@@ -25,20 +25,23 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole Caller;
 		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
-		private LuaFunction savestate_registersavefunc;
-		private LuaFunction savestate_registerloadfunc;
-		private LuaFunction frame_startfunc;
-		private LuaFunction frame_endfunc;
+		private List<LuaFunction> on_savestate_save_events;
+		private List<LuaFunction> on_savestate_load_events;
+		private List<LuaFunction> on_framestart_events;
+		private List<LuaFunction> on_frameend_events;
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 
 		public void SavestateRegisterSave(string name)
 		{
-			if (savestate_registersavefunc != null)
+			if (on_savestate_save_events != null)
 			{
 				try
 				{
-					savestate_registersavefunc.Call(name);
+					foreach (LuaFunction lf in on_savestate_save_events)
+					{
+						lf.Call(name);
+					}
 				}
 				catch (SystemException e)
 				{
@@ -51,11 +54,14 @@ namespace BizHawk.MultiClient
 
 		public void SavestateRegisterLoad(string name)
 		{
-			if (savestate_registerloadfunc != null)
+			if (on_savestate_load_events != null)
 			{
 				try
 				{
-					savestate_registerloadfunc.Call(name);
+					foreach (LuaFunction lf in on_savestate_load_events)
+					{
+						lf.Call(name);
+					}
 				}
 				catch (SystemException e)
 				{
@@ -68,11 +74,14 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterBefore()
 		{
-			if (frame_startfunc != null)
+			if (on_framestart_events != null)
 			{
 				try
 				{
-					frame_startfunc.Call();
+					foreach (LuaFunction lf in on_framestart_events)
+					{
+						lf.Call();
+					}
 				}
 				catch (SystemException e)
 				{
@@ -85,11 +94,14 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterAfter()
 		{
-			if (frame_endfunc != null)
+			if (on_frameend_events != null)
 			{
 				try
 				{
-					frame_endfunc.Call();
+					foreach (LuaFunction lf in on_frameend_events)
+					{
+						lf.Call();
+					}
 				}
 				catch (SystemException e)
 				{
@@ -2027,12 +2039,20 @@ namespace BizHawk.MultiClient
 
 		public void savestate_registersave(LuaFunction luaf)
 		{
-			savestate_registersavefunc = luaf;
+			if (on_savestate_save_events == null)
+			{
+				on_savestate_save_events = new List<LuaFunction>();
+			}
+			on_savestate_save_events.Add(luaf);
 		}
 
 		public void savestate_registerload(LuaFunction luaf)
 		{
-			savestate_registerloadfunc = luaf;
+			if (on_savestate_load_events == null)
+			{
+				on_savestate_load_events = new List<LuaFunction>();
+			}
+			on_savestate_load_events.Add(luaf);
 		}
 
 		//----------------------------------------------------
@@ -3116,12 +3136,20 @@ namespace BizHawk.MultiClient
 
 		public void event_onframestart(LuaFunction luaf)
 		{
-			frame_startfunc = luaf;
+			if (on_framestart_events == null)
+			{
+				on_framestart_events = new List<LuaFunction>();
+			}
+			on_framestart_events.Add(luaf);
 		}
 
 		public void event_onframeend(LuaFunction luaf)
 		{
-			frame_endfunc = luaf;
+			if (on_frameend_events == null)
+			{
+				on_frameend_events = new List<LuaFunction>();
+			}
+			on_frameend_events.Add(luaf);
 		}
 
 		public void event_oninputpoll(LuaFunction luaf)
