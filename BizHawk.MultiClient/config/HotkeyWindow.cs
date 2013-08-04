@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 
+			/*
 			IDW_FRAMEADVANCE.SetBindings(Global.Config.FrameAdvanceBinding);
 			IDW_PAUSE.SetBindings(Global.Config.EmulatorPauseBinding);
 			IDW_REBOOTCORE.SetBindings(Global.Config.RebootCoreResetBinding);
@@ -119,6 +120,7 @@ namespace BizHawk.MultiClient
 			IDW_ClearFrame.SetBindings(Global.Config.ClearFrameBinding);
 
 			IDW_YUPLARGE.Text = Global.Config.YUpLargeBinding;
+			*/
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -128,6 +130,7 @@ namespace BizHawk.MultiClient
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
+			/*
 			Global.Config.FastForwardBinding = IDW_FASTFORWARD.Text;
 			Global.Config.FrameAdvanceBinding = IDW_FRAMEADVANCE.Text;
 			Global.Config.RebootCoreResetBinding = IDW_REBOOTCORE.Text;
@@ -235,6 +238,7 @@ namespace BizHawk.MultiClient
 			Global.Config.ClearFrameBinding = IDW_ClearFrame.Text;
 
 			Global.Config.YUpLargeBinding = IDW_YUPLARGE.Text;
+			*/
 
 			Global.OSD.AddMessage("Hotkey settings saved");
 			DialogResult = DialogResult.OK;

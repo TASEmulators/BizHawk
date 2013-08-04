@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace BizHawk.MultiClient
 {
@@ -587,104 +589,117 @@ namespace BizHawk.MultiClient
 		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
 
-		// Client Hotkey Bindings
-		public string ToggleBackgroundInput = "";
-		public string IncreaseSpeedBinding = "Equals";
-		public string DecreaseSpeedBinding = "Minus";
-		public string HardResetBinding = "";
-		public string RebootCoreResetBinding = "Ctrl+R";
-		public string FastForwardBinding = "Tab, X1 RightShoulder";
-		public string RewindBinding = "Shift+R, X1 LeftShoulder";
-		public string EmulatorPauseBinding = "Pause";
-		public string FrameAdvanceBinding = "F";
-		public string TurboBinding = "";
-		public string MaxTurboBinding = "Shift+Tab";
-		public string ScreenshotBinding = "F12";
-		public string ToggleFullscreenBinding = "Alt+Return";
-		public string QuickSave = "I";
-		public string QuickLoad = "P";
-		public string SelectSlot0 = "D0";
-		public string SelectSlot1 = "D1";
-		public string SelectSlot2 = "D2";
-		public string SelectSlot3 = "D3";
-		public string SelectSlot4 = "D4";
-		public string SelectSlot5 = "D5";
-		public string SelectSlot6 = "D6";
-		public string SelectSlot7 = "D7";
-		public string SelectSlot8 = "D8";
-		public string SelectSlot9 = "D9";
-		public string SaveSlot0 = "Shift+F10";
-		public string SaveSlot1 = "Shift+F1";
-		public string SaveSlot2 = "Shift+F2";
-		public string SaveSlot3 = "Shift+F3";
-		public string SaveSlot4 = "Shift+F4";
-		public string SaveSlot5 = "Shift+F5";
-		public string SaveSlot6 = "Shift+F6";
-		public string SaveSlot7 = "Shift+F7";
-		public string SaveSlot8 = "Shift+F8";
-		public string SaveSlot9 = "Shift+F9";
-		public string LoadSlot0 = "F10";
-		public string LoadSlot1 = "F1";
-		public string LoadSlot2 = "F2";
-		public string LoadSlot3 = "F3";
-		public string LoadSlot4 = "F4";
-		public string LoadSlot5 = "F5";
-		public string LoadSlot6 = "F6";
-		public string LoadSlot7 = "F7";
-		public string LoadSlot8 = "F8";
-		public string LoadSlot9 = "F9";
-		public string ToolBox = "T";
-		public string SaveNamedState = "";
-		public string LoadNamedState = "";
-		public string PreviousSlot = "";
-		public string NextSlot = "";
-		public string RamWatch = "";
-		public string RamSearch = "";
-		public string RamPoke = "";
-		public string HexEditor = "";
-		public string LuaConsole = "";
-		public string Cheats = "";
-		public string TASTudio = "";
-		public string OpenROM = "Ctrl+O";
-		public string CloseROM = "Ctrl+W";
-		public string FrameCounterBinding = "";
-		public string FPSBinding = "";
-		public string LagCounterBinding = "";
-		public string InputDisplayBinding = "";
-		public string ReadOnlyToggleBinding = "Q";
-		public string PlayMovieBinding = "";
-		public string RecordMovieBinding = "";
-		public string StopMovieBinding = "";
-		public string PlayBeginningBinding = "";
-		public string VolUpBinding = "";
-		public string VolDownBinding = "";
-		public string SoftResetBinding = "";
-		public string ToggleMultiTrack = "";
-		public string MTRecordAll = "";
-		public string MTRecordNone = "";
-		public string MTIncrementPlayer = "";
-		public string MTDecrementPlayer = "";
-		public string AVIRecordBinding = "";
-		public string AVIStopBinding = "";
-		public string ToggleMenuBinding = "";
-		public string IncreaseWindowSize = "Alt+UpArrow";
-		public string DecreaseWindowSize = "Alt+DownArrow";
-		public string AutoholdBinding = "";
-		public string AutoholdAutofireBinding = "";
-		public string AutoholdClear = "";
-		public string ToggleSNESBG1Binding = "";
-		public string ToggleSNESBG2Binding = "";
-		public string ToggleSNESBG3Binding = "";
-		public string ToggleSNESBG4Binding = "";
-		public string ToggleSNESOBJ1Binding = "";
-		public string ToggleSNESOBJ2Binding = "";
-		public string ToggleSNESOBJ3Binding = "";
-		public string ToggleSNESOBJ4Binding = "";
-		public string SaveMovieBinding = "";
-		public string OpenVirtualPadBinding = "";
-		public string MoviePlaybackPokeModeBinding = "";
-		public string ClearFrameBinding = "";
-		public string YUpLargeBinding = "";
+		public BindingCollection HotkeyBindings = new BindingCollection()
+		{
+			//General
+			new Binding() { DisplayName = "Frame Advance", Bindings = "F", TabGroup = "General" },
+			new Binding() { DisplayName = "Rewind", Bindings = "Shift+R, X1 LeftShoulder", TabGroup = "General" },
+			new Binding() { DisplayName = "Pause", Bindings = "Pause", TabGroup = "General" },
+			new Binding() { DisplayName = "Fast Forward", Bindings = "Tab, X1 RightShoulder", TabGroup = "General" },
+			new Binding() { DisplayName = "Turbo", Bindings = "Shift+Tab", TabGroup = "General" },
+			new Binding() { DisplayName = "Toggle Throttle", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Soft Reset", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Hard Reset", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Quick Load", Bindings = "P", TabGroup = "General" },
+			new Binding() { DisplayName = "Quick Save", Bindings = "I", TabGroup = "General" },
+			new Binding() { DisplayName = "Autohold", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Clear Autohold", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Screenshot", Bindings = "F12", TabGroup = "General" },
+			new Binding() { DisplayName = "Full Screen", Bindings = "Alt+Return", TabGroup = "General" },
+			new Binding() { DisplayName = "Open ROM", Bindings = "Ctrl+O", TabGroup = "General" },
+			new Binding() { DisplayName = "Close ROM", Bindings = "Ctrl+W", TabGroup = "General" },
+			new Binding() { DisplayName = "Display FPS", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Frame Counter", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Lag Counter", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Input Display", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Toggle BG Input", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Toggle Menu", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Volume Up", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Volume Down", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Record A/V", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Stop A/V", Bindings = "", TabGroup = "General" },
+			new Binding() { DisplayName = "Larger Window", Bindings = "Alt+UpArrow", TabGroup = "General" },
+			new Binding() { DisplayName = "Smaller Window", Bindings = "Alt+DownArrow", TabGroup = "General" },
+			new Binding() { DisplayName = "Increase Speed", Bindings = "Equals", TabGroup = "General" },
+			new Binding() { DisplayName = "Decrease Speed", Bindings = "Minus", TabGroup = "General" },
+			new Binding() { DisplayName = "Reboot Core", Bindings = "Ctrl+R", TabGroup = "General" },
+			new Binding() { DisplayName = "Autofire", Bindings = "", TabGroup = "General" },
+
+			//Save States
+			new Binding() { DisplayName = "Save State 0", Bindings = "Shift+F10", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 1", Bindings = "Shift+F1", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 2", Bindings = "Shift+F2", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 3", Bindings = "Shift+F3", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 4", Bindings = "Shift+F4", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 5", Bindings = "Shift+F5", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 6", Bindings = "Shift+F6", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 7", Bindings = "Shift+F7", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 8", Bindings = "Shift+F8", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save State 9", Bindings = "Shift+F9", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 0", Bindings = "F10", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 1", Bindings = "F1", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 2", Bindings = "F2", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 3", Bindings = "F3", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 4", Bindings = "F4", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 5", Bindings = "F5", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 6", Bindings = "F6", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 7", Bindings = "F7", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 8", Bindings = "F8", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load State 9", Bindings = "F9", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 0", Bindings = "D0", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 1", Bindings = "D1", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 2", Bindings = "D2", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 3", Bindings = "D3", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 4", Bindings = "D4", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 5", Bindings = "D5", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 6", Bindings = "D6", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 7", Bindings = "D7", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 8", Bindings = "D8", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Select State 9", Bindings = "D9", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Save Named State", Bindings = "", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Load Named State", Bindings = "", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Previous Slot", Bindings = "", TabGroup = "Save States" },
+			new Binding() { DisplayName = "Next Slot", Bindings = "", TabGroup = "Save States" },
+
+			//Movie
+			new Binding() { DisplayName = "Toggle read-only", Bindings = "Q", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Play Movie", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Record Movie", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Stop Movie", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Play from beginning", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Save Movie", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Toggle MultiTrack", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "MT Select All", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "MT Select None", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "MT Increment Player", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "MT Decrement Player", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Movie Poke", Bindings = "", TabGroup = "Movie" },
+			new Binding() { DisplayName = "Scrub Input", Bindings = "", TabGroup = "Movie" },
+
+			//Tools
+			new Binding() { DisplayName = "Ram Watch", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Ram Search", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Ram Poke", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Hex Editor", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Cheats", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "TAStudio", Bindings = "", TabGroup = "Tools" },
+			new Binding() { DisplayName = "ToolBox", Bindings = "T", TabGroup = "Tools" },
+			new Binding() { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools" },
+
+			//SNES
+			new Binding() { DisplayName = "SNES Toggle BG 1", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle BG 2", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle BG 3", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle BG 4", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle OBJ 1", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle OBJ 2", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle OBJ 3", Bindings = "", TabGroup = "SNES" },
+			new Binding() { DisplayName = "SNES Toggle OBJ 4", Bindings = "", TabGroup = "SNES" },
+
+			//Analog
+			new Binding() { DisplayName = "Y Up Large", Bindings = "", TabGroup = "Analog" },
+		};
 
 		//Analog Hotkey values
 		public int Analog_LargeChange = 10;
@@ -813,6 +828,49 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowMissle2 = true;
 		public bool Atari2600_ShowBall = true;
 		public bool Atari2600_ShowPlayfield = true;
+	}
+
+	public class BindingCollection : IEnumerable<Binding>
+	{
+		public List<Binding> Bindings { get; private set; }
+
+		public BindingCollection()
+		{
+			Bindings = new List<Binding>();
+		}
+
+		public void Add(Binding b)
+		{
+			Bindings.Add(b);
+		}
+
+		public IEnumerator<Binding> GetEnumerator()
+		{
+			return Bindings.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public Binding this[string index]
+		{
+			get
+			{
+				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? null;
+			}
+		}
+	}
+
+	public class Binding
+	{
+		//TODO: how about a delegate, that would be called by the mainform? Thereby putting all the action logic in one place
+		public string DisplayName;
+		public string Bindings;
+		public string DefaultBinding;
+		public string TabGroup;
+		public Binding() { }
 	}
 
 	public enum PLUGINTYPE { RICE, GLIDE }; 
