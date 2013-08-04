@@ -2001,14 +2001,14 @@ namespace BizHawk.MultiClient
 				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
 
-				case "SNES Toggle BG 1": SNES_ToggleBG1(); break;
-				case "SNES Toggle BG 2": SNES_ToggleBG2(); break;
-				case "SNES Toggle BG 3": SNES_ToggleBG3(); break;
-				case "SNES Toggle BG 4": SNES_ToggleBG4(); break;
-				case "SNES Toggle OBJ 1": SNES_ToggleOBJ1(); break;
-				case "SNES Toggle OBJ 2": SNES_ToggleOBJ2(); break;
-				case "SNES Toggle OBJ 3": SNES_ToggleOBJ3(); break;
-				case "SNES Toggle OBJ 4": SNES_ToggleOBJ4(); break;
+				case "Toggle BG 1": SNES_ToggleBG1(); break;
+				case "Toggle BG 2": SNES_ToggleBG2(); break;
+				case "Toggle BG 3": SNES_ToggleBG3(); break;
+				case "Toggle BG 4": SNES_ToggleBG4(); break;
+				case "Toggle OBJ 1": SNES_ToggleOBJ1(); break;
+				case "Toggle OBJ 2": SNES_ToggleOBJ2(); break;
+				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
+				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
 				
 
 				case "Y Up Large Binding":
