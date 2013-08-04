@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
 		{
 			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			DoTabs();
+			DoFocus();
 		}
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)
@@ -143,6 +144,31 @@ namespace BizHawk.MultiClient
 			{
 				w.AutoTab = AutoTabCheckBox.Checked;
 			}
+		}
+
+		private void HotkeyTabControl_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			DoFocus();
+		}
+
+		private void DoFocus()
+		{
+			if (HotkeyTabControl.SelectedTab != null)
+			{
+				foreach (Control c in HotkeyTabControl.SelectedTab.Controls)
+				{
+					if (c is InputWidget)
+					{
+						(c as InputWidget).Focus();
+						return;
+					}
+				}
+			}
+		}
+
+		private void HotkeyTabControl_Enter(object sender, EventArgs e)
+		{
+			DoFocus();
 		}
 	}
 }
