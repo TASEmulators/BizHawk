@@ -778,12 +778,6 @@
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
-    <Compile Include="config\HotkeyWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\HotkeyWindow.Designer.cs">
-      <DependentUpon>HotkeyWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="TI83tools\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -980,10 +974,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RecordMovie.resx">
       <DependentUpon>RecordMovie.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\HotkeyWindow.resx">
-      <DependentUpon>HotkeyWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TI83tools\TI83KeyPad.resx">
