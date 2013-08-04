@@ -2013,9 +2013,15 @@ namespace BizHawk.MultiClient
 				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
 
 
-				case "Y Up Large":
-					VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange);
-					break;
+				case "Y Up Small": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
+				case "Y Up Large": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
+				case "Y Down Small": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
+				case "Y Down Large": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
+
+				case "X Up Small": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
+				case "X Up Large": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
+				case "X Down Small": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
+				case "X Down Large": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
 			}
 
 			return true;
