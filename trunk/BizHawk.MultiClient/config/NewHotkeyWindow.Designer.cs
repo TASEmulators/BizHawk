@@ -72,6 +72,8 @@
 			this.HotkeyTabControl.SelectedIndex = 0;
 			this.HotkeyTabControl.Size = new System.Drawing.Size(729, 394);
 			this.HotkeyTabControl.TabIndex = 102;
+			this.HotkeyTabControl.SelectedIndexChanged += new System.EventHandler(this.HotkeyTabControl_SelectedIndexChanged);
+			this.HotkeyTabControl.Enter += new System.EventHandler(this.HotkeyTabControl_Enter);
 			// 
 			// tabPage1
 			// 
