@@ -14,6 +14,34 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
+	public class NamedLuaFunction
+	{
+		private LuaFunction _function;
+		private string _name;
+
+		public Guid GUID { get; private set; }
+
+		public NamedLuaFunction(LuaFunction function, string name = null)
+		{
+			_function = function;
+			_name = name ?? "Anonymous Function";
+			GUID = Guid.NewGuid();
+		}
+
+		public void Call(string name = null)
+		{
+			_function.Call(name);
+		}
+
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+		}
+	}
+
 	public class LuaImplementation
 	{
 		public LuaDocumentation docs = new LuaDocumentation();
@@ -25,20 +53,20 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole Caller;
 		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
-		private List<LuaFunction> on_savestate_save_events;
-		private List<LuaFunction> on_savestate_load_events;
-		private List<LuaFunction> on_framestart_events;
-		private List<LuaFunction> on_frameend_events;
+		private List<NamedLuaFunction> on_savestate_save_events = new List<NamedLuaFunction>();
+		private List<NamedLuaFunction> on_savestate_load_events = new List<NamedLuaFunction>();
+		private List<NamedLuaFunction> on_framestart_events = new List<NamedLuaFunction>();
+		private List<NamedLuaFunction> on_frameend_events = new List<NamedLuaFunction>();
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 
 		public void SavestateRegisterSave(string name)
 		{
-			if (on_savestate_save_events != null)
+			if (on_savestate_save_events.Any())
 			{
 				try
 				{
-					foreach (LuaFunction lf in on_savestate_save_events)
+					foreach (NamedLuaFunction lf in on_savestate_save_events)
 					{
 						lf.Call(name);
 					}
@@ -54,11 +82,11 @@ namespace BizHawk.MultiClient
 
 		public void SavestateRegisterLoad(string name)
 		{
-			if (on_savestate_load_events != null)
+			if (on_savestate_load_events.Any())
 			{
 				try
 				{
-					foreach (LuaFunction lf in on_savestate_load_events)
+					foreach (NamedLuaFunction lf in on_savestate_load_events)
 					{
 						lf.Call(name);
 					}
@@ -78,7 +106,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					foreach (LuaFunction lf in on_framestart_events)
+					foreach (NamedLuaFunction lf in on_framestart_events)
 					{
 						lf.Call();
 					}
@@ -98,7 +126,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					foreach (LuaFunction lf in on_frameend_events)
+					foreach (NamedLuaFunction lf in on_frameend_events)
 					{
 						lf.Call();
 					}
@@ -619,7 +647,9 @@ namespace BizHawk.MultiClient
 														"onframeend",
 														"onmemoryread",
 														"onmemorywrite",
-														"oninputpoll"
+														"oninputpoll",
+														"unregisterbyid",
+														"unregisterbyname"
 													};
 		/****************************************************/
 		/*************function definitions********************/
@@ -2037,22 +2067,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void savestate_registersave(LuaFunction luaf)
+		public string savestate_registersave(LuaFunction luaf, object name)
 		{
-			if (on_savestate_save_events == null)
-			{
-				on_savestate_save_events = new List<LuaFunction>();
-			}
-			on_savestate_save_events.Add(luaf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, name != null ? name.ToString() : null);
+			on_savestate_save_events.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
-		public void savestate_registerload(LuaFunction luaf)
+		public string savestate_registerload(LuaFunction luaf, object name)
 		{
-			if (on_savestate_load_events == null)
-			{
-				on_savestate_load_events = new List<LuaFunction>();
-			}
-			on_savestate_load_events.Add(luaf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, name != null ? name.ToString() : null);
+			on_savestate_load_events.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		//----------------------------------------------------
@@ -3124,32 +3150,28 @@ namespace BizHawk.MultiClient
 		//Events library
 		//----------------------------------------------------
 
-		public void event_onsavestate(LuaFunction luaf)
+		public string event_onsavestate(LuaFunction luaf, object name = null)
 		{
-			savestate_registersave(luaf);
+			return savestate_registersave(luaf, name);
 		}
 
-		public void event_onloadstate(LuaFunction luaf)
+		public string event_onloadstate(LuaFunction luaf, object name = null)
 		{
-			savestate_registerload(luaf);
+			return savestate_registerload(luaf, name);
 		}
 
-		public void event_onframestart(LuaFunction luaf)
+		public string event_onframestart(LuaFunction luaf, object name = null)
 		{
-			if (on_framestart_events == null)
-			{
-				on_framestart_events = new List<LuaFunction>();
-			}
-			on_framestart_events.Add(luaf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, name != null ? name.ToString() : null);
+			on_framestart_events.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
-		public void event_onframeend(LuaFunction luaf)
+		public string event_onframeend(LuaFunction luaf, string name = null)
 		{
-			if (on_frameend_events == null)
-			{
-				on_frameend_events = new List<LuaFunction>();
-			}
-			on_frameend_events.Add(luaf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, name != null ? name.ToString() : null);
+			on_frameend_events.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		public void event_oninputpoll(LuaFunction luaf)
@@ -3229,6 +3251,91 @@ namespace BizHawk.MultiClient
 			{
 				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
 			}
+		}
+
+		public bool event_unregisterbyid(object guid)
+		{
+			//Iterating every possible event type is not very scalable
+			foreach (NamedLuaFunction nlf in on_framestart_events)
+			{
+				if (nlf.GUID.ToString() == guid.ToString())
+				{
+					on_framestart_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_frameend_events)
+			{
+				if (nlf.GUID.ToString() == guid.ToString())
+				{
+					on_frameend_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_savestate_save_events)
+			{
+				if (nlf.GUID.ToString() == guid.ToString())
+				{
+					on_savestate_save_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_savestate_load_events)
+			{
+				if (nlf.GUID.ToString() == guid.ToString())
+				{
+					on_savestate_load_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool event_unregisterbyname(object name)
+		{
+			//Horribly redundant to the function above!
+			//Iterating every possible event type is not very scalable
+			foreach (NamedLuaFunction nlf in on_framestart_events)
+			{
+				if (nlf.Name == name.ToString())
+				{
+					on_framestart_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_frameend_events)
+			{
+				if (nlf.Name == name.ToString())
+				{
+					on_frameend_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_savestate_save_events)
+			{
+				if (nlf.Name == name.ToString())
+				{
+					on_savestate_save_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			foreach (NamedLuaFunction nlf in on_savestate_load_events)
+			{
+				if (nlf.Name == name.ToString())
+				{
+					on_savestate_load_events.Remove(nlf);
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
