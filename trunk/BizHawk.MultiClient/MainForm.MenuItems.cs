@@ -1981,6 +1981,16 @@ namespace BizHawk.MultiClient
 			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ2;
 			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ3;
 			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ4;
+
+			bG0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
+			bG1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
+			bG2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 3"].Bindings;
+			bG3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 4"].Bindings;
+
+			oBJ0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 1"].Bindings;
+			oBJ1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 2"].Bindings;
+			oBJ2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 3"].Bindings;
+			oBJ3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
 		}
 
 		private void captureOSDToolStripMenuItem_Click(object sender, EventArgs e)
