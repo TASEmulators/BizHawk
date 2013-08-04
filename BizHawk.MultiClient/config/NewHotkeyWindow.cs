@@ -88,7 +88,7 @@ namespace BizHawk.MultiClient
 				tb.Name = tab;
 				tb.Text = tab;
 
-				List<Binding> bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.DisplayName).ToList();
+				List<Binding> bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
 
 				int _x = 6;
 				int _y = 14;
