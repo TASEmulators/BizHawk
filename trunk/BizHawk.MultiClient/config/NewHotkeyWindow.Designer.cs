@@ -53,7 +53,7 @@
 			// 
 			this.AutoTabCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoTabCheckBox.AutoSize = true;
-			this.AutoTabCheckBox.Location = new System.Drawing.Point(429, 422);
+			this.AutoTabCheckBox.Location = new System.Drawing.Point(409, 422);
 			this.AutoTabCheckBox.Name = "AutoTabCheckBox";
 			this.AutoTabCheckBox.Size = new System.Drawing.Size(70, 17);
 			this.AutoTabCheckBox.TabIndex = 101;
@@ -92,7 +92,7 @@
 			this.IDB_CANCEL.Size = new System.Drawing.Size(60, 22);
 			this.IDB_CANCEL.TabIndex = 103;
 			this.IDB_CANCEL.TabStop = false;
-			this.IDB_CANCEL.Text = "Cancel";
+			this.IDB_CANCEL.Text = "&Cancel";
 			this.IDB_CANCEL.UseVisualStyleBackColor = true;
 			this.IDB_CANCEL.Click += new System.EventHandler(this.IDB_CANCEL_Click);
 			// 
@@ -104,14 +104,14 @@
 			this.IDB_SAVE.Size = new System.Drawing.Size(60, 22);
 			this.IDB_SAVE.TabIndex = 104;
 			this.IDB_SAVE.TabStop = false;
-			this.IDB_SAVE.Text = "Save";
+			this.IDB_SAVE.Text = "&Save";
 			this.IDB_SAVE.UseVisualStyleBackColor = true;
 			this.IDB_SAVE.Click += new System.EventHandler(this.IDB_SAVE_Click);
 			// 
 			// RestoreDefaults
 			// 
 			this.RestoreDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RestoreDefaults.Location = new System.Drawing.Point(505, 418);
+			this.RestoreDefaults.Location = new System.Drawing.Point(485, 418);
 			this.RestoreDefaults.Name = "RestoreDefaults";
 			this.RestoreDefaults.Size = new System.Drawing.Size(60, 22);
 			this.RestoreDefaults.TabIndex = 105;

@@ -130,6 +130,11 @@ namespace BizHawk.MultiClient
 
 		private void Defaults()
 		{
+			foreach (InputWidget w in _inputWidgets)
+			{
+				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
+				w.Text = b.DefaultBinding;
+			}
 		}
 
 		private void SetAutoTab()
