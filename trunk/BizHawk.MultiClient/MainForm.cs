@@ -1849,6 +1849,8 @@ namespace BizHawk.MultiClient
 			//todo - could have these in a table somehow ?
 			switch (trigger)
 			{
+				default:
+					return false;
 				case "Pause": TogglePause(); break;
 				case "Toggle Throttle":
 					unthrottled ^= true;
