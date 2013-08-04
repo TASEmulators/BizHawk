@@ -455,7 +455,6 @@ namespace BizHawk.MultiClient
 
 		private void OpenControllerConfig()
 		{
-			//ControllerConfig c = new ControllerConfig();
 			config.NewControllerConfig c = new config.NewControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
@@ -472,9 +471,6 @@ namespace BizHawk.MultiClient
 
 		private void OpenHotkeyDialog()
 		{
-			//TODO: delete me
-			//HotkeyWindow h = new HotkeyWindow();
-
 			NewHotkeyWindow h = new NewHotkeyWindow();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
