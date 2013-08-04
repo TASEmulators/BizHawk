@@ -580,7 +580,7 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.ClientControls["Autohold"] || Global.ClientControls["AutoholdAutofire"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 

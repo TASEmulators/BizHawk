@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
 
 				int _x = 6;
 				int _y = 14;
-				int iw_offset_x = 87;
+				int iw_offset_x = 110;
 				int iw_offset_y = -4;
 				int iw_width = 120;
 				foreach (Binding b in bindings)
