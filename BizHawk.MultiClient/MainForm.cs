@@ -82,29 +82,54 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		public RamWatch RamWatch1 = new RamWatch();
-		public RamSearch RamSearch1 = new RamSearch();
-		public HexEditor HexEditor1 = new HexEditor();
-		public TraceLogger TraceLogger1 = new TraceLogger();
-		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
-		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
-		public NESPPU NESPPU1 = new NESPPU();
-		public NESDebugger NESDebug1 = new NESDebugger();
-		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
-		public GBAtools.GBAGPUView GBAGPUView1 = new GBAtools.GBAGPUView();
-		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
-		public Cheats Cheats1 = new Cheats();
-		public ToolBox ToolBox1 = new ToolBox();
-		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
-		public TAStudio TAStudio1 = new TAStudio();
-		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
-		public NESGameGenie NESgg = new NESGameGenie();
-		public SNESGameGenie SNESgg = new SNESGameGenie();
-		public GBGameGenie GBgg = new GBGameGenie();
-		public GenGameGenie Gengg = new GenGameGenie();
-		public NESSoundConfig NesSound = new NESSoundConfig();
+
+        private RamWatch _ramwatch = null;
+        private RamSearch _ramsearch = null;
+        private HexEditor _hexeditor = null;
+        private TraceLogger _tracelogger = null;
+        private SNESGraphicsDebugger _snesgraphicsdebugger = null;
+        private NESNameTableViewer _nesnametableview = null;
+        private NESPPU _nesppu = null;
+        private NESDebugger _nesdebugger = null;
+        private GBtools.GBGPUView _gbgpuview = null;
+        private GBAtools.GBAGPUView _gbagpuview = null;
+        private PCEBGViewer _pcebgviewer = null;
+        private Cheats _cheats = null;
+        private ToolBox _toolbox = null;
+        private TI83KeyPad _ti83pad = null;
+        private TAStudio _tastudio = null;
+        private VirtualPadForm _vpad = null;
+        private NESGameGenie _ngg = null;
+        private SNESGameGenie _sgg = null;
+        private GBGameGenie _gbgg = null;
+        private GenGameGenie _gengg = null;
+        private NESSoundConfig _nessound = null;
+
+        //TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
+        public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
+        public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
+        public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
+        public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
+		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
+        public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
+        public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
+		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
+        public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
+        public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
+        public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
+        public Cheats Cheats1 { get { if (_cheats == null) _cheats = new Cheats(); return _cheats; } set { _cheats = value; } }
+        public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
+        public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
+		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
+		public VirtualPadForm VirtualPadForm1 { get { if (_vpad == null) _vpad = new VirtualPadForm(); return _vpad; } set { _vpad = value; } }
+		public NESGameGenie NESgg { get { if (_ngg == null) _ngg = new NESGameGenie(); return _ngg; } set { _ngg = value; } }
+        public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
+		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
+		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
+		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 #if WINDOWS
-		public LuaConsole LuaConsole1 = new LuaConsole();
+        private LuaConsole _luaconsole = null;
+		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
 #endif
 
 		/// <summary>
@@ -1510,21 +1535,21 @@ namespace BizHawk.MultiClient
 				//    throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 				//    SyncThrottle();
 				//}
-				RamSearch1.Restart();
-				RamWatch1.Restart();
-				HexEditor1.Restart();
-				NESPPU1.Restart();
-				NESNameTableViewer1.Restart();
-				NESDebug1.Restart();
-				GBGPUView1.Restart();
-				GBAGPUView1.Restart();
-				PCEBGViewer1.Restart();
-				TI83KeyPad1.Restart();
-				TAStudio1.Restart();
-				VirtualPadForm1.Restart();
-				Cheats1.Restart();
-				ToolBox1.Restart();
-				TraceLogger1.Restart();
+				if (_ramsearch != null) RamSearch1.Restart();
+				if (_ramwatch != null) RamWatch1.Restart();
+				if (_hexeditor != null) HexEditor1.Restart();
+				if (_nesppu != null) NESPPU1.Restart();
+				if (_nesnametableview != null) NESNameTableViewer1.Restart();
+				if (_nesdebugger != null) NESDebug1.Restart();
+				if (_gbgpuview != null) GBGPUView1.Restart();
+				if (_gbagpuview != null) GBAGPUView1.Restart();
+				if (_pcebgviewer != null) PCEBGViewer1.Restart();
+				if (_ti83pad != null) TI83KeyPad1.Restart();
+				if (_tastudio != null) TAStudio1.Restart();
+				if (_vpad != null) VirtualPadForm1.Restart();
+				if (_cheats != null) Cheats1.Restart();
+				if (_toolbox != null) ToolBox1.Restart();
+				if (_tracelogger != null) TraceLogger1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -1533,7 +1558,8 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}
-				Cheats1.UpdateValues();
+				
+                if (_cheats != null) Cheats1.UpdateValues();
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
@@ -2223,21 +2249,22 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsBefore(bool fromLua = false)
 		{
 #if WINDOWS
-			if (!fromLua)
-				LuaConsole1.StartLuaDrawing();
-			LuaConsole1.LuaImp.FrameRegisterBefore();
-
+            if (_luaconsole != null)
+            {
+                if (!fromLua) LuaConsole1.StartLuaDrawing();
+                LuaConsole1.LuaImp.FrameRegisterBefore();
+            }
 #endif
-			NESNameTableViewer1.UpdateValues();
-			NESPPU1.UpdateValues();
-			PCEBGViewer1.UpdateValues();
-			GBGPUView1.UpdateValues();
-			GBAGPUView1.UpdateValues();
+			if (_nesnametableview != null) NESNameTableViewer1.UpdateValues();
+			if (_nesppu != null) NESPPU1.UpdateValues();
+			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
+			if (_gbgpuview != null) GBGPUView1.UpdateValues();
+			if (_gbagpuview != null) GBAGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
 		{
-			SNESGraphicsDebugger1.UpdateToolsLoadstate();
+			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsLoadstate();
 		}
 
 		/// <summary>
@@ -2246,28 +2273,33 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter(bool fromLua = false)
 		{
 #if WINDOWS
-			if (!fromLua)
-				LuaConsole1.ResumeScripts(true);
+            if (_luaconsole != null && !fromLua)
+            {
+                LuaConsole1.ResumeScripts(true);
+            }
 
 #endif
-			RamWatch1.UpdateValues();
-			RamSearch1.UpdateValues();
-			HexEditor1.UpdateValues();
+			if (_ramwatch != null) RamWatch1.UpdateValues();
+			if (_ramsearch != null) RamSearch1.UpdateValues();
+			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 
-			TAStudio1.UpdateValues();
-			VirtualPadForm1.UpdateValues();
-			SNESGraphicsDebugger1.UpdateToolsAfter();
-			TraceLogger1.UpdateValues();
+			if (_tastudio != null) TAStudio1.UpdateValues();
+			if (_vpad != null) VirtualPadForm1.UpdateValues();
+			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsAfter();
+			if (_tracelogger != null) TraceLogger1.UpdateValues();
 			HandleToggleLight();
 #if WINDOWS
-			LuaConsole1.LuaImp.FrameRegisterAfter();
-			if (!fromLua)
-			{
-				Global.DisplayManager.PreFrameUpdateLuaSource();
-				LuaConsole1.EndLuaDrawing();
-			}
+            if (_luaconsole != null)
+            {
+                LuaConsole1.LuaImp.FrameRegisterAfter();
+                if (!fromLua)
+                {
+                    Global.DisplayManager.PreFrameUpdateLuaSource();
+                    LuaConsole1.EndLuaDrawing();
+                }
+            }
 #endif
 		}
 
