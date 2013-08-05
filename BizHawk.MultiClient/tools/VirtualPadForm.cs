@@ -295,10 +295,10 @@ namespace BizHawk.MultiClient
 						case "C64":
 							break;
 						case "N64":
-							Pads[0].SetButtons(str.Substring(3, 20));
-							Pads[1].SetButtons(str.Substring(24, 20));
-							Pads[2].SetButtons(str.Substring(45, 20));
-							Pads[3].SetButtons(str.Substring(66, 20));
+							Pads[0].SetButtons(str.Substring(3, 23));
+							Pads[1].SetButtons(str.Substring(27, 23));
+							Pads[2].SetButtons(str.Substring(51, 23));
+							Pads[3].SetButtons(str.Substring(75, 23));
 							break;
 					}
 				}
