@@ -1301,5 +1301,10 @@ namespace BizHawk.MultiClient
 				dialog.ShowDialog();
 			}
 		}
+
+		private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+		{
+			registeredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
+		}
 	}
 }

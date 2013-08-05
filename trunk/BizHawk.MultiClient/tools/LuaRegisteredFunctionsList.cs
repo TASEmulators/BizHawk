@@ -39,5 +39,42 @@ namespace BizHawk.MultiClient
 				FunctionView.Items.Add(item);
 			}
 		}
+
+		private void CallButton_Click(object sender, EventArgs e)
+		{
+			CallFunction();
+		}
+
+		private void RemoveButton_Click(object sender, EventArgs e)
+		{
+			RemoveFunctionButton();
+		}
+
+		private void CallFunction()
+		{
+			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]].Call();
+			}
+		}
+
+		private void RemoveFunctionButton()
+		{
+			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				NamedLuaFunction nlf = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]];
+				Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Remove(nlf);
+				PopulateListView();
+			}
+		}
+
+		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+			CallButton.Enabled = indexes.Count > 0;
+			RemoveButton.Enabled = indexes.Count > 0;
+		}
 	}
 }
