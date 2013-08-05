@@ -112,16 +112,16 @@ namespace BizHawk.MultiClient
 
 			int x = 0;
 			int y = 0;
-			if (InputValidate.IsValidUnsignedNumber(buttons.Substring(14, 3)))
+			if (InputValidate.IsValidSignedNumber(buttons.Substring(14, 4)))
 			{
-				x = Int32.Parse(buttons.Substring(14, 3)) - 128;
+				x = Int32.Parse(buttons.Substring(14, 4));
 
 			}
-			if (InputValidate.IsValidUnsignedNumber(buttons.Substring(17, 3)))
+			if (InputValidate.IsValidSignedNumber(buttons.Substring(19, 4)))
 			{
-				y = Int32.Parse(buttons.Substring(17, 3)) - 128;
+				y = Int32.Parse(buttons.Substring(19, 4));
 			}
-			AnalogControl1.SetPosition(x, y);
+			set_analog(x, y);
 		}
 
 		public string GetMnemonic()
