@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm : Form
 	{
-		public static bool INTERIM = true;
+		public static bool INTERIM = false;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "March 23, 2013";
 		public string CurrentlyOpenRom;
@@ -4045,7 +4045,6 @@ namespace BizHawk.MultiClient
 		private void configToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			controllersToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-			firmwaresToolStripMenuItem.Visible = INTERIM;
 		}
 
 		private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
