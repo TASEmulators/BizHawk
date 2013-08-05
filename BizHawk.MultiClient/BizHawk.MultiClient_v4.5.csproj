@@ -494,6 +494,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\LuaDocumentation.cs" />
+    <Compile Include="tools\LuaRegisteredFunctionsList.cs" />
+    <Compile Include="tools\LuaRegisteredFunctionsList.Designer.cs">
+      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -707,6 +711,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaFunctionList.resx">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\LuaRegisteredFunctionsList.resx">
+      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>

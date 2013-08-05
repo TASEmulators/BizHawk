@@ -1140,15 +1140,16 @@ namespace BizHawk.MultiClient
 				scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
 			}
 
-			if (luaList.Count > 0)
+			if (luaList.Any())
 				scriptToolStripMenuItem.DropDownItems[9].Enabled = true;
 			else
 				scriptToolStripMenuItem.DropDownItems[9].Enabled = false;
 
-			if (luaRunning)
-				scriptToolStripMenuItem.DropDownItems[11].Enabled = true;
-			else
-				scriptToolStripMenuItem.DropDownItems[11].Enabled = false;
+
+			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
+
+
+			showRegisteredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -1290,6 +1291,15 @@ namespace BizHawk.MultiClient
 		private void newStripButton1_Click(object sender, EventArgs e)
 		{
 			NewScript();
+		}
+
+		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any())
+			{
+				LuaRegisteredFunctionsList dialog = new LuaRegisteredFunctionsList();
+				dialog.ShowDialog();
+			}
 		}
 	}
 }
