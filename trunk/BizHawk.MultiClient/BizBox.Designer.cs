@@ -77,7 +77,7 @@
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.OK.Location = new System.Drawing.Point(361, 478);
+            this.OK.Location = new System.Drawing.Point(361, 490);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 0;
@@ -99,7 +99,7 @@
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(173, 482);
+            this.linkLabel1.Location = new System.Drawing.Point(173, 494);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(180, 13);
             this.linkLabel1.TabIndex = 2;
@@ -215,7 +215,7 @@
             this.panel1.Controls.Add(this.label8);
             this.panel1.Location = new System.Drawing.Point(12, 182);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(423, 290);
+            this.panel1.Size = new System.Drawing.Size(423, 302);
             this.panel1.TabIndex = 11;
             // 
             // linkLabel5
@@ -223,10 +223,10 @@
             this.linkLabel5.AutoSize = true;
             this.linkLabel5.Location = new System.Drawing.Point(21, 256);
             this.linkLabel5.Name = "linkLabel5";
-            this.linkLabel5.Size = new System.Drawing.Size(72, 13);
+            this.linkLabel5.Size = new System.Drawing.Size(96, 13);
             this.linkLabel5.TabIndex = 29;
             this.linkLabel5.TabStop = true;
-            this.linkLabel5.Text = "Mupen64Plus";
+            this.linkLabel5.Text = "Mupen64Plus v2.0";
             this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
             // 
             // label29
@@ -474,9 +474,9 @@
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(198, 162);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(63, 13);
+            this.label27.Size = new System.Drawing.Size(149, 13);
             this.label27.TabIndex = 12;
-            this.label27.Text = "SaxxonPike";
+            this.label27.Text = "SaxxonPike, MasterofPuppets";
             // 
             // BizBox
             // 
@@ -484,7 +484,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.OK;
-            this.ClientSize = new System.Drawing.Size(448, 513);
+            this.ClientSize = new System.Drawing.Size(448, 525);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label7);
