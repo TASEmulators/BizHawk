@@ -18,7 +18,13 @@ namespace BizHawk.MultiClient
 
 		private void NewHotkeyWindow_Load(object sender, EventArgs e)
 		{
-			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
+            AutoCompleteStringCollection source = new AutoCompleteStringCollection();
+            source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
+
+            SearchBox.AutoCompleteCustomSource = source;
+            SearchBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+            AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			DoTabs();
 			DoFocus();
 		}
@@ -166,9 +172,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void HotkeyTabControl_Enter(object sender, EventArgs e)
-		{
-			DoFocus();
-		}
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Tab or Enter
+            if (!e.Control && !e.Alt && !e.Shift &&
+                (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
+            {
+                string user_selection = SearchBox.Text;
+
+                Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
+
+                //Found
+                if (b != null)
+                {
+                    InputWidget w = _inputWidgets.FirstOrDefault(x => x.WidgetName == b.DisplayName);
+                    if (w != null)
+                    {
+                        HotkeyTabControl.SelectTab((w.Parent as TabPage));
+                        w.Focus();
+                    }
+                }
+
+                e.Handled = true;
+            }
+        }
 	}
 }

@@ -419,7 +419,7 @@ namespace BizHawk.MultiClient
 		                                         		"usememorydomain",
 		                                         		"getmemorydomainlist",
 		                                         		"getcurrentmemorydomain",
-																								"getcurrentmemorydomainsize",
+														"getcurrentmemorydomainsize",
 		                                         		"read_s8",
 		                                         		"read_u8",
 		                                         		"read_s16_le",
