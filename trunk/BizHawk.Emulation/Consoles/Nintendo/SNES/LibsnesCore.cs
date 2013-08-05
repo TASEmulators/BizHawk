@@ -696,7 +696,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			temp.SaveAsHexFast(writer);
 			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
 			writer.WriteLine("Profile {0}", CoreComm.SNES_Profile);
 		}
@@ -712,7 +712,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				hex = reader.ReadLine();
 			}
 			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
+			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 			reader.ReadLine(); // Frame #
 			var profile = reader.ReadLine().Split(' ')[1];
