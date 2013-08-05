@@ -650,6 +650,9 @@ namespace BizHawk.MultiClient
             traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
 			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+
+            createDualGBXMLToolStripMenuItem.Visible = INTERIM;
+            toolStripSeparator29.Visible = INTERIM;
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
