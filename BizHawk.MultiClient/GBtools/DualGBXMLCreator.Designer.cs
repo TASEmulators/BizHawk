@@ -29,7 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.dualGBFileSelector1 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.dualGBFileSelector2 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonOK = new System.Windows.Forms.Button();
@@ -38,8 +40,6 @@
 			this.textBoxOutputDir = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.textBoxXML = new System.Windows.Forms.TextBox();
-			this.dualGBFileSelector2 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
-			this.dualGBFileSelector1 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -59,6 +59,16 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Left Rom";
 			// 
+			// dualGBFileSelector1
+			// 
+			this.dualGBFileSelector1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.dualGBFileSelector1.Location = new System.Drawing.Point(6, 19);
+			this.dualGBFileSelector1.Name = "dualGBFileSelector1";
+			this.dualGBFileSelector1.Size = new System.Drawing.Size(323, 29);
+			this.dualGBFileSelector1.TabIndex = 0;
+			this.dualGBFileSelector1.NameChanged += new System.EventHandler(this.dualGBFileSelector1_NameChanged);
+			// 
 			// groupBox2
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -71,6 +81,16 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Right Rom";
 			// 
+			// dualGBFileSelector2
+			// 
+			this.dualGBFileSelector2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.dualGBFileSelector2.Location = new System.Drawing.Point(6, 19);
+			this.dualGBFileSelector2.Name = "dualGBFileSelector2";
+			this.dualGBFileSelector2.Size = new System.Drawing.Size(323, 29);
+			this.dualGBFileSelector2.TabIndex = 1;
+			this.dualGBFileSelector2.NameChanged += new System.EventHandler(this.dualGBFileSelector2_NameChanged);
+			// 
 			// groupBox3
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -79,7 +99,7 @@
 			this.groupBox3.Location = new System.Drawing.Point(12, 132);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(335, 45);
-			this.groupBox3.TabIndex = 2;
+			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Name";
 			// 
@@ -100,7 +120,7 @@
 			this.buttonOK.Location = new System.Drawing.Point(12, 477);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
-			this.buttonOK.TabIndex = 3;
+			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -112,7 +132,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(272, 477);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 4;
+			this.buttonCancel.TabIndex = 7;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
@@ -136,7 +156,7 @@
 			this.textBoxOutputDir.Name = "textBoxOutputDir";
 			this.textBoxOutputDir.ReadOnly = true;
 			this.textBoxOutputDir.Size = new System.Drawing.Size(323, 20);
-			this.textBoxOutputDir.TabIndex = 0;
+			this.textBoxOutputDir.TabIndex = 4;
 			// 
 			// groupBox5
 			// 
@@ -163,33 +183,15 @@
 			this.textBoxXML.ReadOnly = true;
 			this.textBoxXML.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.textBoxXML.Size = new System.Drawing.Size(323, 212);
-			this.textBoxXML.TabIndex = 0;
+			this.textBoxXML.TabIndex = 5;
 			this.textBoxXML.WordWrap = false;
-			// 
-			// dualGBFileSelector2
-			// 
-			this.dualGBFileSelector2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.dualGBFileSelector2.Location = new System.Drawing.Point(6, 19);
-			this.dualGBFileSelector2.Name = "dualGBFileSelector2";
-			this.dualGBFileSelector2.Size = new System.Drawing.Size(323, 29);
-			this.dualGBFileSelector2.TabIndex = 0;
-			this.dualGBFileSelector2.NameChanged += new System.EventHandler(this.dualGBFileSelector2_NameChanged);
-			// 
-			// dualGBFileSelector1
-			// 
-			this.dualGBFileSelector1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.dualGBFileSelector1.Location = new System.Drawing.Point(6, 19);
-			this.dualGBFileSelector1.Name = "dualGBFileSelector1";
-			this.dualGBFileSelector1.Size = new System.Drawing.Size(323, 29);
-			this.dualGBFileSelector1.TabIndex = 0;
-			this.dualGBFileSelector1.NameChanged += new System.EventHandler(this.dualGBFileSelector1_NameChanged);
 			// 
 			// DualGBXMLCreator
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(359, 512);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
@@ -199,6 +201,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "DualGBXMLCreator";
+			this.ShowIcon = false;
 			this.Text = "Create Dual GB XML";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
