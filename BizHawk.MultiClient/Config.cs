@@ -681,11 +681,12 @@ namespace BizHawk.MultiClient
 			new Binding() { DisplayName = "Ram Search", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 1 },
 			new Binding() { DisplayName = "Ram Poke", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 2 },
 			new Binding() { DisplayName = "Hex Editor", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 3 },
-			new Binding() { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 4 },
-			new Binding() { DisplayName = "Cheats", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 5 },
-			new Binding() { DisplayName = "TAStudio", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 6 },
-			new Binding() { DisplayName = "ToolBox", Bindings = "T", TabGroup = "Tools", DefaultBinding = "", Ordinal = 7 },
-			new Binding() { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 8 },
+            new Binding() { DisplayName = "Trace Logger", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 4 },
+			new Binding() { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 5 },
+			new Binding() { DisplayName = "Cheats", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 6 },
+			new Binding() { DisplayName = "TAStudio", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 7 },
+			new Binding() { DisplayName = "ToolBox", Bindings = "T", TabGroup = "Tools", DefaultBinding = "", Ordinal = 8 },
+			new Binding() { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 9 },
 
 			//SNES
 			new Binding() { DisplayName = "Toggle BG 1", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 0 },

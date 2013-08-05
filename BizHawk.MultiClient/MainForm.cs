@@ -1997,6 +1997,7 @@ namespace BizHawk.MultiClient
 				case "Ram Search": LoadRamSearch(); break;
 				case "Ram Poke": new RamPoke().Show(); break;
 				case "Hex Editor": LoadHexEditor(); break;
+                case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
 				case "TAStudio": LoadTAStudio(); break;
