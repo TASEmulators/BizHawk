@@ -425,6 +425,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				VidDllName = "mupen64plus-video-glide64.dll";
 			}
+			else if (video_settings.PluginName == "Glide64mk2")
+			{
+				VidDllName = "mupen64plus-video-glide64mk2.dll";
+			}
 			else
 			{
 				throw new InvalidOperationException(string.Format("Unknown plugin \"" + video_settings.PluginName));

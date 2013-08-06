@@ -293,7 +293,8 @@
 			this.PluginComboBox.FormattingEnabled = true;
 			this.PluginComboBox.Items.AddRange(new object[] {
             "Rice",
-            "Glide64"});
+            "Glide64",
+            "Glide64mk2"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 34);
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
