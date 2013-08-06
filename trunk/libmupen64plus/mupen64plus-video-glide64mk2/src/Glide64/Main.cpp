@@ -1302,7 +1302,7 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int front)
   GrLfbInfo_t info;
   info.size = sizeof(GrLfbInfo_t);
   if (grLfbLock (GR_LFB_READ_ONLY,
-    GR_BUFFER_FRONTBUFFER,
+    GR_BUFFER_BACKBUFFER,
     GR_LFBWRITEMODE_888,
     GR_ORIGIN_UPPER_LEFT,
     FXFALSE,
@@ -1314,16 +1314,16 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int front)
         BYTE *ptr = (BYTE*) info.lfbPtr + (info.strideInBytes * y);
         for (wxUint32 x=0; x<settings.res_x; x++)
         {
-          line[x*3]   = ptr[2];  // red
-          line[x*3+1] = ptr[1];  // green
-          line[x*3+2] = ptr[0];  // blue
+          line[x*4+2]   = ptr[2];  // red
+          line[x*4+1] = ptr[1];  // green
+          line[x*4] = ptr[0];  // blue
           ptr += 4;
         }
-        line += settings.res_x * 3;
+        line += settings.res_x * 4;
       }
 
       // Unlock the frontbuffer
-      grLfbUnlock (GR_LFB_READ_ONLY, GR_BUFFER_FRONTBUFFER);
+      grLfbUnlock (GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
     }
     VLOG ("ReadScreen. Success.\n");
   }
