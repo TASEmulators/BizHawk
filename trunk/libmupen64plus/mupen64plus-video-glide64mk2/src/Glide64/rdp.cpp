@@ -138,6 +138,161 @@ const char *CIStatus[]   = { "ci_main", "ci_zimg", "ci_unknown",  "ci_useless",
                             "ci_old_copy", "ci_copy", "ci_copy_self",
                             "ci_zcopy", "ci_aux", "ci_aux_copy" };
 
+typedef struct
+{
+    int      ucode;
+    int      crc;
+} UcodeData;
+
+static UcodeData UcodeList[] = 
+{
+    {0, 0x006bd77f},
+    {2, 0x03044b84},
+    {2, 0x030f4b84},
+    {1, 0x05165579},
+    {1, 0x05777c62},
+    {1, 0x057e7c62},
+    {0, 0x07200895},
+    {9, 0x0bf36d36},
+    {-1, 0x0d7bbffb}, 
+    {5, 0x0d7cbffb},
+    {2, 0x0ff79527},
+    {-1, 0x0ff795bf}, 
+    {1, 0x1118b3e0},
+    {1, 0x1517a281},
+    {2, 0x168e9cd5},
+    {2, 0x1a1e18a0},
+    {2, 0x1a1e1920},
+    {2, 0x1a62dbaf},
+    {2, 0x1a62dc2f},
+    {1, 0x1de712ff},
+    {6, 0x1ea9e30f},
+    {21, 0x1f120bbb},
+    {2, 0x21f91834},
+    {2, 0x21f91874},
+    {2, 0x22099872},
+    {1, 0x24cd885b},
+    {1, 0x26a7879a},
+    {6, 0x299d5072},
+    {2, 0x2b291027},
+    {6, 0x2b5a89c2},
+    {1, 0x2c7975d6},
+    {1, 0x2d3fe3f1},
+    {2, 0x2f71d1d5},
+    {2, 0x2f7dd1d5},
+    {1, 0x327b933d},
+    {1, 0x339872a6},
+    {2, 0x377359b6},
+    {0, 0x3a1c2b34},
+    {0, 0x3a1cbac3},
+    {0, 0x3f7247fb},
+    {1, 0x3ff1a4ca},
+    {0, 0x4165e1fd},
+    {1, 0x4340ac9b},
+    {1, 0x440cfad6},
+    {7, 0x47d46e86},
+    {2, 0x485abff2},
+    {1, 0x4fe6df78},
+    {0, 0x5182f610},
+    {1, 0x5257cd2a},
+    {1, 0x5414030c},
+    {1, 0x5414030d},
+    {1, 0x559ff7d4},
+    {4, 0x5b5d36e3},
+    {3, 0x5b5d3763},
+    {0, 0x5d1d6f53},
+    {2, 0x5d3099f1},
+    {1, 0x5df1408c},
+    {1, 0x5ef4e34a},
+    {1, 0x6075e9eb},
+    {1, 0x60c1dcc4},
+    {2, 0x6124a508},
+    {2, 0x630a61fb},
+    {5, 0x63be08b1},
+    {5, 0x63be08b3},
+    {1, 0x64ed27e5},
+    {2, 0x65201989},
+    {2, 0x65201a09},
+    {1, 0x66c0b10a},
+    {2, 0x679e1205},
+    {6, 0x6bb745c9},
+    {2, 0x6d8f8f8a},
+    {0, 0x6e4d50af},
+    {1, 0x6eaa1da8},
+    {1, 0x72a4f34e},
+    {1, 0x73999a23},
+    {6, 0x74af0a74},
+    {2, 0x753be4a5},
+    {6, 0x794c3e28},
+    {1, 0x7df75834},
+    {1, 0x7f2d0a2e},
+    {1, 0x82f48073},
+    {1, 0x832fcb99},
+    {1, 0x841ce10f},
+    {-1, 0x844b55b5},
+    {1, 0x863e1ca7},
+    {-1, 0x86b1593e},
+    {1, 0x8805ffea},
+    {1, 0x8d5735b2},
+    {1, 0x8d5735b3},
+    {-1, 0x8ec3e124},
+    {2, 0x93d11f7b},
+    {2, 0x93d11ffb},
+    {2, 0x93d1ff7b},
+    {2, 0x9551177b},
+    {2, 0x955117fb},
+    {2, 0x95cd0062},
+    {1, 0x97d1b58a},
+    {2, 0xa2d0f88e},
+    {1, 0xa346a5cc},
+    {2, 0xaa86cb1d},
+    {2, 0xaae4a5b9},
+    {2, 0xad0a6292},
+    {2, 0xad0a6312},
+    {0, 0xae08d5b9},
+    {1, 0xb1821ed3},
+    {1, 0xb4577b9c},
+    {0, 0xb54e7f93},
+    {2, 0xb62f900f},
+    {2, 0xba65ea1e},
+    {8, 0xba86cb1d},
+    {0, 0xbc03e969},
+    {2, 0xbc45382e},
+    {1, 0xbe78677c},
+    {1, 0xbed8b069},
+    {1, 0xc3704e41},
+    {1, 0xc46dbc3d},
+    {1, 0xc99a4c6c},
+    {2, 0xc901ce73},
+    {2, 0xc901cef3},
+    {2, 0xcb8c9b6c},
+    {1, 0xcee7920f},
+    {2, 0xcfa35a45},
+    {1, 0xd1663234},
+    {6, 0xd20dedbf},
+    {1, 0xd2a9f59c},
+    {1, 0xd41db5f7},
+    {0, 0xd5604971},
+    {1, 0xd57049a5},
+    {-1, 0xd5c4dc96},
+    {0, 0xd5d68b1f},
+    {0, 0xd67c2f8b},
+    {1, 0xd802ec04},
+    {2, 0xda13ab96},
+    {2, 0xde7d67d4},
+    {2, 0xe1290fa2},
+    {0, 0xe41ec47e},
+    {2, 0xe65cb4ad},
+    {1, 0xe89c2b92},
+    {1, 0xe9231df2},
+    {1, 0xec040469},
+    {1, 0xee47381b},
+    {1, 0xef54ee35},
+    {21, 0xf9893f70},
+    {1, 0xfb816260},
+    {21, 0xff372492}
+};
+
 //static variables
 
 char out_buf[2048];
@@ -294,6 +449,19 @@ void rdp_reset ()
   rdp.Reset();
 }
 
+int LookupUcode (int crc)
+{
+	for (int i = 0; i < sizeof(UcodeList)/sizeof(UcodeData); i++)
+    {
+        if (crc == UcodeList[i].crc)
+        {
+            return UcodeList[i].ucode;
+        }
+    }
+
+    return -2;
+}
+
 void microcheck ()
 {
   wxUint32 i;
@@ -321,11 +489,7 @@ void microcheck ()
 
   FRDP("ucode = %08lx\n", uc_crc);
 
-  Ini * ini = Ini::OpenIni();
-  ini->SetPath("UCODE");
-  char str[9];
-  sprintf (str, "%08lx", (unsigned long)uc_crc);
-  int uc = ini->Read(str, -2);
+  int uc = LookupUcode(uc_crc);
 
   if (uc == -2 && ucode_error_report)
   {
@@ -338,7 +502,7 @@ void microcheck ()
   }
   else if (uc == -1 && ucode_error_report)
   {
-    settings.ucode = ini->Read(_T("/SETTINGS/ucode"), 0);
+    settings.ucode = 2; //ini->Read(_T("/SETTINGS/ucode"), 0);
 
     ReleaseGfx ();
     ERRLOG("Error: Unsupported uCode!\n\ncrc: %08lx", (unsigned long)uc_crc);
