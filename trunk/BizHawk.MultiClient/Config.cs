@@ -867,7 +867,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? null;
+				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? new Binding();
 			}
 		}
 	}
