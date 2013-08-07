@@ -209,12 +209,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
+			reader.Read(SaveStatePrivateBuff, 0, length);
+			byte[] data = SaveStatePrivateBuff;
 
 			api.LoadState(data);
 
-			data = reader.ReadBytes(0x800 + 0x8000 * 4);
-			api.LoadSaveram(data);
+			reader.Read(SaveStatePrivateBuff,0,0x800 + 0x8000 * 4);
+			api.LoadSaveram(SaveStatePrivateBuff);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
