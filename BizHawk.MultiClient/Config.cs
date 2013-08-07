@@ -589,6 +589,26 @@ namespace BizHawk.MultiClient
 		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
 
+        public PathEntryCollection PathEntries = new PathEntryCollection()
+        {
+            new PathEntry() { System = "Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
+            new PathEntry() { System = "Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 1 },
+            new PathEntry() { System = "Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 2 },
+            new PathEntry() { System = "Global", Type = "Watch (.wch)", Path = ".", Ordinal = 3 },
+            new PathEntry() { System = "Global", Type = "A/V Dumps", Path = ".", Ordinal = 4 },
+            new PathEntry() { System = "Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
+            new PathEntry() { System = "Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
+            new PathEntry() { System = "Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
+
+            new PathEntry() { System = "NES", Type = "Base", Path = ".", Ordinal = 0 },
+            new PathEntry() { System = "NES", Type = "ROM", Path = ".", Ordinal = 1 },
+            new PathEntry() { System = "NES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+            new PathEntry() { System = "NES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+            new PathEntry() { System = "NES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+            new PathEntry() { System = "NES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+            new PathEntry() { System = "NES", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 }
+        };
+
 		public BindingCollection HotkeyBindings = new BindingCollection()
 		{
 			//General
@@ -882,6 +902,48 @@ namespace BizHawk.MultiClient
 		public int Ordinal = 0;
 		public Binding() { }
 	}
+
+    public class PathEntryCollection : IEnumerable<PathEntry>
+    {
+        public List<PathEntry> Paths { get; private set; }
+
+        public PathEntryCollection()
+        {
+            Paths = new List<PathEntry>();
+        }
+
+        public void Add(PathEntry p)
+        {
+            Paths.Add(p);
+        }
+
+        public IEnumerator<PathEntry> GetEnumerator()
+        {
+            return Paths.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public PathEntry this[string system, string type]
+        {
+            get
+            {
+                return Paths.FirstOrDefault(x => x.System == system && x.Type == type) ?? new PathEntry();
+            }
+        }
+    }
+
+    public class PathEntry
+    {
+        public string Type;
+        public string Path;
+        public string System;
+        public int Ordinal;
+        public PathEntry() { }
+    }
 
 	public enum PLUGINTYPE { RICE, GLIDE }; 
 
