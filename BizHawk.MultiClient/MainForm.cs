@@ -2075,7 +2075,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
 			{
-				Global.Emulator.FrameAdvance(true);
+                runFrame = true;
 			}
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
