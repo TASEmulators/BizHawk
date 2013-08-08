@@ -156,7 +156,7 @@ namespace BizHawk.DiscSystem
 
 		internal void ReadABA_2352(int aba, byte[] buffer, int offset)
 		{
-			Sectors[aba].Sector.Read(buffer, offset);
+			Sectors[aba].Sector.Read_2352(buffer, offset);
 		}
 
 		internal void ReadABA_2048(int aba, byte[] buffer, int offset)

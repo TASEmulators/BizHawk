@@ -72,7 +72,7 @@ namespace BizHawk.DiscSystem
 			/// <summary>
 			/// reads the entire sector, raw
 			/// </summary>
-			int Read(byte[] buffer, int offset); //todo - rename to Read_2352
+			int Read_2352(byte[] buffer, int offset);
 
 			/// <summary>
 			/// reads 2048 bytes of userdata.. precisely what this means isnt always 100% certain (for instance mode2 form 0 has 2336 bytes of userdata instead of 2048)..
@@ -208,7 +208,7 @@ namespace BizHawk.DiscSystem
 		{
 			public IBlob Blob;
 			public long Offset;
-			public int Read(byte[] buffer, int offset)
+			public int Read_2352(byte[] buffer, int offset)
 			{
 				return Blob.Read(Offset, buffer, offset, 2352);
 			}
@@ -223,7 +223,7 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		class Sector_Zero : ISector
 		{
-			public int Read(byte[] buffer, int offset)
+			public int Read_2352(byte[] buffer, int offset)
 			{
 				Array.Clear(buffer, 0, 2352);
 				return 2352;
@@ -266,7 +266,7 @@ namespace BizHawk.DiscSystem
 		abstract class Sector_Mode1_or_Mode2_2352 : ISector
 		{
 			public ISector BaseSector;
-			public abstract int Read(byte[] buffer, int offset);
+			public abstract int Read_2352(byte[] buffer, int offset);
 			public abstract int Read_2048(byte[] buffer, int offset);
 		}
 
@@ -275,14 +275,14 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		class Sector_Mode1_2352 : Sector_Mode1_or_Mode2_2352
 		{
-			public override int Read(byte[] buffer, int offset)
+			public override int Read_2352(byte[] buffer, int offset)
 			{
-				return BaseSector.Read(buffer, offset);
+				return BaseSector.Read_2352(buffer, offset);
 			}
 			public override int Read_2048(byte[] buffer, int offset)
 			{
 				//to get 2048 bytes out of this sector type, start 16 bytes in
-				int ret = BaseSector.Read(TempSector, 0);
+				int ret = BaseSector.Read_2352(TempSector, 0);
 				Buffer.BlockCopy(TempSector, 16, buffer, offset, 2048);
 				System.Diagnostics.Debug.Assert(buffer != TempSector);
 				return 2048;
@@ -300,15 +300,15 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		class Sector_Mode2_2352 : Sector_Mode1_or_Mode2_2352
 		{
-			public override int Read(byte[] buffer, int offset)
+			public override int Read_2352(byte[] buffer, int offset)
 			{
-				return BaseSector.Read(buffer, offset);
+				return BaseSector.Read_2352(buffer, offset);
 			}
 
 			public override int Read_2048(byte[] buffer, int offset)
 			{
 				//to get 2048 bytes out of this sector type, start 24 bytes in
-				int ret = BaseSector.Read(TempSector, 0);
+				int ret = BaseSector.Read_2352(TempSector, 0);
 				Buffer.BlockCopy(TempSector, 24, buffer, offset, 2048);
 				System.Diagnostics.Debug.Assert(buffer != TempSector);
 				return 2048;
@@ -362,7 +362,7 @@ namespace BizHawk.DiscSystem
 				return Blob.BaseBlob.Read(Offset, buffer, offset, 2048);
 			}
 
-			public int Read(byte[] buffer, int offset)
+			public int Read_2352(byte[] buffer, int offset)
 			{
 				//user data
 				int read = Blob.BaseBlob.Read(Offset, buffer, offset + 16, 2048);
