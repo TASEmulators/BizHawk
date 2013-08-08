@@ -245,10 +245,17 @@ namespace BizHawk.MultiClient
         {
             long avg_state_size = 0;
 
-            if (UseDeltaCompression.Checked)
+            if (UseDeltaCompression.Checked || StateSize == 0)
             {
 
-                avg_state_size = (long)(Global.MainForm.Rewind_Size / Global.MainForm.Rewind_Count);
+                if (Global.MainForm.Rewind_Count > 0)
+                {
+                    avg_state_size = (long)(Global.MainForm.Rewind_Size / Global.MainForm.Rewind_Count);
+                }
+                else
+                {
+                    avg_state_size = Global.Emulator.SaveStateBinary().Length;
+                }
             }
             else
             {
