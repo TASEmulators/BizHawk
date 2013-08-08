@@ -97,6 +97,65 @@ namespace BizHawk.DiscSystem
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
 		}
 
+		public class Blob_ZeroPadAdapter : IBlob
+		{
+			public Blob_ZeroPadAdapter(IBlob baseBlob, long padFrom, long padLen)
+			{
+				this.baseBlob = baseBlob;
+				this.padFrom = padFrom;
+				this.padLen = padLen;
+			}
+
+			public int Read(long byte_pos, byte[] buffer, int offset, int count)
+			{
+				throw new NotImplementedException("Blob_ZeroPadAdapter hasnt been tested yet! please report this!");
+
+				//something about this seems unnecessarily complex, but... i dunno.
+
+				//figure out how much remains until the zero-padding begins
+				long remain = byte_pos - padFrom;
+				int todo;
+				if (remain < count)
+					todo = (int)remain;
+				else todo = count;
+
+				//read up until the zero-padding
+				int totalRead = 0;
+				int readed = baseBlob.Read(byte_pos, buffer, offset, todo);
+				totalRead += readed;
+				offset += todo;
+
+				//if we didnt read enough, we certainly shouldnt try to read any more
+				if (readed < todo)
+					return readed;
+
+				//if that was all we needed, then we're done
+				count -= todo;
+				if (count == 0)
+					return totalRead;
+
+				//if we need more, it must come from zero-padding
+				remain = padLen;
+				if (remain < count)
+					todo = (int)remain;
+				else todo = count;
+
+				Array.Clear(buffer, offset, todo);
+				totalRead += todo;
+
+				return totalRead;
+			}
+
+			public void Dispose()
+			{
+				baseBlob.Dispose();
+			}
+
+			IBlob baseBlob;
+			long padFrom;
+			long padLen;
+		}
+
 		class Blob_RawFile : IBlob
 		{
 			public string PhysicalPath { 
@@ -176,31 +235,33 @@ namespace BizHawk.DiscSystem
 			}
 		}
 
-		/// <summary>
-		/// this ISector adapts another ISector by always returning zeroes 
-		/// TODO I dont like the way this works. I think blobs should get adapted instead to zero-pad to a certain length.
-		/// </summary>
-		class Sector_ZeroPad : ISector
-		{
-			public ISector BaseSector;
-			public int BaseLength;
-			public int Read(byte[] buffer, int offset)
-			{
-				return _Read(buffer, offset, 2352);
-			}
-			public int Read_2048(byte[] buffer, int offset)
-			{
-				return _Read(buffer, offset, 2352);
-			}
-			int _Read(byte[] buffer, int offset, int amount)
-			{
-				int read = BaseSector.Read(buffer, offset);
-				if(read < BaseLength) return read;
-				for (int i = BaseLength; i < amount; i++)
-					buffer[offset + i] = 0;
-				return amount;
-			}
-		}
+
+		// ------ replaced by Blob_ZeroPadAdapter
+		///// <summary>
+		///// this ISector adapts another ISector by always returning zeroes 
+		///// TODO I dont like the way this works. I think blobs should get adapted instead to zero-pad to a certain length.
+		///// </summary>
+		//class Sector_ZeroPad : ISector
+		//{
+		//  public ISector BaseSector;
+		//  public int BaseLength;
+		//  public int Read(byte[] buffer, int offset)
+		//  {
+		//    return _Read(buffer, offset, 2352);
+		//  }
+		//  public int Read_2048(byte[] buffer, int offset)
+		//  {
+		//    return _Read(buffer, offset, 2352);
+		//  }
+		//  int _Read(byte[] buffer, int offset, int amount)
+		//  {
+		//    int read = BaseSector.Read(buffer, offset);
+		//    if(read < BaseLength) return read;
+		//    for (int i = BaseLength; i < amount; i++)
+		//      buffer[offset + i] = 0;
+		//    return amount;
+		//  }
+		//}
 
 		abstract class Sector_Mode1_or_Mode2_2352 : ISector
 		{
@@ -297,7 +358,7 @@ namespace BizHawk.DiscSystem
 
 			public int Read_2048(byte[] buffer, int offset)
 			{
-				//this is easy. we only have 2048 bytes, and 2048 bytes wer erequested
+				//this is easy. we only have 2048 bytes, and 2048 bytes were requested
 				return Blob.BaseBlob.Read(Offset, buffer, offset, 2048);
 			}
 
