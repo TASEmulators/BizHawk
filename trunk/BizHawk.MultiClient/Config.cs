@@ -259,7 +259,7 @@ namespace BizHawk.MultiClient
 		public bool Rewind_UseDelta = true;
 		public bool RewindEnabledSmall = true;
 		public bool RewindEnabledMedium = true;
-		public bool RewindEnabledLarge = true;
+		public bool RewindEnabledLarge = false;
 		public int RewindFrequencySmall = 1;
 		public int RewindFrequencyMedium = 2;
 		public int RewindFrequencyLarge = 60;
