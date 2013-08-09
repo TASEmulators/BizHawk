@@ -416,6 +416,12 @@
     <Compile Include="GENtools\GenGameGenie.Designer.cs">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NewPathConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewPathConfig.Designer.cs">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="PCEtools\PCEBGCanvas.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -674,6 +680,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GENtools\GenGameGenie.resx">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewPathConfig.resx">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PCEtools\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>

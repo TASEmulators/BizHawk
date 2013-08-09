@@ -216,6 +216,10 @@
     <Compile Include="config\NewHotkeyWindow.Designer.cs">
       <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NewPathConfig.cs" />
+    <Compile Include="config\NewPathConfig.Designer.cs">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -494,7 +498,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\LuaDocumentation.cs" />
-    <Compile Include="tools\LuaRegisteredFunctionsList.cs" />
+    <Compile Include="tools\LuaRegisteredFunctionsList.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
@@ -626,6 +632,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NewHotkeyWindow.resx">
       <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewPathConfig.resx">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>

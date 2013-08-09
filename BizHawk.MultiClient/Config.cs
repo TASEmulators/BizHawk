@@ -156,6 +156,33 @@ namespace BizHawk.MultiClient
 		public string LogPath = ".";
 		public string FirmwaresPath = Path.Combine(".", "Firmware");
 
+		public PathEntryCollection PathEntries = new PathEntryCollection()
+		{
+			new PathEntry() { System = "Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
+			new PathEntry() { System = "Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 1 },
+			new PathEntry() { System = "Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 2 },
+			new PathEntry() { System = "Global", Type = "Watch (.wch)", Path = ".", Ordinal = 3 },
+			new PathEntry() { System = "Global", Type = "A/V Dumps", Path = ".", Ordinal = 4 },
+			new PathEntry() { System = "Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
+			new PathEntry() { System = "Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
+			new PathEntry() { System = "Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
+
+			new PathEntry() { System = "NES", Type = "Base", Path = Path.Combine(".", "NES"), Ordinal = 0 },
+			new PathEntry() { System = "NES", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry() { System = "NES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry() { System = "NES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+			new PathEntry() { System = "NES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry() { System = "NES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+			new PathEntry() { System = "NES", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
+
+			new PathEntry() { System = "SNES", Type = "Base", Path= Path.Combine(".", "SNES"), Ordinal = 0 },
+			new PathEntry() { System = "SNES", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry() { System = "SNES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry() { System = "SNES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+			new PathEntry() { System = "SNES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry() { System = "SNES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+		};
+
 		//BIOS Paths
 		public string FilenamePCEBios = "[BIOS] Super CD-ROM System (Japan) (v3.0).pce";
 		public string FilenameFDSBios = "disksys.rom";
@@ -589,26 +616,6 @@ namespace BizHawk.MultiClient
 		public int TI83KeyPadWndx = -1;
 		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
-
-        public PathEntryCollection PathEntries = new PathEntryCollection()
-        {
-            new PathEntry() { System = "Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
-            new PathEntry() { System = "Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 1 },
-            new PathEntry() { System = "Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 2 },
-            new PathEntry() { System = "Global", Type = "Watch (.wch)", Path = ".", Ordinal = 3 },
-            new PathEntry() { System = "Global", Type = "A/V Dumps", Path = ".", Ordinal = 4 },
-            new PathEntry() { System = "Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
-            new PathEntry() { System = "Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
-            new PathEntry() { System = "Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
-
-            new PathEntry() { System = "NES", Type = "Base", Path = ".", Ordinal = 0 },
-            new PathEntry() { System = "NES", Type = "ROM", Path = ".", Ordinal = 1 },
-            new PathEntry() { System = "NES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
-            new PathEntry() { System = "NES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
-            new PathEntry() { System = "NES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
-            new PathEntry() { System = "NES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
-            new PathEntry() { System = "NES", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 }
-        };
 
 		public BindingCollection HotkeyBindings = new BindingCollection()
 		{
