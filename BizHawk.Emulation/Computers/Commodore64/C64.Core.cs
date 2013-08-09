@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte[] diskRom = File.ReadAllBytes(diskPath);
 
 			disk = new VIC1541(initRegion, diskRom);
-			disk.Connect(board.serPort);
+			//disk.Connect(board.serPort);
 		}
 
 		private void InitMedia()

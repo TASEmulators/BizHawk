@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			board.PollInput();
 			for (uint count = cyclesPerFrame; count > 0; count--)
 			{
-				disk.Execute();
+				//disk.Execute();
 				board.Execute();
 			}
 			_islag = !board.inputRead;
