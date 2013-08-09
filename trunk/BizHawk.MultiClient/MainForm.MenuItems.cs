@@ -700,7 +700,14 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new PathConfig().ShowDialog();
+			if (INTERIM)
+			{
+				new NewPathConfig().ShowDialog();
+			}
+			else
+			{
+				new PathConfig().ShowDialog();
+			}
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
