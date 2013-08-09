@@ -197,7 +197,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				byte result = 0x00;
+				//byte result = 0x00;
+                byte result = (byte)(~portDir & 0xEF);
 
 				result |= pinLoram ? (byte)0x01 : (byte)0x00;
 				result |= pinHiram ? (byte)0x02 : (byte)0x00;
