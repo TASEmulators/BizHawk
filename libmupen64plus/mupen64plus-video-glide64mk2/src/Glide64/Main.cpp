@@ -38,7 +38,6 @@
 //****************************************************************
 
 #include "Gfx_1.3.h"
-#include "Ini.h"
 #include "Config.h"
 #include "Util.h"
 #include "3dmath.h"
@@ -127,6 +126,39 @@ int exception = FALSE;
 
 int evoodoo = 0;
 int ev_fullscreen = 0;
+
+enum {
+	NONE,
+	ASB,
+	BANJO2,
+	BAR,
+	CHOPPER,
+	DIDDY,
+	FIFA98,
+	FZERO,
+	GOLDENEYE,
+	HYPERBIKE,
+	ISS64,
+	KI,
+	KNOCKOUT,
+	LEGO,
+	MK64,
+	MEGAMAN,
+	MAKERS,
+	WCWNITRO,
+	OGRE64,
+	PILOTWINGS,
+	PMARIO,
+	PPL,
+	RE2,
+	STARCRAFT,
+	SUPERCROSS,
+	TGR,
+	TGR2,
+	TONIC,
+	YOSHI,
+	ZELDA
+};
 
 #ifdef __WINDOWS__
 #define WINPROC_OVERRIDE
@@ -469,107 +501,141 @@ void ReadSpecialSettings (const char * name)
   //  char buf [256];
   //  sprintf(buf, "ReadSpecialSettings. Name: %s\n", name);
   //  LOG(buf);
-  settings.hacks = 0;
 
-  //detect games which require special hacks
-  if (strstr(name, (const char *)"ZELDA") || strstr(name, (const char *)"MASK"))
-    settings.hacks |= hack_Zelda;
-  else if (strstr(name, (const char *)"ROADSTERS TROPHY"))
-    settings.hacks |= hack_Zelda;
-  else if (strstr(name, (const char *)"Diddy Kong Racing"))
-    settings.hacks |= hack_Diddy;
-  else if (strstr(name, (const char *)"Tonic Trouble"))
-    settings.hacks |= hack_Tonic;
-  else if (strstr(name, (const char *)"All") && strstr(name, (const char *)"Star") && strstr(name, (const char *)"Baseball"))
-    settings.hacks |= hack_ASB;
-  else if (strstr(name, (const char *)"Beetle") || strstr(name, (const char *)"BEETLE") || strstr(name, (const char *)"HSV"))
-    settings.hacks |= hack_BAR;
-  else if (strstr(name, (const char *)"I S S 64") || strstr(name, (const char *)"J WORLD SOCCER3") || strstr(name, (const char *)"PERFECT STRIKER") || strstr(name, (const char *)"RONALDINHO SOCCER"))
-    settings.hacks |= hack_ISS64;
-  else if (strstr(name, (const char *)"MARIOKART64"))
-    settings.hacks |= hack_MK64;
-  else if (strstr(name, (const char *)"NITRO64"))
-    settings.hacks |= hack_WCWnitro;
-  else if (strstr(name, (const char *)"CHOPPER_ATTACK") || strstr(name, (const char *)"WILD CHOPPERS"))
-    settings.hacks |= hack_Chopper;
-  else if (strstr(name, (const char *)"Resident Evil II") || strstr(name, (const char *)"BioHazard II"))
-    settings.hacks |= hack_RE2;
-  else if (strstr(name, (const char *)"YOSHI STORY"))
-    settings.hacks |= hack_Yoshi;
-  else if (strstr(name, (const char *)"F-Zero X") || strstr(name, (const char *)"F-ZERO X"))
-    settings.hacks |= hack_Fzero;
-  else if (strstr(name, (const char *)"PAPER MARIO") || strstr(name, (const char *)"MARIO STORY"))
-    settings.hacks |= hack_PMario;
-  else if (strstr(name, (const char *)"TOP GEAR RALLY 2"))
-    settings.hacks |= hack_TGR2;
-  else if (strstr(name, (const char *)"TOP GEAR RALLY"))
-    settings.hacks |= hack_TGR;
-  else if (strstr(name, (const char *)"Top Gear Hyper Bike"))
-    settings.hacks |= hack_Hyperbike;
-  else if (strstr(name, (const char *)"Killer Instinct Gold") || strstr(name, (const char *)"KILLER INSTINCT GOLD"))
-    settings.hacks |= hack_KI;
-  else if (strstr(name, (const char *)"Knockout Kings 2000"))
-    settings.hacks |= hack_Knockout;
-  else if (strstr(name, (const char *)"LEGORacers"))
-    settings.hacks |= hack_Lego;
-  else if (strstr(name, (const char *)"OgreBattle64"))
-    settings.hacks |= hack_Ogre64;
-  else if (strstr(name, (const char *)"Pilot Wings64"))
-    settings.hacks |= hack_Pilotwings;
-  else if (strstr(name, (const char *)"Supercross"))
-    settings.hacks |= hack_Supercross;
-  else if (strstr(name, (const char *)"STARCRAFT 64"))
-    settings.hacks |= hack_Starcraft;
-  else if (strstr(name, (const char *)"BANJO KAZOOIE 2") || strstr(name, (const char *)"BANJO TOOIE"))
-    settings.hacks |= hack_Banjo2;
-  else if (strstr(name, (const char *)"FIFA: RTWC 98") || strstr(name, (const char *)"RoadToWorldCup98"))
-    settings.hacks |= hack_Fifa98;
-  else if (strstr(name, (const char *)"Mega Man 64") || strstr(name, (const char *)"RockMan Dash"))
-    settings.hacks |= hack_Megaman;
-  else if (strstr(name, (const char *)"MISCHIEF MAKERS") || strstr(name, (const char *)"TROUBLE MAKERS"))
-    settings.hacks |= hack_Makers;
-  else if (strstr(name, (const char *)"GOLDENEYE"))
-    settings.hacks |= hack_GoldenEye;
-  else if (strstr(name, (const char *)"PUZZLE LEAGUE"))
-    settings.hacks |= hack_PPL;
+  int EnableHacksForGame = (int)Config_ReadInt ("enable_hacks_for_game", "???", 0, TRUE, FALSE);
 
-  Ini * ini = Ini::OpenIni();
-  if (!ini)
-    return;
-  ini->SetPath(name);
+  switch (EnableHacksForGame)
+  {
+    case NONE:
+		break;
+    case ASB:
+		settings.hacks |= hack_ASB;
+		break;
+    case BANJO2:
+		settings.hacks |= hack_Banjo2;
+		break;
+    case BAR:
+		settings.hacks |= hack_BAR;
+		break;
+    case CHOPPER:
+		  settings.hacks |= hack_Chopper;
+		break;
+    case DIDDY:
+		settings.hacks |= hack_Diddy;
+		break;
+    case FIFA98:
+		settings.hacks |= hack_Fifa98;
+		break;
+    case FZERO:
+		settings.hacks |= hack_Fzero;
+		break;
+    case GOLDENEYE:
+		settings.hacks |= hack_GoldenEye;
+		break;
+    case HYPERBIKE:
+		settings.hacks |= hack_Hyperbike;
+		break;
+    case ISS64:
+		settings.hacks |= hack_ISS64;
+		break;
+    case KI:
+		settings.hacks |= hack_KI;
+		break;
+    case KNOCKOUT:
+		settings.hacks |= hack_Knockout;
+		break;
+    case LEGO:
+		settings.hacks |= hack_Lego;
+		break;
+    case MK64:
+		 settings.hacks |= hack_MK64;
+		break;
+    case MEGAMAN:
+		settings.hacks |= hack_Megaman;
+		break;
+    case MAKERS:
+		settings.hacks |= hack_Makers;
+		break;
+    case WCWNITRO:
+		settings.hacks |= hack_WCWnitro;
+		break;
+    case OGRE64:
+		settings.hacks |= hack_Ogre64;
+		break;
+    case PILOTWINGS:
+		settings.hacks |= hack_Pilotwings;
+		break;
+    case PMARIO:
+		settings.hacks |= hack_PMario;
+		break;
+    case PPL:
+		settings.hacks |= hack_PPL;
+		break;
+    case RE2:
+		settings.hacks |= hack_RE2;
+		break;
+    case STARCRAFT:
+		settings.hacks |= hack_Starcraft;
+		break;
+    case SUPERCROSS:
+		 settings.hacks |= hack_Supercross;
+		break;
+    case TGR:
+		settings.hacks |= hack_TGR;
+		break;
+    case TGR2:
+		 settings.hacks |= hack_TGR2;
+		break;
+    case TONIC:
+		 settings.hacks |= hack_Tonic;
+		break;
+    case YOSHI:
+		settings.hacks |= hack_Yoshi;
+		break;
+    case ZELDA:
+		settings.hacks |= hack_Zelda;
+		break;
+  }
 
-  ini->Read(_T("alt_tex_size"), &(settings.alt_tex_size));
-  ini->Read(_T("use_sts1_only"), &(settings.use_sts1_only));
-  ini->Read(_T("force_calc_sphere"), &(settings.force_calc_sphere));
-  ini->Read(_T("correct_viewport"), &(settings.correct_viewport));
-  ini->Read(_T("increase_texrect_edge"), &(settings.increase_texrect_edge));
-  ini->Read(_T("decrease_fillrect_edge"), &(settings.decrease_fillrect_edge));
-  if (ini->Read(_T("texture_correction"), -1) == 0) settings.texture_correction = 0;
-  else settings.texture_correction = 1;
-  if (ini->Read(_T("pal230"), -1) == 1) settings.pal230 = 1;
-  else settings.pal230 = 0;
-  ini->Read(_T("stipple_mode"), &(settings.stipple_mode));
-  int stipple_pattern = ini->Read(_T("stipple_pattern"), -1);
+  settings.alt_tex_size = (BOOL)Config_ReadInt("alt_tex_size", "???", TRUE);
+  settings.use_sts1_only = (BOOL)Config_ReadInt("use_sts1_only", "???", FALSE);
+  settings.force_calc_sphere = (BOOL)Config_ReadInt("force_calc_sphere", "???", FALSE);
+  settings.correct_viewport = (BOOL)Config_ReadInt("correct_viewport", "???", FALSE);
+  settings.increase_texrect_edge = (BOOL)Config_ReadInt("increase_texrect_edge", "???", FALSE);
+  settings.decrease_fillrect_edge = (BOOL)Config_ReadInt("decrease_fillrect_edge", "???", FALSE);
+  settings.texture_correction = (BOOL)Config_ReadInt("texture_correction", "???", TRUE);
+
+  settings.force_microcheck = (BOOL)Config_ReadInt("force_microcheck", "???", FALSE);
+  settings.fog = (BOOL)Config_ReadInt("fog", "???", TRUE);
+  settings.buff_clear = (BOOL)Config_ReadInt("buff_clear", "???", TRUE);
+  settings.swapmode = (int)Config_ReadInt("swapmode", "???", 1, TRUE, FALSE);
+  int stipple_pattern = (int)Config_ReadInt("stipple_pattern", "???", 1041204192, TRUE, FALSE);
   if (stipple_pattern > 0) settings.stipple_pattern = (wxUint32)stipple_pattern;
-  ini->Read(_T("force_microcheck"), &(settings.force_microcheck));
-  ini->Read(_T("force_quad3d"), &(settings.force_quad3d));
-  ini->Read(_T("clip_zmin"), &(settings.clip_zmin));
-  ini->Read(_T("clip_zmax"), &(settings.clip_zmax));
-  ini->Read(_T("fast_crc"), &(settings.fast_crc));
-  ini->Read(_T("adjust_aspect"), &(settings.adjust_aspect), 1);
-  ini->Read(_T("zmode_compare_less"), &(settings.zmode_compare_less));
-  ini->Read(_T("old_style_adither"), &(settings.old_style_adither));
-  ini->Read(_T("n64_z_scale"), &(settings.n64_z_scale));
+  settings.stipple_mode = (int)Config_ReadInt("stipple_mode", "???", 2, TRUE, FALSE);
+  settings.lodmode = (int)Config_ReadInt("lodmode", "???", 0, TRUE, FALSE);
+  settings.filtering = (int)Config_ReadInt("filtering", "???", 0, TRUE, FALSE);
+  settings.pal230 = (BOOL)Config_ReadInt("pal230", "???", FALSE);
+  settings.texture_correction = (BOOL)Config_ReadInt("texture_correction", "???", TRUE);
+  settings.n64_z_scale = (BOOL)Config_ReadInt("n64_z_scale", "???", FALSE);
+  settings.old_style_adither = (BOOL)Config_ReadInt("old_style_adither", "???", FALSE);
+  settings.zmode_compare_less = (BOOL)Config_ReadInt("zmode_compare_less", "???", FALSE);
+  settings.adjust_aspect = (BOOL)Config_ReadInt("adjust_aspect", "???", TRUE);
+  settings.clip_zmax = (BOOL)Config_ReadInt("clip_zmax", "???", TRUE);
+  settings.clip_zmin = (BOOL)Config_ReadInt("clip_zmin", "???", FALSE);
+  settings.force_quad3d = (BOOL)Config_ReadInt("force_quad3d", "???", FALSE);
+  settings.aspectmode = (int)Config_ReadInt("aspectmode", "???", 0, TRUE, FALSE);
+  settings.fast_crc = (BOOL)Config_ReadInt("fast_crc", "???", TRUE);
+
   if (settings.n64_z_scale)
     ZLUT_init();
 
   //frame buffer
-  int optimize_texrect = ini->Read(_T("optimize_texrect"), -1);
-  int ignore_aux_copy = ini->Read(_T("ignore_aux_copy"), -1);
-  int hires_buf_clear = ini->Read(_T("hires_buf_clear"), -1);
-  int read_alpha = ini->Read(_T("fb_read_alpha"), -1);
-  int useless_is_useless = ini->Read(_T("useless_is_useless"), -1);
-  int fb_crc_mode = ini->Read(_T("fb_crc_mode"), -1);
+  int optimize_texrect = (BOOL)Config_ReadInt("optimize_texrect", "???", TRUE);
+  int ignore_aux_copy = (BOOL)Config_ReadInt("ignore_aux_copy", "???", FALSE);
+  int hires_buf_clear = (BOOL)Config_ReadInt("hires_buf_clear", "???", TRUE);
+  int read_alpha = (BOOL)Config_ReadInt("fb_read_alpha", "???", FALSE);
+  int useless_is_useless = (BOOL)Config_ReadInt("useless_is_useless", "???", FALSE);
+  int fb_crc_mode = (int)Config_ReadInt("fb_crc_mode", "???", 1, TRUE, FALSE);
 
   if (optimize_texrect > 0) settings.frame_buffer |= fb_optimize_texrect;
   else if (optimize_texrect == 0) settings.frame_buffer &= ~fb_optimize_texrect;
@@ -583,39 +649,14 @@ void ReadSpecialSettings (const char * name)
   else settings.frame_buffer &= ~fb_useless_is_useless;
   if (fb_crc_mode >= 0) settings.fb_crc_mode = (SETTINGS::FBCRCMODE)fb_crc_mode;
 
-  //  if (settings.custom_ini)
-  {
-    ini->Read(_T("filtering"), &(settings.filtering));
-    ini->Read(_T("fog"), &(settings.fog));
-    ini->Read(_T("buff_clear"), &(settings.buff_clear));
-    ini->Read(_T("swapmode"), &(settings.swapmode));
-    ini->Read(_T("aspect"), &(settings.aspectmode));
-    ini->Read(_T("lodmode"), &(settings.lodmode));
-    /*
-    TODO-port: fix resolutions
-    int resolution;
-    if (ini->Read(_T("resolution"), &resolution))
-    {
-      settings.res_data = (wxUint32)resolution;
-      if (settings.res_data >= 0x18) settings.res_data = 12;
-      settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-      settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-    }
-    */
-	
-	PackedScreenResolution tmpRes = Config_ReadScreenSettings();
-	settings.res_data = tmpRes.resolution;
-	settings.scr_res_x = settings.res_x = tmpRes.width;
-	settings.scr_res_y = settings.res_y = tmpRes.height;
-
     //frame buffer
-    int smart_read = ini->Read(_T("fb_smart"), -1);
-    int hires = ini->Read(_T("fb_hires"), -1);
-    int read_always = ini->Read(_T("fb_read_always"), -1);
-    int read_back_to_screen = ini->Read(_T("read_back_to_screen"), -1);
-    int cpu_write_hack = ini->Read(_T("detect_cpu_write"), -1);
-    int get_fbinfo = ini->Read(_T("fb_get_info"), -1);
-    int depth_render = ini->Read(_T("fb_render"), -1);
+    int smart_read = (BOOL)Config_ReadInt("fb_smart", "???", FALSE);
+    int hires = (BOOL)Config_ReadInt("fb_hires", "???", TRUE);
+    int read_always = (BOOL)Config_ReadInt("fb_read_always", "???", FALSE);
+    int read_back_to_screen = (int)Config_ReadInt("read_back_to_screen", "???", 0, TRUE, FALSE);
+    int cpu_write_hack = (BOOL)Config_ReadInt("detect_cpu_write", "???", FALSE);
+    int get_fbinfo = (BOOL)Config_ReadInt("fb_get_info", "???", FALSE);
+    int depth_render = (BOOL)Config_ReadInt("fb_render", "???", TRUE);
 
     if (smart_read > 0) settings.frame_buffer |= fb_emulation;
     else if (smart_read == 0) settings.frame_buffer &= ~fb_emulation;
@@ -633,7 +674,7 @@ void ReadSpecialSettings (const char * name)
     if (depth_render > 0) settings.frame_buffer |= fb_depth_render;
     else if (depth_render == 0) settings.frame_buffer &= ~fb_depth_render;
     settings.frame_buffer |= fb_motionblur;
-  }
+
   settings.flame_corona = (settings.hacks & hack_Zelda) && !fb_depth_render_enabled;
 }
 
@@ -1403,19 +1444,9 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
         return M64ERR_INCOMPATIBLE;
     }
 
-    const char *configDir = ConfigGetSharedDataFilepath("Glide64mk2.ini");
-    if (configDir)
-    {
-        SetConfigDir(configDir);
-        CoreVideo_Init();
-        ReadSettings();
-		return M64ERR_SUCCESS;
-    }
-    else
-    {
-        ERRLOG("Couldn't find Glide64mk2.ini");
-        return M64ERR_FILES;
-    }
+    CoreVideo_Init();
+    ReadSettings();
+	return M64ERR_SUCCESS;
 }
 
 EXPORT m64p_error CALL PluginShutdown(void)
