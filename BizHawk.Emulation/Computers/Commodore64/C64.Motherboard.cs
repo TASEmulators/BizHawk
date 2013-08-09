@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte bus;
 		public byte cia0DataA;
 		public byte cia0DataB;
-		public byte cia0DirA;
+        public byte cia0DirA;
 		public byte cia0DirB;
 		public bool cia0FlagCassette;
 		public bool cia0FlagSerial;
@@ -123,47 +123,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Init()
 		{
-			cassPort.DeviceReadLevel = (() => { return cpu.CassetteOutputLevel; });
-			cassPort.DeviceReadMotor = (() => { return cpu.CassetteMotor; });
-			cassPort.DeviceWriteButton = ((bool val) => { cpu.CassetteButton = val; });
-			cassPort.DeviceWriteLevel = ((bool val) => { cia0FlagCassette = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
-			cassPort.SystemReadButton = (() => { return true; });
-			cassPort.SystemReadLevel = (() => { return true; });
-			cassPort.SystemWriteLevel = ((bool val) => { });
-			cassPort.SystemWriteMotor = ((bool val) => { });
+            cassPort.DeviceReadLevel = CassPort_DeviceReadLevel;
+            cassPort.DeviceReadMotor = CassPort_DeviceReadMotor;
+            cassPort.DeviceWriteButton = CassPort_DeviceWriteButton;
+            cassPort.DeviceWriteLevel = CassPort_DeviceWriteLevel;
+            cassPort.SystemReadButton = CassPort_SystemReadLevel;
+            cassPort.SystemReadLevel = CassPort_SystemReadLevel;
+            cassPort.SystemWriteLevel = CassPort_SystemWriteLevel;
+            cassPort.SystemWriteMotor = CassPort_SystemWriteMotor;
 
-			cia0.ReadDirA = (() => { return cia0DirA; });
-			cia0.ReadDirB = (() => { return cia0DirB; });
-			cia0.ReadPortA = (() => { return cia0DataA; });
-			cia0.ReadPortB = (() => { return cia0DataB; });
-			cia0.WriteDirA = ((byte val) => { cia0DirA = val; });
-			cia0.WriteDirB = ((byte val) => { cia0DirB = val; });
-			cia0.WritePortA = ((byte val) => { cia0DataA = Port.CPUWrite(cia0DataA, val, cia0DirA); });
-			cia0.WritePortB = ((byte val) => { cia0DataB = Port.CPUWrite(cia0DataB, val, cia0DirB); });
+            cia0.ReadDirA = Cia0_ReadDirA;
+			cia0.ReadDirB = Cia0_ReadDirB;
+			cia0.ReadPortA = Cia0_ReadPortA;
+			cia0.ReadPortB = Cia0_ReadPortB;
+			cia0.WriteDirA = Cia0_WriteDirA;
+			cia0.WriteDirB = Cia0_WriteDirB;
+			cia0.WritePortA = Cia0_WritePortA;
+			cia0.WritePortB = Cia0_WritePortB;
 
-			cia1.ReadDirA = (() => { return cia1DirA; });
-			cia1.ReadDirB = (() => { return cia1DirB; });
-			cia1.ReadPortA = (() => { return cia1DataA; });
-			cia1.ReadPortB = (() => { return cia1DataB; });
-			cia1.WriteDirA = ((byte val) => { cia1DirA = val; });
-			cia1.WriteDirB = ((byte val) => { cia1DirB = val; });
-			cia1.WritePortA = ((byte val) => { 
-				cia1DataA = Port.CPUWrite(cia1DataA, val, cia1DirA); 
-				UpdateVicBank();
-				serPort.SystemWriteAtn((cia1DataA & 0x08) == 0);
-				serPort.SystemWriteClock((cia1DataA & 0x10) == 0);
-				serPort.SystemWriteData((cia1DataA & 0x20) == 0);
-			});
-			cia1.WritePortB = ((byte val) => {
-				cia1DataB = Port.CPUWrite(cia1DataB, val, cia1DirB);
-			});
+            cia1.ReadDirA = Cia1_ReadDirA;
+			cia1.ReadDirB = Cia1_ReadDirB;
+			cia1.ReadPortA = Cia1_ReadPortA;
+			cia1.ReadPortB = Cia1_ReadPortB;
+			cia1.WriteDirA = Cia1_WriteDirA;
+			cia1.WriteDirB = Cia1_WriteDirB;
+			cia1.WritePortA = Cia1_WritePortA;
+			cia1.WritePortB = Cia1_WritePortB;
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
-			cpu.ReadAEC = (() => { return vic.AEC; });
-			cpu.ReadIRQ = (() => { return cia0.IRQ & vic.IRQ & cartPort.IRQ; });
-			cpu.ReadNMI = (() => { return cia1.IRQ; });
-			cpu.ReadRDY = (() => { return vic.BA; });
+            cpu.ReadAEC = Cpu_ReadAEC;
+            cpu.ReadIRQ = Cpu_ReadIRQ;
+			cpu.ReadNMI = Cpu_ReadNMI;
+			cpu.ReadRDY = Cpu_ReadRDY;
 			cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
 
@@ -190,72 +182,50 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla.PokeMemory = ram.Poke;
 			pla.PokeSid = sid.Poke;
 			pla.PokeVic = vic.Poke;
-			pla.ReadBasicRom = ((ushort addr) => { address = addr; bus = basicRom.Read(addr); return bus; });
-			pla.ReadCartridgeHi = ((ushort addr) => { address = addr; bus = cartPort.ReadHiRom(addr); return bus; });
-			pla.ReadCartridgeLo = ((ushort addr) => { address = addr; bus = cartPort.ReadLoRom(addr); return bus; });
-			pla.ReadCharen = (() => { return cpu.Charen; });
-			pla.ReadCharRom = ((ushort addr) => { address = addr; bus = charRom.Read(addr); return bus; });
-			pla.ReadCia0 = ((ushort addr) =>
-			{
-				address = addr;
-				bus = cia0.Read(addr);
-				if (!inputRead && (addr == 0xDC00 || addr == 0xDC01))
-					inputRead = true;
-				return bus;
-			});
-			pla.ReadCia1 = ((ushort addr) => { address = addr; bus = cia1.Read(addr); return bus; });
-			pla.ReadColorRam = ((ushort addr) => { address = addr; bus &= 0xF0; bus |= colorRam.Read(addr); return bus; });
-			pla.ReadExpansionHi = ((ushort addr) => { address = addr; bus = cartPort.ReadHiExp(addr); return bus; });
-			pla.ReadExpansionLo = ((ushort addr) => { address = addr; bus = cartPort.ReadLoExp(addr); return bus; });
-			pla.ReadExRom = (() => { return cartPort.ExRom; });
-			pla.ReadGame = (() => { return cartPort.Game; });
-			pla.ReadHiRam = (() => { return cpu.HiRam; });
-			pla.ReadKernalRom = ((ushort addr) => { address = addr; bus = kernalRom.Read(addr); return bus; });
-			pla.ReadLoRam = (() => { return cpu.LoRam; });
-			pla.ReadMemory = ((ushort addr) => { address = addr; bus = ram.Read(addr); return bus; });
-			pla.ReadSid = ((ushort addr) => { address = addr; bus = sid.Read(addr); return bus; });
-			pla.ReadVic = ((ushort addr) => { address = addr; bus = vic.Read(addr); return bus; });
-			pla.WriteCartridgeHi = ((ushort addr, byte val) => { address = addr; bus = val; cartPort.WriteHiRom(addr, val); });
-			pla.WriteCartridgeLo = ((ushort addr, byte val) => { address = addr; bus = val; cartPort.WriteLoRom(addr, val); });
-			pla.WriteCia0 = ((ushort addr, byte val) => { address = addr; bus = val; cia0.Write(addr, val); });
-			pla.WriteCia1 = ((ushort addr, byte val) => { address = addr; bus = val; cia1.Write(addr, val); });
-			pla.WriteColorRam = ((ushort addr, byte val) => { address = addr; bus = val; colorRam.Write(addr, val); });
-			pla.WriteExpansionHi = ((ushort addr, byte val) => { address = addr; bus = val; cartPort.WriteHiExp(addr, val); });
-			pla.WriteExpansionLo = ((ushort addr, byte val) => { address = addr; bus = val; cartPort.WriteLoExp(addr, val); });
-			pla.WriteMemory = ((ushort addr, byte val) => { address = addr; bus = val; ram.Write(addr, val); });
-			pla.WriteSid = ((ushort addr, byte val) => { address = addr; bus = val; sid.Write(addr, val); });
-			pla.WriteVic = ((ushort addr, byte val) => { address = addr; bus = val; vic.Write(addr, val); });
+            pla.ReadBasicRom = Pla_ReadBasicRom;
+            pla.ReadCartridgeHi = Pla_ReadCartridgeHi;
+            pla.ReadCartridgeLo = Pla_ReadCartridgeLo;
+            pla.ReadCharen = Pla_ReadCharen;
+            pla.ReadCharRom = Pla_ReadCharRom;
+            pla.ReadCia0 = Pla_ReadCia0;
+            pla.ReadCia1 = Pla_ReadCia1;
+            pla.ReadColorRam = Pla_ReadColorRam;
+            pla.ReadExpansionHi = Pla_ReadExpansionHi;
+            pla.ReadExpansionLo = Pla_ReadExpansionLo;
+            pla.ReadExRom = Pla_ReadExRom;
+            pla.ReadGame = Pla_ReadGame;
+            pla.ReadHiRam = Pla_ReadHiRam;
+            pla.ReadKernalRom = Pla_ReadKernalRom;
+            pla.ReadLoRam = Pla_ReadLoRam;
+            pla.ReadMemory = Pla_ReadMemory;
+            pla.ReadSid = Pla_ReadSid;
+            pla.ReadVic = Pla_ReadVic;
+            pla.WriteCartridgeHi = Pla_WriteCartridgeHi;
+            pla.WriteCartridgeLo = Pla_WriteCartridgeLo;
+            pla.WriteCia0 = Pla_WriteCia0;
+            pla.WriteCia1 = Pla_WriteCia1;
+            pla.WriteColorRam = Pla_WriteColorRam;
+            pla.WriteExpansionHi = Pla_WriteExpansionHi;
+            pla.WriteExpansionLo = Pla_WriteExpansionLo;
+            pla.WriteMemory = Pla_WriteMemory;
+            pla.WriteSid = Pla_WriteSid;
+            pla.WriteVic = Pla_WriteVic;
 
 			// note: c64 serport lines are inverted
-			serPort.DeviceReadAtn = (() => { return (cia1DataA & 0x08) == 0; });
-			serPort.DeviceReadClock = (() => { return (cia1DataA & 0x10) == 0; });
-			serPort.DeviceReadData = (() => { return (cia1DataA & 0x20) == 0; });
-			serPort.DeviceReadReset = (() => { return true; }); // this triggers hard reset on ext device when low
-			serPort.DeviceWriteAtn = ((bool val) => { }); // currently not wired
-			serPort.DeviceWriteClock = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0xBF) | (val ? 0x00 : 0x40)), cia1DirA); });
-			serPort.DeviceWriteData = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0x7F) | (val ? 0x00 : 0x80)), cia1DirA); });
-			serPort.DeviceWriteSrq = ((bool val) => { cia0FlagSerial = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
+            serPort.DeviceReadAtn = SerPort_DeviceReadAtn;
+            serPort.DeviceReadClock = SerPort_DeviceReadClock;
+            serPort.DeviceReadData = SerPort_DeviceReadData;
+            serPort.DeviceReadReset = SerPort_DeviceReadReset;
+            serPort.DeviceWriteAtn = SerPort_DeviceWriteAtn;
+            serPort.DeviceWriteClock = SerPort_DeviceWriteClock;
+            serPort.DeviceWriteData = SerPort_DeviceWriteData;
+            serPort.DeviceWriteSrq = SerPort_DeviceWriteSrq;
 
-			sid.ReadPotX = (() => { return 0; });
-			sid.ReadPotY = (() => { return 0; });
+            sid.ReadPotX = Sid_ReadPotX;
+            sid.ReadPotY = Sid_ReadPotY;
 
-			vic.ReadMemory = ((ushort addr) =>
-			{
-				addr |= vicBank;
-				address = addr;
-				if ((addr & 0x7000) == 0x1000)
-					bus = charRom.Read(addr);
-				else
-					bus = ram.Read(addr);
-				return bus;
-			});
-			vic.ReadColorRam = ((ushort addr) =>
-			{
-				address = addr; 
-				bus &= 0xF0; 
-				bus |= colorRam.Read(addr); 
-				return bus; 
-			});
+            vic.ReadMemory = Vic_ReadMemory;
+            vic.ReadColorRam = Vic_ReadColorRam;
 		}
 
 		public void SyncState(Serializer ser)
