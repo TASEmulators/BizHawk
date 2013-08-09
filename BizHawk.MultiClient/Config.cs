@@ -177,6 +177,7 @@ namespace BizHawk.MultiClient
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
+		public N64Glide64mk2PluginSettings Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
 
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
@@ -945,7 +946,7 @@ namespace BizHawk.MultiClient
         public PathEntry() { }
     }
 
-	public enum PLUGINTYPE { RICE, GLIDE }; 
+	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 }; 
 
 	public interface iPluginSettings
 	{
@@ -1190,5 +1191,115 @@ namespace BizHawk.MultiClient
 		public int fix_tex_coord = 0;
 		public int filtering = 1;
 		public int depth_bias = 20;
+	}
+	
+	public class N64Glide64mk2PluginSettings : iPluginSettings
+	{
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.GLIDE64MK2; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.Glide64mk2Plugin.UseDefaultHacks)
+			{
+				use_sts1_only = Global.Game.GetBool("Glide64mk2_use_sts1_only", false);
+				optimize_texrect = Global.Game.GetBool("Glide64mk2_optimize_texrect", true);
+				increase_texrect_edge = Global.Game.GetBool("Glide64mk2_increase_texrect_edge", false);
+				ignore_aux_copy = Global.Game.GetBool("Glide64mk2_ignore_aux_copy", false);
+				hires_buf_clear = Global.Game.GetBool("Glide64mk2_hires_buf_clear", true);
+				force_microcheck = Global.Game.GetBool("Glide64mk2_force_microcheck", false);
+				fog = Global.Game.GetBool("Glide64mk2_fog", true);
+				fb_smart = Global.Game.GetBool("Glide64mk2_fb_smart", false);
+				fb_read_alpha = Global.Game.GetBool("Glide64mk2_fb_read_alpha", false);
+				fb_hires = Global.Game.GetBool("Glide64mk2_fb_hires", true);
+				detect_cpu_write = Global.Game.GetBool("Glide64mk2_detect_cpu_write", false);
+				decrease_fillrect_edge = Global.Game.GetBool("Glide64mk2_decrease_fillrect_edge", false);
+				buff_clear = Global.Game.GetBool("Glide64mk2_buff_clear", true);
+				alt_tex_size = Global.Game.GetBool("Glide64mk2_alt_tex_size", true);
+				swapmode = Global.Game.GetInt("Glide64mk2_swapmode", 1);
+				stipple_pattern = Global.Game.GetInt("Glide64mk2_stipple_pattern", 1041204192);
+				stipple_mode = Global.Game.GetInt("Glide64mk2_stipple_mode", 2);
+				lodmode = Global.Game.GetInt("Glide64mk2_lodmode", 0);
+				filtering = Global.Game.GetInt("Glide64mk2_filtering", 0);
+				correct_viewport = Global.Game.GetBool("Glide64mk2_correct_viewport", false);
+				force_calc_sphere = Global.Game.GetBool("Glide64mk2_force_calc_sphere", false);
+				pal230 = Global.Game.GetBool("Glide64mk2_pal230", false);
+				texture_correction = Global.Game.GetBool("Glide64mk2_texture_correction", true);
+				n64_z_scale = Global.Game.GetBool("Glide64mk2_n64_z_scale", false);
+				old_style_adither = Global.Game.GetBool("Glide64mk2_old_style_adither", false);
+				zmode_compare_less = Global.Game.GetBool("Glide64mk2_zmode_compare_less", false);
+				adjust_aspect = Global.Game.GetBool("Glide64mk2_adjust_aspect", true);
+				clip_zmax = Global.Game.GetBool("Glide64mk2_clip_zmax", true);
+				clip_zmin = Global.Game.GetBool("Glide64mk2_clip_zmin", false);
+				force_quad3d = Global.Game.GetBool("Glide64mk2_force_quad3d", false);
+				useless_is_useless = Global.Game.GetBool("Glide64mk2_useless_is_useless", false);
+				fb_read_always = Global.Game.GetBool("Glide64mk2_fb_read_always", false);
+				aspectmode = Global.Game.GetInt("Glide64mk2_aspectmode", 0);
+				fb_crc_mode = Global.Game.GetInt("Glide64mk2_fb_crc_mode", 1);
+				enable_hacks_for_game = Global.Game.GetInt("Glide64mk2_enable_hacks_for_game", 0);
+				read_back_to_screen = Global.Game.GetInt("Glide64mk2_read_back_to_screen", 0);
+				fast_crc = Global.Game.GetBool("Glide64mk2_fast_crc", true);
+			}
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			System.Reflection.FieldInfo[] members = Global.Config.Glide64mk2Plugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
+			{
+				object field = Global.Config.Glide64mk2Plugin.GetType().GetField(member.Name).GetValue(Global.Config.Glide64mk2Plugin);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public bool wrpFBO = false;
+		public int card_id = 0;
+		public bool use_sts1_only = false;
+		public bool optimize_texrect = true;
+		public bool increase_texrect_edge = false;
+		public bool ignore_aux_copy = false;
+		public bool hires_buf_clear = true;
+		public bool force_microcheck = false;
+		public bool fog = true;
+		public bool fb_smart = false;
+		public bool fb_read_alpha = false;
+		public bool fb_hires = true;
+		public bool detect_cpu_write = false;
+		public bool decrease_fillrect_edge = false;
+		public bool buff_clear = true;
+		public bool alt_tex_size = true;
+		public int swapmode = 1;
+		public int stipple_pattern = 1041204192;
+		public int stipple_mode = 2;
+		public int lodmode = 0;
+		public int filtering = 0;
+		public bool wrpAnisotropic = false;
+		public bool correct_viewport = false;
+		public bool force_calc_sphere = false;
+		public bool pal230 = false;
+		public bool texture_correction = true;
+		public bool n64_z_scale = false;
+		public bool old_style_adither = false;
+		public bool zmode_compare_less = false;
+		public bool adjust_aspect = true;
+		public bool clip_zmax = true;
+		public bool clip_zmin = false;
+		public bool force_quad3d = false;
+		public bool useless_is_useless = false;
+		public bool fb_read_always = false;
+		public bool fb_get_info = false;
+		public bool fb_render = true;
+		public int aspectmode = 0;
+		public int fb_crc_mode = 1;
+		public bool fast_crc = true;
+		public bool UseDefaultHacks = true;
+		public int enable_hacks_for_game = 0;
+		public int read_back_to_screen = 0;
 	}
 }
