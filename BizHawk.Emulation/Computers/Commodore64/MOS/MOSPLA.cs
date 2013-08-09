@@ -527,10 +527,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case PLABank.Expansion0:
 					WriteExpansionLo(addr, val);
-					break;
+					return;
 				case PLABank.Expansion1:
 					WriteExpansionHi(addr, val);
-					break;
+                    return;
 				case PLABank.KernalROM:
 					break;
 				case PLABank.None:
