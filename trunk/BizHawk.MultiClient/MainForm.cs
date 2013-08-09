@@ -2831,6 +2831,11 @@ namespace BizHawk.MultiClient
 				Global.Config.GlidePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
 			}
+			else if (PluginToUse == "Glide64mk2")
+			{
+				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
+			}
 			
 			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
