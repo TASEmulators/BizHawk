@@ -596,6 +596,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
 			}
+			else if (video_settings.PluginName == "Glide64mk2")
+			{
+				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
+			}
 			else
 			{
 				return;
