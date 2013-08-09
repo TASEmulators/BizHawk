@@ -1,5 +1,7 @@
 ﻿using BizHawk.Emulation.CPUs.M6502;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
@@ -9,7 +11,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		// ------------------------------------
 
-		private MOS6502X cpu;
+        private MOS6502X cpu;
+        private List<GCHandle> disposeList = new List<GCHandle>();
 		private bool freezeCpu;
 		private bool pinCassetteButton; // note: these are only
 		private bool pinCassetteMotor; // latches!
@@ -41,7 +44,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public MOS6510()
 		{
-			cpu = new MOS6502X();
+            cpu = new MOS6502X();
 
 			// configure cpu r/w
 			cpu.DummyReadMemory = Read;
@@ -60,6 +63,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// NMI is high on startup (todo: verify)
 			pinNMILast = true;
 		}
+
+        ~MOS6510()
+        {
+            foreach (GCHandle handle in disposeList)
+            {
+                handle.Free();
+            }
+        }
 
 		public void HardReset()
 		{
