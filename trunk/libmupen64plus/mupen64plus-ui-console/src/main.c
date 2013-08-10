@@ -30,13 +30,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-void* mumalloc(size_t amt)
-{
-	if(amt/1024 != 0)
-		printf("malloc of %d KB\n",amt/1024);
-	return malloc(amt);
-}
-
 // The mac version of SDL requires inclusion of SDL_main in the executable
 #ifdef __APPLE__
 	 #include <SDL_main.h>
