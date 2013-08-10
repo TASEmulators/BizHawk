@@ -116,9 +116,9 @@ namespace BizHawk.MultiClient
 			}
 
 			//now that we have some items in the listview, we can size some columns to sensible widths
-			lvFirmwares.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+			lvFirmwares.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
 
 			DoScan();
 		}
