@@ -74,7 +74,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -94,9 +94,10 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
