@@ -17,7 +17,7 @@ namespace BizHawk
 		public string SNES_FirmwaresPath;
 		public string C64_FirmwaresPath;
 
-		public Func<string, string> AcquireSubfilePath;
+		public ICoreFileProvider CoreFileProvider;
 
 		public string SNES_ExePath;
 		public string SNES_Profile;

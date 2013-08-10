@@ -344,7 +344,7 @@
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(105, 13);
 			this.label25.TabIndex = 17;
-			this.label25.Text = "Created by: Zeromus";
+			this.label25.Text = "Created by: zeromus";
 			// 
 			// label26
 			// 
@@ -470,7 +470,7 @@
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(105, 13);
 			this.label9.TabIndex = 1;
-			this.label9.Text = "Created by: Zeromus";
+			this.label9.Text = "Created by: zeromus";
 			// 
 			// label8
 			// 

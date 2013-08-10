@@ -260,14 +260,18 @@ namespace BizHawk
 			writer.WriteLine();
 		}
 
-		static readonly char[] HexConv = {'0', '1', '2', '3', '4', '5', '6', '7',
-											 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-		public static void SaveAsHexFast(this byte[] buffer, TextWriter writer)
+		public unsafe static void SaveAsHexFast(this byte[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			char* table = Util.HexConvPtr;
+			if (buffer.Length > 0)
 			{
-				writer.Write(HexConv[buffer[i] >> 4]);
-				writer.Write(HexConv[buffer[i] & 15]);
+				int len = buffer.Length;
+				fixed (byte* src = &buffer[0])
+					for (int i = 0; i < len; i++)
+					{
+						writer.Write(table[src[i] >> 4]);
+						writer.Write(table[src[i] & 15]);
+					}
 			}
 			writer.WriteLine();
 		}
@@ -495,8 +499,17 @@ namespace BizHawk
 
 
 
-	public static class Util
+	public unsafe static class Util
 	{
+		static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+		static System.Runtime.InteropServices.GCHandle HexConvHandle;
+		public static char* HexConvPtr;
+		static unsafe Util()
+		{
+			HexConvHandle = System.Runtime.InteropServices.GCHandle.Alloc(HexConvArr, System.Runtime.InteropServices.GCHandleType.Pinned);
+			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
+		}
+
 		public static string Hash_MD5(byte[] data, int offset, int len)
 		{
 			using (var md5 = System.Security.Cryptography.MD5.Create())

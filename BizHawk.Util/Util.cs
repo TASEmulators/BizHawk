@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -63,6 +64,35 @@ namespace BizHawk
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM lParam);
+
+		public static string CopyItemsAsText(this ListView listViewControl)
+		{
+			ListView.SelectedIndexCollection indexes = listViewControl.SelectedIndices;
+			if (indexes.Count <= 0)
+				return "";
+
+			StringBuilder sb = new StringBuilder();
+			
+			//walk over each selected item and subitem within it to generate a string from it
+			foreach (int index in indexes)
+			{
+				foreach (ListViewItem.ListViewSubItem item in listViewControl.Items[index].SubItems)
+				{
+					if (!String.IsNullOrWhiteSpace(item.Text))
+						sb.Append(item.Text).Append('\t');
+				}
+				//remove the last tab
+				sb.Remove(sb.Length - 1, 1);
+
+				sb.Append("\r\n");
+			}
+
+			//remove last newline
+			sb.Length -= 2;
+
+	
+			return sb.ToString();
+		}
 
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
