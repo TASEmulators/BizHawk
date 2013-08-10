@@ -211,7 +211,9 @@ namespace BizHawk.MultiClient.config
 			if (c is ControllerConfigPanel)
 				(c as ControllerConfigPanel).SetAutoTab(value);
 			else if (c is AnalogBindPanel)
-				;// TODO
+			{
+				// TODO
+			}
 			else if (c.HasChildren)
 				foreach (Control cc in c.Controls)
 					SetAutoTab(cc, value);

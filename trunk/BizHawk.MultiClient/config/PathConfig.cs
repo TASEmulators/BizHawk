@@ -134,9 +134,6 @@ namespace BizHawk.MultiClient
 			Atari7800SaveRAMBox.Text = Global.Config.PathAtari7800SaveRAM;
 			Atari7800ScreenshotsBox.Text = Global.Config.PathAtari7800Screenshots;
 			Atari7800CheatsBox.Text = Global.Config.PathAtari7800Cheats;
-			Atari7800NTSCBIOSBox.Text = Global.Config.FilenameA78NTSCBios;
-			Atari7800PALBIOSBox.Text = Global.Config.FilenameA78PALBios;
-			Atari7800HighScoreBIOSBox.Text = Global.Config.FilenameA78HSCBios;
 
 			C64BaseBox.Text = Global.Config.BaseC64;
 			C64ROMsBox.Text = Global.Config.PathC64ROMs;
@@ -172,11 +169,6 @@ namespace BizHawk.MultiClient
 			LogBox.Text = Global.Config.LogPath;
 			textBoxFirmware.Text = Global.Config.FirmwaresPath;
 			BaseROMSBox.Text = Global.Config.BaseROMPath;
-
-			PCEBIOSBox.Text = Global.Config.FilenamePCEBios;
-			FDSBIOSBox.Text = Global.Config.FilenameFDSBios;
-			ColecoBIOSBox.Text = Global.Config.FilenameCOLBios;
-			GBABIOSBox.Text = Global.Config.FilenameGBABIOS;
 
 			SetTabByPlatform();
 
@@ -328,7 +320,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
 			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
 			Global.Config.PathGBACheats = GBACheatsBox.Text;
-			Global.Config.FilenameGBABIOS = GBABIOSBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -349,9 +340,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathAtari7800SaveRAM = Atari7800SaveRAMBox.Text;
 			Global.Config.PathAtari7800Screenshots = Atari7800ScreenshotsBox.Text;
 			Global.Config.PathAtari7800Cheats = Atari7800CheatsBox.Text;
-			Global.Config.FilenameA78NTSCBios = Atari7800NTSCBIOSBox.Text;
-			Global.Config.FilenameA78PALBios = Atari7800PALBIOSBox.Text;
-			Global.Config.FilenameA78HSCBios = Atari7800HighScoreBIOSBox.Text;
 
 			Global.Config.BaseC64 = C64BaseBox.Text;
 			Global.Config.PathC64ROMs = C64ROMsBox.Text;
@@ -387,11 +375,6 @@ namespace BizHawk.MultiClient
 			Global.Config.LogPath = LogBox.Text;
 			Global.Config.FirmwaresPath = textBoxFirmware.Text;
 			Global.Config.BaseROMPath = BaseROMSBox.Text;
-
-			Global.Config.FilenamePCEBios = PCEBIOSBox.Text;
-			Global.Config.FilenameFDSBios = FDSBIOSBox.Text;
-			Global.Config.FilenameCOLBios = ColecoBIOSBox.Text;
-			Global.Config.FilenameGBABIOS = GBABIOSBox.Text;
 
 			BasePathBox.Focus();
 			Global.MainForm.UpdateStatusSlots();
@@ -494,7 +477,7 @@ namespace BizHawk.MultiClient
 
 		private void BrowseFolder(TextBox box, string _Name)
 		{
-			FolderBrowserDialog f = new FolderBrowserDialog
+			FolderBrowserEx f = new FolderBrowserEx
 				{
 					Description = "Set the directory for " + _Name,
 					SelectedPath = PathManager.MakeAbsolutePath(box.Text)
@@ -1005,121 +988,9 @@ namespace BizHawk.MultiClient
 			BrowseFolder(textBoxFirmware, labelFirmware.Text);
 		}
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin,*.pce)|*.rom;*.bin;*.pce|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				PCEBIOSBox.Text = file.Name;
-			}
-		}
-
-		private void NESBrowseFDSBIOS_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				FDSBIOSBox.Text = file.Name;
-			}
-		}
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				ColecoBIOSBox.Text = file.Name;
-			}
-		}
-
-		private void button4_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				GBABIOSBox.Text = file.Name;
-			}
-		}
-
 		private void BrowseBaseROM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(BaseROMSBox, BaseROMLabel.Text, "");
-		}
-
-		private void Atari7800BrowseNTSCBIOS_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				Atari7800NTSCBIOSBox.Text = file.Name;
-			}
-		}
-
-		private void Atari7800BrowsePALBIOS_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				Atari7800PALBIOSBox.Text = file.Name;
-			}
-		}
-
-		private void Atari7800BrowseHSCBIOS_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
-					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
-					RestoreDirectory = false
-				};
-			DialogResult result = ofd.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				var file = new FileInfo(ofd.FileName);
-				Atari7800HighScoreBIOSBox.Text = file.Name;
-			}
 		}
 
 		private void N64BrowseBase_Click(object sender, EventArgs e)

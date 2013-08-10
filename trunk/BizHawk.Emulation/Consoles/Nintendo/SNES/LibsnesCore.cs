@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				{
 					var msu1 = romxml["cartridge"]["msu1"];
 					if (is_msu1_rom && msu1["rom"].Attributes["name"] != null)
-						return CoreComm.AcquireSubfilePath(msu1["rom"].Attributes["name"].Value);
+						return CoreComm.CoreFileProvider.PathSubfile(msu1["rom"].Attributes["name"].Value);
 					if (is_msu1_pcm)
 					{
 						//return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
 						{
 							if (child.Name == "track" && child.Attributes["number"].Value == wantsTrackString)
-								return CoreComm.AcquireSubfilePath(child.Attributes["name"].Value);
+								return CoreComm.CoreFileProvider.PathSubfile(child.Attributes["name"].Value);
 						}
 					}
 				}
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					//bsnes wont inspect the xml to load the necessary sfc file.
 					//so, we have to do that here and pass it in as the romData :/
 					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
-						romData = File.ReadAllBytes(CoreComm.AcquireSubfilePath(romxml["cartridge"]["rom"].Attributes["name"].Value));
+						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(romxml["cartridge"]["rom"].Attributes["name"].Value));
 					else
 						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
 				}

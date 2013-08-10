@@ -408,6 +408,7 @@
     <Compile Include="CPUs\Z80\Z80A.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
@@ -455,6 +456,7 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\ICoreFileProvider.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />

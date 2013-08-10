@@ -83,9 +83,6 @@
 			this.BrowseMovieBackups = new System.Windows.Forms.Button();
 			this.MovieBackupsDescription = new System.Windows.Forms.Label();
 			this.tabPageNES = new System.Windows.Forms.TabPage();
-			this.label3 = new System.Windows.Forms.Label();
-			this.NESBrowseFDSBIOS = new System.Windows.Forms.Button();
-			this.FDSBIOSBox = new System.Windows.Forms.TextBox();
 			this.NESBaseBox = new System.Windows.Forms.TextBox();
 			this.NESPaletteDescription = new System.Windows.Forms.Label();
 			this.NESBrowsePalette = new System.Windows.Forms.Button();
@@ -179,9 +176,6 @@
 			this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
 			this.GenesisROMsBox = new System.Windows.Forms.TextBox();
 			this.tabPagePCE = new System.Windows.Forms.TabPage();
-			this.button2 = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.PCEBIOSBox = new System.Windows.Forms.TextBox();
 			this.PCEBaseBox = new System.Windows.Forms.TextBox();
 			this.PCECheatsDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseCheats = new System.Windows.Forms.Button();
@@ -223,9 +217,6 @@
 			this.GBSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageGBA = new System.Windows.Forms.TabPage();
-			this.label5 = new System.Windows.Forms.Label();
-			this.button4 = new System.Windows.Forms.Button();
-			this.GBABIOSBox = new System.Windows.Forms.TextBox();
 			this.GBABaseBox = new System.Windows.Forms.TextBox();
 			this.GBACheatsDescription = new System.Windows.Forms.Label();
 			this.GBABrowseCheats = new System.Windows.Forms.Button();
@@ -280,15 +271,6 @@
 			this.Atari2600ROMsDescription = new System.Windows.Forms.Label();
 			this.Atari2600BrowseROMs = new System.Windows.Forms.Button();
 			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.Atari7800BrowseHSCBIOS = new System.Windows.Forms.Button();
-			this.Atari7800BrowsePALBIOS = new System.Windows.Forms.Button();
-			this.Atari7800BrowseNTSCBIOS = new System.Windows.Forms.Button();
-			this.Atari7800HighScoreBIOSBox = new System.Windows.Forms.TextBox();
-			this.Atari7800PALBIOSBox = new System.Windows.Forms.TextBox();
-			this.Atari7800NTSCBIOSBox = new System.Windows.Forms.TextBox();
 			this.Atari7800SaveRAMsDescription = new System.Windows.Forms.Label();
 			this.BrowseAtari7800SaveRAM = new System.Windows.Forms.Button();
 			this.Atari7800SaveRAMBox = new System.Windows.Forms.TextBox();
@@ -327,9 +309,6 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageColeco = new System.Windows.Forms.TabPage();
-			this.label4 = new System.Windows.Forms.Label();
-			this.button3 = new System.Windows.Forms.Button();
-			this.ColecoBIOSBox = new System.Windows.Forms.TextBox();
 			this.COLBaseBox = new System.Windows.Forms.TextBox();
 			this.COLCheatsDescription = new System.Windows.Forms.Label();
 			this.COLBrowseCheats = new System.Windows.Forms.Button();
@@ -404,7 +383,7 @@
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
-			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+			this.folderBrowserDialog1 = new BizHawk.FolderBrowserEx();
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -1002,9 +981,6 @@
 			// 
 			// tabPageNES
 			// 
-			this.tabPageNES.Controls.Add(this.label3);
-			this.tabPageNES.Controls.Add(this.NESBrowseFDSBIOS);
-			this.tabPageNES.Controls.Add(this.FDSBIOSBox);
 			this.tabPageNES.Controls.Add(this.NESBaseBox);
 			this.tabPageNES.Controls.Add(this.NESPaletteDescription);
 			this.tabPageNES.Controls.Add(this.NESBrowsePalette);
@@ -1033,37 +1009,6 @@
 			this.tabPageNES.TabIndex = 0;
 			this.tabPageNES.Text = "NES";
 			this.tabPageNES.UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(474, 242);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(56, 13);
-			this.label3.TabIndex = 29;
-			this.label3.Text = "FDS BIOS";
-			// 
-			// NESBrowseFDSBIOS
-			// 
-			this.NESBrowseFDSBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.NESBrowseFDSBIOS.Image = ((System.Drawing.Image)(resources.GetObject("NESBrowseFDSBIOS.Image")));
-			this.NESBrowseFDSBIOS.Location = new System.Drawing.Point(442, 239);
-			this.NESBrowseFDSBIOS.Name = "NESBrowseFDSBIOS";
-			this.NESBrowseFDSBIOS.Size = new System.Drawing.Size(26, 23);
-			this.NESBrowseFDSBIOS.TabIndex = 28;
-			this.NESBrowseFDSBIOS.UseVisualStyleBackColor = true;
-			this.NESBrowseFDSBIOS.Click += new System.EventHandler(this.NESBrowseFDSBIOS_Click);
-			// 
-			// FDSBIOSBox
-			// 
-			this.FDSBIOSBox.AcceptsTab = true;
-			this.FDSBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.FDSBIOSBox.Location = new System.Drawing.Point(13, 239);
-			this.FDSBIOSBox.Name = "FDSBIOSBox";
-			this.FDSBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.FDSBIOSBox.TabIndex = 27;
 			// 
 			// NESBaseBox
 			// 
@@ -2077,9 +2022,6 @@
 			// 
 			// tabPagePCE
 			// 
-			this.tabPagePCE.Controls.Add(this.button2);
-			this.tabPagePCE.Controls.Add(this.label2);
-			this.tabPagePCE.Controls.Add(this.PCEBIOSBox);
 			this.tabPagePCE.Controls.Add(this.PCEBaseBox);
 			this.tabPagePCE.Controls.Add(this.PCECheatsDescription);
 			this.tabPagePCE.Controls.Add(this.PCEBrowseCheats);
@@ -2104,36 +2046,6 @@
 			this.tabPagePCE.TabIndex = 3;
 			this.tabPagePCE.Text = "PC Engine";
 			this.tabPagePCE.UseVisualStyleBackColor = true;
-			// 
-			// button2
-			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
-			this.button2.Location = new System.Drawing.Point(442, 209);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(26, 23);
-			this.button2.TabIndex = 91;
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
-			// label2
-			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(474, 213);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(32, 13);
-			this.label2.TabIndex = 90;
-			this.label2.Text = "BIOS";
-			// 
-			// PCEBIOSBox
-			// 
-			this.PCEBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBIOSBox.Location = new System.Drawing.Point(12, 209);
-			this.PCEBIOSBox.Name = "PCEBIOSBox";
-			this.PCEBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.PCEBIOSBox.TabIndex = 89;
 			// 
 			// PCEBaseBox
 			// 
@@ -2560,9 +2472,6 @@
 			// 
 			// tabPageGBA
 			// 
-			this.tabPageGBA.Controls.Add(this.label5);
-			this.tabPageGBA.Controls.Add(this.button4);
-			this.tabPageGBA.Controls.Add(this.GBABIOSBox);
 			this.tabPageGBA.Controls.Add(this.GBABaseBox);
 			this.tabPageGBA.Controls.Add(this.GBACheatsDescription);
 			this.tabPageGBA.Controls.Add(this.GBABrowseCheats);
@@ -2587,36 +2496,6 @@
 			this.tabPageGBA.TabIndex = 14;
 			this.tabPageGBA.Text = "GBA";
 			this.tabPageGBA.UseVisualStyleBackColor = true;
-			// 
-			// label5
-			// 
-			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(474, 213);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(32, 13);
-			this.label5.TabIndex = 125;
-			this.label5.Text = "BIOS";
-			// 
-			// button4
-			// 
-			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-			this.button4.Location = new System.Drawing.Point(440, 209);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(26, 23);
-			this.button4.TabIndex = 124;
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
-			// 
-			// GBABIOSBox
-			// 
-			this.GBABIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBABIOSBox.Location = new System.Drawing.Point(13, 209);
-			this.GBABIOSBox.Name = "GBABIOSBox";
-			this.GBABIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.GBABIOSBox.TabIndex = 123;
 			// 
 			// GBABaseBox
 			// 
@@ -3184,15 +3063,6 @@
 			// 
 			// tabPageAtari7800
 			// 
-			this.tabPageAtari7800.Controls.Add(this.label8);
-			this.tabPageAtari7800.Controls.Add(this.label7);
-			this.tabPageAtari7800.Controls.Add(this.label6);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800BrowseHSCBIOS);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800BrowsePALBIOS);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800BrowseNTSCBIOS);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800HighScoreBIOSBox);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800PALBIOSBox);
-			this.tabPageAtari7800.Controls.Add(this.Atari7800NTSCBIOSBox);
 			this.tabPageAtari7800.Controls.Add(this.Atari7800SaveRAMsDescription);
 			this.tabPageAtari7800.Controls.Add(this.BrowseAtari7800SaveRAM);
 			this.tabPageAtari7800.Controls.Add(this.Atari7800SaveRAMBox);
@@ -3217,99 +3087,6 @@
 			this.tabPageAtari7800.TabIndex = 15;
 			this.tabPageAtari7800.Text = "A. 7800";
 			this.tabPageAtari7800.UseVisualStyleBackColor = true;
-			// 
-			// label8
-			// 
-			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(474, 264);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(83, 13);
-			this.label8.TabIndex = 110;
-			this.label8.Text = "Highscore BIOS";
-			// 
-			// label7
-			// 
-			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(474, 235);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(55, 13);
-			this.label7.TabIndex = 109;
-			this.label7.Text = "PAL BIOS";
-			// 
-			// label6
-			// 
-			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(474, 209);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(64, 13);
-			this.label6.TabIndex = 108;
-			this.label6.Text = "NTSC BIOS";
-			// 
-			// Atari7800BrowseHSCBIOS
-			// 
-			this.Atari7800BrowseHSCBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowseHSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowseHSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseHSCBIOS.Image")));
-			this.Atari7800BrowseHSCBIOS.Location = new System.Drawing.Point(442, 259);
-			this.Atari7800BrowseHSCBIOS.Name = "Atari7800BrowseHSCBIOS";
-			this.Atari7800BrowseHSCBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowseHSCBIOS.TabIndex = 107;
-			this.Atari7800BrowseHSCBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowseHSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseHSCBIOS_Click);
-			// 
-			// Atari7800BrowsePALBIOS
-			// 
-			this.Atari7800BrowsePALBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowsePALBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowsePALBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowsePALBIOS.Image")));
-			this.Atari7800BrowsePALBIOS.Location = new System.Drawing.Point(442, 232);
-			this.Atari7800BrowsePALBIOS.Name = "Atari7800BrowsePALBIOS";
-			this.Atari7800BrowsePALBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowsePALBIOS.TabIndex = 106;
-			this.Atari7800BrowsePALBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowsePALBIOS.Click += new System.EventHandler(this.Atari7800BrowsePALBIOS_Click);
-			// 
-			// Atari7800BrowseNTSCBIOS
-			// 
-			this.Atari7800BrowseNTSCBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowseNTSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowseNTSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseNTSCBIOS.Image")));
-			this.Atari7800BrowseNTSCBIOS.Location = new System.Drawing.Point(442, 206);
-			this.Atari7800BrowseNTSCBIOS.Name = "Atari7800BrowseNTSCBIOS";
-			this.Atari7800BrowseNTSCBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowseNTSCBIOS.TabIndex = 105;
-			this.Atari7800BrowseNTSCBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowseNTSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseNTSCBIOS_Click);
-			// 
-			// Atari7800HighScoreBIOSBox
-			// 
-			this.Atari7800HighScoreBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800HighScoreBIOSBox.Location = new System.Drawing.Point(13, 259);
-			this.Atari7800HighScoreBIOSBox.Name = "Atari7800HighScoreBIOSBox";
-			this.Atari7800HighScoreBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800HighScoreBIOSBox.TabIndex = 104;
-			// 
-			// Atari7800PALBIOSBox
-			// 
-			this.Atari7800PALBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800PALBIOSBox.Location = new System.Drawing.Point(13, 232);
-			this.Atari7800PALBIOSBox.Name = "Atari7800PALBIOSBox";
-			this.Atari7800PALBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800PALBIOSBox.TabIndex = 103;
-			// 
-			// Atari7800NTSCBIOSBox
-			// 
-			this.Atari7800NTSCBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800NTSCBIOSBox.Location = new System.Drawing.Point(13, 206);
-			this.Atari7800NTSCBIOSBox.Name = "Atari7800NTSCBIOSBox";
-			this.Atari7800NTSCBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800NTSCBIOSBox.TabIndex = 102;
 			// 
 			// Atari7800SaveRAMsDescription
 			// 
@@ -3704,9 +3481,6 @@
 			// 
 			// tabPageColeco
 			// 
-			this.tabPageColeco.Controls.Add(this.label4);
-			this.tabPageColeco.Controls.Add(this.button3);
-			this.tabPageColeco.Controls.Add(this.ColecoBIOSBox);
 			this.tabPageColeco.Controls.Add(this.COLBaseBox);
 			this.tabPageColeco.Controls.Add(this.COLCheatsDescription);
 			this.tabPageColeco.Controls.Add(this.COLBrowseCheats);
@@ -3728,36 +3502,6 @@
 			this.tabPageColeco.TabIndex = 13;
 			this.tabPageColeco.Text = "Col. V.";
 			this.tabPageColeco.UseVisualStyleBackColor = true;
-			// 
-			// label4
-			// 
-			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(474, 183);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(32, 13);
-			this.label4.TabIndex = 112;
-			this.label4.Text = "BIOS";
-			// 
-			// button3
-			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Image = ((System.Drawing.Image)(resources.GetObject("button3.Image")));
-			this.button3.Location = new System.Drawing.Point(442, 179);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(26, 23);
-			this.button3.TabIndex = 111;
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
-			// 
-			// ColecoBIOSBox
-			// 
-			this.ColecoBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ColecoBIOSBox.Location = new System.Drawing.Point(13, 179);
-			this.ColecoBIOSBox.Name = "ColecoBIOSBox";
-			this.ColecoBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.ColecoBIOSBox.TabIndex = 110;
 			// 
 			// COLBaseBox
 			// 
@@ -4873,7 +4617,7 @@
 		private System.Windows.Forms.Label SNESROMsDescription;
 		private System.Windows.Forms.TextBox SNESSaveRAMBox;
 		private System.Windows.Forms.Button SNESBrowseROMs;
-		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+		private BizHawk.FolderBrowserEx folderBrowserDialog1;
 		private System.Windows.Forms.Label LogDescription;
 		private System.Windows.Forms.Button BrowseLog;
 		private System.Windows.Forms.TextBox LogBox;
@@ -4953,30 +4697,9 @@
 		private System.Windows.Forms.Label labelFirmware;
 		private System.Windows.Forms.Button buttonFirmware;
 		private System.Windows.Forms.TextBox textBoxFirmware;
-		private System.Windows.Forms.TextBox PCEBIOSBox;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.TextBox FDSBIOSBox;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Button NESBrowseFDSBIOS;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.TextBox ColecoBIOSBox;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.TextBox GBABIOSBox;
 		private System.Windows.Forms.TextBox BaseROMSBox;
 		private System.Windows.Forms.Label BaseROMLabel;
 		private System.Windows.Forms.Button BrowseBaseROM;
-		private System.Windows.Forms.TextBox Atari7800PALBIOSBox;
-		private System.Windows.Forms.TextBox Atari7800NTSCBIOSBox;
-		private System.Windows.Forms.TextBox Atari7800HighScoreBIOSBox;
-		private System.Windows.Forms.Button Atari7800BrowseHSCBIOS;
-		private System.Windows.Forms.Button Atari7800BrowsePALBIOS;
-		private System.Windows.Forms.Button Atari7800BrowseNTSCBIOS;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.TabPage tabPageN64;
 		private System.Windows.Forms.TabPage tabPageSaturn;
 		private System.Windows.Forms.TextBox N64BaseBox;

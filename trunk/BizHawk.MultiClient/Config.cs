@@ -184,16 +184,7 @@ namespace BizHawk.MultiClient
 		};
 
 		//BIOS Paths
-		public string FilenamePCEBios = "[BIOS] Super CD-ROM System (Japan) (v3.0).pce";
-		public string FilenameFDSBios = "disksys.rom";
-		public string FilenameGBABIOS = "gbabios.rom";
-		public string FilenameCOLBios = "ColecoBios.bin";
-		public string FilenameINTVGROM = "grom.bin";
-		public string FilenameA78NTSCBios = "7800NTSCBIOS.bin";
-		public string FilenameA78PALBios = "7800PALBIOS.bin";
-		public string FilenameA78HSCBios = "7800highscore.bin";
-		public string FilenameINTVEROM = "erom.bin";
-		public string FilenameSaturnBios = "Sega Saturn BIOS v1.01 (JAP).bin";
+		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); //key: sysid+firmwareId; value: absolute path
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 

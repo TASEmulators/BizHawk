@@ -74,6 +74,8 @@ namespace BizHawk.MultiClient
 		private readonly Throttle throttle;
 		private bool unthrottled;
 
+		public FirmwareManager FirmwareManager = new FirmwareManager();
+
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused;
 		private bool didMenuPause;
@@ -83,52 +85,52 @@ namespace BizHawk.MultiClient
 
 		//tool dialogs
 
-        private RamWatch _ramwatch = null;
-        private RamSearch _ramsearch = null;
-        private HexEditor _hexeditor = null;
-        private TraceLogger _tracelogger = null;
-        private SNESGraphicsDebugger _snesgraphicsdebugger = null;
-        private NESNameTableViewer _nesnametableview = null;
-        private NESPPU _nesppu = null;
-        private NESDebugger _nesdebugger = null;
-        private GBtools.GBGPUView _gbgpuview = null;
-        private GBAtools.GBAGPUView _gbagpuview = null;
-        private PCEBGViewer _pcebgviewer = null;
-        private Cheats _cheats = null;
-        private ToolBox _toolbox = null;
-        private TI83KeyPad _ti83pad = null;
-        private TAStudio _tastudio = null;
-        private VirtualPadForm _vpad = null;
-        private NESGameGenie _ngg = null;
-        private SNESGameGenie _sgg = null;
-        private GBGameGenie _gbgg = null;
-        private GenGameGenie _gengg = null;
-        private NESSoundConfig _nessound = null;
+		private RamWatch _ramwatch = null;
+		private RamSearch _ramsearch = null;
+		private HexEditor _hexeditor = null;
+		private TraceLogger _tracelogger = null;
+		private SNESGraphicsDebugger _snesgraphicsdebugger = null;
+		private NESNameTableViewer _nesnametableview = null;
+		private NESPPU _nesppu = null;
+		private NESDebugger _nesdebugger = null;
+		private GBtools.GBGPUView _gbgpuview = null;
+		private GBAtools.GBAGPUView _gbagpuview = null;
+		private PCEBGViewer _pcebgviewer = null;
+		private Cheats _cheats = null;
+		private ToolBox _toolbox = null;
+		private TI83KeyPad _ti83pad = null;
+		private TAStudio _tastudio = null;
+		private VirtualPadForm _vpad = null;
+		private NESGameGenie _ngg = null;
+		private SNESGameGenie _sgg = null;
+		private GBGameGenie _gbgg = null;
+		private GenGameGenie _gengg = null;
+		private NESSoundConfig _nessound = null;
 
-        //TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-        public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
-        public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
-        public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
-        public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
+		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
+		public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
+		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
+		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
+		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
-        public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
-        public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
+		public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
+		public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
 		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
-        public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
-        public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
-        public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
-        public Cheats Cheats1 { get { if (_cheats == null) _cheats = new Cheats(); return _cheats; } set { _cheats = value; } }
-        public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
-        public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
+		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
+		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
+		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
+		public Cheats Cheats1 { get { if (_cheats == null) _cheats = new Cheats(); return _cheats; } set { _cheats = value; } }
+		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
+		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
 		public VirtualPadForm VirtualPadForm1 { get { if (_vpad == null) _vpad = new VirtualPadForm(); return _vpad; } set { _vpad = value; } }
 		public NESGameGenie NESgg { get { if (_ngg == null) _ngg = new NESGameGenie(); return _ngg; } set { _ngg = value; } }
-        public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
+		public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 #if WINDOWS
-        private LuaConsole _luaconsole = null;
+		private LuaConsole _luaconsole = null;
 		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
 #endif
 
@@ -435,8 +437,13 @@ namespace BizHawk.MultiClient
 			SNES_prepared[profile] = exePath;
 		}
 
+
 		public void SyncCoreCommInputSignals(CoreComm target)
 		{
+			var cfp = new CoreFileProvider();
+			target.CoreFileProvider = cfp;
+			cfp.FirmwareManager = FirmwareManager;
+			
 			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
 			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
 			target.NES_ShowBG = Global.Config.NESDispBackground;
@@ -1087,7 +1094,7 @@ namespace BizHawk.MultiClient
 						{
 							case "SAT":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+									string biosPath = this.FirmwareManager.Request("SAT", "J");
 									if (!File.Exists(biosPath))
 									{
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
@@ -1115,7 +1122,7 @@ namespace BizHawk.MultiClient
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenamePCEBios); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									string biosPath = this.FirmwareManager.Request("PCECD", "Bios");
 									if (File.Exists(biosPath) == false)
 									{
 										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
@@ -1207,13 +1214,7 @@ namespace BizHawk.MultiClient
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 
-									//this isnt completely correct. might need to deal with the archive somehow.
-									//once done, code should be factored out to be useful in other platforms as well
-									//BUT!!! right now bsnes needs to open the file itself. lame.
-									//nextComm.AcquireSubfile = (subpath) =>
-									//  File.OpenRead(Path.Combine(Path.GetDirectoryName(path),subpath));
-									nextComm.AcquireSubfilePath = (subpath) =>
-									  Path.Combine(Path.GetDirectoryName(path),subpath);
+									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path);
 
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
@@ -1257,7 +1258,8 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameFDSBios);
+									//TODO - move into nes core
+									string biosPath = nextComm.CoreFileProvider.PathFirmware("NES","Bios_FDS");
 									byte[] bios = null;
 									if (File.Exists(biosPath))
 									{
@@ -1319,8 +1321,7 @@ namespace BizHawk.MultiClient
 									}
 									else
 									{
-										// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
-										string sgbromPath = PathManager.StandardFirmwareName("sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+										string sgbromPath = this.FirmwareManager.Request("SNES","Rom_SGB");
 										byte[] sgbrom = null;
 										try
 										{
@@ -1356,7 +1357,7 @@ namespace BizHawk.MultiClient
 								//}
 								break;
 							case "Coleco":
-								string colbiosPath = PathManager.StandardFirmwareName(Global.Config.FilenameCOLBios);
+								string colbiosPath = this.FirmwareManager.Request("Coleco", "Bios");
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
@@ -1372,11 +1373,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVEROM);
+									string eromPath = this.FirmwareManager.Request("INTV", "EROM");
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVGROM);
+									string gromPath = this.FirmwareManager.Request("INTV", "GROM");
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);
@@ -1384,9 +1385,9 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78NTSCBios);
-								string pal_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78PALBios);
-								string hsbiospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78HSCBios);
+								string ntsc_biospath = this.FirmwareManager.Request("A78", "Bios_NTSC");
+								string pal_biospath = this.FirmwareManager.Request("A78", "Bios_PAL");
+								string hsbiospath = this.FirmwareManager.Request("A78", "Bios_HSC");
 
 								FileInfo ntscfile = new FileInfo(ntsc_biospath);
 								FileInfo palfile = new FileInfo(pal_biospath);
@@ -1430,14 +1431,14 @@ namespace BizHawk.MultiClient
 								nextEmulator = a78;
 								break;
 							case "C64":
-								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
-								c64.HardReset();
-								nextEmulator = c64;
+								//C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
+								//c64.HardReset();
+								//nextEmulator = c64;
 								break;
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = PathManager.StandardFirmwareName(Global.Config.FilenameGBABIOS);
+									string gbabiospath = FirmwareManager.Request("GBA", "Bios");
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))
@@ -2399,6 +2400,7 @@ namespace BizHawk.MultiClient
 				Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
 				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 			{
+				//DateTime start = DateTime.UtcNow;
 				var writer = new StreamWriter(filename);
 				Global.Emulator.SaveStateText(writer);
 				HandleMovieSaveState(writer);
@@ -2408,10 +2410,13 @@ namespace BizHawk.MultiClient
 					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
 				}
 				writer.Close();
+				//DateTime end = DateTime.UtcNow;
+				//Console.WriteLine("n64 savestate BINARY time: {0}", (end - start).TotalMilliseconds);
 			}
 			else
 			{
 				// binary savestate
+				//DateTime start = DateTime.UtcNow;
 				var writer = new BinaryWriter(new FileStream(filename, FileMode.Create));
 				Global.Emulator.SaveStateBinary(writer);
 				if (Global.Config.SaveScreenshotWithStates)
@@ -2422,6 +2427,8 @@ namespace BizHawk.MultiClient
 					writer.Write(buff);
 				}
 				writer.Close();
+				//DateTime end = DateTime.UtcNow;
+				//Console.WriteLine("n64 savestate TEXT time: {0}", (end - start).TotalMilliseconds);
 			}
 			Global.OSD.AddMessage("Saved state: " + name);
 

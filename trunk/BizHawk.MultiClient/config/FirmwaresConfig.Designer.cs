@@ -34,8 +34,6 @@
 			this.lvFirmwares = new System.Windows.Forms.ListView();
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -44,9 +42,18 @@
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
 			this.tbbOrganize = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.tsmiClearCustomization = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
+			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// imageList1
@@ -60,9 +67,12 @@
 			this.lvFirmwares.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader1,
+            this.columnHeader6,
+            this.columnHeader4,
             this.columnHeader2,
             this.columnHeader3,
-            this.columnHeader4});
+            this.columnHeader7});
+			this.lvFirmwares.ContextMenuStrip = this.lvFirmwaresContextMenuStrip;
 			this.lvFirmwares.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvFirmwares.FullRowSelect = true;
 			this.lvFirmwares.GridLines = true;
@@ -75,6 +85,7 @@
 			this.lvFirmwares.View = System.Windows.Forms.View.Details;
 			this.lvFirmwares.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvFirmwares_ColumnClick);
 			this.lvFirmwares.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvFirmwares_KeyDown);
+			this.lvFirmwares.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvFirmwares_MouseClick);
 			// 
 			// columnHeader5
 			// 
@@ -85,20 +96,10 @@
 			// 
 			this.columnHeader1.Text = "System";
 			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Hash";
-			this.columnHeader2.Width = 475;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Normal Filename";
-			this.columnHeader3.Width = 93;
-			// 
 			// columnHeader4
 			// 
 			this.columnHeader4.Text = "Description";
-			this.columnHeader4.Width = 220;
+			this.columnHeader4.Width = 165;
 			// 
 			// panel1
 			// 
@@ -177,6 +178,47 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(779, 478);
 			this.tableLayoutPanel1.TabIndex = 25;
 			// 
+			// columnHeader6
+			// 
+			this.columnHeader6.Text = "Id";
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "Resolved With";
+			this.columnHeader2.Width = 116;
+			// 
+			// columnHeader7
+			// 
+			this.columnHeader7.Text = "Hash";
+			this.columnHeader7.Width = 340;
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Location";
+			this.columnHeader3.Width = 252;
+			// 
+			// lvFirmwaresContextMenuStrip
+			// 
+			this.lvFirmwaresContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSetCustomization,
+            this.tsmiClearCustomization});
+			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
+			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(170, 48);
+			// 
+			// tsmiClearCustomization
+			// 
+			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
+			this.tsmiClearCustomization.Size = new System.Drawing.Size(169, 22);
+			this.tsmiClearCustomization.Text = "&Clear Customization";
+			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
+			// 
+			// tsmiSetCustomization
+			// 
+			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
+			this.tsmiSetCustomization.Size = new System.Drawing.Size(169, 22);
+			this.tsmiSetCustomization.Text = "&Set Customization";
+			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
+			// 
 			// FirmwaresConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -193,6 +235,7 @@
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
+			this.lvFirmwaresContextMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -203,8 +246,6 @@
 				private System.Windows.Forms.ListView lvFirmwares;
 				private System.Windows.Forms.ColumnHeader columnHeader5;
 				private System.Windows.Forms.ColumnHeader columnHeader1;
-				private System.Windows.Forms.ColumnHeader columnHeader2;
-				private System.Windows.Forms.ColumnHeader columnHeader3;
 				private System.Windows.Forms.ColumnHeader columnHeader4;
 				private System.Windows.Forms.Panel panel1;
 				private System.Windows.Forms.ToolStrip toolStrip1;
@@ -213,5 +254,13 @@
 				private System.Windows.Forms.ToolStripButton tbbScan;
 				private System.Windows.Forms.ToolStripButton tbbOrganize;
 				private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+				private System.Windows.Forms.ColumnHeader columnHeader6;
+				private System.Windows.Forms.ColumnHeader columnHeader2;
+				private System.Windows.Forms.ToolTip toolTip1;
+				private System.Windows.Forms.ColumnHeader columnHeader3;
+				private System.Windows.Forms.ColumnHeader columnHeader7;
+				private System.Windows.Forms.ContextMenuStrip lvFirmwaresContextMenuStrip;
+				private System.Windows.Forms.ToolStripMenuItem tsmiSetCustomization;
+				private System.Windows.Forms.ToolStripMenuItem tsmiClearCustomization;
     }
 }
