@@ -110,9 +110,10 @@ namespace BizHawk.MultiClient
 
 				int _x = 6;
 				int _y = 14;
-				int textbox_width = 150;
-				int padding = 10;
+				int textbox_width = 70;
+				int padding = 5;
 				int button_width = 26;
+				int widget_offset = 85;
 				foreach (var path in paths)
 				{
 
@@ -121,18 +122,19 @@ namespace BizHawk.MultiClient
 						Text = path.Path,
 						Location = new Point(_x, _y),
 						Width = textbox_width,
-						Name = path.Type
-						//Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+						Name = path.Type,
+						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+						MinimumSize = new Size(26, 23),
 					};
 
 					Button btn = new Button()
 					{
 						Text = "",
 						Image = BizHawk.MultiClient.Properties.Resources.OpenFile,
-						Location = new Point(_x + textbox_width + padding, _y - 1),
+						Location = new Point(widget_offset, _y - 1),
 						Width = button_width,
 						Name = path.Type,
-						//Anchor = AnchorStyles.Top | AnchorStyles.Right,
+						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 					btn.Click += new System.EventHandler(delegate
 					{
@@ -142,14 +144,15 @@ namespace BizHawk.MultiClient
 					Label label = new Label()
 					{
 						Text = path.Type,
-						Location = new Point(_x + textbox_width + (padding * 2) + button_width, _y + 4),
-						Name = path.Type
-						//Anchor = AnchorStyles.Top | AnchorStyles.Right,
+						Location = new Point(widget_offset + button_width + padding, _y + 4),
+						Width = 100,
+						Name = path.Type,
+						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 
-					t.Controls.Add(box);
-					t.Controls.Add(btn);
 					t.Controls.Add(label);
+					t.Controls.Add(btn);
+					t.Controls.Add(box);
 
 					_y += 30;
 				}
@@ -234,6 +237,34 @@ namespace BizHawk.MultiClient
 					_AllPathBoxes.AddRange(boxes);
 				}
 				return _AllPathBoxes;
+			}
+		}
+
+		private List<Label> AllPathLabels
+		{
+			get
+			{
+				List<Label> _AllPathLabels = new List<Label>();
+				foreach (TabPage tp in PathTabControl.TabPages)
+				{
+					IEnumerable<Label> control = from c in tp.Controls.OfType<Label>() select c;
+					_AllPathLabels.AddRange(control);
+				}
+				return _AllPathLabels;
+			}
+		}
+
+		private List<Button> AllPathButtons
+		{
+			get
+			{
+				List<Button> _AllPathButtons = new List<Button>();
+				foreach (TabPage tp in PathTabControl.TabPages)
+				{
+					IEnumerable<Button> control = from c in tp.Controls.OfType<Button>() select c;
+					_AllPathButtons.AddRange(control);
+				}
+				return _AllPathButtons;
 			}
 		}
 
