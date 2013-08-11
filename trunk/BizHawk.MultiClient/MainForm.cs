@@ -1431,9 +1431,9 @@ namespace BizHawk.MultiClient
 								nextEmulator = a78;
 								break;
 							case "C64":
-								//C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
-								//c64.HardReset();
-								//nextEmulator = c64;
+								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
+								c64.HardReset();
+								nextEmulator = c64;
 								break;
 							case "GBA":
 								if (INTERIM)
