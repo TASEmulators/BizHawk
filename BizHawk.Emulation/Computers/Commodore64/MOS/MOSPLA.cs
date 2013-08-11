@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Action<int, byte> PokeMemory;
 		public Action<int, byte> PokeSid;
 		public Action<int, byte> PokeVic;
+        public Func<bool> ReadBA;
 		public Func<ushort, byte> ReadBasicRom;
 		public Func<ushort, byte> ReadCartridgeLo;
 		public Func<ushort, byte> ReadCartridgeHi;
@@ -82,303 +83,168 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			Expansion1
 		}
 
-		private struct PLACpuMap
-		{
-			public PLABank layout1000;
-			public PLABank layout8000;
-			public PLABank layoutA000;
-			public PLABank layoutC000;
-			public PLABank layoutD000;
-			public PLABank layoutE000;
-		}
-
 		// ------------------------------------
 
-		private PLACpuMap map;
-		private bool pinCharenLast;
-		private bool pinExRomLast;
-		private bool pinGameLast;
-		private bool pinHiRamLast;
-		private bool pinLoRamLast;
+        bool p0;
+        bool p1;
+        bool p2;
+        bool p3;
+        bool p4;
+        bool p5;
+        bool p6;
+        bool p7;
+        bool p8;
+        bool p9;
+        bool p10;
+        bool p11;
+        bool p12;
+        bool p13;
+        bool p14;
+        bool p15;
+        bool p16;
+        bool p17;
+        bool p18;
+        bool p19;
+        bool p20;
+        bool p21;
+        bool p22;
+        bool p23;
+        bool p24;
+        bool p25;
+        bool p26;
+        bool p27;
+        bool p28;
+        bool p29;
+        bool p30;
+        bool p31;
+        bool loram;
+        bool hiram;
+        bool game;
+        bool exrom;
+        bool charen;
+        bool a15;
+        bool a14;
+        bool a13;
+        bool a12;
+        bool va14;
+        bool va13;
+        bool va12;
+        bool aec;
+        bool cas;
+        bool casram;
+        bool basic;
+        bool kernal;
+        bool charrom;
+        bool grw;
+        bool io;
+        bool roml;
+        bool romh;
 
-		public MOSPLA()
+		private PLABank Bank(ushort addr, bool read)
 		{
-		}
+            loram = ReadLoRam();
+            hiram = ReadHiRam();
+            game = ReadGame();
+            exrom = ReadExRom();
+            charen = ReadCharen();
 
-		public void HardReset()
-		{
-			UpdateMap();
-		}
+            a15 = (addr & 0x8000) != 0;
+            a14 = (addr & 0x4000) != 0;
+            a13 = (addr & 0x2000) != 0;
+            a12 = (addr & 0x1000) != 0;
+            va14 = a14;
+            va13 = a13;
+            va12 = a12;
+            aec = false;
+            cas = false;
 
-		// ------------------------------------
+            p0 = loram && hiram && a15 && !a14 && a13 && !aec && read && game;
+            p1 = hiram && a15 && a14 && a13 && !aec && read && game;
+            p2 = hiram && a15 && a14 && a13 && !aec && read && !exrom && !game;
+            p3 = hiram && !charen && a15 && a14 && !a13 && a12 && !aec && read && game;
+            p4 = loram && !charen && a15 && a14 && !a13 && a12 && !aec && read && game;
+            p5 = hiram && !charen && a15 && a14 && !a13 && a12 && !aec && read && !exrom && !game;
+            p6 = va14 && !va13 && va12 && aec && game;
+            p7 = va14 && !va13 && va12 && aec && !exrom && !game;
+            p9 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && read && game;
+            p10 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && !read && game;
+            p11 = loram && charen && a15 && a14 && !a13 && a12 && !aec && read && game;
+            p12 = loram && charen && a15 && a14 && !a13 && a12 && !aec && !read && game;
+            p13 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && read && !exrom && !game;
+            p14 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && !read && !exrom && !game;
+            p15 = loram && charen && a15 && a14 && !a13 && a12 && !aec && read && !exrom && !game;
+            p16 = loram && charen && a15 && a14 && !a13 && a12 && !aec && !read && !exrom && !game;
+            p17 = a15 && a14 && !a13 && a12 && !aec && read && exrom && !game;
+            p18 = a15 && a14 && !a13 && a12 && !aec && !read && exrom && !game;
+            p19 = loram && hiram && a15 && !a14 && !a13 && !aec && read && !exrom;
+            p20 = a15 && !a14 && !a13 && !aec && exrom && !game;
+            p21 = hiram && a15 && !a14 && a13 && !aec && read && !exrom && !game;
+            p22 = a15 && a14 && a13 && !aec && exrom && !game;
+            p23 = va13 && va12 && aec && exrom && !game;
+            p24 = !a15 && !a14 && a12 && exrom && !game;
+            p25 = !a15 && !a14 && a13 && exrom && !game;
+            p26 = !a15 && a14 && exrom && !game;
+            p27 = a15 && !a14 && a13 && exrom && !game;
+            p28 = a15 && a14 && !a13 && !a12 && exrom && !game;
+            p30 = cas;
+            p31 = !cas && a15 && a14 && !a13 && a12 && !aec && !read;
+            casram = !(p0 || p1 || p2 || p3 || p4 || p5 || p6 || p7 || p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18 || p19 || p20 || p21 || p22 || p23 || p24 || p25 || p26 || p27 || p28 || p30);
+            basic = p0;
+            kernal = (p1 || p2);
+            charrom = (p3 || p4 || p5 || p6 || p7);
+            grw = p31;
+            io = (p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18);
+            roml = (p19 || p20);
+            romh = (p21 || p22 || p23);
 
-		public void ExecutePhase1()
-		{
-			UpdatePins();
-		}
-
-		public void ExecutePhase2()
-		{
-			UpdatePins();
-		}
-
-		public void UpdatePins()
-		{
-			if ((ReadExRom() != pinExRomLast) || (ReadGame() != pinGameLast) || (ReadLoRam() != pinLoRamLast) || (ReadHiRam() != pinHiRamLast) || (ReadCharen() != pinCharenLast))
-			{
-				UpdateMap();
-			}
-		}
-
-		// ------------------------------------
-
-		private void UpdateMap()
-		{
-			bool pinGame = ReadGame();
-			bool pinExRom = ReadExRom();
-			bool pinCharen = ReadCharen();
-			bool pinHiRam = ReadHiRam();
-			bool pinLoRam = ReadLoRam();
-
-			if (pinCharen && pinHiRam && pinLoRam && pinGame && pinExRom)
-			{
-				// 11111
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.BasicROM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && pinHiRam && pinLoRam && pinGame && pinExRom)
-			{
-				// 01111
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.BasicROM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (pinCharen && !pinHiRam && pinLoRam && pinGame)
-			{
-				// 1011X
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.RAM;
-			}
-			else if (pinCharen && !pinHiRam && pinLoRam && !pinGame && !pinExRom)
-			{
-				// 10100
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.RAM;
-			}
-			else if (!pinCharen && !pinHiRam && pinLoRam && pinGame)
-			{
-				// 0011X
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.RAM;
-			}
-			else if (!pinCharen && !pinHiRam && pinLoRam && !pinGame && !pinExRom)
-			{
-				// 00100
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.RAM;
-				map.layoutE000 = PLABank.RAM;
-			}
-			else if (!pinHiRam && !pinLoRam && pinGame)
-			{
-				// X001X
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.RAM;
-				map.layoutE000 = PLABank.RAM;
-			}
-			else if (pinCharen && pinHiRam && !pinLoRam && pinGame)
-			{
-				// 1101X
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (pinCharen && !pinHiRam && !pinLoRam && !pinExRom)
-			{
-				// 100X0
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && pinHiRam && !pinLoRam && pinGame)
-			{
-				// 0101X
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && !pinHiRam && !pinLoRam && !pinExRom)
-			{
-				// 000X0
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.RAM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (pinCharen && pinHiRam && pinLoRam && pinGame && !pinExRom)
-			{
-				// 11110
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.CartridgeLo;
-				map.layoutA000 = PLABank.BasicROM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && pinHiRam && pinLoRam && pinGame && !pinExRom)
-			{
-				// 01110
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.CartridgeLo;
-				map.layoutA000 = PLABank.BasicROM;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (pinCharen && pinHiRam && !pinLoRam && !pinGame && !pinExRom)
-			{
-				// 11000
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.CartridgeHi;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && pinHiRam && !pinLoRam && !pinGame && !pinExRom)
-			{
-				// 01000
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.RAM;
-				map.layoutA000 = PLABank.CartridgeHi;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (pinCharen && pinHiRam && pinLoRam && !pinGame && !pinExRom)
-			{
-				// 11100
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.CartridgeLo;
-				map.layoutA000 = PLABank.CartridgeHi;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinCharen && pinHiRam && pinLoRam && !pinGame && !pinExRom)
-			{
-				// 01100
-				map.layout1000 = PLABank.RAM;
-				map.layout8000 = PLABank.CartridgeLo;
-				map.layoutA000 = PLABank.CartridgeHi;
-				map.layoutC000 = PLABank.RAM;
-				map.layoutD000 = PLABank.CharROM;
-				map.layoutE000 = PLABank.KernalROM;
-			}
-			else if (!pinGame && pinExRom)
-			{
-				// XXX01 (ultimax)
-				map.layout1000 = PLABank.None;
-				map.layout8000 = PLABank.CartridgeLo;
-				map.layoutA000 = PLABank.None;
-				map.layoutC000 = PLABank.None;
-				map.layoutD000 = PLABank.IO;
-				map.layoutE000 = PLABank.CartridgeHi;
-			}
-			else
-			{
-				throw new Exception("Memory configuration missing from PLA, fix this!");
-			}
-
-			pinExRomLast = pinExRom;
-			pinGameLast = pinGame;
-			pinLoRamLast = pinLoRam;
-			pinHiRamLast = pinHiRam;
-			pinCharenLast = pinCharen;
-		}
-
-		// ------------------------------------
-
-		private PLABank Bank(ushort addr)
-		{
-			if (addr < 0x1000)
-				return PLABank.RAM;
-			else if (addr >= 0x1000 && addr < 0x8000)
-				return map.layout1000;
-			else if (addr >= 0x8000 && addr < 0xA000)
-				return map.layout8000;
-			else if (addr >= 0xA000 && addr < 0xC000)
-				return map.layoutA000;
-			else if (addr >= 0xC000 && addr < 0xD000)
-				return map.layoutC000;
-			else if (addr >= 0xD000 && addr < 0xE000)
-			{
-				if (map.layoutD000 == PLABank.IO)
-				{
-					if (addr >= 0xD000 && addr < 0xD400)
-						return PLABank.Vic;
-					else if (addr >= 0xD400 && addr < 0xD800)
-						return PLABank.Sid;
-					else if (addr >= 0xD800 && addr < 0xDC00)
-						return PLABank.ColorRam;
-					else if (addr >= 0xDC00 && addr < 0xDD00)
-						return PLABank.Cia0;
-					else if (addr >= 0xDD00 && addr < 0xDE00)
-						return PLABank.Cia1;
-					else if (addr >= 0xDE00 && addr < 0xDF00)
-						return PLABank.Expansion0;
-					else
-						return PLABank.Expansion1;
-				}
-				else
-				{
-					return map.layoutD000;
-				}
-			}
-			else
-			{
-				return map.layoutE000;
-			}
-		}
+            if (basic)
+                return PLABank.BasicROM;
+            if (kernal)
+                return PLABank.KernalROM;
+            if (charrom)
+                return PLABank.CharROM;
+            if (io)
+            {
+                switch (addr & 0x0F00)
+                {
+                    case 0x000:
+                    case 0x100:
+                    case 0x200:
+                    case 0x300:
+                        return PLABank.Vic;
+                    case 0x400:
+                    case 0x500:
+                    case 0x600:
+                    case 0x700:
+                        return PLABank.Sid;
+                    case 0x800:
+                    case 0x900:
+                    case 0xA00:
+                    case 0xB00:
+                        return PLABank.ColorRam;
+                    case 0xC00:
+                        return PLABank.Cia0;
+                    case 0xD00:
+                        return PLABank.Cia1;
+                    case 0xE00:
+                        return PLABank.Expansion0;
+                    case 0xF00:
+                        return PLABank.Expansion1;
+                }
+                return PLABank.IO;
+            }
+            if (roml)
+                return PLABank.CartridgeLo;
+            if (romh)
+                return PLABank.CartridgeHi;
+            if (casram)
+                return PLABank.RAM;
+            return PLABank.None;
+        }
 
 		public byte Peek(int addr)
 		{
-			switch (Bank((ushort)(addr & 0xFFFF)))
+			switch (Bank((ushort)(addr & 0xFFFF), true))
 			{
 				case PLABank.BasicROM:
 					return PeekBasicRom(addr);
@@ -414,7 +280,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Poke(int addr, byte val)
 		{
-			switch (Bank((ushort)(addr & 0xFFFF)))
+			switch (Bank((ushort)(addr & 0xFFFF), false))
 			{
 				case PLABank.BasicROM:
 					break;
@@ -459,7 +325,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Read(ushort addr)
 		{
-			switch (Bank(addr))
+			switch (Bank(addr, true))
 			{
 				case PLABank.BasicROM:
 					return ReadBasicRom(addr);
@@ -491,28 +357,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return 0xFF;
 		}
 
-		public void SyncState(Serializer ser)
-		{
-			ser.Sync("pinCharenLast", ref pinCharenLast);
-			ser.Sync("pinExRomLast", ref pinExRomLast);
-			ser.Sync("pinGameLast", ref pinGameLast);
-			ser.Sync("pinHiRamLast", ref pinHiRamLast);
-			ser.Sync("pinLoRamLast", ref pinLoRamLast);
-
-			if (ser.IsReader) UpdateMap();
-		}
-
 		public void Write(ushort addr, byte val)
 		{
-			switch (Bank(addr))
+			switch (Bank(addr, false))
 			{
 				case PLABank.BasicROM:
 					break;
 				case PLABank.CartridgeHi:
 					WriteCartridgeHi(addr, val);
+			        WriteMemory(addr, val);
 					break;
 				case PLABank.CartridgeLo:
 					WriteCartridgeLo(addr, val);
+			        WriteMemory(addr, val);
 					break;
 				case PLABank.CharROM:
 					break;
@@ -536,7 +393,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.None:
 					break;
 				case PLABank.RAM:
-					// RAM is written through anyway, don't do it here
+			        WriteMemory(addr, val);
 					break;
 				case PLABank.Sid:
 					WriteSid(addr, val);
@@ -545,7 +402,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					WriteVic(addr, val);
 					break;
 			}
-			WriteMemory(addr, val);
 		}
 	}
 }
