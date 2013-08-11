@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 		private void LoadSettings()
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
-			BasePathBox.Text = Global.Config.BasePath;
+			BasePathBox.Text = Global.Config.PathEntries.GlobalBase;
 			DoTabs(Global.Config.PathEntries.Paths);
 			SetDefaultFocusedTab();
 			DoROMToggle();
@@ -216,7 +216,7 @@ namespace BizHawk.MultiClient
 		private void SaveSettings()
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-			Global.Config.BasePath = BasePathBox.Text;
+			Global.Config.PathEntries["Global", "Base"].Path = BasePathBox.Text;
 
 			foreach (TextBox t in AllPathBoxes)
 			{

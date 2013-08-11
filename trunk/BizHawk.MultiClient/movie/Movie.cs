@@ -367,7 +367,7 @@ namespace BizHawk.MultiClient
 
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			BackupName = Global.Config.MoviesBackupPath + "\\" + Path.GetFileName(BackupName);
+			BackupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(BackupName));
 
 			var directory_info = new FileInfo(BackupName).Directory;
 			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);

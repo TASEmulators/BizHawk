@@ -700,14 +700,7 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (INTERIM)
-			{
-				new NewPathConfig().ShowDialog();
-			}
-			else
-			{
-				new PathConfig().ShowDialog();
-			}
+			new NewPathConfig().ShowDialog();
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2393,7 +2386,7 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			new PathConfig().ShowDialog();
+			new NewPathConfig().ShowDialog();
 		}
 
 		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)

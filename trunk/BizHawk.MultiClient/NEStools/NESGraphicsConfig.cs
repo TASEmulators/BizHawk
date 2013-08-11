@@ -47,7 +47,7 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog
 				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESPalette, "NES"),
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
 					Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
 					RestoreDirectory = true
 				};

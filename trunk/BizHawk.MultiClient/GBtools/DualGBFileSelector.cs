@@ -60,7 +60,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 				ofd.Filter = "GB Roms (*.gb,*.gbc)|*.gb;*.gbc|All Files|*.*";
 				ofd.RestoreDirectory = true;
 				var result = ofd.ShowDialog(this);

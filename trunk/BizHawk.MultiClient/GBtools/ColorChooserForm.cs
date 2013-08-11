@@ -316,7 +316,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathGBPalettes, "GB");
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 				ofd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				ofd.RestoreDirectory = true;
 
@@ -361,7 +361,7 @@ namespace BizHawk.MultiClient.GBtools
 				}
 				else
 				{
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathGBPalettes, "GB");
+					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 					sfd.FileName = Global.Game.Name + ".pal";
 				}
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";

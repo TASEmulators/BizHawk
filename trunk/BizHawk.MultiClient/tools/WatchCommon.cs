@@ -187,12 +187,12 @@ namespace BizHawk.MultiClient
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath);
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath);
 			}
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;

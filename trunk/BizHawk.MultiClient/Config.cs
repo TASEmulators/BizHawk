@@ -18,149 +18,9 @@ namespace BizHawk.MultiClient
 			PathEntries.ResolveWithDefaults();
 		}
 
-		public string BaseINTV = Path.Combine(".", "Intellivision");
-		public string PathINTVROMs = ".";
-		public string PathINTVSavestates = Path.Combine(".", "State");
-		public string PathINTVSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathINTVScreenshots = Path.Combine(".", "Screenshots");
-		public string PathINTVCheats = Path.Combine(".", "Cheats");
-
-		public string BaseNES = Path.Combine(".", "NES");
-		public string PathNESROMs = ".";
-		public string PathNESSavestates = Path.Combine(".", "State");
-		public string PathNESSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathNESScreenshots = Path.Combine(".", "Screenshots");
-		public string PathNESCheats = Path.Combine(".", "Cheats");
-		public string PathNESPalette = Path.Combine(".", "Palettes");
-
-		public string BaseSNES = Path.Combine(".", "SNES");
-		public string PathSNESROMs = ".";
-		public string PathSNESSavestates = Path.Combine(".", "State");
-		public string PathSNESSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSNESCheats = Path.Combine(".", "Cheats");
-		//public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseGBA = Path.Combine(".", "GBA");
-		public string PathGBAROMs = ".";
-		public string PathGBASavestates = Path.Combine(".", "State");
-		public string PathGBASaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGBAScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGBACheats = Path.Combine(".", "Cheats");
-
-		public string BaseSMS = Path.Combine(".", "SMS");
-		public string PathSMSROMs = ".";
-		public string PathSMSSavestates = Path.Combine(".", "State");
-		public string PathSMSSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSMSScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSMSCheats = Path.Combine(".", "Cheats");
-
-		public string BaseGG = Path.Combine(".", "Game Gear");
-		public string PathGGROMs = ".";
-		public string PathGGSavestates = Path.Combine(".", "State");
-		public string PathGGSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGGScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGGCheats = Path.Combine(".", "Cheats");
-
-		public string BaseSG = Path.Combine(".", "SG-1000");
-		public string PathSGROMs = ".";
-		public string PathSGSavestates = Path.Combine(".", "State");
-		public string PathSGSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSGScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSGCheats = Path.Combine(".", "Cheats");
-
-		public string BaseGenesis = Path.Combine(".", "Genesis");
-		public string PathGenesisROMs = ".";
-		public string PathGenesisSavestates = Path.Combine(".", "State");
-		public string PathGenesisSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGenesisScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGenesisCheats = Path.Combine(".", "Cheats");
-
-		public string BasePCE = Path.Combine(".", "PC Engine");
-		public string PathPCEROMs = ".";
-		public string PathPCESavestates = Path.Combine(".", "State");
-		public string PathPCESaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathPCEScreenshots = Path.Combine(".", "Screenshots");
-		public string PathPCECheats = Path.Combine(".", "Cheats");
-
-		public string BaseGameboy = Path.Combine(".", "Gameboy");
-		public string PathGBROMs = ".";
-		public string PathGBSavestates = Path.Combine(".", "State");
-		public string PathGBSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGBScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGBCheats = Path.Combine(".", "Cheats");
-		public string PathGBPalettes = Path.Combine(".", "Palettes");
-
-		public string BaseTI83 = Path.Combine(".", "TI83");
-		public string PathTI83ROMs = ".";
-		public string PathTI83Savestates = Path.Combine(".", "State");
-		public string PathTI83SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
-		public string PathTI83Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseAtari2600 = Path.Combine(".", "Atari 2600");
-		public string PathAtari2600ROMs = ".";
-		public string PathAtari2600Savestates = Path.Combine(".", "State");
-		public string PathAtari2600Screenshots = Path.Combine(".", "Screenshots");
-		public string PathAtari2600Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseAtari7800 = Path.Combine(".", "Atari 7800");
-		public string PathAtari7800ROMs = ".";
-		public string PathAtari7800Savestates = Path.Combine(".", "State");
-		public string PathAtari7800SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
-		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
-		//public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseC64 = Path.Combine(".", "C64");
-		public string PathC64ROMs = ".";
-		public string PathC64Savestates = Path.Combine(".", "State");
-		public string PathC64Screenshots = Path.Combine(".", "Screenshots");
-		public string PathC64Cheats = Path.Combine(".", "Cheats");
-		//public string PathC64Firmwares = Path.Combine(".", "Firmwares");
-
-		public string BasePSX = Path.Combine(".", "PSX");
-		public string PathPSXROMs = ".";
-		public string PathPSXSavestates = Path.Combine(".", "State");
-		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
-		public string PathPSXCheats = Path.Combine(".", "Cheats");
-		//public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseCOL = Path.Combine(".", "Coleco");
-		public string PathCOLROMs = ".";
-		public string PathCOLSavestates = Path.Combine(".", "State");
-		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
-		public string PathCOLCheats = Path.Combine(".", "Cheats");
-
-		public string BaseN64 = Path.Combine(".", "N64");
-		public string PathN64ROMs = ".";
-		public string PathN64Savestates = Path.Combine(".", "State");
-		public string PathN64SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathN64Screenshots = Path.Combine(".", "Screenshots");
-		public string PathN64Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseSaturn = Path.Combine(".", "Saturn");
-		public string PathSaturnROMs = ".";
-		public string PathSaturnSavestates = Path.Combine(".", "State");
-		public string PathSaturnSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSaturnScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSaturnCheats = Path.Combine(".", "Cheats");
-
-		public string MoviesPath = Path.Combine(".", "Movies");
-		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
-		public string LuaPath = Path.Combine(".", "Lua");
-		public string WatchPath = ".";
-		public string AVIPath = ".";
-		public string LogPath = ".";
-		public string FirmwaresPath = Path.Combine(".", "Firmware");
-
-
 		//Path Settings ************************************/
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
-		public string BasePath = ".";
-		public string BaseROMPath = ".";
 		public PathEntryCollection PathEntries = new PathEntryCollection();
 
 		//BIOS Paths
@@ -913,7 +773,7 @@ namespace BizHawk.MultiClient
         {
             get
             {
-                return Paths.FirstOrDefault(x => x.System == system && x.Type == type) ?? new PathEntry();
+				return Paths.FirstOrDefault(x => x.System == system && x.Type == type);
             }
         }
 
@@ -947,6 +807,15 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//Some frequently requested paths, made into a property for convenience
+		public string WatchPath { get { return Global.Config.PathEntries["Global", "Watch (.wch)"].Path; } }
+		public string MoviesPath { get { return Global.Config.PathEntries["Global", "Movies"].Path; } }
+		public string LuaPath { get { return Global.Config.PathEntries["Global", "Lua"].Path; } }
+		public string LogPath { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
+		public string FirmwaresPath { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
+		public string AVPath { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
+		public string GlobalBase { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
+
 		public static List<PathEntry> DefaultValues
 		{
 			get
@@ -961,6 +830,7 @@ namespace BizHawk.MultiClient
 					new PathEntry() { System = "Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
 					new PathEntry() { System = "Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
 					new PathEntry() { System = "Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
+					new PathEntry() { System = "Global", Type = "Base", Path = ".", Ordinal = 6 },
 
 					new PathEntry() { System = "INTV", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry() { System = "INTV", Type = "ROM", Path = ".", Ordinal = 1 },
