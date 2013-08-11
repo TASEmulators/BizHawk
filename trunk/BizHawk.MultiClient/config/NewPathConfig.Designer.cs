@@ -43,7 +43,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(431, 435);
+			this.OK.Location = new System.Drawing.Point(450, 387);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -55,7 +55,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(512, 435);
+			this.Cancel.Location = new System.Drawing.Point(531, 387);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -72,13 +72,13 @@
 			this.PathTabControl.Multiline = true;
 			this.PathTabControl.Name = "PathTabControl";
 			this.PathTabControl.SelectedIndex = 0;
-			this.PathTabControl.Size = new System.Drawing.Size(575, 345);
+			this.PathTabControl.Size = new System.Drawing.Size(594, 297);
 			this.PathTabControl.TabIndex = 2;
 			// 
 			// SaveBtn
 			// 
 			this.SaveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.SaveBtn.Location = new System.Drawing.Point(12, 435);
+			this.SaveBtn.Location = new System.Drawing.Point(12, 387);
 			this.SaveBtn.Name = "SaveBtn";
 			this.SaveBtn.Size = new System.Drawing.Size(75, 23);
 			this.SaveBtn.TabIndex = 3;
@@ -88,8 +88,9 @@
 			// 
 			// label1
 			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(490, 52);
+			this.label1.Location = new System.Drawing.Point(506, 52);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(97, 13);
 			this.label1.TabIndex = 210;
@@ -97,8 +98,9 @@
 			// 
 			// button1
 			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
-			this.button1.Location = new System.Drawing.Point(456, 45);
+			this.button1.Location = new System.Drawing.Point(475, 47);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(26, 23);
 			this.button1.TabIndex = 209;
@@ -122,14 +124,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BasePathBox.Location = new System.Drawing.Point(12, 15);
 			this.BasePathBox.Name = "BasePathBox";
-			this.BasePathBox.Size = new System.Drawing.Size(470, 20);
+			this.BasePathBox.Size = new System.Drawing.Size(489, 20);
 			this.BasePathBox.TabIndex = 205;
 			// 
 			// BrowseBase
 			// 
 			this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseBase.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.BrowseBase.Location = new System.Drawing.Point(490, 14);
+			this.BrowseBase.Location = new System.Drawing.Point(509, 14);
 			this.BrowseBase.Name = "BrowseBase";
 			this.BrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.BrowseBase.TabIndex = 206;
@@ -140,7 +142,7 @@
 			// 
 			this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BaseDescription.AutoSize = true;
-			this.BaseDescription.Location = new System.Drawing.Point(523, 19);
+			this.BaseDescription.Location = new System.Drawing.Point(542, 19);
 			this.BaseDescription.Name = "BaseDescription";
 			this.BaseDescription.Size = new System.Drawing.Size(64, 13);
 			this.BaseDescription.TabIndex = 208;
@@ -152,7 +154,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(599, 470);
+			this.ClientSize = new System.Drawing.Size(618, 422);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.RecentForROMs);
@@ -163,6 +165,7 @@
 			this.Controls.Add(this.PathTabControl);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
+			this.MinimumSize = new System.Drawing.Size(360, 250);
 			this.Name = "NewPathConfig";
 			this.ShowIcon = false;
 			this.Text = "Path Configuration";
