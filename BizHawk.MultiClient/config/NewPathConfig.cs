@@ -11,10 +11,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
-		//TODO:
-		//FInish config entries
-		//Set tab focus based on system ID
-		//Remaining GUI items
 		public NewPathConfig()
 		{
 			InitializeComponent();
@@ -49,6 +45,7 @@ namespace BizHawk.MultiClient
 			BasePathBox.Text = Global.Config.BasePath;
 			DoTabs();
 			SetDefaultFocusedTab();
+			DoROMToggle();
 		}
 
 		private void SetDefaultFocusedTab()
@@ -95,10 +92,13 @@ namespace BizHawk.MultiClient
 			//Separate by system
 			List<string> systems = Global.Config.PathEntries.Select(x => x.System).Distinct().ToList();
 			systems.Sort();
-			//TODO: put Global first
+
+			//Hacky way to put global first
+			string global = systems.FirstOrDefault(x => x == "Global");
+			systems.Remove(global);
+			systems.Insert(0, global);
 
 			//TODO: fix anchoring
-			//TODO: fix logic of when to pass in the system (global and base do not want this)
 			foreach (string tab in systems)
 			{
 				TabPage t = new TabPage()
@@ -121,6 +121,7 @@ namespace BizHawk.MultiClient
 						Text = path.Path,
 						Location = new Point(_x, _y),
 						Width = textbox_width,
+						Name = path.Type
 						//Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 					};
 
@@ -130,6 +131,7 @@ namespace BizHawk.MultiClient
 						Image = BizHawk.MultiClient.Properties.Resources.OpenFile,
 						Location = new Point(_x + textbox_width + padding, _y - 1),
 						Width = button_width,
+						Name = path.Type,
 						//Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 					btn.Click += new System.EventHandler(delegate
@@ -141,6 +143,7 @@ namespace BizHawk.MultiClient
 					{
 						Text = path.Type,
 						Location = new Point(_x + textbox_width + (padding * 2) + button_width, _y + 4),
+						Name = path.Type
 						//Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 
@@ -157,6 +160,12 @@ namespace BizHawk.MultiClient
 
 		private void BrowseFolder(TextBox box, string _Name, string System)
 		{
+			//Ugly hack, we don't want to pass in the system in for system base and global paths
+			if (_Name == "Base" || System == "Global")
+			{
+				System = null;
+			}
+
 			FolderBrowserEx f = new FolderBrowserEx
 			{
 				Description = "Set the directory for " + _Name,
@@ -173,7 +182,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
 			Global.Config.BasePath = BasePathBox.Text;
-			//TODO
+
+			foreach (TextBox t in AllPathBoxes)
+			{
+				PathEntry path_entry = Global.Config.PathEntries.FirstOrDefault(x => x.System == t.Parent.Name && x.Type == t.Name);
+				path_entry.Path = t.Text;
+			}
 		}
 
 		private void BrowseBase_Click(object sender, EventArgs e)
@@ -197,7 +211,44 @@ namespace BizHawk.MultiClient
 
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
-			//TODO
+			DoROMToggle();
+		}
+
+		private void DoROMToggle()
+		{
+			List<Control> pcontrols = AllPathControls.Where(x => x.Name == "ROM").ToList();
+			foreach (Control c in pcontrols)
+			{
+				c.Enabled = !RecentForROMs.Checked;
+			}
+		}
+
+		private List<TextBox> AllPathBoxes
+		{
+			get
+			{
+				List<TextBox> _AllPathBoxes = new List<TextBox>();
+				foreach (TabPage tp in PathTabControl.TabPages)
+				{
+					IEnumerable<TextBox> boxes = from b in tp.Controls.OfType<TextBox>() select b;
+					_AllPathBoxes.AddRange(boxes);
+				}
+				return _AllPathBoxes;
+			}
+		}
+
+		private List<Control> AllPathControls
+		{
+			get
+			{
+				List<Control> _AllPathControls = new List<Control>();
+				foreach (TabPage tp in PathTabControl.TabPages)
+				{
+					IEnumerable<Control> control = from c in tp.Controls.OfType<Control>() select c;
+					_AllPathControls.AddRange(control);
+				}
+				return _AllPathControls;
+			}
 		}
 	}
 }
