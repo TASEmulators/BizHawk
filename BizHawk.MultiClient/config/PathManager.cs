@@ -85,6 +85,12 @@ namespace BizHawk.MultiClient
 
 		public static string MakeAbsolutePath(string path, string system = null)
 		{
+			//Hack
+			if (system == "Global")
+			{
+				system = null;
+			}
+
 			//This function translates relative path and special identifiers in absolute paths
 
 			if (path.Length < 1)
@@ -215,7 +221,7 @@ namespace BizHawk.MultiClient
 				path = Global.Config.PathEntries[sysID, "Base"];
 			}
 
-			return path.Path;
+			return MakeAbsolutePath(path.Path, sysID);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
@@ -326,7 +332,7 @@ namespace BizHawk.MultiClient
 				pathEntry = Global.Config.PathEntries[sysId, "Base"];
 			}
 
-			return Path.Combine(pathEntry.Path, name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, sysId == "Global" ? null : sysId), name);
 		}
 
 		public static string ScreenshotPrefix(GameInfo game)
