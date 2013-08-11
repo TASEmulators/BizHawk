@@ -11,6 +11,11 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
+		//TODO:
+		//System ID and preferred folder name do not match, needs new param
+		//FInish config entries
+		//Set tab focus based on system ID
+		//Remaining GUI items
 		public NewPathConfig()
 		{
 			InitializeComponent();

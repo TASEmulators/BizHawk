@@ -216,7 +216,9 @@
     <Compile Include="config\NewHotkeyWindow.Designer.cs">
       <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\NewPathConfig.cs" />
+    <Compile Include="config\NewPathConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\NewPathConfig.Designer.cs">
       <DependentUpon>NewPathConfig.cs</DependentUpon>
     </Compile>
