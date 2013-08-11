@@ -65,6 +65,7 @@ namespace BizHawk.MultiClient
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
+			Global.Config.ResolveDefaults();
 
 #if WINDOWS
 			try { Global.DSound = SoundEnumeration.Create(); }
