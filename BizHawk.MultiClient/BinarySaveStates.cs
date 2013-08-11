@@ -84,6 +84,11 @@ namespace BizHawk.MultiClient
 		{
 			return GetFileByName(BinaryStateFileNames.framebuffer, false, callback);
 		}
+
+		public void GetInputLogRequired(Action<Stream> callback)
+		{
+			GetFileByName(BinaryStateFileNames.input, true, callback);
+		}
 	}
 
 	public class BinaryStateSaver : IDisposable

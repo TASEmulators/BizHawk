@@ -2441,8 +2441,9 @@ namespace BizHawk.MultiClient
 							delegate(Stream s)
 							{
 								StreamWriter sw = new StreamWriter(s);
+								// this never should have been a core's responsibility
+								sw.WriteLine("Frame {0}", Global.Emulator.Frame);
 								HandleMovieSaveState(sw);
-								sw.WriteLine("Frame: {0}", Global.Emulator.Frame);
 								sw.Flush();
 							});
 					}
@@ -2485,9 +2486,19 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					// binary mode
+					bool succeed = false;
+
 					if (Global.MovieSession.Movie.IsActive)
-						throw new Exception("NOT DONE YET BRO");
+					{
+						bw.GetInputLogRequired(
+							delegate(Stream s)
+							{
+								StreamReader sr = new StreamReader(s);
+								succeed = HandleMovieLoadState(sr);
+							});
+						if (!succeed)
+							goto cleanup;
+					}
 
 					bw.GetCoreState(
 						delegate(Stream s)
@@ -2515,6 +2526,8 @@ namespace BizHawk.MultiClient
 							}
 						
 						});
+
+
 				}
 				finally
 				{

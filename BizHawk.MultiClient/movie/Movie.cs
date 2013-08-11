@@ -797,10 +797,9 @@ namespace BizHawk.MultiClient
 			return time;
 		}
 
-		public bool CheckTimeLines(string path, bool OnlyGUID)
+		public bool CheckTimeLines(TextReader reader, bool OnlyGUID)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
-			var reader = new StreamReader(path);
 
 			MovieLog l = new MovieLog();
 			int stateFrame = 0;
@@ -827,13 +826,13 @@ namespace BizHawk.MultiClient
 
 						if (result == DialogResult.No)
 						{
-							reader.Close();
+							//reader.Close();
 							return false;
 						}
 					}
 					else if (OnlyGUID)
 					{
-						reader.Close();
+						//reader.Close();
 						return true;
 					}
 				}
@@ -861,11 +860,11 @@ namespace BizHawk.MultiClient
 					l.AppendFrame(line);
 			}
 
-			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
+			//reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
 
 			if (OnlyGUID)
 			{
-				reader.Close();
+				//reader.Close();
 				return true;
 			}
 
@@ -880,7 +879,7 @@ namespace BizHawk.MultiClient
 				//Future event error
 				MessageBox.Show("The savestate is from frame " + l.Length.ToString() + " which is greater than the current movie length of " +
 					Log.Length.ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				reader.Close();
+				//reader.Close();
 				return false;
 			}
 			for (int x = 0; x < stateFrame; x++)
@@ -892,7 +891,7 @@ namespace BizHawk.MultiClient
 					//TimeLine Error
 					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
 						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					reader.Close();
+					//reader.Close();
 					return false;
 				}
 			}
@@ -914,7 +913,7 @@ namespace BizHawk.MultiClient
 				Mode = MOVIEMODE.PLAY;
 			}
 
-			reader.Close();
+			//reader.Close();
 			return true;
 		}
 
