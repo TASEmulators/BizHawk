@@ -81,6 +81,21 @@ namespace BizHawk.MultiClient
 			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 		}
 
+		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
+		public void WarpToSystemId(string sysid)
+		{
+			bool selectedFirst = false;
+			foreach (ListViewItem lvi in lvFirmwares.Items)
+			{
+				if (lvi.SubItems[1].Text == sysid)
+				{
+					if(!selectedFirst) lvi.Selected = true;
+					lvi.EnsureVisible();
+					selectedFirst = true;
+				}
+			}
+		}
+
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
 			//we'll use this font for displaying the hash, so they dont look all jagged in a long list
