@@ -1246,6 +1246,7 @@ namespace BizHawk.MultiClient
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load(PathManager.DefaultIniPath, Global.Config);
+			Global.Config.ResolveDefaults();
 			Global.OSD.AddMessage("Config file loaded");
 		}
 
