@@ -24,6 +24,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// ------------------------------------
 
+        private byte[] GetFirmware(string name, int length)
+        {
+            byte[] result = new byte[length];
+            using (Stream source = CoreComm.CoreFileProvider.OpenFirmware("C64", name))
+            {
+                source.Read(result, 0, length);
+            }
+            return result;
+        }
+
 		private void Init(Region initRegion)
 		{
 			board = new Motherboard(initRegion);
@@ -39,13 +49,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void InitDisk(Region initRegion)
 		{
-			string sourceFolder = CoreComm.C64_FirmwaresPath;
-			if (sourceFolder == null)
-				sourceFolder = @".\C64\Firmwares";
-			string diskFile = "dos1541";
-			string diskPath = Path.Combine(sourceFolder, diskFile);
-			if (!File.Exists(diskPath)) HandleFirmwareError(diskFile);
-			byte[] diskRom = File.ReadAllBytes(diskPath);
+            byte[] diskRom = new byte[0x4000]; //GetFirmware("dos1541", 0x4000);
 
 			disk = new VIC1541(initRegion, diskRom);
 			//disk.Connect(board.serPort);
@@ -71,25 +75,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void InitRoms()
 		{
-			string sourceFolder = CoreComm.C64_FirmwaresPath;
-			if (sourceFolder == null)
-				sourceFolder = @".\C64\Firmwares";
-
-			string basicFile = "basic";
-			string charFile = "chargen";
-			string kernalFile = "kernal";
-
-			string basicPath = Path.Combine(sourceFolder, basicFile);
-			string charPath = Path.Combine(sourceFolder, charFile);
-			string kernalPath = Path.Combine(sourceFolder, kernalFile);
-
-			if (!File.Exists(basicPath)) HandleFirmwareError(basicFile);
-			if (!File.Exists(charPath)) HandleFirmwareError(charFile);
-			if (!File.Exists(kernalPath)) HandleFirmwareError(kernalFile);
-
-			byte[] basicRom = File.ReadAllBytes(basicPath);
-			byte[] charRom = File.ReadAllBytes(charPath);
-			byte[] kernalRom = File.ReadAllBytes(kernalPath);
+            byte[] basicRom = GetFirmware("Basic", 0x2000);
+            byte[] charRom = GetFirmware("Chargen", 0x1000);
+            byte[] kernalRom = GetFirmware("Kernal", 0x2000);
 			
 			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
 			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
