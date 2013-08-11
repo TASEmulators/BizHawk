@@ -655,7 +655,7 @@ namespace BizHawk.MultiClient
 		public void LoadLogFromSavestateText(string path)
 		{
 			var reader = new StreamReader(path);
-			int stateFrame = 0;
+			int? stateFrame = null;
 			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
@@ -731,15 +731,19 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			if (stateFrame > 0 && stateFrame < Log.Length)
+			if (stateFrame == null)
+				throw new Exception("Couldn't find stateFrame");
+			int stateFramei = (int)stateFrame;
+
+			if (stateFramei > 0 && stateFramei < Log.Length)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Log.TruncateStates(stateFrame);
-					Log.TruncateMovie(stateFrame);
+					Log.TruncateStates(stateFramei);
+					Log.TruncateMovie(stateFramei);
 				}
 			}
-			else if (stateFrame > Log.Length) //Post movie savestate
+			else if (stateFramei > Log.Length) //Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
