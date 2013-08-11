@@ -38,6 +38,7 @@
 			this.BasePathBox = new System.Windows.Forms.TextBox();
 			this.BrowseBase = new System.Windows.Forms.Button();
 			this.BaseDescription = new System.Windows.Forms.Label();
+			this.DefaultsBtn = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -148,6 +149,16 @@
 			this.BaseDescription.TabIndex = 208;
 			this.BaseDescription.Text = "Global Base";
 			// 
+			// DefaultsBtn
+			// 
+			this.DefaultsBtn.Location = new System.Drawing.Point(93, 411);
+			this.DefaultsBtn.Name = "DefaultsBtn";
+			this.DefaultsBtn.Size = new System.Drawing.Size(75, 23);
+			this.DefaultsBtn.TabIndex = 211;
+			this.DefaultsBtn.Text = "&Defaults";
+			this.DefaultsBtn.UseVisualStyleBackColor = true;
+			this.DefaultsBtn.Click += new System.EventHandler(this.DefaultsBtn_Click);
+			// 
 			// NewPathConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -155,6 +166,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(618, 446);
+			this.Controls.Add(this.DefaultsBtn);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.RecentForROMs);
@@ -187,5 +199,6 @@
 		private System.Windows.Forms.TextBox BasePathBox;
 		private System.Windows.Forms.Button BrowseBase;
 		private System.Windows.Forms.Label BaseDescription;
+		private System.Windows.Forms.Button DefaultsBtn;
 	}
 }

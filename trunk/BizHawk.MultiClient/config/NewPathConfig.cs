@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
 			BasePathBox.Text = Global.Config.BasePath;
-			DoTabs();
+			DoTabs(Global.Config.PathEntries.Paths);
 			SetDefaultFocusedTab();
 			DoROMToggle();
 		}
@@ -87,8 +87,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void DoTabs()
+		private void DoTabs(List<PathEntry> PathCollection)
 		{
+			PathTabControl.SuspendLayout();
+			PathTabControl.TabPages.Clear();
+
 			//Separate by system
 			List<string> systems = Global.Config.PathEntries.Select(x => x.System).Distinct().ToList();
 			systems.Sort();
@@ -105,7 +108,7 @@ namespace BizHawk.MultiClient
 					Text = systemId,
 					Name = systemId,
 				};
-				List<PathEntry> paths = Global.Config.PathEntries.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+				List<PathEntry> paths = PathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
 				int _x = 6;
 				int _y = 14;
@@ -186,6 +189,8 @@ namespace BizHawk.MultiClient
 
 				PathTabControl.TabPages.Add(t);
 			}
+
+			PathTabControl.ResumeLayout();
 		}
 
 		private void BrowseFolder(TextBox box, string _Name, string System)
@@ -307,6 +312,11 @@ namespace BizHawk.MultiClient
 				}
 				return _AllPathControls;
 			}
+		}
+
+		private void DefaultsBtn_Click(object sender, EventArgs e)
+		{
+			DoTabs(PathEntryCollection.DefaultValues);
 		}
 	}
 }
