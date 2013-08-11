@@ -37,24 +37,24 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public static string GetBasePathAbsolute()
 		{
-			if (Global.Config.BasePath.Length < 1) //If empty, then EXE path
+			if (Global.Config.PathEntries.GlobalBase.Length < 1) //If empty, then EXE path
 				return GetExeDirectoryAbsolute();
 
-			if (Global.Config.BasePath.Length >= 5 &&
-				Global.Config.BasePath.Substring(0, 5) == "%exe%")
+			if (Global.Config.PathEntries.GlobalBase.Length >= 5 &&
+				Global.Config.PathEntries.GlobalBase.Substring(0, 5) == "%exe%")
 				return GetExeDirectoryAbsolute();
-			if (Global.Config.BasePath[0] == '.')
+			if (Global.Config.PathEntries.GlobalBase[0] == '.')
 			{
-				if (Global.Config.BasePath.Length == 1)
+				if (Global.Config.PathEntries.GlobalBase.Length == 1)
 					return GetExeDirectoryAbsolute();
 				else
 				{
-					if (Global.Config.BasePath.Length == 2 &&
-						Global.Config.BasePath == ".\\")
+					if (Global.Config.PathEntries.GlobalBase.Length == 2 &&
+						Global.Config.PathEntries.GlobalBase == ".\\")
 						return GetExeDirectoryAbsolute();
 					else
 					{
-						string tmp = Global.Config.BasePath;
+						string tmp = Global.Config.PathEntries.GlobalBase;
 						tmp = tmp.Remove(0, 1);
 						tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
 						return tmp;
@@ -62,8 +62,8 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (Global.Config.BasePath.Substring(0, 2) == "..")
-				return RemoveParents(Global.Config.BasePath, GetExeDirectoryAbsolute());
+			if (Global.Config.PathEntries.GlobalBase.Substring(0, 2) == "..")
+				return RemoveParents(Global.Config.PathEntries.GlobalBase, GetExeDirectoryAbsolute());
 
 			//In case of error, return EXE path
 			return GetExeDirectoryAbsolute();
@@ -71,55 +71,16 @@ namespace BizHawk.MultiClient
 
 		public static string GetPlatformBase(string system)
 		{
-			switch (system)
+			if (system == "SGX" || system == "PCECD")
 			{
-				case "C64":
-					return Global.Config.BaseC64;
-				case "PSX":
-					return Global.Config.BasePSX;
-				case "INTV":
-					return Global.Config.BaseINTV;
-				case "A26":
-					return Global.Config.BaseAtari2600;
-				case "A78":
-					return Global.Config.BaseAtari7800;
-				case "NES":
-					return Global.Config.BaseNES;
-				case "SG":
-					return Global.Config.BaseSG;
-				case "GG":
-					return Global.Config.BaseGG;
-				case "SMS":
-					return Global.Config.BaseSMS;
-				case "SGX":
-				case "PCE":
-				case "PCECD":
-					return Global.Config.BasePCE;
-				case "TI83":
-					return Global.Config.BaseTI83;
-				case "GEN":
-					return Global.Config.BaseGenesis;
-				case "GB":
-					return Global.Config.BaseGameboy;
-				case "SNES":
-					return Global.Config.BaseSNES;
-				case "Coleco":
-					return Global.Config.BaseCOL;
-				case "GBA":
-					return Global.Config.BaseGBA;
-				case "N64":
-					return Global.Config.BaseN64;
-				case "SAT":
-					return Global.Config.BaseSaturn;
-				case "NULL":
-				default:
-					return "";
+				system = "PCE";
 			}
+			return Global.Config.PathEntries[system, "Base"].Path;
 		}
 
 		public static string StandardFirmwareName(string name)
 		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.FirmwaresPath), name);
+			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath), name);
 		}
 
 		public static string MakeAbsolutePath(string path, string system = null)
@@ -228,80 +189,33 @@ namespace BizHawk.MultiClient
 
 		public static string GetLuaPath()
 		{
-			return MakeAbsolutePath(Global.Config.LuaPath);
+			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath);
 		}
 
 		public static string GetRomsPath(string sysID)
 		{
-			string path;
-
 			if (Global.Config.UseRecentForROMs)
-				return Environment.SpecialFolder.Recent.ToString();
-
-			switch (sysID)
 			{
-				case "C64":
-					path = MakeAbsolutePath(Global.Config.PathC64ROMs, "C64");
-					break;
-				case "PSX":
-					path = MakeAbsolutePath(Global.Config.PathPSXROMs, "PSX");
-					break;
-				case "INTV":
-					path = MakeAbsolutePath(Global.Config.PathINTVROMs, "INTV");
-					break;
-				case "SNES":
-					path = MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
-					break;
-				case "A26":
-					path = MakeAbsolutePath(Global.Config.PathAtari2600ROMs, "A26");
-					break;
-				case "A78":
-					path = MakeAbsolutePath(Global.Config.PathAtari7800ROMs, "A78");
-					break;
-				case "NES":
-					path = MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
-					break;
-				case "SMS":
-					path = MakeAbsolutePath(Global.Config.PathSMSROMs, "SMS");
-					break;
-				case "SG":
-					path = MakeAbsolutePath(Global.Config.PathSGROMs, "SG");
-					break;
-				case "GG":
-					path = MakeAbsolutePath(Global.Config.PathGGROMs, "GG");
-					break;
-				case "GEN":
-					path = MakeAbsolutePath(Global.Config.PathGenesisROMs, "GEN");
-					break;
-				case "SFX":
-				case "PCE":
-				case "PCECD":
-					path = MakeAbsolutePath(Global.Config.PathPCEROMs, "PCE");
-					break;
-				case "GB":
-					path = MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
-					break;
-				case "GBA":
-					path = MakeAbsolutePath(Global.Config.PathGBAROMs, "GBA");
-					break;
-				case "TI83":
-					path = MakeAbsolutePath(Global.Config.PathTI83ROMs, "TI83");
-					break;
-				case "Coleco":
-					path = MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
-					break;
-				case "N64":
-					path = MakeAbsolutePath(Global.Config.PathN64ROMs, "N64");
-					break;
-				case "SAT":
-					path = MakeAbsolutePath(Global.Config.PathSaturnROMs, "SAT");
-					break;
-				default:
-					path = MakeAbsolutePath(Global.Config.BaseROMPath);
-					break;
+				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			return path;
+			if (sysID == "SGX" || sysID == "PCECD") //Yucky
+			{
+				sysID = "PCE";
+			}
+			else if (sysID == "NULL")
+			{
+				sysID = "Global";
+			}
+
+			PathEntry path = Global.Config.PathEntries[sysID, "ROM"];
+
+			if (path == null)
+			{
+				path = Global.Config.PathEntries[sysID, "Base"];
+			}
+
+			return path.Path;
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
@@ -326,59 +240,59 @@ namespace BizHawk.MultiClient
 			string name = FilesystemSafeName(game);
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
+			string sysId = "";
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSaveRAM, "INTV"), name + ".SaveRAM");
-				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
-				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
-				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), name + ".SaveRAM");
-				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
-				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
-				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
-				case "GB": case "GBC": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), name + ".SaveRAM");
-				case "GBA": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBASaveRAM, "GBA"), name + ".SaveRAM");
-				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
-				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
-				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
-				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800SaveRAM, "A78"), name + ".SaveRAM");
-				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
-				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSaveRAM, "PSX"), name + ".SaveRAM");
-				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnSaveRAM, "SAT"), name + ".SaveRAM");
-				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64SaveRAM, "N64"), name + ".SaveRAM");
-				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
+				case "SGX":
+				case "PCECD":
+					sysId = "PCE";
+					break;
+				case "NULL":
+					sysId = "Global";
+					break;
+				default:
+					sysId = game.System;
+					break;
 			}
+
+			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Save RAM"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			}
+
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
 		{
+			string sysId = "";
 			switch (game.System)
 			{
-				default: return GetRomsPath(game.System);
-				case "INTV": return MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV");
-				case "A26": return MakeAbsolutePath(Global.Config.PathAtari2600Savestates, "A26");
-				case "A78": return MakeAbsolutePath(Global.Config.PathAtari7800Savestates, "A78");
-				case "SMS": return MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS");
-				case "GG": return MakeAbsolutePath(Global.Config.PathGGSavestates, "GG");
-				case "SG": return MakeAbsolutePath(Global.Config.PathSGSavestates, "SG");
-				case "SGX": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
-				case "PCE": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
-				case "PCECD": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
-				case "GB": case "GBC": return MakeAbsolutePath(Global.Config.PathGBSavestates, "GB");
-				case "GBA": return MakeAbsolutePath(Global.Config.PathGBASavestates, "GBA");
-				case "GEN": return MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN");
-				case "NES": return MakeAbsolutePath(Global.Config.PathNESSavestates, "NES");
-				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
-				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
-				case "PSX": return MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX");
-				case "C64": return MakeAbsolutePath(Global.Config.PathC64Savestates, "C64");
-				case "Coleco": return MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco");
-				case "SAT": return MakeAbsolutePath(Global.Config.PathSaturnSavestates, "SAT");
-				case "N64": return MakeAbsolutePath(Global.Config.PathN64Savestates, "N64");
+				case "SGX":
+				case "PCECD":
+					sysId = "PCE";
+					break;
+				case "NULL":
+					sysId = "Global";
+					break;
+				default:
+					sysId = game.System;
+					break;
 			}
+
+			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Savestates"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			}
+
+			return MakeAbsolutePath(pathEntry.Path, sysId == "Global" ? null : sysId);
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
@@ -389,59 +303,59 @@ namespace BizHawk.MultiClient
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
-			
+
+			string sysId = "";
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV"), name);
-				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari2600Savestates, "A26"), name);
-				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800Savestates, "A78"), name);
-				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
-				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
-				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), name);
-				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
-				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
-				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
-				case "GB": case "GBC": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSavestates, "GB"), name);
-				case "GBA": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBASavestates, "GBA"), name);
-				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), name);
-				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
-				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
-				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
-				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX"), name);
-				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Savestates, "C64"), name);
-				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco"), name);
-				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnSavestates, "SAT"), name);
-				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64Savestates, "N64"), name);
+				case "SGX":
+				case "PCECD":
+					sysId = "PCE";
+					break;
+				case "NULL":
+					sysId = "Global";
+					break;
+				default:
+					sysId = game.System;
+					break;
 			}
-			return "";
+
+			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Savestates"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[sysId, "Base"];
+			}
+
+			return Path.Combine(pathEntry.Path, name);
 		}
 
 		public static string ScreenshotPrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
+
+			string sysId = "";
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVScreenshots, "INTV"), name);
-				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari2600Screenshots, "A26"), name);
-				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800Screenshots, "A78"), name);
-				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
-				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);
-				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG"), name);
-				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
-				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
-				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
-				case "GB": case "GBC": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB"), name);
-				case "GBA": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBAScreenshots, "GBA"), name);
-				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN"), name);
-				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);
-				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
-				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
-				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXScreenshots, "PSX"), name);
-				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLScreenshots, "Coleco"), name);
-				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnScreenshots, "SAT"), name);
-				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64Screenshots, "N64"), name);
+				case "SGX":
+				case "PCECD":
+					sysId = "PCE";
+					break;
+				case "NULL":
+					sysId = "Global";
+					break;
+				default:
+					sysId = game.System;
+					break;
 			}
-			return "";
+
+			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Screenshots"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			}
+
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
 		}
 	}
 }

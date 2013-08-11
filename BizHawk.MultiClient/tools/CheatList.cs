@@ -168,38 +168,21 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				string path;
-				switch (Global.Emulator.SystemId)
+				string sysId = Global.Emulator.SystemId;
+
+				//Exceptions.  TODO: There are more of these I'm sure
+				if (sysId == "SGX" || sysId == "PCECD")
 				{
-					case "NES":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathNESCheats, "NES");
-						break;
-					case "SMS":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathSMSCheats, "SMS");
-						break;
-					case "SG":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathSGCheats, "SG");
-						break;
-					case "GG":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathGGCheats, "GG");
-						break;
-					case "GEN":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisCheats, "GEN");
-						break;
-					case "SFX":
-					case "PCE":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "PCE");
-						break;
-					case "GB":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathGBCheats, "GB");
-						break;
-					case "TI83":
-						path = PathManager.MakeAbsolutePath(Global.Config.PathTI83Cheats, "TI83");
-						break;
-					default:
-						path = PathManager.GetBasePathAbsolute();
-						break;
+					sysId = "PCE";
 				}
+
+				PathEntry pathEntry = Global.Config.PathEntries[sysId, "Cheats"];
+				if (pathEntry == null)
+				{
+					pathEntry = Global.Config.PathEntries[sysId, "Base"];
+				}
+				string path = pathEntry.Path;
+				
 				var f = new FileInfo(path);
 				if (f.Directory != null && f.Directory.Exists == false)
 				{

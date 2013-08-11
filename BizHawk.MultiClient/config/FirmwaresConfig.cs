@@ -78,7 +78,7 @@ namespace BizHawk.MultiClient
 
 			listviewSorter = new ListViewSorter(this, -1);
 
-			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
+			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath);
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
@@ -197,7 +197,7 @@ namespace BizHawk.MultiClient
 				else
 				{
 					//lazy substring extraction. really should do a better job
-					var basePath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath) + Path.DirectorySeparatorChar;
+					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath) + Path.DirectorySeparatorChar;
 					
 					var path = ri.FilePath.Replace(basePath, "");
 

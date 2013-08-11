@@ -451,7 +451,7 @@ namespace BizHawk.MultiClient
 		{
 			SaveFileDialog sfd = new SaveFileDialog
 				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath),
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath),
 					DefaultExt = "." + Global.Config.MovieExtension,
 					FileName = Global.MovieSession.Movie.Filename
 				};

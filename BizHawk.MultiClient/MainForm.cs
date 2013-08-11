@@ -455,11 +455,11 @@ namespace BizHawk.MultiClient
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -3618,12 +3618,12 @@ namespace BizHawk.MultiClient
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -3819,7 +3819,7 @@ namespace BizHawk.MultiClient
 
 		void ProcessMovieImport(string fn)
 		{
-			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
+			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath);
 			string errorMsg;
 			string warningMsg;
 			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
