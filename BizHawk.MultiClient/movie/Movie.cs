@@ -654,7 +654,14 @@ namespace BizHawk.MultiClient
 
 		public void LoadLogFromSavestateText(string path)
 		{
-			var reader = new StreamReader(path);
+			using (var reader = new StreamReader(path))
+			{
+				LoadLogFromSavestateText(reader);
+			}
+		}
+
+		public void LoadLogFromSavestateText(TextReader reader)
+		{
 			int? stateFrame = null;
 			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
@@ -754,7 +761,6 @@ namespace BizHawk.MultiClient
 			}
 			if (IsCountingRerecords)
 				Rerecords++;
-			reader.Close();
 		}
 
 		public string GetTime(bool preLoad)

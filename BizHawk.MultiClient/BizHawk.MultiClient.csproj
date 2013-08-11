@@ -152,6 +152,7 @@
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\WavWriter.cs" />
+    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BizBox.cs">
       <SubType>Form</SubType>
     </Compile>
