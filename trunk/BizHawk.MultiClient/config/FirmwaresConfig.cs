@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 	public partial class FirmwaresConfig : Form
 	{
 		//friendlier names than the system Ids
-		static readonly Dictionary<string, string> systemGroupNames = new Dictionary<string, string>()
+		public static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>()
 			{
 				{ "NES", "NES" },
 				{ "SNES", "SNES" },
@@ -40,7 +40,7 @@ namespace BizHawk.MultiClient
 				{ "C64", "C64" },
 			};
 
-
+		public string TargetSystem = null;
 
 		private const int idUnsure = 0;
 		private const int idMissing = 1;
@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
-		public void WarpToSystemId(string sysid)
+		private void WarpToSystemId(string sysid)
 		{
 			bool selectedFirst = false;
 			foreach (ListViewItem lvi in lvFirmwares.Items)
@@ -123,7 +123,7 @@ namespace BizHawk.MultiClient
 				//build the groups in the listview as we go:
 				if (!groups.ContainsKey(fr.systemId))
 				{
-					lvFirmwares.Groups.Add(fr.systemId, systemGroupNames[fr.systemId]);
+					lvFirmwares.Groups.Add(fr.systemId, SystemGroupNames[fr.systemId]);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
 					groups[fr.systemId] = lvg;
 				}
@@ -134,6 +134,11 @@ namespace BizHawk.MultiClient
 			lvFirmwares.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
+
+			if (TargetSystem != null)
+			{
+				WarpToSystemId(TargetSystem);
+			}
 
 			DoScan();
 		}

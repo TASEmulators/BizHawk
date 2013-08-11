@@ -43,7 +43,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(450, 387);
+			this.OK.Location = new System.Drawing.Point(450, 411);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -55,7 +55,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(531, 387);
+			this.Cancel.Location = new System.Drawing.Point(531, 411);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -72,13 +72,13 @@
 			this.PathTabControl.Multiline = true;
 			this.PathTabControl.Name = "PathTabControl";
 			this.PathTabControl.SelectedIndex = 0;
-			this.PathTabControl.Size = new System.Drawing.Size(594, 297);
+			this.PathTabControl.Size = new System.Drawing.Size(594, 321);
 			this.PathTabControl.TabIndex = 2;
 			// 
 			// SaveBtn
 			// 
 			this.SaveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.SaveBtn.Location = new System.Drawing.Point(12, 387);
+			this.SaveBtn.Location = new System.Drawing.Point(12, 411);
 			this.SaveBtn.Name = "SaveBtn";
 			this.SaveBtn.Size = new System.Drawing.Size(75, 23);
 			this.SaveBtn.TabIndex = 3;
@@ -154,7 +154,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(618, 422);
+			this.ClientSize = new System.Drawing.Size(618, 446);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.RecentForROMs);

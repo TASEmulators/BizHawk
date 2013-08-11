@@ -98,15 +98,14 @@ namespace BizHawk.MultiClient
 			systems.Remove(global);
 			systems.Insert(0, global);
 
-			//TODO: fix anchoring
-			foreach (string tab in systems)
+			foreach (string systemId in systems)
 			{
 				TabPage t = new TabPage()
 				{
-					Text = tab,
-					Name = tab,
+					Text = systemId,
+					Name = systemId,
 				};
-				List<PathEntry> paths = Global.Config.PathEntries.Where(x => x.System == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+				List<PathEntry> paths = Global.Config.PathEntries.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
 				int _x = 6;
 				int _y = 14;
@@ -114,6 +113,7 @@ namespace BizHawk.MultiClient
 				int padding = 5;
 				int button_width = 26;
 				int widget_offset = 85;
+				int row_height = 30;
 				foreach (var path in paths)
 				{
 
@@ -154,7 +154,34 @@ namespace BizHawk.MultiClient
 					t.Controls.Add(btn);
 					t.Controls.Add(box);
 
-					_y += 30;
+					_y += row_height;
+				}
+
+				string sys = systemId;
+				if (systemId == "PCE") //Hack
+				{
+					sys = "PCECD";
+				}
+
+				bool hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
+
+				if (hasFirmwares)
+				{
+					Button firmwareButton = new Button()
+					{
+						Name = sys,
+						Text = "&Firmware",
+						Location = new Point(_x, _y),
+						Width = 75,
+					};
+					firmwareButton.Click += new System.EventHandler(delegate
+					{
+						FirmwaresConfig f = new FirmwaresConfig();
+						f.TargetSystem = sys;
+						f.ShowDialog();
+					});
+
+					t.Controls.Add(firmwareButton);
 				}
 
 				PathTabControl.TabPages.Add(t);
