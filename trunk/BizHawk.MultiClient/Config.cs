@@ -13,12 +13,6 @@ namespace BizHawk.MultiClient
 			config.NewControllerConfig.ConfigCheckAllControlDefaults(this);
 		}
 
-		// Directories
-		public bool UseRecentForROMs = false;
-		public string LastRomPath = ".";
-		public string BasePath = ".";
-		public string BaseROMPath = ".";
-
 		public string BaseINTV = Path.Combine(".", "Intellivision");
 		public string PathINTVROMs = ".";
 		public string PathINTVSavestates = Path.Combine(".", "State");
@@ -156,6 +150,12 @@ namespace BizHawk.MultiClient
 		public string LogPath = ".";
 		public string FirmwaresPath = Path.Combine(".", "Firmware");
 
+
+		//Path Settings ************************************/
+		public bool UseRecentForROMs = false;
+		public string LastRomPath = ".";
+		public string BasePath = ".";
+		public string BaseROMPath = ".";
 		public PathEntryCollection PathEntries = new PathEntryCollection()
 		{
 			new PathEntry() { System = "Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
@@ -293,6 +293,7 @@ namespace BizHawk.MultiClient
 			new PathEntry() { System = "Saturn", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry() { System = "Saturn", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 		};
+		//END of Path Settings ************************************/
 
 		//BIOS Paths
 		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); //key: sysid+firmwareId; value: absolute path
