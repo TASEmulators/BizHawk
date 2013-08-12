@@ -46,10 +46,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool[] lastcb;
 		private byte lastpb;
 		private byte paLatch;
-		private byte pbLatch;
 		private bool paLatchEnable;
-		private bool pbLatchEnable;
-		private byte paOut;
+        private byte paOut;
+        private byte pbLatch;
+        private bool pbLatchEnable;
 		private byte pbOut;
 		private readonly bool[] pbPulse;
 		private readonly uint[] pcrControlA;

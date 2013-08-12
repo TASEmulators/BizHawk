@@ -51,17 +51,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.ReadMemory = Read;
 			cpu.WriteMemory = Write;
 
-			// configure data port defaults
-			portDir = 0x00;
-			SetPortData(0x17);
-
 			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
 			unusedPinTTLCycles = 40;
-			unusedPinTTL0 = 0;
-			unusedPinTTL1 = 0;
 
-			// NMI is high on startup (todo: verify)
-			pinNMILast = true;
+            // perform hard reset
+            HardReset();
 		}
 
         ~MOS6510()
@@ -74,11 +68,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
+            // configure CPU defaults
 			cpu.Reset();
 			cpu.FlagI = true;
 			cpu.BCD_Enabled = true;
-			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
-		}
+            if (ReadMemory != null)
+			    cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
+
+            // configure data port defaults
+            portDir = 0x00;
+            SetPortData(0x1F);
+
+            // NMI is high on startup (todo: verify)
+            pinNMILast = true;
+
+            // reset unused IO pin TTLs
+            unusedPinTTL0 = 0;
+            unusedPinTTL1 = 0;
+        }
 
 		// ------------------------------------
 
