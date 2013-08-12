@@ -150,9 +150,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		// ------------------------------------
 
 		private int cyclesPerSec;
-		private bool pinAEC;
-		private bool pinBA;
-		private bool pinIRQ;
+		private bool pinAEC = true;
+        private bool pinBA = true;
+        private bool pinIRQ = true;
 		private int[][] pipeline;
 		private int totalCycles;
 		private int totalLines;
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			pinAEC = true;
 			pinBA = true;
-			pinIRQ = false;
+			pinIRQ = true;
 
 			bufOffset = 0;
 
@@ -282,7 +282,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					baCount = baResetCounter;
 				else if (baCount > 0)
 					baCount--;
-				pinAEC = (baCount > 0);
 			}
 		}
 
@@ -326,7 +325,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected const int rasterIrqLine0Cycle = 1;
 		protected const int rasterIrqLineXCycle = 0;
 
-		protected const int baResetCounter = 4;
+		protected const int baResetCounter = 7;
 
 		// ------------------------------------
 
@@ -380,6 +379,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				// if the BA counter is nonzero, allow CPU bus access
 				UpdateBA();
+                pinAEC = false;
 
 				// must always come last
 				UpdatePins();
@@ -413,6 +413,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 
 				Render();
+                UpdateBA();
+                pinAEC = (baCount > 0);
 
 				// must always come last
 				UpdatePins();
