@@ -1298,7 +1298,7 @@ namespace BizHawk.MultiClient
 		public bool detect_cpu_write = false;
 		public bool decrease_fillrect_edge = false;
 		public bool buff_clear = true;
-		public bool alt_tex_size = true;
+		public bool alt_tex_size = false;
 		public int swapmode = 1;
 		public int stipple_pattern = 1041204192;
 		public int stipple_mode = 2;
