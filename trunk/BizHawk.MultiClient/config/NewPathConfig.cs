@@ -11,6 +11,20 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
+        private void LockDownCores()
+        {
+            if (!MainForm.INTERIM)
+            {
+                string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
+                
+                foreach(string core in coresToHide)
+                {
+                    TabPage tp = AllTabPages.FirstOrDefault(x => x.Name == core);
+                    PathTabControl.TabPages.Remove(tp);
+                }
+            }
+        }
+
         private AutoCompleteStringCollection AutoCompleteOptions
         {
             get
@@ -33,6 +47,7 @@ namespace BizHawk.MultiClient
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
 			LoadSettings();
+            LockDownCores();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -119,7 +134,7 @@ namespace BizHawk.MultiClient
 			{
 				TabPage t = new TabPage()
 				{
-					Text = systemId,
+					Text = systemId == "SG" ? "SG-1000" : systemId == "GEN" ? "Genesis" : systemId, //TODO: don't be hacky
 					Name = systemId,
 				};
 				List<PathEntry> paths = PathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
@@ -329,6 +344,19 @@ namespace BizHawk.MultiClient
 				return _AllPathControls;
 			}
 		}
+
+        private List<TabPage> AllTabPages
+        {
+            get
+            {
+                List<TabPage> _AllTabPages = new List<TabPage>();
+                foreach (TabPage tp in PathTabControl.TabPages)
+                {
+                    _AllTabPages.Add(tp);
+                }
+                return _AllTabPages;
+            }
+        }
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
