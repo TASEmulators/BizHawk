@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Action<int, byte> PokeMemory;
 		public Action<int, byte> PokeSid;
 		public Action<int, byte> PokeVic;
+        public Func<bool> ReadAEC;
         public Func<bool> ReadBA;
 		public Func<ushort, byte> ReadBasicRom;
 		public Func<ushort, byte> ReadCartridgeLo;
@@ -130,6 +131,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool va13;
         bool va12;
         bool aec;
+        bool ba;
         bool cas;
         bool casram;
         bool basic;
@@ -155,8 +157,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             va14 = a14;
             va13 = a13;
             va12 = a12;
-            aec = false;
-            cas = false;
+            aec = !ReadAEC();
+            ba = ReadBA();
+            cas = !true;
 
             p0 = loram && hiram && a15 && !a14 && a13 && !aec && read && game;
             p1 = hiram && a15 && a14 && a13 && !aec && read && game;

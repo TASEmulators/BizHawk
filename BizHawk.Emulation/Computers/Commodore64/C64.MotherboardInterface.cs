@@ -154,6 +154,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
             return vic.BA;
         }
 
+        bool Pla_ReadAEC()
+        {
+            return vic.AEC;
+        }
+
+        bool Pla_ReadBA()
+        {
+            return vic.BA;
+        }
+
         byte Pla_ReadBasicRom(ushort addr)
         {
             address = addr; 
