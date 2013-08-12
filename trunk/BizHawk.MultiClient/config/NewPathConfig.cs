@@ -11,7 +11,21 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
-		public NewPathConfig()
+        private AutoCompleteStringCollection AutoCompleteOptions
+        {
+            get
+            {
+                return new AutoCompleteStringCollection()
+                {
+                    "%recent%",
+                    "%exe%",
+                    ".\\",
+                    "..\\",
+                };
+            }
+        }
+
+        public NewPathConfig()
 		{
 			InitializeComponent();
 		}
@@ -119,7 +133,6 @@ namespace BizHawk.MultiClient
 				int row_height = 30;
 				foreach (var path in paths)
 				{
-
 					TextBox box = new TextBox()
 					{
 						Text = path.Path,
@@ -128,6 +141,9 @@ namespace BizHawk.MultiClient
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 						MinimumSize = new Size(26, 23),
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteCustomSource = AutoCompleteOptions,
+                        AutoCompleteSource = AutoCompleteSource.CustomSource,
 					};
 
 					Button btn = new Button()
