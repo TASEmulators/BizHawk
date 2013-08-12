@@ -190,6 +190,7 @@ namespace BizHawk.MultiClient
 						return false;	//GUID Error
 					}
 					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
 					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
@@ -213,6 +214,7 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.SwitchToRecord();
 					SetMainformMovieInfo();
 					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
 					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
@@ -248,6 +250,7 @@ namespace BizHawk.MultiClient
 							Global.MovieSession.Movie.StartRecording();
 							SetMainformMovieInfo();
 							reader.BaseStream.Position = 0;
+							reader.DiscardBufferedData();
 							Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 						}
 					}
