@@ -11,132 +11,55 @@ namespace BizHawk.Emulation.Computers.Commodore64
     {
         bool CassPort_DeviceReadLevel()
         {
-            return cpu.CassetteOutputLevel;
+            return (cpu.PortData & 0x08) != 0;
         }
 
         bool CassPort_DeviceReadMotor()
         {
-            return cpu.CassetteMotor;
+            return (cpu.PortData & 0x20) != 0;
         }
 
-        void CassPort_DeviceWriteButton(bool val)
+        bool Cia0_ReadFlag()
         {
-            cpu.CassetteButton = val;
-        }
-
-        void CassPort_DeviceWriteLevel(bool val)
-        {
-            cia0FlagCassette = val; 
-            cia0.FLAG = cia0FlagCassette & cia0FlagSerial;
-        }
-
-        bool CassPort_SystemReadButton()
-        {
-            return true;
-        }
-
-        bool CassPort_SystemReadLevel()
-        {
-            return true;
-        }
-
-        void CassPort_SystemWriteLevel(bool val)
-        {
-            return;
-        }
-
-        void CassPort_SystemWriteMotor(bool val)
-        {
-            return;
-        }
-
-        byte Cia0_ReadDirA()
-        {
-            return cia0DirA;
-        }
-
-        byte Cia0_ReadDirB()
-        {
-            return cia0DirB;
+            return cassPort.DataInput;
         }
 
         byte Cia0_ReadPortA()
         {
-            return cia0DataA;
+            WriteInputPort();
+            return cia0InputLatchA;
         }
 
         byte Cia0_ReadPortB()
         {
-            return cia0DataB;
+            WriteInputPort();
+            return cia0InputLatchB;
         }
 
-        void Cia0_WriteDirA(byte val)
+        bool Cia1_ReadFlag()
         {
-            cia0DirA = val;
-        }
-
-        void Cia0_WriteDirB(byte val)
-        {
-            cia0DirB = val;
-        }
-
-        void Cia0_WritePortA(byte val)
-        {
-            cia0DataA = Port.CPUWrite(cia0DataA, val, cia0DirA);
-        }
-
-        void Cia0_WritePortB(byte val)
-        {
-            cia0DataB = Port.CPUWrite(cia0DataB, val, cia0DirB);
-        }
-
-        byte Cia1_ReadDirA()
-        {
-            return cia1DirA;
-        }
-
-        byte Cia1_ReadDirB()
-        {
-            return cia1DirB;
+            return true;
         }
 
         byte Cia1_ReadPortA()
         {
-            return cia1DataA;
+            // the low bits are actually the VIC memory address.
+            return 0x3F;
         }
 
         byte Cia1_ReadPortB()
         {
-            return cia1DataB;
-        }
-
-        void Cia1_WriteDirA(byte val)
-        {
-            cia1DirA = val;
-        }
-
-        void Cia1_WriteDirB(byte val)
-        {
-            cia1DirB = val;
-        }
-
-        void Cia1_WritePortA(byte val)
-        {
-            cia1DataA = Port.CPUWrite(cia1DataA, val, cia1DirA);
-            UpdateVicBank();
-            serPort.SystemWriteAtn((cia1DataA & 0x08) == 0);
-            serPort.SystemWriteClock((cia1DataA & 0x10) == 0);
-            serPort.SystemWriteData((cia1DataA & 0x20) == 0);
-        }
-
-        void Cia1_WritePortB(byte val)
-        {
-            cia1DataB = Port.CPUWrite(cia1DataB, val, cia1DirB);
+            return 0xFF;
         }
 
         bool Cpu_ReadAEC()
         {
             return vic.AEC;
+        }
+
+        bool Cpu_ReadCassetteButton()
+        {
+            return true;
         }
 
         bool Cpu_ReadIRQ()
@@ -147,6 +70,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
         bool Cpu_ReadNMI()
         {
             return cia1.IRQ;
+        }
+
+        byte Cpu_ReadPort()
+        {
+            return 0xFF;
         }
 
         bool Cpu_ReadRDY()
@@ -187,7 +115,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         bool Pla_ReadCharen()
         {
-            return cpu.Charen;
+            return (cpu.PortData & 0x04) != 0;
         }
 
         byte Pla_ReadCharRom(ushort addr)
@@ -247,7 +175,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         bool Pla_ReadHiRam()
         {
-            return cpu.HiRam;
+            return (cpu.PortData & 0x02) != 0;
         }
 
         byte Pla_ReadKernalRom(ushort addr)
@@ -259,7 +187,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         bool Pla_ReadLoRam()
         {
-            return cpu.LoRam;
+            return (cpu.PortData & 0x01) != 0;
         }
 
         byte Pla_ReadMemory(ushort addr)
@@ -355,17 +283,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         bool SerPort_DeviceReadAtn()
         {
-            return (cia1DataA & 0x08) == 0;
+            return (cia1.PortBData & 0x08) == 0;
         }
 
         bool SerPort_DeviceReadClock()
         {
-            return (cia1DataA & 0x10) == 0;
+            return (cia1.PortAData & 0x10) == 0;
         }
 
         bool SerPort_DeviceReadData()
         {
-            return (cia1DataA & 0x20) == 0;
+            return (cia1.PortAData & 0x20) == 0;
         }
 
         bool SerPort_DeviceReadReset()
@@ -381,18 +309,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         void SerPort_DeviceWriteClock(bool val)
         {
-            cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0xBF) | (val ? 0x00 : 0x40)), cia1DirA);
+            //cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0xBF) | (val ? 0x00 : 0x40)), cia1DirA);
         }
 
         void SerPort_DeviceWriteData(bool val)
         {
-            cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0x7F) | (val ? 0x00 : 0x80)), cia1DirA);
+            //cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0x7F) | (val ? 0x00 : 0x80)), cia1DirA);
         }
 
         void SerPort_DeviceWriteSrq(bool val)
         {
-            cia0FlagSerial = val;
-            cia0.FLAG = cia0FlagCassette & cia0FlagSerial;
+            //cia0FlagSerial = val;
+            //cia0.FLAG = cia0FlagCassette & cia0FlagSerial;
         }
 
         byte Sid_ReadPotX()
@@ -407,7 +335,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Vic_ReadMemory(ushort addr)
         {
-            addr |= vicBank;
+            switch (cia1.PortAData & 0x3)
+            {
+                case 0:
+                    addr |= 0xC000;
+                    break;
+                case 1:
+                    addr |= 0x8000;
+                    break;
+                case 2:
+                    addr |= 0x4000;
+                    break;
+            }
             address = addr;
             if ((addr & 0x7000) == 0x1000)
                 bus = charRom.Read(addr);

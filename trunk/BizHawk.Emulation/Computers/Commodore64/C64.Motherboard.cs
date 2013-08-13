@@ -20,27 +20,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// ports
 		public CartridgePort cartPort;
 		public CassettePort cassPort;
-		public IController controller;
+        public IController controller;
 		public SerialPort serPort;
 		public UserPort userPort;
 
 		// state
 		public ushort address;
 		public byte bus;
-		public byte cia0DataA;
-		public byte cia0DataB;
-        public byte cia0DirA;
-		public byte cia0DirB;
-		public bool cia0FlagCassette;
-		public bool cia0FlagSerial;
-		public byte cia1DataA;
-		public byte cia1DataB;
-		public byte cia1DirA;
-		public byte cia1DirB;
 		public bool inputRead;
-
-		// cache
-		private ushort vicBank;
 
 		public Motherboard(Region initRegion)
 		{
@@ -49,7 +36,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cartPort = new CartridgePort();
 			cassPort = new CassettePort();
 			cia0 = new MOS6526(initRegion);
-			cia1 = new MOS6526(initRegion);
+            cia1 = new MOS6526(initRegion);
 			colorRam = new Chip2114();
 			cpu = new MOS6510();
 			pla = new MOSPLA();
@@ -68,8 +55,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Execute()
 		{
-			WriteInputPort();
-
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
 			sid.ExecutePhase1();
@@ -89,16 +74,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			address = 0xFFFF;
 			bus = 0xFF;
-			cia0DataA = 0xFF;
-			cia0DataB = 0xFF;
-			cia0DirA = 0xFF;
-			cia0DirB = 0xFF;
-			cia0FlagCassette = true;
-			cia0FlagSerial = true;
-			cia1DataA = 0xFF;
-			cia1DataB = 0xFF;
-			cia1DirA = 0xFF;
-			cia1DirB = 0xFF;
 			inputRead = false;
 
 			cpu.HardReset();
@@ -113,45 +88,27 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// because of how mapping works, the cpu needs to be hard reset twice
 			cpu.HardReset();
-
-			// now reset the cache
-			UpdateVicBank();
 		}
 
 		public void Init()
 		{
-            cassPort.DeviceReadLevel = CassPort_DeviceReadLevel;
-            cassPort.DeviceReadMotor = CassPort_DeviceReadMotor;
-            cassPort.DeviceWriteButton = CassPort_DeviceWriteButton;
-            cassPort.DeviceWriteLevel = CassPort_DeviceWriteLevel;
-            cassPort.SystemReadButton = CassPort_SystemReadLevel;
-            cassPort.SystemReadLevel = CassPort_SystemReadLevel;
-            cassPort.SystemWriteLevel = CassPort_SystemWriteLevel;
-            cassPort.SystemWriteMotor = CassPort_SystemWriteMotor;
+            cassPort.ReadDataOutput = CassPort_DeviceReadLevel;
+            cassPort.ReadMotor = CassPort_DeviceReadMotor;
 
-            cia0.ReadDirA = Cia0_ReadDirA;
-			cia0.ReadDirB = Cia0_ReadDirB;
+            cia0.ReadFlag = Cia0_ReadFlag;
 			cia0.ReadPortA = Cia0_ReadPortA;
 			cia0.ReadPortB = Cia0_ReadPortB;
-			cia0.WriteDirA = Cia0_WriteDirA;
-			cia0.WriteDirB = Cia0_WriteDirB;
-			cia0.WritePortA = Cia0_WritePortA;
-			cia0.WritePortB = Cia0_WritePortB;
 
-            cia1.ReadDirA = Cia1_ReadDirA;
-			cia1.ReadDirB = Cia1_ReadDirB;
-			cia1.ReadPortA = Cia1_ReadPortA;
+            cia1.ReadFlag = Cia1_ReadFlag;
+            cia1.ReadPortA = Cia1_ReadPortA;
 			cia1.ReadPortB = Cia1_ReadPortB;
-			cia1.WriteDirA = Cia1_WriteDirA;
-			cia1.WriteDirB = Cia1_WriteDirB;
-			cia1.WritePortA = Cia1_WritePortA;
-			cia1.WritePortB = Cia1_WritePortB;
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
             cpu.ReadAEC = Cpu_ReadAEC;
             cpu.ReadIRQ = Cpu_ReadIRQ;
 			cpu.ReadNMI = Cpu_ReadNMI;
+            cpu.ReadPort = Cpu_ReadPort;
 			cpu.ReadRDY = Cpu_ReadRDY;
 			cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
@@ -229,17 +186,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-		}
-
-		private void UpdateVicBank()
-		{
-			switch (cia1DataA & 0x3)
-			{
-				case 0: vicBank = 0xC000; break;
-				case 1: vicBank = 0x8000; break;
-				case 2: vicBank = 0x4000; break;
-				default: vicBank = 0x0000; break;
-			}
 		}
 	}
 }

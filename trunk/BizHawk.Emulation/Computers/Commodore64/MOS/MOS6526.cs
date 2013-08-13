@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿using System;
+
+namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// MOS technology 6526 "CIA"
 	//
@@ -41,7 +43,12 @@
 
 		// ------------------------------------
 
-		private bool alarmSelect;
+        public Func<bool> ReadCNT;
+        public Func<bool> ReadFlag;
+
+        // ------------------------------------
+
+        private bool alarmSelect;
 		private Region chipRegion;
 		private bool cntPos;
 		private bool enableIntAlarm;
@@ -53,7 +60,6 @@
 		private bool intSP;
 		private bool[] intTimer;
 		private bool pinCnt;
-		private bool pinFlag;
 		private bool pinPC;
 		private byte sr;
 		private uint[] timerDelay;
@@ -88,7 +94,6 @@
 			todAlarm = new byte[4];
 
 			SetTodIn(chipRegion);
-			pinFlag = true;
 		}
 
 		// ------------------------------------
@@ -100,18 +105,17 @@
 
 		public void ExecutePhase2()
 		{
-			
 			{
 				pinPC = true;
 				TODRun();
 
 				if (timerPulse[0])
 				{
-					WritePortA((byte)(ReadPortA() & PBOnMask[0]));
+                    portA.Latch &= PBOnMask[0];
 				}
 				if (timerPulse[1])
 				{
-					WritePortB((byte)(ReadPortA() & PBOnMask[1]));
+                    portB.Latch &= PBOnMask[1];
 				}
 
 				if (timerDelay[0] == 0)
@@ -291,15 +295,15 @@
 							if (timerPortEnable[index])
 							{
 								// force port B bit to output
-								WriteDirB((byte)(ReadDirB() | PBOnBit[index]));
+                                portB.Direction |= PBOnBit[index];
 								switch (timerOutMode[index])
 								{
 									case OutMode.Pulse:
 										timerPulse[index] = true;
-										WritePortB((byte)(ReadPortB() | PBOnBit[index]));
+                                        portB.Latch |= PBOnBit[index];
 										break;
 									case OutMode.Toggle:
-										WritePortB((byte)(ReadPortB() ^ PBOnBit[index]));
+                                        portB.Latch ^= PBOnBit[index];
 										break;
 								}
 							}
@@ -356,17 +360,6 @@
 		{
 			get { return pinCnt; }
 			set { cntPos |= (!pinCnt && value); pinCnt = value; }
-		}
-
-		public bool FLAG
-		{
-			get { return pinFlag; }
-			set
-			{
-				if (pinFlag && !value)
-					intFlag = true;
-				pinFlag = value;
-			}
 		}
 
 		public bool PC
@@ -426,16 +419,16 @@
 			switch (addr)
 			{
 				case 0x0:
-					val = ReadPortA();
+					val = portA.ReadInput(ReadPortA());
 					break;
 				case 0x1:
-					val = ReadPortB();
+					val = portB.ReadInput(ReadPortB());
 					break;
 				case 0x2:
-					val = ReadDirA();
+                    val = portA.Direction;
 					break;
 				case 0x3:
-					val = ReadDirB();
+                    val = portB.Direction;
 					break;
 				case 0x4:
 					timerVal = ReadTimerValue(0);
@@ -560,7 +553,6 @@
 			ser.Sync("intTimer0", ref intTimer[0]);
 			ser.Sync("intTimer1", ref intTimer[1]);
 			ser.Sync("pinCnt", ref pinCnt);
-			ser.Sync("pinFlag", ref pinFlag);
 			ser.Sync("pinPC", ref pinPC);
 			ser.Sync("sr", ref sr);
 			ser.Sync("timerDelay0", ref timerDelay[0]);
@@ -650,16 +642,16 @@
 			switch (addr)
 			{
 				case 0x0:
-					WritePortA(val);
+                    portA.Latch = val;
 					break;
 				case 0x1:
-					WritePortB(val);
+                    portB.Latch = val;
 					break;
 				case 0x2:
-					WriteDirA(val);
+                    portA.Direction = val;
 					break;
 				case 0x3:
-					WriteDirB(val);
+                    portB.Direction = val;
 					break;
 				case 0x4:
 					timerLatch[0] &= 0xFF00;

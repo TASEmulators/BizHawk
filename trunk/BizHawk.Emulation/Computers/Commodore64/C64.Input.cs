@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
+        private byte cia0InputLatchA;
+        private byte cia0InputLatchB;
+
 		public void PollInput()
 		{
 			// scan joysticks
@@ -51,8 +54,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void WriteInputPort()
 		{
-			byte portA = Port.ExternalWrite(cia0DataA, 0xFF, cia0DirA);
-			byte portB = Port.ExternalWrite(cia0DataB, 0xFF, cia0DirB);
+            byte portA = cia0.PortAData;
+            byte portB = cia0.PortBData;
 			byte resultA = 0xFF;
 			byte resultB = 0xFF;
 			byte joyA = 0xFF;
@@ -84,8 +87,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			resultA &= joyA;
 			resultB &= joyB;
 
-			cia0DataA = Port.ExternalWrite(cia0DataA, resultA, cia0DirA);
-			cia0DataB = Port.ExternalWrite(cia0DataB, resultB, cia0DirB);
+            cia0InputLatchA = resultA;
+			cia0InputLatchB = resultB;
 		}
 	}
 }
