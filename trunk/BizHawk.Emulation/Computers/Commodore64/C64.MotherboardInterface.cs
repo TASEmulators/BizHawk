@@ -74,7 +74,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Cpu_ReadPort()
         {
-            return 0xFF;
+            byte data = 0x1F;
+            if (!cassPort.Sense)
+                data &= 0xEF;
+            return data;
         }
 
         bool Cpu_ReadRDY()

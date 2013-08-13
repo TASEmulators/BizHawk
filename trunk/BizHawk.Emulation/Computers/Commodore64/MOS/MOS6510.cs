@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             // configure data port defaults
             port = new LatchedPort();
             port.Direction = 0x00;
-            port.Latch = 0x1F;
+            port.Latch = 0xFF;
 
             // NMI is high on startup (todo: verify)
             pinNMILast = true;
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         {
             get
             {
-                return port.ReadOutput();
+                return port.ReadInput(ReadPort());
             }
             set
             {
