@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// ------------------------------------
 
 		private Motherboard board;
-		private VIC1541 disk;
+		//private VIC1541 disk;
 
 		// ------------------------------------
 
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
             byte[] diskRom = new byte[0x4000]; //GetFirmware("dos1541", 0x4000);
 
-			disk = new VIC1541(initRegion, diskRom);
+			//disk = new VIC1541(initRegion, diskRom);
 			//disk.Connect(board.serPort);
 		}
 
@@ -90,14 +90,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			get
 			{
-				return (disk.PeekVia1(0x00) & 0x08) != 0;
+				//return (disk.PeekVia1(0x00) & 0x08) != 0;
+                return false;
 			}
 		}
 
 		public void HardReset()
 		{
 			board.HardReset();
-			disk.HardReset();
+			//disk.HardReset();
 		}
 
 		// ------------------------------------

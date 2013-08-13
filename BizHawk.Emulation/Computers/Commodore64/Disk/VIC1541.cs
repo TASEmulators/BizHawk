@@ -2,6 +2,8 @@
 using BizHawk.Emulation.Computers.Commodore64.MOS;
 using System;
 
+#if false
+
 namespace BizHawk.Emulation.Computers.Commodore64.Disk
 {
 	public class VIC1541
@@ -262,3 +264,4 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 		}
 	}
 }
+#endif

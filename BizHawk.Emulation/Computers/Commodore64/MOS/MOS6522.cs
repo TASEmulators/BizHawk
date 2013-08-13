@@ -1,5 +1,6 @@
 ﻿using System;
 
+#if false
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// via
@@ -566,3 +567,4 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		// ------------------------------------
 	}
 }
+#endif

@@ -7,22 +7,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	public abstract class Timer
 	{
 		protected bool pinIRQ;
-		protected uint[] timer;
+        protected LatchedPort portA;
+        protected LatchedPort portB;
+        protected uint[] timer;
 		protected uint[] timerLatch;
 		protected bool[] timerOn;
 		protected bool[] underflow;
 
-		public Func<byte> ReadDirA = (() => { return 0xFF; });
-		public Func<byte> ReadDirB = (() => { return 0xFF; });
 		public Func<byte> ReadPortA = (() => { return 0xFF; });
 		public Func<byte> ReadPortB = (() => { return 0xFF; });
-		public Action<byte> WriteDirA = ((byte val) => { });
-		public Action<byte> WriteDirB = ((byte val) => { });
-		public Action<byte> WritePortA = ((byte val) => { });
-		public Action<byte> WritePortB = ((byte val) => { });
 
 		public Timer()
 		{
+            portA = new LatchedPort();
+            portB = new LatchedPort();
 			timer = new uint[2];
 			timerLatch = new uint[2];
 			timerOn = new bool[2];
@@ -31,8 +29,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		protected void HardResetInternal()
 		{
-			WriteDirA(0x00);
-			WriteDirB(0x00);
 			timer[0] = 0xFFFF;
 			timer[1] = 0xFFFF;
 			timerLatch[0] = timer[0];
@@ -47,6 +43,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				return pinIRQ;
 			}
 		}
+
+        public byte PortAData
+        {
+            get
+            {
+                return portA.ReadOutput();
+            }
+        }
+
+        public byte PortBData
+        {
+            get
+            {
+                return portB.ReadOutput();
+            }
+        }
 
 		protected void SyncInternal(Serializer ser)
 		{
