@@ -363,5 +363,54 @@ namespace BizHawk.MultiClient
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
 		}
+
+		/// <summary>
+		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
+		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
+		/// </summary>
+		/// <param name="absolute_path"></param>
+		/// <param name="system"></param>
+		/// <returns></returns>
+		public static string TryMakeRelative(string absolute_path, string system = null)
+		{
+			string parent_path;
+			if (String.IsNullOrWhiteSpace(system))
+			{
+				parent_path = GetBasePathAbsolute();
+			}
+			else
+			{
+				parent_path = MakeAbsolutePath(GetPlatformBase(system));
+			}
+
+			if (IsSubfolder(parent_path, absolute_path))
+			{
+				return absolute_path.Replace(parent_path, ".");
+			}
+			else
+			{
+				return absolute_path;
+			}
+		}
+
+		//http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
+		public static bool IsSubfolder(string parentPath, string childPath)
+		{
+			var parentUri = new Uri(parentPath);
+
+			var childUri = new DirectoryInfo(childPath).Parent;
+
+			while (childUri != null)
+			{
+				if (new Uri(childUri.FullName) == parentUri)
+				{
+					return true;
+				}
+
+				childUri = childUri.Parent;
+			}
+
+			return false;
+		}
 	}
 }
