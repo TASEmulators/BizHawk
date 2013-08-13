@@ -94,7 +94,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool p5;
         bool p6;
         bool p7;
-        bool p8;
         bool p9;
         bool p10;
         bool p11;
@@ -115,9 +114,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool p26;
         bool p27;
         bool p28;
-        bool p29;
         bool p30;
-        bool p31;
         bool loram;
         bool hiram;
         bool game;
@@ -127,48 +124,40 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool a14;
         bool a13;
         bool a12;
-        bool va14;
-        bool va13;
-        bool va12;
         bool aec;
-        bool ba;
         bool cas;
-        bool casram;
-        bool basic;
-        bool kernal;
-        bool charrom;
-        //bool grw;
-        bool io;
-        bool roml;
-        bool romh;
 
 		private PLABank Bank(ushort addr, bool read)
 		{
             loram = ReadLoRam();
             hiram = ReadHiRam();
             game = ReadGame();
-            exrom = ReadExRom();
-            charen = ReadCharen();
 
             a15 = (addr & 0x8000) != 0;
             a14 = (addr & 0x4000) != 0;
             a13 = (addr & 0x2000) != 0;
             a12 = (addr & 0x1000) != 0;
-            va14 = a14;
-            va13 = a13;
-            va12 = a12;
             aec = !ReadAEC(); //active low
-            ba = ReadBA();
-            cas = !true; //active low
 
             p0 = loram && hiram && a15 && !a14 && a13 && !aec && read && game;
+            if (p0)
+                return PLABank.BasicROM;
+
+            exrom = ReadExRom();
             p1 = hiram && a15 && a14 && a13 && !aec && read && game;
             p2 = hiram && a15 && a14 && a13 && !aec && read && !exrom && !game;
+            if (p1 || p2)
+                return PLABank.KernalROM;
+
+            charen = ReadCharen();
             p3 = hiram && !charen && a15 && a14 && !a13 && a12 && !aec && read && game;
             p4 = loram && !charen && a15 && a14 && !a13 && a12 && !aec && read && game;
             p5 = hiram && !charen && a15 && a14 && !a13 && a12 && !aec && read && !exrom && !game;
-            p6 = va14 && !va13 && va12 && aec && game;
-            p7 = va14 && !va13 && va12 && aec && !exrom && !game;
+            p6 = a14 && !a13 && a12 && aec && game;
+            p7 = a14 && !a13 && a12 && aec && !exrom && !game;
+            if (p3 || p4 || p5 || p6 || p7)
+                return PLABank.CharROM;
+
             p9 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && read && game;
             p10 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && !read && game;
             p11 = loram && charen && a15 && a14 && !a13 && a12 && !aec && read && game;
@@ -179,34 +168,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             p16 = loram && charen && a15 && a14 && !a13 && a12 && !aec && !read && !exrom && !game;
             p17 = a15 && a14 && !a13 && a12 && !aec && read && exrom && !game;
             p18 = a15 && a14 && !a13 && a12 && !aec && !read && exrom && !game;
-            p19 = loram && hiram && a15 && !a14 && !a13 && !aec && read && !exrom;
-            p20 = a15 && !a14 && !a13 && !aec && exrom && !game;
-            p21 = hiram && a15 && !a14 && a13 && !aec && read && !exrom && !game;
-            p22 = a15 && a14 && a13 && !aec && exrom && !game;
-            p23 = va13 && va12 && aec && exrom && !game;
-            p24 = !a15 && !a14 && a12 && exrom && !game;
-            p25 = !a15 && !a14 && a13 && exrom && !game;
-            p26 = !a15 && a14 && exrom && !game;
-            p27 = a15 && !a14 && a13 && exrom && !game;
-            p28 = a15 && a14 && !a13 && !a12 && exrom && !game;
-            p30 = cas;
-            //p31 = !cas && a15 && a14 && !a13 && a12 && !aec && !read;
-            casram = !(p0 || p1 || p2 || p3 || p4 || p5 || p6 || p7 || p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18 || p19 || p20 || p21 || p22 || p23 || p24 || p25 || p26 || p27 || p28 || p30);
-            basic = p0;
-            kernal = (p1 || p2);
-            charrom = (p3 || p4 || p5 || p6 || p7);
-            //grw = p31;
-            io = (p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18);
-            roml = (p19 || p20);
-            romh = (p21 || p22 || p23);
-
-            if (basic)
-                return PLABank.BasicROM;
-            if (kernal)
-                return PLABank.KernalROM;
-            if (charrom)
-                return PLABank.CharROM;
-            if (io)
+            if (p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18)
             {
                 switch (addr & 0x0F00)
                 {
@@ -236,12 +198,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 }
                 return PLABank.IO;
             }
-            if (roml)
+
+            p19 = loram && hiram && a15 && !a14 && !a13 && !aec && read && !exrom;
+            p20 = a15 && !a14 && !a13 && !aec && exrom && !game;
+            if (p19 || p20)
                 return PLABank.CartridgeLo;
-            if (romh)
+
+            p21 = hiram && a15 && !a14 && a13 && !aec && read && !exrom && !game;
+            p22 = a15 && a14 && a13 && !aec && exrom && !game;
+            p23 = a13 && a12 && aec && exrom && !game;
+            if (p21 || p22 || p23)
                 return PLABank.CartridgeHi;
-            if (casram)
+
+            cas = !true; //active low
+            p24 = !a15 && !a14 && a12 && exrom && !game;
+            p25 = !a15 && !a14 && a13 && exrom && !game;
+            p26 = !a15 && a14 && exrom && !game;
+            p27 = a15 && !a14 && a13 && exrom && !game;
+            p28 = a15 && a14 && !a13 && !a12 && exrom && !game;
+            p30 = cas;
+            if (!(p24 || p25 || p26 || p27 || p28 || p30))
                 return PLABank.RAM;
+
+            //p31 = !cas && a15 && a14 && !a13 && a12 && !aec && !read;
+            //grw = p31;
+
             return PLABank.None;
         }
 
