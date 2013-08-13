@@ -882,6 +882,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public bool BA { get { return pinBA; } }
 		public bool IRQ { get { return pinIRQ; } }
 
+        public bool ReadAEC() { return pinAEC; }
+        public bool ReadBA() { return pinBA; }
+        public bool ReadIRQ() { return pinIRQ; }
+
 		// ------------------------------------
 
 		public int CyclesPerFrame

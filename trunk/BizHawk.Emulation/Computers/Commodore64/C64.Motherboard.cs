@@ -105,11 +105,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
-            cpu.ReadAEC = Cpu_ReadAEC;
+            cpu.ReadAEC = vic.ReadAEC;
             cpu.ReadIRQ = Cpu_ReadIRQ;
-			cpu.ReadNMI = Cpu_ReadNMI;
+			cpu.ReadNMI = cia1.ReadIRQ;
             cpu.ReadPort = Cpu_ReadPort;
-			cpu.ReadRDY = Cpu_ReadRDY;
+			cpu.ReadRDY = vic.ReadBA;
 			cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
 
@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla.PokeMemory = ram.Poke;
 			pla.PokeSid = sid.Poke;
 			pla.PokeVic = vic.Poke;
-            pla.ReadAEC = Pla_ReadAEC;
-            pla.ReadBA = Pla_ReadBA;
+            pla.ReadAEC = vic.ReadAEC;
+            pla.ReadBA = vic.ReadBA;
             pla.ReadBasicRom = Pla_ReadBasicRom;
             pla.ReadCartridgeHi = Pla_ReadCartridgeHi;
             pla.ReadCartridgeLo = Pla_ReadCartridgeLo;
@@ -148,8 +148,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
             pla.ReadColorRam = Pla_ReadColorRam;
             pla.ReadExpansionHi = Pla_ReadExpansionHi;
             pla.ReadExpansionLo = Pla_ReadExpansionLo;
-            pla.ReadExRom = Pla_ReadExRom;
-            pla.ReadGame = Pla_ReadGame;
+            pla.ReadExRom = cartPort.ReadExRom;
+            pla.ReadGame = cartPort.ReadGame;
             pla.ReadHiRam = Pla_ReadHiRam;
             pla.ReadKernalRom = Pla_ReadKernalRom;
             pla.ReadLoRam = Pla_ReadLoRam;

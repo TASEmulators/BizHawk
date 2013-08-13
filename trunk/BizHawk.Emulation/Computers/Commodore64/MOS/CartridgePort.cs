@@ -25,7 +25,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void PokeLoExp(int addr, byte val) { if (connected) { cart.PokeDE00(addr & 0x00FF, val); } }
 		public void PokeLoRom(int addr, byte val) { if (connected) { cart.Poke8000(addr & 0x1FFF, val); } }
 
-		public byte ReadHiExp(ushort addr) { if (connected) { return cart.ReadDF00((ushort)(addr & 0x00FF)); } else { return 0xFF; } }
+        public bool ReadExRom() { if (connected) { return cart.ExRom; } else { return true; } }
+        public bool ReadGame() { if (connected) { return cart.Game; } else { return true; } }
+        public byte ReadHiExp(ushort addr) { if (connected) { return cart.ReadDF00((ushort)(addr & 0x00FF)); } else { return 0xFF; } }
 		public byte ReadHiRom(ushort addr) { if (connected) { return cart.ReadA000((ushort)(addr & 0x1FFF)); } else { return 0xFF; } }
 		public byte ReadLoExp(ushort addr) { if (connected) { return cart.ReadDE00((ushort)(addr & 0x00FF)); } else { return 0xFF; } }
 		public byte ReadLoRom(ushort addr) { if (connected) { return cart.Read8000((ushort)(addr & 0x1FFF)); } else { return 0xFF; } }
@@ -47,28 +49,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			cart = null;
 			connected = false;
-		}
-
-		public bool ExRom
-		{
-			get
-			{
-				if (connected)
-					return cart.ExRom;
-				else
-					return true;
-			}
-		}
-
-		public bool Game
-		{
-			get
-			{
-				if (connected)
-					return cart.Game;
-				else
-					return true;
-			}
 		}
 
 		public void HardReset()
