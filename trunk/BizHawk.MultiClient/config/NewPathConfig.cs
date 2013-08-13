@@ -170,9 +170,13 @@ namespace BizHawk.MultiClient
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
+
+					TextBox tempBox = box;
+					string tempPath = path.Type;
+					string tempSystem = path.System;
 					btn.Click += new System.EventHandler(delegate
 					{
-						BrowseFolder(box, path.Type, path.System);
+						BrowseFolder(tempBox, tempPath, tempSystem);
 					});
 
 					Label label = new Label()
