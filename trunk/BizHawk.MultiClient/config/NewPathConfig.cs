@@ -244,7 +244,7 @@ namespace BizHawk.MultiClient
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				box.Text = f.SelectedPath;
+				box.Text = PathManager.TryMakeRelative(f.SelectedPath, System);
 			}
 		}
 
