@@ -52,11 +52,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
             return 0xFF;
         }
 
-        bool Cpu_ReadAEC()
-        {
-            return vic.AEC;
-        }
-
         bool Cpu_ReadCassetteButton()
         {
             return true;
@@ -67,32 +62,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
             return cia0.IRQ & vic.IRQ & cartPort.IRQ;
         }
 
-        bool Cpu_ReadNMI()
-        {
-            return cia1.IRQ;
-        }
-
         byte Cpu_ReadPort()
         {
             byte data = 0x1F;
             if (!cassPort.Sense)
                 data &= 0xEF;
             return data;
-        }
-
-        bool Cpu_ReadRDY()
-        {
-            return vic.BA;
-        }
-
-        bool Pla_ReadAEC()
-        {
-            return vic.AEC;
-        }
-
-        bool Pla_ReadBA()
-        {
-            return vic.BA;
         }
 
         byte Pla_ReadBasicRom(ushort addr)
@@ -164,16 +139,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
             address = addr;
             bus = cartPort.ReadLoExp(addr);
             return bus;
-        }
-
-        bool Pla_ReadExRom()
-        {
-            return cartPort.ExRom;
-        }
-
-        bool Pla_ReadGame()
-        {
-            return cartPort.Game;
         }
 
         bool Pla_ReadHiRam()

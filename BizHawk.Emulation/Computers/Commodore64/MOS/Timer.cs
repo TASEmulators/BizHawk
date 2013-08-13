@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             }
         }
 
+        public bool ReadIRQ() { return pinIRQ; }
+
 		protected void SyncInternal(Serializer ser)
 		{
 			ser.Sync("pinIRQ", ref pinIRQ);
