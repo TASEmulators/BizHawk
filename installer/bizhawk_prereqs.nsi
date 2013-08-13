@@ -53,7 +53,7 @@ SectionEnd
 !define NETVersion "4.0.30319"
 !define NETInstaller "dotNetFx40_Full_setup.exe"
 Section "MS .NET Framework v${NETVersion}" SecFramework
-  IfFileExists "$WINDIR\Microsoft.NET\Framework\v${NETVersion}" NETFrameworkInstalled 0
+  IfFileExists "$WINDIR\Microsoft.NET\Framework\v${NETVersion}\mscorlib.dll" NETFrameworkInstalled 0
   File /oname=$TEMP\${NETInstaller} dist\${NETInstaller}
  
   DetailPrint "Starting Microsoft .NET Framework v${NETVersion} Setup..."
