@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool basic;
         bool kernal;
         bool charrom;
-        bool grw;
+        //bool grw;
         bool io;
         bool roml;
         bool romh;
@@ -157,9 +157,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             va14 = a14;
             va13 = a13;
             va12 = a12;
-            aec = !ReadAEC();
+            aec = !ReadAEC(); //active low
             ba = ReadBA();
-            cas = !true;
+            cas = !true; //active low
 
             p0 = loram && hiram && a15 && !a14 && a13 && !aec && read && game;
             p1 = hiram && a15 && a14 && a13 && !aec && read && game;
@@ -190,12 +190,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             p27 = a15 && !a14 && a13 && exrom && !game;
             p28 = a15 && a14 && !a13 && !a12 && exrom && !game;
             p30 = cas;
-            p31 = !cas && a15 && a14 && !a13 && a12 && !aec && !read;
+            //p31 = !cas && a15 && a14 && !a13 && a12 && !aec && !read;
             casram = !(p0 || p1 || p2 || p3 || p4 || p5 || p6 || p7 || p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18 || p19 || p20 || p21 || p22 || p23 || p24 || p25 || p26 || p27 || p28 || p30);
             basic = p0;
             kernal = (p1 || p2);
             charrom = (p3 || p4 || p5 || p6 || p7);
-            grw = p31;
+            //grw = p31;
             io = (p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16 || p17 || p18);
             roml = (p19 || p20);
             romh = (p21 || p22 || p23);
