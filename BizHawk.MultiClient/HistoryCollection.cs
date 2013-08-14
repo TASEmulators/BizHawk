@@ -7,16 +7,19 @@ namespace BizHawk.MultiClient
 	{
 		public List<List<Watch>> History { get; private set; }
 		private int curPos; //1-based
+		public bool Enabled { get; private set; }
 
-		public HistoryCollection()
+		public HistoryCollection(bool enabled)
 		{
 			History = new List<List<Watch>>();
+			Enabled = enabled;
 		}
 		
-		public HistoryCollection(List<Watch> newState)
+		public HistoryCollection(List<Watch> newState, bool enabled)
 		{
 			History = new List<List<Watch>>();
 			AddState(newState);
+			Enabled = enabled;
 		}
 
 		public void Clear()
@@ -26,36 +29,39 @@ namespace BizHawk.MultiClient
 
 		public bool CanUndo
 		{
-			get { return curPos > 1; }
+			get { return Enabled && curPos > 1; }
 		}
 
 		public bool CanRedo
 		{
-			get { return curPos < History.Count; }
+			get { return Enabled && curPos < History.Count; }
 		}
 
 		public bool HasHistory
 		{
-			get { return History.Any(); }
+			get { return Enabled && History.Any(); }
 		}
 
 		public void AddState(List<Watch> newState)
 		{
-			if (curPos < History.Count)
+			if (Enabled)
 			{
-				for (int i = curPos + 1; i <= History.Count; i++)
+				if (curPos < History.Count)
 				{
-					History.Remove(History[i - 1]);
+					for (int i = curPos + 1; i <= History.Count; i++)
+					{
+						History.Remove(History[i - 1]);
+					}
 				}
-			}
 
-			History.Add(newState);
-			curPos = History.Count;
+				History.Add(newState);
+				curPos = History.Count;
+			}
 		}
 
 		public List<Watch> Undo()
 		{
-			if (CanUndo)
+			if (CanUndo && Enabled)
 			{
 				curPos--;
 				return History[curPos - 1];
@@ -68,7 +74,7 @@ namespace BizHawk.MultiClient
 
 		public List<Watch> Redo()
 		{
-			if (CanRedo)
+			if (CanRedo && Enabled)
 			{
 				curPos++;
 				return History[curPos - 1];

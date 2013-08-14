@@ -148,6 +148,7 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -699,7 +700,8 @@
             this.saveWindowPositionToolStripMenuItem,
             this.toolStripSeparator11,
             this.alwaysOnTopToolStripMenuItem,
-            this.restoreOriginalWindowSizeToolStripMenuItem});
+            this.restoreOriginalWindowSizeToolStripMenuItem,
+            this.useUndoHistoryToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
@@ -1277,6 +1279,13 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
+			// useUndoHistoryToolStripMenuItem
+			// 
+			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
+			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
+			this.useUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.useUndoHistoryToolStripMenuItem_Click);
+			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
@@ -1441,5 +1450,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
 		private System.Windows.Forms.ToolStripMenuItem clearUndoHistoryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fastModeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
     }
 }
