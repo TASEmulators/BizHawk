@@ -108,6 +108,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
+            board.inputRead = false;
 			board.PollInput();
 			for (uint count = cyclesPerFrame; count > 0; count--)
 			{

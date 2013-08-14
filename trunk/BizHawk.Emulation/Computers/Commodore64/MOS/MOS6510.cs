@@ -130,7 +130,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-            addr &= 0xFFFF;
 			if (addr == 0x0000)
 				return port.Direction;
 			else if (addr == 0x0001)
@@ -141,7 +140,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Poke(int addr, byte val)
 		{
-            addr &= 0xFFFF;
             if (addr == 0x0000)
 				port.Direction = val;
 			else if (addr == 0x0001)
