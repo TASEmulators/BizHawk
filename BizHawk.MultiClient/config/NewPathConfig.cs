@@ -11,6 +11,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
+        //All path text boxes should do some kind of error checking
+        //config path under base, config will default to %exe%
+
         private void LockDownCores()
         {
             if (!MainForm.INTERIM)
