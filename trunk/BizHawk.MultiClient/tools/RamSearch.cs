@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 
 		private string systemID = "NULL";
 		private List<Watch> Searches = new List<Watch>();
-		private HistoryCollection SearchHistory = new HistoryCollection();
+		private HistoryCollection SearchHistory = new HistoryCollection(enabled:true);
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -101,9 +101,7 @@ namespace BizHawk.MultiClient
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			StartNewSearch();
 			SetMemoryDomainMenu();
-			SearchHistory = new HistoryCollection(Searches);
 		}
 
 		private void SetEndian()
@@ -388,6 +386,13 @@ namespace BizHawk.MultiClient
 
 		private void StartNewSearch()
 		{
+			useUndoHistoryToolStripMenuItem.Checked = true;
+			if (Global.Emulator.SystemId == "N64")
+			{
+				useUndoHistoryToolStripMenuItem.Checked = false;
+				Global.Config.RamSearchFastMode = true;
+				
+			}
 			IsAWeededList = false;
 			SearchHistory.Clear();
 			Searches.Clear();
@@ -448,7 +453,7 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
-			SearchHistory = new HistoryCollection(Searches);
+			SearchHistory = new HistoryCollection(Searches, useUndoHistoryToolStripMenuItem.Checked);
 			UpdateUndoRedoToolItems();
 		}
 
@@ -2728,6 +2733,12 @@ namespace BizHawk.MultiClient
 			{
 				Global.Config.RamSearchPreviousAs = 0;
 			}
+		}
+
+		private void useUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			useUndoHistoryToolStripMenuItem.Checked ^= true;
+			SearchHistory = new HistoryCollection(Searches, useUndoHistoryToolStripMenuItem.Checked);
 		}
 	}
 }
