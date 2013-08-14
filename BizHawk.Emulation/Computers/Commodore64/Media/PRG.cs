@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Media
 	{
 		static public void Load(MOSPLA pla, byte[] prgFile)
 		{
-			uint length = (uint)prgFile.Length;
+			int length = prgFile.Length;
 			if (length > 2)
 			{
-				ushort addr = (ushort)(prgFile[0] | (prgFile[1] << 8));
-				uint offset = 2;
+				int addr = (prgFile[0] | (prgFile[1] << 8));
+				int offset = 2;
 				unchecked
 				{
 					while (offset < length)

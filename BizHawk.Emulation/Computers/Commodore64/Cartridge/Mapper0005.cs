@@ -7,19 +7,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	{
 		private byte[][] banksA = new byte[0][]; //8000
 		private byte[][] banksB = new byte[0][]; //A000
-		private uint bankMask;
-		private uint bankNumber;
+		private int bankMask;
+		private int bankNumber;
 		private byte[] currentBankA;
 		private byte[] currentBankB;
 		private byte[] dummyBank;
 
-		public Mapper0005(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper0005(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
-			uint count = (uint)newAddresses.Count;
+			int count = newAddresses.Count;
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (uint i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			if (count == 64) //512k
@@ -80,9 +80,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			}
 
 			// for safety, initialize all banks to dummy
-			for (uint i = 0; i < banksA.Length; i++)
+			for (int i = 0; i < banksA.Length; i++)
 				banksA[i] = dummyBank;
-			for (uint i = 0; i < banksB.Length; i++)
+			for (int i = 0; i < banksB.Length; i++)
 				banksB[i] = dummyBank;
 
 			// now load in the banks
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			BankSet(0);
 		}
 
-		private void BankSet(uint index)
+		private void BankSet(int index)
 		{
 			bankNumber = index & bankMask;
 			if (!pinExRom)
@@ -131,17 +131,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 				BankSet(val);
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return currentBankA[addr];
 		}
 
-		public override byte ReadA000(ushort addr)
+		public override byte ReadA000(int addr)
 		{
 			return currentBankB[addr];
 		}
 
-		public override void WriteDE00(ushort addr, byte val)
+		public override void WriteDE00(int addr, byte val)
 		{
 			if (addr == 0x00)
 				BankSet(val);

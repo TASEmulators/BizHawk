@@ -61,9 +61,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte joyA = 0xFF;
 			byte joyB = 0xFF;
 
-			for (uint i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
-				for (uint j = 0; j < 8; j++)
+				for (int j = 0; j < 8; j++)
 				{
 					if (keyboardPressed[i, j])
 					{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
-			for (uint i = 0; i < 5; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				if (joystickPressed[1, i])
 					joyA &= inputBitMask[i];
@@ -89,6 +89,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             cia0InputLatchA = resultA;
 			cia0InputLatchB = resultB;
+
+            // this joystick has special rules.
+            cia0.PortAMask = joyA;
 		}
 	}
 }

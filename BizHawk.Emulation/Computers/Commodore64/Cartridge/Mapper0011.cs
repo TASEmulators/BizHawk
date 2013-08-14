@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 	public class Mapper0011 : Mapper000F
 	{
-		public Mapper0011(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper0011(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 			: base(newAddresses, newBanks, newData)
 		{
 			// required to pass information to base class
@@ -20,13 +20,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			// do nothing
 		}
 
-		public override byte ReadDE00(ushort addr)
+		public override byte ReadDE00(int addr)
 		{
-			BankSet((uint)addr);
+			BankSet(addr);
 			return base.ReadDE00(addr);
 		}
 
-		public override void WriteDE00(ushort addr, byte val)
+		public override void WriteDE00(int addr, byte val)
 		{
 			// do nothing
 		}

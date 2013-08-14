@@ -99,7 +99,6 @@
     <Compile Include="Computers\Commodore64\Disk\VIC1541.cs" />
     <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
-    <Compile Include="Computers\Commodore64\Memory.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />

@@ -36,4 +36,39 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             return (byte)((Latch & Direction) | (Direction ^ 0xFF));
         }
     }
+
+    public class LatchedBooleanPort
+    {
+        public bool Direction;
+        public bool Latch;
+
+        public LatchedBooleanPort()
+        {
+            Direction = false;
+            Latch = false;
+        }
+
+        //  data    dir     bus     out
+        //  0       0       0       0
+        //  0       0       1       1
+
+        //  0       1       0       0
+        //  0       1       1       0
+
+        //  1       0       0       0
+        //  1       0       1       1
+
+        //  1       1       0       1
+        //  1       1       1       1
+
+        public bool ReadInput(bool bus)
+        {
+            return (Direction && Latch) || (!Direction && bus);
+        }
+
+        public bool ReadOutput()
+        {
+            return (Latch || !Direction);
+        }
+    }
 }

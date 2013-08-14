@@ -6,11 +6,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	public abstract class Timer
 	{
+        public byte PortAMask = 0xFF;
+        public byte PortBMask = 0xFF;
+
 		protected bool pinIRQ;
         protected LatchedPort portA;
         protected LatchedPort portB;
-        protected uint[] timer;
-		protected uint[] timerLatch;
+        protected int[] timer;
+		protected int[] timerLatch;
 		protected bool[] timerOn;
 		protected bool[] underflow;
 
@@ -21,8 +24,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
             portA = new LatchedPort();
             portB = new LatchedPort();
-			timer = new uint[2];
-			timerLatch = new uint[2];
+			timer = new int[2];
+			timerLatch = new int[2];
 			timerOn = new bool[2];
 			underflow = new bool[2];
 		}
@@ -34,14 +37,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			timerLatch[0] = timer[0];
 			timerLatch[1] = timer[1];
 			pinIRQ = true;
-		}
-
-		public bool IRQ
-		{
-			get
-			{
-				return pinIRQ;
-			}
 		}
 
         public byte PortAData
@@ -60,7 +55,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             }
         }
 
-        public bool ReadIRQ() { return pinIRQ; }
+        public bool ReadIRQBuffer() { return pinIRQ; }
 
 		protected void SyncInternal(Serializer ser)
 		{

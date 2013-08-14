@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	static public class C64Util
 	{
-		static public string ToBinary(uint n, uint charsmin)
+		static public string ToBinary(int n, int charsmin)
 		{
 			string result = "";
 
@@ -121,13 +121,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return result;
 		}
 
-		static public string ToHex(uint n, uint charsmin)
+		static public string ToHex(int n, int charsmin)
 		{
 			string result = "";
 
 			while (n > 0 || charsmin > 0)
 			{
-				result = "0123456789ABCDEF".Substring((int)(n & 0xF), 1) + result;
+				result = "0123456789ABCDEF".Substring((n & 0xF), 1) + result;
 				n >>= 4;
 				if (charsmin > 0)
 					charsmin--;

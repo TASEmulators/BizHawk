@@ -18,14 +18,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 			if (new string(reader.ReadChars(16)) == "C64 CARTRIDGE   ")
 			{
-				List<uint> chipAddress = new List<uint>();
-				List<uint> chipBank = new List<uint>();
+				List<int> chipAddress = new List<int>();
+				List<int> chipBank = new List<int>();
 				List<byte[]> chipData = new List<byte[]>();
-				List<uint> chipType = new List<uint>();
+				List<int> chipType = new List<int>();
 
-				uint headerLength = ReadCRTInt(reader);
-				uint version = ReadCRTShort(reader);
-				uint mapper = ReadCRTShort(reader);
+				int headerLength = ReadCRTInt(reader);
+				int version = ReadCRTShort(reader);
+				int mapper = ReadCRTShort(reader);
 				bool exrom = (reader.ReadByte() != 0);
 				bool game = (reader.ReadByte() != 0);
 
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 				// skip extra header bytes
 				if (headerLength > 0x40)
 				{
-					reader.ReadBytes((int)headerLength - 0x40);
+					reader.ReadBytes(headerLength - 0x40);
 				}
 
 				// read chips
@@ -46,15 +46,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 				{
 					if (new string(reader.ReadChars(4)) == "CHIP")
 					{
-						uint chipLength = ReadCRTInt(reader);
+						int chipLength = ReadCRTInt(reader);
 						chipType.Add(ReadCRTShort(reader));
 						chipBank.Add(ReadCRTShort(reader));
 						chipAddress.Add(ReadCRTShort(reader));
-						uint chipDataLength = ReadCRTShort(reader);
-						chipData.Add(reader.ReadBytes((int)chipDataLength));
+						int chipDataLength = ReadCRTShort(reader);
+						chipData.Add(reader.ReadBytes(chipDataLength));
 						chipLength -= (chipDataLength + 0x10);
 						if (chipLength > 0)
-							reader.ReadBytes((int)chipLength);
+							reader.ReadBytes(chipLength);
 					}
 				}
 
@@ -96,21 +96,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			return result;
 		}
 
-		static private uint ReadCRTShort(BinaryReader reader)
+		static private int ReadCRTShort(BinaryReader reader)
 		{
-			uint result;
-			result = (uint)reader.ReadByte() << 8;
-			result |= (uint)reader.ReadByte();
+			int result;
+			result = (int)reader.ReadByte() << 8;
+			result |= (int)reader.ReadByte();
 			return result;
 		}
 
-		static private uint ReadCRTInt(BinaryReader reader)
+		static private int ReadCRTInt(BinaryReader reader)
 		{
-			uint result;
-			result = (uint)reader.ReadByte() << 24;
-			result |= (uint)reader.ReadByte() << 16;
-			result |= (uint)reader.ReadByte() << 8;
-			result |= (uint)reader.ReadByte();
+			int result;
+			result = (int)reader.ReadByte() << 24;
+			result |= (int)reader.ReadByte() << 16;
+			result |= (int)reader.ReadByte() << 8;
+			result |= (int)reader.ReadByte();
 			return result;
 		}
 
@@ -206,22 +206,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public virtual byte Read8000(ushort addr)
+		public virtual byte Read8000(int addr)
 		{
 			return 0xFF;
 		}
 
-		public virtual byte ReadA000(ushort addr)
+		public virtual byte ReadA000(int addr)
 		{
 			return 0xFF;
 		}
 
-		public virtual byte ReadDE00(ushort addr)
+		public virtual byte ReadDE00(int addr)
 		{
 			return 0xFF;
 		}
 
-		public virtual byte ReadDF00(ushort addr)
+		public virtual byte ReadDF00(int addr)
 		{
 			return 0xFF;
 		}
@@ -252,19 +252,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public virtual void Write8000(ushort addr, byte val)
+		public virtual void Write8000(int addr, byte val)
 		{
 		}
 
-		public virtual void WriteA000(ushort addr, byte val)
+		public virtual void WriteA000(int addr, byte val)
 		{
 		}
 
-		public virtual void WriteDE00(ushort addr, byte val)
+		public virtual void WriteDE00(int addr, byte val)
 		{
 		}
 
-		public virtual void WriteDF00(ushort addr, byte val)
+		public virtual void WriteDF00(int addr, byte val)
 		{
 		}
 	}

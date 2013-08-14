@@ -419,9 +419,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					waveform = (value >> 4) & 0x0F;
 					wave = waveTable[waveform & 0x07];
 					ringMsbMask = ((~value >> 5) & (value >> 2) & 0x1) << 23;
-					noNoise = ((waveform & 0x8) != 0) ? (int)0x000 : (int)0xFFF;
+					noNoise = ((waveform & 0x8) != 0) ? 0x000 : 0xFFF;
 					noNoiseOrNoise = noNoise | noise;
-					noPulse = ((waveform & 0x4) != 0) ? (int)0x000 : (int)0xFFF;
+					noPulse = ((waveform & 0x4) != 0) ? 0x000 : 0xFFF;
 
 					if (!testPrev && test)
 					{
@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						if (floatOutputTTL != 0 && --floatOutputTTL == 0)
 							output = 0x000;
 					}
-					pulse = ((accumulator >> 12) >= pulseWidth) ? (int)0xFFF : (int)0x000;
+					pulse = ((accumulator >> 12) >= pulseWidth) ? 0xFFF : 0x000;
 					return output;
 				}
 			}
@@ -759,15 +759,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			return ReadRegister((ushort)(addr & 0x1F));
+			return ReadRegister((addr & 0x1F));
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((ushort)(addr & 0x1F), val);
+			WriteRegister((addr & 0x1F), val);
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
 			addr &= 0x1F;
 			byte result = 0x00;
@@ -783,7 +783,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return result;
 		}
 
-		private byte ReadRegister(ushort addr)
+		private byte ReadRegister(int addr)
 		{
 			byte result = 0x00;
 
@@ -892,7 +892,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return result;
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
 			addr &= 0x1F;
 			switch (addr)
@@ -912,7 +912,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		private void WriteRegister(ushort addr, byte val)
+		private void WriteRegister(int addr, byte val)
 		{
 			switch (addr)
 			{
