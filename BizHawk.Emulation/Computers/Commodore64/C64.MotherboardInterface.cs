@@ -26,13 +26,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Cia0_ReadPortA()
         {
-            WriteInputPort();
             return cia0InputLatchA;
         }
 
         byte Cia0_ReadPortB()
         {
-            WriteInputPort();
             return cia0InputLatchB;
         }
 
@@ -98,7 +96,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
         byte Pla_ReadCia0(int addr)
         {
             if (addr == 0xDC00 || addr == 0xDC01)
+            {
+                WriteInputPort();
                 inputRead = true;
+            }
             return cia0.Read(addr);
         }
 

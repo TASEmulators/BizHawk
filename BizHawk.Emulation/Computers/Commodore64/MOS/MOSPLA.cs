@@ -228,7 +228,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-            addr &= 0x0FFFF;
 			switch (Bank(addr, true))
 			{
 				case PLABank.BasicROM:
@@ -263,7 +262,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Poke(int addr, byte val)
 		{
-            addr &= 0x0FFFF;
 			switch (Bank(addr, false))
 			{
 				case PLABank.CartridgeHi:
@@ -301,7 +299,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Read(int addr)
 		{
-            addr &= 0x0FFFF;
 			switch (Bank(addr, true))
 			{
 				case PLABank.BasicROM:
@@ -336,7 +333,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Write(int addr, byte val)
 		{
-            addr &= 0x0FFFF;
 			switch (Bank(addr, false))
 			{
 				case PLABank.BasicROM:
