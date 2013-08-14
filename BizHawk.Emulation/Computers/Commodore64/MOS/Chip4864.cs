@@ -30,17 +30,17 @@
 
 		public byte Peek(int addr)
 		{
-			return ram[addr];
+			return ram[addr & 0xFFFF];
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			ram[addr] = val;
+            ram[addr & 0xFFFF] = val;
 		}
 
 		public byte Read(int addr)
 		{
-			return ram[addr];
+            return ram[addr & 0xFFFF];
 		}
 
 		public void SyncState(Serializer ser)
@@ -51,7 +51,7 @@
 
 		public void Write(int addr, byte val)
 		{
-			ram[addr] = val;
+            ram[addr & 0xFFFF] = val;
 		}
 	}
 }

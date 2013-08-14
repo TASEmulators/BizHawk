@@ -630,8 +630,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool filterSelectLoPass;
 		private bool filterSelectHiPass;
 		private int potCounter;
-		private byte potX;
-		private byte potY;
+		private int potX;
+        private int potY;
 		private int[] voiceOutput;
 		private Voice[] voices;
 		private int volume;

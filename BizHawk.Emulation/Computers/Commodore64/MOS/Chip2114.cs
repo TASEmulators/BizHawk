@@ -21,11 +21,6 @@
 			return ram[addr & 0x3FF];
 		}
 
-		public byte Peek(int addr, byte bus)
-		{
-			return (byte)(ram[addr & 0x3FF] | (bus & 0xF0));
-		}
-
 		public void Poke(int addr, byte val)
 		{
 			ram[addr & 0x3FF] = (byte)(val & 0xF);
@@ -33,12 +28,7 @@
 
 		public byte Read(int addr)
 		{
-			return (byte)(ram[addr & 0x3FF]);
-		}
-
-		public byte Read(int addr, byte bus)
-		{
-			return (byte)(ram[addr & 0x3FF] | (bus & 0xF0));
+			return ram[addr & 0x3FF];
 		}
 
 		public void SyncState(Serializer ser)
