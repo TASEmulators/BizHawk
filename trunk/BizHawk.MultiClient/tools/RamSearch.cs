@@ -205,7 +205,7 @@ namespace BizHawk.MultiClient
 				str = " address";
 			else
 				str = " addresses";
-			TotalSearchLabel.Text = x.ToString() + str;
+			TotalSearchLabel.Text = String.Format("{0:n0}", x) + str;
 		}
 
 		private void OpenSearchFile()
