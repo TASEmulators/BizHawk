@@ -983,12 +983,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x11:
 					result = (byte)(
-						(byte)(yScroll & 0x7) |
-						(rowSelect ? (byte)0x08 : (byte)0x00) |
-						(displayEnable ? (byte)0x10 : (byte)0x00) |
-						(bitmapMode ? (byte)0x20 : (byte)0x00) |
-						(extraColorMode ? (byte)0x40 : (byte)0x00) |
-						(byte)((rasterLine & 0x100) >> 1)
+						(yScroll & 0x7) |
+						(rowSelect ? 0x08 : 0x00) |
+						(displayEnable ? 0x10 : 0x00) |
+						(bitmapMode ? 0x20 : 0x00) |
+						(extraColorMode ? 0x40 : 0x00) |
+						((rasterLine & 0x100) >> 1)
 						);
 					break;
 				case 0x12:
@@ -1015,9 +1015,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case 0x16:
 					result &= 0xC0;
 					result |= (byte)(
-						(byte)(xScroll & 0x7) |
-						(columnSelect ? (byte)0x08 : (byte)0x00) |
-						(multicolorMode ? (byte)0x10 : (byte)0x00)
+						(xScroll & 0x7) |
+						(columnSelect ? 0x08 : 0x00) |
+						(multicolorMode ? 0x10 : 0x00)
 						);
 					break;
 				case 0x17:
