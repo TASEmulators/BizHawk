@@ -665,42 +665,42 @@
       "P1 X Axis": {
         "Value": "J1 X",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P1 Y Axis": {
         "Value": "J1 Y",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P2 X Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P2 Y Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P3 X Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P3 Y Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P4 X Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       },
       "P4 Y Axis": {
         "Value": "",
         "Mult": 1,
-        "Deadzone": 0
+        "Deadzone": 0.1
       }
     },
     "NES Controller": {}
