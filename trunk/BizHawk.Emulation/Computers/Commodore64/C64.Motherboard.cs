@@ -2,6 +2,9 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
+    /// <summary>
+    /// Contains the onboard chipset and glue.
+    /// </summary>
 	public partial class Motherboard
 	{
 		// chips
@@ -25,9 +28,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public UserPort userPort;
 
 		// state
-		public ushort address;
+		public int address;
 		public byte bus;
 		public bool inputRead;
+        public bool irq;
+        public bool nmi;
 
 		public Motherboard(Region initRegion)
 		{
@@ -92,25 +97,32 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Init()
 		{
-            cassPort.ReadDataOutput = CassPort_DeviceReadLevel;
-            cassPort.ReadMotor = CassPort_DeviceReadMotor;
+            cartPort.ReadIRQ = Glue_ReadIRQ;
+            cartPort.ReadNMI = cia1.ReadIRQBuffer;
 
-            cia0.ReadFlag = Cia0_ReadFlag;
+            cassPort.ReadDataOutput = CassPort_ReadDataOutput;
+            cassPort.ReadMotor = CassPort_ReadMotor;
+
+            cia0.ReadCNT = Cia0_ReadCnt;
+            cia0.ReadFlag = cassPort.ReadDataInputBuffer;
 			cia0.ReadPortA = Cia0_ReadPortA;
 			cia0.ReadPortB = Cia0_ReadPortB;
+            cia0.ReadSP = Cia0_ReadSP;
 
-            cia1.ReadFlag = Cia1_ReadFlag;
+            cia1.ReadCNT = Cia1_ReadCnt;
+            cia1.ReadFlag = userPort.ReadFlag2;
             cia1.ReadPortA = Cia1_ReadPortA;
-			cia1.ReadPortB = Cia1_ReadPortB;
+			cia1.ReadPortB = userPort.ReadData;
+            cia1.ReadSP = Cia1_ReadSP;
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
-            cpu.ReadAEC = vic.ReadAEC;
-            cpu.ReadIRQ = Cpu_ReadIRQ;
-			cpu.ReadNMI = cia1.ReadIRQ;
+            cpu.ReadAEC = vic.ReadAECBuffer;
+            cpu.ReadIRQ = Glue_ReadIRQ;
+            cpu.ReadNMI = cia1.ReadIRQBuffer;
             cpu.ReadPort = Cpu_ReadPort;
-			cpu.ReadRDY = vic.ReadBA;
-			cpu.ReadMemory = pla.Read;
+            cpu.ReadRDY = vic.ReadBABuffer;
+			cpu.ReadMemory = pla.Read; 
 			cpu.WriteMemory = pla.Write;
 
 			pla.PeekBasicRom = basicRom.Peek;
@@ -136,8 +148,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla.PokeMemory = ram.Poke;
 			pla.PokeSid = sid.Poke;
 			pla.PokeVic = vic.Poke;
-            pla.ReadAEC = vic.ReadAEC;
-            pla.ReadBA = vic.ReadBA;
+            pla.ReadAEC = vic.ReadAECBuffer;
+            pla.ReadBA = vic.ReadBABuffer;
             pla.ReadBasicRom = Pla_ReadBasicRom;
             pla.ReadCartridgeHi = Pla_ReadCartridgeHi;
             pla.ReadCartridgeLo = Pla_ReadCartridgeLo;
@@ -167,21 +179,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
             pla.WriteSid = Pla_WriteSid;
             pla.WriteVic = Pla_WriteVic;
 
-			// note: c64 serport lines are inverted
-            serPort.DeviceReadAtn = SerPort_DeviceReadAtn;
-            serPort.DeviceReadClock = SerPort_DeviceReadClock;
-            serPort.DeviceReadData = SerPort_DeviceReadData;
-            serPort.DeviceReadReset = SerPort_DeviceReadReset;
-            serPort.DeviceWriteAtn = SerPort_DeviceWriteAtn;
-            serPort.DeviceWriteClock = SerPort_DeviceWriteClock;
-            serPort.DeviceWriteData = SerPort_DeviceWriteData;
-            serPort.DeviceWriteSrq = SerPort_DeviceWriteSrq;
+            serPort.ReadAtnOut = SerPort_ReadAtnOut;
+            serPort.ReadClockOut = SerPort_ReadClockOut;
+            serPort.ReadDataOut = SerPort_ReadDataOut;
 
             sid.ReadPotX = Sid_ReadPotX;
             sid.ReadPotY = Sid_ReadPotY;
 
             vic.ReadMemory = Vic_ReadMemory;
-            vic.ReadColorRam = Vic_ReadColorRam;
+            vic.ReadColorRam = colorRam.Read;
 		}
 
 		public void SyncState(Serializer ser)

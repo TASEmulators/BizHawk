@@ -21,20 +21,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	{
 		private byte[][] banksA = new byte[64][]; //8000
 		private byte[][] banksB = new byte[64][]; //A000
-		private uint bankNumber;
+		private int bankNumber;
 		private bool boardLed;
 		private byte[] currentBankA;
 		private byte[] currentBankB;
 		private byte[] dummyBank;
 		private byte[] ram = new byte[256];
 
-		public Mapper0020(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper0020(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
-			uint count = (uint)newAddresses.Count;
+			int count = newAddresses.Count;
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (uint i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			// force ultimax mode (the cart SHOULD set this
@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			pinExRom = true;
 
 			// for safety, initialize all banks to dummy
-			for (uint i = 0; i < 64; i++)
+			for (int i = 0; i < 64; i++)
 				banksA[i] = dummyBank;
-			for (uint i = 0; i < 64; i++)
+			for (int i = 0; i < 64; i++)
 				banksB[i] = dummyBank;
 
 			// load in all banks
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			BankSet(0);
 		}
 
-		private void BankSet(uint index)
+		private void BankSet(int index)
 		{
 			bankNumber = index & 0x3F;
 			UpdateState();
@@ -121,17 +121,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			ram[addr] = val;
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return currentBankA[addr];
 		}
 
-		public override byte ReadA000(ushort addr)
+		public override byte ReadA000(int addr)
 		{
 			return currentBankB[addr];
 		}
 
-		public override byte ReadDF00(ushort addr)
+		public override byte ReadDF00(int addr)
 		{
 			return ram[addr];
 		}
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			currentBankB = banksB[bankNumber];
 		}
 
-		public override void WriteDE00(ushort addr, byte val)
+		public override void WriteDE00(int addr, byte val)
 		{
 			if (addr == 0x00)
 				BankSet(val);
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 				StateSet(val);
 		}
 
-		public override void WriteDF00(ushort addr, byte val)
+		public override void WriteDF00(int addr, byte val)
 		{
 			ram[addr] = val;
 		}

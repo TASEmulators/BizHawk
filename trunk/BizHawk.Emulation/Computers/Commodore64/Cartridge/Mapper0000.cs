@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	public class Mapper0000 : Cart
 	{
 		private byte[] romA;
-		private uint romAMask;
+		private int romAMask;
 		private byte[] romB;
-		private uint romBMask;
+		private int romBMask;
 
 		// standard cartridge mapper (Commodore)
 		// note that this format also covers Ultimax carts
 
-		public Mapper0000(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData, bool game, bool exrom)
+		public Mapper0000(List<int> newAddresses, List<int> newBanks, List<byte[]> newData, bool game, bool exrom)
 		{
 			pinGame = game;
 			pinExRom = exrom;
@@ -83,12 +83,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			return romB[addr & romBMask];
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return romA[addr & romAMask];
 		}
 
-		public override byte ReadA000(ushort addr)
+		public override byte ReadA000(int addr)
 		{
 			return romB[addr & romBMask];
 		}

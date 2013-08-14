@@ -11,20 +11,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 		}
 
-        public bool DataInput
+        public bool ReadDataInputBuffer()
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
 
-        public bool Sense
+        public bool ReadSenseBuffer()
         {
-            get
-            {
-                return true;
-            }
+            return true;
         }
 	}
 }

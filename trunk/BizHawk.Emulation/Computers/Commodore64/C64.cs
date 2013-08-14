@@ -146,12 +146,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			// chips must be initialized before this code runs!
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(board.cpu.Peek), new Action<int, byte>(board.cpu.Poke)));
-			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(board.ram.Peek), new Action<int, byte>(board.ram.Poke)));
-			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(board.cia0.Peek), new Action<int, byte>(board.cia0.Poke)));
-			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(board.cia1.Peek), new Action<int, byte>(board.cia1.Poke)));
-			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(board.vic.Peek), new Action<int, byte>(board.vic.Poke)));
-			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(board.sid.Peek), new Action<int, byte>(board.sid.Poke)));
+			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, board.cpu.Peek, board.cpu.Poke));
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, board.ram.Peek, board.ram.Poke));
+			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, board.cia0.Peek, board.cia0.Poke));
+			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, board.cia1.Peek, board.cia1.Poke));
+			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, board.vic.Peek, board.vic.Poke));
+			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, board.sid.Peek, board.sid.Poke));
 			//domains.Add(new MemoryDomain("1541 Bus", 0x10000, Endian.Little, new Func<int, byte>(disk.Peek), new Action<int, byte>(disk.Poke)));
 			//domains.Add(new MemoryDomain("1541 VIA0", 0x10, Endian.Little, new Func<int, byte>(disk.PeekVia0), new Action<int, byte>(disk.PokeVia0)));
 			//domains.Add(new MemoryDomain("1541 VIA1", 0x10, Endian.Little, new Func<int, byte>(disk.PeekVia1), new Action<int, byte>(disk.PokeVia1)));

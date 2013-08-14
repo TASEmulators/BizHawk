@@ -34,34 +34,34 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Action<int, byte> PokeVic;
         public Func<bool> ReadAEC;
         public Func<bool> ReadBA;
-		public Func<ushort, byte> ReadBasicRom;
-		public Func<ushort, byte> ReadCartridgeLo;
-		public Func<ushort, byte> ReadCartridgeHi;
+		public Func<int, byte> ReadBasicRom;
+		public Func<int, byte> ReadCartridgeLo;
+		public Func<int, byte> ReadCartridgeHi;
 		public Func<bool> ReadCharen;
-		public Func<ushort, byte> ReadCharRom;
-		public Func<ushort, byte> ReadCia0;
-		public Func<ushort, byte> ReadCia1;
-		public Func<ushort, byte> ReadColorRam;
-		public Func<ushort, byte> ReadExpansionLo;
-		public Func<ushort, byte> ReadExpansionHi;
+		public Func<int, byte> ReadCharRom;
+		public Func<int, byte> ReadCia0;
+		public Func<int, byte> ReadCia1;
+		public Func<int, byte> ReadColorRam;
+		public Func<int, byte> ReadExpansionLo;
+		public Func<int, byte> ReadExpansionHi;
 		public Func<bool> ReadExRom;
 		public Func<bool> ReadGame;
 		public Func<bool> ReadHiRam;
-		public Func<ushort, byte> ReadKernalRom;
+		public Func<int, byte> ReadKernalRom;
 		public Func<bool> ReadLoRam;
-		public Func<ushort, byte> ReadMemory;
-		public Func<ushort, byte> ReadSid;
-		public Func<ushort, byte> ReadVic;
-		public Action<ushort, byte> WriteCartridgeLo;
-		public Action<ushort, byte> WriteCartridgeHi;
-		public Action<ushort, byte> WriteCia0;
-		public Action<ushort, byte> WriteCia1;
-		public Action<ushort, byte> WriteColorRam;
-		public Action<ushort, byte> WriteExpansionLo;
-		public Action<ushort, byte> WriteExpansionHi;
-		public Action<ushort, byte> WriteMemory;
-		public Action<ushort, byte> WriteSid;
-		public Action<ushort, byte> WriteVic;
+		public Func<int, byte> ReadMemory;
+		public Func<int, byte> ReadSid;
+		public Func<int, byte> ReadVic;
+		public Action<int, byte> WriteCartridgeLo;
+		public Action<int, byte> WriteCartridgeHi;
+		public Action<int, byte> WriteCia0;
+		public Action<int, byte> WriteCia1;
+		public Action<int, byte> WriteColorRam;
+		public Action<int, byte> WriteExpansionLo;
+		public Action<int, byte> WriteExpansionHi;
+		public Action<int, byte> WriteMemory;
+		public Action<int, byte> WriteSid;
+		public Action<int, byte> WriteVic;
 	
 		// ------------------------------------
 
@@ -127,16 +127,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool aec;
         bool cas;
 
-		private PLABank Bank(ushort addr, bool read)
+		private PLABank Bank(int addr, bool read)
 		{
             loram = ReadLoRam();
             hiram = ReadHiRam();
             game = ReadGame();
 
-            a15 = (addr & 0x8000) != 0;
-            a14 = (addr & 0x4000) != 0;
-            a13 = (addr & 0x2000) != 0;
-            a12 = (addr & 0x1000) != 0;
+            a15 = (addr & 0x08000) != 0;
+            a14 = (addr & 0x04000) != 0;
+            a13 = (addr & 0x02000) != 0;
+            a12 = (addr & 0x01000) != 0;
             aec = !ReadAEC(); //active low
 
             p0 = loram && hiram && a15 && !a14 && a13 && !aec && read && game;
@@ -228,7 +228,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			switch (Bank((ushort)(addr & 0xFFFF), true))
+            addr &= 0x0FFFF;
+			switch (Bank(addr, true))
 			{
 				case PLABank.BasicROM:
 					return PeekBasicRom(addr);
@@ -250,8 +251,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					return PeekExpansionHi(addr);
 				case PLABank.KernalROM:
 					return PeekKernalRom(addr);
-				case PLABank.None:
-					return 0xFF;
 				case PLABank.RAM:
 					return PeekMemory(addr);
 				case PLABank.Sid:
@@ -264,17 +263,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Poke(int addr, byte val)
 		{
-			switch (Bank((ushort)(addr & 0xFFFF), false))
+            addr &= 0x0FFFF;
+			switch (Bank(addr, false))
 			{
-				case PLABank.BasicROM:
-					break;
 				case PLABank.CartridgeHi:
 					PokeCartridgeHi(addr, val);
 					break;
 				case PLABank.CartridgeLo:
 					PokeCartridgeLo(addr, val);
-					break;
-				case PLABank.CharROM:
 					break;
 				case PLABank.Cia0:
 					PokeCia0(addr, val);
@@ -291,10 +287,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.Expansion1:
 					PokeExpansionHi(addr, val);
 					break;
-				case PLABank.KernalROM:
-					break;
-				case PLABank.None:
-					break;
 				case PLABank.RAM:
 					PokeMemory(addr, val);
 					break;
@@ -307,8 +299,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
+            addr &= 0x0FFFF;
 			switch (Bank(addr, true))
 			{
 				case PLABank.BasicROM:
@@ -341,8 +334,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return 0xFF;
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
+            addr &= 0x0FFFF;
 			switch (Bank(addr, false))
 			{
 				case PLABank.BasicROM:
@@ -354,8 +348,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.CartridgeLo:
 					WriteCartridgeLo(addr, val);
 			        WriteMemory(addr, val);
-					break;
-				case PLABank.CharROM:
 					break;
 				case PLABank.Cia0:
 					WriteCia0(addr, val);
@@ -372,10 +364,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.Expansion1:
 					WriteExpansionHi(addr, val);
                     return;
-				case PLABank.KernalROM:
-					break;
-				case PLABank.None:
-					break;
 				case PLABank.RAM:
 			        WriteMemory(addr, val);
 					break;

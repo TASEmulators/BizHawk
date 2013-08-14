@@ -28,9 +28,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Func<bool> ReadIRQ;
 		public Func<bool> ReadNMI;
 		public Func<bool> ReadRDY;
-		public Func<ushort, byte> ReadMemory;
+		public Func<int, byte> ReadMemory;
         public Func<byte> ReadPort;
-		public Action<ushort, byte> WriteMemory;
+		public Action<int, byte> WriteMemory;
 
 		// ------------------------------------
 
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.FlagI = true;
 			cpu.BCD_Enabled = true;
             if (ReadMemory != null)
-			    cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
+			    cpu.PC = (ushort)(ReadMemory(0x0FFFC) | (ReadMemory(0x0FFFD) << 8));
 
             // configure data port defaults
             port = new LatchedPort();
@@ -130,6 +130,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
+            addr &= 0xFFFF;
 			if (addr == 0x0000)
 				return port.Direction;
 			else if (addr == 0x0001)
@@ -140,7 +141,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Poke(int addr, byte val)
 		{
-			if (addr == 0x0000)
+            addr &= 0xFFFF;
+            if (addr == 0x0000)
 				port.Direction = val;
 			else if (addr == 0x0001)
 				port.Latch = val;

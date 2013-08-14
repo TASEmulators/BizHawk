@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public Func<bool> ReadCNT;
         public Func<bool> ReadFlag;
+        public Func<bool> ReadSP;
 
         // ------------------------------------
 
@@ -60,9 +61,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool intSP;
 		private bool[] intTimer;
 		private bool pinCnt;
-		private bool pinPC;
+        private bool pinCntLast;
+        private bool pinPC;
+        private bool pinSP;
 		private byte sr;
-		private uint[] timerDelay;
+		private int[] timerDelay;
 		private InMode[] timerInMode;
 		private OutMode[] timerOutMode;
 		private bool[] timerPortEnable;
@@ -72,8 +75,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private byte[] tod;
 		private byte[] todAlarm;
 		private bool todAlarmPM;
-		private uint todCounter;
-		private uint todCounterLatch;
+		private int todCounter;
+		private int todCounterLatch;
 		private bool todIn;
 		private bool todPM;
 
@@ -84,7 +87,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			chipRegion = region;
 			enableIntTimer = new bool[2];
 			intTimer = new bool[2];
-			timerDelay = new uint[2];
+			timerDelay = new int[2];
 			timerInMode = new InMode[2];
 			timerOutMode = new OutMode[2];
 			timerPortEnable = new bool[2];
@@ -106,8 +109,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void ExecutePhase2()
 		{
 			{
-				pinPC = true;
-				TODRun();
+                bool sumCnt = ReadCNT();
+                cntPos |= (!pinCntLast && sumCnt);
+                pinCntLast = sumCnt;
+
+                pinPC = true;
+                TODRun();
 
 				if (timerPulse[0])
 				{
@@ -217,12 +224,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-				uint lo;
-				uint hi;
-				uint result;
+				int lo;
+				int hi;
+				int result;
 
-				lo = (i & (uint)0x0F) + (j & (uint)0x0F);
-				hi = (i & (uint)0x70) + (j & (uint)0x70);
+				lo = (i & 0x0F) + (j & 0x0F);
+				hi = (i & 0x70) + (j & 0x70);
 				if (lo > 0x09)
 				{
 					hi += 0x10;
@@ -238,13 +245,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		private void TimerRun(uint index)
+		private void TimerRun(int index)
 		{
 			
 			{
 				if (timerOn[index])
 				{
-					uint t = timer[index];
+					int t = timer[index];
 					bool u = false;
 					
 					{
@@ -356,33 +363,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public bool CNT
-		{
-			get { return pinCnt; }
-			set { cntPos |= (!pinCnt && value); pinCnt = value; }
-		}
-
-		public bool PC
-		{
-			get { return pinPC; }
-		}
-
 		public byte Peek(int addr)
 		{
-			return ReadRegister((ushort)(addr & 0xF));
+			return ReadRegister((addr & 0xF));
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((ushort)(addr & 0xF), val);
+			WriteRegister((addr & 0xF), val);
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
 			return Read(addr, 0xFF);
 		}
 
-		public byte Read(ushort addr, byte mask)
+		public byte Read(int addr, byte mask)
 		{
 			addr &= 0xF;
 			byte val;
@@ -411,18 +407,28 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return val;
 		}
 
-		private byte ReadRegister(ushort addr)
+        public bool ReadCNTBuffer()
+        {
+            return pinCnt;
+        }
+
+        public bool ReadPCBuffer()
+        {
+            return pinPC;
+        }
+
+		private byte ReadRegister(int addr)
 		{
 			byte val = 0x00; //unused pin value
-			uint timerVal;
+			int timerVal;
 
 			switch (addr)
 			{
 				case 0x0:
-					val = portA.ReadInput(ReadPortA());
+					val = (byte)(portA.ReadInput(ReadPortA()) & PortAMask);
 					break;
 				case 0x1:
-					val = portB.ReadInput(ReadPortB());
+					val = (byte)(portB.ReadInput(ReadPortB()) & PortBMask);
 					break;
 				case 0x2:
                     val = portA.Direction;
@@ -512,7 +518,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return val;
 		}
 
-		private uint ReadTimerValue(uint index)
+        public bool ReadSPBuffer()
+        {
+            return pinSP;
+        }
+
+		private int ReadTimerValue(int index)
 		{
 			if (timerOn[index])
 			{
@@ -530,13 +541,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void SyncState(Serializer ser)
 		{
 			int chipRegionInt = (int)chipRegion;
-			int timerInModeInt0 = (int)timerInMode[0];
-			int timerInModeInt1 = (int)timerInMode[1];
-			int timerOutModeInt0 = (int)timerOutMode[0];
-			int timerOutModeInt1 = (int)timerOutMode[1];
-			int timerRunModeInt0 = (int)timerRunMode[0];
-			int timerRunModeInt1 = (int)timerRunMode[1];
-			int timerSPModeInt = (int)timerSPMode;
+            int timerInModeInt0 = (int)timerInMode[0];
+            int timerInModeInt1 = (int)timerInMode[1];
+            int timerOutModeInt0 = (int)timerOutMode[0];
+            int timerOutModeInt1 = (int)timerOutMode[1];
+            int timerRunModeInt0 = (int)timerRunMode[0];
+            int timerRunModeInt1 = (int)timerRunMode[1];
+            int timerSPModeInt = (int)timerSPMode;
 
 			SyncInternal(ser);
 			ser.Sync("alarmSelect", ref alarmSelect);
@@ -592,12 +603,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			timerSPMode = (SPMode)timerSPModeInt;
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
 			Write(addr, val, 0xFF);
 		}
 
-		public void Write(ushort addr, byte val, byte mask)
+		public void Write(int addr, byte val, byte mask)
 		{
 			addr &= 0xF;
 			val &= mask;
@@ -635,7 +646,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		public void WriteRegister(ushort addr, byte val)
+		public void WriteRegister(int addr, byte val)
 		{
 			bool intReg;
 
@@ -659,7 +670,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x5:
 					timerLatch[0] &= 0x00FF;
-					timerLatch[0] |= (uint)val << 8;
+					timerLatch[0] |= val << 8;
 					break;
 				case 0x6:
 					timerLatch[1] &= 0xFF00;
@@ -667,7 +678,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x7:
 					timerLatch[1] &= 0x00FF;
-					timerLatch[1] |= (uint)val << 8;
+					timerLatch[1] |= val << 8;
 					break;
 				case 0x8:
 					if (alarmSelect)

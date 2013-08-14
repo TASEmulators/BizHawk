@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			return rom[addr & (int)addrMask];
+			return rom[addr & addrMask];
 		}
 
 		public void Poke(int addr, byte val)
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// do nothing (this is rom)
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
 			return rom[addr & addrMask];
 		}
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			ser.Sync("rom", ref buffer);
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
 			// do nothing (this is rom)
 		}
