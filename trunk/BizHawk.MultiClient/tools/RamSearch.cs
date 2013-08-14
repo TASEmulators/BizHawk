@@ -389,6 +389,9 @@ namespace BizHawk.MultiClient
 			useUndoHistoryToolStripMenuItem.Checked = true;
 			if (Global.Emulator.SystemId == "N64")
 			{
+				byteToolStripMenuItem.Checked = false;
+				bytesToolStripMenuItem.Checked = false;
+				dWordToolStripMenuItem1.Checked = true;
 				useUndoHistoryToolStripMenuItem.Checked = false;
 				Global.Config.RamSearchFastMode = true;
 				
