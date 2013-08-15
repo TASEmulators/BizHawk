@@ -13,14 +13,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         private MOS6502X cpu;
         private List<GCHandle> disposeList = new List<GCHandle>();
-		private bool freezeCpu;
+		//private bool freezeCpu;
 		private bool pinNMILast;
         private LatchedPort port;
-		private bool unusedPin0;
-		private bool unusedPin1;
-		private uint unusedPinTTL0;
-		private uint unusedPinTTL1;
-		private uint unusedPinTTLCycles;
 
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
@@ -42,9 +37,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.DummyReadMemory = Read;
 			cpu.ReadMemory = Read;
 			cpu.WriteMemory = Write;
-
-			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
-			unusedPinTTLCycles = 40;
 
             // perform hard reset
             HardReset();
@@ -74,10 +66,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             // NMI is high on startup (todo: verify)
             pinNMILast = true;
-
-            // reset unused IO pin TTLs
-            unusedPinTTL0 = 0;
-            unusedPinTTL1 = 0;
         }
 
 		// ------------------------------------
@@ -88,35 +76,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			if (ReadAEC() && !freezeCpu)
-			{
-				// the 6502 core expects active high
-				// so we reverse the polarity here
-				bool thisNMI = ReadNMI();
-				if (!thisNMI && pinNMILast)
-					cpu.NMI = true;
-				else
-					cpu.NMI = false;
-				pinNMILast = thisNMI;
+            cpu.RDY = ReadRDY();
 
-				cpu.IRQ = !ReadIRQ();
-				cpu.ExecuteOne();
-			}
+            // the 6502 core expects active high
+            // so we reverse the polarity here
+            bool thisNMI = ReadNMI();
+            if (!thisNMI && pinNMILast)
+                cpu.NMI = true;
+            else
+                cpu.NMI = false;
+            pinNMILast = thisNMI;
 
-			// unfreeze cpu if BA is high
-			if (ReadRDY()) freezeCpu = false;
-
-			// process unused pin TTL
-			if (unusedPinTTL0 == 0)
-				unusedPin0 = false;
-			else
-				unusedPinTTL0--;
-
-			if (unusedPinTTL1 == 0)
-				unusedPin1 = false;
-			else
-				unusedPinTTL1--;
-		}
+            cpu.IRQ = !ReadIRQ();
+            cpu.ExecuteOne();
+        }
 
 		// ------------------------------------
 
@@ -162,10 +135,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public byte Read(ushort addr)
 		{
-			// cpu freezes after first read when RDY is low
-			if (!ReadRDY())
-				freezeCpu = true;
-
 			if (addr == 0x0000)
 				return port.Direction;
 			else if (addr == 0x0001)
@@ -177,13 +146,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public void SyncState(Serializer ser)
         {
             cpu.SyncState(ser);
-            ser.Sync("freezeCpu", ref freezeCpu);
             ser.Sync("pinNMILast", ref pinNMILast);
-            ser.Sync("unusedPin0", ref unusedPin0);
-            ser.Sync("unusedPin1", ref unusedPin1);
-            ser.Sync("unusedPinTTL0", ref unusedPinTTL0);
-            ser.Sync("unusedPinTTL1", ref unusedPinTTL1);
-            ser.Sync("unusedPinTTLCycles", ref unusedPinTTLCycles);
         }
 
         public void Write(ushort addr, byte val)
