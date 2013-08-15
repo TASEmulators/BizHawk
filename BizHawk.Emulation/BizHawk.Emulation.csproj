@@ -98,6 +98,10 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\Disk\VIC1541.cs" />
     <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\MOS6569.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Interface.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Internal.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Rom.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
