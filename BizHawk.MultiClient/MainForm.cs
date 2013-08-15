@@ -138,6 +138,7 @@ namespace BizHawk.MultiClient
 		/// number of frames to autodump
 		/// </summary>
 		int autoDumpLength;
+        bool autoCloseOnDump = false;
 
 		static MainForm()
 		{
@@ -243,18 +244,20 @@ namespace BizHawk.MultiClient
 				}
 
 				string arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--movie="))
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-type="))
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-name="))
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-length="))
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
-				else
-					cmdRom = arg;
+                if (arg.StartsWith("--load-slot="))
+                    cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--movie="))
+                    cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-type="))
+                    cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-name="))
+                    cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-length="))
+                    int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
+                else if (arg.StartsWith("--dump_close="))
+                    autoCloseOnDump = true;
+                else
+                    cmdRom = arg;
 			}
 
 			if (cmdRom != null)
@@ -3762,8 +3765,14 @@ namespace BizHawk.MultiClient
 				if (autoDumpLength > 0)
 				{
 					autoDumpLength--;
-					if (autoDumpLength == 0) // finish
-						StopAVI();
+                    if (autoDumpLength == 0) // finish
+                    {
+                        StopAVI();
+                        if (autoCloseOnDump)
+                        {
+                            Close();
+                        }
+                    }
 				}
 			}
 		}
