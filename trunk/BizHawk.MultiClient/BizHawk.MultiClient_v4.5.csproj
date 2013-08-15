@@ -154,6 +154,7 @@
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\WavWriter.cs" />
+    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BizBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,12 +223,6 @@
     <Compile Include="config\NewPathConfig.Designer.cs">
       <DependentUpon>NewPathConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PathConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PathConfig.Designer.cs">
-      <DependentUpon>PathConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\PathInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,8 +242,10 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="CoreFileProvider.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="FirmwareManager.cs" />
     <Compile Include="GBAtools\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -938,9 +935,6 @@
     <EmbeddedResource Include="config\MessageConfig.resx">
       <DependentUpon>MessageConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PathConfig.resx">
-      <DependentUpon>PathConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\SoundConfig.resx">
       <DependentUpon>SoundConfig.cs</DependentUpon>
