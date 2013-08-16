@@ -15,10 +15,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
         public int ReadAddress()
         {
             int addr = 0xFFFF;
-            addr &= cpu.OutputAddress();
-            addr &= expansion.OutputAddress();
-            addr &= vic.OutputAddress();
+            addr &= cpu.Address;
+            addr &= expansion.Address;
+            addr &= vic.Address;
             return addr;
+        }
+
+        public int ReadData()
+        {
+            int data = 0xFF;
+            data &= expansion.Data;
+            if (pla.Basic)
+                data &= basicRom.Data;
+            if (pla.CharRom)
+                data &= characterRom.Data;
+            if (pla.GraphicsRead)
+                data &= colorRam.Data;
+            if (pla.IO)
+            {
+                data &= sid.Data;
+                data &= vic.Data;
+            }
+            data &= cpu.Data;
+            data &= kernalRom.Data;
+            data &= memory.Data;
+            return data;
         }
     }
 }

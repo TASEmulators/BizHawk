@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
     {
         public Func<int> InputAddress;
         public Func<int> InputData;
-        public Func<bool> InputSelect;
 
         protected int addressMask;
         protected int dataMask;
@@ -26,9 +25,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         {
             get
             {
-                if (InputSelect())
-                    return memory[InputAddress() & addressMask] & dataMask;
-                return 0xFF;
+                return memory[InputAddress() & addressMask] & dataMask;
             }
         }
 

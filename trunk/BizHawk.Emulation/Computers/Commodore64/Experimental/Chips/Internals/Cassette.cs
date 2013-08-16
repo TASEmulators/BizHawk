@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 
         virtual public bool Data { get { return true; } }
         public bool OutputData() { return Data; }
-        virtual public bool OutputSense() { return Sense; }
+        public bool OutputSense() { return Sense; }
         virtual public int Peek(int addr) { return 0xFF; }
         virtual public void Poke(int addr, int val) { }
         virtual public void Precache() { }

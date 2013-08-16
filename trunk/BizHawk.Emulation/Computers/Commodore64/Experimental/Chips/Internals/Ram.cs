@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 
         virtual public void Execute()
         {
-            if (InputWrite() && InputSelect())
+            if (InputWrite())
                 memory[InputAddress() & addressMask] = InputData() & dataMask;
         }
     }

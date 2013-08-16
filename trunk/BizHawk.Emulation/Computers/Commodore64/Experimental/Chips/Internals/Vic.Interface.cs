@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
     public abstract partial class Vic
     {
         public Func<int> InputAddress;
-        public Func<bool> InputChipSelect;
         public Func<int> InputData;
         public Func<bool> InputRead;
 
@@ -74,37 +73,37 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             return Address;
         }
 
-        virtual public bool OutputAEC()
+        public bool OutputAEC()
         {
             return AEC;
         }
 
-        virtual public bool OutputBA()
+        public bool OutputBA()
         {
             return BA;
         }
 
-        virtual public bool OutputCAS()
+        public bool OutputCAS()
         {
             return CAS;
         }
 
-        virtual public int OutputData()
+        public int OutputData()
         {
             return Data;
         }
 
-        virtual public bool OutputIRQ()
+        public bool OutputIRQ()
         {
             return IRQ;
         }
 
-        virtual public bool OutputPHI0()
+        public bool OutputPHI0()
         {
             return PHI0;
         }
 
-        virtual public bool OutputRAS()
+        public bool OutputRAS()
         {
             return RAS;
         }
