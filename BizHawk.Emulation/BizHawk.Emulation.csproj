@@ -102,6 +102,8 @@
     <Compile Include="Computers\Commodore64\Experimental\C64.Glue.cs" />
     <Compile Include="Computers\Commodore64\Experimental\C64NTSC.cs" />
     <Compile Include="Computers\Commodore64\Experimental\C64PAL.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Interface.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Internal.cs" />
     <Compile Include="Computers\Commodore64\Experimental\IMotherboard.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cpu.Interface.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cpu.Internal.cs" />
