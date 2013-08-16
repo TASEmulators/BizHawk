@@ -12,15 +12,25 @@ namespace BizHawk.DiscSystem
 		/// <summary>
 		/// finds a file in the same directory with an extension alternate to the supplied one.
 		/// If two are found, an exception is thrown (later, we may have heuristics to try to acquire the desired content)
+		/// TODO - this whole concept could be turned into a gigantic FileResolver class and be way more powerful
 		/// </summary>
-		string FindAlternateExtensionFile(string path, bool caseSensitive)
+		string FindAlternateExtensionFile(string path, bool caseSensitive, string baseDir)
 		{
 			string targetFile = Path.GetFileName(path);
 			string targetFragment = Path.GetFileNameWithoutExtension(path);
 			var di = new FileInfo(path).Directory;
+			
+			//if the directory doesnt exist, it may be because it was a full path or something. try an alternate base directory
+			if (!di.Exists)
+				di = new DirectoryInfo(baseDir);
+
 			var results = new List<FileInfo>();
 			foreach (var fi in di.GetFiles())
 			{
+				//dont acquire cue files...
+				if (Path.GetExtension(fi.FullName).ToLower() == ".cue")
+					continue;
+
 				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
 				int cmp = string.Compare(fragment, targetFragment, !caseSensitive);
@@ -36,11 +46,12 @@ namespace BizHawk.DiscSystem
 			return results[0].FullName;
 		}
 
-		void FromCuePathInternal(string cuePath, CueBinPrefs prefs)
+		//cue files can get their data from other sources using this
+		Dictionary<string, string> CueFileResolver = new Dictionary<string, string>();
+
+		void FromCueInternal(Cue cue, string cueDir, CueBinPrefs prefs)
 		{
-			string cueDir = Path.GetDirectoryName(cuePath);
-			var cue = new Cue();
-			cue.LoadFromPath(cuePath);
+			//TODO - add cue directory to CueBinPrefs???? could make things cleaner...
 
 			var session = new DiscTOC.Session();
 			session.num = 1;
@@ -56,18 +67,22 @@ namespace BizHawk.DiscSystem
 
 				string blobPath = Path.Combine(cueDir, cue_file.Path);
 
+				if (CueFileResolver.ContainsKey(cue_file.Path))
+					blobPath = CueFileResolver[cue_file.Path];
+
 				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
-				int blob_length_aba, blob_leftover;
+				int blob_length_aba;
+				long blob_length_bytes;
 				IBlob cue_blob = null;
 
 				//try any way we can to acquire a file
 				if (!File.Exists(blobPath) && prefs.ExtensionAware)
 				{
-					blobPath = FindAlternateExtensionFile(blobPath, prefs.CaseSensitive);
+					blobPath = FindAlternateExtensionFile(blobPath, prefs.CaseSensitive, cueDir);
 				}
 
 				if (!File.Exists(blobPath))
-					throw new DiscReferenceException(blobPath,"");
+					throw new DiscReferenceException(blobPath, "");
 
 				//some simple rules to mutate the file type if we received something fishy
 				string blobPathExt = Path.GetExtension(blobPath).ToLower();
@@ -85,12 +100,12 @@ namespace BizHawk.DiscSystem
 					Blobs.Add(blob);
 
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
+					blob_length_bytes = blob.Length;
 					cue_blob = blob;
 				}
 				else if (cue_file.FileType == Cue.CueFileType.ECM)
 				{
-					if(!Blob_ECM.IsECM(blobPath))
+					if (!Blob_ECM.IsECM(blobPath))
 					{
 						throw new DiscReferenceException(blobPath, "an ECM file was specified or detected, but it isn't a valid ECM file. You've got issues. Consult your iso vendor.");
 					}
@@ -99,7 +114,7 @@ namespace BizHawk.DiscSystem
 					blob.Parse(blobPath);
 					cue_blob = blob;
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
+					blob_length_bytes = blob.Length;
 				}
 				else if (cue_file.FileType == Cue.CueFileType.Wave)
 				{
@@ -142,7 +157,7 @@ namespace BizHawk.DiscSystem
 					}
 
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
+					blob_length_bytes = blob.Length;
 					cue_blob = blob;
 				}
 				else throw new Exception("Internal error - Unhandled cue blob type");
@@ -151,6 +166,9 @@ namespace BizHawk.DiscSystem
 
 				//start timekeeping for the blob. every time we hit an index, this will advance
 				int blob_timestamp = 0;
+
+				//because we can have different size sectors in a blob, we need to keep a file cursor within the blob
+				long blob_cursor = 0;
 
 				//the aba that this cue blob starts on
 				int blob_disc_aba_start = Sectors.Count;
@@ -190,9 +208,7 @@ namespace BizHawk.DiscSystem
 
 					int blob_track_start = blob_timestamp;
 
-					//enforce a rule of our own: every track within the file must have the same sector size
-					//we do know that files can change between track types within a file, but we're not sure what to do if the sector size changes
-					if (Cue.BINSectorSizeForTrackType(cue_track.TrackType) != blob_sectorsize) throw new Cue.CueBrokenException("Found different sector sizes within a cue blob. We don't know how to handle that.");
+					//once upon a time we had a check here to prevent a single blob from containing variant sector sizes. but we support that now.
 
 					//check integrity of track sequence and setup data structures
 					//TODO - check for skipped tracks in cue parser instead
@@ -265,25 +281,26 @@ namespace BizHawk.DiscSystem
 							{
 								case ETrackType.Audio:  //all 2352 bytes are present
 								case ETrackType.Mode1_2352: //2352 bytes are present, containing 2048 bytes of user data as well as ECM
-								case ETrackType.Mode2_2352: //2352 bytes are present, containing 2336 bytes of user data, with no ECM
+								case ETrackType.Mode2_2352: //2352 bytes are present, containing the entirety of a mode2 sector (could be form0,1,2)
 									{
 										//these cases are all 2352 bytes
 										//in all these cases, either no ECM is present or ECM is provided.
 										//so we just emit a Sector_Raw
 										Sector_RawBlob sector_rawblob = new Sector_RawBlob();
 										sector_rawblob.Blob = cue_blob;
-										sector_rawblob.Offset = (long)blob_timestamp * 2352;
-										Sector_Raw sector_raw = new Sector_Raw();
+										sector_rawblob.Offset = blob_cursor;
+										blob_cursor += 2352;
+										Sector_Mode1_or_Mode2_2352 sector_raw;
+										if(cue_track.TrackType == ETrackType.Mode1_2352)
+											sector_raw  = new Sector_Mode1_2352();
+										else if (cue_track.TrackType == ETrackType.Audio)
+											sector_raw = new Sector_Mode1_2352(); //TODO should probably make a new sector adapter which errors if 2048B are requested
+										else if (cue_track.TrackType == ETrackType.Mode2_2352)
+											sector_raw = new Sector_Mode2_2352();
+										else throw new InvalidOperationException();
+
 										sector_raw.BaseSector = sector_rawblob;
-										//take care to handle final sectors that are too short.
-										if (is_last_aba_in_track && blob_leftover > 0)
-										{
-											Sector_ZeroPad sector_zeropad = new Sector_ZeroPad();
-											sector_zeropad.BaseSector = sector_rawblob;
-											sector_zeropad.BaseLength = 2352 - blob_leftover;
-											sector_raw.BaseSector = sector_zeropad;
-											Sectors.Add(new SectorEntry(sector_raw));
-										}
+
 										Sectors.Add(new SectorEntry(sector_raw));
 										break;
 									}
@@ -294,8 +311,8 @@ namespace BizHawk.DiscSystem
 										int curr_disc_aba = Sectors.Count;
 										var sector_2048 = new Sector_Mode1_2048(curr_disc_aba + 150);
 										sector_2048.Blob = new ECMCacheBlob(cue_blob);
-										sector_2048.Offset = (long)blob_timestamp * 2048;
-										if (blob_leftover > 0) throw new Cue.CueBrokenException("TODO - Incomplete 2048 byte/sector bin files (iso files) not yet supported.");
+										sector_2048.Offset = blob_cursor;
+										blob_cursor += 2048;
 										Sectors.Add(new SectorEntry(sector_2048));
 										break;
 									}
@@ -319,6 +336,13 @@ namespace BizHawk.DiscSystem
 					toc_track.length_aba = Sectors.Count - toc_track.Indexes[1].aba;
 					curr_track++;
 
+					//if we ran off the end of the blob, pad it with zeroes, I guess
+					if (blob_cursor > blob_length_bytes)
+					{
+						//mutate the blob to an encapsulating Blob_ZeroPadAdapter
+						Blobs[Blobs.Count - 1] = new Blob_ZeroPadAdapter(Blobs[Blobs.Count - 1], blob_length_bytes, blob_cursor - blob_length_bytes);
+					}
+
 				} //track loop
 			} //file loop
 
@@ -337,6 +361,14 @@ namespace BizHawk.DiscSystem
 				session.length_aba = lastTrack.Indexes[1].aba + lastTrack.length_aba - firstTrack.Indexes[0].aba;
 				TOC.length_aba += toc_session.length_aba;
 			}
+		}
+
+		void FromCuePathInternal(string cuePath, CueBinPrefs prefs)
+		{
+			string cueDir = Path.GetDirectoryName(cuePath);
+			var cue = new Cue();
+			cue.LoadFromPath(cuePath);
+			FromCueInternal(cue, cueDir, prefs);
 		}
 	}
 
@@ -451,8 +483,13 @@ namespace BizHawk.DiscSystem
 		{
 			FileInfo fiCue = new FileInfo(cuePath);
 			if (!fiCue.Exists) throw new FileNotFoundException();
-			File.ReadAllText(cuePath);
-			TextReader tr = new StreamReader(cuePath);
+			string cueString = File.ReadAllText(cuePath);
+			LoadFromString(cueString);
+		}
+
+		public void LoadFromString(string cueString)
+		{
+			TextReader tr = new StringReader(cueString);
 
 			bool track_has_pregap = false;
 			bool track_has_postgap = false;

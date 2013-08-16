@@ -26,6 +26,9 @@ namespace BizHawk.MultiClient
 		private void SetToolTips()
 		{
 			//Set button hotkey mapping into tooltips
+			// TODO: REFIX this to work with the new controller system
+			// it isn't horribly difficult, but has to be done.
+			/*
 			toolTip1.SetToolTip(ZERO, Global.Config.TI83Controller[0]._0);
 			toolTip1.SetToolTip(ONE, Global.Config.TI83Controller[0]._1);
 			toolTip1.SetToolTip(TWO, Global.Config.TI83Controller[0]._2);
@@ -76,6 +79,7 @@ namespace BizHawk.MultiClient
 			toolTip1.SetToolTip(DEL, Global.Config.TI83Controller[0].DEL);
 			toolTip1.SetToolTip(COMMA, Global.Config.TI83Controller[0].COMMA);
 			toolTip1.SetToolTip(SIN, Global.Config.TI83Controller[0].SIN);
+			*/
 		}
 
 		public void StopToolTips()

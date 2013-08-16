@@ -78,6 +78,7 @@ Angriff der Luftflotten (a.k.a. Paris Attack),Starsoft,,,,,,,A2600PAL,,,adf1afac
 Apples and Dolls,CCE,,,,,,,A2600NTSC,,,e73838c43040bcbc83e4204a3e72eef4,
 Aquaventure,Atari,,,,,Unbelievably Rare,A8K,A2600NTSC,,,038e1e79c3d4410defde4bfe0b99cc32,
 Aquaventure,CCE,,,,,,A8K,A2600NTSC,,,f69d4fcf76942fcd9bdf3fd8fde790fb,
+Arkanoid (0911),,,Homebrew,2011,,,A7832P,A7800NTSC,,,0a9e58ef5eb9ff93246e0fff684dc7f1,
 Armor Ambush,Mattel,,,1982,MT5661,Common,,A2600NTSC,,,a7b584937911d60c120677fe0d47f36f,
 Armor Ambush,Telegames,,,1982,,,,A2600PAL,,,d0af33865512e9b6900714c26db5fa23,
 Artillery Duel,Xonox,,,1983,99004,Extremely Rare,,A2600NTSC,,,c77c35a6fc3c0f12bf9e8bae48cba54b,
@@ -165,6 +166,8 @@ Beany Bopper,20th Century Fox,,,1982,11002,Rare,,A2600NTSC,,,d0b9df57bfea66378c0
 Beany Bopper,CCE,,,,,,,A2600NTSC,,,6a9e0c72fab92df70084eccd9061fdbd,
 Beast Invaders,,Jeff 'Yak' Minter,Hack,,,,,A2600NTSC,,,235436ab0832370e73677c9c6f0c8b06,
 Beat 'Em and Eat 'Em,Mystique,,,,1003,Extremely Rare,,A2600NTSC,Paddles,Paddles,59e96de9628e8373d1c685f5e57dcf10,
+Beef Drop,,Ken Siders,Homebrew,2006,,,,A7800NTSC,,,c534db0a062225b17cfb8ecce0fb9090,http://www.atariage.com/software_page.html?SoftwareLabelID=2782
+Bentley Bear - Crystal Quest,,Bob DeCrescenzo,Homebrew,2012,,,A78S9,A7800NTSC,,,6da5b1b9fa0001e3517f6084ff651b07
 Berenstain Bears,Coleco,,,1982,2658,Unbelievably Rare,A8K,A2600NTSC,,,ee6665683ebdb539e89ba620981cb0f6,
 Bermuda,,,,,SS-009,Extremely Rare,,A2600PAL,,,073d7aff37b7601431e4f742c36c0dc1,
 Bermuda,Rainbow Vision,,,,SS-009,Extremely Rare,,A2600PAL,,,cf3c2725f736d4bcb84ad6f42de62a41,
@@ -366,6 +369,9 @@ Crackpots,Activision,Dan Kitchen,,,AX-029,Rare,,A2600PAL,,,f3c431930e035a457fe37
 Crackpots,CCE,Dan Kitchen,,,,,,A2600NTSC,,,3f3ad2765c874ca13c015ca6a44a40a1,
 Crash Dive,20th Century Fox,,,1983,11031,Extremely Rare,,A2600NTSC,,,fb88c400d602fe759ae74ef1716ee84e,
 Crash Dive,20th Century Fox,Fabrizio Zavagli,Hack,,,,,A2600PAL,,,9072c142728a3a3d994956d03bfacba2,
+Crazy Brix,,Bob DeCrescenzo,Homebrew,2011,,,A7816,A7800NTSC,,,0c9b124355d5328697a3b9e0011353f2
+Crazy Brix,,Bob DeCrescenzo,Homebrew,2011,,,A7816,A7800NTSC,,,45e1d527becc96d1715e810d1c07ac27
+Crazy Brix,,Bob DeCrescenzo,Homebrew,2011,,,A7816,A7800PAL,,,fc7db1a9243ce2140f716762b8352a5c
 Crazy Climber,,,,,CX2683,Extremely Rare,,A2600NTSC,,,55ef7b65066428367844342ed59f956c,http://www.atariage.com/manual_html_page.html?SoftwareID=954
 Crazy Valet,Hozer Video Games,,Homebrew,,,,,A2600NTSC,,,4a7eee19c2dfb6aeb4d9d0a01d37e127,
 Criminal Pursuit,,,,,,Extremely Rare,,A2600NTSC,,,48f18d69799a5f5451a5f0d17876acef,
@@ -556,6 +562,7 @@ F-18 Hornet,Absolute,John Van Ryzin,,1988,AP-044,Scarce,A78AB,A7800NTSC,,,2251a6
 F-18 Hornet,Absolute,John Van Ryzin,,1988,AP-044,Scarce,A78AB,A7800PAL,,,e7709da8e49d3767301947a0a0b9d2e6,http://www.atariage.com/manual_thumbs.html?SoftwareID=2129
 Face Invaders 2,,Barry Laws Jr.,Hack,,,,,A2600NTSC,,,7926083ad423ed685de3b3a04a914315,
 Face Invaders Deluxe,,Barry Laws Jr.,Hack,,,,,A2600NTSC,,,0af51ceb4aecc7a8fc89781ac44a1973,
+FailSafe,,Bob DeCrescenzo,Homebrew,2009,,,A7848,A7800NTSC,,,6287727ab36391a62f728bbdee88675c,
 Fantastic Voyage,20th Century Fox,,,1982,11008,Rare,,A2600NTSC,,,b80d50ecee73919a507498d0a4d922ae,
 Farmyard Fun,,,,,TP-617,Extremely Rare,,A2600NTSC,,,f7e07080ed8396b68f2e5788a5c245e2,
 Fast Eddie,,,,,,,,A2600PAL,,,67631ea5cfe44066a1e76ddcb6bcb512,
@@ -817,6 +824,10 @@ Joust,Atari,,,1987,CX7806,Common,,A7800NTSC,,,f18b3b897a25ab3885b43b4bd141b396,h
 Joust,Atari,,,1987,CX7806,Common,,A7800PAL,,,f2dae0264a4b4a73762b9d7177e989f6,http://www.atariage.com/manual_thumbs.html?SoftwareID=2135
 Jr. Pac-Man,Atari,,,1984,CX26123,Uncommon,A16KR,A2600NTSC,,,36c29ceee2c151b23a1ad7aa04bd529d,
 Jr. Pac-Man,Atari,,,1984,CX26123,Uncommon,A16KR,A2600PAL,,,297c405afd01f3ac48cdb67b00d273fe,
+Jr. Pac-Man (Tunnels),,Bob DeCrescenzo,Homebrew,2009,,,A7832P,A7800NTSC,,,6bc2daeb48e28d103a4298a276e7e551,
+Jr. Pac-Man,,Bob DeCrescenzo,Homebrew,2009,,,A78SGR,A7800NTSC,,,8281ab17fa3bfc0a6c497d6a4f350061,
+Jr. Pac-Man,,Bob DeCrescenzo,Homebrew,2009,,,A78SGR,A7800NTSC,,,0b3baf47886915dd2eec5da7671bfa63,
+Jr. Ms. Pac-Man,,Bob DeCrescenzo,Homebrew,2009,,,A7832P,A7800NTSC,,,548ba2e54e4fc45ab84ed634d702c136,
 Jumping Jack,Dynamics,,,,,,,A2600PAL,,,80e1410ec98089e0733cc09e584dba4b,
 Jungle Fever,Mystique,,,,1011,Extremely Rare,,A2600NTSC,,,2cccc079c15e9af94246f867ffc7e9bf,
 Jungle Hunt,Atari,,,1983,CX2688,Uncommon,A8K,A2600NTSC,,,2bb9f4686f7e08c5fcc69ec1a1c66fe7,
@@ -959,6 +970,8 @@ Meltdown,Atari,,,1990,,Common,A78SG,A7800NTSC,Lightgun,Lightgun,bedc30ec43587e0c
 Meltdown,Atari,,,1990,,Common,A78SG,A7800PAL,Lightgun,Lightgun,c80155d7eec9e3dcb79aa6b83c9ccd1e,http://www.atariage.com/manual_thumbs.html?SoftwareID=2140
 Merlin's Walls (Standard Edition),Ebivision,,,1999,,,,A2600NTSC,,,50568c80ac61cab789d9923c9b05b68e,
 Meteor Defense,ITT Family Games,,,,554-33391,Extremely Rare,,A2600PAL,,,6522717cfd75d1dba252cbde76992090,
+Meteor Shower,,Bob DeCrescenzo,Homebrew,2011,,,A7816,A7800NTSC,,,b02f93661f4b7e712810d2bf8e02ad79,
+Meteor Shower,,Bob DeCrescenzo,Homebrew,2011,,,A7816,A7800PAL,,,2f1f199ecc2b414d28e01f0de53ca8f7,
 Midnight Magic,Atari,,,1984,CX26129,Rare,A16K,A2600NTSC,,,f1554569321dc933c87981cf5c239c43,
 Midnight Magic,Atari,,,1984,CX26129,Rare,A16K,A2600PAL,,,da732c57697ad7d7af414998fa527e75,
 Midnight Mutants,Atari,,,1990,CX7889,Scarce,A78SG,A7800NTSC,,,bc1e905db1008493a9632aa83ab4682b,http://www.atariage.com/manual_thumbs.html?SoftwareID=2141
@@ -1008,6 +1021,7 @@ Monster aus dem All,Rainbow Vision,,,1983,,,,A2600PAL,,,c31a17942d162b80962cb1f7
 Monstercise,,,Prototype,,CX26131,,,A2600NTSC,Keypad,Keypad,6913c90002636c1487538d4004f7cac2,
 Montezuma's Revenge - Starring Panama Joe,Parker Bros,,,1983,PB5760,Extremely Rare,PB8K,A2600NTSC,,,3347a6dd59049b15a38394aa2dafa585,
 Montezuma's Revenge - Starring Panama Joe,Parker Bros,Thomas Jentzsch,Hack,1983,,,PB8K,A2600PAL,,,9f59eddf9ba91a7d93bce7ee4b7693bc,
+Moon Cresta,,Bob DeCrescenzo,Homebrew,2011,,,A7832,A7800NTSC,,,9ff38ea62004201d870caa8bd9463525,
 Moon Patrol,Atari,,,1983,CX2692,Uncommon,A8K,A2600NTSC,,,515046e3061b7b18aa3a551c3ae12673,
 Moon Patrol,Atari,,,1983,CX2692,Uncommon,A8K,A2600PAL,,,65490d61922f3e3883ee1d583ce10855,
 Moon Patrol,CCE,,,,,,,A2600NTSC,,,6de924c2297c8733524952448d54a33c,
@@ -1133,6 +1147,7 @@ Oystron (V2.82),,,Homebrew,,,,,A2600NTSC,,,70d14c66c319683b4c19abbe0e3db57c,http
 Oystron (V2.85),,,Homebrew,,,,,A2600NTSC,,,5360693f1eb90856176bd1c0a7b17432,http://www.io.com/~nickb/atari/oystron.html
 Oystron (V2.9),,,Homebrew,1997,,,,A2600NTSC,,,91f0a708eeb93c133e9672ad2c8e0429,http://www.io.com/~nickb/atari/oystron.html
 Oystron X,,,Homebrew,,,,,A2600NTSC,,,aa2c4b32656bde9a75042a4d158583e1,http://www.io.com/~nickb/atari/oystron.html
+PacArcade,,,Homebrew,2011,,,A7816,A7800NTSC,,,90223a8a363bdf643a19d0f97e63b1b2,
 Pac Ghost Sprite Demo,,,,,,,,A2600NTSC,,,d0498baca989e792db4b8270a02b9624,
 Pac Ghost Sprite Demo 2,,,,,,,,A2600NTSC,,,bd430c2193045c68d1a20a018a976248,
 Pac Invaders,ZUT,,,,,,,A2600NTSC,,,f9da42f91a1c5cfa344d2ff440c6f8d4,
@@ -1394,6 +1409,8 @@ Return of Mario Bros.,,Philip R. Frey,Hack,,,,,A2600NTSC,,,5e1cd11a6d41fc15cf479
 Revenge of the Beefsteak Tomatoes,20th Century Fox,,,1983,11016,Rare,,A2600NTSC,,,4f64d6d0694d9b7a1ed7b0cb0b83e759,
 Riddle of the Sphinx,Imagic,Bob Smith,,1982,IA3600,Uncommon,,A2600NTSC,,,a995b6cbdb1f0433abc74050808590e6,
 Riddle of the Sphinx,Imagic,Bob Smith,,1982,IA3600,Uncommon,,A2600PAL,,,083e7cae41a874b2f9b61736c37d2ffe,
+Rip Off,,Bob DeCrescenzo,Homebrew,2012,,,A7816,A7800NTSC,,,43525a0405184875c2ecfd0196886a34,
+Rip Off,,Bob DeCrescenzo,Homebrew,2012,,,A7816,A7800PAL,,,106b409c6f4c219b1a3b3d099ead3b2b,
 River Patrol,Tigervision,,,,7-004,Extremely Rare,TV8K,A2600NTSC,,,31512cdfadfd82bfb6f196e3b0fd83cd,
 River Raid,Activision,Carol Shaw,,1982,AX-020,Uncommon,,A2600NTSC,,,393948436d1f4cc3192410bb918f9724,http://www.atariage.com/manual_thumbs.html?SoftwareID=1255
 River Raid,Activision,Carol Shaw,,1982,AX-020,Uncommon,,A2600NTSC,,,95c4576d6a14e2debfa0fd6f6ec254ab,http://www.atariage.com/manual_thumbs.html?SoftwareID=1255
@@ -1422,6 +1439,7 @@ Robot City (Version 0.12),,Thomas Jentzsch,Homebrew,,,,,A2600NTSC,,,3e1682ddaec4
 Robot City (Version 0.18),,Thomas Jentzsch,Homebrew,,,,,A2600NTSC,,,f954381f9e0f2009d1ac40dedd777b1a,
 Robot City (Version 0.21),,Thomas Jentzsch,Homebrew,,,,,A2600NTSC,,,97cd63c483fe3c68b7ce939ab8f7a318,
 Robot Fight (a.k.a. Space Robot),HomeVision,,,,1,Extremely Rare,,A2600PAL,,,1bef389e3dd2d4ca4f2f60d42c932509,
+Robot Finds Kitten,,Thomas Mathys,Homebrew,2004,,,A7832,A7800NTSC,,,505f05e7f161f62ccd749dab3c4a204b,
 Robot Tank,Activision,Alan Miller,,1983,AZ-028,Rare,DC8K,A2600NTSC,,,4f618c2429138e0280969193ed6c107e,
 Robot Tank,Activision,Alan Miller,,1983,AZ-028,Rare,DC8K,A2600PAL,,,f687ec4b69611a7f78bd69b8a567937a,
 Robot Tank TC,Activision,Thomas Jentzsch,Hack,,,,DC8K,A2600NTSC,,,fbb0151ea2108e33b2dbaae14a1831dd,
@@ -1437,6 +1455,7 @@ RUN Platform Demo,,,,,,,,A2600NTSC,,,0f341d1f4e144e3163d9a5fc5a662b79,
 Sabotage,Ultravision,,,,,,,A2600NTSC,,,88d8a1accab58cf1abb043613cf185e9,
 Saboteur,,,Prototype,,CX26119,,,A2600NTSC,,,1ec57bbd27bdbd08b60c391c4895c1cf,
 SALT Diagnostics,,,,,,,,A2600NTSC,,,a8916734ff8c64ec3342f4c73fd5b57d,
+Santa Simon,,,Homebrew,,,,A7848,A7800NTSC,,,ae85689b21bdf85cb9dc57c3b1fec9db,
 Save Mary,,Tod Frye,,,,,,A2600NTSC,,,4d502d6fb5b992ee0591569144128f99,
 Save Our Ship,,,,,,Extremely Rare,,A2600NTSC,,,ed1a784875538c7871d035b7a98c2433,
 Save Our Ship,,,,,,,,A2600PAL,,,49571b26f46620a85f93448359324c28,
@@ -1446,6 +1465,10 @@ Schiessbude,Starsoft,,,,,,,A2600PAL,,,2516f4f4b811ede4ecf6fbeb5d54a299,
 Schnapp die Apfeldiebe (a.k.a. Catch Time),Starsoft,,,,,,,A2600PAL,,,f6f1b27efc247a0e8d473ddb4269ff9e,
 Schnecke und Eichhoernchen,Bitcorp,,,1983,PG208,Rare,,A2600PAL,,,898b5467551d32af48a604802407b6e8,
 Schussel - der Polizistenschreck,Starsoft,,,,,Extremely Rare,,A2600PAL,,,7ff53f6922708119e7bf478d7d618c86,
+Scramble,,Bob DeCrescenzo,Hack,2012,,,,A7800NTSC,,,c265cfd65534a4514f226cb4c7f7d6bf
+Scramble,,Bob DeCrescenzo,Hack,2012,,,,A7800NTSC,,,57651b6c8e62811fab0361cea537b79c
+Scramble,,Bob DeCrescenzo,Hack,2012,,,,A7800PAL,,,1ee26fc6b06b4c9ba74931914b7e719d
+Scramble,,Bob DeCrescenzo,Hack,2012,,,,A7800PAL,,,65fe82f419f6583a0f9a736242cb303d
 Scrapyard Dog,Atari,,,1990,CX7879,Scarce,A78SG,A7800NTSC,,,980c35ae9625773a450aa7ef51751c04,http://www.atariage.com/manual_thumbs.html?SoftwareID=2148
 Scrapyard Dog,Atari,,,1990,CX7879,Scarce,A78SG,A7800PAL,,,53db322c201323fe2ca8f074c0a2bf86,http://www.atariage.com/manual_thumbs.html?SoftwareID=2148
 Scroller Demo,,Bob Colbert,,,,,,A2600NTSC,,,0f2e09c71cc216f79d22a804152ba24b,
@@ -1945,6 +1968,8 @@ Wizard of Wor,CBS Electronics,,,,M8774,Rare,,A2600NTSC,,,7e8aa18bc9502eb57daaf5e
 Wizard of Wor,CBS Electronics,,,,M8774,Rare,,A2600PAL,,,663ef22eb399504d5204c543b8a86bcd,
 Word Zapper,US Games,,,,VC 1003,Uncommon,,A2600NTSC,,,ec3beb6d8b5689e867bafb5d5f507491,
 Word Zapper,US Games,,,,,,,A2600PAL,,,37527966823ee9243d34c7da8302774f,
+Wasp (Standard Edition),,Mark Ball,Homebrew,2009,,,A7832,A7800NTSC,,,412cc5bfa08bd03244b9c4e8d46cd0a0,
+Worm (0703),,Mark Ball,Homebrew,2010,,,A7816,A7800NTSC,,,6813ffff510f930c867b3f0aba78ac85,
 Worm War I,20th Century Fox,,,1982,11001,Uncommon,,A2600NTSC,,,87f020daa98d0132e98e43db7d8fea7e,
 Worm War I,20th Century Fox,,,1982,,,,A2600PAL,,,52b448757081fd9fabf859f4e2f91f6b,
 Worm War I,CCE,,,,,,,A2600NTSC,,,007d18dedc1f0565f09c42aa61a6f585,

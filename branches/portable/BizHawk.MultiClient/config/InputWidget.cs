@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -11,18 +12,19 @@ namespace BizHawk.MultiClient
 	{
 		//TODO: when binding, make sure that the new key combo is not in one of the other bindings
 
-		int MaxBind = 4; //Max number of bindings allowed
-		int pos = 0;	 //Which mapping the widget will listen for
+		private int MaxBind = 4; //Max number of bindings allowed
+		private int pos = 0;	 //Which mapping the widget will listen for
 		private Timer timer = new Timer();
-		public bool AutoTab = true;
-		string[] Bindings = new string[4];
-		string wasPressed = "";
-		ToolTip tooltip1 = new ToolTip();
-		public string ButtonName;
-		Color _highlight_color = Color.LightCyan;
-		Color _no_highlight_color = SystemColors.Window;
-
+		private string[] _bindings = new string[4];
+		private string wasPressed = "";
+		private ToolTip tooltip1 = new ToolTip();
+		private Color _highlight_color = Color.LightCyan;
+		private Color _no_highlight_color = SystemColors.Window;
 		private bool conflicted = false;
+
+		public bool AutoTab = true;
+		public string WidgetName;
+
 		public bool Conflicted
 		{
 			get
@@ -71,17 +73,18 @@ namespace BizHawk.MultiClient
 		{
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
-			InitializeBindings();
+			_clearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
-		public InputWidget(int maxBindings)
+		public InputWidget(int maxBindings, bool autotab)
 		{
+			this.AutoTab = autotab;
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			MaxBind = maxBindings;
-			Bindings = new string[MaxBind];
-			InitializeBindings();
+			_bindings = new string[MaxBind];
+			_clearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
@@ -93,11 +96,11 @@ namespace BizHawk.MultiClient
 		}
 #endif
 
-		private void InitializeBindings()
+		private void _clearBindings()
 		{
-			for (int x = 0; x < MaxBind; x++)
+			for (int i = 0; i < MaxBind; i++)
 			{
-				Bindings[x] = "";
+				_bindings[i] = "";
 			}
 		}
 
@@ -125,8 +128,8 @@ namespace BizHawk.MultiClient
 
 		public void EraseMappings()
 		{
-			ClearBindings();
-			conflicted = false;
+			_clearBindings();
+			Conflicted = false;
 			Text = "";
 		}
 
@@ -142,8 +145,8 @@ namespace BizHawk.MultiClient
 			{
 				if (TempBindingStr == "Escape")
 				{
-					ClearBindings();
-					conflicted = false;
+					_clearBindings();
+					Conflicted = false;
 					Increment();
 					return;
 				}
@@ -153,7 +156,7 @@ namespace BizHawk.MultiClient
 
 				if (!IsDuplicate(TempBindingStr))
 				{
-					Bindings[pos] = TempBindingStr;
+					_bindings[pos] = TempBindingStr;
 				}
 				wasPressed = TempBindingStr;
 
@@ -165,13 +168,7 @@ namespace BizHawk.MultiClient
 		//Checks if the key is already mapped to this widget
 		private bool IsDuplicate(string binding)
 		{
-			for (int x = 0; x < MaxBind; x++)
-			{
-				if (Bindings[x] == binding)
-					return true;
-			}
-
-			return false;
+			return _bindings.FirstOrDefault(x => x == binding) != null;
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
@@ -221,50 +218,50 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void ClearBindings()
-		{
-			for (int i = 0; i < MaxBind; i++)
-			{
-				Bindings[i] = "";
-			}
-		}
-
 		public void UpdateLabel()
 		{
 			Text = "";
 			for (int x = 0; x < MaxBind; x++)
 			{
-				if (Bindings[x].Length > 0)
+				if (_bindings[x].Length > 0)
 				{
-					Text += Bindings[x];
-					if (x < MaxBind - 1 && Bindings[x+1].Length > 0)
+					Text += _bindings[x];
+					if (x < MaxBind - 1 && _bindings[x+1].Length > 0)
 						Text += ", ";
 				}
 			}
 		}
 
-		public void SetBindings(string bindingsString)
+		public string Bindings
 		{
-			Text = "";
-			ClearBindings();
-			string str = bindingsString.Trim();
-			int x;
-			for (int i = 0; i < MaxBind; i++)
+			get
 			{
-				str = str.Trim();
-				x = str.IndexOf(',');
-				if (x < 0)
-				{
-					Bindings[i] = str;
-					str = "";
-				}
-				else
-				{
-					Bindings[i] = str.Substring(0, x);
-					str = str.Substring(x + 1, str.Length - x - 1);
-				}
+				return Text;
 			}
-			UpdateLabel();
+			set
+			{
+				Text = "";
+				_clearBindings();
+				string str = value.Trim();
+				int x;
+				for (int i = 0; i < MaxBind; i++)
+				{
+					str = str.Trim();
+					x = str.IndexOf(',');
+					if (x < 0)
+					{
+						_bindings[i] = str;
+						str = "";
+					}
+					else
+					{
+						_bindings[i] = str.Substring(0, x);
+						str = str.Substring(x + 1, str.Length - x - 1);
+					}
+				}
+
+				UpdateLabel();
+			}
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)

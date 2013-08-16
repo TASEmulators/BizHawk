@@ -64,6 +64,7 @@ static const gfx_plugin_functions dummy_gfx = {
     dummyvideo_ViWidthChanged,
     dummyvideo_ReadScreen2,
     dummyvideo_SetRenderingCallback,
+    dummyvideo_ResizeVideoOutput,
     dummyvideo_FBRead,
     dummyvideo_FBWrite,
     dummyvideo_FBGetFrameBufferInfo
@@ -161,6 +162,7 @@ static m64p_error plugin_connect_gfx(m64p_dynlib_handle plugin_handle)
         if (l_GfxAttached)
             return M64ERR_INVALID_STATE;
 
+        /* set function pointers for required functions */
         if (!GET_FUNC(ptr_PluginGetVersion, gfx.getVersion, "PluginGetVersion") ||
             !GET_FUNC(ptr_ChangeWindow, gfx.changeWindow, "ChangeWindow") ||
             !GET_FUNC(ptr_InitiateGFX, gfx.initiateGFX, "InitiateGFX") ||
@@ -184,6 +186,9 @@ static m64p_error plugin_connect_gfx(m64p_dynlib_handle plugin_handle)
             return M64ERR_INPUT_INVALID;
         }
 
+        /* set function pointers for optional functions */
+        gfx.resizeVideoOutput = (ptr_ResizeVideoOutput) osal_dynlib_getproc(plugin_handle, "ResizeVideoOutput");
+
         /* check the version info */
         (*gfx.getVersion)(&PluginType, &PluginVersion, &APIVersion, NULL, NULL);
         if (PluginType != M64PLUGIN_GFX || (APIVersion & 0xffff0000) != (GFX_API_VERSION & 0xffff0000))
@@ -201,6 +206,11 @@ static m64p_error plugin_connect_gfx(m64p_dynlib_handle plugin_handle)
             gfx.setRenderingCallback(backcompat_videoRenderCallback);
             l_old1SetRenderingCallback = gfx.setRenderingCallback; // save this just for future use
             gfx.setRenderingCallback = (ptr_SetRenderingCallback) backcompat_setRenderCallbackIntercept;
+        }
+        if (APIVersion < 0x20200 || gfx.resizeVideoOutput == NULL)
+        {
+            DebugMessage(M64MSG_WARNING, "Fallback for Video plugin API (%02i.%02i.%02i) < 2.2.0. Resizable video will not work", VERSION_PRINTF_SPLIT(APIVersion));
+            gfx.resizeVideoOutput = dummyvideo_ResizeVideoOutput;
         }
 
         l_GfxAttached = 1;

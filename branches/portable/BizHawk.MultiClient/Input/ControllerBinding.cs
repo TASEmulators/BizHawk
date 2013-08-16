@@ -10,9 +10,22 @@ namespace BizHawk.MultiClient
 		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 
+		private readonly WorkingDictionary<string, float> FloatButtons = new WorkingDictionary<string, float>();
+
+		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
+
+		private readonly Dictionary<string, Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
+
 		public Controller(ControllerDefinition definition)
 		{
 			type = definition;
+			for (int i = 0; i < type.FloatControls.Count; i++)
+			{
+				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
+				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
+			}
+			//FloatBinds.Add("J5 X", new Config.AnalogBind("P1 X Axis", 1.0f));
+			//FloatBinds.Add("J5 Y", new Config.AnalogBind("P1 Y Axis", -1.0f));
 		}
 
 		public ControllerDefinition Type { get { return type; } }
@@ -24,8 +37,7 @@ namespace BizHawk.MultiClient
 			return buttons[button];
 		}
 
-
-		public float GetFloat(string name) { throw new NotImplementedException(); }
+		public float GetFloat(string name) { return FloatButtons[name]; }
 		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
@@ -71,8 +83,40 @@ namespace BizHawk.MultiClient
 				buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-					if(controller[bound_button])
+					if (controller[bound_button])
 						buttons[kvp.Key] = true;
+				}
+			}
+			foreach (var kvp in FloatBinds)
+			{
+				float input = controller.GetFloat(kvp.Value.Value);
+				string outkey = kvp.Key;
+				float multiplier = kvp.Value.Mult;
+				float deadzone = kvp.Value.Deadzone;
+				ControllerDefinition.FloatRange range;
+				if (FloatRanges.TryGetValue(outkey, out range))
+				{
+					// input range is assumed to be -10000,0,10000
+
+					// first, modify for deadzone
+					{
+						float absinput = Math.Abs(input);
+						float zeropoint = deadzone * 10000.0f;
+						if (absinput < zeropoint)
+							input = 0.0f;
+						else
+						{
+							absinput -= zeropoint;
+							absinput *= 10000.0f;
+							absinput /= (10000.0f - zeropoint);
+							input = absinput * Math.Sign(input);
+						}
+					}
+
+					float output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					if (output < range.Min) output = range.Min;
+					if (output > range.Max) output = range.Max;
+					FloatButtons[outkey] = output;
 				}
 			}
 		}
@@ -107,6 +151,11 @@ namespace BizHawk.MultiClient
 			string[] controlbindings = controlString.Split(',');
 			foreach (string control in controlbindings)
 				bindings[button].Add(control.Trim());
+		}
+
+		public void BindFloat(string button, Config.AnalogBind bind)
+		{
+			FloatBinds[button] = bind;
 		}
 
 		/// <summary>

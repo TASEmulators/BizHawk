@@ -237,7 +237,7 @@ namespace BizHawk.MultiClient
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
-					player <= Global.PLAYERS[controllers.Type.Name]
+					player <= MnemonicConstants.PLAYERS[controllers.Type.Name]
 				)
 				{
 					for (int button = 0; button < buttons.Length; button++)
@@ -1938,7 +1938,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					if (player <= Global.PLAYERS[controllers.Type.Name])
+					if (player <= MnemonicConstants.PLAYERS[controllers.Type.Name])
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
@@ -2731,7 +2731,7 @@ namespace BizHawk.MultiClient
 								}
 							}
 							leftOver = !leftOver;
-							if (player <= Global.PLAYERS[controllers.Type.Name])
+							if (player <= MnemonicConstants.PLAYERS[controllers.Type.Name])
 							{
 								if (player != 2 || !superScope)
 								{

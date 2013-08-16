@@ -8,7 +8,7 @@
     <ProjectGuid>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Util</RootNamespace>
+    <RootNamespace>BizHawk</RootNamespace>
     <AssemblyName>BizHawk.Util</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -120,6 +120,12 @@
     </Compile>
     <Compile Include="InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="QuickProgressPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickProgressPopup.Designer.cs">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringHelpers.cs" />
     <Compile Include="MiscControls.cs">
       <SubType>Component</SubType>
@@ -158,6 +164,9 @@
     <EmbeddedResource Include="7z\arch\Test.txt.gz" />
     <EmbeddedResource Include="7z\arch\Test.txt.xz" />
     <EmbeddedResource Include="7z\arch\Test.zip" />
+    <EmbeddedResource Include="QuickProgressPopup.resx">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7z\arch\Test.txt" />

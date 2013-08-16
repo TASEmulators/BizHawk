@@ -451,7 +451,7 @@ namespace BizHawk.MultiClient
 		{
 			SaveFileDialog sfd = new SaveFileDialog
 				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath),
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath),
 					DefaultExt = "." + Global.Config.MovieExtension,
 					FileName = Global.MovieSession.Movie.Filename
 				};
@@ -800,5 +800,11 @@ namespace BizHawk.MultiClient
 		{
 
 		}
+
+        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
+            this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
+        }
 	}
 }

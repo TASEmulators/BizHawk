@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
@@ -187,6 +188,17 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(n64pad3);
 					ControllerBox.Controls.Add(n64pad4);
 					break;
+				case "SAT":
+					VirtualPadSaturn saturnpad1 = new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadSaturn saturnpad2 = new VirtualPadSaturn { Location = new Point(213, 19), Controller = "P2" };
+					Pads.Add(saturnpad1);
+					Pads.Add(saturnpad2);
+					ControllerBox.Controls.Add(saturnpad1);
+					ControllerBox.Controls.Add(saturnpad2);
+					VirtualPadSaturnControl saturncontrols = new VirtualPadSaturnControl { Location = new Point(8, 125) };
+					Pads.Add(saturncontrols);
+					ControllerBox.Controls.Add(saturncontrols);
+					break;
 			}
 
 			//Hack for now
@@ -283,10 +295,10 @@ namespace BizHawk.MultiClient
 						case "C64":
 							break;
 						case "N64":
-							Pads[0].SetButtons(str.Substring(3, 20));
-							Pads[1].SetButtons(str.Substring(24, 20));
-							Pads[2].SetButtons(str.Substring(45, 20));
-							Pads[3].SetButtons(str.Substring(66, 20));
+							Pads[0].SetButtons(str.Substring(3, 23));
+							Pads[1].SetButtons(str.Substring(27, 23));
+							Pads[2].SetButtons(str.Substring(51, 23));
+							Pads[3].SetButtons(str.Substring(75, 23));
 							break;
 					}
 				}
@@ -341,6 +353,18 @@ namespace BizHawk.MultiClient
 			Global.Config.VirtualPadSaveWindowPosition = true;
 			Global.Config.VPadHeight = -1;
 			Global.Config.VPadWidth = -1;
+		}
+
+		//TODO: multi-player
+		public void BumpAnalogValue(int? dx, int? dy)
+		{
+			//TODO: make an analog flag in virtualpads that have it, and check the virtualpads loaded, instead of doing this hardcoded
+			if (Global.Emulator is N64)
+			{
+				(Pads[0] as VirtualPadN64).FudgeAnalog(dx, dy);
+
+				UpdateValues();
+			}
 		}
 	}
 }

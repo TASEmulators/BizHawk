@@ -10,6 +10,7 @@ using System.Globalization;
 
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.MultiClient.tools;
+using System.Text;
 
 namespace BizHawk.MultiClient
 {
@@ -24,20 +25,29 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole Caller;
 		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
-		private LuaFunction savestate_registersavefunc;
-		private LuaFunction savestate_registerloadfunc;
-		private LuaFunction frame_startfunc;
-		private LuaFunction frame_endfunc;
+		
+		//private List<NamedLuaFunction> on_savestate_save_events = new List<NamedLuaFunction>();
+		//private List<NamedLuaFunction> on_savestate_load_events = new List<NamedLuaFunction>();
+		//private List<NamedLuaFunction> on_framestart_events = new List<NamedLuaFunction>();
+		//private List<NamedLuaFunction> on_frameend_events = new List<NamedLuaFunction>();
+		private LuaFunctionCollection lua_functions = new LuaFunctionCollection();
+
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 
+		public List<NamedLuaFunction> RegisteredFunctions { get { return lua_functions.Functions; } }
+
 		public void SavestateRegisterSave(string name)
 		{
-			if (savestate_registersavefunc != null)
+			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateSave").ToList();
+			if (lfs.Any())
 			{
 				try
 				{
-					savestate_registersavefunc.Call(name);
+					foreach (NamedLuaFunction lf in lfs)
+					{
+						lf.Call(name);
+					}
 				}
 				catch (SystemException e)
 				{
@@ -50,11 +60,15 @@ namespace BizHawk.MultiClient
 
 		public void SavestateRegisterLoad(string name)
 		{
-			if (savestate_registerloadfunc != null)
+			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateLoad").ToList();
+			if (lfs.Any())
 			{
 				try
 				{
-					savestate_registerloadfunc.Call(name);
+					foreach (NamedLuaFunction lf in lfs)
+					{
+						lf.Call(name);
+					}
 				}
 				catch (SystemException e)
 				{
@@ -67,11 +81,15 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterBefore()
 		{
-			if (frame_startfunc != null)
+			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameStart").ToList();
+			if (lfs.Any())
 			{
 				try
 				{
-					frame_startfunc.Call();
+					foreach (NamedLuaFunction lf in lfs)
+					{
+						lf.Call();
+					}
 				}
 				catch (SystemException e)
 				{
@@ -84,11 +102,15 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterAfter()
 		{
-			if (frame_endfunc != null)
+			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameEnd").ToList();
+			if (lfs.Any())
 			{
 				try
 				{
-					frame_endfunc.Call();
+					foreach (NamedLuaFunction lf in lfs)
+					{
+						lf.Call();
+					}
 				}
 				catch (SystemException e)
 				{
@@ -397,7 +419,7 @@ namespace BizHawk.MultiClient
 		                                         		"usememorydomain",
 		                                         		"getmemorydomainlist",
 		                                         		"getcurrentmemorydomain",
-																								"getcurrentmemorydomainsize",
+														"getcurrentmemorydomainsize",
 		                                         		"read_s8",
 		                                         		"read_u8",
 		                                         		"read_s16_le",
@@ -606,7 +628,9 @@ namespace BizHawk.MultiClient
 														"onframeend",
 														"onmemoryread",
 														"onmemorywrite",
-														"oninputpoll"
+														"oninputpoll",
+														"unregisterbyid",
+														"unregisterbyname"
 													};
 		/****************************************************/
 		/*************function definitions********************/
@@ -624,7 +648,43 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+                if (lua_input is LuaTable)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    var lti = (lua_input as LuaTable);
+
+                    List<string> Keys = new List<string>();
+                    List<string> Values = new List<string>();
+                    foreach (var key in lti.Keys) { Keys.Add(key.ToString()); }
+                    foreach (var value in lti.Values) { Values.Add(value.ToString()); }
+
+                    List<KeyValuePair<string, string>> KVPs = new List<KeyValuePair<string, string>>();
+                    for (int i = 0; i < Keys.Count; i++)
+                    {
+                        if (i < Values.Count)
+                        {
+                            KeyValuePair<string, string> kvp = new KeyValuePair<string, string>(Keys[i], Values[i]);
+                            KVPs.Add(kvp);
+                        }
+                    }
+                    KVPs = KVPs.OrderBy(x => x.Key).ToList();
+                    foreach(var kvp in KVPs)
+                    {
+                        sb
+                            .Append("\"")
+                            .Append(kvp.Key)
+                            .Append("\": \"")
+                            .Append(kvp.Value)
+                            .Append("\"")
+                            .AppendLine();
+                    }
+
+                    Global.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
+                }
+                else
+                {
+                    Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+                }
 			}
 		}
 
@@ -1208,13 +1268,14 @@ namespace BizHawk.MultiClient
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					Global.Config.RewindEnabled = false;
+					Global.MainForm.RewindActive = false;
+					Global.OSD.AddMessage("Rewind suspended");
 				}
 				else
 				{
-					Global.Config.RewindEnabled = true;
+					Global.MainForm.RewindActive = true;
+					Global.OSD.AddMessage("Rewind enabled");
 				}
-				Global.MainForm.RewindMessage();
 			}
 		}
 
@@ -1987,14 +2048,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void savestate_registersave(LuaFunction luaf)
+		public string savestate_registersave(LuaFunction luaf, object name)
 		{
-			savestate_registersavefunc = luaf;
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateSave", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
-		public void savestate_registerload(LuaFunction luaf)
+		public string savestate_registerload(LuaFunction luaf, object name)
 		{
-			savestate_registerloadfunc = luaf;
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		//----------------------------------------------------
@@ -2117,11 +2182,29 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-				if (controller == null)
-					buttons[button] = Global.ControllerOutput[button];
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+            {
+                if (controller == null)
+                {
+                    buttons[button] = Global.ControllerOutput[button];
+                }
+                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                {
+                    buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+                }
+            }
+
+            foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
+            {
+                if (controller == null)
+                {
+                    buttons[button] = Global.ControllerOutput.GetFloat(button);
+                }
+                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                {
+                    buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+                }
+            }
 
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
@@ -2233,21 +2316,20 @@ namespace BizHawk.MultiClient
 			{
 				foreach (var name in controls.Keys)
 				{
-					float theValue;
 					string theValueStr = controls[name].ToString();
 
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
 						try
 						{
-							theValue = float.Parse(theValueStr);
+							float theValue = float.Parse(theValueStr);
 							if (controller == null)
 							{
 								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
 							}
 							else
 							{
-								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name.ToString(), theValue);
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 							}
 						}
 						catch { }
@@ -3049,24 +3131,28 @@ namespace BizHawk.MultiClient
 		//Events library
 		//----------------------------------------------------
 
-		public void event_onsavestate(LuaFunction luaf)
+		public string event_onsavestate(LuaFunction luaf, object name = null)
 		{
-			savestate_registersave(luaf);
+			return savestate_registersave(luaf, name);
 		}
 
-		public void event_onloadstate(LuaFunction luaf)
+		public string event_onloadstate(LuaFunction luaf, object name = null)
 		{
-			savestate_registerload(luaf);
+			return savestate_registerload(luaf, name);
 		}
 
-		public void event_onframestart(LuaFunction luaf)
+		public string event_onframestart(LuaFunction luaf, object name = null)
 		{
-			frame_startfunc = luaf;
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameStart", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
-		public void event_onframeend(LuaFunction luaf)
+		public string event_onframeend(LuaFunction luaf, string name = null)
 		{
-			frame_endfunc = luaf;
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameEnd", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		public void event_oninputpoll(LuaFunction luaf)
@@ -3145,6 +3231,120 @@ namespace BizHawk.MultiClient
 			else
 			{
 				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
+			}
+		}
+
+		public bool event_unregisterbyid(object guid)
+		{
+			//Iterating every possible event type is not very scalable
+			foreach (NamedLuaFunction nlf in lua_functions)
+			{
+				if (nlf.GUID.ToString() == guid.ToString())
+				{
+					lua_functions.Remove(nlf);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool event_unregisterbyname(object name)
+		{
+			//Horribly redundant to the function above!
+			foreach (NamedLuaFunction nlf in lua_functions)
+			{
+				if (nlf.Name == name.ToString())
+				{
+					lua_functions.Remove(nlf);
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	public class NamedLuaFunction
+	{
+		private LuaFunction _function;
+		private string _name;
+		private string _event;
+
+		public Guid GUID { get; private set; }
+
+		public NamedLuaFunction(LuaFunction function, string theevent, string name = null)
+		{
+			_function = function;
+			_name = name ?? "Anonymous Function";
+			_event = theevent;
+			GUID = Guid.NewGuid();
+		}
+
+		public void Call(string name = null)
+		{
+			_function.Call(name);
+		}
+
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+		}
+
+		public string Event
+		{
+			get
+			{
+				return _event;
+			}
+		}
+	}
+
+	public class LuaFunctionCollection : IEnumerable<NamedLuaFunction>
+	{
+		public List<NamedLuaFunction> Functions { get; private set; }
+
+		public LuaFunctionCollection()
+		{
+			Functions = new List<NamedLuaFunction>();
+		}
+
+		public void Add(NamedLuaFunction nlf)
+		{
+			Functions.Add(nlf);
+		}
+
+		public void Remove(NamedLuaFunction nlf)
+		{
+			Functions.Remove(nlf);
+		}
+
+		public IEnumerator<NamedLuaFunction> GetEnumerator()
+		{
+			return Functions.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public NamedLuaFunction this[int index]
+		{
+			get
+			{
+				return Functions[index];
+			}
+		}
+
+		public NamedLuaFunction this[string guid]
+		{
+			get
+			{
+				return Functions.FirstOrDefault(x => x.GUID.ToString() == guid) ?? null;
 			}
 		}
 	}

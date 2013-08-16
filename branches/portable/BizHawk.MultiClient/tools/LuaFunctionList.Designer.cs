@@ -41,7 +41,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(423, 284);
+			this.OK.Location = new System.Drawing.Point(434, 284);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -63,7 +63,7 @@
 			this.FunctionView.GridLines = true;
 			this.FunctionView.Location = new System.Drawing.Point(12, 12);
 			this.FunctionView.Name = "FunctionView";
-			this.FunctionView.Size = new System.Drawing.Size(486, 266);
+			this.FunctionView.Size = new System.Drawing.Size(497, 266);
 			this.FunctionView.TabIndex = 1;
 			this.FunctionView.UseCompatibleStateImageBehavior = false;
 			this.FunctionView.View = System.Windows.Forms.View.Details;
@@ -79,27 +79,28 @@
 			// 
 			this.LibraryHead.Text = "Library";
 			this.LibraryHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.LibraryHead.Width = 75;
+			this.LibraryHead.Width = 85;
 			// 
 			// LibraryName
 			// 
 			this.LibraryName.Text = "Name";
-			this.LibraryName.Width = 135;
+			this.LibraryName.Width = 131;
 			// 
 			// LibraryParameters
 			// 
 			this.LibraryParameters.Text = "Parameters";
-			this.LibraryParameters.Width = 210;
+			this.LibraryParameters.Width = 217;
 			// 
 			// LuaFunctionList
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(510, 319);
+			this.ClientSize = new System.Drawing.Size(521, 319);
 			this.Controls.Add(this.FunctionView);
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(200, 50);
 			this.Name = "LuaFunctionList";
 			this.Text = "Lua Functions";
 			this.Load += new System.EventHandler(this.LuaFunctionList_Load);

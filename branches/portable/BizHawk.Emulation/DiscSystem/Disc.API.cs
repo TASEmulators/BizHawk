@@ -60,6 +60,80 @@ namespace BizHawk.DiscSystem
 		}
 	}
 
+	/// <summary>
+	/// Allows you to stream data off a disc
+	/// </summary>
+	public class DiscStream : System.IO.Stream
+	{
+		int SectorSize;
+		int NumSectors;
+		Disc Disc;
+
+		long currPosition;
+		int cachedSector;
+		byte[] cachedSectorBuffer;
+
+		public static DiscStream Open_LBA_2048(Disc disc)
+		{
+			var ret = new DiscStream();
+			ret._Open_LBA_2048(disc);
+			return ret;
+		}
+
+		void _Open_LBA_2048(Disc disc)
+		{
+			SectorSize = 2048;
+			this.Disc = disc;
+			NumSectors = disc.LBACount;
+
+			currPosition = 0;
+			cachedSector = -1;
+			cachedSectorBuffer = new byte[SectorSize];
+		}
+
+		public override bool CanRead { get { return true; } }
+		public override bool CanSeek { get { return true; } }
+		public override bool CanWrite { get { return false; } }
+		public override void Flush() { throw new NotImplementedException(); }
+		public override long Length { get { return NumSectors * SectorSize; } }
+
+		public override long Position
+		{
+			get { return currPosition; }
+			set
+			{
+				currPosition = value;
+				//invalidate the cached sector..
+				//as a later optimization, we could actually intelligently decide if this is necessary
+				cachedSector = -1;
+			}
+		}
+
+		public override int Read(byte[] buffer, int offset, int count)
+		{
+			long remain = Length - currPosition;
+			if (count > remain)
+				count = (int)Math.Min(remain,int.MaxValue);
+			Disc.READLBA_Flat_Implementation(currPosition, buffer, offset, count, (a, b, c) => Disc.ReadLBA_2048(a, b, c), SectorSize, cachedSectorBuffer, ref cachedSector);
+			currPosition += count;
+			return count;
+		}
+
+		public override long Seek(long offset, System.IO.SeekOrigin origin)
+		{
+			switch (origin)
+			{
+				case System.IO.SeekOrigin.Begin: Position = offset; break;
+				case System.IO.SeekOrigin.Current: Position += offset; break;
+				case System.IO.SeekOrigin.End: Position = Length - offset; break;
+			}
+			return Position;
+		}
+
+		public override void SetLength(long value) { throw new NotImplementedException(); }
+		public override void Write(byte[] buffer, int offset, int count) { throw new NotImplementedException(); }
+	}
+
 	public partial class Disc
 	{
 		/// <summary>
@@ -82,14 +156,12 @@ namespace BizHawk.DiscSystem
 
 		internal void ReadABA_2352(int aba, byte[] buffer, int offset)
 		{
-			Sectors[aba].Sector.Read(buffer, offset);
+			Sectors[aba].Sector.Read_2352(buffer, offset);
 		}
 
 		internal void ReadABA_2048(int aba, byte[] buffer, int offset)
 		{
-			byte[] temp = new byte[2352];
-			Sectors[aba].Sector.Read(temp, offset);
-			Array.Copy(temp, 16, buffer, offset, 2048);
+			Sectors[aba].Sector.Read_2048(buffer, offset);
 		}
 
 		/// <summary>
@@ -100,16 +172,37 @@ namespace BizHawk.DiscSystem
 		{
 			int secsize = 2352;
 			byte[] lba_buf = new byte[secsize];
-			while(length > 0)
+			int sectorHint = -1;
+			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2352(a, b, c), secsize, lba_buf, ref sectorHint);
+		}
+
+		/// <summary>
+		/// reads logical data from a flat disc address space
+		/// useful for plucking data from a known location on the disc
+		/// </summary>
+		public void ReadLBA_2048_Flat(long disc_offset, byte[] buffer, int offset, int length)
+		{
+			int secsize = 2048;
+			byte[] lba_buf = new byte[secsize];
+			int sectorHint = -1;
+			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2048(a, b, c), secsize, lba_buf, ref sectorHint);
+		}
+
+		internal void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
+		{
+			//hint is the sector number which is already read. to avoid repeatedly reading the sector from the disc in case of several small reads, so that sectorBuf can be used as a sector cache
+			while (length > 0)
 			{
-				int lba = (int)(disc_offset / secsize);
-				int lba_within = (int)(disc_offset % secsize);
+				int lba = (int)(disc_offset / sectorSize);
+				int lba_within = (int)(disc_offset % sectorSize);
 				int todo = length;
-				int remains_in_lba = secsize - lba_within;
+				int remains_in_lba = sectorSize - lba_within;
 				if (remains_in_lba < todo)
 					todo = remains_in_lba;
-				ReadLBA_2352(lba, lba_buf, 0);
-				Array.Copy(lba_buf, lba_within, buffer, offset, todo);
+				if(sectorBufferHint != lba)
+					sectorReader(lba, sectorBuf, 0);
+				sectorBufferHint = lba;
+				Array.Copy(sectorBuf, lba_within, buffer, offset, todo);
 				offset += todo;
 				length -= todo;
 				disc_offset += todo;
@@ -204,20 +297,6 @@ namespace BizHawk.DiscSystem
 				return Util.Hash_MD5(buffer, 0, lba_len * 2352);
 			}
 			return "no data track found";
-		}
-
-		/// <summary>
-		/// this isn't quite right...
-		/// </summary>
-		/// <returns></returns>
-		public bool DetectSegaSaturn()
-		{
-			byte[] data = new byte[2048];
-			ReadLBA_2048(0, data, 0);
-			byte[] cmp = System.Text.Encoding.ASCII.GetBytes("SEGA SEGASATURN");
-			byte[] cmp2 = new byte[15];
-			Buffer.BlockCopy(data, 0, cmp2, 0, 15);
-			return System.Linq.Enumerable.SequenceEqual(cmp, cmp2);
 		}
 	}
 }

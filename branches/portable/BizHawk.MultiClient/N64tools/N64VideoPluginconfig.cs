@@ -19,12 +19,14 @@ namespace BizHawk.MultiClient
 		private void CancelBT_Click(object sender, EventArgs e)
 		{
 			//Add confirmation of cancelling change
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
@@ -211,7 +213,62 @@ namespace BizHawk.MultiClient
 
 			Global.Config.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
 			Global.Config.GlidePlugin.enable_hacks_for_game = Glide_enable_hacks_for_game.SelectedIndex;
-		}
+
+			Global.Config.Glide64mk2Plugin.card_id = Glide64mk2_card_id.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.wrpFBO = Glide64mk2_wrpFBO.Checked;
+			Global.Config.Glide64mk2Plugin.wrpAnisotropic = Glide64mk2_wrpAnisotropic.Checked;
+			Global.Config.Glide64mk2Plugin.fb_get_info = Glide64mk2_fb_get_info.Checked;
+			Global.Config.Glide64mk2Plugin.fb_render = Glide64mk2_fb_render.Checked;
+
+			Global.Config.Glide64mk2Plugin.UseDefaultHacks = Glide64mk2_UseDefaultHacks1.Checked || Glide64mk2_UseDefaultHacks2.Checked;
+
+			Global.Config.Glide64mk2Plugin.use_sts1_only = Glide64mk2_use_sts1_only.Checked;
+			Global.Config.Glide64mk2Plugin.optimize_texrect = Glide64mk2_optimize_texrect.Checked;
+			Global.Config.Glide64mk2Plugin.increase_texrect_edge = Glide64mk2_increase_texrect_edge.Checked;
+			Global.Config.Glide64mk2Plugin.ignore_aux_copy = Glide64mk2_ignore_aux_copy.Checked;
+			Global.Config.Glide64mk2Plugin.hires_buf_clear = Glide64mk2_hires_buf_clear.Checked;
+			Global.Config.Glide64mk2Plugin.force_microcheck = Glide64mk2_force_microcheck.Checked;
+			Global.Config.Glide64mk2Plugin.fog = Glide64mk2_fog.Checked;
+			Global.Config.Glide64mk2Plugin.fb_smart = Glide64mk2_fb_smart.Checked;
+			Global.Config.Glide64mk2Plugin.fb_read_alpha = Glide64mk2_fb_read_alpha.Checked;
+			Global.Config.Glide64mk2Plugin.fb_hires = Glide64mk2_fb_hires.Checked;
+			Global.Config.Glide64mk2Plugin.detect_cpu_write = Glide64mk2_detect_cpu_write.Checked;
+			Global.Config.Glide64mk2Plugin.decrease_fillrect_edge = Glide64mk2_decrease_fillrect_edge.Checked;
+			Global.Config.Glide64mk2Plugin.buff_clear = Glide64mk2_buff_clear.Checked;
+			Global.Config.Glide64mk2Plugin.alt_tex_size = Glide64mk2_alt_tex_size.Checked;
+			Global.Config.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
+
+			if (InputValidate.IsValidSignedNumber(Glide64mk2_stipple_pattern.Text))
+				Global.Config.Glide64mk2Plugin.stipple_pattern = int.Parse(Glide64mk2_stipple_pattern.Text);
+			else
+				Global.Config.Glide64mk2Plugin.stipple_pattern = 1041204192;
+
+			if (InputValidate.IsValidSignedNumber(Glide64mk2_stipple_mode.Text))
+				Global.Config.Glide64mk2Plugin.stipple_mode = int.Parse(Glide64mk2_stipple_mode.Text);
+			else
+				Global.Config.Glide64mk2Plugin.stipple_mode = 2;
+
+			Global.Config.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.filtering = Glide64mk2_filtering.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.correct_viewport = Glide64mk2_correct_viewport.Checked;
+			Global.Config.Glide64mk2Plugin.force_calc_sphere = Glide64mk2_force_calc_sphere.Checked;
+			Global.Config.Glide64mk2Plugin.pal230 = Glide64mk2_pal230.Checked;
+			Global.Config.Glide64mk2Plugin.texture_correction = Glide64mk2_texture_correction.Checked;
+			Global.Config.Glide64mk2Plugin.n64_z_scale = Glide64mk2_n64_z_scale.Checked;
+			Global.Config.Glide64mk2Plugin.old_style_adither = Glide64mk2_old_style_adither.Checked;
+			Global.Config.Glide64mk2Plugin.zmode_compare_less = Glide64mk2_zmode_compare_less.Checked;
+			Global.Config.Glide64mk2Plugin.adjust_aspect = Glide64mk2_adjust_aspect.Checked;
+			Global.Config.Glide64mk2Plugin.clip_zmax = Glide64mk2_clip_zmax.Checked;
+			Global.Config.Glide64mk2Plugin.clip_zmin = Glide64mk2_clip_zmin.Checked;
+			Global.Config.Glide64mk2Plugin.force_quad3d = Glide64mk2_force_quad3d.Checked;
+			Global.Config.Glide64mk2Plugin.useless_is_useless = Glide64mk2_useless_is_useless.Checked;
+			Global.Config.Glide64mk2Plugin.fb_read_always = Glide64mk2_fb_read_always.Checked;
+			Global.Config.Glide64mk2Plugin.aspectmode = Glide64mk2_aspectmode.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.fb_crc_mode = Glide64mk2_fb_crc_mode.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.enable_hacks_for_game = Glide64mk2_enable_hacks_for_game.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
+			Global.Config.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
+		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
@@ -229,7 +286,6 @@ namespace BizHawk.MultiClient
 			PluginComboBox.Text = Global.Config.N64VidPlugin;
 
 			//Rice
-			Global.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
 			RiceNormalAlphaBlender_CB.Checked = Global.Config.RicePlugin.NormalAlphaBlender;
 			RiceFastTextureLoading_CB.Checked = Global.Config.RicePlugin.FastTextureLoading;
 			RiceAccurateTextureMapping_CB.Checked = Global.Config.RicePlugin.AccurateTextureMapping;
@@ -374,6 +430,57 @@ namespace BizHawk.MultiClient
 				Glide_swapmode.SelectedIndex = Global.Config.GlidePlugin.swapmode;
 				Glide_enable_hacks_for_game.SelectedIndex = Global.Config.GlidePlugin.enable_hacks_for_game;
 			}
+
+			Glide64mk2_card_id.SelectedIndex = Global.Config.Glide64mk2Plugin.card_id;
+			Glide64mk2_wrpFBO.Checked = Global.Config.Glide64mk2Plugin.wrpFBO;
+			Glide64mk2_wrpAnisotropic.Checked = Global.Config.Glide64mk2Plugin.wrpAnisotropic;
+			Glide64mk2_fb_get_info.Checked = Global.Config.Glide64mk2Plugin.fb_get_info;
+			Glide64mk2_fb_render.Checked = Global.Config.Glide64mk2Plugin.fb_render;
+
+			Glide64mk2_UseDefaultHacks1.Checked = Global.Config.Glide64mk2Plugin.UseDefaultHacks;
+			Glide64mk2_UseDefaultHacks2.Checked = Global.Config.Glide64mk2Plugin.UseDefaultHacks;
+
+			UpdateGlide64mk2HacksSection();
+			if (!Global.Config.Glide64mk2Plugin.UseDefaultHacks)
+			{
+				Glide64mk2_use_sts1_only.Checked = Global.Config.Glide64mk2Plugin.use_sts1_only;
+				Glide64mk2_optimize_texrect.Checked = Global.Config.Glide64mk2Plugin.optimize_texrect;
+				Glide64mk2_increase_texrect_edge.Checked = Global.Config.Glide64mk2Plugin.increase_texrect_edge;
+				Glide64mk2_ignore_aux_copy.Checked = Global.Config.Glide64mk2Plugin.ignore_aux_copy;
+				Glide64mk2_hires_buf_clear.Checked = Global.Config.Glide64mk2Plugin.hires_buf_clear;
+				Glide64mk2_force_microcheck.Checked = Global.Config.Glide64mk2Plugin.force_microcheck;
+				Glide64mk2_fog.Checked = Global.Config.Glide64mk2Plugin.fog;
+				Glide64mk2_fb_smart.Checked = Global.Config.Glide64mk2Plugin.fb_smart;
+				Glide64mk2_fb_read_alpha.Checked = Global.Config.Glide64mk2Plugin.fb_read_alpha;
+				Glide64mk2_fb_hires.Checked = Global.Config.Glide64mk2Plugin.fb_hires;
+				Glide64mk2_detect_cpu_write.Checked = Global.Config.Glide64mk2Plugin.detect_cpu_write;
+				Glide64mk2_decrease_fillrect_edge.Checked = Global.Config.Glide64mk2Plugin.decrease_fillrect_edge;
+				Glide64mk2_buff_clear.Checked = Global.Config.Glide64mk2Plugin.buff_clear;
+				Glide64mk2_alt_tex_size.Checked = Global.Config.Glide64mk2Plugin.alt_tex_size;
+				Glide64mk2_swapmode.SelectedIndex = Global.Config.Glide64mk2Plugin.swapmode;
+				Glide64mk2_stipple_pattern.Text = Global.Config.Glide64mk2Plugin.stipple_pattern.ToString();
+				Glide64mk2_stipple_mode.Text = Global.Config.Glide64mk2Plugin.stipple_mode.ToString();
+				Glide64mk2_lodmode.SelectedIndex = Global.Config.Glide64mk2Plugin.lodmode;
+				Glide64mk2_filtering.SelectedIndex = Global.Config.Glide64mk2Plugin.filtering;
+				Glide64mk2_correct_viewport.Checked = Global.Config.Glide64mk2Plugin.correct_viewport;
+				Glide64mk2_force_calc_sphere.Checked = Global.Config.Glide64mk2Plugin.force_calc_sphere;
+				Glide64mk2_pal230.Checked = Global.Config.Glide64mk2Plugin.pal230;
+				Glide64mk2_texture_correction.Checked = Global.Config.Glide64mk2Plugin.texture_correction;
+				Glide64mk2_n64_z_scale.Checked = Global.Config.Glide64mk2Plugin.n64_z_scale;
+				Glide64mk2_old_style_adither.Checked = Global.Config.Glide64mk2Plugin.old_style_adither;
+				Glide64mk2_zmode_compare_less.Checked = Global.Config.Glide64mk2Plugin.zmode_compare_less;
+				Glide64mk2_adjust_aspect.Checked = Global.Config.Glide64mk2Plugin.adjust_aspect;
+				Glide64mk2_clip_zmax.Checked = Global.Config.Glide64mk2Plugin.clip_zmax;
+				Glide64mk2_clip_zmin.Checked = Global.Config.Glide64mk2Plugin.clip_zmin;
+				Glide64mk2_force_quad3d.Checked = Global.Config.Glide64mk2Plugin.force_quad3d;
+				Glide64mk2_useless_is_useless.Checked = Global.Config.Glide64mk2Plugin.useless_is_useless;
+				Glide64mk2_fb_read_always.Checked = Global.Config.Glide64mk2Plugin.fb_read_always;
+				Glide64mk2_aspectmode.SelectedIndex = Global.Config.Glide64mk2Plugin.aspectmode;
+				Glide64mk2_fb_crc_mode.SelectedIndex = Global.Config.Glide64mk2Plugin.fb_crc_mode;
+				Glide64mk2_enable_hacks_for_game.SelectedIndex = Global.Config.Glide64mk2Plugin.enable_hacks_for_game;
+				Glide64mk2_read_back_to_screen.SelectedIndex = Global.Config.Glide64mk2Plugin.read_back_to_screen;
+				Glide64mk2_fast_crc.Checked = Global.Config.Glide64mk2Plugin.fast_crc;
+			}
 		}
 		
 		private void RiceAnisotropicFiltering_TB_Scroll_1(object sender, EventArgs e)
@@ -384,6 +491,56 @@ namespace BizHawk.MultiClient
 		private void RiceUseDefaultHacks_CB_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateRiceHacksSection();
+		}
+
+		private void UpdateGlide64mk2HacksSection()
+		{
+			if (Glide64mk2_UseDefaultHacks1.Checked || Glide64mk2_UseDefaultHacks2.Checked)
+			{
+				Glide64mk2_use_sts1_only.Checked = Global.Game.GetBool("Glide64mk2_use_sts1_only", false);
+				Glide64mk2_optimize_texrect.Checked = Global.Game.GetBool("Glide64mk2_optimize_texrect", true);
+				Glide64mk2_increase_texrect_edge.Checked = Global.Game.GetBool("Glide64mk2_increase_texrect_edge", false);
+				Glide64mk2_ignore_aux_copy.Checked = Global.Game.GetBool("Glide64mk2_ignore_aux_copy", false);
+				Glide64mk2_hires_buf_clear.Checked = Global.Game.GetBool("Glide64mk2_hires_buf_clear", true);
+				Glide64mk2_force_microcheck.Checked = Global.Game.GetBool("Glide64mk2_force_microcheck", false);
+				Glide64mk2_fog.Checked = Global.Game.GetBool("Glide64mk2_fog", true);
+				Glide64mk2_fb_smart.Checked = Global.Game.GetBool("Glide64mk2_fb_smart", false);
+				Glide64mk2_fb_read_alpha.Checked = Global.Game.GetBool("Glide64mk2_fb_read_alpha", false);
+				Glide64mk2_fb_hires.Checked = Global.Game.GetBool("Glide64mk2_fb_hires", true);
+				Glide64mk2_detect_cpu_write.Checked = Global.Game.GetBool("Glide64mk2_detect_cpu_write", false);
+				Glide64mk2_decrease_fillrect_edge.Checked = Global.Game.GetBool("Glide64mk2_decrease_fillrect_edge", false);
+				Glide64mk2_buff_clear.Checked = Global.Game.GetBool("Glide64mk2_buff_clear", true);
+				Glide64mk2_alt_tex_size.Checked = Global.Game.GetBool("Glide64mk2_alt_tex_size", true);
+				Glide64mk2_swapmode.SelectedIndex = Global.Game.GetInt("Glide64mk2_swapmode", 1);
+				Glide64mk2_stipple_pattern.Text = Global.Game.GetInt("Glide64mk2_stipple_pattern", 1041204192).ToString();
+				Glide64mk2_stipple_mode.Text = Global.Game.GetInt("Glide64mk2_stipple_mode", 2).ToString();
+				Glide64mk2_lodmode.SelectedIndex = Global.Game.GetInt("Glide64mk2_lodmode", 0);
+				Glide64mk2_filtering.SelectedIndex = Global.Game.GetInt("Glide64mk2_filtering", 0);
+				Glide64mk2_correct_viewport.Checked = Global.Game.GetBool("Glide64mk2_correct_viewport", false);
+				Glide64mk2_force_calc_sphere.Checked = Global.Game.GetBool("Glide64mk2_force_calc_sphere", false);
+				Glide64mk2_pal230.Checked = Global.Game.GetBool("Glide64mk2_pal230", false);
+				Glide64mk2_texture_correction.Checked = Global.Game.GetBool("Glide64mk2_texture_correction", true);
+				Glide64mk2_n64_z_scale.Checked = Global.Game.GetBool("Glide64mk2_n64_z_scale", false);
+				Glide64mk2_old_style_adither.Checked = Global.Game.GetBool("Glide64mk2_old_style_adither", false);
+				Glide64mk2_zmode_compare_less.Checked = Global.Game.GetBool("Glide64mk2_zmode_compare_less", false);
+				Glide64mk2_adjust_aspect.Checked = Global.Game.GetBool("Glide64mk2_adjust_aspect", true);
+				Glide64mk2_clip_zmax.Checked = Global.Game.GetBool("Glide64mk2_clip_zmax", true);
+				Glide64mk2_clip_zmin.Checked = Global.Game.GetBool("Glide64mk2_clip_zmin", false);
+				Glide64mk2_force_quad3d.Checked = Global.Game.GetBool("Glide64mk2_force_quad3d", false);
+				Glide64mk2_useless_is_useless.Checked = Global.Game.GetBool("Glide64mk2_useless_is_useless", false);
+				Glide64mk2_fb_read_always.Checked = Global.Game.GetBool("Glide64mk2_fb_read_always", false);
+				Glide64mk2_aspectmode.SelectedIndex = Global.Game.GetInt("Glide64mk2_aspectmode", 0);
+				Glide64mk2_fb_crc_mode.SelectedIndex = Global.Game.GetInt("Glide64mk2_fb_crc_mode", 1);
+				Glide64mk2_enable_hacks_for_game.SelectedIndex = Global.Game.GetInt("Glide64mk2_enable_hacks_for_game", 0);
+				Glide64mk2_read_back_to_screen.SelectedIndex = Global.Game.GetInt("Glide64mk2_read_back_to_screen", 0);
+				Glide64mk2_fast_crc.Checked = Global.Game.GetBool("Glide64mk2_fast_crc", true);
+
+				ToggleGlide64mk2HackCheckboxEnable(false);
+			}
+			else
+			{
+				ToggleGlide64mk2HackCheckboxEnable(true);
+			}
 		}
 
 		private void UpdateGlideHacksSection()
@@ -554,6 +711,47 @@ namespace BizHawk.MultiClient
 			Glide_enable_hacks_for_game.Enabled = val;
 		}
 
+		public void ToggleGlide64mk2HackCheckboxEnable(bool val)
+		{
+			Glide64mk2_use_sts1_only.Enabled = val;
+			Glide64mk2_optimize_texrect.Enabled = val;
+			Glide64mk2_increase_texrect_edge.Enabled = val;
+			Glide64mk2_ignore_aux_copy.Enabled = val;
+			Glide64mk2_hires_buf_clear.Enabled = val;
+			Glide64mk2_force_microcheck.Enabled = val;
+			Glide64mk2_fog.Enabled = val;
+			Glide64mk2_fb_smart.Enabled = val;
+			Glide64mk2_fb_read_alpha.Enabled = val;
+			Glide64mk2_fb_hires.Enabled = val;
+			Glide64mk2_detect_cpu_write.Enabled = val;
+			Glide64mk2_decrease_fillrect_edge.Enabled = val;
+			Glide64mk2_buff_clear.Enabled = val;
+			Glide64mk2_alt_tex_size.Enabled = val;
+			Glide64mk2_swapmode.Enabled = val;
+			Glide64mk2_stipple_pattern.Enabled = val;
+			Glide64mk2_stipple_mode.Enabled = val;
+			Glide64mk2_lodmode.Enabled = val;
+			Glide64mk2_filtering.Enabled = val;
+			Glide64mk2_correct_viewport.Enabled = val;
+			Glide64mk2_force_calc_sphere.Enabled = val;
+			Glide64mk2_pal230.Enabled = val;
+			Glide64mk2_texture_correction.Enabled = val;
+			Glide64mk2_n64_z_scale.Enabled = val;
+			Glide64mk2_old_style_adither.Enabled = val;
+			Glide64mk2_zmode_compare_less.Enabled = val;
+			Glide64mk2_adjust_aspect.Enabled = val;
+			Glide64mk2_clip_zmax.Enabled = val;
+			Glide64mk2_clip_zmin.Enabled = val;
+			Glide64mk2_force_quad3d.Enabled = val;
+			Glide64mk2_useless_is_useless.Enabled = val;
+			Glide64mk2_fb_read_always.Enabled = val;
+			Glide64mk2_aspectmode.Enabled = val;
+			Glide64mk2_fb_crc_mode.Enabled = val;
+			Glide64mk2_enable_hacks_for_game.Enabled = val;
+			Glide64mk2_read_back_to_screen.Enabled = val;
+			Glide64mk2_fast_crc.Enabled = val;
+		}
+
 		private void GlideUseDefaultHacks1_CheckedChanged(object sender, EventArgs e)
 		{
 			GlideUseDefaultHacks2.Checked = GlideUseDefaultHacks1.Checked;
@@ -564,6 +762,18 @@ namespace BizHawk.MultiClient
 		{
 			GlideUseDefaultHacks1.Checked = GlideUseDefaultHacks2.Checked;
 			UpdateGlideHacksSection();
+		}
+
+		private void Glide64mk2_UseDefaultHacks1_CheckedChanged(object sender, EventArgs e)
+		{
+			Glide64mk2_UseDefaultHacks2.Checked = Glide64mk2_UseDefaultHacks1.Checked;
+			UpdateGlide64mk2HacksSection();
+		}
+
+		private void Glide64mk2_UseDefaultHacks2_CheckedChanged(object sender, EventArgs e)
+		{
+			Glide64mk2_UseDefaultHacks1.Checked = Glide64mk2_UseDefaultHacks2.Checked;
+			UpdateGlide64mk2HacksSection();
 		}
 
 	}

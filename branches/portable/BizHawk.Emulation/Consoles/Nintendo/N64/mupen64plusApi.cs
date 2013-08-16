@@ -425,6 +425,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				VidDllName = "mupen64plus-video-glide64.dll";
 			}
+			else if (video_settings.PluginName == "Glide64mk2")
+			{
+				VidDllName = "mupen64plus-video-glide64mk2.dll";
+			}
 			else
 			{
 				throw new InvalidOperationException(string.Format("Unknown plugin \"" + video_settings.PluginName));
@@ -591,6 +595,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			else if (video_settings.PluginName == "Glide64")
 			{
 				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
+			}
+			else if (video_settings.PluginName == "Glide64mk2")
+			{
+				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
 			}
 			else
 			{

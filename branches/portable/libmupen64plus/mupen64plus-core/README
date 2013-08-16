@@ -63,6 +63,9 @@ Type 'make' by itself to view all available build options:
      SHAREDIR=path == extra path to search for shared data files
      OPTFLAGS=flag == compiler optimization (default: -O3)
      PIC=(1|0)     == Force enable/disable of position independent code
+     OSD=(1|0)     == Enable/disable build of OpenGL On-screen display
+     NEW_DYNAREC=1 == Replace dynamic recompiler with Ari64's experimental dynarec
+     POSTFIX=name  == String added to the name of the the build (default: '')
    Install Options:
      PREFIX=path   == install/uninstall prefix (default: /usr/local/)
      SHAREDIR=path == path to install shared data (default: PREFIX/share/mupen64plus/)
@@ -76,6 +79,7 @@ Type 'make' by itself to view all available build options:
      DBG_CORE=1    == print debugging info in r4300 core
      DBG_COUNT=1   == print R4300 instruction count totals (64-bit dynarec only)
      DBG_COMPARE=1 == enable core-synchronized r4300 debugging
+     DBG_TIMING=1  == print timing data
      DBG_PROFILE=1 == dump profiling data for r4300 dynarec to data file
      V=1           == show verbose compiler output
 
@@ -99,10 +103,13 @@ files used by mupen64plus.
 NOTE: By default, install.sh uses /usr/local for the install prefix. Although
 the user can specify an alternate prefix to install.sh at the commandline, the
 mupen64plus binary was compiled to look for the install directory in /usr/local,
-so specifying an alternate prefix to install.sh will cause problems (mupen64plus
-will not find the install directory). If you want to use a prefix other than
-/usr/local, you will have to download the source package and build with the
-PREFIX option (see below).
+so specifying an alternate prefix to install.sh will cause problems (the
+mupen64plus front-end application will not find the directory containing the
+core library) unless the directory to which you install it is known by your
+dynamic library loader (ie, included in /etc/ld.conf.so)
+
+If you want to use a prefix other than /usr/local, you may also download the
+source code package and build with the PREFIX option (see below).
 
 *Source Distribution*
 
@@ -114,7 +121,7 @@ to /usr/local. This can be changed by passing the PREFIX option to make. NOTE:
 you must pass the prefix, when building AND installing. For example, to install
 mupen64plus to /usr, do this:
 
- $ make all
+ $ make PREFIX=/usr all
  $ sudo make PREFIX=/usr install
  $
 

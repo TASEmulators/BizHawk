@@ -409,6 +409,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\main\sdl_key_converter.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\osd\screenshot.cpp"
 				>
 			</File>
@@ -644,6 +648,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\main\savestates.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\main\sdl_key_converter.h"
 				>
 			</File>
 			<File

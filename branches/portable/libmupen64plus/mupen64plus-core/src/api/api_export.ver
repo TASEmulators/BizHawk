@@ -65,4 +65,5 @@ VidExt_Quit;
 VidExt_SetCaption;
 VidExt_SetVideoMode;
 VidExt_ToggleFullScreen;
+VidExt_ResizeWindow;
 local: *; };

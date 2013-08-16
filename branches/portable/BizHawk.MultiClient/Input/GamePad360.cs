@@ -62,6 +62,17 @@ namespace BizHawk.MultiClient
 			state = controller.GetState();
 		}
 
+		public IEnumerable<Tuple<string, float>> GetFloats()
+		{
+			var g = state.Gamepad;
+			const float f = 3.2768f;
+			yield return new Tuple<string, float>("LeftThumbX", g.LeftThumbX / f);
+			yield return new Tuple<string, float>("LeftThumbY", g.LeftThumbY / f);
+			yield return new Tuple<string, float>("RightThumbX", g.RightThumbX / f);
+			yield return new Tuple<string, float>("RightThumbY", g.RightThumbY / f);
+			yield break;
+		}
+
 		public int NumButtons { get; private set; }
 
 		private readonly List<string> names = new List<string>();

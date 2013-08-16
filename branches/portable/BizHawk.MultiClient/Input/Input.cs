@@ -174,6 +174,10 @@ namespace BizHawk.MultiClient
 #else
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight" });
 #endif
+		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
+		private bool trackdeltas = false;
+
 		void HandleButton(string button, bool newState)
 		{
 			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
@@ -263,6 +267,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public List<Tuple<string, float>> GetFloats()
+		{
+			List<Tuple<string, float>> FloatValuesCopy = new List<Tuple<string,float>>();
+			lock (FloatValues)
+			{
+				foreach (var kvp in FloatValues)
+					FloatValuesCopy.Add(new Tuple<string, float>(kvp.Key, kvp.Value));
+			}
+			return FloatValuesCopy;
+		}
 
 		void UpdateThreadProc()
 		{
@@ -294,23 +308,47 @@ namespace BizHawk.MultiClient
 				}
 #endif
 #if WINDOWS
-				//analyze xinput
-				for (int i = 0; i < GamePad360.Devices.Count; i++)
+				lock (FloatValues)
 				{
-					var pad = GamePad360.Devices[i];
-					string xname = "X" + (i + 1) + " ";
-					for (int b = 0; b < pad.NumButtons; b++)
-						HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
-				}
+					//FloatValues.Clear();
 
-				//analyze joysticks
-				for (int i = 0; i < GamePad.Devices.Count; i++)
-				{
-					var pad = GamePad.Devices[i];
-					string jname = "J" + (i + 1) + " ";
+					//analyze xinput
+					for (int i = 0; i < GamePad360.Devices.Count; i++)
+					{
+						var pad = GamePad360.Devices[i];
+						string xname = "X" + (i + 1) + " ";
+						for (int b = 0; b < pad.NumButtons; b++)
+							HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+						foreach (var sv in pad.GetFloats())
+						{
+							string n = xname = sv.Item1;
+							float f = sv.Item2;
+							if (trackdeltas)
+								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							FloatValues[n] = f;
+						}
+					}
 
-					for (int b = 0; b < pad.NumButtons; b++)
-						HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+					//analyze joysticks
+					for (int i = 0; i < GamePad.Devices.Count; i++)
+					{
+						var pad = GamePad.Devices[i];
+						string jname = "J" + (i + 1) + " ";
+
+						for (int b = 0; b < pad.NumButtons; b++)
+							HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+						foreach (var sv in pad.GetFloats())
+						{
+							string n = jname + sv.Item1;
+							float f = sv.Item2;
+							//if (n == "J5 RotationZ")
+							//	System.Diagnostics.Debugger.Break();
+							if (trackdeltas)
+								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							FloatValues[n] = f;
+						}
+					}
+
 				}
 #endif
 				bool swallow = !Global.MainForm.AllowInput;
@@ -326,6 +364,37 @@ namespace BizHawk.MultiClient
 
 				//arbitrary selection of polling frequency:
 				Thread.Sleep(10);
+			}
+		}
+
+		public void StartListeningForFloatEvents()
+		{
+			lock (FloatValues)
+			{
+				FloatDeltas.Clear();
+				trackdeltas = true;
+			}
+		}
+
+		public string GetNextFloatEvent()
+		{
+			lock (FloatValues)
+			{
+				foreach (var kvp in FloatDeltas)
+				{
+					// need to wiggle the stick a bit
+					if (kvp.Value >= 20000.0f)
+						return kvp.Key;
+				}
+			}
+			return null;
+		}
+
+		public void StopListeningForFloatEvents()
+		{
+			lock (FloatValues)
+			{
+				trackdeltas = false;
 			}
 		}
 

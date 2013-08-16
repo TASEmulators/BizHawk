@@ -6,33 +6,32 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	public abstract class Timer
 	{
+        public byte PortAMask = 0xFF;
+        public byte PortBMask = 0xFF;
+
 		protected bool pinIRQ;
-		protected uint[] timer;
-		protected uint[] timerLatch;
+        protected LatchedPort portA;
+        protected LatchedPort portB;
+        protected int[] timer;
+		protected int[] timerLatch;
 		protected bool[] timerOn;
 		protected bool[] underflow;
 
-		public Func<byte> ReadDirA = (() => { return 0xFF; });
-		public Func<byte> ReadDirB = (() => { return 0xFF; });
 		public Func<byte> ReadPortA = (() => { return 0xFF; });
 		public Func<byte> ReadPortB = (() => { return 0xFF; });
-		public Action<byte> WriteDirA = ((byte val) => { });
-		public Action<byte> WriteDirB = ((byte val) => { });
-		public Action<byte> WritePortA = ((byte val) => { });
-		public Action<byte> WritePortB = ((byte val) => { });
 
 		public Timer()
 		{
-			timer = new uint[2];
-			timerLatch = new uint[2];
+            portA = new LatchedPort();
+            portB = new LatchedPort();
+			timer = new int[2];
+			timerLatch = new int[2];
 			timerOn = new bool[2];
 			underflow = new bool[2];
 		}
 
 		protected void HardResetInternal()
 		{
-			WriteDirA(0x00);
-			WriteDirB(0x00);
 			timer[0] = 0xFFFF;
 			timer[1] = 0xFFFF;
 			timerLatch[0] = timer[0];
@@ -40,13 +39,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pinIRQ = true;
 		}
 
-		public bool IRQ
-		{
-			get
-			{
-				return pinIRQ;
-			}
-		}
+        public byte PortAData
+        {
+            get
+            {
+                return portA.ReadOutput();
+            }
+        }
+
+        public byte PortBData
+        {
+            get
+            {
+                return portB.ReadOutput();
+            }
+        }
+
+        public bool ReadIRQBuffer() { return pinIRQ; }
 
 		protected void SyncInternal(Serializer ser)
 		{

@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				{
 					var msu1 = romxml["cartridge"]["msu1"];
 					if (is_msu1_rom && msu1["rom"].Attributes["name"] != null)
-						return CoreComm.AcquireSubfilePath(msu1["rom"].Attributes["name"].Value);
+						return CoreComm.CoreFileProvider.PathSubfile(msu1["rom"].Attributes["name"].Value);
 					if (is_msu1_pcm)
 					{
 						//return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
 						{
 							if (child.Name == "track" && child.Attributes["number"].Value == wantsTrackString)
-								return CoreComm.AcquireSubfilePath(child.Attributes["name"].Value);
+								return CoreComm.CoreFileProvider.PathSubfile(child.Attributes["name"].Value);
 						}
 					}
 				}
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					//bsnes wont inspect the xml to load the necessary sfc file.
 					//so, we have to do that here and pass it in as the romData :/
 					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
-						romData = File.ReadAllBytes(CoreComm.AcquireSubfilePath(romxml["cartridge"]["rom"].Attributes["name"].Value));
+						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(romxml["cartridge"]["rom"].Attributes["name"].Value));
 					else
 						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
 				}
@@ -411,6 +411,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if(CoreComm.SNES_UseRingBuffer)
 				api.BeginBufferIO();
 
+			/* if the input poll callback is called, it will set this to false
+			 * this has to be done before we save the per-frame state in deterministic
+			 * mode, because in there, the core actually advances, and might advance
+			 * through the point in time where IsLagFrame gets set to false.  makes sense?
+			 */
+
+			IsLagFrame = true;
+
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
 			if (!nocallbacks && DeterministicEmulation)
@@ -456,9 +464,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			api.snes_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
 			api.snes_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
 			api.snes_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
-
-			// if the input poll callback is called, it will set this to false
-			IsLagFrame = true;
 
 			//apparently this is one frame?
 			timeFrameCounter++;
@@ -512,10 +517,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			{
 				Name = "SNES Controller",
 				BoolButtons = {
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset", "Power",
-					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 B", "P2 A", "P2 X", "P2 Y", "P2 L", "P2 R",
-					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 B", "P3 A", "P3 X", "P3 Y", "P3 L", "P3 R",
-					"P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 B", "P4 A", "P4 X", "P4 Y", "P4 L", "P4 R",
+					"Reset", "Power",
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Y", "P1 X", "P1 B", "P1 A", "P1 L", "P1 R",
+					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Y", "P2 X", "P2 B", "P2 A", "P2 L", "P2 R",
+					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 Y", "P3 X", "P3 B", "P3 A", "P3 L", "P3 R",
+					"P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 Y", "P4 X", "P4 B", "P4 A", "P4 L", "P4 R",
 				}
 			};
 
@@ -690,7 +696,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			temp.SaveAsHexFast(writer);
 			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
 			writer.WriteLine("Profile {0}", CoreComm.SNES_Profile);
 		}
@@ -706,7 +712,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				hex = reader.ReadLine();
 			}
 			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
+			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 			reader.ReadLine(); // Frame #
 			var profile = reader.ReadLine().Split(' ')[1];

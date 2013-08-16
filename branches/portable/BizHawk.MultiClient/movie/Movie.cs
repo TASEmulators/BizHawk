@@ -367,7 +367,7 @@ namespace BizHawk.MultiClient
 
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			BackupName = Global.Config.MoviesBackupPath + "\\" + Path.GetFileName(BackupName);
+			BackupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(BackupName));
 
 			var directory_info = new FileInfo(BackupName).Directory;
 			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
@@ -645,8 +645,15 @@ namespace BizHawk.MultiClient
 
 		public void LoadLogFromSavestateText(string path)
 		{
-			var reader = new StreamReader(path);
-			int stateFrame = 0;
+			using (var reader = new StreamReader(path))
+			{
+				LoadLogFromSavestateText(reader);
+			}
+		}
+
+		public void LoadLogFromSavestateText(TextReader reader)
+		{
+			int? stateFrame = null;
 			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
@@ -722,15 +729,19 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			if (stateFrame > 0 && stateFrame < Log.Length)
+			if (stateFrame == null)
+				throw new Exception("Couldn't find stateFrame");
+			int stateFramei = (int)stateFrame;
+
+			if (stateFramei > 0 && stateFramei < Log.Length)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Log.TruncateStates(stateFrame);
-					Log.TruncateMovie(stateFrame);
+					Log.TruncateStates(stateFramei);
+					Log.TruncateMovie(stateFramei);
 				}
 			}
-			else if (stateFrame > Log.Length) //Post movie savestate
+			else if (stateFramei > Log.Length) //Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
@@ -741,7 +752,6 @@ namespace BizHawk.MultiClient
 			}
 			if (IsCountingRerecords)
 				Rerecords++;
-			reader.Close();
 		}
 
 		public string GetTime(bool preLoad)
@@ -778,10 +788,9 @@ namespace BizHawk.MultiClient
 			return time;
 		}
 
-		public bool CheckTimeLines(string path, bool OnlyGUID)
+		public bool CheckTimeLines(TextReader reader, bool OnlyGUID)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
-			var reader = new StreamReader(path);
 
 			MovieLog l = new MovieLog();
 			int stateFrame = 0;
@@ -808,13 +817,13 @@ namespace BizHawk.MultiClient
 
 						if (result == DialogResult.No)
 						{
-							reader.Close();
+							//reader.Close();
 							return false;
 						}
 					}
 					else if (OnlyGUID)
 					{
-						reader.Close();
+						//reader.Close();
 						return true;
 					}
 				}
@@ -842,11 +851,11 @@ namespace BizHawk.MultiClient
 					l.AppendFrame(line);
 			}
 
-			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
+			//reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
 
 			if (OnlyGUID)
 			{
-				reader.Close();
+				//reader.Close();
 				return true;
 			}
 
@@ -861,7 +870,7 @@ namespace BizHawk.MultiClient
 				//Future event error
 				MessageBox.Show("The savestate is from frame " + l.Length.ToString() + " which is greater than the current movie length of " +
 					Log.Length.ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				reader.Close();
+				//reader.Close();
 				return false;
 			}
 			for (int x = 0; x < stateFrame; x++)
@@ -873,7 +882,7 @@ namespace BizHawk.MultiClient
 					//TimeLine Error
 					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
 						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					reader.Close();
+					//reader.Close();
 					return false;
 				}
 			}
@@ -895,7 +904,7 @@ namespace BizHawk.MultiClient
 				Mode = MOVIEMODE.PLAY;
 			}
 
-			reader.Close();
+			//reader.Close();
 			return true;
 		}
 

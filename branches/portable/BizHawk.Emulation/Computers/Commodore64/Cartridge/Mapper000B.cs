@@ -14,11 +14,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	{
 		private byte[] rom = new byte[0x4000];
 
-		public Mapper000B(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper000B(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
 			validCartridge = false;
 
-			for (uint i = 0; i < 0x4000; i++)
+			for (int i = 0; i < 0x4000; i++)
 				rom[i] = 0xFF;
 
 			if (newAddresses[0] == 0x8000)
@@ -38,17 +38,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			return rom[addr | 0x2000];
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return rom[addr];
 		}
 
-		public override byte ReadA000(ushort addr)
+		public override byte ReadA000(int addr)
 		{
 			return rom[addr | 0x2000];
 		}
 
-		public override byte ReadDF00(ushort addr)
+		public override byte ReadDF00(int addr)
 		{
 			pinGame = true;
 			return base.ReadDF00(addr);

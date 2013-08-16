@@ -232,7 +232,7 @@ namespace BizHawk.MultiClient
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
 				string name = PathManager.FilesystemSafeName(Global.Game);
-				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.LogPath), name) + ".txt";
+				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath), name) + ".txt";
 				LogFile = new FileInfo(filename);
 				if (LogFile.Directory != null && !LogFile.Directory.Exists)
 				{
@@ -303,7 +303,7 @@ namespace BizHawk.MultiClient
 			{
 				string name = PathManager.FilesystemSafeName(Global.Game);
 				sfd.FileName = name + ".txt";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LogPath);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath);
 			}
 			else if (!String.IsNullOrWhiteSpace(LogFile.FullName))
 			{
@@ -313,7 +313,7 @@ namespace BizHawk.MultiClient
 			else
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LogPath);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath);
 			}
 
 			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";

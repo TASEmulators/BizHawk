@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			mi = 0;
 			opcode = 256;
 			iflag_pending = true;
+            RDY = true;
 		}
 
 		public void NESSoftReset()
@@ -82,6 +83,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		public bool IRQ;
 		public bool NMI;
+        public bool RDY;
 
 		public void SyncState(Serializer ser)
 		{
@@ -94,6 +96,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			ser.Sync("S", ref S);
 			ser.Sync("NMI", ref NMI);
 			ser.Sync("IRQ", ref IRQ);
+            ser.Sync("RDY", ref RDY);
 			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("opcode2", ref opcode2);

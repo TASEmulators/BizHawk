@@ -511,6 +511,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 		int ea, alu_temp; //cpu internal temp variables
 		int mi; //microcode index
 		bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
+        bool rdy_freeze; //true if the CPU must be frozen
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
@@ -581,21 +582,30 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void Fetch1_Real()
 		{
-			if (debug) Console.WriteLine(State());
-			branch_irq_hack = false;
-			opcode = ReadMemory(PC++);
-			mi = -1;
-
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                if (debug) Console.WriteLine(State());
+                branch_irq_hack = false;
+                opcode = ReadMemory(PC++);
+                mi = -1;
+            }
 		}
 		void Fetch2()
 		{
-			opcode2 = ReadMemory(PC++);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                opcode2 = ReadMemory(PC++);
+            }
 		}
 		void Fetch3()
 		{
-			opcode3 = ReadMemory(PC++);
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                opcode3 = ReadMemory(PC++);
+            }
 		}
 		void PushPCH()
 		{
@@ -643,43 +653,64 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void FetchPCLVector()
 		{
-			if (ea == BRKVector && FlagB && NMI)
-			{
-				NMI = false;
-				ea = NMIVector;
-			}
-			if (ea == IRQVector && !FlagB && NMI)
-			{
-				NMI = false;
-				ea = NMIVector;
-			}
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                if (ea == BRKVector && FlagB && NMI)
+                {
+                    NMI = false;
+                    ea = NMIVector;
+                }
+                if (ea == IRQVector && !FlagB && NMI)
+                {
+                    NMI = false;
+                    ea = NMIVector;
+                }
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void FetchPCHVector()
 		{
-			alu_temp += ReadMemory((ushort)(ea + 1)) << 8;
-			PC = (ushort)alu_temp;
-
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp += ReadMemory((ushort)(ea + 1)) << 8;
+                PC = (ushort)alu_temp;
+            }
 
 		}
 		void Imp_INY()
 		{
-			FetchDummy(); Y++; NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); Y++; NZ_Y();
+            }
 		}
 		void Imp_DEY()
 		{
-			FetchDummy(); Y--; NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); Y--; NZ_Y();
+            }
 		}
 		void Imp_INX()
 		{
-			FetchDummy(); X++; NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); X++; NZ_X();
+            }
 		}
 		void Imp_DEX()
 		{
-			FetchDummy(); X--; NZ_X();
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); X--; NZ_X();
+            }
 		}
 		void NZ_A()
 		{
@@ -696,56 +727,108 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void Imp_TSX()
 		{
-			FetchDummy(); X = S; NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); X = S; NZ_X();
+            }
 		}
 		void Imp_TXS()
 		{
-			FetchDummy(); S = X;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); S = X;
+            }
 		}
 		void Imp_TAX()
 		{
-			FetchDummy(); X = A; NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); X = A; NZ_X();
+            }
 		}
 		void Imp_TAY()
 		{
-			FetchDummy(); Y = A; NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); Y = A; NZ_Y();
+            }
 		}
 		void Imp_TYA()
 		{
-			FetchDummy(); A = Y; NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); A = Y; NZ_A();
+            }
 		}
 		void Imp_TXA()
 		{
-			FetchDummy(); A = X; NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); A = X; NZ_A();
+            }
 
 		}
 		void Imp_SEI()
 		{
-			FetchDummy(); iflag_pending = true;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); iflag_pending = true;
+            }
 		}
 		void Imp_CLI()
 		{
-			FetchDummy(); iflag_pending = false;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); iflag_pending = false;
+            }
 		}
 		void Imp_SEC()
 		{
-			FetchDummy(); FlagC = true;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); FlagC = true;
+            }
 		}
 		void Imp_CLC()
 		{
-			FetchDummy(); FlagC = false;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); FlagC = false;
+            }
 		}
 		void Imp_SED()
 		{
-			FetchDummy(); FlagD = true;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); FlagD = true;
+            }
 		}
 		void Imp_CLD()
 		{
-			FetchDummy(); FlagD = false;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); FlagD = false;
+            }
 		}
 		void Imp_CLV()
 		{
-			FetchDummy(); FlagV = false;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                FetchDummy(); FlagV = false;
+            }
 
 		}
 		void Abs_WRITE_STA()
@@ -784,42 +867,61 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void IndIdx_Stage3()
 		{
-			ea = ReadMemory(opcode2);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ea = ReadMemory(opcode2);
+            }
 
 		}
 		void IndIdx_Stage4()
 		{
-			alu_temp = ea + Y;
-			ea = (ReadMemory((byte)(opcode2 + 1)) << 8)
-				| ((alu_temp & 0xFF));
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ea + Y;
+                ea = (ReadMemory((byte)(opcode2 + 1)) << 8)
+                    | ((alu_temp & 0xFF));
+            }
 
 		}
 		void IndIdx_WRITE_Stage5()
 		{
-			ReadMemory((ushort)ea);
-			ea += (alu_temp >> 8) << 8;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory((ushort)ea);
+                ea += (alu_temp >> 8) << 8;
+            }
 
 		}
 		void IndIdx_READ_Stage5()
 		{
-			if (!alu_temp.Bit(8))
-			{
-				mi++;
-				ExecuteOneRetry();
-				return;
-			}
-			else
-			{
-				ReadMemory((ushort)ea);
-				ea = (ushort)(ea + 0x100);
-			}
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                if (!alu_temp.Bit(8))
+                {
+                    mi++;
+                    ExecuteOneRetry();
+                    return;
+                }
+                else
+                {
+                    ReadMemory((ushort)ea);
+                    ea = (ushort)(ea + 0x100);
+                }
+            }
 		}
 		void IndIdx_RMW_Stage5()
 		{
-			if (alu_temp.Bit(8))
-				ea = (ushort)(ea + 0x100);
-			ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                if (alu_temp.Bit(8))
+                    ea = (ushort)(ea + 0x100);
+                ReadMemory((ushort)ea);
+            }
 
 		}
 		void IndIdx_WRITE_Stage6_STA()
@@ -834,47 +936,83 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void IndIdx_READ_Stage6_LDA()
 		{
-			A = ReadMemory((ushort)ea);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory((ushort)ea);
+                NZ_A();
+            }
 		}
 		void IndIdx_READ_Stage6_CMP()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Cmp();
+            }
 		}
 		void IndIdx_READ_Stage6_AND()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _And();
+            }
 		}
 		void IndIdx_READ_Stage6_EOR()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Eor();
+            }
 		}
 		void IndIdx_READ_Stage6_LAX()
 		{
-			A = X = ReadMemory((ushort)ea);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = X = ReadMemory((ushort)ea);
+                NZ_A();
+            }
 		}
 		void IndIdx_READ_Stage6_ADC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Adc();
+            }
 		}
 		void IndIdx_READ_Stage6_SBC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Sbc();
+            }
 		}
 		void IndIdx_READ_Stage6_ORA()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Ora();
+            }
 		}
 		void IndIdx_RMW_Stage6()
 		{
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void IndIdx_RMW_Stage7_SLO()
@@ -976,15 +1114,18 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void RelBranch_Stage2()
 		{
-			opcode2 = ReadMemory(PC++);
-			if (branch_taken)
-			{
-				branch_taken = false;
-				//if the branch is taken, we enter a different bit of microcode to calculate the PC and complete the branch
-				opcode = VOP_RelativeStuff;
-				mi = -1;
-			}
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                opcode2 = ReadMemory(PC++);
+                if (branch_taken)
+                {
+                    branch_taken = false;
+                    //if the branch is taken, we enter a different bit of microcode to calculate the PC and complete the branch
+                    opcode = VOP_RelativeStuff;
+                    mi = -1;
+                }
+            }
 
 		}
 		void RelBranch_Stage3()
@@ -1030,115 +1171,198 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void JSR()
 		{
-			PC = (ushort)((ReadMemory((ushort)(PC)) << 8) + opcode2);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                PC = (ushort)((ReadMemory((ushort)(PC)) << 8) + opcode2);
+            }
 		}
 		void PullP()
 		{
-			P = ReadMemory((ushort)(S++ + 0x100));
-			FlagT = true; //force T always to remain true
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                P = ReadMemory((ushort)(S++ + 0x100));
+                FlagT = true; //force T always to remain true
+            }
 
 		}
 		void PullPCL()
 		{
-			PC &= 0xFF00;
-			PC |= ReadMemory((ushort)(S++ + 0x100));
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                PC &= 0xFF00;
+                PC |= ReadMemory((ushort)(S++ + 0x100));
+            }
 
 		}
 		void PullPCH_NoInc()
 		{
-			PC &= 0xFF;
-			PC |= (ushort)(ReadMemory((ushort)(S + 0x100)) << 8);
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                PC &= 0xFF;
+                PC |= (ushort)(ReadMemory((ushort)(S + 0x100)) << 8);
+            }
 
 		}
 		void Abs_READ_LDA()
 		{
-			A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                NZ_A();
+            }
 		}
 		void Abs_READ_LDY()
 		{
-			Y = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                Y = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                NZ_Y();
+            }
 		}
 		void Abs_READ_LDX()
 		{
-			X = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                X = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                NZ_X();
+            }
 		}
 		void Abs_READ_BIT()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Bit();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Bit();
+            }
 		}
 		void Abs_READ_LAX()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			X = A;
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                X = A;
+                NZ_A();
+            }
 		}
 		void Abs_READ_AND()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _And();
+            }
 		}
 		void Abs_READ_EOR()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Eor();
+            }
 		}
 		void Abs_READ_ORA()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Ora();
+            }
 		}
 		void Abs_READ_ADC()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Adc();
+            }
 		}
 		void Abs_READ_CMP()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Cmp();
+            }
 		}
 		void Abs_READ_CPY()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Cpy();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Cpy();
+            }
 		}
 		void Abs_READ_NOP()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+            }
 
 		}
 		void Abs_READ_CPX()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Cpx();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Cpx();
+            }
 		}
 		void Abs_READ_SBC()
 		{
-			alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+                _Sbc();
+            }
 
 		}
 		void ZpIdx_Stage3_X()
 		{
-			ReadMemory(opcode2);
-			opcode2 = (byte)(opcode2 + X); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory(opcode2);
+                opcode2 = (byte)(opcode2 + X); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+            }
 
 		}
 		void ZpIdx_Stage3_Y()
 		{
-			ReadMemory(opcode2);
-			opcode2 = (byte)(opcode2 + Y); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory(opcode2);
+                opcode2 = (byte)(opcode2 + Y); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+            }
 
 		}
 		void ZpIdx_RMW_Stage4()
 		{
-			alu_temp = ReadMemory(opcode2);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+            }
 
 		}
 		void ZpIdx_RMW_Stage6()
@@ -1149,75 +1373,131 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void ZP_READ_EOR()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Eor();
+            }
 		}
 		void ZP_READ_BIT()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Bit();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Bit();
+            }
 		}
 		void ZP_READ_LDA()
 		{
-			A = ReadMemory(opcode2);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory(opcode2);
+                NZ_A();
+            }
 		}
 		void ZP_READ_LDY()
 		{
-			Y = ReadMemory(opcode2);
-			NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                Y = ReadMemory(opcode2);
+                NZ_Y();
+            }
 		}
 		void ZP_READ_LDX()
 		{
-			X = ReadMemory(opcode2);
-			NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                X = ReadMemory(opcode2);
+                NZ_X();
+            }
 		}
 		void ZP_READ_LAX()
 		{
-			//?? is this right??
-			X = ReadMemory(opcode2);
-			A = X;
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                //?? is this right??
+                X = ReadMemory(opcode2);
+                A = X;
+                NZ_A();
+            }
 		}
 		void ZP_READ_CPY()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Cpy();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Cpy();
+            }
 		}
 		void ZP_READ_CMP()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Cmp();
+            }
 		}
 		void ZP_READ_CPX()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Cpx();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Cpx();
+            }
 		}
 		void ZP_READ_ORA()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Ora();
+            }
 		}
 		void ZP_READ_NOP()
 		{
-			ReadMemory(opcode2); //just a dummy
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory(opcode2); //just a dummy
+            }
 
 		}
 		void ZP_READ_SBC()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Sbc();
+            }
 		}
 		void ZP_READ_ADC()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _Adc();
+            }
 		}
 		void ZP_READ_AND()
 		{
-			alu_temp = ReadMemory(opcode2);
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+                _And();
+            }
 
 		}
 		void _Cpx()
@@ -1374,146 +1654,257 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void Imm_EOR()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Eor();
+            }
 		}
 		void Imm_ANC()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Anc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Anc();
+            }
 		}
 		void Imm_ASR()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Asr();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Asr();
+            }
 		}
 		void Imm_AXS()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Axs();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Axs();
+            }
 		}
 		void Imm_ARR()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Arr();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Arr();
+            }
 		}
 		void Imm_LXA()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Lxa();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Lxa();
+            }
 		}
 		void Imm_ORA()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Ora();
+            }
 		}
 		void Imm_CPY()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Cpy();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Cpy();
+            }
 		}
 		void Imm_CPX()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Cpx();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Cpx();
+            }
 		}
 		void Imm_CMP()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Cmp();
+            }
 		}
 		void Imm_SBC()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Sbc();
+            }
 		}
 		void Imm_AND()
 		{
-			alu_temp = ReadMemory(PC++);
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _And();
+            }
 		}
 		void Imm_ADC()
 		{
-			alu_temp = ReadMemory(PC++);
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(PC++);
+                _Adc();
+            }
 		}
 		void Imm_LDA()
 		{
-			A = ReadMemory(PC++);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory(PC++);
+                NZ_A();
+            }
 		}
 		void Imm_LDX()
 		{
-			X = ReadMemory(PC++);
-			NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                X = ReadMemory(PC++);
+                NZ_X();
+            }
 		}
 		void Imm_LDY()
 		{
-			Y = ReadMemory(PC++);
-			NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                Y = ReadMemory(PC++);
+                NZ_Y();
+            }
 		}
 		void Imm_Unsupported()
 		{
-			ReadMemory(PC++);
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory(PC++);
+            }
 
 		}
 		void IdxInd_Stage3()
 		{
-			ReadMemory(opcode2); //dummy?
-			alu_temp = (opcode2 + X) & 0xFF;
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ReadMemory(opcode2); //dummy?
+                alu_temp = (opcode2 + X) & 0xFF;
+            }
 
 		}
 		void IdxInd_Stage4()
 		{
-			ea = ReadMemory((ushort)alu_temp);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ea = ReadMemory((ushort)alu_temp);
+            }
 
 		}
 		void IdxInd_Stage5()
 		{
-			ea += (ReadMemory((byte)(alu_temp + 1)) << 8);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ea += (ReadMemory((byte)(alu_temp + 1)) << 8);
+            }
 
 		}
 		void IdxInd_Stage6_READ_LDA()
 		{
-			//TODO make uniform with others
-			A = ReadMemory((ushort)ea);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                //TODO make uniform with others
+                A = ReadMemory((ushort)ea);
+                NZ_A();
+            }
 		}
 		void IdxInd_Stage6_READ_ORA()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Ora();
+            }
 		}
 		void IdxInd_Stage6_READ_LAX()
 		{
-			A = X = ReadMemory((ushort)ea);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = X = ReadMemory((ushort)ea);
+                NZ_A();
+            }
 		}
 		void IdxInd_Stage6_READ_CMP()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Cmp();
+            }
 		}
 		void IdxInd_Stage6_READ_ADC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Adc();
+            }
 		}
 		void IdxInd_Stage6_READ_AND()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _And();
+            }
 		}
 		void IdxInd_Stage6_READ_EOR()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Eor();
+            }
 		}
 		void IdxInd_Stage6_READ_SBC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Sbc();
+            }
 		}
 		void IdxInd_Stage6_WRITE_STA()
 		{
@@ -1529,7 +1920,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void IdxInd_Stage6_RMW()
 		{
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void IdxInd_Stage7_RMW_SLO()
@@ -1601,11 +1996,17 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void PullA_NoInc()
 		{
-			A = ReadMemory((ushort)(S + 0x100));
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory((ushort)(S + 0x100));
+                NZ_A();
+            }
 		}
 		void PullP_NoInc()
 		{
+            rdy_freeze = !RDY;
+            if (RDY)
 			{
 				my_iflag = FlagI;
 				P = ReadMemory((ushort)(S + 0x100));
@@ -1649,7 +2050,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void JMP_abs()
 		{
-			PC = (ushort)((ReadMemory(PC) << 8) + opcode2);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                PC = (ushort)((ReadMemory(PC) << 8) + opcode2);
+            }
 
 		}
 		void IncPC()
@@ -1660,7 +2065,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void ZP_RMW_Stage3()
 		{
-			alu_temp = ReadMemory(opcode2);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory(opcode2);
+            }
 
 		}
 		void ZP_RMW_Stage5()
@@ -1771,44 +2180,59 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void AbsIdx_Stage3_Y()
 		{
-			opcode3 = ReadMemory(PC++);
-			alu_temp = opcode2 + Y;
-			ea = (opcode3 << 8) + (alu_temp & 0xFF);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                opcode3 = ReadMemory(PC++);
+                alu_temp = opcode2 + Y;
+                ea = (opcode3 << 8) + (alu_temp & 0xFF);
 
-			//new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
+                //new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
+            }
 		}
 		void AbsIdx_Stage3_X()
 		{
-			opcode3 = ReadMemory(PC++);
-			alu_temp = opcode2 + X;
-			ea = (opcode3 << 8) + (alu_temp & 0xFF);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                opcode3 = ReadMemory(PC++);
+                alu_temp = opcode2 + X;
+                ea = (opcode3 << 8) + (alu_temp & 0xFF);
+            }
 
 		}
 		void AbsIdx_READ_Stage4()
 		{
-			if (!alu_temp.Bit(8))
-			{
-				mi++;
-				ExecuteOneRetry();
-				return;
-			}
-			else
-			{
-				alu_temp = ReadMemory((ushort)ea);
-				ea = (ushort)(ea + 0x100);
-			}
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                if (!alu_temp.Bit(8))
+                {
+                    mi++;
+                    ExecuteOneRetry();
+                    return;
+                }
+                else
+                {
+                    alu_temp = ReadMemory((ushort)ea);
+                    ea = (ushort)(ea + 0x100);
+                }
+            }
 
 		}
 		void AbsIdx_Stage4()
 		{
-			//bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
-			if (alu_temp.Bit(8))
-			{
-				alu_temp = ReadMemory((ushort)ea);
-				ea = (ushort)(ea + 0x100);
-			}
-			else alu_temp = ReadMemory((ushort)ea);
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                //bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
+                if (alu_temp.Bit(8))
+                {
+                    alu_temp = ReadMemory((ushort)ea);
+                    ea = (ushort)(ea + 0x100);
+                }
+                else alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void AbsIdx_WRITE_Stage5_STA()
@@ -1832,14 +2256,21 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void AbsIdx_WRITE_Stage5_ERROR()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
+            }
 
 		}
 		void AbsIdx_RMW_Stage5()
 		{
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void AbsIdx_RMW_Stage7()
@@ -1947,85 +2378,142 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 		void AbsIdx_READ_Stage5_LDA()
 		{
-			A = ReadMemory((ushort)ea);
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory((ushort)ea);
+                NZ_A();
+            }
 		}
 		void AbsIdx_READ_Stage5_LDX()
 		{
-			X = ReadMemory((ushort)ea);
-			NZ_X();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                X = ReadMemory((ushort)ea);
+                NZ_X();
+            }
 		}
 		void AbsIdx_READ_Stage5_LAX()
 		{
-			A = ReadMemory((ushort)ea);
-			X = A;
-			NZ_A();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                A = ReadMemory((ushort)ea);
+                X = A;
+                NZ_A();
+            }
 		}
 		void AbsIdx_READ_Stage5_LDY()
 		{
-			Y = ReadMemory((ushort)ea);
-			NZ_Y();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                Y = ReadMemory((ushort)ea);
+                NZ_Y();
+            }
 		}
 		void AbsIdx_READ_Stage5_ORA()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Ora();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Ora();
+            }
 		}
 		void AbsIdx_READ_Stage5_NOP()
 		{
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void AbsIdx_READ_Stage5_CMP()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Cmp();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Cmp();
+            }
 		}
 		void AbsIdx_READ_Stage5_SBC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Sbc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Sbc();
+            }
 		}
 		void AbsIdx_READ_Stage5_ADC()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Adc();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Adc();
+            }
 		}
 		void AbsIdx_READ_Stage5_EOR()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_Eor();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _Eor();
+            }
 		}
 		void AbsIdx_READ_Stage5_AND()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			_And();
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                _And();
+            }
 		}
 		void AbsIdx_READ_Stage5_ERROR()
 		{
-			alu_temp = ReadMemory((ushort)ea);
-			//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                alu_temp = ReadMemory((ushort)ea);
+                //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
+            }
 
 		}
 		void AbsInd_JMP_Stage4()
 		{
-			ea = (opcode3 << 8) + opcode2;
-			alu_temp = ReadMemory((ushort)ea);
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+			    ea = (opcode3 << 8) + opcode2;
+                alu_temp = ReadMemory((ushort)ea);
+            }
 		}
 		void AbsInd_JMP_Stage5()
 		{
-			ea = (opcode3 << 8) + (byte)(opcode2 + 1);
-			alu_temp += ReadMemory((ushort)ea) << 8;
-			PC = (ushort)alu_temp;
-
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ea = (opcode3 << 8) + (byte)(opcode2 + 1);
+                alu_temp += ReadMemory((ushort)ea) << 8;
+                PC = (ushort)alu_temp;
+            }
 
 		}
 		void Abs_RMW_Stage4()
 		{
-			ea = (opcode3 << 8) + opcode2;
-			alu_temp = ReadMemory((ushort)ea);
+            rdy_freeze = !RDY;
+            if (RDY)
+            {
+                ea = (opcode3 << 8) + opcode2;
+                alu_temp = ReadMemory((ushort)ea);
+            }
 
 		}
 		void Abs_RMW_Stage5_INC()
@@ -2423,14 +2911,19 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		public void ExecuteOne()
 		{
-			TotalExecutedCycles++;
+            if (!rdy_freeze)
+            {
+                TotalExecutedCycles++;
 
-			interrupt_pending |= Interrupted;
-
-			//i tried making ExecuteOneRetry not re-entrant by having it set a flag instead, then exit from the call below, check the flag, and GOTO if it was flagged, but it wasnt faster
+                interrupt_pending |= Interrupted;
+            }
+            rdy_freeze = false;
+            
+            //i tried making ExecuteOneRetry not re-entrant by having it set a flag instead, then exit from the call below, check the flag, and GOTO if it was flagged, but it wasnt faster
 			ExecuteOneRetry();
 
-			mi++;
+            if (!rdy_freeze)
+			    mi++;
 		} //ExecuteOne
 	}
 }

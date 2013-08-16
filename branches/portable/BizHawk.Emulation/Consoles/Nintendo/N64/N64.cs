@@ -37,10 +37,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			Name = "Nintento 64 Controller",
 			BoolButtons =
 			{
-				"P1 DPad R", "P1 DPad L", "P1 DPad D", "P1 DPad U", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Right", "P1 C Left", "P1 C Down", "P1 C Up", "P1 R", "P1 L",
-				"P2 DPad R", "P2 DPad L", "P2 DPad D", "P2 DPad U", "P2 Start", "P2 Z", "P2 B", "P2 A", "P2 C Right", "P2 C Left", "P2 C Down", "P2 C Up", "P2 R", "P2 L",
-				"P3 DPad R", "P3 DPad L", "P3 DPad D", "P3 DPad U", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Right", "P3 C Left", "P3 C Down", "P3 C Up", "P3 R", "P3 L",
-				"P4 DPad R", "P4 DPad L", "P4 DPad D", "P4 DPad U", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Right", "P4 C Left", "P4 C Down", "P4 C Up", "P4 R", "P4 L",
+				"P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right", "P1 DPad U", "P1 DPad D", "P1 DPad L", "P1 DPad R", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Up", "P1 C Down", "P1 C Right", "P1 C Left", "P1 L", "P1 R", 
+				"P2 A Up", "P2 A Down", "P2 A Left", "P2 A Right", "P2 DPad U", "P2 DPad D", "P2 DPad L", "P2 DPad R", "P2 Start", "P2 Z", "P2 B", "P2 A", "P2 C Up", "P2 C Down", "P2 C Right", "P2 C Left", "P2 L", "P2 R", 
+				"P3 A Up", "P3 A Down", "P3 A Left", "P3 A Right", "P3 DPad U", "P3 DPad D", "P3 DPad L", "P3 DPad R", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Up", "P3 C Down", "P3 C Right", "P3 C Left", "P3 L", "P3 R", 
+				"P4 A Up", "P4 A Down", "P4 A Left", "P4 A Right", "P4 DPad U", "P4 DPad D", "P4 DPad L", "P4 DPad R", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Up", "P4 C Down", "P4 C Right", "P4 C Left", "P4 L", "P4 R", 
 				"Reset", "Power"
 			},
 			FloatControls =
@@ -49,6 +49,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				"P2 X Axis", "P2 Y Axis",
 				"P3 X Axis", "P3 Y Axis",
 				"P4 X Axis", "P4 Y Axis"
+			},
+			FloatRanges =
+			{
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f}
 			}
 		};
 
@@ -88,7 +99,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			for (int i = 0; i < 4; i++)
 			{
-				api.set_buttons(i, ReadController(i+1), (sbyte)Controller.GetFloat("P" + (i+1) + " X Axis"), (sbyte)Controller.GetFloat("P" + (i+1) + " Y Axis"));
+				string p = "P" + (i + 1);
+				sbyte x;
+				if (Controller.IsPressed(p + " A Left")) { x = -127; }
+				else if (Controller.IsPressed(p + " A Right")) { x = 127; }
+				else { x = (sbyte)Controller.GetFloat(p + " X Axis"); }
+
+				sbyte y;
+				if (Controller.IsPressed(p + " A Up")) { y = 127; }
+				else if (Controller.IsPressed(p + " A Down")) { y = -127; }
+				else { y = (sbyte)Controller.GetFloat(p + " Y Axis"); }
+
+				api.set_buttons(i, ReadController(i+1), x, y);
 			}
 		}
 
@@ -166,9 +188,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
+		byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			byte[] data = new byte[16788288 + 1024];
+			byte[] data = SaveStatePrivateBuff;
 			int bytes_used = api.SaveState(data);
 
 			writer.Write(data.Length);
@@ -186,12 +209,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
+			reader.Read(SaveStatePrivateBuff, 0, length);
+			byte[] data = SaveStatePrivateBuff;
 
 			api.LoadState(data);
 
-			data = reader.ReadBytes(0x800 + 0x8000 * 4);
-			api.LoadSaveram(data);
+			reader.Read(SaveStatePrivateBuff,0,0x800 + 0x8000 * 4);
+			api.LoadSaveram(SaveStatePrivateBuff);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -199,13 +223,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			Frame = reader.ReadInt32();
 		}
 
+		byte[] SaveStateBinaryPrivateBuff = new byte[0];
+
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
+			// WELCOME TO THE HACK ZONE
+			byte[] saveram = api.SaveSaveram();
+
+			int lenwant = 4 + SaveStatePrivateBuff.Length + saveram.Length + 1 + 4 + 4;
+			if (SaveStateBinaryPrivateBuff.Length != lenwant)
+			{
+				Console.WriteLine("Allocating new N64 private buffer size {0}", lenwant);
+				SaveStateBinaryPrivateBuff = new byte[lenwant];
+			}
+
+			MemoryStream ms = new MemoryStream(SaveStateBinaryPrivateBuff);
 			BinaryWriter bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			return ms.ToArray();
+
+			if (ms.Length != SaveStateBinaryPrivateBuff.Length)
+				throw new Exception("Unexpected Length");
+
+			return SaveStateBinaryPrivateBuff;// ms.ToArray();
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }

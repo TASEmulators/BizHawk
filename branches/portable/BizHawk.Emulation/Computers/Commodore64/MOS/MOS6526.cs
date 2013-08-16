@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿using System;
+
+namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// MOS technology 6526 "CIA"
 	//
@@ -41,7 +43,13 @@
 
 		// ------------------------------------
 
-		private bool alarmSelect;
+        public Func<bool> ReadCNT;
+        public Func<bool> ReadFlag;
+        public Func<bool> ReadSP;
+
+        // ------------------------------------
+
+        private bool alarmSelect;
 		private Region chipRegion;
 		private bool cntPos;
 		private bool enableIntAlarm;
@@ -53,10 +61,11 @@
 		private bool intSP;
 		private bool[] intTimer;
 		private bool pinCnt;
-		private bool pinFlag;
-		private bool pinPC;
+        private bool pinCntLast;
+        private bool pinPC;
+        private bool pinSP;
 		private byte sr;
-		private uint[] timerDelay;
+		private int[] timerDelay;
 		private InMode[] timerInMode;
 		private OutMode[] timerOutMode;
 		private bool[] timerPortEnable;
@@ -66,8 +75,8 @@
 		private byte[] tod;
 		private byte[] todAlarm;
 		private bool todAlarmPM;
-		private uint todCounter;
-		private uint todCounterLatch;
+		private int todCounter;
+		private int todCounterLatch;
 		private bool todIn;
 		private bool todPM;
 
@@ -78,7 +87,7 @@
 			chipRegion = region;
 			enableIntTimer = new bool[2];
 			intTimer = new bool[2];
-			timerDelay = new uint[2];
+			timerDelay = new int[2];
 			timerInMode = new InMode[2];
 			timerOutMode = new OutMode[2];
 			timerPortEnable = new bool[2];
@@ -88,7 +97,6 @@
 			todAlarm = new byte[4];
 
 			SetTodIn(chipRegion);
-			pinFlag = true;
 		}
 
 		// ------------------------------------
@@ -100,18 +108,21 @@
 
 		public void ExecutePhase2()
 		{
-			
 			{
-				pinPC = true;
-				TODRun();
+                bool sumCnt = ReadCNT();
+                cntPos |= (!pinCntLast && sumCnt);
+                pinCntLast = sumCnt;
+
+                pinPC = true;
+                TODRun();
 
 				if (timerPulse[0])
 				{
-					WritePortA((byte)(ReadPortA() & PBOnMask[0]));
+                    portA.Latch &= PBOnMask[0];
 				}
 				if (timerPulse[1])
 				{
-					WritePortB((byte)(ReadPortA() & PBOnMask[1]));
+                    portB.Latch &= PBOnMask[1];
 				}
 
 				if (timerDelay[0] == 0)
@@ -213,12 +224,12 @@
 		{
 			
 			{
-				uint lo;
-				uint hi;
-				uint result;
+				int lo;
+				int hi;
+				int result;
 
-				lo = (i & (uint)0x0F) + (j & (uint)0x0F);
-				hi = (i & (uint)0x70) + (j & (uint)0x70);
+				lo = (i & 0x0F) + (j & 0x0F);
+				hi = (i & 0x70) + (j & 0x70);
 				if (lo > 0x09)
 				{
 					hi += 0x10;
@@ -234,13 +245,13 @@
 			}
 		}
 
-		private void TimerRun(uint index)
+		private void TimerRun(int index)
 		{
 			
 			{
 				if (timerOn[index])
 				{
-					uint t = timer[index];
+					int t = timer[index];
 					bool u = false;
 					
 					{
@@ -291,15 +302,15 @@
 							if (timerPortEnable[index])
 							{
 								// force port B bit to output
-								WriteDirB((byte)(ReadDirB() | PBOnBit[index]));
+                                portB.Direction |= PBOnBit[index];
 								switch (timerOutMode[index])
 								{
 									case OutMode.Pulse:
 										timerPulse[index] = true;
-										WritePortB((byte)(ReadPortB() | PBOnBit[index]));
+                                        portB.Latch |= PBOnBit[index];
 										break;
 									case OutMode.Toggle:
-										WritePortB((byte)(ReadPortB() ^ PBOnBit[index]));
+                                        portB.Latch ^= PBOnBit[index];
 										break;
 								}
 							}
@@ -352,44 +363,22 @@
 
 		// ------------------------------------
 
-		public bool CNT
-		{
-			get { return pinCnt; }
-			set { cntPos |= (!pinCnt && value); pinCnt = value; }
-		}
-
-		public bool FLAG
-		{
-			get { return pinFlag; }
-			set
-			{
-				if (pinFlag && !value)
-					intFlag = true;
-				pinFlag = value;
-			}
-		}
-
-		public bool PC
-		{
-			get { return pinPC; }
-		}
-
 		public byte Peek(int addr)
 		{
-			return ReadRegister((ushort)(addr & 0xF));
+			return ReadRegister(addr & 0xF);
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((ushort)(addr & 0xF), val);
+			WriteRegister((addr & 0xF), val);
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
 			return Read(addr, 0xFF);
 		}
 
-		public byte Read(ushort addr, byte mask)
+		public byte Read(int addr, byte mask)
 		{
 			addr &= 0xF;
 			byte val;
@@ -418,24 +407,34 @@
 			return val;
 		}
 
-		private byte ReadRegister(ushort addr)
+        public bool ReadCNTBuffer()
+        {
+            return pinCnt;
+        }
+
+        public bool ReadPCBuffer()
+        {
+            return pinPC;
+        }
+
+		private byte ReadRegister(int addr)
 		{
 			byte val = 0x00; //unused pin value
-			uint timerVal;
+			int timerVal;
 
 			switch (addr)
 			{
 				case 0x0:
-					val = ReadPortA();
+					val = (byte)(portA.ReadInput(ReadPortA()) & PortAMask);
 					break;
 				case 0x1:
-					val = ReadPortB();
+					val = (byte)(portB.ReadInput(ReadPortB()) & PortBMask);
 					break;
 				case 0x2:
-					val = ReadDirA();
+                    val = portA.Direction;
 					break;
 				case 0x3:
-					val = ReadDirB();
+                    val = portB.Direction;
 					break;
 				case 0x4:
 					timerVal = ReadTimerValue(0);
@@ -519,7 +518,12 @@
 			return val;
 		}
 
-		private uint ReadTimerValue(uint index)
+        public bool ReadSPBuffer()
+        {
+            return pinSP;
+        }
+
+		private int ReadTimerValue(int index)
 		{
 			if (timerOn[index])
 			{
@@ -537,13 +541,13 @@
 		public void SyncState(Serializer ser)
 		{
 			int chipRegionInt = (int)chipRegion;
-			int timerInModeInt0 = (int)timerInMode[0];
-			int timerInModeInt1 = (int)timerInMode[1];
-			int timerOutModeInt0 = (int)timerOutMode[0];
-			int timerOutModeInt1 = (int)timerOutMode[1];
-			int timerRunModeInt0 = (int)timerRunMode[0];
-			int timerRunModeInt1 = (int)timerRunMode[1];
-			int timerSPModeInt = (int)timerSPMode;
+            int timerInModeInt0 = (int)timerInMode[0];
+            int timerInModeInt1 = (int)timerInMode[1];
+            int timerOutModeInt0 = (int)timerOutMode[0];
+            int timerOutModeInt1 = (int)timerOutMode[1];
+            int timerRunModeInt0 = (int)timerRunMode[0];
+            int timerRunModeInt1 = (int)timerRunMode[1];
+            int timerSPModeInt = (int)timerSPMode;
 
 			SyncInternal(ser);
 			ser.Sync("alarmSelect", ref alarmSelect);
@@ -560,7 +564,6 @@
 			ser.Sync("intTimer0", ref intTimer[0]);
 			ser.Sync("intTimer1", ref intTimer[1]);
 			ser.Sync("pinCnt", ref pinCnt);
-			ser.Sync("pinFlag", ref pinFlag);
 			ser.Sync("pinPC", ref pinPC);
 			ser.Sync("sr", ref sr);
 			ser.Sync("timerDelay0", ref timerDelay[0]);
@@ -600,12 +603,12 @@
 			timerSPMode = (SPMode)timerSPModeInt;
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
 			Write(addr, val, 0xFF);
 		}
 
-		public void Write(ushort addr, byte val, byte mask)
+		public void Write(int addr, byte val, byte mask)
 		{
 			addr &= 0xF;
 			val &= mask;
@@ -643,23 +646,23 @@
 			}
 		}
 
-		public void WriteRegister(ushort addr, byte val)
+		public void WriteRegister(int addr, byte val)
 		{
 			bool intReg;
 
 			switch (addr)
 			{
 				case 0x0:
-					WritePortA(val);
+                    portA.Latch = val;
 					break;
 				case 0x1:
-					WritePortB(val);
+                    portB.Latch = val;
 					break;
 				case 0x2:
-					WriteDirA(val);
+                    portA.Direction = val;
 					break;
 				case 0x3:
-					WriteDirB(val);
+                    portB.Direction = val;
 					break;
 				case 0x4:
 					timerLatch[0] &= 0xFF00;
@@ -667,7 +670,7 @@
 					break;
 				case 0x5:
 					timerLatch[0] &= 0x00FF;
-					timerLatch[0] |= (uint)val << 8;
+					timerLatch[0] |= val << 8;
 					break;
 				case 0x6:
 					timerLatch[1] &= 0xFF00;
@@ -675,7 +678,7 @@
 					break;
 				case 0x7:
 					timerLatch[1] &= 0x00FF;
-					timerLatch[1] |= (uint)val << 8;
+					timerLatch[1] |= val << 8;
 					break;
 				case 0x8:
 					if (alarmSelect)

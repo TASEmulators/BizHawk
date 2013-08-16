@@ -13,21 +13,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	public class Mapper000F : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
-		private uint bankMask;
-		private uint bankNumber;
+		private int bankMask;
+		private int bankNumber;
 		private byte[] currentBank;
 		private byte[] dummyBank;
 
-		public Mapper000F(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper000F(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
-			uint count = (uint)newAddresses.Count;
+			int count = newAddresses.Count;
 
 			pinGame = true;
 			pinExRom = false;
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (uint i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			if (count == 64) //512k
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			}
 
 			// for safety, initialize all banks to dummy
-			for (uint i = 0; i < banks.Length; i++)
+			for (int i = 0; i < banks.Length; i++)
 				banks[i] = dummyBank;
 
 			// now load in the banks
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			BankSet(0);
 		}
 
-		protected void BankSet(uint index)
+		protected void BankSet(int index)
 		{
 			bankNumber = index & bankMask;
 			UpdateState();
@@ -100,10 +100,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		public override void PokeDE00(int addr, byte val)
 		{
-			BankSet((uint)addr);
+			BankSet(addr);
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return currentBank[addr];
 		}
@@ -113,9 +113,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			currentBank = banks[bankNumber];
 		}
 
-		public override void WriteDE00(ushort addr, byte val)
+		public override void WriteDE00(int addr, byte val)
 		{
-			BankSet((uint)addr);
+			BankSet(addr);
 		}
 
 		public override void SyncState(Serializer ser)

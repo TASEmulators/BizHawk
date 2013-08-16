@@ -123,3 +123,8 @@ void dummyvideo_FBGetFrameBufferInfo(void *p)
 {
 }
 
+void dummyvideo_ResizeVideoOutput(int width, int height)
+{
+}
+
+

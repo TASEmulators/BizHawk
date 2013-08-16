@@ -86,17 +86,21 @@
 			this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.fastModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExcludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -125,7 +129,7 @@
 			this.CompareToBox = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumberOfChangesBox = new System.Windows.Forms.TextBox();
-			this.SpecificAddressBox = new HexTextBox();
+			this.SpecificAddressBox = new BizHawk.HexTextBox();
 			this.SpecificValueBox = new System.Windows.Forms.TextBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
@@ -144,6 +148,7 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -345,7 +350,7 @@
             this.toolStripSeparator12,
             this.viewInHexEditorToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 214);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 192);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// startNewSearchToolStripMenuItem
@@ -566,7 +571,9 @@
             this.toolStripSeparator5,
             this.addSelectedToRamWatchToolStripMenuItem,
             this.pokeAddressToolStripMenuItem,
-            this.freezeAddressToolStripMenuItem});
+            this.freezeAddressToolStripMenuItem,
+            this.toolStripSeparator13,
+            this.clearUndoHistoryToolStripMenuItem});
 			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
 			this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
 			this.searchToolStripMenuItem.Text = "&Search";
@@ -670,16 +677,31 @@
 			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator13
+			// 
+			this.toolStripSeparator13.Name = "toolStripSeparator13";
+			this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
+			// 
+			// clearUndoHistoryToolStripMenuItem
+			// 
+			this.clearUndoHistoryToolStripMenuItem.Name = "clearUndoHistoryToolStripMenuItem";
+			this.clearUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.clearUndoHistoryToolStripMenuItem.Text = "Clear Undo History";
+			this.clearUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.clearUndoHistoryToolStripMenuItem_Click);
+			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.definePreviousValueToolStripMenuItem,
+            this.fastModeToolStripMenuItem,
             this.previewModeToolStripMenuItem,
             this.alwaysExcludeRamSearchListToolStripMenuItem,
             this.autoloadDialogToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem,
             this.toolStripSeparator11,
-            this.restoreOriginalWindowSizeToolStripMenuItem});
+            this.alwaysOnTopToolStripMenuItem,
+            this.restoreOriginalWindowSizeToolStripMenuItem,
+            this.useUndoHistoryToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
@@ -725,6 +747,13 @@
 			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
 			this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
 			// 
+			// fastModeToolStripMenuItem
+			// 
+			this.fastModeToolStripMenuItem.Name = "fastModeToolStripMenuItem";
+			this.fastModeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.fastModeToolStripMenuItem.Text = "Fast Mode";
+			this.fastModeToolStripMenuItem.Click += new System.EventHandler(this.fastModeToolStripMenuItem_Click);
+			// 
 			// previewModeToolStripMenuItem
 			// 
 			this.previewModeToolStripMenuItem.Name = "previewModeToolStripMenuItem";
@@ -757,6 +786,13 @@
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
 			this.toolStripSeparator11.Size = new System.Drawing.Size(237, 6);
+			// 
+			// alwaysOnTopToolStripMenuItem
+			// 
+			this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
+			this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
+			this.alwaysOnTopToolStripMenuItem.Click += new System.EventHandler(this.alwaysOnTopToolStripMenuItem_Click);
 			// 
 			// restoreOriginalWindowSizeToolStripMenuItem
 			// 
@@ -1243,6 +1279,13 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
+			// useUndoHistoryToolStripMenuItem
+			// 
+			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
+			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
+			this.useUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.useUndoHistoryToolStripMenuItem_Click);
+			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
@@ -1403,5 +1446,10 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+		private System.Windows.Forms.ToolStripMenuItem clearUndoHistoryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem fastModeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
     }
 }

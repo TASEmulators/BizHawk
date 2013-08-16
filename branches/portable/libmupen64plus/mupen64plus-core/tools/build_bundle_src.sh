@@ -2,7 +2,7 @@
 #/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 # *   Mupen64plus - build_bundle_src.sh                                     *
 # *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
-# *   Copyright (C) 2009 Richard Goedeken                                   *
+# *   Copyright (C) 2009-2013 Richard Goedeken                              *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU General Public License as published by  *
@@ -43,6 +43,7 @@ hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-audio-sdl
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-input-sdl
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-rsp-hle
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-video-rice
+hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-video-glide64mk2
 for dirname in ./mupen64plus-*; do rm -rf ${dirname}/.hg*; done
 
 # unzip the helper scripts and remove the Mercurial scripts

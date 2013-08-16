@@ -59,32 +59,101 @@ using System.Collections.Generic;
 //2048 bytes packed into 2352: 
 //12 bytes sync(00 ff ff ff ff ff ff ff ff ff ff 00)
 //3 bytes sector address (min+A0),sec,frac //does this correspond to ccd `point` field in the TOC entries?
-//sector mode byte (0: silence; 1: 2048Byte mode (EDC,ECC,CIRC), 2: 2352Byte mode (CIRC only)
-//user data: 2336 bytes
+//sector mode byte (0: silence; 1: 2048Byte mode (EDC,ECC,CIRC), 2: mode2 (could be 2336[vanilla mode2], 2048[xa mode2 form1], 2324[xa mode2 form2])
 //cue sheets may use mode1_2048 (and the error coding needs to be regenerated to get accurate raw data) or mode1_2352 (the entire sector is present)
-//mode2_2352 is the only kind of mode2, by necessity
 //audio is a different mode, seems to be just 2352 bytes with no sync, header or error correction. i guess the CIRC error correction is still there
 
 namespace BizHawk.DiscSystem
 {
 	public partial class Disc : IDisposable
 	{
-		//TODO - separate these into Read_2352 and Read_2048 (optimizations can be made by ISector implementors depending on what is requested)
-		//(for example, avoiding the 2048 byte sector creating the ECC data and then immediately discarding it)
 		public interface ISector
 		{
-			int Read(byte[] buffer, int offset);
+			/// <summary>
+			/// reads the entire sector, raw
+			/// </summary>
+			int Read_2352(byte[] buffer, int offset);
+
+			/// <summary>
+			/// reads 2048 bytes of userdata.. precisely what this means isnt always 100% certain (for instance mode2 form 0 has 2336 bytes of userdata instead of 2048)..
+			/// ..but its certain enough for this to be useful
+			/// </summary>
+			int Read_2048(byte[] buffer, int offset);
 		}
 
 		/// <summary>
-		/// Presently, an IBlob doesn't need to work multithreadedly. It's quite an onerous demand. This should probably be managed by the Disc class somehow, or by the user making another Disc.
+		/// Presently, an IBlob doesn't need to work multithreadedly. It's quite an onerous demand.
+		/// This should probably be managed by the Disc class somehow, or by the user making another Disc.
 		/// </summary>
 		public interface IBlob : IDisposable
 		{
 			/// <summary>
 			/// what a weird parameter order. normally the dest buffer would be first. weird.
 			/// </summary>
+			/// <param name="byte_pos">location in the blob to read from</param>
+			/// <param name="buffer">destination buffer for read data</param>
+			/// <param name="offset">offset into destination buffer</param>
+			/// <param name="count">amount to read</param>
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
+		}
+
+		public class Blob_ZeroPadAdapter : IBlob
+		{
+			public Blob_ZeroPadAdapter(IBlob baseBlob, long padFrom, long padLen)
+			{
+				this.baseBlob = baseBlob;
+				this.padFrom = padFrom;
+				this.padLen = padLen;
+			}
+
+			public int Read(long byte_pos, byte[] buffer, int offset, int count)
+			{
+				throw new NotImplementedException("Blob_ZeroPadAdapter hasnt been tested yet! please report this!");
+
+				//something about this seems unnecessarily complex, but... i dunno.
+
+				//figure out how much remains until the zero-padding begins
+				long remain = byte_pos - padFrom;
+				int todo;
+				if (remain < count)
+					todo = (int)remain;
+				else todo = count;
+
+				//read up until the zero-padding
+				int totalRead = 0;
+				int readed = baseBlob.Read(byte_pos, buffer, offset, todo);
+				totalRead += readed;
+				offset += todo;
+
+				//if we didnt read enough, we certainly shouldnt try to read any more
+				if (readed < todo)
+					return readed;
+
+				//if that was all we needed, then we're done
+				count -= todo;
+				if (count == 0)
+					return totalRead;
+
+				//if we need more, it must come from zero-padding
+				remain = padLen;
+				if (remain < count)
+					todo = (int)remain;
+				else todo = count;
+
+				Array.Clear(buffer, offset, todo);
+				totalRead += todo;
+
+				return totalRead;
+			}
+
+			public void Dispose()
+			{
+				baseBlob.Dispose();
+			}
+
+			IBlob baseBlob;
+			long padFrom;
+			long padLen;
 		}
 
 		class Blob_RawFile : IBlob
@@ -132,56 +201,121 @@ namespace BizHawk.DiscSystem
 			}
 		}
 
-		class Sector_RawSilence : ISector
-		{
-			public int Read(byte[] buffer, int offset)
-			{
-				Array.Clear(buffer, 0, 2352);
-				return 2352;
-			}
-		}
-
+		/// <summary>
+		/// this ISector is dumb and only knows how to drag chunks off a source blob
+		/// </summary>
 		class Sector_RawBlob : ISector
 		{
 			public IBlob Blob;
 			public long Offset;
-			public int Read(byte[] buffer, int offset)
+			public int Read_2352(byte[] buffer, int offset)
 			{
 				return Blob.Read(Offset, buffer, offset, 2352);
 			}
+			public int Read_2048(byte[] buffer, int offset)
+			{
+				return Blob.Read(Offset, buffer, offset, 2048);
+			}
 		}
 
+		/// <summary>
+		/// this ISector always returns zeroes
+		/// </summary>
 		class Sector_Zero : ISector
 		{
-			public int Read(byte[] buffer, int offset)
+			public int Read_2352(byte[] buffer, int offset)
 			{
-				for (int i = 0; i < 2352; i++)
-					buffer[offset + i] = 0;
+				Array.Clear(buffer, 0, 2352);
 				return 2352;
+			}
+			public int Read_2048(byte[] buffer, int offset)
+			{
+				Array.Clear(buffer, 0, 2048);
+				return 2048;
 			}
 		}
 
-		class Sector_ZeroPad : ISector
+
+		// ------ replaced by Blob_ZeroPadAdapter
+		///// <summary>
+		///// this ISector adapts another ISector by always returning zeroes 
+		///// TODO I dont like the way this works. I think blobs should get adapted instead to zero-pad to a certain length.
+		///// </summary>
+		//class Sector_ZeroPad : ISector
+		//{
+		//  public ISector BaseSector;
+		//  public int BaseLength;
+		//  public int Read(byte[] buffer, int offset)
+		//  {
+		//    return _Read(buffer, offset, 2352);
+		//  }
+		//  public int Read_2048(byte[] buffer, int offset)
+		//  {
+		//    return _Read(buffer, offset, 2352);
+		//  }
+		//  int _Read(byte[] buffer, int offset, int amount)
+		//  {
+		//    int read = BaseSector.Read(buffer, offset);
+		//    if(read < BaseLength) return read;
+		//    for (int i = BaseLength; i < amount; i++)
+		//      buffer[offset + i] = 0;
+		//    return amount;
+		//  }
+		//}
+
+		abstract class Sector_Mode1_or_Mode2_2352 : ISector
 		{
 			public ISector BaseSector;
-			public int BaseLength;
-			public int Read(byte[] buffer, int offset)
-			{
-				int read = BaseSector.Read(buffer, offset);
-				if(read < BaseLength) return read;
-				for (int i = BaseLength; i < 2352; i++)
-					buffer[offset + i] = 0;
-				return 2352;
-			}
+			public abstract int Read_2352(byte[] buffer, int offset);
+			public abstract int Read_2048(byte[] buffer, int offset);
 		}
 
-		class Sector_Raw : ISector
+		/// <summary>
+		/// This ISector is a raw MODE1 sector
+		/// </summary>
+		class Sector_Mode1_2352 : Sector_Mode1_or_Mode2_2352
 		{
-			public ISector BaseSector;
-			public int Read(byte[] buffer, int offset)
+			public override int Read_2352(byte[] buffer, int offset)
 			{
-				return BaseSector.Read(buffer, offset);
+				return BaseSector.Read_2352(buffer, offset);
 			}
+			public override int Read_2048(byte[] buffer, int offset)
+			{
+				//to get 2048 bytes out of this sector type, start 16 bytes in
+				int ret = BaseSector.Read_2352(TempSector, 0);
+				Buffer.BlockCopy(TempSector, 16, buffer, offset, 2048);
+				System.Diagnostics.Debug.Assert(buffer != TempSector);
+				return 2048;
+			}
+
+			[ThreadStatic]
+			static byte[] TempSector = new byte[2352];
+		}
+
+		/// <summary>
+		/// this ISector is a raw MODE2 sector. could be form 0,1,2... who can say? supposedly:
+		/// To tell the different Mode 2s apart you have to examine bytes 16-23 of the sector (the first 8 bytes of Mode Data). 
+		/// If bytes 16-19 are not the same as 20-23, then it is Mode 2. If they are equal and bit 5 is on (0x20), then it is Mode 2 Form 2. Otherwise it is Mode 2 Form 1.
+		/// ...but we're not using this information in any way
+		/// </summary>
+		class Sector_Mode2_2352 : Sector_Mode1_or_Mode2_2352
+		{
+			public override int Read_2352(byte[] buffer, int offset)
+			{
+				return BaseSector.Read_2352(buffer, offset);
+			}
+
+			public override int Read_2048(byte[] buffer, int offset)
+			{
+				//to get 2048 bytes out of this sector type, start 24 bytes in
+				int ret = BaseSector.Read_2352(TempSector, 0);
+				Buffer.BlockCopy(TempSector, 24, buffer, offset, 2048);
+				System.Diagnostics.Debug.Assert(buffer != TempSector);
+				return 2048;
+			}
+
+			[ThreadStatic]
+			static byte[] TempSector = new byte[2352];
 		}
 
 		protected static byte BCD_Byte(byte val)
@@ -201,6 +335,9 @@ namespace BizHawk.DiscSystem
 			public IBlob BaseBlob;
 		}
 
+		/// <summary>
+		/// this ISector is a MODE1 sector that is generating itself from an underlying MODE1/2048 userdata piece
+		/// </summary>
 		class Sector_Mode1_2048 : ISector
 		{
 			public Sector_Mode1_2048(int ABA)
@@ -218,7 +355,14 @@ namespace BizHawk.DiscSystem
 			public long Offset;
 			byte[] extra_data;
 			bool has_extra_data;
-			public int Read(byte[] buffer, int offset)
+
+			public int Read_2048(byte[] buffer, int offset)
+			{
+				//this is easy. we only have 2048 bytes, and 2048 bytes were requested
+				return Blob.BaseBlob.Read(Offset, buffer, offset, 2048);
+			}
+
+			public int Read_2352(byte[] buffer, int offset)
 			{
 				//user data
 				int read = Blob.BaseBlob.Read(Offset, buffer, offset + 16, 2048);
@@ -335,39 +479,52 @@ namespace BizHawk.DiscSystem
 
 		void FromIsoPathInternal(string isoPath)
 		{
-			var session = new DiscTOC.Session();
-			session.num = 1;
-			TOC.Sessions.Add(session);
-			var track = new DiscTOC.Track();
-			track.num = 1;
-			session.Tracks.Add(track);
-			var index = new DiscTOC.Index();
-			index.num = 0;
-			track.Indexes.Add(index);
-			index = new DiscTOC.Index();
-			index.num = 1;
-			track.Indexes.Add(index);
+			//make a fake cue file to represent this iso file
+			string isoCueWrapper = @"
+FILE ""xarp.barp.marp.farp"" BINARY
+  TRACK 01 MODE1/2048
+    INDEX 01 00:00:00
+";
 
-			var fiIso = new FileInfo(isoPath);
-			Blob_RawFile blob = new Blob_RawFile();
-			blob.PhysicalPath = fiIso.FullName;
-			Blobs.Add(blob);
-			int num_aba = (int)(fiIso.Length / 2048);
-			track.length_aba = num_aba;
-			if (fiIso.Length % 2048 != 0)
-				throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
-			//TODO - handle this with Final Fantasy 9 cd1.iso
+			string cueDir = "";
+			var cue = new Cue();
+			CueFileResolver["xarp.barp.marp.farp"] = isoPath;
+			cue.LoadFromString(isoCueWrapper);
+			FromCueInternal(cue, cueDir, new CueBinPrefs());
 
-			var ecmCacheBlob = new ECMCacheBlob(blob);
-			for (int i = 0; i < num_aba; i++)
-			{
-				Sector_Mode1_2048 sector = new Sector_Mode1_2048(i+150);
-				sector.Blob = ecmCacheBlob;
-				sector.Offset = i * 2048;
-				Sectors.Add(new SectorEntry(sector));
-			}
+			//var session = new DiscTOC.Session();
+			//session.num = 1;
+			//TOC.Sessions.Add(session);
+			//var track = new DiscTOC.Track();
+			//track.num = 1;
+			//session.Tracks.Add(track);
+			//var index = new DiscTOC.Index();
+			//index.num = 0;
+			//track.Indexes.Add(index);
+			//index = new DiscTOC.Index();
+			//index.num = 1;
+			//track.Indexes.Add(index);
 
-			TOC.AnalyzeLengthsFromIndexLengths();
+			//var fiIso = new FileInfo(isoPath);
+			//Blob_RawFile blob = new Blob_RawFile();
+			//blob.PhysicalPath = fiIso.FullName;
+			//Blobs.Add(blob);
+			//int num_aba = (int)(fiIso.Length / 2048);
+			//track.length_aba = num_aba;
+			//if (fiIso.Length % 2048 != 0)
+			//  throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
+			////TODO - handle this with Final Fantasy 9 cd1.iso
+
+			//var ecmCacheBlob = new ECMCacheBlob(blob);
+			//for (int i = 0; i < num_aba; i++)
+			//{
+			//  Sector_Mode1_2048 sector = new Sector_Mode1_2048(i+150);
+			//  sector.Blob = ecmCacheBlob;
+			//  sector.Offset = i * 2048;
+			//  Sectors.Add(new SectorEntry(sector));
+			//}
+
+			//TOC.AnalyzeLengthsFromIndexLengths();
 		}
 
 		

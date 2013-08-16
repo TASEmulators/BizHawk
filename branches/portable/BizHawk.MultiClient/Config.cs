@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace BizHawk.MultiClient
 {
@@ -8,256 +10,22 @@ namespace BizHawk.MultiClient
 	{
 		public Config()
 		{
-			SMSController[0] = new SMSControllerTemplate(true);
-			SMSController[1] = new SMSControllerTemplate(false);
-			PCEController[0] = new PCEControllerTemplate(true);
-			PCEController[1] = new PCEControllerTemplate(false);
-			PCEController[2] = new PCEControllerTemplate(false);
-			PCEController[3] = new PCEControllerTemplate(false);
-			PCEController[4] = new PCEControllerTemplate(false);
-			NESController[0] = new NESControllerTemplate(true);
-			NESController[1] = new NESControllerTemplate(false);
-			NESController[2] = new NESControllerTemplate(false);
-			NESController[3] = new NESControllerTemplate(false);
-			SNESController[0] = new SNESControllerTemplate(true);
-			SNESController[1] = new SNESControllerTemplate(false);
-			SNESController[2] = new SNESControllerTemplate(false);
-			SNESController[3] = new SNESControllerTemplate(false);
-			GBController[0] = new GBControllerTemplate(true);
-			DualGBController[0] = new DualGBControllerTemplate(true);
-			AutoDualGBController[0] = new DualGBControllerTemplate(true);
-			GBAutoController[0] = new GBControllerTemplate(true);
-			TI83Controller[0] = new TI83ControllerTemplate(true);
-
-			GBAController[0] = new GBAControllerTemplate(true);
-			GBAAutoController[0] = new GBAControllerTemplate(false);
-
-			GenesisController[0] = new GenControllerTemplate(true);
-			GenesisAutoController[0] = new GenControllerTemplate(false);
-
-			SaturnController[0] = new SaturnControllerTemplate(true);
-			SaturnController[1] = new SaturnControllerTemplate(false);
-
-			SaturnAutoController[0] = new SaturnControllerTemplate(false);
-			SaturnAutoController[1] = new SaturnControllerTemplate(false);
-
-			Atari2600Controller[0] = new SingleButtonJoyStickTemplate(true);
-			Atari2600Controller[1] = new SingleButtonJoyStickTemplate(false);
-			Atari2600AutoController[0] = new SingleButtonJoyStickTemplate(false);
-			Atari2600AutoController[1] = new SingleButtonJoyStickTemplate(false);
-			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
-
-			Atari7800Controller[0] = new DoubleButtonJoyStickTemplate(true);
-			Atari7800Controller[1] = new DoubleButtonJoyStickTemplate(false);
-			Atari7800AutoController[0] = new DoubleButtonJoyStickTemplate(false);
-			Atari7800AutoController[1] = new DoubleButtonJoyStickTemplate(false);
-			Atari7800ConsoleButtons[0] = new Atari7800ConsoleButtonsTemplate(true);
-
-			NESAutoController[0] = new NESControllerTemplate(false);
-			NESAutoController[1] = new NESControllerTemplate(false);
-			NESAutoController[2] = new NESControllerTemplate(false);
-			NESAutoController[3] = new NESControllerTemplate(false);
-
-			SMSAutoController[0] = new SMSControllerTemplate(false);
-			SMSAutoController[1] = new SMSControllerTemplate(false);
-
-			PCEAutoController[0] = new PCEControllerTemplate(false);
-			PCEAutoController[1] = new PCEControllerTemplate(false);
-			PCEAutoController[2] = new PCEControllerTemplate(false);
-			PCEAutoController[3] = new PCEControllerTemplate(false);
-			PCEAutoController[4] = new PCEControllerTemplate(false);
-
-			SNESAutoController[0] = new SNESControllerTemplate(false);
-			SNESAutoController[1] = new SNESControllerTemplate(false);
-			SNESAutoController[2] = new SNESControllerTemplate(false);
-			SNESAutoController[3] = new SNESControllerTemplate(false);
-
-			N64Controller[0] = new N64ButtonsTemplate(true);
-			N64Controller[1] = new N64ButtonsTemplate(false);
-			N64Controller[2] = new N64ButtonsTemplate(false);
-			N64Controller[3] = new N64ButtonsTemplate(false);
-			N64AutoController[0] = new N64ButtonsTemplate(false);
-			N64AutoController[1] = new N64ButtonsTemplate(false);
-			N64AutoController[2] = new N64ButtonsTemplate(false);
-			N64AutoController[3] = new N64ButtonsTemplate(false);
-			N64ConsoleButtons = new Standard2ButtonConsoleTemplate(true);
-
-			ColecoController[0] = new ColecoVisionControllerTemplate(true);
-			ColecoController[1] = new ColecoVisionControllerTemplate(false);
-			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
-			ColecoAutoController[1] = new ColecoVisionControllerTemplate(false);
-
-			IntellivisionController[0] = new IntellivisionControllerTemplate(true);
-			IntellivisionController[1] = new IntellivisionControllerTemplate(false);
-			IntellivisionAutoController[0] = new IntellivisionControllerTemplate(false);
-			IntellivisionAutoController[1] = new IntellivisionControllerTemplate(false);
-
-			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
-			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
-			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
-			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
-			C64Keyboard = new C64KeyboardTemplate(true);
-
-			NESConsoleButtons = new NESConsoleButtonTemplate();
-			SNESConsoleButtons = new NESConsoleButtonTemplate();
-			SMSConsoleButtons = new SMSConsoleButtonTemplate();
-			GenesisConsoleButtons = new GenConsoleButtonTemplate();
+			config.NewControllerConfig.ConfigCheckAllControlDefaults(this);
 		}
 
-		// Directories
+		public void ResolveDefaults()
+		{
+			PathEntries.ResolveWithDefaults();
+            HotkeyBindings.ResolveWithDefaults();
+		}
+
+		//Path Settings ************************************/
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
-		public string BasePath = ".";
-		public string BaseROMPath = ".";
-
-		public string BaseINTV = Path.Combine(".", "Intellivision");
-		public string PathINTVROMs = ".";
-		public string PathINTVSavestates = Path.Combine(".", "State");
-		public string PathINTVSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathINTVScreenshots = Path.Combine(".", "Screenshots");
-		public string PathINTVCheats = Path.Combine(".", "Cheats");
-
-		public string BaseNES = Path.Combine(".", "NES");
-		public string PathNESROMs = ".";
-		public string PathNESSavestates = Path.Combine(".", "State");
-		public string PathNESSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathNESScreenshots = Path.Combine(".", "Screenshots");
-		public string PathNESCheats = Path.Combine(".", "Cheats");
-		public string PathNESPalette = Path.Combine(".", "Palettes");
-
-		public string BaseSNES = Path.Combine(".", "SNES");
-		public string PathSNESROMs = ".";
-		public string PathSNESSavestates = Path.Combine(".", "State");
-		public string PathSNESSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSNESCheats = Path.Combine(".", "Cheats");
-		//public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseGBA = Path.Combine(".", "GBA");
-		public string PathGBAROMs = ".";
-		public string PathGBASavestates = Path.Combine(".", "State");
-		public string PathGBASaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGBAScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGBACheats = Path.Combine(".", "Cheats");
-
-		public string BaseSMS = Path.Combine(".", "SMS");
-		public string PathSMSROMs = ".";
-		public string PathSMSSavestates = Path.Combine(".", "State");
-		public string PathSMSSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSMSScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSMSCheats = Path.Combine(".", "Cheats");
-
-		public string BaseGG = Path.Combine(".", "Game Gear");
-		public string PathGGROMs = ".";
-		public string PathGGSavestates = Path.Combine(".", "State");
-		public string PathGGSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGGScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGGCheats = Path.Combine(".", "Cheats");
-
-		public string BaseSG = Path.Combine(".", "SG-1000");
-		public string PathSGROMs = ".";
-		public string PathSGSavestates = Path.Combine(".", "State");
-		public string PathSGSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSGScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSGCheats = Path.Combine(".", "Cheats");
-
-		public string BaseGenesis = Path.Combine(".", "Genesis");
-		public string PathGenesisROMs = ".";
-		public string PathGenesisSavestates = Path.Combine(".", "State");
-		public string PathGenesisSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGenesisScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGenesisCheats = Path.Combine(".", "Cheats");
-
-		public string BasePCE = Path.Combine(".", "PC Engine");
-		public string PathPCEROMs = ".";
-		public string PathPCESavestates = Path.Combine(".", "State");
-		public string PathPCESaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathPCEScreenshots = Path.Combine(".", "Screenshots");
-		public string PathPCECheats = Path.Combine(".", "Cheats");
-
-		public string BaseGameboy = Path.Combine(".", "Gameboy");
-		public string PathGBROMs = ".";
-		public string PathGBSavestates = Path.Combine(".", "State");
-		public string PathGBSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathGBScreenshots = Path.Combine(".", "Screenshots");
-		public string PathGBCheats = Path.Combine(".", "Cheats");
-		public string PathGBPalettes = Path.Combine(".", "Palettes");
-
-		public string BaseTI83 = Path.Combine(".", "TI83");
-		public string PathTI83ROMs = ".";
-		public string PathTI83Savestates = Path.Combine(".", "State");
-		public string PathTI83SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
-		public string PathTI83Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseAtari2600 = Path.Combine(".", "Atari 2600");
-		public string PathAtari2600ROMs = ".";
-		public string PathAtari2600Savestates = Path.Combine(".", "State");
-		public string PathAtari2600Screenshots = Path.Combine(".", "Screenshots");
-		public string PathAtari2600Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseAtari7800 = Path.Combine(".", "Atari 7800");
-		public string PathAtari7800ROMs = ".";
-		public string PathAtari7800Savestates = Path.Combine(".", "State");
-		public string PathAtari7800SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
-		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
-		//public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseC64 = Path.Combine(".", "C64");
-		public string PathC64ROMs = ".";
-		public string PathC64Savestates = Path.Combine(".", "State");
-		public string PathC64Screenshots = Path.Combine(".", "Screenshots");
-		public string PathC64Cheats = Path.Combine(".", "Cheats");
-		//public string PathC64Firmwares = Path.Combine(".", "Firmwares");
-
-		public string BasePSX = Path.Combine(".", "PSX");
-		public string PathPSXROMs = ".";
-		public string PathPSXSavestates = Path.Combine(".", "State");
-		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
-		public string PathPSXCheats = Path.Combine(".", "Cheats");
-		//public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
-
-		public string BaseCOL = Path.Combine(".", "Coleco");
-		public string PathCOLROMs = ".";
-		public string PathCOLSavestates = Path.Combine(".", "State");
-		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
-		public string PathCOLCheats = Path.Combine(".", "Cheats");
-
-		public string BaseN64 = Path.Combine(".", "N64");
-		public string PathN64ROMs = ".";
-		public string PathN64Savestates = Path.Combine(".", "State");
-		public string PathN64SaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathN64Screenshots = Path.Combine(".", "Screenshots");
-		public string PathN64Cheats = Path.Combine(".", "Cheats");
-
-		public string BaseSaturn = Path.Combine(".", "Saturn");
-		public string PathSaturnROMs = ".";
-		public string PathSaturnSavestates = Path.Combine(".", "State");
-		public string PathSaturnSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathSaturnScreenshots = Path.Combine(".", "Screenshots");
-		public string PathSaturnCheats = Path.Combine(".", "Cheats");
-
-		public string MoviesPath = Path.Combine(".", "Movies");
-		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
-		public string LuaPath = Path.Combine(".", "Lua");
-		public string WatchPath = ".";
-		public string AVIPath = ".";
-		public string LogPath = ".";
-		public string FirmwaresPath = Path.Combine(".", "Firmware");
+		public PathEntryCollection PathEntries = new PathEntryCollection();
 
 		//BIOS Paths
-		public string FilenamePCEBios = "[BIOS] Super CD-ROM System (Japan) (v3.0).pce";
-		public string FilenameFDSBios = "disksys.rom";
-		public string FilenameGBABIOS = "gbabios.rom";
-		public string FilenameCOLBios = "ColecoBios.bin";
-		public string FilenameINTVGROM = "grom.bin";
-		public string FilenameA78NTSCBios = "7800NTSCBIOS.bin";
-		public string FilenameA78PALBios = "7800PALBIOS.bin";
-		public string FilenameA78HSCBios = "7800highscore.bin";
-		public string FilenameINTVEROM = "erom.bin";
-		public string FilenameSaturnBios = "Sega Saturn BIOS v1.01 (JAP).bin";
+		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); //key: sysid+firmwareId; value: absolute path
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
@@ -266,75 +34,9 @@ namespace BizHawk.MultiClient
 		public int N64VideoSizeX = 320;
 		public int N64VideoSizeY = 240;
 
-	
-		//public int RiceFrameBufferSetting = 0;
-		//public int RiceFrameBufferWriteBackControl = 0;
-		//public int RiceRenderToTexture = 0;
-		//public int RiceScreenUpdateSetting = 4;
-		//public int RiceMipmapping = 2;
-		//public int RiceFogMethod = 0;
-		//public int RiceForceTextureFilter = 0;
-		//public int RiceTextureEnhancement = 0;
-		//public int RiceTextureEnhancementControl = 0;
-		//public int RiceTextureQuality = 0;
-		//public int RiceOpenGLDepthBufferSetting = 16;
-		//public int RiceMultiSampling = 0;
-		//public int RiceColorQuality = 0;
-		//public int RiceOpenGLRenderSetting = 0;
-		//public int RiceAnisotropicFiltering = 0;
-
-		
-		//public bool RiceNormalAlphaBlender = false; 
-		//public bool RiceFastTextureLoading = false;
-		//public bool RiceAccurateTextureMapping = true;
-		//public bool RiceInN64Resolution = false;
-		//public bool RiceSaveVRAM = false;
-		//public bool RiceDoubleSizeForSmallTxtrBuf = false;
-		//public bool RiceDefaultCombinerDisable = false;
-		//public bool RiceEnableHacks = true;
-		//public bool RiceWinFrameMode = false;
-		//public bool RiceFullTMEMEmulation = false;
-		//public bool RiceOpenGLVertexClipper = false;
-		//public bool RiceEnableSSE = true;
-		//public bool RiceEnableVertexShader = false;
-		//public bool RiceSkipFrame = false;
-		//public bool RiceTexRectOnly = false;
-		//public bool RiceSmallTextureOnly = false;
-		//public bool RiceLoadHiResCRCOnly = true;
-		//public bool RiceLoadHiResTextures = false;
-		//public bool RiceDumpTexturesToFiles = false;
-
-		//public bool RiceUseDefaultHacks = true;
-		//public bool RiceDisableTextureCRC = false;
-		//public bool RiceDisableCulling = false;
-		//public bool RiceIncTexRectEdge = false;
-		//public bool RiceZHack = false;
-		//public bool RiceTextureScaleHack = false;
-		//public bool RicePrimaryDepthHack = false;
-		//public bool RiceTexture1Hack = false;
-		//public bool RiceFastLoadTile = false;
-		//public bool RiceUseSmallerTexture = false;
-		//public int RiceVIWidth = -1;
-		//public int RiceVIHeight = -1;
-		//public int RiceUseCIWidthAndRatio = 0;
-		//public int RiceFullTMEM = 0;
-		//public bool RiceTxtSizeMethod2 = false;
-		//public bool RiceEnableTxtLOD = false;
-		//public int RiceFastTextureCRC = 0;
-		//public bool RiceEmulateClear = false;
-		//public bool RiceForceScreenClear = false;
-		//public int RiceAccurateTextureMappingHack = 0;
-		//public int RiceNormalBlender = 0;
-		//public bool RiceDisableBlender = false;
-		//public bool RiceForceDepthBuffer = false;
-		//public bool RiceDisableObjBG = false;
-		//public int RiceFrameBufferOption = 0;
-		//public int RiceRenderToTextureOption = 0;
-		//public int RiceScreenUpdateSettingHack = 0;
-		//public int RiceEnableHacksForGame = 0;
-
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
+		public N64Glide64mk2PluginSettings Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
 
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
@@ -384,7 +86,21 @@ namespace BizHawk.MultiClient
 		public bool ClockThrottle = true;
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
-		public bool RewindEnabled = true;
+
+		//Rewind settings
+		public bool Rewind_UseDelta = true;
+		public bool RewindEnabledSmall = true;
+		public bool RewindEnabledMedium = true;
+		public bool RewindEnabledLarge = false;
+		public int RewindFrequencySmall = 1;
+		public int RewindFrequencyMedium = 2;
+		public int RewindFrequencyLarge = 60;
+		public int Rewind_MediumStateSize = 262144; //256kb
+		public int Rewind_LargeStateSize = 1048576; //1mb
+		public int Rewind_BufferSize = 128; //in mb
+		public bool Rewind_OnDisk = false;
+		public bool Rewind_IsThreaded = false;
+
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
 
@@ -505,6 +221,7 @@ namespace BizHawk.MultiClient
 		public int RamSearchValueIndex = 1;
 		public int RamSearchPrevIndex = 2;
 		public int RamSearchChangesIndex = 3;
+		public bool RamSearchFastMode = false;
 
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
@@ -732,103 +449,28 @@ namespace BizHawk.MultiClient
 		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
 
-		// Client Hotkey Bindings
-		public string ToggleBackgroundInput = "";
-		public string IncreaseSpeedBinding = "Equals";
-		public string DecreaseSpeedBinding = "Minus";
-		public string HardResetBinding = "";
-		public string RebootCoreResetBinding = "Ctrl+R";
-		public string FastForwardBinding = "Tab, X1 RightShoulder";
-		public string RewindBinding = "Shift+R, X1 LeftShoulder";
-		public string EmulatorPauseBinding = "Pause";
-		public string FrameAdvanceBinding = "F";
-		public string TurboBinding = "";
-		public string MaxTurboBinding = "Shift+Tab";
-		public string ScreenshotBinding = "F12";
-		public string ToggleFullscreenBinding = "Alt+Return";
-		public string QuickSave = "I";
-		public string QuickLoad = "P";
-		public string SelectSlot0 = "D0";
-		public string SelectSlot1 = "D1";
-		public string SelectSlot2 = "D2";
-		public string SelectSlot3 = "D3";
-		public string SelectSlot4 = "D4";
-		public string SelectSlot5 = "D5";
-		public string SelectSlot6 = "D6";
-		public string SelectSlot7 = "D7";
-		public string SelectSlot8 = "D8";
-		public string SelectSlot9 = "D9";
-		public string SaveSlot0 = "Shift+F10";
-		public string SaveSlot1 = "Shift+F1";
-		public string SaveSlot2 = "Shift+F2";
-		public string SaveSlot3 = "Shift+F3";
-		public string SaveSlot4 = "Shift+F4";
-		public string SaveSlot5 = "Shift+F5";
-		public string SaveSlot6 = "Shift+F6";
-		public string SaveSlot7 = "Shift+F7";
-		public string SaveSlot8 = "Shift+F8";
-		public string SaveSlot9 = "Shift+F9";
-		public string LoadSlot0 = "F10";
-		public string LoadSlot1 = "F1";
-		public string LoadSlot2 = "F2";
-		public string LoadSlot3 = "F3";
-		public string LoadSlot4 = "F4";
-		public string LoadSlot5 = "F5";
-		public string LoadSlot6 = "F6";
-		public string LoadSlot7 = "F7";
-		public string LoadSlot8 = "F8";
-		public string LoadSlot9 = "F9";
-		public string ToolBox = "T";
-		public string SaveNamedState = "";
-		public string LoadNamedState = "";
-		public string PreviousSlot = "";
-		public string NextSlot = "";
-		public string RamWatch = "";
-		public string RamSearch = "";
-		public string RamPoke = "";
-		public string HexEditor = "";
-		public string LuaConsole = "";
-		public string Cheats = "";
-		public string TASTudio = "";
-		public string OpenROM = "Ctrl+O";
-		public string CloseROM = "Ctrl+W";
-		public string FrameCounterBinding = "";
-		public string FPSBinding = "";
-		public string LagCounterBinding = "";
-		public string InputDisplayBinding = "";
-		public string ReadOnlyToggleBinding = "Q";
-		public string PlayMovieBinding = "";
-		public string RecordMovieBinding = "";
-		public string StopMovieBinding = "";
-		public string PlayBeginningBinding = "";
-		public string VolUpBinding = "";
-		public string VolDownBinding = "";
-		public string SoftResetBinding = "";
-		public string ToggleMultiTrack = "";
-		public string MTRecordAll = "";
-		public string MTRecordNone = "";
-		public string MTIncrementPlayer = "";
-		public string MTDecrementPlayer = "";
-		public string AVIRecordBinding = "";
-		public string AVIStopBinding = "";
-		public string ToggleMenuBinding = "";
-		public string IncreaseWindowSize = "Alt+UpArrow";
-		public string DecreaseWindowSize = "Alt+DownArrow";
-		public string AutoholdBinding = "";
-		public string AutoholdAutofireBinding = "";
-		public string AutoholdClear = "";
-		public string ToggleSNESBG1Binding = "";
-		public string ToggleSNESBG2Binding = "";
-		public string ToggleSNESBG3Binding = "";
-		public string ToggleSNESBG4Binding = "";
-		public string ToggleSNESOBJ1Binding = "";
-		public string ToggleSNESOBJ2Binding = "";
-		public string ToggleSNESOBJ3Binding = "";
-		public string ToggleSNESOBJ4Binding = "";
-		public string SaveMovieBinding = "";
-		public string OpenVirtualPadBinding = "";
-		public string MoviePlaybackPokeModeBinding = "";
-		public string ClearFrameBinding = "";
+        public BindingCollection HotkeyBindings = new BindingCollection();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//Analog Hotkey values
+		public int Analog_LargeChange = 10;
+		public int Analog_SmallChange = 1;
+
 		// NES Sound settings
 		public int NESSquare1 = 376;
 		public int NESSquare2 = 376;
@@ -842,6 +484,27 @@ namespace BizHawk.MultiClient
 		public const int NESNoiseMax = 247;
 		public const int NESDMCMax = 167;
 
+		public struct AnalogBind
+		{
+			/// <summary>the physical stick that we're bound to</summary>
+			public string Value;
+			/// <summary>sensitivity and flip</summary>
+			public float Mult;
+			/// <summary>portion of axis to ignore</summary>
+			public float Deadzone;
+			public AnalogBind(string Value, float Mult, float Deadzone)
+			{
+				this.Value = Value;
+				this.Mult = Mult;
+				this.Deadzone = Deadzone;
+			}
+		}
+
+		// [ControllerType][ButtonName] => Physical Bind
+		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
@@ -850,66 +513,36 @@ namespace BizHawk.MultiClient
 		public bool GGShowClippedRegions = false;
 		public bool GGHighlightActiveDisplayRegion = false;
 
-		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
-		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
-		public SMSConsoleButtonTemplate SMSConsoleButtons = new SMSConsoleButtonTemplate();
-
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
 		public bool PceEqualizeVolume = false;
 		public bool PceArcadeCardRewindHack = true;
-		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
-		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-		public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
-		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
-		public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
 
 		//Atari 2600 Settings
-		public SingleButtonJoyStickTemplate[] Atari2600Controller = new SingleButtonJoyStickTemplate[2];
-		public SingleButtonJoyStickTemplate[] Atari2600AutoController = new SingleButtonJoyStickTemplate[2];
-		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 		public bool Atari2600_BW = false;
 		public bool Atari2600_LeftDifficulty = true;
 		public bool Atari2600_RightDifficulty = true;
 
 		//Atari 7800 Settings
-		public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
-		public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
-		public Atari7800ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari7800ConsoleButtonsTemplate[1];
 
 		//ColecoVision
-		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
-		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
 
 		//Intellivision
-		public IntellivisionControllerTemplate[] IntellivisionController = new IntellivisionControllerTemplate[2];
-		public IntellivisionControllerTemplate[] IntellivisionAutoController = new IntellivisionControllerTemplate[2];
 
 		//NES settings
-		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
-		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
-		public NESConsoleButtonTemplate NESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//SNES settings
-		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
-		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
-		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 		public string SNESProfile = "Compatibility";
 		public bool SNESUseRingBuffer = true;
 		public bool SNESAlwaysDoubleSize = false;
 
-		public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
-		public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
-		public Standard2ButtonConsoleTemplate N64ConsoleButtons = new Standard2ButtonConsoleTemplate();
+		//N64 settings
 
 		//TI 83 settings
-		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
 		//GB settings
-		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
-		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
 		public bool GB_ForceDMG = false;
 		public bool GB_GBACGB = false;
 		public bool GB_MulticartCompat = false;
@@ -918,23 +551,12 @@ namespace BizHawk.MultiClient
 		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
 
 		//Dual Gb
-		public DualGBControllerTemplate[] DualGBController = new DualGBControllerTemplate[1];
-		public DualGBControllerTemplate[] AutoDualGBController = new DualGBControllerTemplate[1];
 
 		//GBA settings
-		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
-		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
 
 		//Saturn
-		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
-		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
-		public SaturnConsoleButtonTemplate SaturnConsoleButtons = new SaturnConsoleButtonTemplate();
 
 		//Commodore 64 Settings
-		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
-		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
-		public C64KeyboardTemplate C64Keyboard = new C64KeyboardTemplate();
-		public C64KeyboardTemplate C64AutofireKeyboard = new C64KeyboardTemplate();
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -974,988 +596,438 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowPlayfield = true;
 	}
 
-	public class NESConsoleButtonTemplate : iControllerConfigObject
-	{
-		public string Reset = "";
-		public string Power = "";
-		//public string FDS_Eject = ""; //Not supporting this for now
-		//public string FDS_Insert = ""; //Need to support inserting of disk 1,2,3,4,etc so not supporting this for now
-		//public string VS_Coin_1 = ""; //Not supported yet
-		//public string VS_Coin_2 = ""; //Not supported yet
+	#region Sub-classes TODO - it is about time to port these to separate files
 
-		public void SetDefaults()
+	public class BindingCollection : IEnumerable<Binding>
+	{
+		public List<Binding> Bindings { get; private set; }
+
+		public BindingCollection()
 		{
-			Reset = "";
-			Power = "";
+            Bindings = new List<Binding>();
+            Bindings.AddRange(DefaultValues);
 		}
-	}
 
-	public class SMSConsoleButtonTemplate : iControllerConfigObject
-	{
-		public string Reset = "C";
-		public string Pause = "V, X1 Start";
-
-		public void SetDefaults()
+		public void Add(Binding b)
 		{
-			Reset = "C";
-			Pause = "V, X1 Start";
+			Bindings.Add(b);
 		}
-	}
 
-	public class SaturnConsoleButtonTemplate : iControllerConfigObject
-	{
-		public string Reset = "";
-		public string Power = "";
-
-		public void SetDefaults()
+		public IEnumerator<Binding> GetEnumerator()
 		{
-			Reset = "";
-			Power = "";
+			return Bindings.GetEnumerator();
 		}
-	}
 
-
-	public class GenConsoleButtonTemplate : iControllerConfigObject
-	{
-		public string Reset = "";
-
-		public void SetDefaults()
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			Reset = "";
+			return GetEnumerator();
 		}
-	}
 
-	public class SMSControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string B1 = "";
-		public string B2 = "";
-		public bool Enabled = false;
-		public SMSControllerTemplate() { }
-		public SMSControllerTemplate(bool defaults)
+		public Binding this[string index]
 		{
-			if (defaults)
+			get
 			{
-				SetDefaults();
+				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? new Binding();
 			}
 		}
 
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			B1 = "Z, X1 A";
-			B2 = "X, X1 B";
-		}
+        public void ResolveWithDefaults()
+        {
+            //Add missing entries
+            foreach (Binding default_binding in DefaultValues)
+            {
+                var binding = Bindings.FirstOrDefault(x => x.DisplayName == default_binding.DisplayName);
+                if (binding == null)
+                {
+                    Bindings.Add(default_binding);
+                }
+            }
+
+            List<Binding> entriesToRemove = new List<Binding>();
+
+            //Remove entries that no longer exist in defaults
+            foreach (Binding entry in Bindings)
+            {
+                var binding = DefaultValues.FirstOrDefault(x => x.DisplayName == entry.DisplayName);
+                if (binding == null)
+                {
+                    entriesToRemove.Add(entry);
+                }
+            }
+
+            foreach (Binding entry in entriesToRemove)
+            {
+                Bindings.Remove(entry);
+            }
+        }
+
+        public static List<Binding> DefaultValues
+        {
+            get
+            {
+                return new List<Binding>()
+		        {
+			        //General
+			        new Binding() { DisplayName = "Frame Advance", Bindings = "F", TabGroup = "General", DefaultBinding = "F", Ordinal = 0 },
+			        new Binding() { DisplayName = "Rewind", Bindings = "Shift+R, X1 LeftShoulder", TabGroup = "General", DefaultBinding = "Shift+R, X1 LeftShoulder", Ordinal = 1 },
+			        new Binding() { DisplayName = "Pause", Bindings = "Pause", TabGroup = "General", DefaultBinding = "Pause", Ordinal = 2 },
+			        new Binding() { DisplayName = "Fast Forward", Bindings = "Tab, X1 RightShoulder", TabGroup = "General", DefaultBinding = "Tab, X1 RightShoulder", Ordinal = 3 },
+			        new Binding() { DisplayName = "Turbo", Bindings = "Shift+Tab", TabGroup = "General", DefaultBinding = "Shift+Tab", Ordinal = 4 },
+			        new Binding() { DisplayName = "Toggle Throttle", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 5 },
+			        new Binding() { DisplayName = "Soft Reset", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 6 },
+			        new Binding() { DisplayName = "Hard Reset", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 7 },
+			        new Binding() { DisplayName = "Quick Load", Bindings = "P", TabGroup = "General", DefaultBinding = "P", Ordinal = 8 },
+			        new Binding() { DisplayName = "Quick Save", Bindings = "I", TabGroup = "General", DefaultBinding = "I", Ordinal = 9 },
+			        new Binding() { DisplayName = "Autohold", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 10 },
+			        new Binding() { DisplayName = "Clear Autohold", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 11 },
+			        new Binding() { DisplayName = "Screenshot", Bindings = "F12", TabGroup = "General", DefaultBinding = "F12", Ordinal = 12 },
+			        new Binding() { DisplayName = "Full Screen", Bindings = "Alt+Return", TabGroup = "General", DefaultBinding = "Alt+Return", Ordinal = 13 },
+			        new Binding() { DisplayName = "Open ROM", Bindings = "Ctrl+O", TabGroup = "General", DefaultBinding = "Ctrl+O", Ordinal = 14 },
+			        new Binding() { DisplayName = "Close ROM", Bindings = "Ctrl+W", TabGroup = "General", DefaultBinding = "Ctrl+W", Ordinal = 15 },
+			        new Binding() { DisplayName = "Display FPS", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 16 },
+			        new Binding() { DisplayName = "Frame Counter", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 17 },
+			        new Binding() { DisplayName = "Lag Counter", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 18 },
+			        new Binding() { DisplayName = "Input Display", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 19 },
+			        new Binding() { DisplayName = "Toggle BG Input", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 20 },
+			        new Binding() { DisplayName = "Toggle Menu", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 21 },
+			        new Binding() { DisplayName = "Volume Up", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 22 },
+			        new Binding() { DisplayName = "Volume Down", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 23 },
+			        new Binding() { DisplayName = "Record A/V", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 24 },
+			        new Binding() { DisplayName = "Stop A/V", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 25 },
+			        new Binding() { DisplayName = "Larger Window", Bindings = "Alt+UpArrow", TabGroup = "General", DefaultBinding = "Alt+UpArrow", Ordinal = 26 },
+			        new Binding() { DisplayName = "Smaller Window", Bindings = "Alt+DownArrow", TabGroup = "General", DefaultBinding = "Alt+DownArrow", Ordinal = 27 },
+			        new Binding() { DisplayName = "Increase Speed", Bindings = "Equals", TabGroup = "General", DefaultBinding = "Equals", Ordinal = 28 },
+			        new Binding() { DisplayName = "Decrease Speed", Bindings = "Minus", TabGroup = "General", DefaultBinding = "Minus", Ordinal = 29 },
+			        new Binding() { DisplayName = "Reboot Core", Bindings = "Ctrl+R", TabGroup = "General", DefaultBinding = "Ctrl+R", Ordinal = 30 },
+			        new Binding() { DisplayName = "Autofire", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 31 },
+
+			        //Save States
+			        new Binding() { DisplayName = "Save State 0", Bindings = "Shift+F10", TabGroup = "Save States", DefaultBinding = "Shift+F10", Ordinal = 1 },
+			        new Binding() { DisplayName = "Save State 1", Bindings = "Shift+F1", TabGroup = "Save States", DefaultBinding = "Shift+F1", Ordinal = 2 },
+			        new Binding() { DisplayName = "Save State 2", Bindings = "Shift+F2", TabGroup = "Save States", DefaultBinding = "Shift+F2", Ordinal = 3 },
+			        new Binding() { DisplayName = "Save State 3", Bindings = "Shift+F3", TabGroup = "Save States", DefaultBinding = "Shift+F3", Ordinal = 4 },
+			        new Binding() { DisplayName = "Save State 4", Bindings = "Shift+F4", TabGroup = "Save States", DefaultBinding = "Shift+F4", Ordinal = 5 },
+			        new Binding() { DisplayName = "Save State 5", Bindings = "Shift+F5", TabGroup = "Save States", DefaultBinding = "Shift+F5", Ordinal = 6 },
+			        new Binding() { DisplayName = "Save State 6", Bindings = "Shift+F6", TabGroup = "Save States", DefaultBinding = "Shift+F6", Ordinal = 7 },
+			        new Binding() { DisplayName = "Save State 7", Bindings = "Shift+F7", TabGroup = "Save States", DefaultBinding = "Shift+F7", Ordinal = 8 },
+			        new Binding() { DisplayName = "Save State 8", Bindings = "Shift+F8", TabGroup = "Save States", DefaultBinding = "Shift+F8", Ordinal = 9 },
+			        new Binding() { DisplayName = "Save State 9", Bindings = "Shift+F9", TabGroup = "Save States", DefaultBinding = "Shift+F9", Ordinal = 10 },
+			        new Binding() { DisplayName = "Load State 0", Bindings = "F10", TabGroup = "Save States", DefaultBinding = "F10", Ordinal = 11 },
+			        new Binding() { DisplayName = "Load State 1", Bindings = "F1", TabGroup = "Save States", DefaultBinding = "F1", Ordinal = 12 },
+			        new Binding() { DisplayName = "Load State 2", Bindings = "F2", TabGroup = "Save States", DefaultBinding = "F2", Ordinal = 13 },
+			        new Binding() { DisplayName = "Load State 3", Bindings = "F3", TabGroup = "Save States", DefaultBinding = "F3", Ordinal = 14 },
+			        new Binding() { DisplayName = "Load State 4", Bindings = "F4", TabGroup = "Save States", DefaultBinding = "F4", Ordinal = 15 },
+			        new Binding() { DisplayName = "Load State 5", Bindings = "F5", TabGroup = "Save States", DefaultBinding = "F5", Ordinal = 16 },
+			        new Binding() { DisplayName = "Load State 6", Bindings = "F6", TabGroup = "Save States", DefaultBinding = "F6", Ordinal = 17 },
+			        new Binding() { DisplayName = "Load State 7", Bindings = "F7", TabGroup = "Save States", DefaultBinding = "F7", Ordinal = 18 },
+			        new Binding() { DisplayName = "Load State 8", Bindings = "F8", TabGroup = "Save States", DefaultBinding = "F8", Ordinal = 19 },
+			        new Binding() { DisplayName = "Load State 9", Bindings = "F9", TabGroup = "Save States", DefaultBinding = "F9", Ordinal = 20 },
+			        new Binding() { DisplayName = "Select State 0", Bindings = "D0", TabGroup = "Save States", DefaultBinding = "D0", Ordinal = 21 },
+			        new Binding() { DisplayName = "Select State 1", Bindings = "D1", TabGroup = "Save States", DefaultBinding = "D1", Ordinal = 22 },
+			        new Binding() { DisplayName = "Select State 2", Bindings = "D2", TabGroup = "Save States", DefaultBinding = "D2", Ordinal = 23 },
+			        new Binding() { DisplayName = "Select State 3", Bindings = "D3", TabGroup = "Save States", DefaultBinding = "D3", Ordinal = 24 },
+			        new Binding() { DisplayName = "Select State 4", Bindings = "D4", TabGroup = "Save States", DefaultBinding = "D4", Ordinal = 25 },
+			        new Binding() { DisplayName = "Select State 5", Bindings = "D5", TabGroup = "Save States", DefaultBinding = "D5", Ordinal = 26 },
+			        new Binding() { DisplayName = "Select State 6", Bindings = "D6", TabGroup = "Save States", DefaultBinding = "D6", Ordinal = 27 },
+			        new Binding() { DisplayName = "Select State 7", Bindings = "D7", TabGroup = "Save States", DefaultBinding = "D7", Ordinal = 28 },
+			        new Binding() { DisplayName = "Select State 8", Bindings = "D8", TabGroup = "Save States", DefaultBinding = "D8", Ordinal = 29 },
+			        new Binding() { DisplayName = "Select State 9", Bindings = "D9", TabGroup = "Save States", DefaultBinding = "D9", Ordinal = 30 },
+			        new Binding() { DisplayName = "Save Named State", Bindings = "", TabGroup = "Save States", DefaultBinding = "", Ordinal = 31 },
+			        new Binding() { DisplayName = "Load Named State", Bindings = "", TabGroup = "Save States", DefaultBinding = "", Ordinal = 32 },
+			        new Binding() { DisplayName = "Previous Slot", Bindings = "", TabGroup = "Save States", DefaultBinding = "", Ordinal = 33 },
+			        new Binding() { DisplayName = "Next Slot", Bindings = "", TabGroup = "Save States", DefaultBinding = "", Ordinal = 34 },
+
+			        //Movie
+			        new Binding() { DisplayName = "Toggle read-only", Bindings = "Q", TabGroup = "Movie", DefaultBinding = "Q", Ordinal = 0 },
+			        new Binding() { DisplayName = "Play Movie", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 1 },
+			        new Binding() { DisplayName = "Record Movie", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 2 },
+			        new Binding() { DisplayName = "Stop Movie", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 3 },
+			        new Binding() { DisplayName = "Play from beginning", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 4 },
+			        new Binding() { DisplayName = "Save Movie", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 5 },
+			        new Binding() { DisplayName = "Toggle MultiTrack", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 6 },
+			        new Binding() { DisplayName = "MT Select All", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 7 },
+			        new Binding() { DisplayName = "MT Select None", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 8 },
+			        new Binding() { DisplayName = "MT Increment Player", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 9 },
+			        new Binding() { DisplayName = "MT Decrement Player", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 10 },
+			        new Binding() { DisplayName = "Movie Poke", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 11 },
+			        new Binding() { DisplayName = "Scrub Input", Bindings = "", TabGroup = "Movie", DefaultBinding = "", Ordinal = 12 },
+
+			        //Tools
+			        new Binding() { DisplayName = "Ram Watch", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 0 },
+			        new Binding() { DisplayName = "Ram Search", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 1 },
+			        new Binding() { DisplayName = "Ram Poke", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 2 },
+			        new Binding() { DisplayName = "Hex Editor", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 3 },
+                    new Binding() { DisplayName = "Trace Logger", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 4 },
+			        new Binding() { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 5 },
+			        new Binding() { DisplayName = "Cheats", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 6 },
+			        new Binding() { DisplayName = "TAStudio", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 7 },
+			        new Binding() { DisplayName = "ToolBox", Bindings = "T", TabGroup = "Tools", DefaultBinding = "", Ordinal = 8 },
+			        new Binding() { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 9 },
+
+			        //SNES
+			        new Binding() { DisplayName = "Toggle BG 1", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 0 },
+			        new Binding() { DisplayName = "Toggle BG 2", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 1 },
+			        new Binding() { DisplayName = "Toggle BG 3", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 2 },
+			        new Binding() { DisplayName = "Toggle BG 4", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 3 },
+			        new Binding() { DisplayName = "Toggle OBJ 1", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 4 },
+			        new Binding() { DisplayName = "Toggle OBJ 2", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 5 },
+			        new Binding() { DisplayName = "Toggle OBJ 3", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 6 },
+			        new Binding() { DisplayName = "Toggle OBJ 4", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 7 },
+
+			        //Analog
+			        new Binding() { DisplayName = "Y Up Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 0 },
+			        new Binding() { DisplayName = "Y Up Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 1 },
+			        new Binding() { DisplayName = "Y Down Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 2 },
+			        new Binding() { DisplayName = "Y Down Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 3 },
+			        new Binding() { DisplayName = "X Up Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 4 },
+			        new Binding() { DisplayName = "X Up Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 5 },
+			        new Binding() { DisplayName = "X Down Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 6 },
+			        new Binding() { DisplayName = "X Down Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 7 },
+			
+		        };
+            }
+        }
 	}
 
-	public class PCEControllerTemplate : iControllerConfigObject
+	public class Binding
 	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string I = "";
-		public string II = "";
-		public string Select = "";
-		public string Run = "";
-		public bool Enabled = false;
-		public PCEControllerTemplate() { }
-		public PCEControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			I = "Z, X1 B";
-			II = "X, X1 A";
-			Run = "C, X1 Start";
-			Select = "V, X1 Back";
-		}
+		//TODO: how about a delegate, that would be called by the mainform? Thereby putting all the action logic in one place
+		public string DisplayName;
+		public string Bindings;
+		public string DefaultBinding;
+		public string TabGroup;
+		public int Ordinal = 0;
+		public Binding() { }
 	}
 
-	public class SNESControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string Start = "";
-		public string Select = "";
-		public string Y = "";
-		public string X = "";
-		public string L = "";
-		public string R = "";
-		public bool Enabled = false;
-		public SNESControllerTemplate() { }
-		public SNESControllerTemplate(bool defaults)
+    public class PathEntryCollection : IEnumerable<PathEntry>
+    {
+        public List<PathEntry> Paths { get; private set; }
+
+        public PathEntryCollection()
+        {
+            Paths = new List<PathEntry>();
+			Paths.AddRange(DefaultValues);
+        }
+
+        public void Add(PathEntry p)
+        {
+            Paths.Add(p);
+        }
+
+        public IEnumerator<PathEntry> GetEnumerator()
+        {
+            return Paths.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public PathEntry this[string system, string type]
+        {
+            get
+            {
+				return Paths.FirstOrDefault(x => x.System == system && x.Type == type);
+            }
+        }
+
+		public void ResolveWithDefaults()
 		{
-			if (defaults)
+			//Add missing entries
+			foreach(PathEntry defaultpath in DefaultValues)
 			{
-				SetDefaults();
+				var path = Paths.FirstOrDefault(x => x.System == defaultpath.System && x.Type == defaultpath.Type);
+				if (path == null)
+				{
+					Paths.Add(defaultpath);
+				}
+			}
+
+			List<PathEntry> entriesToRemove = new List<PathEntry>();
+
+			//Remove entries that no longer exist in defaults
+			foreach (PathEntry pathEntry in Paths)
+			{
+				var path = DefaultValues.FirstOrDefault(x => x.System == pathEntry.System && x.Type == pathEntry.Type);
+				if (path == null)
+				{
+					entriesToRemove.Add(pathEntry);
+				}
+			}
+
+			foreach (PathEntry entry in entriesToRemove)
+			{
+				Paths.Remove(entry);
 			}
 		}
 
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			A = "X, X1 B";
-			B = "Z, X1 A";
-			Y = "A, X1 X";
-			X = "S, X1 Y";
-			L = "W, X1 LeftTrigger";
-			R = "E, X1 RightTrigger";
-			Start = "Return, X1 Start";
-			Select = "Space, X1 Back";
-		}
-	}
+		//Some frequently requested paths, made into a property for convenience
+		public string WatchPath { get { return Global.Config.PathEntries["Global", "Watch (.wch)"].Path; } }
+		public string MoviesPath { get { return Global.Config.PathEntries["Global", "Movies"].Path; } }
+		public string LuaPath { get { return Global.Config.PathEntries["Global", "Lua"].Path; } }
+		public string LogPath { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
+		public string FirmwaresPath { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
+		public string AVPath { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
+		public string GlobalBase { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
 
-	public class GBAControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string Start = "";
-		public string Select = "";
-		public string L = "";
-		public string R = "";
-		public string Power = "";
-		public bool Enabled = false;
-		public GBAControllerTemplate() { }
-		public GBAControllerTemplate(bool defaults)
+		public static List<PathEntry> DefaultValues
 		{
-			if (defaults)
+			get
 			{
-				SetDefaults();
+				return new List<PathEntry>()
+				{
+					new PathEntry() { System = "Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 0 },
+					new PathEntry() { System = "Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 1 },
+					new PathEntry() { System = "Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 2 },
+					new PathEntry() { System = "Global", Type = "Watch (.wch)", Path = ".", Ordinal = 3 },
+					new PathEntry() { System = "Global", Type = "A/V Dumps", Path = ".", Ordinal = 4 },
+					new PathEntry() { System = "Global", Type = "Debug Logs", Path = ".", Ordinal = 5 },
+					new PathEntry() { System = "Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 6 },
+					new PathEntry() { System = "Global", Type = "Base ROM", Path = ".", Ordinal = 6 },
+					new PathEntry() { System = "Global", Type = "Base", Path = ".", Ordinal = 6 },
+
+					new PathEntry() { System = "INTV", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
+					new PathEntry() { System = "INTV", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "INTV", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "INTV", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "INTV", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "INTV", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+					new PathEntry() { System = "INTV", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
+
+					new PathEntry() { System = "NES", Type = "Base", Path = Path.Combine(".", "NES"), Ordinal = 0 },
+					new PathEntry() { System = "NES", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "NES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "NES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "NES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "NES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+					new PathEntry() { System = "NES", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
+
+					new PathEntry() { System = "SNES", Type = "Base", Path= Path.Combine(".", "SNES"), Ordinal = 0 },
+					new PathEntry() { System = "SNES", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "SNES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "SNES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "SNES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "SNES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "GBA", Type = "Base", Path= Path.Combine(".", "GBA"), Ordinal = 0 },
+					new PathEntry() { System = "GBA", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "GBA", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "GBA", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "GBA", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "GBA", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "SMS", Type = "Base", Path= Path.Combine(".", "SMS"), Ordinal = 0 },
+					new PathEntry() { System = "SMS", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "SMS", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "SMS", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "SMS", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "SMS", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "GG", Type = "Base", Path= Path.Combine(".", "Game Gear"), Ordinal = 0 },
+					new PathEntry() { System = "GG", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "GG", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "GG", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "GG", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "GG", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "SG", Type = "Base", Path= Path.Combine(".", "SG-1000"), Ordinal = 0 },
+					new PathEntry() { System = "SG", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "SG", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "SG", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "SG", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "SG", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "GEN", Type = "Base", Path= Path.Combine(".", "Genesis"), Ordinal = 0 },
+					new PathEntry() { System = "GEN", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "GEN", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "GEN", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "GEN", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "GEN", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "PCE", Type = "Base", Path= Path.Combine(".", "PC Engine"), Ordinal = 0 },
+					new PathEntry() { System = "PCE", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "PCE", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "PCE", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "PCE", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "PCE", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "GB", Type = "Base", Path= Path.Combine(".", "Gameboy"), Ordinal = 0 },
+					new PathEntry() { System = "GB", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "GB", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "GB", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "GB", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "GB", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+					new PathEntry() { System = "GB", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
+
+					new PathEntry() { System = "TI83", Type = "Base", Path= Path.Combine(".", "TI83"), Ordinal = 0 },
+					new PathEntry() { System = "TI83", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "TI83", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "TI83", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "TI83", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "TI83", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "A26", Type = "Base", Path= Path.Combine(".", "Atari 2600"), Ordinal = 0 },
+					new PathEntry() { System = "A26", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "A26", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "A26", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "A26", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "A78", Type = "Base", Path= Path.Combine(".", "Atari 7800"), Ordinal = 0 },
+					new PathEntry() { System = "A78", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "A78", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "A78", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "A78", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "A78", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "C64", Type = "Base", Path= Path.Combine(".", "C64"), Ordinal = 0 },
+					new PathEntry() { System = "C64", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "C64", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "C64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "C64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "PSX", Type = "Base", Path= Path.Combine(".", "PSX"), Ordinal = 0 },
+					new PathEntry() { System = "PSX", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "PSX", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "PSX", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "PSX", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "PSX", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "Coleco", Type = "Base", Path= Path.Combine(".", "Coleco"), Ordinal = 0 },
+					new PathEntry() { System = "Coleco", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "Coleco", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "Coleco", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "Coleco", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "N64", Type = "Base", Path= Path.Combine(".", "N64"), Ordinal = 0 },
+					new PathEntry() { System = "N64", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "N64", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "N64", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "N64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "N64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry() { System = "Saturn", Type = "Base", Path= Path.Combine(".", "Saturn"), Ordinal = 0 },
+					new PathEntry() { System = "Saturn", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "Saturn", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "Saturn", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "Saturn", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "Saturn", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+				};
 			}
 		}
+    }
 
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			A = "X, X1 B";
-			B = "Z, X1 A";
-			L = "W, X1 LeftTrigger";
-			R = "E, X1 RightTrigger";
-			Start = "Return, X1 Start";
-			Select = "Space, X1 Back";
-			Power = "";
-		}
-	}
+    public class PathEntry
+    {
+        public string Type;
+        public string Path;
+        public string System;
+        public int Ordinal;
+        public PathEntry() { }
+    }
 
-	public class NESControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string Select = "";
-		public string Start = "";
-		public bool Enabled = false;
-		public NESControllerTemplate() { }
-		public NESControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			A = "X, X1 B";
-			B = "Z, X1 A";
-			Start = "Return, X1 Start";
-			Select = "Space, X1 Back";
-		}
-	}
-
-	public class GBControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string Select = "";
-		public string Start = "";
-		public string Power = "";
-		public bool Enabled = false;
-		public GBControllerTemplate() { }
-		public GBControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			A = "X, X1 B";
-			B = "Z, X1 A";
-			Start = "Return, X1 Start";
-			Select = "Space, X1 Back";
-			Power = "";
-		}
-	}
-
-	public class DualGBControllerTemplate : iControllerConfigObject
-	{
-		public string P1_Up = "";
-		public string P1_Down = "";
-		public string P1_Left = "";
-		public string P1_Right = "";
-		public string P1_A = "";
-		public string P1_B = "";
-		public string P1_Select = "";
-		public string P1_Start = "";
-		public string P1_Power = "";
-
-		public string P2_Up = "";
-		public string P2_Down = "";
-		public string P2_Left = "";
-		public string P2_Right = "";
-		public string P2_A = "";
-		public string P2_B = "";
-		public string P2_Select = "";
-		public string P2_Start = "";
-		public string P2_Power = "";
-
-		public bool Enabled = false;
-		public DualGBControllerTemplate() { }
-		public DualGBControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			P1_Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			P1_Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			P1_Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			P1_Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			P1_A = "X, X1 B";
-			P1_B = "Z, X1 A";
-			P1_Start = "Return, X1 Start";
-			P1_Select = "Space, X1 Back";
-			P1_Power = "";
-
-			P2_Up = "NumberPad8";
-			P2_Down = "NumberPad2";
-			P2_Left = "NumberPad4";
-			P2_Right = "NumberPad6";
-			P2_A = "C";
-			P2_B = "V";
-			P2_Select = "";
-			P2_Start = "";
-			P2_Power = "";
-		}
-	}
-
-	public class SaturnControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string C = "";
-		public string X = "";
-		public string Y = "";
-		public string Z = "";
-		public string L = "";
-		public string R = "";
-		public string Start = "";
-		public bool Enabled;
-
-		public SaturnControllerTemplate() { }
-		public SaturnControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-		public void SetDefaults()
-		{
-			Enabled = true;
-		}
-	}
-
-	public class GenControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string A = "";
-		public string B = "";
-		public string C = "";
-		public string Start = "";
-		public bool Enabled;
-
-		public GenControllerTemplate() { }
-		public GenControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			A = "Z, X1 A";
-			B = "X, X1 X";
-			C = "C, X1 Y";
-			Start = "Return, X1 Start";
-		}
-	}
-
-	public class SingleButtonJoyStickTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string Button = "";
-		public bool Enabled;
-		public bool UseNumpad;
-
-		public SingleButtonJoyStickTemplate() { }
-		public SingleButtonJoyStickTemplate(bool defaults, bool useNumpad = false)
-		{
-			UseNumpad = useNumpad;
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			if (UseNumpad)
-			{
-				Enabled = true;
-				Up = "NumberPad8, X1 DpadUp, X1 LStickUp";
-				Down = "NumberPad2, X1 DpadDown, X1 LStickDown";
-				Left = "NumberPad4, X1 DpadLeft, X1 LStickLeft";
-				Right = "NumberPad6, X1 DpadRight, X1 LStickRight";
-				Button = "NumberPad8, X1 A";
-			}
-			else
-			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				Button = "Z, X1 A";
-			}
-		}
-	}
-
-	public class DoubleButtonJoyStickTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string Button1 = "";
-		public string Button2 = "";
-		public bool Enabled;
-
-		public DoubleButtonJoyStickTemplate() { }
-		public DoubleButtonJoyStickTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			Button1 = "Z, X1 A";
-			Button2 = "X, X1 X";
-		}
-	}
-
-	public class Atari2600ConsoleButtonsTemplate : iControllerConfigObject
-	{
-		public string Reset = "C";
-		public string Select = "V, X1 Start";
-		public bool Enabled = false;
-
-		public Atari2600ConsoleButtonsTemplate() { }
-		public Atari2600ConsoleButtonsTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Reset = "";
-			Select = "";
-		}
-	}
-
-	public class Atari7800ConsoleButtonsTemplate : iControllerConfigObject
-	{
-		public string Power = "";
-		public string Reset = "C";
-		public string Select = "V, X1 Start";
-		public string Pause = "";
-		public bool Enabled = false;
-
-		public Atari7800ConsoleButtonsTemplate() { }
-		public Atari7800ConsoleButtonsTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Reset = "";
-			Select = "";
-			Pause = "";
-		}
-	}
-
-	public class N64ButtonsTemplate : iControllerConfigObject
-	{
-		public string DPadU = "";
-		public string DPadD = "";
-		public string DPadL = "";
-		public string DPadR = "";
-		public string Start = "";
-		public string Z = "";
-		public string B = "";
-		public string A = "";
-		public string CUp = "";
-		public string CDown = "";
-		public string CLeft = "";
-		public string CRight = "";
-		public string L = "";
-		public string R = "";
-
-		public bool Enabled = false;
-
-		public N64ButtonsTemplate() { }
-		public N64ButtonsTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			DPadU = "UpArrow, X1 DpadUp, X1 LStickUp";
-			DPadD = "DownArrow, X1 DpadDown, X1 LStickDown";
-			DPadL = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			DPadR = "RightArrow, X1 DpadRight, X1 LStickRight";
-			Start = "V, X1 Start";
-			Z = "Z, X1 A";
-			B = "X, X1 X";
-			A = "C";
-			CUp = "NumberPad8, J1 RotationZ-";
-			CDown = "NumberPad2, J1 RoationZ+";
-			CLeft = "NumberPad4, J1 Z-";
-			CRight = "NumberPad6, J1 Z+";
-			L = "D";
-			R = "F";
-
-			Enabled = true;
-		}
-	}
-
-	public class Standard2ButtonConsoleTemplate : iControllerConfigObject
-	{
-		public string Power = "";
-		public string Reset = "";
-		public bool Enabled = false;
-
-		public Standard2ButtonConsoleTemplate() { }
-		public Standard2ButtonConsoleTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Power = "";
-			Reset = "";
-		}
-	}
-
-	public class ColecoVisionControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string L = "";
-		public string R = "";
-		public string _1 = "";
-		public string _2 = "";
-		public string _3 = "";
-		public string _4 = "";
-		public string _5 = "";
-		public string _6 = "";
-		public string _7 = "";
-		public string _8 = "";
-		public string _9 = "";
-		public string Star = "";
-		public string _0 = "";
-		public string Pound = "";
-		public bool Enabled;
-
-		public ColecoVisionControllerTemplate() { }
-		public ColecoVisionControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			L = "Z, J1 B1";
-			R = "X, J1 B1";
-			_0 = "NumberPad0";
-			_1 = "NumberPad1";
-			_2 = "NumberPad2";
-			_3 = "NumberPad3";
-			_4 = "NumberPad4";
-			_5 = "NumberPad5";
-			_6 = "NumberPad6";
-			_7 = "NumberPad7";
-			_8 = "NumberPad8";
-			_9 = "NumberPad9";
-			Pound = "NumberPadPeriod";
-			Star = "NumberPadEnter";
-		}
-	}
-
-	public class IntellivisionControllerTemplate : iControllerConfigObject
-	{
-		public string Up = "";
-		public string Down = "";
-		public string Left = "";
-		public string Right = "";
-		public string L = "";
-		public string R = "";
-		public string _1 = "";
-		public string _2 = "";
-		public string _3 = "";
-		public string _4 = "";
-		public string _5 = "";
-		public string _6 = "";
-		public string _7 = "";
-		public string _8 = "";
-		public string _9 = "";
-		public string Enter = "";
-		public string _0 = "";
-		public string Clear = "";
-		
-		public bool Enabled;
-
-		public IntellivisionControllerTemplate() { }
-		public IntellivisionControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-			L = "Z, J1 B1";
-			R = "X, J1 B1";
-			_0 = "NumberPad0";
-			_1 = "NumberPad1";
-			_2 = "NumberPad2";
-			_3 = "NumberPad3";
-			_4 = "NumberPad4";
-			_5 = "NumberPad5";
-			_6 = "NumberPad6";
-			_7 = "NumberPad7";
-			_8 = "NumberPad8";
-			_9 = "NumberPad9";
-			Enter = "NumberPadPeriod";
-			Clear = "NumberPadEnter";
-		}
-	}
-
-	public class C64KeyboardTemplate : iControllerConfigObject
-	{
-		public string F1 = "";
-		public string F3 = "";
-		public string F5 = "";
-		public string F7 = "";
-
-		public string Left_Arrow = "";
-		public string _1 = "";
-		public string _2 = "";
-		public string _3 = "";
-		public string _4 = "";
-		public string _5 = "";
-		public string _6 = "";
-		public string _7 = "";
-		public string _8 = "";
-		public string _9 = "";
-		public string _0 = "";
-		public string Plus = "";
-		public string Minus = "";
-		public string Pound = "";
-		public string Clear_Home = "";
-		public string Insert_Delete = "";
-
-		public string Control = "";
-		public string Q = "";
-		public string W = "";
-		public string E = "";
-		public string R = "";
-		public string T = "";
-		public string Y = "";
-		public string U = "";
-		public string I = "";
-		public string O = "";
-		public string P = "";
-		public string At = "";
-		public string Asterisk = "";
-		public string Up_Arrow = "";
-		public string Restore = "";
-
-		public string Run_Stop = "";
-		public string Lck = "";
-		public string A = "";
-		public string S = "";
-		public string D = "";
-		public string F = "";
-		public string G = "";
-		public string H = "";
-		public string J = "";
-		public string K = "";
-		public string L = "";
-		public string Colon = "";
-		public string Semicolon = "";
-		public string Equal = "";
-		public string Return = "";
-
-		public string Commodore = "";
-		public string Left_Shift = "";
-		public string Z = "";
-		public string X = "";
-		public string C = "";
-		public string V = "";
-		public string B = "";
-		public string N = "";
-		public string M = "";
-		public string Comma = "";
-		public string Period = "";
-		public string Slash = "";
-		public string Right_Shift = "";
-		public string Cursor_Up_Down = "";
-		public string Cursor_Left_Right = "";
-
-		public string Space = "";
-
-		public bool enabled = false;
-
-		public C64KeyboardTemplate() { }
-		public C64KeyboardTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			F1 = "F1";
-			F3 = "F3";
-			F5 = "F5";
-			F7 = "F7";
-
-			Left_Arrow = "Grave";
-			_1 = "D1";
-			_2 = "D2";
-			_3 = "D3";
-			_4 = "D4";
-			_5 = "D5";
-			_6 = "D6";
-			_7 = "D7";
-			_8 = "D8";
-			_9 = "D9";
-			_0 = "D0";
-			Plus = "Equals";
-			Minus = "Minus";
-			Pound = "Insert";
-			Clear_Home = "Delete";
-			Insert_Delete = "Backspace";
-
-			Control = "Tab";
-			Q = "Q";
-			W = "W";
-			E = "E";
-			R = "R";
-			T = "T";
-			Y = "Y";
-			U = "U";
-			I = "I";
-			O = "O";
-			P = "P";
-			At = "LeftBracket";
-			Asterisk = "RightBracket";
-			Up_Arrow = "Backslash";
-
-			Run_Stop = "CapsLock";
-			A = "A";
-			S = "S";
-			D = "D";
-			F = "F";
-			G = "G";
-			H = "H";
-			J = "J";
-			K = "K";
-			L = "L";
-			Colon = "Semicolon";
-			Semicolon = "Apostrophe";
-			Equal = "RightControl";
-			Return = "Return";
-
-			Commodore = "LeftControl";
-			Left_Shift = "LeftShift";
-			Z = "Z";
-			X = "X";
-			C = "C";
-			V = "V";
-			B = "B";
-			N = "N";
-			M = "M";
-			Comma = "Comma";
-			Period = "Period";
-			Slash = "Slash";
-			Right_Shift = "RightShift";
-			Cursor_Up_Down = "DownArrow";
-			Cursor_Left_Right = "RightArrow";
-
-			Space = "Space";
-		}
-	}
-
-	public class TI83ControllerTemplate : iControllerConfigObject
-	{
-		public string _0 = "";
-		public string _1 = "";
-		public string _2 = "";
-		public string _3 = "";
-		public string _4 = "";
-		public string _5 = "";
-		public string _6 = "";
-		public string _7 = "";
-		public string _8 = "";
-		public string _9 = "";
-		public string DOT = "";
-		public string ON = "";
-		public string ENTER = "";
-		public string DOWN = "";
-		public string UP = "";
-		public string LEFT = "";
-		public string RIGHT = "";
-		public string PLUS = "";
-		public string MINUS = "";
-		public string MULTIPLY = "";
-		public string DIVIDE = "";
-		public string CLEAR = "";
-		public string EXP = "";
-		public string DASH = "";
-		public string PARACLOSE = "";
-		public string TAN = "";
-		public string VARS = "";
-		public string PARAOPEN = "";
-		public string COS = "";
-		public string PRGM = "";
-		public string STAT = "";
-		public string SIN = "";
-		public string MATRIX = "";
-		public string X = "";
-		public string STO = "";
-		public string LN = "";
-		public string LOG = "";
-		public string SQUARED = "";
-		public string NEG1 = "";
-		public string MATH = "";
-		public string ALPHA = "";
-		public string GRAPH = "";
-		public string TRACE = "";
-		public string ZOOM = "";
-		public string WINDOW = "";
-		public string Y = "";
-		public string SECOND = "";
-		public string MODE = "";
-		public string DEL = "";
-		public string COMMA = "";
-
-		public bool Enabled = false;
-
-		public TI83ControllerTemplate() { }
-		public TI83ControllerTemplate(bool defaults)
-		{
-			if (defaults)
-			{
-				SetDefaults();
-			}
-		}
-
-		public void SetDefaults()
-		{
-			Enabled = true;
-			_0 = "NumberPad0";      //0
-			_1 = "NumberPad1";      //1
-			_2 = "NumberPad2";      //2
-			_3 = "NumberPad3";      //3
-			_4 = "NumberPad4";      //4
-			_5 = "NumberPad5";      //5
-			_6 = "NumberPad6";      //6
-			_7 = "NumberPad7";      //7
-			_8 = "NumberPad8";      //8
-			_9 = "NumberPad9";      //9
-			DOT = "NumberPadPeriod";//10
-			ON = "Space";           //11
-			ENTER = "Return, NumberPadEnter";       //12
-			UP = "UpArrow";         //13
-			DOWN = "DownArrow";     //14
-			LEFT = "LeftArrow";     //15
-			RIGHT = "RightArrow";   //16
-			PLUS = "NumberPadPlus"; //17
-			MINUS = "NumberPadMinus";     //18
-			MULTIPLY = "NumberPadStar";   //19
-			DIVIDE = "NumberPadSlash";    //20
-			CLEAR = "Escape";       //21
-			EXP = "6";              //22
-			DASH = "Minus";         //23
-			PARACLOSE = "0";        //24
-			PARAOPEN = "9";         //25
-			TAN = "T";              //26
-			VARS = "V";             //27
-			COS = "C";              //28
-			PRGM = "R";             //29
-			STAT = "S";             //30
-			MATRIX = "LeftBracket"; //31
-			X = "X";                //32
-			STO = "Insert";         //33
-			LN = "L";               //34
-			LOG = "O";              //35
-			SQUARED = "2";          //36
-			NEG1 = "1";             //37
-			MATH = "M";             //38
-			ALPHA = "A";            //39
-			GRAPH = "G";            //40
-			TRACE = "Home";         //41
-			ZOOM = "Z";             //42
-			WINDOW = "W";           //43
-			Y = "Y";                //44
-			SECOND = "Slash";       //45
-			MODE = "BackSlash";     //46
-			DEL = "Delete";         //47
-			COMMA = "Comma";        //48
-			SIN = "Period";         //49
-		}
-	}
-
-	public interface iControllerConfigObject
-	{
-		void SetDefaults();
-	}
-
-
-	public enum PLUGINTYPE { RICE, GLIDE }; 
+	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 }; 
 
 	public interface iPluginSettings
 	{
@@ -2201,4 +1273,116 @@ namespace BizHawk.MultiClient
 		public int filtering = 1;
 		public int depth_bias = 20;
 	}
+	
+	public class N64Glide64mk2PluginSettings : iPluginSettings
+	{
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.GLIDE64MK2; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.Glide64mk2Plugin.UseDefaultHacks)
+			{
+				use_sts1_only = Global.Game.GetBool("Glide64mk2_use_sts1_only", false);
+				optimize_texrect = Global.Game.GetBool("Glide64mk2_optimize_texrect", true);
+				increase_texrect_edge = Global.Game.GetBool("Glide64mk2_increase_texrect_edge", false);
+				ignore_aux_copy = Global.Game.GetBool("Glide64mk2_ignore_aux_copy", false);
+				hires_buf_clear = Global.Game.GetBool("Glide64mk2_hires_buf_clear", true);
+				force_microcheck = Global.Game.GetBool("Glide64mk2_force_microcheck", false);
+				fog = Global.Game.GetBool("Glide64mk2_fog", true);
+				fb_smart = Global.Game.GetBool("Glide64mk2_fb_smart", false);
+				fb_read_alpha = Global.Game.GetBool("Glide64mk2_fb_read_alpha", false);
+				fb_hires = Global.Game.GetBool("Glide64mk2_fb_hires", true);
+				detect_cpu_write = Global.Game.GetBool("Glide64mk2_detect_cpu_write", false);
+				decrease_fillrect_edge = Global.Game.GetBool("Glide64mk2_decrease_fillrect_edge", false);
+				buff_clear = Global.Game.GetBool("Glide64mk2_buff_clear", true);
+				alt_tex_size = Global.Game.GetBool("Glide64mk2_alt_tex_size", true);
+				swapmode = Global.Game.GetInt("Glide64mk2_swapmode", 1);
+				stipple_pattern = Global.Game.GetInt("Glide64mk2_stipple_pattern", 1041204192);
+				stipple_mode = Global.Game.GetInt("Glide64mk2_stipple_mode", 2);
+				lodmode = Global.Game.GetInt("Glide64mk2_lodmode", 0);
+				filtering = Global.Game.GetInt("Glide64mk2_filtering", 0);
+				correct_viewport = Global.Game.GetBool("Glide64mk2_correct_viewport", false);
+				force_calc_sphere = Global.Game.GetBool("Glide64mk2_force_calc_sphere", false);
+				pal230 = Global.Game.GetBool("Glide64mk2_pal230", false);
+				texture_correction = Global.Game.GetBool("Glide64mk2_texture_correction", true);
+				n64_z_scale = Global.Game.GetBool("Glide64mk2_n64_z_scale", false);
+				old_style_adither = Global.Game.GetBool("Glide64mk2_old_style_adither", false);
+				zmode_compare_less = Global.Game.GetBool("Glide64mk2_zmode_compare_less", false);
+				adjust_aspect = Global.Game.GetBool("Glide64mk2_adjust_aspect", true);
+				clip_zmax = Global.Game.GetBool("Glide64mk2_clip_zmax", true);
+				clip_zmin = Global.Game.GetBool("Glide64mk2_clip_zmin", false);
+				force_quad3d = Global.Game.GetBool("Glide64mk2_force_quad3d", false);
+				useless_is_useless = Global.Game.GetBool("Glide64mk2_useless_is_useless", false);
+				fb_read_always = Global.Game.GetBool("Glide64mk2_fb_read_always", false);
+				aspectmode = Global.Game.GetInt("Glide64mk2_aspectmode", 0);
+				fb_crc_mode = Global.Game.GetInt("Glide64mk2_fb_crc_mode", 1);
+				enable_hacks_for_game = Global.Game.GetInt("Glide64mk2_enable_hacks_for_game", 0);
+				read_back_to_screen = Global.Game.GetInt("Glide64mk2_read_back_to_screen", 0);
+				fast_crc = Global.Game.GetBool("Glide64mk2_fast_crc", true);
+			}
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			System.Reflection.FieldInfo[] members = Global.Config.Glide64mk2Plugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
+			{
+				object field = Global.Config.Glide64mk2Plugin.GetType().GetField(member.Name).GetValue(Global.Config.Glide64mk2Plugin);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public bool wrpFBO = false;
+		public int card_id = 0;
+		public bool use_sts1_only = false;
+		public bool optimize_texrect = true;
+		public bool increase_texrect_edge = false;
+		public bool ignore_aux_copy = false;
+		public bool hires_buf_clear = true;
+		public bool force_microcheck = false;
+		public bool fog = true;
+		public bool fb_smart = false;
+		public bool fb_read_alpha = false;
+		public bool fb_hires = true;
+		public bool detect_cpu_write = false;
+		public bool decrease_fillrect_edge = false;
+		public bool buff_clear = true;
+		public bool alt_tex_size = false;
+		public int swapmode = 1;
+		public int stipple_pattern = 1041204192;
+		public int stipple_mode = 2;
+		public int lodmode = 0;
+		public int filtering = 0;
+		public bool wrpAnisotropic = false;
+		public bool correct_viewport = false;
+		public bool force_calc_sphere = false;
+		public bool pal230 = false;
+		public bool texture_correction = true;
+		public bool n64_z_scale = false;
+		public bool old_style_adither = false;
+		public bool zmode_compare_less = false;
+		public bool adjust_aspect = true;
+		public bool clip_zmax = true;
+		public bool clip_zmin = false;
+		public bool force_quad3d = false;
+		public bool useless_is_useless = false;
+		public bool fb_read_always = false;
+		public bool fb_get_info = false;
+		public bool fb_render = true;
+		public int aspectmode = 0;
+		public int fb_crc_mode = 1;
+		public bool fast_crc = true;
+		public bool UseDefaultHacks = true;
+		public int enable_hacks_for_game = 0;
+		public int read_back_to_screen = 0;
+	}
+
+	#endregion
 }

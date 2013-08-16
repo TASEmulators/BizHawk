@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog
 				{
 					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Sprites",
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"),
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
 					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
 					RestoreDirectory = true
 				};

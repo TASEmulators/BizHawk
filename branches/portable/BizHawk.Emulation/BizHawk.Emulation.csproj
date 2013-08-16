@@ -85,6 +85,7 @@
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
+    <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
@@ -96,8 +97,11 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\Disk\VIC1541.cs" />
     <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\MOS6569.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Interface.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Internal.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Vic.Rom.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
-    <Compile Include="Computers\Commodore64\Memory.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
@@ -365,6 +369,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
+    <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
@@ -405,6 +411,7 @@
     <Compile Include="CPUs\Z80\Z80A.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
@@ -416,6 +423,13 @@
     <Compile Include="DiscSystem\CCD_format.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\cdfs\EndianBitConverter.cs" />
+    <Compile Include="DiscSystem\cdfs\ISODirectoryNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFile.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFileNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONodeRecord.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOVolumeDescriptor.cs" />
     <Compile Include="DiscSystem\CUE_format.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -426,6 +440,7 @@
     <Compile Include="DiscSystem\Disc.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\Disc.Id.cs" />
     <Compile Include="DiscSystem\DiscTOC.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -444,6 +459,7 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\ICoreFileProvider.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
@@ -500,6 +516,7 @@
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
+    <Content Include="DiscSystem\cdfs\notes.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>

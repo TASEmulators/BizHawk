@@ -105,7 +105,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private int cycleIndex;
 		private int dataC;
 		private int dataG;
-		private int displayC;
+        private bool debugScreen;
+        private int displayC;
 		private bool displayEnable;
 		private int displayIndex;
 		private bool enableIntLightPen;
@@ -150,17 +151,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		// ------------------------------------
 
 		private int cyclesPerSec;
-		private bool pinAEC;
-		private bool pinBA;
-		private bool pinIRQ;
+		private bool pinAEC = true;
+        private bool pinBA = true;
+        private bool pinIRQ = true;
 		private int[][] pipeline;
 		private int totalCycles;
 		private int totalLines;
 
 		// ------------------------------------
 
-		public Func<ushort, byte> ReadColorRam;
-		public Func<ushort, byte> ReadMemory;
+		public Func<int, byte> ReadColorRam;
+		public Func<int, byte> ReadMemory;
 	
 		// ------------------------------------
 
@@ -168,13 +169,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-				totalCycles = newCycles;
+                debugScreen = false;
+
+                totalCycles = newCycles;
 				totalLines = newLines;
 				pipeline = newPipeline;
 				cyclesPerSec = newCyclesPerSec;
 				pixelBufferDelay = 12;
 				pixelBackgroundBufferDelay = 4;
-				bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
+
+                if (debugScreen)
+                {
+                    bufRect = new Rectangle(0, 0, totalCycles * 8, totalLines);
+                }
+                else
+                {
+                    bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
+                }
 
 				buf = new int[bufRect.Width * bufRect.Height];
 				bufLength = buf.Length;
@@ -197,7 +208,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			pinAEC = true;
 			pinBA = true;
-			pinIRQ = false;
+			pinIRQ = true;
 
 			bufOffset = 0;
 
@@ -282,7 +293,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					baCount = baResetCounter;
 				else if (baCount > 0)
 					baCount--;
-				pinAEC = (baCount > 0);
 			}
 		}
 
@@ -326,7 +336,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected const int rasterIrqLine0Cycle = 1;
 		protected const int rasterIrqLineXCycle = 0;
 
-		protected const int baResetCounter = 4;
+		protected const int baResetCounter = 7;
 
 		// ------------------------------------
 
@@ -380,6 +390,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				// if the BA counter is nonzero, allow CPU bus access
 				UpdateBA();
+                pinAEC = false;
 
 				// must always come last
 				UpdatePins();
@@ -413,6 +424,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 
 				Render();
+                UpdateBA();
+                pinAEC = (baCount > 0);
 
 				// must always come last
 				UpdatePins();
@@ -423,7 +436,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-				ushort addr = 0x3FFF;
+				int addr = 0x3FFF;
 				int cycleBAsprite0;
 				int cycleBAsprite1;
 				int cycleBAsprite2;
@@ -441,7 +454,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					case 0x0100:
 						// fetch R
 						refreshCounter = (refreshCounter - 1) & 0xFF;
-						addr = (ushort)(0x3F00 | refreshCounter);
+						addr = (0x3F00 | refreshCounter);
 						ReadMemory(addr);
 						break;
 					case 0x0200:
@@ -450,7 +463,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						{
 							if (badline)
 							{
-								addr = (ushort)((pointerVM << 10) | vc);
+								addr = ((pointerVM << 10) | vc);
 								dataC = ReadMemory(addr);
 								dataC |= ((int)ReadColorRam(addr) & 0xF) << 8;
 								bufferC[vmli] = dataC;
@@ -473,9 +486,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						else
 						{
 							if (bitmapMode)
-								addr = (ushort)(rc | (vc << 3) | ((pointerCB & 0x4) << 11));
+								addr = (rc | (vc << 3) | ((pointerCB & 0x4) << 11));
 							else
-								addr = (ushort)(rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
+								addr = (rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
 						}
 						if (extraColorMode)
 							addr &= 0x39FF;
@@ -489,7 +502,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						break;
 					case 0x0400:
 						// fetch I
-						addr = (extraColorMode ? (ushort)0x39FF : (ushort)0x3FFF);
+						addr = (extraColorMode ? 0x39FF : 0x3FFF);
 						dataG = ReadMemory(addr);
 						dataC = 0;
 						break;
@@ -502,7 +515,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						{
 							case 0x00:
 								// fetch P
-								addr = (ushort)(0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
+								addr = (0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
 								sprites[cycleFetchSpriteIndex].pointer = ReadMemory(addr);
 								sprites[cycleFetchSpriteIndex].shiftEnable = false;
 								break;
@@ -513,7 +526,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 								if (sprites[cycleFetchSpriteIndex].dma)
 								{
 									Sprite spr = sprites[cycleFetchSpriteIndex];
-									addr = (ushort)(spr.mc | (spr.pointer << 6));
+									addr = (spr.mc | (spr.pointer << 6));
 									spr.sr <<= 8;
 									spr.sr |= ReadMemory(addr);
 									spr.mc++;
@@ -876,9 +889,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public bool AEC { get { return pinAEC; } }
-		public bool BA { get { return pinBA; } }
-		public bool IRQ { get { return pinIRQ; } }
+        public bool ReadAECBuffer() { return pinAEC; }
+        public bool ReadBABuffer() { return pinBA; }
+        public bool ReadIRQBuffer() { return pinIRQ; }
 
 		// ------------------------------------
 
@@ -886,7 +899,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return (int)(totalCycles * totalLines);
+				return (totalCycles * totalLines);
 			}
 		}
 
@@ -902,15 +915,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			return ReadRegister((ushort)(addr & 0x3F));
+			return ReadRegister((addr & 0x3F));
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((ushort)(addr & 0x3F), val);
+			WriteRegister((addr & 0x3F), val);
 		}
 
-		public byte Read(ushort addr)
+		public byte Read(int addr)
 		{
 			byte result;
 			addr &= 0x3F;
@@ -924,13 +937,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					WriteRegister(addr, 0);
 					break;
 				default:
-					result = ReadRegister((ushort)(addr & 0x3F));
+					result = ReadRegister((addr & 0x3F));
 					break;
 			}
 			return result;
 		}
 
-		private byte ReadRegister(ushort addr)
+		private byte ReadRegister(int addr)
 		{
 			byte result = 0xFF; //unused bit value
 
@@ -970,12 +983,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x11:
 					result = (byte)(
-						(byte)(yScroll & 0x7) |
-						(rowSelect ? (byte)0x08 : (byte)0x00) |
-						(displayEnable ? (byte)0x10 : (byte)0x00) |
-						(bitmapMode ? (byte)0x20 : (byte)0x00) |
-						(extraColorMode ? (byte)0x40 : (byte)0x00) |
-						(byte)((rasterLine & 0x100) >> 1)
+						(yScroll & 0x7) |
+						(rowSelect ? 0x08 : 0x00) |
+						(displayEnable ? 0x10 : 0x00) |
+						(bitmapMode ? 0x20 : 0x00) |
+						(extraColorMode ? 0x40 : 0x00) |
+						((rasterLine & 0x100) >> 1)
 						);
 					break;
 				case 0x12:
@@ -1002,9 +1015,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case 0x16:
 					result &= 0xC0;
 					result |= (byte)(
-						(byte)(xScroll & 0x7) |
-						(columnSelect ? (byte)0x08 : (byte)0x00) |
-						(multicolorMode ? (byte)0x10 : (byte)0x00)
+						(xScroll & 0x7) |
+						(columnSelect ? 0x08 : 0x00) |
+						(multicolorMode ? 0x10 : 0x00)
 						);
 					break;
 				case 0x17:
@@ -1152,7 +1165,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return result;
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, byte val)
 		{
 			addr &= 0x3F;
 			switch (addr)
@@ -1201,7 +1214,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		private void WriteRegister(ushort addr, byte val)
+		private void WriteRegister(int addr, byte val)
 		{
 			switch (addr)
 			{

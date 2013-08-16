@@ -104,24 +104,18 @@ ifeq ("$(CPU)","NONE")
 endif
 
 # base CFLAGS, LDLIBS, and LDFLAGS
-OPTFLAGS ?= -O3
+OPTFLAGS ?= -O3 -flto
 WARNFLAGS ?= -Wall
 CFLAGS += $(OPTFLAGS) $(WARNFLAGS) -ffast-math -fno-strict-aliasing -fvisibility=hidden -I../../src -DM64P_PARALLEL
 CXXFLAGS += -fvisibility-inlines-hidden
 LDLIBS +=  -lm
 
-# default configuration programs
-SDL_CONFIG = $(CROSS_COMPILE)sdl-config
-PKG_CONFIG = $(CROSS_COMPILE)pkg-config
-
 # Since we are building a shared library, we must compile with -fPIC on some architectures
 # On 32-bit x86 systems we do not want to use -fPIC because we don't have to and it has a big performance penalty on this arch
 ifeq ($(PIC), 1)
   CFLAGS += -fPIC
-  LDFLAGS += -fPIC
 else
   CFLAGS += -fno-PIC
-  LDFLAGS += -fno-PIC
 endif
 
 ifeq ($(BIG_ENDIAN), 1)
@@ -134,7 +128,7 @@ ifeq ($(ARCH_DETECTED), 64BITS_32)
     $(error Do not use the BITS=32 option with FreeBSD, use -m32 and -m elf_i386)
   endif
   CFLAGS += -m32
-  LDFLAGS += -m32 -Wl,-m,elf_i386
+  LDFLAGS += -Wl,-m,elf_i386
 endif
 
 # set special flags per-system
@@ -153,28 +147,18 @@ ifeq ($(OS), LINUX)
   LDFLAGS += -Wl,-version-script,$(SRCDIR)/api/api_export.ver
 endif
 ifeq ($(OS), OSX)
-  # Select the proper SDK
-  # Also, SDKs are stored in a different location since XCode 4.3
-  OSX_SDK ?= $(shell sw_vers -productVersion | cut -f1 -f2 -d .)
-  OSX_XCODEMAJ = $(shell xcodebuild -version | grep '[0-9]*\.[0-9]*' | cut -f2 -d ' ' | cut -f1 -d .)
-  OSX_XCODEMIN = $(shell xcodebuild -version | grep '[0-9]*\.[0-9]*' | cut -f2 -d ' ' | cut -f2 -d .)
-  OSX_XCODEGE43 = $(shell echo "`expr $(OSX_XCODEMAJ) \>= 4``expr $(OSX_XCODEMIN) \>= 3`")
-  ifeq ($(OSX_XCODEGE43), 11)
-    OSX_SYSROOT := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
-  else
-    OSX_SYSROOT := /Developer/SDKs
-  endif
+  #xcode-select has been around since XCode 3.0, i.e. OS X 10.5
+  OSX_SDK_ROOT = $(shell xcode-select -print-path)/Platforms/MacOSX.platform/Developer/SDKs
+  OSX_SDK_PATH = $(OSX_SDK_ROOT)/$(shell ls $(OSX_SDK_ROOT) | tail -1)
 
   TARGET = libmupen64plus$(POSTFIX).dylib
   LDFLAGS += -bundle -read_only_relocs suppress
   LDLIBS += -ldl
   ifeq ($(CPU), X86)
     ifeq ($(ARCH_DETECTED), 64BITS)
-      CFLAGS += -pipe -arch x86_64 -mmacosx-version-min=$(OSX_SDK) -isysroot $(OSX_SYSROOT)/MacOSX$(OSX_SDK).sdk
-      LDFLAGS += -arch x86_64
+      CFLAGS += -pipe -arch x86_64 -mmacosx-version-min=10.5 -isysroot $(OSX_SDK_PATH)
     else
-      CFLAGS += -pipe -mmmx -msse -arch i686 -mmacosx-version-min=$(OSX_SDK) -isysroot $(OSX_SYSROOT)/MacOSX$(OSX_SDK).sdk
-      LDFLAGS += -arch i686
+      CFLAGS += -pipe -mmmx -msse -arch i686 -mmacosx-version-min=10.5 -isysroot $(OSX_SDK_PATH)
       ifneq ($(PROFILE), 1)
         CFLAGS += -fomit-frame-pointer
       endif
@@ -203,60 +187,92 @@ endif
 endif
 
 # test for essential build dependencies
-ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
-  $(error $(PKG_CONFIG) not found)
+ifeq ($(origin PKG_CONFIG), undefined)
+  PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+  ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+    $(error $(PKG_CONFIG) not found)
+  endif
 endif
-ifeq ($(shell $(PKG_CONFIG) --modversion libpng 2>/dev/null),)
-  $(error No libpng development libraries found!)
-endif
+
 ifeq ($(OS), OSX) # use system zlib on OSX
-  LDLIBS += -lz
-else
+  ZLIB_LDLIBS += -lz
+endif
+
+ifeq ($(origin ZLIB_CFLAGS) $(origin ZLIB_LDLIBS), undefined undefined)
   ifeq ($(shell $(PKG_CONFIG) --modversion zlib 2>/dev/null),)
     $(error No zlib development libraries found!)
   endif
-  CFLAGS += $(shell $(PKG_CONFIG) --cflags zlib)
-  LDLIBS +=  $(shell $(PKG_CONFIG) --libs zlib)
+  ZLIB_CFLAGS += $(shell $(PKG_CONFIG) --cflags zlib)
+  ZLIB_LDLIBS +=  $(shell $(PKG_CONFIG) --libs zlib)
 endif
- 
-CFLAGS += $(shell $(PKG_CONFIG) --cflags libpng)
-LDLIBS +=  $(shell $(PKG_CONFIG) --libs libpng)
+CFLAGS += $(ZLIB_CFLAGS)
+LDLIBS += $(ZLIB_LDLIBS)
+
+ifeq ($(origin LIBPNG_CFLAGS) $(origin LIBPNG_LDLIBS), undefined undefined)
+  ifeq ($(shell $(PKG_CONFIG) --modversion libpng 2>/dev/null),)
+    $(error No libpng development libraries found!)
+  endif
+  LIBPNG_CFLAGS += $(shell $(PKG_CONFIG) --cflags libpng)
+  LIBPNG_LDLIBS +=  $(shell $(PKG_CONFIG) --libs libpng)
+endif
+CFLAGS += $(LIBPNG_CFLAGS)
+LDLIBS += $(LIBPNG_LDLIBS)
 
 # test for presence of SDL
-ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
-  $(error No SDL development libraries found!)
+ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+  SDL_CONFIG = $(CROSS_COMPILE)sdl-config
+  ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+    $(error No SDL development libraries found!)
+  endif
+  SDL_CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
+  SDL_LDLIBS += $(shell $(SDL_CONFIG) --libs)
 endif
-CFLAGS	+= $(shell $(SDL_CONFIG) --cflags)
-LDLIBS	+= $(shell $(SDL_CONFIG) --libs)
+CFLAGS += $(SDL_CFLAGS)
+LDLIBS += $(SDL_LDLIBS)
 
 OSD ?= 1
 ifeq ($(OSD), 1)
   CFLAGS += -DM64P_OSD
-  ifeq ($(shell $(PKG_CONFIG) --modversion freetype2 2>/dev/null),)
-    $(error No FreeType 2 development libraries found!)
+
+  ifeq ($(origin FREETYPE2_CFLAGS) $(origin FREETYPE2_LDLIBS), undefined undefined)
+    ifeq ($(shell $(PKG_CONFIG) --modversion freetype2 2>/dev/null),)
+      $(error No freetype2 development libraries found!)
+    endif
+    FREETYPE2_CFLAGS += $(shell $(PKG_CONFIG) --cflags freetype2)
+    FREETYPE2_LDLIBS +=  $(shell $(PKG_CONFIG) --libs freetype2)
   endif
+  CFLAGS += $(FREETYPE2_CFLAGS)
+  LDLIBS += $(FREETYPE2_LDLIBS)
 
   # search for OpenGL libraries
-  GL_LIBS=
   ifeq ($(OS), OSX)
-    GL_LIBS = -framework OpenGL
+    GL_LDLIBS = -framework OpenGL
+    GLU_LDLIBS = -framework OpenGL
   endif
   ifeq ($(OS), MINGW)
-    GL_LIBS = -lopengl32 -lglu32
+    GL_LDLIBS = -lopengl32
+    GLU_LDLIBS = -lglu32
   endif
-  ifeq ("$(GL_LIBS)", "")
+
+  ifeq ($(origin GL_CFLAGS) $(origin GL_LDLIBS), undefined undefined)
     ifeq ($(shell $(PKG_CONFIG) --modversion gl 2>/dev/null),)
       $(error No OpenGL development libraries found!)
     endif
+    GL_CFLAGS += $(shell $(PKG_CONFIG) --cflags gl)
+    GL_LDLIBS +=  $(shell $(PKG_CONFIG) --libs gl)
+  endif
+  CFLAGS += $(GL_CFLAGS)
+  LDLIBS += $(GL_LDLIBS)
+
+  ifeq ($(origin GLU_CFLAGS) $(origin GLU_LDLIBS), undefined undefined)
     ifeq ($(shell $(PKG_CONFIG) --modversion glu 2>/dev/null),)
       $(error No OpenGL utility development libraries found!)
     endif
-    CFLAGS += $(shell $(PKG_CONFIG) --cflags gl glu)
-    GL_LIBS = $(shell $(PKG_CONFIG) --libs gl glu)
+    GLU_CFLAGS += $(shell $(PKG_CONFIG) --cflags glu)
+    GLU_LDLIBS +=  $(shell $(PKG_CONFIG) --libs glu)
   endif
-
-  CFLAGS += $(shell $(PKG_CONFIG) --cflags freetype2)
-  LDLIBS += $(shell $(PKG_CONFIG) --libs freetype2) $(GL_LIBS)
+  CFLAGS += $(GLU_CFLAGS)
+  LDLIBS += $(GLU_LDLIBS)
 endif
 
 # set base program pointers and flags
@@ -267,7 +283,7 @@ INSTALL  ?= install
 MKDIR ?= mkdir -p
 COMPILE.c = $(Q_CC)$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cc = $(Q_CXX)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
-LINK.o = $(Q_LD)$(CXX) $(LDFLAGS) $(TARGET_ARCH)
+LINK.o = $(Q_LD)$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 ifeq ($(OS),OSX)
   LDCONFIG ?= true  # no 'ldconfig' under OSX
@@ -288,7 +304,6 @@ endif
 # 2. variables for profiling and adding debugging symbols
 ifeq ($(PROFILE), 1)
   CFLAGS += -pg -g
-  LDFLAGS += -pg
   INSTALL_STRIP_FLAG ?= 
 else
   ifeq ($(DEBUG), 1)
@@ -360,6 +375,7 @@ SOURCE = \
 	$(SRCDIR)/main/md5.c \
 	$(SRCDIR)/main/rom.c \
 	$(SRCDIR)/main/savestates.c \
+	$(SRCDIR)/main/sdl_key_converter.c \
 	$(SRCDIR)/main/workqueue.c \
 	$(SRCDIR)/memory/dma.c \
 	$(SRCDIR)/memory/flashram.c \
@@ -497,7 +513,7 @@ targets:
 	@echo "    LIRC=1        == enable LIRC support"
 	@echo "    NO_ASM=1      == build without assembly (no dynamic recompiler or MMX/SSE code)"
 	@echo "    SHAREDIR=path == extra path to search for shared data files"
-	@echo "    OPTFLAGS=flag == compiler optimization (default: -O3)"
+	@echo "    OPTFLAGS=flag == compiler optimization (default: -O3 -flto)"
 	@echo "    WARNFLAGS=flag == compiler warning levels (default: -Wall)"
 	@echo "    PIC=(1|0)     == Force enable/disable of position independent code"
 	@echo "    OSD=(1|0)     == Enable/disable build of OpenGL On-screen display"
@@ -518,7 +534,6 @@ targets:
 	@echo "    DBG_COMPARE=1 == enable core-synchronized r4300 debugging"
 	@echo "    DBG_TIMING=1  == print timing data"
 	@echo "    DBG_PROFILE=1 == dump profiling data for r4300 dynarec to data file"
-	@echo "    LTO=1         == enable experimental build with link-time optimization"
 	@echo "    V=1           == show verbose compiler output"
 
 all: $(TARGET)
@@ -550,11 +565,6 @@ CFLAGS += -MD
 -include $(OBJECTS:.o=.d)
 
 CXXFLAGS += $(CFLAGS)
-ifeq ($(LTO), 1)
-  CFLAGS += -flto
-  CXXFLAGS += -flto
-  LDFLAGS += -fuse-linker-plugin $(CXXFLAGS)
-endif
 
 # standard build rules
 $(OBJDIR)/%.o: $(SRCDIR)/%.S

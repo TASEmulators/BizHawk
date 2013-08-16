@@ -486,7 +486,7 @@ namespace BizHawk.MultiClient
 				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 			}
 
-			s.Replace(".", " ").Replace("|", "");
+			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
 			
 			return s.ToString();
 		}
@@ -580,7 +580,7 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.ClientControls["Autohold"] || Global.ClientControls["AutoholdAutofire"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 

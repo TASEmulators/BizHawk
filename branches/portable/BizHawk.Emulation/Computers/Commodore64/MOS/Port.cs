@@ -2,58 +2,73 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	static public class Port
-	{
-		static public byte CPUWrite(byte latch, byte val, byte dir)
-		{
-			byte result;
-			result = (byte)(latch & (dir ^ 0xFF));
-			result |= (byte)(val & dir);
-			return result;
-		}
+    public class LatchedPort
+    {
+        public byte Direction;
+        public byte Latch;
 
-		static public byte ExternalWrite(byte latch, byte val, byte dir)
-		{
-			byte result;
-			result = (byte)(latch & dir);
-			result |= (byte)(val & (dir ^ 0xFF));
-			return result;
-		}
+        public LatchedPort()
+        {
+            Direction = 0x00;
+            Latch = 0x00;
+        }
 
-		static public PortAdapter GetAdapter(Func<byte> newRead, Action<byte> newWrite, Action<byte> newWriteForce)
-		{
-			return new PortAdapter(newRead, newWrite, newWriteForce);
-		}
-	}
+        // data works like this in these types of systems:
+        // 
+        //  directionA  directionB  result
+        //  0           0           1
+        //  1           0           latchA
+        //  0           1           latchB
+        //  1           1           latchA && latchB
+        //
+        // however because this uses transistor logic, there are cases where wired-ands
+        // cause the pull-up resistors not to be enough to keep the bus bit set to 1 when
+        // both the direction and latch are 1 (the keyboard and joystick port 2 can do this.)
+        // the class does not handle this case as it must be handled differently in every occurrence.
 
-	public class PortAdapter
-	{
-		private Action<byte> actWrite;
-		private Action<byte> actWriteMask;
-		private Func<byte> funcRead;
+        public byte ReadInput(byte bus)
+        {
+            return (byte)((Latch & Direction) | ((Direction ^ 0xFF) & bus));
+        }
 
-		public PortAdapter(Func<byte> newRead, Action<byte> newWrite, Action<byte> newWriteMask)
-		{
-			funcRead = newRead;
-			actWrite = newWrite;
-			actWriteMask = newWriteMask;
-		}
+        public byte ReadOutput()
+        {
+            return (byte)((Latch & Direction) | (Direction ^ 0xFF));
+        }
+    }
 
-		public byte Data
-		{
-			get
-			{
-				return funcRead();
-			}
-			set
-			{
-				actWrite(value);
-			}
-		}
+    public class LatchedBooleanPort
+    {
+        public bool Direction;
+        public bool Latch;
 
-		public void MaskWrite(byte val)
-		{
-			actWriteMask(val);
-		}
-	}
+        public LatchedBooleanPort()
+        {
+            Direction = false;
+            Latch = false;
+        }
+
+        //  data    dir     bus     out
+        //  0       0       0       0
+        //  0       0       1       1
+
+        //  0       1       0       0
+        //  0       1       1       0
+
+        //  1       0       0       0
+        //  1       0       1       1
+
+        //  1       1       0       1
+        //  1       1       1       1
+
+        public bool ReadInput(bool bus)
+        {
+            return (Direction && Latch) || (!Direction && bus);
+        }
+
+        public bool ReadOutput()
+        {
+            return (Latch || !Direction);
+        }
+    }
 }

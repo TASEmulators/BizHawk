@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using BizHawk.Core;
 using BizHawk.DiscSystem;
+using BizHawk.Emulation;
+using BizHawk.Emulation.Computers.Commodore64;
+using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Consoles.Coleco;
+using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Intellivision;
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Nintendo.GBA;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
-using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Nintendo;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
-using BizHawk.Emulation.Consoles.Coleco;
-using System.Collections.Generic;
-using BizHawk.Emulation.Consoles.Intellivision;
-using BizHawk.Emulation.Consoles.GB;
-using BizHawk.Emulation.Consoles.Nintendo.GBA;
-using BizHawk.Emulation.Computers.Commodore64;
-using BizHawk.Emulation;
-using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
-
 	public partial class MainForm : Form
 	{
 		public static bool INTERIM = true;
@@ -39,6 +38,8 @@ namespace BizHawk.MultiClient
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 		public bool NeedsReboot = false;
+
+		public bool RewindActive = true;
 
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
@@ -76,6 +77,8 @@ namespace BizHawk.MultiClient
 		private readonly Throttle throttle;
 		private bool unthrottled;
 
+		public FirmwareManager FirmwareManager = new FirmwareManager();
+
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused;
 		private bool didMenuPause;
@@ -84,37 +87,63 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		public RamWatch RamWatch1 = new RamWatch();
-		public RamSearch RamSearch1 = new RamSearch();
-		public HexEditor HexEditor1 = new HexEditor();
-		public TraceLogger TraceLogger1 = new TraceLogger();
+
+		private RamWatch _ramwatch = null;
+		private RamSearch _ramsearch = null;
+		private HexEditor _hexeditor = null;
+		private TraceLogger _tracelogger = null;
 #if SNES
-		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
+		private SNESGraphicsDebugger _snesgraphicsdebugger = null;
 #endif
-		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
-		public NESPPU NESPPU1 = new NESPPU();
-		public NESDebugger NESDebug1 = new NESDebugger();
-		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
-		public GBAtools.GBAGPUView GBAGPUView1 = new GBAtools.GBAGPUView();
-		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
-		public Cheats Cheats1 = new Cheats();
-		public ToolBox ToolBox1 = new ToolBox();
-		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
-		public TAStudio TAStudio1 = new TAStudio();
-		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
-		public NESGameGenie NESgg = new NESGameGenie();
-		public SNESGameGenie SNESgg = new SNESGameGenie();
-		public GBGameGenie GBgg = new GBGameGenie();
-		public GenGameGenie Gengg = new GenGameGenie();
-		public NESSoundConfig NesSound = new NESSoundConfig();
+		private NESNameTableViewer _nesnametableview = null;
+		private NESPPU _nesppu = null;
+		private NESDebugger _nesdebugger = null;
+		private GBtools.GBGPUView _gbgpuview = null;
+		private GBAtools.GBAGPUView _gbagpuview = null;
+		private PCEBGViewer _pcebgviewer = null;
+		private Cheats _cheats = null;
+		private ToolBox _toolbox = null;
+		private TI83KeyPad _ti83pad = null;
+		private TAStudio _tastudio = null;
+		private VirtualPadForm _vpad = null;
+		private NESGameGenie _ngg = null;
+		private SNESGameGenie _sgg = null;
+		private GBGameGenie _gbgg = null;
+		private GenGameGenie _gengg = null;
+		private NESSoundConfig _nessound = null;
+
+		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
+		public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
+		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
+		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
+		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
+		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
+		public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
+		public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
+		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
+		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
+		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
+		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
+		public Cheats Cheats1 { get { if (_cheats == null) _cheats = new Cheats(); return _cheats; } set { _cheats = value; } }
+		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
+		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
+		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
+		public VirtualPadForm VirtualPadForm1 { get { if (_vpad == null) _vpad = new VirtualPadForm(); return _vpad; } set { _vpad = value; } }
+		public NESGameGenie NESgg { get { if (_ngg == null) _ngg = new NESGameGenie(); return _ngg; } set { _ngg = value; } }
+		public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
+		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
+		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
+		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 #if WINDOWS
-		public LuaConsole LuaConsole1 = new LuaConsole();
+		private LuaConsole _luaconsole = null;
+		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
 #endif
 
 		/// <summary>
 		/// number of frames to autodump
 		/// </summary>
 		int autoDumpLength;
+        bool autoCloseOnDump = false;
 
 		static MainForm()
 		{
@@ -243,18 +272,20 @@ namespace BizHawk.MultiClient
 				}
 
 				string arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--movie="))
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-type="))
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-name="))
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				else if (arg.StartsWith("--dump-length="))
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
-				else
-					cmdRom = arg;
+                if (arg.StartsWith("--load-slot="))
+                    cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--movie="))
+                    cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-type="))
+                    cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-name="))
+                    cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--dump-length="))
+                    int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
+                else if (arg.StartsWith("--dump_close="))
+                    autoCloseOnDump = true;
+                else
+                    cmdRom = arg;
 			}
 
 			if (cmdRom != null)
@@ -268,7 +299,7 @@ namespace BizHawk.MultiClient
 					RunLoopBlocked = false;
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty)
+			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.Empty)
 				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
 
 			if (cmdMovie != null)
@@ -290,7 +321,7 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty)
+			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.Empty)
 			{
 				if (Global.Game == null)
 				{
@@ -443,8 +474,13 @@ namespace BizHawk.MultiClient
 			SNES_prepared[profile] = exePath;
 		}
 
+
 		public void SyncCoreCommInputSignals(CoreComm target)
 		{
+			var cfp = new CoreFileProvider();
+			target.CoreFileProvider = cfp;
+			cfp.FirmwareManager = FirmwareManager;
+			
 			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
 			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
 			target.NES_ShowBG = Global.Config.NESDispBackground;
@@ -456,11 +492,11 @@ namespace BizHawk.MultiClient
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -571,7 +607,7 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
-			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["MaxTurbo"];
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["Turbo"];
 			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -622,7 +658,7 @@ namespace BizHawk.MultiClient
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
-				else if (Global.ClientControls["AutoholdAutofire"])
+				else if (Global.ClientControls["Autofire"])
 				{
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
@@ -743,962 +779,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static ControllerDefinition ClientControlsDef = new ControllerDefinition
-		{
-			Name = "Emulator Frontend Controls",
-			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State",
-				"Emulator Pause", "Frame Advance", "Unthrottle", "MaxTurbo", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
-				"SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
-				"SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
-				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
-				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
-				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire", "MoviePokeToggle", "ClearFrame" }
-		};
-
 		private void InitControls()
 		{
-			var controls = new Controller(ClientControlsDef);
+			var controls = new Controller(
+				new ControllerDefinition()
+				{
+					Name = "Emulator Frontend Controls",
+					BoolButtons = Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
+				});
 
-			controls.BindMulti("SNES Toggle BG 1", Global.Config.ToggleSNESBG1Binding);
-			controls.BindMulti("SNES Toggle BG 2", Global.Config.ToggleSNESBG2Binding);
-			controls.BindMulti("SNES Toggle BG 3", Global.Config.ToggleSNESBG3Binding);
-			controls.BindMulti("SNES Toggle BG 4", Global.Config.ToggleSNESBG4Binding);
-
-			controls.BindMulti("SNES Toggle OBJ 1", Global.Config.ToggleSNESOBJ1Binding);
-			controls.BindMulti("SNES Toggle OBJ 2", Global.Config.ToggleSNESOBJ2Binding);
-			controls.BindMulti("SNES Toggle OBJ 3", Global.Config.ToggleSNESOBJ3Binding);
-			controls.BindMulti("SNES Toggle OBJ 4", Global.Config.ToggleSNESOBJ4Binding);
-			controls.BindMulti("Save Movie", Global.Config.SaveMovieBinding);
-			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
-			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
-			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
-			controls.BindMulti("Rewind", Global.Config.RewindBinding);
-			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
-			controls.BindMulti("Reboot Core", Global.Config.RebootCoreResetBinding);
-			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
-			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
-			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
-			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
-			controls.BindMulti("Toggle Background Input", Global.Config.ToggleBackgroundInput);
-			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
-			controls.BindMulti("MaxTurbo", Global.Config.MaxTurboBinding);
-			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
-			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
-			controls.BindMulti("Quick Save State", Global.Config.QuickSave);
-			controls.BindMulti("Quick Load State", Global.Config.QuickLoad);
-			controls.BindMulti("SelectSlot0", Global.Config.SelectSlot0);
-			controls.BindMulti("SelectSlot1", Global.Config.SelectSlot1);
-			controls.BindMulti("SelectSlot2", Global.Config.SelectSlot2);
-			controls.BindMulti("SelectSlot3", Global.Config.SelectSlot3);
-			controls.BindMulti("SelectSlot4", Global.Config.SelectSlot4);
-			controls.BindMulti("SelectSlot5", Global.Config.SelectSlot5);
-			controls.BindMulti("SelectSlot6", Global.Config.SelectSlot6);
-			controls.BindMulti("SelectSlot7", Global.Config.SelectSlot7);
-			controls.BindMulti("SelectSlot8", Global.Config.SelectSlot8);
-			controls.BindMulti("SelectSlot9", Global.Config.SelectSlot9);
-			controls.BindMulti("SaveSlot0", Global.Config.SaveSlot0);
-			controls.BindMulti("SaveSlot1", Global.Config.SaveSlot1);
-			controls.BindMulti("SaveSlot2", Global.Config.SaveSlot2);
-			controls.BindMulti("SaveSlot3", Global.Config.SaveSlot3);
-			controls.BindMulti("SaveSlot4", Global.Config.SaveSlot4);
-			controls.BindMulti("SaveSlot5", Global.Config.SaveSlot5);
-			controls.BindMulti("SaveSlot6", Global.Config.SaveSlot6);
-			controls.BindMulti("SaveSlot7", Global.Config.SaveSlot7);
-			controls.BindMulti("SaveSlot8", Global.Config.SaveSlot8);
-			controls.BindMulti("SaveSlot9", Global.Config.SaveSlot9);
-			controls.BindMulti("LoadSlot0", Global.Config.LoadSlot0);
-			controls.BindMulti("LoadSlot1", Global.Config.LoadSlot1);
-			controls.BindMulti("LoadSlot2", Global.Config.LoadSlot2);
-			controls.BindMulti("LoadSlot3", Global.Config.LoadSlot3);
-			controls.BindMulti("LoadSlot4", Global.Config.LoadSlot4);
-			controls.BindMulti("LoadSlot5", Global.Config.LoadSlot5);
-			controls.BindMulti("LoadSlot6", Global.Config.LoadSlot6);
-			controls.BindMulti("LoadSlot7", Global.Config.LoadSlot7);
-			controls.BindMulti("LoadSlot8", Global.Config.LoadSlot8);
-			controls.BindMulti("LoadSlot9", Global.Config.LoadSlot9);
-			controls.BindMulti("ToolBox", Global.Config.ToolBox);
-			controls.BindMulti("Save Named State", Global.Config.SaveNamedState);
-			controls.BindMulti("Load Named State", Global.Config.LoadNamedState);
-			controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
-			controls.BindMulti("Next Slot", Global.Config.NextSlot);
-			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
-			controls.BindMulti("TASTudio", Global.Config.TASTudio);
-			controls.BindMulti("Virtual Pad", Global.Config.OpenVirtualPadBinding);
-			controls.BindMulti("Ram Search", Global.Config.RamSearch);
-			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
-			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
-			controls.BindMulti("Lua Console", Global.Config.LuaConsole);
-			controls.BindMulti("Cheats", Global.Config.Cheats);
-			controls.BindMulti("Open ROM", Global.Config.OpenROM);
-			controls.BindMulti("Close ROM", Global.Config.CloseROM);
-			controls.BindMulti("Display FPS", Global.Config.FPSBinding);
-			controls.BindMulti("Display FrameCounter", Global.Config.FrameCounterBinding);
-			controls.BindMulti("Display LagCounter", Global.Config.LagCounterBinding);
-			controls.BindMulti("Display Input", Global.Config.InputDisplayBinding);
-			controls.BindMulti("Toggle Read Only", Global.Config.ReadOnlyToggleBinding);
-			controls.BindMulti("Play Movie", Global.Config.PlayMovieBinding);
-			controls.BindMulti("Record Movie", Global.Config.RecordMovieBinding);
-			controls.BindMulti("Stop Movie", Global.Config.StopMovieBinding);
-			controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
-			controls.BindMulti("Volume Up", Global.Config.VolUpBinding);
-			controls.BindMulti("Volume Down", Global.Config.VolDownBinding);
-			controls.BindMulti("Toggle MultiTrack", Global.Config.ToggleMultiTrack);
-			controls.BindMulti("Record All", Global.Config.MTRecordAll);
-			controls.BindMulti("Record None", Global.Config.MTRecordNone);
-			controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
-			controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
-			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
-			controls.BindMulti("Record AVI/WAV", Global.Config.AVIRecordBinding);
-			controls.BindMulti("Stop AVI/WAV", Global.Config.AVIStopBinding);
-			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
-			controls.BindMulti("Autohold", Global.Config.AutoholdBinding);
-			controls.BindMulti("AutoholdAutofire", Global.Config.AutoholdAutofireBinding);
-			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
-			controls.BindMulti("MoviePokeToggle", Global.Config.MoviePlaybackPokeModeBinding);
-			controls.BindMulti("ClearFrame", Global.Config.ClearFrameBinding);
+			foreach (Binding b in Global.Config.HotkeyBindings)
+			{
+				controls.BindMulti(b.DisplayName, b.Bindings);
+			}
 
 			Global.ClientControls = controls;
-
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
-			var smsControls = new Controller(SMS.SmsController);
-			smsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
-			smsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
-			for (int i = 0; i < 2; i++)
-			{
-				smsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSController[i].Up);
-				smsControls.BindMulti(string.Format("P{0} Left", i + 1), Global.Config.SMSController[i].Left);
-				smsControls.BindMulti(string.Format("P{0} Right", i + 1), Global.Config.SMSController[i].Right);
-				smsControls.BindMulti(string.Format("P{0} Down", i + 1), Global.Config.SMSController[i].Down);
-				smsControls.BindMulti(string.Format("P{0} B1", i + 1), Global.Config.SMSController[i].B1);
-				smsControls.BindMulti(string.Format("P{0} B2", i + 1), Global.Config.SMSController[i].B2);
-			}
-			Global.SMSControls = smsControls;
-
-			var asmsControls = new AutofireController(SMS.SmsController) {Autofire = true};
-			asmsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
-			asmsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
-			for (int i = 0; i < 2; i++)
-			{
-				asmsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSAutoController[i].Up);
-				asmsControls.BindMulti(string.Format("P{0} Left", i + 1), Global.Config.SMSAutoController[i].Left);
-				asmsControls.BindMulti(string.Format("P{0} Right", i + 1), Global.Config.SMSAutoController[i].Right);
-				asmsControls.BindMulti(string.Format("P{0} Down", i + 1), Global.Config.SMSAutoController[i].Down);
-				asmsControls.BindMulti(string.Format("P{0} B1", i + 1), Global.Config.SMSAutoController[i].B1);
-				asmsControls.BindMulti(string.Format("P{0} B2", i + 1), Global.Config.SMSAutoController[i].B2);
-			}
-			Global.AutofireSMSControls = asmsControls;
-
-			var pceControls = new Controller(PCEngine.PCEngineController);
-			for (int i = 0; i < 5; i++)
-			{
-				pceControls.BindMulti("P" + (i + 1) + " Up", Global.Config.PCEController[i].Up);
-				pceControls.BindMulti("P" + (i + 1) + " Down", Global.Config.PCEController[i].Down);
-				pceControls.BindMulti("P" + (i + 1) + " Left", Global.Config.PCEController[i].Left);
-				pceControls.BindMulti("P" + (i + 1) + " Right", Global.Config.PCEController[i].Right);
-
-				pceControls.BindMulti("P" + (i + 1) + " B2", Global.Config.PCEController[i].II);
-				pceControls.BindMulti("P" + (i + 1) + " B1", Global.Config.PCEController[i].I);
-				pceControls.BindMulti("P" + (i + 1) + " Select", Global.Config.PCEController[i].Select);
-				pceControls.BindMulti("P" + (i + 1) + " Run", Global.Config.PCEController[i].Run);
-			}
-			Global.PCEControls = pceControls;
-
-			var apceControls = new AutofireController(PCEngine.PCEngineController) {Autofire = true};
-			for (int i = 0; i < 5; i++)
-			{
-				apceControls.BindMulti("P" + (i + 1) + " Up", Global.Config.PCEAutoController[i].Up);
-				apceControls.BindMulti("P" + (i + 1) + " Down", Global.Config.PCEAutoController[i].Down);
-				apceControls.BindMulti("P" + (i + 1) + " Left", Global.Config.PCEAutoController[i].Left);
-				apceControls.BindMulti("P" + (i + 1) + " Right", Global.Config.PCEAutoController[i].Right);
-
-				apceControls.BindMulti("P" + (i + 1) + " B2", Global.Config.PCEAutoController[i].II);
-				apceControls.BindMulti("P" + (i + 1) + " B1", Global.Config.PCEAutoController[i].I);
-				apceControls.BindMulti("P" + (i + 1) + " Select", Global.Config.PCEAutoController[i].Select);
-				apceControls.BindMulti("P" + (i + 1) + " Run", Global.Config.PCEAutoController[i].Run);
-			}
-			Global.AutofirePCEControls = apceControls;
-
-			var snesControls = new Controller(LibsnesCore.SNESController);
-
-			for (int i = 0; i < 4; i++)
-			{
-				snesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESController[i].Up);
-				snesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESController[i].Down);
-				snesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.SNESController[i].Left);
-				snesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.SNESController[i].Right);
-				snesControls.BindMulti("P" + (i + 1) + " A", Global.Config.SNESController[i].A);
-				snesControls.BindMulti("P" + (i + 1) + " B", Global.Config.SNESController[i].B);
-				snesControls.BindMulti("P" + (i + 1) + " X", Global.Config.SNESController[i].X);
-				snesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESController[i].Y);
-				snesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESController[i].L);
-				snesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESController[i].R);
-				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESController[i].Select);
-				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESController[i].Start);
-			}
-
-			snesControls.BindMulti("Reset", Global.Config.SNESConsoleButtons.Reset);
-			snesControls.BindMulti("Power", Global.Config.SNESConsoleButtons.Power);
-			Global.SNESControls = snesControls;
-
-
-			var asnesControls = new AutofireController(LibsnesCore.SNESController) {Autofire = true};
-			for (int i = 0; i < 4; i++)
-			{
-				asnesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESAutoController[i].Up);
-				asnesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESAutoController[i].Down);
-				asnesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.SNESAutoController[i].Left);
-				asnesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.SNESAutoController[i].Right);
-				asnesControls.BindMulti("P" + (i + 1) + " A", Global.Config.SNESAutoController[i].A);
-				asnesControls.BindMulti("P" + (i + 1) + " B", Global.Config.SNESAutoController[i].B);
-				asnesControls.BindMulti("P" + (i + 1) + " X", Global.Config.SNESAutoController[i].X);
-				asnesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESAutoController[i].Y);
-				asnesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESAutoController[i].L);
-				asnesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESAutoController[i].R);
-				asnesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESAutoController[i].Select);
-				asnesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESAutoController[i].Start);
-			}
-			Global.AutofireSNESControls = asnesControls;
-
-			var nesControls = new Controller(NES.NESController);
-			for (int i = 0; i < 2 /*TODO*/; i++)
-			{
-				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
-				nesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESController[i].Down);
-				nesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.NESController[i].Left);
-				nesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.NESController[i].Right);
-				nesControls.BindMulti("P" + (i + 1) + " A", Global.Config.NESController[i].A);
-				nesControls.BindMulti("P" + (i + 1) + " B", Global.Config.NESController[i].B);
-				nesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
-				nesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
-			}
-
-			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.Reset);
-			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.Power);
-			//nesControls.BindMulti("FDS Eject", Global.Config.NESConsoleButtons.FDS_Eject);
-			//nesControls.BindMulti("VS Coin 1", Global.Config.NESConsoleButtons.VS_Coin_1);
-			//nesControls.BindMulti("VS Coin 2", Global.Config.NESConsoleButtons.VS_Coin_2);
-
-			Global.NESControls = nesControls;
-
-			var anesControls = new AutofireController(NES.NESController) {Autofire = true};
-
-			for (int i = 0; i < 2 /*TODO*/; i++)
-			{
-				anesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESAutoController[i].Up);
-				anesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESAutoController[i].Down);
-				anesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.NESAutoController[i].Left);
-				anesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.NESAutoController[i].Right);
-				anesControls.BindMulti("P" + (i + 1) + " A", Global.Config.NESAutoController[i].A);
-				anesControls.BindMulti("P" + (i + 1) + " B", Global.Config.NESAutoController[i].B);
-				anesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESAutoController[i].Select);
-				anesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESAutoController[i].Start);
-			}
-			Global.AutofireNESControls = anesControls;
-
-			var gbControls = new Controller(Gameboy.GbController);
-			gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
-			gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
-			gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
-			gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
-			gbControls.BindMulti("A", Global.Config.GBController[0].A);
-			gbControls.BindMulti("B", Global.Config.GBController[0].B);
-			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
-			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
-			gbControls.BindMulti("Power", Global.Config.GBController[0].Power);
-			Global.GBControls = gbControls;
-
-			var agbControls = new AutofireController(Gameboy.GbController) {Autofire = true};
-			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
-			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
-			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
-			agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
-			agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
-			agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
-			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
-			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
-			Global.AutofireGBControls = agbControls;
-
-
-			var dualgbControls = new Controller(Gameboy.GbController);
-			dualgbControls.BindMulti("P1 Up", Global.Config.DualGBController[0].P1_Up);
-			dualgbControls.BindMulti("P1 Down", Global.Config.DualGBController[0].P1_Down);
-			dualgbControls.BindMulti("P1 Left", Global.Config.DualGBController[0].P1_Left);
-			dualgbControls.BindMulti("P1 Right", Global.Config.DualGBController[0].P1_Right);
-			dualgbControls.BindMulti("P1 A", Global.Config.DualGBController[0].P1_A);
-			dualgbControls.BindMulti("P1 B", Global.Config.DualGBController[0].P1_B);
-			dualgbControls.BindMulti("P1 Select", Global.Config.DualGBController[0].P1_Select);
-			dualgbControls.BindMulti("P1 Start", Global.Config.DualGBController[0].P1_Start);
-			dualgbControls.BindMulti("P1 Power", Global.Config.DualGBController[0].P1_Power);
-
-			dualgbControls.BindMulti("P2 Up", Global.Config.DualGBController[0].P2_Up);
-			dualgbControls.BindMulti("P2 Down", Global.Config.DualGBController[0].P2_Down);
-			dualgbControls.BindMulti("P2 Left", Global.Config.DualGBController[0].P2_Left);
-			dualgbControls.BindMulti("P2 Right", Global.Config.DualGBController[0].P2_Right);
-			dualgbControls.BindMulti("P2 A", Global.Config.DualGBController[0].P2_A);
-			dualgbControls.BindMulti("P2 B", Global.Config.DualGBController[0].P2_B);
-			dualgbControls.BindMulti("P2 Select", Global.Config.DualGBController[0].P2_Select);
-			dualgbControls.BindMulti("P2 Start", Global.Config.DualGBController[0].P2_Start);
-			dualgbControls.BindMulti("P2 Power", Global.Config.DualGBController[0].P2_Power);
-
-			Global.DualGBControls = dualgbControls;
-
-			var adualgbControls = new AutofireController(Gameboy.GbController) {Autofire = true};
-			adualgbControls.BindMulti("P1 Up", Global.Config.AutoDualGBController[0].P1_Up);
-			adualgbControls.BindMulti("P1 Down", Global.Config.AutoDualGBController[0].P1_Down);
-			adualgbControls.BindMulti("P1 Left", Global.Config.AutoDualGBController[0].P1_Left);
-			adualgbControls.BindMulti("P1 Right", Global.Config.AutoDualGBController[0].P1_Right);
-			adualgbControls.BindMulti("P1 A", Global.Config.AutoDualGBController[0].P1_A);
-			adualgbControls.BindMulti("P1 B", Global.Config.AutoDualGBController[0].P1_B);
-			adualgbControls.BindMulti("P1 Select", Global.Config.AutoDualGBController[0].P1_Select);
-			adualgbControls.BindMulti("P1 Start", Global.Config.AutoDualGBController[0].P1_Start);
-
-			adualgbControls.BindMulti("P2 Up", Global.Config.AutoDualGBController[0].P2_Up);
-			adualgbControls.BindMulti("P2 Down", Global.Config.AutoDualGBController[0].P2_Down);
-			adualgbControls.BindMulti("P2 Left", Global.Config.AutoDualGBController[0].P2_Left);
-			adualgbControls.BindMulti("P2 Right", Global.Config.AutoDualGBController[0].P2_Right);
-			adualgbControls.BindMulti("P2 A", Global.Config.AutoDualGBController[0].P2_A);
-			adualgbControls.BindMulti("P2 B", Global.Config.AutoDualGBController[0].P2_B);
-			adualgbControls.BindMulti("P2 Select", Global.Config.AutoDualGBController[0].P2_Select);
-			adualgbControls.BindMulti("P2 Start", Global.Config.AutoDualGBController[0].P2_Start);
-
-			Global.DualAutofireGBControls = adualgbControls;
-
-			
-			var gbaControls = new Controller(GBA.GBAController);
-			gbaControls.BindMulti("Up", Global.Config.GBAController[0].Up);
-			gbaControls.BindMulti("Down", Global.Config.GBAController[0].Down);
-			gbaControls.BindMulti("Left", Global.Config.GBAController[0].Left);
-			gbaControls.BindMulti("Right", Global.Config.GBAController[0].Right);
-			gbaControls.BindMulti("A", Global.Config.GBAController[0].A);
-			gbaControls.BindMulti("B", Global.Config.GBAController[0].B);
-			gbaControls.BindMulti("Select", Global.Config.GBAController[0].Select);
-			gbaControls.BindMulti("Start", Global.Config.GBAController[0].Start);
-			gbaControls.BindMulti("L", Global.Config.GBAController[0].L);
-			gbaControls.BindMulti("R", Global.Config.GBAController[0].R);
-			gbaControls.BindMulti("Power", Global.Config.GBAController[0].Power);
-			Global.GBAControls = gbaControls;
-
-			var agbaControls = new AutofireController(GBA.GBAController);
-			agbaControls.BindMulti("Up", Global.Config.GBAAutoController[0].Up);
-			agbaControls.BindMulti("Down", Global.Config.GBAAutoController[0].Down);
-			agbaControls.BindMulti("Left", Global.Config.GBAAutoController[0].Left);
-			agbaControls.BindMulti("Right", Global.Config.GBAAutoController[0].Right);
-			agbaControls.BindMulti("A", Global.Config.GBAAutoController[0].A);
-			agbaControls.BindMulti("B", Global.Config.GBAAutoController[0].B);
-			agbaControls.BindMulti("Select", Global.Config.GBAAutoController[0].Select);
-			agbaControls.BindMulti("Start", Global.Config.GBAAutoController[0].Start);
-			agbaControls.BindMulti("L", Global.Config.GBAAutoController[0].L);
-			agbaControls.BindMulti("R", Global.Config.GBAAutoController[0].R);
-			agbaControls.BindMulti("Power", Global.Config.GBAAutoController[0].Power);
-			Global.AutofireGBAControls = agbaControls;
-
-			var satControls = new Controller(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
-			satControls.BindMulti("Power", Global.Config.SaturnConsoleButtons.Power);
-			satControls.BindMulti("Reset", Global.Config.SaturnConsoleButtons.Reset);
-			satControls.BindMulti("P1 Up", Global.Config.SaturnController[0].Up);
-			satControls.BindMulti("P1 Down", Global.Config.SaturnController[0].Down);
-			satControls.BindMulti("P1 Left", Global.Config.SaturnController[0].Left);
-			satControls.BindMulti("P1 Right", Global.Config.SaturnController[0].Right);
-			satControls.BindMulti("P1 A", Global.Config.SaturnController[0].A);
-			satControls.BindMulti("P1 B", Global.Config.SaturnController[0].B);
-			satControls.BindMulti("P1 C", Global.Config.SaturnController[0].C);
-			satControls.BindMulti("P1 X", Global.Config.SaturnController[0].X);
-			satControls.BindMulti("P1 Y", Global.Config.SaturnController[0].Y);
-			satControls.BindMulti("P1 Z", Global.Config.SaturnController[0].Z);
-			satControls.BindMulti("P1 L", Global.Config.SaturnController[0].L);
-			satControls.BindMulti("P1 R", Global.Config.SaturnController[0].R);
-			satControls.BindMulti("P1 Start", Global.Config.SaturnController[0].Start);
-			satControls.BindMulti("P2 Up", Global.Config.SaturnController[1].Up);
-			satControls.BindMulti("P2 Down", Global.Config.SaturnController[1].Down);
-			satControls.BindMulti("P2 Left", Global.Config.SaturnController[1].Left);
-			satControls.BindMulti("P2 Right", Global.Config.SaturnController[1].Right);
-			satControls.BindMulti("P2 A", Global.Config.SaturnController[1].A);
-			satControls.BindMulti("P2 B", Global.Config.SaturnController[1].B);
-			satControls.BindMulti("P2 C", Global.Config.SaturnController[1].C);
-			satControls.BindMulti("P2 X", Global.Config.SaturnController[1].X);
-			satControls.BindMulti("P2 Y", Global.Config.SaturnController[1].Y);
-			satControls.BindMulti("P2 Z", Global.Config.SaturnController[1].Z);
-			satControls.BindMulti("P2 L", Global.Config.SaturnController[1].L);
-			satControls.BindMulti("P2 R", Global.Config.SaturnController[1].R);
-			satControls.BindMulti("P2 Start", Global.Config.SaturnController[1].Start);
-			Global.SaturnControls = satControls;
-
-			var asatControls = new AutofireController(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
-			asatControls.BindMulti("P1 Up", Global.Config.SaturnAutoController[0].Up);
-			asatControls.BindMulti("P1 Down", Global.Config.SaturnAutoController[0].Down);
-			asatControls.BindMulti("P1 Left", Global.Config.SaturnAutoController[0].Left);
-			asatControls.BindMulti("P1 Right", Global.Config.SaturnAutoController[0].Right);
-			asatControls.BindMulti("P1 A", Global.Config.SaturnAutoController[0].A);
-			asatControls.BindMulti("P1 B", Global.Config.SaturnAutoController[0].B);
-			asatControls.BindMulti("P1 C", Global.Config.SaturnAutoController[0].C);
-			asatControls.BindMulti("P1 X", Global.Config.SaturnAutoController[0].X);
-			asatControls.BindMulti("P1 Y", Global.Config.SaturnAutoController[0].Y);
-			asatControls.BindMulti("P1 Z", Global.Config.SaturnAutoController[0].Z);
-			asatControls.BindMulti("P1 L", Global.Config.SaturnAutoController[0].L);
-			asatControls.BindMulti("P1 R", Global.Config.SaturnAutoController[0].R);
-			asatControls.BindMulti("P1 Start", Global.Config.SaturnAutoController[0].Start);
-			asatControls.BindMulti("P2 Up", Global.Config.SaturnAutoController[1].Up);
-			asatControls.BindMulti("P2 Down", Global.Config.SaturnAutoController[1].Down);
-			asatControls.BindMulti("P2 Left", Global.Config.SaturnAutoController[1].Left);
-			asatControls.BindMulti("P2 Right", Global.Config.SaturnAutoController[1].Right);
-			asatControls.BindMulti("P2 A", Global.Config.SaturnAutoController[1].A);
-			asatControls.BindMulti("P2 B", Global.Config.SaturnAutoController[1].B);
-			asatControls.BindMulti("P2 C", Global.Config.SaturnAutoController[1].C);
-			asatControls.BindMulti("P2 X", Global.Config.SaturnAutoController[1].X);
-			asatControls.BindMulti("P2 Y", Global.Config.SaturnAutoController[1].Y);
-			asatControls.BindMulti("P2 Z", Global.Config.SaturnAutoController[1].Z);
-			asatControls.BindMulti("P2 L", Global.Config.SaturnAutoController[1].L);
-			asatControls.BindMulti("P2 R", Global.Config.SaturnAutoController[1].R);
-			asatControls.BindMulti("P2 Start", Global.Config.SaturnAutoController[1].Start);
-			Global.AutofireSaturnControls = asatControls;
-
-			var genControls = new Controller(Genesis.GenesisController);
-			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
-			genControls.BindMulti("P1 Left", Global.Config.GenesisController[0].Left);
-			genControls.BindMulti("P1 Right", Global.Config.GenesisController[0].Right);
-			genControls.BindMulti("P1 Down", Global.Config.GenesisController[0].Down);
-			genControls.BindMulti("P1 A", Global.Config.GenesisController[0].A);
-			genControls.BindMulti("P1 B", Global.Config.GenesisController[0].B);
-			genControls.BindMulti("P1 C", Global.Config.GenesisController[0].C);
-			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
-			genControls.BindMulti("Reset", Global.Config.GenesisConsoleButtons.Reset);
-			Global.GenControls = genControls;
-
-            var agenControls = new AutofireController(Genesis.GenesisController);
-            agenControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
-            agenControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
-            agenControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
-            agenControls.BindMulti("P1 Down", Global.Config.GenesisAutoController[0].Down);
-            agenControls.BindMulti("P1 A", Global.Config.GenesisAutoController[0].A);
-            agenControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
-            agenControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
-            agenControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
-            Global.AutofireGenControls = agenControls;
-
-			var a2600Controls = new Controller(Atari2600.Atari2600ControllerDefinition);
-			a2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
-			a2600Controls.BindMulti("P1 Left", Global.Config.Atari2600Controller[0].Left);
-			a2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
-			a2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
-			a2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
-			
-			a2600Controls.BindMulti("P2 Up", Global.Config.Atari2600Controller[1].Up);
-			a2600Controls.BindMulti("P2 Left", Global.Config.Atari2600Controller[1].Left);
-			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
-			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
-			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
-			
-			a2600Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
-			a2600Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
-			
-			Global.Atari2600Controls = a2600Controls;
-
-			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
-			autofireA2600Controls.BindMulti("P1 Up", Global.Config.Atari2600AutoController[0].Up);
-			autofireA2600Controls.BindMulti("P1 Left", Global.Config.Atari2600AutoController[0].Left);
-			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600AutoController[0].Right);
-			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600AutoController[0].Down);
-			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600AutoController[0].Button);
-			
-			autofireA2600Controls.BindMulti("P2 Up", Global.Config.Atari2600AutoController[1].Up);
-			autofireA2600Controls.BindMulti("P2 Left", Global.Config.Atari2600AutoController[1].Left);
-			autofireA2600Controls.BindMulti("P2 Right", Global.Config.Atari2600AutoController[1].Right);
-			autofireA2600Controls.BindMulti("P2 Down", Global.Config.Atari2600AutoController[1].Down);
-			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600AutoController[1].Button);
-			
-			Global.AutofireAtari2600Controls = autofireA2600Controls;
-
-			var a7800Controls = new Controller(Atari7800Control.ProLineJoystick);
-
-			a7800Controls.BindMulti("Power", Global.Config.Atari7800ConsoleButtons[0].Power);
-			a7800Controls.BindMulti("Reset", Global.Config.Atari7800ConsoleButtons[0].Reset);
-			a7800Controls.BindMulti("Select", Global.Config.Atari7800ConsoleButtons[0].Select);
-			a7800Controls.BindMulti("Pause", Global.Config.Atari7800ConsoleButtons[0].Pause);
-
-			a7800Controls.BindMulti("P1 Up", Global.Config.Atari7800Controller[0].Up);
-			a7800Controls.BindMulti("P1 Left", Global.Config.Atari7800Controller[0].Left);
-			a7800Controls.BindMulti("P1 Right", Global.Config.Atari7800Controller[0].Right);
-			a7800Controls.BindMulti("P1 Down", Global.Config.Atari7800Controller[0].Down);
-			a7800Controls.BindMulti("P1 Trigger", Global.Config.Atari7800Controller[0].Button1);
-			a7800Controls.BindMulti("P1 Trigger 2", Global.Config.Atari7800Controller[0].Button2);
-
-			a7800Controls.BindMulti("P2 Up", Global.Config.Atari7800Controller[1].Up);
-			a7800Controls.BindMulti("P2 Left", Global.Config.Atari7800Controller[1].Left);
-			a7800Controls.BindMulti("P2 Right", Global.Config.Atari7800Controller[1].Right);
-			a7800Controls.BindMulti("P2 Down", Global.Config.Atari7800Controller[1].Down);
-			a7800Controls.BindMulti("P2 Trigger", Global.Config.Atari7800Controller[1].Button1);
-			a7800Controls.BindMulti("P2 Trigger 2", Global.Config.Atari7800Controller[1].Button2);
-
-			Global.Atari7800Controls = a7800Controls;
-
-			var autofireA7800Controls = new AutofireController(Atari7800Control.ProLineJoystick);
-			autofireA7800Controls.BindMulti("P1 Up", Global.Config.Atari7800AutoController[0].Up);
-			autofireA7800Controls.BindMulti("P1 Left", Global.Config.Atari7800AutoController[0].Left);
-			autofireA7800Controls.BindMulti("P1 Right", Global.Config.Atari7800AutoController[0].Right);
-			autofireA7800Controls.BindMulti("P1 Down", Global.Config.Atari7800AutoController[0].Down);
-			autofireA7800Controls.BindMulti("P1 Trigger", Global.Config.Atari7800Controller[0].Button1);
-			autofireA7800Controls.BindMulti("P1 Trigger 2", Global.Config.Atari7800Controller[0].Button2);
-
-			autofireA7800Controls.BindMulti("P2 Up", Global.Config.Atari7800AutoController[1].Up);
-			autofireA7800Controls.BindMulti("P2 Left", Global.Config.Atari7800AutoController[1].Left);
-			autofireA7800Controls.BindMulti("P2 Right", Global.Config.Atari7800AutoController[1].Right);
-			autofireA7800Controls.BindMulti("P2 Down", Global.Config.Atari7800AutoController[1].Down);
-			autofireA7800Controls.BindMulti("P2 Trigger", Global.Config.Atari7800Controller[1].Button1);
-			autofireA7800Controls.BindMulti("P2 Trigger 2", Global.Config.Atari7800Controller[1].Button2);
-
-			Global.AutofireAtari7800Controls = autofireA2600Controls;
-
-			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
-			colecoControls.BindMulti("P1 Up", Global.Config.ColecoController[0].Up);
-			colecoControls.BindMulti("P1 Left", Global.Config.ColecoController[0].Left);
-			colecoControls.BindMulti("P1 Right", Global.Config.ColecoController[0].Right);
-			colecoControls.BindMulti("P1 Down", Global.Config.ColecoController[0].Down);
-			colecoControls.BindMulti("P1 L", Global.Config.ColecoController[0].L);
-			colecoControls.BindMulti("P1 R", Global.Config.ColecoController[0].R);
-			colecoControls.BindMulti("P1 Key0", Global.Config.ColecoController[0]._0);
-			colecoControls.BindMulti("P1 Key1", Global.Config.ColecoController[0]._1);
-			colecoControls.BindMulti("P1 Key2", Global.Config.ColecoController[0]._2);
-			colecoControls.BindMulti("P1 Key3", Global.Config.ColecoController[0]._3);
-			colecoControls.BindMulti("P1 Key4", Global.Config.ColecoController[0]._4);
-			colecoControls.BindMulti("P1 Key5", Global.Config.ColecoController[0]._5);
-			colecoControls.BindMulti("P1 Key6", Global.Config.ColecoController[0]._6);
-			colecoControls.BindMulti("P1 Key7", Global.Config.ColecoController[0]._7);
-			colecoControls.BindMulti("P1 Key8", Global.Config.ColecoController[0]._8);
-			colecoControls.BindMulti("P1 Key9", Global.Config.ColecoController[0]._9);
-			colecoControls.BindMulti("P1 Star", Global.Config.ColecoController[0].Star);
-			colecoControls.BindMulti("P1 Pound", Global.Config.ColecoController[0].Pound);
-
-			colecoControls.BindMulti("P2 Up", Global.Config.ColecoController[1].Up);
-			colecoControls.BindMulti("P2 Left", Global.Config.ColecoController[1].Left);
-			colecoControls.BindMulti("P2 Right", Global.Config.ColecoController[1].Right);
-			colecoControls.BindMulti("P2 Down", Global.Config.ColecoController[1].Down);
-			colecoControls.BindMulti("P2 L", Global.Config.ColecoController[1].L);
-			colecoControls.BindMulti("P2 R", Global.Config.ColecoController[1].R);
-			colecoControls.BindMulti("P2 Key0", Global.Config.ColecoController[1]._0);
-			colecoControls.BindMulti("P2 Key1", Global.Config.ColecoController[1]._1);
-			colecoControls.BindMulti("P2 Key2", Global.Config.ColecoController[1]._2);
-			colecoControls.BindMulti("P2 Key3", Global.Config.ColecoController[1]._3);
-			colecoControls.BindMulti("P2 Key4", Global.Config.ColecoController[1]._4);
-			colecoControls.BindMulti("P2 Key5", Global.Config.ColecoController[1]._5);
-			colecoControls.BindMulti("P2 Key6", Global.Config.ColecoController[1]._6);
-			colecoControls.BindMulti("P2 Key7", Global.Config.ColecoController[1]._7);
-			colecoControls.BindMulti("P2 Key8", Global.Config.ColecoController[1]._8);
-			colecoControls.BindMulti("P2 Key9", Global.Config.ColecoController[1]._9);
-			colecoControls.BindMulti("P2 Star", Global.Config.ColecoController[1].Star);
-			colecoControls.BindMulti("P2 Pound", Global.Config.ColecoController[1].Pound);
-			Global.ColecoControls = colecoControls;
-
-			var acolecoControls = new AutofireController(ColecoVision.ColecoVisionControllerDefinition);
-			acolecoControls.BindMulti("P1 Up", Global.Config.ColecoAutoController[0].Up);
-			acolecoControls.BindMulti("P1 Left", Global.Config.ColecoAutoController[0].Left);
-			acolecoControls.BindMulti("P1 Right", Global.Config.ColecoAutoController[0].Right);
-			acolecoControls.BindMulti("P1 Down", Global.Config.ColecoAutoController[0].Down);
-			acolecoControls.BindMulti("P1 L", Global.Config.ColecoAutoController[0].L);
-			acolecoControls.BindMulti("P1 R", Global.Config.ColecoAutoController[0].R);
-			acolecoControls.BindMulti("P1 Key0", Global.Config.ColecoAutoController[0]._0);
-			acolecoControls.BindMulti("P1 Key1", Global.Config.ColecoAutoController[0]._1);
-			acolecoControls.BindMulti("P1 Key2", Global.Config.ColecoAutoController[0]._2);
-			acolecoControls.BindMulti("P1 Key3", Global.Config.ColecoAutoController[0]._3);
-			acolecoControls.BindMulti("P1 Key4", Global.Config.ColecoAutoController[0]._4);
-			acolecoControls.BindMulti("P1 Key5", Global.Config.ColecoAutoController[0]._5);
-			acolecoControls.BindMulti("P1 Key6", Global.Config.ColecoAutoController[0]._6);
-			acolecoControls.BindMulti("P1 Key7", Global.Config.ColecoAutoController[0]._7);
-			acolecoControls.BindMulti("P1 Key8", Global.Config.ColecoAutoController[0]._8);
-			acolecoControls.BindMulti("P1 Key9", Global.Config.ColecoAutoController[0]._9);
-			acolecoControls.BindMulti("P1 Star", Global.Config.ColecoAutoController[0].Star);
-			acolecoControls.BindMulti("P1 Pound", Global.Config.ColecoController[0].Pound);
-
-			acolecoControls.BindMulti("P2 Up", Global.Config.ColecoAutoController[1].Up);
-			acolecoControls.BindMulti("P2 Left", Global.Config.ColecoAutoController[1].Left);
-			acolecoControls.BindMulti("P2 Right", Global.Config.ColecoAutoController[1].Right);
-			acolecoControls.BindMulti("P2 Down", Global.Config.ColecoAutoController[1].Down);
-			acolecoControls.BindMulti("P2 L", Global.Config.ColecoAutoController[1].L);
-			acolecoControls.BindMulti("P2 R", Global.Config.ColecoAutoController[1].R);
-			acolecoControls.BindMulti("P2 Key0", Global.Config.ColecoAutoController[1]._0);
-			acolecoControls.BindMulti("P2 Key1", Global.Config.ColecoAutoController[1]._1);
-			acolecoControls.BindMulti("P2 Key2", Global.Config.ColecoAutoController[1]._2);
-			acolecoControls.BindMulti("P2 Key3", Global.Config.ColecoAutoController[1]._3);
-			acolecoControls.BindMulti("P2 Key4", Global.Config.ColecoAutoController[1]._4);
-			acolecoControls.BindMulti("P2 Key5", Global.Config.ColecoAutoController[1]._5);
-			acolecoControls.BindMulti("P2 Key6", Global.Config.ColecoAutoController[1]._6);
-			acolecoControls.BindMulti("P2 Key7", Global.Config.ColecoAutoController[1]._7);
-			acolecoControls.BindMulti("P2 Key8", Global.Config.ColecoAutoController[1]._8);
-			acolecoControls.BindMulti("P2 Key9", Global.Config.ColecoAutoController[1]._9);
-			acolecoControls.BindMulti("P2 Star", Global.Config.ColecoAutoController[1].Star);
-			acolecoControls.BindMulti("P2 Pound", Global.Config.ColecoController[1].Pound);
-			Global.AutofireColecoControls = acolecoControls;
-
-			var intelliControls = new Controller(Intellivision.IntellivisionController);
-			intelliControls.BindMulti("P1 Up", Global.Config.IntellivisionController[0].Up);
-			intelliControls.BindMulti("P1 Left", Global.Config.IntellivisionController[0].Left);
-			intelliControls.BindMulti("P1 Right", Global.Config.IntellivisionController[0].Right);
-			intelliControls.BindMulti("P1 Down", Global.Config.IntellivisionController[0].Down);
-			intelliControls.BindMulti("P1 L", Global.Config.IntellivisionController[0].L);
-			intelliControls.BindMulti("P1 R", Global.Config.IntellivisionController[0].R);
-			intelliControls.BindMulti("P1 Key0", Global.Config.IntellivisionController[0]._0);
-			intelliControls.BindMulti("P1 Key1", Global.Config.IntellivisionController[0]._1);
-			intelliControls.BindMulti("P1 Key2", Global.Config.IntellivisionController[0]._2);
-			intelliControls.BindMulti("P1 Key3", Global.Config.IntellivisionController[0]._3);
-			intelliControls.BindMulti("P1 Key4", Global.Config.IntellivisionController[0]._4);
-			intelliControls.BindMulti("P1 Key5", Global.Config.IntellivisionController[0]._5);
-			intelliControls.BindMulti("P1 Key6", Global.Config.IntellivisionController[0]._6);
-			intelliControls.BindMulti("P1 Key7", Global.Config.IntellivisionController[0]._7);
-			intelliControls.BindMulti("P1 Key8", Global.Config.IntellivisionController[0]._8);
-			intelliControls.BindMulti("P1 Key9", Global.Config.IntellivisionController[0]._9);
-			intelliControls.BindMulti("P1 Clear", Global.Config.IntellivisionController[0].Clear);
-			intelliControls.BindMulti("P1 Enter", Global.Config.IntellivisionController[0].Enter);
-
-			intelliControls.BindMulti("P2 Up", Global.Config.IntellivisionController[1].Up);
-			intelliControls.BindMulti("P2 Left", Global.Config.IntellivisionController[1].Left);
-			intelliControls.BindMulti("P2 Right", Global.Config.IntellivisionController[1].Right);
-			intelliControls.BindMulti("P2 Down", Global.Config.IntellivisionController[1].Down);
-			intelliControls.BindMulti("P2 L", Global.Config.IntellivisionController[1].L);
-			intelliControls.BindMulti("P2 R", Global.Config.IntellivisionController[1].R);
-			intelliControls.BindMulti("P2 Key0", Global.Config.IntellivisionController[1]._0);
-			intelliControls.BindMulti("P2 Key1", Global.Config.IntellivisionController[1]._1);
-			intelliControls.BindMulti("P2 Key2", Global.Config.IntellivisionController[1]._2);
-			intelliControls.BindMulti("P2 Key3", Global.Config.IntellivisionController[1]._3);
-			intelliControls.BindMulti("P2 Key4", Global.Config.IntellivisionController[1]._4);
-			intelliControls.BindMulti("P2 Key5", Global.Config.IntellivisionController[1]._5);
-			intelliControls.BindMulti("P2 Key6", Global.Config.IntellivisionController[1]._6);
-			intelliControls.BindMulti("P2 Key7", Global.Config.IntellivisionController[1]._7);
-			intelliControls.BindMulti("P2 Key8", Global.Config.IntellivisionController[1]._8);
-			intelliControls.BindMulti("P2 Key9", Global.Config.IntellivisionController[1]._9);
-			intelliControls.BindMulti("P2 Clear", Global.Config.IntellivisionController[1].Clear);
-			intelliControls.BindMulti("P2 Enter", Global.Config.IntellivisionController[1].Enter);
-			Global.IntellivisionControls = intelliControls;
-
-			var aintelliControls = new AutofireController(Intellivision.IntellivisionController);
-			aintelliControls.BindMulti("P1 Up", Global.Config.IntellivisionAutoController[0].Up);
-			aintelliControls.BindMulti("P1 Left", Global.Config.IntellivisionAutoController[0].Left);
-			aintelliControls.BindMulti("P1 Right", Global.Config.IntellivisionAutoController[0].Right);
-			aintelliControls.BindMulti("P1 Down", Global.Config.IntellivisionAutoController[0].Down);
-			aintelliControls.BindMulti("P1 L", Global.Config.IntellivisionAutoController[0].L);
-			aintelliControls.BindMulti("P1 R", Global.Config.IntellivisionAutoController[0].R);
-			aintelliControls.BindMulti("P1 Key0", Global.Config.IntellivisionAutoController[0]._0);
-			aintelliControls.BindMulti("P1 Key1", Global.Config.IntellivisionAutoController[0]._1);
-			aintelliControls.BindMulti("P1 Key2", Global.Config.IntellivisionAutoController[0]._2);
-			aintelliControls.BindMulti("P1 Key3", Global.Config.IntellivisionAutoController[0]._3);
-			aintelliControls.BindMulti("P1 Key4", Global.Config.IntellivisionAutoController[0]._4);
-			aintelliControls.BindMulti("P1 Key5", Global.Config.IntellivisionAutoController[0]._5);
-			aintelliControls.BindMulti("P1 Key6", Global.Config.IntellivisionAutoController[0]._6);
-			aintelliControls.BindMulti("P1 Key7", Global.Config.IntellivisionAutoController[0]._7);
-			aintelliControls.BindMulti("P1 Key8", Global.Config.IntellivisionAutoController[0]._8);
-			aintelliControls.BindMulti("P1 Key9", Global.Config.IntellivisionAutoController[0]._9);
-			aintelliControls.BindMulti("P1 Clear", Global.Config.IntellivisionAutoController[0].Clear);
-			aintelliControls.BindMulti("P1 Enter", Global.Config.IntellivisionAutoController[0].Enter);
-
-			aintelliControls.BindMulti("P2 Up", Global.Config.IntellivisionAutoController[1].Up);
-			aintelliControls.BindMulti("P2 Left", Global.Config.IntellivisionAutoController[1].Left);
-			aintelliControls.BindMulti("P2 Right", Global.Config.IntellivisionAutoController[1].Right);
-			aintelliControls.BindMulti("P2 Down", Global.Config.IntellivisionAutoController[1].Down);
-			aintelliControls.BindMulti("P2 L", Global.Config.IntellivisionAutoController[1].L);
-			aintelliControls.BindMulti("P2 R", Global.Config.IntellivisionAutoController[1].R);
-			aintelliControls.BindMulti("P2 Key0", Global.Config.IntellivisionAutoController[1]._0);
-			aintelliControls.BindMulti("P2 Key1", Global.Config.IntellivisionAutoController[1]._1);
-			aintelliControls.BindMulti("P2 Key2", Global.Config.IntellivisionAutoController[1]._2);
-			aintelliControls.BindMulti("P2 Key3", Global.Config.IntellivisionAutoController[1]._3);
-			aintelliControls.BindMulti("P2 Key4", Global.Config.IntellivisionAutoController[1]._4);
-			aintelliControls.BindMulti("P2 Key5", Global.Config.IntellivisionAutoController[1]._5);
-			aintelliControls.BindMulti("P2 Key6", Global.Config.IntellivisionAutoController[1]._6);
-			aintelliControls.BindMulti("P2 Key7", Global.Config.IntellivisionAutoController[1]._7);
-			aintelliControls.BindMulti("P2 Key8", Global.Config.IntellivisionAutoController[1]._8);
-			aintelliControls.BindMulti("P2 Key9", Global.Config.IntellivisionAutoController[1]._9);
-			aintelliControls.BindMulti("P2 Clear", Global.Config.IntellivisionAutoController[1].Clear);
-			aintelliControls.BindMulti("P2 Enter", Global.Config.IntellivisionAutoController[1].Enter);
-			Global.AutofireIntellivisionControls = aintelliControls;
-
-			var TI83Controls = new Controller(TI83.TI83Controller);
-			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
-			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
-			TI83Controls.BindMulti("2", Global.Config.TI83Controller[0]._2);
-			TI83Controls.BindMulti("3", Global.Config.TI83Controller[0]._3);
-			TI83Controls.BindMulti("4", Global.Config.TI83Controller[0]._4);
-			TI83Controls.BindMulti("5", Global.Config.TI83Controller[0]._5);
-			TI83Controls.BindMulti("6", Global.Config.TI83Controller[0]._6);
-			TI83Controls.BindMulti("7", Global.Config.TI83Controller[0]._7);
-			TI83Controls.BindMulti("8", Global.Config.TI83Controller[0]._8);
-			TI83Controls.BindMulti("9", Global.Config.TI83Controller[0]._9);
-			TI83Controls.BindMulti("ON", Global.Config.TI83Controller[0].ON);
-			TI83Controls.BindMulti("ENTER", Global.Config.TI83Controller[0].ENTER);
-			TI83Controls.BindMulti("DOWN", Global.Config.TI83Controller[0].DOWN);
-			TI83Controls.BindMulti("LEFT", Global.Config.TI83Controller[0].LEFT);
-			TI83Controls.BindMulti("RIGHT", Global.Config.TI83Controller[0].RIGHT);
-			TI83Controls.BindMulti("UP", Global.Config.TI83Controller[0].UP);
-			TI83Controls.BindMulti("PLUS", Global.Config.TI83Controller[0].PLUS);
-			TI83Controls.BindMulti("MINUS", Global.Config.TI83Controller[0].MINUS);
-			TI83Controls.BindMulti("MULTIPLY", Global.Config.TI83Controller[0].MULTIPLY);
-			TI83Controls.BindMulti("DIVIDE", Global.Config.TI83Controller[0].DIVIDE);
-			TI83Controls.BindMulti("CLEAR", Global.Config.TI83Controller[0].CLEAR);
-			TI83Controls.BindMulti("DOT", Global.Config.TI83Controller[0].DOT);
-			TI83Controls.BindMulti("EXP", Global.Config.TI83Controller[0].EXP);
-			TI83Controls.BindMulti("DASH", Global.Config.TI83Controller[0].DASH);
-			TI83Controls.BindMulti("PARACLOSE", Global.Config.TI83Controller[0].DASH);
-			TI83Controls.BindMulti("TAN", Global.Config.TI83Controller[0].TAN);
-			TI83Controls.BindMulti("VARS", Global.Config.TI83Controller[0].VARS);
-			TI83Controls.BindMulti("PARAOPEN", Global.Config.TI83Controller[0].PARAOPEN);
-			TI83Controls.BindMulti("COS", Global.Config.TI83Controller[0].COS);
-			TI83Controls.BindMulti("PRGM", Global.Config.TI83Controller[0].PRGM);
-			TI83Controls.BindMulti("STAT", Global.Config.TI83Controller[0].STAT);
-			TI83Controls.BindMulti("COMMA", Global.Config.TI83Controller[0].COMMA);
-			TI83Controls.BindMulti("SIN", Global.Config.TI83Controller[0].SIN);
-			TI83Controls.BindMulti("MATRIX", Global.Config.TI83Controller[0].MATRIX);
-			TI83Controls.BindMulti("X", Global.Config.TI83Controller[0].X);
-			TI83Controls.BindMulti("STO", Global.Config.TI83Controller[0].STO);
-			TI83Controls.BindMulti("LN", Global.Config.TI83Controller[0].LN);
-			TI83Controls.BindMulti("LOG", Global.Config.TI83Controller[0].LOG);
-			TI83Controls.BindMulti("SQUARED", Global.Config.TI83Controller[0].SQUARED);
-			TI83Controls.BindMulti("NEG1", Global.Config.TI83Controller[0].NEG1);
-			TI83Controls.BindMulti("MATH", Global.Config.TI83Controller[0].MATH);
-			TI83Controls.BindMulti("ALPHA", Global.Config.TI83Controller[0].ALPHA);
-			TI83Controls.BindMulti("GRAPH", Global.Config.TI83Controller[0].GRAPH);
-			TI83Controls.BindMulti("TRACE", Global.Config.TI83Controller[0].TRACE);
-			TI83Controls.BindMulti("ZOOM", Global.Config.TI83Controller[0].ZOOM);
-			TI83Controls.BindMulti("WINDOW", Global.Config.TI83Controller[0].WINDOW);
-			TI83Controls.BindMulti("Y", Global.Config.TI83Controller[0].Y);
-			TI83Controls.BindMulti("2ND", Global.Config.TI83Controller[0].SECOND);
-			TI83Controls.BindMulti("MODE", Global.Config.TI83Controller[0].MODE);
-			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].DEL);
-			Global.TI83Controls = TI83Controls;
-
-			var CommodoreControls = new Controller(C64.C64ControllerDefinition);
-			CommodoreControls.BindMulti("P1 Up", Global.Config.C64Joysticks[0].Up);
-			CommodoreControls.BindMulti("P1 Left", Global.Config.C64Joysticks[0].Left);
-			CommodoreControls.BindMulti("P1 Right", Global.Config.C64Joysticks[0].Right);
-			CommodoreControls.BindMulti("P1 Down", Global.Config.C64Joysticks[0].Down);
-			CommodoreControls.BindMulti("P1 Button", Global.Config.C64Joysticks[0].Button);
-
-			CommodoreControls.BindMulti("P2 Up", Global.Config.C64Joysticks[1].Up);
-			CommodoreControls.BindMulti("P2 Left", Global.Config.C64Joysticks[1].Left);
-			CommodoreControls.BindMulti("P2 Right", Global.Config.C64Joysticks[1].Right);
-			CommodoreControls.BindMulti("P2 Down", Global.Config.C64Joysticks[1].Down);
-			CommodoreControls.BindMulti("P2 Button", Global.Config.C64Joysticks[1].Button);
-
-			CommodoreControls.BindMulti("Key F1", Global.Config.C64Keyboard.F1);
-			CommodoreControls.BindMulti("Key F3", Global.Config.C64Keyboard.F3);
-			CommodoreControls.BindMulti("Key F5", Global.Config.C64Keyboard.F5);
-			CommodoreControls.BindMulti("Key F7", Global.Config.C64Keyboard.F7);
-			CommodoreControls.BindMulti("Key Left Arrow", Global.Config.C64Keyboard.Left_Arrow);
-			CommodoreControls.BindMulti("Key 1", Global.Config.C64Keyboard._1);
-			CommodoreControls.BindMulti("Key 2", Global.Config.C64Keyboard._2);
-			CommodoreControls.BindMulti("Key 3", Global.Config.C64Keyboard._3);
-			CommodoreControls.BindMulti("Key 4", Global.Config.C64Keyboard._4);
-			CommodoreControls.BindMulti("Key 5", Global.Config.C64Keyboard._5);
-			CommodoreControls.BindMulti("Key 6", Global.Config.C64Keyboard._6);
-			CommodoreControls.BindMulti("Key 7", Global.Config.C64Keyboard._7);
-			CommodoreControls.BindMulti("Key 8", Global.Config.C64Keyboard._8);
-			CommodoreControls.BindMulti("Key 9", Global.Config.C64Keyboard._9);
-			CommodoreControls.BindMulti("Key 0", Global.Config.C64Keyboard._0);
-			CommodoreControls.BindMulti("Key Plus", Global.Config.C64Keyboard.Plus);
-			CommodoreControls.BindMulti("Key Minus", Global.Config.C64Keyboard.Minus);
-			CommodoreControls.BindMulti("Key Pound", Global.Config.C64Keyboard.Pound);
-			CommodoreControls.BindMulti("Key Clear/Home", Global.Config.C64Keyboard.Clear_Home);
-			CommodoreControls.BindMulti("Key Insert/Delete", Global.Config.C64Keyboard.Insert_Delete);
-			CommodoreControls.BindMulti("Key Control", Global.Config.C64Keyboard.Control);
-			CommodoreControls.BindMulti("Key Q", Global.Config.C64Keyboard.Q);
-			CommodoreControls.BindMulti("Key W", Global.Config.C64Keyboard.W);
-			CommodoreControls.BindMulti("Key E", Global.Config.C64Keyboard.E);
-			CommodoreControls.BindMulti("Key R", Global.Config.C64Keyboard.R);
-			CommodoreControls.BindMulti("Key T", Global.Config.C64Keyboard.T);
-			CommodoreControls.BindMulti("Key Y", Global.Config.C64Keyboard.Y);
-			CommodoreControls.BindMulti("Key U", Global.Config.C64Keyboard.U);
-			CommodoreControls.BindMulti("Key I", Global.Config.C64Keyboard.I);
-			CommodoreControls.BindMulti("Key O", Global.Config.C64Keyboard.O);
-			CommodoreControls.BindMulti("Key P", Global.Config.C64Keyboard.P);
-			CommodoreControls.BindMulti("Key At", Global.Config.C64Keyboard.At);
-			CommodoreControls.BindMulti("Key Asterisk", Global.Config.C64Keyboard.Asterisk);
-			CommodoreControls.BindMulti("Key Up Arrow", Global.Config.C64Keyboard.Up_Arrow);
-			CommodoreControls.BindMulti("Key Restore", Global.Config.C64Keyboard.Restore);
-			CommodoreControls.BindMulti("Key Run/Stop", Global.Config.C64Keyboard.Run_Stop);
-			CommodoreControls.BindMulti("Key Lck", Global.Config.C64Keyboard.Lck);
-			CommodoreControls.BindMulti("Key A", Global.Config.C64Keyboard.A);
-			CommodoreControls.BindMulti("Key S", Global.Config.C64Keyboard.S);
-			CommodoreControls.BindMulti("Key D", Global.Config.C64Keyboard.D);
-			CommodoreControls.BindMulti("Key F", Global.Config.C64Keyboard.F);
-			CommodoreControls.BindMulti("Key G", Global.Config.C64Keyboard.G);
-			CommodoreControls.BindMulti("Key H", Global.Config.C64Keyboard.H);
-			CommodoreControls.BindMulti("Key J", Global.Config.C64Keyboard.J);
-			CommodoreControls.BindMulti("Key K", Global.Config.C64Keyboard.K);
-			CommodoreControls.BindMulti("Key L", Global.Config.C64Keyboard.L);
-			CommodoreControls.BindMulti("Key Colon", Global.Config.C64Keyboard.Colon);
-			CommodoreControls.BindMulti("Key Semicolon", Global.Config.C64Keyboard.Semicolon);
-			CommodoreControls.BindMulti("Key Equal", Global.Config.C64Keyboard.Equal);
-			CommodoreControls.BindMulti("Key Return", Global.Config.C64Keyboard.Return);
-			CommodoreControls.BindMulti("Key Commodore", Global.Config.C64Keyboard.Commodore);
-			CommodoreControls.BindMulti("Key Left Shift", Global.Config.C64Keyboard.Left_Shift);
-			CommodoreControls.BindMulti("Key Z", Global.Config.C64Keyboard.Z);
-			CommodoreControls.BindMulti("Key X", Global.Config.C64Keyboard.X);
-			CommodoreControls.BindMulti("Key C", Global.Config.C64Keyboard.C);
-			CommodoreControls.BindMulti("Key V", Global.Config.C64Keyboard.V);
-			CommodoreControls.BindMulti("Key B", Global.Config.C64Keyboard.B);
-			CommodoreControls.BindMulti("Key N", Global.Config.C64Keyboard.N);
-			CommodoreControls.BindMulti("Key M", Global.Config.C64Keyboard.M);
-			CommodoreControls.BindMulti("Key Comma", Global.Config.C64Keyboard.Comma);
-			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
-			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
-			CommodoreControls.BindMulti("Key Slash", Global.Config.C64Keyboard.Slash);
-			CommodoreControls.BindMulti("Key Right Shift", Global.Config.C64Keyboard.Right_Shift);
-			CommodoreControls.BindMulti("Key Cursor Up/Down", Global.Config.C64Keyboard.Cursor_Up_Down);
-			CommodoreControls.BindMulti("Key Cursor Left/Right", Global.Config.C64Keyboard.Cursor_Left_Right);
-			CommodoreControls.BindMulti("Key Space", Global.Config.C64Keyboard.Space);
-
-			Global.Commodore64Controls = CommodoreControls;
-
-			var autofireC64Controls = new AutofireController(C64.C64ControllerDefinition);
-			autofireC64Controls.BindMulti("P1 Up", Global.Config.C64AutoJoysticks[0].Up);
-			autofireC64Controls.BindMulti("P1 Left", Global.Config.C64AutoJoysticks[0].Left);
-			autofireC64Controls.BindMulti("P1 Right", Global.Config.C64AutoJoysticks[0].Right);
-			autofireC64Controls.BindMulti("P1 Down", Global.Config.C64AutoJoysticks[0].Down);
-			autofireC64Controls.BindMulti("P1 Button", Global.Config.C64AutoJoysticks[0].Button);
-
-			autofireC64Controls.BindMulti("P2 Up", Global.Config.C64AutoJoysticks[1].Up);
-			autofireC64Controls.BindMulti("P2 Left", Global.Config.C64AutoJoysticks[1].Left);
-			autofireC64Controls.BindMulti("P2 Right", Global.Config.C64AutoJoysticks[1].Right);
-			autofireC64Controls.BindMulti("P2 Down", Global.Config.C64AutoJoysticks[1].Down);
-			autofireC64Controls.BindMulti("P2 Button", Global.Config.C64AutoJoysticks[1].Button);
-
-			Global.AutofireCommodore64Controls = autofireC64Controls;
-
-			var N64Controls = new Controller(N64.N64ControllerDefinition);
-
-			N64Controls.BindMulti("Power", Global.Config.N64ConsoleButtons.Power);
-			N64Controls.BindMulti("Reset", Global.Config.N64ConsoleButtons.Reset);
-
-			N64Controls.BindMulti("P1 DPad U", Global.Config.N64Controller[0].DPadU);
-			N64Controls.BindMulti("P1 DPad L", Global.Config.N64Controller[0].DPadL);
-			N64Controls.BindMulti("P1 DPad R", Global.Config.N64Controller[0].DPadR);
-			N64Controls.BindMulti("P1 DPad D", Global.Config.N64Controller[0].DPadD);
-			N64Controls.BindMulti("P1 Start", Global.Config.N64Controller[0].Start);
-			N64Controls.BindMulti("P1 Z", Global.Config.N64Controller[0].Z);
-			N64Controls.BindMulti("P1 B", Global.Config.N64Controller[0].B);
-			N64Controls.BindMulti("P1 A", Global.Config.N64Controller[0].A);
-			N64Controls.BindMulti("P1 C Up", Global.Config.N64Controller[0].CUp);
-			N64Controls.BindMulti("P1 C Down", Global.Config.N64Controller[0].CDown);
-			N64Controls.BindMulti("P1 C Left", Global.Config.N64Controller[0].CLeft);
-			N64Controls.BindMulti("P1 C Right", Global.Config.N64Controller[0].CRight);
-			N64Controls.BindMulti("P1 L", Global.Config.N64Controller[0].L);
-			N64Controls.BindMulti("P1 R", Global.Config.N64Controller[0].R);
-
-			N64Controls.BindMulti("P2 DPad U", Global.Config.N64Controller[1].DPadU);
-			N64Controls.BindMulti("P2 DPad L", Global.Config.N64Controller[1].DPadL);
-			N64Controls.BindMulti("P2 DPad R", Global.Config.N64Controller[1].DPadR);
-			N64Controls.BindMulti("P2 DPad D", Global.Config.N64Controller[1].DPadD);
-			N64Controls.BindMulti("P2 Start", Global.Config.N64Controller[1].Start);
-			N64Controls.BindMulti("P2 Z", Global.Config.N64Controller[1].Z);
-			N64Controls.BindMulti("P2 B", Global.Config.N64Controller[1].B);
-			N64Controls.BindMulti("P2 A", Global.Config.N64Controller[1].A);
-			N64Controls.BindMulti("P2 C Up", Global.Config.N64Controller[1].CUp);
-			N64Controls.BindMulti("P2 C Down", Global.Config.N64Controller[1].CDown);
-			N64Controls.BindMulti("P2 C Left", Global.Config.N64Controller[1].CLeft);
-			N64Controls.BindMulti("P2 C Right", Global.Config.N64Controller[1].CRight);
-			N64Controls.BindMulti("P2 L", Global.Config.N64Controller[1].L);
-			N64Controls.BindMulti("P2 R", Global.Config.N64Controller[1].R);
-
-			N64Controls.BindMulti("P3 DPad U", Global.Config.N64Controller[2].DPadU);
-			N64Controls.BindMulti("P3 DPad L", Global.Config.N64Controller[2].DPadL);
-			N64Controls.BindMulti("P3 DPad R", Global.Config.N64Controller[2].DPadR);
-			N64Controls.BindMulti("P3 DPad D", Global.Config.N64Controller[2].DPadD);
-			N64Controls.BindMulti("P3 Start", Global.Config.N64Controller[2].Start);
-			N64Controls.BindMulti("P3 Z", Global.Config.N64Controller[2].Z);
-			N64Controls.BindMulti("P3 B", Global.Config.N64Controller[2].B);
-			N64Controls.BindMulti("P3 A", Global.Config.N64Controller[2].A);
-			N64Controls.BindMulti("P3 C Up", Global.Config.N64Controller[2].CUp);
-			N64Controls.BindMulti("P3 C Down", Global.Config.N64Controller[2].CDown);
-			N64Controls.BindMulti("P3 C Left", Global.Config.N64Controller[2].CLeft);
-			N64Controls.BindMulti("P3 C Right", Global.Config.N64Controller[2].CRight);
-			N64Controls.BindMulti("P3 L", Global.Config.N64Controller[2].L);
-			N64Controls.BindMulti("P3 R", Global.Config.N64Controller[2].R);
-
-			N64Controls.BindMulti("P4 DPad U", Global.Config.N64Controller[3].DPadU);
-			N64Controls.BindMulti("P4 DPad L", Global.Config.N64Controller[3].DPadL);
-			N64Controls.BindMulti("P4 DPad R", Global.Config.N64Controller[3].DPadR);
-			N64Controls.BindMulti("P4 DPad D", Global.Config.N64Controller[3].DPadD);
-			N64Controls.BindMulti("P4 Start", Global.Config.N64Controller[3].Start);
-			N64Controls.BindMulti("P4 Z", Global.Config.N64Controller[3].Z);
-			N64Controls.BindMulti("P4 B", Global.Config.N64Controller[3].B);
-			N64Controls.BindMulti("P4 A", Global.Config.N64Controller[3].A);
-			N64Controls.BindMulti("P4 C Up", Global.Config.N64Controller[3].CUp);
-			N64Controls.BindMulti("P4 C Down", Global.Config.N64Controller[3].CDown);
-			N64Controls.BindMulti("P4 C Left", Global.Config.N64Controller[3].CLeft);
-			N64Controls.BindMulti("P4 C Right", Global.Config.N64Controller[3].CRight);
-			N64Controls.BindMulti("P4 L", Global.Config.N64Controller[3].L);
-			N64Controls.BindMulti("P4 R", Global.Config.N64Controller[3].R);
-
-			Global.N64Controls = N64Controls;
-
-			var N64AControls = new AutofireController(N64.N64ControllerDefinition);
-			
-			N64AControls.BindMulti("P1 DPad U", Global.Config.N64AutoController[0].DPadU);
-			N64AControls.BindMulti("P1 DPad L", Global.Config.N64AutoController[0].DPadL);
-			N64AControls.BindMulti("P1 DPad R", Global.Config.N64AutoController[0].DPadR);
-			N64AControls.BindMulti("P1 DPad D", Global.Config.N64AutoController[0].DPadD);
-			N64AControls.BindMulti("P1 Start", Global.Config.N64AutoController[0].Start);
-			N64AControls.BindMulti("P1 Z", Global.Config.N64AutoController[0].Z);
-			N64AControls.BindMulti("P1 B", Global.Config.N64AutoController[0].B);
-			N64AControls.BindMulti("P1 A", Global.Config.N64AutoController[0].A);
-			N64AControls.BindMulti("P1 C Up", Global.Config.N64AutoController[0].CUp);
-			N64AControls.BindMulti("P1 C Down", Global.Config.N64AutoController[0].CDown);
-			N64AControls.BindMulti("P1 C Left", Global.Config.N64AutoController[0].CLeft);
-			N64AControls.BindMulti("P1 C Right", Global.Config.N64AutoController[0].CRight);
-			N64AControls.BindMulti("P1 L", Global.Config.N64AutoController[0].L);
-			N64AControls.BindMulti("P1 R", Global.Config.N64AutoController[0].R);
-
-			N64AControls.BindMulti("P2 DPad U", Global.Config.N64AutoController[1].DPadU);
-			N64AControls.BindMulti("P2 DPad L", Global.Config.N64AutoController[1].DPadL);
-			N64AControls.BindMulti("P2 DPad R", Global.Config.N64AutoController[1].DPadR);
-			N64AControls.BindMulti("P2 DPad D", Global.Config.N64AutoController[1].DPadD);
-			N64AControls.BindMulti("P2 Start", Global.Config.N64AutoController[1].Start);
-			N64AControls.BindMulti("P2 Z", Global.Config.N64AutoController[1].Z);
-			N64AControls.BindMulti("P2 B", Global.Config.N64AutoController[1].B);
-			N64AControls.BindMulti("P2 A", Global.Config.N64AutoController[1].A);
-			N64AControls.BindMulti("P2 C Up", Global.Config.N64AutoController[1].CUp);
-			N64AControls.BindMulti("P2 C Down", Global.Config.N64AutoController[1].CDown);
-			N64AControls.BindMulti("P2 C Left", Global.Config.N64AutoController[1].CLeft);
-			N64AControls.BindMulti("P2 C Right", Global.Config.N64AutoController[1].CRight);
-			N64AControls.BindMulti("P2 L", Global.Config.N64AutoController[1].L);
-			N64AControls.BindMulti("P2 R", Global.Config.N64AutoController[1].R);
-
-			N64AControls.BindMulti("P3 DPad U", Global.Config.N64AutoController[2].DPadU);
-			N64AControls.BindMulti("P3 DPad L", Global.Config.N64AutoController[2].DPadL);
-			N64AControls.BindMulti("P3 DPad R", Global.Config.N64AutoController[2].DPadR);
-			N64AControls.BindMulti("P3 DPad D", Global.Config.N64AutoController[2].DPadD);
-			N64AControls.BindMulti("P3 Start", Global.Config.N64AutoController[2].Start);
-			N64AControls.BindMulti("P3 Z", Global.Config.N64AutoController[2].Z);
-			N64AControls.BindMulti("P3 B", Global.Config.N64AutoController[2].B);
-			N64AControls.BindMulti("P3 A", Global.Config.N64AutoController[2].A);
-			N64AControls.BindMulti("P3 C Up", Global.Config.N64AutoController[2].CUp);
-			N64AControls.BindMulti("P3 C Down", Global.Config.N64AutoController[2].CDown);
-			N64AControls.BindMulti("P3 C Left", Global.Config.N64AutoController[2].CLeft);
-			N64AControls.BindMulti("P3 C Right", Global.Config.N64AutoController[2].CRight);
-			N64AControls.BindMulti("P3 L", Global.Config.N64AutoController[2].L);
-			N64AControls.BindMulti("P3 R", Global.Config.N64AutoController[2].R);
-
-			N64AControls.BindMulti("P4 DPad U", Global.Config.N64AutoController[3].DPadU);
-			N64AControls.BindMulti("P4 DPad L", Global.Config.N64AutoController[3].DPadL);
-			N64AControls.BindMulti("P4 DPad R", Global.Config.N64AutoController[3].DPadR);
-			N64AControls.BindMulti("P4 DPad D", Global.Config.N64AutoController[3].DPadD);
-			N64AControls.BindMulti("P4 Start", Global.Config.N64AutoController[3].Start);
-			N64AControls.BindMulti("P4 Z", Global.Config.N64AutoController[3].Z);
-			N64AControls.BindMulti("P4 B", Global.Config.N64AutoController[3].B);
-			N64AControls.BindMulti("P4 A", Global.Config.N64AutoController[3].A);
-			N64AControls.BindMulti("P4 C Up", Global.Config.N64AutoController[3].CUp);
-			N64AControls.BindMulti("P4 C Down", Global.Config.N64AutoController[3].CDown);
-			N64AControls.BindMulti("P4 C Left", Global.Config.N64AutoController[3].CLeft);
-			N64AControls.BindMulti("P4 C Right", Global.Config.N64AutoController[3].CRight);
-			N64AControls.BindMulti("P4 L", Global.Config.N64AutoController[3].L);
-			N64AControls.BindMulti("P4 R", Global.Config.N64AutoController[3].R);
-
-			Global.AutofireN64Controls = N64AControls;
-		}
-
-		private static void FormDragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private bool IsValidMovieExtension(string ext)
@@ -1713,95 +811,9 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
-		private void FormDragDrop(object sender, DragEventArgs e)
-		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-#if WINDOWS
-			bool isLua = false;
-			foreach (string path in filePaths)
-			{
-				var extension = Path.GetExtension(path);
-				if (extension != null && extension.ToUpper() == ".LUA")
-				{
-					OpenLuaConsole();
-					LuaConsole1.LoadLuaFile(path);
-					isLua = true;
-				}
-			}
-			if (isLua)
-				return;
-#endif
-
-			var ext = Path.GetExtension(filePaths[0]) ?? "";
-			if (ext.ToUpper() == ".LUASES")
-			{
-#if WINDOWS
-				OpenLuaConsole();
-				LuaConsole1.LoadLuaSession(filePaths[0]);
-#endif
-			}
-			else if (IsValidMovieExtension(ext))
-			{
-				Movie m = new Movie(filePaths[0]);
-				StartNewMovie(m, false);
-
-			}
-			else if (ext.ToUpper() == ".STATE")
-			{
-				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
-			}
-			else if (ext.ToUpper() == ".CHT")
-			{
-				LoadCheatsWindow();
-				Cheats1.LoadCheatFile(filePaths[0], false);
-				Cheats1.DisplayCheatsList();
-			}
-			else if (ext.ToUpper() == ".WCH")
-			{
-				LoadRamWatch(true);
-				RamWatch1.LoadWatchFile(filePaths[0], false);
-				RamWatch1.DisplayWatchList();
-			}
-
-			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
-			{
-				//tries to open a legacy movie format as if it were a BKM, by importing it
-
-				if (CurrentlyOpenRom == null)
-					OpenROM();
-				else
-					LoadRom(CurrentlyOpenRom);
-
-				string errorMsg;
-				string warningMsg;
-				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (errorMsg.Length > 0)
-				{
-					RunLoopBlocked = true;
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					RunLoopBlocked = false;
-				}
-				else
-				{
-					//fix movie extension to something palatable for these purposes. 
-					//for instance, something which doesnt clobber movies you already may have had.
-					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					m.Filename += ".autoimported." + Global.Config.MovieExtension;
-					m.WriteMovie();
-					StartNewMovie(m, false);
-				}
-				Global.OSD.AddMessage(warningMsg);
-			}
-			else
-				LoadRom(filePaths[0]);
-		}
-
 		public bool IsNullEmulator()
 		{
-			if (Global.Emulator is NullEmulator)
-				return true;
-			else
-				return false;
+			return Global.Emulator is NullEmulator;
 		}
 
 		private string DisplayNameForSystem(string system)
@@ -1917,7 +929,7 @@ namespace BizHawk.MultiClient
 		{
 			nESSpeicalToolStripMenuItem.Visible = true;
 			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate
-				{
+			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
@@ -1926,9 +938,7 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage(msg);
 					}
 				}
-
-			}
-			);
+			});
 		}
 
 		void NESSpeicalMenuControls()
@@ -1971,91 +981,60 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
+		{
+			var ret = new Controller(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			Dictionary<string, Config.AnalogBind> abinds;
+			if (analogbinds.TryGetValue(def.Name, out abinds))
+			{
+				foreach (string cbutton in def.FloatControls)
+				{
+					Config.AnalogBind bind;
+					if (abinds.TryGetValue(cbutton, out bind))
+					{
+						ret.BindFloat(cbutton, bind);
+					}
+				}
+			}
+			return ret;
+		}
+
+		static AutofireController BindToDefinitionAF(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
+		{
+			var ret = new AutofireController(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			return ret;
+		}
+
+
 		void SyncControls()
 		{
-			if (Global.Game == null) return;
-			switch (Global.Game.System)
-			{
+			var def = Global.Emulator.ControllerDefinition;
 
-				case "SG":
-				case "SMS":
-					Global.ActiveController = Global.SMSControls;
-					Global.AutoFireController = Global.AutofireSMSControls;
-					break;
-				case "GG":
-					Global.ActiveController = Global.SMSControls;
-					Global.AutoFireController = Global.AutofireSMSControls;
-					break;
-				case "A26":
-					Global.ActiveController = Global.Atari2600Controls;
-					Global.AutoFireController = Global.AutofireAtari2600Controls;
-					break;
-				case "A78":
-					Global.ActiveController = Global.Atari7800Controls;
-					Global.AutoFireController = Global.AutofireAtari7800Controls;
-					break;
-				case "PCE":
-				case "PCECD":
-					Global.ActiveController = Global.PCEControls;
-					Global.AutoFireController = Global.AutofirePCEControls;
-					break;
-				case "SGX":
-					Global.ActiveController = Global.PCEControls;
-					Global.AutoFireController = Global.AutofirePCEControls;
-					break;
-				case "GEN":
-					Global.ActiveController = Global.GenControls;
-					Global.AutoFireController = Global.AutofireGenControls;
-					break;
-				case "TI83":
-					Global.ActiveController = Global.TI83Controls;
-					break;
-				case "NES":
-					Global.ActiveController = Global.NESControls;
-					Global.AutoFireController = Global.AutofireNESControls;
-					break;
-				case "SNES":
-					Global.ActiveController = Global.SNESControls;
-					Global.AutoFireController = Global.AutofireSNESControls;
-					break;
-				case "GB":
-				case "GBC":
-					Global.ActiveController = Global.GBControls;
-					Global.AutoFireController = Global.AutofireGBControls;
-					break;
-				case "GBA":
-					Global.ActiveController = Global.GBAControls;
-					Global.AutoFireController = Global.AutofireGBAControls;
-					break;
-				case "Coleco":
-					Global.ActiveController = Global.ColecoControls;
-					Global.AutoFireController = Global.AutofireColecoControls;
-					break;
-				case "N64":
-					Global.ActiveController = Global.N64Controls;
-					Global.AutoFireController = Global.AutofireN64Controls;
-					break;
-				case "SAT":
-					Global.ActiveController = Global.SaturnControls;
-					Global.AutoFireController = Global.AutofireSaturnControls;
-					break;
-				case "C64":
-					Global.ActiveController = Global.Commodore64Controls;
-					Global.AutoFireController = Global.AutofireCommodore64Controls;
-					break;
-				case "INTV":
-					Global.ActiveController = Global.IntellivisionControls;
-					Global.AutoFireController = Global.AutofireIntellivisionControls;
-					break;
-				case "DGB":
-					Global.ActiveController = Global.DualGBControls;
-					Global.AutoFireController = Global.DualAutofireGBControls;
-					break;
-				default:
-					Global.ActiveController = Global.NullControls;
-					break;
-			}
+			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
+			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
+
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			// these two lines shouldn't be required anymore under the new system?
 			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
 			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);			
 			RewireInputChain();
@@ -2132,64 +1111,59 @@ namespace BizHawk.MultiClient
 
 				try
 				{
-					//if (file.Extension.ToLower() == ".exe")
-					//{
-					//  PSX psx = new PSX();
-					//  nextEmulator = psx;
-					//  psx.LoadFile(file.CanonicalFullPath);
-					//  game = new GameInfo();
-					//  game.System = "PSX";
-					//  game.Name = "xx";
-					//  game.Hash = "xx";
-					//}
-					//else 
-					if (file.Extension.ToLower() == ".iso")
+					string ext = file.Extension.ToLower();
+					if (ext == ".iso" || ext == ".cue")
 					{
-						//if (Global.PsxCoreLibrary.IsOpen)
-						//{
-						//  // sorry zero ;'( I leave de-RomGameifying this to you
-						//  //PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
-						//  //nextEmulator = psx;
-						//  //game = new RomGame();
-						//  //var disc = Disc.FromIsoPath(path);
-						//  //Global.DiscHopper.Clear();
-						//  //Global.DiscHopper.Enqueue(disc);
-						//  //Global.DiscHopper.Insert();
-						//  //psx.SetDiscHopper(Global.DiscHopper);
-						//}
-					}
-					else if (file.Extension.ToLower() == ".cue")
-					{
-						Disc disc = Disc.FromCuePath(path, new CueBinPrefs());
+						Disc disc;
+						if (ext == ".iso")
+							disc = Disc.FromIsoPath(path);
+						else
+							disc = Disc.FromCuePath(path, new CueBinPrefs());
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
 						{
-							// Game was not found in DB. For now we're going to send it to the PCE-CD core.
-							// In the future we need to do something smarter, possibly including simply asking the user
-							// what system the game is for.
+							// try to use our wizard methods
+							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 
+							switch (disc.DetectDiscType())
+							{
+								case DiscType.SegaSaturn:
+									game.System = "SAT";
+									break;
+								case DiscType.SonyPSP:
+									game.System = "PSP";
+									break;
+								case DiscType.SonyPSX:
+									game.System = "PSX";
+									break;
+								case DiscType.TurboCD:
+								case DiscType.UnknownCDFS:
+								case DiscType.UnknownFormat:
+								default: // PCECD was bizhawk's first CD core, so this prevents regressions
+									game.System = "PCECD";
+									break;
+							}
+							
+							/* probably dead code here
 							if (Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
 							{
 								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 								disc.Dispose();
 							}
-							else if (disc.DetectSegaSaturn())
-							{
-								Console.WriteLine("Sega Saturn disc detected!");
-								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-							}
-							else
-							{
-								game = new GameInfo { System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-							}
+							*/
+                            //else if (disc.DetectSegaSaturn())  // DetectSegaSaturn does not exist
+                            //{
+                            //    Console.WriteLine("Sega Saturn disc detected!");
+                            //    game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
+                            //}
 						}
 
 						switch (game.System)
 						{
 							case "SAT":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+									string biosPath = this.FirmwareManager.Request("SAT", "J");
 									if (!File.Exists(biosPath))
 									{
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
@@ -2200,7 +1174,12 @@ namespace BizHawk.MultiClient
 									SaturnSetPrefs(saturn);
 								}
 								break;
-
+							case "PSP":
+								{
+									var psp = new Emulation.Consoles.Sony.PSP.PSP(nextComm, file.Name);
+									nextEmulator = psp;
+								}
+								break;
 							case "PSX":
 								{
 									var psx = new Emulation.Consoles.PSX.Octoshock(nextComm);
@@ -2209,11 +1188,10 @@ namespace BizHawk.MultiClient
 									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								}
 								break;
-
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenamePCEBios); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									string biosPath = this.FirmwareManager.Request("PCECD", "Bios");
 									if (File.Exists(biosPath) == false)
 									{
 										RunLoopBlocked = true;
@@ -2284,7 +1262,7 @@ namespace BizHawk.MultiClient
 							}
 
 						}
-						// if load fails, second chance to identify as a bsnes XML
+						// if load fails, are we supposed to retry as a bsnes XML????????
 					}
 					else // most extensions
 					{
@@ -2309,13 +1287,7 @@ namespace BizHawk.MultiClient
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 
-									//this isnt completely correct. might need to deal with the archive somehow.
-									//once done, code should be factored out to be useful in other platforms as well
-									//BUT!!! right now bsnes needs to open the file itself. lame.
-									//nextComm.AcquireSubfile = (subpath) =>
-									//  File.OpenRead(Path.Combine(Path.GetDirectoryName(path),subpath));
-									nextComm.AcquireSubfilePath = (subpath) =>
-									  Path.Combine(Path.GetDirectoryName(path),subpath);
+									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path);
 
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
@@ -2359,7 +1331,8 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameFDSBios);
+									//TODO - move into nes core
+									string biosPath = nextComm.CoreFileProvider.PathFirmware("NES","Bios_FDS");
 									byte[] bios = null;
 									if (File.Exists(biosPath))
 									{
@@ -2423,8 +1396,7 @@ namespace BizHawk.MultiClient
 									}
 									else
 									{
-										// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
-										string sgbromPath = PathManager.StandardFirmwareName("sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+										string sgbromPath = this.FirmwareManager.Request("SNES","Rom_SGB");
 										byte[] sgbrom = null;
 										try
 										{
@@ -2462,7 +1434,7 @@ namespace BizHawk.MultiClient
 								//}
 								break;
 							case "Coleco":
-								string colbiosPath = PathManager.StandardFirmwareName(Global.Config.FilenameCOLBios);
+								string colbiosPath = this.FirmwareManager.Request("Coleco", "Bios");
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
@@ -2480,11 +1452,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVEROM);
+									string eromPath = this.FirmwareManager.Request("INTV", "EROM");
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVGROM);
+									string gromPath = this.FirmwareManager.Request("INTV", "GROM");
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);
@@ -2492,9 +1464,9 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78NTSCBios);
-								string pal_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78PALBios);
-								string hsbiospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78HSCBios);
+								string ntsc_biospath = this.FirmwareManager.Request("A78", "Bios_NTSC");
+								string pal_biospath = this.FirmwareManager.Request("A78", "Bios_PAL");
+								string hsbiospath = this.FirmwareManager.Request("A78", "Bios_HSC");
 
 								FileInfo ntscfile = new FileInfo(ntsc_biospath);
 								FileInfo palfile = new FileInfo(pal_biospath);
@@ -2547,7 +1519,7 @@ namespace BizHawk.MultiClient
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = PathManager.StandardFirmwareName(Global.Config.FilenameGBABIOS);
+									string gbabiospath = FirmwareManager.Request("GBA", "Bios");
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))
@@ -2568,17 +1540,14 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "N64":
-								if (INTERIM)
+								Global.Game = game;
+								VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
+								int SaveType = 0;
+								if (game.OptionValue("SaveType") == "EEPROM_16K")
 								{
-									Global.Game = game;
-									VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
-									int SaveType = 0;
-									if (game.OptionValue("SaveType") == "EEPROM_16K")
-									{
-										SaveType = 1;
-									}
-									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
+									SaveType = 1;
 								}
+								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
 								break;
 						}
 					}
@@ -2589,7 +1558,7 @@ namespace BizHawk.MultiClient
 				catch (Exception ex)
 				{
 					RunLoopBlocked = true;
-					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+					MessageBox.Show("Exception during loadgame:\n\n" + ex);
 					RunLoopBlocked = false;
 					return false;
 				}
@@ -2633,7 +1602,7 @@ namespace BizHawk.MultiClient
 
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.IsEmpty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
                 {
 #if WINDOWS
                     LuaConsole1.Restart();
@@ -2652,21 +1621,21 @@ namespace BizHawk.MultiClient
 				//    throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 				//    SyncThrottle();
 				//}
-				RamSearch1.Restart();
-				RamWatch1.Restart();
-				HexEditor1.Restart();
-				NESPPU1.Restart();
-				NESNameTableViewer1.Restart();
-				NESDebug1.Restart();
-				GBGPUView1.Restart();
-				GBAGPUView1.Restart();
-				PCEBGViewer1.Restart();
-				TI83KeyPad1.Restart();
-				TAStudio1.Restart();
-				VirtualPadForm1.Restart();
-				Cheats1.Restart();
-				ToolBox1.Restart();
-				TraceLogger1.Restart();
+				if (_ramsearch != null) RamSearch1.Restart();
+				if (_ramwatch != null) RamWatch1.Restart();
+				if (_hexeditor != null) HexEditor1.Restart();
+				if (_nesppu != null) NESPPU1.Restart();
+				if (_nesnametableview != null) NESNameTableViewer1.Restart();
+				if (_nesdebugger != null) NESDebug1.Restart();
+				if (_gbgpuview != null) GBGPUView1.Restart();
+				if (_gbagpuview != null) GBAGPUView1.Restart();
+				if (_pcebgviewer != null) PCEBGViewer1.Restart();
+				if (_ti83pad != null) TI83KeyPad1.Restart();
+				if (_tastudio != null) TAStudio1.Restart();
+				if (_vpad != null) VirtualPadForm1.Restart();
+				if (_cheats != null) Cheats1.Restart();
+				if (_toolbox != null) ToolBox1.Restart();
+				if (_tracelogger != null) TraceLogger1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -2675,7 +1644,8 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}
-				Cheats1.UpdateValues();
+				
+                if (_cheats != null) Cheats1.UpdateValues();
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
@@ -2686,6 +1656,7 @@ namespace BizHawk.MultiClient
 				CaptureRewindState();
 
 				Global.StickyXORAdapter.ClearStickies();
+				Global.StickyXORAdapter.ClearStickyFloats();
 				Global.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
@@ -2832,7 +1803,7 @@ namespace BizHawk.MultiClient
 			writer.Close();
 		}
 
-		void OnSelectSlot(int num)
+		void SelectSlot(int num)
 		{
 			Global.Config.SaveSlot = num;
 			SaveSlotSelectedMessage();
@@ -2850,8 +1821,10 @@ namespace BizHawk.MultiClient
 				if (ActiveForm == this) return true;
 
 				//modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyWindow) return true;
-				if (ActiveForm is ControllerConfig) return true;
+				//if (ActiveForm is HotkeyWindow) return true;
+				if (ActiveForm is NewHotkeyWindow) return true;
+				//if (ActiveForm is ControllerConfig) return true;
+				if (ActiveForm is config.NewControllerConfig) return true;
 				if (ActiveForm is TAStudio) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
@@ -2971,6 +1944,8 @@ namespace BizHawk.MultiClient
 
 			} //foreach event
 
+			// also handle floats
+			Global.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
 		}
 
 		private void ClearAutohold()
@@ -2988,236 +1963,179 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
-
-				case "SNES Toggle BG 1":
-					SNES_ToggleBG1();
-					break;
-				case "SNES Toggle BG 2":
-					SNES_ToggleBG2();
-					break;
-				case "SNES Toggle BG 3":
-					SNES_ToggleBG3();
-					break;
-				case "SNES Toggle BG 4":
-					SNES_ToggleBG4();
-					break;
-				case "SNES Toggle OBJ 1":
-					SNES_ToggleOBJ1();
-					break;
-				case "SNES Toggle OBJ 2":
-					SNES_ToggleOBJ2();
-					break;
-				case "SNES Toggle OBJ 3":
-					SNES_ToggleOBJ3();
-					break;
-				case "SNES Toggle OBJ 4":
-					SNES_ToggleOBJ4();
-					break;
-				case "Save Movie":
-					SaveMovie();
-					break;
-				case "Clear Autohold":
-					ClearAutohold();
-					break;
-				case "IncreaseWindowSize":
-					IncreaseWindowSize();
-					break;
-				case "DecreaseWindowSize":
-					DecreaseWIndowSize();
-					break;
-				case "Record AVI/WAV":
-					RecordAVI();
-					break;
-				case "Stop AVI/WAV":
-					StopAVI();
-					break;
-				case "ToolBox":
-					LoadToolBox();
-					break;
-				case "Increase Speed":
-					IncreaseSpeed();
-					break;
-				case "Decrease Speed":
-					DecreaseSpeed();
-					break;
-				case "Toggle Background Input":
-					ToggleBackgroundInput();
-					break;
-				case "Quick Save State":
-					if (!IsNullEmulator())
-						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-
-				case "Quick Load State":
-					if (!IsNullEmulator())
-						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-
-				case "Unthrottle":
+				case "Pause": TogglePause(); break;
+				case "Toggle Throttle":
 					unthrottled ^= true;
 					Global.OSD.AddMessage("Unthrottled: " + unthrottled);
 					break;
-
+				case "Soft Reset": SoftReset(); break;
+				case "Hard Reset": HardReset(); break;
+				case "Quick Load":
+					if (!IsNullEmulator())
+						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
+					break;
+				case "Quick Save":
+					if (!IsNullEmulator())
+						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+					break;
+				case "Clear Autohold": ClearAutohold(); break;
+				case "Screenshot": TakeScreenshot(); break;
+				case "Full Screen": ToggleFullscreen(); break;
+				case "Open ROM": OpenROM(); break;
+				case "Close ROM": CloseROM(); break;
+				case "Display FPS": ToggleFPS(); break;
+				case "Frame Counter": ToggleFrameCounter(); break;
+				case "Lag Counter": ToggleLagCounter(); break;
+				case "Input Display": ToggleInputDisplay(); break;
+				case "Toggle BG Input": ToggleBackgroundInput(); break;
+				case "Toggle Menu": ShowHideMenu(); break;
+				case "Volume Up": VolumeUp(); break;
+				case "Volume Down": VolumeDown(); break;
+				case "Record A/V": RecordAVI(); break;
+				case "Stop A/V": StopAVI(); break;
+				case "Larger Window": IncreaseWindowSize(); break;
+				case "Smaller Window": DecreaseWIndowSize(); break;
+				case "Increase Speed": IncreaseSpeed(); break;
+				case "Decrease Speed": DecreaseSpeed(); break;
 				case "Reboot Core":
-					{
-						bool autoSaveState = Global.Config.AutoSavestates;
-						Global.Config.AutoSavestates = false;
-						LoadRom(CurrentlyOpenRom);
-						Global.Config.AutoSavestates = autoSaveState;
-						break;
-					}
-
-				case "Hard Reset":
-					HardReset();
-					break;
-				case "Screenshot":
-					TakeScreenshot();
+					bool autoSaveState = Global.Config.AutoSavestates;
+					Global.Config.AutoSavestates = false;
+					LoadRom(CurrentlyOpenRom);
+					Global.Config.AutoSavestates = autoSaveState;
 					break;
 
-				case "SaveSlot0": if (!IsNullEmulator()) SaveState("QuickSave0"); break;
-				case "SaveSlot1": if (!IsNullEmulator()) SaveState("QuickSave1"); break;
-				case "SaveSlot2": if (!IsNullEmulator()) SaveState("QuickSave2"); break;
-				case "SaveSlot3": if (!IsNullEmulator()) SaveState("QuickSave3"); break;
-				case "SaveSlot4": if (!IsNullEmulator()) SaveState("QuickSave4"); break;
-				case "SaveSlot5": if (!IsNullEmulator()) SaveState("QuickSave5"); break;
-				case "SaveSlot6": if (!IsNullEmulator()) SaveState("QuickSave6"); break;
-				case "SaveSlot7": if (!IsNullEmulator()) SaveState("QuickSave7"); break;
-				case "SaveSlot8": if (!IsNullEmulator()) SaveState("QuickSave8"); break;
-				case "SaveSlot9": if (!IsNullEmulator()) SaveState("QuickSave9"); break;
-				case "LoadSlot0": if (!IsNullEmulator()) LoadState("QuickSave0"); break;
-				case "LoadSlot1": if (!IsNullEmulator()) LoadState("QuickSave1"); break;
-				case "LoadSlot2": if (!IsNullEmulator()) LoadState("QuickSave2"); break;
-				case "LoadSlot3": if (!IsNullEmulator()) LoadState("QuickSave3"); break;
-				case "LoadSlot4": if (!IsNullEmulator()) LoadState("QuickSave4"); break;
-				case "LoadSlot5": if (!IsNullEmulator()) LoadState("QuickSave5"); break;
-				case "LoadSlot6": if (!IsNullEmulator()) LoadState("QuickSave6"); break;
-				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
-				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
-				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0": OnSelectSlot(0); break;
-				case "SelectSlot1": OnSelectSlot(1); break;
-				case "SelectSlot2": OnSelectSlot(2); break;
-				case "SelectSlot3": OnSelectSlot(3); break;
-				case "SelectSlot4": OnSelectSlot(4); break;
-				case "SelectSlot5": OnSelectSlot(5); break;
-				case "SelectSlot6": OnSelectSlot(6); break;
-				case "SelectSlot7": OnSelectSlot(7); break;
-				case "SelectSlot8": OnSelectSlot(8); break;
-				case "SelectSlot9": OnSelectSlot(9); break;
-
-				case "Toggle Fullscreen": ToggleFullscreen(); break;
+				case "Save State 0": SaveState("QuickSave0"); break;
+				case "Save State 1": SaveState("QuickSave1"); break;
+				case "Save State 2": SaveState("QuickSave2"); break;
+				case "Save State 3": SaveState("QuickSave3"); break;
+				case "Save State 4": SaveState("QuickSave4"); break;
+				case "Save State 5": SaveState("QuickSave5"); break;
+				case "Save State 6": SaveState("QuickSave6"); break;
+				case "Save State 7": SaveState("QuickSave7"); break;
+				case "Save State 8": SaveState("QuickSave8"); break;
+				case "Save State 9": SaveState("QuickSave9"); break;
+				case "Load State 0": LoadState("QuickSave0"); break;
+				case "Load State 1": LoadState("QuickSave1"); break;
+				case "Load State 2": LoadState("QuickSave2"); break;
+				case "Load State 3": LoadState("QuickSave3"); break;
+				case "Load State 4": LoadState("QuickSave4"); break;
+				case "Load State 5": LoadState("QuickSave5"); break;
+				case "Load State 6": LoadState("QuickSave6"); break;
+				case "Load State 7": LoadState("QuickSave7"); break;
+				case "Load State 8": LoadState("QuickSave8"); break;
+				case "Load State 9": LoadState("QuickSave9"); break;
+				case "Select State 0": SelectSlot(0); break;
+				case "Select State 1": SelectSlot(1); break;
+				case "Select State 2": SelectSlot(2); break;
+				case "Select State 3": SelectSlot(3); break;
+				case "Select State 4": SelectSlot(4); break;
+				case "Select State 5": SelectSlot(5); break;
+				case "Select State 6": SelectSlot(6); break;
+				case "Select State 7": SelectSlot(7); break;
+				case "Select State 8": SelectSlot(8); break;
+				case "Select State 9": SelectSlot(9); break;
 				case "Save Named State": SaveStateAs(); break;
 				case "Load Named State": LoadStateAs(); break;
 				case "Previous Slot": PreviousSlot(); break;
 				case "Next Slot": NextSlot(); break;
-				case "Ram Watch": LoadRamWatch(true); break;
-				case "Ram Search": LoadRamSearch(); break;
-				case "Ram Poke":
-					{
-						RamPoke r = new RamPoke();
-						RunLoopBlocked = true;
-						r.Show();
-						RunLoopBlocked = false;
-						break;
-					}
-				case "Hex Editor": LoadHexEditor(); break;
-				case "Lua Console": OpenLuaConsole(); break;
-				case "Cheats": LoadCheatsWindow(); break;
-				case "TASTudio": LoadTAStudio(); break;
-				case "Virtual Pad": LoadVirtualPads(); break;
-				case "Open ROM": OpenROM(); break;
-				case "Close ROM": CloseROM(); break;
-				case "Display FPS": ToggleFPS(); break;
-				case "Display FrameCounter": ToggleFrameCounter(); break;
-				case "Display LagCounter": ToggleLagCounter(); break;
-				case "Display Input": ToggleInputDisplay(); break;
-				case "Toggle Read Only": ToggleReadOnly(); break;
+
+
+				case "Toggle read-only": ToggleReadOnly(); break;
 				case "Play Movie": PlayMovie(); break;
 				case "Record Movie": RecordMovie(); break;
 				case "Stop Movie": StopMovie(); break;
-				case "Play Beginning": PlayMovieFromBeginning(); break;
-				case "Volume Up": VolumeUp(); break;
-				case "Volume Down": VolumeDown(); break;
-				case "Soft Reset": SoftReset(); break;
+				case "Play from beginning": PlayMovieFromBeginning(); break;
+				case "Save Movie": SaveMovie(); break;
 				case "Toggle MultiTrack":
+					if (Global.MovieSession.Movie.IsActive)
 					{
-						if (Global.MovieSession.Movie.IsActive)
+
+						if (Global.Config.VBAStyleMovieLoadState)
 						{
-							
-							if (Global.Config.VBAStyleMovieLoadState)
-							{
-								Global.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
-							}
-							else
-							{
-								Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-								if (Global.MovieSession.MultiTrack.IsActive)
-								{
-									Global.OSD.AddMessage("MultiTrack Enabled");
-									Global.OSD.MT = "Recording None";
-								}
-								else
-								{
-									Global.OSD.AddMessage("MultiTrack Disabled");
-								}
-								Global.MovieSession.MultiTrack.RecordAll = false;
-								Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-							}
+							Global.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
 						}
 						else
 						{
-							Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
+							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+							if (Global.MovieSession.MultiTrack.IsActive)
+							{
+								Global.OSD.AddMessage("MultiTrack Enabled");
+								Global.OSD.MT = "Recording None";
+							}
+							else
+							{
+								Global.OSD.AddMessage("MultiTrack Disabled");
+							}
+							Global.MovieSession.MultiTrack.RecordAll = false;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						}
-						break;
 					}
-				case "Increment Player":
+					else
 					{
-						Global.MovieSession.MultiTrack.CurrentPlayer++;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
-						{
-							Global.MovieSession.MultiTrack.CurrentPlayer = 1;
-						}
-						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-						break;
+						Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
 					}
+					break;
+				case "MT Select All":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = true;
+					Global.OSD.MT = "Recording All";
+					break;
+				case "MT Select None":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					Global.OSD.MT = "Recording None";
+					break;
+				case "MT Increment Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer++;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
+					}
+					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					break;
+				case "MT Decrement Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer--;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
+					}
+					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					break;
+				case "Movie Poke": ToggleModePokeMode(); break;
 
-				case "Decrement Player":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer--;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
-						{
-							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
-						}
-						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-						break;
-					}
-				case "Record All":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						Global.MovieSession.MultiTrack.RecordAll = true;
-						Global.OSD.MT = "Recording All";
-						break;
-					}
-				case "Record None":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						Global.OSD.MT = "Recording None";
-						break;
-					}
-				case "Emulator Pause":
-					//used to be here: (the pause hotkey is ignored when we are frame advancing)
-					TogglePause();
-					break;
-				case "Toggle Menu":
-					ShowHideMenu();
-					break;
-				case "MoviePokeToggle":
-					ToggleModePokeMode();
-					break;
-			} //switch(trigger)
+				case "Ram Watch": LoadRamWatch(true); break;
+				case "Ram Search": LoadRamSearch(); break;
+				case "Ram Poke": new RamPoke().Show(); break;
+				case "Hex Editor": LoadHexEditor(); break;
+                case "Trace Logger": LoadTraceLogger(); break;
+				case "Lua Console": OpenLuaConsole(); break;
+				case "Cheats": LoadCheatsWindow(); break;
+				case "TAStudio": LoadTAStudio(); break;
+				case "ToolBox": LoadToolBox(); break;
+				case "Virtual Pad": LoadVirtualPads(); break;
+
+				case "Toggle BG 1": SNES_ToggleBG1(); break;
+				case "Toggle BG 2": SNES_ToggleBG2(); break;
+				case "Toggle BG 3": SNES_ToggleBG3(); break;
+				case "Toggle BG 4": SNES_ToggleBG4(); break;
+				case "Toggle OBJ 1": SNES_ToggleOBJ1(); break;
+				case "Toggle OBJ 2": SNES_ToggleOBJ2(); break;
+				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
+				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
+
+
+				case "Y Up Small": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
+				case "Y Up Large": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
+				case "Y Down Small": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
+				case "Y Down Large": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
+
+				case "X Up Small": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
+				case "X Up Large": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
+				case "X Down Small": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
+				case "X Down Large": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
+			}
 
 			return true;
 		}
@@ -3243,7 +2161,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
 			{
-				Global.Emulator.FrameAdvance(true);
+                runFrame = true;
 			}
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
@@ -3284,7 +2202,7 @@ namespace BizHawk.MultiClient
 			}
 
 			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
+			if (RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
@@ -3315,8 +2233,8 @@ namespace BizHawk.MultiClient
 			bool coreskipaudio = false;
 			if (runFrame)
 			{
-				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
-				bool fff = Global.ClientControls["MaxTurbo"];
+				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["Turbo"];
+				bool fff = Global.ClientControls["Turbo"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
@@ -3353,7 +2271,7 @@ namespace BizHawk.MultiClient
 					Global.OSD.FPS = fps_string;
 				}
 
-				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
+				if (!suppressCaptureRewind && RewindActive) CaptureRewindState();
 
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
@@ -3417,22 +2335,23 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsBefore(bool fromLua = false)
 		{
 #if WINDOWS
-			if (!fromLua)
-				LuaConsole1.StartLuaDrawing();
-			LuaConsole1.LuaImp.FrameRegisterBefore();
-
+            if (_luaconsole != null)
+            {
+                if (!fromLua) LuaConsole1.StartLuaDrawing();
+                LuaConsole1.LuaImp.FrameRegisterBefore();
+            }
 #endif
-			NESNameTableViewer1.UpdateValues();
-			NESPPU1.UpdateValues();
-			PCEBGViewer1.UpdateValues();
-			GBGPUView1.UpdateValues();
-			GBAGPUView1.UpdateValues();
+			if (_nesnametableview != null) NESNameTableViewer1.UpdateValues();
+			if (_nesppu != null) NESPPU1.UpdateValues();
+			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
+			if (_gbgpuview != null) GBGPUView1.UpdateValues();
+			if (_gbagpuview != null) GBAGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
 		{
 #if SNES
-			SNESGraphicsDebugger1.UpdateToolsLoadstate();
+			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsLoadstate();
 #endif
 		}
 
@@ -3442,30 +2361,35 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter(bool fromLua = false)
 		{
 #if WINDOWS
-			if (!fromLua)
-				LuaConsole1.ResumeScripts(true);
+            if (_luaconsole != null && !fromLua)
+            {
+                LuaConsole1.ResumeScripts(true);
+            }
 
 #endif
-			RamWatch1.UpdateValues();
-			RamSearch1.UpdateValues();
-			HexEditor1.UpdateValues();
+			if (_ramwatch != null) RamWatch1.UpdateValues();
+			if (_ramsearch != null) RamSearch1.UpdateValues();
+			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 
-			TAStudio1.UpdateValues();
-			VirtualPadForm1.UpdateValues();
+			if (_tastudio != null) TAStudio1.UpdateValues();
+			if (_vpad != null) VirtualPadForm1.UpdateValues();
 #if SNES
-			SNESGraphicsDebugger1.UpdateToolsAfter();
+			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsAfter();
 #endif
-			TraceLogger1.UpdateValues();
+			if (_tracelogger != null) TraceLogger1.UpdateValues();
 			HandleToggleLight();
 #if WINDOWS
-			LuaConsole1.LuaImp.FrameRegisterAfter();
-			if (!fromLua)
-			{
-				Global.DisplayManager.PreFrameUpdateLuaSource();
-				LuaConsole1.EndLuaDrawing();
-			}
+            if (_luaconsole != null)
+            {
+                LuaConsole1.LuaImp.FrameRegisterAfter();
+                if (!fromLua)
+                {
+                    Global.DisplayManager.PreFrameUpdateLuaSource();
+                    LuaConsole1.EndLuaDrawing();
+                }
+            }
 #endif
 		}
 
@@ -3533,6 +2457,11 @@ namespace BizHawk.MultiClient
 
 		public void SaveState(string name)
 		{
+			if (IsNullEmulator())
+			{
+				return;
+			}
+
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 
 			var file = new FileInfo(path);
@@ -3557,11 +2486,10 @@ namespace BizHawk.MultiClient
 
 		public void SaveStateFile(string filename, string name, bool fromLua)
 		{
-			// since movie mode requires input log, always save text in that case
-			if (Global.MovieSession.Movie.IsActive ||
-				Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
+			if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
 				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 			{
+				// text mode savestates
 				var writer = new StreamWriter(filename);
 				Global.Emulator.SaveStateText(writer);
 				HandleMovieSaveState(writer);
@@ -3571,20 +2499,48 @@ namespace BizHawk.MultiClient
 					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
 				}
 				writer.Close();
+				//DateTime end = DateTime.UtcNow;
+				//Console.WriteLine("n64 savestate BINARY time: {0}", (end - start).TotalMilliseconds);
 			}
 			else
 			{
-				// binary savestate
-				var writer = new BinaryWriter(new FileStream(filename, FileMode.Create));
-				Global.Emulator.SaveStateBinary(writer);
-				if (Global.Config.SaveScreenshotWithStates)
+				// binary savestates
+				using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+				using (BinaryStateSaver bs = new BinaryStateSaver(fs))
 				{
-					writer.Write("FRAMEBUFFA");
-					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-					writer.Write(buff.Length);
-					writer.Write(buff);
+					bs.PutCoreState(
+						delegate(Stream s)
+						{
+							BinaryWriter bw = new BinaryWriter(s);
+							Global.Emulator.SaveStateBinary(bw);
+							bw.Flush();
+						});
+					if (Global.Config.SaveScreenshotWithStates)
+					{
+						bs.PutFrameBuffer(
+							delegate(Stream s)
+							{
+								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+								BinaryWriter bw = new BinaryWriter(s);
+								bw.Write(buff);
+								bw.Flush();
+							});
+					}
+					if (Global.MovieSession.Movie.IsActive)
+					{
+						bs.PutInputLog(
+							delegate(Stream s)
+							{
+								StreamWriter sw = new StreamWriter(s);
+								// this never should have been a core's responsibility
+								sw.WriteLine("Frame {0}", Global.Emulator.Frame);
+								HandleMovieSaveState(sw);
+								sw.Flush();
+							});
+					}
 				}
-				writer.Close();
+				//DateTime end = DateTime.UtcNow;
+				//Console.WriteLine("n64 savestate TEXT time: {0}", (end - start).TotalMilliseconds);
 			}
 			Global.OSD.AddMessage("Saved state: " + name);
 
@@ -3617,74 +2573,89 @@ namespace BizHawk.MultiClient
 
 		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
-			if (!Global.MovieSession.Movie.IsActive)
+			// try to detect binary first
+			BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(path);
+			if (bw != null)
 			{
-				// only when movies are not playing can we possibly load binary savestates
-				bool binary = false;
-				using (var s = new FileStream(path, FileMode.Open, FileAccess.Read))
+				try
 				{
-					int i;
-					while ((i = s.ReadByte()) != -1)
-					{
-						// unicode support will need something better here
-						if (i < 0x9 || (i > 0x7f))
-						{
-							binary = true;
-							break;
-						}
-					}
-				}
+					bool succeed = false;
 
-				if (binary)
-				{
-					using (var reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
+					if (Global.MovieSession.Movie.IsActive)
 					{
-						Global.Emulator.LoadStateBinary(reader);
-						try
-						{
-							string s = reader.ReadString();
-							if (s.Equals("FRAMEBUFFA"))
+						bw.GetInputLogRequired(
+							delegate(Stream s)
 							{
-								int len = reader.ReadInt32();
-								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-								for (int i = 0; i < len; i++)
-									buff[i] = reader.ReadInt32();
+								StreamReader sr = new StreamReader(s);
+								succeed = HandleMovieLoadState(sr);
+							});
+						if (!succeed)
+							goto cleanup;
+					}
+
+					bw.GetCoreState(
+						delegate(Stream s)
+						{
+							BinaryReader br = new BinaryReader(s);
+							Global.Emulator.LoadStateBinary(br);
+						});
+
+					bw.GetFrameBuffer(
+						delegate(Stream s)
+						{
+							BinaryReader br = new BinaryReader(s);
+							int i;
+							var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+							try
+							{
+								for (i = 0; i < buff.Length; i++)
+								{
+									int j = br.ReadInt32();
+									buff[i] = j;
+								}
+							}
+							catch (EndOfStreamException)
+							{
+							}
+						
+						});
+
+
+				}
+				finally
+				{
+					bw.Dispose();
+				}
+			}
+			else 
+			{
+				// text mode
+
+				if (HandleMovieLoadState(path))
+				{
+					using (var reader = new StreamReader(path))
+					{
+						Global.Emulator.LoadStateText(reader);
+
+						while (true)
+						{
+							string str = reader.ReadLine();
+							if (str == null) break;
+							if (str.Trim() == "") continue;
+
+							string[] args = str.Split(' ');
+							if (args[0] == "Framebuffer")
+							{
+								Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
-						catch { }
+
 					}
-					goto cleanup;
 				}
 				else
-				{
-					// fall through to text situation
-				}
-			}
-
-
-			if (HandleMovieLoadState(path))
-			{
-				var reader = new StreamReader(path);
-				Global.Emulator.LoadStateText(reader);
-
-				while (true)
-				{
-					string str = reader.ReadLine();
-					if (str == null) break;
-					if (str.Trim() == "") continue;
-
-					string[] args = str.Split(' ');
-					if (args[0] == "Framebuffer")
-					{
-						Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
-					}
-				}
-
-				reader.Close();
+					Global.OSD.AddMessage("Loadstate error!");
 
 			}
-			else
-				Global.OSD.AddMessage("Loadstate error!");
 
 			cleanup:
 			Global.OSD.ClearGUIText();
@@ -3699,6 +2670,11 @@ namespace BizHawk.MultiClient
 
 		public void LoadState(string name, bool fromLua = false)
 		{
+			if (IsNullEmulator())
+			{
+				return;
+			}
+
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
 			{
@@ -4020,6 +2996,11 @@ namespace BizHawk.MultiClient
 				Global.Config.GlidePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
 			}
+			else if (PluginToUse == "Glide64mk2")
+			{
+				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
+			}
 			
 			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
@@ -4029,7 +3010,7 @@ namespace BizHawk.MultiClient
 					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
 					{
 						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
-						if (video_settings.Parameters[setting].GetType() == typeof(bool))
+						if (video_settings.Parameters[setting] is bool)
 						{
 							try
 							{
@@ -4046,7 +3027,7 @@ namespace BizHawk.MultiClient
 								video_settings.Parameters[setting] = false;
 							}*/
 						}
-						else if (video_settings.Parameters[setting].GetType() == typeof(int))
+						else if (video_settings.Parameters[setting] is int)
 						{
 							try
 							{
@@ -4250,11 +3231,12 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 #if WINDOWS
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 #endif
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
@@ -4774,12 +3756,12 @@ namespace BizHawk.MultiClient
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -4920,8 +3902,14 @@ namespace BizHawk.MultiClient
 				if (autoDumpLength > 0)
 				{
 					autoDumpLength--;
-					if (autoDumpLength == 0) // finish
-						StopAVI();
+                    if (autoDumpLength == 0) // finish
+                    {
+                        StopAVI();
+                        if (autoCloseOnDump)
+                        {
+                            Close();
+                        }
+                    }
 				}
 			}
 		}
@@ -4981,47 +3969,9 @@ namespace BizHawk.MultiClient
 			RunLoopBlocked = false;
 		}
 
-		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
-            ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-			ofd.Multiselect = true;
-            ofd.Filter = FormatFilter(
-						"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
-						"FCEUX", "*.fm2",
-						"PCEjin/Mednafen", "*.mc2;*.mcm",
-						"Dega", "*.mmv",
-						"Gens", "*.gmv",
-						"Visual Boy Advance", "*.vbm",
-						"LSNES", "*.lsmv",
-						"FCEU", "*.fcm",
-						"Famtasia", "*.fmv",
-						"VirtuaNES", "*.vmv",
-						"Nintendulator", "*.nmv",
-						"Snes9x", "*.smv",
-						"ZSNES", "*.zmv",
-						"All Files", "*.*");
-			ofd.RestoreDirectory = false;
-
-            RunLoopBlocked = true;
-			Global.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
-            RunLoopBlocked = false;
-			if (result != DialogResult.OK)
-				return;
-			
-			RunLoopBlocked = true;
-			foreach (string fn in ofd.FileNames)
-			{
-				ProcessMovieImport(fn);
-			}
-			RunLoopBlocked = false;
-		}
-
 		void ProcessMovieImport(string fn)
 		{
-			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
+			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath);
 			string errorMsg;
 			string warningMsg;
 			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
@@ -5155,11 +4105,6 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
-		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SupressAskSave ^= true;
-		}
-
 		private void IncreaseSpeed()
 		{
 			int oldp = Global.Config.SpeedPercent;
@@ -5208,11 +4153,6 @@ namespace BizHawk.MultiClient
 			nes.SetDMC(Global.Config.NESDMC);
 		}
 
-		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNesSoundConfig();
-		}
-
 		public void ClearSaveRAM()
 		{
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
@@ -5237,82 +4177,6 @@ namespace BizHawk.MultiClient
 			catch { }
 		}
 
-		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Gameboy)
-			{
-				var g = Global.Emulator as Gameboy;
-				if (g.IsCGBMode())
-				{
-					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
-					{
-						g.SetCGBColors(Global.Config.CGBColors);
-					}
-				}
-				else
-				{
-					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
-				}
-			}
-		}
-
-		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			Global.Config.Screenshot_CaptureOSD ^= true;
-		}
-
-		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-		{
-			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
-		}
-
-		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if ((Global.Emulator as LibsnesCore).IsSGB)
-			{
-				loadGBInSGBToolStripMenuItem.Visible = true;
-				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			}
-			else
-				loadGBInSGBToolStripMenuItem.Visible = false;
-		}
-
-		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			loadGBInSGBToolStripMenuItem_Click(sender, e);
-		}
-
-		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void MainForm_Resize(object sender, EventArgs e)
-		{
-			if(Global.RenderPanel != null)
-				Global.RenderPanel.Resized = true;
-		}
-
-		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BackupSaveram ^= true;
-			if (Global.Config.BackupSaveram)
-			{
-				Global.OSD.AddMessage("Backup saveram enabled");
-			}
-			else
-			{
-				Global.OSD.AddMessage("Backup saveram disabled");
-			}
-
-		}
-
-		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
-		{
-			RebootCore();
-		}
-
 		private void SetRebootIconStatus()
 		{
 			if (NeedsReboot)
@@ -5332,33 +4196,6 @@ namespace BizHawk.MultiClient
 			Global.OSD.AddMessage("Core reboot needed for this setting");
 		}
 
-		private void traceLoggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadTraceLogger();
-		}
-
-		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DispBlurry ^= true;
-		}
-
-		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGShowClippedRegions ^= true;
-			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
-		}
-
-		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-		}
-
-		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
-		}
-
 		private void SaveMovie()
 		{
 			if (Global.MovieSession.Movie.IsActive)
@@ -5368,174 +4205,34 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
-		}
-
-		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadVirtualPads();
-		}
-
-		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBG ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBall ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayfield ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBGPUView();
-		}
-
-		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
-		{
-		}
-
-		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.ColecoSkipBiosIntro ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
-		}
-		private bool _lightTogglePending;
-		private void HandleToggleLight()
-		{
-			if (StatusSlot0.Visible && !_lightTogglePending)
-			{
-				_lightTogglePending = true;
-				this.BeginInvoke(new Action(delegate{
-				if (Global.Emulator.CoreComm.UsesDriveLed)
-				{
-					if (!StatusBarLedLight.Visible)
-					{
-						StatusBarLedLight.Visible = true;
-					}
-					if (Global.Emulator.CoreComm.DriveLED)
-					{
-						StatusBarLedLight.Image = Properties.Resources.LightOn;
-					}
-					else
-					{
-						StatusBarLedLight.Image = Properties.Resources.LightOff;
-					}
-				}
-				else
-				{
-					if (StatusBarLedLight.Visible)
-					{
-						StatusBarLedLight.Visible = false;
-					}
-				}
-					_lightTogglePending = false;
-				}));
-			}
-		}
-
-		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBAGPUView();
-		}
-
-		private void bothHotkeysAndControllersToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 0;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void inputOverridesHotkeysToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 1;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void hotkeysOverrideInputToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 2;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void keyPriorityToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
-			{
-				default:
-				case 0:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = true;
-					inputOverridesHotkeysToolStripMenuItem.Checked = false;
-					hotkeysOverrideInputToolStripMenuItem.Checked = false;
-					break;
-				case 1:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
-					inputOverridesHotkeysToolStripMenuItem.Checked = true;
-					hotkeysOverrideInputToolStripMenuItem.Checked = false;
-					break;
-				case 2:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
-					inputOverridesHotkeysToolStripMenuItem.Checked = false;
-					hotkeysOverrideInputToolStripMenuItem.Checked = true;
-					break;
-			}
-		}
-
-		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
-			{
-				default:
-				case 0:
-					Global.Config.Input_Hotkey_OverrideOptions = 1;
-					break;
-				case 1:
-					Global.Config.Input_Hotkey_OverrideOptions = 2;
-					break;
-				case 2:
-					Global.Config.Input_Hotkey_OverrideOptions = 0;
-					break;
-			}
-			UpdateKeyPriorityIcon();
-		}
+        private void HandleToggleLight()
+        {
+            if (StatusSlot0.Visible)
+            {
+                if (Global.Emulator.CoreComm.UsesDriveLed)
+                {
+                    if (!StatusBarLedLight.Visible)
+                    {
+                        StatusBarLedLight.Visible = true;
+                    }
+                    if (Global.Emulator.CoreComm.DriveLED)
+                    {
+                        StatusBarLedLight.Image = Properties.Resources.LightOn;
+                    }
+                    else
+                    {
+                        StatusBarLedLight.Image = Properties.Resources.LightOff;
+                    }
+                }
+                else
+                {
+                    if (StatusBarLedLight.Visible)
+                    {
+                        StatusBarLedLight.Visible = false;
+                    }
+                }
+            }
+        }
 
 		private void UpdateKeyPriorityIcon()
 		{
@@ -5557,11 +4254,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VBAStyleMovieLoadState ^= true;
-		}
-
 		private void ToggleModePokeMode()
 		{
 			Global.Config.MoviePlaybackPokeMode ^= true;
@@ -5573,16 +4265,6 @@ namespace BizHawk.MultiClient
 			{
 				Global.OSD.AddMessage("Movie Poke mode disabled");
 			}
-		}
-
-		private void toolStripMenuItem6_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
-		}
-
-		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
 		}
 
 		public string GetEmuVersion()
@@ -5597,75 +4279,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void configToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			controllersToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
 		}
 
-		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			new FirmwaresConfig().Show();
 		}
-
-		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Sound.StopSound();
-			using (var dlg = new GBtools.DualGBXMLCreator())
-			{
-				dlg.ShowDialog(this);
-			}
-			Global.Sound.StartSound();
-		}
-
-		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new N64VideoPluginconfig().ShowDialog();
-		}
-
-		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			defaultToolStripMenuItem.Checked = false;
-			binaryToolStripMenuItem.Checked = false;
-			textToolStripMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: binaryToolStripMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: textToolStripMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: defaultToolStripMenuItem.Checked = true; break;
-			}
-		}
-
-		private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-		}
-
-		private void binaryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-		}
-
-		private void textToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-		}
-
-		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (var dlg = new SATTools.SaturnPrefs())
-			{
-				var result = dlg.ShowDialog(this);
-				if (result == System.Windows.Forms.DialogResult.OK)
-				{
-					SaturnSetPrefs();
-				}
-			}
-		}
-
 	}
 }

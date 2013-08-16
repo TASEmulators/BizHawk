@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			Name = "GBA Controller",
 			BoolButtons =
 			{					
-				"Up", "Down", "Left", "Right", "Select", "Start", "B", "A", "L", "R", "Power"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
 			}
 		};
 		public ControllerDefinition ControllerDefinition { get { return GBAController; } }

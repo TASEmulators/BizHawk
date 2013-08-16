@@ -14,15 +14,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 	public class Mapper0013 : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
-		private uint bankMask;
-		private uint bankNumber;
+		private int bankMask;
+		private int bankNumber;
 		private byte[] currentBank;
 		private byte[] dummyBank;
 		private bool romEnable;
 
-		public Mapper0013(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData)
+		public Mapper0013(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
-			uint count = (uint)newAddresses.Count;
+			int count = newAddresses.Count;
 
 			pinGame = true;
 			pinExRom = false;
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (uint i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			if (count == 16) //128k
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			}
 
 			// for safety, initialize all banks to dummy
-			for (uint i = 0; i < banks.Length; i++)
+			for (int i = 0; i < banks.Length; i++)
 				banks[i] = dummyBank;
 
 			// now load in the banks
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			BankSet(0);
 		}
 
-		private void BankSet(uint index)
+		private void BankSet(int index)
 		{
 			bankNumber = index & bankMask;
 			romEnable = ((index & 0x80) == 0);
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 				BankSet(val);
 		}
 
-		public override byte Read8000(ushort addr)
+		public override byte Read8000(int addr)
 		{
 			return currentBank[addr];
 		}
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override void WriteDE00(ushort addr, byte val)
+		public override void WriteDE00(int addr, byte val)
 		{
 			if (addr == 0x00)
 				BankSet(val);
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			ser.Sync("bankNumber", ref bankNumber);
 			ser.Sync("romEnable", ref romEnable);
 			if (ser.IsReader)
-				BankSet(bankNumber | (uint)(romEnable ? 0x00 : 0x80));
+				BankSet(bankNumber | (romEnable ? 0x00 : 0x80));
 		}
 	}
 }

@@ -41,6 +41,12 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+			this.label29 = new System.Windows.Forms.Label();
+			this.label31 = new System.Windows.Forms.Label();
+			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+			this.label28 = new System.Windows.Forms.Label();
+			this.label30 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -63,9 +69,12 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
-			this.label28 = new System.Windows.Forms.Label();
-			this.label30 = new System.Windows.Forms.Label();
-			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel6 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel7 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel8 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel9 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel10 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel11 = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -74,7 +83,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.OK.Location = new System.Drawing.Point(361, 455);
+			this.OK.Location = new System.Drawing.Point(361, 565);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -96,7 +105,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(173, 459);
+			this.linkLabel1.Location = new System.Drawing.Point(173, 569);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(180, 13);
 			this.linkLabel1.TabIndex = 2;
@@ -183,6 +192,15 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.linkLabel11);
+			this.panel1.Controls.Add(this.linkLabel10);
+			this.panel1.Controls.Add(this.linkLabel9);
+			this.panel1.Controls.Add(this.linkLabel8);
+			this.panel1.Controls.Add(this.linkLabel7);
+			this.panel1.Controls.Add(this.linkLabel6);
+			this.panel1.Controls.Add(this.linkLabel5);
+			this.panel1.Controls.Add(this.label29);
+			this.panel1.Controls.Add(this.label31);
 			this.panel1.Controls.Add(this.linkLabel4);
 			this.panel1.Controls.Add(this.label28);
 			this.panel1.Controls.Add(this.label30);
@@ -209,8 +227,66 @@
 			this.panel1.Controls.Add(this.label8);
 			this.panel1.Location = new System.Drawing.Point(12, 182);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(423, 267);
+			this.panel1.Size = new System.Drawing.Size(423, 377);
 			this.panel1.TabIndex = 11;
+			// 
+			// linkLabel5
+			// 
+			this.linkLabel5.AutoSize = true;
+			this.linkLabel5.Location = new System.Drawing.Point(21, 256);
+			this.linkLabel5.Name = "linkLabel5";
+			this.linkLabel5.Size = new System.Drawing.Size(96, 13);
+			this.linkLabel5.TabIndex = 29;
+			this.linkLabel5.TabStop = true;
+			this.linkLabel5.Text = "Mupen64Plus v2.0";
+			this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
+			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(21, 347);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(101, 13);
+			this.label29.TabIndex = 28;
+			this.label29.Text = "Ported by: micro500";
+			// 
+			// label31
+			// 
+			this.label31.AutoSize = true;
+			this.label31.Location = new System.Drawing.Point(13, 238);
+			this.label31.Name = "label31";
+			this.label31.Size = new System.Drawing.Size(55, 13);
+			this.label31.TabIndex = 27;
+			this.label31.Text = "N64Hawk";
+			// 
+			// linkLabel4
+			// 
+			this.linkLabel4.AutoSize = true;
+			this.linkLabel4.Location = new System.Drawing.Point(212, 225);
+			this.linkLabel4.Name = "linkLabel4";
+			this.linkLabel4.Size = new System.Drawing.Size(79, 13);
+			this.linkLabel4.TabIndex = 26;
+			this.linkLabel4.TabStop = true;
+			this.linkLabel4.Text = "EMU7800 v1.5";
+			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(212, 238);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(104, 13);
+			this.label28.TabIndex = 25;
+			this.label28.Text = "author: Mike Murphy";
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(204, 207);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(80, 13);
+			this.label30.TabIndex = 23;
+			this.label30.Text = "Atari7800Hawk";
 			// 
 			// label12
 			// 
@@ -268,7 +344,7 @@
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(105, 13);
 			this.label25.TabIndex = 17;
-			this.label25.Text = "Created by: Zeromus";
+			this.label25.Text = "Created by: zeromus";
 			// 
 			// label26
 			// 
@@ -394,7 +470,7 @@
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(105, 13);
 			this.label9.TabIndex = 1;
-			this.label9.Text = "Created by: Zeromus";
+			this.label9.Text = "Created by: zeromus";
 			// 
 			// label8
 			// 
@@ -410,38 +486,75 @@
 			this.label27.AutoSize = true;
 			this.label27.Location = new System.Drawing.Point(198, 162);
 			this.label27.Name = "label27";
-			this.label27.Size = new System.Drawing.Size(63, 13);
+			this.label27.Size = new System.Drawing.Size(149, 13);
 			this.label27.TabIndex = 12;
-			this.label27.Text = "SaxxonPike";
+			this.label27.Text = "SaxxonPike, MasterofPuppets";
 			// 
-			// label28
+			// linkLabel6
 			// 
-			this.label28.AutoSize = true;
-			this.label28.Location = new System.Drawing.Point(212, 238);
-			this.label28.Name = "label28";
-			this.label28.Size = new System.Drawing.Size(104, 13);
-			this.label28.TabIndex = 25;
-			this.label28.Text = "author: Mike Murphy";
+			this.linkLabel6.AutoSize = true;
+			this.linkLabel6.Location = new System.Drawing.Point(21, 269);
+			this.linkLabel6.Name = "linkLabel6";
+			this.linkLabel6.Size = new System.Drawing.Size(71, 13);
+			this.linkLabel6.TabIndex = 30;
+			this.linkLabel6.TabStop = true;
+			this.linkLabel6.Text = "Core: f17a1af";
+			this.linkLabel6.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel6_LinkClicked);
 			// 
-			// label30
+			// linkLabel7
 			// 
-			this.label30.AutoSize = true;
-			this.label30.Location = new System.Drawing.Point(204, 207);
-			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(80, 13);
-			this.label30.TabIndex = 23;
-			this.label30.Text = "Atari7800Hawk";
+			this.linkLabel7.AutoSize = true;
+			this.linkLabel7.Location = new System.Drawing.Point(21, 282);
+			this.linkLabel7.Name = "linkLabel7";
+			this.linkLabel7.Size = new System.Drawing.Size(77, 13);
+			this.linkLabel7.TabIndex = 31;
+			this.linkLabel7.TabStop = true;
+			this.linkLabel7.Text = "RSP: dee8e63";
+			this.linkLabel7.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel7_LinkClicked);
 			// 
-			// linkLabel4
+			// linkLabel8
 			// 
-			this.linkLabel4.AutoSize = true;
-			this.linkLabel4.Location = new System.Drawing.Point(212, 225);
-			this.linkLabel4.Name = "linkLabel4";
-			this.linkLabel4.Size = new System.Drawing.Size(55, 13);
-			this.linkLabel4.TabIndex = 26;
-			this.linkLabel4.TabStop = true;
-			this.linkLabel4.Text = "EMU7800";
-			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			this.linkLabel8.AutoSize = true;
+			this.linkLabel8.Location = new System.Drawing.Point(21, 295);
+			this.linkLabel8.Name = "linkLabel8";
+			this.linkLabel8.Size = new System.Drawing.Size(108, 13);
+			this.linkLabel8.TabIndex = 32;
+			this.linkLabel8.TabStop = true;
+			this.linkLabel8.Text = "Win32 Deps: f816fb4";
+			this.linkLabel8.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel8_LinkClicked);
+			// 
+			// linkLabel9
+			// 
+			this.linkLabel9.AutoSize = true;
+			this.linkLabel9.Location = new System.Drawing.Point(21, 308);
+			this.linkLabel9.Name = "linkLabel9";
+			this.linkLabel9.Size = new System.Drawing.Size(77, 13);
+			this.linkLabel9.TabIndex = 33;
+			this.linkLabel9.TabStop = true;
+			this.linkLabel9.Text = "Rice: e25d038";
+			this.linkLabel9.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel9_LinkClicked);
+			// 
+			// linkLabel10
+			// 
+			this.linkLabel10.AutoSize = true;
+			this.linkLabel10.Location = new System.Drawing.Point(21, 321);
+			this.linkLabel10.Name = "linkLabel10";
+			this.linkLabel10.Size = new System.Drawing.Size(111, 13);
+			this.linkLabel10.TabIndex = 34;
+			this.linkLabel10.TabStop = true;
+			this.linkLabel10.Text = "Glide64mk2: 158331c";
+			this.linkLabel10.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel10_LinkClicked);
+			// 
+			// linkLabel11
+			// 
+			this.linkLabel11.AutoSize = true;
+			this.linkLabel11.Location = new System.Drawing.Point(21, 334);
+			this.linkLabel11.Name = "linkLabel11";
+			this.linkLabel11.Size = new System.Drawing.Size(88, 13);
+			this.linkLabel11.TabIndex = 35;
+			this.linkLabel11.TabStop = true;
+			this.linkLabel11.Text = "Glide64: bfe79ce";
+			this.linkLabel11.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel11_LinkClicked);
 			// 
 			// BizBox
 			// 
@@ -449,7 +562,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
-			this.ClientSize = new System.Drawing.Size(448, 490);
+			this.ClientSize = new System.Drawing.Size(448, 600);
 			this.Controls.Add(this.label27);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label7);
@@ -516,5 +629,14 @@
 		private System.Windows.Forms.Label label28;
 		private System.Windows.Forms.Label label30;
 		private System.Windows.Forms.LinkLabel linkLabel4;
+		private System.Windows.Forms.LinkLabel linkLabel5;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.Label label31;
+		private System.Windows.Forms.LinkLabel linkLabel11;
+		private System.Windows.Forms.LinkLabel linkLabel10;
+		private System.Windows.Forms.LinkLabel linkLabel9;
+		private System.Windows.Forms.LinkLabel linkLabel8;
+		private System.Windows.Forms.LinkLabel linkLabel7;
+		private System.Windows.Forms.LinkLabel linkLabel6;
 	}
 }

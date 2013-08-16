@@ -2,28 +2,35 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
+	// this is a little messy right now because of remnants of the old config system
+
 	public partial class ControllerConfigPanel : UserControl
 	{
-		iControllerConfigObject ControllerConfigObject; //Object that values will be saved to (In Config.cs)
+		// the dictionary that results are saved to
+		Dictionary<string, string> RealConfigObject;
+		// if nonnull, the list of keys to use.  used to have the config panel operate on a smaller list than the whole dictionary;
+		// for instance, to show only a single player
+		List<string> RealConfigButtons;
 
 		public List<string> buttons = new List<string>();
 
 		public int InputMarginLeft = 0;
-		public int LabelPadding = 10;
+		public int LabelPadding = 5;
 
 		public int MarginTop = 0;
-		public int Spacing = 30;
-		public int InputSize = 200;
-		public int ColumnWidth = 220;
-		public int LabelWidth = 100;
+		public int Spacing = 24;
+		public int InputSize = 170;
+		public int ColumnWidth = 280;
+		public int LabelWidth = 60;
 
 		protected List<InputWidget> Inputs = new List<InputWidget>();
 		protected List<Label> Labels = new List<Label>();
+
+		private Size _panelSize = new Size(0, 0);
 
 		public ControllerConfigPanel()
 		{
@@ -74,68 +81,70 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Save()
+		/// <summary>
+		/// save to config
+		/// </summary>
+		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
+		public void Save(Dictionary<string, string>SaveConfigObject = null)
 		{
+			var saveto = SaveConfigObject ?? RealConfigObject;
 			for (int button = 0; button < buttons.Count; button++)
-			{
-				FieldInfo buttonF = ControllerConfigObject.GetType().GetField(buttons[button]);
-				buttonF.SetValue(ControllerConfigObject, Inputs[button].Text);
-			}
+				saveto[buttons[button]] = Inputs[button].Text;
 		}
 
-		public void LoadSettings(iControllerConfigObject configobj)
+		public bool Autotab = false;
+		public void LoadSettings(Dictionary<string, string> configobj, bool autotab, List<string> configbuttons = null, int? width = null, int? height = null)
 		{
-			ControllerConfigObject = configobj;
-
+			Autotab = autotab;
+			if (width.HasValue && height.HasValue)
+			{
+				_panelSize = new Size(width.Value, height.Value);
+			}
+			else
+			{
+				_panelSize = Size;
+			}
+			
+			RealConfigObject = configobj;
+			RealConfigButtons = configbuttons;
 			SetButtonList();
 			Startup();
 			SetWidgetStrings();
 		}
 
-		private void SetButtonList()
+		protected void SetButtonList()
 		{
 			buttons.Clear();
-			MemberInfo[] members = ControllerConfigObject.GetType().GetMembers();
-
-			foreach (MemberInfo member in members)
-			{
-				if (member.MemberType.ToString() == "Field" && member.ToString().Contains("System.String"))
-				{
-					buttons.Add(member.Name);
-				}
-			}
+			IEnumerable<string> bl = RealConfigButtons ?? (IEnumerable<string>)RealConfigObject.Keys;
+			foreach (string s in bl)
+				buttons.Add(s);
 		}
 
-		private void SetWidgetStrings()
+		protected void SetWidgetStrings()
 		{
 			for (int button = 0; button < buttons.Count; button++)
 			{
-				object field = ControllerConfigObject.GetType().GetField(buttons[button]).GetValue(ControllerConfigObject);
-
-				if (field == null)
-				{
-					Inputs[button].SetBindings("");
-				}
-				else
-				{
-					Inputs[button].SetBindings(field.ToString());
-				}
+				string s;
+				if (!RealConfigObject.TryGetValue(buttons[button], out s))
+					s = "";
+				Inputs[button].Bindings = s;
 			}
 		}
 
-		private void Startup()
+		protected void Startup()
 		{
 			int x = InputMarginLeft;
 			int y = MarginTop - Spacing;
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (Size.Height - 23))
+				if (y > (_panelSize.Height - 30))
 				{
 					y = MarginTop;
 					x += ColumnWidth;
 				}
 				InputWidget iw = new InputWidget {Location = new Point(x, y), Size = new Size(InputSize, 23), TabIndex = i};
+				iw.AutoTab = Autotab;
 				iw.BringToFront();
 				iw.Enter += InputWidget_Enter;
 				iw.Leave += InputWidget_Leave;
@@ -145,7 +154,7 @@ namespace BizHawk.MultiClient
 					{
 						Location = new Point(x + InputSize + LabelPadding, y + 3),
 						Text = buttons[i].Replace('_', ' ').Trim(),
-						Width = LabelWidth
+						//Width = LabelWidth
 					};
 				Controls.Add(l);
 				Labels.Add(l);
@@ -173,12 +182,6 @@ namespace BizHawk.MultiClient
 		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearAll();
-		}
-
-		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ControllerConfigObject.SetDefaults();
-			SetWidgetStrings();
 		}
 	}
 }

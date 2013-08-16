@@ -37,6 +37,7 @@ if not exist %SVNREV% (
   echo Ran into a weird error writing subwcrev output to tempfile: %TEMPFILE%
 )
 
+rem <zero> make subwcrev process more reliable. sorry for leaving so many tempfiles, but life's too short
 rem del %TEMPFILE%
 
 rem always let build proceed

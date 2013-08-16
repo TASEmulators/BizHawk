@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 			recentlist.Clear();
 		}
 
-		public bool IsEmpty
+		public bool Empty
 		{
 			get { return recentlist.Count == 0; }
 		}

@@ -119,15 +119,11 @@ ifeq ("$(CPU)","NONE")
 endif
 
 # base CFLAGS, LDLIBS, and LDFLAGS
-OPTFLAGS ?= -O3
+OPTFLAGS ?= -O3 -flto
 WARNFLAGS ?= -Wall
 CFLAGS += $(OPTFLAGS) $(WARNFLAGS) -ffast-math -fno-strict-aliasing -fvisibility=hidden -I../../src -I../../src/wrapper -DGCC
 CXXFLAGS += -fvisibility-inlines-hidden
 LDFLAGS += $(SHARED)
-
-# default configuration programs
-SDL_CONFIG = $(CROSS_COMPILE)sdl-config
-PKG_CONFIG = $(CROSS_COMPILE)pkg-config
 
 ifeq ($(CPU), X86)
   CFLAGS += -msse
@@ -137,10 +133,8 @@ endif
 # On 32-bit x86 systems we do not want to use -fPIC because we don't have to and it has a big performance penalty on this arch
 ifeq ($(PIC), 1)
   CFLAGS += -fPIC
-  LDFLAGS += -fPIC
 else
   CFLAGS += -fno-PIC
-  LDFLAGS += -fno-PIC
 endif
 
 ifeq ($(BIG_ENDIAN), 1)
@@ -153,7 +147,7 @@ ifeq ($(ARCH_DETECTED), 64BITS_32)
     $(error Do not use the BITS=32 option with FreeBSD, use -m32 and -m elf_i386)
   endif
   CFLAGS += -m32
-  LDFLAGS += -m32 -Wl,-m,elf_i386
+  LDFLAGS += -Wl,-m,elf_i386
 endif
 
 # set special flags per-system
@@ -178,11 +172,11 @@ ifeq ($(OS), OSX)
   ifeq ($(CPU), X86)
     ifeq ($(ARCH_DETECTED), 64BITS)
       CFLAGS += -pipe -arch x86_64 -mmacosx-version-min=$(OSX_SDK) -isysroot $(OSX_SYSROOT)/MacOSX$(OSX_SDK).sdk
-      LDFLAGS += -bundle -arch x86_64
+      LDFLAGS += -bundle
       LDLIBS += -ldl
     else
       CFLAGS += -pipe -mmmx -msse -fomit-frame-pointer -arch i686 -mmacosx-version-min=$(OSX_SDK) -isysroot $(OSX_SYSROOT)/MacOSX$(OSX_SDK).sdk
-      LDFLAGS += -bundle -arch i686
+      LDFLAGS += -bundle
       LDLIBS += -ldl
     endif
   endif
@@ -192,47 +186,47 @@ ifeq ($(OS), FREEBSD)
 endif
 
 # search for OpenGL libraries
-GL_LIBS=
 ifeq ($(OS), OSX)
-  GL_LIBS = -framework OpenGL
+  GL_LDLIBS = -framework OpenGL
 endif
 ifeq ($(OS), MINGW)
-  GL_LIBS = -lopengl32
+  GL_LDLIBS = -lopengl32
 endif
-ifeq ("$(GL_LIBS)", "")
-  ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
-    $(error $(PKG_CONFIG) not found)
+ifeq ($(origin GL_CFLAGS) $(origin GL_LDLIBS), undefined undefined)
+  ifeq ($(origin PKG_CONFIG), undefined)
+    PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+    ifeq ($(shell which $(PKG_CONFIG) 2>/dev/null),)
+      $(error $(PKG_CONFIG) not found)
+    endif
   endif
+
   ifeq ($(shell $(PKG_CONFIG) --modversion gl 2>/dev/null),)
     $(error No OpenGL development libraries found!)
   endif
-  CFLAGS += $(shell $(PKG_CONFIG) --cflags gl)
-  GL_LIBS = $(shell $(PKG_CONFIG) --libs gl)
+  GL_CFLAGS += $(shell $(PKG_CONFIG) --cflags gl)
+  GL_LDLIBS +=  $(shell $(PKG_CONFIG) --libs gl)
 endif
-LDLIBS += $(GL_LIBS)
+CFLAGS += $(GL_CFLAGS)
+LDLIBS += $(GL_LDLIBS)
 
 # test for presence of SDL
-ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
-  $(error No SDL development libraries found!)
-endif
-ifeq ($(OS),FREEBSD)
-    CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
-    LDLIBS += $(shell $(SDL_CONFIG) --libs)
-endif
-ifeq ($(OS),OSX)
-    CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
+ifeq ($(origin SDL_CFLAGS) $(origin SDL_LDLIBS), undefined undefined)
+  SDL_CONFIG = $(CROSS_COMPILE)sdl-config
+  ifeq ($(shell which $(SDL_CONFIG) 2>/dev/null),)
+    $(error No SDL development libraries found!)
+  endif
+  ifeq ($(OS),OSX)
+    SDL_CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
     # sdl-config on mac screws up when we're trying to build a library and not an executable
     # SDL 1.3 is supposed to fix that, if it's ever released
-    LDLIBS += -L/usr/local/lib -lSDL -Wl,-framework,Cocoa
+    SDL_LDLIBS += -L/usr/local/lib -lSDL -Wl,-framework,Cocoa
+  else
+    SDL_CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
+    SDL_LDLIBS += $(shell $(SDL_CONFIG) --libs)
+  endif
 endif
-ifeq ($(OS),LINUX)
-    CFLAGS  += $(shell $(SDL_CONFIG) --cflags)
-    LDLIBS += $(shell $(SDL_CONFIG) --libs)
-endif
-ifeq ($(OS), MINGW)
-  CFLAGS += $(shell $(SDL_CONFIG) --cflags)
-  LDLIBS += $(shell $(SDL_CONFIG) --libs)
-endif
+CFLAGS += $(SDL_CFLAGS)
+LDLIBS += $(SDL_LDLIBS)
 
 # set mupen64plus core API header path
 ifneq ("$(APIDIR)","")
@@ -273,7 +267,7 @@ INSTALL  ?= install
 MKDIR ?= mkdir -p
 COMPILE.c = $(Q_CC)$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cc = $(Q_CXX)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
-LINK.o = $(Q_LD)$(CXX) $(LDFLAGS) $(TARGET_ARCH)
+LINK.o = $(Q_LD)$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 # set special flags for given Makefile parameters
 ifeq ($(DEBUG),1)
@@ -356,7 +350,7 @@ targets:
 	@echo "    BITS=32       == build 32-bit binaries on 64-bit machine"
 	@echo "    NO_ASM=1      == build without inline assembly code (x86 MMX/SSE)"
 	@echo "    APIDIR=path   == path to find Mupen64Plus Core headers"
-	@echo "    OPTFLAGS=flag == compiler optimization (default: -O3)"
+	@echo "    OPTFLAGS=flag == compiler optimization (default: -O3 -flto)"
 	@echo "    WARNFLAGS=flag == compiler warning levels (default: -Wall)"
 	@echo "    PIC=(1|0)     == Force enable/disable of position independent code"
 	@echo "    POSTFIX=name  == String added to the name of the the build (default: '')"
@@ -368,7 +362,6 @@ targets:
 	@echo "    DESTDIR=path  == path to prepend to all installation paths (only for packagers)"
 	@echo "  Debugging Options:"
 	@echo "    DEBUG=1       == add debugging symbols"
-	@echo "    LTO=1         == enable experimental build with link-time optimization"
 	@echo "    V=1           == show verbose compiler output"
 
 all: $(TARGET)
@@ -393,11 +386,6 @@ CFLAGS += -MD
 -include $(OBJECTS:.o=.d)
 
 CXXFLAGS += $(CFLAGS)
-ifeq ($(LTO), 1)
-  CFLAGS += -flto -ffunction-sections -fdata-sections
-  CXXFLAGS += -flto -ffunction-sections -fdata-sections
-  LDFLAGS += -fuse-linker-plugin -Wl,--gc-sections $(CXXFLAGS)
-endif
 
 # standard build rules
 $(OBJDIR)/%.o: $(SRCDIR)/%.c

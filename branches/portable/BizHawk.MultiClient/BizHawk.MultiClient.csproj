@@ -42,7 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -155,6 +155,7 @@
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\WavWriter.cs" />
+    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BizBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,17 +170,26 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig.cs">
-      <SubType>Form</SubType>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="config\ControllerConfig.Designer.cs">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.Designer.cs">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindPanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\FirmwaresConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\FirmwaresConfig.Designer.cs">
+      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
@@ -196,11 +206,17 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PathConfig.cs">
+    <Compile Include="config\NewControllerConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\PathConfig.Designer.cs">
-      <DependentUpon>PathConfig.cs</DependentUpon>
+    <Compile Include="config\NewControllerConfig.Designer.cs">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NewHotkeyWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewHotkeyWindow.Designer.cs">
+      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathInfo.cs">
       <SubType>Form</SubType>
@@ -209,14 +225,22 @@
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathManager.cs" />
+    <Compile Include="config\RewindConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\RewindConfig.Designer.cs">
+      <DependentUpon>RewindConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="CoreFileProvider.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="FirmwareManager.cs" />
     <Compile Include="GBAtools\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -320,6 +344,7 @@
     <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\MovieLog.cs" />
+    <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\Subtitle.cs" />
@@ -390,6 +415,12 @@
     </Compile>
     <Compile Include="GENtools\GenGameGenie.Designer.cs">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NewPathConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewPathConfig.Designer.cs">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="PCEtools\PCEBGCanvas.cs">
       <SubType>Component</SubType>
@@ -467,7 +498,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\LuaDocumentation.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="tools\LuaTextBox.cs" Condition=" '$(OS)' == 'Windows_NT' ">
+    <Compile Include="tools\LuaRegisteredFunctionsList.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\LuaRegisteredFunctionsList.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\LuaTextBox.cs" Condition=" '$(OS)' == 'Windows_NT' " >
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\LuaWinform.cs" Condition=" '$(OS)' == 'Windows_NT' ">
@@ -546,6 +583,18 @@
     <Compile Include="tools\VirtualPadN64.Designer.cs">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadSaturn.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturn.Designer.cs">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.Designer.cs">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadSNES.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -566,17 +615,29 @@
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig.resx">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\FirmwaresConfig.resx">
+      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\NewControllerConfig.resx">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewHotkeyWindow.resx">
+      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\RewindConfig.resx">
+      <DependentUpon>RewindConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBAtools\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>
@@ -620,6 +681,9 @@
     <EmbeddedResource Include="GENtools\GenGameGenie.resx">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\NewPathConfig.resx">
+      <DependentUpon>NewPathConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PCEtools\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -659,7 +723,10 @@
     <EmbeddedResource Include="tools\LuaFunctionList.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWinform.resx" Condition=" '$(OS)' == 'Windows_NT' ">
+    <EmbeddedResource Include="tools\LuaRegisteredFunctionsList.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\LuaWinform.resx" Condition=" '$(OS)' == 'Windows_NT' " >
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaWriter.resx" Condition=" '$(OS)' == 'Windows_NT' ">
@@ -699,6 +766,12 @@
     <EmbeddedResource Include="tools\VirtualPadN64.resx">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturn.resx">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturnControl.resx">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -723,12 +796,6 @@
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
-    <Compile Include="config\HotkeyWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\HotkeyWindow.Designer.cs">
-      <DependentUpon>HotkeyWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="TI83tools\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -872,9 +939,6 @@
       <DependentUpon>MessageConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\PathConfig.resx">
-      <DependentUpon>PathConfig.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\SoundConfig.resx">
       <DependentUpon>SoundConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -925,10 +989,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RecordMovie.resx">
       <DependentUpon>RecordMovie.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\HotkeyWindow.resx">
-      <DependentUpon>HotkeyWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TI83tools\TI83KeyPad.resx">

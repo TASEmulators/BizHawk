@@ -562,7 +562,7 @@ namespace BizHawk.MultiClient
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (currentFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -701,7 +701,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentWatches.IsEmpty)
+			if (Global.Config.RecentWatches.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
@@ -1590,15 +1590,14 @@ namespace BizHawk.MultiClient
 						{
 							if (WatchListView.Columns[i].Width > 0)
 							{
-								sb.Append(GetColumnValue(i, index));
-								sb.Append('\t');
+								sb.Append(GetColumnValue(i, index)).Append('\t');
 							}
 						}
 						sb.Remove(sb.Length - 1, 1);
 						sb.Append('\n');
 					}
 
-					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					if (sb.Length > 0)
 					{
 						Clipboard.SetDataObject(sb.ToString());
 					}

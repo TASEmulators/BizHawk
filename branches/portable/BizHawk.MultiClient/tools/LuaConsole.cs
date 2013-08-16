@@ -100,7 +100,7 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			if (Global.Config.AutoLoadLuaSession)
 			{
-				if (!Global.Config.RecentLuaSession.IsEmpty)
+				if (!Global.Config.RecentLuaSession.Empty)
 				{
 					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
 				}
@@ -536,7 +536,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLua.IsEmpty)
+			if (Global.Config.RecentLua.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
@@ -1012,7 +1012,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentSessionsToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLuaSession.IsEmpty)
+			if (Global.Config.RecentLuaSession.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentSessionsToolStripMenuItem.DropDownItems.Add(none);
@@ -1140,15 +1140,16 @@ namespace BizHawk.MultiClient
 				scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
 			}
 
-			if (luaList.Count > 0)
+			if (luaList.Any())
 				scriptToolStripMenuItem.DropDownItems[9].Enabled = true;
 			else
 				scriptToolStripMenuItem.DropDownItems[9].Enabled = false;
 
-			if (luaRunning)
-				scriptToolStripMenuItem.DropDownItems[11].Enabled = true;
-			else
-				scriptToolStripMenuItem.DropDownItems[11].Enabled = false;
+
+			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
+
+
+			showRegisteredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -1290,6 +1291,20 @@ namespace BizHawk.MultiClient
 		private void newStripButton1_Click(object sender, EventArgs e)
 		{
 			NewScript();
+		}
+
+		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any())
+			{
+				LuaRegisteredFunctionsList dialog = new LuaRegisteredFunctionsList();
+				dialog.ShowDialog();
+			}
+		}
+
+		private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+		{
+			registeredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
 		}
 	}
 }

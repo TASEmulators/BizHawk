@@ -95,7 +95,7 @@ static void prefetch(void);
       } \
       else name(); \
    }
-#define CHECK_MEMORY(x)
+#define CHECK_MEMORY()
 
 #include "interpreter.def"
 

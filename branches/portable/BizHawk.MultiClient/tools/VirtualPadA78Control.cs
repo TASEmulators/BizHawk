@@ -106,5 +106,10 @@ namespace BizHawk.MultiClient
 			B3.Checked = false;
 			B4.Checked = false;
 		}
+
+		private void VirtualPadA78Control_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

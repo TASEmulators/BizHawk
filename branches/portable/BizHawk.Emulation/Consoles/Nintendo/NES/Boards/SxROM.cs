@@ -42,6 +42,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SyncCHR();
 		}
 
+		public void Dispose()
+		{
+			chr_banks_4k.Dispose();
+			prg_banks_16k.Dispose();
+		}
+
 		public void SyncState(Serializer ser)
 		{
 			scnt.SyncState(ser);
@@ -55,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.SyncEnum("mirror", ref mirror);
 
 			SyncCHR();
-			//ser.Sync("chr_banks_4k", ref chr_banks_4k, false); 
+			SyncPRG();
 		}
 
 		public enum Rev
@@ -78,7 +84,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int wram_disable;
 		int prg;
 
-		int[] chr_banks_4k = new int[2];
+		//regenerable state
+		IntBuffer chr_banks_4k = new IntBuffer(2);
+		IntBuffer prg_banks_16k = new IntBuffer(2);
 
 		public class MMC1_SerialController
 		{
@@ -138,12 +146,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mode = 1;
 			scnt.Reset();
 			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
+			SyncCHR();
+			SyncPRG();
 		}
 
 		public void Write(int addr, byte value)
 		{
 			scnt.Write(addr, value);
 			SyncCHR();
+			SyncPRG();
 		}
 
 		//logical register writes, called from the serial controller
@@ -186,31 +197,42 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public int Get_PRGBank(int addr)
+		void SyncPRG()
 		{
-			int PRG_A14 = (addr >> 14) & 1;
 			if (prg_mode == 0)
-				if (PRG_A14 == 0)
-					return prg;
+			{
+				//switch 32kb
+				prg_banks_16k[0] = prg & ~1;
+				prg_banks_16k[1] = (prg & ~1) + 1;
+			}
+			else
+			{
+				//switch 16KB at...
+				if (prg_slot == 0)
+				{
+					//...$C000:
+					prg_banks_16k[0] = 0x1F;
+					prg_banks_16k[1] = prg;
+				}
 				else
 				{
-					//"not tested very well yet! had to guess!
-					return prg + 1;
+					//...$8000:
+					prg_banks_16k[0] = prg;
+					prg_banks_16k[1] = 0x1F;
 				}
-			else if (prg_slot == 0)
-				if (PRG_A14 == 0)
-					return 0;
-				else return prg;
-			else
-				if (PRG_A14 == 0)
-					return prg;
-				else return 0xF;
+			}
+		}
+
+		public int Get_PRGBank(int addr)
+		{
+			int bank_16k = addr >> 14;
+			bank_16k = prg_banks_16k[bank_16k];
+			return bank_16k;
 		}
 
 		public int Get_CHRBank_4K(int addr)
 		{
 			int bank_4k = addr >> 12;
-			int ofs = addr & ((1 << 12) - 1);
 			bank_4k = chr_banks_4k[bank_4k];
 			return bank_4k;
 		}
@@ -331,6 +353,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
 					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SJROM": //zombie hunter.. but it has no wram????
+					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
+					break;
 				case "NES-SJROM": //air fortress
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8);
 					break;
@@ -382,6 +407,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (!disablemirror)
 				SetMirrorType(mmc1.mirror);
 			ppuclock = pputimeout;
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			if(mmc1 != null) mmc1.Dispose();
 		}
 
 	} //class SxROM

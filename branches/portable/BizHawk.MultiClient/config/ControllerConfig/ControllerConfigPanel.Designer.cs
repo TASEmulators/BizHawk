@@ -31,17 +31,15 @@
 			this.components = new System.ComponentModel.Container();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.restoreDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem,
-            this.restoreDefaultsToolStripMenuItem});
+            this.clearToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(160, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
 			// 
 			// clearToolStripMenuItem
 			// 
@@ -50,19 +48,13 @@
 			this.clearToolStripMenuItem.Text = "&Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
 			// 
-			// restoreDefaultsToolStripMenuItem
-			// 
-			this.restoreDefaultsToolStripMenuItem.Name = "restoreDefaultsToolStripMenuItem";
-			this.restoreDefaultsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-			this.restoreDefaultsToolStripMenuItem.Text = "&Restore Defaults";
-			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultsToolStripMenuItem_Click);
-			// 
 			// ControllerConfigPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.Name = "ControllerConfigPanel";
+			this.Size = new System.Drawing.Size(203, 292);
 			this.Load += new System.EventHandler(this.ControllerConfigPanel_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -73,6 +65,5 @@
 
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem restoreDefaultsToolStripMenuItem;
 	}
 }

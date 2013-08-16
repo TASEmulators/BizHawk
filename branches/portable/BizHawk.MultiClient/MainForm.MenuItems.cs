@@ -1,15 +1,20 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
-using System.Drawing.Imaging;
+using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
+		private void openROMToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenROM();
+		}
 
 		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -170,7 +175,7 @@ namespace BizHawk.MultiClient
 
 		public void ClickSpeedItem(int num)
 		{
-			if ((Control.ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
+			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
 			else SetSpeedPercent(num);
 		}
 		private void miSpeed50_Click(object sender, EventArgs e) { ClickSpeedItem(50); }
@@ -186,10 +191,15 @@ namespace BizHawk.MultiClient
 
 		private void soundToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenSoundConfigDialog();
+		}
+
+		private void OpenSoundConfigDialog()
+		{
             RunLoopBlocked = true;
 			SoundConfig s = new SoundConfig();
 			var result = s.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
+			if (result == DialogResult.OK)
 				RewireSound();
             RunLoopBlocked = false;
 		}
@@ -405,21 +415,6 @@ namespace BizHawk.MultiClient
 			CloseROM();
 		}
 
-		private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-            RunLoopBlocked = true;
-			Global.Sound.StopSound();
-
-			var frm = new NameStateForm();
-			frm.ShowDialog(this);
-
-			if (frm.OK)
-				SaveState(frm.Result);
-
-			Global.Sound.StartSound();
-            RunLoopBlocked = false;
-		}
-
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RebootCore();
@@ -442,7 +437,7 @@ namespace BizHawk.MultiClient
 
 		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (EmulatorPaused == true)
+			if (EmulatorPaused)
 				UnpauseEmulator();
 			else
 				PauseEmulator();
@@ -465,8 +460,13 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenControllerConfig();
+		}
+
+		private void OpenControllerConfig()
+		{
 			RunLoopBlocked = true;
-			ControllerConfig c = new ControllerConfig();
+			config.NewControllerConfig c = new config.NewControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{
@@ -478,8 +478,13 @@ namespace BizHawk.MultiClient
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenHotkeyDialog();
+		}
+
+		private void OpenHotkeyDialog()
+		{
 			RunLoopBlocked = true;
-			HotkeyWindow h = new HotkeyWindow();
+			NewHotkeyWindow h = new NewHotkeyWindow();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
 			{
@@ -552,32 +557,9 @@ namespace BizHawk.MultiClient
 				Close();
 		}
 
-		private void openROMToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenROM();
-		}
-
 		private void PPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadNESPPU();
-		}
-
-		private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RewindEnabled ^= true;
-			RewindMessage();
-		}
-
-		public void RewindMessage()
-		{
-			if (Global.Config.RewindEnabled)
-			{
-				Global.OSD.AddMessage("Rewind enabled");
-			}
-			else
-			{
-				Global.OSD.AddMessage("Rewind disabled");
-			}
 		}
 
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -618,32 +600,32 @@ namespace BizHawk.MultiClient
 
 		private void saveStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			savestate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot1;
-			savestate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot2;
-			savestate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot3;
-			savestate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot4;
-			savestate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot5;
-			savestate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot6;
-			savestate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot7;
-			savestate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot8;
-			savestate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot9;
-			savestate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot0;
-			saveNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveNamedState;
+			savestate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 1"].Bindings;
+			savestate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 2"].Bindings;
+			savestate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 3"].Bindings;
+			savestate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 4"].Bindings;
+			savestate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 5"].Bindings;
+			savestate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 6"].Bindings;
+			savestate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 7"].Bindings;
+			savestate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 8"].Bindings;
+			savestate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 9"].Bindings;
+			savestate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 0"].Bindings;
+			saveNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Named State"].Bindings;
 		}
 
 		private void loadStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot1;
-			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot2;
-			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot3;
-			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot4;
-			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot5;
-			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot6;
-			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot7;
-			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
-			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
-			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot0;
-			loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadNamedState;
+			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 1"].Bindings;
+			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 2"].Bindings;
+			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 3"].Bindings;
+			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 4"].Bindings;
+			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 5"].Bindings;
+			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 6"].Bindings;
+			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 7"].Bindings;
+			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 8"].Bindings;
+			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 9"].Bindings;
+			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 0"].Bindings;
+			loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load Named State"].Bindings;
 
 			autoLoadLastSlotToolStripMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
 		}
@@ -670,47 +652,36 @@ namespace BizHawk.MultiClient
 
 		private void toolsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			toolBoxToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToolBox;
-			if (!ToolBox1.IsHandleCreated || ToolBox1.IsDisposed)
-				toolBoxToolStripMenuItem.Enabled = true;
-			else
-				toolBoxToolStripMenuItem.Enabled = false;
-
-			rAMWatchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamWatch;
-			rAMSearchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamSearch;
-			rAMPokeToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamPoke;
-			hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HexEditor;
-			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
-			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
-			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
-			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenVirtualPadBinding;
-
-			if (Global.Emulator.CoreComm.CpuTraceAvailable)
-			{
-				traceLoggerToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				traceLoggerToolStripMenuItem.Enabled = false;
-			}
+			toolBoxToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
+			rAMWatchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Watch"].Bindings;
+			rAMSearchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Search"].Bindings;
+			rAMPokeToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Poke"].Bindings;
+			hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hex Editor"].Bindings;
+			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lua Console"].Bindings;
+			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;
+			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
+			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
+            traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
+			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
+			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			selectSlot10ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot0;
-			selectSlot1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot1;
-			selectSlot2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot2;
-			selectSlot3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot3;
-			selectSlot4ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot4;
-			selectSlot5ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot5;
-			selectSlot6ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot6;
-			selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot7;
-			selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot8;
-			selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot9;
-			previousSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PreviousSlot;
-			nextSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.NextSlot;
-			saveToCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickSave;
-			loadCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickLoad;
+			selectSlot10ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 0"].Bindings;
+			selectSlot1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 1"].Bindings;
+			selectSlot2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 2"].Bindings;
+			selectSlot3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 3"].Bindings;
+			selectSlot4ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 4"].Bindings;
+			selectSlot5ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 5"].Bindings;
+			selectSlot6ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 6"].Bindings;
+			selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 7"].Bindings;
+			selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 8"].Bindings;
+			selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 9"].Bindings;
+			previousSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Previous Slot"].Bindings;
+			nextSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Next Slot"].Bindings;
+			saveToCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Save"].Bindings;
+			loadCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Load"].Bindings;
 		}
 
 		private void switchToFullscreenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -721,8 +692,7 @@ namespace BizHawk.MultiClient
 		private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             RunLoopBlocked = true;
-			MessageConfig m = new MessageConfig();
-			m.ShowDialog();
+			new MessageConfig().ShowDialog();
             RunLoopBlocked = false;
 		}
 
@@ -747,8 +717,7 @@ namespace BizHawk.MultiClient
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             RunLoopBlocked = true;
-			PathConfig p = new PathConfig();
-			p.ShowDialog();
+			new NewPathConfig().ShowDialog();
             RunLoopBlocked = false;
 		}
 
@@ -763,11 +732,9 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentROMToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentRoms.IsEmpty)
+			if (Global.Config.RecentRoms.Empty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentROMToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -775,27 +742,19 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentRoms.Count; x++)
 				{
 					string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadRomFromRecent(path);
 					recentROMToolStripMenuItem.DropDownItems.Add(item);
 				}
 			}
 
 			recentROMToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
 			recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
-
-			var auto = new ToolStripMenuItem();
-			auto.Text = "&Autoload Most Recent";
+			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
 			auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
-			if (Global.Config.AutoLoadMostRecentRom == true)
-				auto.Checked = true;
-			else
-				auto.Checked = false;
+			auto.Checked = Global.Config.AutoLoadMostRecentRom;
 			recentROMToolStripMenuItem.DropDownItems.Add(auto);
 		}
 
@@ -806,11 +765,9 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentMovies.IsEmpty)
+			if (Global.Config.RecentMovies.Empty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -818,8 +775,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentMovies.Count; x++)
 				{
 					string path = Global.Config.RecentMovies.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadMoviesFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -827,18 +783,13 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentMovies.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
 
-			var auto = new ToolStripMenuItem();
-			auto.Text = "&Autoload Most Recent";
+			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
 			auto.Click += (o, ev) => UpdateAutoLoadRecentMovie();
-			if (Global.Config.AutoLoadMostRecentMovie == true)
-				auto.Checked = true;
-			else
-				auto.Checked = false;
+			auto.Checked = Global.Config.AutoLoadMostRecentMovie;
 			recentToolStripMenuItem.DropDownItems.Add(auto);
 		}
 
@@ -847,10 +798,12 @@ namespace BizHawk.MultiClient
             RunLoopBlocked = true;
 			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
             
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = Path.GetDirectoryName(path);
-			sfd.FileName = Path.GetFileName(path);
-			sfd.Filter = "PNG File (*.png)|*.png";
+			SaveFileDialog sfd = new SaveFileDialog
+				{
+					InitialDirectory = Path.GetDirectoryName(path),
+					FileName = Path.GetFileName(path),
+					Filter = "PNG File (*.png)|*.png"
+				};
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -932,8 +885,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
 			{
-				Point p = new Point(e.X, e.Y + this.menuStrip1.Height);
-				Point po = this.PointToScreen(p);
+				Point p = new Point(e.X, e.Y + menuStrip1.Height);
+				Point po = PointToScreen(p);
 				contextMenuStrip1.Show(po);
 			}
 		}
@@ -994,8 +947,7 @@ namespace BizHawk.MultiClient
 			}
 			if (index < 0)
 			{
-				sub = new Subtitle();
-				sub.Frame = Global.Emulator.Frame;
+				sub = new Subtitle {Frame = Global.Emulator.Frame};
 			}
 			s.sub = sub;
 
@@ -1006,11 +958,6 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
             RunLoopBlocked = false;
-		}
-
-		private void screenshotToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			TakeScreenshot();
 		}
 
 		private void closeROMToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1031,19 +978,13 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (EmulatorPaused)
-			{
-				wasPaused = true;
-			}
-			else
-			{
-				wasPaused = false;
-			}
-
+			wasPaused = EmulatorPaused;
 			didMenuPause = true;
 			PauseEmulator();
 
 			//TODO - MUST refactor this to hide all and then view a set depending on the state
+
+			configToolStripMenuItem1.Visible = InFullscreen;
 
 			if (IsNullEmulator())
 			{
@@ -1070,14 +1011,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				if (InFullscreen)
-				{
-					cmiOpenRom.Visible = true;
-				}
-				else
-				{
-					cmiOpenRom.Visible = false;
-				}
+				cmiOpenRom.Visible = InFullscreen;
+				configToolStripMenuItem1.Visible = InFullscreen;
 				
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
@@ -1094,7 +1029,7 @@ namespace BizHawk.MultiClient
 					cmiViewComments.Visible = true;
 					saveMovieToolStripMenuItem1.Visible = true;
 					toolStripSeparator_afterMovie.Visible = true;
-					if (ReadOnly == true)
+					if (ReadOnly)
 					{
 						cmiViewSubtitles.Text = "View Subtitles";
 						cmiViewComments.Text = "View Comments";
@@ -1129,52 +1064,37 @@ namespace BizHawk.MultiClient
 				cmiCloseRom.Visible = true;
 			}
 
-			if (Global.Config.RecentRoms.Count > 0)
-			{
-				cmiLoadLastRom.Enabled = true;
-			}
-			else
-			{
-				cmiLoadLastRom.Enabled = false;
-			}
-
-			if (Global.Config.RecentMovies.Count > 0)
-			{
-				cmiLoadLastMovie.Enabled = true;
-			}
-			else
-			{
-				cmiLoadLastMovie.Enabled = false;
-			}
+			cmiLoadLastRom.Enabled = !Global.Config.RecentRoms.Empty;
+			cmiLoadLastMovie.Enabled = !Global.Config.RecentMovies.Empty;
 
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
-			if (file.Exists == true)
+			if (file.Exists)
 			{
 				if (StateSlots.IsRedo(Global.Config.SaveSlot))
 				{
 					cmiUndoSavestate.Enabled = true;
 					cmiUndoSavestate.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
-					cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.redo;
+					cmiUndoSavestate.Image = Properties.Resources.redo;
 				}
 				else
 				{
 					cmiUndoSavestate.Enabled = true;
 					cmiUndoSavestate.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
-					cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.undo;
+					cmiUndoSavestate.Image = Properties.Resources.undo;
 				}
 			}
 			else
 			{
 				cmiUndoSavestate.Enabled = false;
 				cmiUndoSavestate.Text = "Undo Savestate";
-				cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.undo;
+				cmiUndoSavestate.Image = Properties.Resources.undo;
 			}
 
-			if (InFullscreen == true)
+			if (InFullscreen)
 			{
 				cmiShowMenu.Visible = true;
-				if (MainMenuStrip.Visible == true)
+				if (MainMenuStrip.Visible)
 					cmiShowMenu.Text = "Hide Menu";
 				else
 					cmiShowMenu.Text = "Show Menu";
@@ -1240,8 +1160,8 @@ namespace BizHawk.MultiClient
 
 		private void aVIWAVToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			recordAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIRecordBinding;
-			stopAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIStopBinding;
+			recordAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
+			stopAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
 			captureOSDToolStripMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
 			if (CurrAviWriter == null)
@@ -1261,8 +1181,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				RunLoopBlocked = true;
-				EditCommentsForm c = new EditCommentsForm();
-				c.ReadOnly = ReadOnly;
+				EditCommentsForm c = new EditCommentsForm {ReadOnly = ReadOnly};
 				c.GetMovie(Global.MovieSession.Movie);
 				c.ShowDialog();
 				RunLoopBlocked = false;
@@ -1274,8 +1193,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				RunLoopBlocked = true;
-				EditSubtitlesForm s = new EditSubtitlesForm();
-				s.ReadOnly = ReadOnly;
+				EditSubtitlesForm s = new EditSubtitlesForm {ReadOnly = ReadOnly};
 				s.GetMovie(Global.MovieSession.Movie);
 				s.ShowDialog();
 				RunLoopBlocked = false;
@@ -1324,48 +1242,24 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.MultiTrack.IsActive)
-			{
-				fullMovieLoadstatesToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				fullMovieLoadstatesToolStripMenuItem.Enabled = true;
-			}
-
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				stopMovieToolStripMenuItem.Enabled = true;
-				playFromBeginningToolStripMenuItem.Enabled = true;
-				saveMovieToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				stopMovieToolStripMenuItem.Enabled = false;
-				playFromBeginningToolStripMenuItem.Enabled = false;
-				saveMovieToolStripMenuItem.Enabled = false;
-			}
+			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
+			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			stopMovieToolStripMenuItem.Enabled 
+				= playFromBeginningToolStripMenuItem.Enabled 
+				= saveMovieToolStripMenuItem.Enabled 
+				= Global.MovieSession.Movie.IsActive;
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
 			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
 			automaticallyBackupMoviesToolStripMenuItem.Checked = Global.Config.EnableBackupMovies;
-
-			readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ReadOnlyToggleBinding;
-			recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RecordMovieBinding;
-			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
-			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
-			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
-			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveMovieBinding;
 			fullMovieLoadstatesToolStripMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
 
-			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges)
-			{
-				stopMovieWithoutSavingToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				stopMovieWithoutSavingToolStripMenuItem.Enabled = false;
-			}
+			readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle read-only"].Bindings;
+			recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record Movie"].Bindings;
+			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play Movie"].Bindings;
+			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop Movie"].Bindings;
+			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play from beginning"].Bindings;
+			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Movie"].Bindings;
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1376,7 +1270,8 @@ namespace BizHawk.MultiClient
 
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, Global.Config);
+			Global.Config = ConfigService.Load(PathManager.DefaultIniPath, Global.Config);
+			Global.Config.ResolveDefaults();
 			Global.OSD.AddMessage("Config file loaded");
 		}
 
@@ -1402,15 +1297,15 @@ namespace BizHawk.MultiClient
 			vSyncEnabledToolStripMenuItem.Checked = Global.Config.VSync;
 
 			miSpeed100.Checked = Global.Config.SpeedPercent == 100;
-			miSpeed100.Image = (Global.Config.SpeedPercentAlternate == 100) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed100.Image = (Global.Config.SpeedPercentAlternate == 100) ? Properties.Resources.FastForward : null;
 			miSpeed150.Checked = Global.Config.SpeedPercent == 150;
-			miSpeed150.Image = (Global.Config.SpeedPercentAlternate == 150) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed150.Image = (Global.Config.SpeedPercentAlternate == 150) ? Properties.Resources.FastForward : null;
 			miSpeed200.Checked = Global.Config.SpeedPercent == 200;
-			miSpeed200.Image = (Global.Config.SpeedPercentAlternate == 200) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed200.Image = (Global.Config.SpeedPercentAlternate == 200) ? Properties.Resources.FastForward : null;
 			miSpeed75.Checked = Global.Config.SpeedPercent == 75;
-			miSpeed75.Image = (Global.Config.SpeedPercentAlternate == 75) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed75.Image = (Global.Config.SpeedPercentAlternate == 75) ? Properties.Resources.FastForward : null;
 			miSpeed50.Checked = Global.Config.SpeedPercent == 50;
-			miSpeed50.Image = (Global.Config.SpeedPercentAlternate == 50) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed50.Image = (Global.Config.SpeedPercentAlternate == 50) ? Properties.Resources.FastForward : null;
 		}
 
 		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1428,12 +1323,11 @@ namespace BizHawk.MultiClient
 			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
 			neverBeAskedToSaveChangesToolStripMenuItem.Checked = Global.Config.SupressAskSave;
 
-			acceptBackgroundInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleBackgroundInput;
+			acceptBackgroundInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG Input"].Bindings;
 		}
 
 		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
@@ -1478,10 +1372,11 @@ namespace BizHawk.MultiClient
 			displayRerecordCountToolStripMenuItem.Checked = Global.Config.DisplayRerecordCount;
 			displaySubtitlesToolStripMenuItem.Checked = Global.Config.DisplaySubtitles;
 
-			displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FPSBinding;
-			displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FrameCounterBinding;
-			displayLagCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LagCounterBinding;
-			displayInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.InputDisplayBinding;
+			displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Display FPS"].Bindings;
+			displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Frame Counter"].Bindings;
+			displayLagCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lag Counter"].Bindings;
+			displayInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Input Display"].Bindings;
+			switchToFullscreenToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Full Screen"].Bindings;
 
 			x1MenuItem.Checked = false;
 			x2MenuItem.Checked = false;
@@ -1497,8 +1392,6 @@ namespace BizHawk.MultiClient
 				case 5: x5MenuItem.Checked = true; break;
 				case 10: mzMenuItem.Checked = true; break;
 			}
-
-			switchToFullscreenToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleFullscreenBinding;
 		}
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1610,43 +1503,24 @@ namespace BizHawk.MultiClient
 				case 9:
 					selectSlot9ToolStripMenuItem.Checked = true;
 					break;
-				default:
-					break;
 			}
 
-			if (Global.Config.AutoLoadMostRecentRom == true)
-				autoloadMostRecentToolStripMenuItem.Checked = true;
-			else
-				autoloadMostRecentToolStripMenuItem.Checked = false;
-
-			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
-			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenROM;
-			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.CloseROM;
+			autoloadMostRecentToolStripMenuItem.Checked = Global.Config.AutoLoadMostRecentRom;
+			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
+			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
+			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
 		}
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
-					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
-			{
-				resetToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				resetToolStripMenuItem.Enabled = false;
-			}
+			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
+					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
 
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
-				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
-			{
-				hardResetToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				hardResetToolStripMenuItem.Enabled = false;
-			}
+
+			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
+				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause)
@@ -1654,10 +1528,10 @@ namespace BizHawk.MultiClient
 				pauseToolStripMenuItem.Checked = wasPaused;
 			}
 
-			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
-			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RebootCoreResetBinding;
-			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SoftResetBinding;
-			hardResetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Pause"].Bindings;
+			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Reboot Core"].Bindings;
+			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Soft Reset"].Bindings;
+			hardResetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hard Reset"].Bindings;
 		}
 
 		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1764,13 +1638,13 @@ namespace BizHawk.MultiClient
 			if (Global.CheatList.HasActiveCheats)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
-				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
+				CheatStatus.Image = Properties.Resources.Freeze;
 				CheatStatus.Visible = true;
 			}
 			else
 			{
 				CheatStatus.ToolTipText = "";
-				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				CheatStatus.Image = Properties.Resources.Blank;
 				CheatStatus.Visible = false;
 			}
 		}
@@ -1861,22 +1735,8 @@ namespace BizHawk.MultiClient
 			showPlayfieldToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayfield;
 		}
 
-		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GameBoySkipBIOS ^= true;
-		}
-
 		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			// the palettes have no effect when CGB mode is active
-			/*
-			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
-			{
-				changeDMGPalettesToolStripMenuItem.Enabled =
-					!((Emulation.Consoles.GB.Gameboy)Global.Emulator).IsCGBMode();
-			}*/
-
-			//skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;
 			gBAInCGBModeToolStripMenuItem.Checked = Global.Config.GB_GBACGB;
 			multicartCompatibilityToolStripMenuItem.Checked = Global.Config.GB_MulticartCompat;
@@ -1891,11 +1751,13 @@ namespace BizHawk.MultiClient
 
 		private void miSnesOptions_Click(object sender, EventArgs e)
 		{
-			var so = new SNESOptions();
-			so.UseRingBuffer = Global.Config.SNESUseRingBuffer;
-			so.AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize;
-			so.Profile = Global.Config.SNESProfile;
-			if (so.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			var so = new SNESOptions
+				{
+					UseRingBuffer = Global.Config.SNESUseRingBuffer,
+					AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize,
+					Profile = Global.Config.SNESProfile
+				};
+			if (so.ShowDialog() == DialogResult.OK)
 			{
 				bool reboot = Global.Config.SNESProfile != so.Profile;
 				Global.Config.SNESProfile = so.Profile;
@@ -2150,6 +2012,16 @@ namespace BizHawk.MultiClient
 			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ2;
 			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ3;
 			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ4;
+
+			bG0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
+			bG1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
+			bG2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 3"].Bindings;
+			bG3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 4"].Bindings;
+
+			oBJ0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 1"].Bindings;
+			oBJ1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 2"].Bindings;
+			oBJ2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 3"].Bindings;
+			oBJ3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
 		}
 
 		private void captureOSDToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2323,6 +2195,500 @@ namespace BizHawk.MultiClient
 			{
 				SaveState("QuickSave0");
 			}
+		}
+
+		private static void FormDragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Multiselect = true,
+				Filter = FormatFilter(
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
+					"FCEUX", "*.fm2",
+					"PCEjin/Mednafen", "*.mc2;*.mcm",
+					"Dega", "*.mmv",
+					"Gens", "*.gmv",
+					"Visual Boy Advance", "*.vbm",
+					"LSNES", "*.lsmv",
+					"FCEU", "*.fcm",
+					"Famtasia", "*.fmv",
+					"VirtuaNES", "*.vmv",
+					"Nintendulator", "*.nmv",
+					"Snes9x", "*.smv",
+					"ZSNES", "*.zmv",
+					"All Files", "*.*"),
+				RestoreDirectory = false
+			};
+
+			Global.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return;
+
+			foreach (string fn in ofd.FileNames)
+			{
+				ProcessMovieImport(fn);
+			}
+		}
+
+		private void FormDragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			bool isLua = false;
+			foreach (string path in filePaths)
+			{
+				var extension = Path.GetExtension(path);
+				if (extension != null && extension.ToUpper() == ".LUA")
+				{
+					OpenLuaConsole();
+					LuaConsole1.LoadLuaFile(path);
+					isLua = true;
+				}
+			}
+			if (isLua)
+				return;
+
+			var ext = Path.GetExtension(filePaths[0]) ?? "";
+			if (ext.ToUpper() == ".LUASES")
+			{
+				OpenLuaConsole();
+				LuaConsole1.LoadLuaSession(filePaths[0]);
+			}
+			else if (IsValidMovieExtension(ext))
+			{
+				Movie m = new Movie(filePaths[0]);
+				StartNewMovie(m, false);
+
+			}
+			else if (ext.ToUpper() == ".STATE")
+			{
+				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
+			}
+			else if (ext.ToUpper() == ".CHT")
+			{
+				LoadCheatsWindow();
+				Cheats1.LoadCheatFile(filePaths[0], false);
+				Cheats1.DisplayCheatsList();
+			}
+			else if (ext.ToUpper() == ".WCH")
+			{
+				LoadRamWatch(true);
+				RamWatch1.LoadWatchFile(filePaths[0], false);
+				RamWatch1.DisplayWatchList();
+			}
+
+			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
+			{
+				//tries to open a legacy movie format as if it were a BKM, by importing it
+
+				if (CurrentlyOpenRom == null)
+					OpenROM();
+				else
+					LoadRom(CurrentlyOpenRom);
+
+				string errorMsg;
+				string warningMsg;
+				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+				if (errorMsg.Length > 0)
+				{
+					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					//fix movie extension to something palatable for these purposes. 
+					//for instance, something which doesnt clobber movies you already may have had.
+					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					m.Filename += ".autoimported." + Global.Config.MovieExtension;
+					m.WriteMovie();
+					StartNewMovie(m, false);
+				}
+				Global.OSD.AddMessage(warningMsg);
+			}
+			else
+				LoadRom(filePaths[0]);
+		}
+
+		private void toolStripMenuItem6_Click(object sender, EventArgs e)
+		{
+			StopMovie(true);
+		}
+
+		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopMovie(true);
+		}
+
+		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Sound.StopSound();
+			using (var dlg = new GBtools.DualGBXMLCreator())
+			{
+				dlg.ShowDialog(this);
+			}
+			Global.Sound.StartSound();
+		}
+
+		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var result = new N64VideoPluginconfig().ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				Global.OSD.AddMessage("Plugin settings saved");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Plugin settings aborted");
+			}
+		}
+
+		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			defaultToolStripMenuItem.Checked = false;
+			binaryToolStripMenuItem.Checked = false;
+			textToolStripMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: binaryToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: textToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: defaultToolStripMenuItem.Checked = true; break;
+			}
+		}
+
+		private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
+		}
+
+		private void binaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
+		}
+
+		private void textToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
+		}
+
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new SATTools.SaturnPrefs())
+			{
+				var result = dlg.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					SaturnSetPrefs();
+				}
+			}
+		}
+
+		private void controllersToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenControllerConfig();
+		}
+
+		private void hotkeysToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenHotkeyDialog();
+		}
+
+		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new MessageConfig().ShowDialog();
+		}
+
+		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new NewPathConfig().ShowDialog();
+		}
+
+		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenSoundConfigDialog();
+		}
+
+		private void autofireToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new AutofireConfig().ShowDialog();
+		}
+
+		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SupressAskSave ^= true;
+		}
+
+		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNesSoundConfig();
+		}
+
+		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				var g = Global.Emulator as Gameboy;
+				if (g.IsCGBMode())
+				{
+					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
+					{
+						g.SetCGBColors(Global.Config.CGBColors);
+					}
+				}
+				else
+				{
+					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
+				}
+			}
+		}
+
+		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Global.Config.Screenshot_CaptureOSD ^= true;
+		}
+
+		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		{
+			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
+		}
+
+		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if ((Global.Emulator as LibsnesCore).IsSGB)
+			{
+				loadGBInSGBToolStripMenuItem.Visible = true;
+				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
+			}
+			else
+				loadGBInSGBToolStripMenuItem.Visible = false;
+		}
+
+		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			loadGBInSGBToolStripMenuItem_Click(sender, e);
+		}
+
+		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			Global.RenderPanel.Resized = true;
+		}
+
+		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.BackupSaveram ^= true;
+			if (Global.Config.BackupSaveram)
+			{
+				Global.OSD.AddMessage("Backup saveram enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Backup saveram disabled");
+			}
+
+		}
+
+		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
+		{
+			RebootCore();
+		}
+
+		private void traceLoggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadTraceLogger();
+		}
+
+		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DispBlurry ^= true;
+		}
+
+		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGShowClippedRegions ^= true;
+			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+		}
+
+		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGHighlightActiveDisplayRegion ^= true;
+			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+		}
+
+		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
+		}
+
+		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
+		}
+
+		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadVirtualPads();
+		}
+
+		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBG ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer1 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer2 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle1 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle2 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBall ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayfield ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBGPUView();
+		}
+
+		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
+		{
+		}
+
+		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ColecoSkipBiosIntro ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
+		}
+
+		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBAGPUView();
+		}
+
+		private void bothHotkeysAndControllersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 0;
+			UpdateKeyPriorityIcon();
+		}
+
+		private void inputOverridesHotkeysToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 1;
+			UpdateKeyPriorityIcon();
+		}
+
+		private void hotkeysOverrideInputToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 2;
+			UpdateKeyPriorityIcon();
+		}
+
+		private void keyPriorityToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = true;
+					inputOverridesHotkeysToolStripMenuItem.Checked = false;
+					hotkeysOverrideInputToolStripMenuItem.Checked = false;
+					break;
+				case 1:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
+					inputOverridesHotkeysToolStripMenuItem.Checked = true;
+					hotkeysOverrideInputToolStripMenuItem.Checked = false;
+					break;
+				case 2:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
+					inputOverridesHotkeysToolStripMenuItem.Checked = false;
+					hotkeysOverrideInputToolStripMenuItem.Checked = true;
+					break;
+			}
+		}
+
+		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					Global.Config.Input_Hotkey_OverrideOptions = 1;
+					break;
+				case 1:
+					Global.Config.Input_Hotkey_OverrideOptions = 2;
+					break;
+				case 2:
+					Global.Config.Input_Hotkey_OverrideOptions = 0;
+					break;
+			}
+			UpdateKeyPriorityIcon();
+		}
+
+		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.VBAStyleMovieLoadState ^= true;
+		}
+
+		private void rewindOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new RewindConfig().ShowDialog();
 		}
 	}
 }

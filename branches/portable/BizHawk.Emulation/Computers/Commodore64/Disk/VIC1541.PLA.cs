@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 
 		public byte Peek(int addr)
 		{
-			addr &= 0xFFFF;
 			if (addr >= 0x1800 && addr < 0x1C00)
 				return PeekVia0(addr);
 			else if (addr >= 0x1C00 && addr < 0x2000)
@@ -36,7 +35,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 
 		public void Poke(int addr, byte val)
 		{
-			addr &= 0xFFFF;
 			if (addr >= 0x1800 && addr < 0x1C00)
 				PokeVia0(addr, val);
 			else if (addr >= 0x1C00 && addr < 0x2000)
@@ -49,7 +47,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 
 		public byte Read(ushort addr)
 		{
-			addr &= 0xFFFF;
 			if (addr >= 0x1800 && addr < 0x1C00)
 				return ReadVia0(addr);
 			else if (addr >= 0x1C00 && addr < 0x2000)
@@ -62,7 +59,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 
 		public void Write(ushort addr, byte val)
 		{
-			addr &= 0xFFFF;
 			if (addr >= 0x1800 && addr < 0x1C00)
 				WriteVia0(addr, val);
 			else if (addr >= 0x1C00 && addr < 0x2000)

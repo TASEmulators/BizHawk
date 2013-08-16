@@ -92,6 +92,7 @@
 			this.Controls.Add(this.B1);
 			this.Name = "VirtualPadA78Control";
 			this.Size = new System.Drawing.Size(217, 34);
+			this.Load += new System.EventHandler(this.VirtualPadA78Control_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

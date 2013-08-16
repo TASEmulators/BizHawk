@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			Name = "Gameboy Controller",
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power"
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
 			}
 		};
 

@@ -95,8 +95,8 @@ namespace BizHawk.MultiClient
 			// put any BEETA quality cores here
 			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
 				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
-				Global.Emulator is Emulation.Consoles.Nintendo.N64.N64 ||
-				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause)
+				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
+                Global.Emulator is Emulation.Consoles.Sony.PSP.PSP)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
@@ -157,6 +157,14 @@ namespace BizHawk.MultiClient
 
 		private bool HandleMovieLoadState(string path)
 		{
+			using (var sr = new StreamReader(path))
+			{
+				return HandleMovieLoadState(sr);
+			}
+		}
+
+		private bool HandleMovieLoadState(StreamReader reader)
+		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
 			if (!Global.MovieSession.Movie.IsActive)
 			{
@@ -168,7 +176,7 @@ namespace BizHawk.MultiClient
 
 				if (ReadOnly)
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
 					{
 						return false;	//Timeline/GUID error
 					}
@@ -181,11 +189,13 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
 						return false;	//GUID Error
 					}
-					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
 
@@ -193,7 +203,7 @@ namespace BizHawk.MultiClient
 			{
 				if (ReadOnly)
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
 					{
 						return false;	//Timeline/GUID error
 					}
@@ -201,13 +211,15 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
 						return false;	//GUID Error
 					}
 					Global.MovieSession.Movie.SwitchToRecord();
 					SetMainformMovieInfo();
-					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
 			else if (Global.MovieSession.Movie.IsFinished)
@@ -215,7 +227,7 @@ namespace BizHawk.MultiClient
 				if (ReadOnly)
 				{
 					{
-						if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+						if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
 						{
 							return false;	//Timeline/GUID error
 						}
@@ -233,7 +245,7 @@ namespace BizHawk.MultiClient
 				else
 				{
 					{
-						if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+						if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 						{
 							return false;	//GUID Error
 						}
@@ -241,7 +253,9 @@ namespace BizHawk.MultiClient
 						{
 							Global.MovieSession.Movie.StartRecording();
 							SetMainformMovieInfo();
-							Global.MovieSession.Movie.LoadLogFromSavestateText(path);
+							reader.BaseStream.Position = 0;
+							reader.DiscardBufferedData();
+							Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 						}
 					}
 				}
