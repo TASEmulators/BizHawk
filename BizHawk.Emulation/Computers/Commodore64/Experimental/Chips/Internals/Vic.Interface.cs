@@ -103,6 +103,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             return PHI0;
         }
 
+        public bool OutputPixelClock()
+        {
+            return PixelClock;
+        }
+
         public bool OutputRAS()
         {
             return RAS;
@@ -113,6 +118,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             get
             {
                 return bufferPHI0;
+            }
+        }
+
+        virtual public bool PixelClock
+        {
+            get
+            {
+                return true;
             }
         }
 

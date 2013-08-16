@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public class Ram : Rom
     {
-        public Func<bool> InputWrite;
+        public Func<bool> InputRead;
 
         public Ram(int size, int addressMask, int dataMask)
             : base(size, addressMask, dataMask)
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 
         virtual public void Execute()
         {
-            if (InputWrite())
+            if (!InputRead())
                 memory[InputAddress() & addressMask] = InputData() & dataMask;
         }
     }

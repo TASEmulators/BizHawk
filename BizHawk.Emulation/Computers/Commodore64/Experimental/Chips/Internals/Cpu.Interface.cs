@@ -22,7 +22,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public int OutputAddress() { return Address; }
         public int OutputData() { return Data; }
         public int OutputPort() { return Port; }
+        public bool OutputRead() { return Read; }
         virtual public int Port { get { return 0xFF; } }
+        virtual public bool Read { get { return true; } }
         virtual public void Precache() { }
         virtual public void SyncState(Serializer ser) { }
     }
