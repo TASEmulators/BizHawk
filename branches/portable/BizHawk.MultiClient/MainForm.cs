@@ -117,7 +117,9 @@ namespace BizHawk.MultiClient
 		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
+#if SNES
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
+#endif
 		public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
 		public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
 		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
@@ -648,22 +650,22 @@ namespace BizHawk.MultiClient
                     //handle events and dispatch as a hotkey action, or a hotkey button, or an input button
                     ProcessInput();
                     Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
-				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+					Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+					Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+					Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				if (Global.ClientControls["Autohold"])
-				{
-					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
-				}
-				else if (Global.ClientControls["Autofire"])
-				{
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-				}
+					if (Global.ClientControls["Autohold"])
+					{
+						Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+						Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+					}
+					else if (Global.ClientControls["Autofire"])
+					{
+						Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					}
 
-				//if (!EmulatorPaused)
+					//if (!EmulatorPaused)
 					//Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS

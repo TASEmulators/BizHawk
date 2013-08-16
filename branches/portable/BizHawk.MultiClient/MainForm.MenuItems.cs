@@ -2241,6 +2241,7 @@ namespace BizHawk.MultiClient
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+#if WINDOWS
 			bool isLua = false;
 			foreach (string path in filePaths)
 			{
@@ -2254,12 +2255,14 @@ namespace BizHawk.MultiClient
 			}
 			if (isLua)
 				return;
-
+#endif
 			var ext = Path.GetExtension(filePaths[0]) ?? "";
 			if (ext.ToUpper() == ".LUASES")
 			{
+#if WINDOWS
 				OpenLuaConsole();
 				LuaConsole1.LoadLuaSession(filePaths[0]);
+#endif
 			}
 			else if (IsValidMovieExtension(ext))
 			{
@@ -2496,7 +2499,8 @@ namespace BizHawk.MultiClient
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			Global.RenderPanel.Resized = true;
+			if(Global.RenderPanel != null)
+				Global.RenderPanel.Resized = true;
 		}
 
 		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
