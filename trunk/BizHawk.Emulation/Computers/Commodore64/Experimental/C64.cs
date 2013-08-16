@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
         Rom basicRom;
         Cassette cassette;
         Rom characterRom;
+        Cia cia1;
+        Cia cia2;
         Ram colorRam;
         Cpu cpu;
         Expansion expansion;
@@ -22,6 +24,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
         Pla pla;
         Serial serial;
         Sid sid;
+        Userport user;
         Vic vic;
 
         public C64(C64Timing timing)
