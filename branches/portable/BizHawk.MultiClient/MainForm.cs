@@ -667,7 +667,6 @@ namespace BizHawk.MultiClient
 
 					//if (!EmulatorPaused)
 					//Global.ClickyVirtualPadController.FrameTick();
-
 #if WINDOWS
                     LuaConsole1.ResumeScripts(false);
 #endif

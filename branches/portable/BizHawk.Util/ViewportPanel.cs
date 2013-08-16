@@ -173,13 +173,13 @@ namespace BizHawk.Core
 
 		}
 
-
+#if WINDOWS
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			SignalPaint();
 			base.OnPaint(e);
 		}
-
+#endif
 	}
 
 	/// <summary>
