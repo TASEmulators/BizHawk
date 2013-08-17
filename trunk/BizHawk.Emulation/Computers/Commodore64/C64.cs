@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
-		private uint cyclesPerFrame;
+		private int cyclesPerFrame;
 		private string extension;
 		private byte[] inputFile;
 
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			inputFile = rom;
 			extension = romextension;
 			Init(Region.PAL);
-			cyclesPerFrame = (uint)board.vic.CyclesPerFrame;
+			cyclesPerFrame = board.vic.CyclesPerFrame;
 			CoreComm.UsesDriveLed = true;
 			SetupMemoryDomains();
 		}
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             board.inputRead = false;
 			board.PollInput();
-			for (uint count = cyclesPerFrame; count > 0; count--)
+			for (int count = cyclesPerFrame; count > 0; count--)
 			{
 				//disk.Execute();
 				board.Execute();

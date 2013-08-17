@@ -7,14 +7,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public partial class Vic
     {
-        int bufferADDR;
-        bool bufferAEC;
-        bool bufferBA;
-        bool bufferCAS;
-        int bufferDATA;
-        bool bufferIRQ;
-        bool bufferPHI0;
-        bool bufferRAS;
+        int cachedADDR;
+        bool cachedAEC;
+        bool cachedBA;
+        bool cachedCAS;
+        int cachedDATA;
+        bool cachedIRQ;
+        bool cachedRAS;
 
         class Sprite
         {
@@ -30,15 +29,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             public int Y;
         }
 
+        bool ba;
         int[] backgroundColor;
         bool bitmapMode;
         int borderColor;
+        bool cas;
         int characterBitmap;
         bool columnSelect;
+        int data;
         bool dataCollisionInterrupt;
         bool displayEnable;
         bool extraColorMode;
         byte interruptEnableRegister;
+        bool irq;
         bool lightPenInterrupt;
         int lightPenX;
         int lightPenY;
@@ -64,25 +67,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int videoCounterBase;
         int videoMatrixLineIndex;
 
-        public void Execute()
+        public void Clock()
         {
             if (pixelTimer == 0)
             {
-                bufferPHI0 = !bufferPHI0;
                 pixelTimer = 8;
-
                 badLineEnable |= (rasterY == 0x30 && displayEnable);
-                if (!bufferPHI0)
-                {
-                    badLineCondition = (
-                        badLineEnable && 
-                        rasterY >= 0x030 && 
-                        rasterY <= 0x0F7 && 
-                        (rasterY & 0x007) == yScroll
-                        );
-                    if (!idleState && badLineCondition)
-                        idleState = true;
-                }
+                badLineCondition = (
+                    badLineEnable &&
+                    rasterY >= 0x030 &&
+                    rasterY <= 0x0F7 &&
+                    (rasterY & 0x007) == yScroll
+                    );
+                if (!idleState && badLineCondition)
+                    idleState = true;
             }
             pixelTimer--;
 

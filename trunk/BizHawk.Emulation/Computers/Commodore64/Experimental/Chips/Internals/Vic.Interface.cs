@@ -20,51 +20,51 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 sprites[i] = new Sprite();
         }
 
-        virtual public int Address
+        public int Address
         {
             get
             {
-                return bufferADDR;
+                return cachedADDR;
             }
         }
 
-        virtual public bool AEC
+        public bool AEC
         {
             get
             {
-                return bufferAEC;
+                return cachedAEC;
             }
         }
 
-        virtual public bool BA
+        public bool BA
         {
             get
             {
-                return bufferBA;
+                return cachedBA;
             }
         }
 
-        virtual public bool CAS
+        public bool CAS
         {
             get
             {
-                return bufferCAS;
+                return cachedCAS;
             }
         }
 
-        virtual public int Data
+        public int Data
         {
             get
             {
-                return bufferDATA;
+                return cachedDATA;
             }
         }
 
-        virtual public bool IRQ
+        public bool IRQ
         {
             get
             {
-                return bufferIRQ;
+                return cachedIRQ;
             }
         }
 
@@ -98,46 +98,29 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             return IRQ;
         }
 
-        public bool OutputPHI0()
-        {
-            return PHI0;
-        }
-
-        public bool OutputPixelClock()
-        {
-            return PixelClock;
-        }
-
         public bool OutputRAS()
         {
             return RAS;
         }
 
-        virtual public bool PHI0
+        public bool RAS
         {
             get
             {
-                return bufferPHI0;
+                return cachedRAS;
             }
         }
 
-        virtual public bool PixelClock
+        public void Precache() 
         {
-            get
-            {
-                return true;
-            }
+            cachedAEC = (pixelTimer >= 4);
+            cachedBA = ba;
+            cachedCAS = cas;
+            cachedDATA = data;
+            cachedIRQ = irq;
+            
         }
 
-        virtual public bool RAS
-        {
-            get
-            {
-                return bufferRAS;
-            }
-        }
-
-        virtual public void Precache() { }
-        virtual public void SyncState(Serializer ser) { }
+        public void SyncState(Serializer ser) { }
     }
 }

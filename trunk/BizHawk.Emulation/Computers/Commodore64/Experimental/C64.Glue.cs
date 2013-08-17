@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             characterRom.InputData = ReadData;
 
             cia1.InputAddress = ReadAddress;
-            cia1.InputClock = vic.OutputPHI0;
             cia1.InputCNT = user.OutputCNT1;
             cia1.InputData = ReadData;
             cia1.InputFlag = ReadCia1Flag;
@@ -27,7 +26,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             cia1.InputSP = user.OutputSP1;
 
             cia2.InputAddress = ReadAddress;
-            cia2.InputClock = vic.OutputPHI0;
             cia2.InputCNT = user.OutputCNT2;
             cia2.InputData = ReadData;
             cia2.InputFlag = user.OutputFLAG2;
@@ -43,7 +41,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
             cpu.InputAddress = ReadAddress;
             cpu.InputAEC = vic.OutputAEC;
-            cpu.InputClock = vic.OutputPHI0;
             cpu.InputData = ReadData;
             cpu.InputIRQ = ReadIRQ;
             cpu.InputNMI = ReadNMI;
@@ -54,7 +51,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             expansion.InputAddress = ReadAddress;
             expansion.InputBA = vic.OutputBA;
             expansion.InputData = ReadData;
-            expansion.InputDotClock = vic.OutputPixelClock;
             expansion.InputHiExpansion = ReadHiExpansion;
             expansion.InputHiRom = pla.OutputRomHi;
             expansion.InputIRQ = ReadIRQ;
@@ -160,27 +156,68 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         int ReadData()
         {
+            int addr = ReadAddress();
             int data = 0xFF;
+
             data &= expansion.Data;
             if (pla.Basic)
+            {
+                basicRom.Precache();
                 data &= basicRom.Data;
+            }
             if (pla.CharRom)
+            {
+                characterRom.Precache();
                 data &= characterRom.Data;
+            }
             if (pla.GraphicsRead)
+            {
+                colorRam.Precache();
                 data &= colorRam.Data;
+            }
             if (pla.IO)
             {
-                data &= cia1.Data;
-                data &= cia2.Data;
-                data &= sid.Data;
-                data &= vic.Data;
+                if ((addr & 0x0F00) == 0x0C00)
+                {
+                    cia1.Precache();
+                    data &= cia1.Data;
+                }
+                if ((addr & 0x0F00) == 0x0D00)
+                {
+                    cia2.Precache();
+                    data &= cia2.Data;
+                }
+                if ((addr & 0x0C00) == 0x0800)
+                {
+                    colorRam.Precache();
+                    data &= colorRam.Data;
+                }
+                if ((addr & 0x0C00) == 0x0400)
+                {
+                    sid.Precache();
+                    data &= sid.Data;
+                }
+                if ((addr & 0x0C00) == 0x0000)
+                {
+                    vic.Precache();
+                    data &= vic.Data;
+                }
             }
             if (vic.BA)
+            {
+                cpu.Precache();
                 data &= cpu.Data;
+            }
             if (pla.Kernal)
+            {
+                kernalRom.Precache();
                 data &= kernalRom.Data;
+            }
             if (pla.CASRam)
+            {
+                memory.Precache();
                 data &= memory.Data;
+            }
             return data;
         }
 
