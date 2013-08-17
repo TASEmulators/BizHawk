@@ -104,7 +104,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void ExecutePhase1()
 		{
 			// unsure if the timer actually operates in ph1
-		}
+            pinIRQ = !(
+                (intTimer[0] && enableIntTimer[0]) ||
+                (intTimer[1] && enableIntTimer[1]) ||
+                (intAlarm && enableIntAlarm) ||
+                (intSP && enableIntSP) ||
+                (intFlag && enableIntFlag)
+                );
+
+        }
 
 		public void ExecutePhase2()
 		{
@@ -145,14 +153,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cntPos = false;
 				underflow[0] = false;
 				underflow[1] = false;
-
-				pinIRQ = !(
-					(intTimer[0] && enableIntTimer[0]) ||
-					(intTimer[1] && enableIntTimer[1]) ||
-					(intAlarm && enableIntAlarm) ||
-					(intSP && enableIntSP) ||
-					(intFlag && enableIntFlag)
-					);
 			}
 		}
 
@@ -261,33 +261,33 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 								// CNT positive
 								if (cntPos)
 								{
-									u = (t == 0);
 									t--;
-									intTimer[index] |= (t == 0);
+                                    u = (t == 0);
+                                    intTimer[index] |= (t == 0);
 								}
 								break;
 							case InMode.Phase2:
 								// every clock
-								u = (t == 0);
 								t--;
+								u = (t == 0);
 								intTimer[index] |= (t == 0);
 								break;
 							case InMode.TimerAUnderflow:
 								// every underflow[0]
 								if (underflow[0])
 								{
-									u = (t == 0);
 									t--;
-									intTimer[index] |= (t == 0);
+                                    u = (t == 0);
+                                    intTimer[index] |= (t == 0);
 								}
 								break;
 							case InMode.TimerAUnderflowCNT:
 								// every underflow[0] while CNT high
 								if (underflow[0] && pinCnt)
 								{
-									u = (t == 0);
 									t--;
-									intTimer[index] |= (t == 0);
+                                    u = (t == 0);
+                                    intTimer[index] |= (t == 0);
 								}
 								break;
 						}
@@ -295,7 +295,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						// underflow?
 						if (u)
 						{
-							t = timerLatch[index];
+                            timerDelay[index]++;
+                            t = timerLatch[index];
 							if (timerRunMode[index] == RunMode.Oneshot)
 								timerOn[index] = false;
 
