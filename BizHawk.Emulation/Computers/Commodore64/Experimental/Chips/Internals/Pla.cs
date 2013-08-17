@@ -159,7 +159,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 p13 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && ba && read && !exrom && !game;
                 p14 = hiram && charen && a15 && a14 && !a13 && a12 && !aec && !read && !exrom && !game;
                 p15 = loram && charen && a15 && a14 && !a13 && a12 && !aec && ba && read && !exrom && !game;
-                p15 = loram && charen && a15 && a14 && !a13 && a12 && !aec && ba && read && !exrom && !game;
                 p16 = loram && charen && a15 && a14 && !a13 && a12 && !aec && !read && !exrom && !game;
                 p17 = a15 && a14 && !a13 && a12 && !aec && ba && read && exrom && !game;
                 p18 = a15 && a14 && !a13 && a12 && !aec && !read && exrom && !game;
