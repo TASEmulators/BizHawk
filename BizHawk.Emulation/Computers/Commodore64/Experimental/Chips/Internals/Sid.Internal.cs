@@ -7,5 +7,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public partial class Sid
     {
+        public void Clock()
+        {
+        }
     }
 }

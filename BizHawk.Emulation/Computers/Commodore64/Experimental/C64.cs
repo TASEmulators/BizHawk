@@ -8,24 +8,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 {
     public abstract partial class C64 : IMotherboard
     {
-        Rom basicRom;
-        Cassette cassette;
-        Rom characterRom;
-        Cia cia1;
-        Cia cia2;
-        Ram colorRam;
-        Cpu cpu;
-        Expansion expansion;
-        Joystick joystickA;
-        Joystick joystickB;
-        Rom kernalRom;
-        Keyboard keyboard;
-        Ram memory;
-        Pla pla;
-        Serial serial;
-        Sid sid;
-        Userport user;
-        Vic vic;
+        protected Rom basicRom;
+        protected Cassette cassette;
+        protected Rom characterRom;
+        protected Cia cia1;
+        protected Cia cia2;
+        protected Ram colorRam;
+        protected Cpu cpu;
+        protected Expansion expansion;
+        protected Joystick joystickA;
+        protected Joystick joystickB;
+        protected Rom kernalRom;
+        protected Keyboard keyboard;
+        protected Ram memory;
+        protected Pla pla;
+        protected Serial serial;
+        protected Sid sid;
+        protected Userport user;
+        protected Vic vic;
 
         public C64(C64Timing timing)
         {
@@ -33,6 +33,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         public void ExecuteFrame()
         {
+            vic.Clock();
+            vic.Clock();
+            vic.Clock();
+            vic.Clock();
+            vic.Precache();
+            cpu.Clock();
+            cpu.Precache();
         }
 
         public byte PeekBasicRom(int addr)
