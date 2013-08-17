@@ -47,11 +47,43 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             }
         }
 
+        public byte PortADirection
+        {
+            get
+            {
+                return portA.Direction;
+            }
+        }
+
+        public byte PortALatch
+        {
+            get
+            {
+                return portA.Latch;
+            }
+        }
+
         public byte PortBData
         {
             get
             {
                 return portB.ReadOutput();
+            }
+        }
+
+        public byte PortBDirection
+        {
+            get
+            {
+                return portB.Direction;
+            }
+        }
+
+        public byte PortBLatch
+        {
+            get
+            {
+                return portB.Latch;
             }
         }
 

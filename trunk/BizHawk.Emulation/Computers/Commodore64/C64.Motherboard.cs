@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public UserPort userPort;
 
 		// state
-		public int address;
+		//public int address;
 		public byte bus;
 		public bool inputRead;
         public bool irq;
@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
-			sid.ExecutePhase1();
             vic.ExecutePhase1();
             cpu.ExecutePhase1();
 
@@ -73,11 +72,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
             cpu.ExecutePhase2();
         }
 
+        public void Flush()
+        {
+            sid.Flush();
+        }
+
 		// -----------------------------------------
 
 		public void HardReset()
 		{
-			address = 0xFFFF;
 			bus = 0xFF;
 			inputRead = false;
 
@@ -122,7 +125,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
             cpu.ReadNMI = cia1.ReadIRQBuffer;
             cpu.ReadPort = Cpu_ReadPort;
             cpu.ReadRDY = vic.ReadBABuffer;
-			cpu.ReadMemory = pla.Read; 
+            cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
 
 			pla.PeekBasicRom = basicRom.Peek;

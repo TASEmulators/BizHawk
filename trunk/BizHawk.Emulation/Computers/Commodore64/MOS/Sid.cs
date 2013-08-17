@@ -55,11 +55,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				HardReset();
 			}
 
-			public void ExecutePhase1()
-			{
-				// do nothing
-			}
-
 			public void ExecutePhase2()
 			{
 				
@@ -266,11 +261,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private class Voice
 		{
+            private int accBits;
+            private int accNext;
 			private int accumulator;
+            private bool controlTestPrev;
+            private int controlWavePrev;
 			private int delay;
 			private int floatOutputTTL;
 			private int frequency;
-			private bool msbRising;
+            private bool msbRising;
 			private int noise;
 			private int noNoise;
 			private int noNoiseOrNoise;
@@ -286,6 +285,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			private bool test;
 			private int[] wave;
 			private int waveform;
+            private int waveformIndex;
 			private int[][] waveTable;
 
 			public Voice(int[][] newWaveTable)
@@ -315,11 +315,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				ResetShiftReg();
 			}
 
-			public void ExecutePhase1()
-			{
-				// do nothing
-			}
-
 			public void ExecutePhase2()
 			{
 				
@@ -334,8 +329,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					}
 					else
 					{
-						int accNext = (accumulator + frequency) & 0xFFFFFF;
-						int accBits = ~accumulator & accNext;
+						accNext = (accumulator + frequency) & 0xFFFFFF;
+						accBits = ~accumulator & accNext;
 						accumulator = accNext;
 						msbRising = ((accBits & 0x800000) != 0);
 
@@ -353,8 +348,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				
 				{
-					int bit0 = ((shiftRegister >> 22) ^ (shiftRegister >> 17)) & 0x1;
-					shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
+					shiftRegister = ((shiftRegister << 1) |
+                        (((shiftRegister >> 22) ^ (shiftRegister >> 17)) & 0x1)
+                        ) & 0x7FFFFF;
 					SetNoise();
 				}
 			}
@@ -410,8 +406,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				set
 				{
-					int wavePrev = waveform;
-					bool testPrev = test;
+					controlWavePrev = waveform;
+					controlTestPrev = test;
 
 					sync = ((value & 0x02) != 0);
 					ringMod = ((value & 0x04) != 0);
@@ -423,20 +419,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					noNoiseOrNoise = noNoise | noise;
 					noPulse = ((waveform & 0x4) != 0) ? 0x000 : 0xFFF;
 
-					if (!testPrev && test)
+                    if (!controlTestPrev && test)
 					{
 						accumulator = 0;
 						delay = 0;
 						shiftRegisterReset = 0x8000;
 					}
-					else if (testPrev && !test)
+                    else if (controlTestPrev && !test)
 					{
-						int bit0 = (~shiftRegister >> 17) & 0x1;
-						shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
+						shiftRegister = ((shiftRegister << 1) |
+                            ((~shiftRegister >> 17) & 0x1)
+                            ) & 0x7FFFFF;
 						SetNoise();
 					}
 
-					if (waveform == 0 && wavePrev != 0)
+                    if (waveform == 0 && controlWavePrev != 0)
 						floatOutputTTL = 0x28000;
 				}
 			}
@@ -493,8 +490,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				{
 					if (waveform != 0)
 					{
-						int index = (accumulator ^ (ringModSource.accumulator & ringMsbMask)) >> 12;
-						output = wave[index] & (noPulse | pulse) & noNoiseOrNoise;
+						waveformIndex = (accumulator ^ (ringModSource.accumulator & ringMsbMask)) >> 12;
+                        output = wave[waveformIndex] & (noPulse | pulse) & noNoiseOrNoise;
 						if (waveform > 8)
 							WriteShiftReg();
 					}
@@ -620,6 +617,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private static int[] syncNextTable = new int[] { 1, 2, 0 };
 		private static int[] syncPrevTable = new int[] { 2, 0, 1 };
 
+        private int cachedCycles;
 		private bool disableVoice3;
 		private int[] envelopeOutput;
 		private Envelope[] envelopes;
@@ -629,10 +627,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool filterSelectBandPass;
 		private bool filterSelectLoPass;
 		private bool filterSelectHiPass;
-		private int potCounter;
+        private int mixer;
+        private int potCounter;
 		private int potX;
         private int potY;
-		private int[] voiceOutput;
+        private short sample;
+        private int[] voiceOutput;
 		private Voice[] voices;
 		private int volume;
 		private int[][] waveformTable;
@@ -694,66 +694,55 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public void ExecutePhase1()
+        public void ExecutePhase2()
 		{
-			// do nothing
-		}
+            cachedCycles++;
 
-		public void ExecutePhase2()
-		{
-			
-			{
-				// potentiometer values refresh every 512 cycles
-				if (potCounter == 0)
-				{
-					potCounter = 512;
-					potX = ReadPotX(); //todo: implement paddles
-					potY = ReadPotY();
-				}
+            // potentiometer values refresh every 512 cycles
+            if (potCounter == 0)
+            {
+                potCounter = 512;
+                potX = ReadPotX();
+                potY = ReadPotY();
+                Flush(); //this is here unrelated to the pots, just to keep the buffer somewhat loaded
+            }
+            potCounter--;
+        }
 
-				// process voices and envelopes
-				voices[0].ExecutePhase2();
-				voices[1].ExecutePhase2();
-				voices[2].ExecutePhase2();
-				envelopes[0].ExecutePhase2();
-				envelopes[1].ExecutePhase2();
-				envelopes[2].ExecutePhase2();
+        public void Flush()
+        {
+            while (cachedCycles > 0)
+            {
+                // process voices and envelopes
+                voices[0].ExecutePhase2();
+                voices[1].ExecutePhase2();
+                voices[2].ExecutePhase2();
+                envelopes[0].ExecutePhase2();
+                envelopes[1].ExecutePhase2();
+                envelopes[2].ExecutePhase2();
 
-				// process sync
-				for (int i = 0; i < 3; i++)
-					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
+                // process sync
+                for (int i = 0; i < 3; i++)
+                    voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
 
-				// get output
-				voiceOutput[0] = voices[0].Output(voices[2]);
-				voiceOutput[1] = voices[1].Output(voices[0]);
-				voiceOutput[2] = voices[2].Output(voices[1]);
-				envelopeOutput[0] = envelopes[0].Level;
-				envelopeOutput[1] = envelopes[1].Level;
-				envelopeOutput[2] = envelopes[2].Level;
+                // get output
+                voiceOutput[0] = voices[0].Output(voices[2]);
+                voiceOutput[1] = voices[1].Output(voices[0]);
+                voiceOutput[2] = voices[2].Output(voices[1]);
+                envelopeOutput[0] = envelopes[0].Level;
+                envelopeOutput[1] = envelopes[1].Level;
+                envelopeOutput[2] = envelopes[2].Level;
 
-				// process output
-				//if (bufferCounter == 0)
-				//{
-					int mixer;
-					short sample;
-					//bufferCounter = bufferFrequency;
+                mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
+                mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
+                mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
+                mixer = (mixer * volume) >> 4;
 
-					// mix each channel (20 bits)
-					mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
-					mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
-					mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
-					mixer = (mixer * volume) >> 4;
-
-					sample = (short)mixer;
-					//buffer[bufferIndex++] = sample;
-					//buffer[bufferIndex++] = sample;
-					resampler.EnqueueSample(sample, sample);
-					//if (bufferIndex == bufferLength)
-					//	bufferIndex = 0;
-				//}
-				//bufferCounter--;
-			}
-		}
+                sample = (short)mixer;
+                resampler.EnqueueSample(sample, sample);
+                cachedCycles--;
+            }
+        }
 
 		// ------------------------------------
 
@@ -777,6 +766,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case 0x1A:
 				case 0x1B:
 				case 0x1C:
+                    Flush();
 					result = ReadRegister(addr);
 					break;
 			}
@@ -907,6 +897,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					// can't write to these
 					break;
 				default:
+                    Flush();
 					WriteRegister(addr, val);
 					break;
 			}

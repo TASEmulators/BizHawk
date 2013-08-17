@@ -115,6 +115,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				//disk.Execute();
 				board.Execute();
 			}
+            board.Flush();
 			_islag = !board.inputRead;
 
 			if (_islag)
