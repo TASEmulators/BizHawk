@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-                debugScreen = true;
+                debugScreen = false;
 
                 totalCycles = newCycles;
 				totalLines = newLines;
@@ -663,7 +663,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-                renderEnabled = true;//bufRect.Contains(bufPoint);
+                renderEnabled = bufRect.Contains(bufPoint);
 
 				for (int i = 0; i < 4; i++)
 				{
