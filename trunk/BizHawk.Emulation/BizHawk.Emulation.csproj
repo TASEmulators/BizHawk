@@ -152,6 +152,10 @@
     <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
     <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.Parse.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.Registers.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.Render.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.Sprite.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
