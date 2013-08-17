@@ -63,15 +63,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
 			sid.ExecutePhase1();
-			vic.ExecutePhase1();
-			cpu.ExecutePhase1();
+            vic.ExecutePhase1();
+            cpu.ExecutePhase1();
 
 			cia0.ExecutePhase2();
 			cia1.ExecutePhase2();
 			sid.ExecutePhase2();
-			vic.ExecutePhase2();
-			cpu.ExecutePhase2();
-		}
+            vic.ExecutePhase2();
+            cpu.ExecutePhase2();
+        }
 
 		// -----------------------------------------
 

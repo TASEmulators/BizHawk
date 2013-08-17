@@ -167,13 +167,5 @@ namespace BizHawk.Emulation.Computers.Commodore64
                 bus = ram.Read(addr);
             return bus;
         }
-
-        byte Vic_ReadColorRam(int addr)
-        {
-            address = addr;
-            bus &= 0xF0;
-            bus |= colorRam.Read(addr);
-            return bus;
-        }
     }
 }

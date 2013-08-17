@@ -123,13 +123,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private int lightPenX;
 		private int lightPenY;
 		private bool multicolorMode;
+        private int parseaddr;
+        private int parsecycleBAsprite0;
+        private int parsecycleBAsprite1;
+        private int parsecycleBAsprite2;
+        private int parsecycleFetchSpriteIndex;
+        private int parsefetch;
+        private int parseba;
+        private int parseact;
+        private int pixel;
 		private int[] pixelBackgroundBuffer;
 		private int pixelBackgroundBufferDelay;
 		private int pixelBackgroundBufferIndex;
 		private int[] pixelBuffer;
 		private int pixelBufferDelay;
 		private int pixelBufferIndex;
-		private int[] pixelDataBuffer;
+        private int pixelData;
+        private int[] pixelDataBuffer;
 		private int pointerCB;
 		private int pointerVM;
 		private int rasterInterruptLine;
@@ -137,6 +147,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private int rasterX;
 		private int rc;
 		private int refreshCounter;
+        private bool renderEnabled;
 		private bool rowSelect;
 		private int spriteMulticolor0;
 		private int spriteMulticolor1;
@@ -169,7 +180,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-                debugScreen = false;
+                debugScreen = true;
 
                 totalCycles = newCycles;
 				totalLines = newLines;
@@ -336,7 +347,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected const int rasterIrqLine0Cycle = 1;
 		protected const int rasterIrqLineXCycle = 0;
 
-		protected const int baResetCounter = 7;
+		protected const int baResetCounter = 6;
 
 		// ------------------------------------
 
@@ -436,26 +447,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-				int addr = 0x3FFF;
-				int cycleBAsprite0;
-				int cycleBAsprite1;
-				int cycleBAsprite2;
-				int cycleFetchSpriteIndex;
-				int fetch = pipeline[1][cycleIndex];
-				int ba = pipeline[2][cycleIndex];
-				int act = pipeline[3][cycleIndex];
+				parseaddr = 0x3FFF;
+                parsefetch = pipeline[1][cycleIndex];
+                parseba = pipeline[2][cycleIndex];
+                parseact = pipeline[3][cycleIndex];
 
 				// apply X location
 				rasterX = pipeline[0][cycleIndex];
 
 				// perform fetch
-				switch (fetch & 0xFF00)
+                switch (parsefetch & 0xFF00)
 				{
 					case 0x0100:
 						// fetch R
 						refreshCounter = (refreshCounter - 1) & 0xFF;
-						addr = (0x3F00 | refreshCounter);
-						ReadMemory(addr);
+                        parseaddr = (0x3F00 | refreshCounter);
+                        ReadMemory(parseaddr);
 						break;
 					case 0x0200:
 						// fetch C
@@ -463,9 +470,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						{
 							if (badline)
 							{
-								addr = ((pointerVM << 10) | vc);
-								dataC = ReadMemory(addr);
-								dataC |= ((int)ReadColorRam(addr) & 0xF) << 8;
+                                parseaddr = ((pointerVM << 10) | vc);
+                                dataC = ReadMemory(parseaddr);
+                                dataC |= ((int)ReadColorRam(parseaddr) & 0xF) << 8;
 								bufferC[vmli] = dataC;
 							}
 							else
@@ -482,17 +489,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					case 0x0300:
 						// fetch G
 						if (idle)
-							addr = 0x3FFF;
+                            parseaddr = 0x3FFF;
 						else
 						{
 							if (bitmapMode)
-								addr = (rc | (vc << 3) | ((pointerCB & 0x4) << 11));
+                                parseaddr = (rc | (vc << 3) | ((pointerCB & 0x4) << 11));
 							else
-								addr = (rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
+                                parseaddr = (rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
 						}
 						if (extraColorMode)
-							addr &= 0x39FF;
-						dataG = ReadMemory(addr);
+                            parseaddr &= 0x39FF;
+                        dataG = ReadMemory(parseaddr);
 						if (!idle)
 						{
 							bufferG[vmli] = dataG;
@@ -502,33 +509,33 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						break;
 					case 0x0400:
 						// fetch I
-						addr = (extraColorMode ? 0x39FF : 0x3FFF);
-						dataG = ReadMemory(addr);
+                        parseaddr = (extraColorMode ? 0x39FF : 0x3FFF);
+                        dataG = ReadMemory(parseaddr);
 						dataC = 0;
 						break;
 					case 0x0500:
 						// no fetch
 						break;
 					default:
-						cycleFetchSpriteIndex = (fetch & 0x7);
-						switch (fetch & 0xF0)
+                        parsecycleFetchSpriteIndex = (parsefetch & 0x7);
+                        switch (parsefetch & 0xF0)
 						{
 							case 0x00:
 								// fetch P
-								addr = (0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
-								sprites[cycleFetchSpriteIndex].pointer = ReadMemory(addr);
-								sprites[cycleFetchSpriteIndex].shiftEnable = false;
+                                parseaddr = (0x3F8 | (pointerVM << 10) | parsecycleFetchSpriteIndex);
+                                sprites[parsecycleFetchSpriteIndex].pointer = ReadMemory(parseaddr);
+                                sprites[parsecycleFetchSpriteIndex].shiftEnable = false;
 								break;
 							case 0x10:
 							case 0x20:
 							case 0x30:
 								// fetch S
-								if (sprites[cycleFetchSpriteIndex].dma)
+                                if (sprites[parsecycleFetchSpriteIndex].dma)
 								{
-									Sprite spr = sprites[cycleFetchSpriteIndex];
-									addr = (spr.mc | (spr.pointer << 6));
+                                    Sprite spr = sprites[parsecycleFetchSpriteIndex];
+                                    parseaddr = (spr.mc | (spr.pointer << 6));
 									spr.sr <<= 8;
-									spr.sr |= ReadMemory(addr);
+                                    spr.sr |= ReadMemory(parseaddr);
 									spr.mc++;
 								}
 								break;
@@ -537,7 +544,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 
 				// perform BA flag manipulation
-				switch (ba)
+                switch (parseba)
 				{
 					case 0x0000:
 						pinBA = true;
@@ -546,12 +553,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						pinBA = !badline;
 						break;
 					default:
-						cycleBAsprite0 = (ba & 0x000F);
-						cycleBAsprite1 = (ba & 0x00F0) >> 4;
-						cycleBAsprite2 = (ba & 0x0F00) >> 8;
-						if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
-							(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
-							(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
+                        parsecycleBAsprite0 = (parseba & 0x000F);
+                        parsecycleBAsprite1 = (parseba & 0x00F0) >> 4;
+                        parsecycleBAsprite2 = (parseba & 0x0F00) >> 8;
+                        if ((parsecycleBAsprite0 < 8 && sprites[parsecycleBAsprite0].dma) ||
+                            (parsecycleBAsprite1 < 8 && sprites[parsecycleBAsprite1].dma) ||
+                            (parsecycleBAsprite2 < 8 && sprites[parsecycleBAsprite2].dma))
 							pinBA = false;
 						else
 							pinBA = true;
@@ -562,11 +569,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				borderCheckLEnable = true;
 				borderCheckREnable = true;
 
-				if ((act & pipelineChkSprChunch) != 0)
+                if ((parseact & pipelineChkSprChunch) != 0)
 				{
-					for (int i = 0; i < 8; i++)
+					//for (int i = 0; i < 8; i++)
+                    foreach (Sprite spr in sprites)
 					{
-						Sprite spr = sprites[i];
+						//Sprite spr = sprites[i];
 						if (spr.yCrunch)
 							spr.mcbase += 2;
 						spr.shiftEnable = false;
@@ -574,11 +582,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						spr.multicolorCrunch = !spr.multicolor;
 					}
 				}
-				if ((act & pipelineChkSprDisp) != 0)
+                if ((parseact & pipelineChkSprDisp) != 0)
 				{
-					for (int i = 0; i < 8; i++)
+					//for (int i = 0; i < 8; i++)
+                    foreach (Sprite spr in sprites)
 					{
-						Sprite spr = sprites[i];
+						//Sprite spr = sprites[i];
 						spr.mc = spr.mcbase;
 						if (spr.dma && spr.y == (rasterLine & 0xFF))
 						{
@@ -586,20 +595,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						}
 					}
 				}
-				if ((act & pipelineChkSprDma) != 0)
+                if ((parseact & pipelineChkSprDma) != 0)
 				{
-					for (int i = 0; i < 8; i++)
-					{
-						Sprite spr = sprites[i];
-						if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
-						{
-							spr.dma = true;
-							spr.mcbase = 0;
-							spr.yCrunch = !spr.yExpand;
-						}
-					}
+					//for (int i = 0; i < 8; i++)
+                    foreach (Sprite spr in sprites)
+                    {
+                        //Sprite spr = sprites[i];
+                        if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+                        {
+                            spr.dma = true;
+                            spr.mcbase = 0;
+                            spr.yCrunch = !spr.yExpand;
+                        }
+                    }
 				}
-				if ((act & pipelineChkSprExp) != 0)
+                if ((parseact & pipelineChkSprExp) != 0)
 				{
 					if (sprites[0].yExpand) sprites[0].yCrunch ^= true;
 					if (sprites[1].yExpand) sprites[1].yCrunch ^= true;
@@ -610,11 +620,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					if (sprites[6].yExpand) sprites[6].yCrunch ^= true;
 					if (sprites[7].yExpand) sprites[7].yCrunch ^= true;
 				}
-				if ((act & pipelineUpdateMcBase) != 0)
+                if ((parseact & pipelineUpdateMcBase) != 0)
 				{
-					for (int i = 0; i < 8; i++)
+					//for (int i = 0; i < 8; i++)
+                    foreach (Sprite spr in sprites)
 					{
-						Sprite spr = sprites[i];
+						//Sprite spr = sprites[i];
 						if (spr.yCrunch)
 						{
 							spr.mcbase++;
@@ -626,7 +637,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						}
 					}
 				}
-				if ((act & pipelineUpdateRc) != 0)
+                if ((parseact & pipelineUpdateRc) != 0)
 				{
 					if (rc == 7)
 					{
@@ -636,7 +647,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					if (!idle)
 						rc = (rc + 1) & 0x7;
 				}
-				if ((act & pipelineUpdateVc) != 0)
+                if ((parseact & pipelineUpdateVc) != 0)
 				{
 					vc = vcbase;
 					vmli = 0;
@@ -652,9 +663,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			
 			{
-				int pixel;
-				int pixelData;
-				bool renderEnabled = bufRect.Contains(bufPoint);
+                renderEnabled = true;//bufRect.Contains(bufPoint);
 
 				for (int i = 0; i < 4; i++)
 				{

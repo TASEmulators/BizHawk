@@ -88,7 +88,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             pinNMILast = thisNMI;
 
             cpu.IRQ = !ReadIRQ();
-            cpu.ExecuteOne();
+            if (ReadAEC())
+                cpu.ExecuteOne();
         }
 
 		// ------------------------------------

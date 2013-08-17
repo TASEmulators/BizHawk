@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             board.inputRead = false;
 			board.PollInput();
-			for (int count = cyclesPerFrame; count > 0; count--)
+            for (int count = 0; count < cyclesPerFrame; count++)
 			{
 				//disk.Execute();
 				board.Execute();
