@@ -34,18 +34,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void PollInput()
 		{
 			// scan joysticks
-			for (uint i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				for (uint j = 0; j < 5; j++)
+                for (int j = 0; j < 5; j++)
 				{
 					joystickPressed[i, j] = controller[joystickMatrix[i, j]];
 				}
 			}
 
 			// scan keyboard
-			for (uint i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
 			{
-				for (uint j = 0; j < 8; j++)
+                for (int j = 0; j < 8; j++)
 				{
 					keyboardPressed[i, j] = controller[keyboardMatrix[i, j]];
 				}

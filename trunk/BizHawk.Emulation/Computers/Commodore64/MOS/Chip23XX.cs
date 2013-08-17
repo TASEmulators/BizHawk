@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	public class Chip23XX
 	{
-		private uint addrMask;
+		private int addrMask;
 		private byte[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
