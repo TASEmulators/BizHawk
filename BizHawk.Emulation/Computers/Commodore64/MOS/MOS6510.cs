@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		//private bool freezeCpu;
 		private bool pinNMILast;
         private LatchedPort port;
+        private bool thisNMI;
 
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
@@ -72,7 +73,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-		}
+            cpu.IRQ = !ReadIRQ();
+        }
 
 		public void ExecutePhase2()
 		{
@@ -80,16 +82,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             // the 6502 core expects active high
             // so we reverse the polarity here
-            bool thisNMI = ReadNMI();
+            thisNMI = ReadNMI();
             if (!thisNMI && pinNMILast)
                 cpu.NMI = true;
-            else
-                cpu.NMI = false;
-            pinNMILast = thisNMI;
 
-            cpu.IRQ = !ReadIRQ();
             if (ReadAEC())
+            {
                 cpu.ExecuteOne();
+                pinNMILast = thisNMI;
+            }
         }
 
 		// ------------------------------------
