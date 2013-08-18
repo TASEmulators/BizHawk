@@ -106,6 +106,9 @@
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Internal.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Sid.SoundProvider.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Userport.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Cache.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.State.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Timing.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\MOS6581.cs" />
     <Compile Include="Computers\Commodore64\Experimental\IMotherboard.cs" />
