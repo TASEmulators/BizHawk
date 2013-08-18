@@ -387,7 +387,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return 0xFF;
 		}
 
-		public void Write(int addr, byte val)
+        public byte VicRead(int addr)
+        {
+            game = ReadGame();
+            exrom = ReadExRom();
+            a14 = (addr & 0x04000) == 0;
+            a13 = (addr & 0x02000) != 0;
+            a12 = (addr & 0x01000) != 0;
+
+            // read char rom at 1000-1FFF and 9000-9FFF
+            if (a14 && !a13 && a12 && (game || !exrom))
+                return ReadCharRom(addr);
+
+            // read cartridge rom in ultimax mode
+            if (a13 && a12 && exrom && !game)
+                return ReadCartridgeHi(addr);
+
+            return ReadMemory(addr);
+        }
+
+        public void Write(int addr, byte val)
 		{
 			switch (Bank(addr, false))
 			{

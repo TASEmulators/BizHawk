@@ -133,18 +133,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Vic_ReadMemory(int addr)
         {
-            //p6 = a14 && !a13 && a12 && aec && game;
-            //p7 = a14 && !a13 && a12 && aec && !exrom && !game;
-            //(char rom from pla)
-
-
             // the system sees (cia1.PortAData & 0x3) but we use a shortcut
             addr |= (0x3 - (((cia1.PortALatch & cia1.PortADirection) | (~cia1.PortADirection)) & 0x3)) << 14;
-            if ((addr & 0x7000) == 0x1000)
-                bus = charRom.Read(addr);
-            else
-                bus = ram.Read(addr);
-            return bus;
+            return pla.VicRead(addr);
         }
     }
 }
