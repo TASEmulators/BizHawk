@@ -5,13 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Vic
+    sealed public partial class Cpu
     {
-        public void Precache()
-        {
-            cachedAEC = (pixelTimer >= 4);
-            cachedBA = ba;
-            cachedIRQ = irq;
-        }
     }
 }

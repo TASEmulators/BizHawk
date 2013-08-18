@@ -126,76 +126,143 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             a14 = (addr & 0x04000) != 0;
             a13 = (addr & 0x02000) != 0;
             a12 = (addr & 0x01000) != 0;
+            #region OLDPLA
+            //// io/character access
+            //if (a15 && a14 && !a13 && a12)
+            //{
+            //    // character rom, banked in at D000-DFFF
+            //    charen = ReadCharen();
+            //    if (read && !charen)
+            //    {
+            //        p3 = hiram && game;
+            //        p4 = loram && game;
+            //        p5 = hiram && !exrom && !game;
+            //        if (p3 || p4 || p5)
+            //            return PLABank.CharROM;
+            //    }
 
-            // io/character access
-            if (a15 && a14 && !a13 && a12)
-            {
-                // character rom, banked in at D000-DFFF
-                charen = ReadCharen();
-                if (read && !charen)
-                {
-                    p3 = hiram && game;
-                    p4 = loram && game;
-                    p5 = hiram && !exrom && !game;
-                    if (p3 || p4 || p5)
-                        return PLABank.CharROM;
-                }
+            //    // io block, banked in at D000-DFFF
+            //    p9 = hiram && charen && game;
+            //    p11 = loram && charen && game;
+            //    p13 = hiram && charen && !exrom && !game;
+            //    p15 = loram && charen && !exrom && !game;
+            //    p17 = exrom && !game;
+            //    if (p9 || p11 || p13 || p15 || p17)
+            //    {
+            //        if (addr < 0xD400)
+            //            return PLABank.Vic;
+            //        if (addr < 0xD800)
+            //            return PLABank.Sid;
+            //        if (addr < 0xDC00)
+            //            return PLABank.ColorRam;
+            //        if (addr < 0xDD00)
+            //            return PLABank.Cia0;
+            //        if (addr < 0xDE00)
+            //            return PLABank.Cia1;
+            //        if (addr < 0xDF00)
+            //            return PLABank.Expansion0;
+            //        return PLABank.Expansion1;
+            //    }
+            //}
 
-                // io block, banked in at D000-DFFF
-                p9 = hiram && charen && game;
-                p11 = loram && charen && game;
-                p13 = hiram && charen && !exrom && !game;
-                p15 = loram && charen && !exrom && !game;
-                p17 = exrom && !game;
-                if (p9 || p11 || p13 || p15 || p17)
-                {
-                    if (addr < 0xD400)
-                        return PLABank.Vic;
-                    if (addr < 0xD800)
-                        return PLABank.Sid;
-                    if (addr < 0xDC00)
-                        return PLABank.ColorRam;
-                    if (addr < 0xDD00)
-                        return PLABank.Cia0;
-                    if (addr < 0xDE00)
-                        return PLABank.Cia1;
-                    if (addr < 0xDF00)
-                        return PLABank.Expansion0;
-                    return PLABank.Expansion1;
-                }
-            }
+            //// basic rom, banked at A000-BFFF
+            //p0 = loram && hiram && a15 && !a14 && a13 && read && game;
+            //if (p0)
+            //    return PLABank.BasicROM;
 
-            // basic rom, banked at A000-BFFF
-            p0 = loram && hiram && a15 && !a14 && a13 && read && game;
-            if (p0)
-                return PLABank.BasicROM;
+            //// kernal rom, banked at E000-FFFF
+            //exrom = ReadExRom();
+            //if (hiram && a15 && a14 && a13 && read)
+            //{
+            //    p1 = game;
+            //    p2 = !exrom && !game;
+            //    if (p1 || p2)
+            //        return PLABank.KernalROM;
+            //}
 
-            // kernal rom, banked at E000-FFFF
+            //// cartridge low, banked at 8000-9FFF
+            //if (a15 && !a14 && !a13)
+            //{
+            //    p19 = loram && hiram && read && !exrom;
+            //    p20 = exrom && !game;
+            //    if (p19 || p20)
+            //        return PLABank.CartridgeLo;
+            //}
+
+            //// cartridge high, banked either at A000-BFFF or E000-FFFF depending
+            //if (a15 && a13 && !game)
+            //{
+            //    p21 = hiram && !a14 && read && !exrom;
+            //    p22 = a14 && exrom;
+            //    if (p21 || p22)
+            //        return PLABank.CartridgeHi;
+            //}
+
+            //// ultimax mode ram exclusion
+            //if (exrom && !game)
+            //{
+            //    p24 = !a15 && !a14 && a12;
+            //    p25 = !a15 && !a14 && a13;
+            //    p26 = !a15 && a14;
+            //    p27 = a15 && !a14 && a13;
+            //    p28 = a15 && a14 && !a13 && !a12;
+            //    if (!(p24 || p25 || p26 || p27 || p28))
+            //        return PLABank.RAM;
+            //}
+            //else
+            //{
+            //    return PLABank.RAM;
+            //}
+
+            //return PLABank.None;
+            #endregion
+
+            // upper memory regions 8000-FFFF
             exrom = ReadExRom();
-            if (hiram && a15 && a14 && a13 && read)
+            if (a15)
             {
-                p1 = game;
-                p2 = !exrom && !game;
-                if (p1 || p2)
-                    return PLABank.KernalROM;
-            }
+                // io/character access
+                if (a14 && !a13 && a12)
+                {
+                    // character rom, banked in at D000-DFFF
+                    charen = ReadCharen();
+                    if (read && !charen && (((hiram || loram) && game) || (hiram && !exrom && !game)))
+                        return PLABank.CharROM;
 
-            // cartridge low, banked at 8000-9FFF
-            if (a15 && !a14 && !a13)
-            {
-                p19 = loram && hiram && read && !exrom;
-                p20 = exrom && !game;
-                if (p19 || p20)
-                    return PLABank.CartridgeLo;
-            }
+                    // io block, banked in at D000-DFFF
+                    if ((charen && (hiram || loram)) || (exrom && !game))
+                    {
+                        if (addr < 0xD400)
+                            return PLABank.Vic;
+                        if (addr < 0xD800)
+                            return PLABank.Sid;
+                        if (addr < 0xDC00)
+                            return PLABank.ColorRam;
+                        if (addr < 0xDD00)
+                            return PLABank.Cia0;
+                        if (addr < 0xDE00)
+                            return PLABank.Cia1;
+                        if (addr < 0xDF00)
+                            return PLABank.Expansion0;
+                        return PLABank.Expansion1;
+                    }
+                }
 
-            // cartridge high, banked either at A000-BFFF or E000-FFFF depending
-            if (a15 && a13 && !game)
-            {
-                p21 = hiram && !a14 && read && !exrom;
-                p22 = a14 && exrom;
-                if (p21 || p22)
+                // cartridge high, banked either at A000-BFFF or E000-FFFF depending
+                if (a13 && !game && ((hiram && !a14 && read && !exrom) || (a14 && exrom)))
                     return PLABank.CartridgeHi;
+
+                // cartridge low, banked at 8000-9FFF
+                if (!a14 && !a13 && ((loram && hiram && read && !exrom) || (exrom && !game)))
+                    return PLABank.CartridgeLo;
+
+                // kernal rom, banked at E000-FFFF
+                if (hiram && a14 && a13 && read && (game || (!exrom && !game)))
+                    return PLABank.KernalROM;
+
+                // basic rom, banked at A000-BFFF
+                if (loram && hiram && !a14 && a13 && read && game)
+                    return PLABank.BasicROM;
             }
 
             // ultimax mode ram exclusion
@@ -210,9 +277,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     return PLABank.RAM;
             }
             else
-            {
                 return PLABank.RAM;
-            }
 
             return PLABank.None;
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public abstract partial class Vic
+    public partial class Vic
     {
         protected struct CycleTiming
         {
