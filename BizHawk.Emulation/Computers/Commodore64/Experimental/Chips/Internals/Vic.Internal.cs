@@ -5,15 +5,11 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Vic
+    public abstract partial class Vic
     {
-        int cachedADDR;
         bool cachedAEC;
         bool cachedBA;
-        bool cachedCAS;
-        int cachedDATA;
         bool cachedIRQ;
-        bool cachedRAS;
 
         class Sprite
         {
@@ -67,23 +63,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int videoCounterBase;
         int videoMatrixLineIndex;
 
+        public Vic()
+        {
+            backgroundColor = new int[4];
+            spriteMultiColor = new int[2];
+            sprites = new Sprite[8];
+            for (int i = 0; i < 8; i++)
+                sprites[i] = new Sprite();
+        }
+
         public void Clock()
         {
+
+            // at the end, clock other devices if applicable
             if (pixelTimer == 0)
             {
                 pixelTimer = 8;
-                badLineEnable |= (rasterY == 0x30 && displayEnable);
-                badLineCondition = (
-                    badLineEnable &&
-                    rasterY >= 0x030 &&
-                    rasterY <= 0x0F7 &&
-                    (rasterY & 0x007) == yScroll
-                    );
-                if (!idleState && badLineCondition)
-                    idleState = true;
+                ClockPhi0();
             }
             pixelTimer--;
-
         }
     }
 }
