@@ -10,76 +10,54 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
         public void InitializeConnections()
         {
             cia1.InputCNT = user.OutputCNT1;
-            cia1.InputData = ReadData;
             cia1.InputFlag = ReadCia1Flag;
             cia1.InputPortA = ReadCia1PortA;
             cia1.InputPortB = ReadCia1PortB;
-            cia1.InputRead = cpu.OutputRead;
-            cia1.InputReset = ReadReset;
             cia1.InputSP = user.OutputSP1;
 
             cia2.InputCNT = user.OutputCNT2;
-            cia2.InputData = ReadData;
             cia2.InputFlag = user.OutputFLAG2;
             cia2.InputPortA = ReadCia2PortA;
             cia2.InputPortB = user.OutputData;
-            cia2.InputRead = cpu.OutputRead;
-            cia2.InputReset = ReadReset;
             cia2.InputSP = user.OutputSP2;
 
-            colorRam.InputData = ReadData;
-            colorRam.InputRead = cpu.OutputRead;
-
             cpu.InputAEC = vic.OutputAEC;
-            cpu.InputData = ReadData;
             cpu.InputIRQ = ReadIRQ;
             cpu.InputNMI = ReadNMI;
             cpu.InputPort = ReadCPUPort;
             cpu.InputRDY = vic.OutputBA;
-            cpu.InputReset = ReadReset;
+            cpu.ReadMemory = pla.ReadMemory;
+            cpu.WriteMemory = pla.WriteMemory;
 
-            expansion.InputBA = vic.OutputBA;
-            expansion.InputData = ReadData;
-            expansion.InputHiExpansion = ReadHiExpansion;
-            expansion.InputHiRom = pla.OutputRomHi;
-            expansion.InputIRQ = ReadIRQ;
-            expansion.InputLoExpansion = ReadLoExpansion;
-            expansion.InputLoRom = pla.OutputRomLo;
-            expansion.InputNMI = ReadNMI;
-            expansion.InputRead = cpu.OutputRead;
-            expansion.InputReset = ReadReset;
+            //expansion.InputBA = vic.OutputBA;
+            //expansion.InputData = ReadData;
+            //expansion.InputHiExpansion = ReadHiExpansion;
+            //expansion.InputHiRom = pla.OutputRomHi;
+            //expansion.InputIRQ = ReadIRQ;
+            //expansion.InputLoExpansion = ReadLoExpansion;
+            //expansion.InputLoRom = pla.OutputRomLo;
+            //expansion.InputNMI = ReadNMI;
 
-            memory.InputData = ReadData;
-            memory.InputRead = cpu.OutputRead;
+            //pla.InputAEC = vic.OutputAEC;
+            //pla.InputBA = vic.OutputBA;
+            //pla.InputCharen = ReadCharen;
+            //pla.InputExRom = expansion.OutputExRom;
+            //pla.InputGame = expansion.OutputGame;
+            //pla.InputHiRam = ReadHiRam;
+            //pla.InputLoRam = ReadLoRam;
+            //pla.InputVA = ReadVicAddress;
 
-            pla.InputAEC = vic.OutputAEC;
-            pla.InputBA = vic.OutputBA;
-            pla.InputCharen = ReadCharen;
-            pla.InputExRom = expansion.OutputExRom;
-            pla.InputGame = expansion.OutputGame;
-            pla.InputHiRam = ReadHiRam;
-            pla.InputLoRam = ReadLoRam;
-            pla.InputRead = cpu.OutputRead;
-            pla.InputVA = ReadVicAddress;
+            //serial.InputATN = ReadSerialATN;
+            //serial.InputClock = ReadSerialCLK;
+            //serial.InputData = ReadSerialDTA;
 
-            serial.InputATN = ReadSerialATN;
-            serial.InputClock = ReadSerialCLK;
-            serial.InputData = ReadSerialDTA;
-            serial.InputReset = ReadReset;
-
-            user.InputCNT1 = cia1.OutputCNT;
-            user.InputCNT2 = cia2.OutputCNT;
-            user.InputData = cia2.OutputPortB;
-            user.InputPA2 = ReadUserPA2;
-            user.InputPC2 = cia2.OutputPC;
-            user.InputReset = ReadReset;
-            user.InputSP1 = cia1.OutputSP;
-            user.InputSP2 = cia2.OutputSP;
-        }
-
-        bool ReadCharen()
-        {
-            return (cpu.Port & 0x4) != 0;
+            //user.InputCNT1 = cia1.OutputCNT;
+            //user.InputCNT2 = cia2.OutputCNT;
+            //user.InputData = cia2.OutputPortB;
+            //user.InputPA2 = ReadUserPA2;
+            //user.InputPC2 = cia2.OutputPC;
+            //user.InputSP1 = cia1.OutputSP;
+            //user.InputSP2 = cia2.OutputSP;
         }
 
         bool ReadCia1Cnt()
@@ -95,12 +73,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         int ReadCia1PortA()
         {
-            return (joystickB.Data | 0xE0) & keyboard.Column;
+            return joystickB.Data & keyboard.Column;
         }
 
         int ReadCia1PortB()
         {
-            return (joystickA.Data | 0xE0) & keyboard.Row;
+            return joystickA.Data & keyboard.Row;
         }
 
         int ReadCia2PortA()
@@ -120,81 +98,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             return 0xFF;
         }
 
-        int ReadData()
-        {
-            int addr = 0xFFFF;
-            int data = 0xFF;
-
-            data &= expansion.Data;
-            if (pla.Basic)
-            {
-                basicRom.Precache();
-                data &= basicRom.Data;
-            }
-            if (pla.CharRom)
-            {
-                characterRom.Precache();
-                data &= characterRom.Data;
-            }
-            if (pla.GraphicsRead)
-            {
-                colorRam.Precache();
-                data &= colorRam.Data;
-            }
-            if (pla.IO)
-            {
-                if ((addr & 0x0F00) == 0x0C00)
-                {
-                    cia1.Precache();
-                    data &= cia1.Data;
-                }
-                if ((addr & 0x0F00) == 0x0D00)
-                {
-                    cia2.Precache();
-                    data &= cia2.Data;
-                }
-                if ((addr & 0x0C00) == 0x0800)
-                {
-                    colorRam.Precache();
-                    data &= colorRam.Data;
-                }
-                if ((addr & 0x0C00) == 0x0400)
-                {
-                    sid.Precache();
-                    data &= sid.Data;
-                }
-                if ((addr & 0x0C00) == 0x0000)
-                {
-                    vic.Precache();
-                }
-            }
-            if (vic.BA)
-            {
-                cpu.Precache();
-                data &= cpu.Data;
-            }
-            if (pla.Kernal)
-            {
-                kernalRom.Precache();
-                data &= kernalRom.Data;
-            }
-            if (pla.CASRam)
-            {
-                memory.Precache();
-                data &= memory.Data;
-            }
-            return data;
-        }
-
         bool ReadHiExpansion()
         {
             int addr = 0xFFFF;
             return (addr >= 0xDF00 && addr < 0xE000);
-        }
-
-        bool ReadHiRam()
-        {
-            return (cpu.Port & 0x2) != 0;
         }
 
         bool ReadIRQ()
