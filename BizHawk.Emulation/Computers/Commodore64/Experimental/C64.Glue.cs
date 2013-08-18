@@ -9,13 +9,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
     {
         public void InitializeConnections()
         {
-            basicRom.InputAddress = ReadAddress;
-            basicRom.InputData = ReadData;
-
-            characterRom.InputAddress = ReadAddress;
-            characterRom.InputData = ReadData;
-
-            cia1.InputAddress = ReadAddress;
             cia1.InputCNT = user.OutputCNT1;
             cia1.InputData = ReadData;
             cia1.InputFlag = ReadCia1Flag;
@@ -25,7 +18,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             cia1.InputReset = ReadReset;
             cia1.InputSP = user.OutputSP1;
 
-            cia2.InputAddress = ReadAddress;
             cia2.InputCNT = user.OutputCNT2;
             cia2.InputData = ReadData;
             cia2.InputFlag = user.OutputFLAG2;
@@ -35,11 +27,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             cia2.InputReset = ReadReset;
             cia2.InputSP = user.OutputSP2;
 
-            colorRam.InputAddress = ReadAddress;
             colorRam.InputData = ReadData;
             colorRam.InputRead = cpu.OutputRead;
 
-            cpu.InputAddress = ReadAddress;
             cpu.InputAEC = vic.OutputAEC;
             cpu.InputData = ReadData;
             cpu.InputIRQ = ReadIRQ;
@@ -48,7 +38,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             cpu.InputRDY = vic.OutputBA;
             cpu.InputReset = ReadReset;
 
-            expansion.InputAddress = ReadAddress;
             expansion.InputBA = vic.OutputBA;
             expansion.InputData = ReadData;
             expansion.InputHiExpansion = ReadHiExpansion;
@@ -60,17 +49,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             expansion.InputRead = cpu.OutputRead;
             expansion.InputReset = ReadReset;
 
-            kernalRom.InputAddress = ReadAddress;
-            kernalRom.InputData = ReadData;
-
-            memory.InputAddress = ReadAddress;
             memory.InputData = ReadData;
             memory.InputRead = cpu.OutputRead;
 
-            pla.InputAddress = ReadAddress;
             pla.InputAEC = vic.OutputAEC;
             pla.InputBA = vic.OutputBA;
-            pla.InputCAS = vic.OutputCAS;
             pla.InputCharen = ReadCharen;
             pla.InputExRom = expansion.OutputExRom;
             pla.InputGame = expansion.OutputGame;
@@ -84,10 +67,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             serial.InputData = ReadSerialDTA;
             serial.InputReset = ReadReset;
 
-            sid.InputAddress = ReadAddress;
-            sid.InputData = ReadData;
-            sid.InputRead = cpu.OutputRead;
-
             user.InputCNT1 = cia1.OutputCNT;
             user.InputCNT2 = cia2.OutputCNT;
             user.InputData = cia2.OutputPortB;
@@ -96,19 +75,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
             user.InputReset = ReadReset;
             user.InputSP1 = cia1.OutputSP;
             user.InputSP2 = cia2.OutputSP;
-
-            vic.InputAddress = ReadAddress;
-            vic.InputData = ReadData;
-            vic.InputRead = cpu.OutputRead;
-        }
-
-        int ReadAddress()
-        {
-            int addr = 0xFFFF;
-            addr &= cpu.Address;
-            addr &= expansion.Address;
-            addr &= vic.Address;
-            return addr;
         }
 
         bool ReadCharen()
@@ -156,7 +122,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         int ReadData()
         {
-            int addr = ReadAddress();
+            int addr = 0xFFFF;
             int data = 0xFF;
 
             data &= expansion.Data;
@@ -200,7 +166,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
                 if ((addr & 0x0C00) == 0x0000)
                 {
                     vic.Precache();
-                    data &= vic.Data;
                 }
             }
             if (vic.BA)
@@ -223,7 +188,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         bool ReadHiExpansion()
         {
-            int addr = ReadAddress();
+            int addr = 0xFFFF;
             return (addr >= 0xDF00 && addr < 0xE000);
         }
 
@@ -243,7 +208,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         bool ReadLoExpansion()
         {
-            int addr = ReadAddress();
+            int addr = 0xFFFF;
             return (addr >= 0xDE00 && addr < 0xDF00);
         }
 
@@ -289,7 +254,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         int ReadVicAddress()
         {
-            return (vic.Address | ((cia2.PortA & 0x3) << 14));
+            //return (vic.Address | ((cia2.PortA & 0x3) << 14));
+            return 0xFFFF;
         }
     }
 }
