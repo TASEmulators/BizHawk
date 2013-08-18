@@ -7,6 +7,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     public abstract partial class Vic
     {
+        private int ecmPixel;
+        private int pixel;
+        private int[] pixelBackgroundBuffer;
+        private int pixelBackgroundBufferDelay;
+        private int pixelBackgroundBufferIndex;
+        private int[] pixelBuffer;
+        private int pixelBufferDelay;
+        private int pixelBufferIndex;
+        private int pixelData;
+
         private void Render()
         {
 
@@ -80,12 +90,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                                     spr.sr <<= 1;
                             }
                             spr.xCrunch ^= spr.xExpand;
-                            switch (sprData)
-                            {
-                                case 1: sprPixel = spriteMulticolor0; break;
-                                case 2: sprPixel = spr.color; break;
-                                case 3: sprPixel = spriteMulticolor1; break;
-                            }
+
+                            if (sprData == 1) 
+                                sprPixel = spriteMulticolor0;
+                            else if (sprData == 2) 
+                                sprPixel = spr.color;
+                            else if (sprData == 3) 
+                                sprPixel = spriteMulticolor1;
+
                             if (sprData != 0)
                             {
                                 // sprite-sprite collision
@@ -149,13 +161,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             pixelData = (sr & 0xC0) >> 6;
                             if ((bitmapColumn & 1) != 0)
                                 sr <<= 2;
-                            switch (pixelData)
-                            {
-                                case 0x00: pixel = backgroundColor0; break;
-                                case 0x01: pixel = backgroundColor1; break;
-                                case 0x02: pixel = backgroundColor2; break;
-                                default: pixel = (displayC & 0x700) >> 8; break;
-                            }
+
+                            if (pixelData == 0)
+                                pixel = backgroundColor0;
+                            else if (pixelData == 1)
+                                pixel = backgroundColor1;
+                            else if (pixelData == 2)
+                                pixel = backgroundColor2;
+                            else
+                                pixel = (displayC & 0x700) >> 8;
                         }
                         else
                         {
@@ -178,13 +192,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         pixelData = (sr & 0xC0) >> 6;
                         if ((bitmapColumn & 1) != 0)
                             sr <<= 2;
-                        switch (pixelData)
-                        {
-                            case 0x00: pixel = backgroundColor0; break;
-                            case 0x01: pixel = (displayC >> 4) & 0xF; break;
-                            case 0x02: pixel = displayC & 0xF; break;
-                            default: pixel = (displayC >> 8) & 0xF; break;
-                        }
+
+                        if (pixelData == 0) 
+                            pixel = backgroundColor0;
+                        else if (pixelData == 1) 
+                            pixel = (displayC >> 4) & 0xF;
+                        else if (pixelData == 2) 
+                            pixel = displayC & 0xF;
+                        else 
+                            pixel = (displayC >> 8) & 0xF;
                     }
                     else if (extraColorMode && !bitmapMode & !multicolorMode)
                     {
@@ -197,13 +213,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         }
                         else
                         {
-                            switch ((displayC >> 6) & 0x3)
-                            {
-                                case 0x00: pixel = backgroundColor0; break;
-                                case 0x01: pixel = backgroundColor1; break;
-                                case 0x02: pixel = backgroundColor2; break;
-                                default: pixel = backgroundColor3; break;
-                            }
+                            ecmPixel = (displayC >> 6) & 0x3;
+                            if (ecmPixel == 0)
+                                pixel = backgroundColor0;
+                            else if (ecmPixel == 1)
+                                pixel = backgroundColor1;
+                            else if (ecmPixel == 2)
+                                pixel = backgroundColor2;
+                            else
+                                pixel = backgroundColor3;
                         }
                     }
                     else if (extraColorMode && !bitmapMode & multicolorMode)

@@ -7,37 +7,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     public abstract partial class Vic
     {
-        private int backgroundColor0;
-        private int backgroundColor1;
-        private int backgroundColor2;
-        private int backgroundColor3;
-        private bool bitmapMode;
-        private int borderColor;
-        private bool columnSelect;
-        private bool displayEnable;
-        private bool enableIntLightPen;
-        private bool enableIntRaster;
-        private bool enableIntSpriteCollision;
-        private bool enableIntSpriteDataCollision;
-        private bool extraColorMode;
-        private bool intLightPen;
-        private bool intRaster;
-        private bool intSpriteCollision;
-        private bool intSpriteDataCollision;
-        private int lightPenX;
-        private int lightPenY;
-        private bool multicolorMode;
-        private int pointerCB;
-        private int pointerVM;
-        private int rasterInterruptLine;
-        private int rasterLine;
-        private int rasterX;
-        private bool rowSelect;
-        private int spriteMulticolor0;
-        private int spriteMulticolor1;
-        private Sprite[] sprites;
-        private int xScroll;
-        private int yScroll;
 
         public byte Peek(int addr)
         {
