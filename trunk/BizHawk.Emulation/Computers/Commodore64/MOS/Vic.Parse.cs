@@ -7,18 +7,33 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     public abstract partial class Vic
     {
+        protected const int baResetCounter = 6;
+        protected const int pipelineUpdateVc = 1;
+        protected const int pipelineChkSprChunch = 2;
+        protected const int pipelineUpdateMcBase = 4;
+        protected const int pipelineChkBrdL1 = 8;
+        protected const int pipelineChkBrdL0 = 16;
+        protected const int pipelineChkSprDma = 32;
+        protected const int pipelineChkBrdR0 = 64;
+        protected const int pipelineChkSprExp = 128;
+        protected const int pipelineChkBrdR1 = 256;
+        protected const int pipelineChkSprDisp = 512;
+        protected const int pipelineUpdateRc = 1024;
+        protected const int rasterIrqLine0Cycle = 1;
+        protected const int rasterIrqLineXCycle = 0;
+
         private int parseaddr;
         private int parsecycleBAsprite0;
         private int parsecycleBAsprite1;
         private int parsecycleBAsprite2;
         private int parsecycleFetchSpriteIndex;
         private int parsefetch;
+        private int parsefetchType;
         private int parseba;
         private int parseact;
 
         private void ParseCycle()
         {
-
             {
                 parseaddr = 0x3FFF;
                 parsefetch = pipeline[1][cycleIndex];
@@ -29,91 +44,95 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 rasterX = pipeline[0][cycleIndex];
 
                 // perform fetch
-                switch (parsefetch & 0xFF00)
+                parsefetchType = parsefetch & 0xFF00;
+                if (parsefetchType == 0x100)
                 {
-                    case 0x0100:
-                        // fetch R
-                        refreshCounter = (refreshCounter - 1) & 0xFF;
-                        parseaddr = (0x3F00 | refreshCounter);
-                        ReadMemory(parseaddr);
-                        break;
-                    case 0x0200:
-                        // fetch C
-                        if (!idle)
+                    // fetch R
+                    refreshCounter = (refreshCounter - 1) & 0xFF;
+                    parseaddr = (0x3F00 | refreshCounter);
+                    ReadMemory(parseaddr);
+                }
+                else if (parsefetchType == 0x200)
+                {
+                    // fetch C
+                    if (!idle)
+                    {
+                        if (badline)
                         {
-                            if (badline)
-                            {
-                                parseaddr = ((pointerVM << 10) | vc);
-                                dataC = ReadMemory(parseaddr);
-                                dataC |= ((int)ReadColorRam(parseaddr) & 0xF) << 8;
-                                bufferC[vmli] = dataC;
-                            }
-                            else
-                            {
-                                dataC = bufferC[vmli];
-                            }
-                        }
-                        else
-                        {
-                            dataC = 0;
+                            parseaddr = ((pointerVM << 10) | vc);
+                            dataC = ReadMemory(parseaddr);
+                            dataC |= ((int)ReadColorRam(parseaddr) & 0xF) << 8;
                             bufferC[vmli] = dataC;
                         }
-                        break;
-                    case 0x0300:
-                        // fetch G
-                        if (idle)
-                            parseaddr = 0x3FFF;
                         else
                         {
-                            if (bitmapMode)
-                                parseaddr = (rc | (vc << 3) | ((pointerCB & 0x4) << 11));
-                            else
-                                parseaddr = (rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
+                            dataC = bufferC[vmli];
                         }
-                        if (extraColorMode)
-                            parseaddr &= 0x39FF;
-                        dataG = ReadMemory(parseaddr);
-                        if (!idle)
-                        {
-                            bufferG[vmli] = dataG;
-                            vmli = (vmli + 1) & 0x3F;
-                            vc = (vc + 1) & 0x3FF;
-                        }
-                        break;
-                    case 0x0400:
-                        // fetch I
-                        parseaddr = (extraColorMode ? 0x39FF : 0x3FFF);
-                        dataG = ReadMemory(parseaddr);
+                    }
+                    else
+                    {
                         dataC = 0;
-                        break;
-                    case 0x0500:
-                        // no fetch
-                        break;
-                    default:
-                        parsecycleFetchSpriteIndex = (parsefetch & 0x7);
-                        switch (parsefetch & 0xF0)
-                        {
-                            case 0x00:
-                                // fetch P
-                                parseaddr = (0x3F8 | (pointerVM << 10) | parsecycleFetchSpriteIndex);
-                                sprites[parsecycleFetchSpriteIndex].pointer = ReadMemory(parseaddr);
-                                sprites[parsecycleFetchSpriteIndex].shiftEnable = false;
-                                break;
-                            case 0x10:
-                            case 0x20:
-                            case 0x30:
-                                // fetch S
-                                if (sprites[parsecycleFetchSpriteIndex].dma)
-                                {
-                                    Sprite spr = sprites[parsecycleFetchSpriteIndex];
-                                    parseaddr = (spr.mc | (spr.pointer << 6));
-                                    spr.sr <<= 8;
-                                    spr.sr |= ReadMemory(parseaddr);
-                                    spr.mc++;
-                                }
-                                break;
-                        }
-                        break;
+                        bufferC[vmli] = dataC;
+                    }
+                }
+                else if (parsefetchType == 0x300)
+                {
+                    // fetch G
+                    if (idle)
+                        parseaddr = 0x3FFF;
+                    else
+                    {
+                        if (bitmapMode)
+                            parseaddr = (rc | (vc << 3) | ((pointerCB & 0x4) << 11));
+                        else
+                            parseaddr = (rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
+                    }
+                    if (extraColorMode)
+                        parseaddr &= 0x39FF;
+                    dataG = ReadMemory(parseaddr);
+                    if (!idle)
+                    {
+                        bufferG[vmli] = dataG;
+                        vmli = (vmli + 1) & 0x3F;
+                        vc = (vc + 1) & 0x3FF;
+                    }
+                }
+                else if (parsefetchType == 0x400)
+                {
+                    // fetch I
+                    parseaddr = (extraColorMode ? 0x39FF : 0x3FFF);
+                    dataG = ReadMemory(parseaddr);
+                    dataC = 0;
+                }
+                else if (parsefetchType == 0x500)
+                {
+                    // fetch none
+                }
+                else
+                {
+                    parsecycleFetchSpriteIndex = (parsefetch & 0x7);
+                    switch (parsefetch & 0xF0)
+                    {
+                        case 0x00:
+                            // fetch P
+                            parseaddr = (0x3F8 | (pointerVM << 10) | parsecycleFetchSpriteIndex);
+                            sprites[parsecycleFetchSpriteIndex].pointer = ReadMemory(parseaddr);
+                            sprites[parsecycleFetchSpriteIndex].shiftEnable = false;
+                            break;
+                        case 0x10:
+                        case 0x20:
+                        case 0x30:
+                            // fetch S
+                            if (sprites[parsecycleFetchSpriteIndex].dma)
+                            {
+                                Sprite spr = sprites[parsecycleFetchSpriteIndex];
+                                parseaddr = (spr.mc | (spr.pointer << 6));
+                                spr.sr <<= 8;
+                                spr.sr |= ReadMemory(parseaddr);
+                                spr.mc++;
+                            }
+                            break;
+                    }
                 }
 
                 // perform BA flag manipulation
