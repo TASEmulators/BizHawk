@@ -32,11 +32,10 @@ namespace BizHawk.MultiClient
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 #endif
-
 		}
 
 		[STAThread]
-		unsafe static void Main(string[] args)
+		static void Main(string[] args)
 		{
 			SubMain(args);
 		}

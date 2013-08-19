@@ -15,10 +15,52 @@ using System.IO;
 
 namespace BizHawk
 {
-	class DiscoHawk
+	static class Program
 	{
+		static Program()
+		{
+			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+#if WINDOWS
+			// this will look in subdirectory "dll" to load pinvoked stuff
+			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			SetDllDirectory(dllDir);
 
-		public static string GetExeDirectoryAbsolute()
+			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			WhackAllMOTW(dllDir);
+
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+#endif
+		}
+
+		[STAThread]
+		static void Main(string[] args)
+		{
+			SubMain(args);
+		}
+
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+		static void SubMain(string[] args)
+		{
+			#if WINDOWS
+				ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+			#endif
+
+			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
+			if (!File.Exists(ffmpegPath))
+				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
+			DiscSystem.FFMpeg.FFMpegPath = ffmpegPath;
+			AudioExtractor.FFmpegPath = ffmpegPath;
+			new DiscoHawk().Run(args);
+		}
+
+
+	public static string GetExeDirectoryAbsolute()
 		{
 			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
 			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
@@ -84,30 +126,6 @@ namespace BizHawk
 		}
 #endif
 
-		[STAThread]
-		static void Main(string[] args)
-		{
-
-#if WINDOWS
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			SetDllDirectory(dllDir);
-
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-			WhackAllMOTW(dllDir);
-
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-#endif
-
-			ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
-
-			SubMain(args);
-		}
 		private const UInt32 WM_DROPFILES = 0x0233;
 		private const UInt32 WM_COPYDATA = 0x004A;
 		[DllImport("user32")]
@@ -132,20 +150,11 @@ namespace BizHawk
         public uint size;
         public MessageFilterInfo info;
     }
+	}
 
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
-		static void SubMain(string[] args)
-		{
-			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
-			if(!File.Exists(ffmpegPath))
-				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
-			DiscSystem.FFMpeg.FFMpegPath = ffmpegPath;
-			AudioExtractor.FFmpegPath = ffmpegPath;
-			new DiscoHawk().Run(args);
-		}
-
-		void Run(string[] args)
+	class DiscoHawk
+	{
+		public void Run(string[] args)
 		{
 			bool gui = true;
 			foreach (var arg in args)
