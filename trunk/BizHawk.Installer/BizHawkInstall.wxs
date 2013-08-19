@@ -285,14 +285,23 @@
           <Property Id="ARPNOMODIFY" Value="1" />
         </UI>
         <UIRef Id="WixUI_Common" />
+        <!-- The dotnet45 variable is defined in the project build tab. The 2012 project is uses .NET 4.5 -->
+        <?if $(var.dotnet45) = 1 ?>
+          <PropertyRef Id="NETFRAMEWORK45" />
+          <Condition Message="This application requires .NET Framework 4.5.">Installed OR NETFRAMEWORK45</Condition>
+        <?else?>
+          <PropertyRef Id="NETFRAMEWORK40FULL" />
+          <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
+        <?endif?>
         <!-- <Property Id="VC2010SP1RUNTIME">
-          <RegistrySearch Id="VC2010sp1RuntimeCheck" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" Name="InstallDate" Type="raw" />
-        </Property>-->
-        <PropertyRef Id="NETFRAMEWORK40FULL" />
-        <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
+            <RegistrySearch Id="VC2010sp1RuntimeCheck" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" Name="InstallDate" Type="raw" />
+          </Property>-->
         <!-- <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition> -->
+        <Property Id="DIRECTX90C">
+            <RegistrySearch Id="DirectX90Ccheck" Root="HKLM" Key="Software\Microsoft\DirectX" Name="Version" Type="raw" />
+        </Property>
+        <Condition Message="This application requires DirectX 9.0c or later">Installed OR DIRECTX90C="4.09.00.0904" OR DIRECTX90C="4.09.0000.0904"</Condition>
         <Icon Id="BizHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\BizHawk.MultiClient.exe" />
         <Icon Id="DiscoHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\DiscoHawk.exe" />
-        
     </Product>
 </Wix>
