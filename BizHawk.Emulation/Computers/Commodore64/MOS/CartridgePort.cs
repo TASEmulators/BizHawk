@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public Func<bool> ReadIRQ;
         public Func<bool> ReadNMI;
 
-		private Cart cart;
-		private bool connected;
+		protected Cart cart;
+        protected bool connected;
 
 		public CartridgePort()
 		{
@@ -80,13 +80,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void SyncState(Serializer ser)
 		{
-			ser.Sync("connected", ref connected);
-			if (connected)
-			{
-				ser.BeginSection("cartmapper");
-				cart.SyncState(ser);
-				ser.EndSection();
-			}
+            Sync.SyncObject(ser, this);
 		}
 	}
 }

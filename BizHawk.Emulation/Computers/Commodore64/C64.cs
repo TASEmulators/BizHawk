@@ -7,25 +7,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
-		private int cyclesPerFrame;
-		private string extension;
-		private byte[] inputFile;
-
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
-		{
-			CoreComm = comm;
-			inputFile = rom;
-			extension = romextension;
-			Init(Region.PAL);
-			cyclesPerFrame = board.vic.CyclesPerFrame;
-			CoreComm.UsesDriveLed = true;
-			SetupMemoryDomains();
-		}
-
 		// internal variables
 		private bool _islag = true;
 		private int _lagcount = 0;
 		private int _frame = 0;
+        private int cyclesPerFrame;
+        private InputFileInfo inputFileInfo;
 
 		// bizhawk I/O
 		public CoreComm CoreComm { get; private set; }
@@ -63,7 +50,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public IController Controller { get { return board.controller; } set { board.controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
-			Name = "Commodore 64 Controller", //TODO
+			Name = "Commodore 64 Controller",
 			BoolButtons =
 			{
 				"Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Key Cursor Up/Down",
@@ -81,7 +68,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		};
 
 		// framework
-		public void Dispose()
+        public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
+        {
+            inputFileInfo = new InputFileInfo();
+            inputFileInfo.Data = rom;
+            inputFileInfo.Extension = romextension;
+            CoreComm = comm;
+            Init(Region.PAL);
+            cyclesPerFrame = board.vic.CyclesPerFrame;
+            CoreComm.UsesDriveLed = true;
+            SetupMemoryDomains();
+        }
+
+        public void Dispose()
 		{
 			if (board.sid != null)
 			{
@@ -93,28 +92,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			// load PRG file if needed
-			if (loadPrg)
-			{
-				if (board.pla.Peek(0x04C8) == 0x12 &&
-					board.pla.Peek(0x04C9) == 0x05 &&
-					board.pla.Peek(0x04CA) == 0x01 &&
-					board.pla.Peek(0x04CB) == 0x04 &&
-					board.pla.Peek(0x04CC) == 0x19 &&
-					board.pla.Peek(0x04CD) == 0x2E)
-				{
-					Media.PRG.Load(board.pla, inputFile);
-					loadPrg = false;
-				}
-			}
-
             board.inputRead = false;
 			board.PollInput();
+
             for (int count = 0; count < cyclesPerFrame; count++)
 			{
 				//disk.Execute();
 				board.Execute();
-			}
+
+                // load PRG file if needed
+                if (loadPrg)
+                {
+                    // check to see if cpu PC is at the BASIC warm start vector
+                    if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
+                    {
+                        //board.ram.Poke(0x0302, 0xAE);
+                        //board.ram.Poke(0x0303, 0xA7);
+                        ////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
+                        ////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
+
+                        //if (inputFileInfo.Data.Length >= 6)
+                        //{
+                        //    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
+                        //    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
+                        //}
+                        Media.PRG.Load(board.pla, inputFileInfo.Data);
+                        loadPrg = false;
+                    }
+                }
+            }
+
             board.Flush();
 			_islag = !board.inputRead;
 

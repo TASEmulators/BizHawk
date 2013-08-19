@@ -22,15 +22,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         protected const int rasterIrqLine0Cycle = 1;
         protected const int rasterIrqLineXCycle = 0;
 
-        private int parseaddr;
-        private int parsecycleBAsprite0;
-        private int parsecycleBAsprite1;
-        private int parsecycleBAsprite2;
-        private int parsecycleFetchSpriteIndex;
-        private int parsefetch;
-        private int parsefetchType;
-        private int parseba;
-        private int parseact;
+        protected int parseaddr;
+        protected int parsecycleBAsprite0;
+        protected int parsecycleBAsprite1;
+        protected int parsecycleBAsprite2;
+        protected int parsecycleFetchSpriteIndex;
+        protected int parsefetch;
+        protected int parsefetchType;
+        protected int parseba;
+        protected int parseact;
 
         private void ParseCycle()
         {

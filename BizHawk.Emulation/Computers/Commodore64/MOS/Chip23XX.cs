@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	public class Chip23XX
 	{
-		private int addrMask;
-		private byte[] rom;
+        protected int addrMask;
+        protected byte[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{
@@ -53,8 +53,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			ByteBuffer buffer = new ByteBuffer(rom);
-			ser.Sync("rom", ref buffer);
-		}
+            Sync.SyncObject(ser, this);
+        }
 	}
 }

@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	
 		// ------------------------------------
 
-		private enum PLABank
+        protected enum PLABank
 		{
 			None,
 			RAM,
@@ -86,35 +86,35 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-        bool p0;
-        bool p1;
-        bool p2;
-        bool p3;
-        bool p4;
-        bool p5;
-        bool p9;
-        bool p11;
-        bool p13;
-        bool p15;
-        bool p17;
-        bool p19;
-        bool p20;
-        bool p21;
-        bool p22;
-        bool p24;
-        bool p25;
-        bool p26;
-        bool p27;
-        bool p28;
-        bool loram;
-        bool hiram;
-        bool game;
-        bool exrom;
-        bool charen;
-        bool a15;
-        bool a14;
-        bool a13;
-        bool a12;
+        protected bool p0;
+        protected bool p1;
+        protected bool p2;
+        protected bool p3;
+        protected bool p4;
+        protected bool p5;
+        protected bool p9;
+        protected bool p11;
+        protected bool p13;
+        protected bool p15;
+        protected bool p17;
+        protected bool p19;
+        protected bool p20;
+        protected bool p21;
+        protected bool p22;
+        protected bool p24;
+        protected bool p25;
+        protected bool p26;
+        protected bool p27;
+        protected bool p28;
+        protected bool loram;
+        protected bool hiram;
+        protected bool game;
+        protected bool exrom;
+        protected bool charen;
+        protected bool a15;
+        protected bool a14;
+        protected bool a13;
+        protected bool a12;
 
 		private PLABank Bank(int addr, bool read)
 		{
@@ -386,6 +386,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 			return 0xFF;
 		}
+
+        public void SyncState(Serializer ser)
+        {
+            Sync.SyncObject(ser, this);
+        }
 
         public byte VicRead(int addr)
         {

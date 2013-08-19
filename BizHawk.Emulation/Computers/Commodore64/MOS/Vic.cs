@@ -12,10 +12,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public bool ReadBABuffer() { return pinBA; }
         public bool ReadIRQBuffer() { return pinIRQ; }
 
-        private int cyclesPerSec;
-		private int[][] pipeline;
-		private int totalCycles;
-		private int totalLines;
+        protected int cyclesPerSec;
+		protected int[][] pipeline;
+		protected int totalCycles;
+		protected int totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec)
 		{

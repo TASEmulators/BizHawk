@@ -6,27 +6,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		// ------------------------------------
 
-		private class Envelope
+		protected class Envelope
 		{
-			private const int stateAttack = 0;
-			private const int stateDecay = 1;
-			private const int stateRelease = 2;
+			protected const int stateAttack = 0;
+			protected const int stateDecay = 1;
+			protected const int stateRelease = 2;
 
-			private int attack;
-			private int decay;
-			private bool delay;
-			private int envCounter;
-			private int expCounter;
-			private int expPeriod;
-			private bool freeze;
-			private int lfsr;
-			private bool gate;
-			private int rate;
-			private int release;
-			private int state;
-			private int sustain;
+			protected int attack;
+			protected int decay;
+			protected bool delay;
+			protected int envCounter;
+			protected int expCounter;
+			protected int expPeriod;
+			protected bool freeze;
+			protected int lfsr;
+			protected bool gate;
+			protected int rate;
+			protected int release;
+			protected int state;
+			protected int sustain;
 
-			private static int[] adsrTable = new int[]
+			protected static int[] adsrTable = new int[]
 			{
 				0x7F00, 0x0006, 0x003C, 0x0330,
 				0x20C0, 0x6755, 0x3800, 0x500E,
@@ -34,17 +34,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				0x3840, 0x77E2, 0x7625, 0x0A93
 			};
 
-			private static int[] expCounterTable = new int[]
+			protected static int[] expCounterTable = new int[]
 			{
 				0xFF, 0x5D, 0x36, 0x1A, 0x0E, 0x06, 0x00
 			};
 
-			private static int[] expPeriodTable = new int[]
+			protected static int[] expPeriodTable = new int[]
 			{
 				0x01, 0x02, 0x04, 0x08, 0x10, 0x1E, 0x01
 			};
 
-			private static int[] sustainTable = new int[]
+			protected static int[] sustainTable = new int[]
 			{
 				0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 				0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
@@ -241,52 +241,40 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("attack", ref attack);
-				ser.Sync("decay", ref decay);
-				ser.Sync("delay", ref delay);
-				ser.Sync("envCounter", ref envCounter);
-				ser.Sync("expCounter", ref expCounter);
-				ser.Sync("expPeriod", ref expPeriod);
-				ser.Sync("freeze", ref freeze);
-				ser.Sync("lfsr", ref lfsr);
-				ser.Sync("gate", ref gate);
-				ser.Sync("rate", ref rate);
-				ser.Sync("release", ref release);
-				ser.Sync("state", ref state);
-				ser.Sync("sustain", ref sustain);
-			}
+                Sync.SyncObject(ser, this);
+            }
 
 			// ------------------------------------
 		}
 
-		private class Voice
+		protected class Voice
 		{
-            private int accBits;
-            private int accNext;
-			private int accumulator;
-            private bool controlTestPrev;
-            private int controlWavePrev;
-			private int delay;
-			private int floatOutputTTL;
-			private int frequency;
-            private bool msbRising;
-			private int noise;
-			private int noNoise;
-			private int noNoiseOrNoise;
-			private int noPulse;
-			private int output;
-			private int pulse;
-			private int pulseWidth;
-			private bool ringMod;
-			private int ringMsbMask;
-			private int shiftRegister;
-			private int shiftRegisterReset;
-			private bool sync;
-			private bool test;
-			private int[] wave;
-			private int waveform;
-            private int waveformIndex;
-			private int[][] waveTable;
+            protected int accBits;
+            protected int accNext;
+			protected int accumulator;
+            protected bool controlTestPrev;
+            protected int controlWavePrev;
+			protected int delay;
+			protected int floatOutputTTL;
+			protected int frequency;
+            protected bool msbRising;
+			protected int noise;
+			protected int noNoise;
+			protected int noNoiseOrNoise;
+			protected int noPulse;
+			protected int output;
+			protected int pulse;
+			protected int pulseWidth;
+			protected bool ringMod;
+			protected int ringMsbMask;
+			protected int shiftRegister;
+			protected int shiftRegisterReset;
+			protected bool sync;
+			protected bool test;
+			protected int[] wave;
+			protected int waveform;
+            protected int waveformIndex;
+			protected int[][] waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -585,25 +573,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("accumulator", ref accumulator);
-				ser.Sync("delay", ref delay);
-				ser.Sync("floatOutputTTL", ref floatOutputTTL);
-				ser.Sync("frequency", ref frequency);
-				ser.Sync("msbRising", ref msbRising);
-				ser.Sync("noise", ref noise);
-				ser.Sync("noNoise", ref noNoise);
-				ser.Sync("noNoiseOrNoise", ref noNoiseOrNoise);
-				ser.Sync("noPulse", ref noPulse);
-				ser.Sync("output", ref output);
-				ser.Sync("pulse", ref pulse);
-				ser.Sync("pulseWidth", ref pulseWidth);
-				ser.Sync("ringMod", ref ringMod);
-				ser.Sync("ringMsbMask", ref ringMsbMask);
-				ser.Sync("shiftRegister", ref shiftRegister);
-				ser.Sync("shiftRegisterReset", ref shiftRegisterReset);
-				ser.Sync("sync", ref sync);
-				ser.Sync("test", ref test);
-				ser.Sync("waveform", ref waveform);
+                BizHawk.Emulation.Computers.Commodore64.Sync.SyncObject(ser, this);
 
 				if (ser.IsReader)
 					wave = waveTable[waveform];
@@ -614,28 +584,28 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Sound.Utilities.SpeexResampler resampler;
 
-		private static int[] syncNextTable = new int[] { 1, 2, 0 };
-		private static int[] syncPrevTable = new int[] { 2, 0, 1 };
+		protected static int[] syncNextTable = new int[] { 1, 2, 0 };
+		protected static int[] syncPrevTable = new int[] { 2, 0, 1 };
 
-        private int cachedCycles;
-		private bool disableVoice3;
-		private int[] envelopeOutput;
-		private Envelope[] envelopes;
-		private bool[] filterEnable;
-		private int filterFrequency;
-		private int filterResonance;
-		private bool filterSelectBandPass;
-		private bool filterSelectLoPass;
-		private bool filterSelectHiPass;
-        private int mixer;
-        private int potCounter;
-		private int potX;
-        private int potY;
-        private short sample;
-        private int[] voiceOutput;
-		private Voice[] voices;
-		private int volume;
-		private int[][] waveformTable;
+        protected int cachedCycles;
+		protected bool disableVoice3;
+		protected int[] envelopeOutput;
+		protected Envelope[] envelopes;
+		protected bool[] filterEnable;
+		protected int filterFrequency;
+		protected int filterResonance;
+		protected bool filterSelectBandPass;
+		protected bool filterSelectLoPass;
+		protected bool filterSelectHiPass;
+        protected int mixer;
+        protected int potCounter;
+		protected int potX;
+        protected int potY;
+        protected short sample;
+        protected int[] voiceOutput;
+		protected Voice[] voices;
+		protected int volume;
+		protected int[][] waveformTable;
 
 		public Func<byte> ReadPotX;
 		public Func<byte> ReadPotY;
@@ -954,9 +924,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ----------------------------------
 
-		public void SyncState(Serializer ser)
+        public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("env0");
+            Sync.SyncObject(ser, this);
+            ser.BeginSection("env0");
 			envelopes[0].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("wav0");
@@ -974,25 +945,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			ser.BeginSection("wav2");
 			voices[2].SyncState(ser);
 			ser.EndSection();
-			ser.Sync("disableVoice3", ref disableVoice3);
-			ser.Sync("envelopeOutput0", ref envelopeOutput[0]);
-			ser.Sync("envelopeOutput1", ref envelopeOutput[1]);
-			ser.Sync("envelopeOutput2", ref envelopeOutput[2]);
-			ser.Sync("filterEnable0", ref filterEnable[0]);
-			ser.Sync("filterEnable1", ref filterEnable[1]);
-			ser.Sync("filterEnable2", ref filterEnable[2]);
-			ser.Sync("filterFrequency", ref filterFrequency);
-			ser.Sync("filterResonance", ref filterResonance);
-			ser.Sync("filterSelectBandPass", ref filterSelectBandPass);
-			ser.Sync("filterSelectLoPass", ref filterSelectLoPass);
-			ser.Sync("filterSelectHiPass", ref filterSelectHiPass);
-			ser.Sync("potCounter", ref potCounter);
-			ser.Sync("potX", ref potX);
-			ser.Sync("potY", ref potY);
-			ser.Sync("voiceOutput0", ref voiceOutput[0]);
-			ser.Sync("voiceOutput1", ref voiceOutput[1]);
-			ser.Sync("voiceOutput2", ref voiceOutput[2]);
-			ser.Sync("volume", ref volume);
 		}
 	}
 }
