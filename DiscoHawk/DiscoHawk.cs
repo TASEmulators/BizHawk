@@ -41,6 +41,7 @@ namespace BizHawk
 			SubMain(args);
 		}
 
+		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
 		static void SubMain(string[] args)
@@ -69,16 +70,21 @@ namespace BizHawk
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			//load missing assemblies by trying to find them in the dll directory
-			string dllname = new AssemblyName(args.Name).Name + ".dll";
-			string directory = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			string fname = Path.Combine(directory, dllname);
-			if (!File.Exists(fname)) return null;
+			lock (AppDomain.CurrentDomain)
+			{
+				var asms = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var asm in asms)
+					if (asm.FullName == args.Name)
+						return asm;
 
-			ApplyMOTW(fname);
-
-			//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
-			return Assembly.LoadFile(fname);
+				//load missing assemblies by trying to find them in the dll directory
+				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
+				string fname = Path.Combine(directory, dllname);
+				if (!File.Exists(fname)) return null;
+				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+				return Assembly.LoadFile(fname);
+			}
 		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
