@@ -14,7 +14,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;dotnet45=0;</DefineConstants>
+    <DefineConstants>Debug;dotnet45=1;</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
