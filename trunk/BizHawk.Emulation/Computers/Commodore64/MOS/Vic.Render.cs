@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     public abstract partial class Vic
     {
-        private int ecmPixel;
-        private int pixel;
-        private int[] pixelBackgroundBuffer;
-        private int pixelBackgroundBufferDelay;
-        private int pixelBackgroundBufferIndex;
-        private int[] pixelBuffer;
-        private int pixelBufferDelay;
-        private int pixelBufferIndex;
-        private int pixelData;
+        protected int ecmPixel;
+        protected int pixel;
+        protected int[] pixelBackgroundBuffer;
+        protected int pixelBackgroundBufferDelay;
+        protected int pixelBackgroundBufferIndex;
+        protected int[] pixelBuffer;
+        protected int pixelBufferDelay;
+        protected int pixelBufferIndex;
+        protected int pixelData;
 
         private void Render()
         {

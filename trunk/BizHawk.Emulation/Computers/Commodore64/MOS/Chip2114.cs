@@ -4,7 +4,7 @@
 
 	public class Chip2114
 	{
-		private byte[] ram;
+        protected byte[] ram;
 
 		public Chip2114()
 		{
@@ -33,9 +33,8 @@
 
 		public void SyncState(Serializer ser)
 		{
-			ByteBuffer buffer = new ByteBuffer(ram);
-			ser.Sync("ram", ref buffer);
-		}
+            Sync.SyncObject(ser, this);
+        }
 
 		public void Write(int addr, byte val)
 		{

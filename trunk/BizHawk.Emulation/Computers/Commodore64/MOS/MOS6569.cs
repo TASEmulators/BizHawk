@@ -3,7 +3,7 @@
 	// vic pal
 	public class MOS6569 : Vic
 	{
-		static int[][] pipeline = new int[][]
+        static protected int[][] pipeline = new int[][]
 			{
 				new int[] // xposition
 				{

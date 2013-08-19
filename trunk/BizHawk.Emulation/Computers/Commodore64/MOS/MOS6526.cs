@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		// ------------------------------------
 
-		private enum InMode
+        protected enum InMode
 		{
 			Phase2,
 			CNT,
@@ -20,26 +20,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			TimerAUnderflowCNT
 		}
 
-		private enum OutMode
+        protected enum OutMode
 		{
 			Pulse,
 			Toggle
 		}
 
-		private enum RunMode
+        protected enum RunMode
 		{
 			Continuous,
 			Oneshot
 		}
 
-		private enum SPMode
+        protected enum SPMode
 		{
 			Input,
 			Output
 		}
 
-		private static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
-		private static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
+        protected static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
+        protected static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
 
 		// ------------------------------------
 
@@ -49,36 +49,36 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         // ------------------------------------
 
-        private bool alarmSelect;
-		private Region chipRegion;
-		private bool cntPos;
-		private bool enableIntAlarm;
-		private bool enableIntFlag;
-		private bool enableIntSP;
-		private bool[] enableIntTimer;
-		private bool intAlarm;
-		private bool intFlag;
-		private bool intSP;
-		private bool[] intTimer;
-		private bool pinCnt;
-        private bool pinCntLast;
-        private bool pinPC;
-        private bool pinSP;
-		private byte sr;
-		private int[] timerDelay;
-		private InMode[] timerInMode;
-		private OutMode[] timerOutMode;
-		private bool[] timerPortEnable;
-		private bool[] timerPulse;
-		private RunMode[] timerRunMode;
-		private SPMode timerSPMode;
-		private byte[] tod;
-		private byte[] todAlarm;
-		private bool todAlarmPM;
-		private int todCounter;
-		private int todCounterLatch;
-		private bool todIn;
-		private bool todPM;
+        protected bool alarmSelect;
+		protected Region chipRegion;
+		protected bool cntPos;
+		protected bool enableIntAlarm;
+		protected bool enableIntFlag;
+		protected bool enableIntSP;
+		protected bool[] enableIntTimer;
+		protected bool intAlarm;
+		protected bool intFlag;
+		protected bool intSP;
+		protected bool[] intTimer;
+		protected bool pinCnt;
+        protected bool pinCntLast;
+        protected bool pinPC;
+        protected bool pinSP;
+		protected byte sr;
+		protected int[] timerDelay;
+		protected InMode[] timerInMode;
+		protected OutMode[] timerOutMode;
+		protected bool[] timerPortEnable;
+		protected bool[] timerPulse;
+		protected RunMode[] timerRunMode;
+		protected SPMode timerSPMode;
+		protected byte[] tod;
+		protected byte[] todAlarm;
+		protected bool todAlarmPM;
+		protected int todCounter;
+		protected int todCounterLatch;
+		protected bool todIn;
+		protected bool todPM;
 
 		// ------------------------------------
 
@@ -541,67 +541,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			int chipRegionInt = (int)chipRegion;
-            int timerInModeInt0 = (int)timerInMode[0];
-            int timerInModeInt1 = (int)timerInMode[1];
-            int timerOutModeInt0 = (int)timerOutMode[0];
-            int timerOutModeInt1 = (int)timerOutMode[1];
-            int timerRunModeInt0 = (int)timerRunMode[0];
-            int timerRunModeInt1 = (int)timerRunMode[1];
-            int timerSPModeInt = (int)timerSPMode;
-
-			SyncInternal(ser);
-			ser.Sync("alarmSelect", ref alarmSelect);
-			ser.Sync("chipRegion", ref chipRegionInt);
-			ser.Sync("cntPos", ref cntPos);
-			ser.Sync("enableIntAlarm", ref enableIntAlarm);
-			ser.Sync("enableIntFlag", ref enableIntFlag);
-			ser.Sync("enableIntSP", ref enableIntSP);
-			ser.Sync("enableIntTimer0", ref enableIntTimer[0]);
-			ser.Sync("enableIntTimer1", ref enableIntTimer[1]);
-			ser.Sync("intAlarm", ref intAlarm);
-			ser.Sync("intFlag", ref intFlag);
-			ser.Sync("intSP", ref intSP);
-			ser.Sync("intTimer0", ref intTimer[0]);
-			ser.Sync("intTimer1", ref intTimer[1]);
-			ser.Sync("pinCnt", ref pinCnt);
-			ser.Sync("pinPC", ref pinPC);
-			ser.Sync("sr", ref sr);
-			ser.Sync("timerDelay0", ref timerDelay[0]);
-			ser.Sync("timerDelay1", ref timerDelay[1]);
-			ser.Sync("timerInMode0", ref timerInModeInt0);
-			ser.Sync("timerInMode1", ref timerInModeInt1);
-			ser.Sync("timerOutMode0", ref timerOutModeInt0);
-			ser.Sync("timerOutMode1", ref timerOutModeInt1);
-			ser.Sync("timerPortEnable0", ref timerPortEnable[0]);
-			ser.Sync("timerPortEnable1", ref timerPortEnable[1]);
-			ser.Sync("timerPulse0", ref timerPulse[0]);
-			ser.Sync("timerPulse1", ref timerPulse[1]);
-			ser.Sync("timerRunMode0", ref timerRunModeInt0);
-			ser.Sync("timerRunMode1", ref timerRunModeInt1);
-			ser.Sync("timerSPMode", ref timerSPModeInt);
-			ser.Sync("tod0", ref tod[0]);
-			ser.Sync("tod1", ref tod[1]);
-			ser.Sync("tod2", ref tod[2]);
-			ser.Sync("tod3", ref tod[3]);
-			ser.Sync("todAlarm0", ref todAlarm[0]);
-			ser.Sync("todAlarm1", ref todAlarm[1]);
-			ser.Sync("todAlarm2", ref todAlarm[2]);
-			ser.Sync("todAlarm3", ref todAlarm[3]);
-			ser.Sync("todAlarmPM", ref todAlarmPM);
-			ser.Sync("todCounter", ref todCounter);
-			ser.Sync("todCounterLatch", ref todCounterLatch);
-			ser.Sync("todIn", ref todIn);
-			ser.Sync("todPM", ref todPM);
-
-			chipRegion = (Region)chipRegionInt;
-			timerInMode[0] = (InMode)timerInModeInt0;
-			timerInMode[1] = (InMode)timerInModeInt1;
-			timerOutMode[0] = (OutMode)timerOutModeInt0;
-			timerOutMode[1] = (OutMode)timerOutModeInt1;
-			timerRunMode[0] = (RunMode)timerRunModeInt0;
-			timerRunMode[1] = (RunMode)timerRunModeInt1;
-			timerSPMode = (SPMode)timerSPModeInt;
+            Sync.SyncObject(ser, this);
 		}
 
 		public void Write(int addr, byte val)

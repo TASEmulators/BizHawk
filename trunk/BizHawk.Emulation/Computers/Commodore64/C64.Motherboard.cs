@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Computers.Commodore64.MOS;
+using System.Reflection;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
@@ -195,6 +196,49 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-		}
+            ser.BeginSection("motherboard");
+            Sync.SyncObject(ser, this);
+            ser.EndSection();
+
+            ser.BeginSection("cartridge");
+            cartPort.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cassette");
+            cassPort.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cia0");
+            cia0.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cia1");
+            cia1.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("colorram");
+            colorRam.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cpu");
+            cpu.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("pla");
+            pla.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("ram");
+            ram.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("sid");
+            sid.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("vic");
+            vic.SyncState(ser);
+            ser.EndSection();
+        }
 	}
 }

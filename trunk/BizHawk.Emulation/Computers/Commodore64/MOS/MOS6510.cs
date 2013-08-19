@@ -11,12 +11,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		// ------------------------------------
 
-        private MOS6502X cpu;
-        private List<GCHandle> disposeList = new List<GCHandle>();
-		//private bool freezeCpu;
-		private bool pinNMILast;
-        private LatchedPort port;
-        private bool thisNMI;
+        protected MOS6502X cpu;
+        protected bool pinNMILast;
+        protected LatchedPort port;
+        protected bool thisNMI;
 
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
@@ -42,14 +40,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             // perform hard reset
             HardReset();
 		}
-
-        ~MOS6510()
-        {
-            foreach (GCHandle handle in disposeList)
-            {
-                handle.Free();
-            }
-        }
 
 		public void HardReset()
 		{
@@ -101,6 +91,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				return cpu.PC;
 			}
+            set
+            {
+                cpu.PC = value;
+            }
 		}
 
 		public byte Peek(int addr)
@@ -148,7 +142,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public void SyncState(Serializer ser)
         {
             cpu.SyncState(ser);
-            ser.Sync("pinNMILast", ref pinNMILast);
+            Sync.SyncObject(ser, this);
         }
 
         public void Write(ushort addr, byte val)
