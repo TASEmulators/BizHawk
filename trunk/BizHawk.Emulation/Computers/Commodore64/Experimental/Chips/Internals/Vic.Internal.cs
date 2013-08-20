@@ -7,10 +7,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Vic
     {
-        bool cachedAEC;
-        bool cachedBA;
-        bool cachedIRQ;
-
         class Sprite
         {
             public int Color;
@@ -25,6 +21,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             public int Y;
         }
 
+        bool aec;
         bool ba;
         int[] backgroundColor;
         bool bitmapMode;
@@ -34,20 +31,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         bool columnSelect;
         int data;
         bool dataCollisionInterrupt;
+        bool dataCollisionInterruptEnable;
         bool displayEnable;
         bool extraColorMode;
-        byte interruptEnableRegister;
         bool irq;
         bool lightPenInterrupt;
+        bool lightPenInterruptEnable;
         int lightPenX;
         int lightPenY;
         bool multiColorMode;
         bool rasterInterrupt;
+        bool rasterInterruptEnable;
         int rasterX;
         int rasterY;
         bool reset;
         bool rowSelect;
         bool spriteCollisionInterrupt;
+        bool spriteCollisionInterruptEnable;
         int[] spriteMultiColor;
         Sprite[] sprites;
         int videoMemory;
