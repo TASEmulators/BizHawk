@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Vic : IVideoProvider
+    sealed public partial class Vic : IVideoProvider
     {
         protected int[] videoBuffer;
 

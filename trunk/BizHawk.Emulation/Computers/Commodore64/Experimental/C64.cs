@@ -33,13 +33,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 
         public void ExecuteFrame()
         {
-            vic.Clock();
-            vic.Clock();
-            vic.Clock();
-            vic.Clock();
-            vic.Precache();
-            cpu.Clock();
-            cpu.Precache();
         }
 
         public byte PeekBasicRom(int addr)

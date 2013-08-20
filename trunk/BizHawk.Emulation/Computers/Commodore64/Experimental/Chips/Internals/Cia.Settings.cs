@@ -5,8 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    sealed public partial class Sid
+    public class CiaSettings
     {
-        public void SyncState(Serializer ser) { }
     }
 }

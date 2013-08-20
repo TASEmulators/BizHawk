@@ -79,29 +79,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             ExpansionHi
         }
 
-        bool p0;
-        bool p1;
-        bool p2;
-        bool p3;
-        bool p4;
-        bool p5;
-        bool p6;
-        bool p7;
-        bool p9;
-        bool p11;
-        bool p13;
-        bool p15;
-        bool p17;
-        bool p19;
-        bool p20;
-        bool p21;
-        bool p22;
-        bool p23;
-        bool p24;
-        bool p25;
-        bool p26;
-        bool p27;
-        bool p28;
         bool loram;
         bool hiram;
         bool game;
@@ -222,6 +199,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             loram = InputLoRam();
             hiram = InputHiRam();
             game = InputGame();
+            exrom = InputExRom();
 
             a15 = (addr & 0x08000) != 0;
             a14 = (addr & 0x04000) != 0;
@@ -258,39 +236,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     }
                 }
 
-                // cartridge high, banked either at A000-BFFF or E000-FFFF depending
-                exrom = InputExRom();
-                if (a13 && !game && ((hiram && !a14 && read && !exrom) || (a14 && exrom)))
-                    return PLABank.CartridgeHi;
+                if (read)
+                {
+                    // cartridge high, banked either at A000-BFFF or E000-FFFF depending
+                    if (a13 && !game && ((hiram && !a14 && !exrom) || (a14 && exrom)))
+                        return PLABank.CartridgeHi;
 
-                // cartridge low, banked at 8000-9FFF
-                if (!a14 && !a13 && ((loram && hiram && read && !exrom) || (exrom && !game)))
-                    return PLABank.CartridgeLo;
+                    // cartridge low, banked at 8000-9FFF
+                    if (!a14 && !a13 && ((loram && hiram && !exrom) || (exrom && !game)))
+                        return PLABank.CartridgeLo;
 
-                // kernal rom, banked at E000-FFFF
-                if (hiram && a14 && a13 && read && (game || (!exrom && !game)))
-                    return PLABank.KernalROM;
+                    // kernal rom, banked at E000-FFFF
+                    if (hiram && a14 && a13 && (game || (!exrom && !game)))
+                        return PLABank.KernalROM;
 
-                // basic rom, banked at A000-BFFF
-                if (loram && hiram && !a14 && a13 && read && game)
-                    return PLABank.BasicROM;
+                    // basic rom, banked at A000-BFFF
+                    if (loram && hiram && !a14 && a13 && game)
+                        return PLABank.BasicROM;
+                }
             }
 
             // ultimax mode ram exclusion
-            if (exrom && !game)
-            {
-                p24 = !a15 && !a14 && a12;
-                p25 = !a15 && !a14 && a13;
-                p26 = !a15 && a14;
-                p27 = a15 && !a14 && a13;
-                p28 = a15 && a14 && !a13 && !a12;
-                if (!(p24 || p25 || p26 || p27 || p28))
-                    return PLABank.RAM;
-            }
-            else
-                return PLABank.RAM;
+            if (exrom && !game && ((a15 && ((!a14 && a13) || (a14 && !a13 && !a12))) || (!a15 && (a14 || (!a14 && (a12 || a13))))))
+                return PLABank.None;
 
-            return PLABank.None;
+            return PLABank.RAM;
         }
 
         public int VicRead(int addr)

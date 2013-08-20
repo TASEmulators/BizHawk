@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Vic
+    sealed public partial class Vic
     {
         public Action ClockPhi0;
         public Func<int, int> ReadColorRam;

@@ -24,16 +24,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool OutputPort5() { return Port5; }
         public bool OutputPort6() { return Port6; }
         public bool OutputPort7() { return Port7; }
-        public int Port { get { return cachedPort; } }
-        public bool Port0 { get { return (cachedPort & 0x01) != 0; } }
-        public bool Port1 { get { return (cachedPort & 0x02) != 0; } }
-        public bool Port2 { get { return (cachedPort & 0x04) != 0; } }
-        public bool Port3 { get { return (cachedPort & 0x08) != 0; } }
-        public bool Port4 { get { return (cachedPort & 0x10) != 0; } }
-        public bool Port5 { get { return (cachedPort & 0x20) != 0; } }
-        public bool Port6 { get { return (cachedPort & 0x40) != 0; } }
-        public bool Port7 { get { return (cachedPort & 0x80) != 0; } }
-        public void Precache() { }
-        public void SyncState(Serializer ser) { }
+        public int Port { get { return (portLatch | (~portDirection)) & 0xFF; } }
+        public bool Port0 { get { return (Port & 0x01) != 0; } }
+        public bool Port1 { get { return (Port & 0x02) != 0; } }
+        public bool Port2 { get { return (Port & 0x04) != 0; } }
+        public bool Port3 { get { return (Port & 0x08) != 0; } }
+        public bool Port4 { get { return (Port & 0x10) != 0; } }
+        public bool Port5 { get { return (Port & 0x20) != 0; } }
+        public bool Port6 { get { return (Port & 0x40) != 0; } }
+        public bool Port7 { get { return (Port & 0x80) != 0; } }
+        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
     }
 }

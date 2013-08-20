@@ -5,25 +5,15 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Cia
+    sealed public partial class Cia
     {
-        public int Peek(int addr)
+        public Cia(CiaSettings settings)
         {
-            return 0xFF;
+            Reset();
         }
 
-        public void Poke(int addr, int val)
+        public void Reset()
         {
-        }
-
-        public int Read(int addr)
-        {
-            return Peek(addr);
-        }
-
-        public void Write(int addr, int val)
-        {
-            Poke(addr, val);
         }
     }
 }

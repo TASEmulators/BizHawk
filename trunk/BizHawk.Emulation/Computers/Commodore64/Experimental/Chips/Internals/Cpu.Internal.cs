@@ -11,7 +11,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int cachedAddress;
         int cachedData;
         bool cachedNMI;
-        int cachedPort;
         int delayCycles;
         bool nmiBuffer;
         int portDirection;

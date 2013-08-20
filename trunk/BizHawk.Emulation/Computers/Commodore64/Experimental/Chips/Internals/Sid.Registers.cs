@@ -7,17 +7,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Sid
     {
-        public Sid(SidSettings settings)
+        public int Peek(int addr)
         {
-            Reset();
+            return 0xFF;
         }
 
-        public void Clock()
+        public void Poke(int addr, int val)
         {
         }
 
-        public void Reset()
+        public int Read(int addr)
         {
+            return Peek(addr);
+        }
+
+        public void Write(int addr, int val)
+        {
+            Poke(addr, val);
         }
     }
 }

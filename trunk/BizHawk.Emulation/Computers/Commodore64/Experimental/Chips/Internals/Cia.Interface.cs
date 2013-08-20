@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Cia
+    sealed public partial class Cia
     {
         public Func<bool> InputCNT;
         public Func<bool> InputFlag;
@@ -24,9 +24,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool PC { get { return true; } }
         public int PortA { get { return 0xFF; } }
         public int PortB { get { return 0xFF; } }
+        public bool PortA0 { get { return true; } }
         public bool SP { get { return true; } }
 
         public void Clock() { }
-        public void Precache() { }
+        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
     }
 }

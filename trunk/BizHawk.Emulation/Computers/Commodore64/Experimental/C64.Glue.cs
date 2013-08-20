@@ -132,13 +132,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
                 );
         }
 
-        bool ReadReset()
-        {
-            return (
-                expansion.Reset
-                );
-        }
-
         bool ReadSerialATN()
         {
             return (cia2.PortA & 0x08) != 0;
