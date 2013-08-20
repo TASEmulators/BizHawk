@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 
         public void Reset()
         {
+            for (int i = 0; i < 0x20; i++)
+                Poke(i, 0);
         }
     }
 }

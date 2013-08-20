@@ -87,6 +87,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             sprites = new Sprite[8];
             for (int i = 0; i < 8; i++)
                 sprites[i] = new Sprite();
+            for (int i = 0; i < 0x40; i++)
+                Poke(i, 0);
         }
     }
 }
