@@ -673,7 +673,21 @@ namespace BizHawk.MultiClient
 
 			public bool this[int c]
 			{
-				get { return m[c] != '.'; }
+				get
+				{
+					if (m[c] == '.')
+					{
+						return false;
+					}
+					else if (m[c] == '?')
+					{
+						return new Random((int)DateTime.Now.Ticks).Next(0, 10) > 5;
+					}
+					else
+					{
+						return true;
+					}
+				}
 			}
 		}
 
