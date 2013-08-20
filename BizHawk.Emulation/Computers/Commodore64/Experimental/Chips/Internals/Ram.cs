@@ -5,19 +5,39 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public class Ram : Rom
+    sealed public class Ram
     {
-        public Func<bool> InputRead;
+        protected int addressMask;
+        protected int dataMask;
+        protected int[] memory;
 
         public Ram(int size, int addressMask, int dataMask)
-            : base(size, addressMask, dataMask)
         {
+            this.addressMask = addressMask;
+            this.dataMask = dataMask;
+            this.memory = new int[size];
         }
 
-        virtual public void Execute()
+        public int Peek(int addr)
         {
-            if (!InputRead())
-                memory[InputAddress() & addressMask] = InputData() & dataMask;
+            return memory[addr & addressMask];
         }
+
+        public void Poke(int addr, int val)
+        {
+            memory[addr & addressMask] = val;
+        }
+
+        public int Read(int addr)
+        {
+            return memory[addr & addressMask];
+        }
+
+        public void Write(int addr, int val)
+        {
+            memory[addr & addressMask] = val & dataMask;
+        }
+
+        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
     }
 }

@@ -7,30 +7,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public class Rom
     {
-        public Func<int> InputAddress;
-        public Func<int> InputData;
-
         protected int addressMask;
-        protected int dataMask;
         protected int[] memory;
 
-        public Rom(int size, int addressMask, int dataMask)
+        public Rom(int size, int addressMask, byte[] data)
         {
             this.addressMask = addressMask;
-            this.dataMask = dataMask;
             this.memory = new int[size];
+            for (int i = 0; i < size; i++)
+                memory[i] = data[i];
         }
 
-        virtual public int Data
+        public int Peek(int addr)
         {
-            get
-            {
-                return memory[InputAddress() & addressMask] & dataMask;
-            }
+            return memory[addr & addressMask];
         }
 
-        public int OutputData() { return Data; }
-        virtual public void Precache() { }
-        virtual public void SyncState(Serializer ser) { }
+        public int Read(int addr)
+        {
+            return memory[addr & addressMask];
+        }
+
+        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
     }
 }

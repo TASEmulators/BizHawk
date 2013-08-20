@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    public partial class Vic
+    sealed public partial class Vic
     {
         bool cachedAEC;
         bool cachedBA;
@@ -63,13 +63,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int videoCounterBase;
         int videoMatrixLineIndex;
 
-        public Vic()
+        public Vic(VicSettings settings)
         {
-            backgroundColor = new int[4];
-            spriteMultiColor = new int[2];
-            sprites = new Sprite[8];
-            for (int i = 0; i < 8; i++)
-                sprites[i] = new Sprite();
+            Reset();
         }
 
         public void Clock()
@@ -82,6 +78,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 ClockPhi0();
             }
             pixelTimer--;
+        }
+
+        public void Reset()
+        {
+            backgroundColor = new int[4];
+            spriteMultiColor = new int[2];
+            sprites = new Sprite[8];
+            for (int i = 0; i < 8; i++)
+                sprites[i] = new Sprite();
         }
     }
 }

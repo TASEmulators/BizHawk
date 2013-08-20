@@ -268,18 +268,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             // ultimax mode ram exclusion
             if (exrom && !game)
             {
-                p24 = !a15 && !a14 && a12;
-                p25 = !a15 && !a14 && a13;
-                p26 = !a15 && a14;
-                p27 = a15 && !a14 && a13;
-                p28 = a15 && a14 && !a13 && !a12;
-                if (!(p24 || p25 || p26 || p27 || p28))
-                    return PLABank.RAM;
+                p24 = !a15 && !a14 && a12;        //00x1 1000-1FFF, 3000-3FFF
+                p25 = !a15 && !a14 && a13;        //001x 2000-3FFF
+                p26 = !a15 && a14;                //01xx 4000-7FFF
+                p27 = a15 && !a14 && a13;         //101x A000-BFFF
+                p28 = a15 && a14 && !a13 && !a12; //1100 C000-CFFF
+                if (p24 || p25 || p26 || p27 || p28)
+                    return PLABank.None;
             }
-            else
-                return PLABank.RAM;
 
-            return PLABank.None;
+            return PLABank.RAM;
         }
 
 		public byte Peek(int addr)

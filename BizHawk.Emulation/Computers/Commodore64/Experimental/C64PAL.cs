@@ -11,26 +11,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
     {
         static private C64Timing timing;
 
-        public C64PAL() : base(timing)
+        public C64PAL(byte[] basic, byte[] kernal, byte[] character) : base(timing)
         {
-            this.basicRom = new Rom2364();
+            this.basicRom = Presets.Rom2364(basic);
             this.cassette = new Cassette();
-            this.characterRom = new Rom2332();
-            this.cia1 = new Cia();
-            this.cia2 = new Cia();
-            this.colorRam = new Ram2114();
+            this.characterRom = Presets.Rom2332(character);
+            this.cia1 = Presets.Cia6526(true);
+            this.cia2 = Presets.Cia6526(true);
+            this.colorRam = Presets.Ram2114();
             this.cpu = new Cpu();
             this.expansion = new Expansion();
             this.joystickA = new Joystick();
             this.joystickB = new Joystick();
-            this.kernalRom = new Rom2364();
+            this.kernalRom = Presets.Rom2364(kernal);
             this.keyboard = new Keyboard();
-            this.memory = new Ram4864();
+            this.memory = Presets.Ram4864();
             this.pla = new Pla();
             this.serial = new Serial();
-            this.sid = new MOS6581();
+            this.sid = Presets.Sid6581();
             this.user = new Userport();
-            this.vic = new MOS6569();
+            this.vic = Presets.Vic6569();
             InitializeConnections();
         }
     }
