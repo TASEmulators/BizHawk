@@ -102,6 +102,7 @@
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -148,7 +149,8 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+			this.clearPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -348,9 +350,11 @@
             this.pokeAddressToolStripMenuItem1,
             this.unfreezeAllToolStripMenuItem,
             this.toolStripSeparator12,
-            this.viewInHexEditorToolStripMenuItem});
+            this.viewInHexEditorToolStripMenuItem,
+            this.toolStripSeparator14,
+            this.clearPreviewToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 192);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 242);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// startNewSearchToolStripMenuItem
@@ -800,6 +804,13 @@
 			this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
 			this.restoreOriginalWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreOriginalWindowSizeToolStripMenuItem_Click);
+			// 
+			// useUndoHistoryToolStripMenuItem
+			// 
+			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
+			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
+			this.useUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.useUndoHistoryToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -1279,12 +1290,17 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
-			// useUndoHistoryToolStripMenuItem
+			// toolStripSeparator14
 			// 
-			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
-			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
-			this.useUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.useUndoHistoryToolStripMenuItem_Click);
+			this.toolStripSeparator14.Name = "toolStripSeparator14";
+			this.toolStripSeparator14.Size = new System.Drawing.Size(212, 6);
+			// 
+			// clearPreviewToolStripMenuItem
+			// 
+			this.clearPreviewToolStripMenuItem.Name = "clearPreviewToolStripMenuItem";
+			this.clearPreviewToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.clearPreviewToolStripMenuItem.Text = "&Clear Preview";
+			this.clearPreviewToolStripMenuItem.Click += new System.EventHandler(this.clearPreviewToolStripMenuItem_Click);
 			// 
 			// RamSearch
 			// 
@@ -1451,5 +1467,7 @@
 		private System.Windows.Forms.ToolStripMenuItem clearUndoHistoryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fastModeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+		private System.Windows.Forms.ToolStripMenuItem clearPreviewToolStripMenuItem;
     }
 }
