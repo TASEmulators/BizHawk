@@ -41,6 +41,7 @@ namespace BizHawk.MultiClient
 		private string addressFormatStr = "{0:X4}  ";
 		private bool sortReverse;
 		private string sortedCol;
+		private bool forcePreviewClear = false;
 
 		public void SaveConfigSettings()
 		{
@@ -572,55 +573,63 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (IsAWeededList && column == 0)
+			if (IsAWeededList && column == 0 && Searches[index].Deleted)
 			{
-				if (Searches[index].Deleted)
+				if (color == Color.Pink)
 				{
-					if (color == Color.Pink) return;
-					if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
-					{
-						if (color == Color.Purple)
-						{
-							return;
-						}
-						else
-						{
-							color = Color.Purple;
-						}
-					}
-					else
-					{
-						if (color == Color.Pink)
-						{
-							return;
-						}
-						else
-						{
-							color = Color.Pink;
-						}
-					}
+					return;
 				}
 				else if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
 				{
-					if (color == Color.LightCyan)
+					if (forcePreviewClear)
+					{
+						color = Color.LightCyan;
+					}
+					else if (color == Color.Lavender)
 					{
 						return;
 					}
 					else
 					{
-						color = Color.LightCyan;
+						color = Color.Lavender;
 					}
 				}
 				else
 				{
-					if (color == Color.White)
+					if (forcePreviewClear)
+					{
+						color = Color.White;
+					}
+					else if (color == Color.Pink)
 					{
 						return;
 					}
 					else
 					{
-						color = Color.White;
+						color = Color.Pink;
 					}
+				}
+			}
+			else if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
+			{
+				if (color == Color.LightCyan)
+				{
+					return;
+				}
+				else
+				{
+					color = Color.LightCyan;
+				}
+			}
+			else
+			{
+				if (color == Color.White)
+				{
+					return;
+				}
+				else
+				{
+					color = Color.White;
 				}
 			}
 		}
@@ -691,6 +700,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.RamSearchPreviewMode)
 			{
+				forcePreviewClear = false;
 				GenerateWeedOutList();
 			}
 		}
@@ -2377,6 +2387,8 @@ namespace BizHawk.MultiClient
 				addToRamWatchToolStripMenuItem.Visible = false;
 				pokeAddressToolStripMenuItem1.Visible = false;
 				freezeAddressToolStripMenuItem1.Visible = false;
+				toolStripSeparator14.Visible = false;
+				clearPreviewToolStripMenuItem.Visible = false;
 			}
 			else
 			{
@@ -2420,16 +2432,13 @@ namespace BizHawk.MultiClient
 						freezeAddressToolStripMenuItem1.Image = Properties.Resources.Freeze;
 					}
 				}
+
+
+				toolStripSeparator14.Visible = Global.Config.RamSearchPreviewMode;
+				clearPreviewToolStripMenuItem.Visible = Global.Config.RamSearchPreviewMode;
 			}
 
-			if (Global.CheatList.HasActiveCheats)
-			{
-				unfreezeAllToolStripMenuItem.Visible = true;
-			}
-			else
-			{
-				unfreezeAllToolStripMenuItem.Visible = false;
-			}
+			unfreezeAllToolStripMenuItem.Visible = Global.CheatList.HasActiveCheats;
 		}
 
 		private void removeSelectedToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2742,6 +2751,12 @@ namespace BizHawk.MultiClient
 		{
 			useUndoHistoryToolStripMenuItem.Checked ^= true;
 			SearchHistory = new HistoryCollection(Searches, useUndoHistoryToolStripMenuItem.Checked);
+		}
+
+		private void clearPreviewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			forcePreviewClear = true;
+			SearchListView.Refresh();
 		}
 	}
 }
