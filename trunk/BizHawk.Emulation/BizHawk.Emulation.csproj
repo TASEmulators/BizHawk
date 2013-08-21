@@ -113,6 +113,7 @@
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Userport.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Registers.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Settings.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Sprite.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.State.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Timing.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.VideoProvider.cs" />
