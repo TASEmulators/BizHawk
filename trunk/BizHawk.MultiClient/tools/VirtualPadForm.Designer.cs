@@ -33,7 +33,7 @@
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autolaodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,7 +173,7 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox ControllerBox;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autolaodToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;

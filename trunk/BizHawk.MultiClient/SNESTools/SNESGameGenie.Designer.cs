@@ -56,7 +56,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.ClearButton = new System.Windows.Forms.Button();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -510,7 +510,7 @@
 		private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button ClearButton;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private MenuStripEx menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;

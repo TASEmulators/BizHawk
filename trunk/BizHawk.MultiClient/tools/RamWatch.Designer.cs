@@ -30,7 +30,7 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamWatch));
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.filesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -937,7 +937,7 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private MenuStripEx menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem filesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem watchesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newListToolStripMenuItem;

@@ -66,7 +66,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.savePaletteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.savePatternScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -817,7 +817,7 @@
 		private System.Windows.Forms.TrackBar RefreshRate;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem1;
