@@ -37,6 +37,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int screenXStart;
         int screenYEnd;
         int screenYStart;
+        int spriteCounterCheckStart;
+        int spriteDMACheckEnd;
+        int spriteDMACheckStart;
+        int spriteDMADisableEnd;
+        int spriteDMADisableStart;
+        int spriteShiftDisableStart;
         bool vBlank;
 
         void InitTiming(VicTiming timing)
@@ -60,6 +66,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             rasterWidth = timing.HSize;
             rasterAdvance = timing.LineStart;
             rasterCount = timing.VSize;
+            spriteDMACheckStart = characterBAEnd;
+            spriteDMACheckEnd = (spriteDMACheckStart + 8) % timing.HSize;
+            spriteCounterCheckStart = (spriteDMACheckEnd + 16) % timing.HSize;
+            spriteShiftDisableStart = timing.HBlankStart;
+            spriteDMADisableStart = characterFetchStart;
+            spriteDMADisableEnd = (characterFetchStart + 8) % timing.HSize;
         }
     }
 
