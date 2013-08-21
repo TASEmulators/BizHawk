@@ -36,7 +36,7 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
@@ -248,7 +248,7 @@
 				private System.Windows.Forms.ColumnHeader columnHeader1;
 				private System.Windows.Forms.ColumnHeader columnHeader4;
 				private System.Windows.Forms.Panel panel1;
-				private System.Windows.Forms.ToolStrip toolStrip1;
+				private ToolStripEx toolStrip1;
 				private System.Windows.Forms.ToolStripButton tbbGroup;
 				private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 				private System.Windows.Forms.ToolStripButton tbbScan;
