@@ -7,5 +7,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public class VicSettings
     {
+        public VicTiming timing;
     }
 }

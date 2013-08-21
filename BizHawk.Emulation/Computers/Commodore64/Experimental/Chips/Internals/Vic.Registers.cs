@@ -7,6 +7,35 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Vic
     {
+        int[] backgroundColor;
+        bool bitmapMode;
+        int borderColor;
+        int characterBitmap;
+        bool columnSelect;
+        bool dataCollisionInterrupt;
+        bool dataCollisionInterruptEnable;
+        bool displayEnable;
+        bool extraColorMode;
+        bool irq;
+        bool lightPenInterrupt;
+        bool lightPenInterruptEnable;
+        int lightPenX;
+        int lightPenY;
+        bool multiColorMode;
+        bool rasterInterrupt;
+        bool rasterInterruptEnable;
+        int rasterY;
+        bool reset;
+        bool rowSelect;
+        bool spriteCollisionInterrupt;
+        bool spriteCollisionInterruptEnable;
+        int spriteIndex;
+        int[] spriteMultiColor;
+        Sprite[] sprites;
+        int videoMemory;
+        int xScroll;
+        int yScroll;
+
         public int Peek(int addr)
         {
             switch (addr)
