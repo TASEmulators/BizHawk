@@ -7,12 +7,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Vic
     {
+        const int AEC_DELAY = 7;
+        const int GRAPHICS_GENERATOR_DELAY = 12;
+        const int BORDER_GENERATOR_DELAY = 8;
+        const int BORDER_GENERATOR_DELAY_BIT = 1 << BORDER_GENERATOR_DELAY;
+
         int address;
         bool aec;
         int aecCounter;
         bool ba;
         bool badLineCondition;
         bool badLineEnable;
+        int borderDelay;
         int characterData;
         int[] characterMatrix;
         int colorData;
@@ -22,8 +28,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int graphicsGeneratorCharacter;
         int graphicsGeneratorColor;
         int graphicsGeneratorData;
+        bool graphicsGeneratorMulticolor;
         int graphicsGeneratorPixel;
         int graphicsGeneratorPixelData;
+        bool graphicsGeneratorShiftToggle;
         bool idleState;
         bool mainBorder;
         int mainBorderEnd;
@@ -35,6 +43,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int rasterX;
         int refreshCounter;
         int rowCounter;
+        Sprite spriteBuffer;
+        int spriteGeneratorBackgroundData;
+        int spriteGeneratorPixel;
+        int spriteGeneratorPixelData;
+        bool spriteGeneratorPixelEnabled;
+        bool spriteGeneratorPriority;
         bool verticalBorder;
         int verticalBorderEnd;
         int verticalBorderStart;
@@ -59,7 +73,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             videoBuffer = new int[screenWidth * screenHeight];
 
             // reset registers
-            pixelBufferLength = 12;
+            pixelBufferLength = GRAPHICS_GENERATOR_DELAY;
             Reset();
         }
 
@@ -70,6 +84,81 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             mainBorderEnd = columnSelect ? 0x158 : 0x14F;
             verticalBorderStart = rowSelect ? 0x33 : 0x37;
             verticalBorderEnd = rowSelect ? 0xFB : 0xF7;
+
+            // process badline enable & condition
+            if (rasterY >= 0x30 && rasterY < 0xF8)
+            {
+                if (rasterY == 0x30 && displayEnable)
+                    badLineEnable = true;
+                if (badLineEnable && ((rasterY & 0x7) == yScroll))
+                    badLineCondition = true;
+            }
+
+            // process sprites on phi1
+            foreach (Sprite sprite in sprites)
+            {
+                // process expansion flipflop
+                if (!sprite.ExpandY)
+                    sprite.ExpandYToggle = true;
+                else if (rasterX == spriteDMACheckStart)
+                    sprite.ExpandYToggle = !sprite.ExpandYToggle;
+            }
+
+            // process sprite dma enable
+            if (rasterX == spriteDMACheckStart || rasterX == spriteDMACheckEnd)
+            {
+                foreach (Sprite sprite in sprites)
+                {
+                    if (sprite.Enabled && !sprite.DMA & sprite.Y == (rasterY & 0xFF))
+                    {
+                        sprite.DMA = true;
+                        sprite.CounterBase = 0;
+                        if (sprite.ExpandY)
+                            sprite.ExpandYToggle = false;
+                    }
+
+                    //TODO: VERIFY THIS IS THE CORRECT TIMING
+                    // (the VIC doc I used doesn't specify exactly when this happens)
+                    sprite.DataShiftEnable = false;
+                }
+            }
+
+            // process sprite display
+            if (rasterX == spriteCounterCheckStart)
+            {
+                foreach (Sprite sprite in sprites)
+                {
+                    sprite.Counter = sprite.CounterBase;
+                    if (sprite.DMA && sprite.Y == (rasterY & 0xFF))
+                        sprite.Display = true;
+                }
+            }
+
+            // process sprite counter base
+            if (rasterX == spriteDMADisableStart)
+            {
+                foreach (Sprite sprite in sprites)
+                {
+                    if (sprite.ExpandYToggle)
+                        sprite.CounterBase += 2;
+                }
+            }
+
+            // process sprite dma disable
+            if (rasterX == spriteDMADisableEnd)
+            {
+                foreach (Sprite sprite in sprites)
+                {
+                    if (sprite.ExpandYToggle)
+                        sprite.CounterBase += 1;
+                    if (sprite.CounterBase == 63)
+                    {
+                        sprite.DMA = false;
+                        sprite.Display = false;
+                    }
+                }
+            }
+
 
             do
             {
@@ -133,6 +222,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         rasterY = 0;
                         videoCounterBase = 0;
                         videoBufferIndex = 0;
+                        badLineEnable = false;
                     }
                 }
 
@@ -169,13 +259,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         }
                         if (sprite.Fetch)
                         {
-                            fetchState = FetchState.Sprite;
-                            ba = false;
+                            if (sprite.DMA)
+                            {
+                                fetchState = FetchState.Sprite;
+                                ba = false;
+                            }
                             break;
                         }
                         else if (rasterX == sprite.FetchStart)
                         {
-                            sprite.Fetch = sprite.Enabled;
+                            sprite.Fetch = true;
                             fetchState = FetchState.Pointer;
                             ba = !sprite.Fetch;
                             break;
@@ -187,7 +280,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 // determine AEC state
                 if (ba)
                 {
-                    aecCounter = 7;
+                    aecCounter = AEC_DELAY;
                     aec = true;
                 }
                 else
@@ -241,6 +334,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     case FetchState.Pointer:
                         address = spriteIndex | videoMemory | 0x03F8;
                         data = ReadRam(address);
+                        sprites[spriteIndex].Pointer = address;
                         break;
                     case FetchState.Refresh:
                         address = refreshCounter | 0x3F00;
@@ -249,44 +343,38 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         refreshCounter &= 0xFF;
                         break;
                     case FetchState.Sprite:
-                        address = data | sprites[spriteIndex].Counter;
+                        spriteBuffer = sprites[spriteIndex];
+                        address = (spriteBuffer.Pointer << 6) | spriteBuffer.Counter;
                         data = ReadRam(address);
+                        spriteBuffer.Counter++;
+                        spriteBuffer.Counter &= 0x3F;
+                        spriteBuffer.Data <<= 8;
+                        spriteBuffer.Data |= data;
                         break;
                 }
 
-                // render 4 pixels
+                // render 4 pixels (there are 8 per cycle)
                 for (int i = 0; i < 4; i++)
                 {
-                    // pixelbuffer -> videobuffer
-                    if (!hBlank && !vBlank)
-                    {
-                        videoBuffer[videoBufferIndex] = palette[pixelBuffer[pixelBufferIndex]];
-                        videoBufferIndex++;
-                    }
-
-                    // graphics generator
+                    // initialize background pixel data generator
                     if ((rasterX & 0x7) == xScroll)
                     {
                         graphicsGeneratorCharacter = characterData;
                         graphicsGeneratorColor = colorData;
                         graphicsGeneratorData = graphicsData;
+                        graphicsGeneratorMulticolor = !(!multiColorMode || (!bitmapMode && ((colorData & 0x4) == 0)));
+                        graphicsGeneratorShiftToggle = !graphicsGeneratorMulticolor;
                     }
 
                     // shift graphics data
-                    if (!multiColorMode || (!bitmapMode && ((colorData & 0x4) == 0)))
-                    {
-                        graphicsGeneratorPixelData = graphicsData & 0x01;
-                        graphicsData >>= 1;
-                    }
-                    else if ((rasterX & 0x7) == xScroll)
-                    {
-                        graphicsGeneratorPixelData = graphicsData & 0x03;
-                        graphicsData >>= 2;
-                    }
+                    if (graphicsGeneratorShiftToggle)
+                        graphicsGeneratorPixelData >>= graphicsGeneratorMulticolor ? 2 : 1;
+                    graphicsGeneratorShiftToggle = !graphicsGeneratorShiftToggle || !graphicsGeneratorMulticolor;
 
-                    // generate pixel
+                    // generate data and color for the pixelbuffer
                     if (!verticalBorder)
                     {
+                        // graphics generator
                         if (extraColorMode)
                         {
                             if (bitmapMode)
@@ -379,7 +467,80 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         graphicsGeneratorPixelData = 0x0;
                     }
 
-                    // pixel generator -> pixelbuffer
+                    // sprite generator
+                    spriteGeneratorBackgroundData = pixelDataBuffer[pixelBufferIndex];
+                    spriteIndex = 0;
+                    spriteGeneratorPixelEnabled = false;
+                    foreach (Sprite sprite in sprites)
+                    {
+                        if (sprite.Display)
+                        {
+                            if (sprite.X == rasterX)
+                            {
+                                // enable sprite shift register on X compare
+                                sprite.DataShiftEnable = true;
+                                sprite.ExpandXToggle = !sprite.ExpandX;
+                                sprite.MultiColorToggle = !sprite.Multicolor;
+                            }
+
+                            if (sprite.DataShiftEnable)
+                            {
+                                // bit select based on multicolor
+                                if (sprite.Multicolor)
+                                    sprite.OutputData = sprite.Data & 0x300000;
+                                else
+                                    sprite.OutputData = sprite.Data & 0x200000;
+
+                                // shift bits in the shift register
+                                if (sprite.MultiColorToggle && sprite.ExpandXToggle)
+                                    sprite.Data <<= sprite.Multicolor ? 2 : 1;
+
+                                // flipflops used to determine when to shift bits
+                                sprite.MultiColorToggle = !sprite.MultiColorToggle || !sprite.Multicolor;
+                                if (sprite.MultiColorToggle)
+                                    sprite.ExpandXToggle = !sprite.ExpandXToggle || !sprite.ExpandX;
+
+                                // determine sprite collision and color
+                                if (sprite.OutputData != 0x000000)
+                                {
+                                    if (!spriteGeneratorPixelEnabled)
+                                    {
+                                        spriteGeneratorPixelEnabled = true;
+                                        spriteGeneratorPixelData = spriteIndex;
+                                        spriteGeneratorPriority = sprite.Priority;
+
+                                        // determine sprite pixel output for topmost sprite only
+                                        if (sprite.OutputData == 0x100000)
+                                            sprite.OutputPixel = spriteMultiColor[0];
+                                        else if (sprite.OutputData == 0x200000)
+                                            sprite.OutputPixel = sprite.Color;
+                                        else if (sprite.OutputData == 0x300000)
+                                            sprite.OutputPixel = spriteMultiColor[1];
+                                    }
+                                    else
+                                    {
+                                        sprites[spriteGeneratorPixelData].SpriteCollision = true;
+                                        sprite.SpriteCollision = true;
+                                    }
+
+                                    // determine sprite-background collision
+                                    if ((spriteGeneratorBackgroundData & 0x2) != 0)
+                                        sprite.DataCollision = true;
+                                }
+
+                            }
+                        }
+                        spriteIndex++;
+                    }
+
+                    // combine the pixels
+                    if (spriteGeneratorPixelEnabled && (!spriteGeneratorPriority || ((spriteGeneratorBackgroundData & 0x2) == 0)))
+                        pixel = spriteGeneratorPixel;
+                    else
+                        pixel = pixelBuffer[pixelBufferIndex];
+
+                    // pixel generator data -> pixeldatabuffer
+                    pixelDataBuffer[pixelBufferIndex] = graphicsGeneratorPixelData;
                     pixelBuffer[pixelBufferIndex] = graphicsGeneratorPixel;
 
                     // border unit comparisons
@@ -395,17 +556,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                             mainBorder = false;
                     }
 
-                    // border unit -> pixelbuffer
+                    // border unit (delay of 8 pixels, we use a shift register)
+                    borderDelay <<= 1;
                     if (mainBorder || verticalBorder)
-                        pixelBuffer[borderPixelBufferIndex] = borderColor;
+                        borderDelay |= 1;
+                    if ((borderDelay & BORDER_GENERATOR_DELAY_BIT) != 0)
+                        pixel = borderColor;
+
+                    // rendered pixel -> videobuffer
+                    if (!hBlank && !vBlank)
+                    {
+                        videoBuffer[videoBufferIndex] = palette[pixel];
+                        videoBufferIndex++;
+                    }
 
                     // advance pixelbuffer
                     pixelBufferIndex++;
                     if (pixelBufferIndex == pixelBufferLength)
                         pixelBufferIndex = 0;
-                    borderPixelBufferIndex++;
-                    if (borderPixelBufferIndex == pixelBufferLength)
-                        borderPixelBufferIndex = 0;
 
                     // horizontal raster delay found in 6567R8
                     if (rasterDelay > 0)
@@ -444,7 +612,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             pixelBuffer = new int[pixelBufferLength];
             pixelDataBuffer = new int[pixelBufferLength];
             pixelBufferIndex = 0;
-            borderPixelBufferIndex = 8;
 
             // internal screen row buffer
             colorMatrix = new int[40];

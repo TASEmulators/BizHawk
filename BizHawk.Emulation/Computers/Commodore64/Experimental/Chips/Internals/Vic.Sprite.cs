@@ -14,9 +14,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             public int BAStart; //precalculated
             public int Counter; //MC
             public int CounterBase; //MCBASE
-            public int Data; //24-bit shift register
+            public Int32 Data; //24-bit shift register
+            public bool DataShiftEnable;
+            public bool Display;
+            public bool DMA;
+            public bool ExpandXToggle;
+            public bool ExpandYToggle;
             public bool Fetch;
             public int FetchStart; //precalculated
+            public bool MultiColorToggle;
+            public int OutputData;
+            public int OutputPixel;
+            public int Pointer;
 
             public int Color;
             public bool DataCollision;
