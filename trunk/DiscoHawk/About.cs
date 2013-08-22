@@ -14,7 +14,7 @@ namespace BizHawk
 		public About()
 		{
 			InitializeComponent();
-			lblVersion.Text = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + " beta";
+			lblVersion.Text = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 		}
 
 		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
