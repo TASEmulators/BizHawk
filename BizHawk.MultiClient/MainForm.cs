@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
 	{
 		public static bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "March 23, 2013";
+		public const string RELEASEDATE = "August 22, 2013";
 		public string CurrentlyOpenRom;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
