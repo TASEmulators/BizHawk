@@ -2332,7 +2332,7 @@ namespace BizHawk.MultiClient
 					}
 
 					// make opaque
-					//col |= unchecked((int)0xff000000);
+					col |= unchecked((int)0xff000000);
 
 					ptr[y * stride + x] = col;
 				}
