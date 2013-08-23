@@ -583,7 +583,10 @@ namespace BizHawk.MultiClient
 			if (gdi)
 			{
 				Global.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
+#if WINDOWS
+				//UI was already threaded in portable branch.
 				retainedPanel.ActivateThreaded();
+#endif
 			}
 #if WINDOWS
 			else
