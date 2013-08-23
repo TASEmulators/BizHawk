@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "DiscoHawk\Disc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.PCE_Debugger", "BizHawk.PCE_Debugger\BizHawk.PCE_Debugger.csproj", "{2D7F5A4A-C3C4-41CD-839C-C35F3DD58725}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaHawk", "LuaHawk\LuaHawk.csproj", "{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,18 @@ Global
 		{2D7F5A4A-C3C4-41CD-839C-C35F3DD58725}.Release|Win32.ActiveCfg = Release|x86
 		{2D7F5A4A-C3C4-41CD-839C-C35F3DD58725}.Release|x86.ActiveCfg = Release|x86
 		{2D7F5A4A-C3C4-41CD-839C-C35F3DD58725}.Release|x86.Build.0 = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|Win32.ActiveCfg = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|x86.ActiveCfg = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Debug|x86.Build.0 = Debug|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|Any CPU.ActiveCfg = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|Win32.ActiveCfg = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|x86.ActiveCfg = Release|x86
+		{B7FA7300-52DF-4A3F-84EF-D69E40CF60AF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
