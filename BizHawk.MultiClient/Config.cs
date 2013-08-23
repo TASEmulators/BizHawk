@@ -1007,12 +1007,12 @@ namespace BizHawk.MultiClient
 					new PathEntry() { System = "N64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry() { System = "N64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry() { System = "Saturn", Type = "Base", Path= Path.Combine(".", "Saturn"), Ordinal = 0 },
-					new PathEntry() { System = "Saturn", Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry() { System = "Saturn", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
-					new PathEntry() { System = "Saturn", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
-					new PathEntry() { System = "Saturn", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
-					new PathEntry() { System = "Saturn", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+					new PathEntry() { System = "SAT", Type = "Base", Path= Path.Combine(".", "Saturn"), Ordinal = 0 },
+					new PathEntry() { System = "SAT", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "SAT", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "SAT", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "SAT", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "SAT", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 				};
 			}
 		}
