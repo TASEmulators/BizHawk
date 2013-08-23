@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <Product Id="56D52B0F-C469-4EE4-A61F-366D9E82757B" Name="BizHawk" Language="1033" Version="1.5.0.0" Manufacturer="WixEdit" UpgradeCode="7E81CB7B-CD7E-441A-B038-D0B3708778AD">
+        <Package Description="This installs the BizHawk emulator" Comments="BizHawk Multi System Emulator" InstallerVersion="200" Compressed="yes" />
+        <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" />
+      <!-- I broke the installer up into features below, although the UI window to select features is not something
+      included in the windows defined in the UI section. If we included that window, the user would be able to choose
+      if they want to install DiscoHawk, Gameboy Palettes, or the Bundled LUA scripts during the install process.
+      All features are installed by default. -->
+        <Feature Id="DefaultFeature" Title="BizHawk Emulator" Level="1">
+            <ComponentRef Id="BIZHAWK.MULTICLIENT.EXE" />
+            <ComponentRef Id="DEFCTRL.JSON" />
+            <ComponentRef Id="_7Z.DLL" />
+            <ComponentRef Id="AT3PLUSDECODER.DLL" />
+            <ComponentRef Id="BIZHAWK.EMULATION.DLL" />
+            <ComponentRef Id="BIZHAWK.UTIL.DLL" />
+            <ComponentRef Id="BLIP_BUF.DLL" />
+            <ComponentRef Id="EMU7800.DLL" />
+            <ComponentRef Id="FFMPEG.EXE" />
+            <ComponentRef Id="FFMPEG_README.TXT" />
+            <ComponentRef Id="FREETYPE6.DLL" />
+            <ComponentRef Id="ICSHARPCODE.SHARPZIPLIB.DLL" />
+            <ComponentRef Id="LIBCO_MSVC_WIN32.DLL" />
+            <ComponentRef Id="LIBGAMBATTE.DLL" />
+            <ComponentRef Id="LIBMEDNAHAWK.DLL" />
+            <ComponentRef Id="LIBMETEOR.DLL" />
+            <ComponentRef Id="LIBPNG12.DLL" />
+            <ComponentRef Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" />
+            <ComponentRef Id="LIBSNESHAWK_32_PERFORMANCE.EXE" />
+            <ComponentRef Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" />
+            <ComponentRef Id="LIBSNESHAWK_64_PERFORMANCE.EXE" />
+            <ComponentRef Id="LIBSPEEXDSP.DLL" />
+            <ComponentRef Id="LIBYABAUSE.DLL" />
+            <ComponentRef Id="LUA51.DLL" />
+            <ComponentRef Id="LUAINTERFACE.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_AUDIO_BKM.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_INPUT_BKM.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_RSP_HLE.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" />
+            <ComponentRef Id="MUPEN64PLUS_VIDEO_RICE.DLL" />
+            <ComponentRef Id="MUPEN64PLUS.DLL" />
+            <ComponentRef Id="MUSASHIDLL.DLL" />
+            <ComponentRef Id="NEWTONSOFT.JSON.DLL" />
+            <ComponentRef Id="PPSSPPBIZHAWK.DLL" />
+            <ComponentRef Id="SDL.DLL" />
+            <ComponentRef Id="SLIMDX.DLL" />
+            <ComponentRef Id="ZLIB1.DLL" />
+            <ComponentRef Id="BIOS_INFO.TXT" />
+            <ComponentRef Id="EMU7800.CSV" />
+            <ComponentRef Id="GAMEDB.TXT" />
+            <ComponentRef Id="GAMEDB_A2600.TXT" />
+            <ComponentRef Id="GAMEDB_COLECO.TXT" />
+            <ComponentRef Id="GAMEDB_GB.TXT" />
+            <ComponentRef Id="GAMEDB_GBC.TXT" />
+            <ComponentRef Id="GAMEDB_N64.TXT" />
+            <ComponentRef Id="GAMEDB_NESHOMEBREW.TXT" />
+            <ComponentRef Id="GAMEDB_PCE_CD.TXT" />
+            <ComponentRef Id="GAMEDB_PCE_HUCARDS.TXT" />
+            <ComponentRef Id="GAMEDB_SEGA_8BIT.TXT" />
+            <ComponentRef Id="GAMEDB_SEGA_MD.TXT" />
+            <ComponentRef Id="GAMEDB_SNES.TXT" />
+            <ComponentRef Id="GAMEDB_VS.TXT" />
+            <ComponentRef Id="NESCARTS.7Z" />
+            <ComponentRef Id="UPDATE_GAMEDB.BAT" />
+            <ComponentRef Id="WGET.EXE" />
+            <ComponentRef Id="ASQ_REALITYA.PAL" />
+            <ComponentRef Id="ASQ_REALITYB.PAL" />
+            <ComponentRef Id="BMF_FINAL2.PAL" />
+            <ComponentRef Id="BMF_FINAL3.PAL" />
+            <ComponentRef Id="FCEU_13_DEFAULT_NITSUJA.PAL" />
+            <ComponentRef Id="FCEU_15_NITSUJA_NEW.PAL" />
+            <ComponentRef Id="FCEUX.PAL" />
+            <ComponentRef Id="StartMenuShortcuts" />
+        </Feature>
+        <Feature Id="DiscoHawk" Title="DiscoHawk Disc Image Tool" Level="1">
+          <ComponentRef Id="DISCOHAWK.EXE" />
+        </Feature>
+        <Feature Id="GBPalettes" Title="Gameboy Color Palettes" Level="1">
+          <ComponentRef Id="ALLEY_WAY.PAL" />
+          <ComponentRef Id="ASTEROIDS_MISCMD.PAL" />
+          <ComponentRef Id="BA.TOSHINDEN.PAL" />
+          <ComponentRef Id="BALLOON_KID.PAL" />
+          <ComponentRef Id="BASEBALL.PAL" />
+          <ComponentRef Id="BGB__LCD_GREEN_.PAL" />
+          <ComponentRef Id="BOY_AND_BLOB_GB1.PAL" />
+          <ComponentRef Id="BOY_AND_BLOB_GB2.PAL" />
+          <ComponentRef Id="BSNES_V087.PAL" />
+          <ComponentRef Id="BT2RAGNAROKWORLD.PAL" />
+          <ComponentRef Id="DEFAULT.PAL" />
+          <ComponentRef Id="DEFENDER_JOUST.PAL" />
+          <ComponentRef Id="DMG_FOOTBALL.PAL" />
+          <ComponentRef Id="DONKEY_KONG.PAL" />
+          <ComponentRef Id="DONKEYKONGLAND_2.PAL" />
+          <ComponentRef Id="DONKEYKONGLAND_3.PAL" />
+          <ComponentRef Id="DONKEYKONGLAND.PAL" />
+          <ComponentRef Id="DONKEYKONGLAND95.PAL" />
+          <ComponentRef Id="DR.MARIO.PAL" />
+          <ComponentRef Id="DYNABLASTER.PAL" />
+          <ComponentRef Id="F1RACE.PAL" />
+          <ComponentRef Id="G_W_GALLERY.PAL" />
+          <ComponentRef Id="GALAGA_GALAXIAN.PAL" />
+          <ComponentRef Id="GAME_AND_WATCH_2.PAL" />
+          <ComponentRef Id="GAME_WATCH.PAL" />
+          <ComponentRef Id="GAMEBOY_GALLERY.PAL" />
+          <ComponentRef Id="GAMEBOY_GALLERY2.PAL" />
+          <ComponentRef Id="GBC___BLUE.PAL" />
+          <ComponentRef Id="GBC___BROWN.PAL" />
+          <ComponentRef Id="GBC___DARK_BLUE.PAL" />
+          <ComponentRef Id="GBC___DARK_BROWN.PAL" />
+          <ComponentRef Id="GBC___DARK_GREEN.PAL" />
+          <ComponentRef Id="GBC___GRAYSCALE.PAL" />
+          <ComponentRef Id="GBC___GREEN.PAL" />
+          <ComponentRef Id="GBC___INVERTED.PAL" />
+          <ComponentRef Id="GBC___ORANGE.PAL" />
+          <ComponentRef Id="GBC___PASTEL_MIX.PAL" />
+          <ComponentRef Id="GBC___RED.PAL" />
+          <ComponentRef Id="GBC___YELLOW.PAL" />
+          <ComponentRef Id="GBWARS.PAL" />
+          <ComponentRef Id="GOLF.PAL" />
+          <ComponentRef Id="HOSHINOKA_BI.PAL" />
+          <ComponentRef Id="JAMES__BOND__007.PAL" />
+          <ComponentRef Id="KAERUNOTAMENI.PAL" />
+          <ComponentRef Id="KEN_GRIFFEY_JR.PAL" />
+          <ComponentRef Id="KID_ICARUS.PAL" />
+          <ComponentRef Id="KILLERINSTINCT95.PAL" />
+          <ComponentRef Id="KINGOFTHEZOO.PAL" />
+          <ComponentRef Id="KIRAKIRA_KIDS.PAL" />
+          <ComponentRef Id="KIRBY_BLOCKBALL.PAL" />
+          <ComponentRef Id="KIRBY_DREAM_LAND.PAL" />
+          <ComponentRef Id="KIRBY_S_PINBALL.PAL" />
+          <ComponentRef Id="KIRBY2.PAL" />
+          <ComponentRef Id="LOLO2.PAL" />
+          <ComponentRef Id="MAGNETIC_SOCCER.PAL" />
+          <ComponentRef Id="MANSELL.PAL" />
+          <ComponentRef Id="MARIO___YOSHI.PAL" />
+          <ComponentRef Id="MARIO_S_PICROSS.PAL" />
+          <ComponentRef Id="MARIOLAND2.PAL" />
+          <ComponentRef Id="MEGA_MAN_2.PAL" />
+          <ComponentRef Id="MEGAMAN.PAL" />
+          <ComponentRef Id="MEGAMAN3.PAL" />
+          <ComponentRef Id="METROID2.PAL" />
+          <ComponentRef Id="MILLI_CENTI_PEDE.PAL" />
+          <ComponentRef Id="MOGURANYA.PAL" />
+          <ComponentRef Id="MYSTIC_QUEST.PAL" />
+          <ComponentRef Id="NETTOU_KOF_95.PAL" />
+          <ComponentRef Id="NEW_CHESSMASTER.PAL" />
+          <ComponentRef Id="OTHELLO.PAL" />
+          <ComponentRef Id="PAC_IN_TIME.PAL" />
+          <ComponentRef Id="PICROSS_2.PAL" />
+          <ComponentRef Id="PINOCCHIO.PAL" />
+          <ComponentRef Id="POKEBOM.PAL" />
+          <ComponentRef Id="POKEMON_BLUE.PAL" />
+          <ComponentRef Id="POKEMON_GREEN.PAL" />
+          <ComponentRef Id="POKEMON_RED.PAL" />
+          <ComponentRef Id="POKEMON_YELLOW.PAL" />
+          <ComponentRef Id="QIX.PAL" />
+          <ComponentRef Id="RADARMISSION.PAL" />
+          <ComponentRef Id="ROCKMAN_WORLD.PAL" />
+          <ComponentRef Id="ROCKMAN_WORLD2.PAL" />
+          <ComponentRef Id="ROCKMANWORLD3.PAL" />
+          <ComponentRef Id="SEIKEN_DENSETSU.PAL" />
+          <ComponentRef Id="SOCCER.PAL" />
+          <ComponentRef Id="SOLARSTRIKER.PAL" />
+          <ComponentRef Id="SPACE_INVADERS.PAL" />
+          <ComponentRef Id="STAR_STACKER.PAL" />
+          <ComponentRef Id="STAR_WARS_NOA.PAL" />
+          <ComponentRef Id="STAR_WARS.PAL" />
+          <ComponentRef Id="STREET_FIGHTER_2.PAL" />
+          <ComponentRef Id="SUPER_MARIOLAND.PAL" />
+          <ComponentRef Id="SUPER_RC_PRO_AM.PAL" />
+          <ComponentRef Id="SUPERDONKEYKONG.PAL" />
+          <ComponentRef Id="SUPERMARIOLAND3.PAL" />
+          <ComponentRef Id="TENNIS.PAL" />
+          <ComponentRef Id="TETRIS_ATTACK.PAL" />
+          <ComponentRef Id="TETRIS_BLAST.PAL" />
+          <ComponentRef Id="TETRIS_FLASH.PAL" />
+          <ComponentRef Id="TETRIS_PLUS.PAL" />
+          <ComponentRef Id="TETRIS.PAL" />
+          <ComponentRef Id="TETRIS2.PAL" />
+          <ComponentRef Id="THE_CHESSMASTER.PAL" />
+          <ComponentRef Id="TOPRANKINGTENNIS.PAL" />
+          <ComponentRef Id="TOPRANKTENNIS.PAL" />
+          <ComponentRef Id="TOY_STORY.PAL" />
+          <ComponentRef Id="TRIP_WORLD.PAL" />
+          <ComponentRef Id="VEGAS_STAKES.PAL" />
+          <ComponentRef Id="WARIO_BLAST.PAL" />
+          <ComponentRef Id="WARIOLAND2.PAL" />
+          <ComponentRef Id="WAVERACE.PAL" />
+          <ComponentRef Id="WORLD_CUP.PAL" />
+          <ComponentRef Id="X.PAL" />
+          <ComponentRef Id="YAKUMAN.PAL" />
+          <ComponentRef Id="YOSHI_S_COOKIE.PAL" />
+          <ComponentRef Id="YOSSY_NO_COOKIE.PAL" />
+          <ComponentRef Id="YOSSY_NO_PANEPON.PAL" />
+          <ComponentRef Id="YOSSY_NO_TAMAGO.PAL" />
+          <ComponentRef Id="ZELDA.PAL" />
+          <ComponentRef Id="ZELDA2.PAL" />
+        </Feature>
+        <Feature Id="LuaScripts" Title="Bundled Lua Scripts" Level="1">
+          <ComponentRef Id="BUTTONCOUNT.LUA" />
+          <ComponentRef Id="CASTLEVANIA_BLOODLINES.LUA" />
+          <ComponentRef Id="LEGEND_OF_TOKI.LUA" />
+          <ComponentRef Id="M64_READER.LUA" />
+          <ComponentRef Id="CASTLEVANIA.LUA" />
+          <ComponentRef Id="CONTRA_FORCE.LUA" />
+          <ComponentRef Id="CRYSTALIS.LUA" />
+          <ComponentRef Id="FAXANDU.LUA" />
+          <ComponentRef Id="HOLY_DIVER.LUA" />
+          <ComponentRef Id="MEGAMAN_4.LUA" />
+          <ComponentRef Id="NINJAGAIDEN_HITBOX.LUA" />
+          <ComponentRef Id="PUNCHOUTSTATS.LUA" />
+          <ComponentRef Id="RBIBASEBALL.LUA" />
+          <ComponentRef Id="SIMONS_QUEST.LUA" />
+          <ComponentRef Id="SMB2U.LUA" />
+          <ComponentRef Id="SNAKE_RATTLE_N__ROLL.LUA" />
+          <ComponentRef Id="SUPER_C.LUA" />
+          <ComponentRef Id="VICE_PROJECT_DOOM.LUA" />
+          <ComponentRef Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" />
+          <ComponentRef Id="CONGO_S_CAPER.LUA" />
+          <ComponentRef Id="CONTRA_3.LUA" />
+          <ComponentRef Id="DONKEY_KONG_COUNTRY_3.LUA" />
+          <ComponentRef Id="MEGAMAN_X.LUA" />
+          <ComponentRef Id="MEGAMAN_X2.LUA" />
+          <ComponentRef Id="MEGAMAN_X3.LUA" />
+          <ComponentRef Id="ROCKMAN___FORTE.LUA" />
+          <ComponentRef Id="SUPER_CASTLEVANIA_4.LUA" />
+          <ComponentRef Id="SUPER_GHOULS_N_GHOST.LUA" />
+          <ComponentRef Id="SUPER_MARIO_WORLD.LUA" />
+          <ComponentRef Id="SUPER_METROID.LUA" />
+        </Feature>
+        <Property Id="WIXUI_INSTALLDIR" Value="BIZHAWK" />
+        <UI Id="WixUI_InstallDir">
+          <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+          <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+          <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+          <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+          <Property Id="WixUI_Mode" Value="InstallDir" />
+
+          <DialogRef Id="BrowseDlg" />
+          <DialogRef Id="DiskCostDlg" />
+          <DialogRef Id="ErrorDlg" />
+          <DialogRef Id="FatalError" />
+          <DialogRef Id="FilesInUse" />
+          <DialogRef Id="MsiRMFilesInUse" />
+          <DialogRef Id="PrepareDlg" />
+          <DialogRef Id="ProgressDlg" />
+          <DialogRef Id="ResumeDlg" />
+          <DialogRef Id="UserExit" />
+
+          <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+          <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+
+          <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+          <!-- If we want a license dialog, restore the lines below and remove the ones below that. -->
+          <!--<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+
+          <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+          <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">LicenseAccepted = "1"</Publish>
+
+          <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>-->
+          <!-- End of License Dialog Code, Start of No License dialog code-->
+          <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+          <!-- End of no license dialog code-->
+          
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+          <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+          <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+          <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+
+          <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+          <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+          <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+          <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+          <Property Id="ARPNOMODIFY" Value="1" />
+        </UI>
+        <UIRef Id="WixUI_Common" />
+        <!-- The dotnet45 variable is defined in the project build tab. The 2012 project is uses .NET 4.5 -->
+        <?if $(var.dotnet45) = 1 ?>
+          <PropertyRef Id="NETFRAMEWORK45" />
+          <Condition Message="This application requires .NET Framework 4.5.">Installed OR NETFRAMEWORK45</Condition>
+        <?else?>
+          <PropertyRef Id="NETFRAMEWORK40FULL" />
+          <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
+        <?endif?>
+        <!-- <Property Id="VC2010SP1RUNTIME">
+            <RegistrySearch Id="VC2010sp1RuntimeCheck" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" Name="InstallDate" Type="raw" />
+          </Property>-->
+        <!-- <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition> -->
+        <Property Id="DIRECTX90C">
+            <RegistrySearch Id="DirectX90Ccheck" Root="HKLM" Key="Software\Microsoft\DirectX" Name="Version" Type="raw" />
+        </Property>
+        <Condition Message="This application requires DirectX 9.0c or later">Installed OR DIRECTX90C="4.09.00.0904" OR DIRECTX90C="4.09.0000.0904"</Condition>
+        <Icon Id="BizHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\BizHawk.MultiClient.exe" />
+        <Icon Id="DiscoHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\DiscoHawk.exe" />
+    </Product>
+</Wix>

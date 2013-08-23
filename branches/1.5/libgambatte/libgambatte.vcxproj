@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5D630682-7BDA-474D-B387-0EB420DDC199}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libgambatte</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBGAMBATTE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;src;src\common</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4373;4800;4804</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBGAMBATTE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;src;src\common</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4373;4800;4804</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\gambatte.h" />
+    <ClInclude Include="include\gbint.h" />
+    <ClInclude Include="include\inputgetter.h" />
+    <ClInclude Include="src\bitmap_font.h" />
+    <ClInclude Include="src\cinterface.h" />
+    <ClInclude Include="src\common\array.h" />
+    <ClInclude Include="src\common\uncopyable.h" />
+    <ClInclude Include="src\counterdef.h" />
+    <ClInclude Include="src\cpu.h" />
+    <ClInclude Include="src\file\file.h" />
+    <ClInclude Include="src\file\stdfile.h" />
+    <ClInclude Include="src\initstate.h" />
+    <ClInclude Include="src\insertion_sort.h" />
+    <ClInclude Include="src\interrupter.h" />
+    <ClInclude Include="src\interruptrequester.h" />
+    <ClInclude Include="src\memory.h" />
+    <ClInclude Include="src\mem\cartridge.h" />
+    <ClInclude Include="src\mem\memptrs.h" />
+    <ClInclude Include="src\mem\rtc.h" />
+    <ClInclude Include="src\minkeeper.h" />
+    <ClInclude Include="src\osd_element.h" />
+    <ClInclude Include="src\savestate.h" />
+    <ClInclude Include="src\sound.h" />
+    <ClInclude Include="src\sound\channel1.h" />
+    <ClInclude Include="src\sound\channel2.h" />
+    <ClInclude Include="src\sound\channel3.h" />
+    <ClInclude Include="src\sound\channel4.h" />
+    <ClInclude Include="src\sound\duty_unit.h" />
+    <ClInclude Include="src\sound\envelope_unit.h" />
+    <ClInclude Include="src\sound\length_counter.h" />
+    <ClInclude Include="src\sound\master_disabler.h" />
+    <ClInclude Include="src\sound\sound_unit.h" />
+    <ClInclude Include="src\sound\static_output_tester.h" />
+    <ClInclude Include="src\statesaver.h" />
+    <ClInclude Include="src\state_osd_elements.h" />
+    <ClInclude Include="src\tima.h" />
+    <ClInclude Include="src\video.h" />
+    <ClInclude Include="src\video\lyc_irq.h" />
+    <ClInclude Include="src\video\ly_counter.h" />
+    <ClInclude Include="src\video\next_m0_time.h" />
+    <ClInclude Include="src\video\ppu.h" />
+    <ClInclude Include="src\video\sprite_mapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\bitmap_font.cpp" />
+    <ClCompile Include="src\cinterface.cpp" />
+    <ClCompile Include="src\cpu.cpp" />
+    <ClCompile Include="src\file\file.cpp" />
+    <ClCompile Include="src\gambatte.cpp" />
+    <ClCompile Include="src\initstate.cpp" />
+    <ClCompile Include="src\interrupter.cpp" />
+    <ClCompile Include="src\interruptrequester.cpp" />
+    <ClCompile Include="src\memory.cpp" />
+    <ClCompile Include="src\mem\cartridge.cpp" />
+    <ClCompile Include="src\mem\memptrs.cpp" />
+    <ClCompile Include="src\mem\rtc.cpp" />
+    <ClCompile Include="src\sound.cpp" />
+    <ClCompile Include="src\sound\channel1.cpp" />
+    <ClCompile Include="src\sound\channel2.cpp" />
+    <ClCompile Include="src\sound\channel3.cpp" />
+    <ClCompile Include="src\sound\channel4.cpp" />
+    <ClCompile Include="src\sound\duty_unit.cpp" />
+    <ClCompile Include="src\sound\envelope_unit.cpp" />
+    <ClCompile Include="src\sound\length_counter.cpp" />
+    <ClCompile Include="src\statesaver.cpp" />
+    <ClCompile Include="src\state_osd_elements.cpp" />
+    <ClCompile Include="src\tima.cpp" />
+    <ClCompile Include="src\video.cpp" />
+    <ClCompile Include="src\video\lyc_irq.cpp" />
+    <ClCompile Include="src\video\ly_counter.cpp" />
+    <ClCompile Include="src\video\next_m0_time.cpp" />
+    <ClCompile Include="src\video\ppu.cpp" />
+    <ClCompile Include="src\video\sprite_mapper.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

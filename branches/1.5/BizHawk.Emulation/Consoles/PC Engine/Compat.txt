@@ -1,0 +1,78 @@
+﻿******************************************************
+*                   Turbo CD Issues                  *
+******************************************************
+
+- Graphics corruption:
+  - Camp California, check seagull during opening
+  - In part of Dungeon Explorer II intro
+  - Popful Mail... some corruption on Turbo Engine too.... and pcejin?
+
+Still some lesser issues with cancelling a fadeout. Otherwise CDDA is working now...
+  - Develo Magazine demo game
+
+- JANSHIN DENSETSU sets the T flag prior to an LDA instruction; MANY TIMES (ie it doesnt seem to be an accident).
+  Unclear if T flag actually affects LDA instruction.
+- Gradius II sets T flag prior to an STZ instruction. Unclear if T-flag affects STZ instruction.
+- Ryuuko no Ken is all messed up, and I don't super care :|
+- Record of Lodoss War wont start game from title screen
+- Valis: Screen is black during entire intro section
+
+======= TurboGrafx compatibility issues =======
+
+General: 
+ + LFO is not implemented, though I can't tell.
+ + Screen resolution is an ongoing issue. Some games appear to show garbage beyond what it supposed to be visible.
+   Most emulators simply crop the screen at a certain vertical range. For now, I have chosen not to do this.
+   Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
+   But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
++ Adding to this, there are only a handful of Hucards that do crazy thing with screen resolution, and our framebuffer
+  approach mostly seems reasonable. On TurboCD the situation changes somewhat, while the normal "gameplay" screens
+  are pretty standard, the various intro screens tend to do much more crazy stuff with the 'active display region' 
+  much more frequently than was done on Hucards, and our framebuffer/active display strategy starts to look more silly.
+  Oh well, though. Changing this is a Native Version Core feature, not a C# Core feature.
+
+Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed (so does Turbo Engine!)
+
+===================================
+Games that need TV Emulation (to varying degrees)
+===================================
+
+Greater degrees:
+
+Final Blaster     - Intro does crazy shit with video modes; not sure what if anything to do about it
+Griffon           - Mid-frame res changes (hax to make playable)
+Yo, Bro           - Mid-frame res changes (hax to make playable) (IF YOU CAN CALL THIS GAME PLAYABLE)
+
+Lesser degrees:
+
+Aero Blaster      - Bottom of Screen extends too many lines - like 3 extra or so
+Alice             - Screen too tall; glitches when scrolling up, but in mednafen in turboengine also,  
+                    but not Ootake; could be a timing artifact, or Ootake is cutting off the top
+Dead Moon         - Screen is too tall
+Jack Nicholas Golf- Some screens are too tall and reveal bad gfx below the intended visible screen
+Legend of Hero Ton- Slight gfx issue on top of screen
+Madoo Granzort    - Screen ~5 pixels too tall
+Metal Stoker      - Tearing when scrolling vertically at bottom of screen - screen too tall?
+Side Arms         - Screen is like 4 pixels too tall
+
+
+Game Express card games don't work yet. 
+
+===================================
+Stuff I Fixed That's Not In Other Docs:
+===================================
+
++ Street Fighter II special mapper
++ Populous has special SaveRAM, 32k starting at page $40.
++ After Burner - There is a 1-instruction delay on changes to IRQ Control Byte taking effect
++ There is a one-instruction delay on changes to the I flag taking effect
+  - Affects (Not a complete list): Blodia, Body Conquest 2, Champions Forever Boxing,
+    Cross Wiber, Jackie Chan, Jigoku Meguri, New Adventure Island, World Beach volley
++ Writing to the SATB location register of the VDC requests a VRAM->SAT DMA even if the SAT DMA
+  bit is disabled in the DCR.
++ This is in other docs, but Fighting Run requires full MWR register emulation including the various
+  4 color modes. It appears to be the only game that requires this, and it's a shitty game. :(
++ The ROM of Paranoia (J) that is commonly labeled as the authoritative dump - I assume its a bad
+  dump, because it dies during the 3rd stage on ALL EMULATORS. Alternative versions of the rom 
+  work fine.
++ Puzzle Boy - requests frame height of 512... cap active display to 242 lines  
