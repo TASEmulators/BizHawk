@@ -480,8 +480,6 @@ namespace BizHawk.MultiClient
 
 		public string MakeInputDisplay()
 		{
-			var blah = DateTime.Now.Ticks;
-			return blah.ToString();
 			StringBuilder s;
 			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
 			{
