@@ -969,6 +969,14 @@ namespace BizHawk.MultiClient
 					new PathEntry() { System = "GB_GBC", SystemDisplayName="Gameboy", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 					new PathEntry() { System = "GB_GBC", SystemDisplayName="Gameboy", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
 
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Base", Path= Path.Combine(".", "Dual Gameboy"), Ordinal = 0 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+					new PathEntry() { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
+
 					new PathEntry() { System = "TI83", SystemDisplayName="TI83", Type = "Base", Path= Path.Combine(".", "TI83"), Ordinal = 0 },
 					new PathEntry() { System = "TI83", SystemDisplayName="TI83", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry() { System = "TI83", SystemDisplayName="TI83", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },

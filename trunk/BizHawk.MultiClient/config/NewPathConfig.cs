@@ -249,7 +249,7 @@ namespace BizHawk.MultiClient
 			FolderBrowserEx f = new FolderBrowserEx
 			{
 				Description = "Set the directory for the base global path",
-				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text)
+				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
 			};
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)

@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Makes a path relative to the %exe% dir
 		/// </summary>
-		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path); }
+		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, null); }
 
 		/// <summary>
 		/// The location of the default INI file
@@ -76,10 +76,10 @@ namespace BizHawk.MultiClient
 
 		public static string StandardFirmwareName(string name)
 		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath), name);
+			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null), name);
 		}
 
-		public static string MakeAbsolutePath(string path, string system = null)
+		public static string MakeAbsolutePath(string path, string system)
 		{
 			//Hack
 			if (system == "Global")
@@ -188,7 +188,7 @@ namespace BizHawk.MultiClient
 
 		public static string GetLuaPath()
 		{
-			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath);
+			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath, null);
 		}
 
 		public static string GetRomsPath(string sysID)
@@ -240,7 +240,7 @@ namespace BizHawk.MultiClient
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
@@ -285,7 +285,7 @@ namespace BizHawk.MultiClient
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				parent_path = MakeAbsolutePath(GetPlatformBase(system));
+				parent_path = MakeAbsolutePath(GetPlatformBase(system), system);
 			}
 
 			if (IsSubfolder(parent_path, absolute_path))
