@@ -3,7 +3,7 @@
 	// sid
 	public class MOS6581 : Sid
 	{
-		static int[][] waveTable = new int[][]
+        static protected int[][] waveTable = new int[][]
 		{
 			new int[] {
 				0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 

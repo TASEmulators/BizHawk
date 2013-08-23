@@ -15,10 +15,53 @@ using System.IO;
 
 namespace BizHawk
 {
-	class DiscoHawk
+	static class Program
 	{
+		static Program()
+		{
+			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+#if WINDOWS
+			// this will look in subdirectory "dll" to load pinvoked stuff
+			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			SetDllDirectory(dllDir);
 
-		public static string GetExeDirectoryAbsolute()
+			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			WhackAllMOTW(dllDir);
+
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+#endif
+		}
+
+		[STAThread]
+		static void Main(string[] args)
+		{
+			SubMain(args);
+		}
+
+		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+		static void SubMain(string[] args)
+		{
+			#if WINDOWS
+				ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+				ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+			#endif
+
+			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
+			if (!File.Exists(ffmpegPath))
+				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
+			DiscSystem.FFMpeg.FFMpegPath = ffmpegPath;
+			AudioExtractor.FFmpegPath = ffmpegPath;
+			new DiscoHawk().Run(args);
+		}
+
+
+	public static string GetExeDirectoryAbsolute()
 		{
 			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
 			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
@@ -27,16 +70,21 @@ namespace BizHawk
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			//load missing assemblies by trying to find them in the dll directory
-			string dllname = new AssemblyName(args.Name).Name + ".dll";
-			string directory = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			string fname = Path.Combine(directory, dllname);
-			if (!File.Exists(fname)) return null;
+			lock (AppDomain.CurrentDomain)
+			{
+				var asms = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var asm in asms)
+					if (asm.FullName == args.Name)
+						return asm;
 
-			ApplyMOTW(fname);
-
-			//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
-			return Assembly.LoadFile(fname);
+				//load missing assemblies by trying to find them in the dll directory
+				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
+				string fname = Path.Combine(directory, dllname);
+				if (!File.Exists(fname)) return null;
+				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+				return Assembly.LoadFile(fname);
+			}
 		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
@@ -84,30 +132,6 @@ namespace BizHawk
 		}
 #endif
 
-		[STAThread]
-		static void Main(string[] args)
-		{
-
-#if WINDOWS
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
-			SetDllDirectory(dllDir);
-
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-			WhackAllMOTW(dllDir);
-
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-#endif
-
-			ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-			ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
-
-			SubMain(args);
-		}
 		private const UInt32 WM_DROPFILES = 0x0233;
 		private const UInt32 WM_COPYDATA = 0x004A;
 		[DllImport("user32")]
@@ -132,20 +156,11 @@ namespace BizHawk
         public uint size;
         public MessageFilterInfo info;
     }
+	}
 
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
-		static void SubMain(string[] args)
-		{
-			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
-			if(!File.Exists(ffmpegPath))
-				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
-			DiscSystem.FFMpeg.FFMpegPath = ffmpegPath;
-			AudioExtractor.FFmpegPath = ffmpegPath;
-			new DiscoHawk().Run(args);
-		}
-
-		void Run(string[] args)
+	class DiscoHawk
+	{
+		public void Run(string[] args)
 		{
 			bool gui = true;
 			foreach (var arg in args)

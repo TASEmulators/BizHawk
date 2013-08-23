@@ -13,7 +13,7 @@
 
 	public class Chip4864
 	{
-		private byte[] ram;
+        protected byte[] ram;
 
 		public Chip4864()
 		{
@@ -45,9 +45,8 @@
 
 		public void SyncState(Serializer ser)
 		{
-			ByteBuffer buffer = new ByteBuffer(ram);
-			ser.Sync("ram", ref buffer);
-		}
+            Sync.SyncObject(ser, this);
+        }
 
 		public void Write(int addr, byte val)
 		{

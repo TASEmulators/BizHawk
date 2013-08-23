@@ -32,7 +32,7 @@
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -317,7 +317,7 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox TracerBox;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveLogToolStripMenuItem;

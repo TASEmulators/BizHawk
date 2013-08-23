@@ -60,27 +60,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
             return (userPort.ReadSerial2Buffer() && cia1.ReadSPBuffer());
         }
 
-        byte Cpu_ReadMemory(int addr)
-        {
-            byte result = pla.ReadMemory(addr);
-            address = addr;
-            bus = result;
-            return result;
-        }
-
         byte Cpu_ReadPort()
         {
             byte data = 0x1F;
             if (!cassPort.ReadSenseBuffer())
                 data &= 0xEF;
             return data;
-        }
-
-        void Cpu_WriteMemory(int addr, byte val)
-        {
-            pla.WriteMemory(addr, val);
-            address = addr;
-            bus = val;
         }
 
         bool Glue_ReadIRQ()
@@ -105,10 +90,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Pla_ReadColorRam(int addr)
         {
-            int result;
-            address = addr;
-            result = colorRam.Read(addr) | (bus & 0xF0);
-            return (byte)result;
+            byte result = bus;
+            result &= 0xF0;
+            result |= colorRam.Read(addr);
+            return result;
         }
 
         bool Pla_ReadHiRam()
@@ -148,32 +133,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         byte Vic_ReadMemory(int addr)
         {
-            switch (cia1.PortAData & 0x3)
-            {
-                case 0:
-                    addr |= 0xC000;
-                    break;
-                case 1:
-                    addr |= 0x8000;
-                    break;
-                case 2:
-                    addr |= 0x4000;
-                    break;
-            }
-            address = addr;
-            if ((addr & 0x7000) == 0x1000)
-                bus = charRom.Read(addr);
-            else
-                bus = ram.Read(addr);
-            return bus;
-        }
-
-        byte Vic_ReadColorRam(int addr)
-        {
-            address = addr;
-            bus &= 0xF0;
-            bus |= colorRam.Read(addr);
-            return bus;
+            // the system sees (cia1.PortAData & 0x3) but we use a shortcut
+            addr |= (0x3 - (((cia1.PortALatch & cia1.PortADirection) | (~cia1.PortADirection)) & 0x3)) << 14;
+            return pla.VicRead(addr);
         }
     }
 }

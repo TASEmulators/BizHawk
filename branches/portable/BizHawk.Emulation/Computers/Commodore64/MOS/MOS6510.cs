@@ -11,11 +11,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		// ------------------------------------
 
-        private MOS6502X cpu;
-        private List<GCHandle> disposeList = new List<GCHandle>();
-		//private bool freezeCpu;
-		private bool pinNMILast;
-        private LatchedPort port;
+        protected MOS6502X cpu;
+        protected bool pinNMILast;
+        protected LatchedPort port;
+        protected bool thisNMI;
 
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
@@ -42,14 +41,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             HardReset();
 		}
 
-        ~MOS6510()
-        {
-            foreach (GCHandle handle in disposeList)
-            {
-                handle.Free();
-            }
-        }
-
 		public void HardReset()
 		{
             // configure CPU defaults
@@ -72,7 +63,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-		}
+            cpu.IRQ = !ReadIRQ();
+        }
 
 		public void ExecutePhase2()
 		{
@@ -80,15 +72,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             // the 6502 core expects active high
             // so we reverse the polarity here
-            bool thisNMI = ReadNMI();
+            thisNMI = ReadNMI();
             if (!thisNMI && pinNMILast)
                 cpu.NMI = true;
-            else
-                cpu.NMI = false;
-            pinNMILast = thisNMI;
 
-            cpu.IRQ = !ReadIRQ();
-            cpu.ExecuteOne();
+            if (ReadAEC())
+            {
+                cpu.ExecuteOne();
+                pinNMILast = thisNMI;
+            }
         }
 
 		// ------------------------------------
@@ -99,6 +91,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				return cpu.PC;
 			}
+            set
+            {
+                cpu.PC = value;
+            }
 		}
 
 		public byte Peek(int addr)
@@ -146,7 +142,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public void SyncState(Serializer ser)
         {
             cpu.SyncState(ser);
-            ser.Sync("pinNMILast", ref pinNMILast);
+            Sync.SyncObject(ser, this);
         }
 
         public void Write(ushort addr, byte val)

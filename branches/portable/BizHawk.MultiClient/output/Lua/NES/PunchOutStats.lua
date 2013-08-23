@@ -27,6 +27,11 @@ local OppHit
 local OppHitTimer = 0
 local OppHitToDisplay = 0
 
+local OppGetUpCountAddr = 0x00C4
+local OppGetUpCount = 0
+local OppGetUpX = 0
+local OppGetUpY = 24
+
 OHitValuex = 100
 OHitValuey = 100
 
@@ -63,7 +68,12 @@ while true do
 
     if IsOppDown() then
 	    OppWillGet = mainmemory.read_u8(OppWillGetUpWith)
+        OppGetUpCount = (mainmemory.read_u8(OppGetUpCountAddr) - 153)
+        if OppGetUpCount == -153 then
+            OppGetUpCount = "never!"
+        end
 	    gui.text(0, 12, "Next health: " .. OppWillGet, null, null, "bottomright")
+        gui.text(OppGetUpX, OppGetUpY, "Will get up on: " .. OppGetUpCount, null, null, "bottomright")
     end
 
     if OppIsHit() then

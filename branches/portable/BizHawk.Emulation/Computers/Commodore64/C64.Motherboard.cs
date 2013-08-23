@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Computers.Commodore64.MOS;
+using System.Reflection;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
@@ -28,7 +29,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public UserPort userPort;
 
 		// state
-		public int address;
+		//public int address;
 		public byte bus;
 		public bool inputRead;
         public bool irq;
@@ -62,22 +63,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
-			sid.ExecutePhase1();
-			vic.ExecutePhase1();
-			cpu.ExecutePhase1();
+            vic.ExecutePhase1();
+            cpu.ExecutePhase1();
 
 			cia0.ExecutePhase2();
 			cia1.ExecutePhase2();
 			sid.ExecutePhase2();
-			vic.ExecutePhase2();
-			cpu.ExecutePhase2();
-		}
+            vic.ExecutePhase2();
+            cpu.ExecutePhase2();
+        }
+
+        public void Flush()
+        {
+            sid.Flush();
+        }
 
 		// -----------------------------------------
 
 		public void HardReset()
 		{
-			address = 0xFFFF;
 			bus = 0xFF;
 			inputRead = false;
 
@@ -122,7 +126,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
             cpu.ReadNMI = cia1.ReadIRQBuffer;
             cpu.ReadPort = Cpu_ReadPort;
             cpu.ReadRDY = vic.ReadBABuffer;
-			cpu.ReadMemory = pla.Read; 
+            cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
 
 			pla.PeekBasicRom = basicRom.Peek;
@@ -192,6 +196,49 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-		}
+            ser.BeginSection("motherboard");
+            Sync.SyncObject(ser, this);
+            ser.EndSection();
+
+            ser.BeginSection("cartridge");
+            cartPort.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cassette");
+            cassPort.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cia0");
+            cia0.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cia1");
+            cia1.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("colorram");
+            colorRam.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("cpu");
+            cpu.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("pla");
+            pla.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("ram");
+            ram.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("sid");
+            sid.SyncState(ser);
+            ser.EndSection();
+
+            ser.BeginSection("vic");
+            vic.SyncState(ser);
+            ser.EndSection();
+        }
 	}
 }

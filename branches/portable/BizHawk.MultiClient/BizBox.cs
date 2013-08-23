@@ -13,7 +13,7 @@ namespace BizHawk.MultiClient
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			linkLabel1.LinkVisited = true;
-			System.Diagnostics.Process.Start("http://code.google.com/p/bizhawk/");
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk.html");
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -23,7 +23,14 @@ namespace BizHawk.MultiClient
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
-			Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
+			if (MainForm.INTERIM)
+			{
+				Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
+			}
+			else
+			{
+				Text = MainForm.EMUVERSION;
+			}
 			VersionLabel.Text = MainForm.EMUVERSION + "  Released " + MainForm.RELEASEDATE;
 		}
 

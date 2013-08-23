@@ -34,7 +34,7 @@
 			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveImageClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -494,7 +494,7 @@
 
 		private System.Windows.Forms.GroupBox groupBox1;
 		private NameTableViewer NameTableView;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;

@@ -4,16 +4,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	public abstract partial class Vic : IVideoProvider
 	{
-		private int[] buf;
-		private int bufHeight;
-		private int bufLength;
-		private int bufOffset;
-		private Point bufPoint;
-		private Rectangle bufRect;
-		private int bufWidth;
+		protected int[] buf;
+		protected int bufHeight;
+		protected int bufLength;
+		protected int bufOffset;
+		protected Point bufPoint;
+		protected Rectangle bufRect;
+		protected int bufWidth;
 
 		// palette
-		private int[] palette =
+		protected int[] palette =
         {
                 Colors.ARGB(0x00, 0x00, 0x00),
                 Colors.ARGB(0xFF, 0xFF, 0xFF),

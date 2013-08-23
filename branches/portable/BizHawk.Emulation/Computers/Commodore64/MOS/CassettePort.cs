@@ -20,5 +20,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         {
             return true;
         }
+
+        public void SyncState(Serializer ser)
+        {
+            Sync.SyncObject(ser, this);
+        }
 	}
 }

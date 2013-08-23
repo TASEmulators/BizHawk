@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class Motherboard
 	{
-		private bool[,] joystickPressed = new bool[2, 5];
-		private bool[,] keyboardPressed = new bool[8, 8];
+		private int[] joystickPressed = new int[10];
+		private int[] keyboardPressed = new int[64];
 
 		static private string[,] joystickMatrix = new string[2, 5]
 		{
@@ -28,26 +28,29 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-        private byte cia0InputLatchA;
-        private byte cia0InputLatchB;
+        protected byte cia0InputLatchA;
+        protected byte cia0InputLatchB;
+        protected int pollIndex;
 
 		public void PollInput()
 		{
 			// scan joysticks
-			for (uint i = 0; i < 2; i++)
+            pollIndex = 0;
+            for (int j = 0; j < 5; j++)
 			{
-				for (uint j = 0; j < 5; j++)
-				{
-					joystickPressed[i, j] = controller[joystickMatrix[i, j]];
+                for (int i = 0; i < 2; i++)
+                {
+                    joystickPressed[pollIndex++] = controller[joystickMatrix[i, j]] ? -1 : 0;
 				}
 			}
 
 			// scan keyboard
-			for (uint i = 0; i < 8; i++)
+            pollIndex = 0;
+            for (int i = 0; i < 8; i++)
 			{
-				for (uint j = 0; j < 8; j++)
+                for (int j = 0; j < 8; j++)
 				{
-					keyboardPressed[i, j] = controller[keyboardMatrix[i, j]];
+                    keyboardPressed[pollIndex++] = controller[keyboardMatrix[i, j]] ? -1 : 0;
 				}
 			}
 		}
@@ -61,11 +64,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte joyA = 0xFF;
 			byte joyB = 0xFF;
 
+            pollIndex = 0;
 			for (int i = 0; i < 8; i++)
 			{
 				for (int j = 0; j < 8; j++)
 				{
-					if (keyboardPressed[i, j])
+                    if (keyboardPressed[pollIndex++] != 0)
 					{
 						if (((portA & inputBitSelect[i]) == 0) || ((portB & inputBitSelect[j]) == 0))
 						{
@@ -76,12 +80,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
+            pollIndex = 0;
 			for (int i = 0; i < 5; i++)
 			{
-				if (joystickPressed[1, i])
+                if (joystickPressed[pollIndex++] != 0)
+                    joyB &= inputBitMask[i];
+                if (joystickPressed[pollIndex++] != 0)
 					joyA &= inputBitMask[i];
-				if (joystickPressed[0, i])
-					joyB &= inputBitMask[i];
 			}
 
 			resultA &= joyA;

@@ -11,18 +11,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		PAL
 	}
 
-	public partial class  C64 : IEmulator
+	public partial class C64 : IEmulator
 	{
-		// ------------------------------------
-
 		private Motherboard board;
-		//private VIC1541 disk;
-
-		// ------------------------------------
-
 		private bool loadPrg;
-
-		// ------------------------------------
 
         private byte[] GetFirmware(string name, int length)
         {
@@ -39,7 +31,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			board = new Motherboard(initRegion);
 			InitRoms();
 			board.Init();
-			InitDisk(initRegion);
 			InitMedia();
 
 			// configure video
@@ -47,27 +38,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			CoreComm.VsyncNum = board.vic.CyclesPerSecond;
 		}
 
-		private void InitDisk(Region initRegion)
-		{
-            byte[] diskRom = new byte[0x4000]; //GetFirmware("dos1541", 0x4000);
-
-			//disk = new VIC1541(initRegion, diskRom);
-			//disk.Connect(board.serPort);
-		}
-
 		private void InitMedia()
 		{
-			switch (extension.ToUpper())
+			switch (inputFileInfo.Extension.ToUpper())
 			{
 				case @".CRT":
-					Cart cart = Cart.Load(inputFile);
+                    Cart cart = Cart.Load(inputFileInfo.Data);
 					if (cart != null)
 					{
 						board.cartPort.Connect(cart);
 					}
 					break;
 				case @".PRG":
-					if (inputFile.Length > 2)
+                    if (inputFileInfo.Data.Length > 2)
 						loadPrg = true;
 					break;
 			}
@@ -100,8 +83,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			board.HardReset();
 			//disk.HardReset();
 		}
-
-		// ------------------------------------
 	}
 
 	static public class C64Util

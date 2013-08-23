@@ -35,6 +35,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         {
             return (byte)((Latch & Direction) | (Direction ^ 0xFF));
         }
+
+        public void SyncState(Serializer ser)
+        {
+            Sync.SyncObject(ser, this);
+        }
     }
 
     public class LatchedBooleanPort
@@ -69,6 +74,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public bool ReadOutput()
         {
             return (Latch || !Direction);
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            Sync.SyncObject(ser, this);
         }
     }
 }

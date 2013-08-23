@@ -3,7 +3,7 @@
 	// vic pal
 	public class MOS6569 : Vic
 	{
-		static int[][] pipeline = new int[][]
+        static protected int[][] pipeline = new int[][]
 			{
 				new int[] // xposition
 				{
@@ -176,10 +176,10 @@
 					0x0878, 0x0878,
 					
 					0x0000, 0x0000,
-					0x1000, 0x1000, // 12: badline
+					0x1000, 0x1000, // 12: badline ba start
 					0x1000,	0x1000,
 					0x1000, 0x1000,
-					0x1000, 0x1000,
+					0x1000, 0x1000, // 15: badline start
 					
 					0x1000, 0x1000,
 					0x1000, 0x1000,

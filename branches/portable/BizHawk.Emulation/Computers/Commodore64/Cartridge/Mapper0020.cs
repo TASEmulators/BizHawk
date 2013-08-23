@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 		private byte[] currentBankA;
 		private byte[] currentBankB;
 		private byte[] dummyBank;
+        private bool jumper = false;
+        private int stateBits;
 		private byte[] ram = new byte[256];
 
 		public Mapper0020(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
@@ -86,21 +88,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 			// normally you can't read these regs
 			// but Peek is provided here for debug reasons
 			// and may not stay around
-			if (addr == 0x00)
-				return (byte)bankNumber;
-			else if (addr == 0x02)
-				return (byte)(
-					(pinGame ? 0x00 : 0x01) |
-					(pinExRom ? 0x00 : 0x02) |
-					0x04 |
-					0x08 |
-					0x10 |
-					0x20 |
-					0x40 |
-					(boardLed ? 0x80 : 0x00)
-					);
-			else
-				return (byte)0xFF;
+            addr &= 0x02;
+            if (addr == 0x00)
+                return (byte)bankNumber;
+            else
+                return (byte)stateBits;
 		}
 
 		public override byte PeekDF00(int addr)
@@ -110,9 +102,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		public override void PokeDE00(int addr, byte val)
 		{
+            addr &= 0x02;
 			if (addr == 0x00)
 				BankSet(val);
-			else if (addr == 0x02)
+			else
 				StateSet(val);
 		}
 
@@ -138,9 +131,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		private void StateSet(byte val)
 		{
-			pinGame = ((val & 0x01) == 0);
+            stateBits = val &= 0x87;
+            if ((val & 0x04) != 0)
+                pinGame = ((val & 0x01) == 0);
+            else
+                pinGame = jumper;
 			pinExRom = ((val & 0x02) == 0);
-			boardLed = ((val & 0x80) != 0) ? !boardLed : boardLed;
+			boardLed = ((val & 0x80) != 0);
 			UpdateState();
 		}
 
@@ -152,9 +149,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		public override void WriteDE00(int addr, byte val)
 		{
+            addr &= 0x02;
 			if (addr == 0x00)
 				BankSet(val);
-			else if (addr == 0x02)
+			else
 				StateSet(val);
 		}
 
