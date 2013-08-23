@@ -11,38 +11,38 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewPathConfig : Form
 	{
-        //All path text boxes should do some kind of error checking
-        //config path under base, config will default to %exe%
+		//All path text boxes should do some kind of error checking
+		//config path under base, config will default to %exe%
 
-        private void LockDownCores()
-        {
-            if (!MainForm.INTERIM)
-            {
-                string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
-                
-                foreach(string core in coresToHide)
-                {
-                    TabPage tp = AllTabPages.FirstOrDefault(x => x.Name == core);
-                    PathTabControl.TabPages.Remove(tp);
-                }
-            }
-        }
+		private void LockDownCores()
+		{
+			if (!MainForm.INTERIM)
+			{
+				string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
 
-        private AutoCompleteStringCollection AutoCompleteOptions
-        {
-            get
-            {
-                return new AutoCompleteStringCollection()
+				foreach (string core in coresToHide)
+				{
+					TabPage tp = AllTabPages.FirstOrDefault(x => x.Name == core);
+					PathTabControl.TabPages.Remove(tp);
+				}
+			}
+		}
+
+		private AutoCompleteStringCollection AutoCompleteOptions
+		{
+			get
+			{
+				return new AutoCompleteStringCollection()
                 {
                     "%recent%",
                     "%exe%",
                     ".\\",
                     "..\\",
                 };
-            }
-        }
+			}
+		}
 
-        public NewPathConfig()
+		public NewPathConfig()
 		{
 			InitializeComponent();
 		}
@@ -50,7 +50,7 @@ namespace BizHawk.MultiClient
 		private void NewPathConfig_Load(object sender, EventArgs e)
 		{
 			LoadSettings();
-            LockDownCores();
+			LockDownCores();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -82,33 +82,13 @@ namespace BizHawk.MultiClient
 
 		private void SetDefaultFocusedTab()
 		{
-			switch (Global.Game.System)
-			{
-				case "NULL":
-					PathTabControl.SelectTab(FindTabByName("Global"));
-					break;
-				default:
-					PathTabControl.SelectTab(FindTabByName(Global.Game.System));
-					break;
-
-				//"Sub" Systems and other exceptions go here
-				case "PCECD":
-				case "SGX":
-					PathTabControl.SelectTab(FindTabByName("PCE"));
-					break;
-				case "GBC":
-					PathTabControl.SelectTab(FindTabByName("GB"));
-					break;
-				case "SGB":
-					PathTabControl.SelectTab(FindTabByName("SNES"));
-					break;
-			}
+			PathTabControl.SelectTab(FindTabByName(Global.Game.System));
 		}
 
 		private TabPage FindTabByName(string name)
 		{
 			IEnumerable<TabPage> query = from p in PathTabControl.TabPages.OfType<TabPage>() select p;
-			var tab = query.FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
+			var tab = query.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper()));
 			if (tab == null)
 			{
 				return new TabPage();
@@ -125,7 +105,7 @@ namespace BizHawk.MultiClient
 			PathTabControl.TabPages.Clear();
 
 			//Separate by system
-			List<string> systems = Global.Config.PathEntries.Select(x => x.System).Distinct().ToList();
+			List<string> systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
 			systems.Sort();
 
 			//Hacky way to put global first
@@ -133,11 +113,12 @@ namespace BizHawk.MultiClient
 			systems.Remove(global);
 			systems.Insert(0, global);
 
-			foreach (string systemId in systems)
+			foreach (string systemDisplayName in systems)
 			{
+				string systemId = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System;
 				TabPage t = new TabPage()
 				{
-					Text = systemId == "SG" ? "SG-1000" : systemId == "GEN" ? "Genesis" : systemId, //TODO: don't be hacky
+					Text = systemDisplayName,
 					Name = systemId,
 				};
 				List<PathEntry> paths = PathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
@@ -159,9 +140,9 @@ namespace BizHawk.MultiClient
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 						MinimumSize = new Size(26, 23),
-                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
-                        AutoCompleteCustomSource = AutoCompleteOptions,
-                        AutoCompleteSource = AutoCompleteSource.CustomSource,
+						AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+						AutoCompleteCustomSource = AutoCompleteOptions,
+						AutoCompleteSource = AutoCompleteSource.CustomSource,
 					};
 
 					Button btn = new Button()
@@ -198,8 +179,8 @@ namespace BizHawk.MultiClient
 					_y += row_height;
 				}
 
-				string sys = systemId;
-				if (systemId == "PCE") //Hack
+				string sys = systemDisplayName;
+				if (systemDisplayName == "PCE") //Hack
 				{
 					sys = "PCECD";
 				}
@@ -352,18 +333,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        private List<TabPage> AllTabPages
-        {
-            get
-            {
-                List<TabPage> _AllTabPages = new List<TabPage>();
-                foreach (TabPage tp in PathTabControl.TabPages)
-                {
-                    _AllTabPages.Add(tp);
-                }
-                return _AllTabPages;
-            }
-        }
+		private List<TabPage> AllTabPages
+		{
+			get
+			{
+				List<TabPage> _AllTabPages = new List<TabPage>();
+				foreach (TabPage tp in PathTabControl.TabPages)
+				{
+					_AllTabPages.Add(tp);
+				}
+				return _AllTabPages;
+			}
+		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
