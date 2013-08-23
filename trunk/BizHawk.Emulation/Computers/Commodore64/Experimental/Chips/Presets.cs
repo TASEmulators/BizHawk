@@ -41,6 +41,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips
         static private VicSettings Settings6569()
         {
             VicSettings result = new VicSettings();
+
+            VicTiming timing = new VicTiming();
+            timing.CharacterBAStart = 0x1EC;
+            timing.Frequency = 17734472 / 18;
+            timing.HBlankDelay = 0;
+            timing.HBlankEnd = 0x1E0;
+            timing.HBlankStart = 0x17C;
+            timing.HSize = 0x1F8;
+            timing.LineStart = 0x194;
+            timing.RefreshStart = 0x1E4;
+            timing.SpriteBAStart = 0x14C;
+            timing.VBlankEnd = 0x010;
+            timing.VBlankStart = 0x12C;
+            timing.VSize = 0x138;
+
+            result.timing = timing;
             return result;
         }
 

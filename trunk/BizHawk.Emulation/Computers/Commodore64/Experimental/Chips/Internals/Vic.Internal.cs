@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
     sealed public partial class Vic
     {
         const int AEC_DELAY = 7;
-        const int GRAPHICS_GENERATOR_DELAY = 12;
         const int BORDER_GENERATOR_DELAY = 8;
         const int BORDER_GENERATOR_DELAY_BIT = 1 << BORDER_GENERATOR_DELAY;
+        const bool BORDER_ENABLE = false;
 
         int address;
         bool aec;
@@ -29,8 +29,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int graphicsGeneratorColor;
         int graphicsGeneratorData;
         bool graphicsGeneratorMulticolor;
+        int graphicsGeneratorOutputData;
+        int graphicsGeneratorPipeData;
+        int graphicsGeneratorPipePixel0;
+        int graphicsGeneratorPipePixel2;
         int graphicsGeneratorPixel;
-        int graphicsGeneratorPixelData;
         bool graphicsGeneratorShiftToggle;
         bool idleState;
         bool mainBorder;
@@ -39,12 +42,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         bool phi0;
         int phi1Data;
         int pixel;
-        int[] pixelDataBuffer;
         int rasterX;
         int refreshCounter;
         int rowCounter;
         Sprite spriteBuffer;
-        int spriteGeneratorBackgroundData;
         int spriteGeneratorPixel;
         int spriteGeneratorPixelData;
         bool spriteGeneratorPixelEnabled;
@@ -59,39 +60,59 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public Vic(VicSettings settings)
         {
             // initialize timing values
-            InitTiming(settings.timing);
+            timing = settings.timing;
 
-            // calculate visible screen dimensions
-            screenWidth = screenXEnd - screenXStart;
-            screenHeight = screenYEnd - screenYStart;
-            if (screenXEnd < screenXStart)
-                screenWidth += rasterWidth;
-            if (screenYEnd < screenYStart)
-                screenHeight += rasterCount;
+            // reset registers
+            Reset();
+
+            // calculate visible width
+            screenWidth = 0;
+            rasterX = screenXStart;
+            while (rasterX != screenXEnd)
+            {
+                screenWidth++;
+                rasterX++;
+                if (rasterX == rasterWidth)
+                    rasterX = 0;
+            }
+
+            // calculate visible height
+            screenHeight = 0;
+            rasterY = screenYStart;
+            while (rasterY != screenYEnd)
+            {
+                screenHeight++;
+                rasterY++;
+                if (rasterY == rasterCount)
+                    rasterY = 0;
+            }
+
+            // reset raster counters
+            rasterX = 0;
+            rasterY = 0;
 
             // create video buffer
             videoBuffer = new int[screenWidth * screenHeight];
-
-            // reset registers
-            pixelBufferLength = GRAPHICS_GENERATOR_DELAY;
-            Reset();
         }
 
         public void Clock()
         {
             // these should be cached somewhere
-            mainBorderStart = columnSelect ? 0x18 : 0x1F;
-            mainBorderEnd = columnSelect ? 0x158 : 0x14F;
-            verticalBorderStart = rowSelect ? 0x33 : 0x37;
-            verticalBorderEnd = rowSelect ? 0xFB : 0xF7;
+            mainBorderEnd = columnSelect ? 0x18 : 0x1F;
+            mainBorderStart = columnSelect ? 0x158 : 0x14F;
+            verticalBorderEnd = rowSelect ? 0x33 : 0x37;
+            verticalBorderStart = rowSelect ? 0xFB : 0xF7;
 
             // process badline enable & condition
-            if (rasterY >= 0x30 && rasterY < 0xF8)
+            if (!badLineCondition && rasterY >= 0x30 && rasterY < 0xF8)
             {
                 if (rasterY == 0x30 && displayEnable)
                     badLineEnable = true;
                 if (badLineEnable && ((rasterY & 0x7) == yScroll))
+                {
                     badLineCondition = true;
+                    idleState = false;
+                }
             }
 
             // process sprites on phi1
@@ -208,6 +229,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     rasterX = 0;
                     videoCounter = videoCounterBase;
                     videoMatrixLineIndex = 0;
+                    if (badLineCondition)
+                        rowCounter = 0;
+                    if (rasterY == rasterYCompare)
+                        rasterInterrupt = true;
                 }
                 else if (rasterX == rasterAdvance)
                 {
@@ -224,25 +249,36 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         videoBufferIndex = 0;
                         badLineEnable = false;
                     }
+                    badLineCondition = false;
                 }
 
                 // determine BA and fetch state
                 ba = true;
 
                 // None is used for when we don't assert control.
-                fetchState = phi0 ? FetchState.Idle : FetchState.None;
+                fetchState = phi0 ? FetchState.None : FetchState.Idle;
 
-                if (characterBA)
+                if (!characterBA && badLineCondition && badLineEnable)
                 {
-                    // covers badlines and display area fetches
-                    characterFetch = (badLineCondition && badLineEnable);
-                    ba = !characterFetch;
-                    fetchState = phi0 ? FetchState.Graphics : FetchState.Character;
+                    ba = false;
                 }
-                else if (refreshFetch)
+
+                if (graphicsFetch)
+                {
+                    if (badLineCondition && badLineEnable)
+                    {
+                        fetchState = phi0 ? FetchState.Character : FetchState.Graphics;
+                    }
+                    else
+                    {
+                        fetchState = phi0 ? FetchState.CharacterInternal : FetchState.Graphics;
+                    }
+                }
+
+                if (refreshFetch)
                 {
                     // covers memory refresh fetches
-                    fetchState = phi0 ? FetchState.Refresh : FetchState.None;
+                    fetchState = phi0 ? FetchState.None : FetchState.Refresh;
                 }
                 else
                 {
@@ -270,7 +306,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         {
                             sprite.Fetch = true;
                             fetchState = FetchState.Pointer;
-                            ba = !sprite.Fetch;
+                            ba = !sprite.DMA;
                             break;
                         }
                         spriteIndex++;
@@ -302,16 +338,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                             colorMatrix[videoMatrixLineIndex] = colorData = ReadColorRam(address);
                             characterMatrix[videoMatrixLineIndex] = characterData = data = ReadRam(address);
                         }
-                        else if (!idleState)
-                        {
-                            colorData = colorMatrix[videoMatrixLineIndex];
-                            characterData = characterMatrix[videoMatrixLineIndex];
-                        }
                         else
                         {
                             colorData = 0;
                             characterData = 0;
                         }
+                        break;
+                    case FetchState.CharacterInternal:
+                        colorData = colorMatrix[videoMatrixLineIndex];
+                        characterData = characterMatrix[videoMatrixLineIndex];
                         break;
                     case FetchState.Graphics:
                         address = (extraColorMode ? 0x39FF : 0x3FFF);
@@ -322,7 +357,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                             else
                                 address &= (rowCounter | (characterData << 3) | characterBitmap);
                             videoMatrixLineIndex++;
-                            videoMatrixLineIndex &= 0x3F;
+                            videoCounter = ((videoCounter + 1) & 0x3FF);
                         }
                         data = ReadRam(address);
                         graphicsData = data;
@@ -354,7 +389,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 }
 
                 // render 4 pixels (there are 8 per cycle)
-                for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
                 {
                     // initialize background pixel data generator
                     if ((rasterX & 0x7) == xScroll)
@@ -366,39 +401,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         graphicsGeneratorShiftToggle = !graphicsGeneratorMulticolor;
                     }
 
+                    // extract graphics data
+                    graphicsGeneratorOutputData = (graphicsGeneratorData & (graphicsGeneratorMulticolor ? 0xC0 : 0x80));
+                    graphicsGeneratorPipeData <<= 2;
+                    graphicsGeneratorPipeData |= graphicsGeneratorOutputData;
+
                     // shift graphics data
                     if (graphicsGeneratorShiftToggle)
-                        graphicsGeneratorPixelData >>= graphicsGeneratorMulticolor ? 2 : 1;
+                        graphicsGeneratorData <<= graphicsGeneratorMulticolor ? 2 : 1;
                     graphicsGeneratorShiftToggle = !graphicsGeneratorShiftToggle || !graphicsGeneratorMulticolor;
 
                     // generate data and color for the pixelbuffer
-                    if (!verticalBorder)
+                    if (!verticalBorder || !BORDER_ENABLE)
                     {
                         // graphics generator
-                        if (extraColorMode)
+                        if (extraColorMode && !bitmapMode && !multiColorMode)
                         {
-                            if (bitmapMode)
-                            {
-                                // ECM=1, BMM=1, MCM=1
-                                // ECM=1, BMM=1, MCM=0
-                                graphicsGeneratorPixel = 0;
-                            }
+                            // ECM=1, BMM=0, MCM=0
+                            if (graphicsGeneratorOutputData == 0x00)
+                                graphicsGeneratorPixel = backgroundColor[characterData >> 6];
                             else
-                            {
-                                if (multiColorMode)
-                                {
-                                    // ECM=1, BMM=0, MCM=1
-                                    graphicsGeneratorPixel = 0;
-                                }
-                                else
-                                {
-                                    // ECM=1, BMM=0, MCM=0
-                                    if (graphicsGeneratorPixelData == 0)
-                                        graphicsGeneratorPixel = backgroundColor[characterData >> 6];
-                                    else
-                                        graphicsGeneratorPixel = colorData;
-                                }
-                            }
+                                graphicsGeneratorPixel = colorData;
                         }
                         else
                         {
@@ -407,11 +430,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                                 if (multiColorMode)
                                 {
                                     // ECM=0, BMM=1, MCM=1
-                                    if (graphicsGeneratorPixelData == 0x0)
+                                    if (graphicsGeneratorOutputData == 0x00)
                                         graphicsGeneratorPixel = backgroundColor[0];
-                                    else if (graphicsGeneratorPixelData == 0x1)
+                                    else if (graphicsGeneratorOutputData == 0x40)
                                         graphicsGeneratorPixel = characterData >> 4;
-                                    else if (graphicsGeneratorPixelData == 0x2)
+                                    else if (graphicsGeneratorOutputData == 0x80)
                                         graphicsGeneratorPixel = (characterData & 0xF);
                                     else
                                         graphicsGeneratorPixel = colorData;
@@ -419,7 +442,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                                 else
                                 {
                                     // ECM=0, BMM=1, MCM=0
-                                    if (graphicsGeneratorPixelData == 0x0)
+                                    if (graphicsGeneratorOutputData == 0x00)
                                         graphicsGeneratorPixel = (characterData & 0xF);
                                     else
                                         graphicsGeneratorPixel = characterData >> 4;
@@ -432,18 +455,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                                     // ECM=0, BMM=0, MCM=1
                                     if ((colorData & 0x4) == 0)
                                     {
-                                        if (graphicsGeneratorPixelData == 0x0)
+                                        if (graphicsGeneratorOutputData == 0x00)
                                             graphicsGeneratorPixel = backgroundColor[0];
                                         else
                                             graphicsGeneratorPixel = (colorData & 0x7);
                                     }
                                     else
                                     {
-                                        if (graphicsGeneratorPixelData == 0x0)
+                                        if (graphicsGeneratorOutputData == 0x00)
                                             graphicsGeneratorPixel = backgroundColor[0];
-                                        else if (graphicsGeneratorPixelData == 0x1)
+                                        else if (graphicsGeneratorOutputData == 0x40)
                                             graphicsGeneratorPixel = backgroundColor[1];
-                                        else if (graphicsGeneratorPixelData == 0x2)
+                                        else if (graphicsGeneratorOutputData == 0x80)
                                             graphicsGeneratorPixel = backgroundColor[2];
                                         else
                                             graphicsGeneratorPixel = (colorData & 0x7);
@@ -452,7 +475,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                                 else
                                 {
                                     // ECM=0, BMM=0, MCM=0
-                                    if (graphicsGeneratorPixelData == 0x0)
+                                    if (graphicsGeneratorOutputData == 0x00)
                                         graphicsGeneratorPixel = backgroundColor[0];
                                     else
                                         graphicsGeneratorPixel = colorData;
@@ -464,11 +487,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     {
                         // vertical border enabled, disable output
                         graphicsGeneratorPixel = backgroundColor[0];
-                        graphicsGeneratorPixelData = 0x0;
+                    }
+
+                    // shift color data
+                    if (phi0)
+                    {
+                        graphicsGeneratorPipePixel2 <<= 4;
+                        graphicsGeneratorPipePixel2 |= graphicsGeneratorPixel;
+                        graphicsGeneratorPixel = (graphicsGeneratorPipePixel2 & 0x00F00000) >> 20;
+                    }
+                    else
+                    {
+                        graphicsGeneratorPipePixel0 <<= 4;
+                        graphicsGeneratorPipePixel0 |= graphicsGeneratorPixel;
+                        graphicsGeneratorPixel = (graphicsGeneratorPipePixel0 & 0x00F00000) >> 20;
                     }
 
                     // sprite generator
-                    spriteGeneratorBackgroundData = pixelDataBuffer[pixelBufferIndex];
                     spriteIndex = 0;
                     spriteGeneratorPixelEnabled = false;
                     foreach (Sprite sprite in sprites)
@@ -524,7 +559,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                                     }
 
                                     // determine sprite-background collision
-                                    if ((spriteGeneratorBackgroundData & 0x2) != 0)
+                                    if ((graphicsGeneratorData & 0x200000) != 0)
                                         sprite.DataCollision = true;
                                 }
 
@@ -534,14 +569,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     }
 
                     // combine the pixels
-                    if (spriteGeneratorPixelEnabled && (!spriteGeneratorPriority || ((spriteGeneratorBackgroundData & 0x2) == 0)))
+                    if (spriteGeneratorPixelEnabled && (!spriteGeneratorPriority || ((graphicsGeneratorPipeData & 0x80000) == 0)))
                         pixel = spriteGeneratorPixel;
                     else
-                        pixel = pixelBuffer[pixelBufferIndex];
-
-                    // pixel generator data -> pixeldatabuffer
-                    pixelDataBuffer[pixelBufferIndex] = graphicsGeneratorPixelData;
-                    pixelBuffer[pixelBufferIndex] = graphicsGeneratorPixel;
+                        pixel = graphicsGeneratorPixel;
 
                     // border unit comparisons
                     if (rasterX == verticalBorderStart)
@@ -560,7 +591,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     borderDelay <<= 1;
                     if (mainBorder || verticalBorder)
                         borderDelay |= 1;
-                    if ((borderDelay & BORDER_GENERATOR_DELAY_BIT) != 0)
+                    if (BORDER_ENABLE && (borderDelay & BORDER_GENERATOR_DELAY_BIT) != 0)
                         pixel = borderColor;
 
                     // rendered pixel -> videobuffer
@@ -569,11 +600,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                         videoBuffer[videoBufferIndex] = palette[pixel];
                         videoBufferIndex++;
                     }
-
-                    // advance pixelbuffer
-                    pixelBufferIndex++;
-                    if (pixelBufferIndex == pixelBufferLength)
-                        pixelBufferIndex = 0;
 
                     // horizontal raster delay found in 6567R8
                     if (rasterDelay > 0)
@@ -588,30 +614,39 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 phi0 = !phi0;
             } while (phi0);
 
+            // process irq
+            irq = !(
+                (rasterInterrupt && rasterInterruptEnable)
+                );
+
             // at the end, clock other devices if applicable
-            ClockPhi0();
+            if (ClockPhi0 != null)
+                ClockPhi0();
         }
 
         public void Reset()
         {
+            // set up color arrays
             backgroundColor = new int[4];
             spriteMultiColor = new int[2];
+
+            // set up sprites
             sprites = new Sprite[8];
             for (int i = 0; i < 8; i++)
                 sprites[i] = new Sprite();
             for (int i = 0; i < 0x40; i++)
                 Poke(i, 0);
+
+            // set up pin state
             phi0 = false;
+            irq = true;
+            ba = true;
+            aec = true;
 
             // we set these so no video is displayed before
             // the first frame starts
             vBlank = true;
             hBlank = true;
-
-            // empty out the pixel buffer
-            pixelBuffer = new int[pixelBufferLength];
-            pixelDataBuffer = new int[pixelBufferLength];
-            pixelBufferIndex = 0;
 
             // internal screen row buffer
             colorMatrix = new int[40];
@@ -624,6 +659,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             // border unit
             mainBorder = true;
             verticalBorder = true;
+
+            // setup timing
+            InitTiming();
         }
     }
 }

@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             Character,
             Refresh,
             Sprite,
-            Pointer
+            Pointer,
+            CharacterInternal
         }
         FetchState fetchState;
 
@@ -24,6 +25,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int characterBAStart;
         bool characterFetch;
         int characterFetchStart;
+        int frequency;
         bool graphicsFetch;
         bool hBlank;
         int hBlankDelay;
@@ -43,9 +45,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int spriteDMADisableEnd;
         int spriteDMADisableStart;
         int spriteShiftDisableStart;
+        VicTiming timing;
         bool vBlank;
 
-        void InitTiming(VicTiming timing)
+        void InitTiming()
         {
             int spriteBAStart = timing.SpriteBAStart;
 
@@ -54,6 +57,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 sprites[i].BAStart = spriteBAStart % timing.HSize;
                 sprites[i].BAEnd = (spriteBAStart + 40) % timing.HSize;
                 sprites[i].FetchStart = (spriteBAStart + 24) % timing.HSize;
+                spriteBAStart = (spriteBAStart + 32) % timing.HSize;
             }
 
             characterBAStart = timing.CharacterBAStart % timing.HSize;
@@ -66,6 +70,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             rasterWidth = timing.HSize;
             rasterAdvance = timing.LineStart;
             rasterCount = timing.VSize;
+            frequency = timing.Frequency;
             spriteDMACheckStart = characterBAEnd;
             spriteDMACheckEnd = (spriteDMACheckStart + 8) % timing.HSize;
             spriteCounterCheckStart = (spriteDMACheckEnd + 16) % timing.HSize;
@@ -78,6 +83,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
     sealed public class VicTiming
     {
         public int CharacterBAStart; //VMBA
+        public int Frequency;
         public int HBlankDelay;
         public int HBlankEnd; //HBLANK
         public int HBlankStart; //HBLANK

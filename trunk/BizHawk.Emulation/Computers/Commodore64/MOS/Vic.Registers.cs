@@ -353,6 +353,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     rasterInterruptLine &= 0xFF;
                     rasterInterruptLine |= (val & 0x80) << 1;
                     UpdateBorder();
+                    UpdateVideoMode();
                     break;
                 case 0x12:
                     rasterInterruptLine &= 0x100;
@@ -379,6 +380,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     columnSelect = ((val & 0x08) != 0);
                     multicolorMode = ((val & 0x10) != 0);
                     UpdateBorder();
+                    UpdateVideoMode();
                     break;
                 case 0x17:
                     sprites[0].yExpand = ((val & 0x01) != 0);

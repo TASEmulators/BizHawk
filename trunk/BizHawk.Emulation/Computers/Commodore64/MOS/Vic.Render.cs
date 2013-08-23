@@ -16,6 +16,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         protected int pixelBufferDelay;
         protected int pixelBufferIndex;
         protected int pixelData;
+        protected int pixelOwner;
+        protected int sprData;
+        protected int sprPixel;
+        protected VicVideoMode videoMode;
+
+        protected enum VicVideoMode : int
+        {
+            Mode000,
+            Mode001,
+            Mode010,
+            Mode011,
+            Mode100,
+            ModeBad
+        }
 
         private void Render()
         {
@@ -63,11 +77,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
 
                     // render sprite
-                    int pixelOwner = 8;
+                    pixelOwner = 8;
                     for (int j = 0; j < 8; j++)
                     {
-                        int sprData;
-                        int sprPixel = pixel;
+                        sprData = 0;
+                        sprPixel = pixel;
 
                         Sprite spr = sprites[j];
 
@@ -78,28 +92,28 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         {
                             if (spr.multicolor)
                             {
-                                sprData = (spr.sr & 0xC00000) >> 22;
+                                sprData = (spr.sr & 0xC00000);
                                 if (spr.multicolorCrunch && spr.xCrunch)
                                     spr.sr <<= 2;
                                 spr.multicolorCrunch ^= spr.xCrunch;
                             }
                             else
                             {
-                                sprData = (spr.sr & 0x800000) >> 22;
+                                sprData = (spr.sr & 0x800000);
                                 if (spr.xCrunch)
                                     spr.sr <<= 1;
                             }
                             spr.xCrunch ^= spr.xExpand;
 
-                            if (sprData == 1) 
-                                sprPixel = spriteMulticolor0;
-                            else if (sprData == 2) 
-                                sprPixel = spr.color;
-                            else if (sprData == 3) 
-                                sprPixel = spriteMulticolor1;
-
                             if (sprData != 0)
                             {
+                                if (sprData == 0x400000)
+                                    sprPixel = spriteMulticolor0;
+                                else if (sprData == 0x800000)
+                                    sprPixel = spr.color;
+                                else if (sprData == 0xC00000)
+                                    sprPixel = spriteMulticolor1;
+
                                 // sprite-sprite collision
                                 if (pixelOwner >= 8)
                                 {
@@ -117,7 +131,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                                 }
 
                                 // sprite-data collision
-                                if (!borderOnVertical && (pixelDataBuffer[pixelBackgroundBufferIndex] >= 0x2))
+                                if (!borderOnVertical && (pixelDataBuffer[pixelBackgroundBufferIndex] == 0x80))
                                 {
                                     spr.collideData = true;
                                 }
@@ -145,10 +159,90 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         bitmapColumn = 0;
                     }
 
+#if true
+                    switch (videoMode)
+                    {
+                        case VicVideoMode.Mode000:
+                            pixelData = (sr & 0x80);
+                            sr <<= 1;
+                            pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
+                            break;
+                        case VicVideoMode.Mode001:
+                            if ((displayC & 0x800) != 0)
+                            {
+                                // multicolor 001
+                                pixelData = (sr & 0xC0);
+                                if ((bitmapColumn & 1) != 0)
+                                    sr <<= 2;
+
+                                if (pixelData == 0x00)
+                                    pixel = backgroundColor0;
+                                else if (pixelData == 0x40)
+                                    pixel = backgroundColor1;
+                                else if (pixelData == 0x80)
+                                    pixel = backgroundColor2;
+                                else
+                                    pixel = (displayC & 0x700) >> 8;
+                            }
+                            else
+                            {
+                                // standard 001
+                                pixelData = (sr & 0x80);
+                                sr <<= 1;
+                                pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+                            }
+                            break;
+                        case VicVideoMode.Mode010:
+                            pixelData = (sr & 0x80);
+                            sr <<= 1;
+                            pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
+                            break;
+                        case VicVideoMode.Mode011:
+                            pixelData = (sr & 0xC0);
+                            if ((bitmapColumn & 1) != 0)
+                                sr <<= 2;
+
+                            if (pixelData == 0x00)
+                                pixel = backgroundColor0;
+                            else if (pixelData == 0x40)
+                                pixel = (displayC >> 4) & 0xF;
+                            else if (pixelData == 0x80)
+                                pixel = displayC & 0xF;
+                            else
+                                pixel = (displayC >> 8) & 0xF;
+                            break;
+                        case VicVideoMode.Mode100:
+                            pixelData = (sr & 0x80);
+                            sr <<= 1;
+                            if (pixelData != 0)
+                            {
+                                pixel = displayC >> 8;
+                            }
+                            else
+                            {
+                                ecmPixel = (displayC) & 0xC0;
+                                if (ecmPixel == 0x00)
+                                    pixel = backgroundColor0;
+                                else if (ecmPixel == 0x40)
+                                    pixel = backgroundColor1;
+                                else if (ecmPixel == 0x80)
+                                    pixel = backgroundColor2;
+                                else
+                                    pixel = backgroundColor3;
+                            }
+                            break;
+                        default:
+                            pixelData = 0;
+                            pixel = 0;
+                            break;
+                    }
+
+#else
+
                     if (!extraColorMode && !bitmapMode & !multicolorMode)
                     {
                         // 000
-                        pixelData = (sr & 0x80) >> 6;
+                        pixelData = (sr & 0x80);
                         sr <<= 1;
                         pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
                     }
@@ -158,15 +252,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         if ((displayC & 0x800) != 0)
                         {
                             // multicolor 001
-                            pixelData = (sr & 0xC0) >> 6;
+                            pixelData = (sr & 0xC0);
                             if ((bitmapColumn & 1) != 0)
                                 sr <<= 2;
 
-                            if (pixelData == 0)
+                            if (pixelData == 0x00)
                                 pixel = backgroundColor0;
-                            else if (pixelData == 1)
+                            else if (pixelData == 0x40)
                                 pixel = backgroundColor1;
-                            else if (pixelData == 2)
+                            else if (pixelData == 0x80)
                                 pixel = backgroundColor2;
                             else
                                 pixel = (displayC & 0x700) >> 8;
@@ -174,7 +268,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         else
                         {
                             // standard 001
-                            pixelData = (sr & 0x80) >> 6;
+                            pixelData = (sr & 0x80);
                             sr <<= 1;
                             pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
                         }
@@ -182,22 +276,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     else if (!extraColorMode && bitmapMode & !multicolorMode)
                     {
                         // 010
-                        pixelData = (sr & 0x80) >> 6;
+                        pixelData = (sr & 0x80);
                         sr <<= 1;
                         pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
                     }
                     else if (!extraColorMode && bitmapMode & multicolorMode)
                     {
                         // 011
-                        pixelData = (sr & 0xC0) >> 6;
+                        pixelData = (sr & 0xC0);
                         if ((bitmapColumn & 1) != 0)
                             sr <<= 2;
 
-                        if (pixelData == 0) 
+                        if (pixelData == 0x00) 
                             pixel = backgroundColor0;
-                        else if (pixelData == 1) 
+                        else if (pixelData == 0x40) 
                             pixel = (displayC >> 4) & 0xF;
-                        else if (pixelData == 2) 
+                        else if (pixelData == 0x80) 
                             pixel = displayC & 0xF;
                         else 
                             pixel = (displayC >> 8) & 0xF;
@@ -205,7 +299,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     else if (extraColorMode && !bitmapMode & !multicolorMode)
                     {
                         // 100
-                        pixelData = (sr & 0x80) >> 6;
+                        pixelData = (sr & 0x80);
                         sr <<= 1;
                         if (pixelData != 0)
                         {
@@ -213,12 +307,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         }
                         else
                         {
-                            ecmPixel = (displayC >> 6) & 0x3;
-                            if (ecmPixel == 0)
+                            ecmPixel = (displayC) & 0xC0;
+                            if (ecmPixel == 0x00)
                                 pixel = backgroundColor0;
-                            else if (ecmPixel == 1)
+                            else if (ecmPixel == 0x40)
                                 pixel = backgroundColor1;
-                            else if (ecmPixel == 2)
+                            else if (ecmPixel == 0x80)
                                 pixel = backgroundColor2;
                             else
                                 pixel = backgroundColor3;
@@ -242,6 +336,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         pixelData = 0;
                         pixel = 0;
                     }
+
+#endif
 
                     // put the rendered pixel into the background buffer
                     pixelDataBuffer[pixelBackgroundBufferIndex] = pixelData;
