@@ -622,7 +622,7 @@ namespace BizHawk.MultiClient
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
 
-				Render();
+				if (Global.DisplayManager.NeedsToPaint) { Render(); }
 
 				CheckMessages();
 				if (exit)
@@ -2201,6 +2201,7 @@ namespace BizHawk.MultiClient
 				//=======================================
 				MemoryPulse.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
+				Global.DisplayManager.NeedsToPaint = true;
 				MemoryPulse.Pulse();
 				//=======================================
 
@@ -2483,6 +2484,7 @@ namespace BizHawk.MultiClient
 
 		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			// try to detect binary first
 			BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(path);
 			if (bw != null)
@@ -4140,6 +4142,21 @@ namespace BizHawk.MultiClient
 		private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new FirmwaresConfig().Show();
+		}
+
+		private void menuStrip1_Leave(object sender, EventArgs e)
+		{
+			Global.DisplayManager.NeedsToPaint = true;
+		}
+
+		private void MainForm_Enter(object sender, EventArgs e)
+		{
+			Global.DisplayManager.NeedsToPaint = true;
+		}
+
+		private void MainForm_Paint(object sender, PaintEventArgs e)
+		{
+			Global.DisplayManager.NeedsToPaint = true;
 		}
 	}
 }
