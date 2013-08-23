@@ -197,5 +197,35 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					(enableIntLightPen & intLightPen));
 			}
 		}
+
+        private void UpdateVideoMode()
+        {
+            if (!extraColorMode && !bitmapMode && !multicolorMode)
+            {
+                videoMode = VicVideoMode.Mode000;
+                return;
+            }
+            else if (!extraColorMode && !bitmapMode && multicolorMode)
+            {
+                videoMode = VicVideoMode.Mode001;
+                return;
+            }
+            else if (!extraColorMode && bitmapMode && !multicolorMode)
+            {
+                videoMode = VicVideoMode.Mode010;
+                return;
+            }
+            else if (!extraColorMode && bitmapMode && multicolorMode)
+            {
+                videoMode = VicVideoMode.Mode011;
+                return;
+            }
+            else if (extraColorMode && !bitmapMode && !multicolorMode)
+            {
+                videoMode = VicVideoMode.Mode100;
+                return;
+            }
+            videoMode = VicVideoMode.ModeBad;
+        }
 	}
 }

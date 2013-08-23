@@ -31,6 +31,11 @@
 			return ram[addr & 0x3FF];
 		}
 
+        public int ReadInt(int addr)
+        {
+            return ram[addr & 0x3FF];
+        }
+
 		public void SyncState(Serializer ser)
 		{
             Sync.SyncObject(ser, this);

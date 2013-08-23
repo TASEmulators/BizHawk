@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         bool rasterInterrupt;
         bool rasterInterruptEnable;
         int rasterY;
+        int rasterYCompare;
         bool reset;
         bool rowSelect;
         bool spriteCollisionInterrupt;
@@ -192,6 +193,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             }
         }
 
+        public byte PeekByte(int addr)
+        {
+            return (byte)(Peek(addr) & 0xFF);
+        }
+
         public void Poke(int addr, int val)
         {
             switch (addr)
@@ -228,9 +234,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     displayEnable = ((val & 0x10) != 0);
                     bitmapMode = ((val & 0x20) != 0);
                     extraColorMode = ((val & 0x40) != 0);
-                    rasterY = (rasterY & 0xFF) | ((val & 0x80) << 1);
+                    rasterYCompare = (rasterYCompare & 0xFF) | ((val & 0x80) << 1);
                     return;
-                case 0x12: rasterY = (rasterY & 0x100) | val; return;
+                case 0x12: rasterYCompare = (rasterYCompare & 0x100) | val; return;
                 case 0x13: lightPenX = val; return;
                 case 0x14: lightPenY = val; return;
                 case 0x15:
@@ -246,8 +252,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 case 0x16:
                     xScroll = (val & 0x07);
                     columnSelect = ((val & 0x08) != 0);
-                    multiColorMode = ((val & 0x08) != 0);
-                    reset = ((val & 0x08) != 0);
+                    multiColorMode = ((val & 0x10) != 0);
+                    reset = ((val & 0x20) != 0);
                     return;
                 case 0x17:
                     sprites[0].ExpandY = ((val & 0x01) != 0);
@@ -345,6 +351,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             }
         }
 
+        public void PokeByte(int addr, byte val)
+        {
+            Poke(addr, val);
+        }
+
         public int Read(int addr)
         {
             int result;
@@ -360,6 +371,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 default:
                     return Peek(addr & 0x3F);
             }
+        }
+
+        public byte ReadByte(int addr)
+        {
+            return (byte)(Read(addr) & 0xFF);
         }
 
         public void Write(int addr, int val)
@@ -402,6 +418,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     Poke(addr, val);
                     return;
             }
+        }
+
+        public void WriteByte(int addr, byte val)
+        {
+            Write(addr, val);
         }
     }
 }

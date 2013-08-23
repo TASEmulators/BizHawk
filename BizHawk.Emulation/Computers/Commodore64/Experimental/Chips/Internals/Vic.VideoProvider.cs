@@ -7,9 +7,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Vic : IVideoProvider
     {
-        int[] pixelBuffer;
-        int pixelBufferIndex;
-        int pixelBufferLength;
         int screenHeight;
         int screenWidth;
         int[] videoBuffer;
