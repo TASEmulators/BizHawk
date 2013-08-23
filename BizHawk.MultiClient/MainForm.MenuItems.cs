@@ -482,21 +482,25 @@ namespace BizHawk.MultiClient
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleFPS();
 		}
 
 		private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleFrameCounter();
 		}
 
 		private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleInputDisplay();
 		}
 
 		private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleLagCounter();
 		}
 
@@ -705,6 +709,7 @@ namespace BizHawk.MultiClient
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
@@ -1127,6 +1132,7 @@ namespace BizHawk.MultiClient
 
 		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
 		}
 
@@ -1325,6 +1331,7 @@ namespace BizHawk.MultiClient
 
 		private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			if (!wasPaused)
 			{
 				UnpauseEmulator();

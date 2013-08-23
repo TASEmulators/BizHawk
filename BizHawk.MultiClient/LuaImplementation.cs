@@ -886,11 +886,13 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			gui_drawText(X, Y, message, color, fontsize, fontfamily, fontstyle);
 		}
 
 		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -943,6 +945,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPixel(object X, object Y, object color = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
@@ -959,6 +962,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -974,6 +978,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -995,6 +1000,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPolygon(LuaTable points, object line, object background = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			//this is a test
 			using (var g = GetGraphics())
 			{
@@ -1038,6 +1044,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawBezier(LuaTable points, object color)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1064,6 +1071,7 @@ namespace BizHawk.MultiClient
 		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
 								object line, object background = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1085,6 +1093,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1110,6 +1119,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1132,6 +1142,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_clearGraphics()
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			luaSurface.Clear();
 		}
 
@@ -1146,6 +1157,7 @@ namespace BizHawk.MultiClient
 
 		public void emu_yield()
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			currThread.Yield(0);
 		}
 
