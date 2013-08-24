@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		private StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
+		public StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
 		private RewindThreader RewindThread;
 
 		private byte[] LastState;
@@ -17,13 +17,13 @@ namespace BizHawk.MultiClient
 		private bool RewindDeltaEnable = false;
 
 		public float Rewind_FullnessRatio { get { return RewindBuf.FullnessRatio; } }
-		public int Rewind_Count { get { return RewindBuf.Count; } }
-		public long Rewind_Size { get { return RewindBuf.Size; } }
+		public int Rewind_Count { get { return RewindBuf != null ? RewindBuf.Count : 0; } }
+		public long Rewind_Size { get { return RewindBuf != null ? RewindBuf.Size : 0; } }
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
 		/// Probably only useful for the rewind buffer, so I didnt put it in another file
 		/// </summary>
-		class StreamBlobDatabase : IDisposable
+		public class StreamBlobDatabase : IDisposable
 		{
 			public void Dispose()
 			{
