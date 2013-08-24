@@ -13,7 +13,7 @@
 	<key>CFBundleName</key>
 	<string>BizHawk</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.1</string>
+	<string>1.5.0</string>
 	<key>CFBundleVersion</key>
 	<string>OS X</string>
 	<key>LSMinimumSystemVersion</key>

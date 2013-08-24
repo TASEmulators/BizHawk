@@ -68,7 +68,7 @@ namespace MonoMacWrapper
 			}
 			while(_mainWinForm.RunLoopBlocked); //Wait to terminate until shutdown is complete
 			_mainWinForm.Dispose();
-			NSApplication.SharedApplication.Terminate(this);
+			InvokeOnMainThread(new NSAction(()=>{NSApplication.SharedApplication.Terminate(this);}));
 		}
 				
 		private void DoMenuExtraction()
