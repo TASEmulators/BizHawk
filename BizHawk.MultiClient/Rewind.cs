@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		private StreamBlobDatabase RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
+		private StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
 		private RewindThreader RewindThread;
 
 		private byte[] LastState;
@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 
 		public float Rewind_FullnessRatio { get { return RewindBuf.FullnessRatio; } }
 		public int Rewind_Count { get { return RewindBuf.Count; } }
-        public long Rewind_Size { get { return RewindBuf.Size; } }
+		public long Rewind_Size { get { return RewindBuf.Size; } }
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
 		/// Probably only useful for the rewind buffer, so I didnt put it in another file
@@ -391,15 +391,15 @@ namespace BizHawk.MultiClient
 
 		void SetRewindParams(bool enabled, int frequency)
 		{
-            if (RewindActive != enabled)
-            {
-                Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
-            }
+			if (RewindActive != enabled)
+			{
+				Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+			}
 
-            if (RewindFrequency != frequency && enabled)
-            {
-                Global.OSD.AddMessage("Rewind frequency set to " + frequency);
-            }
+			if (RewindFrequency != frequency && enabled)
+			{
+				Global.OSD.AddMessage("Rewind frequency set to " + frequency);
+			}
 
 			RewindActive = enabled;
 			RewindFrequency = frequency;
@@ -410,29 +410,41 @@ namespace BizHawk.MultiClient
 
 		public void DoRewindSettings()
 		{
-			long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
-			RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
-			if (RewindThread != null)
-				RewindThread.Dispose();
-			RewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
-			
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 			LastState = Global.Emulator.SaveStateBinary();
 
+			int state_size = 0;
 			if (LastState.Length >= Global.Config.Rewind_LargeStateSize)
 			{
 				SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
+				state_size = 3;
 			}
 			else if (LastState.Length >= Global.Config.Rewind_MediumStateSize)
 			{
 				SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
+				state_size = 2;
 			}
 			else
 			{
 				SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+				state_size = 1;
 			}
 
+			bool rewind_enabled = false;
+			if (state_size == 1) rewind_enabled = Global.Config.RewindEnabledSmall;
+			if (state_size == 2) rewind_enabled = Global.Config.RewindEnabledMedium;
+			if (state_size == 3) rewind_enabled = Global.Config.RewindEnabledLarge;
+
 			RewindDeltaEnable = Global.Config.Rewind_UseDelta;
+
+			if (rewind_enabled)
+			{
+				long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
+				RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
+				if (RewindThread != null)
+					RewindThread.Dispose();
+				RewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
+			}
 		}
 
 		void CaptureRewindStateNonDelta(byte[] CurrentState)
@@ -581,7 +593,7 @@ namespace BizHawk.MultiClient
 
 		public void ResetRewindBuffer()
 		{
-			RewindBuf.Clear();
+			if (RewindBuf != null) { RewindBuf.Clear(); }
 			RewindImpossible = false;
 			LastState = null;
 		}
