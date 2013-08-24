@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public Func<bool> ReadIRQ;
         public Func<bool> ReadNMI;
 
-		protected Cart cart;
-        protected bool connected;
+		Cart cart;
+        bool connected;
 
 		public CartridgePort()
 		{

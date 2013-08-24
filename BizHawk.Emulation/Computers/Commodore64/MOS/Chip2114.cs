@@ -2,9 +2,9 @@
 {
 	// used as Color RAM in C64
 
-	public class Chip2114
+	sealed public class Chip2114
 	{
-        protected byte[] ram;
+        byte[] ram;
 
 		public Chip2114()
 		{

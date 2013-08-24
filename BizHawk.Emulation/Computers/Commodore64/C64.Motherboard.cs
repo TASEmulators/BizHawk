@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla = new MOSPLA();
 			ram = new Chip4864();
 			serPort = new SerialPort();
-			sid = new MOS6581(44100, initRegion);
+			sid = MOS6581.Create(44100, initRegion);
 			switch (initRegion)
 			{
 				case Region.NTSC: vic = MOS6567.Create(); break;
@@ -61,16 +61,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Execute()
 		{
-			cia0.ExecutePhase1();
-			cia1.ExecutePhase1();
             vic.ExecutePhase1();
             cpu.ExecutePhase1();
+            cia0.ExecutePhase1();
+			cia1.ExecutePhase1();
 
-			cia0.ExecutePhase2();
-			cia1.ExecutePhase2();
-			sid.ExecutePhase2();
             vic.ExecutePhase2();
             cpu.ExecutePhase2();
+            cia0.ExecutePhase2();
+			cia1.ExecutePhase2();
+			sid.ExecutePhase2();
         }
 
         public void Flush()

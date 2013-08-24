@@ -12,10 +12,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public bool ReadBABuffer() { return pinBA; }
         public bool ReadIRQBuffer() { return pinIRQ; }
 
-        protected int cyclesPerSec;
-		protected int[][] pipeline;
-		protected int totalCycles;
-		protected int totalLines;
+        int cyclesPerSec;
+        int irqShift;
+		int[][] pipeline;
+		int totalCycles;
+		int totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec)
 		{
@@ -125,7 +126,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 pinAEC = false;
 
                 // must always come last
-                UpdatePins();
+                //UpdatePins();
             }
         }
 
@@ -166,21 +167,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         private void UpdateBA()
 		{
-			
-			{
-				if (pinBA)
-					baCount = baResetCounter;
-				else if (baCount > 0)
-					baCount--;
-			}
+			if (pinBA)
+				baCount = baResetCounter;
+			else if (baCount > 0)
+				baCount--;
 		}
 
 		private void UpdateBorder()
 		{
 			
 			{
-				borderL = columnSelect ? 0x018 : 0x01F;
-				borderR = columnSelect ? 0x158 : 0x14F;
+				//borderL = columnSelect ? 0x018 : 0x01F;
+				//borderR = columnSelect ? 0x158 : 0x14F;
+                borderL = columnSelect ? 28 : 35;
+                borderR = columnSelect ? 348 : 339;
 				borderT = rowSelect ? 0x033 : 0x037;
 				borderB = rowSelect ? 0x0FB : 0x0F7;
 			}
@@ -188,14 +188,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void UpdatePins()
 		{
-			
-			{
-				pinIRQ = !(
-					(enableIntRaster & intRaster) |
-					(enableIntSpriteDataCollision & intSpriteDataCollision) |
-					(enableIntSpriteCollision & intSpriteCollision) |
-					(enableIntLightPen & intLightPen));
-			}
+			bool irqTemp = !(
+				(enableIntRaster & intRaster) |
+				(enableIntSpriteDataCollision & intSpriteDataCollision) |
+				(enableIntSpriteCollision & intSpriteCollision) |
+				(enableIntLightPen & intLightPen));
+
+            irqShift <<= 1;
+            irqShift |= (irqTemp ? 0x1 : 0x0);
+            pinIRQ = (irqShift & 0x2) != 0;
 		}
 
         private void UpdateVideoMode()

@@ -7,17 +7,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// 2364: 64 kbit (8kbyte)
 	// 23128: 128 kbit (16kbyte)
 
-	public enum Chip23XXmodel
+    public enum Chip23XXmodel
 	{
 		Chip2332,
 		Chip2364,
 		Chip23128
 	}
 
-	public class Chip23XX
+    sealed public class Chip23XX
 	{
-        protected int addrMask;
-        protected byte[] rom;
+        int addrMask;
+        byte[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{

@@ -11,9 +11,9 @@
 
 	// memory is striped 00/FF at intervals of 0x40
 
-	public class Chip4864
+    sealed public class Chip4864
 	{
-        protected byte[] ram;
+        byte[] ram;
 
 		public Chip4864()
 		{

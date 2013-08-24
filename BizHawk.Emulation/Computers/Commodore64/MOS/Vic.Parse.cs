@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        public const int baResetCounter = 6;
+        public const int baResetCounter = 7;
         public const int pipelineUpdateVc = 1;
         public const int pipelineChkSprChunch = 2;
         public const int pipelineUpdateMcBase = 4;
@@ -19,18 +19,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public const int pipelineChkBrdR1 = 256;
         public const int pipelineChkSprDisp = 512;
         public const int pipelineUpdateRc = 1024;
+        public const int pipelineHoldX = 0x40000000;
         public const int rasterIrqLine0Cycle = 1;
         public const int rasterIrqLineXCycle = 0;
 
-        protected int parseaddr;
-        protected int parsecycleBAsprite0;
-        protected int parsecycleBAsprite1;
-        protected int parsecycleBAsprite2;
-        protected int parsecycleFetchSpriteIndex;
-        protected int parsefetch;
-        protected int parsefetchType;
-        protected int parseba;
-        protected int parseact;
+        int parseaddr;
+        int parsecycleBAsprite0;
+        int parsecycleBAsprite1;
+        int parsecycleBAsprite2;
+        int parsecycleFetchSpriteIndex;
+        int parsefetch;
+        int parsefetchType;
+        int parseba;
+        int parseact;
 
         private void ParseCycle()
         {
@@ -111,140 +112,136 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 else
                 {
                     parsecycleFetchSpriteIndex = (parsefetch & 0x7);
-                    switch (parsefetch & 0xF0)
+                    if ((parsefetch & 0xF0) == 0)
                     {
-                        case 0x00:
-                            // fetch P
-                            parseaddr = (0x3F8 | (pointerVM << 10) | parsecycleFetchSpriteIndex);
-                            sprites[parsecycleFetchSpriteIndex].pointer = ReadMemory(parseaddr);
-                            sprites[parsecycleFetchSpriteIndex].shiftEnable = false;
-                            break;
-                        case 0x10:
-                        case 0x20:
-                        case 0x30:
-                            // fetch S
-                            if (sprites[parsecycleFetchSpriteIndex].dma)
-                            {
-                                Sprite spr = sprites[parsecycleFetchSpriteIndex];
-                                parseaddr = (spr.mc | (spr.pointer << 6));
-                                spr.sr <<= 8;
-                                spr.sr |= ReadMemory(parseaddr);
-                                spr.mc++;
-                            }
-                            break;
+                        // fetch P
+                        parseaddr = (0x3F8 | (pointerVM << 10) | parsecycleFetchSpriteIndex);
+                        sprites[parsecycleFetchSpriteIndex].pointer = ReadMemory(parseaddr);
+                        sprites[parsecycleFetchSpriteIndex].shiftEnable = false;
+                    }
+                    else
+                    {
+                        // fetch S
+                        if (sprites[parsecycleFetchSpriteIndex].dma)
+                        {
+                            Sprite spr = sprites[parsecycleFetchSpriteIndex];
+                            parseaddr = (spr.mc | (spr.pointer << 6));
+                            spr.sr <<= 8;
+                            spr.sr |= ReadMemory(parseaddr);
+                            spr.mc++;
+                        }
                     }
                 }
 
                 // perform BA flag manipulation
-                switch (parseba)
+                if (parseba == 0x0000)
                 {
-                    case 0x0000:
+                    pinBA = true;
+                }
+                else if (parseba == 0x1000)
+                {
+                    pinBA = !badline;
+                }
+                else
+                {
+                    parsecycleBAsprite0 = (parseba & 0x000F);
+                    parsecycleBAsprite1 = (parseba & 0x00F0) >> 4;
+                    parsecycleBAsprite2 = (parseba & 0x0F00) >> 8;
+                    if ((parsecycleBAsprite0 < 8 && sprites[parsecycleBAsprite0].dma) ||
+                        (parsecycleBAsprite1 < 8 && sprites[parsecycleBAsprite1].dma) ||
+                        (parsecycleBAsprite2 < 8 && sprites[parsecycleBAsprite2].dma))
+                        pinBA = false;
+                    else
                         pinBA = true;
-                        break;
-                    case 0x1000:
-                        pinBA = !badline;
-                        break;
-                    default:
-                        parsecycleBAsprite0 = (parseba & 0x000F);
-                        parsecycleBAsprite1 = (parseba & 0x00F0) >> 4;
-                        parsecycleBAsprite2 = (parseba & 0x0F00) >> 8;
-                        if ((parsecycleBAsprite0 < 8 && sprites[parsecycleBAsprite0].dma) ||
-                            (parsecycleBAsprite1 < 8 && sprites[parsecycleBAsprite1].dma) ||
-                            (parsecycleBAsprite2 < 8 && sprites[parsecycleBAsprite2].dma))
-                            pinBA = false;
-                        else
-                            pinBA = true;
-                        break;
                 }
 
                 // perform actions
-                borderCheckLEnable = true;
-                borderCheckREnable = true;
+                borderCheckLEnable = ((parseact & (pipelineChkBrdL0 | pipelineChkBrdL1)) != 0);
+                borderCheckREnable = ((parseact & (pipelineChkBrdR0 | pipelineChkBrdR1)) != 0);
+                rasterXHold = ((parseact & pipelineHoldX) != 0);
 
-                if ((parseact & pipelineChkSprChunch) != 0)
+                if (parseact != 0)
                 {
-                    //for (int i = 0; i < 8; i++)
-                    foreach (Sprite spr in sprites)
+                    if ((parseact & pipelineChkSprChunch) != 0)
                     {
-                        //Sprite spr = sprites[i];
-                        if (spr.yCrunch)
-                            spr.mcbase += 2;
-                        spr.shiftEnable = false;
-                        spr.xCrunch = !spr.xExpand;
-                        spr.multicolorCrunch = !spr.multicolor;
-                    }
-                }
-                if ((parseact & pipelineChkSprDisp) != 0)
-                {
-                    //for (int i = 0; i < 8; i++)
-                    foreach (Sprite spr in sprites)
-                    {
-                        //Sprite spr = sprites[i];
-                        spr.mc = spr.mcbase;
-                        if (spr.dma && spr.y == (rasterLine & 0xFF))
+                        foreach (Sprite spr in sprites)
                         {
-                            spr.display = true;
+                            if (spr.yCrunch)
+                                spr.mcbase += 2;
+                            spr.shiftEnable = false;
+                            spr.xCrunch = !spr.xExpand;
+                            spr.multicolorCrunch = !spr.multicolor;
                         }
                     }
-                }
-                if ((parseact & pipelineChkSprDma) != 0)
-                {
-                    //for (int i = 0; i < 8; i++)
-                    foreach (Sprite spr in sprites)
+
+                    else if ((parseact & pipelineChkSprDisp) != 0)
                     {
-                        //Sprite spr = sprites[i];
-                        if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+                        foreach (Sprite spr in sprites)
                         {
-                            spr.dma = true;
-                            spr.mcbase = 0;
-                            spr.yCrunch = !spr.yExpand;
-                        }
-                    }
-                }
-                if ((parseact & pipelineChkSprExp) != 0)
-                {
-                    if (sprites[0].yExpand) sprites[0].yCrunch ^= true;
-                    if (sprites[1].yExpand) sprites[1].yCrunch ^= true;
-                    if (sprites[2].yExpand) sprites[2].yCrunch ^= true;
-                    if (sprites[3].yExpand) sprites[3].yCrunch ^= true;
-                    if (sprites[4].yExpand) sprites[4].yCrunch ^= true;
-                    if (sprites[5].yExpand) sprites[5].yCrunch ^= true;
-                    if (sprites[6].yExpand) sprites[6].yCrunch ^= true;
-                    if (sprites[7].yExpand) sprites[7].yCrunch ^= true;
-                }
-                if ((parseact & pipelineUpdateMcBase) != 0)
-                {
-                    //for (int i = 0; i < 8; i++)
-                    foreach (Sprite spr in sprites)
-                    {
-                        //Sprite spr = sprites[i];
-                        if (spr.yCrunch)
-                        {
-                            spr.mcbase++;
-                            if (spr.mcbase == 63)
+                            spr.mc = spr.mcbase;
+                            if (spr.dma && spr.y == (rasterLine & 0xFF))
                             {
-                                spr.dma = false;
-                                spr.display = false;
+                                spr.display = true;
                             }
                         }
                     }
-                }
-                if ((parseact & pipelineUpdateRc) != 0)
-                {
-                    if (rc == 7)
+
+                    else if ((parseact & pipelineChkSprDma) != 0)
                     {
-                        idle = true;
-                        vcbase = vc;
+                        foreach (Sprite spr in sprites)
+                        {
+                            if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+                            {
+                                spr.dma = true;
+                                spr.mcbase = 0;
+                                spr.yCrunch = !spr.yExpand;
+                            }
+                        }
                     }
-                    if (!idle)
-                        rc = (rc + 1) & 0x7;
-                }
-                if ((parseact & pipelineUpdateVc) != 0)
-                {
-                    vc = vcbase;
-                    vmli = 0;
-                    if (badline)
-                        rc = 0;
+
+                    else if ((parseact & pipelineChkSprExp) != 0)
+                    {
+                        foreach (Sprite spr in sprites)
+                        {
+                            if (spr.yExpand)
+                                spr.yCrunch ^= true;
+                        }
+                    }
+
+                    else if ((parseact & pipelineUpdateMcBase) != 0)
+                    {
+                        foreach (Sprite spr in sprites)
+                        {
+                            if (spr.yCrunch)
+                            {
+                                spr.mcbase++;
+                                if (spr.mcbase == 63)
+                                {
+                                    spr.dma = false;
+                                    spr.display = false;
+                                }
+                            }
+                        }
+                    }
+
+                    else if ((parseact & pipelineUpdateRc) != 0)
+                    {
+                        if (rc == 7)
+                        {
+                            idle = true;
+                            vcbase = vc;
+                        }
+                        if (!idle)
+                            rc = (rc + 1) & 0x7;
+                    }
+
+                    else if ((parseact & pipelineUpdateVc) != 0)
+                    {
+                        vc = vcbase;
+                        vmli = 0;
+                        if (badline)
+                            rc = 0;
+                    }
                 }
 
                 cycleIndex++;
