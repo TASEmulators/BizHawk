@@ -135,6 +135,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			get { return "INTV"; }
 		}
 
+		public string BoardName { get { return null; } }
+
 		public bool DeterministicEmulation { get { return true; } }
 
 

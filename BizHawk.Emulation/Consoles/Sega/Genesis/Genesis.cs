@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "GEN"; } }
 
-		
+		public string BoardName { get { return null; } }
 
         public void SaveStateText(TextWriter writer)
         {

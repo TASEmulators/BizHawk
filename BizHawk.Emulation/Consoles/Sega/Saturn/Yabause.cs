@@ -219,6 +219,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
+		public string BoardName { get { return null; } }
+
 		#region saveram
 
 		public byte[] ReadSaveRam()

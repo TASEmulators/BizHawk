@@ -324,6 +324,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return board;
 		}
 
+		public string BoardName { get { return board.GetType().Name; } }
+
 		void BoardSystemHardReset()
 		{
 			INESBoard newboard;

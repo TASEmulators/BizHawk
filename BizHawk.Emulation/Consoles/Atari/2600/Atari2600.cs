@@ -9,6 +9,8 @@ namespace BizHawk
 		public string SystemId { get { return "A26"; } }
 		public GameInfo game;
 
+		public string BoardName { get { return mapper.GetType().Name; } }
+
 		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return tia; } }
 		public ISoundProvider SoundProvider { get { return dcfilter; } }
