@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		private StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
+		public StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
 		private RewindThreader RewindThread;
 
 		private byte[] LastState;
@@ -17,22 +17,28 @@ namespace BizHawk.MultiClient
 		private bool RewindDeltaEnable = false;
 
 		public float Rewind_FullnessRatio { get { return RewindBuf.FullnessRatio; } }
-		public int Rewind_Count { get { return RewindBuf.Count; } }
-		public long Rewind_Size { get { return RewindBuf.Size; } }
+		public int Rewind_Count { get { return RewindBuf != null ? RewindBuf.Count : 0; } }
+		public long Rewind_Size { get { return RewindBuf != null ? RewindBuf.Size : 0; } }
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
 		/// Probably only useful for the rewind buffer, so I didnt put it in another file
 		/// </summary>
-		class StreamBlobDatabase : IDisposable
+		public class StreamBlobDatabase : IDisposable
 		{
 			public void Dispose()
 			{
 				mStream.Dispose();
 				mStream = null;
+				if (mAllocatedBuffer != null)
+					mBufferManage(mAllocatedBuffer, 0, false);
 			}
+
+			Func<byte[], long, bool, byte[]> mBufferManage;
+			byte[] mAllocatedBuffer;
 			
-			public StreamBlobDatabase(bool onDisk, long capacity)
+			public StreamBlobDatabase(bool onDisk, long capacity, Func<byte[],long,bool,byte[]> BufferManage)
 			{
+				this.mBufferManage = BufferManage;
 				mCapacity = capacity;
 				if (onDisk)
 				{
@@ -45,8 +51,8 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					var buffer = new byte[capacity];
-					mStream = new MemoryStream(buffer);
+					mAllocatedBuffer = mBufferManage(null, capacity, true);
+					mStream = new MemoryStream(mAllocatedBuffer);
 				}
 			}
 
@@ -220,31 +226,31 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			void Test()
-			{
-				var sbb = new StreamBlobDatabase(false, Global.Config.Rewind_BufferSize * 1024 * 1024);
-				var rand = new Random(0);
-				int timestamp = 0;
-				for (; ; )
-				{
-					long test = sbb.Enqueue(timestamp, rand.Next(100 * 1024));
-					if (rand.Next(10) == 0)
-						if (sbb.Count != 0) sbb.Dequeue();
-					if (rand.Next(10) == 0)
-						if (sbb.Count != 0) sbb.Pop();
-					if (rand.Next(50) == 1)
-					{
-						while (sbb.Count != 0)
-						{
-							Console.WriteLine("ZAM!!!");
-							sbb.Dequeue();
-						}
-					}
-					sbb.AssertMonotonic();
-					timestamp++;
-					Console.WriteLine("{0}, {1}", test, sbb.Count);
-				}
-			}
+			//void Test()
+			//{
+			//  var sbb = new StreamBlobDatabase(false, Global.Config.Rewind_BufferSize * 1024 * 1024);
+			//  var rand = new Random(0);
+			//  int timestamp = 0;
+			//  for (; ; )
+			//  {
+			//    long test = sbb.Enqueue(timestamp, rand.Next(100 * 1024));
+			//    if (rand.Next(10) == 0)
+			//      if (sbb.Count != 0) sbb.Dequeue();
+			//    if (rand.Next(10) == 0)
+			//      if (sbb.Count != 0) sbb.Pop();
+			//    if (rand.Next(50) == 1)
+			//    {
+			//      while (sbb.Count != 0)
+			//      {
+			//        Console.WriteLine("ZAM!!!");
+			//        sbb.Dequeue();
+			//      }
+			//    }
+			//    sbb.AssertMonotonic();
+			//    timestamp++;
+			//    Console.WriteLine("{0}, {1}", test, sbb.Count);
+			//  }
+			//}
 		} //class StreamBlobDatabase
 
 		class RewindThreader : IDisposable
@@ -440,10 +446,36 @@ namespace BizHawk.MultiClient
 			if (rewind_enabled)
 			{
 				long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
-				RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
+
+				if(RewindBuf != null)
+					RewindBuf.Dispose();
+				RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap, BufferManage);
+
 				if (RewindThread != null)
 					RewindThread.Dispose();
 				RewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
+			}
+		}
+
+		byte[] RewindFellationBuf;
+		byte[] BufferManage(byte[] inbuf, long size, bool allocate)
+		{
+			if (allocate)
+			{
+				//if we have an appropriate buffer free, return it
+				if (RewindFellationBuf != null && RewindFellationBuf.LongLength == size)
+				{
+					byte[] ret = RewindFellationBuf;
+					RewindFellationBuf = null;
+					return ret;
+				}
+				//otherwise, allocate it
+				return new byte[size];
+			}
+			else
+			{
+				RewindFellationBuf = inbuf;
+				return null;
 			}
 		}
 
