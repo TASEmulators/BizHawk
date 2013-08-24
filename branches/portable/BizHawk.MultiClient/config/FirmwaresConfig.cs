@@ -292,7 +292,7 @@ namespace BizHawk.MultiClient
 
 		private void tsmiSetCustomization_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using (var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog())
 			{
 				ofd.InitialDirectory = currSelectorDir;
 				ofd.RestoreDirectory = true;

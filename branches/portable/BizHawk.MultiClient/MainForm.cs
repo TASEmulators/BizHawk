@@ -1519,8 +1519,10 @@ namespace BizHawk.MultiClient
                                 }
                                 catch (InvalidDataException ex)
                                 {
+									RunLoopBlocked = true;
                                     MessageBox.Show(ex.Message, "Region specific bios missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    return false;
+									RunLoopBlocked = false;
+									return false;
                                 }
 								break;
 							case "C64":
@@ -3777,9 +3779,11 @@ namespace BizHawk.MultiClient
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
+					RunLoopBlocked = true;
 					Global.Sound.StopSound();
 					var result = sfd.ShowDialog();
 					Global.Sound.StartSound();
+					RunLoopBlocked = false;
 
 					if (result == DialogResult.Cancel)
 					{
@@ -4298,7 +4302,9 @@ namespace BizHawk.MultiClient
 
 		private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			new FirmwaresConfig().Show();
+			RunLoopBlocked = false;
 		}
 	}
 }

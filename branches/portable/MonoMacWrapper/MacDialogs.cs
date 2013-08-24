@@ -132,7 +132,12 @@ namespace MonoMacWrapper
 				}
 				return retval;
 			}
-		}	
+		}
+
+		public void Dispose()
+		{
+			_openPanel.Dispose();
+		}
 	}
 
 	public class MacFolderBrowserDialog : BizHawk.IFolderBrowserDialog

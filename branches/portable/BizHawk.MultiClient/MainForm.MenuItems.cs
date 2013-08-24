@@ -2345,16 +2345,19 @@ namespace BizHawk.MultiClient
 
 		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			using (var dlg = new GBtools.DualGBXMLCreator())
 			{
 				dlg.ShowDialog(this);
 			}
 			Global.Sound.StartSound();
+			RunLoopBlocked = false;
 		}
 
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			var result = new N64VideoPluginconfig().ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -2364,6 +2367,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.OSD.AddMessage("Plugin settings aborted");
 			}
+			RunLoopBlocked = false;
 		}
 
 		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2398,7 +2402,9 @@ namespace BizHawk.MultiClient
 		{
 			using (var dlg = new SATTools.SaturnPrefs())
 			{
+				RunLoopBlocked = true;
 				var result = dlg.ShowDialog(this);
+				RunLoopBlocked = false;
 				if (result == DialogResult.OK)
 				{
 					SaturnSetPrefs();
@@ -2418,12 +2424,16 @@ namespace BizHawk.MultiClient
 
 		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			new MessageConfig().ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			new NewPathConfig().ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2433,7 +2443,9 @@ namespace BizHawk.MultiClient
 
 		private void autofireToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			new AutofireConfig().ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2692,7 +2704,9 @@ namespace BizHawk.MultiClient
 
 		private void rewindOptionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			new RewindConfig().ShowDialog();
+			RunLoopBlocked = false;
 		}
 	}
 }

@@ -73,6 +73,10 @@ namespace BizHawk
             get { return _capsule.FilterIndex; }
             set { _capsule.FilterIndex = value; }
         }
+		public void Dispose()
+		{
+			_capsule.Dispose();
+		}
 	}
 
 	public class DefaultFolderBrowserDialog : IFolderBrowserDialog

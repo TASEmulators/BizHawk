@@ -2,7 +2,7 @@ using System;
 
 namespace BizHawk
 {
-	public interface IOpenFileDialog
+	public interface IOpenFileDialog : IDisposable
 	{
 		string InitialDirectory {get;set;}
 		string Filter {get;set;}

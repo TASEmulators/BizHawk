@@ -87,21 +87,18 @@ namespace BizHawk.MultiClient
 			RealFirmwareReader reader = new RealFirmwareReader();
 
 			//build a list of files under the global firmwares path, and build a hash for each of them while we're at it
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(Global.Config.PathEntries.FirmwaresPath) });
+			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath)) });
 	
 			while (todo.Count != 0)
 			{
 				var di = todo.Dequeue();
 
 				//we're going to allow recursing into subdirectories, now. its been verified to work OK
-				if(di.Exists)
+				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+			
+				foreach (var fi in di.GetFiles())
 				{
-					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-				
-					foreach (var fi in di.GetFiles())
-					{
-						reader.Read(fi);
-					}
+					reader.Read(fi);
 				}
 			}
 
@@ -139,15 +136,19 @@ namespace BizHawk.MultiClient
 			}
 
 			//apply user overrides
-			foreach (var fr in FirmwareDatabase.FirmwareRecords)
+			foreach (var fr2 in FirmwareDatabase.FirmwareRecords)
 			{
 				string userSpec = null;
 				
 				//do we have a user specification for this firmware record?
-				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out userSpec))
+				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr2.ConfigKey, out userSpec))
 				{
+					if (!ResolutionDictionary.ContainsKey(fr2)) 
+					{
+						ResolutionDictionary.Add(fr2, new ResolutionInfo());
+					}
 					//flag it as user specified
-					var ri = ResolutionDictionary[fr];
+					var ri = ResolutionDictionary[fr2];
 					ri.UserSpecified = true;
 					ri.KnownFirmwareFile = null;
 					ri.FilePath = userSpec;
@@ -174,8 +175,8 @@ namespace BizHawk.MultiClient
 						//if the known firmware file is for a different firmware, flag it so we can show a warning
 						var option =
 							(from fo in FirmwareDatabase.FirmwareOptions
-							where fo.hash == rff.hash && fo.ConfigKey != fr.ConfigKey
-							select fr).FirstOrDefault();
+							where fo.hash == rff.hash && fo.ConfigKey != fr2.ConfigKey
+							select fr2).FirstOrDefault();
 						if (option != null)
 							ri.KnownMismatching = true;
 					}
