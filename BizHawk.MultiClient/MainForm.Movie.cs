@@ -54,6 +54,7 @@ namespace BizHawk.MultiClient
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
 			VirtualPadForm1.Restart();
+			Global.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void SetMainformMovieInfo()
