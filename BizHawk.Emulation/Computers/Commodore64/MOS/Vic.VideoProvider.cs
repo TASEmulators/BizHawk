@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		int bufHeight;
 		int bufLength;
 		int bufOffset;
-		Point bufPoint;
-		Rectangle bufRect;
 		int bufWidth;
 
 		// palette
@@ -40,12 +38,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int BufferHeight
 		{
-			get { return bufRect.Height; }
+			get { return bufHeight; }
 		}
 
 		public int BufferWidth
 		{
-			get { return bufRect.Width; }
+			get { return bufWidth; }
 		}
 
 		public int[] GetVideoBuffer()
@@ -55,7 +53,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int VirtualWidth
 		{
-			get { return bufRect.Width; }
+            get { return bufWidth; }
 		}
 	}
 }

@@ -19,6 +19,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public const int pipelineChkBrdR1 = 256;
         public const int pipelineChkSprDisp = 512;
         public const int pipelineUpdateRc = 1024;
+        public const int pipelineHBlankL = 0x10000000;
+        public const int pipelineHBlankR = 0x20000000;
         public const int pipelineHoldX = 0x40000000;
         public const int rasterIrqLine0Cycle = 1;
         public const int rasterIrqLineXCycle = 0;
@@ -43,6 +45,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                 // apply X location
                 rasterX = pipeline[0][cycleIndex];
+                rasterXHold = ((parseact & pipelineHoldX) != 0);
 
                 // perform fetch
                 parsefetchType = parsefetch & 0xFF00;
@@ -158,7 +161,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 // perform actions
                 borderCheckLEnable = ((parseact & (pipelineChkBrdL0 | pipelineChkBrdL1)) != 0);
                 borderCheckREnable = ((parseact & (pipelineChkBrdR0 | pipelineChkBrdR1)) != 0);
-                rasterXHold = ((parseact & pipelineHoldX) != 0);
+                hblankCheckEnableL = ((parseact & pipelineHBlankL) != 0);
+                hblankCheckEnableR = ((parseact & pipelineHBlankR) != 0);
 
                 if (parseact != 0)
                 {

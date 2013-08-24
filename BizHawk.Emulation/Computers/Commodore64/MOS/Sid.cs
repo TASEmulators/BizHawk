@@ -613,11 +613,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Sid(int[][] newWaveformTable, int newSampleRate, Region newRegion)
 		{
 			uint cyclesPerSec = 0;
+            uint cyclesNum;
+            uint cyclesDen;
+            uint sampleRate = 44100;
 
 			switch (newRegion)
 			{
-				case Region.NTSC: cyclesPerSec = 14318181 / 14; break;
-				case Region.PAL: cyclesPerSec = 17734472 / 18; break;
+                case Region.NTSC: cyclesNum = 14318181; cyclesDen = 14; break;
+				case Region.PAL: cyclesNum = 17734472; cyclesDen = 18; break;
+                default: return;
 			}
 
 			waveformTable = newWaveformTable;
@@ -636,7 +640,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			for (int i = 0; i < 3; i++)
 				filterEnable[i] = false;
 
-			resampler = new Sound.Utilities.SpeexResampler(0, cyclesPerSec, 44100, cyclesPerSec, 44100, null, null);
+            resampler = new Sound.Utilities.SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
 		}
 
 		public void Dispose()

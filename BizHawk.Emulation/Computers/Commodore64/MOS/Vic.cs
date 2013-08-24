@@ -18,11 +18,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		int totalCycles;
 		int totalLines;
 
-		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec)
+		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
-			
 			{
                 debugScreen = false;
+
+                this.hblankStart = hblankStart;
+                this.hblankEnd = hblankEnd;
+                this.vblankStart = vblankStart;
+                this.vblankEnd = vblankEnd;
 
                 totalCycles = newCycles;
 				totalLines = newLines;
@@ -31,19 +35,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				pixelBufferDelay = 12;
 				pixelBackgroundBufferDelay = 4;
 
-                if (debugScreen)
-                {
-                    bufRect = new Rectangle(0, 0, totalCycles * 8, totalLines);
-                }
-                else
-                {
-                    bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
-                }
+                bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
+                bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
 
-				buf = new int[bufRect.Width * bufRect.Height];
+                buf = new int[bufWidth * bufHeight];
 				bufLength = buf.Length;
-				bufWidth = (totalCycles * 8);
-				bufHeight = (totalLines);
 
 				sprites = new Sprite[8];
 				for (int i = 0; i < 8; i++)
@@ -144,6 +140,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         borderOnVertical = true;
                     if (rasterLine == borderT && displayEnable)
                         borderOnVertical = false;
+
+                    if (rasterLine == vblankStart)
+                        vblank = true;
+                    if (rasterLine == vblankEnd)
+                        vblank = false;
 
                     cycleIndex = 0;
                     cycle = 0;
