@@ -5,7 +5,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class  C64 : IEmulator
+	sealed public partial class C64 : IEmulator
 	{
 		// internal variables
 		private bool _islag = true;

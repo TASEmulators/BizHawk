@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pipelineChkSprDisp, pipelineUpdateRc
         };
 
-        static public int[] TimingBuilder_Act(int[] timing, int cycle14, int cycle55)
+        static public int[] TimingBuilder_Act(int[] timing, int cycle14, int cycle55, int hblankStart, int hblankEnd)
         {
             List<int> result = new List<int>();
 
@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     result.Add(0);
             }
 
+            bool hBlankL = false;
+            bool hBlankR = false;
             for (int i = 0; i < length; i++)
             {
                 // pipeline raster X delay
@@ -54,6 +56,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     result[i] |= pipelineChkBrdR0;
                 if (timing[i] == 0x15C)
                     result[i] |= pipelineChkBrdR1;
+                if (timing[i] == (hblankStart & 0xFFD))
+                    result[i] |= pipelineHBlankR;
+                if (timing[i] == (hblankEnd & 0xFFD))
+                    result[i] |= pipelineHBlankL;
             }
 
             return result.ToArray();
@@ -194,6 +200,34 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             }
 
             return result.ToArray();
+        }
+
+        static public int TimingBuilder_ScreenHeight(int vblankStart, int vblankEnd, int lines)
+        {
+            int offset = vblankEnd;
+            int result = 0;
+            while (true)
+            {
+                if (offset >= lines)
+                    offset -= lines;
+                if (offset == vblankStart)
+                    return result;
+                offset++;
+                result++;
+            }
+        }
+
+        static public int TimingBuilder_ScreenWidth(int[] timing, int hblankStart, int hblankEnd)
+        {
+            int length = timing.Length;
+            int result = 0;
+            int offset = 0;
+
+            while (timing[offset] != hblankEnd) { offset = (offset + 1) % length; }
+            while (timing[offset] != hblankStart) { offset = (offset + 1) % length; result++; }
+            //while (timing[offset] == hblankStart) { offset = (offset + 1) % length; result++; }
+
+            return (result * 4);
         }
 
         static public int[] TimingBuilder_XRaster(int start, int width, int count, int delayOffset, int delayAmount)

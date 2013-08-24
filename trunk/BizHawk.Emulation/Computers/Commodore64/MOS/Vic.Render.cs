@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
+        int borderSR;
         int ecmPixel;
         int pixel;
         int[] pixelBackgroundBuffer;
@@ -33,46 +34,51 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         private void Render()
         {
-            renderEnabled = bufRect.Contains(bufPoint);
+            if (hblankCheckEnableL)
+            {
+                if (rasterX == hblankEnd)
+                    hblank = false;
+            }
+            else if (hblankCheckEnableR)
+            {
+                if (rasterX == hblankStart)
+                    hblank = true;
+            }
+            renderEnabled = !hblank && !vblank; //bufRect.Contains(bufPoint);
 
             for (int i = 0; i < 4; i++)
             {
-                if (borderCheckLEnable)
+                if (borderCheckLEnable && (rasterX == borderL))
                 {
-                    if (rasterX == borderL)
-                    {
-                        if (rasterLine == borderB)
-                            borderOnVertical = true;
-                        if (rasterLine == borderT && displayEnable)
-                            borderOnVertical = false;
-                        if (!borderOnVertical)
-                            borderOnMain = false;
-                    }
+                    if (rasterLine == borderB)
+                        borderOnVertical = true;
+                    if (rasterLine == borderT && displayEnable)
+                        borderOnVertical = false;
+                    if (!borderOnVertical)
+                        borderOnMain = false;
                 }
-                if (borderCheckREnable)
-                {
-                    if (rasterX == borderR)
-                        borderOnMain = true;
-                }
+
+                if (borderCheckREnable && (rasterX == borderR))
+                    borderOnMain = true;
 
                 // recall pixel from buffer
                 pixel = pixelBuffer[pixelBufferIndex];
 
+                // border doesn't work with the background buffer
+                borderSR <<= 1;
+                if (borderOnMain || borderOnVertical)
+                    borderSR |= 1;
+                if ((borderSR & 0x100) != 0)
+                    pixel = borderColor;
+
                 // plot pixel if within viewing area
                 if (renderEnabled)
                 {
+
                     buf[bufOffset] = palette[pixel];
                     bufOffset++;
                     if (bufOffset == bufLength)
                         bufOffset = 0;
-                }
-                bufPoint.X++;
-                if (bufPoint.X == bufWidth)
-                {
-                    bufPoint.X = 0;
-                    bufPoint.Y++;
-                    if (bufPoint.Y == bufHeight)
-                        bufPoint.Y = 0;
                 }
 
                 // put the pixel from the background buffer into the main buffer
@@ -142,10 +148,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             spr.shiftEnable = false; //optimization
                     }
                 }
-
-                // border doesn't work with the background buffer
-                if (borderOnMain || borderOnVertical)
-                    pixel = borderColor;
 
                 // store pixel in buffer
                 pixelBuffer[pixelBufferIndex] = pixel;

@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
             IntBuffer refIntBuffer;
             Int32 refPointX;
             Int32 refPointY;
-            Rectangle refRect;
             SByte refSByte;
             UInt16 refUInt16;
             UInt32 refUInt32;

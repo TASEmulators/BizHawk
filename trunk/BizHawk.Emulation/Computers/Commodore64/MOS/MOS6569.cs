@@ -1,12 +1,22 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿using System.Drawing;
+
+namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// vic pal
 	static public class MOS6569
 	{
-        static int[] timing = Vic.TimingBuilder_XRaster(0x194, 0x1F8, 0x1F8, -1, -1);
+        static int cycles = 63;
+        static int lines = 312;
+        static int vblankstart = 0x12C;
+        static int vblankend = 0x00F;
+        static int hblankstart = 0x17C;
+        static int hblankend = 0x1E0;
+        static int scanwidth = cycles * 8;
+
+        static int[] timing = Vic.TimingBuilder_XRaster(0x194, 0x1F8, scanwidth, -1, -1);
         static int[] fetch = Vic.TimingBuilder_Fetch(timing, 0x164);
         static int[] ba = Vic.TimingBuilder_BA(fetch);
-        static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C);
+        static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C, hblankstart, hblankend);
 
         static int[][] pipeline = new int[][]
 			{
@@ -18,7 +28,13 @@
 
         static public Vic Create()
         {
-            return new Vic(63, 312, pipeline, 17734472 / 18);
+            return new Vic(
+                cycles, lines, 
+                pipeline, 
+                17734472 / 18,
+                hblankstart, hblankend,
+                vblankstart, vblankend
+                );
         }
 	}
 }

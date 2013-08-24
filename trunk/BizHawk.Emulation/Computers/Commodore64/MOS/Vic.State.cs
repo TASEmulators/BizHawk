@@ -42,11 +42,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool enableIntSpriteCollision;
         bool enableIntSpriteDataCollision;
         bool extraColorMode;
+        bool hblank;
         bool idle;
         bool intLightPen;
         bool intRaster;
         bool intSpriteCollision;
         bool intSpriteDataCollision;
+        int hblankEnd;
+        int hblankStart;
+        bool hblankCheckEnableL;
+        bool hblankCheckEnableR;
         int lastRasterLine;
         int lightPenX;
         int lightPenY;
@@ -69,6 +74,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         int spriteMulticolor1;
         Sprite[] sprites;
         int sr;
+        bool vblank;
+        int vblankEnd;
+        int vblankStart;
         int vc;
         int vcbase;
         int vmli;
@@ -105,6 +113,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             enableIntSpriteCollision = false;
             enableIntSpriteDataCollision = false;
             extraColorMode = false;
+            hblank = true;
             idle = true;
             intLightPen = false;
             intRaster = false;
@@ -127,6 +136,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             spriteMulticolor0 = 0;
             spriteMulticolor1 = 0;
             sr = 0;
+            vblank = true;
             vc = 0;
             vcbase = 0;
             vmli = 0;
