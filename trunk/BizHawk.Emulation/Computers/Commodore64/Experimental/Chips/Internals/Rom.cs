@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     public class Rom
     {
-        protected int addressMask;
-        protected int[] memory;
+        int addressMask;
+        int[] memory;
 
         public Rom(int size, int addressMask, byte[] data)
         {

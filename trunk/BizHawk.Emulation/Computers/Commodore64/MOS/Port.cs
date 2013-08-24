@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    public class LatchedPort
+    sealed public class LatchedPort
     {
         public byte Direction;
         public byte Latch;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         }
     }
 
-    public class LatchedBooleanPort
+    sealed public class LatchedBooleanPort
     {
         public bool Direction;
         public bool Latch;

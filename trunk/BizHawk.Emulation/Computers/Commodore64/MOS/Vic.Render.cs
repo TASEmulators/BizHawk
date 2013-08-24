@@ -7,21 +7,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        protected int ecmPixel;
-        protected int pixel;
-        protected int[] pixelBackgroundBuffer;
-        protected int pixelBackgroundBufferDelay;
-        protected int pixelBackgroundBufferIndex;
-        protected int[] pixelBuffer;
-        protected int pixelBufferDelay;
-        protected int pixelBufferIndex;
-        protected int pixelData;
-        protected int pixelOwner;
-        protected int sprData;
-        protected int sprPixel;
-        protected VicVideoMode videoMode;
+        int ecmPixel;
+        int pixel;
+        int[] pixelBackgroundBuffer;
+        int pixelBackgroundBufferDelay;
+        int pixelBackgroundBufferIndex;
+        int[] pixelBuffer;
+        int pixelBufferDelay;
+        int pixelBufferIndex;
+        int pixelData;
+        int pixelOwner;
+        int sprData;
+        int sprPixel;
+        VicVideoMode videoMode;
 
-        protected enum VicVideoMode : int
+        enum VicVideoMode : int
         {
             Mode000,
             Mode001,
@@ -37,18 +37,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             for (int i = 0; i < 4; i++)
             {
-                if (borderCheckLEnable && rasterX == borderL)
+                if (borderCheckLEnable)
                 {
-                    if (rasterLine == borderB)
-                        borderOnVertical = true;
-                    if (rasterLine == borderT && displayEnable)
-                        borderOnVertical = false;
-                    if (!borderOnVertical)
-                        borderOnMain = false;
+                    if (rasterX == borderL)
+                    {
+                        if (rasterLine == borderB)
+                            borderOnVertical = true;
+                        if (rasterLine == borderT && displayEnable)
+                            borderOnVertical = false;
+                        if (!borderOnVertical)
+                            borderOnMain = false;
+                    }
                 }
-                if (borderCheckREnable && rasterX == borderR)
+                if (borderCheckREnable)
                 {
-                    borderOnMain = true;
+                    if (rasterX == borderR)
+                        borderOnMain = true;
                 }
 
                 // recall pixel from buffer
@@ -91,14 +95,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         if (spr.multicolor)
                         {
                             sprData = (spr.sr & 0xC00000);
-                            if (spr.multicolorCrunch && spr.xCrunch)
+                            if (spr.multicolorCrunch && spr.xCrunch && !rasterXHold)
                                 spr.sr <<= 2;
                             spr.multicolorCrunch ^= spr.xCrunch;
                         }
                         else
                         {
                             sprData = (spr.sr & 0x800000);
-                            if (spr.xCrunch)
+                            if (spr.xCrunch && !rasterXHold)
                                 spr.sr <<= 1;
                         }
                         spr.xCrunch ^= spr.xExpand;

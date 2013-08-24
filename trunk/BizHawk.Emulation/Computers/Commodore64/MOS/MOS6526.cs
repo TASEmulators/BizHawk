@@ -8,11 +8,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
 
-	public class MOS6526 : Timer
+    sealed public class MOS6526
 	{
 		// ------------------------------------
 
-        protected enum InMode
+        enum InMode
 		{
 			Phase2,
 			CNT,
@@ -20,26 +20,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			TimerAUnderflowCNT
 		}
 
-        protected enum OutMode
+        enum OutMode
 		{
 			Pulse,
 			Toggle
 		}
 
-        protected enum RunMode
+        enum RunMode
 		{
 			Continuous,
 			Oneshot
 		}
 
-        protected enum SPMode
+        enum SPMode
 		{
 			Input,
 			Output
 		}
 
-        protected static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
-        protected static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
+        static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
+        static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
 
 		// ------------------------------------
 
@@ -49,36 +49,36 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         // ------------------------------------
 
-        protected bool alarmSelect;
-		protected Region chipRegion;
-		protected bool cntPos;
-		protected bool enableIntAlarm;
-		protected bool enableIntFlag;
-		protected bool enableIntSP;
-		protected bool[] enableIntTimer;
-		protected bool intAlarm;
-		protected bool intFlag;
-		protected bool intSP;
-		protected bool[] intTimer;
-		protected bool pinCnt;
-        protected bool pinCntLast;
-        protected bool pinPC;
-        protected bool pinSP;
-		protected byte sr;
-		protected int[] timerDelay;
-		protected InMode[] timerInMode;
-		protected OutMode[] timerOutMode;
-		protected bool[] timerPortEnable;
-		protected bool[] timerPulse;
-		protected RunMode[] timerRunMode;
-		protected SPMode timerSPMode;
-		protected byte[] tod;
-		protected byte[] todAlarm;
-		protected bool todAlarmPM;
-		protected int todCounter;
-		protected int todCounterLatch;
-		protected bool todIn;
-		protected bool todPM;
+        bool alarmSelect;
+		Region chipRegion;
+		bool cntPos;
+		bool enableIntAlarm;
+		bool enableIntFlag;
+		bool enableIntSP;
+		bool[] enableIntTimer;
+		bool intAlarm;
+		bool intFlag;
+		bool intSP;
+		bool[] intTimer;
+		bool pinCnt;
+        bool pinCntLast;
+        bool pinPC;
+        bool pinSP;
+		byte sr;
+		int[] timerDelay;
+		InMode[] timerInMode;
+		OutMode[] timerOutMode;
+		bool[] timerPortEnable;
+		bool[] timerPulse;
+		RunMode[] timerRunMode;
+		SPMode timerSPMode;
+		byte[] tod;
+		byte[] todAlarm;
+		bool todAlarmPM;
+		int todCounter;
+		int todCounterLatch;
+		bool todIn;
+		bool todPM;
 
 		// ------------------------------------
 
@@ -95,23 +95,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			timerRunMode = new RunMode[2];
 			tod = new byte[4];
 			todAlarm = new byte[4];
-
 			SetTodIn(chipRegion);
-		}
+
+            portA = new LatchedPort();
+            portB = new LatchedPort();
+            timer = new int[2];
+            timerLatch = new int[2];
+            timerOn = new bool[2];
+            underflow = new bool[2];
+        }
 
 		// ------------------------------------
 
 		public void ExecutePhase1()
 		{
 			// unsure if the timer actually operates in ph1
-            pinIRQ = !(
-                (intTimer[0] && enableIntTimer[0]) ||
-                (intTimer[1] && enableIntTimer[1]) ||
-                (intAlarm && enableIntAlarm) ||
-                (intSP && enableIntSP) ||
-                (intFlag && enableIntFlag)
-                );
-
         }
 
 		public void ExecutePhase2()
@@ -153,6 +151,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cntPos = false;
 				underflow[0] = false;
 				underflow[1] = false;
+
+                pinIRQ = !(
+                    (intTimer[0] && enableIntTimer[0]) ||
+                    (intTimer[1] && enableIntTimer[1]) ||
+                    (intAlarm && enableIntAlarm) ||
+                    (intSP && enableIntSP) ||
+                    (intFlag && enableIntFlag)
+                    );
 			}
 		}
 
@@ -295,7 +301,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						// underflow?
 						if (u)
 						{
-                            timerDelay[index]++;
+                            //timerDelay[index] = 2;
                             t = timerLatch[index];
 							if (timerRunMode[index] == RunMode.Oneshot)
 								timerOn[index] = false;
@@ -698,5 +704,78 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
-	}
+
+        public byte PortAMask = 0xFF;
+        public byte PortBMask = 0xFF;
+
+		bool pinIRQ;
+        LatchedPort portA;
+        LatchedPort portB;
+        int[] timer;
+		int[] timerLatch;
+		bool[] timerOn;
+		bool[] underflow;
+
+		public Func<byte> ReadPortA = (() => { return 0xFF; });
+		public Func<byte> ReadPortB = (() => { return 0xFF; });
+
+		void HardResetInternal()
+		{
+			timer[0] = 0xFFFF;
+			timer[1] = 0xFFFF;
+			timerLatch[0] = timer[0];
+			timerLatch[1] = timer[1];
+			pinIRQ = true;
+		}
+
+        public byte PortAData
+        {
+            get
+            {
+                return portA.ReadOutput();
+            }
+        }
+
+        public byte PortADirection
+        {
+            get
+            {
+                return portA.Direction;
+            }
+        }
+
+        public byte PortALatch
+        {
+            get
+            {
+                return portA.Latch;
+            }
+        }
+
+        public byte PortBData
+        {
+            get
+            {
+                return portB.ReadOutput();
+            }
+        }
+
+        public byte PortBDirection
+        {
+            get
+            {
+                return portB.Direction;
+            }
+        }
+
+        public byte PortBLatch
+        {
+            get
+            {
+                return portB.Latch;
+            }
+        }
+
+        public bool ReadIRQBuffer() { return pinIRQ; }
+    }
 }

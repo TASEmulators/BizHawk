@@ -2,31 +2,31 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Sid
+	sealed public partial class Sid
 	{
 		// ------------------------------------
 
-		protected class Envelope
+		sealed class Envelope
 		{
-			protected const int stateAttack = 0;
-			protected const int stateDecay = 1;
-			protected const int stateRelease = 2;
+			const int stateAttack = 0;
+			const int stateDecay = 1;
+			const int stateRelease = 2;
 
-			protected int attack;
-			protected int decay;
-			protected bool delay;
-			protected int envCounter;
-			protected int expCounter;
-			protected int expPeriod;
-			protected bool freeze;
-			protected int lfsr;
-			protected bool gate;
-			protected int rate;
-			protected int release;
-			protected int state;
-			protected int sustain;
+			int attack;
+			int decay;
+			bool delay;
+			int envCounter;
+			int expCounter;
+			int expPeriod;
+			bool freeze;
+			int lfsr;
+			bool gate;
+			int rate;
+			int release;
+			int state;
+			int sustain;
 
-			protected static int[] adsrTable = new int[]
+			static int[] adsrTable = new int[]
 			{
 				0x7F00, 0x0006, 0x003C, 0x0330,
 				0x20C0, 0x6755, 0x3800, 0x500E,
@@ -34,17 +34,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				0x3840, 0x77E2, 0x7625, 0x0A93
 			};
 
-			protected static int[] expCounterTable = new int[]
+			static int[] expCounterTable = new int[]
 			{
 				0xFF, 0x5D, 0x36, 0x1A, 0x0E, 0x06, 0x00
 			};
 
-			protected static int[] expPeriodTable = new int[]
+			static int[] expPeriodTable = new int[]
 			{
 				0x01, 0x02, 0x04, 0x08, 0x10, 0x1E, 0x01
 			};
 
-			protected static int[] sustainTable = new int[]
+			static int[] sustainTable = new int[]
 			{
 				0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 				0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
@@ -247,34 +247,34 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// ------------------------------------
 		}
 
-		protected class Voice
+		sealed class Voice
 		{
-            protected int accBits;
-            protected int accNext;
-			protected int accumulator;
-            protected bool controlTestPrev;
-            protected int controlWavePrev;
-			protected int delay;
-			protected int floatOutputTTL;
-			protected int frequency;
-            protected bool msbRising;
-			protected int noise;
-			protected int noNoise;
-			protected int noNoiseOrNoise;
-			protected int noPulse;
-			protected int output;
-			protected int pulse;
-			protected int pulseWidth;
-			protected bool ringMod;
-			protected int ringMsbMask;
-			protected int shiftRegister;
-			protected int shiftRegisterReset;
-			protected bool sync;
-			protected bool test;
-			protected int[] wave;
-			protected int waveform;
-            protected int waveformIndex;
-			protected int[][] waveTable;
+            int accBits;
+            int accNext;
+			int accumulator;
+            bool controlTestPrev;
+            int controlWavePrev;
+			int delay;
+			int floatOutputTTL;
+			int frequency;
+            bool msbRising;
+			int noise;
+			int noNoise;
+			int noNoiseOrNoise;
+			int noPulse;
+			int output;
+			int pulse;
+			int pulseWidth;
+			bool ringMod;
+			int ringMsbMask;
+			int shiftRegister;
+			int shiftRegisterReset;
+			bool sync;
+			bool test;
+			int[] wave;
+			int waveform;
+            int waveformIndex;
+			int[][] waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -584,28 +584,28 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Sound.Utilities.SpeexResampler resampler;
 
-		protected static int[] syncNextTable = new int[] { 1, 2, 0 };
-		protected static int[] syncPrevTable = new int[] { 2, 0, 1 };
+		static int[] syncNextTable = new int[] { 1, 2, 0 };
+		static int[] syncPrevTable = new int[] { 2, 0, 1 };
 
-        protected int cachedCycles;
-		protected bool disableVoice3;
-		protected int[] envelopeOutput;
-		protected Envelope[] envelopes;
-		protected bool[] filterEnable;
-		protected int filterFrequency;
-		protected int filterResonance;
-		protected bool filterSelectBandPass;
-		protected bool filterSelectLoPass;
-		protected bool filterSelectHiPass;
-        protected int mixer;
-        protected int potCounter;
-		protected int potX;
-        protected int potY;
-        protected short sample;
-        protected int[] voiceOutput;
-		protected Voice[] voices;
-		protected int volume;
-		protected int[][] waveformTable;
+        int cachedCycles;
+		bool disableVoice3;
+		int[] envelopeOutput;
+		Envelope[] envelopes;
+		bool[] filterEnable;
+		int filterFrequency;
+		int filterResonance;
+		bool filterSelectBandPass;
+		bool filterSelectLoPass;
+		bool filterSelectHiPass;
+        int mixer;
+        int potCounter;
+		int potX;
+        int potY;
+        short sample;
+        int[] voiceOutput;
+		Voice[] voices;
+		int volume;
+		int[][] waveformTable;
 
 		public Func<byte> ReadPotX;
 		public Func<byte> ReadPotY;

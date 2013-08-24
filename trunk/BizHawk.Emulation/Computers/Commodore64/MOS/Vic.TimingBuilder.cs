@@ -7,10 +7,61 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
+        static int[] TimingBuilder_Cycle14Act = new int[]
+        {
+			pipelineUpdateVc, 0,
+			pipelineChkSprChunch, 0,
+			pipelineUpdateMcBase, 0,
+        };
+
+        static int[] TimingBuilder_Cycle55Act = new int[]
+        {
+			pipelineChkSprDma, 0,
+			pipelineChkSprDma, pipelineChkSprExp,
+			0, 0,
+			pipelineChkSprDisp, pipelineUpdateRc
+        };
+
+        static public int[] TimingBuilder_Act(int[] timing, int cycle14, int cycle55)
+        {
+            List<int> result = new List<int>();
+
+            int length = timing.Length;
+            for (int i = 0; i < length; i++)
+            {
+                while (i < result.Count)
+                    i++;
+                if (timing[i] == cycle14)
+                    result.AddRange(TimingBuilder_Cycle14Act);
+                else if (timing[i] == cycle55)
+                    result.AddRange(TimingBuilder_Cycle55Act);
+                else
+                    result.Add(0);
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                // pipeline raster X delay
+                if (timing[(i + 1) % length] == timing[i])
+                    result[i] |= pipelineHoldX;
+
+                // pipeline border checks
+                if (timing[i] == 0x01C)
+                    result[i] |= pipelineChkBrdL1;
+                if (timing[i] == 0x020)
+                    result[i] |= pipelineChkBrdL0;
+                if (timing[i] == 0x150)
+                    result[i] |= pipelineChkBrdR0;
+                if (timing[i] == 0x15C)
+                    result[i] |= pipelineChkBrdR1;
+            }
+
+            return result.ToArray();
+        }
+
         static public int[] TimingBuilder_BA(int[] fetch)
         {
             int baRestart = 7;
-            int bacounter = 0;
             int start = 0;
             int length = fetch.Length;
             int[] result = new int[length];
@@ -151,6 +202,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             int rasterX = start;
             bool delayed = false;
             count >>= 2;
+            delayAmount >>= 2;
 
             for (int i = 0; i < count; i++)
             {
