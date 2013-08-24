@@ -65,7 +65,7 @@ namespace BizHawk.MultiClient
 		public bool EmulatorPaused { get; private set; }
 		public EventWaitHandle MainWait;
 
-		private bool exit;
+		public bool exit;
 		private bool runloop_frameProgress;
 		private DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		private int runloop_fps;

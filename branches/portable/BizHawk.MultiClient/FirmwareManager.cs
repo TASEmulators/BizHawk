@@ -94,11 +94,14 @@ namespace BizHawk.MultiClient
 				var di = todo.Dequeue();
 
 				//we're going to allow recursing into subdirectories, now. its been verified to work OK
-				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-				
-				foreach (var fi in di.GetFiles())
+				if(di.Exists)
 				{
-					reader.Read(fi);
+					foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+				
+					foreach (var fi in di.GetFiles())
+					{
+						reader.Read(fi);
+					}
 				}
 			}
 
