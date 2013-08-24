@@ -5,22 +5,22 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    public abstract partial class Vic
+    sealed public partial class Vic
     {
-        protected const int baResetCounter = 6;
-        protected const int pipelineUpdateVc = 1;
-        protected const int pipelineChkSprChunch = 2;
-        protected const int pipelineUpdateMcBase = 4;
-        protected const int pipelineChkBrdL1 = 8;
-        protected const int pipelineChkBrdL0 = 16;
-        protected const int pipelineChkSprDma = 32;
-        protected const int pipelineChkBrdR0 = 64;
-        protected const int pipelineChkSprExp = 128;
-        protected const int pipelineChkBrdR1 = 256;
-        protected const int pipelineChkSprDisp = 512;
-        protected const int pipelineUpdateRc = 1024;
-        protected const int rasterIrqLine0Cycle = 1;
-        protected const int rasterIrqLineXCycle = 0;
+        public const int baResetCounter = 6;
+        public const int pipelineUpdateVc = 1;
+        public const int pipelineChkSprChunch = 2;
+        public const int pipelineUpdateMcBase = 4;
+        public const int pipelineChkBrdL1 = 8;
+        public const int pipelineChkBrdL0 = 16;
+        public const int pipelineChkSprDma = 32;
+        public const int pipelineChkBrdR0 = 64;
+        public const int pipelineChkSprExp = 128;
+        public const int pipelineChkBrdR1 = 256;
+        public const int pipelineChkSprDisp = 512;
+        public const int pipelineUpdateRc = 1024;
+        public const int rasterIrqLine0Cycle = 1;
+        public const int rasterIrqLineXCycle = 0;
 
         protected int parseaddr;
         protected int parsecycleBAsprite0;
