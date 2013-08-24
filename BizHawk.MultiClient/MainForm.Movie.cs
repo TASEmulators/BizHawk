@@ -84,8 +84,7 @@ namespace BizHawk.MultiClient
 
 		public void PlayMovie()
 		{
-			PlayMovie p = new PlayMovie();
-			p.ShowDialog();
+			new PlayMovie().ShowDialog();
 		}
 
 		public void RecordMovie()
@@ -104,8 +103,7 @@ namespace BizHawk.MultiClient
 				if (result != DialogResult.Yes)
 					return;
 			}
-			RecordMovie r = new RecordMovie();
-			r.ShowDialog();
+			new RecordMovie().ShowDialog();
 		}
 
 		public void PlayMovieFromBeginning()
