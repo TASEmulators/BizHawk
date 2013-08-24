@@ -198,6 +198,10 @@ namespace BizHawk.Emulation
 			this.game = game;
 			this.hsbios = highscoreBIOS;
 			this.bios = GameInfo.MachineType == MachineType.A7800PAL ? pal_bios : ntsc_bios;
+            if (bios == null)
+            {
+                throw new InvalidDataException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
+            }
 			HardReset();
 		}
 

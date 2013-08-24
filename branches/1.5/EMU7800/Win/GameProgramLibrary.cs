@@ -319,8 +319,9 @@ namespace EMU7800.Win
 
             if (_columnPositions[Column.HelpUri] < row.Length)
             {
-                var helpUri = row[_columnPositions[Column.HelpUri]].Trim();
-                if (!helpUri.Length.Equals(0))
+                string helpUri = row[_columnPositions[Column.HelpUri]];
+                if (helpUri != null) helpUri = helpUri.Trim();
+                if (helpUri != null && !helpUri.Length.Equals(0))
                     gp.HelpUri = helpUri;
             }
 
