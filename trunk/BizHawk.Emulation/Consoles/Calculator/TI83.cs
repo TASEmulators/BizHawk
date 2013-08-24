@@ -592,6 +592,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public string SystemId { get { return "TI83"; } }
 
+		public string BoardName { get { return null; } }
+
 		private IList<MemoryDomain> memoryDomains;
 		private const ushort RamSizeMask = 0x7FFF;
 

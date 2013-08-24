@@ -1526,6 +1526,11 @@ namespace BizHawk.MultiClient
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom.RomData)));
 				}
 
+				if (Global.Emulator.BoardName != null)
+				{
+					Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
+				}
+
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)

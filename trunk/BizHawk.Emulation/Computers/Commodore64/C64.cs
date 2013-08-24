@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public GameInfo game;
 		public string SystemId { get { return "C64"; } }
 
+		public string BoardName { get { return null; } }
+
 		// memory domains
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 		private IList<MemoryDomain> memoryDomains;

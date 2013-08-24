@@ -67,6 +67,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
+		// todo: information about the saveram type would be useful here.
+		public string BoardName { get { return null; } }
+
 		public void ResetFrameCounter()
 		{
 			Frame = 0;

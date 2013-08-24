@@ -374,6 +374,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public string SystemId { get { return "SMS"; } }
 
+		public string BoardName { get { return null; } }
+
 		string region = "Export";
 		public string Region
 		{

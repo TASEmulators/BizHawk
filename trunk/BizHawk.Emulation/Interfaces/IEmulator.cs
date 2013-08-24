@@ -38,6 +38,11 @@ namespace BizHawk
 		bool DeterministicEmulation { get; }
 
 		/// <summary>
+		/// identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
+		/// </summary>
+		string BoardName { get; }
+
+		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
 		/// </summary>
 		byte[] ReadSaveRam();

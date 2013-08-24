@@ -9,6 +9,8 @@ namespace BizHawk
 		public string SystemId { get { return "NULL"; } }
 		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
+		public string BoardName { get { return null; } }
+
 		private int[] frameBuffer = new int[256 * 192];
 		private Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }

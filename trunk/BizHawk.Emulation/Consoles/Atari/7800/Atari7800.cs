@@ -22,6 +22,8 @@ namespace BizHawk.Emulation
 		public string SystemId { get { return "A78"; } } // TODO 2600?
 		public GameInfo game;
 
+		public string BoardName { get { return null; } }
+
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;

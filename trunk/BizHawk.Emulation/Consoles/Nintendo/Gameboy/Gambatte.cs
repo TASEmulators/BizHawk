@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			comm.NominalHeight = 144;
 
 			ThrowExceptionForBadRom(romdata);
+			BoardName = MapperName(romdata);
 
 			GambatteState = LibGambatte.gambatte_create();
 
@@ -200,6 +201,34 @@ namespace BizHawk.Emulation.Consoles.GB
 			FrameAdvancePost();
 		}
 
+		static string MapperName(byte[] romdata)
+		{
+			switch (romdata[0x147])
+			{
+				case 0x00: return "Plain ROM"; // = PLAIN; break;
+				case 0x01: return "MBC1 ROM"; // = MBC1; break;
+				case 0x02: return "MBC1 ROM+RAM"; // = MBC1; break;
+				case 0x03: return "MBC1 ROM+RAM+BATTERY"; // = MBC1; break;
+				case 0x05: return "MBC2 ROM"; // = MBC2; break;
+				case 0x06: return "MBC2 ROM+BATTERY"; // = MBC2; break;
+				case 0x08: return "Plain ROM+RAM"; // = PLAIN; break;
+				case 0x09: return "Plain ROM+RAM+BATTERY"; // = PLAIN; break;
+				case 0x0F: return "MBC3 ROM+TIMER+BATTERY"; // = MBC3; break;
+				case 0x10: return "MBC3 ROM+TIMER+RAM+BATTERY"; // = MBC3; break;
+				case 0x11: return "MBC3 ROM"; // = MBC3; break;
+				case 0x12: return "MBC3 ROM+RAM"; // = MBC3; break;
+				case 0x13: return "MBC3 ROM+RAM+BATTERY"; // = MBC3; break;
+				case 0x19: return "MBC5 ROM"; // = MBC5; break;
+				case 0x1A: return "MBC5 ROM+RAM"; // = MBC5; break;
+				case 0x1B: return "MBC5 ROM+RAM+BATTERY"; // = MBC5; break;
+				case 0x1C: return "MBC5 ROM+RUMBLE"; // = MBC5; break;
+				case 0x1D: return "MBC5 ROM+RUMBLE+RAM"; // = MBC5; break;
+				case 0x1E: return "MBC5 ROM+RUMBLE+RAM+BATTERY"; // = MBC5; break;
+				case 0xFF: return "HuC1 ROM+RAM+BATTERY"; // = HUC1; break;
+				default: return "UNKNOWN";
+			}
+		}
+
 		/// <summary>
 		/// throw exception with intelligible message on some kinds of bad rom
 		/// </summary>
@@ -263,6 +292,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			get { return "GB"; }
 		}
+
+		public string BoardName { get; private set; }
 
 		public bool DeterministicEmulation { get { return true; } }
 
