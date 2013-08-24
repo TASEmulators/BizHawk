@@ -27,6 +27,7 @@ namespace BizHawk.MultiClient
 		public const string SHA1 = "SHA1";
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
+		public const string BOARDNAME = "BoardName";
 
 		//Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";

@@ -76,6 +76,11 @@ namespace BizHawk.MultiClient
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 				}
 
+				if (Global.Emulator.BoardName != null)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, Global.Emulator.BoardName);
+				}
+
 				if (Global.Emulator is Gameboy)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
