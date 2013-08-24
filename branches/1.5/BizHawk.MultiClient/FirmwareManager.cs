@@ -144,7 +144,12 @@ namespace BizHawk.MultiClient
 				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out userSpec))
 				{
 					//flag it as user specified
-					var ri = ResolutionDictionary[fr];
+					ResolutionInfo ri = null;
+					if (!ResolutionDictionary.TryGetValue(fr, out ri))
+					{
+						ri = new ResolutionInfo();
+						ResolutionDictionary[fr] = ri;
+					}
 					ri.UserSpecified = true;
 					ri.KnownFirmwareFile = null;
 					ri.FilePath = userSpec;
