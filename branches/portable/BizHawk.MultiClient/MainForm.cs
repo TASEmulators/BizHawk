@@ -1439,8 +1439,8 @@ namespace BizHawk.MultiClient
 								break;
 							case "Coleco":
 								string colbiosPath = this.FirmwareManager.Request("Coleco", "Bios");
-								FileInfo colfile = new FileInfo(colbiosPath);
-								if (!colfile.Exists)
+								FileInfo colfile = colbiosPath != null ? new FileInfo(colbiosPath) : null;
+								if (colfile == null || !colfile.Exists)
 								{
 									RunLoopBlocked = true;
 									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1472,15 +1472,15 @@ namespace BizHawk.MultiClient
 								string pal_biospath = this.FirmwareManager.Request("A78", "Bios_PAL");
 								string hsbiospath = this.FirmwareManager.Request("A78", "Bios_HSC");
 
-								FileInfo ntscfile = new FileInfo(ntsc_biospath);
-								FileInfo palfile = new FileInfo(pal_biospath);
-								FileInfo hsfile = new FileInfo(hsbiospath);
+								FileInfo ntscfile = ntsc_biospath != null ? new FileInfo(ntsc_biospath) : null;
+								FileInfo palfile = pal_biospath != null ? new FileInfo(pal_biospath) : null;
+								FileInfo hsfile = hsbiospath != null ? new FileInfo(hsbiospath) : null;
 
 								byte[] NTSC_BIOS7800 = null;
 								byte[] PAL_BIOS7800 = null;
 								byte[] HighScoreBIOS = null;
                                 RunLoopBlocked = true;
-								if (!ntscfile.Exists)
+								if (ntscfile == null || !ntscfile.Exists)
 								{
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 									//throw new Exception();
@@ -1490,7 +1490,7 @@ namespace BizHawk.MultiClient
 									NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								}
 
-								if (!palfile.Exists)
+								if (palfile == null || !palfile.Exists)
 								{
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 									//throw new Exception();
@@ -1500,7 +1500,7 @@ namespace BizHawk.MultiClient
 									PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								}
 
-								if (!hsfile.Exists)
+								if (hsfile == null || !hsfile.Exists)
 								{
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 									//throw new Exception();
@@ -1512,8 +1512,16 @@ namespace BizHawk.MultiClient
                                 RunLoopBlocked = false;
 
 								string gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								var a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
-								nextEmulator = a78;
+                                try
+                                {
+                                    var a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
+                                    nextEmulator = a78;
+                                }
+                                catch (InvalidDataException ex)
+                                {
+                                    MessageBox.Show(ex.Message, "Region specific bios missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return false;
+                                }
 								break;
 							case "C64":
 								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
