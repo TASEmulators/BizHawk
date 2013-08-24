@@ -51,8 +51,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = new MOS6581(44100, initRegion);
 			switch (initRegion)
 			{
-				case Region.NTSC: vic = new MOS6567(); break;
-				case Region.PAL: vic = new MOS6569(); break;
+				case Region.NTSC: vic = MOS6567.Create(); break;
+				case Region.PAL: vic = MOS6569.Create(); break;
 			}
 			userPort = new UserPort();
 		}

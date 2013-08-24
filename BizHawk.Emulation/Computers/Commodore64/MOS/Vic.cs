@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Vic
+	sealed public partial class Vic
 	{
         public Func<int, byte> ReadColorRam;
         public Func<int, byte> ReadMemory;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    public abstract partial class Vic
+    sealed public partial class Vic
     {
 
         public byte Peek(int addr)

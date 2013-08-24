@@ -163,6 +163,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.Render.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Sprite.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.State.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.TimingBuilder.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\Sync.cs" />
     <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />

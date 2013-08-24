@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Vic : IVideoProvider
+    sealed public partial class Vic : IVideoProvider
 	{
 		protected int[] buf;
 		protected int bufHeight;
