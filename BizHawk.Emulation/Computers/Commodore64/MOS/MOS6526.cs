@@ -110,6 +110,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void ExecutePhase1()
 		{
 			// unsure if the timer actually operates in ph1
+            pinIRQ = !(
+                (intTimer[0] && enableIntTimer[0]) ||
+                (intTimer[1] && enableIntTimer[1]) ||
+                (intAlarm && enableIntAlarm) ||
+                (intSP && enableIntSP) ||
+                (intFlag && enableIntFlag)
+                );
         }
 
 		public void ExecutePhase2()
@@ -151,14 +158,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cntPos = false;
 				underflow[0] = false;
 				underflow[1] = false;
-
-                pinIRQ = !(
-                    (intTimer[0] && enableIntTimer[0]) ||
-                    (intTimer[1] && enableIntTimer[1]) ||
-                    (intAlarm && enableIntAlarm) ||
-                    (intSP && enableIntSP) ||
-                    (intFlag && enableIntFlag)
-                    );
 			}
 		}
 

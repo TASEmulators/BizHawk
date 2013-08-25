@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 }
                 else if (parsefetchType == 0x200)
                 {
-                    // fetch C
+                    delayC = xScroll;
                     if (!idle)
                     {
                         if (badline)
@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         dataC = 0;
                         bufferC[vmli] = dataC;
                     }
+                    srC <<= 12;
+                    srC |= dataC;
                 }
                 else if (parsefetchType == 0x300)
                 {
@@ -95,6 +97,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         parseaddr &= 0x39FF;
                     dataG = ReadMemory(parseaddr);
                     sr |= dataG << (7 - xScroll);
+                    srSync |= 0xAA << (7 - xScroll);
                     if (!idle)
                     {
                         bufferG[vmli] = dataG;
@@ -107,7 +110,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     // fetch I
                     parseaddr = (extraColorMode ? 0x39FF : 0x3FFF);
                     dataG = ReadMemory(parseaddr);
-                    dataC = 0;
+                    //dataC = 0;
                 }
                 else if (parsefetchType == 0x500)
                 {
