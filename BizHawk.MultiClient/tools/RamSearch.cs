@@ -2289,7 +2289,7 @@ namespace BizHawk.MultiClient
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 				Global.MainForm.RamWatch1.UpdateValues();
-				Global.MainForm.Cheats1.UpdateValues();
+				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
 
@@ -2369,7 +2369,7 @@ namespace BizHawk.MultiClient
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 				Global.MainForm.RamWatch1.UpdateValues();
-				Global.MainForm.Cheats1.UpdateValues();
+				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
 
@@ -2723,7 +2723,7 @@ namespace BizHawk.MultiClient
 
 			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1286,7 +1286,7 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void UnfreezeAddress()
@@ -1317,7 +1317,7 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1730,7 +1730,7 @@ namespace BizHawk.MultiClient
 			
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
