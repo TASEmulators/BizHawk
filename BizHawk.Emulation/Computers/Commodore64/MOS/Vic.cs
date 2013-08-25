@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
-			{
+            {
                 debugScreen = false;
 
                 this.hblankStart = hblankStart;
@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				totalLines = newLines;
 				pipeline = newPipeline;
 				cyclesPerSec = newCyclesPerSec;
-				pixelBufferDelay = 12;
-				pixelBackgroundBufferDelay = 4;
+				//pixelBufferDelay = 4;
+				//pixelBackgroundBufferDelay = 12;
 
                 bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
                 bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
@@ -47,9 +47,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				bufferC = new int[40];
 				bufferG = new int[40];
-				pixelBuffer = new int[pixelBufferDelay];
-				pixelDataBuffer = new int[pixelBufferDelay];
-				pixelBackgroundBuffer = new int[pixelBackgroundBufferDelay];
+				//pixelBuffer = new int[pixelBufferDelay];
+				//pixelDataBuffer = new int[pixelBufferDelay];
+				//pixelBackgroundBuffer = new int[pixelBackgroundBufferDelay];
 			}
 		}
 
@@ -71,7 +71,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void ExecutePhase1()
         {
-
+            //xScroll = 1;
+            bitmapColumn = 8 - xScroll;
             {
                 // raster IRQ compare
                 if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
@@ -88,9 +89,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                 // badline compare
                 if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
+                {
                     badline = true;
+                }
                 else
+                {
                     badline = false;
+                }
 
                 // go into display state on a badline
                 if (badline)
@@ -106,15 +111,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 if (!sprites[6].yExpand) sprites[6].yCrunch = true;
                 if (!sprites[7].yExpand) sprites[7].yCrunch = true;
 
-                // set up display index for rendering
-                if (cycle == 15)
-                    displayIndex = 0;
-                else if (cycle > 15 && cycle <= 55)
-                    displayIndex++;
-
                 ParseCycle();
 
-                xOffset = 0;
+                //xOffset = 0;
                 Render();
 
                 // if the BA counter is nonzero, allow CPU bus access
@@ -197,7 +196,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             irqShift <<= 1;
             irqShift |= (irqTemp ? 0x1 : 0x0);
-            pinIRQ = (irqShift & 0x2) != 0;
+            pinIRQ = (irqShift & 0x1) != 0;
 		}
 
         private void UpdateVideoMode()

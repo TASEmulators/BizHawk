@@ -6,12 +6,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	static public class MOS6569
 	{
         static int cycles = 63;
-        static int lines = 312;
-        static int vblankstart = 0x12C;
-        static int vblankend = 0x00F;
-        static int hblankstart = 0x17C;
-        static int hblankend = 0x1E0;
         static int scanwidth = cycles * 8;
+        static int lines = 312;
+        static int vblankstart = 0x12C % lines;
+        static int vblankend = 0x00F % lines;
+        static int hblankoffset = 20;
+        static int hblankstart = (0x17C + hblankoffset) % scanwidth;
+        static int hblankend = (0x1E0 + hblankoffset) % scanwidth;
 
         static int[] timing = Vic.TimingBuilder_XRaster(0x194, 0x1F8, scanwidth, -1, -1);
         static int[] fetch = Vic.TimingBuilder_Fetch(timing, 0x164);

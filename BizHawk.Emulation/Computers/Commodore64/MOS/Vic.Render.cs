@@ -10,16 +10,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         int borderSR;
         int ecmPixel;
         int pixel;
-        int[] pixelBackgroundBuffer;
-        int pixelBackgroundBufferDelay;
-        int pixelBackgroundBufferIndex;
-        int[] pixelBuffer;
-        int pixelBufferDelay;
-        int pixelBufferIndex;
         int pixelData;
         int pixelOwner;
         int sprData;
         int sprPixel;
+        int srOutput = 0;
+        int srOutputMC = 0;
+        int hblankSR = 0;
         VicVideoMode videoMode;
 
         enum VicVideoMode : int
@@ -44,10 +41,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 if (rasterX == hblankStart)
                     hblank = true;
             }
-            renderEnabled = !hblank && !vblank; //bufRect.Contains(bufPoint);
 
+            renderEnabled = (!hblank && !vblank);
             for (int i = 0; i < 4; i++)
             {
+                // fill shift register
+                if (bitmapColumn >= 8)
+                {
+                    displayC >>= 12;
+                    displayC &= 0xFFF;
+                    if (!idle)
+                    {
+                        displayC |= (dataC << 12);
+                    }
+                    bitmapColumn &= 7;
+                }
+
                 if (borderCheckLEnable && (rasterX == borderL))
                 {
                     if (rasterLine == borderB)
@@ -58,32 +67,80 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         borderOnMain = false;
                 }
 
-                if (borderCheckREnable && (rasterX == borderR))
-                    borderOnMain = true;
-
-                // recall pixel from buffer
-                pixel = pixelBuffer[pixelBufferIndex];
-
-                // border doesn't work with the background buffer
-                borderSR <<= 1;
-                if (borderOnMain || borderOnVertical)
-                    borderSR |= 1;
-                if ((borderSR & 0x100) != 0)
-                    pixel = borderColor;
-
-                // plot pixel if within viewing area
-                if (renderEnabled)
+                srOutput = sr & srMask2;
+                if ((bitmapColumn & 1) == 0)
+                    srOutputMC = sr & srMask3;
+                switch (videoMode)
                 {
+                    case VicVideoMode.Mode000:
+                        pixelData = srOutput;
+                        pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+                        break;
+                    case VicVideoMode.Mode001:
+                        if ((displayC & 0x800) != 0)
+                        {
+                            // multicolor 001
+                            pixelData = srOutputMC;
 
-                    buf[bufOffset] = palette[pixel];
-                    bufOffset++;
-                    if (bufOffset == bufLength)
-                        bufOffset = 0;
+                            if (pixelData == srMask0)
+                                pixel = backgroundColor0;
+                            else if (pixelData == srMask1)
+                                pixel = backgroundColor1;
+                            else if (pixelData == srMask2)
+                                pixel = backgroundColor2;
+                            else
+                                pixel = (displayC & 0x700) >> 8;
+                        }
+                        else
+                        {
+                            // standard 001
+                            pixelData = srOutput;
+                            pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+                        }
+                        break;
+                    case VicVideoMode.Mode010:
+                        pixelData = srOutput;
+                        pixel = (pixelData != 0) ? (displayC >> 4) : (displayC);
+                        break;
+                    case VicVideoMode.Mode011:
+                        pixelData = srOutputMC;
+
+                        if (pixelData == srMask0)
+                            pixel = backgroundColor0;
+                        else if (pixelData == srMask1)
+                            pixel = (displayC >> 4);
+                        else if (pixelData == srMask2)
+                            pixel = displayC;
+                        else
+                            pixel = (displayC >> 8);
+                        break;
+                    case VicVideoMode.Mode100:
+                        pixelData = srOutput;
+                        if (pixelData != 0)
+                        {
+                            pixel = displayC >> 8;
+                        }
+                        else
+                        {
+                            ecmPixel = (displayC) & 0xC0;
+                            if (ecmPixel == 0x00)
+                                pixel = backgroundColor0;
+                            else if (ecmPixel == 0x40)
+                                pixel = backgroundColor1;
+                            else if (ecmPixel == 0x80)
+                                pixel = backgroundColor2;
+                            else
+                                pixel = backgroundColor3;
+                        }
+                        break;
+                    default:
+                        pixelData = 0;
+                        pixel = 0;
+                        break;
                 }
-
-                // put the pixel from the background buffer into the main buffer
-                pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
-
+                pixel &= 0xF;
+                sr <<= 1;
+                
                 // render sprite
                 pixelOwner = 8;
                 for (int j = 0; j < 8; j++)
@@ -125,7 +182,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             // sprite-sprite collision
                             if (pixelOwner >= 8)
                             {
-                                if (!spr.priority || (pixelDataBuffer[pixelBackgroundBufferIndex] < 0x80))
+                                if (!spr.priority || ((sr & srMask) == 0))
                                     pixel = sprPixel;
                                 pixelOwner = j;
                             }
@@ -139,7 +196,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             }
 
                             // sprite-data collision
-                            if (!borderOnVertical && (pixelDataBuffer[pixelBackgroundBufferIndex] == 0x80))
+                            if (!borderOnVertical && ((sr & srMask) != 0))
                             {
                                 spr.collideData = true;
                             }
@@ -149,113 +206,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     }
                 }
 
-                // store pixel in buffer
-                pixelBuffer[pixelBufferIndex] = pixel;
+                if (borderCheckREnable && (rasterX == borderR))
+                    borderOnMain = true;
 
-                // fill shift register
-                if (xOffset == xScroll)
+                // border doesn't work with the background buffer
+                if (borderOnMain || borderOnVertical)
+                    pixel = borderColor;
+
+                // plot pixel if within viewing area
+                if (renderEnabled)
                 {
-                    if (displayIndex < 40 && !idle)
-                    {
-                        displayC = bufferC[displayIndex];
-                        sr |= bufferG[displayIndex];
-                    }
-                    bitmapColumn = 0;
+                    buf[bufOffset] = palette[pixBuffer[pixBufferIndex]];
+                    bufOffset++;
+                    if (bufOffset == bufLength)
+                        bufOffset = 0;
                 }
+                pixBuffer[pixBufferIndex] = pixel;
+                pixBufferIndex++;
 
-                switch (videoMode)
-                {
-                    case VicVideoMode.Mode000:
-                        pixelData = (sr & 0x80);
-                        sr <<= 1;
-                        pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
-                        break;
-                    case VicVideoMode.Mode001:
-                        if ((displayC & 0x800) != 0)
-                        {
-                            // multicolor 001
-                            pixelData = (sr & 0xC0);
-                            if ((bitmapColumn & 1) != 0)
-                                sr <<= 2;
-
-                            if (pixelData == 0x00)
-                                pixel = backgroundColor0;
-                            else if (pixelData == 0x40)
-                                pixel = backgroundColor1;
-                            else if (pixelData == 0x80)
-                                pixel = backgroundColor2;
-                            else
-                                pixel = (displayC & 0x700) >> 8;
-                        }
-                        else
-                        {
-                            // standard 001
-                            pixelData = (sr & 0x80);
-                            sr <<= 1;
-                            pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
-                        }
-                        break;
-                    case VicVideoMode.Mode010:
-                        pixelData = (sr & 0x80);
-                        sr <<= 1;
-                        pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
-                        break;
-                    case VicVideoMode.Mode011:
-                        pixelData = (sr & 0xC0);
-                        if ((bitmapColumn & 1) != 0)
-                            sr <<= 2;
-
-                        if (pixelData == 0x00)
-                            pixel = backgroundColor0;
-                        else if (pixelData == 0x40)
-                            pixel = (displayC >> 4) & 0xF;
-                        else if (pixelData == 0x80)
-                            pixel = displayC & 0xF;
-                        else
-                            pixel = (displayC >> 8) & 0xF;
-                        break;
-                    case VicVideoMode.Mode100:
-                        pixelData = (sr & 0x80);
-                        sr <<= 1;
-                        if (pixelData != 0)
-                        {
-                            pixel = displayC >> 8;
-                        }
-                        else
-                        {
-                            ecmPixel = (displayC) & 0xC0;
-                            if (ecmPixel == 0x00)
-                                pixel = backgroundColor0;
-                            else if (ecmPixel == 0x40)
-                                pixel = backgroundColor1;
-                            else if (ecmPixel == 0x80)
-                                pixel = backgroundColor2;
-                            else
-                                pixel = backgroundColor3;
-                        }
-                        break;
-                    default:
-                        pixelData = 0;
-                        pixel = 0;
-                        break;
-                }
-
-                // put the rendered pixel into the background buffer
-                pixelDataBuffer[pixelBackgroundBufferIndex] = pixelData;
-                pixelBackgroundBuffer[pixelBackgroundBufferIndex] = pixel;
-                pixelBackgroundBufferIndex++;
-                if (pixelBackgroundBufferIndex == pixelBackgroundBufferDelay)
-                    pixelBackgroundBufferIndex = 0;
-
-                // advance pixel buffer
-                pixelBufferIndex++;
-                if (pixelBufferIndex == pixelBufferDelay)
-                    pixelBufferIndex = 0;
-
-                rasterX++;
-                xOffset++;
+                if (!rasterXHold)
+                    rasterX++;
                 bitmapColumn++;
             }
+
+            if (pixBufferIndex >= pixBufferSize)
+                pixBufferIndex = 0;
         }
     }
 }

@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		int bufLength;
 		int bufOffset;
 		int bufWidth;
+        int pixBufferSize = 12;
+        int[] pixBuffer;
+        int pixBufferIndex;
 
 		// palette
 		int[] palette =

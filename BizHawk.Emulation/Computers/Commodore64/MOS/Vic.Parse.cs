@@ -94,6 +94,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     if (extraColorMode)
                         parseaddr &= 0x39FF;
                     dataG = ReadMemory(parseaddr);
+                    sr |= dataG << (7 - xScroll);
                     if (!idle)
                     {
                         bufferG[vmli] = dataG;
