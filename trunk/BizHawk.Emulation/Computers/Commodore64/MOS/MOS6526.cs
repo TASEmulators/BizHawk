@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						// underflow?
 						if (u)
 						{
-                            //timerDelay[index] = 2;
+                            timerDelay[index] = 1;
                             t = timerLatch[index];
 							if (timerRunMode[index] == RunMode.Oneshot)
 								timerOn[index] = false;
