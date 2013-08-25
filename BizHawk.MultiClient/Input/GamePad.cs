@@ -21,10 +21,12 @@ namespace BizHawk.MultiClient
 
 			foreach (DeviceInstance device in dinput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly))
 			{
-                if (device.ProductName.Contains("XBOX 360"))
-                    continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput.
-				
-                var joystick = new Joystick(dinput, device.InstanceGuid);
+				Console.WriteLine("joydevice: {0} `{1}`", device.InstanceGuid, device.ProductName);
+
+				if (device.ProductName.Contains("XBOX 360"))
+					continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput (there are limitations in some trigger axes when xbox pads go over xinput)
+
+				var joystick = new Joystick(dinput, device.InstanceGuid);
 				joystick.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 				foreach (DeviceObjectInstance deviceObject in joystick.GetObjects())
 				{
