@@ -324,8 +324,11 @@
       <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.Movie.cs">
-      <SubType>Form</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainForm.Rewind.cs">
+		<DependentUpon>MainForm.cs</DependentUpon>
+	</Compile>
     <Compile Include="movie\EditCommentsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -872,9 +875,6 @@
     </Compile>
     <Compile Include="RecentFiles.cs" />
     <Compile Include="RenderPanel.cs" />
-    <Compile Include="Rewind.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
