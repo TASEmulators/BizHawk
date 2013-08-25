@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Zelda 2
 	//Castlevania 2
 
-	public class MMC1
+	public sealed class MMC1
 	{
 		NES.NESBoardBase board;
 		public MMC1_SerialController scnt = new MMC1_SerialController();

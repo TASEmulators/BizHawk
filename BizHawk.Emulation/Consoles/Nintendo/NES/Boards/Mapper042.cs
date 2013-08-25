@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// pirate FDS conversion
 	// this is probably two different boards, but they seem to work well enough the same
-	public class Mapper042 : NES.NESBoardBase
+	public sealed class Mapper042 : NES.NESBoardBase
 	{
 		int prg = 0;
 		int chr = 0;

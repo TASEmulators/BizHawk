@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class MLT_ACTION52 : NES.NESBoardBase
+	public sealed class MLT_ACTION52 : NES.NESBoardBase
 	{
 		/*
 		 Here are Disch's original notes:

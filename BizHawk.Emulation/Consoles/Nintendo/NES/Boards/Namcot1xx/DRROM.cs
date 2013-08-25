@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//this board contains a Namcot 109 and some extra ram for nametables
-	public class DRROM : Namcot108Board_Base
+	public sealed class DRROM : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

@@ -3,7 +3,7 @@
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
 	public class Mapper044 : MMC3Board_Base
 	{
-		public override bool Configure(NES.EDetectionOrigin origin)
+		public sealed override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)

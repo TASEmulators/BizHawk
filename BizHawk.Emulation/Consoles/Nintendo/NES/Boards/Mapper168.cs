@@ -6,7 +6,7 @@
 	// defaults to off, the control regs are write only, and cannot be reenabled.  so...
 
 	// todo: special controller, and IRQ is possibly wrong
-	public class Mapper168 : NES.NESBoardBase
+	public sealed class Mapper168 : NES.NESBoardBase
 	{
 		int prg = 0;
 		int chr = 0;

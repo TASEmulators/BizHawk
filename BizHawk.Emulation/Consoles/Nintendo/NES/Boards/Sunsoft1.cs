@@ -3,7 +3,7 @@
 	//AKA mapper 184
 	//Sunsoft-1 chips, EXCEPT for fantasy zone.
 	//this is confusing. see docs/sunsoft.txt
-	class Sunsoft1 : NES.NESBoardBase
+	public sealed class Sunsoft1 : NES.NESBoardBase
 	{
 		int chr_mask;
 		int left_piece = 0;

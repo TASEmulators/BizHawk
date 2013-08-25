@@ -2,7 +2,7 @@
 {
 	// one of the VS unisystem mappers
 	// a lot of dumps are labelled incorrectly
-	public class Mapper099 : NES.NESBoardBase
+	public sealed class Mapper099 : NES.NESBoardBase
 	{
 		int chr;
 		public override bool Configure(NES.EDetectionOrigin origin)

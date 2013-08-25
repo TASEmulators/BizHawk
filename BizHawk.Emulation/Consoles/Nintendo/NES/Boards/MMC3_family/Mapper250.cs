@@ -3,7 +3,7 @@
 	// Time Diver Avenger (Unl)
 	// MMC3 with slightly different write scheme
 	// presumably the board contains an MMC3 clone with some unique edge case behavior; unknown
-	public class Mapper250 : MMC3Board_Base
+	public sealed class Mapper250 : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

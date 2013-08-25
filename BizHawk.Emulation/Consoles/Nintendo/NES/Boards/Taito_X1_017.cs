@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Taito_X1_017 : NES.NESBoardBase 
+	public sealed class Taito_X1_017 : NES.NESBoardBase 
 	{
 		/*
 		ines Mapper 82

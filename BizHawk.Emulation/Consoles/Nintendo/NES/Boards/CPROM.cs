@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
-	public class CPROM : NES.NESBoardBase
+	public sealed class CPROM : NES.NESBoardBase
 	{
 		//generally mapper 13
 

@@ -19,7 +19,7 @@ Other chips used: Sunsoft-1
 	 * Bio Senshi Dan - Increaser Tono Tatakai [allegedly; but it does not work]
 	 */
 
-	class Jaleco_JF_11_14 : NES.NESBoardBase
+	public sealed class Jaleco_JF_11_14 : NES.NESBoardBase
 	{
 		int chr, prg;
 

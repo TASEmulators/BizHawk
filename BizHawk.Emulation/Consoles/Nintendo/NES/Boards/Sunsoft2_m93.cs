@@ -3,7 +3,7 @@
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4
 	//this is confusing. see docs/sunsoft.txt
-	class Sunsoft2_Mapper93 : NES.NESBoardBase
+	public sealed class Sunsoft2_Mapper93 : NES.NESBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;

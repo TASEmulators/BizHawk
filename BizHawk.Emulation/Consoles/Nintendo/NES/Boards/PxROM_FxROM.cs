@@ -2,7 +2,7 @@
 {
 	//AKA MMC2 Mike Tyson's Punch-Out!!
 	//AKA MMC4 (similar enough to combine in one fle)
-	class PxROM_FxROM : NES.NESBoardBase
+	public sealed class PxROM_FxROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_4k;

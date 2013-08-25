@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper078 : NES.NESBoardBase 
+	public sealed class Mapper078 : NES.NESBoardBase 
 	{
 		bool holydiver;
 		int chr;

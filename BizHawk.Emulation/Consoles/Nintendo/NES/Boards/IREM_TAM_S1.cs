@@ -3,7 +3,7 @@
 	//iNES Mapper 97
 	//Kaiketsu Yanchamaru (Kid Niki 1)
 
-	class IREM_TAM_S1 : NES.NESBoardBase
+	public sealed class IREM_TAM_S1 : NES.NESBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;

@@ -9,7 +9,7 @@
 
 	//also mapper 048 (same as 33 but with an extra chip)
 
-	class TAITO_TC0190FMC : NES.NESBoardBase
+	public sealed class TAITO_TC0190FMC : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

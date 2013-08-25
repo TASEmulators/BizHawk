@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper240 : NES.NESBoardBase
+	public sealed class Mapper240 : NES.NESBoardBase
 	{
 		//MHROM (mapper60) -like but wider regs (4 prg, 4 chr instead of 2 prg, 2 chr) and on EXP bus
 

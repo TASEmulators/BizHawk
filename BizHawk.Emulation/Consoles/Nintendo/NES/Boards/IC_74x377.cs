@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Crystal Mines
 	//Metal Fighter
 
-	public class IC_74x377 : NES.NESBoardBase
+	public sealed class IC_74x377 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;

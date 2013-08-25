@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper50 : NES.NESBoardBase
+	public sealed class Mapper50 : NES.NESBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_050
 

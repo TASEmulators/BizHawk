@@ -325,10 +325,12 @@
     </Compile>
     <Compile Include="MainForm.Movie.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Rewind.cs">
-		<DependentUpon>MainForm.cs</DependentUpon>
-	</Compile>
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="movie\EditCommentsForm.cs">
       <SubType>Form</SubType>
     </Compile>

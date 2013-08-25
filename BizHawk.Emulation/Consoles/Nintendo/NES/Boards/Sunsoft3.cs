@@ -2,7 +2,7 @@
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt
-	class Sunsoft3 : NES.NESBoardBase
+	public sealed class Sunsoft3 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_2k;
