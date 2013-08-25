@@ -3005,14 +3005,14 @@ namespace BizHawk.MultiClient
 				{
 					Cheat c = new Cheat
 						{
-							name = code,
-							domain = Global.Emulator.MemoryDomains[1],
-							address = gg.Address,
-							value = (byte) gg.Value
+							Name = code,
+							Domain = Global.Emulator.MemoryDomains[1],
+							Address = gg.Address,
+							Value = (byte) gg.Value
 						};
 					if (gg.Compare != -1)
 					{
-						c.compare = (byte)gg.Compare;
+						c.Compare = (byte)gg.Compare;
 					}
 					c.Enable();
 					Global.MainForm.Cheats1.AddCheat(c);
@@ -3030,16 +3030,16 @@ namespace BizHawk.MultiClient
 				{
 					Cheat c = new Cheat
 						{
-							name = code,
-							domain = Global.Emulator.MemoryDomains[1],
-							address = gg.Address,
-							value = (byte) gg.Value
+							Name = code,
+							Domain = Global.Emulator.MemoryDomains[1],
+							Address = gg.Address,
+							Value = (byte) gg.Value
 						};
 					if (gg.Compare != -1)
 					{
-						c.compare = (byte)gg.Compare;
+						c.Compare = (byte)gg.Compare;
 					}
-					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
+					Global.CheatList.Remove(Global.Emulator.MemoryDomains[1], c.Address);
 				}
 			}
 		}

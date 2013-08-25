@@ -334,7 +334,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				Cheat c = new Cheat { name = GameGenieCode.Text };
+				Cheat c = new Cheat { Name = GameGenieCode.Text };
 
 				if (String.IsNullOrWhiteSpace(AddressBox.Text))
 				{
@@ -344,26 +344,26 @@ namespace BizHawk.MultiClient
 				{
 					return;
 				}
-				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-				c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+				c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				c.Value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
 
 				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
 				{
 					try
 					{
-						c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+						c.Compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					}
 					catch
 					{
-						c.compare = null;
+						c.Compare = null;
 					}
 				}
 				else
 				{
-					c.compare = null;
+					c.Compare = null;
 				}
 
-				c.domain = Global.Emulator.MemoryDomains[1]; //System Bus only
+				c.Domain = Global.Emulator.MemoryDomains[1]; //System Bus only
 				c.Enable();
 
 				Global.MainForm.Cheats1.AddCheat(c);

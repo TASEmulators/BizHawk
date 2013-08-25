@@ -129,6 +129,10 @@ namespace BizHawk.MultiClient
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
+
+		//TODO: eventually start doing this, rather than tools attempting to talk to tools
+		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
+
 #if WINDOWS
 		private LuaConsole _luaconsole = null;
 		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
@@ -1570,8 +1574,8 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}
-				
-                if (_cheats != null) Cheats1.UpdateValues();
+
+				Cheats_UpdateValues();
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
