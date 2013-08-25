@@ -1356,7 +1356,7 @@ namespace BizHawk.MultiClient
 			return dictionary;
 		}
 
-		public bool wrpFBO = false;
+		public bool wrpFBO = true;
 		public int card_id = 0;
 		public bool use_sts1_only = false;
 		public bool optimize_texrect = true;
