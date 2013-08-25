@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Globalization;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
+	#region Legacy watch object
 	/// <summary>
 	/// An object that represent a ram address and related properties
 	/// </summary>
@@ -886,5 +890,111 @@ namespace BizHawk.MultiClient
 		}
 
 		#endregion
+	}
+
+	#endregion
+
+	public abstract class WatchEntryBase
+	{
+		protected MemoryDomain _domain;
+
+		public abstract int Address { get; }
+		public abstract int Value { get; }
+
+		public abstract string ToString();
+		
+		public enum WatchSize { Byte = 1, Word = 2, DWord = 4 };
+		public enum DisplayType { BYTE, BYTEHEX, WORD, WORDHEX, _12_4_FixedPoint, DWORD, DWORDHEX, _20_12_FixedPoint, _32bit_Float };
+
+		public readonly WatchSize Size;
+		public readonly DisplayType Type;
+	}
+	
+	public interface iWatchEntryDetails
+	{
+		int ChangeCount { get; }
+		void ClearChangeCount();
+
+		int Previous { get; }
+		void ResetPrevious();
+	}
+
+	public class ByteWatch : WatchEntryBase
+	{
+		protected int _address;
+
+		public ByteWatch(MemoryDomain domain, int address)
+		{
+			_address = address;
+			_domain = domain;
+		}
+
+		public override int Value
+		{
+			get
+			{
+				return _domain.PeekByte(_address);
+			}
+		}
+
+		public override int Address
+		{
+			get
+			{
+				return _address;
+			}
+		}
+
+		public override string ToString()
+		{
+			switch(Type)
+			{
+				default:
+					return Value.ToString(); //TODO
+			}
+		}
+	}
+
+	public class DetailedByteWatch : ByteWatch, iWatchEntryDetails
+	{
+		private int _previous;
+
+		public DetailedByteWatch(MemoryDomain domain, int address) : base(domain, address) { }
+
+		public int ChangeCount { get; private set; }
+		public void ClearChangeCount() { ChangeCount = 0; }
+		
+		public int Previous { get { return _previous; } }
+		public void ResetPrevious()
+		{
+			_previous = Value;
+		}
+	}
+
+	public class WatchList : IEnumerable
+	{
+		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange };
+
+		private List<WatchEntryBase> _watchList = new List<WatchEntryBase>();
+
+		public WatchList() { }
+
+		public IEnumerator<WatchEntryBase> GetEnumerator()
+		{
+			return _watchList.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public WatchEntryBase this[int index]
+		{
+			get
+			{
+				return _watchList[index];
+			}
+		}
 	}
 }
