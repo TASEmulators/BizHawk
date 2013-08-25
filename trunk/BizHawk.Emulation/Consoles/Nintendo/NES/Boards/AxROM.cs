@@ -3,7 +3,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//generally mapper7
 
 	[NES.INESBoardImplPriority]
-	public class AxROM : NES.NESBoardBase
+	public sealed class AxROM : NES.NESBoardBase
 	{
 		//configuration
 		bool bus_conflict;

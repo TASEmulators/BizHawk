@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper120 : NES.NESBoardBase
+	public sealed class Mapper120 : NES.NESBoardBase
 	{
 		//Used by Tobidase Daisakusen (FDS Conversion).  Undocumented by Disch docs, this implementation is based on FCEUX
 		

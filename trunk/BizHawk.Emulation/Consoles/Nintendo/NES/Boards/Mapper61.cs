@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper61 : NES.NESBoardBase
+	public sealed class Mapper61 : NES.NESBoardBase
 	{
 		/*
 		* Here are Disch's original notes:  

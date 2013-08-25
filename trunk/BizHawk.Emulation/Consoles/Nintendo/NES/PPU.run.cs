@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		partial class PPU
+		sealed partial class PPU
 		{
 			const int kFetchTime = 2;
 

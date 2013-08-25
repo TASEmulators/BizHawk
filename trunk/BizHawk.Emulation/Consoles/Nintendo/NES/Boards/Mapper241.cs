@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper241 : NES.NESBoardBase
+	public sealed class Mapper241 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;

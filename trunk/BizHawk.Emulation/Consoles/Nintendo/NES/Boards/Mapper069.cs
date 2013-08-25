@@ -3,7 +3,7 @@
 	//Mapper 069 is FME7 
 	//or, Sunsoft-5, which is FME7 with additional sound hardware
 
-	class Sunsoft_5 : Sunsoft_FME7
+	public sealed class Sunsoft_5 : Sunsoft_FME7
 	{
 		Sound.Sunsoft5BAudio audio;
 
@@ -50,7 +50,7 @@
 		}
 	}
 
-	class Sunsoft_FME7 : NES.NESBoardBase
+	public class Sunsoft_FME7 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k, wram_bank_mask_8k;

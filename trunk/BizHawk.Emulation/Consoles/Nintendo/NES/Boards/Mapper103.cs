@@ -2,7 +2,7 @@
 {
 	// Doki Doki Panic (FDS port)
 	// "BTL 2708"
-	public class Mapper103 : NES.NESBoardBase
+	public sealed class Mapper103 : NES.NESBoardBase
 	{
 		int prg;
 		bool romenable;

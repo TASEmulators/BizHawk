@@ -5,7 +5,7 @@
 	//After Burner & After Burner 2
 	//Maharaja
 
-	class Sunsoft4 : NES.NESBoardBase
+	public sealed class Sunsoft4 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask, nt_bank_mask;

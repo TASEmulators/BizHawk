@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper205 : MMC3Board_Base
+	public sealed class Mapper205 : MMC3Board_Base
 	{
 		//Mapper 205 info: http://wiki.nesdev.com/w/index.php/INES_Mapper_205
 

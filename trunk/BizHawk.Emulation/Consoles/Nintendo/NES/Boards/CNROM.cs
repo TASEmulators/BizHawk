@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Cybernoid
 
 	[NES.INESBoardImplPriority]
-	public class CNROM : NES.NESBoardBase
+	public sealed class CNROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_mask,chr_mask;

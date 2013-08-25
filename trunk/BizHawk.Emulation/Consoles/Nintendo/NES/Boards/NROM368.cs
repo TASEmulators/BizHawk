@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class NROM368 : NES.NESBoardBase
+	public sealed class NROM368 : NES.NESBoardBase
 	{
 		// not even one actual prototype of this pile of shit exists, and
 		// there are already two incompatible implementations.  pathetic.

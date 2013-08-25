@@ -4,7 +4,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	[NES.INESBoardImplPriority]
-	public class TxROM : MMC3Board_Base
+	public sealed class TxROM : MMC3Board_Base
 	{
 		public override void WritePRG(int addr, byte value)
 		{

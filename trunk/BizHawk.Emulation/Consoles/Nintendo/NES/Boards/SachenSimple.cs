@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	// 32K prgrom blocks and 8k chrrom blocks
 	// behavior gleamed from FCEUX
 	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems; the latter needs PAL
-	public class SachenSimple : NES.NESBoardBase
+	public sealed class SachenSimple : NES.NESBoardBase
 	{
 		Action<byte> ExpWrite = null;
 		Action<byte> PrgWrite = null;

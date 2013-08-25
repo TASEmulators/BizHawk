@@ -3,7 +3,7 @@
 	// tetris (unl)
 	// behaves identically to CNROM for the one board it is on, but supports more (64K prg, 64K chr)
 	// http://kevtris.org/mappers/tengen/800008.html
-	public class TENGEN_800008: NES.NESBoardBase
+	public sealed class TENGEN_800008 : NES.NESBoardBase
 	{
 		int prg_mask;
 		int chr_mask;

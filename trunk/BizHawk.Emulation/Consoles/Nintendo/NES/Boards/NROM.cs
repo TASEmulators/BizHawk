@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	[NES.INESBoardImplPriority]
-	public class NROM : NES.NESBoardBase
+	public sealed class NROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_byte_mask;

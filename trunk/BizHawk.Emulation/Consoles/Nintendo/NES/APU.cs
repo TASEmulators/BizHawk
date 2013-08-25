@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
-	partial class NES
+	sealed partial class NES
 	{
 		public class APU 
 		{

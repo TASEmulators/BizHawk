@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
-	class AVE_NINA_001 : NES.NESBoardBase
+	public sealed class AVE_NINA_001 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_4k;

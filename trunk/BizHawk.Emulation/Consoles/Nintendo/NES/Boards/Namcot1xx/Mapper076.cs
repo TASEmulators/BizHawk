@@ -1,7 +1,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//aka NAMCOT-3446
-	public class Mapper076 : Namcot108Board_Base
+	public sealed class Mapper076 : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

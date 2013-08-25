@@ -9,7 +9,7 @@
 
 	//Near Identical to Jaleco JF 17, except for a slight PRG setup
 
-	class JALECO_JF_19 : NES.NESBoardBase
+	public sealed class JALECO_JF_19 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

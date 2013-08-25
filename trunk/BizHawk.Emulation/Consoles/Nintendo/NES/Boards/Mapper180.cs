@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper180 : NES.NESBoardBase
+	public sealed class Mapper180 : NES.NESBoardBase
 	{
 		//Mapper 180
 		//Crazy Climber (J)

@@ -3,7 +3,7 @@
 	//this class also handles mapper 248
 	//FCEUX uses 115 to implement 248 as well (as of 09-apr-2012 it does it buggily in the case of Bao Qing Tian (As))
 	//VirtuaNES has its own class that implements 248. I think it's wrong (MAME and/or MESS may have switched to using 115 at some point)
-	public class Mapper115 : MMC3Board_Base
+	public sealed class Mapper115 : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

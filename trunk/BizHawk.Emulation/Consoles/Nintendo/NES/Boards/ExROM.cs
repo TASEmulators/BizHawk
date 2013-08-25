@@ -16,7 +16,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	[NES.INESBoardImplPriority]
-	public class ExROM : NES.NESBoardBase
+	public sealed class ExROM : NES.NESBoardBase
 	{
 		//configuraton
 		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)

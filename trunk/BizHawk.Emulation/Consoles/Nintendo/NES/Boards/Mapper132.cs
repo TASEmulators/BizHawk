@@ -2,7 +2,7 @@
 {
 	// Creatom
 	// specs pulled from Nintendulator sources
-	public class Mapper132 : NES.NESBoardBase
+	public sealed class Mapper132 : NES.NESBoardBase
 	{
 		//configuraton
 		int prg_mask, chr_mask;

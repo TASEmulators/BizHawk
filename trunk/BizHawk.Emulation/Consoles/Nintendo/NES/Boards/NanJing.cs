@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class NanJing : NES.NESBoardBase
+	public sealed class NanJing : NES.NESBoardBase
 	{
 		/* 
 		 * China Pirate Stuff.  Not very tested.

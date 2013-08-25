@@ -2,7 +2,7 @@
 {
 	// china
 	// behavior from fceux
-	public class Mapper177 : NES.NESBoardBase
+	public sealed class Mapper177 : NES.NESBoardBase
 	{
 		int prg;
 
