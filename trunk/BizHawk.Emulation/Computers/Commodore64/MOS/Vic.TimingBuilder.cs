@@ -38,9 +38,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 else
                     result.Add(0);
             }
-
-            bool hBlankL = false;
-            bool hBlankR = false;
             for (int i = 0; i < length; i++)
             {
                 // pipeline raster X delay
@@ -48,13 +45,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     result[i] |= pipelineHoldX;
 
                 // pipeline border checks
-                if (timing[i] == 0x01C)
+                if (timing[i] == 0x018)
                     result[i] |= pipelineChkBrdL1;
-                if (timing[i] == 0x020)
+                if (timing[i] == 0x01C)
                     result[i] |= pipelineChkBrdL0;
-                if (timing[i] == 0x150)
+                if (timing[i] == 0x14C)
                     result[i] |= pipelineChkBrdR0;
-                if (timing[i] == 0x15C)
+                if (timing[i] == 0x158)
                     result[i] |= pipelineChkBrdR1;
                 if (timing[i] == (hblankStart & 0xFFD))
                     result[i] |= pipelineHBlankR;

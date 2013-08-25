@@ -7,16 +7,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        int borderSR;
+        int delayC;
         int ecmPixel;
         int pixel;
         int pixelData;
-        int pixelOwner;
+        //int pixelOwner;
+        Sprite pixelOwner;
         int sprData;
         int sprPixel;
-        int srOutput = 0;
-        int srOutputMC = 0;
-        int hblankSR = 0;
+        int srC = 0;
+        int srSync = 0;
         VicVideoMode videoMode;
 
         enum VicVideoMode : int
@@ -45,17 +45,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             renderEnabled = (!hblank && !vblank);
             for (int i = 0; i < 4; i++)
             {
-                // fill shift register
-                if (bitmapColumn >= 8)
-                {
-                    displayC >>= 12;
-                    displayC &= 0xFFF;
-                    if (!idle)
-                    {
-                        displayC |= (dataC << 12);
-                    }
-                    bitmapColumn &= 7;
-                }
+
+                if (delayC > 0)
+                    delayC--;
+                else
+                    displayC = (srC >> 12) & 0xFFF;
+
 
                 if (borderCheckLEnable && (rasterX == borderL))
                 {
@@ -67,20 +62,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         borderOnMain = false;
                 }
 
-                srOutput = sr & srMask2;
-                if ((bitmapColumn & 1) == 0)
-                    srOutputMC = sr & srMask3;
                 switch (videoMode)
                 {
                     case VicVideoMode.Mode000:
-                        pixelData = srOutput;
+                        pixelData = sr & srMask2;
                         pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
                         break;
                     case VicVideoMode.Mode001:
                         if ((displayC & 0x800) != 0)
                         {
                             // multicolor 001
-                            pixelData = srOutputMC;
+                            if ((srSync & srMask2) != 0)
+                                pixelData = sr & srMask3;
 
                             if (pixelData == srMask0)
                                 pixel = backgroundColor0;
@@ -94,16 +87,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         else
                         {
                             // standard 001
-                            pixelData = srOutput;
+                            pixelData = sr & srMask2;
                             pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
                         }
                         break;
                     case VicVideoMode.Mode010:
-                        pixelData = srOutput;
+                        pixelData = sr & srMask2;
                         pixel = (pixelData != 0) ? (displayC >> 4) : (displayC);
                         break;
                     case VicVideoMode.Mode011:
-                        pixelData = srOutputMC;
+                        if ((srSync & srMask2) != 0)
+                            pixelData = sr & srMask3;
 
                         if (pixelData == srMask0)
                             pixel = backgroundColor0;
@@ -115,7 +109,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             pixel = (displayC >> 8);
                         break;
                     case VicVideoMode.Mode100:
-                        pixelData = srOutput;
+                        pixelData = sr & srMask2;
                         if (pixelData != 0)
                         {
                             pixel = displayC >> 8;
@@ -140,15 +134,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 }
                 pixel &= 0xF;
                 sr <<= 1;
+                srSync <<= 1;
                 
                 // render sprite
-                pixelOwner = 8;
-                for (int j = 0; j < 8; j++)
+                //pixelOwner = 8;
+                pixelOwner = null;
+                foreach (Sprite spr in sprites)
                 {
                     sprData = 0;
                     sprPixel = pixel;
-
-                    Sprite spr = sprites[j];
 
                     if (spr.x == rasterX)
                         spr.shiftEnable = true;
@@ -157,14 +151,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     {
                         if (spr.multicolor)
                         {
-                            sprData = (spr.sr & 0xC00000);
+                            sprData = (spr.sr & srSpriteMaskMC);
                             if (spr.multicolorCrunch && spr.xCrunch && !rasterXHold)
                                 spr.sr <<= 2;
                             spr.multicolorCrunch ^= spr.xCrunch;
                         }
                         else
                         {
-                            sprData = (spr.sr & 0x800000);
+                            sprData = (spr.sr & srSpriteMask);
                             if (spr.xCrunch && !rasterXHold)
                                 spr.sr <<= 1;
                         }
@@ -172,31 +166,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                         if (sprData != 0)
                         {
-                            if (sprData == 0x400000)
-                                sprPixel = spriteMulticolor0;
-                            else if (sprData == 0x800000)
-                                sprPixel = spr.color;
-                            else if (sprData == 0xC00000)
-                                sprPixel = spriteMulticolor1;
-
                             // sprite-sprite collision
-                            if (pixelOwner >= 8)
+                            if (pixelOwner == null)
                             {
-                                if (!spr.priority || ((sr & srMask) == 0))
-                                    pixel = sprPixel;
-                                pixelOwner = j;
+                                if (!spr.priority || (pixelData == 0))
+                                {
+                                    if (sprData == srSpriteMask1)
+                                        pixel = spriteMulticolor0;
+                                    else if (sprData == srSpriteMask2)
+                                        pixel = spr.color;
+                                    else if (sprData == srSpriteMask3)
+                                        pixel = spriteMulticolor1;
+                                }
+                                pixelOwner = spr;
                             }
                             else
                             {
                                 if (!borderOnVertical)
                                 {
                                     spr.collideSprite = true;
-                                    sprites[pixelOwner].collideSprite = true;
+                                    pixelOwner.collideSprite = true;
                                 }
                             }
 
                             // sprite-data collision
-                            if (!borderOnVertical && ((sr & srMask) != 0))
+                            if (!borderOnVertical && (pixelData < srMask2))
                             {
                                 spr.collideData = true;
                             }

@@ -80,6 +80,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         int srMask2;
         int srMask3;
         int srMaskMC;
+        int srSpriteMask;
+        int srSpriteMask0;
+        int srSpriteMask1;
+        int srSpriteMask2;
+        int srSpriteMask3;
+        int srSpriteMaskMC;
         bool vblank;
         int vblankEnd;
         int vblankStart;
@@ -92,6 +98,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void HardReset()
         {
+            // *** SHIFT REGISTER BITMASKS ***
+            srMask0 = 0x00000;
+            srMask1 = 0x20000;
+            srMask2 = srMask1 << 1;
+            srMask3 = srMask1 | srMask2;
+            srMask = srMask2;
+            srMaskMC = srMask3;
+            srSpriteMask0 = 0x000000;
+            srSpriteMask1 = 0x400000;
+            srSpriteMask2 = srSpriteMask1 << 1;
+            srSpriteMask3 = srSpriteMask1 | srSpriteMask2;
+            srSpriteMask = srSpriteMask2;
+            srSpriteMaskMC = srSpriteMask3;
+
             pinAEC = true;
             pinBA = true;
             pinIRQ = true;
@@ -141,12 +161,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             spriteMulticolor0 = 0;
             spriteMulticolor1 = 0;
             sr = 0;
-            srMask0 = 0x000000;
-            srMask1 = 0x200000;
-            srMask2 = srMask1 << 1;
-            srMask3 = srMask1 | srMask2;
-            srMask = srMask2;
-            srMaskMC = srMask3;
             vblank = true;
             vc = 0;
             vcbase = 0;
