@@ -4,31 +4,32 @@ namespace BizHawk.MultiClient
 {
 	public class Cheat
 	{
-		public string name { get; set; }
-		public int address { get; set; }
-		public byte value { get; set; }
-		public byte? compare { get; set; }
-		public MemoryDomain domain { get; set; }
+		public string Name { get; set; }
+		public int Address { get; set; }
+		public byte Value { get; set; }
+		public byte? Compare { get; set; }
+		public MemoryDomain Domain { get; set; }
+		
 		private bool enabled;
 
 		public Cheat()
 		{
-			name = "";
-			address = 0;
-			value = 0;
-			compare = null;
+			Name = "";
+			Address = 0;
+			Value = 0;
+			Compare = null;
 			enabled = false;
-			domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
+			Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
 		}
 
 		public Cheat(Cheat c)
 		{
-			name = c.name;
-			address = c.address;
-			value = c.value;
+			Name = c.Name;
+			Address = c.Address;
+			Value = c.Value;
 			enabled = c.enabled;
-			domain = c.domain;
-			compare = c.compare;
+			Domain = c.Domain;
+			Compare = c.Compare;
 			if (enabled)
 			{
 				Enable();
@@ -41,12 +42,12 @@ namespace BizHawk.MultiClient
 
 		public Cheat(string cname, int addr, byte val, bool e, MemoryDomain d, byte? comp = null)
 		{
-			name = cname;
-			address = addr;
-			value = val;
+			Name = cname;
+			Address = addr;
+			Value = val;
 			enabled = e;
-			domain = d;
-			compare = comp;
+			Domain = d;
+			Compare = comp;
 			if (enabled)
 			{
 				Enable();
@@ -57,16 +58,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public bool IsSeparator
+		{
+			get
+			{
+				return Address == -1; //TODO: make this a nullable instead
+			}
+		}
+
 		public void Enable()
 		{
 			enabled = true;
-			if (Global.Emulator is NES && domain == Global.Emulator.MemoryDomains[1])
+			if (Global.Emulator is NES && Domain == Global.Emulator.MemoryDomains[1])
 			{
-				(Global.Emulator as NES).ApplyGameGenie(address, value, compare);
+				(Global.Emulator as NES).ApplyGameGenie(Address, Value, Compare);
 			}
 			else
 			{
-				MemoryPulse.Add(domain, address, value, compare);
+				MemoryPulse.Add(Domain, Address, Value, Compare);
 			}
 
 			Global.MainForm.UpdateCheatStatus();
@@ -81,19 +90,22 @@ namespace BizHawk.MultiClient
 
 		public void DisposeOfCheat()
 		{
-			if (Global.Emulator is NES && domain == Global.Emulator.MemoryDomains[1])
+			if (Global.Emulator is NES && Domain == Global.Emulator.MemoryDomains[1])
 			{
-				(Global.Emulator as NES).RemoveGameGenie(address);
+				(Global.Emulator as NES).RemoveGameGenie(Address);
 			}
 			else
 			{
-				MemoryPulse.Remove(domain, address);
+				MemoryPulse.Remove(Domain, Address);
 			}
 		}
 
-		public bool IsEnabled()
+		public bool IsEnabled
 		{
-			return enabled;
+			get
+			{
+				return enabled;
+			}
 		}
 
 		~Cheat()

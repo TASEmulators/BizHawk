@@ -350,46 +350,46 @@ namespace BizHawk.MultiClient
 			{
 				Cheat c = new Cheat();
 				if (cheatname.Text.Length > 0)
-					c.name = cheatname.Text;
+					c.Name = cheatname.Text;
 				else
 				{
 					Processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					c.name = GGCodeMaskBox.Text;
+					c.Name = GGCodeMaskBox.Text;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
 					Processing = false;
 				}
 
 				if (String.IsNullOrWhiteSpace(AddressBox.Text))
-					c.address = 0;
+					c.Address = 0;
 				else
-					c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 
 				if (String.IsNullOrWhiteSpace(ValueBox.Text))
-					c.value = 0;
+					c.Value = 0;
 				else
-					c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+					c.Value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 
 				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
 				{
 					try
 					{
-						c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+						c.Compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					}
 					catch
 					{
-						c.compare = null;
+						c.Compare = null;
 					}
 				}
 				else
 				{
-					c.compare = null;
+					c.Compare = null;
 				}
 				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 
 					if (Global.Emulator.MemoryDomains[x].ToString() == "System Bus")
 					{
-						c.domain = Global.Emulator.MemoryDomains[x];
+						c.Domain = Global.Emulator.MemoryDomains[x];
 						c.Enable();
 						Global.MainForm.Cheats1.AddCheat(c);
 						break;
