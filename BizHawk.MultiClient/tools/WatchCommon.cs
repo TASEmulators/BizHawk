@@ -9,7 +9,25 @@ namespace BizHawk.MultiClient
 {
 	public static class WatchCommon
 	{
-		public static bool SaveWchFile(string path, string domain_name, List<Watch> watchList)
+        public static FileInfo GetFileFromUser(string currentFile)
+        {
+            var ofd = new OpenFileDialog();
+            if (currentFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+            ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+            ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(ofd.FileName);
+            return file;
+        }
+
+        public static bool SaveWchFile(string path, string domain_name, List<Watch> watchList)
 		{
 			using (StreamWriter sw = new StreamWriter(path))
 			{
