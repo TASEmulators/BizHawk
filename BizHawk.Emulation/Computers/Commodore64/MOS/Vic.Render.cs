@@ -11,8 +11,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         int ecmPixel;
         int pixel;
         int pixelData;
-        //int pixelOwner;
-        Sprite pixelOwner;
+        SpriteGenerator pixelOwner;
         int sprData;
         int sprPixel;
         int srC = 0;
@@ -137,9 +136,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 srSync <<= 1;
                 
                 // render sprite
-                //pixelOwner = 8;
                 pixelOwner = null;
-                foreach (Sprite spr in sprites)
+                foreach (SpriteGenerator spr in sprites)
                 {
                     sprData = 0;
                     sprPixel = pixel;

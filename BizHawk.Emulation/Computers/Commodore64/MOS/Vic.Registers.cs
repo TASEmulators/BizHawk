@@ -7,7 +7,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-
         public byte Peek(int addr)
         {
             return ReadRegister((addr & 0x3F));

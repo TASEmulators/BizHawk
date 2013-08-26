@@ -7,23 +7,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        public const int baResetCounter = 7;
-        public const int pipelineUpdateVc = 1;
-        public const int pipelineChkSprChunch = 2;
-        public const int pipelineUpdateMcBase = 4;
-        public const int pipelineChkBrdL1 = 8;
-        public const int pipelineChkBrdL0 = 16;
-        public const int pipelineChkSprDma = 32;
-        public const int pipelineChkBrdR0 = 64;
-        public const int pipelineChkSprExp = 128;
-        public const int pipelineChkBrdR1 = 256;
-        public const int pipelineChkSprDisp = 512;
-        public const int pipelineUpdateRc = 1024;
-        public const int pipelineHBlankL = 0x10000000;
-        public const int pipelineHBlankR = 0x20000000;
-        public const int pipelineHoldX = 0x40000000;
-        public const int rasterIrqLine0Cycle = 1;
-        public const int rasterIrqLineXCycle = 0;
+        const int baResetCounter = 7;
+        const int pipelineUpdateVc = 1;
+        const int pipelineChkSprChunch = 2;
+        const int pipelineUpdateMcBase = 4;
+        const int pipelineChkBrdL1 = 8;
+        const int pipelineChkBrdL0 = 16;
+        const int pipelineChkSprDma = 32;
+        const int pipelineChkBrdR0 = 64;
+        const int pipelineChkSprExp = 128;
+        const int pipelineChkBrdR1 = 256;
+        const int pipelineChkSprDisp = 512;
+        const int pipelineUpdateRc = 1024;
+        const int pipelineHBlankL = 0x10000000;
+        const int pipelineHBlankR = 0x20000000;
+        const int pipelineHoldX = 0x40000000;
+        const int rasterIrqLine0Cycle = 1;
+        const int rasterIrqLineXCycle = 0;
 
         int parseaddr;
         int parsecycleBAsprite0;
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         // fetch S
                         if (sprites[parsecycleFetchSpriteIndex].dma)
                         {
-                            Sprite spr = sprites[parsecycleFetchSpriteIndex];
+                            SpriteGenerator spr = sprites[parsecycleFetchSpriteIndex];
                             parseaddr = (spr.mc | (spr.pointer << 6));
                             spr.sr <<= 8;
                             spr.sr |= ReadMemory(parseaddr);
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 {
                     if ((parseact & pipelineChkSprChunch) != 0)
                     {
-                        foreach (Sprite spr in sprites)
+                        foreach (SpriteGenerator spr in sprites)
                         {
                             if (spr.yCrunch)
                                 spr.mcbase += 2;
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                     else if ((parseact & pipelineChkSprDisp) != 0)
                     {
-                        foreach (Sprite spr in sprites)
+                        foreach (SpriteGenerator spr in sprites)
                         {
                             spr.mc = spr.mcbase;
                             if (spr.dma && spr.y == (rasterLine & 0xFF))
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                     else if ((parseact & pipelineChkSprDma) != 0)
                     {
-                        foreach (Sprite spr in sprites)
+                        foreach (SpriteGenerator spr in sprites)
                         {
                             if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
                             {
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                     else if ((parseact & pipelineChkSprExp) != 0)
                     {
-                        foreach (Sprite spr in sprites)
+                        foreach (SpriteGenerator spr in sprites)
                         {
                             if (spr.yExpand)
                                 spr.yCrunch ^= true;
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
                     else if ((parseact & pipelineUpdateMcBase) != 0)
                     {
-                        foreach (Sprite spr in sprites)
+                        foreach (SpriteGenerator spr in sprites)
                         {
                             if (spr.yCrunch)
                             {

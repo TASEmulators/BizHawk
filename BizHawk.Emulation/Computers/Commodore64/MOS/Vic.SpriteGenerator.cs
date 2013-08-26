@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        sealed class Sprite
+        sealed class SpriteGenerator
         {
             public bool collideData;
             public bool collideSprite;
@@ -56,26 +56,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             public void SyncState(Serializer ser)
             {
-                ser.Sync("collideData", ref collideData);
-                ser.Sync("collideSprite", ref collideSprite);
-                ser.Sync("color", ref color);
-                ser.Sync("display", ref display);
-                ser.Sync("dma", ref dma);
-                ser.Sync("enable", ref enable);
-                ser.Sync("mc", ref mc);
-                ser.Sync("mcbase", ref mcbase);
-                ser.Sync("multicolor", ref multicolor);
-                ser.Sync("multicolorCrunch", ref multicolorCrunch);
-                ser.Sync("pointer", ref pointer);
-                ser.Sync("priority", ref priority);
-                ser.Sync("shiftEnable", ref shiftEnable);
-                ser.Sync("sr", ref sr);
-                ser.Sync("x", ref x);
-                ser.Sync("xCrunch", ref xCrunch);
-                ser.Sync("xExpand", ref xExpand);
-                ser.Sync("y", ref y);
-                ser.Sync("yCrunch", ref yCrunch);
-                ser.Sync("yExpand", ref yExpand);
+                SaveState.SyncObject(ser, this);
             }
         }
     }
