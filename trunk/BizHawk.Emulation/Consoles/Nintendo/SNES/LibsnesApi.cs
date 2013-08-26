@@ -1106,8 +1106,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BSX_PRAM = 3,
 			SUFAMI_TURBO_A_RAM = 4,
 			SUFAMI_TURBO_B_RAM = 5,
-			GAME_BOY_RAM = 6,
-			GAME_BOY_RTC = 7,
+			SGB_CARTRAM = 6,
+			SGB_RTC = 7,
+			SGB_WRAM = 8,
+			SGB_HRAM = 9,
 
 			WRAM = 100,
 			APURAM = 101,
