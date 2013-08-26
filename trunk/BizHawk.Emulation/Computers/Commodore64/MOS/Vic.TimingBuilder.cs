@@ -7,6 +7,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
+        const int BORDER_LEFT_38 = 0x01F;
+        const int BORDER_LEFT_40 = 0x018;
+        const int BORDER_RIGHT_38 = 0x14F;
+        const int BORDER_RIGHT_40 = 0x158;
+
         static int[] TimingBuilder_Cycle14Act = new int[]
         {
 			pipelineUpdateVc, 0,
@@ -45,17 +50,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     result[i] |= pipelineHoldX;
 
                 // pipeline border checks
-                if (timing[i] == 0x018)
+                if (timing[i] == (BORDER_LEFT_40 & 0xFFC))
                     result[i] |= pipelineChkBrdL1;
-                if (timing[i] == 0x01C)
+                if (timing[i] == (BORDER_LEFT_38 & 0xFFC))
                     result[i] |= pipelineChkBrdL0;
-                if (timing[i] == 0x14C)
+                if (timing[i] == (BORDER_RIGHT_38 & 0xFFC))
                     result[i] |= pipelineChkBrdR0;
-                if (timing[i] == 0x158)
+                if (timing[i] == (BORDER_RIGHT_40 & 0xFFC))
                     result[i] |= pipelineChkBrdR1;
-                if (timing[i] == (hblankStart & 0xFFD))
+                if (timing[i] == (hblankStart & 0xFFC))
                     result[i] |= pipelineHBlankR;
-                if (timing[i] == (hblankEnd & 0xFFD))
+                if (timing[i] == (hblankEnd & 0xFFC))
                     result[i] |= pipelineHBlankL;
             }
 

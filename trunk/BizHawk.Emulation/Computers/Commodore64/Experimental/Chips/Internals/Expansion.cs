@@ -15,6 +15,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool OutputGame() { return Game; }
         public bool OutputIRQ() { return IRQ; }
         public bool OutputNMI() { return NMI; }
-        virtual public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        virtual public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

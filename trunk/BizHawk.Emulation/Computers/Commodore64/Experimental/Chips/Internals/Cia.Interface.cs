@@ -28,6 +28,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool SP { get { return true; } }
 
         public void Clock() { }
-        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

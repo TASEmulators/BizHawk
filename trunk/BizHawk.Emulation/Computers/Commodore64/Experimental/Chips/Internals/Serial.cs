@@ -18,6 +18,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool OutputData() { return Data; }
         public bool OutputSRQ() { return SRQ; }
         virtual public bool SRQ { get { return true; } }
-        virtual public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        virtual public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
     sealed public partial class Vic
     {
-        class Sprite
+        sealed class Sprite
         {
             public bool collideData;
             public bool collideSprite;

@@ -155,7 +155,8 @@
     <Compile Include="Computers\Commodore64\MOS\Port.cs" />
     <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.Envelope.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.Voice.cs" />
     <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Parse.cs" />
@@ -165,7 +166,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.State.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.TimingBuilder.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
-    <Compile Include="Computers\Commodore64\Sync.cs" />
+    <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />

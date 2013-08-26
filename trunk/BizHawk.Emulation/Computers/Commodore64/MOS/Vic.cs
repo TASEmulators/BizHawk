@@ -174,15 +174,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void UpdateBorder()
 		{
-			
-			{
-				borderL = columnSelect ? 0x018 : 0x01F;
-				borderR = columnSelect ? 0x158 : 0x14F;
-                //borderL = columnSelect ? 28 : 35;
-                //borderR = columnSelect ? 348 : 339;
-				borderT = rowSelect ? 0x033 : 0x037;
-				borderB = rowSelect ? 0x0FB : 0x0F7;
-			}
+			borderL = columnSelect ? 0x018 : 0x01F;
+			borderR = columnSelect ? 0x158 : 0x14F;
+            //borderL = columnSelect ? 28 : 35;
+            //borderR = columnSelect ? 348 : 339;
+			borderT = rowSelect ? 0x033 : 0x037;
+			borderB = rowSelect ? 0x0FB : 0x0F7;
 		}
 
 		private void UpdatePins()

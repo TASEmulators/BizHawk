@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 		}
 
-        public bool ReadDataInputBuffer()
+        virtual public bool ReadDataInputBuffer()
         {
             return true;
         }
 
-        public bool ReadSenseBuffer()
+        virtual public bool ReadSenseBuffer()
         {
             return true;
         }
 
         public void SyncState(Serializer ser)
         {
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
         }
 	}
 }
