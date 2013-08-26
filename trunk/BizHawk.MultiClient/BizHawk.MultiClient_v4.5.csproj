@@ -534,6 +534,12 @@
     <Compile Include="tools\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\NewRamWatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NewRamWatch.Designer.cs">
+      <DependentUpon>NewRamWatch.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
@@ -772,6 +778,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaWriterColorConfig.resx">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NewRamWatch.resx">
+      <DependentUpon>NewRamWatch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
