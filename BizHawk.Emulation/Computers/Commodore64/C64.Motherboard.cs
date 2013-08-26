@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void SyncState(Serializer ser)
 		{
             ser.BeginSection("motherboard");
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
             ser.EndSection();
 
             ser.BeginSection("cartridge");

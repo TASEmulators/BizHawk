@@ -196,11 +196,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void SyncState(Serializer ser)
         {
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
             for (int i = 0; i < 8; i++)
             {
                 ser.BeginSection("sprite" + i.ToString());
-                Sync.SyncObject(ser, sprites[i]);
+                SaveState.SyncObject(ser, sprites[i]);
                 ser.EndSection();
             }
         }

@@ -38,6 +38,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             memory[addr & addressMask] = val & dataMask;
         }
 
-        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

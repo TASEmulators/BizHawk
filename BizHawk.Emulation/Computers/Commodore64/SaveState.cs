@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-    static class Sync
+    static class SaveState
     {
         static public void SyncObject(Serializer ser, object obj)
         {
