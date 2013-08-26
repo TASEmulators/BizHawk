@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool rowSelect;
         int spriteMulticolor0;
         int spriteMulticolor1;
-        Sprite[] sprites;
+        SpriteGenerator[] sprites;
         int sr;
         int srMask;
         int srMask0;

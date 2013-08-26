@@ -159,10 +159,11 @@
     <Compile Include="Computers\Commodore64\MOS\Sid.Voice.cs" />
     <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.GraphicsGenerator.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Parse.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Registers.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Render.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Vic.Sprite.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.SpriteGenerator.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.State.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.TimingBuilder.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />

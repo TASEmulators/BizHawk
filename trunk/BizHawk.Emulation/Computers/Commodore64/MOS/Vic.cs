@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 buf = new int[bufWidth * bufHeight];
 				bufLength = buf.Length;
 
-				sprites = new Sprite[8];
+                sprites = new SpriteGenerator[8];
 				for (int i = 0; i < 8; i++)
-					sprites[i] = new Sprite();
+                    sprites[i] = new SpriteGenerator();
 
 				bufferC = new int[40];
 				bufferG = new int[40];
