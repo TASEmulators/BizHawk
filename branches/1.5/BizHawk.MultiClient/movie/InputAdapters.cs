@@ -201,9 +201,11 @@ namespace BizHawk.MultiClient
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
 		WorkingDictionary<string,float?> FloatSet = new WorkingDictionary<string,float?>();
-		public void SetFloat(string name, float value)
+		public void SetFloat(string name, float? value)
 		{
-			FloatSet[name] = value;
+			if (value.HasValue)
+				FloatSet[name] = value;
+			else FloatSet.Remove(name);
 		}
 		public float GetFloat(string name)
 		{

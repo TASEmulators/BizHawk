@@ -8,6 +8,8 @@ namespace BizHawk.MultiClient
 		public int X = 0;
 		public int Y = 0;
 
+		public bool HasValue { get; private set; }
+
 		private readonly Brush WhiteBrush = Brushes.White;
 		private readonly Brush BlackBrush = Brushes.Black;
 		private readonly Brush GrayBrush = Brushes.LightGray;
@@ -31,8 +33,6 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.Opaque, true);
 			BackColor = Color.Gray;
 			Paint += AnalogControlPanel_Paint;
-			MouseClick += Event_MouseClick;
-			MouseMove += Event_MouseMove;
 			_white_pen = new Pen(WhiteBrush);
 			BlackPen = new Pen(BlackBrush);
 			GrayPen = new Pen(GrayBrush);
@@ -73,38 +73,76 @@ namespace BizHawk.MultiClient
 				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
 
 				//Line
-				e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
-				e.Graphics.DrawImage(dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
-
+				if (HasValue)
+				{
+					e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
+					e.Graphics.DrawImage(dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
+				}
 			}
 		}
 
-		private void Event_MouseClick(object sender, MouseEventArgs e)
+		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
 				X = GFXToReal(e.X - 64);
 				Y = GFXToReal(-(e.Y - 63));
+				HasValue = true;
+			}
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				Clear();
 			}
 
 			Refresh();
 		}
 
-		private void Event_MouseMove(object sender, MouseEventArgs e)
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+			if (Capture)
+				Capture = false;
+		}
+
+
+		protected override void WndProc(ref Message m)
+		{
+			if (m.Msg == 0x007B) //WM_CONTEXTMENU
+			{
+				//dont let parent controls get this.. we handle the right mouse button ourselves
+				return;
+			}
+			base.WndProc(ref m);
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
 				X = GFXToReal(e.X - 64);
 				Y = GFXToReal(-(e.Y - 63));
+				HasValue = true;
+			}
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				Clear();
 			}
 
 			Refresh();
+		}
+
+
+		void Clear()
+		{
+			X = Y = 0;
+			HasValue = false;
 		}
 
 		public void SetPosition(int Xval, int Yval)
 		{
 			X = Xval;
 			Y = Yval;
+			HasValue = true;
 			
 			Refresh();
 		}

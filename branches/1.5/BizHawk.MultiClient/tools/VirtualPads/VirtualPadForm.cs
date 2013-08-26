@@ -217,6 +217,13 @@ namespace BizHawk.MultiClient
 			Close();
 		}
 
+		protected override void OnClosed(EventArgs e)
+		{
+			//is this a good idea?
+			Global.StickyXORAdapter.ClearStickies();
+			Global.StickyXORAdapter.ClearStickyFloats();
+		}
+
 		public void ClearVirtualPadHolds()
 		{
 			foreach (var controller in ControllerBox.Controls)
