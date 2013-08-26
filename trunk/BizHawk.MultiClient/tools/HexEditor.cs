@@ -62,22 +62,6 @@ namespace BizHawk.MultiClient
 			Header.Font = new Font("Courier New", 8);
 			AddressesLabel.Font = new Font("Courier New", 8);
 			AddressLabel.Font = new Font("Courier New", 8);
-			memoryDomainsToolStripMenuItem.DropDownItemClicked += new ToolStripItemClickedEventHandler(memoryDomainsToolStripMenuItem_DropDownItemClicked);
-			toolStripComboBox_SelectDomain.SelectedIndexChanged += new EventHandler(toolStripComboBox_SelectDomain_SelectedIndexChanged);
-		}
-		void toolStripComboBox_SelectDomain_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			var tsmi = (ToolStripMenuItem)toolStripComboBox_SelectDomain.SelectedItem;
-			SetMemoryDomain((int)tsmi.Tag);
-		}
-
-
-		void memoryDomainsToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
-		{
-			//if (HACK_WTF_REENTRANCY) return;
-			//HACK_WTF_REENTRANCY = true;
-			//e.ClickedItem.PerformClick();
-			//HACK_WTF_REENTRANCY = false;
 		}
 
 		private void LoadConfigSettings()
@@ -506,14 +490,13 @@ namespace BizHawk.MultiClient
 					var item = new ToolStripMenuItem {Text = str};
 					{
 						int z = i;
-						item.Click += (o, ev) =>
-						{
-							toolStripComboBox_SelectDomain.SelectedItem = item;
-						};
-						item.Tag = z;
+						item.Click += (o, ev) => SetMemoryDomain(z);
+					}
+					if (i == 0)
+					{
+						SetMemoryDomain(i);
 					}
 					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-					toolStripComboBox_SelectDomain.Items.Add(item);
 					domainMenuItems.Add(item);
 				}
 			}
@@ -524,13 +507,6 @@ namespace BizHawk.MultiClient
 			rom_item.Click += (o, ev) => SetMemoryDomain(999); //999 will denote ROM file
 			memoryDomainsToolStripMenuItem.DropDownItems.Add(rom_item);
 			domainMenuItems.Add(rom_item);
-
-			if (Global.Emulator.MemoryDomains.Count > 0)
-			{
-				toolStripComboBox_SelectDomain.SelectedItem = toolStripComboBox_SelectDomain.Items[0];
-				AddressesLabel.Focus();
-			}
-
 		}
 
 
@@ -2247,7 +2223,6 @@ namespace BizHawk.MultiClient
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				AddressesLabel.Focus();
 				int pointed_address = GetPointedAddress(e.X, e.Y);
 				if (pointed_address >= 0)
 				{
@@ -2308,10 +2283,5 @@ namespace BizHawk.MultiClient
             alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
             this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
         }
-
-				private void toolStripComboBox_SelectDomain_Click(object sender, EventArgs e)
-				{
-
-				}
 	}
 } 
