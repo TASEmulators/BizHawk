@@ -1,5 +1,7 @@
 #include <gameboy/gameboy.hpp>
 
+#include <snes/snes.hpp>
+
 #define CPU_CPP
 namespace GameBoy {
 
@@ -129,8 +131,8 @@ void CPU::power() {
   bus.mmio[0xff77] = this;  //???
   }
 
-  for(auto &n : wram) n = 0x00;
-  for(auto &n : hram) n = 0x00;
+  for(unsigned n = 0; n < 32768; n++) wram[n] = 0x00;
+  for(unsigned n = 0; n < 8192; n++) hram[n] = 0x00;
 
   r[PC] = 0x0000;
   r[SP] = 0x0000;
@@ -195,8 +197,24 @@ void CPU::power() {
   status.interrupt_enable_vblank = 0;
 }
 
-CPU::CPU() : trace(false) {
+CPU::CPU()
+	: trace(false)
+	, wram(nullptr)
+	, hram(nullptr)
+{
   initialize_opcode_table();
 }
 
+CPU::~CPU()
+{
+	SNES::interface()->freeSharedMemory(wram);
+	SNES::interface()->freeSharedMemory(hram);
 }
+
+void CPU::initialize()
+{
+	wram = (uint8*)SNES::interface()->allocSharedMemory("SGB_WRAM", 32768);
+	hram = (uint8*)SNES::interface()->allocSharedMemory("SGB_HRAM", 8192);
+}
+
+} //namespace GameBoy

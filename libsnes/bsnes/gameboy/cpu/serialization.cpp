@@ -3,8 +3,8 @@
 void CPU::serialize(serializer &s) {
   Processor::serialize(s);
 
-  s.array(wram);
-  s.array(hram);
+  s.array(wram,32768);
+  s.array(hram,8192);
 
   s.integer(r.a.data);
   s.integer(r.f.z);

@@ -441,14 +441,18 @@ namespace BizHawk.MultiClient
 
 		private void SetMemoryDomain(int pos)
 		{
+			//<zeromus> THIS IS HORRIBLE.
 			if (pos == 999)
 			{
+				//<zeromus> THIS IS HORRIBLE.
 				ROM = GetRomBytes() ?? new byte[] { 0xFF };
 
+				//<zeromus> THIS IS HORRIBLE.
 				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little,
 					i => ROM[i],
 					(i, value) => ROM[i] = value);
-			
+
+				//<zeromus> THIS IS HORRIBLE.
 				Domain = ROMDomain;
 			}
 			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
@@ -498,6 +502,7 @@ namespace BizHawk.MultiClient
 			}
 			
 			//Add ROM File memory domain
+			//<zeromus> THIS IS HORRIBLE.
 			var rom_item = new ToolStripMenuItem {Text = "ROM File"};
 			rom_item.Click += (o, ev) => SetMemoryDomain(999); //999 will denote ROM file
 			memoryDomainsToolStripMenuItem.DropDownItems.Add(rom_item);

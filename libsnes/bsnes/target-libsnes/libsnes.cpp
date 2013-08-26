@@ -252,6 +252,10 @@ void snes_init(void) {
 	reconstruct(&SNES::ppu);
 	SNES::ppu.initialize();
   SNES::system.init();
+  
+  //zero 26-aug-2013 - yup. still more
+  reconstruct(&GameBoy::cpu); GameBoy::cpu.initialize();
+  
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
   SNES::input.connect(SNES::Controller::Port2, SNES::Input::Device::Joypad);
 }
@@ -559,12 +563,18 @@ uint8_t* snes_get_memory_data(unsigned id) {
     case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SufamiTurbo) break;
       return SNES::sufamiturbo.slotB.ram.data();
-    case SNES_MEMORY_GAME_BOY_RAM:
+    case SNES_MEMORY_GAME_BOY_CARTRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       return GameBoy::cartridge.ramdata;
   //case SNES_MEMORY_GAME_BOY_RTC:
   //  if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
   //  return GameBoy::cartridge.rtcdata;
+    case SNES_MEMORY_GAME_BOY_WRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      return GameBoy::cpu.wram;  
+    case SNES_MEMORY_GAME_BOY_HRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      return GameBoy::cpu.hram;        
 
     case SNES_MEMORY_WRAM:
       return SNES::cpu.wram;
@@ -603,13 +613,20 @@ const char* snes_get_memory_id_name(unsigned id) {
     case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SufamiTurbo) break;
       return "SUFAMI_SLOTBRAM";
-    case SNES_MEMORY_GAME_BOY_RAM:
+    case SNES_MEMORY_GAME_BOY_CARTRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       //return GameBoy::cartridge.ramdata;
 			return "SGB_CARTRAM";
   //case SNES_MEMORY_GAME_BOY_RTC:
   //  if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
   //  return GameBoy::cartridge.rtcdata;
+    case SNES_MEMORY_GAME_BOY_WRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      //see notes in SetupMemoryDomains in bizhawk
+      return "SGB_WRAM";
+    case SNES_MEMORY_GAME_BOY_HRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      return "SGB_HRAM";
 
     case SNES_MEMORY_WRAM:
       //return SNES::cpu.wram;
@@ -655,7 +672,7 @@ unsigned snes_get_memory_size(unsigned id) {
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SufamiTurbo) break;
       size = SNES::sufamiturbo.slotB.ram.size();
       break;
-    case SNES_MEMORY_GAME_BOY_RAM:
+    case SNES_MEMORY_GAME_BOY_CARTRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       size = GameBoy::cartridge.ramsize;
       break;
@@ -663,6 +680,15 @@ unsigned snes_get_memory_size(unsigned id) {
   //  if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
   //  size = GameBoy::cartridge.rtcsize;
   //  break;
+    case SNES_MEMORY_GAME_BOY_WRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      //see notes in SetupMemoryDomains in bizhawk
+      size = 32768;
+      break;  
+    case SNES_MEMORY_GAME_BOY_HRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      size = 128;
+      break;        
 
     case SNES_MEMORY_WRAM:
       size = 128 * 1024;

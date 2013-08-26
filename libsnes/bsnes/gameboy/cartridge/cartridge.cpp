@@ -60,7 +60,7 @@ void Cartridge::load(System::Revision revision, const string &markup, const uint
     case Mapper::HuC3:  mapper = &huc3;  break;
   }
 
-  ramdata = (uint8_t*)interface->allocSharedMemory("GAME_BOY_RAM",ramsize = info.ramsize);
+  ramdata = (uint8_t*)interface->allocSharedMemory("SGB_CARTRAM",ramsize = info.ramsize);
   system.load(revision);
 
   loaded = true;
