@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			api.snes_power();
 
-			SetupMemoryDomains(romData);
+			SetupMemoryDomains(romData,sgbRomData);
 
 			this.DeterministicEmulation = DeterministicEmulation;
 			if (DeterministicEmulation) // save frame-0 savestate now
@@ -861,28 +861,49 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			MemoryDomains.Add(md);
 
 			return md;
-
-
 		}
 
-		void SetupMemoryDomains(byte[] romData)
+		void SetupMemoryDomains(byte[] romData, byte[] sgbRomData)
 		{
 			MemoryDomains = new List<MemoryDomain>();
 			// remember, MainMemory must always be the same as MemoryDomains[0], else GIANT DRAGONS
-			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
+			//<zeromus> - this is stupid.
 
-			if (romData != null)
+			//lets just do this entirely differently for SGB
+			if (IsSGB)
 			{
+				//NOTE: CGB has 32K of wram, and DMG has 8KB of wram. Not sure how to control this right now.. bsnes might not have any ready way of doign that? I couldnt spot it. 
+				//You wouldnt expect a DMG game to access excess wram, but what if it tried to? maybe an oversight in bsnes?
+				MakeMemoryDomain("SGB WRAM", LibsnesApi.SNES_MEMORY.SGB_WRAM, Endian.Little);
+
+
+				var romDomain = new MemoryDomain("SGB CARTROM", romData.Length, Endian.Little,
+					(addr) => romData[addr],
+					(addr, value) => romData[addr] = value);
+				MemoryDomains.Add(romDomain);
+		
+
+				//the last 1 byte of this is special.. its an interrupt enable register, instead of ram. weird. maybe its actually ram and just getting specially used?
+				MakeMemoryDomain("SGB HRAM", LibsnesApi.SNES_MEMORY.SGB_HRAM, Endian.Little);
+
+				MakeMemoryDomain("SGB CARTRAM", LibsnesApi.SNES_MEMORY.SGB_CARTRAM, Endian.Little);
+
+				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
+
+				var sgbromDomain = new MemoryDomain("SGB.SFC ROM", sgbRomData.Length, Endian.Little,
+					(addr) => sgbRomData[addr],
+					(addr, value) => sgbRomData[addr] = value);
+				MemoryDomains.Add(sgbromDomain);
+			}
+			else
+			{
+				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
+
 				var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
 					(addr) => romData[addr],
 					(addr, value) => romData[addr] = value);
 				MemoryDomains.Add(romDomain);
-			}
 
-
-			//someone needs to comprehensively address these in SGB mode, and go hook them up in the gameboy core
-			if (!IsSGB)
-			{
 				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, Endian.Little);
 				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, Endian.Little);
 				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, Endian.Little);
@@ -893,8 +914,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
 						(addr) => api.peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
 						(addr, val) => api.poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+
 			}
 		}
+
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
 
