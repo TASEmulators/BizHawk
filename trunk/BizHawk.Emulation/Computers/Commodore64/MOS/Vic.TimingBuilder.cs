@@ -12,13 +12,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         const int BORDER_RIGHT_38 = 0x14F;
         const int BORDER_RIGHT_40 = 0x158;
 
+        // The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
         static int[] TimingBuilder_Cycle14Act = new int[]
         {
 			pipelineUpdateVc, 0,
 			pipelineChkSprChunch, 0,
 			pipelineUpdateMcBase, 0,
         };
-
         static int[] TimingBuilder_Cycle55Act = new int[]
         {
 			pipelineChkSprDma, 0,
@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pipelineChkSprDisp, pipelineUpdateRc
         };
 
+        // This builds a table of special actions to take on each half-cycle. Cycle14 is the X-raster position where
+        // pre-display operations happen, and Cycle55 is the X-raster position where post-display operations happen.
         static public int[] TimingBuilder_Act(int[] timing, int cycle14, int cycle55, int hblankStart, int hblankEnd)
         {
             List<int> result = new List<int>();
@@ -67,6 +69,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             return result.ToArray();
         }
 
+        // This builds a table of how the BA pin is supposed to act on each half-cycle.
         static public int[] TimingBuilder_BA(int[] fetch)
         {
             int baRestart = 7;
@@ -138,6 +141,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             return result;
         }
 
+        // This builds a table of the fetch operations to take on each half-cycle.
         static public int[] TimingBuilder_Fetch(int[] timing, int sprite)
         {
             int length = timing.Length;
@@ -204,6 +208,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             return result.ToArray();
         }
 
+        // This uses the vBlank values to determine the height of the visible screen.
         static public int TimingBuilder_ScreenHeight(int vblankStart, int vblankEnd, int lines)
         {
             int offset = vblankEnd;
@@ -219,6 +224,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             }
         }
 
+        // This uses the hBlank values to determine the width of the visible screen.
         static public int TimingBuilder_ScreenWidth(int[] timing, int hblankStart, int hblankEnd)
         {
             int length = timing.Length;
@@ -227,11 +233,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
             while (timing[offset] != hblankEnd) { offset = (offset + 1) % length; }
             while (timing[offset] != hblankStart) { offset = (offset + 1) % length; result++; }
-            //while (timing[offset] == hblankStart) { offset = (offset + 1) % length; result++; }
 
             return (result * 4);
         }
 
+        // This builds the table of X-raster positions. Start marks the position where the
+        // Y-raster is incremented. Width is the position where the X-raster is reset to zero. Count
+        // is the width of a rasterline in pixels. DelayOffset is the X-raster position where lag begins
+        // (specifically on an NTSC 6567R8) and DelayAmount is the number of positions to lag.
         static public int[] TimingBuilder_XRaster(int start, int width, int count, int delayOffset, int delayAmount)
         {
             List<int> result = new List<int>();
