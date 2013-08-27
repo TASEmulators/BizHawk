@@ -1765,6 +1765,7 @@ namespace BizHawk.MultiClient
 				//if (ActiveForm is ControllerConfig) return true;
 				if (ActiveForm is config.NewControllerConfig) return true;
 				if (ActiveForm is TAStudio) return true;
+				if (ActiveForm is VirtualPadForm) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
