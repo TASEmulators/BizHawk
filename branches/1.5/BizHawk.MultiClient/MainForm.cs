@@ -815,6 +815,10 @@ namespace BizHawk.MultiClient
 
 			switch (system)
 			{
+				default:
+				case "NULL":
+					n64ToolStripMenuItem.Visible = true;
+					break;
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;

@@ -269,6 +269,7 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.label47 = new System.Windows.Forms.Label();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -308,6 +309,7 @@
 			// 
 			// N64vpluginglobaltab
 			// 
+			this.N64vpluginglobaltab.Controls.Add(this.label47);
 			this.N64vpluginglobaltab.Controls.Add(this.label2);
 			this.N64vpluginglobaltab.Controls.Add(this.VideoResolutionComboBox);
 			this.N64vpluginglobaltab.Controls.Add(this.PluginComboBox);
@@ -323,7 +325,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(10, 75);
+			this.label2.Location = new System.Drawing.Point(10, 107);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(87, 13);
 			this.label2.TabIndex = 13;
@@ -347,7 +349,7 @@
             "1600 x 1200",
             "1920 x 1440",
             "2048 x 1536"});
-			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 91);
+			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 123);
 			this.VideoResolutionComboBox.Name = "VideoResolutionComboBox";
 			this.VideoResolutionComboBox.Size = new System.Drawing.Size(136, 21);
 			this.VideoResolutionComboBox.TabIndex = 12;
@@ -3175,6 +3177,15 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
+			// label47
+			// 
+			this.label47.AutoSize = true;
+			this.label47.Location = new System.Drawing.Point(10, 58);
+			this.label47.Name = "label47";
+			this.label47.Size = new System.Drawing.Size(275, 13);
+			this.label47.TabIndex = 14;
+			this.label47.Text = "(Glide64mk2 is newer and is recommended over Glide64)";
+			// 
 			// N64VideoPluginconfig
 			// 
 			this.AcceptButton = this.SaveButton;
@@ -3467,5 +3478,6 @@
 		private System.Windows.Forms.ComboBox Glide64mk2_aspectmode;
 		private System.Windows.Forms.ComboBox Glide64mk2_fb_crc_mode;
 		private System.Windows.Forms.Label label45;
+		private System.Windows.Forms.Label label47;
 	}
 }
