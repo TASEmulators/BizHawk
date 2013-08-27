@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 case 0x18:
                     result &= 0x01;
                     result |= (byte)(
-                        ((pointerVM & 0xF) << 4) |
+                        ((pointerVM & 0x3C00) >> 6) |
                         ((pointerCB & 0x7) << 1)
                         );
                     break;
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     sprites[7].yExpand = ((val & 0x80) != 0);
                     break;
                 case 0x18:
-                    pointerVM = ((val >> 4) & 0xF);
+                    pointerVM = ((val << 6) & 0x3C00);
                     pointerCB = ((val >> 1) & 0x7);
                     break;
                 case 0x19:

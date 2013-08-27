@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 {
     public partial class C64NTSC : C64
     {
-        static private C64Timing timing;
+        static private C64Timing timing = null;
 
         public C64NTSC(byte[] basicRom, byte[] charRom, byte[] kernalRom) : base(timing)
         {

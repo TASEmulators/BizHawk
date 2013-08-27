@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                             if ((srSync & srMask2) != 0)
                                 pixelData = sr & srMask3;
 
-                            if (pixelData == srMask0)
+                            if (pixelData == 0)
                                 pixel = backgroundColor0;
                             else if (pixelData == srMask1)
                                 pixel = backgroundColor1;
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                         if ((srSync & srMask2) != 0)
                             pixelData = sr & srMask3;
 
-                        if (pixelData == srMask0)
+                        if (pixelData == 0)
                             pixel = backgroundColor0;
                         else if (pixelData == srMask1)
                             pixel = (displayC >> 4);

@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         int screenHeight;
         int screenWidth;
         int[] videoBuffer;
-        int videoBufferIndex;
 
         // palette
         static private int[] palette =
