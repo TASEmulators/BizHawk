@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 {
     public partial class C64PAL : C64
     {
-        static private C64Timing timing;
+        static private C64Timing timing = null;
 
         public C64PAL(byte[] basic, byte[] kernal, byte[] character) : base(timing)
         {

@@ -33,8 +33,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool columnSelect;
         int dataC;
         int dataG;
-        bool debugScreen;
-        int delayedC;
         bool displayEnable;
         int displayC;
         bool enableIntLightPen;
@@ -59,7 +57,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         bool pinAEC = true;
         bool pinBA = true;
         bool pinIRQ = true;
-        //int[] pixelDataBuffer;
         int pointerCB;
         int pointerVM;
         int rasterInterruptLine;
@@ -75,13 +72,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         SpriteGenerator[] sprites;
         int sr;
         int srMask;
-        int srMask0;
         int srMask1;
         int srMask2;
         int srMask3;
         int srMaskMC;
         int srSpriteMask;
-        int srSpriteMask0;
         int srSpriteMask1;
         int srSpriteMask2;
         int srSpriteMask3;
@@ -92,20 +87,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         int vc;
         int vcbase;
         int vmli;
-        //int xOffset;
         int xScroll;
         int yScroll;
 
         public void HardReset()
         {
             // *** SHIFT REGISTER BITMASKS ***
-            srMask0 = 0x00000;
             srMask1 = 0x20000;
             srMask2 = srMask1 << 1;
             srMask3 = srMask1 | srMask2;
             srMask = srMask2;
             srMaskMC = srMask3;
-            srSpriteMask0 = 0x000000;
             srSpriteMask1 = 0x400000;
             srSpriteMask2 = srSpriteMask1 << 1;
             srSpriteMask3 = srSpriteMask1 | srSpriteMask2;
@@ -148,8 +140,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             lightPenX = 0;
             lightPenY = 0;
             multicolorMode = false;
-            //pixelBufferIndex = 0;
-            //pixelBackgroundBufferIndex = 0;
             pointerCB = 0;
             pointerVM = 0;
             rasterInterruptLine = 0;
@@ -165,7 +155,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             vc = 0;
             vcbase = 0;
             vmli = 0;
-            //xOffset = 0;
             xScroll = 0;
             yScroll = 0;
 
@@ -180,17 +169,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 bufferG[i] = 0;
             }
 
-            // clear pixel buffer
-            //for (int i = 0; i < pixelBufferDelay; i++)
-            //{
-            //    pixelBuffer[i] = 0;
-            //    pixelDataBuffer[i] = 0;
-            //}
-            //for (int i = 0; i < pixelBackgroundBufferDelay; i++)
-            //    pixelBackgroundBuffer[i] = 0;
-
             pixBuffer = new int[pixBufferSize];
-
             UpdateBorder();
         }
 

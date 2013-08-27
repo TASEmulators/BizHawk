@@ -103,6 +103,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             timerLatch = new int[2];
             timerOn = new bool[2];
             underflow = new bool[2];
+
+            pinSP = true;
         }
 
 		// ------------------------------------

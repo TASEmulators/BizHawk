@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
             {
-                debugScreen = false;
-
                 this.hblankStart = hblankStart;
                 this.hblankEnd = hblankEnd;
                 this.vblankStart = vblankStart;
@@ -32,8 +30,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				totalLines = newLines;
 				pipeline = newPipeline;
 				cyclesPerSec = newCyclesPerSec;
-				//pixelBufferDelay = 4;
-				//pixelBackgroundBufferDelay = 12;
 
                 bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
                 bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
@@ -47,9 +43,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				bufferC = new int[40];
 				bufferG = new int[40];
-				//pixelBuffer = new int[pixelBufferDelay];
-				//pixelDataBuffer = new int[pixelBufferDelay];
-				//pixelBackgroundBuffer = new int[pixelBackgroundBufferDelay];
 			}
 		}
 
@@ -101,14 +94,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     idle = false;
 
                 // process some sprite crunch vars
-                if (!sprites[0].yExpand) sprites[0].yCrunch = true;
-                if (!sprites[1].yExpand) sprites[1].yCrunch = true;
-                if (!sprites[2].yExpand) sprites[2].yCrunch = true;
-                if (!sprites[3].yExpand) sprites[3].yCrunch = true;
-                if (!sprites[4].yExpand) sprites[4].yCrunch = true;
-                if (!sprites[5].yExpand) sprites[5].yCrunch = true;
-                if (!sprites[6].yExpand) sprites[6].yCrunch = true;
-                if (!sprites[7].yExpand) sprites[7].yCrunch = true;
+                foreach (SpriteGenerator spr in sprites)
+                    if (!spr.yExpand) spr.yCrunch = true;
 
                 ParseCycle();
 
