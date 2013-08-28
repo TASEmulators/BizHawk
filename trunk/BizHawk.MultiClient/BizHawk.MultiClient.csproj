@@ -539,12 +539,6 @@
       <DependentUpon>NewRamWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
-    <Compile Include="tools\StructureWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\StructureWatch.Designer.cs">
-      <DependentUpon>StructureWatch.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -804,9 +798,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="tools\StructureWatch.resx">
-      <DependentUpon>StructureWatch.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
     </EmbeddedResource>
