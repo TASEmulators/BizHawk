@@ -412,7 +412,7 @@ namespace BizHawk.MultiClient
 			RebootCore();
 		}
 
-		void RebootCore()
+		public void RebootCore()
 		{
 			LoadRom(CurrentlyOpenRom);
 		}
