@@ -373,6 +373,12 @@ namespace BizHawk.MultiClient
 				UpdateValues();
 			}
 		}
+
+        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
+			this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
+        }
 	}
 }
 
