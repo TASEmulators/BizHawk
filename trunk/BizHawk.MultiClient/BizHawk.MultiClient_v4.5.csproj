@@ -572,6 +572,7 @@
     <Compile Include="tools\VirtualPads\VirtualPadA78Control.Designer.cs">
       <DependentUpon>VirtualPadA78Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadButton.cs" />
     <Compile Include="tools\VirtualPads\VirtualPadC64Keyboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
