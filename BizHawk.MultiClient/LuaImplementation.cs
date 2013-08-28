@@ -548,7 +548,8 @@ namespace BizHawk.MultiClient
 															"screenshottoclipboard",
 															"setscreenshotosd",
 															"pause_av",
-															"unpause_av"
+															"unpause_av",
+															"reboot_core",
 		                                              	};
 
 		public static string[] FormsFunctions = new[]
@@ -1378,6 +1379,10 @@ namespace BizHawk.MultiClient
 			Global.MainForm.PauseAVI = false;
 		}
 
+		public void client_reboot_core()
+		{
+			Global.MainForm.RebootCore();
+		}
 		//----------------------------------------------------
 		//Memory library
 		//----------------------------------------------------
