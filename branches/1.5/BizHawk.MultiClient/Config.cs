@@ -829,7 +829,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return Paths.FirstOrDefault(x => x.System.Contains(system) && x.Type == type);
+				return Paths.FirstOrDefault(x => x.HasSystem(system) && x.Type == type);
 			}
 		}
 
@@ -1042,6 +1042,11 @@ namespace BizHawk.MultiClient
 		public string System;
 		public int Ordinal;
 		public PathEntry() { }
+         public bool HasSystem(string systemID)
+        {
+            string[] ids = System.Split('_');
+            return ids.Contains(systemID);
+        }
 	}
 
 	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 };
