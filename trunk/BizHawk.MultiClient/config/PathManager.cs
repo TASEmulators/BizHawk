@@ -240,7 +240,7 @@ namespace BizHawk.MultiClient
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
