@@ -7,18 +7,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public partial class Vic
     {
+        int address;
+        bool aec;
+        bool ba;
+        int data;
+        int phi1Data;
+        int rasterX;
+
         public Vic(VicSettings settings)
         {
-            backgroundColor = new int[4];
-            sprites = new Sprite[8];
-            frequency = 0;
-            rasterCount = 0;
-            rasterWidth = 0;
-            rasterY = 0;
-            screenHeight = 0;
-            screenWidth = 0;
-            spriteMultiColor = new int[2];
-            videoBuffer = new int[screenHeight * screenWidth];
+        }
+
+        public void Clock()
+        {
+        }
+
+        public void Reset()
+        {
         }
     }
 }
