@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 {
-    public abstract partial class C64
+    public sealed partial class C64
     {
         public void InitializeConnections()
         {

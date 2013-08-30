@@ -100,8 +100,8 @@
     <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
     <Compile Include="Computers\Commodore64\Experimental\C64.cs" />
     <Compile Include="Computers\Commodore64\Experimental\C64.Glue.cs" />
-    <Compile Include="Computers\Commodore64\Experimental\C64NTSC.cs" />
-    <Compile Include="Computers\Commodore64\Experimental\C64PAL.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\C64Presets.NTSC.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\C64Presets.PAL.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Interface.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Internal.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Cia.Registers.cs" />
@@ -111,10 +111,12 @@
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Sid.Settings.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Sid.SoundProvider.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Userport.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Graphics.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Registers.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Settings.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Sprite.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.State.cs" />
+    <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Synth.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.Timing.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Internals\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\Experimental\Chips\Presets.cs" />

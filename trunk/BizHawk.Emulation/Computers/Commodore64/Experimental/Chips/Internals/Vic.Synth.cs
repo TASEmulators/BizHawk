@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    sealed public class VicSettings
+    sealed public partial class Vic
     {
     }
 }

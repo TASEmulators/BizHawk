@@ -23,6 +23,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             public Sprite()
             {
             }
+
+            public void Clock()
+            {
+            }
+
+            public void LoadP(int value)
+            {
+            }
+
+            public void LoadS(int value)
+            {
+            }
         }
 
     }

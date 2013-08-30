@@ -6,26 +6,26 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental
 {
-    public abstract partial class C64 : IMotherboard
+    public sealed partial class C64 : IMotherboard
     {
-        protected Rom basicRom;
-        protected Cassette cassette;
-        protected Rom characterRom;
-        protected Cia cia1;
-        protected Cia cia2;
-        protected Ram colorRam;
-        protected Cpu cpu;
-        protected Expansion expansion;
-        protected Joystick joystickA;
-        protected Joystick joystickB;
-        protected Rom kernalRom;
-        protected Keyboard keyboard;
-        protected Ram memory;
-        protected Pla pla;
-        protected Serial serial;
-        protected Sid sid;
-        protected Userport user;
-        protected Vic vic;
+        public Rom basicRom;
+        public Cassette cassette;
+        public Rom characterRom;
+        public Cia cia1;
+        public Cia cia2;
+        public Ram colorRam;
+        public Cpu cpu;
+        public Expansion expansion;
+        public Joystick joystickA;
+        public Joystick joystickB;
+        public Rom kernalRom;
+        public Keyboard keyboard;
+        public Ram memory;
+        public Pla pla;
+        public Serial serial;
+        public Sid sid;
+        public Userport user;
+        public Vic vic;
 
         public C64(C64Timing timing)
         {
