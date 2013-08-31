@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 
         public void Clock()
         {
+            Render();
         }
 
         public void Reset()

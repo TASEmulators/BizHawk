@@ -31,7 +31,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         bool spriteCollisionInterrupt;
         bool spriteCollisionInterruptEnable;
         int[] spriteMultiColor;
-        Sprite[] sprites;
         int videoMemory;
         int xScroll;
         int yScroll;
