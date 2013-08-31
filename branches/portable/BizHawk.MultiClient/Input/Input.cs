@@ -353,9 +353,8 @@ namespace BizHawk.MultiClient
 						}
 
 					}
-
-					bool swallow = !Global.MainForm.AllowInput;
 #endif
+					bool swallow = !Global.MainForm.AllowInput;
 					foreach (var ie in _NewEvents)
 					{
 						//events are swallowed in some cases:
@@ -364,6 +363,7 @@ namespace BizHawk.MultiClient
 						else
 							EnqueueEvent(ie);
 					}
+
 				} //lock(this)
 
 				//arbitrary selection of polling frequency:
