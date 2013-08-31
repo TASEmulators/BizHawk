@@ -205,7 +205,9 @@ namespace MonoMacWrapper
 			System.IO.MemoryStream ms = new System.IO.MemoryStream();
 			input.Save(ms,System.Drawing.Imaging.ImageFormat.Png);
 			ms.Position = 0;
-			return NSImage.FromStream(ms);
+			NSImage img = NSImage.FromStream(ms);
+			img.Size = new System.Drawing.SizeF(16f, 16f); //Some of BizHawk's menu icons are larger, even though WinForms only does 16x16.
+			return img;
 		}
 		
 		private static string CleanMenuString(string text)
