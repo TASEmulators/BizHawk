@@ -106,11 +106,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     if (g_OutData == GRAPHICS_DATA_00)
                         g_OutPixel = backgroundColor[0];
                     else if (g_OutData == GRAPHICS_DATA_01)
-                        g_OutPixel = (g_DataC >> 4) & 0xF;
+                        g_OutPixel = g_Idle ? 0 : ((g_DataC >> 4) & 0xF);
                     else if (g_OutData == GRAPHICS_DATA_10)
-                        g_OutPixel = g_DataC & 0xF;
+                        g_OutPixel = g_Idle ? 0 : (g_DataC & 0xF);
                     else
-                        g_OutPixel = g_DataC >> 8;
+                        g_OutPixel = g_Idle ? 0 : (g_DataC >> 8);
                     break;
                 case GraphicsMode.Mode100:
                     if (g_OutData == GRAPHICS_DATA_00)
