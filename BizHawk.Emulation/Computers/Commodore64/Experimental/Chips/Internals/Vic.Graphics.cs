@@ -40,7 +40,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         {
             if ((rasterX & 0x7) == g_FillRasterX)
             {
-                g_DataC = g_BufferC;
+                if (g_Idle)
+                    g_DataC = 0;
+                else
+                    g_DataC = g_BufferC;
 
                 if (multiColorMode && (bitmapMode || (g_DataC & 0x8) != 0))
                 {
@@ -95,28 +98,28 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                     if (g_OutData == GRAPHICS_DATA_00)
                         g_OutPixel = backgroundColor[0];
                     else if (g_OutData == GRAPHICS_DATA_11)
-                        g_OutPixel = g_Idle ? 0 : ((g_DataC >> 8) & 0x7);
+                        g_OutPixel = ((g_DataC >> 8) & 0x7);
                     else if (g_OutData == GRAPHICS_DATA_01)
-                        g_OutPixel = g_Idle ? 0 : backgroundColor[1];
+                        g_OutPixel = backgroundColor[1];
                     else
-                        g_OutPixel = g_Idle ? 0 : backgroundColor[2];
+                        g_OutPixel = backgroundColor[2];
                     break;
                 case GraphicsMode.Mode010:
                 case GraphicsMode.Mode011:
                     if (g_OutData == GRAPHICS_DATA_00)
-                        g_OutPixel = (g_Idle && !multiColorMode) ? 0 : backgroundColor[0];
+                        g_OutPixel = backgroundColor[0];
                     else if (g_OutData == GRAPHICS_DATA_01)
-                        g_OutPixel = g_Idle ? 0 : ((g_DataC >> 4) & 0xF);
+                        g_OutPixel = ((g_DataC >> 4) & 0xF);
                     else if (g_OutData == GRAPHICS_DATA_10)
-                        g_OutPixel = g_Idle ? 0 : (g_DataC & 0xF);
+                        g_OutPixel = (g_DataC & 0xF);
                     else
-                        g_OutPixel = g_Idle ? 0 : (g_DataC >> 8);
+                        g_OutPixel = (g_DataC >> 8);
                     break;
                 case GraphicsMode.Mode100:
                     if (g_OutData == GRAPHICS_DATA_00)
-                        g_OutPixel = g_Idle ? backgroundColor[0] : backgroundColor[(g_DataC >> 6) & 0x3];
+                        g_OutPixel = backgroundColor[(g_DataC >> 6) & 0x3];
                     else
-                        g_OutPixel = g_Idle ? 0 : (g_DataC >> 8);
+                        g_OutPixel = (g_DataC >> 8);
                     break;
                 default:
                     g_OutPixel = 0;
