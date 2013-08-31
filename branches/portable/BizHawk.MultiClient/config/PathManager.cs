@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Makes a path relative to the %exe% dir
 		/// </summary>
-		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path); }
+		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, null); }
 
 		/// <summary>
 		/// The location of the default INI file
@@ -71,19 +71,15 @@ namespace BizHawk.MultiClient
 
 		public static string GetPlatformBase(string system)
 		{
-			if (system == "SGX" || system == "PCECD")
-			{
-				system = "PCE";
-			}
 			return Global.Config.PathEntries[system, "Base"].Path;
 		}
 
 		public static string StandardFirmwareName(string name)
 		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath), name);
+			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null), name);
 		}
 
-		public static string MakeAbsolutePath(string path, string system = null)
+		public static string MakeAbsolutePath(string path, string system)
 		{
 			//Hack
 			if (system == "Global")
@@ -191,15 +187,12 @@ namespace BizHawk.MultiClient
 
 		public static bool IsRecent(string path)
 		{
-			if (path == "%recent%")
-				return true;
-			else
-				return false;
+			return path == "%recent%";
 		}
 
 		public static string GetLuaPath()
 		{
-			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath);
+			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath, null);
 		}
 
 		public static string GetRomsPath(string sysID)
@@ -207,15 +200,6 @@ namespace BizHawk.MultiClient
 			if (Global.Config.UseRecentForROMs)
 			{
 				return Environment.SpecialFolder.Recent.ToString();
-			}
-
-			if (sysID == "SGX" || sysID == "PCECD") //Yucky
-			{
-				sysID = "PCE";
-			}
-			else if (sysID == "NULL")
-			{
-				sysID = "Global";
 			}
 
 			PathEntry path = Global.Config.PathEntries[sysID, "ROM"];
@@ -253,56 +237,26 @@ namespace BizHawk.MultiClient
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
-			string sysId = "";
-			switch (game.System)
-			{
-				case "SGX":
-				case "PCECD":
-					sysId = "PCE";
-					break;
-				case "NULL":
-					sysId = "Global";
-					break;
-				default:
-					sysId = game.System;
-					break;
-			}
-
-			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Save RAM"];
+			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Save RAM"];
 
 			if (pathEntry == null)
 			{
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
 		{
-			string sysId = "";
-			switch (game.System)
-			{
-				case "SGX":
-				case "PCECD":
-					sysId = "PCE";
-					break;
-				case "NULL":
-					sysId = "Global";
-					break;
-				default:
-					sysId = game.System;
-					break;
-			}
-
-			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Savestates"];
+			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Savestates"];
 
 			if (pathEntry == null)
 			{
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return MakeAbsolutePath(pathEntry.Path, sysId == "Global" ? null : sysId);
+			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
@@ -314,58 +268,28 @@ namespace BizHawk.MultiClient
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
-			string sysId = "";
-			switch (game.System)
-			{
-				case "SGX":
-				case "PCECD":
-					sysId = "PCE";
-					break;
-				case "NULL":
-					sysId = "Global";
-					break;
-				default:
-					sysId = game.System;
-					break;
-			}
-
-			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Savestates"];
-
-			if (pathEntry == null)
-			{
-				pathEntry = Global.Config.PathEntries[sysId, "Base"];
-			}
-
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, sysId == "Global" ? null : sysId), name);
-		}
-
-		public static string ScreenshotPrefix(GameInfo game)
-		{
-			string name = FilesystemSafeName(game);
-
-			string sysId = "";
-			switch (game.System)
-			{
-				case "SGX":
-				case "PCECD":
-					sysId = "PCE";
-					break;
-				case "NULL":
-					sysId = "Global";
-					break;
-				default:
-					sysId = game.System;
-					break;
-			}
-
-			PathEntry pathEntry = Global.Config.PathEntries[sysId, "Screenshots"];
+			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Savestates"];
 
 			if (pathEntry == null)
 			{
 				pathEntry = Global.Config.PathEntries[game.System, "Base"];
 			}
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path), name);
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+		}
+
+		public static string ScreenshotPrefix(GameInfo game)
+		{
+			string name = FilesystemSafeName(game);
+
+			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Screenshots"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			}
+
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
 		/// <summary>
@@ -384,7 +308,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				parent_path = MakeAbsolutePath(GetPlatformBase(system));
+				parent_path = MakeAbsolutePath(GetPlatformBase(system), system);
 			}
 
 			if (IsSubfolder(parent_path, absolute_path))

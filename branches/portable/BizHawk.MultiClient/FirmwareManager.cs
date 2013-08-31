@@ -87,7 +87,7 @@ namespace BizHawk.MultiClient
 			RealFirmwareReader reader = new RealFirmwareReader();
 
 			//build a list of files under the global firmwares path, and build a hash for each of them while we're at it
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath)) });
+			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath,null)) });
 	
 			while (todo.Count != 0)
 			{
@@ -143,12 +143,13 @@ namespace BizHawk.MultiClient
 				//do we have a user specification for this firmware record?
 				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr2.ConfigKey, out userSpec))
 				{
-					if (!ResolutionDictionary.ContainsKey(fr2)) 
-					{
-						ResolutionDictionary.Add(fr2, new ResolutionInfo());
-					}
 					//flag it as user specified
-					var ri = ResolutionDictionary[fr2];
+					ResolutionInfo ri = null;
+					if (!ResolutionDictionary.TryGetValue(fr2, out ri))
+					{
+						ri = new ResolutionInfo();
+						ResolutionDictionary[fr2] = ri;
+					}
 					ri.UserSpecified = true;
 					ri.KnownFirmwareFile = null;
 					ri.FilePath = userSpec;

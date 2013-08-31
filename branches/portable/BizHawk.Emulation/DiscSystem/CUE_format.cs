@@ -500,8 +500,8 @@ namespace BizHawk.DiscSystem
 			{
 				string line = tr.ReadLine();
 				if (line == null) break;
-				if (line == "") continue;
 				line = line.Trim();
+				if (line == "") continue;
 				var clp = new CueLineParser(line);
 
 				string key = clp.ReadToken().ToUpper();
@@ -622,6 +622,7 @@ namespace BizHawk.DiscSystem
 			public string ReadToken(bool isPath)
 			{
 				if (EOF) return null;
+
 				int startIndex = index;
 				bool inToken = false;
 				bool inQuote = false;

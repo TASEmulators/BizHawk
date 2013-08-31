@@ -226,49 +226,49 @@ namespace BizHawk.MultiClient
 				Cheat d = new Cheat();
 				if (cheatname.Text.Length > 0)
 				{
-					c.name = cheatname.Text + " Part 1";
-					d.name = cheatname.Text + " Part 2";
+					c.Name = cheatname.Text + " Part 1";
+					d.Name = cheatname.Text + " Part 2";
 				}
 				else
 				{
 					Processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					c.name = GGCodeMaskBox.Text + " Part 1";
-					d.name = GGCodeMaskBox.Text + " Part 2";
+					c.Name = GGCodeMaskBox.Text + " Part 1";
+					d.Name = GGCodeMaskBox.Text + " Part 2";
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
 					Processing = false;
 				}
 
 				if (String.IsNullOrWhiteSpace(AddressBox.Text))
 				{
-					c.address = 0;
-					d.address = 0 + 1;
+					c.Address = 0;
+					d.Address = 0 + 1;
 				}
 				else
 				{
-					c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-					d.address = c.address + 1;
+					c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					d.Address = c.Address + 1;
 				}
 				if (String.IsNullOrWhiteSpace(ValueBox.Text))
 				{
-					c.value = 0;
-					d.value = 0;
+					c.Value = 0;
+					d.Value = 0;
 				}
 				else
 				{
-					c.value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
-					d.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0x00FF);
+					c.Value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
+					d.Value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0x00FF);
 				}
-				c.compare = null;
-				d.compare = null;
+				c.Compare = null;
+				d.Compare = null;
 				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 
 					if (Global.Emulator.MemoryDomains[x].ToString() == "Rom Data")
 					{
-						c.domain = Global.Emulator.MemoryDomains[x];
+						c.Domain = Global.Emulator.MemoryDomains[x];
 						c.Enable();
 						Global.MainForm.Cheats1.AddCheat(c);
-						d.domain = Global.Emulator.MemoryDomains[x];
+						d.Domain = Global.Emulator.MemoryDomains[x];
 						d.Enable();
 						Global.MainForm.Cheats1.AddCheat(d);
 						break;

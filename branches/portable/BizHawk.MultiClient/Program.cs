@@ -87,8 +87,14 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 				if (Global.Config.SingleInstanceMode)
 				{
-					SingleInstanceController controller = new SingleInstanceController(args);
-					controller.Run(args);
+					try
+					{
+						new SingleInstanceController(args).Run(args);
+					}
+					catch (ObjectDisposedException ex)
+					{
+						/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
+					}
 				}
 				else
 				{
@@ -192,29 +198,27 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 		public class SingleInstanceController : WindowsFormsApplicationBase
 		{
-			MainForm mf;
 			readonly string[] cmdArgs;
 			public SingleInstanceController(string[] args)
 			{
 				cmdArgs = args;
 				IsSingleInstance = true;
 				StartupNextInstance += this_StartupNextInstance;
-
 			}
 
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
-				mf.LoadRom(e.CommandLine[0]);
+				(MainForm as MainForm).LoadRom(e.CommandLine[0]);
 			}
 
 			protected override void OnCreateMainForm()
 			{
-				MainForm = new RamWatch();
-
-				mf = new MainForm(cmdArgs);
-				MainForm = mf;
-                Application.Run(mf);
-			}
+				MainForm = new MainForm(cmdArgs);
+				var title = MainForm.Text;
+				MainForm.Show();
+				MainForm.Text = title;
+				(MainForm as MainForm).ProgramRunLoop();
+			} 
 		}
 
 		public static void DisplayDirect3DError()

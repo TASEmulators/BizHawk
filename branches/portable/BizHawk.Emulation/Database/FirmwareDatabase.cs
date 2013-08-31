@@ -8,8 +8,14 @@ namespace BizHawk
 	{
 		static FirmwareDatabase()
 		{
-			FirmwareAndOption("E4E41472C454F928E53EB10E0509BF7D1146ECC1", "NES", "Bios_FDS", "disksys.rom", "FDS Bios");
-			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom");
+			//FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
+			var fds_nintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", "disksys-nintendo.rom", "Bios (Nintendo)");
+			var fds_twinfc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", "disksys-nintendo.rom", "Bios (TwinFC)");
+			Firmware("NES", "Bios_FDS", "Bios");
+			Option("NES", "Bios_FDS", fds_nintendo);
+			Option("NES", "Bios_FDS", fds_twinfc);
+
+			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom"); //World (Rev B) ?
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", "SNES", "CX4", "cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", "SNES", "DSP1", "dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", "SNES", "DSP1b", "dsp1b.rom", "DSP1b Rom");

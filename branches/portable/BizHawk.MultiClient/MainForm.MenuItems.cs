@@ -1208,6 +1208,8 @@ namespace BizHawk.MultiClient
 		private void singleInstanceModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SingleInstanceMode ^= true;
+
+			MessageBox.Show("BizHawk must be restarted for this setting to take effect.", "Reboot Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void MainForm_Deactivate(object sender, EventArgs e)

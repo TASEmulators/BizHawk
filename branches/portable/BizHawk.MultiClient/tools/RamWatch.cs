@@ -562,7 +562,7 @@ namespace BizHawk.MultiClient
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (currentFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -1286,7 +1286,7 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void UnfreezeAddress()
@@ -1317,7 +1317,7 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1730,7 +1730,7 @@ namespace BizHawk.MultiClient
 			
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)

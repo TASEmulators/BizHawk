@@ -17,39 +17,58 @@ namespace BizHawk.MultiClient
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			FullnessLabel.Text = String.Format("{0:0.00}", Global.MainForm.Rewind_FullnessRatio * 100) + "%";
-			RewindFramesUsedLabel.Text = Global.MainForm.Rewind_Count.ToString();
-			StateSize = Global.Emulator.SaveStateBinary().Length;
-			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
-			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
-			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
+			if (Global.MainForm.RewindBuf != null)
+			{
+				FullnessLabel.Text = String.Format("{0:0.00}", Global.MainForm.Rewind_FullnessRatio * 100) + "%";
+				RewindFramesUsedLabel.Text = Global.MainForm.Rewind_Count.ToString();
+			}
+			else
+			{
+				FullnessLabel.Text = "N/A";
+				RewindFramesUsedLabel.Text = "N/A";
+			}
 
-			MediumStateSize = Global.Config.Rewind_MediumStateSize;
-			LargeStateSize = Global.Config.Rewind_LargeStateSize;
+			try
+			{
+				DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
+				RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
+				StateSize = Global.Emulator.SaveStateBinary().Length;
+				BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
 
-			UseDeltaCompression.Checked = Global.Config.Rewind_UseDelta;
+				MediumStateSize = Global.Config.Rewind_MediumStateSize;
+				LargeStateSize = Global.Config.Rewind_LargeStateSize;
 
-			SmallSavestateNumeric.Value = Global.Config.RewindFrequencySmall;
-			MediumSavestateNumeric.Value = Global.Config.RewindFrequencyMedium;
-			LargeSavestateNumeric.Value = Global.Config.RewindFrequencyLarge;
+				UseDeltaCompression.Checked = Global.Config.Rewind_UseDelta;
 
-			SmallStateEnabledBox.Checked = Global.Config.RewindEnabledSmall;
-			MediumStateEnabledBox.Checked = Global.Config.RewindEnabledMedium;
-			LargeStateEnabledBox.Checked = Global.Config.RewindEnabledLarge;
+				SmallSavestateNumeric.Value = Global.Config.RewindFrequencySmall;
+				MediumSavestateNumeric.Value = Global.Config.RewindFrequencyMedium;
+				LargeSavestateNumeric.Value = Global.Config.RewindFrequencyLarge;
 
-			SetSmallEnabled();
-			SetMediumEnabled();
-			SetLargeEnabled();
+				SmallStateEnabledBox.Checked = Global.Config.RewindEnabledSmall;
+				MediumStateEnabledBox.Checked = Global.Config.RewindEnabledMedium;
+				LargeStateEnabledBox.Checked = Global.Config.RewindEnabledLarge;
 
-			SetStateSize();
+				SetSmallEnabled();
+				SetMediumEnabled();
+				SetLargeEnabled();
 
-			int medium_state_size_kb = Global.Config.Rewind_MediumStateSize / 1024;
-			int large_state_size_kb = Global.Config.Rewind_LargeStateSize / 1024;
+				SetStateSize();
 
-			MediumStateTrackbar.Value = medium_state_size_kb;
-			MediumStateUpDown.Value = (decimal)medium_state_size_kb;
-			LargeStateTrackbar.Value = large_state_size_kb;
-			LargeStateUpDown.Value = (decimal)large_state_size_kb;
+				int medium_state_size_kb = Global.Config.Rewind_MediumStateSize / 1024;
+				int large_state_size_kb = Global.Config.Rewind_LargeStateSize / 1024;
+
+				MediumStateTrackbar.Value = medium_state_size_kb;
+				MediumStateUpDown.Value = (decimal)medium_state_size_kb;
+				LargeStateTrackbar.Value = large_state_size_kb;
+				LargeStateUpDown.Value = (decimal)large_state_size_kb;
+			}
+			catch (Exception ex)
+			{
+				int x = 0;
+				x++;
+				int y = x;
+				y++;
+			}
 		}
 
 		private void SetStateSize()

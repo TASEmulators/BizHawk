@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
@@ -22,7 +24,24 @@ namespace BizHawk.MultiClient
 
 		private void UserControl1_Load(object sender, EventArgs e)
 		{
+			PU.ControllerButton = Controller + " Up";
+			PD.ControllerButton = Controller + " Down";
+			PL.ControllerButton = Controller + " Left";
+			PR.ControllerButton = Controller + " Right";
 
+			BA.ControllerButton = Controller + " A";
+			BB.ControllerButton = Controller + " B";
+			BZ.ControllerButton = Controller + " Z";
+
+			BS.ControllerButton = Controller + " Start";
+
+			BL.ControllerButton = Controller + " L";
+			BR.ControllerButton = Controller + " R";
+
+			CU.ControllerButton = Controller + " C Up";
+			CD.ControllerButton = Controller + " C Down";
+			CL.ControllerButton = Controller + " C Left";
+			CR.ControllerButton = Controller + " C Right";
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -55,41 +74,10 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "N64") return;
 
-
-			if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-
-			if (BB.Checked) Global.StickyXORAdapter.SetSticky(Controller + " B", false);
-			if (BA.Checked) Global.StickyXORAdapter.SetSticky(Controller + " A", false);
-			if (BZ.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Z", false);
-			if (BS.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
-
-			if (BL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " L", false);
-			if (BR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " R", false);
-
-			if (CU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " C Up", false);
-			if (CD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " C Down", false);
-			if (CL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " C Left", false);
-			if (CR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " C Right", false);
-
-			PU.Checked = false;
-			PD.Checked = false;
-			PL.Checked = false;
-			PR.Checked = false;
-
-			BB.Checked = false;
-			BA.Checked = false;
-			BZ.Checked = false;
-			BS.Checked = false;
-			BL.Checked = false;
-			BR.Checked = false;
-
-			CU.Checked = false;
-			CD.Checked = false;
-			CL.Checked = false;
-			CR.Checked = false;
+			foreach (var button in Buttons)
+			{
+				button.Clear();
+			}
 		}
 
 		public void SetButtons(string buttons)
@@ -121,7 +109,7 @@ namespace BizHawk.MultiClient
 			{
 				y = Int32.Parse(buttons.Substring(19, 4));
 			}
-			set_analog(x, y);
+			set_analog(true, x, y);
 		}
 
 		public string GetMnemonic()
@@ -151,96 +139,34 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
-		private void Buttons_CheckedChanged(object sender, EventArgs e)
-		{
-			if (Global.Emulator.SystemId != "N64")
-			{
-				return;
-			}
-			else if (sender == PU)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " DPad U", PU.Checked);
-			}
-			else if (sender == PD)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " DPad D", PD.Checked);
-			}
-			else if (sender == PL)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " DPad L", PL.Checked);
-			}
-			else if (sender == PR)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " DPad R", PR.Checked);
-			}
-			else if (sender == CR)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " C Right", CR.Checked);
-			}
-			else if (sender == CL)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " C Left", CL.Checked);
-			}
-			else if (sender == CU)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " C Up", CU.Checked);
-			}
-			else if (sender == CD)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " C Down", CD.Checked);
-			}
-			else if (sender == BR)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " R", BR.Checked);
-			}
-			else if (sender == BL)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " L", BL.Checked);
-			}
-			else if (sender == BS)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " Start", BS.Checked);
-			}
-			else if (sender == BA)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " A", BA.Checked);
-			}
-			else if (sender == BB)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " B", BB.Checked);
-			}
-			else if (sender == BZ)
-			{
-				Global.StickyXORAdapter.SetSticky(Controller + " Z", BZ.Checked);
-			}
-		}
-
 		private void AnalogControl1_MouseClick(object sender, MouseEventArgs e)
 		{
-			set_analog(AnalogControl1.X, AnalogControl1.Y);
+			set_analog(AnalogControl1.HasValue, AnalogControl1.X, AnalogControl1.Y);
 		}
 
 		private void AnalogControl1_MouseMove(object sender, MouseEventArgs e)
 		{
-			set_analog(AnalogControl1.X, AnalogControl1.Y);
+			set_analog(AnalogControl1.HasValue, AnalogControl1.X, AnalogControl1.Y);
 		}
 
 		private void ManualX_ValueChanged(object sender, EventArgs e)
 		{
 			if (ManualX.Value != old_X)
-				set_analog((int)ManualX.Value, old_Y);
+				set_analog(AnalogControl1.HasValue, (int)ManualX.Value, old_Y);
 		}
 
 		private void ManualY_ValueChanged(object sender, EventArgs e)
 		{
 			if (ManualY.Value != old_Y)
-				set_analog(old_X, (int)ManualY.Value);
+				set_analog(AnalogControl1.HasValue, old_X, (int)ManualY.Value);
 		}
 
-		public void set_analog(int X, int Y)
+		public void set_analog(bool hasValue, int X, int Y)
 		{
-			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", X);
-			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", Y);
+			int? x = hasValue ? X : (int?)null;
+			int? y = hasValue ? Y : (int?)null;
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
 
 			AnalogControl1.X = X;
 			AnalogControl1.Y = Y;
@@ -277,6 +203,22 @@ namespace BizHawk.MultiClient
 			ManualX.Value = newx;
 			ManualY.Value = newy;
 			Refresh();
+		}
+
+		public List<VirtualPadButton> Buttons
+		{
+			get
+			{
+				List<VirtualPadButton> _list = new List<VirtualPadButton>();
+				foreach(Control c in this.Controls)
+				{
+					if (c is VirtualPadButton)
+					{
+						_list.Add((c as VirtualPadButton));
+					}
+				}
+				return _list;
+			}
 		}
 	}
 }

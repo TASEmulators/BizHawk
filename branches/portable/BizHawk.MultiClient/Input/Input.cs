@@ -289,78 +289,82 @@ namespace BizHawk.MultiClient
 #endif
 
 				_Modifiers = KeyInput.GetModifierKeysAsKeys();
-				_NewEvents.Clear();
 
-				//analyze keys
+				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
+				lock (this)
+				{
+					_NewEvents.Clear();
 #if WINDOWS
-				var bleh = new HashSet<Key>();
-				foreach (var k in KeyInput.State.PressedKeys)
-					bleh.Add(k);
-				foreach (var k in KeyInput.State.AllKeys)
-					if (bleh.Contains(k))
-						HandleButton(k.ToString(), true);
-					else
-						HandleButton(k.ToString(), false);
+					//analyze keys
+					var bleh = new HashSet<Key>();
+					foreach (var k in KeyInput.State.PressedKeys)
+						bleh.Add(k);
+					foreach (var k in KeyInput.State.AllKeys)
+						if (bleh.Contains(k))
+							HandleButton(k.ToString(), true);
+						else
+							HandleButton(k.ToString(), false);
 #else
-				foreach(Key kb in Enum.GetValues(typeof(Key)))
+   				foreach(Key kb in Enum.GetValues(typeof(Key)))
 				{
 					HandleButton(kb.ToString(), KeyInput.IsPressed(kb));
 				}
 #endif
 #if WINDOWS
-				lock (FloatValues)
-				{
-					//FloatValues.Clear();
-
-					//analyze xinput
-					for (int i = 0; i < GamePad360.Devices.Count; i++)
+                    lock (FloatValues)
 					{
-						var pad = GamePad360.Devices[i];
-						string xname = "X" + (i + 1) + " ";
-						for (int b = 0; b < pad.NumButtons; b++)
-							HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
-						foreach (var sv in pad.GetFloats())
+						//FloatValues.Clear();
+
+						//analyze xinput
+						for (int i = 0; i < GamePad360.Devices.Count; i++)
 						{
-							string n = xname = sv.Item1;
-							float f = sv.Item2;
-							if (trackdeltas)
-								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
-							FloatValues[n] = f;
+							var pad = GamePad360.Devices[i];
+							string xname = "X" + (i + 1) + " ";
+							for (int b = 0; b < pad.NumButtons; b++)
+								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+							foreach (var sv in pad.GetFloats())
+							{
+								string n = xname = sv.Item1;
+								float f = sv.Item2;
+								if (trackdeltas)
+									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+								FloatValues[n] = f;
+							}
 						}
+
+						//analyze joysticks
+						for (int i = 0; i < GamePad.Devices.Count; i++)
+						{
+							var pad = GamePad.Devices[i];
+							string jname = "J" + (i + 1) + " ";
+
+							for (int b = 0; b < pad.NumButtons; b++)
+								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+							foreach (var sv in pad.GetFloats())
+							{
+								string n = jname + sv.Item1;
+								float f = sv.Item2;
+								//if (n == "J5 RotationZ")
+								//	System.Diagnostics.Debugger.Break();
+								if (trackdeltas)
+									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+								FloatValues[n] = f;
+							}
+						}
+
 					}
 
-					//analyze joysticks
-					for (int i = 0; i < GamePad.Devices.Count; i++)
-					{
-						var pad = GamePad.Devices[i];
-						string jname = "J" + (i + 1) + " ";
-
-						for (int b = 0; b < pad.NumButtons; b++)
-							HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
-						foreach (var sv in pad.GetFloats())
-						{
-							string n = jname + sv.Item1;
-							float f = sv.Item2;
-							//if (n == "J5 RotationZ")
-							//	System.Diagnostics.Debugger.Break();
-							if (trackdeltas)
-								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
-							FloatValues[n] = f;
-						}
-					}
-
-				}
+					bool swallow = !Global.MainForm.AllowInput;
 #endif
-				bool swallow = !Global.MainForm.AllowInput;
-
-				foreach (var ie in _NewEvents)
-				{
-					//events are swallowed in some cases:
-					if (ie.EventType == InputEventType.Press && swallow)
-					{ }
-					else
-						EnqueueEvent(ie);
-				}
+					foreach (var ie in _NewEvents)
+					{
+						//events are swallowed in some cases:
+						if (ie.EventType == InputEventType.Press && swallow)
+						{ }
+						else
+							EnqueueEvent(ie);
+					}
+				} //lock(this)
 
 				//arbitrary selection of polling frequency:
 				Thread.Sleep(10);
@@ -407,40 +411,44 @@ namespace BizHawk.MultiClient
 		//returns the next Press event, if available. should be useful
 		public string GetNextBindEvent()
 		{
-			if (InputEvents.Count == 0) return null;
-			if (!Global.MainForm.AllowInput) return null;
-
-			//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
-			//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
-			//if you just pressed ctrl+c, wanting to bind ctrl+c, we'd see: pressed:ctrl, pressed:ctrl+c, unpressed:ctrl+c, unpressed:ctrl
-			//so its the first unpress we need to listen for
-
-			while (InputEvents.Count != 0)
+			//this whole process is intimately involved with the data structures, which can conflict with the input thread.
+			lock (this)
 			{
-				var ie = DequeueEvent();
-				
-				//as a special perk, we'll accept escape immediately
-				if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button == "Escape")
-					goto ACCEPT;
-					
-				if (ie.EventType == InputEventType.Press) continue;
+				if (InputEvents.Count == 0) return null;
+				if (!Global.MainForm.AllowInput) return null;
 
-			ACCEPT:
-				Console.WriteLine("Bind Event: {0} ", ie);
+				//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
+				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
+				//if you just pressed ctrl+c, wanting to bind ctrl+c, we'd see: pressed:ctrl, pressed:ctrl+c, unpressed:ctrl+c, unpressed:ctrl
+				//so its the first unpress we need to listen for
 
-				foreach (var kvp in LastState)
-					if (kvp.Value)
-					{
-						Console.WriteLine("Unpressing " + kvp.Key);
-						UnpressState[kvp.Key] = true;
-					}
-				
-				InputEvents.Clear();
+				while (InputEvents.Count != 0)
+				{
+					var ie = DequeueEvent();
 
-				return ie.LogicalButton.ToString();
+					//as a special perk, we'll accept escape immediately
+					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button == "Escape")
+						goto ACCEPT;
+
+					if (ie.EventType == InputEventType.Press) continue;
+
+				ACCEPT:
+					Console.WriteLine("Bind Event: {0} ", ie);
+
+					foreach (var kvp in LastState)
+						if (kvp.Value)
+						{
+							Console.WriteLine("Unpressing " + kvp.Key);
+							UnpressState[kvp.Key] = true;
+						}
+
+					InputEvents.Clear();
+
+					return ie.LogicalButton.ToString();
+				}
+
+				return null;
 			}
-
-			return null;
 		}
 
 		//controls whether modifier keys will be ignored as key press events

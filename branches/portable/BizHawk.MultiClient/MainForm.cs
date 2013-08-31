@@ -136,6 +136,10 @@ namespace BizHawk.MultiClient
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
+
+		//TODO: eventually start doing this, rather than tools attempting to talk to tools
+		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
+
 #if WINDOWS
 		private LuaConsole _luaconsole = null;
 		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
@@ -494,11 +498,11 @@ namespace BizHawk.MultiClient
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -875,6 +879,10 @@ namespace BizHawk.MultiClient
 
 			switch (system)
 			{
+				default:
+				case "NULL":
+					n64ToolStripMenuItem.Visible = true;
+					break;
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;
@@ -1658,8 +1666,8 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}
-				
-                if (_cheats != null) Cheats1.UpdateValues();
+
+				Cheats_UpdateValues();
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
@@ -1840,6 +1848,7 @@ namespace BizHawk.MultiClient
 				//if (ActiveForm is ControllerConfig) return true;
 				if (ActiveForm is config.NewControllerConfig) return true;
 				if (ActiveForm is TAStudio) return true;
+				if (ActiveForm is VirtualPadForm) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
@@ -2429,6 +2438,10 @@ namespace BizHawk.MultiClient
 						else
 							col = Color.White.ToArgb();
 					}
+
+					// make opaque
+					col |= unchecked((int)0xff000000);
+
 					ptr[y * stride + x] = col;
 				}
 			image.UnlockBits(bmpdata);
@@ -3770,12 +3783,12 @@ namespace BizHawk.MultiClient
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -3987,7 +4000,7 @@ namespace BizHawk.MultiClient
 
 		void ProcessMovieImport(string fn)
 		{
-			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath);
+			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
 			string errorMsg;
 			string warningMsg;
 			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);

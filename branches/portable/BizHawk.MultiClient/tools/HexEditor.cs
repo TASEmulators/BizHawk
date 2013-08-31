@@ -441,14 +441,18 @@ namespace BizHawk.MultiClient
 
 		private void SetMemoryDomain(int pos)
 		{
+			//<zeromus> THIS IS HORRIBLE.
 			if (pos == 999)
 			{
+				//<zeromus> THIS IS HORRIBLE.
 				ROM = GetRomBytes() ?? new byte[] { 0xFF };
 
+				//<zeromus> THIS IS HORRIBLE.
 				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little,
 					i => ROM[i],
 					(i, value) => ROM[i] = value);
-			
+
+				//<zeromus> THIS IS HORRIBLE.
 				Domain = ROMDomain;
 			}
 			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
@@ -498,6 +502,7 @@ namespace BizHawk.MultiClient
 			}
 			
 			//Add ROM File memory domain
+			//<zeromus> THIS IS HORRIBLE.
 			var rom_item = new ToolStripMenuItem {Text = "ROM File"};
 			rom_item.Click += (o, ev) => SetMemoryDomain(999); //999 will denote ROM file
 			memoryDomainsToolStripMenuItem.DropDownItems.Add(rom_item);
@@ -835,14 +840,14 @@ namespace BizHawk.MultiClient
 
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void UnFreezeAddress(int address)
 		{
 			if (address >= 0)
 			{
-				Cheat c = new Cheat {address = address, value = Domain.PeekByte(address), domain = Domain};
+				Cheat c = new Cheat {Address = address, Value = Domain.PeekByte(address), Domain = Domain};
 				Global.MainForm.Cheats1.RemoveCheat(c);
 
 				switch (DataSize)
@@ -851,18 +856,18 @@ namespace BizHawk.MultiClient
 					case 1:
 						break;
 					case 2:
-						Cheat c2 = new Cheat {address = address + 1, domain = Domain, value = Domain.PeekByte(address + 1)};
+						Cheat c2 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
 						c2.Enable();
 						Global.MainForm.Cheats1.RemoveCheat(c2);
 						break;
 					case 4:
-						Cheat c42 = new Cheat {address = address + 1, domain = Domain, value = Domain.PeekByte(address + 1)};
+						Cheat c42 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
 						c42.Enable();
 						Global.MainForm.Cheats1.RemoveCheat(c42);
-						Cheat c43 = new Cheat {address = address + 2, domain = Domain, value = Domain.PeekByte(address + 2)};
+						Cheat c43 = new Cheat {Address = address + 2, Domain = Domain, Value = Domain.PeekByte(address + 2)};
 						c43.Enable();
 						Global.MainForm.Cheats1.RemoveCheat(c43);
-						Cheat c44 = new Cheat {address = address + 3, domain = Domain, value = Domain.PeekByte(address + 3)};
+						Cheat c44 = new Cheat {Address = address + 3, Domain = Domain, Value = Domain.PeekByte(address + 3)};
 						c44.Enable();
 						Global.MainForm.Cheats1.RemoveCheat(c44);
 						break;
@@ -875,7 +880,7 @@ namespace BizHawk.MultiClient
 		{
 			if (address >= 0)
 			{
-				Cheat c = new Cheat {address = address, value = Domain.PeekByte(address), domain = Domain};
+				Cheat c = new Cheat {Address = address, Value = Domain.PeekByte(address), Domain = Domain};
 				c.Enable();
 				Global.MainForm.Cheats1.AddCheat(c);
 
@@ -885,18 +890,18 @@ namespace BizHawk.MultiClient
 					case 1:
 						break;
 					case 2:
-						Cheat c2 = new Cheat {address = address + 1, domain = Domain, value = Domain.PeekByte(address + 1)};
+						Cheat c2 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
 						c2.Enable();
 						Global.MainForm.Cheats1.AddCheat(c2);
 						break;
 					case 4:
-						Cheat c42 = new Cheat {address = address + 1, domain = Domain, value = Domain.PeekByte(address + 1)};
+						Cheat c42 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
 						c42.Enable();
 						Global.MainForm.Cheats1.AddCheat(c42);
-						Cheat c43 = new Cheat {address = address + 2, domain = Domain, value = Domain.PeekByte(address + 2)};
+						Cheat c43 = new Cheat {Address = address + 2, Domain = Domain, Value = Domain.PeekByte(address + 2)};
 						c43.Enable();
 						Global.MainForm.Cheats1.AddCheat(c43);
-						Cheat c44 = new Cheat {address = address + 3, domain = Domain, value = Domain.PeekByte(address + 3)};
+						Cheat c44 = new Cheat {Address = address + 3, Domain = Domain, Value = Domain.PeekByte(address + 3)};
 						c44.Enable();
 						Global.MainForm.Cheats1.AddCheat(c44);
 						break;
@@ -1194,11 +1199,11 @@ namespace BizHawk.MultiClient
 			
 			for (int x = 0; x < Global.CheatList.Count; x++)
 			{
-				if (IsVisible(Global.CheatList.cheatList[x].address))
+				if (IsVisible(Global.CheatList[x].Address))
 				{
-					if (Domain.ToString() == Global.CheatList.cheatList[x].domain.ToString())
+					if (Domain.ToString() == Global.CheatList[x].Domain.ToString())
 					{
-						Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList.cheatList[x].address), new Size(15 * DataSize, fontHeight));
+						Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList[x].Address), new Size(15 * DataSize, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
@@ -1641,7 +1646,7 @@ namespace BizHawk.MultiClient
 
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)

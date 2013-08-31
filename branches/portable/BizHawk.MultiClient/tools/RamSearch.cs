@@ -1896,7 +1896,7 @@ namespace BizHawk.MultiClient
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (currentFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 			if (currentFile.Length > 0)
@@ -2289,7 +2289,7 @@ namespace BizHawk.MultiClient
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 				Global.MainForm.RamWatch1.UpdateValues();
-				Global.MainForm.Cheats1.UpdateValues();
+				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
 
@@ -2369,7 +2369,7 @@ namespace BizHawk.MultiClient
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 				Global.MainForm.RamWatch1.UpdateValues();
-				Global.MainForm.Cheats1.UpdateValues();
+				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
 
@@ -2723,7 +2723,7 @@ namespace BizHawk.MultiClient
 
 			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 		}
 
 		private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
