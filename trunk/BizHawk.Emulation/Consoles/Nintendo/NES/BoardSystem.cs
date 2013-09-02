@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//mixes the board's custom audio into the supplied sample buffer
 			void ApplyCustomAudio(short[] samples);
+
+			MapperProperties InitialRegisterValues { get; set; }
 		};
 
 
@@ -71,6 +73,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 
 			}
+
+			private MapperProperties _initialRegisterValues = new MapperProperties();
+			public MapperProperties InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
@@ -343,6 +348,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				newboard = CreateBoardInstance(board.GetType());
 			}
 			newboard.Create(this);
+			newboard.InitialRegisterValues = InitialMapperRegisterValues;
 			newboard.Configure(origin);
 			newboard.ROM = board.ROM;
 			newboard.VROM = board.VROM;
@@ -432,7 +438,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// finds a board class which can handle the provided cart
 		/// </summary>
-		static Type FindBoard(CartInfo cart, EDetectionOrigin origin)
+		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, MapperProperties properties)
 		{
 			NES nes = new NES();
 			nes.cart = cart;
@@ -448,6 +454,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							board.DisableConfigAsserts = true;
 
 						board.Create(nes);
+						board.InitialRegisterValues = properties;
 						if (board.Configure(origin))
 						{
 							return type;

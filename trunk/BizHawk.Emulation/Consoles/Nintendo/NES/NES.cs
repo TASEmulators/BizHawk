@@ -13,8 +13,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(CoreComm comm, GameInfo game, byte[] rom, byte[] fdsbios = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, byte[] fdsbios = null, Dictionary<string, string> boardProperties = null)
 		{
+			if (boardProperties != null)
+			{
+				InitialMapperRegisterValues.Set(boardProperties);
+			}
+
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
@@ -59,6 +64,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return ret;
 			}
 			return null;
+		}
+
+		MapperProperties InitialMapperRegisterValues = new MapperProperties();
+
+		public class MapperProperties
+		{
+			private List<KeyValuePair<string, string>> _properties = new List<KeyValuePair<string, string>>();
+
+			public string this[string key]
+			{
+				get
+				{
+					if(_properties.Any(x => x.Key == key))
+					{
+						return _properties.FirstOrDefault(x => x.Key == key).Value;
+					}
+					else
+					{
+						return null;
+					}
+				}
+			}
+
+			public void Set(Dictionary<string, string> values)
+			{
+				_properties.Clear();
+				_properties.AddRange(values);
+			}
+
+			public void Add(string key, string value)
+			{
+				_properties.Add(new KeyValuePair<string, string>(key, value));
+			}
 		}
 
 		class NESWatch
@@ -654,7 +692,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//try spinning up a board with 8K wram and with 0K wram to see if one answers
 						try
 						{
-							boardType = FindBoard(choice, origin);
+							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
 						}
 						catch { }
 						if (boardType == null)
@@ -663,7 +701,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							else if (choice.wram_size == 0) choice.wram_size = 8;
 							try
 							{
-								boardType = FindBoard(choice, origin);
+								boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
 							}
 							catch { }
 							if (boardType != null)
@@ -709,7 +747,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			game_name = choice.game.name;
 
 			//find a INESBoard to handle this
-			boardType = FindBoard(choice, origin);
+			boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
 			if (boardType == null)
 				throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
@@ -733,6 +771,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			cart = choice;
 			board.Create(this);
+			board.InitialRegisterValues = InitialMapperRegisterValues;
 			board.Configure(origin);
 
 			if (origin == EDetectionOrigin.BootGodDB)
