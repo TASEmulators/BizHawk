@@ -1285,7 +1285,7 @@ namespace BizHawk.MultiClient
 										}
 									}
 
-									NES nes = new NES(nextComm, game, rom.FileData, bios)
+									NES nes = new NES(nextComm, game, rom.FileData, bios, Global.MovieSession.Movie.Header.BoardProperties)
 										{
 											SoundOn = Global.Config.SoundEnabled,
 											NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
