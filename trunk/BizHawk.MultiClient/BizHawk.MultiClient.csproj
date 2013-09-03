@@ -1163,6 +1163,7 @@
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
     <None Include="config\ControllerImages\IntVController.png" />
+    <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
