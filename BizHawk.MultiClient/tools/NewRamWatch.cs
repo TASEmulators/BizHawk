@@ -61,20 +61,17 @@ namespace BizHawk.MultiClient
 					text = Watches[index].ValueString;
 					break;
 				case 2: // prev
-					text = "TODO";
-					//switch (Global.Config.RamWatchPrev_Type)
-					//{
-					//    case 1:
-					//        text = Watches[index].PrevString;
-					//        break;
-					//    case 2:
-					//        text = Watches[index].LastChangeString;
-					//        break;
-					//}
+					if (Watches[index] is iWatchEntryDetails)
+					{
+						text = "TODO";
+						//text = (Watches[index] as iWatchEntryDetails).Previous;
+					}
 					break;
 				case 3: // changes
-					text = "TODO";
-					//text = Watches[index].Changecount;
+					if (Watches[index] is iWatchEntryDetails)
+					{
+						text = (Watches[index] as iWatchEntryDetails).ChangeCount.ToString();
+					}
 					break;
 				case 4: // diff
 					text = "TODO";
@@ -92,8 +89,10 @@ namespace BizHawk.MultiClient
 					text = Watches[index].DomainName;
 					break;
 				case 6: // notes
-					text = "TODO";
-					//text = Watches[index].Notes;
+					if (Watches[index] is iWatchEntryDetails)
+					{
+						text = (Watches[index] as iWatchEntryDetails).Notes;
+					}
 					break;
 			}
 		}

@@ -897,28 +897,22 @@ namespace BizHawk.MultiClient
 
 	public abstract class WatchEntryBase
 	{
-		protected MemoryDomain _domain;
-
-		public abstract int? Address { get; }
-		public abstract int? Value { get; }
-
-		public abstract string AddressString { get; }
-		public abstract string ValueString { get; }
-
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
 		public enum DisplayType { Signed, Unsigned, Hex };
 
-		public readonly WatchSize Size;
-		public readonly DisplayType Type;
-		public bool BigEndian = false;
+		protected MemoryDomain _domain;
+		protected DisplayType _type;
+		protected bool _bigEndian;
 
-		public virtual bool IsSeparator
-		{
-			get
-			{
-				return Size == WatchSize.Separator;
-			}
-		}
+		public abstract int? Address { get; }
+		public abstract int? Value { get; }
+		public abstract string AddressString { get; }
+		public abstract string ValueString { get; }
+		public abstract WatchSize Size { get; }
+		public abstract bool IsSeparator { get; }
+
+		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
+		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		public string DomainName
 		{
@@ -955,7 +949,22 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static WatchEntryBase GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool details)
+		public string AddressFormatStr
+		{
+			get
+			{
+				if (_domain != null)
+				{
+					return "X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString();
+				}
+				else
+				{
+					return "";
+				}
+			}
+		}
+
+		public static WatchEntryBase GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
 		{
 			switch (size)
 			{
@@ -1031,6 +1040,11 @@ namespace BizHawk.MultiClient
 		{
 			get { return true; }
 		}
+
+		public override WatchSize Size
+		{
+			get { return WatchSize.Separator; }
+		}
 	}
 
 	public class ByteWatch : WatchEntryBase
@@ -1045,10 +1059,7 @@ namespace BizHawk.MultiClient
 
 		public override int? Address
 		{
-			get
-			{
-				return _address;
-			}
+			get { return _address; }
 		}
 
 		public override int? Value
@@ -1070,7 +1081,14 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (Address.HasValue)
+				{
+					return Address.Value.ToString(AddressFormatStr);
+				}
+				else
+				{
+					return "";
+				}
 			}
 		}
 
@@ -1078,7 +1096,16 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				throw new NotImplementedException();
+				switch (Type)
+				{
+					case DisplayType.Signed:
+						return ((sbyte)Value).ToString();
+					default:
+					case DisplayType.Unsigned:
+						return ((byte)Value).ToString();
+					case DisplayType.Hex:
+						return String.Format("{0:X2}", Value);
+				}
 			}
 		}
 
@@ -1087,8 +1114,18 @@ namespace BizHawk.MultiClient
 			switch (Type)
 			{
 				default:
-					return Value.ToString(); //TODO
+					return Value.ToString(); //TODO - this is used by on screen display
 			}
+		}
+
+		public override bool IsSeparator
+		{
+			get { return false; }
+		}
+
+		public override WatchSize Size
+		{
+			get { return WatchSize.Byte; }
 		}
 	}
 
@@ -1196,7 +1233,7 @@ namespace BizHawk.MultiClient
 
 		public void Load(string path, bool details, bool append)
 		{
-			bool result = LoadFile(path, append, details);
+			bool result = LoadFile(path, details, append);
 
 			if (result)
 			{
@@ -1287,17 +1324,17 @@ namespace BizHawk.MultiClient
 
 
 					//Temporary, rename if kept
-					int THEADDRESS_ = 0;
-					WatchEntryBase.WatchSize THESIZE = WatchEntryBase.WatchSize.Separator;
-					WatchEntryBase.DisplayType THEDISPLAYTYPE = WatchEntryBase.DisplayType.Unsigned;
-					bool BIGENDIAN = false;
-					MemoryDomain THEDOMAIN = Global.Emulator.MainMemory;
-					string THENOTES;
+					int addr = 0;
+					WatchEntryBase.WatchSize size = WatchEntryBase.WatchSize.Separator;
+					WatchEntryBase.DisplayType type = WatchEntryBase.DisplayType.Unsigned;
+					bool bigEndian = false;
+					MemoryDomain memDomain = Global.Emulator.MainMemory;
+					string notes;
 
 					string temp = line.Substring(0, line.IndexOf('\t'));
 					try
 					{
-						THEADDRESS_ = Int32.Parse(temp, NumberStyles.HexNumber);
+						addr = Int32.Parse(temp, NumberStyles.HexNumber);
 					}
 					catch
 					{
@@ -1306,12 +1343,12 @@ namespace BizHawk.MultiClient
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Type
-					THESIZE = WatchEntryBase.SizeFromChar(line[0]);
+					size = WatchEntryBase.SizeFromChar(line[0]);
 
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Signed
-					THEDISPLAYTYPE = WatchEntryBase.DisplayTypeFromChar(line[0]);
+					type = WatchEntryBase.DisplayTypeFromChar(line[0]);
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Endian
@@ -1325,11 +1362,11 @@ namespace BizHawk.MultiClient
 					}
 					if (startIndex == 0)
 					{
-						BIGENDIAN = false;
+						bigEndian = false;
 					}
 					else
 					{
-						BIGENDIAN = true;
+						bigEndian = true;
 					}
 
 					if (isBizHawkWatch && !isOldBizHawkWatch)
@@ -1337,20 +1374,17 @@ namespace BizHawk.MultiClient
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						THEDOMAIN = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
+						memDomain = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
-					THENOTES = line.Substring(startIndex, line.Length - startIndex);   //User notes
+					notes = line.Substring(startIndex, line.Length - startIndex);   //User notes
 
-					WatchEntryBase w = WatchEntryBase.GenerateWatch(
-							THEDOMAIN,
-							THEADDRESS_,
-							THESIZE,
-							THEDISPLAYTYPE,
-							details
-						);
-					w.BigEndian = BIGENDIAN;
+					WatchEntryBase w = WatchEntryBase.GenerateWatch(memDomain, addr, size, details);
+					w.BigEndian = bigEndian;
+					w.Type = type;
+					(w as iWatchEntryDetails).Notes = notes;
+
 					_watchList.Add(w);
 					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
 				}
