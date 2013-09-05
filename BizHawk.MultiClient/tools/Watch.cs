@@ -96,7 +96,7 @@ namespace BizHawk.MultiClient
 		{
 			get { return Value - Prev; }
 		}
-		
+
 		public int DiffOriginal
 		{
 			get { return Value - Original; }
@@ -256,7 +256,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Prev = Value;
-			
+
 			switch (Type)
 			{
 				case TYPE.BYTE:
@@ -902,52 +902,79 @@ namespace BizHawk.MultiClient
 		public abstract int? Address { get; }
 		public abstract int? Value { get; }
 
-        public abstract string AddressString { get; }
-        public abstract string ValueString { get; }
+		public abstract string AddressString { get; }
+		public abstract string ValueString { get; }
 
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
 		public enum DisplayType { Signed, Unsigned, Hex };
 
 		public readonly WatchSize Size;
 		public readonly DisplayType Type;
-        public bool BigEndian = false;
+		public bool BigEndian = false;
 
-        public bool IsSeparator()
-        {
-            return Size == WatchSize.Separator;
-        }
+		public virtual bool IsSeparator
+		{
+			get
+			{
+				return Size == WatchSize.Separator;
+			}
+		}
 
-        public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
-        {
-            switch (c)
-            {
-                case 'b':
-                    return WatchSize.Byte;
-                case 'w':
-                    return WatchSize.Word;
-                case 'd':
-                    return WatchSize.DWord;
-                default:
-                case 'S':
-                    return WatchSize.Separator;
-            }
-        }
+		public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
+		{
+			switch (c)
+			{
+				case 'b':
+					return WatchSize.Byte;
+				case 'w':
+					return WatchSize.Word;
+				case 'd':
+					return WatchSize.DWord;
+				default:
+				case 'S':
+					return WatchSize.Separator;
+			}
+		}
 
-        public static DisplayType DisplayTypeFromChar(char c) //s = signed, u = unsigned, h = hex
-        {
-            switch (c)
-            {
-                default:
-                case 'u':
-                    return DisplayType.Unsigned;
-                case 's':
-                    return DisplayType.Signed;
-                case 'h':
-                    return DisplayType.Hex;
-            }
-        }
+		public static DisplayType DisplayTypeFromChar(char c) //s = signed, u = unsigned, h = hex
+		{
+			switch (c)
+			{
+				default:
+				case 'u':
+					return DisplayType.Unsigned;
+				case 's':
+					return DisplayType.Signed;
+				case 'h':
+					return DisplayType.Hex;
+			}
+		}
+
+		public static WatchEntryBase GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool details)
+		{
+			switch (size)
+			{
+				default:
+				case WatchSize.Separator:
+					return new SeparatorWatch();
+				case WatchSize.Byte:
+					if (details)
+					{
+						return new DetailedByteWatch(domain, address);
+					}
+					else
+					{
+						return new ByteWatch(domain, address);
+					}
+					break;
+				case WatchSize.Word:
+					throw new NotImplementedException();
+				case WatchSize.DWord:
+					throw new NotImplementedException();
+			}
+		}
 	}
-	
+
 	public interface iWatchEntryDetails
 	{
 		int ChangeCount { get; }
@@ -956,7 +983,49 @@ namespace BizHawk.MultiClient
 		int? Previous { get; }
 		void ResetPrevious();
 
-        string Notes { get; set; }
+		string Notes { get; set; }
+	}
+
+	public class SeparatorWatch : WatchEntryBase
+	{
+		public SeparatorWatch()
+		{
+			
+		}
+
+		public override int? Address
+		{
+			get { return null; }
+		}
+
+		public override int? Value
+		{
+			get { return null; }
+		}
+
+		public override string AddressString
+		{
+			get { return ""; }
+		}
+
+		public override string ValueString
+		{
+			get { return ""; }
+		}
+
+		public override string ToString()
+		{
+			switch (Type)
+			{
+				default:
+					return Value.ToString(); //TODO
+			}
+		}
+
+		public override bool IsSeparator
+		{
+			get { return true; }
+		}
 	}
 
 	public class ByteWatch : WatchEntryBase
@@ -968,8 +1037,8 @@ namespace BizHawk.MultiClient
 			_address = address;
 			_domain = domain;
 		}
-        
-        public override int? Address
+
+		public override int? Address
 		{
 			get
 			{
@@ -982,35 +1051,35 @@ namespace BizHawk.MultiClient
 			get
 			{
 				if (_address.HasValue)
-                {
-                    return _domain.PeekByte(_address.Value);
-                }
-                else
-                {
-                    return null;
-                }
+				{
+					return _domain.PeekByte(_address.Value);
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 
-        public override string  AddressString
-        {
-	        get
-            {
-                throw new NotImplementedException();
-            }
-        }
+		public override string AddressString
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
 
-        public override string  ValueString
-        {
-	        get
-            {
-                throw new NotImplementedException();
-            }
-        }
+		public override string ValueString
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
 
 		public override string ToString()
 		{
-			switch(Type)
+			switch (Type)
 			{
 				default:
 					return Value.ToString(); //TODO
@@ -1022,26 +1091,28 @@ namespace BizHawk.MultiClient
 	{
 		private int? _previous;
 
-        public DetailedByteWatch(MemoryDomain domain, int address) : base(domain, address) { Notes = String.Empty; }
+		public DetailedByteWatch(MemoryDomain domain, int address) : base(domain, address) { Notes = String.Empty; }
 
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
-		
+
 		public int? Previous { get { return _previous; } }
 		public void ResetPrevious()
 		{
 			_previous = Value;
 		}
 
-        public string Notes { get; set; }
+		public string Notes { get; set; }
 	}
 
 	public class WatchList : IEnumerable
 	{
+		private string _currentFilename = "";
+
 		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange };
 
 		private List<WatchEntryBase> _watchList = new List<WatchEntryBase>();
-        private MemoryDomain _domain = null;
+		private MemoryDomain _domain = null;
 
 		public WatchList() { }
 
@@ -1063,229 +1134,237 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        public int WatchCount
-        {
-            get
-            {
-                return _watchList.Count(w => !w.IsSeparator());
-            }
-        }
+		public int WatchCount
+		{
+			get
+			{
+				return _watchList.Count(w => !w.IsSeparator);
+			}
+		}
 
-        public int ItemCount
-        {
-            get
-            {
-                return _watchList.Count;
-            }
-        }
+		public int ItemCount
+		{
+			get
+			{
+				return _watchList.Count;
+			}
+		}
 
-        public string AddressFormatStr
-        {
-            get
-            {
-                if (_domain != null)
-                {
-                    return "X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString();
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
+		public string AddressFormatStr
+		{
+			get
+			{
+				if (_domain != null)
+				{
+					return "X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString();
+				}
+				else
+				{
+					return "";
+				}
+			}
+		}
 
-        public void Clear()
-        {
-            _watchList.Clear();
-        }
+		public void Clear()
+		{
+			_watchList.Clear();
+		}
 
-        public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
+		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
 
-        #region File handling logic - probably needs to be its own class
+		#region File handling logic - probably needs to be its own class
 
-        public string CurrentFileName { get; set; }
-        public bool Changes { get; set; }
+		public string CurrentFileName { get { return _currentFilename; } set { _currentFilename = value; } }
+		public bool Changes { get; set; }
 
-        public void Save()
-        {
-            if (!String.IsNullOrWhiteSpace(CurrentFileName))
-            {
-                SaveFile();
-            }
-            else
-            {
-                SaveFileAs();
-            }
-        }
+		public void Save()
+		{
+			if (!String.IsNullOrWhiteSpace(CurrentFileName))
+			{
+				SaveFile();
+			}
+			else
+			{
+				SaveFileAs();
+			}
+		}
 
-        public void Load(string path, bool append)
-        {
-            bool result = LoadFile(path, append);
+		public void Load(string path, bool details, bool append)
+		{
+			bool result = LoadFile(path, append, details);
 
-            if (result)
-            {
-                if (!append)
-                {
-                    CurrentFileName = path;
-                }
-                else
-                {
-                    Changes = false;
-                }
-            }
-        }
+			if (result)
+			{
+				if (!append)
+				{
+					CurrentFileName = path;
+				}
+				else
+				{
+					Changes = false;
+				}
+			}
+		}
 
-        private void SaveFile()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		private void SaveFile()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
-        private void SaveFileAs()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		private void SaveFileAs()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
-        private bool LoadFile(string path, bool append)
-        {
-            string domain = "";
-            var file = new FileInfo(path);
-            if (file.Exists == false) return false;
-            bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
-            bool isOldBizHawkWatch = false;
-            using (StreamReader sr = file.OpenText())
-            {
-                string line;
+		private bool LoadFile(string path, bool details, bool append)
+		{
+			string domain = "";
+			var file = new FileInfo(path);
+			if (file.Exists == false) return false;
+			bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
+			bool isOldBizHawkWatch = false;
+			using (StreamReader sr = file.OpenText())
+			{
+				string line;
 
-                if (append == false)
-                {
-                    Clear();
-                }
+				if (append == false)
+				{
+					Clear();
+				}
 
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-                    //Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-                    if (line.Length < 5)
-                    {
-                        isBizHawkWatch = false;
-                        continue;
-                    }
+				while ((line = sr.ReadLine()) != null)
+				{
+					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
+					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
+					if (line.Length < 5)
+					{
+						isBizHawkWatch = false;
+						continue;
+					}
 
-                    if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
-                    {
-                        domain = line.Substring(7, line.Length - 7);
-                        isBizHawkWatch = true;
-                    }
+					if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
+					{
+						domain = line.Substring(7, line.Length - 7);
+						isBizHawkWatch = true;
+					}
 
-                    if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
-                    {
-                        continue;
-                    }
+					if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
+					{
+						continue;
+					}
 
-                    int numColumns = StringHelpers.HowMany(line, '\t');
-                    int startIndex;
-                    if (numColumns == 5)
-                    {
-                        //If 5, then this is a post 1.0.5 .wch file
-                        if (isBizHawkWatch)
-                        {
-                            //Do nothing here
-                        }
-                        else
-                        {
-                            startIndex = line.IndexOf('\t') + 1;
-                            line = line.Substring(startIndex, line.Length - startIndex);   //5 digit value representing the watch position number
-                        }
-                    }
-                    else if (numColumns == 4)
-                    {
-                        isOldBizHawkWatch = true;
-                    }
-                    else //4 is 1.0.5 and earlier
-                    {
-                        continue;   //If not 4, something is wrong with this line, ignore it
-                    }
-
-
-
-                    //Temporary, rename if kept
-                    Watch w = new Watch();
-                    int THEADDRESS_ = 0;
-                    WatchEntryBase.WatchSize THESIZE = WatchEntryBase.WatchSize.Separator;
-                    WatchEntryBase.DisplayType THEDISPLAYTYPE = WatchEntryBase.DisplayType.Unsigned;
-                    bool BIGENDIAN = false;
-                    MemoryDomain THEDOMAIN = Global.Emulator.MainMemory;
-                    string THENOTES;
-
-                    string temp = line.Substring(0, line.IndexOf('\t'));
-                    try
-                    {
-                        THEADDRESS_ = Int32.Parse(temp, NumberStyles.HexNumber);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    startIndex = line.IndexOf('\t') + 1;
-                    line = line.Substring(startIndex, line.Length - startIndex);   //Type
-                    THESIZE = WatchEntryBase.SizeFromChar(line[0]);
+					int numColumns = StringHelpers.HowMany(line, '\t');
+					int startIndex;
+					if (numColumns == 5)
+					{
+						//If 5, then this is a post 1.0.5 .wch file
+						if (isBizHawkWatch)
+						{
+							//Do nothing here
+						}
+						else
+						{
+							startIndex = line.IndexOf('\t') + 1;
+							line = line.Substring(startIndex, line.Length - startIndex);   //5 digit value representing the watch position number
+						}
+					}
+					else if (numColumns == 4)
+					{
+						isOldBizHawkWatch = true;
+					}
+					else //4 is 1.0.5 and earlier
+					{
+						continue;   //If not 4, something is wrong with this line, ignore it
+					}
 
 
-                    startIndex = line.IndexOf('\t') + 1;
-                    line = line.Substring(startIndex, line.Length - startIndex);   //Signed
-                    THEDISPLAYTYPE = WatchEntryBase.DisplayTypeFromChar(line[0]);
 
-                    startIndex = line.IndexOf('\t') + 1;
-                    line = line.Substring(startIndex, line.Length - startIndex);   //Endian
-                    try
-                    {
-                        startIndex = Int16.Parse(line[0].ToString());
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                    if (startIndex == 0)
-                    {
-                        BIGENDIAN = false;
-                    }
-                    else
-                    {
-                        BIGENDIAN = true;
-                    }
+					//Temporary, rename if kept
+					int THEADDRESS_ = 0;
+					WatchEntryBase.WatchSize THESIZE = WatchEntryBase.WatchSize.Separator;
+					WatchEntryBase.DisplayType THEDISPLAYTYPE = WatchEntryBase.DisplayType.Unsigned;
+					bool BIGENDIAN = false;
+					MemoryDomain THEDOMAIN = Global.Emulator.MainMemory;
+					string THENOTES;
 
-                    if (isBizHawkWatch && !isOldBizHawkWatch)
-                    {
-                        startIndex = line.IndexOf('\t') + 1;
-                        line = line.Substring(startIndex, line.Length - startIndex);   //Domain
-                        temp = line.Substring(0, line.IndexOf('\t'));
-                        THEDOMAIN = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
-                    }
+					string temp = line.Substring(0, line.IndexOf('\t'));
+					try
+					{
+						THEADDRESS_ = Int32.Parse(temp, NumberStyles.HexNumber);
+					}
+					catch
+					{
+						continue;
+					}
 
-                    startIndex = line.IndexOf('\t') + 1;
-                    THENOTES = line.Substring(startIndex, line.Length - startIndex);   //User notes
+					startIndex = line.IndexOf('\t') + 1;
+					line = line.Substring(startIndex, line.Length - startIndex);   //Type
+					THESIZE = WatchEntryBase.SizeFromChar(line[0]);
 
-                    //_watchList.Add(w); //TODO: we need a widget factory or something, to manage the logic of what object to use!
-                }
-            }
 
-            return true;
-        }
+					startIndex = line.IndexOf('\t') + 1;
+					line = line.Substring(startIndex, line.Length - startIndex);   //Signed
+					THEDISPLAYTYPE = WatchEntryBase.DisplayTypeFromChar(line[0]);
 
-        private static int GetDomainPos(string name)
-        {
-            //Attempts to find the memory domain by name, if it fails, it defaults to index 0
-            for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-            {
-                if (Global.Emulator.MemoryDomains[x].Name == name)
-                    return x;
-            }
-            return 0;
-        }
+					startIndex = line.IndexOf('\t') + 1;
+					line = line.Substring(startIndex, line.Length - startIndex);   //Endian
+					try
+					{
+						startIndex = Int16.Parse(line[0].ToString());
+					}
+					catch
+					{
+						continue;
+					}
+					if (startIndex == 0)
+					{
+						BIGENDIAN = false;
+					}
+					else
+					{
+						BIGENDIAN = true;
+					}
 
-        #endregion
-    }
+					if (isBizHawkWatch && !isOldBizHawkWatch)
+					{
+						startIndex = line.IndexOf('\t') + 1;
+						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
+						temp = line.Substring(0, line.IndexOf('\t'));
+						THEDOMAIN = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
+					}
+
+					startIndex = line.IndexOf('\t') + 1;
+					THENOTES = line.Substring(startIndex, line.Length - startIndex);   //User notes
+
+					WatchEntryBase w = WatchEntryBase.GenerateWatch(
+							THEDOMAIN,
+							THEADDRESS_,
+							THESIZE,
+							THEDISPLAYTYPE,
+							details
+						);
+					w.BigEndian = BIGENDIAN;
+					_watchList.Add(w);
+					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
+				}
+			}
+
+			return true;
+		}
+
+		private static int GetDomainPos(string name)
+		{
+			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			{
+				if (Global.Emulator.MemoryDomains[x].Name == name)
+					return x;
+			}
+			return 0;
+		}
+
+		#endregion
+	}
 }
