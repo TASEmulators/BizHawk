@@ -1210,6 +1210,8 @@ namespace BizHawk.MultiClient
 		public void Clear()
 		{
 			_watchList.Clear();
+            Changes = false;
+            _currentFilename = "";
 		}
 
 		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
