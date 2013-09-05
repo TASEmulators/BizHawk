@@ -106,6 +106,7 @@ namespace BizHawk.MultiClient
 		private GBGameGenie _gbgg = null;
 		private GenGameGenie _gengg = null;
 		private NESSoundConfig _nessound = null;
+        private NewRamWatch _newramwatch = null;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
@@ -129,6 +130,8 @@ namespace BizHawk.MultiClient
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
+
+        public NewRamWatch NewRamWatch1 { get { if (_newramwatch == null) _newramwatch = new NewRamWatch(); return _newramwatch; } set { _newramwatch = value; } }
 
 		//TODO: eventually start doing this, rather than tools attempting to talk to tools
 		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
@@ -322,10 +325,12 @@ namespace BizHawk.MultiClient
 				if (Global.Config.DisplayRamWatch)
 				{
 					LoadRamWatch(false);
+                    LoadNewRamWatch(false);
 				}
 				else
 				{
 					LoadRamWatch(true);
+                    LoadNewRamWatch(true);
 				}
 			}
 			if (Global.Config.AutoLoadRamSearch)
@@ -2307,6 +2312,7 @@ namespace BizHawk.MultiClient
 
 #endif
 			if (_ramwatch != null) RamWatch1.UpdateValues();
+            if (_newramwatch != null) NewRamWatch1.UpdateValues();
 			if (_ramsearch != null) RamSearch1.UpdateValues();
 			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
@@ -4187,7 +4193,27 @@ namespace BizHawk.MultiClient
 
         private void newRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new NewRamWatch().Show();
+            LoadNewRamWatch(true);
+        }
+
+        private void LoadNewRamWatch(bool load_dialog)
+        {
+            if (!NewRamWatch1.IsHandleCreated || NewRamWatch1.IsDisposed)
+            {
+                NewRamWatch1 = new NewRamWatch();
+                if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Count > 0)
+                {
+                    NewRamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+                }
+                if (load_dialog)
+                {
+                    NewRamWatch1.Show();
+                }
+            }
+            else
+            {
+                NewRamWatch1.Focus();
+            }
         }
 	}
 }

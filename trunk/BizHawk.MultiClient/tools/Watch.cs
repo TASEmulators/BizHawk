@@ -1233,7 +1233,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Load(string path, bool details, bool append)
+		public bool Load(string path, bool details, bool append)
 		{
 			bool result = LoadFile(path, details, append);
 
@@ -1248,6 +1248,8 @@ namespace BizHawk.MultiClient
 					Changes = false;
 				}
 			}
+
+            return result;
 		}
 
 		private void SaveFile()

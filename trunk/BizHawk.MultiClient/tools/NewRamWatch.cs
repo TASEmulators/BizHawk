@@ -101,7 +101,33 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			//TODO
+            if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+            {
+                return;
+            }
+
+            /* TODO
+            foreach (Watch t in Watches)
+            {
+                t.PeekAddress();
+            }
+
+            if (Global.Config.DisplayRamWatch)
+            {
+                for (int x = 0; x < Watches.Count; x++)
+                {
+                    bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
+                    Global.OSD.AddGUIText(Watches[x].ToString(),
+                        Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
+                }
+            }
+            */
+
+            if (!IsHandleCreated || IsDisposed) return;
+
+            WatchListView.BlazingFast = true;
+            WatchListView.Refresh();
+            WatchListView.BlazingFast = false;
 		}
 
 		public bool AskSave()
@@ -177,6 +203,29 @@ namespace BizHawk.MultiClient
                 MessageLabel.Text = "";
                 sortReverse = false;
                 sortedCol = "";
+            }
+        }
+
+        public void LoadWatchFromRecent(string file)
+        {
+            bool ask_result = true;
+            if (Watches.Changes)
+            {
+                ask_result = AskSave();
+            }
+
+            if (ask_result)
+            {
+                bool load_result = Watches.Load(file, details: true, append: false);
+                if (!load_result)
+                {
+                    DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (result == DialogResult.Yes)
+                        Global.Config.RecentWatches.Remove(file);
+                }
+
+                DisplayWatches();
+                Watches.Changes = false;
             }
         }
 
