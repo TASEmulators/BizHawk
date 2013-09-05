@@ -323,12 +323,12 @@
             // 
             // newListToolStripMenuItem
             // 
-            this.newListToolStripMenuItem.Enabled = false;
             this.newListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
             this.newListToolStripMenuItem.Name = "newListToolStripMenuItem";
             this.newListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newListToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.newListToolStripMenuItem.Text = "&New List";
+            this.newListToolStripMenuItem.Click += new System.EventHandler(this.newListToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 

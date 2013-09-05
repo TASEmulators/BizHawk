@@ -14,6 +14,8 @@ namespace BizHawk.MultiClient
 	{
 		private WatchList Watches = new WatchList();
 		private string systemID = "NULL";
+        private string sortedCol = "";
+        private bool sortReverse = false;
 
 		public NewRamWatch()
 		{
@@ -159,6 +161,25 @@ namespace BizHawk.MultiClient
 			MemDomainLabel.Text = systemID + " " + memoryDomain;
 		}
 
+        private void NewWatchList(bool suppressAsk)
+        {
+            bool result = true;
+            if (Watches.Changes)
+            {
+                result = AskSave();
+            }
+
+            if (result || suppressAsk)
+            {
+                Watches.Clear();
+                DisplayWatches();
+                UpdateWatchCount();
+                MessageLabel.Text = "";
+                sortReverse = false;
+                sortedCol = "";
+            }
+        }
+
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
@@ -166,17 +187,10 @@ namespace BizHawk.MultiClient
 
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!AskSave())
-			{
-				return;
-			}
-			else
-			{
-				Close();
-			}
-		}
+        private void newListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWatchList(false);
+        }
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -200,6 +214,18 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!AskSave())
+            {
+                return;
+            }
+            else
+            {
+                Close();
+            }
+        }
 
 		#endregion
 	}
