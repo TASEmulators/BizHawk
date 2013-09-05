@@ -920,6 +920,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public string DomainName
+		{
+			get { return _domain.Name; }
+		}
+
 		public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
 		{
 			switch (c)
