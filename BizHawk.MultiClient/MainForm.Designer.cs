@@ -1971,6 +1971,7 @@
             // 
             // newRamWatchToolStripMenuItem
             // 
+            this.newRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
             this.newRamWatchToolStripMenuItem.Name = "newRamWatchToolStripMenuItem";
             this.newRamWatchToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.newRamWatchToolStripMenuItem.Text = "New Ram Watch";
