@@ -109,7 +109,7 @@ namespace BizHawk.MultiClient
 
                 if (result)
                 {
-                    Watches.Load(file.FullName, false);
+                    Watches.Load(file.FullName, details: true, append: false);
                     DisplayWatches();
                     MessageLabel.Text = Path.GetFileNameWithoutExtension(Watches.CurrentFileName);
                     UpdateWatchCount();
