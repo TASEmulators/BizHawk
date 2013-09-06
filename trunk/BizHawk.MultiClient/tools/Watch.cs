@@ -1266,7 +1266,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				SaveFileAs();
+				SaveAs();
 			}
 		}
 
@@ -1276,13 +1276,14 @@ namespace BizHawk.MultiClient
 
 			if (result)
 			{
-				if (!append)
+				if (append)
 				{
-					CurrentFileName = path;
+                    Changes = true;
 				}
 				else
 				{
-					Changes = false;
+                    CurrentFileName = path;
+                    Changes = false;
 				}
 			}
 
@@ -1295,7 +1296,7 @@ namespace BizHawk.MultiClient
 			throw new NotImplementedException();
 		}
 
-		private void SaveFileAs()
+		public void SaveAs()
 		{
 			//TODO
 			throw new NotImplementedException();
@@ -1312,10 +1313,10 @@ namespace BizHawk.MultiClient
 			{
 				string line;
 
-				if (append == false)
-				{
-					Clear();
-				}
+                if (append == false)
+                {
+                    Clear();
+                }
 
 				while ((line = sr.ReadLine()) != null)
 				{
