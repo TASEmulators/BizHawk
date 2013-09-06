@@ -267,7 +267,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentCheats.Count; x++)
 				{
-					string path = Global.Config.RecentCheats.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentCheats[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadCheatFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);

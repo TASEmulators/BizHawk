@@ -277,7 +277,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.Empty)
-				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+				LoadRomFromRecent(Global.Config.RecentRoms[0]);
 
 			if (cmdMovie != null)
 			{
@@ -306,7 +306,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0));
+					Movie m = new Movie(Global.Config.RecentMovies[0]);
 					StartNewMovie(m, false);
 				}
 			}
@@ -1546,7 +1546,7 @@ namespace BizHawk.MultiClient
 
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != file.CanonicalFullPath)
 				{
 #if WINDOWS
 					LuaConsole1.Restart();
@@ -3348,7 +3348,7 @@ namespace BizHawk.MultiClient
 				RamWatch1 = new RamWatch();
 				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Count > 0)
 				{
-					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches[0]);
 				}
 				if (load_dialog)
 				{
@@ -4203,7 +4203,7 @@ namespace BizHawk.MultiClient
                 NewRamWatch1 = new NewRamWatch();
                 if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Count > 0)
                 {
-                    NewRamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+                    NewRamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches[0]);
                 }
                 if (load_dialog)
                 {
