@@ -898,7 +898,7 @@ namespace BizHawk.MultiClient
 	public abstract class WatchEntryBase
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
-		public enum DisplayType { Signed, Unsigned, Hex };
+		public enum DisplayType { Separator, Signed, Unsigned, Hex };
 
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
@@ -910,6 +910,7 @@ namespace BizHawk.MultiClient
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 		public abstract bool IsSeparator { get; }
+		public abstract List<DisplayType> ValidTypes { get; }
 
 		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
@@ -995,17 +996,17 @@ namespace BizHawk.MultiClient
 		void ClearChangeCount();
 
 		int? Previous { get; }
+		string PreviousStr { get; }
 		void ResetPrevious();
-
+		string Diff { get; }
 		string Notes { get; set; }
+
+		void Update();
 	}
 
 	public class SeparatorWatch : WatchEntryBase
 	{
-		public SeparatorWatch()
-		{
-			
-		}
+		public SeparatorWatch() { }
 
 		public override int? Address
 		{
@@ -1045,11 +1046,16 @@ namespace BizHawk.MultiClient
 		{
 			get { return WatchSize.Separator; }
 		}
+
+		public override List<DisplayType> ValidTypes
+		{
+			get { return new List<DisplayType>() { DisplayType.Separator }; }
+		}
 	}
 
 	public class ByteWatch : WatchEntryBase
 	{
-		protected int? _address;
+		protected int _address;
 
 		public ByteWatch(MemoryDomain domain, int address)
 		{
@@ -1066,47 +1072,18 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (_address.HasValue)
-				{
-					return _domain.PeekByte(_address.Value);
-				}
-				else
-				{
-					return null;
-				}
+				return GetValue();
 			}
 		}
 
 		public override string AddressString
 		{
-			get
-			{
-				if (Address.HasValue)
-				{
-					return Address.Value.ToString(AddressFormatStr);
-				}
-				else
-				{
-					return "";
-				}
-			}
+			get { return Address.Value.ToString(AddressFormatStr); }
 		}
 
 		public override string ValueString
 		{
-			get
-			{
-				switch (Type)
-				{
-					case DisplayType.Signed:
-						return ((sbyte)Value).ToString();
-					default:
-					case DisplayType.Unsigned:
-						return ((byte)Value).ToString();
-					case DisplayType.Hex:
-						return String.Format("{0:X2}", Value);
-				}
-			}
+			get { return FormatValue(GetValue()); }
 		}
 
 		public override string ToString()
@@ -1127,24 +1104,73 @@ namespace BizHawk.MultiClient
 		{
 			get { return WatchSize.Byte; }
 		}
+
+		public override List<DisplayType> ValidTypes
+		{
+			get
+			{
+				return new List<DisplayType>()
+				{
+					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex
+				};
+			}
+		}
+
+		protected byte GetValue()
+		{
+			return _domain.PeekByte(_address);
+		}
+
+		protected string FormatValue(byte val)
+		{
+			switch (Type)
+			{
+				default:
+				case DisplayType.Unsigned:
+					return ((byte)val).ToString();
+				case DisplayType.Signed:
+					return ((sbyte)val).ToString();
+				case DisplayType.Hex:
+					return String.Format("{0:X2}", val);
+			}
+		}
 	}
 
 	public class DetailedByteWatch : ByteWatch, iWatchEntryDetails
 	{
-		private int? _previous;
+		private byte _value;
+		private byte _previous;
 
-		public DetailedByteWatch(MemoryDomain domain, int address) : base(domain, address) { Notes = String.Empty; }
+		public DetailedByteWatch(MemoryDomain domain, int address)
+			: base(domain, address)
+		{
+			Notes = String.Empty;
+			_previous = _value = _domain.PeekByte(_address);
+		}
 
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
 
 		public int? Previous { get { return _previous; } }
-		public void ResetPrevious()
+		public string PreviousStr { get { return FormatValue(_previous); } }
+		public void ResetPrevious() { _previous = _value; }
+
+		public string Diff
 		{
-			_previous = Value;
+			get { return FormatValue((byte)(_previous - _value)); }
 		}
 
 		public string Notes { get; set; }
+
+		public void Update() //TODO: different notions of previous
+		{
+			_previous = _value;
+			_value = _domain.PeekByte(_address);
+			if (_value != Previous)
+			{
+				ChangeCount++;
+			}
+		}
 	}
 
 	public class WatchList : IEnumerable
@@ -1210,11 +1236,20 @@ namespace BizHawk.MultiClient
 		public void Clear()
 		{
 			_watchList.Clear();
-            Changes = false;
-            _currentFilename = "";
+			Changes = false;
+			_currentFilename = "";
 		}
 
 		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
+
+		public void UpdateValues()
+		{
+			var detailedWatches = _watchList.OfType<iWatchEntryDetails>().ToList();
+			foreach (var watch in detailedWatches)
+			{
+				watch.Update();
+			}
+		}
 
 		#region File handling logic - probably needs to be its own class
 
@@ -1249,7 +1284,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-            return result;
+			return result;
 		}
 
 		private void SaveFile()
