@@ -220,6 +220,12 @@ namespace BizHawk.MultiClient
 
 		#region Winform Events
 
+        /*************File***********************/
+        private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            saveToolStripMenuItem.Enabled = Watches.Changes;
+        }
+
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 
@@ -232,7 +238,8 @@ namespace BizHawk.MultiClient
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = WatchCommon.GetFileFromUser(Watches.CurrentFileName);
+            bool append = sender == appendFileToolStripMenuItem;
+            var file = WatchCommon.GetFileFromUser(Watches.CurrentFileName);
 			if (file != null)
 			{
 				bool result = true;
@@ -243,15 +250,25 @@ namespace BizHawk.MultiClient
 
 				if (result)
 				{
-					Watches.Load(file.FullName, details: true, append: false);
+					Watches.Load(file.FullName, true, append);
 					DisplayWatches();
-					MessageLabel.Text = Path.GetFileNameWithoutExtension(Watches.CurrentFileName);
+                    MessageLabel.Text = Path.GetFileNameWithoutExtension(Watches.CurrentFileName) + (Watches.Changes ? " *" : String.Empty);
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(Watches.CurrentFileName);
 					SetMemoryDomain(WatchCommon.GetDomainPos(Watches.Domain.ToString()));
 				}
 			}
 		}
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Watches.Save();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Watches.SaveAs();
+        }
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -264,6 +281,32 @@ namespace BizHawk.MultiClient
 				Close();
 			}
 		}
+
+        /*************Options***********************/
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            displayWatchesOnScreenToolStripMenuItem.Checked = Global.Config.DisplayRamWatch;
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
+        }
+
+        private void displayWatchesOnScreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.DisplayRamWatch ^= true;
+
+            if (!Global.Config.DisplayRamWatch)
+            {
+                Global.OSD.ClearGUIText();
+            }
+            else
+            {
+                UpdateValues();
+            }
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamWatchSaveWindowPosition ^= true;
+        }
 
 		#endregion
 	}
