@@ -710,7 +710,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentWatches.Count; x++)
 				{
-					string path = Global.Config.RecentWatches.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentWatches[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadWatchFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);

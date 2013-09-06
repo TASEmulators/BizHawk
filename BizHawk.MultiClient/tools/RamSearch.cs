@@ -1869,7 +1869,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentSearches.Count; x++)
 				{
-					string path = Global.Config.RecentSearches.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentSearches[x];
 					var item = new ToolStripMenuItem { Text = path };
 					item.Click += (o, ev) => LoadSearchFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);

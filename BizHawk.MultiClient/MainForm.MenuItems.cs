@@ -730,7 +730,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentRoms.Count; x++)
 				{
-					string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentRoms[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadRomFromRecent(path);
 					recentROMToolStripMenuItem.DropDownItems.Add(item);
@@ -763,7 +763,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentMovies.Count; x++)
 				{
-					string path = Global.Config.RecentMovies.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentMovies[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadMoviesFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
@@ -879,7 +879,7 @@ namespace BizHawk.MultiClient
 
 		private void loadLastROMToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+			LoadRomFromRecent(Global.Config.RecentRoms[0]);
 		}
 
 		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
@@ -907,7 +907,7 @@ namespace BizHawk.MultiClient
 
 		private void loadLastMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadMoviesFromRecent(Global.Config.RecentMovies.GetRecentFileByPosition(0));
+			LoadMoviesFromRecent(Global.Config.RecentMovies[0]);
 		}
 
 		private void AddSubtitleToolStripMenuItem_Click(object sender, EventArgs e)

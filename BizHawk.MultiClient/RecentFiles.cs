@@ -66,16 +66,19 @@ namespace BizHawk.MultiClient
 			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
-		public string GetRecentFileByPosition(int position)
-		{
-			if (recentlist.Count > 0)
-			{
-				return recentlist[position];
-			}
-			else
-			{
-				return "";
-			}
-		}
+        public string this[int index]
+        {
+            get
+            {
+                if (recentlist.Any())
+                {
+                    return recentlist[index];
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        }
 	}
 }

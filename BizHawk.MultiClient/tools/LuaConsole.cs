@@ -102,7 +102,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Global.Config.RecentLuaSession.Empty)
 				{
-					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
+					LoadSessionFromRecent(Global.Config.RecentLuaSession[0]);
 				}
 			}
 
@@ -545,7 +545,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentLua.Count; x++)
 				{
-					string path = Global.Config.RecentLua.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentLua[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadLuaFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
@@ -1021,7 +1021,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Global.Config.RecentLuaSession.Count; x++)
 				{
-					string path = Global.Config.RecentLuaSession.GetRecentFileByPosition(x);
+					string path = Global.Config.RecentLuaSession[x];
 					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadSessionFromRecent(path);
 					recentSessionsToolStripMenuItem.DropDownItems.Add(item);
