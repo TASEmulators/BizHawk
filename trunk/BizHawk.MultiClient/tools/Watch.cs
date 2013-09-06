@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
@@ -950,6 +951,44 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        public char SizeAsChar
+        {
+            get
+            {
+                switch (Size)
+                {
+                    default:
+                    case WatchSize.Separator:
+                        return 'S';
+                    case WatchSize.Byte:
+                        return 'b';
+                    case WatchSize.Word:
+                        return 'w';
+                    case WatchSize.DWord:
+                        return 'd';
+                }
+            }
+        }
+
+        public char TypeAsChar
+        {
+            get
+            {
+                switch (Type)
+                {
+                    default:
+                    case DisplayType.Separator:
+                        return '_';
+                    case DisplayType.Unsigned:
+                        return 's';
+                    case DisplayType.Signed:
+                        return 'u';
+                    case DisplayType.Hex:
+                        return 'h';
+                }
+            }
+        }
+
 		public string AddressFormatStr
 		{
 			get
@@ -1222,11 +1261,11 @@ namespace BizHawk.MultiClient
 
 		public string AddressFormatStr
 		{
-			get
+            get
 			{
 				if (_domain != null)
 				{
-					return "X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString();
+					return "{0:X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString() + "}";
 				}
 				else
 				{
@@ -1258,16 +1297,24 @@ namespace BizHawk.MultiClient
 		public string CurrentFileName { get { return _currentFilename; } set { _currentFilename = value; } }
 		public bool Changes { get; set; }
 
-		public void Save()
+		public bool Save()
 		{
-			if (!String.IsNullOrWhiteSpace(CurrentFileName))
+            bool result = false;
+            if (!String.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				SaveFile();
+				result = SaveFile();
 			}
 			else
 			{
-				SaveAs();
+				result = SaveAs();
 			}
+
+            if (result)
+            {
+                Changes = false;
+            }
+
+            return result;
 		}
 
 		public bool Load(string path, bool details, bool append)
@@ -1290,16 +1337,50 @@ namespace BizHawk.MultiClient
 			return result;
 		}
 
-		private void SaveFile()
+		private bool SaveFile()
 		{
-			//TODO
-			throw new NotImplementedException();
+            if (String.IsNullOrWhiteSpace(CurrentFileName))
+            {
+                return false;
+            }
+
+            using (StreamWriter sw = new StreamWriter(CurrentFileName))
+            {
+                StringBuilder sb = new StringBuilder();
+                sb
+                    .Append("Domain ").AppendLine(_domain.Name)
+                    .Append("SystemID ").AppendLine(Global.Emulator.SystemId);
+
+                foreach (WatchEntryBase w in _watchList)
+                {
+                    sb
+                        .Append(String.Format(AddressFormatStr, w.Address)).Append('\t')
+                        .Append(w.SizeAsChar).Append('\t')
+                        .Append(w.TypeAsChar).Append('\t')
+                        .Append(w.BigEndian ? '1' : '0').Append('\t')
+                        .Append(w.DomainName).Append('\t')
+                        .Append(w is iWatchEntryDetails ? (w as iWatchEntryDetails).Notes : String.Empty)
+                        .AppendLine();
+                }
+
+                sw.WriteLine(sb.ToString());
+            }
+
+            return true;
 		}
 
-		public void SaveAs()
+		public bool SaveAs()
 		{
-			//TODO
-			throw new NotImplementedException();
+            var file = WatchCommon.GetSaveFileFromUser(CurrentFileName);
+            if (file != null)
+            {
+                CurrentFileName = file.FullName;
+                return SaveFile();
+            }
+            else
+            {
+                return false;
+            }
 		}
 
 		private bool LoadFile(string path, bool details, bool append)
@@ -1448,6 +1529,53 @@ namespace BizHawk.MultiClient
 			}
 			return 0;
 		}
+
+        public static FileInfo GetFileFromUser(string currentFile)
+        {
+            var ofd = new OpenFileDialog();
+            if (currentFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+            ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+            ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(ofd.FileName);
+            return file;
+        }
+
+        public static FileInfo GetSaveFileFromUser(string currentFile)
+        {
+            var sfd = new SaveFileDialog();
+            if (currentFile.Length > 0)
+            {
+                sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+                sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
+            }
+            else if (!(Global.Emulator is NullEmulator))
+            {
+                sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+                sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+            }
+            else
+            {
+                sfd.FileName = "NULL";
+                sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+            }
+            sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            sfd.RestoreDirectory = true;
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(sfd.FileName);
+            return file;
+        }
 
 		#endregion
 	}
