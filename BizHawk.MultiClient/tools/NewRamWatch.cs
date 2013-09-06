@@ -12,7 +12,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewRamWatch : Form
 	{
-		private WatchList Watches = new WatchList();
+        private int defaultWidth;
+        private int defaultHeight;
+        private WatchList Watches = new WatchList();
 		private string systemID = "NULL";
 		private string sortedCol = "";
 		private bool sortReverse = false;
@@ -23,7 +25,17 @@ namespace BizHawk.MultiClient
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
+            Closing += (o, e) => SaveConfigSettings();
+            sortedCol = "";
+            sortReverse = false;
 		}
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!AskSave())
+                e.Cancel = true;
+            base.OnClosing(e);
+        }
 
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
@@ -218,18 +230,45 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        public void SaveConfigSettings()
+        {
+            Global.Config.RamWatchAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
+            Global.Config.RamWatchValueWidth = WatchListView.Columns[Global.Config.RamWatchValueIndex].Width;
+            Global.Config.RamWatchPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
+            Global.Config.RamWatchChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
+            Global.Config.RamWatchDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
+            Global.Config.RamWatchDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
+            Global.Config.RamWatchNotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
+
+            Global.Config.RamWatchWndx = Location.X;
+            Global.Config.RamWatchWndy = Location.Y;
+            Global.Config.RamWatchWidth = Right - Left;
+            Global.Config.RamWatchHeight = Bottom - Top;
+        }
+
 		#region Winform Events
+
+        private void NewRamWatch_Load(object sender, EventArgs e)
+        {
+            defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+            defaultHeight = Size.Height;
+
+            if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+            {
+                Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+            }
+
+            if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
+            {
+                Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+            }
+        }
 
         /*************File***********************/
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             saveToolStripMenuItem.Enabled = Watches.Changes;
         }
-
-		private void NewRamWatch_Load(object sender, EventArgs e)
-		{
-
-		}
 
 		private void newListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -315,6 +354,34 @@ namespace BizHawk.MultiClient
         private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.RamWatchSaveWindowPosition ^= true;
+        }
+
+        private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Size = new Size(defaultWidth, defaultHeight);
+
+            Global.Config.RamWatchAddressIndex = 0;
+            Global.Config.RamWatchValueIndex = 1;
+            Global.Config.RamWatchPrevIndex = 2;
+            Global.Config.RamWatchChangeIndex = 3;
+            Global.Config.RamWatchDiffIndex = 4;
+            Global.Config.RamWatchNotesIndex = 5;
+
+            showPreviousValueToolStripMenuItem.Checked = false;
+            Global.Config.RamWatchShowPrevColumn = false;
+            showChangeCountsToolStripMenuItem.Checked = true;
+            Global.Config.RamWatchShowChangeColumn = true;
+            Global.Config.RamWatchShowDiffColumn = false;
+            Global.Config.RamWatchShowDomainColumn = true;
+            WatchListView.Columns[0].Width = 60;
+            WatchListView.Columns[1].Width = 59;
+            WatchListView.Columns[2].Width = 0;
+            WatchListView.Columns[3].Width = 55;
+            WatchListView.Columns[4].Width = 0;
+            WatchListView.Columns[5].Width = 55;
+            WatchListView.Columns[6].Width = 128;
+            Global.Config.DisplayRamWatch = false;
+            Global.Config.RamWatchSaveWindowPosition = true;
         }
 
 		#endregion
