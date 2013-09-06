@@ -318,6 +318,16 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private void UpdateAutoLoadRamWatch()
+        {
+            Global.Config.AutoLoadRamWatch ^= true;
+        }
+
+        private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            RecentFiles.GenerateRecentMenu(recentToolStripMenuItem, Global.Config.RecentWatches, LoadWatchFromRecent, Global.Config.AutoLoadRamWatch, UpdateAutoLoadRamWatch);
+        }
+
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!AskSave())

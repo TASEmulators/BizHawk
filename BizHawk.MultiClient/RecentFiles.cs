@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public class RecentFiles
+	public class RecentFiles : IEnumerable
 	{
 		private readonly int MAX_RECENT_FILES;       //Maximum number of files
 		private readonly List<string> recentlist;    //List of recent files
@@ -14,6 +17,16 @@ namespace BizHawk.MultiClient
 			recentlist = new List<string>();
 			MAX_RECENT_FILES = max;
 		}
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            return recentlist.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
 		public void Clear()
 		{
@@ -78,6 +91,39 @@ namespace BizHawk.MultiClient
                 {
                     return "";
                 }
+            }
+        }
+
+        public static void GenerateRecentMenu(ToolStripMenuItem menu, RecentFiles recent, Action<string> loadFileCallback,  bool? autoloadConfigVar = null, Action autoloadCallback = null)
+        {
+            menu.DropDownItems.Clear();
+
+            if (recent.Empty)
+            {
+                var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
+                menu.DropDownItems.Add(none);
+            }
+            else
+            {
+               foreach (string filename in recent)
+               {
+                   var item = new ToolStripMenuItem { Text = filename };
+                   item.Click += (o, ev) => loadFileCallback(filename);
+                   menu.DropDownItems.Add(item);
+               }
+            }
+
+            menu.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem { Text = "&Clear" };
+            clearitem.Click += (o, ev) => recent.Clear();
+            menu.DropDownItems.Add(clearitem);
+
+            if (autoloadConfigVar.HasValue)
+            {
+                var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = autoloadConfigVar.Value };
+                auto.Click += (o, ev) => autoloadCallback();
+                menu.DropDownItems.Add(auto);
             }
         }
 	}
