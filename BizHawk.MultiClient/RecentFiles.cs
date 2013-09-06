@@ -94,18 +94,18 @@ namespace BizHawk.MultiClient
             }
         }
 
-        public static void GenerateRecentMenu(ToolStripMenuItem menu, RecentFiles recent, Action<string> loadFileCallback,  bool? autoloadConfigVar = null, Action autoloadCallback = null)
+        public void GenerateRecentMenu(ToolStripMenuItem menu, Action<string> loadFileCallback,  bool? autoloadConfigVar = null, Action autoloadCallback = null)
         {
             menu.DropDownItems.Clear();
 
-            if (recent.Empty)
+            if (Empty)
             {
                 var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
                 menu.DropDownItems.Add(none);
             }
             else
             {
-               foreach (string filename in recent)
+                foreach (string filename in recentlist)
                {
                    var item = new ToolStripMenuItem { Text = filename };
                    item.Click += (o, ev) => loadFileCallback(filename);
@@ -116,7 +116,7 @@ namespace BizHawk.MultiClient
             menu.DropDownItems.Add("-");
 
             var clearitem = new ToolStripMenuItem { Text = "&Clear" };
-            clearitem.Click += (o, ev) => recent.Clear();
+            clearitem.Click += (o, ev) => recentlist.Clear();
             menu.DropDownItems.Add(clearitem);
 
             if (autoloadConfigVar.HasValue)

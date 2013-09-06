@@ -230,6 +230,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        private void UpdateAutoLoadRamWatch()
+        {
+            Global.Config.AutoLoadRamWatch ^= true;
+        }
+
         public void SaveConfigSettings()
         {
             Global.Config.RamWatchAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
@@ -318,14 +323,9 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void UpdateAutoLoadRamWatch()
-        {
-            Global.Config.AutoLoadRamWatch ^= true;
-        }
-
         private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            RecentFiles.GenerateRecentMenu(recentToolStripMenuItem, Global.Config.RecentWatches, LoadWatchFromRecent, Global.Config.AutoLoadRamWatch, UpdateAutoLoadRamWatch);
+            Global.Config.RecentWatches.GenerateRecentMenu(recentToolStripMenuItem, LoadWatchFromRecent, Global.Config.AutoLoadRamWatch, UpdateAutoLoadRamWatch);
         }
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
