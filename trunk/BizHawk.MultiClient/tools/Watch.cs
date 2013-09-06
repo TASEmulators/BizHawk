@@ -1051,6 +1051,11 @@ namespace BizHawk.MultiClient
 		{
 			get { return new List<DisplayType>() { DisplayType.Separator }; }
 		}
+
+		public override DisplayType Type
+		{
+			get { return DisplayType.Separator; }
+		}
 	}
 
 	public class ByteWatch : WatchEntryBase
@@ -1070,10 +1075,7 @@ namespace BizHawk.MultiClient
 
 		public override int? Value
 		{
-			get
-			{
-				return GetValue();
-			}
+			get { return GetValue(); }
 		}
 
 		public override string AddressString
@@ -1422,7 +1424,10 @@ namespace BizHawk.MultiClient
 					WatchEntryBase w = WatchEntryBase.GenerateWatch(memDomain, addr, size, details);
 					w.BigEndian = bigEndian;
 					w.Type = type;
-					(w as iWatchEntryDetails).Notes = notes;
+					if (w is iWatchEntryDetails)
+					{
+						(w as iWatchEntryDetails).Notes = notes;
+					}
 
 					_watchList.Add(w);
 					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
