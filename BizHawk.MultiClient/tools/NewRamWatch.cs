@@ -239,7 +239,7 @@ namespace BizHawk.MultiClient
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             bool append = sender == appendFileToolStripMenuItem;
-            var file = WatchCommon.GetFileFromUser(Watches.CurrentFileName);
+            var file = WatchList.GetFileFromUser(Watches.CurrentFileName);
 			if (file != null)
 			{
 				bool result = true;
@@ -262,12 +262,21 @@ namespace BizHawk.MultiClient
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Watches.Save();
+            bool result = Watches.Save();
+            if (result)
+            {
+                MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " saved.";
+            }
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Watches.SaveAs();
+            bool result = Watches.SaveAs();
+            if (result)
+            {
+                MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " saved.";
+                Global.Config.RecentWatches.Add(Watches.CurrentFileName);
+            }
         }
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
