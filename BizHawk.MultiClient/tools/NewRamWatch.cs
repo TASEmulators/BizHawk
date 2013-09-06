@@ -14,8 +14,8 @@ namespace BizHawk.MultiClient
 	{
 		private WatchList Watches = new WatchList();
 		private string systemID = "NULL";
-        private string sortedCol = "";
-        private bool sortReverse = false;
+		private string sortedCol = "";
+		private bool sortReverse = false;
 
 		public NewRamWatch()
 		{
@@ -65,8 +65,7 @@ namespace BizHawk.MultiClient
 				case 2: // prev
 					if (Watches[index] is iWatchEntryDetails)
 					{
-						text = "TODO";
-						//text = (Watches[index] as iWatchEntryDetails).Previous;
+						text = (Watches[index] as iWatchEntryDetails).PreviousStr;
 					}
 					break;
 				case 3: // changes
@@ -76,16 +75,10 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case 4: // diff
-					text = "TODO";
-					//switch (Global.Config.RamWatchPrev_Type)
-					//{
-					//    case 1:
-					//        text = Watches[index].DiffPrevString;
-					//        break;
-					//    case 2:
-					//        text = Watches[index].DiffLastChangeString;
-					//        break;
-					//}
+					if (Watches[index] is iWatchEntryDetails)
+					{
+						text = (Watches[index] as iWatchEntryDetails).Diff;
+					}
 					break;
 				case 5: // domain
 					text = Watches[index].DomainName;
@@ -101,33 +94,29 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-            if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
-            {
-                return;
-            }
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+			Watches.UpdateValues();
 
-            /* TODO
-            foreach (Watch t in Watches)
-            {
-                t.PeekAddress();
-            }
+			if (Global.Config.DisplayRamWatch)
+			{
+				/* TODO
+				for (int x = 0; x < Watches.Count; x++)
+				{
+					bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
+					Global.OSD.AddGUIText(Watches[x].ToString(),
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
+				}
+				*/
+			}
 
-            if (Global.Config.DisplayRamWatch)
-            {
-                for (int x = 0; x < Watches.Count; x++)
-                {
-                    bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
-                    Global.OSD.AddGUIText(Watches[x].ToString(),
-                        Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
-                }
-            }
-            */
+			if (!IsHandleCreated || IsDisposed) return;
 
-            if (!IsHandleCreated || IsDisposed) return;
-
-            WatchListView.BlazingFast = true;
-            WatchListView.Refresh();
-            WatchListView.BlazingFast = false;
+			WatchListView.BlazingFast = true;
+			WatchListView.Refresh();
+			WatchListView.BlazingFast = false;
 		}
 
 		public bool AskSave()
@@ -187,47 +176,47 @@ namespace BizHawk.MultiClient
 			MemDomainLabel.Text = systemID + " " + memoryDomain;
 		}
 
-        private void NewWatchList(bool suppressAsk)
-        {
-            bool result = true;
-            if (Watches.Changes)
-            {
-                result = AskSave();
-            }
+		private void NewWatchList(bool suppressAsk)
+		{
+			bool result = true;
+			if (Watches.Changes)
+			{
+				result = AskSave();
+			}
 
-            if (result || suppressAsk)
-            {
-                Watches.Clear();
-                DisplayWatches();
-                UpdateWatchCount();
-                MessageLabel.Text = "";
-                sortReverse = false;
-                sortedCol = "";
-            }
-        }
+			if (result || suppressAsk)
+			{
+				Watches.Clear();
+				DisplayWatches();
+				UpdateWatchCount();
+				MessageLabel.Text = "";
+				sortReverse = false;
+				sortedCol = "";
+			}
+		}
 
-        public void LoadWatchFromRecent(string file)
-        {
-            bool ask_result = true;
-            if (Watches.Changes)
-            {
-                ask_result = AskSave();
-            }
+		public void LoadWatchFromRecent(string file)
+		{
+			bool ask_result = true;
+			if (Watches.Changes)
+			{
+				ask_result = AskSave();
+			}
 
-            if (ask_result)
-            {
-                bool load_result = Watches.Load(file, details: true, append: false);
-                if (!load_result)
-                {
-                    DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-                    if (result == DialogResult.Yes)
-                        Global.Config.RecentWatches.Remove(file);
-                }
+			if (ask_result)
+			{
+				bool load_result = Watches.Load(file, details: true, append: false);
+				if (!load_result)
+				{
+					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+					if (result == DialogResult.Yes)
+						Global.Config.RecentWatches.Remove(file);
+				}
 
-                DisplayWatches();
-                Watches.Changes = false;
-            }
-        }
+				DisplayWatches();
+				Watches.Changes = false;
+			}
+		}
 
 		#region Winform Events
 
@@ -236,10 +225,10 @@ namespace BizHawk.MultiClient
 
 		}
 
-        private void newListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWatchList(false);
-        }
+		private void newListToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NewWatchList(false);
+		}
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -264,17 +253,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!AskSave())
-            {
-                return;
-            }
-            else
-            {
-                Close();
-            }
-        }
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!AskSave())
+			{
+				return;
+			}
+			else
+			{
+				Close();
+			}
+		}
 
 		#endregion
 	}
