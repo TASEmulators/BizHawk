@@ -646,10 +646,10 @@
             // 
             // restoreWindowSizeToolStripMenuItem
             // 
-            this.restoreWindowSizeToolStripMenuItem.Enabled = false;
             this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
             this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.restoreWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // WatchListView
             // 
