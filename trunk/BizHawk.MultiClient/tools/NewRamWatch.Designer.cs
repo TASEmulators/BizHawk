@@ -56,9 +56,6 @@
             this.appendFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -368,38 +365,18 @@
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noneToolStripMenuItem,
-            this.toolStripSeparator4,
-            this.clearToolStripMenuItem,
-            this.autoLoadToolStripMenuItem});
-            this.recentToolStripMenuItem.Enabled = false;
+            this.noneToolStripMenuItem});
             this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.recentToolStripMenuItem.Text = "Recent";
+            this.recentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpened);
             // 
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.noneToolStripMenuItem.Text = "None";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(128, 6);
-            // 
-            // clearToolStripMenuItem
-            // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
-            // 
-            // autoLoadToolStripMenuItem
-            // 
-            this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.autoLoadToolStripMenuItem.Text = "Auto-Load";
             // 
             // toolStripSeparator1
             // 
@@ -769,10 +746,7 @@
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem watchesToolStripMenuItem;
