@@ -325,7 +325,6 @@
     </Compile>
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="LuaImplementation.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -486,57 +485,72 @@
     <Compile Include="N64tools\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\HexColor.cs">
+    <Compile Include="tools\HexEditor\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\HexColor.Designer.cs">
+    <Compile Include="tools\HexEditor\HexColor.Designer.cs">
       <DependentUpon>HexColor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\HexFind.cs">
+    <Compile Include="tools\HexEditor\HexEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\HexFind.Designer.cs">
+    <Compile Include="tools\HexEditor\HexEditor.Designer.cs">
+      <DependentUpon>HexEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\HexEditor\HexFind.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaButton.cs">
+    <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\LuaDocumentation.cs" />
-    <Compile Include="tools\LuaRegisteredFunctionsList.cs">
+    <Compile Include="tools\Lua\LuaConsole.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaRegisteredFunctionsList.Designer.cs">
+    <Compile Include="tools\Lua\LuaConsole.Designer.cs">
+      <DependentUpon>LuaConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaDocumentation.cs" />
+    <Compile Include="tools\Lua\LuaFiles.cs" />
+    <Compile Include="tools\Lua\LuaFunctionList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Lua\LuaFunctionList.Designer.cs">
+      <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaImplementation.cs" />
+    <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaTextBox.cs">
+    <Compile Include="tools\Lua\LuaText.cs" />
+    <Compile Include="tools\Lua\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\LuaWinform.cs">
+    <Compile Include="tools\Lua\LuaWinform.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWinform.Designer.cs">
+    <Compile Include="tools\Lua\LuaWinform.Designer.cs">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaWriter.cs">
+    <Compile Include="tools\Lua\LuaWriter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWriter.designer.cs">
+    <Compile Include="tools\Lua\LuaWriter.Designer.cs">
       <DependentUpon>LuaWriter.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaWriterBox.cs">
+    <Compile Include="tools\Lua\LuaWriterBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\LuaWriterColorConfig.cs">
+    <Compile Include="tools\Lua\LuaWriterColorConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWriterColorConfig.Designer.cs">
+    <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NewRamWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NewRamWatch.Designer.cs">
-      <DependentUpon>NewRamWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
     <Compile Include="tools\ToolHelpers.cs" />
@@ -643,7 +657,45 @@
     <Compile Include="tools\VirtualPads\VirtualPadSNESControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\WatchCommon.cs" />
+    <Compile Include="tools\Watch\NewRamWatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\NewRamWatch.Designer.cs">
+      <DependentUpon>NewRamWatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\RamPoke.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\RamPoke.Designer.cs">
+      <DependentUpon>RamPoke.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\RamSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\RamSearch.Designer.cs">
+      <DependentUpon>RamSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\RamWatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\RamWatch.Designer.cs">
+      <DependentUpon>RamWatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\RamWatchNewWatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\RamWatchNewWatch.Designer.cs">
+      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\Watch.cs" />
+    <Compile Include="tools\Watch\WatchCommon.cs" />
+    <Compile Include="tools\Watch\WatchEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\WatchEditor.Designer.cs">
+      <DependentUpon>WatchEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Watch\WatchLegacy.cs" />
     <Compile Include="XmlGame.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
@@ -762,43 +814,38 @@
     <EmbeddedResource Include="N64tools\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexColor.resx">
-      <DependentUpon>HexColor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexFind.resx">
-      <DependentUpon>HexFind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaFunctionList.resx">
-      <DependentUpon>LuaFunctionList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaRegisteredFunctionsList.resx">
-      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWinform.resx">
-      <DependentUpon>LuaWinform.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWriter.resx">
-      <DependentUpon>LuaWriter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWriterColorConfig.resx">
-      <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NewRamWatch.resx">
-      <DependentUpon>NewRamWatch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\RamWatch.resx">
-      <DependentUpon>RamWatch.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\RamWatchNewWatch.resx">
-      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\HexEditor\HexColor.resx">
+      <DependentUpon>HexColor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexEditor\HexEditor.resx">
+      <DependentUpon>HexEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
+      <DependentUpon>HexFind.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
+      <DependentUpon>LuaConsole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaFunctionList.resx">
+      <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaRegisteredFunctionsList.resx">
+      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
+      <DependentUpon>LuaWinform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaWriter.resx">
+      <DependentUpon>LuaWriter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaWriterColorConfig.resx">
+      <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
     </EmbeddedResource>
@@ -825,6 +872,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturnControl.resx">
       <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\NewRamWatch.resx">
+      <DependentUpon>NewRamWatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\RamPoke.resx">
+      <DependentUpon>RamPoke.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\RamSearch.resx">
+      <DependentUpon>RamSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\RamWatch.resx">
+      <DependentUpon>RamWatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\RamWatchNewWatch.resx">
+      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
+      <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -858,59 +923,15 @@
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaFunctionList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\LuaFunctionList.Designer.cs">
-      <DependentUpon>LuaFunctionList.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\MemoryPulse.cs" />
-    <Compile Include="tools\HexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor.Designer.cs">
-      <DependentUpon>HexEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\LuaConsole.cs" Condition=" '$(OS)' == 'Windows_NT' ">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\LuaConsole.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
-      <DependentUpon>LuaConsole.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\LuaFiles.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="tools\LuaText.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="tools\MemoryViewer.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\RamPoke.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\RamPoke.Designer.cs">
-      <DependentUpon>RamPoke.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\InputPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\InputPrompt.Designer.cs">
       <DependentUpon>InputPrompt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\RamSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\RamSearch.Designer.cs">
-      <DependentUpon>RamSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\RamWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\RamWatch.Designer.cs">
-      <DependentUpon>RamWatch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\RamWatchNewWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\RamWatchNewWatch.Designer.cs">
-      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="RecentFiles.cs" />
     <Compile Include="RenderPanel.cs" />
@@ -929,7 +950,6 @@
     <Compile Include="tools\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
@@ -1015,27 +1035,12 @@
     <EmbeddedResource Include="tools\TraceLogger.resx">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor.resx">
-      <DependentUpon>HexEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaConsole.resx">
-      <DependentUpon>LuaConsole.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\MemoryViewer.resx">
       <DependentUpon>MemoryViewer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\RamPoke.resx">
-      <DependentUpon>RamPoke.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\InputPrompt.resx">
       <DependentUpon>InputPrompt.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\RamSearch.resx">
-      <DependentUpon>RamSearch.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio.resx">

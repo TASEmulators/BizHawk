@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 		//Multiple undo levels (List<List<string>> UndoLists)
 
 		private string systemID = "NULL";
-		private List<Watch> Searches = new List<Watch>();
+		private List<Watch_Legacy> Searches = new List<Watch_Legacy>();
 		private HistoryCollection SearchHistory = new HistoryCollection(enabled:true);
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -337,43 +337,43 @@ namespace BizHawk.MultiClient
 			StartNewSearch();
 		}
 
-		private Watch.DISPTYPE GetDataType()
+		private Watch_Legacy.DISPTYPE GetDataType()
 		{
 			if (unsignedToolStripMenuItem.Checked)
 			{
-				return Watch.DISPTYPE.UNSIGNED;
+				return Watch_Legacy.DISPTYPE.UNSIGNED;
 			}
 			else if (signedToolStripMenuItem.Checked)
 			{
-				return Watch.DISPTYPE.SIGNED;
+				return Watch_Legacy.DISPTYPE.SIGNED;
 			}
 			else if (hexadecimalToolStripMenuItem.Checked)
 			{
-				return Watch.DISPTYPE.HEX;
+				return Watch_Legacy.DISPTYPE.HEX;
 			}
 			else
 			{
-				return Watch.DISPTYPE.UNSIGNED;    //Just in case
+				return Watch_Legacy.DISPTYPE.UNSIGNED;    //Just in case
 			}
 		}
 
-		private Watch.TYPE GetDataSize()
+		private Watch_Legacy.TYPE GetDataSize()
 		{
 			if (byteToolStripMenuItem.Checked)
 			{
-				return Watch.TYPE.BYTE;
+				return Watch_Legacy.TYPE.BYTE;
 			}
 			else if (bytesToolStripMenuItem.Checked)
 			{
-				return Watch.TYPE.WORD;
+				return Watch_Legacy.TYPE.WORD;
 			}
 			else if (dWordToolStripMenuItem1.Checked)
 			{
-				return Watch.TYPE.DWORD;
+				return Watch_Legacy.TYPE.DWORD;
 			}
 			else
 			{
-				return Watch.TYPE.BYTE;
+				return Watch_Legacy.TYPE.BYTE;
 			}
 		}
 
@@ -408,10 +408,10 @@ namespace BizHawk.MultiClient
 			{
 				switch (GetDataSize())
 				{
-					case Watch.TYPE.WORD:
+					case Watch_Legacy.TYPE.WORD:
 						divisor = 2;
 						break;
-					case Watch.TYPE.DWORD:
+					case Watch_Legacy.TYPE.DWORD:
 						divisor = 4;
 						break;
 				}
@@ -419,7 +419,7 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x <= ((Domain.Size / divisor) - 1); x++)
 			{
-				Searches.Add(new Watch());
+				Searches.Add(new Watch_Legacy());
 				Searches[x].Address = count;
 				Searches[x].Type = GetDataSize();
 				Searches[x].BigEndian = GetBigEndian();
@@ -437,13 +437,13 @@ namespace BizHawk.MultiClient
 				{
 					switch (GetDataSize())
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							count++;
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							count += 2;
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							count += 4;
 							break;
 					}
@@ -675,7 +675,7 @@ namespace BizHawk.MultiClient
 
 		private void ClearChangeCounts()
 		{
-			foreach (Watch t in Searches)
+			foreach (Watch_Legacy t in Searches)
 			{
 				t.Changecount = 0;
 			}
@@ -819,7 +819,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) < Searches[x].SignedVal(previous))
 							{
@@ -847,7 +847,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) > Searches[x].SignedVal(previous))
 							{
@@ -875,7 +875,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) <= Searches[x].SignedVal(previous))
 							{
@@ -903,7 +903,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) >= Searches[x].SignedVal(previous))
 							{
@@ -931,7 +931,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous))
 							{
@@ -959,7 +959,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) != Searches[x].SignedVal(previous))
 							{
@@ -989,7 +989,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
+						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) + diff || Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) - diff)
 							{
@@ -1036,9 +1036,9 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) < t.SignedVal((int)value))
 							{
@@ -1063,9 +1063,9 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATER:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) > t.SignedVal((int)value))
 							{
@@ -1090,9 +1090,9 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) <= t.SignedVal((int)value))
 							{
@@ -1117,9 +1117,9 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) >= t.SignedVal((int)value))
 							{
@@ -1144,9 +1144,9 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.EQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) == t.SignedVal((int)value))
 							{
@@ -1172,9 +1172,9 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) != t.SignedVal((int)value))
 							{
@@ -1201,9 +1201,9 @@ namespace BizHawk.MultiClient
 				case SOperator.DIFFBY:
 					int diff = GetDifferentBy();
 					if (diff < 0) return false;
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
-						if (t.Signed == Watch.DISPTYPE.SIGNED)
+						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
 						{
 							if (t.SignedVal(t.Value) == t.SignedVal((int)value) + diff || t.SignedVal(t.Value) == t.SignedVal((int)value) - diff)
 							{
@@ -1237,27 +1237,27 @@ namespace BizHawk.MultiClient
 			bool i;
 			switch (GetDataType())
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
 					int value = (int)Int64.Parse(SpecificValueBox.Text);
 					switch (GetDataSize())
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							return (byte)value;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							return (ushort)value;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							return (int)(uint)value;
 					}
 					return value;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
@@ -1303,7 +1303,7 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address < address)
 						{
@@ -1316,7 +1316,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATER:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address > address)
 						{
@@ -1329,7 +1329,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address <= address)
 						{
@@ -1342,7 +1342,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address >= address)
 						{
@@ -1355,7 +1355,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.EQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address == address)
 						{
@@ -1368,7 +1368,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address != address)
 						{
@@ -1384,7 +1384,7 @@ namespace BizHawk.MultiClient
 					{
 						int diff = GetDifferentBy();
 						if (diff < 0) return false;
-						foreach (Watch t in Searches)
+						foreach (Watch_Legacy t in Searches)
 						{
 							if (t.Address == address + diff || t.Address == address - diff)
 							{
@@ -1423,7 +1423,7 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount < changes)
 						{
@@ -1436,7 +1436,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATER:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount > changes)
 						{
@@ -1449,7 +1449,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount <= changes)
 						{
@@ -1462,7 +1462,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount >= changes)
 						{
@@ -1475,7 +1475,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.EQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount == changes)
 						{
@@ -1488,7 +1488,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Changecount != changes)
 						{
@@ -1503,7 +1503,7 @@ namespace BizHawk.MultiClient
 				case SOperator.DIFFBY:
 					int diff = GetDifferentBy();
 					if (diff < 0) return false;
-					foreach (Watch t in Searches)
+					foreach (Watch_Legacy t in Searches)
 					{
 						if (t.Address == changes + diff || t.Address == changes - diff)
 						{
@@ -1519,16 +1519,16 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private void ConvertListsDataType(Watch.DISPTYPE s)
+		private void ConvertListsDataType(Watch_Legacy.DISPTYPE s)
 		{
-			foreach (Watch t in Searches)
+			foreach (Watch_Legacy t in Searches)
 			{
 				t.Signed = s;
 			}
 
-			foreach (List<Watch> state in SearchHistory.History)
+			foreach (List<Watch_Legacy> state in SearchHistory.History)
 			{
-				foreach (Watch watch in state)
+				foreach (Watch_Legacy watch in state)
 				{
 					watch.Signed = s;
 				}
@@ -1540,7 +1540,7 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		private void ConvertListsDataSize(Watch.TYPE s, bool bigendian)
+		private void ConvertListsDataSize(Watch_Legacy.TYPE s, bool bigendian)
 		{
 			ConvertDataSize(s, ref Searches);
 
@@ -1556,23 +1556,23 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		private void ConvertDataSize(Watch.TYPE s, ref List<Watch> list)
+		private void ConvertDataSize(Watch_Legacy.TYPE s, ref List<Watch_Legacy> list)
 		{
-			List<Watch> converted = new List<Watch>();
+			List<Watch_Legacy> converted = new List<Watch_Legacy>();
 			int divisor = 1;
 			if (!includeMisalignedToolStripMenuItem.Checked)
 			{
 				switch (s)
 				{
-					case Watch.TYPE.WORD:
+					case Watch_Legacy.TYPE.WORD:
 						divisor = 2;
 						break;
-					case Watch.TYPE.DWORD:
+					case Watch_Legacy.TYPE.DWORD:
 						divisor = 4;
 						break;
 				}
 			}
-			foreach (Watch t in list)
+			foreach (Watch_Legacy t in list)
 				if (t.Address % divisor == 0)
 				{
 					int changes = t.Changecount;
@@ -1591,50 +1591,50 @@ namespace BizHawk.MultiClient
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Watch specificValue = new Watch();
+			Watch_Legacy specificValue = new Watch_Legacy();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
 			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch.DISPTYPE.UNSIGNED;
+			specificValue.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
 			specificValue.Type = GetDataSize();
 			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch.DISPTYPE.UNSIGNED);
+			ConvertListsDataType(Watch_Legacy.DISPTYPE.UNSIGNED);
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Watch specificValue = new Watch();
+			Watch_Legacy specificValue = new Watch_Legacy();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
 			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch.DISPTYPE.SIGNED;
+			specificValue.Signed = Watch_Legacy.DISPTYPE.SIGNED;
 			specificValue.Type = GetDataSize();
 			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch.DISPTYPE.SIGNED);
+			ConvertListsDataType(Watch_Legacy.DISPTYPE.SIGNED);
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Watch specificValue = new Watch();
+			Watch_Legacy specificValue = new Watch_Legacy();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
 			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch.DISPTYPE.HEX;
+			specificValue.Signed = Watch_Legacy.DISPTYPE.HEX;
 			specificValue.Type = GetDataSize();
 			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch.DISPTYPE.HEX);
+			ConvertListsDataType(Watch_Legacy.DISPTYPE.HEX);
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1650,16 +1650,16 @@ namespace BizHawk.MultiClient
 		{
 			switch (GetDataType())
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					switch (GetDataSize())
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 3;
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							SpecificValueBox.MaxLength = 5;
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 10;
 							break;
 						default:
@@ -1667,16 +1667,16 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					switch (GetDataSize())
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 4;
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							SpecificValueBox.MaxLength = 6;
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 11;
 							break;
 						default:
@@ -1684,16 +1684,16 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					switch (GetDataSize())
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 2;
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							SpecificValueBox.MaxLength = 4;
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 8;
 							break;
 						default:
@@ -1712,7 +1712,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(Watch.TYPE.BYTE, GetBigEndian());
+			ConvertListsDataSize(Watch_Legacy.TYPE.BYTE, GetBigEndian());
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1720,7 +1720,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(Watch.TYPE.WORD, GetBigEndian());
+			ConvertListsDataSize(Watch_Legacy.TYPE.WORD, GetBigEndian());
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1728,7 +1728,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
-			ConvertListsDataSize(Watch.TYPE.DWORD, GetBigEndian());
+			ConvertListsDataSize(Watch_Legacy.TYPE.DWORD, GetBigEndian());
 		}
 
 		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -1831,7 +1831,7 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		bool LoadSearchFile(string path, bool append, List<Watch> list)
+		bool LoadSearchFile(string path, bool append, List<Watch_Legacy> list)
 		{
 			string domain;
 			bool result = WatchCommon.LoadWatchFile(path, append, list, out domain);
@@ -2047,19 +2047,19 @@ namespace BizHawk.MultiClient
 
 			switch (GetDataType())
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					if (!InputValidate.IsValidHexNumber(e.KeyChar))
 					{
 						e.Handled = true;
@@ -2120,7 +2120,7 @@ namespace BizHawk.MultiClient
 			var file = GetFileFromUser();
 			if (file != null)
 			{
-				List<Watch> temp = new List<Watch>();
+				List<Watch_Legacy> temp = new List<Watch_Legacy>();
 				LoadSearchFile(file.FullName, false, temp);
 				TruncateList(temp);
 				DoTruncate();
@@ -2130,17 +2130,17 @@ namespace BizHawk.MultiClient
 
 		private void ClearWeeded()
 		{
-			foreach (Watch watch in Searches)
+			foreach (Watch_Legacy watch in Searches)
 			{
 				watch.Deleted = false;
 			}
 		}
 
 
-		private void TruncateList(IEnumerable<Watch> toRemove)
+		private void TruncateList(IEnumerable<Watch_Legacy> toRemove)
 		{
 			ClearWeeded();
-			foreach (Watch watch in toRemove)
+			foreach (Watch_Legacy watch in toRemove)
 			{
 				var first_or_default = Searches.FirstOrDefault(x => x.Address == watch.Address);
 				if (first_or_default != null)
@@ -2181,7 +2181,7 @@ namespace BizHawk.MultiClient
 
 		private void CopyValueToPrev()
 		{
-			foreach (Watch t in Searches)
+			foreach (Watch_Legacy t in Searches)
 			{
 				t.LastSearch = t.Value;
 				t.Original = t.Value;
@@ -2194,7 +2194,7 @@ namespace BizHawk.MultiClient
 
 		private void UpdateLastSearch()
 		{
-			foreach (Watch t in Searches)
+			foreach (Watch_Legacy t in Searches)
 			{
 				t.LastSearch = t.Value;
 			}
@@ -2247,14 +2247,14 @@ namespace BizHawk.MultiClient
 				{
 					switch (Searches[indexes[i]].Type)
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
 							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 2);
@@ -2279,12 +2279,12 @@ namespace BizHawk.MultiClient
 				{
 					switch (Searches[indexes[i]].Type)
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							Cheat c = new Cheat("", Searches[indexes[i]].Address, (byte)Searches[indexes[i]].Value,
 								true, Domain);
 							Global.MainForm.Cheats1.AddCheat(c);
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							{
 								byte low = (byte)(Searches[indexes[i]].Value / 256);
 								byte high = (byte)(Searches[indexes[i]].Value);
@@ -2306,7 +2306,7 @@ namespace BizHawk.MultiClient
 								}
 							}
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							{
 								byte HIWORDhigh = (byte)(Searches[indexes[i]].Value / 0x1000000);
 								byte HIWORDlow = (byte)(Searches[indexes[i]].Value / 0x10000);
@@ -2561,7 +2561,7 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			Searches.Sort((x, y) => x.CompareTo(y, columnName, (Watch.PREVDEF)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
+			Searches.Sort((x, y) => x.CompareTo(y, columnName, (Watch_Legacy.PREVDEF)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();

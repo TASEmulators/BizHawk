@@ -27,7 +27,7 @@ namespace BizHawk.MultiClient
             return file;
         }
 
-        public static bool SaveWchFile(string path, string domain_name, List<Watch> watchList)
+        public static bool SaveWchFile(string path, string domain_name, List<Watch_Legacy> watchList)
 		{
 			using (StreamWriter sw = new StreamWriter(path))
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.MultiClient
 				str.Append(Global.Emulator.SystemId);
 				str.Append('\n');
 
-				foreach (Watch t in watchList)
+				foreach (Watch_Legacy t in watchList)
 				{
 					str.Append(string.Format("{0:X4}", t.Address));
 					str.Append('\t');
@@ -67,7 +67,7 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		public static bool LoadWatchFile(string path, bool append, List<Watch> watchList, out string domain)
+		public static bool LoadWatchFile(string path, bool append, List<Watch_Legacy> watchList, out string domain)
 		{
 			domain = "";
 			var file = new FileInfo(path);
@@ -125,7 +125,7 @@ namespace BizHawk.MultiClient
 					{
 						continue;   //If not 4, something is wrong with this line, ignore it
 					}
-					Watch w = new Watch();
+					Watch_Legacy w = new Watch_Legacy();
 
 					string temp = s.Substring(0, s.IndexOf('\t'));
 					try

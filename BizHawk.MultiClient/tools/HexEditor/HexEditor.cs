@@ -665,20 +665,20 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
-		private Watch MakeWatch(int address)
+		private Watch_Legacy MakeWatch(int address)
 		{
-			Watch w = new Watch {Address = address, BigEndian = BigEndian, Signed = Watch.DISPTYPE.HEX, Domain = Domain};
+			Watch_Legacy w = new Watch_Legacy {Address = address, BigEndian = BigEndian, Signed = Watch_Legacy.DISPTYPE.HEX, Domain = Domain};
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					w.Type = Watch.TYPE.BYTE;
+					w.Type = Watch_Legacy.TYPE.BYTE;
 					break;
 				case 2:
-					w.Type = Watch.TYPE.WORD;
+					w.Type = Watch_Legacy.TYPE.WORD;
 					break;
 				case 4:
-					w.Type = Watch.TYPE.DWORD;
+					w.Type = Watch_Legacy.TYPE.DWORD;
 					break;
 			}
 			return w;
@@ -708,12 +708,12 @@ namespace BizHawk.MultiClient
 		{
 			int p = GetHighlightedAddress();
 			if (p < 0) return;
-			Watch w = new Watch
+			Watch_Legacy w = new Watch_Legacy
 				{
 					Address = p,
 					Value = MakeValue(p),
 					BigEndian = BigEndian,
-					Signed = Watch.DISPTYPE.HEX,
+					Signed = Watch_Legacy.DISPTYPE.HEX,
 					Domain = Domain
 				};
 
@@ -721,13 +721,13 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					w.Type = Watch.TYPE.BYTE;
+					w.Type = Watch_Legacy.TYPE.BYTE;
 					break;
 				case 2:
-					w.Type = Watch.TYPE.WORD;
+					w.Type = Watch_Legacy.TYPE.WORD;
 					break;
 				case 4:
-					w.Type = Watch.TYPE.DWORD;
+					w.Type = Watch_Legacy.TYPE.DWORD;
 					break;
 			}
 				
