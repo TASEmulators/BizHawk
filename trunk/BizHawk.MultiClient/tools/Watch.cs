@@ -951,43 +951,43 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        public char SizeAsChar
-        {
-            get
-            {
-                switch (Size)
-                {
-                    default:
-                    case WatchSize.Separator:
-                        return 'S';
-                    case WatchSize.Byte:
-                        return 'b';
-                    case WatchSize.Word:
-                        return 'w';
-                    case WatchSize.DWord:
-                        return 'd';
-                }
-            }
-        }
+		public char SizeAsChar
+		{
+			get
+			{
+				switch (Size)
+				{
+					default:
+					case WatchSize.Separator:
+						return 'S';
+					case WatchSize.Byte:
+						return 'b';
+					case WatchSize.Word:
+						return 'w';
+					case WatchSize.DWord:
+						return 'd';
+				}
+			}
+		}
 
-        public char TypeAsChar
-        {
-            get
-            {
-                switch (Type)
-                {
-                    default:
-                    case DisplayType.Separator:
-                        return '_';
-                    case DisplayType.Unsigned:
-                        return 's';
-                    case DisplayType.Signed:
-                        return 'u';
-                    case DisplayType.Hex:
-                        return 'h';
-                }
-            }
-        }
+		public char TypeAsChar
+		{
+			get
+			{
+				switch (Type)
+				{
+					default:
+					case DisplayType.Separator:
+						return '_';
+					case DisplayType.Unsigned:
+						return 's';
+					case DisplayType.Signed:
+						return 'u';
+					case DisplayType.Hex:
+						return 'h';
+				}
+			}
+		}
 
 		public string AddressFormatStr
 		{
@@ -1046,6 +1046,14 @@ namespace BizHawk.MultiClient
 	public class SeparatorWatch : WatchEntryBase
 	{
 		public SeparatorWatch() { }
+
+		public static SeparatorWatch Instance
+		{
+			get
+			{
+				return new SeparatorWatch();
+			}
+		}
 
 		public override int? Address
 		{
@@ -1235,6 +1243,11 @@ namespace BizHawk.MultiClient
 			return GetEnumerator();
 		}
 
+		public int Count
+		{
+			get { return _watchList.Count; }
+		}
+
 		public WatchEntryBase this[int index]
 		{
 			get
@@ -1261,7 +1274,7 @@ namespace BizHawk.MultiClient
 
 		public string AddressFormatStr
 		{
-            get
+			get
 			{
 				if (_domain != null)
 				{
@@ -1292,6 +1305,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void Add(WatchEntryBase watch)
+		{
+			_watchList.Add(watch);
+			Changes = true;
+		}
+
+		public void Remove(WatchEntryBase watch)
+		{
+			_watchList.Remove(watch);
+			Changes = true;
+		}
+
+		public void Insert(int index, WatchEntryBase watch)
+		{
+			_watchList.Insert(index, watch);
+		}
+
+		public void ClearChangeCounts()
+		{
+			var detailedWatches = _watchList.OfType<iWatchEntryDetails>().ToList();
+			foreach (var watch in detailedWatches)
+			{
+				watch.ClearChangeCount();
+			}
+		}
+
 		#region File handling logic - probably needs to be its own class
 
 		public string CurrentFileName { get { return _currentFilename; } set { _currentFilename = value; } }
@@ -1299,8 +1338,8 @@ namespace BizHawk.MultiClient
 
 		public bool Save()
 		{
-            bool result = false;
-            if (!String.IsNullOrWhiteSpace(CurrentFileName))
+			bool result = false;
+			if (!String.IsNullOrWhiteSpace(CurrentFileName))
 			{
 				result = SaveFile();
 			}
@@ -1309,12 +1348,12 @@ namespace BizHawk.MultiClient
 				result = SaveAs();
 			}
 
-            if (result)
-            {
-                Changes = false;
-            }
+			if (result)
+			{
+				Changes = false;
+			}
 
-            return result;
+			return result;
 		}
 
 		public bool Load(string path, bool details, bool append)
@@ -1325,12 +1364,12 @@ namespace BizHawk.MultiClient
 			{
 				if (append)
 				{
-                    Changes = true;
+					Changes = true;
 				}
 				else
 				{
-                    CurrentFileName = path;
-                    Changes = false;
+					CurrentFileName = path;
+					Changes = false;
 				}
 			}
 
@@ -1339,48 +1378,48 @@ namespace BizHawk.MultiClient
 
 		private bool SaveFile()
 		{
-            if (String.IsNullOrWhiteSpace(CurrentFileName))
-            {
-                return false;
-            }
+			if (String.IsNullOrWhiteSpace(CurrentFileName))
+			{
+				return false;
+			}
 
-            using (StreamWriter sw = new StreamWriter(CurrentFileName))
-            {
-                StringBuilder sb = new StringBuilder();
-                sb
-                    .Append("Domain ").AppendLine(_domain.Name)
-                    .Append("SystemID ").AppendLine(Global.Emulator.SystemId);
+			using (StreamWriter sw = new StreamWriter(CurrentFileName))
+			{
+				StringBuilder sb = new StringBuilder();
+				sb
+					.Append("Domain ").AppendLine(_domain.Name)
+					.Append("SystemID ").AppendLine(Global.Emulator.SystemId);
 
-                foreach (WatchEntryBase w in _watchList)
-                {
-                    sb
-                        .Append(String.Format(AddressFormatStr, w.Address)).Append('\t')
-                        .Append(w.SizeAsChar).Append('\t')
-                        .Append(w.TypeAsChar).Append('\t')
-                        .Append(w.BigEndian ? '1' : '0').Append('\t')
-                        .Append(w.DomainName).Append('\t')
-                        .Append(w is iWatchEntryDetails ? (w as iWatchEntryDetails).Notes : String.Empty)
-                        .AppendLine();
-                }
+				foreach (WatchEntryBase w in _watchList)
+				{
+					sb
+						.Append(String.Format(AddressFormatStr, w.Address)).Append('\t')
+						.Append(w.SizeAsChar).Append('\t')
+						.Append(w.TypeAsChar).Append('\t')
+						.Append(w.BigEndian ? '1' : '0').Append('\t')
+						.Append(w.DomainName).Append('\t')
+						.Append(w is iWatchEntryDetails ? (w as iWatchEntryDetails).Notes : String.Empty)
+						.AppendLine();
+				}
 
-                sw.WriteLine(sb.ToString());
-            }
+				sw.WriteLine(sb.ToString());
+			}
 
-            return true;
+			return true;
 		}
 
 		public bool SaveAs()
 		{
-            var file = WatchCommon.GetSaveFileFromUser(CurrentFileName);
-            if (file != null)
-            {
-                CurrentFileName = file.FullName;
-                return SaveFile();
-            }
-            else
-            {
-                return false;
-            }
+			var file = WatchCommon.GetSaveFileFromUser(CurrentFileName);
+			if (file != null)
+			{
+				CurrentFileName = file.FullName;
+				return SaveFile();
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		private bool LoadFile(string path, bool details, bool append)
@@ -1394,10 +1433,10 @@ namespace BizHawk.MultiClient
 			{
 				string line;
 
-                if (append == false)
-                {
-                    Clear();
-                }
+				if (append == false)
+				{
+					Clear();
+				}
 
 				while ((line = sr.ReadLine()) != null)
 				{
@@ -1530,52 +1569,52 @@ namespace BizHawk.MultiClient
 			return 0;
 		}
 
-        public static FileInfo GetFileFromUser(string currentFile)
-        {
-            var ofd = new OpenFileDialog();
-            if (currentFile.Length > 0)
-                ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-            ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-            ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-            ofd.RestoreDirectory = true;
+		public static FileInfo GetFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog();
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+			ofd.RestoreDirectory = true;
 
-            Global.Sound.StopSound();
-            var result = ofd.ShowDialog();
-            Global.Sound.StartSound();
-            if (result != DialogResult.OK)
-                return null;
-            var file = new FileInfo(ofd.FileName);
-            return file;
-        }
+			Global.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(ofd.FileName);
+			return file;
+		}
 
-        public static FileInfo GetSaveFileFromUser(string currentFile)
-        {
-            var sfd = new SaveFileDialog();
-            if (currentFile.Length > 0)
-            {
-                sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-                sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
-            }
-            else if (!(Global.Emulator is NullEmulator))
-            {
-                sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-                sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-            }
-            else
-            {
-                sfd.FileName = "NULL";
-                sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-            }
-            sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-            sfd.RestoreDirectory = true;
-            Global.Sound.StopSound();
-            var result = sfd.ShowDialog();
-            Global.Sound.StartSound();
-            if (result != DialogResult.OK)
-                return null;
-            var file = new FileInfo(sfd.FileName);
-            return file;
-        }
+		public static FileInfo GetSaveFileFromUser(string currentFile)
+		{
+			var sfd = new SaveFileDialog();
+			if (currentFile.Length > 0)
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+			}
+			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
 
 		#endregion
 	}

@@ -539,6 +539,7 @@
       <DependentUpon>NewRamWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
+    <Compile Include="tools\ToolHelpers.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
     </Compile>

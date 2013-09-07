@@ -1328,7 +1328,7 @@ namespace BizHawk.MultiClient
 		private void SetMemoryDomainMenu()
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
+			if (Global.Emulator.MemoryDomains.Any())
 			{
 				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 				{

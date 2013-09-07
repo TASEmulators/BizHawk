@@ -171,21 +171,9 @@ namespace BizHawk.MultiClient
 			WatchCountLabel.Text = count.ToString() + (count == 1 ? " watch" : " watches");
 		}
 
-		private void SetMemoryDomain(int pos)
-		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
-			{
-				Watches.Domain = Global.Emulator.MemoryDomains[pos];
-			}
-			SetPlatformAndMemoryDomainLabel();
-			Update();
-		}
-
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			string memoryDomain = Watches.Domain.ToString();
-			systemID = Global.Emulator.SystemId;
-			MemDomainLabel.Text = systemID + " " + memoryDomain;
+			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Watches.Domain.Name;
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -244,6 +232,119 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchWndy = Location.Y;
 			Global.Config.RamWatchWidth = Right - Left;
 			Global.Config.RamWatchHeight = Bottom - Top;
+		}
+
+		private void SetMemoryDomain(int pos)
+		{
+			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			{
+				Watches.Domain = Global.Emulator.MemoryDomains[pos];
+			}
+
+			SetPlatformAndMemoryDomainLabel();
+			Update();
+		}
+
+		private void SelectAll()
+		{
+			for (int i = 0; i < Watches.Count; i++)
+				WatchListView.SelectItem(i, true);
+		}
+
+		void Changes()
+		{
+			Watches.Changes = true;
+			MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
+		}
+
+		void MoveUp()
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count == 0 || indexes[0] == 0)
+			{
+				return;
+			}
+
+			foreach (int index in indexes)
+			{
+				var watch = Watches[index];
+				Watches.Remove(Watches[index]);
+				Watches.Insert(index - 1, watch);
+
+				//Note: here it will get flagged many times redundantly potentially, 
+				//but this avoids it being flagged falsely when the user did not select an index
+				Changes();
+			}
+			List<int> indices = new List<int>();
+			for (int i = 0; i < indexes.Count; i++)
+			{
+				indices.Add(indexes[i] - 1);
+			}
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (int t in indices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
+			DisplayWatches();
+		}
+
+		void MoveDown()
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count == 0)
+			{
+				return;
+			}
+
+			foreach (int index in indexes)
+			{
+				var watch = Watches[index];
+
+				if (index < Watches.Count - 1)
+				{
+					Watches.Remove(Watches[index]);
+					Watches.Insert(index + 1, watch);
+				}
+
+				//Note: here it will get flagged many times redundantly potnetially, 
+				//but this avoids it being flagged falsely when the user did not select an index
+				Changes();
+			}
+
+			List<int> indices = new List<int>();
+			for (int i = 0; i < indexes.Count; i++)
+			{
+				indices.Add(indexes[i] + 1);
+			}
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (int t in indices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
+			DisplayWatches();
+		}
+
+		private void InsertSeparator()
+		{
+			Changes();
+
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				if (indexes[0] > 0)
+				{
+					Watches.Insert(indexes[0], SeparatorWatch.Instance);
+				}
+			}
+			else
+			{
+				Watches.Add(SeparatorWatch.Instance);
+			}
+			DisplayWatches();
 		}
 
 		#region Winform Events
@@ -335,6 +436,79 @@ namespace BizHawk.MultiClient
 			{
 				Close();
 			}
+		}
+
+		/*************Watches***********************/
+		private void watchesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				editWatchToolStripMenuItem.Enabled = true;
+				duplicateWatchToolStripMenuItem.Enabled = true;
+				removeWatchToolStripMenuItem.Enabled = true;
+				moveUpToolStripMenuItem.Enabled = true;
+				moveDownToolStripMenuItem.Enabled = true;
+				pokeAddressToolStripMenuItem.Enabled = true;
+				freezeAddressToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				editWatchToolStripMenuItem.Enabled = false;
+				duplicateWatchToolStripMenuItem.Enabled = false;
+				removeWatchToolStripMenuItem.Enabled = false;
+				moveUpToolStripMenuItem.Enabled = false;
+				moveDownToolStripMenuItem.Enabled = false;
+				pokeAddressToolStripMenuItem.Enabled = false;
+				freezeAddressToolStripMenuItem.Enabled = false;
+			}
+		}
+
+		private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
+			memoryDomainsToolStripMenuItem.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Watches.Domain.Name));
+		}
+
+		private void removeWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				foreach (int index in indexes)
+				{
+					Watches.Remove(Watches[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+				}
+				indexes.Clear();
+				DisplayWatches();
+			}
+			UpdateValues();
+			UpdateWatchCount();
+		}
+
+		private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertSeparator();
+		}
+
+		private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Watches.ClearChangeCounts();
+		}
+
+		private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MoveUp();
+		}
+
+		private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MoveDown();
+		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
 		}
 
 		/*************Options***********************/
