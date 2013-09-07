@@ -254,31 +254,8 @@ namespace BizHawk.MultiClient
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Cheats list
-			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentCheats.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentCheats.Count; x++)
-				{
-					string path = Global.Config.RecentCheats[x];
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadCheatFromRecent(path);
-					recentToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentCheats.Clear();
-			recentToolStripMenuItem.DropDownItems.Add(clearitem);
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentCheats.GenerateRecentMenu(LoadCheatFromRecent));
 		}
 
 		private void LoadConfigSettings()
@@ -739,7 +716,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
 			CheatsOnOffLoadToolStripMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
-			autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadCheats;
+			autoloadDialogToolStripMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
 			LoadCheatFileByGameToolStripMenuItem.Checked = Global.Config.LoadCheatFileByGame;
 			saveCheatsOnCloseToolStripMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
 			showValuesAsHexToolStripMenuItem.Checked = Global.Config.Cheats_ValuesAsHex;
@@ -1050,7 +1027,7 @@ namespace BizHawk.MultiClient
 
 		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AutoLoadCheats ^= true;
+			Global.Config.RecentCheats.AutoLoad ^= true;
 		}
 
 		private void LoadCheatFileByGameToolStripMenuItem_Click(object sender, EventArgs e)

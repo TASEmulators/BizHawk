@@ -98,7 +98,7 @@ namespace BizHawk.MultiClient
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			if (Global.Config.AutoLoadLuaSession)
+			if (Global.Config.RecentLuaSession.AutoLoad)
 			{
 				if (!Global.Config.RecentLuaSession.Empty)
 				{
@@ -253,7 +253,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
 			autoloadConsoleToolStripMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
-			autoloadSessionToolStripMenuItem.Checked = Global.Config.AutoLoadLuaSession;
+			autoloadSessionToolStripMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
 			disableScriptsOnLoadToolStripMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 		}
 
@@ -532,31 +532,8 @@ namespace BizHawk.MultiClient
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Cheats list
-			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentLua.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentLua.Count; x++)
-				{
-					string path = Global.Config.RecentLua[x];
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadLuaFromRecent(path);
-					recentToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentLua.Clear();
-			recentToolStripMenuItem.DropDownItems.Add(clearitem);
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentLua.GenerateRecentMenu(LoadLuaFromRecent));
 		}
 
 		private void LoadLuaFromRecent(string path)
@@ -1008,31 +985,8 @@ namespace BizHawk.MultiClient
 
 		private void recentSessionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Cheats list
-			//repopulate it with an up to date list
 			recentSessionsToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentLuaSession.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentSessionsToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentLuaSession.Count; x++)
-				{
-					string path = Global.Config.RecentLuaSession[x];
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadSessionFromRecent(path);
-					recentSessionsToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentSessionsToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentLuaSession.Clear();
-			recentSessionsToolStripMenuItem.DropDownItems.Add(clearitem);
+			recentSessionsToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentLuaSession.GenerateRecentMenu(LoadSessionFromRecent));
 		}
 
 		public void LoadSessionFromRecent(string file)
@@ -1207,7 +1161,7 @@ namespace BizHawk.MultiClient
 
 		private void autoloadSessionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AutoLoadLuaSession ^= true;
+			Global.Config.RecentLuaSession.AutoLoad ^= true;
 		}
 
 		private void TogglePause()

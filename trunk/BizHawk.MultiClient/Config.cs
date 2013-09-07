@@ -43,7 +43,6 @@ namespace BizHawk.MultiClient
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
-		public bool AutoLoadMostRecentRom = false;
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
@@ -164,7 +163,6 @@ namespace BizHawk.MultiClient
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
-		public bool AutoLoadLuaSession = false;
 		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;
 		public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
@@ -201,7 +199,6 @@ namespace BizHawk.MultiClient
 		public int RamWatchPrev_Type = 1;
 
 		// RamSearch Settings
-		public bool AutoLoadRamSearch = false;
 		public bool RamSearchSaveWindowPosition = true;
 		public RecentFiles RecentSearches = new RecentFiles(8);
 		public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
@@ -360,7 +357,6 @@ namespace BizHawk.MultiClient
 
 		// Cheats Dialog
 		public bool Cheats_ValuesAsHex = true;
-		public bool AutoLoadCheats = false;
 		public bool CheatsSaveWindowPosition = true;
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
@@ -427,7 +423,6 @@ namespace BizHawk.MultiClient
 
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
-		public bool AutoLoadMostRecentMovie = false;
 		public bool BindSavestatesToMovies = true;
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;

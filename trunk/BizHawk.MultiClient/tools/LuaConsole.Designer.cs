@@ -46,13 +46,9 @@
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.recentSessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.noneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +79,7 @@
 			this.OutputBox = new System.Windows.Forms.RichTextBox();
 			this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.registeredFunctionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
 			this.OutputMessages = new System.Windows.Forms.Label();
@@ -100,7 +97,6 @@
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.registeredFunctionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
@@ -177,6 +173,7 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.scriptToolStripMenuItem,
@@ -251,59 +248,31 @@
 			// recentSessionsToolStripMenuItem
 			// 
 			this.recentSessionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noneToolStripMenuItem1,
-            this.toolStripSeparator8,
-            this.clearToolStripMenuItem1});
+            this.toolStripSeparator8});
 			this.recentSessionsToolStripMenuItem.Name = "recentSessionsToolStripMenuItem";
 			this.recentSessionsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.recentSessionsToolStripMenuItem.Text = "Recent Sessions";
 			this.recentSessionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentSessionsToolStripMenuItem_DropDownOpened);
 			// 
-			// noneToolStripMenuItem1
-			// 
-			this.noneToolStripMenuItem1.Name = "noneToolStripMenuItem1";
-			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
-			this.noneToolStripMenuItem1.Text = "None";
-			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(100, 6);
-			// 
-			// clearToolStripMenuItem1
-			// 
-			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
-			this.clearToolStripMenuItem1.Text = "Clear";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
 			// 
 			// recentToolStripMenuItem
 			// 
 			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noneToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.clearToolStripMenuItem});
+            this.toolStripSeparator3});
 			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.recentToolStripMenuItem.Text = "Recent Scripts";
 			this.recentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpened);
 			// 
-			// noneToolStripMenuItem
-			// 
-			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-			this.noneToolStripMenuItem.Text = "None";
-			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(100, 6);
-			// 
-			// clearToolStripMenuItem
-			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-			this.clearToolStripMenuItem.Text = "Clear";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -550,7 +519,7 @@
             this.clearToolStripMenuItem2,
             this.registeredFunctionsToolStripMenuItem});
 			this.contextMenuStrip2.Name = "contextMenuStrip2";
-			this.contextMenuStrip2.Size = new System.Drawing.Size(185, 70);
+			this.contextMenuStrip2.Size = new System.Drawing.Size(185, 48);
 			this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
 			// 
 			// clearToolStripMenuItem2
@@ -559,6 +528,13 @@
 			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(184, 22);
 			this.clearToolStripMenuItem2.Text = "&Clear";
 			this.clearToolStripMenuItem2.Click += new System.EventHandler(this.clearToolStripMenuItem2_Click);
+			// 
+			// registeredFunctionsToolStripMenuItem
+			// 
+			this.registeredFunctionsToolStripMenuItem.Name = "registeredFunctionsToolStripMenuItem";
+			this.registeredFunctionsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.registeredFunctionsToolStripMenuItem.Text = "&Registered Functions";
+			this.registeredFunctionsToolStripMenuItem.Click += new System.EventHandler(this.showRegisteredFunctionsToolStripMenuItem_Click);
 			// 
 			// groupBox1
 			// 
@@ -740,13 +716,6 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
-			// registeredFunctionsToolStripMenuItem
-			// 
-			this.registeredFunctionsToolStripMenuItem.Name = "registeredFunctionsToolStripMenuItem";
-			this.registeredFunctionsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-			this.registeredFunctionsToolStripMenuItem.Text = "&Registered Functions";
-			this.registeredFunctionsToolStripMenuItem.Click += new System.EventHandler(this.showRegisteredFunctionsToolStripMenuItem_Click);
-			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -802,10 +771,8 @@
         private System.Windows.Forms.ToolStripMenuItem insertSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem turnOffAllScriptsToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem stopAllScriptsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoloadConsoleToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem removeScriptToolStripMenuItem;
@@ -833,9 +800,7 @@
 		private System.Windows.Forms.ToolStripMenuItem openSessionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripMenuItem recentSessionsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem luaFunctionsListToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
