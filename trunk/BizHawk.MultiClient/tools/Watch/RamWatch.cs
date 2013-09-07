@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 
 		private string systemID = "NULL";
 		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
-		private readonly List<Watch> Watches = new List<Watch>();
+		private readonly List<Watch_Legacy> Watches = new List<Watch_Legacy>();
 		private string currentFile = "";
 		private bool changes = false;
 		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -52,9 +52,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public List<Watch> GetRamWatchList()
+		public List<Watch_Legacy> GetRamWatchList()
 		{
-			return Watches.Select(t => new Watch(t)).ToList();
+			return Watches.Select(t => new Watch_Legacy(t)).ToList();
 		}
 
 		public void DisplayWatchList()
@@ -69,7 +69,7 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			foreach (Watch t in Watches)
+			foreach (Watch_Legacy t in Watches)
 			{
 				t.PeekAddress();
 			}
@@ -91,7 +91,7 @@ namespace BizHawk.MultiClient
 			WatchListView.BlazingFast = false;
 		}
 
-		public void AddWatch(Watch w)
+		public void AddWatch(Watch_Legacy w)
 		{
 			Watches.Add(w);
 			Changes();
@@ -195,7 +195,7 @@ namespace BizHawk.MultiClient
 
 			if (column == 0)
 			{
-				if (Watches[index].Type == Watch.TYPE.SEPARATOR)
+				if (Watches[index].Type == Watch_Legacy.TYPE.SEPARATOR)
 				{
 					color = BackColor;
 				}
@@ -210,7 +210,7 @@ namespace BizHawk.MultiClient
 		{
 			text = "";
 
-			if (Watches[index].Type == Watch.TYPE.SEPARATOR || index >= Watches.Count)
+			if (Watches[index].Type == Watch_Legacy.TYPE.SEPARATOR || index >= Watches.Count)
 			{
 				return;
 			}
@@ -334,7 +334,7 @@ namespace BizHawk.MultiClient
 
 		private void UpdateWatchCount()
 		{
-			int count = Watches.Count(w => w.Type != Watch.TYPE.SEPARATOR);
+			int count = Watches.Count(w => w.Type != Watch_Legacy.TYPE.SEPARATOR);
 
 			WatchCountLabel.Text = count.ToString() + (count == 1 ? " watch" : " watches");
 		}
@@ -346,7 +346,7 @@ namespace BizHawk.MultiClient
 
 			if (result)
 			{
-				foreach (Watch w in Watches)
+				foreach (Watch_Legacy w in Watches)
 				{
 					InitializeAddress(w);
 				}
@@ -375,7 +375,7 @@ namespace BizHawk.MultiClient
 		private void AddNewWatch()
 		{
 			RamWatchNewWatch r = new RamWatchNewWatch {location = GetPromptPoint()};
-			Watch w = new Watch {Domain = Domain};
+			Watch_Legacy w = new Watch_Legacy {Domain = Domain};
 			r.SetWatch(w);
 			Global.Sound.StopSound();
 			r.ShowDialog();
@@ -390,7 +390,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void InitializeAddress(Watch w)
+		private void InitializeAddress(Watch_Legacy w)
 		{
 			w.PeekAddress();
 			w.Prev = w.Value;
@@ -485,7 +485,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				Watch temp = Watches[index];
+				Watch_Legacy temp = Watches[index];
 				Watches.Remove(Watches[index]);
 				Watches.Insert(index - 1, temp);
 
@@ -514,7 +514,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				Watch temp = Watches[index];
+				Watch_Legacy temp = Watches[index];
 
 				if (index < Watches.Count - 1)
 				{
@@ -787,7 +787,7 @@ namespace BizHawk.MultiClient
 		private void InsertSeparator()
 		{
 			Changes();
-			Watch w = new Watch {Type = Watch.TYPE.SEPARATOR};
+			Watch_Legacy w = new Watch_Legacy {Type = Watch_Legacy.TYPE.SEPARATOR};
 
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count > 0)
@@ -1065,7 +1065,7 @@ namespace BizHawk.MultiClient
 
 		private void ClearChangeCounts()
 		{
-			foreach (Watch t in Watches)
+			foreach (Watch_Legacy t in Watches)
 			{
 				t.Changecount = 0;
 			}
@@ -1196,12 +1196,12 @@ namespace BizHawk.MultiClient
 				{
 					switch (Watches[indexes[i]].Type)
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							Cheat c = new Cheat("", Watches[indexes[i]].Address, (byte)Watches[indexes[i]].Value,
 								true, Domain);
 							Global.MainForm.Cheats1.AddCheat(c);
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							{
 								byte low = (byte)(Watches[indexes[i]].Value / 256);
 								byte high = (byte)(Watches[indexes[i]].Value);
@@ -1223,7 +1223,7 @@ namespace BizHawk.MultiClient
 								}
 							}
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							{
 								byte HIWORDhigh = (byte)(Watches[indexes[i]].Value >> 24);
 								byte HIWORDlow = (byte)(Watches[indexes[i]].Value >> 16);
@@ -1275,14 +1275,14 @@ namespace BizHawk.MultiClient
 				{
 					switch (Watches[indexes[i]].Type)
 					{
-						case Watch.TYPE.BYTE:
+						case Watch_Legacy.TYPE.BYTE:
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
 							break;
-						case Watch.TYPE.WORD:
+						case Watch_Legacy.TYPE.WORD:
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 1);
 							break;
-						case Watch.TYPE.DWORD:
+						case Watch_Legacy.TYPE.DWORD:
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 1);
 							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 2);
@@ -1494,7 +1494,7 @@ namespace BizHawk.MultiClient
 			{
 				sortReverse = false;
 			}
-			Watches.Sort((x, y) => x.CompareTo(y, columnName, Global.Config.RamWatchPrev_Type == 1 ? Watch.PREVDEF.LASTFRAME : Watch.PREVDEF.LASTCHANGE) * (sortReverse ? -1 : 1));
+			Watches.Sort((x, y) => x.CompareTo(y, columnName, Global.Config.RamWatchPrev_Type == 1 ? Watch_Legacy.PREVDEF.LASTFRAME : Watch_Legacy.PREVDEF.LASTCHANGE) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			WatchListView.Refresh();

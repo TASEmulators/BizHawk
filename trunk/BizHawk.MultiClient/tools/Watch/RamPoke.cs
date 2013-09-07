@@ -7,7 +7,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class RamPoke : Form
 	{
-		public Watch Watch = new Watch();
+		public Watch_Legacy Watch = new Watch_Legacy();
 		public MemoryDomain Domain = Global.Emulator.MainMemory;
 		public Point NewLocation = new Point();
 
@@ -16,10 +16,10 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatchObject(Watch w)
+		public void SetWatchObject(Watch_Legacy w)
 		{
 			PopulateMemoryDomainComboBox();
-			Watch = new Watch(w);
+			Watch = new Watch_Legacy(w);
 			Domain = w.Domain;
 		}
 
@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 				PopulateMemoryDomainComboBox();
 			SetTypeRadio(Watch.Type);
 			SetSignedRadio(Watch.Signed);
-			if (Watch.Signed == Watch.DISPTYPE.HEX)
+			if (Watch.Signed == Watch_Legacy.DISPTYPE.HEX)
 			{
 				ValueHexLabel.Text = "0x";
 			}
@@ -68,15 +68,15 @@ namespace BizHawk.MultiClient
 		{
 			switch (Watch.Signed)
 			{
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					ValueHexLabel.Text = "";
 					break;
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					ValueHexLabel.Text = "";
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					ValueHexLabel.Text = "0x";
 					HexRadio.Checked = true;
 					break;
@@ -90,7 +90,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "0x";
 			ValueBox.MaxLength = GetValueNumDigits();
-			Watch.Signed = Watch.DISPTYPE.HEX;
+			Watch.Signed = Watch_Legacy.DISPTYPE.HEX;
 			FormatValue();
 		}
 
@@ -98,7 +98,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
-			Watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			Watch.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
 			FormatValue();
 		}
 
@@ -106,7 +106,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
-			Watch.Signed = Watch.DISPTYPE.SIGNED;
+			Watch.Signed = Watch_Legacy.DISPTYPE.SIGNED;
 			FormatValue();
 		}
 
@@ -130,33 +130,33 @@ namespace BizHawk.MultiClient
 			Text = "Ram Poke - " + Domain;
 		}
 
-		private void SetTypeRadio(Watch.TYPE a)
+		private void SetTypeRadio(Watch_Legacy.TYPE a)
 		{
 			switch (a)
 			{
-				case Watch.TYPE.BYTE:
+				case Watch_Legacy.TYPE.BYTE:
 					Byte1Radio.Checked = true;
 					break;
-				case Watch.TYPE.WORD:
+				case Watch_Legacy.TYPE.WORD:
 					Byte2Radio.Checked = true;
 					break;
-				case Watch.TYPE.DWORD:
+				case Watch_Legacy.TYPE.DWORD:
 					Byte4Radio.Checked = true;
 					break;
 			}
 		}
 
-		private void SetSignedRadio(Watch.DISPTYPE a)
+		private void SetSignedRadio(Watch_Legacy.DISPTYPE a)
 		{
 			switch (a)
 			{
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					break;
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
 			}
@@ -183,28 +183,28 @@ namespace BizHawk.MultiClient
 
 			if (SignedRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.SIGNED;
+				Watch.Signed = Watch_Legacy.DISPTYPE.SIGNED;
 			}
 			else if (UnsignedRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.UNSIGNED;
+				Watch.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
 			}
 			else if (HexRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.HEX;
+				Watch.Signed = Watch_Legacy.DISPTYPE.HEX;
 			}
 
 			if (Byte1Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.BYTE;
+				Watch.Type = Watch_Legacy.TYPE.BYTE;
 			}
 			else if (Byte2Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.WORD;
+				Watch.Type = Watch_Legacy.TYPE.WORD;
 			}
 			else if (Byte4Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.DWORD;
+				Watch.Type = Watch_Legacy.TYPE.DWORD;
 			}
 
 			if (BigEndianRadio.Checked)
@@ -261,7 +261,7 @@ namespace BizHawk.MultiClient
 
 			switch (Watch.Signed)
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(ValueBox.Text))
 					{
 						ValueBox.Focus();
@@ -270,7 +270,7 @@ namespace BizHawk.MultiClient
 						t.Show("Must be a valid unsigned decimal value", ValueBox, 5000);
 					}
 					break;
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					if (!InputValidate.IsValidSignedNumber(ValueBox.Text))
 					{
 						ValueBox.Focus();
@@ -279,7 +279,7 @@ namespace BizHawk.MultiClient
 						t.Show("Must be a valid signed decimal value", ValueBox, 5000);
 					}
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					if (!InputValidate.IsValidHexNumber(ValueBox.Text))
 					{
 						ValueBox.Focus();
@@ -292,23 +292,23 @@ namespace BizHawk.MultiClient
 			
 		}
 
-		private Watch.DISPTYPE GetDataType()
+		private Watch_Legacy.DISPTYPE GetDataType()
 		{
 			if (SignedRadio.Checked)
 			{
-				return Watch.DISPTYPE.SIGNED;
+				return Watch_Legacy.DISPTYPE.SIGNED;
 			}
 			if (UnsignedRadio.Checked)
 			{
-				return Watch.DISPTYPE.UNSIGNED;
+				return Watch_Legacy.DISPTYPE.UNSIGNED;
 			}
 			if (HexRadio.Checked)
 			{
-				return Watch.DISPTYPE.HEX;
+				return Watch_Legacy.DISPTYPE.HEX;
 			}
 			else
 			{
-				return Watch.DISPTYPE.UNSIGNED;    //Just in case
+				return Watch_Legacy.DISPTYPE.UNSIGNED;    //Just in case
 			}
 		}
 
@@ -318,19 +318,19 @@ namespace BizHawk.MultiClient
 
 			switch (GetDataType())
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					if (!InputValidate.IsValidHexNumber(e.KeyChar))
 					{
 						e.Handled = true;
@@ -339,23 +339,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private Watch.TYPE GetDataSize()
+		private Watch_Legacy.TYPE GetDataSize()
 		{
 			if (Byte1Radio.Checked)
 			{
-				return Watch.TYPE.BYTE;
+				return Watch_Legacy.TYPE.BYTE;
 			}
 			else if (Byte2Radio.Checked)
 			{
-				return Watch.TYPE.WORD;
+				return Watch_Legacy.TYPE.WORD;
 			}
 			else if (Byte4Radio.Checked)
 			{
-				return Watch.TYPE.DWORD;
+				return Watch_Legacy.TYPE.DWORD;
 			}
 			else
 			{
-				return Watch.TYPE.BYTE;
+				return Watch_Legacy.TYPE.BYTE;
 			}
 		}
 
@@ -365,7 +365,7 @@ namespace BizHawk.MultiClient
 			bool i;
 			switch (GetDataType())
 			{
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(ValueBox.Text);
 					if (!i)
 					{
@@ -375,7 +375,7 @@ namespace BizHawk.MultiClient
 					{
 						return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
 					}
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					i = InputValidate.IsValidSignedNumber(ValueBox.Text);
 					if (!i)
 					{
@@ -385,7 +385,7 @@ namespace BizHawk.MultiClient
 					{
 						return (int)Int64.Parse(ValueBox.Text);
 					}
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					i = InputValidate.IsValidHexNumber(ValueBox.Text);
 					if (!i)
 					{
@@ -404,15 +404,15 @@ namespace BizHawk.MultiClient
 			switch (GetDataSize())
 			{
 				default:
-				case Watch.TYPE.BYTE:
+				case Watch_Legacy.TYPE.BYTE:
 					if (HexRadio.Checked) return 2;
 					else if (UnsignedRadio.Checked) return 3;
 					else return 4;
-				case Watch.TYPE.WORD:
+				case Watch_Legacy.TYPE.WORD:
 					if (HexRadio.Checked) return 4;
 					else if (UnsignedRadio.Checked) return 5;
 					else return 6;
-				case Watch.TYPE.DWORD:
+				case Watch_Legacy.TYPE.DWORD:
 					if (HexRadio.Checked) return 8;
 					else if (UnsignedRadio.Checked) return 10;
 					else return 11;

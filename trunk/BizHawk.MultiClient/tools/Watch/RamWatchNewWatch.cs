@@ -7,7 +7,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class RamWatchNewWatch : Form
 	{
-		public Watch Watch = new Watch();
+		public Watch_Legacy Watch = new Watch_Legacy();
 		public bool SelectionWasMade = false;
 		public Point location = new Point();
 
@@ -18,10 +18,10 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatch(Watch watch, string message = "New Watch")
+		public void SetWatch(Watch_Legacy watch, string message = "New Watch")
 		{
 			DoNotResetAddress = true; //Hack for the drop down event changing when initializing the drop down
-			Watch = new Watch(watch);
+			Watch = new Watch_Legacy(watch);
 			Text = message;
 
 			NotesBox.Text = watch.Notes;
@@ -70,28 +70,28 @@ namespace BizHawk.MultiClient
 
 			if (SignedRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.SIGNED;
+				Watch.Signed = Watch_Legacy.DISPTYPE.SIGNED;
 			}
 			else if (UnsignedRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.UNSIGNED;
+				Watch.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
 			}
 			else if (HexRadio.Checked)
 			{
-				Watch.Signed = Watch.DISPTYPE.HEX;
+				Watch.Signed = Watch_Legacy.DISPTYPE.HEX;
 			}
 
 			if (Byte1Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.BYTE;
+				Watch.Type = Watch_Legacy.TYPE.BYTE;
 			}
 			else if (Byte2Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.WORD;
+				Watch.Type = Watch_Legacy.TYPE.WORD;
 			}
 			else if (Byte4Radio.Checked)
 			{
-				Watch.Type = Watch.TYPE.DWORD;
+				Watch.Type = Watch_Legacy.TYPE.DWORD;
 			}
 
 			if (BigEndianRadio.Checked)
@@ -153,13 +153,13 @@ namespace BizHawk.MultiClient
 		{
 			switch (Watch.Type)
 			{
-				case Watch.TYPE.BYTE:
+				case Watch_Legacy.TYPE.BYTE:
 					Byte1Radio.Checked = true;
 					break;
-				case Watch.TYPE.WORD:
+				case Watch_Legacy.TYPE.WORD:
 					Byte2Radio.Checked = true;
 					break;
-				case Watch.TYPE.DWORD:
+				case Watch_Legacy.TYPE.DWORD:
 					Byte4Radio.Checked = true;
 					break;
 				default:
@@ -223,13 +223,13 @@ namespace BizHawk.MultiClient
 		{
 			switch (Watch.Signed)
 			{
-				case Watch.DISPTYPE.SIGNED:
+				case Watch_Legacy.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					break;
-				case Watch.DISPTYPE.UNSIGNED:
+				case Watch_Legacy.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					break;
-				case Watch.DISPTYPE.HEX:
+				case Watch_Legacy.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
 			}
