@@ -321,7 +321,7 @@ namespace BizHawk.MultiClient
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentWatches.GenerateRecentMenu(LoadWatchFromRecent).ToArray());
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentWatches.GenerateRecentMenu(LoadWatchFromRecent));
 			recentToolStripMenuItem.DropDownItems.Add(Global.Config.RecentWatches.GenerateAutoLoadItem());
 		}
 

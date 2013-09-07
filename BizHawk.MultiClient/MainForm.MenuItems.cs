@@ -301,17 +301,6 @@ namespace BizHawk.MultiClient
 			LoadRamSearch();
 		}
 
-
-		private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			UpdateAutoLoadRecentRom();
-		}
-
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RecentRoms.Clear();
-		}
-		
 		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveSlot = 1;
@@ -717,69 +706,16 @@ namespace BizHawk.MultiClient
 
 		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Roms list
-			//repopulate it with an up to date list
 			recentROMToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentRoms.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentROMToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentRoms.Count; x++)
-				{
-					string path = Global.Config.RecentRoms[x];
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadRomFromRecent(path);
-					recentROMToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentROMToolStripMenuItem.DropDownItems.Add("-");
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
-			recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
-			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
-			auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
-			auto.Checked = Global.Config.AutoLoadMostRecentRom;
-			recentROMToolStripMenuItem.DropDownItems.Add(auto);
+			recentROMToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentRoms.GenerateRecentMenu(LoadRomFromRecent));
+			recentROMToolStripMenuItem.DropDownItems.Add(Global.Config.RecentRoms.GenerateAutoLoadItem());
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Movies list
-			//repopulate it with an up to date list
-
 			recentToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentMovies.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentMovies.Count; x++)
-				{
-					string path = Global.Config.RecentMovies[x];
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadMoviesFromRecent(path);
-					recentToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentMovies.Clear();
-			recentToolStripMenuItem.DropDownItems.Add(clearitem);
-
-			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
-			auto.Click += (o, ev) => UpdateAutoLoadRecentMovie();
-			auto.Checked = Global.Config.AutoLoadMostRecentMovie;
-			recentToolStripMenuItem.DropDownItems.Add(auto);
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentMovies.GenerateRecentMenu(LoadMoviesFromRecent));
+			recentToolStripMenuItem.DropDownItems.Add(Global.Config.RecentMovies.GenerateAutoLoadItem());
 		}
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1484,7 +1420,6 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
-			autoloadMostRecentToolStripMenuItem.Checked = Global.Config.AutoLoadMostRecentRom;
 			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
 			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
 			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;

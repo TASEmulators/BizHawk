@@ -96,7 +96,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public List<ToolStripItem> GenerateRecentMenu(Action<string> loadFileCallback)
+		public ToolStripItem[] GenerateRecentMenu(Action<string> loadFileCallback)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -109,8 +109,9 @@ namespace BizHawk.MultiClient
 			{
 				foreach (string filename in recentlist)
 				{
-					var item = new ToolStripMenuItem { Text = filename };
-					item.Click += (o, ev) => loadFileCallback(filename);
+					string temp = filename;
+					var item = new ToolStripMenuItem { Text = temp };
+					item.Click += (o, ev) => loadFileCallback(temp);
 					items.Add(item);
 				}
 			}
@@ -121,7 +122,7 @@ namespace BizHawk.MultiClient
 			clearitem.Click += (o, ev) => recentlist.Clear();
 			items.Add(clearitem);
 
-			return items;
+			return items.ToArray();
 		}
 
 		public ToolStripMenuItem GenerateAutoLoadItem()

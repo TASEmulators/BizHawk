@@ -1856,31 +1856,8 @@ namespace BizHawk.MultiClient
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Roms list
-			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentSearches.Empty)
-			{
-				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
-				recentToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentSearches.Count; x++)
-				{
-					string path = Global.Config.RecentSearches[x];
-					var item = new ToolStripMenuItem { Text = path };
-					item.Click += (o, ev) => LoadSearchFromRecent(path);
-					recentToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
-			clearitem.Click += (o, ev) => Global.Config.RecentSearches.Clear();
-			recentToolStripMenuItem.DropDownItems.Add(clearitem);
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentSearches.GenerateRecentMenu(LoadSearchFromRecent));
 		}
 
 		private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1921,7 +1898,7 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
-			autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadRamSearch;
+			autoloadDialogToolStripMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 		}
 
 		private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2713,7 +2690,7 @@ namespace BizHawk.MultiClient
 
 		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AutoLoadRamSearch ^= true;
+			Global.Config.RecentSearches.AutoLoad ^= true;
 		}
 
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)

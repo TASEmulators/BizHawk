@@ -276,8 +276,10 @@ namespace BizHawk.MultiClient
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.Empty)
+			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
+			{
 				LoadRomFromRecent(Global.Config.RecentRoms[0]);
+			}
 
 			if (cmdMovie != null)
 			{
@@ -298,7 +300,7 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.Empty)
+			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
 			{
 				if (Global.Game == null)
 				{
@@ -333,39 +335,58 @@ namespace BizHawk.MultiClient
 					LoadNewRamWatch(true);
 				}
 			}
-			if (Global.Config.AutoLoadRamSearch)
+			if (Global.Config.RecentSearches.AutoLoad)
+			{
 				LoadRamSearch();
+			}
 			if (Global.Config.AutoLoadHexEditor)
+			{
 				LoadHexEditor();
-			if (Global.Config.AutoLoadCheats)
+			}
+			if (Global.Config.RecentCheats.AutoLoad)
+			{
 				LoadCheatsWindow();
+			}
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
+			{
 				LoadNESPPU();
+			}
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
+			{
 				LoadNESNameTable();
+			}
 			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
+			{
 				LoadNESDebugger();
+			}
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
+			{
 				LoadGameGenieEC();
+			}
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
+			{
 				LoadGBGPUView();
-
+			}
 			if (Global.Config.AutoloadTAStudio)
 			{
 				LoadTAStudio();
 			}
-
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				LoadVirtualPads();
 			}
-
 			if (Global.Config.AutoLoadLuaConsole)
+			{
 				OpenLuaConsole();
+			}
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
+			{
 				LoadPCEBGViewer();
+			}
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
+			{
 				LoadSNESGraphicsDebugger();
+			}
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
 				if (Global.CoreComm.CpuTraceAvailable)
@@ -375,15 +396,23 @@ namespace BizHawk.MultiClient
 			}
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			{
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
 
 			if (Global.Config.DisplayStatusBar == false)
+			{
 				StatusSlot0.Visible = false;
+			}
 			else
+			{
 				displayStatusBarToolStripMenuItem.Checked = true;
+			}
 
 			if (Global.Config.StartPaused)
+			{
 				PauseEmulator();
+			}
 
 			if (!INTERIM)
 			{
@@ -2652,34 +2681,6 @@ namespace BizHawk.MultiClient
 		private void SaveSlotSelectedMessage()
 		{
 			Global.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
-		}
-
-		private void UpdateAutoLoadRecentRom()
-		{
-			if (Global.Config.AutoLoadMostRecentRom)
-			{
-				autoloadMostRecentToolStripMenuItem.Checked = false;
-				Global.Config.AutoLoadMostRecentRom = false;
-			}
-			else
-			{
-				autoloadMostRecentToolStripMenuItem.Checked = true;
-				Global.Config.AutoLoadMostRecentRom = true;
-			}
-		}
-
-		private void UpdateAutoLoadRecentMovie()
-		{
-			if (Global.Config.AutoLoadMostRecentMovie)
-			{
-				autoloadMostRecentToolStripMenuItem1.Checked = false;
-				Global.Config.AutoLoadMostRecentMovie = false;
-			}
-			else
-			{
-				autoloadMostRecentToolStripMenuItem1.Checked = true;
-				Global.Config.AutoLoadMostRecentMovie = true;
-			}
 		}
 
 		public void LoadRamSearch()
