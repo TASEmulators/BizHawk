@@ -693,6 +693,12 @@ namespace BizHawk.MultiClient
 			Changes = true;
 		}
 
+		public void AddRange(IList<Watch> watches)
+		{
+			_watchList.AddRange(watches);
+			Changes = true;
+		}
+
 		public void Remove(Watch watch)
 		{
 			_watchList.Remove(watch);

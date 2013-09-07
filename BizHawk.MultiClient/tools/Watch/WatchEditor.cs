@@ -1,246 +1,117 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
 	public partial class WatchEditor : Form
 	{
-		public Watch_Legacy Watch = new Watch_Legacy();
-		public bool SelectionWasMade = false;
-		public Point location = new Point();
+		public enum Mode { New, Duplicate, Edit };
+		
+		private List<Watch> _watchList = new List<Watch>();
+		private Mode _mode = Mode.New;
+		private bool _loading = true;
+		private string _addressFormatStr = "{0:X2}";
 
-		private bool DoNotResetAddress;
+		public Mode EditorMode { get { return _mode; } }
+		public List<Watch> Watches { get { return _watchList; } }
+		public Point InitialLocation = new Point(0, 0);
 
 		public WatchEditor()
 		{
 			InitializeComponent();
 		}
 
-		public void SetWatch(Watch_Legacy watch, string message = "New Watch")
+		private void RamWatchNewWatch_Load(object sender, EventArgs e)
 		{
-			DoNotResetAddress = true; //Hack for the drop down event changing when initializing the drop down
-			Watch = new Watch_Legacy(watch);
-			Text = message;
+			if (InitialLocation.X > 0 || InitialLocation.Y > 0)
+			{
+				Location = InitialLocation;
+			}
+			_loading = false;
+			SetAddressBoxProperties();
+		}
 
-			NotesBox.Text = watch.Notes;
-			setTypeRadio();
-			setSignedRadio();
-			setEndianBox();
-			setDomainSelection();
-			setAddressBox();
+		public void SetWatch(MemoryDomain domain = null, List<Watch> watches = null, Mode mode = Mode.New)
+		{
+			if (watches != null)
+			{
+				_watchList.AddRange(watches);
+			}
+			SetTitle();
+			DoMemoryDomainDropdown(domain ?? Global.Emulator.MainMemory);
+		}
+
+		private void SetTitle()
+		{
+			switch(_mode)
+			{
+				default:
+				case WatchEditor.Mode.New:
+					Text = "New Watch";
+					break;
+				case WatchEditor.Mode.Edit:
+					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : "");
+					break;
+				case WatchEditor.Mode.Duplicate:
+					Text = "Duplicate Watch";
+					break;
+			}
+		}
+
+		private void DoMemoryDomainDropdown(MemoryDomain startDomain)
+		{
+			DomainComboBox.Items.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
+				{
+					var result = DomainComboBox.Items.Add(domain.ToString());
+					if (domain.Name == startDomain.Name)
+					{
+						DomainComboBox.SelectedIndex = result;
+					}
+				}
+			}
+		}
+
+		private void SetAddressBoxProperties()
+		{
+			if (!_loading)
+			{
+				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainComboBox.SelectedItem.ToString());
+				if (domain != null)
+				{
+					AddressBox.MaxLength = IntHelpers.GetNumDigits(domain.Size - 1);
+					_addressFormatStr = "{0:X" + AddressBox.MaxLength.ToString() + "}";
+					AddressBox.Text = String.Format(_addressFormatStr, 0);
+				}
+			}
 		}
 
 		#region Events
 
-		private void RamWatchNewWatch_Load(object sender, EventArgs e)
-		{
-			if (location.X > 0 && location.Y > 0)
-			{
-				Location = location;
-			}
-
-			populateMemoryDomainComboBox();
-			DoNotResetAddress = false;
-		}
-
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			SelectionWasMade = false;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			//Put user settings in the watch file
-			SelectionWasMade = true;
-			if (InputValidate.IsValidHexNumber(AddressBox.Text))
-			{
-				Watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-			}
-			else
-			{
-				MessageBox.Show("Not a valid address (enter a valid Hex number)", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				AddressBox.Focus();
-				AddressBox.SelectAll();
+			DialogResult = DialogResult.OK;
 
-				return;
-			}
-
-			if (SignedRadio.Checked)
-			{
-				Watch.Signed = Watch_Legacy.DISPTYPE.SIGNED;
-			}
-			else if (UnsignedRadio.Checked)
-			{
-				Watch.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
-			}
-			else if (HexRadio.Checked)
-			{
-				Watch.Signed = Watch_Legacy.DISPTYPE.HEX;
-			}
-
-			if (Byte1Radio.Checked)
-			{
-				Watch.Type = Watch_Legacy.TYPE.BYTE;
-			}
-			else if (Byte2Radio.Checked)
-			{
-				Watch.Type = Watch_Legacy.TYPE.WORD;
-			}
-			else if (Byte4Radio.Checked)
-			{
-				Watch.Type = Watch_Legacy.TYPE.DWORD;
-			}
-
-			if (BigEndianRadio.Checked)
-			{
-				Watch.BigEndian = true;
-			}
-			else if (LittleEndianRadio.Checked)
-			{
-				Watch.BigEndian = false;
-			}
-
-			Watch.Domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-			Watch.Notes = NotesBox.Text;
+			//TODO
 
 			Close();
 		}
 
-		private void AddressBox_Leave(object sender, EventArgs e)
-		{
-			AddressBox.Text = AddressBox.Text.Replace(" ", "");
-			if (!InputValidate.IsValidHexNumber(AddressBox.Text))
-			{
-				AddressBox.Focus();
-				AddressBox.SelectAll();
-				ToolTip t = new ToolTip();
-				t.Show("Must be a valid hexadecimal vaue", AddressBox, 5000);
-			}
-			else
-			{
-				try
-				{
-					Watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-					AddressBox.Text = String.Format("{0:X" + getNumDigits(Watch.Domain.Size - 1) + "}", Watch.Address);
-				}
-				catch
-				{
-					//Do nothing
-				}
-			}
-		}
-
 		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!DoNotResetAddress)
-			{
-				Watch.Domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-				Watch.Address = 0;
-				Watch.Value = 0;
-				setAddressBox();
-				AddressBox.MaxLength = getNumDigits(Watch.Domain.Size);
-			}
-		}
-
-		#endregion
-
-		#region Helpers
-
-		private void setTypeRadio()
-		{
-			switch (Watch.Type)
-			{
-				case Watch_Legacy.TYPE.BYTE:
-					Byte1Radio.Checked = true;
-					break;
-				case Watch_Legacy.TYPE.WORD:
-					Byte2Radio.Checked = true;
-					break;
-				case Watch_Legacy.TYPE.DWORD:
-					Byte4Radio.Checked = true;
-					break;
-				default:
-					break;
-			}
-		}
-
-		private void setEndianBox()
-		{
-			if (Watch.BigEndian == true)
-			{
-				BigEndianRadio.Checked = true;
-			}
-			else
-			{
-				LittleEndianRadio.Checked = true;
-			}
-		}
-
-		private void setDomainSelection()
-		{
-			//Counts should always be the same, but just in case, let's check
-			int max;
-			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
-			{
-				max = Global.Emulator.MemoryDomains.Count;
-			}
-			else
-			{
-				max = DomainComboBox.Items.Count;
-			}
-
-			for (int i = 0; i < max; i++)
-			{
-				if (Watch.Domain.ToString() == DomainComboBox.Items[i].ToString())
-				{
-					DomainComboBox.SelectedIndex = i;
-				}
-			}
-		}
-
-		private void populateMemoryDomainComboBox()
-		{
-			DomainComboBox.Items.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
-			{
-				foreach (MemoryDomain t in Global.Emulator.MemoryDomains)
-				{
-					DomainComboBox.Items.Add(t.ToString());
-				}
-			}
-			setDomainSelection();
-		}
-
-		private void setAddressBox()
-		{
-			AddressBox.Text = String.Format("{0:X" + getNumDigits(Watch.Domain.Size - 1) + "}", Watch.Address);
-		}
-
-		private void setSignedRadio()
-		{
-			switch (Watch.Signed)
-			{
-				case Watch_Legacy.DISPTYPE.SIGNED:
-					SignedRadio.Checked = true;
-					break;
-				case Watch_Legacy.DISPTYPE.UNSIGNED:
-					UnsignedRadio.Checked = true;
-					break;
-				case Watch_Legacy.DISPTYPE.HEX:
-					HexRadio.Checked = true;
-					break;
-			}
-		}
-
-		private int getNumDigits(Int32 i)
-		{
-			if (i < 0x10000) return 4;
-			if (i < 0x1000000) return 6;
-			if (i < 0x10000000) return 7;
-			else return 8;
+			SetAddressBoxProperties();
 		}
 
 		#endregion
