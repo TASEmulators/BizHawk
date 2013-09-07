@@ -953,6 +953,22 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public static WatchSize SizeFromChar(char c)
+		{
+			switch (c)
+			{
+				default:
+				case 'S':
+					return WatchSize.Separator;
+				case 'b':
+					return WatchSize.Byte;
+				case 'w':
+					return WatchSize.Word;
+				case 'd':
+					return WatchSize.DWord;
+			}
+		}
+
 		public char TypeAsChar
 		{
 			get
@@ -972,7 +988,35 @@ namespace BizHawk.MultiClient
 						return 'b';
 					case DisplayType.FixedPoint_12_4:
 						return '1';
+					case DisplayType.FixedPoint_20_12:
+						return '2';
+					case DisplayType.Float:
+						return 'f';
 				}
+			}
+		}
+
+		public static DisplayType DisplayTypeFromChar(char c)
+		{
+			switch (c)
+			{
+				default:
+				case '_':
+					return DisplayType.Separator;
+				case 'u':
+					return DisplayType.Unsigned;
+				case 's':
+					return DisplayType.Signed;
+				case 'h':
+					return DisplayType.Hex;
+				case 'b':
+					return DisplayType.Binary;
+				case '1':
+					return DisplayType.FixedPoint_12_4;
+				case '2':
+					return DisplayType.FixedPoint_20_12;
+				case 'f':
+					return DisplayType.Float;
 			}
 		}
 
@@ -1061,40 +1105,6 @@ namespace BizHawk.MultiClient
 					{
 						return new DWordWatch(domain, address);
 					}
-			}
-		}
-
-		public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
-		{
-			switch (c)
-			{
-				case 'b':
-					return WatchSize.Byte;
-				case 'w':
-					return WatchSize.Word;
-				case 'd':
-					return WatchSize.DWord;
-				default:
-				case 'S':
-					return WatchSize.Separator;
-			}
-		}
-
-		public static DisplayType DisplayTypeFromChar(char c) //s = signed, u = unsigned, h = hex
-		{
-			switch (c)
-			{
-				default:
-				case 'u':
-					return DisplayType.Unsigned;
-				case 's':
-					return DisplayType.Signed;
-				case 'h':
-					return DisplayType.Hex;
-				case 'b':
-					return DisplayType.Binary;
-				case '1':
-					return DisplayType.FixedPoint_12_4;
 			}
 		}
 	}
