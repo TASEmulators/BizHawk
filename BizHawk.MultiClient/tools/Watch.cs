@@ -896,21 +896,19 @@ namespace BizHawk.MultiClient
 
 	#endregion
 
-	public abstract class WatchEntryBase
+	public abstract class WatchBase
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
-		public enum DisplayType { Separator, Signed, Unsigned, Hex };
+		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float };
 
+		protected int _address;
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
 		protected bool _bigEndian;
 
-		public abstract int? Address { get; }
 		public abstract int? Value { get; }
-		public abstract string AddressString { get; }
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
-		public abstract bool IsSeparator { get; }
 		public abstract List<DisplayType> ValidTypes { get; }
 
 		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
@@ -921,34 +919,19 @@ namespace BizHawk.MultiClient
 			get { return _domain.Name; }
 		}
 
-		public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
+		public virtual int? Address
 		{
-			switch (c)
-			{
-				case 'b':
-					return WatchSize.Byte;
-				case 'w':
-					return WatchSize.Word;
-				case 'd':
-					return WatchSize.DWord;
-				default:
-				case 'S':
-					return WatchSize.Separator;
-			}
+			get { return _address; }
 		}
 
-		public static DisplayType DisplayTypeFromChar(char c) //s = signed, u = unsigned, h = hex
+		public virtual string AddressString
 		{
-			switch (c)
-			{
-				default:
-				case 'u':
-					return DisplayType.Unsigned;
-				case 's':
-					return DisplayType.Signed;
-				case 'h':
-					return DisplayType.Hex;
-			}
+			get { return _address.ToString(AddressFormatStr); }
+		}
+
+		public virtual bool IsSeparator
+		{
+			get { return false; }
 		}
 
 		public char SizeAsChar
@@ -985,6 +968,10 @@ namespace BizHawk.MultiClient
 						return 'u';
 					case DisplayType.Hex:
 						return 'h';
+					case DisplayType.Binary:
+						return 'b';
+					case DisplayType.FixedPoint_12_4:
+						return '1';
 				}
 			}
 		}
@@ -1004,7 +991,42 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static WatchEntryBase GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
+		protected byte GetByte()
+		{
+			return _domain.PeekByte(_address);
+		}
+
+		protected ushort GetWord()
+		{
+			if (_bigEndian)
+			{
+				return (ushort)((_domain.PeekByte(_address) << 8) | (_domain.PeekByte(_address + 1)));
+			}
+			else
+			{
+				return (ushort)((_domain.PeekByte(_address)) | (_domain.PeekByte(_address + 1) << 8));
+			}
+		}
+
+		protected uint GetDWord()
+		{
+			if (_bigEndian)
+			{
+				return (uint)((_domain.PeekByte(_address) << 24)
+					| (_domain.PeekByte(_address + 1) << 16)
+					| (_domain.PeekByte(_address + 2) << 8)
+					| (_domain.PeekByte(_address + 3) << 0));
+			}
+			else
+			{
+				return (uint)((_domain.PeekByte(_address) << 0)
+					| (_domain.PeekByte(_address + 1) << 8)
+					| (_domain.PeekByte(_address + 2) << 16)
+					| (_domain.PeekByte(_address + 3) << 24));
+			}
+		}
+
+		public static WatchBase GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
 		{
 			switch (size)
 			{
@@ -1022,9 +1044,57 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case WatchSize.Word:
-					throw new NotImplementedException();
+					if (details)
+					{
+						return new DetailedWordWatch(domain, address);
+					}
+					else
+					{
+						return new WordWatch(domain, address);
+					}
 				case WatchSize.DWord:
-					throw new NotImplementedException();
+					if (details)
+					{
+						return new DetailedDWordWatch(domain, address);
+					}
+					else
+					{
+						return new DWordWatch(domain, address);
+					}
+			}
+		}
+
+		public static WatchSize SizeFromChar(char c)     //b = byte, w = word, d = dword
+		{
+			switch (c)
+			{
+				case 'b':
+					return WatchSize.Byte;
+				case 'w':
+					return WatchSize.Word;
+				case 'd':
+					return WatchSize.DWord;
+				default:
+				case 'S':
+					return WatchSize.Separator;
+			}
+		}
+
+		public static DisplayType DisplayTypeFromChar(char c) //s = signed, u = unsigned, h = hex
+		{
+			switch (c)
+			{
+				default:
+				case 'u':
+					return DisplayType.Unsigned;
+				case 's':
+					return DisplayType.Signed;
+				case 'h':
+					return DisplayType.Hex;
+				case 'b':
+					return DisplayType.Binary;
+				case '1':
+					return DisplayType.FixedPoint_12_4;
 			}
 		}
 	}
@@ -1043,7 +1113,7 @@ namespace BizHawk.MultiClient
 		void Update();
 	}
 
-	public class SeparatorWatch : WatchEntryBase
+	public class SeparatorWatch : WatchBase
 	{
 		public SeparatorWatch() { }
 
@@ -1105,10 +1175,8 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class ByteWatch : WatchEntryBase
+	public class ByteWatch : WatchBase
 	{
-		protected int _address;
-
 		public ByteWatch(MemoryDomain domain, int address)
 		{
 			_address = address;
@@ -1122,17 +1190,12 @@ namespace BizHawk.MultiClient
 
 		public override int? Value
 		{
-			get { return GetValue(); }
-		}
-
-		public override string AddressString
-		{
-			get { return Address.Value.ToString(AddressFormatStr); }
+			get { return GetByte(); }
 		}
 
 		public override string ValueString
 		{
-			get { return FormatValue(GetValue()); }
+			get { return FormatValue(GetByte()); }
 		}
 
 		public override string ToString()
@@ -1160,14 +1223,9 @@ namespace BizHawk.MultiClient
 			{
 				return new List<DisplayType>()
 				{
-					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex
+					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.Binary
 				};
 			}
-		}
-
-		protected byte GetValue()
-		{
-			return _domain.PeekByte(_address);
 		}
 
 		protected string FormatValue(byte val)
@@ -1181,6 +1239,8 @@ namespace BizHawk.MultiClient
 					return ((sbyte)val).ToString();
 				case DisplayType.Hex:
 					return String.Format("{0:X2}", val);
+				case DisplayType.Binary:
+					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
 			}
 		}
 	}
@@ -1194,7 +1254,7 @@ namespace BizHawk.MultiClient
 			: base(domain, address)
 		{
 			Notes = String.Empty;
-			_previous = _value = _domain.PeekByte(_address);
+			_previous = _value = GetByte();
 		}
 
 		public int ChangeCount { get; private set; }
@@ -1214,7 +1274,207 @@ namespace BizHawk.MultiClient
 		public void Update() //TODO: different notions of previous
 		{
 			_previous = _value;
-			_value = _domain.PeekByte(_address);
+			_value = GetByte();
+			if (_value != Previous)
+			{
+				ChangeCount++;
+			}
+		}
+	}
+
+	public class WordWatch : WatchBase
+	{
+		public WordWatch(MemoryDomain domain, int address)
+		{
+			_domain = domain;
+			_address = address;
+		}
+
+		public override int? Value
+		{
+			get { return GetWord(); }
+		}
+
+		public override WatchSize Size
+		{
+			get { return WatchSize.Word; }
+		}
+
+		public override List<DisplayType> ValidTypes
+		{
+			get
+			{
+				return new List<DisplayType>()
+				{
+					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.FixedPoint_12_4, DisplayType.Binary
+				};
+			}
+		}
+
+		public override string ValueString
+		{
+			get { return FormatValue(GetWord()); }
+		}
+
+		public override string ToString()
+		{
+			switch (Type)
+			{
+				default:
+					return Value.ToString(); //TODO
+			}
+		}
+
+		protected string FormatValue(ushort val)
+		{
+			switch (Type)
+			{
+				default:
+				case DisplayType.Unsigned:
+					return val.ToString();
+				case DisplayType.Signed:
+					return ((short)val).ToString();
+				case DisplayType.Hex:
+					return String.Format("{0:X4}", val);
+				case DisplayType.FixedPoint_12_4:
+					return String.Format("{0:F4}", ((double)val / 16.0));
+				case DisplayType.Binary:
+					return Convert.ToString(val, 2).PadLeft(16, '0').Insert(8, " ").Insert(4, " ").Insert(14, " ");
+			}
+		}
+	}
+
+	public class DetailedWordWatch : WordWatch, iWatchEntryDetails
+	{
+		private ushort _value;
+		private ushort _previous;
+
+		public DetailedWordWatch(MemoryDomain domain, int address)
+			: base(domain, address)
+		{
+			Notes = String.Empty;
+			_previous = _value = GetWord();
+		}
+
+		public int ChangeCount { get; private set; }
+		public void ClearChangeCount() { ChangeCount = 0; }
+
+		public int? Previous { get { return _previous; } }
+		public string PreviousStr { get { return FormatValue(_previous); } }
+		public void ResetPrevious() { _previous = _value; }
+
+		public string Diff
+		{
+			get { return FormatValue((ushort)(_previous - _value)); }
+		}
+
+		public string Notes { get; set; }
+
+		public void Update() //TODO: different notions of previous
+		{
+			_previous = _value;
+			_value = GetWord();
+			if (_value != Previous)
+			{
+				ChangeCount++;
+			}
+		}
+	}
+
+	public class DWordWatch : WatchBase
+	{
+		public DWordWatch(MemoryDomain domain, int address)
+		{
+			_domain = domain;
+			_address = address;
+		}
+
+		public override int? Value
+		{
+			get { return (int)GetDWord(); }
+		}
+
+		public override WatchSize Size
+		{
+			get { return WatchSize.DWord; }
+		}
+
+		public override List<DisplayType> ValidTypes
+		{
+			get
+			{
+				return new List<DisplayType>()
+				{
+					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
+				};
+			}
+		}
+
+		public override string ValueString
+		{
+			get { return FormatValue(GetDWord()); }
+		}
+
+		public override string ToString()
+		{
+			switch (Type)
+			{
+				default:
+					return Value.ToString(); //TODO
+			}
+		}
+
+		protected string FormatValue(uint val)
+		{
+			switch (Type)
+			{
+				default:
+				case DisplayType.Unsigned:
+					return val.ToString();
+				case DisplayType.Signed:
+					return ((int)val).ToString();
+				case DisplayType.Hex:
+					return String.Format("{0:X8}", val);
+				case DisplayType.FixedPoint_20_12:
+					return String.Format("{0:F5}", ((double)val / 4096.0));
+				case DisplayType.Float:
+					byte[] bytes = BitConverter.GetBytes(val);
+					float _float = System.BitConverter.ToSingle(bytes, 0);
+					return String.Format("{0:F6}", _float);
+			}
+		}
+	}
+
+	public class DetailedDWordWatch : DWordWatch, iWatchEntryDetails
+	{
+		private uint _value;
+		private uint _previous;
+
+		public DetailedDWordWatch(MemoryDomain domain, int address)
+			: base(domain, address)
+		{
+			Notes = String.Empty;
+			_previous = _value = GetDWord();
+		}
+
+		public int ChangeCount { get; private set; }
+		public void ClearChangeCount() { ChangeCount = 0; }
+
+		public int? Previous { get { return (int)_previous; } }
+		public string PreviousStr { get { return FormatValue(_previous); } }
+		public void ResetPrevious() { _previous = _value; }
+
+		public string Diff
+		{
+			get { return FormatValue((uint)(_previous - _value)); }
+		}
+
+		public string Notes { get; set; }
+
+		public void Update() //TODO: different notions of previous
+		{
+			_previous = _value;
+			_value = GetDWord();
 			if (_value != Previous)
 			{
 				ChangeCount++;
@@ -1228,12 +1488,12 @@ namespace BizHawk.MultiClient
 
 		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange };
 
-		private List<WatchEntryBase> _watchList = new List<WatchEntryBase>();
+		private List<WatchBase> _watchList = new List<WatchBase>();
 		private MemoryDomain _domain = null;
 
 		public WatchList() { }
 
-		public IEnumerator<WatchEntryBase> GetEnumerator()
+		public IEnumerator<WatchBase> GetEnumerator()
 		{
 			return _watchList.GetEnumerator();
 		}
@@ -1248,7 +1508,7 @@ namespace BizHawk.MultiClient
 			get { return _watchList.Count; }
 		}
 
-		public WatchEntryBase this[int index]
+		public WatchBase this[int index]
 		{
 			get
 			{
@@ -1305,19 +1565,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Add(WatchEntryBase watch)
+		public void Add(WatchBase watch)
 		{
 			_watchList.Add(watch);
 			Changes = true;
 		}
 
-		public void Remove(WatchEntryBase watch)
+		public void Remove(WatchBase watch)
 		{
 			_watchList.Remove(watch);
 			Changes = true;
 		}
 
-		public void Insert(int index, WatchEntryBase watch)
+		public void Insert(int index, WatchBase watch)
 		{
 			_watchList.Insert(index, watch);
 		}
@@ -1390,7 +1650,7 @@ namespace BizHawk.MultiClient
 					.Append("Domain ").AppendLine(_domain.Name)
 					.Append("SystemID ").AppendLine(Global.Emulator.SystemId);
 
-				foreach (WatchEntryBase w in _watchList)
+				foreach (WatchBase w in _watchList)
 				{
 					sb
 						.Append(String.Format(AddressFormatStr, w.Address)).Append('\t')
@@ -1487,8 +1747,8 @@ namespace BizHawk.MultiClient
 
 					//Temporary, rename if kept
 					int addr = 0;
-					WatchEntryBase.WatchSize size = WatchEntryBase.WatchSize.Separator;
-					WatchEntryBase.DisplayType type = WatchEntryBase.DisplayType.Unsigned;
+					WatchBase.WatchSize size = WatchBase.WatchSize.Separator;
+					WatchBase.DisplayType type = WatchBase.DisplayType.Unsigned;
 					bool bigEndian = false;
 					MemoryDomain memDomain = Global.Emulator.MainMemory;
 					string notes;
@@ -1505,12 +1765,12 @@ namespace BizHawk.MultiClient
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Type
-					size = WatchEntryBase.SizeFromChar(line[0]);
+					size = WatchBase.SizeFromChar(line[0]);
 
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Signed
-					type = WatchEntryBase.DisplayTypeFromChar(line[0]);
+					type = WatchBase.DisplayTypeFromChar(line[0]);
 
 					startIndex = line.IndexOf('\t') + 1;
 					line = line.Substring(startIndex, line.Length - startIndex);   //Endian
@@ -1542,7 +1802,7 @@ namespace BizHawk.MultiClient
 					startIndex = line.IndexOf('\t') + 1;
 					notes = line.Substring(startIndex, line.Length - startIndex);   //User notes
 
-					WatchEntryBase w = WatchEntryBase.GenerateWatch(memDomain, addr, size, details);
+					WatchBase w = WatchBase.GenerateWatch(memDomain, addr, size, details);
 					w.BigEndian = bigEndian;
 					w.Type = type;
 					if (w is iWatchEntryDetails)
