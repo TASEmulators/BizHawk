@@ -174,7 +174,6 @@ namespace BizHawk.MultiClient
 		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings
-		public bool AutoLoadRamWatch = false;
 		public RecentFiles RecentWatches = new RecentFiles(8);
 		public bool RamWatchSaveWindowPosition = true;
 		public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
@@ -192,7 +191,6 @@ namespace BizHawk.MultiClient
 		public int RamWatchDiffWidth = -1;
 		public int RamWatchNotesWidth = -1;
 		public int RamWatchDomainWidth = -1;
-
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
@@ -450,22 +448,6 @@ namespace BizHawk.MultiClient
 		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		//Analog Hotkey values
 		public int Analog_LargeChange = 10;

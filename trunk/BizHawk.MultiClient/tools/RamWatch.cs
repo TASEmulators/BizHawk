@@ -672,29 +672,14 @@ namespace BizHawk.MultiClient
 
 		private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.Config.AutoLoadRamWatch)
-			{
-				autoLoadToolStripMenuItem.Checked = true;
-			}
-			else
-			{
-				autoLoadToolStripMenuItem.Checked = false;
-			}
-
-			if (!changes)
-			{
-				saveToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				saveToolStripMenuItem.Enabled = true;
-			}
+			saveToolStripMenuItem.Enabled = changes;
 		}
 
 		private void UpdateAutoLoadRamWatch()
 		{
-			autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadRamWatch ^= true;
+			autoLoadToolStripMenuItem.Checked = Global.Config.RecentWatches.AutoLoad ^= true;
 		}
+
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			//Clear out recent Roms list
@@ -725,15 +710,7 @@ namespace BizHawk.MultiClient
 
 			var auto = new ToolStripMenuItem {Text = "&Auto-Load"};
 			auto.Click += (o, ev) => UpdateAutoLoadRamWatch();
-			if (Global.Config.AutoLoadRamWatch)
-			{
-				auto.Checked = true;
-			}
-			else
-			{
-				auto.Checked = false;
-			}
-
+			auto.Checked = Global.Config.RecentWatches.AutoLoad;
 			recentToolStripMenuItem.DropDownItems.Add(auto);
 		}
 

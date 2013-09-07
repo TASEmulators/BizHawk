@@ -11,6 +11,8 @@ namespace BizHawk.MultiClient
 		private readonly int MAX_RECENT_FILES;       //Maximum number of files
 		private readonly List<string> recentlist;    //List of recent files
 
+		public bool AutoLoad = false;
+
 		public RecentFiles() : this(8) { }
 		public RecentFiles(int max)
 		{
@@ -18,15 +20,15 @@ namespace BizHawk.MultiClient
 			MAX_RECENT_FILES = max;
 		}
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            return recentlist.GetEnumerator();
-        }
+		public IEnumerator<string> GetEnumerator()
+		{
+			return recentlist.GetEnumerator();
+		}
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
 		public void Clear()
 		{
@@ -79,52 +81,59 @@ namespace BizHawk.MultiClient
 			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
-        public string this[int index]
-        {
-            get
-            {
-                if (recentlist.Any())
-                {
-                    return recentlist[index];
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
+		public string this[int index]
+		{
+			get
+			{
+				if (recentlist.Any())
+				{
+					return recentlist[index];
+				}
+				else
+				{
+					return "";
+				}
+			}
+		}
 
-        public void GenerateRecentMenu(ToolStripMenuItem menu, Action<string> loadFileCallback,  bool? autoloadConfigVar = null, Action autoloadCallback = null)
-        {
-            menu.DropDownItems.Clear();
+		public List<ToolStripItem> GenerateRecentMenu(Action<string> loadFileCallback)
+		{
+			var items = new List<ToolStripItem>();
 
-            if (Empty)
-            {
-                var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
-                menu.DropDownItems.Add(none);
-            }
-            else
-            {
-                foreach (string filename in recentlist)
-               {
-                   var item = new ToolStripMenuItem { Text = filename };
-                   item.Click += (o, ev) => loadFileCallback(filename);
-                   menu.DropDownItems.Add(item);
-               }
-            }
+			if (Empty)
+			{
+				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
+				items.Add(none);
+			}
+			else
+			{
+				foreach (string filename in recentlist)
+				{
+					var item = new ToolStripMenuItem { Text = filename };
+					item.Click += (o, ev) => loadFileCallback(filename);
+					items.Add(item);
+				}
+			}
 
-            menu.DropDownItems.Add("-");
+			items.Add(new ToolStripSeparator());
 
-            var clearitem = new ToolStripMenuItem { Text = "&Clear" };
-            clearitem.Click += (o, ev) => recentlist.Clear();
-            menu.DropDownItems.Add(clearitem);
+			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
+			clearitem.Click += (o, ev) => recentlist.Clear();
+			items.Add(clearitem);
 
-            if (autoloadConfigVar.HasValue)
-            {
-                var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = autoloadConfigVar.Value };
-                auto.Click += (o, ev) => autoloadCallback();
-                menu.DropDownItems.Add(auto);
-            }
-        }
+			return items;
+		}
+
+		public ToolStripMenuItem GenerateAutoLoadItem()
+		{
+			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = AutoLoad };
+			auto.Click += (o, ev) => ToggleAutoLoad();
+			return auto;
+		}
+
+		private void ToggleAutoLoad()
+		{
+			AutoLoad ^= true;
+		}
 	}
 }
