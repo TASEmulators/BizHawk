@@ -167,8 +167,7 @@ namespace BizHawk.MultiClient
 
 		private void UpdateWatchCount()
 		{
-			int count = Watches.WatchCount;
-			WatchCountLabel.Text = count.ToString() + (count == 1 ? " watch" : " watches");
+			WatchCountLabel.Text = Watches.WatchCount.ToString() + (Watches.WatchCount == 1 ? " watch" : " watches");
 		}
 
 		private void SetPlatformAndMemoryDomainLabel()
@@ -214,6 +213,7 @@ namespace BizHawk.MultiClient
 				}
 
 				DisplayWatches();
+				UpdateWatchCount();
 				Watches.Changes = false;
 			}
 		}
@@ -347,6 +347,30 @@ namespace BizHawk.MultiClient
 			DisplayWatches();
 		}
 
+		private Point GetPromptPoint()
+		{
+			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
+		}
+
+		private void AddNewWatch()
+		{
+			WatchEditor we = new WatchEditor()
+			{
+				InitialLocation = GetPromptPoint()
+			};
+			we.SetWatch(Watches.Domain);
+			Global.Sound.StopSound();
+			we.ShowDialog();
+			Global.Sound.StartSound();
+
+			if (we.DialogResult == DialogResult.OK)
+			{
+				Watches.Add(we.Watches[0]);
+				UpdateWatchCount();
+				DisplayWatches();
+			}
+		}
+
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
@@ -468,6 +492,11 @@ namespace BizHawk.MultiClient
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
 			memoryDomainsToolStripMenuItem.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Watches.Domain.Name));
+		}
+
+		private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddNewWatch();
 		}
 
 		private void removeWatchToolStripMenuItem_Click(object sender, EventArgs e)

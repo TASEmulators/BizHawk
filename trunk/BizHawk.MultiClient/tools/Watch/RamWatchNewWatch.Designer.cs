@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamWatchNewWatch));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.AddressBox = new HexTextBox();
+			this.AddressBox = new BizHawk.HexTextBox();
 			this.NotesBox = new System.Windows.Forms.TextBox();
 			this.DataTypeGroupBox = new System.Windows.Forms.GroupBox();
 			this.HexRadio = new System.Windows.Forms.RadioButton();
@@ -245,6 +245,7 @@
 			// 
 			// DomainComboBox
 			// 
+			this.DomainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.DomainComboBox.FormattingEnabled = true;
 			this.DomainComboBox.Location = new System.Drawing.Point(12, 230);
 			this.DomainComboBox.Name = "DomainComboBox";
