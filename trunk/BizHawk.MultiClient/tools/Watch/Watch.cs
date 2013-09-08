@@ -49,7 +49,7 @@ namespace BizHawk.MultiClient
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 
-		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
+		public virtual DisplayType Type { get { return _type; } set {  _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		public string DomainName

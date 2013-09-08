@@ -15,6 +15,9 @@ namespace BizHawk.MultiClient
 		private bool _loading = true;
 		private string _addressFormatStr = "{0:X2}";
 
+		private bool _changedSize = false;
+		private bool _changedDisplayType = false;
+
 		public Mode EditorMode { get { return _mode; } }
 		public List<Watch> Watches { get { return _watchList; } }
 		public Point InitialLocation = new Point(0, 0);
@@ -39,6 +42,46 @@ namespace BizHawk.MultiClient
 				case Mode.New:
 					SizeDropDown.SelectedItem = SizeDropDown.Items[0];
 					break;
+				case Mode.Edit:
+					switch (_watchList[0].Size)
+					{
+						case Watch.WatchSize.Byte:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+							break;
+						case Watch.WatchSize.Word:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
+							break;
+						case Watch.WatchSize.DWord:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
+							break;
+					}
+					int x = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(_watchList[0].Type));
+					DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[x];
+
+					if (_watchList.Count > 1)
+					{
+						NotesBox.Enabled = false;
+						NotesBox.Text = "";
+
+						AddressBox.Enabled = false;
+						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+
+						BigEndianCheckBox.ThreeState = true;
+
+						if (_watchList.Select(s => s.Size).Distinct().Count() > 1)
+						{
+							DisplayTypeDropDown.Enabled = false;
+						}
+					}
+					else
+					{
+						NotesBox.Text = (_watchList[0] as iWatchEntryDetails).Notes;
+						AddressBox.Text = _watchList[0].AddressString;
+					}
+
+					SetBigEndianCheckBox();
+					DomainDropDown.Enabled = false;
+					break;
 			}
 		}
 
@@ -48,8 +91,9 @@ namespace BizHawk.MultiClient
 			{
 				_watchList.AddRange(watches);
 			}
-			SetTitle();
+			_mode = mode;
 			DoMemoryDomainDropdown(domain ?? Global.Emulator.MainMemory);
+			SetTitle();
 		}
 
 		private void SetTitle()
@@ -82,11 +126,6 @@ namespace BizHawk.MultiClient
 						DomainDropDown.SelectedIndex = result;
 					}
 				}
-			}
-
-			if (DomainDropDown.SelectedIndex == null)
-			{
-				DomainDropDown.SelectedItem = DomainDropDown.Items[0];
 			}
 		}
 
@@ -135,6 +174,7 @@ namespace BizHawk.MultiClient
 
 					if (hasBig && hasLittle)
 					{
+						BigEndianCheckBox.Checked = true;
 						BigEndianCheckBox.CheckState = CheckState.Indeterminate;
 					}
 					else if (hasBig)
@@ -215,6 +255,18 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case Mode.Edit:
+					if (_changedSize = true)
+					{
+						//uh oh
+					}
+					if (_changedDisplayType)
+					{
+						_watchList.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
+					}
+					if (!(BigEndianCheckBox.CheckState == CheckState.Indeterminate))
+					{
+						_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
+					}
 					break;
 				case Mode.Duplicate:
 					break;
@@ -227,16 +279,27 @@ namespace BizHawk.MultiClient
 		{
 			SetAddressBoxProperties();
 			SetBigEndianCheckBox();
+			_changedSize = true;
+			_changedDisplayType = true;
 		}
 
 		private void SizeDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetDisplayTypes();
-			
+			_changedSize = true;
+
+			if (!DisplayTypeDropDown.Enabled)
+			{
+				DisplayTypeDropDown.Enabled = true;
+				_changedDisplayType = true;
+			}
+		}
+
+		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_changedDisplayType = true;
 		}
 
 		#endregion
-
-		
 	}
 }

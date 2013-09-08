@@ -204,12 +204,12 @@
 			// EditWatchToolStripButton1
 			// 
 			this.EditWatchToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.EditWatchToolStripButton1.Enabled = false;
 			this.EditWatchToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("EditWatchToolStripButton1.Image")));
 			this.EditWatchToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EditWatchToolStripButton1.Name = "EditWatchToolStripButton1";
 			this.EditWatchToolStripButton1.Size = new System.Drawing.Size(23, 22);
 			this.EditWatchToolStripButton1.Text = "Edit Watch";
+			this.EditWatchToolStripButton1.Click += new System.EventHandler(this.editWatchToolStripMenuItem_Click);
 			// 
 			// cutToolStripButton
 			// 
@@ -454,12 +454,12 @@
 			// 
 			// editWatchToolStripMenuItem
 			// 
-			this.editWatchToolStripMenuItem.Enabled = false;
 			this.editWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
 			this.editWatchToolStripMenuItem.Name = "editWatchToolStripMenuItem";
 			this.editWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
 			this.editWatchToolStripMenuItem.Text = "&Edit Watch";
+			this.editWatchToolStripMenuItem.Click += new System.EventHandler(this.editWatchToolStripMenuItem_Click);
 			// 
 			// removeWatchToolStripMenuItem
 			// 

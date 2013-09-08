@@ -111,12 +111,12 @@
 			this.label6.TabIndex = 15;
 			this.label6.Text = "Memory Domain";
 			// 
-			// DomainComboBox
+			// DomainDropDown
 			// 
 			this.DomainDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.DomainDropDown.FormattingEnabled = true;
 			this.DomainDropDown.Location = new System.Drawing.Point(12, 230);
-			this.DomainDropDown.Name = "DomainComboBox";
+			this.DomainDropDown.Name = "DomainDropDown";
 			this.DomainDropDown.Size = new System.Drawing.Size(141, 21);
 			this.DomainDropDown.TabIndex = 14;
 			this.DomainDropDown.SelectedIndexChanged += new System.EventHandler(this.DomainComboBox_SelectedIndexChanged);
@@ -165,6 +165,7 @@
 			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
 			this.DisplayTypeDropDown.Size = new System.Drawing.Size(141, 21);
 			this.DisplayTypeDropDown.TabIndex = 18;
+			this.DisplayTypeDropDown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropDown_SelectedIndexChanged);
 			// 
 			// BigEndianCheckBox
 			// 
