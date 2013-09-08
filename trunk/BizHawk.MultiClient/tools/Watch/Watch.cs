@@ -14,6 +14,32 @@ namespace BizHawk.MultiClient
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
 		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float };
 
+		public static string DisplayTypeToString(DisplayType type)
+		{
+			switch (type)
+			{
+				default:
+					return type.ToString();
+				case DisplayType.FixedPoint_12_4:
+					return "Fixed Point 12.4";
+				case DisplayType.FixedPoint_20_12:
+					return "Fixed Point 20.12";
+			}
+		}
+
+		public static DisplayType StringToDisplayType(string name)
+		{
+			switch(name)
+			{
+				default:
+					return (DisplayType) Enum.Parse(typeof(DisplayType), name);
+				case "Fixed Point 12.4":
+					return DisplayType.FixedPoint_12_4;
+				case "Fixed Point 20.12":
+					return DisplayType.FixedPoint_20_12;
+			}
+		}
+
 		protected int _address;
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
@@ -22,7 +48,6 @@ namespace BizHawk.MultiClient
 		public abstract int? Value { get; }
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
-		public abstract List<DisplayType> ValidTypes { get; }
 
 		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
@@ -286,7 +311,7 @@ namespace BizHawk.MultiClient
 			get { return WatchSize.Separator; }
 		}
 
-		public override List<DisplayType> ValidTypes
+		public static List<DisplayType> ValidTypes
 		{
 			get { return new List<DisplayType>() { DisplayType.Separator }; }
 		}
@@ -339,13 +364,13 @@ namespace BizHawk.MultiClient
 			get { return WatchSize.Byte; }
 		}
 
-		public override List<DisplayType> ValidTypes
+		public static List<DisplayType> ValidTypes
 		{
 			get
 			{
 				return new List<DisplayType>()
 				{
-					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.Binary
+					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.Binary
 				};
 			}
 		}
@@ -422,13 +447,13 @@ namespace BizHawk.MultiClient
 			get { return WatchSize.Word; }
 		}
 
-		public override List<DisplayType> ValidTypes
+		public static List<DisplayType> ValidTypes
 		{
 			get
 			{
 				return new List<DisplayType>()
 				{
-					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.FixedPoint_12_4, DisplayType.Binary
+					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_12_4, DisplayType.Binary
 				};
 			}
 		}
@@ -521,13 +546,13 @@ namespace BizHawk.MultiClient
 			get { return WatchSize.DWord; }
 		}
 
-		public override List<DisplayType> ValidTypes
+		public static List<DisplayType> ValidTypes
 		{
 			get
 			{
 				return new List<DisplayType>()
 				{
-					DisplayType.Signed, DisplayType.Unsigned, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
+					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.Float
 				};
 			}
 		}
@@ -762,6 +787,15 @@ namespace BizHawk.MultiClient
 			}
 
 			return result;
+		}
+
+		public void Reload()
+		{
+			if (!String.IsNullOrWhiteSpace(CurrentFileName))
+			{
+				LoadFile(CurrentFileName, true, false);
+				Changes = false;
+			}
 		}
 
 		private bool SaveFile()

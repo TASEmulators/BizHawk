@@ -35,7 +35,12 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
-			this.DomainComboBox = new System.Windows.Forms.ComboBox();
+			this.DomainDropDown = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.SizeDropDown = new System.Windows.Forms.ComboBox();
+			this.DisplayTypeLael = new System.Windows.Forms.Label();
+			this.DisplayTypeDropDown = new System.Windows.Forms.ComboBox();
+			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -108,13 +113,68 @@
 			// 
 			// DomainComboBox
 			// 
-			this.DomainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.DomainComboBox.FormattingEnabled = true;
-			this.DomainComboBox.Location = new System.Drawing.Point(12, 230);
-			this.DomainComboBox.Name = "DomainComboBox";
-			this.DomainComboBox.Size = new System.Drawing.Size(141, 21);
-			this.DomainComboBox.TabIndex = 14;
-			this.DomainComboBox.SelectedIndexChanged += new System.EventHandler(this.DomainComboBox_SelectedIndexChanged);
+			this.DomainDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.DomainDropDown.FormattingEnabled = true;
+			this.DomainDropDown.Location = new System.Drawing.Point(12, 230);
+			this.DomainDropDown.Name = "DomainComboBox";
+			this.DomainDropDown.Size = new System.Drawing.Size(141, 21);
+			this.DomainDropDown.TabIndex = 14;
+			this.DomainDropDown.SelectedIndexChanged += new System.EventHandler(this.DomainComboBox_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(9, 64);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(27, 13);
+			this.label3.TabIndex = 17;
+			this.label3.Text = "Size";
+			// 
+			// SizeDropDown
+			// 
+			this.SizeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.SizeDropDown.FormattingEnabled = true;
+			this.SizeDropDown.Items.AddRange(new object[] {
+            "1 Byte",
+            "2 Byte",
+            "4 Byte"});
+			this.SizeDropDown.Location = new System.Drawing.Point(10, 80);
+			this.SizeDropDown.Name = "SizeDropDown";
+			this.SizeDropDown.Size = new System.Drawing.Size(141, 21);
+			this.SizeDropDown.TabIndex = 16;
+			this.SizeDropDown.SelectedIndexChanged += new System.EventHandler(this.SizeDropDown_SelectedIndexChanged);
+			// 
+			// DisplayTypeLael
+			// 
+			this.DisplayTypeLael.AutoSize = true;
+			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 106);
+			this.DisplayTypeLael.Name = "DisplayTypeLael";
+			this.DisplayTypeLael.Size = new System.Drawing.Size(68, 13);
+			this.DisplayTypeLael.TabIndex = 19;
+			this.DisplayTypeLael.Text = "Display Type";
+			// 
+			// DisplayTypeDropDown
+			// 
+			this.DisplayTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.DisplayTypeDropDown.FormattingEnabled = true;
+			this.DisplayTypeDropDown.Items.AddRange(new object[] {
+            "1 Byte",
+            "2 Byte",
+            "4 Byte"});
+			this.DisplayTypeDropDown.Location = new System.Drawing.Point(12, 122);
+			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
+			this.DisplayTypeDropDown.Size = new System.Drawing.Size(141, 21);
+			this.DisplayTypeDropDown.TabIndex = 18;
+			// 
+			// BigEndianCheckBox
+			// 
+			this.BigEndianCheckBox.AutoSize = true;
+			this.BigEndianCheckBox.Location = new System.Drawing.Point(14, 159);
+			this.BigEndianCheckBox.Name = "BigEndianCheckBox";
+			this.BigEndianCheckBox.Size = new System.Drawing.Size(77, 17);
+			this.BigEndianCheckBox.TabIndex = 20;
+			this.BigEndianCheckBox.Text = "Big Endian";
+			this.BigEndianCheckBox.UseVisualStyleBackColor = true;
 			// 
 			// WatchEditor
 			// 
@@ -123,8 +183,13 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(213, 296);
+			this.Controls.Add(this.BigEndianCheckBox);
+			this.Controls.Add(this.DisplayTypeLael);
+			this.Controls.Add(this.DisplayTypeDropDown);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.SizeDropDown);
 			this.Controls.Add(this.label6);
-			this.Controls.Add(this.DomainComboBox);
+			this.Controls.Add(this.DomainDropDown);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.NotesBox);
@@ -151,6 +216,11 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.ComboBox DomainComboBox;
+		private System.Windows.Forms.ComboBox DomainDropDown;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox SizeDropDown;
+		private System.Windows.Forms.Label DisplayTypeLael;
+		private System.Windows.Forms.ComboBox DisplayTypeDropDown;
+		private System.Windows.Forms.CheckBox BigEndianCheckBox;
     }
 }

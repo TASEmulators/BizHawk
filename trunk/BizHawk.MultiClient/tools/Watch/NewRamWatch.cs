@@ -30,6 +30,95 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 		}
 
+		public void UpdateValues()
+		{
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+			Watches.UpdateValues();
+
+			if (Global.Config.DisplayRamWatch)
+			{
+				/* TODO
+				for (int x = 0; x < Watches.Count; x++)
+				{
+					bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
+					Global.OSD.AddGUIText(Watches[x].ToString(),
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
+				}
+				*/
+			}
+
+			if (!IsHandleCreated || IsDisposed) return;
+
+			WatchListView.BlazingFast = true;
+			WatchListView.Refresh();
+			WatchListView.BlazingFast = false;
+		}
+
+		public void Restart()
+		{
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
+			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
+			{
+				Watches.Reload();
+			}
+			else
+			{
+				NewWatchList(true);
+			}
+		}
+
+		public bool AskSave()
+		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
+			if (Watches.Changes)
+			{
+				Global.Sound.StopSound();
+				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				Global.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					Watches.Save();
+				}
+				else if (result == DialogResult.No)
+				{
+					return true;
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public void SaveConfigSettings()
+		{
+			Global.Config.RamWatchAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
+			Global.Config.RamWatchValueWidth = WatchListView.Columns[Global.Config.RamWatchValueIndex].Width;
+			Global.Config.RamWatchPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
+			Global.Config.RamWatchChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
+			Global.Config.RamWatchDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
+			Global.Config.RamWatchDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
+			Global.Config.RamWatchNotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
+
+			Global.Config.RamWatchWndx = Location.X;
+			Global.Config.RamWatchWndy = Location.Y;
+			Global.Config.RamWatchWidth = Right - Left;
+			Global.Config.RamWatchHeight = Bottom - Top;
+		}
+
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			if (!AskSave())
@@ -57,7 +146,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		void WatchListView_QueryItemText(int index, int column, out string text)
+		private void WatchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
 
@@ -102,62 +191,6 @@ namespace BizHawk.MultiClient
 					}
 					break;
 			}
-		}
-
-		public void UpdateValues()
-		{
-			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
-			{
-				return;
-			}
-			Watches.UpdateValues();
-
-			if (Global.Config.DisplayRamWatch)
-			{
-				/* TODO
-				for (int x = 0; x < Watches.Count; x++)
-				{
-					bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
-					Global.OSD.AddGUIText(Watches[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
-				}
-				*/
-			}
-
-			if (!IsHandleCreated || IsDisposed) return;
-
-			WatchListView.BlazingFast = true;
-			WatchListView.Refresh();
-			WatchListView.BlazingFast = false;
-		}
-
-		public bool AskSave()
-		{
-			if (Global.Config.SupressAskSave) //User has elected to not be nagged
-			{
-				return true;
-			}
-
-			if (Watches.Changes)
-			{
-				Global.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				Global.Sound.StartSound();
-				if (result == DialogResult.Yes)
-				{
-					Watches.Save();
-				}
-				else if (result == DialogResult.No)
-				{
-					return true;
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 		private void DisplayWatches()
@@ -214,24 +247,9 @@ namespace BizHawk.MultiClient
 
 				DisplayWatches();
 				UpdateWatchCount();
+				MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
 				Watches.Changes = false;
 			}
-		}
-
-		public void SaveConfigSettings()
-		{
-			Global.Config.RamWatchAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
-			Global.Config.RamWatchValueWidth = WatchListView.Columns[Global.Config.RamWatchValueIndex].Width;
-			Global.Config.RamWatchPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
-			Global.Config.RamWatchChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
-			Global.Config.RamWatchDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
-			Global.Config.RamWatchDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
-			Global.Config.RamWatchNotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
-
-			Global.Config.RamWatchWndx = Location.X;
-			Global.Config.RamWatchWndy = Location.Y;
-			Global.Config.RamWatchWidth = Right - Left;
-			Global.Config.RamWatchHeight = Bottom - Top;
 		}
 
 		private void SetMemoryDomain(int pos)
@@ -251,13 +269,13 @@ namespace BizHawk.MultiClient
 				WatchListView.SelectItem(i, true);
 		}
 
-		void Changes()
+		private void Changes()
 		{
 			Watches.Changes = true;
 			MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
 		}
 
-		void MoveUp()
+		private void MoveUp()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count == 0 || indexes[0] == 0)
@@ -290,7 +308,7 @@ namespace BizHawk.MultiClient
 			DisplayWatches();
 		}
 
-		void MoveDown()
+		private void MoveDown()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count == 0)
@@ -366,6 +384,7 @@ namespace BizHawk.MultiClient
 			if (we.DialogResult == DialogResult.OK)
 			{
 				Watches.Add(we.Watches[0]);
+				Changes();
 				UpdateWatchCount();
 				DisplayWatches();
 			}

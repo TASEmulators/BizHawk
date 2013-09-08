@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -33,6 +32,14 @@ namespace BizHawk.MultiClient
 			}
 			_loading = false;
 			SetAddressBoxProperties();
+
+			switch (_mode)
+			{
+				default:
+				case Mode.New:
+					SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+					break;
+			}
 		}
 
 		public void SetWatch(MemoryDomain domain = null, List<Watch> watches = null, Mode mode = Mode.New)
@@ -64,17 +71,22 @@ namespace BizHawk.MultiClient
 
 		private void DoMemoryDomainDropdown(MemoryDomain startDomain)
 		{
-			DomainComboBox.Items.Clear();
+			DomainDropDown.Items.Clear();
 			if (Global.Emulator.MemoryDomains.Count > 0)
 			{
 				foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
 				{
-					var result = DomainComboBox.Items.Add(domain.ToString());
+					var result = DomainDropDown.Items.Add(domain.ToString());
 					if (domain.Name == startDomain.Name)
 					{
-						DomainComboBox.SelectedIndex = result;
+						DomainDropDown.SelectedIndex = result;
 					}
 				}
+			}
+
+			if (DomainDropDown.SelectedIndex == null)
+			{
+				DomainDropDown.SelectedItem = DomainDropDown.Items[0];
 			}
 		}
 
@@ -82,7 +94,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!_loading)
 			{
-				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainComboBox.SelectedItem.ToString());
+				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 				if (domain != null)
 				{
 					AddressBox.MaxLength = IntHelpers.GetNumDigits(domain.Size - 1);
@@ -90,6 +102,64 @@ namespace BizHawk.MultiClient
 					AddressBox.Text = String.Format(_addressFormatStr, 0);
 				}
 			}
+		}
+
+		private void SetDisplayTypes()
+		{
+			DisplayTypeDropDown.Items.Clear();
+			switch (SizeDropDown.SelectedIndex)
+			{
+				default:
+				case 0:
+					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					break;
+				case 1:
+					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					break;
+				case 2:
+					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					break;
+			}
+			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
+		}
+
+		private void SetBigEndianCheckBox()
+		{
+			if (_watchList != null)
+			{
+				if (_watchList.Count > 1)
+				{
+					//Aggregate state
+					var hasBig = _watchList.Any(x => x.BigEndian);
+					var hasLittle = _watchList.Any(x => x.BigEndian == false);
+
+					if (hasBig && hasLittle)
+					{
+						BigEndianCheckBox.CheckState = CheckState.Indeterminate;
+					}
+					else if (hasBig)
+					{
+						BigEndianCheckBox.Checked = true;
+					}
+					else
+					{
+						BigEndianCheckBox.Checked = false;
+					}
+				}
+				else if (_watchList.Count == 1)
+				{
+					BigEndianCheckBox.Checked = _watchList[0].BigEndian;
+					return;
+				}
+			}
+
+			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+			if (domain == null)
+			{
+				domain = Global.Emulator.MainMemory;
+			}
+			BigEndianCheckBox.Checked = domain.Endian == Endian.Big ? true : false;
+			
 		}
 
 		#region Events
@@ -104,7 +174,51 @@ namespace BizHawk.MultiClient
 		{
 			DialogResult = DialogResult.OK;
 
-			//TODO
+			switch (_mode)
+			{
+				default:
+				case Mode.New:
+					var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+					var address = (AddressBox as HexTextBox).ToInt();
+					var notes = NotesBox.Text;
+					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
+					var bigendian = BigEndianCheckBox.Checked;
+					switch (SizeDropDown.SelectedIndex)
+					{
+						case 0:
+							_watchList.Add(new DetailedByteWatch(domain, address)
+								{
+									Notes = notes,
+									Type = type,
+									BigEndian = bigendian,
+								}
+							);
+							break;
+						case 1:
+							_watchList.Add(new DetailedWordWatch(domain, address)
+								{
+									Notes = notes,
+									Type = type,
+									BigEndian = bigendian,
+								}
+							);
+							break;
+						case 2:
+							_watchList.Add(new DetailedDWordWatch(domain, address)
+								{
+									Notes = notes,
+									Type = type,
+									BigEndian = bigendian,
+								}
+							);
+							break;
+					}
+					break;
+				case Mode.Edit:
+					break;
+				case Mode.Duplicate:
+					break;
+			}
 
 			Close();
 		}
@@ -112,8 +226,17 @@ namespace BizHawk.MultiClient
 		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetAddressBoxProperties();
+			SetBigEndianCheckBox();
+		}
+
+		private void SizeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetDisplayTypes();
+			
 		}
 
 		#endregion
+
+		
 	}
 }
