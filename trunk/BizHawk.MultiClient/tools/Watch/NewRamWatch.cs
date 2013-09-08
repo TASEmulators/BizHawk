@@ -59,14 +59,19 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisplayRamWatch)
 			{
-				/* TODO
 				for (int x = 0; x < Watches.Count; x++)
 				{
-					bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
-					Global.OSD.AddGUIText(Watches[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
+					bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActiveCheat(Watches[x].Domain, Watches[x].Address.Value);
+					Global.OSD.AddGUIText(
+						Watches[x].ToString(),
+						Global.Config.DispRamWatchx, 
+						(Global.Config.DispRamWatchy + (x * 14)), 
+						alert, 
+						Color.Black, 
+						Color.White,
+						0
+					);
 				}
-				*/
 			}
 
 			if (!IsHandleCreated || IsDisposed) return;
