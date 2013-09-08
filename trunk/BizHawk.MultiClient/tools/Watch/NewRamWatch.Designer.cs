@@ -236,12 +236,12 @@
 			// DuplicateWatchToolStripButton
 			// 
 			this.DuplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DuplicateWatchToolStripButton.Enabled = false;
 			this.DuplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateWatchToolStripButton.Image")));
 			this.DuplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DuplicateWatchToolStripButton.Name = "DuplicateWatchToolStripButton";
 			this.DuplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.DuplicateWatchToolStripButton.Text = "Duplicate Watch";
+			this.DuplicateWatchToolStripButton.Click += new System.EventHandler(this.duplicateWatchToolStripMenuItem_Click);
 			// 
 			// PoketoolStripButton2
 			// 
@@ -472,12 +472,12 @@
 			// 
 			// duplicateWatchToolStripMenuItem
 			// 
-			this.duplicateWatchToolStripMenuItem.Enabled = false;
 			this.duplicateWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
 			this.duplicateWatchToolStripMenuItem.Name = "duplicateWatchToolStripMenuItem";
 			this.duplicateWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
 			this.duplicateWatchToolStripMenuItem.Text = "&Duplicate Watch";
+			this.duplicateWatchToolStripMenuItem.Click += new System.EventHandler(this.duplicateWatchToolStripMenuItem_Click);
 			// 
 			// pokeAddressToolStripMenuItem
 			// 

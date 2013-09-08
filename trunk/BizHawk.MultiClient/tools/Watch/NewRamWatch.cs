@@ -182,7 +182,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case 5: // domain
-					text = Watches[index].DomainName;
+					text = Watches[index].Domain.Name;
 					break;
 				case 6: // notes
 					if (Watches[index] is iWatchEntryDetails)
@@ -398,7 +398,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		void EditWatch()
+		private void EditWatch(bool duplicate = false)
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 
@@ -423,20 +423,30 @@ namespace BizHawk.MultiClient
 					return;
 				}
 
-				we.SetWatch(Watches.Domain, watches, WatchEditor.Mode.Edit);
+				we.SetWatch(Watches.Domain, watches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 				Global.Sound.StopSound();
 				var result = we.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					Changes();
+					if (duplicate)
+					{
+						Watches.AddRange(we.Watches);
+						DisplayWatches();
+					}
+					else
+					{
+						for (int i = 0; i < we.Watches.Count; i++)
+						{
+							Watches[indexes[i]] = we.Watches[i];
+						}
+					}
 				}
 
 				Global.Sound.StartSound();
+				UpdateValues();
 			}
-
-			UpdateValues();
 		}
-
 
 		#region Winform Events
 
@@ -585,6 +595,11 @@ namespace BizHawk.MultiClient
 			}
 			UpdateValues();
 			UpdateWatchCount();
+		}
+
+		private void duplicateWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditWatch(duplicate:true);
 		}
 
 		private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)

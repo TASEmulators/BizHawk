@@ -42,6 +42,7 @@ namespace BizHawk.MultiClient
 				case Mode.New:
 					SizeDropDown.SelectedItem = SizeDropDown.Items[0];
 					break;
+				case Mode.Duplicate:
 				case Mode.Edit:
 					switch (_watchList[0].Size)
 					{
@@ -85,7 +86,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void SetWatch(MemoryDomain domain = null, List<Watch> watches = null, Mode mode = Mode.New)
+		public void SetWatch(MemoryDomain domain, List<Watch> watches = null, Mode mode = Mode.New)
 		{
 			if (watches != null)
 			{
@@ -255,24 +256,61 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case Mode.Edit:
-					if (_changedSize = true)
-					{
-						//uh oh
-					}
-					if (_changedDisplayType)
-					{
-						_watchList.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
-					}
-					if (!(BigEndianCheckBox.CheckState == CheckState.Indeterminate))
-					{
-						_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
-					}
+					DoEdit();
 					break;
 				case Mode.Duplicate:
+					var tempWatchList = new List<Watch>();
+					tempWatchList.AddRange(_watchList);
+					_watchList.Clear();
+					foreach (var watch in tempWatchList)
+					{
+						var newWatch = Watch.GenerateWatch(watch.Domain, watch.Address.Value, watch.Size, details: true);
+						newWatch.Type = watch.Type;
+						(newWatch as iWatchEntryDetails).Notes = (watch as iWatchEntryDetails).Notes;
+						_watchList.Add(watch);
+					}
+					DoEdit();
 					break;
 			}
 
 			Close();
+		}
+
+		private void DoEdit()
+		{
+			if (_changedSize = true)
+			{
+				for(int i = 0; i < _watchList.Count; i++)
+				{
+					Watch.WatchSize size = Watch.WatchSize.Byte;
+					switch(SizeDropDown.SelectedIndex)
+					{
+						case 0:
+							size = Watch.WatchSize.Byte;
+							break;
+						case 1:
+							size = Watch.WatchSize.Word;
+							break;
+						case 2:
+							size = Watch.WatchSize.DWord;
+							break;
+					}
+					_watchList[i] = Watch.GenerateWatch(_watchList[i].Domain, _watchList[i].Address.Value, size, details: true);
+				}
+			}
+			if (_changedDisplayType)
+			{
+				_watchList.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
+			}
+			if (!(BigEndianCheckBox.CheckState == CheckState.Indeterminate))
+			{
+				_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
+			}
+
+			if (_watchList.Count == 1)
+			{
+				(_watchList[0] as iWatchEntryDetails).Notes = NotesBox.Text;
+			}
 		}
 
 		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
