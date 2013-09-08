@@ -234,30 +234,30 @@ namespace BizHawk.MultiClient
 					text = Watches[index].ValueString;
 					break;
 				case PREV:
-					if (Watches[index] is iWatchEntryDetails)
+					if (Watches[index] is IWatchDetails)
 					{
-						text = (Watches[index] as iWatchEntryDetails).PreviousStr;
+						text = (Watches[index] as IWatchDetails).PreviousStr;
 					}
 					break;
 				case CHANGES:
-					if (Watches[index] is iWatchEntryDetails)
+					if (Watches[index] is IWatchDetails)
 					{
-						text = (Watches[index] as iWatchEntryDetails).ChangeCount.ToString();
+						text = (Watches[index] as IWatchDetails).ChangeCount.ToString();
 					}
 					break;
 				case DIFF:
-					if (Watches[index] is iWatchEntryDetails)
+					if (Watches[index] is IWatchDetails)
 					{
-						text = (Watches[index] as iWatchEntryDetails).Diff;
+						text = (Watches[index] as IWatchDetails).Diff;
 					}
 					break;
 				case DOMAIN:
 					text = Watches[index].Domain.Name;
 					break;
 				case NOTES:
-					if (Watches[index] is iWatchEntryDetails)
+					if (Watches[index] is IWatchDetails)
 					{
-						text = (Watches[index] as iWatchEntryDetails).Notes;
+						text = (Watches[index] as IWatchDetails).Notes;
 					}
 					break;
 			}
@@ -542,7 +542,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				List<Watch> selected = new List<Watch>();
+				var selected = new List<Watch>();
 				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 				if (indexes.Count > 0)
 				{
@@ -557,6 +557,24 @@ namespace BizHawk.MultiClient
 				return selected;
 			}
 		}
+
+		private List<Watch> SelectedIndexes
+		{
+			get
+			{
+				var selected = new List<Watch>();
+				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					foreach (int index in indexes)
+					{
+						selected.Add(Watches[index]);
+					}
+				}
+				return selected;
+			}
+		}
+
 
 		private void AddRemoveColumn(string columnName, bool enabled)
 		{
@@ -584,14 +602,14 @@ namespace BizHawk.MultiClient
 
 		private void ColumnPositionSet() //TODO: fix indexing, thrown off by columns not existing
 		{
-			List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
+			var columnHeaders = new List<ColumnHeader>();
 			foreach(ColumnHeader column in WatchListView.Columns)
 			{
 				columnHeaders.Add(column);
 			}
 			WatchListView.Columns.Clear();
 
-			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>
+			var columnSettings = new List<KeyValuePair<int, string>>
 				{
 					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, ADDRESS),
 					new KeyValuePair<int, string>(Global.Config.RamWatchValueIndex, VALUE),
@@ -642,6 +660,69 @@ namespace BizHawk.MultiClient
 			WatchListView.Columns[ADDRESS].Width = GetColumnWidth(ADDRESS);
 			WatchListView.Columns[VALUE].Width = GetColumnWidth(VALUE);
 			WatchListView.Columns[NOTES].Width = GetColumnWidth(NOTES);
+		}
+
+		private void RemoveWatch()
+		{
+			var indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				foreach (int index in indexes)
+				{
+					Watches.Remove(Watches[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+				}
+				indexes.Clear();
+				DisplayWatches();
+			}
+			UpdateValues();
+			UpdateWatchCount();
+		}
+
+		private string GetColumnValue(string name, int index)
+		{
+			switch (name)
+			{
+				default:
+					return String.Empty;
+				case ADDRESS:
+					return Watches[index].AddressString;
+				case VALUE:
+					return Watches[index].ValueString;
+				case PREV:
+					return (Watches[index] as IWatchDetails).PreviousStr;
+				case CHANGES:
+					return (Watches[index] as IWatchDetails).ChangeCount.ToString();
+				case DIFF:
+					return (Watches[index] as IWatchDetails).Diff;
+				case DOMAIN:
+					return Watches[index].Domain.Name;
+				case NOTES:
+					return (Watches[index] as IWatchDetails).Notes;
+			}
+		}
+
+		private void CopyWatchesToClipBoard()
+		{
+			var indexes = WatchListView.SelectedIndices;
+
+			if (indexes.Count > 0)
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (int index in indexes)
+				{
+					foreach(ColumnHeader column in WatchListView.Columns)
+					{
+						sb.Append(GetColumnValue(column.Name, index)).Append('\t');
+					}
+					sb.Remove(sb.Length - 1, 1);
+					sb.AppendLine();
+				}
+
+				if (sb.Length > 0)
+				{
+					Clipboard.SetDataObject(sb.ToString());
+				}
+			}
 		}
 
 		#region Winform Events
@@ -769,18 +850,7 @@ namespace BizHawk.MultiClient
 
 		private void removeWatchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				foreach (int index in indexes)
-				{
-					Watches.Remove(Watches[indexes[0]]); //index[0] used since each iteration will make this the correct list index
-				}
-				indexes.Clear();
-				DisplayWatches();
-			}
-			UpdateValues();
-			UpdateWatchCount();
+			RemoveWatch();
 		}
 
 		private void duplicateWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -952,6 +1022,98 @@ namespace BizHawk.MultiClient
 			
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = true;
+		}
+
+		/*************Context Menu***********************/
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			EditContextMenuItem.Visible =
+				RemoveContextMenuItem.Visible =
+				DuplicateContextMenuItem.Visible =
+				PokeContextMenuItem.Visible =
+				FreezeContextMenuItem.Visible =
+				Separator6.Visible =
+				InsertSeperatorContextMenuItem.Visible =
+				MoveUpContextMenuItem.Visible =
+				MoveDownContextMenuItem.Visible =
+				Separator2.Visible =
+				indexes.Count > 0;
+
+
+			bool allCheats = true;
+			foreach (int i in indexes)
+			{
+				if (!Watches[i].IsSeparator)
+				{
+					if (!Global.CheatList.IsActiveCheat(Watches[i].Domain, Watches[i].Address.Value))
+					{
+						allCheats = false;
+					}
+				}
+			}
+
+			if (allCheats)
+			{
+				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
+			}
+			else
+			{
+				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
+			}
+
+			ShowChangeCountsContextMenuItem.Text = Global.Config.RamWatchShowChangeColumn ? "Hide change counts" : "Show change counts";
+			ShowPreviousValueContextMenuItem.Text = Global.Config.RamWatchShowPrevColumn ? "Hide previous value" : "Show previous value";
+			ShowDiffContextMenuItem.Text = Global.Config.RamWatchShowDiffColumn ? "Hide difference value" : "Show difference value";
+			ShowDomainContextMenuItem.Text = Global.Config.RamWatchShowDomainColumn ? "Hide domain" : "Show domain";
+
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.HasActiveCheats;
+
+			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count == 1;
+		}
+
+		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+			UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
+		}
+
+		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.SetDomain(Watches[indexes[0]].Domain);
+				Global.MainForm.HexEditor1.GoToAddress(Watches[indexes[0]].Address.Value);
+			}
+		}
+
+		/*************ListView Events***********************/
+		
+		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveWatch();
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < Watches.Count; x++)
+				{
+					WatchListView.SelectItem(x, true);
+				}
+			}
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				CopyWatchesToClipBoard();
+			}
 		}
 
 		#endregion
