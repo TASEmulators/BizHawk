@@ -89,13 +89,13 @@
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.VirtualListView();
-			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Prev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ChangeCounts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.PrevColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -555,36 +555,37 @@
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.viewToolStripMenuItem.Text = "&View";
+			this.viewToolStripMenuItem.DropDownOpened += new System.EventHandler(this.viewToolStripMenuItem_DropDownOpened);
 			// 
 			// showPreviousValueToolStripMenuItem
 			// 
-			this.showPreviousValueToolStripMenuItem.Enabled = false;
 			this.showPreviousValueToolStripMenuItem.Name = "showPreviousValueToolStripMenuItem";
 			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.showPreviousValueToolStripMenuItem.Text = "Previous Value";
+			this.showPreviousValueToolStripMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
 			// 
 			// showChangeCountsToolStripMenuItem
 			// 
 			this.showChangeCountsToolStripMenuItem.Checked = true;
 			this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.showChangeCountsToolStripMenuItem.Enabled = false;
 			this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
 			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.showChangeCountsToolStripMenuItem.Text = "Change Counts";
+			this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
 			// 
 			// diffToolStripMenuItem
 			// 
-			this.diffToolStripMenuItem.Enabled = false;
 			this.diffToolStripMenuItem.Name = "diffToolStripMenuItem";
 			this.diffToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.diffToolStripMenuItem.Text = "Difference";
+			this.diffToolStripMenuItem.Click += new System.EventHandler(this.diffToolStripMenuItem_Click);
 			// 
 			// domainToolStripMenuItem
 			// 
-			this.domainToolStripMenuItem.Enabled = false;
 			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
 			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.domainToolStripMenuItem.Text = "Domain";
+			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -655,13 +656,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchListView.AutoArrange = false;
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Address,
-            this.Value,
-            this.Prev,
-            this.ChangeCounts,
-            this.Diff,
+            this.AddressColumn,
+            this.ValueColumn,
+            this.PrevColumn,
+            this.ChangesColumn,
+            this.DiffColumn,
             this.DomainColumn,
-            this.Notes});
+            this.NotesColumn});
 			this.WatchListView.FullRowSelect = true;
 			this.WatchListView.GridLines = true;
 			this.WatchListView.HideSelection = false;
@@ -675,43 +676,50 @@
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			// 
-			// Address
+			// AddressColumn
 			// 
-			this.Address.Text = "Address";
+			this.AddressColumn.Name = "AddressColumn";
+			this.AddressColumn.Text = "Address";
 			// 
-			// Value
+			// ValueColumn
 			// 
-			this.Value.Text = "Value";
-			this.Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.Value.Width = 59;
+			this.ValueColumn.Name = "ValueColumn";
+			this.ValueColumn.Text = "Value";
+			this.ValueColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.ValueColumn.Width = 59;
 			// 
-			// Prev
+			// PrevColumn
 			// 
-			this.Prev.Text = "Prev";
-			this.Prev.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.Prev.Width = 0;
+			this.PrevColumn.Name = "PrevColumn";
+			this.PrevColumn.Text = "Prev";
+			this.PrevColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.PrevColumn.Width = 59;
 			// 
-			// ChangeCounts
+			// ChangesColumn
 			// 
-			this.ChangeCounts.Text = "Changes";
-			this.ChangeCounts.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.ChangeCounts.Width = 54;
+			this.ChangesColumn.Name = "ChangesColumn";
+			this.ChangesColumn.Text = "Changes";
+			this.ChangesColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.ChangesColumn.Width = 54;
 			// 
-			// Diff
+			// DiffColumn
 			// 
-			this.Diff.Text = "Diff";
-			this.Diff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.Diff.Width = 59;
+			this.DiffColumn.Name = "DiffColumn";
+			this.DiffColumn.Text = "Diff";
+			this.DiffColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.DiffColumn.Width = 59;
 			// 
 			// DomainColumn
 			// 
+			this.DomainColumn.Name = "DomainColumn";
 			this.DomainColumn.Text = "Domain";
 			this.DomainColumn.Width = 55;
 			// 
-			// Notes
+			// NotesColumn
 			// 
-			this.Notes.Text = "Notes";
-			this.Notes.Width = 128;
+			this.NotesColumn.Name = "NotesColumn";
+			this.NotesColumn.Text = "Notes";
+			this.NotesColumn.Width = 128;
 			// 
 			// NewRamWatch
 			// 
@@ -740,13 +748,13 @@
 		#endregion
 
 		private VirtualListView WatchListView;
-		private System.Windows.Forms.ColumnHeader Address;
-		private System.Windows.Forms.ColumnHeader Value;
-		private System.Windows.Forms.ColumnHeader Prev;
-		private System.Windows.Forms.ColumnHeader ChangeCounts;
-		private System.Windows.Forms.ColumnHeader Diff;
+		private System.Windows.Forms.ColumnHeader AddressColumn;
+		private System.Windows.Forms.ColumnHeader ValueColumn;
+		private System.Windows.Forms.ColumnHeader PrevColumn;
+		private System.Windows.Forms.ColumnHeader ChangesColumn;
+		private System.Windows.Forms.ColumnHeader DiffColumn;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
-		private System.Windows.Forms.ColumnHeader Notes;
+		private System.Windows.Forms.ColumnHeader NotesColumn;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem filesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newListToolStripMenuItem;
