@@ -470,7 +470,7 @@ namespace BizHawk.MultiClient
 
 		private void EditWatch(bool duplicate = false)
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			var indexes = WatchListView.SelectedIndices;
 
 			if (indexes.Count > 0)
 			{
@@ -725,12 +725,42 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void OrderColumn(int columnToOrder)
+		{
+			//TODO
+		}
+
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
 			
+		}
+
+		private void NewRamWatch_Activated(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
+
+		private void NewRamWatch_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; 
+		}
+
+		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".wch"))
+			{
+				Watches.Load(filePaths[0], true, false);
+				DisplayWatches();
+			}
+		}
+
+		private void NewRamWatch_Enter(object sender, EventArgs e)
+		{
+			WatchListView.Focus();
 		}
 
 		/*************File***********************/
@@ -1114,6 +1144,20 @@ namespace BizHawk.MultiClient
 			{
 				CopyWatchesToClipBoard();
 			}
+			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) //Enter
+			{
+				EditWatch();
+			}
+		}
+
+		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			EditWatch();
+		}
+
+		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			OrderColumn(e.Column);
 		}
 
 		#endregion

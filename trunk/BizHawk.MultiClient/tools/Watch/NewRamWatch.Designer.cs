@@ -111,8 +111,8 @@
 			this.MoveUpContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveDownContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.ShowChangeCountsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowPreviousValueContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowChangeCountsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDomainContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1.SuspendLayout();
@@ -698,7 +698,6 @@
 			this.WatchListView.GridLines = true;
 			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
-			this.WatchListView.LabelEdit = true;
 			this.WatchListView.Location = new System.Drawing.Point(16, 76);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
@@ -706,7 +705,9 @@
 			this.WatchListView.TabIndex = 2;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
+			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
+			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
 			// AddressColumn
 			// 
@@ -873,19 +874,19 @@
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
 			this.toolStripSeparator4.Size = new System.Drawing.Size(200, 6);
 			// 
-			// ShowChangeCountsContextMenuItem
-			// 
-			this.ShowChangeCountsContextMenuItem.Name = "ShowChangeCountsContextMenuItem";
-			this.ShowChangeCountsContextMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.ShowChangeCountsContextMenuItem.Text = "Show Change Counts";
-			this.ShowChangeCountsContextMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
-			// 
 			// ShowPreviousValueContextMenuItem
 			// 
 			this.ShowPreviousValueContextMenuItem.Name = "ShowPreviousValueContextMenuItem";
 			this.ShowPreviousValueContextMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.ShowPreviousValueContextMenuItem.Text = "Show Previous Value";
 			this.ShowPreviousValueContextMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
+			// 
+			// ShowChangeCountsContextMenuItem
+			// 
+			this.ShowChangeCountsContextMenuItem.Name = "ShowChangeCountsContextMenuItem";
+			this.ShowChangeCountsContextMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.ShowChangeCountsContextMenuItem.Text = "Show Change Counts";
+			this.ShowChangeCountsContextMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
 			// 
 			// ShowDiffContextMenuItem
 			// 
@@ -915,7 +916,11 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "NewRamWatch";
 			this.Text = "Brand New Experimental Ram Watch";
+			this.Activated += new System.EventHandler(this.NewRamWatch_Activated);
 			this.Load += new System.EventHandler(this.NewRamWatch_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
+			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
