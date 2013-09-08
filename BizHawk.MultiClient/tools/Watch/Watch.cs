@@ -294,11 +294,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			switch (Type)
-			{
-				default:
-					return Value.ToString(); //TODO
-			}
+			return "----";
 		}
 
 		public override bool IsSeparator
@@ -347,11 +343,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			switch (Type)
-			{
-				default:
-					return Value.ToString(); //TODO - this is used by on screen display
-			}
+			return AddressString + ": " + ValueString;
 		}
 
 		public override bool IsSeparator
@@ -402,6 +394,11 @@ namespace BizHawk.MultiClient
 		{
 			Notes = String.Empty;
 			_previous = _value = GetByte();
+		}
+
+		public override string ToString()
+		{
+			return Notes + ": " + ValueString;
 		}
 
 		public int ChangeCount { get; private set; }
@@ -465,11 +462,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			switch (Type)
-			{
-				default:
-					return Value.ToString(); //TODO
-			}
+			return AddressString + ": " + ValueString;
 		}
 
 		protected string FormatValue(ushort val)
@@ -501,6 +494,11 @@ namespace BizHawk.MultiClient
 		{
 			Notes = String.Empty;
 			_previous = _value = GetWord();
+		}
+
+		public override string ToString()
+		{
+			return Notes + ": " + ValueString;
 		}
 
 		public int ChangeCount { get; private set; }
@@ -564,11 +562,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			switch (Type)
-			{
-				default:
-					return Value.ToString(); //TODO
-			}
+			return AddressString + ": " + ValueString;
 		}
 
 		protected string FormatValue(uint val)
@@ -604,6 +598,10 @@ namespace BizHawk.MultiClient
 			_previous = _value = GetDWord();
 		}
 
+		public override string ToString()
+		{
+			return Notes + ": " + ValueString;
+		}
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
 
