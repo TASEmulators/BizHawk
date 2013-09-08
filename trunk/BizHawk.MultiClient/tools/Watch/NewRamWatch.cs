@@ -448,6 +448,46 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void PokeAddress()
+		{
+			return; //TODO
+			//TODO: WatchEditor can do the poking too
+
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				Global.Sound.StopSound();
+				RamPoke poke = new RamPoke()
+				{
+					NewLocation = GetPromptPoint()
+				};
+				poke.ShowDialog();
+				//poke.SetWatchObject(null); //TODO
+				UpdateValues();
+				Global.Sound.StartSound();
+			}
+		}
+
+		private List<Watch> SelectedWatches
+		{
+			get
+			{
+				List<Watch> selected = new List<Watch>();
+				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					foreach (int index in indexes)
+					{
+						if (!Watches[index].IsSeparator)
+						{
+							selected.Add(Watches[index]);
+						}
+					}
+				}
+				return selected;
+			}
+		}
+
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
@@ -600,6 +640,16 @@ namespace BizHawk.MultiClient
 		private void duplicateWatchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			EditWatch(duplicate:true);
+		}
+
+		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
+		}
+
+		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ToolHelpers.FreezeAddress(SelectedWatches);
 		}
 
 		private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)
