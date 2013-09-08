@@ -52,9 +52,9 @@ namespace BizHawk.MultiClient
 		public virtual DisplayType Type { get { return _type; } set {  _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
-		public string DomainName
+		public MemoryDomain Domain
 		{
-			get { return _domain.Name; }
+			get { return _domain; }
 		}
 
 		public virtual int? Address
@@ -661,6 +661,10 @@ namespace BizHawk.MultiClient
 			{
 				return _watchList[index];
 			}
+			set
+			{
+				_watchList[index] = value;
+			}
 		}
 
 		public int WatchCount
@@ -819,7 +823,7 @@ namespace BizHawk.MultiClient
 						.Append(w.SizeAsChar).Append('\t')
 						.Append(w.TypeAsChar).Append('\t')
 						.Append(w.BigEndian ? '1' : '0').Append('\t')
-						.Append(w.DomainName).Append('\t')
+						.Append(w.Domain.Name).Append('\t')
 						.Append(w is iWatchEntryDetails ? (w as iWatchEntryDetails).Notes : String.Empty)
 						.AppendLine();
 				}
