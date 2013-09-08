@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Globalization;
+using System.Windows.Forms;
 
 namespace BizHawk
 {
@@ -19,6 +20,11 @@ namespace BizHawk
 			{
 				e.Handled = true;
 			}
+		}
+
+		public int ToInt()
+		{
+			return int.Parse(Text, NumberStyles.HexNumber);
 		}
 	}
 }
