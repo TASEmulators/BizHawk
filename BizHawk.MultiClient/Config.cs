@@ -209,8 +209,9 @@ namespace BizHawk.MultiClient
 		public int RamWatchDiffIndex = 4;
 		public int RamWatchDomainIndex = 5;
 		public int RamWatchNotesIndex = 6;
-		
+
 		public int RamWatchPrev_Type = 1;
+		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 
 		// RamSearch Settings
 		public bool RamSearchSaveWindowPosition = true;

@@ -96,6 +96,7 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.originalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -604,23 +605,26 @@
 			// 
 			this.definePreviousValueAsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previousFrameToolStripMenuItem,
-            this.lastChangeToolStripMenuItem});
-			this.definePreviousValueAsToolStripMenuItem.Enabled = false;
+            this.lastChangeToolStripMenuItem,
+            this.originalToolStripMenuItem});
 			this.definePreviousValueAsToolStripMenuItem.Name = "definePreviousValueAsToolStripMenuItem";
 			this.definePreviousValueAsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.definePreviousValueAsToolStripMenuItem.Text = "Define Previous Value As";
+			this.definePreviousValueAsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueAsToolStripMenuItem_DropDownOpened);
 			// 
 			// previousFrameToolStripMenuItem
 			// 
 			this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
 			this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.previousFrameToolStripMenuItem.Text = "Previous Frame";
+			this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.previousFrameToolStripMenuItem_Click);
 			// 
 			// lastChangeToolStripMenuItem
 			// 
 			this.lastChangeToolStripMenuItem.Name = "lastChangeToolStripMenuItem";
 			this.lastChangeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.lastChangeToolStripMenuItem.Text = "Last Change";
+			this.lastChangeToolStripMenuItem.Click += new System.EventHandler(this.lastChangeToolStripMenuItem_Click);
 			// 
 			// displayWatchesOnScreenToolStripMenuItem
 			// 
@@ -721,6 +725,13 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
+			// originalToolStripMenuItem
+			// 
+			this.originalToolStripMenuItem.Name = "originalToolStripMenuItem";
+			this.originalToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.originalToolStripMenuItem.Text = "&Original";
+			this.originalToolStripMenuItem.Click += new System.EventHandler(this.originalToolStripMenuItem_Click);
+			// 
 			// NewRamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -814,5 +825,6 @@
         private System.Windows.Forms.Label MessageLabel;
         private System.Windows.Forms.Label MemDomainLabel;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem originalToolStripMenuItem;
 	}
 }

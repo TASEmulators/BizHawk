@@ -863,6 +863,42 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
 		}
 
+		private void definePreviousValueAsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			lastChangeToolStripMenuItem.Checked = false;
+			previousFrameToolStripMenuItem.Checked = false;
+			originalToolStripMenuItem.Checked = false;
+
+			switch (Global.Config.RamWatchDefinePrevious)
+			{
+				default:
+				case Watch.PreviousType.LastFrame:
+					previousFrameToolStripMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.LastChange:
+					lastChangeToolStripMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.OriginalValue:
+					originalToolStripMenuItem.Checked = true;
+					break;
+			}
+		}
+
+		private void previousFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
+		}
+
+		private void lastChangeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastChange;
+		}
+
+		private void originalToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.OriginalValue;
+		}
+
 		private void displayWatchesOnScreenToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayRamWatch ^= true;
