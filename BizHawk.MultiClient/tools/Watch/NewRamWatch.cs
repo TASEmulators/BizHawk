@@ -238,17 +238,25 @@ namespace BizHawk.MultiClient
 			if (ask_result)
 			{
 				bool load_result = Watches.Load(file, details: true, append: false);
-				if (!load_result)
+				if (load_result)
+				{
+					Global.Config.RecentWatches.Add(file);
+					
+				}
+				else
 				{
 					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 					if (result == DialogResult.Yes)
+					{
 						Global.Config.RecentWatches.Remove(file);
+					}
 				}
 
 				DisplayWatches();
 				UpdateWatchCount();
 				MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
 				Watches.Changes = false;
+				
 			}
 		}
 
@@ -390,6 +398,46 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		void EditWatch()
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+
+			if (indexes.Count > 0)
+			{
+				WatchEditor we = new WatchEditor()
+				{
+					InitialLocation = GetPromptPoint(),
+				};
+
+				List<Watch> watches = new List<Watch>();
+				foreach (int index in indexes)
+				{
+					if (!Watches[index].IsSeparator)
+					{
+						watches.Add(Watches[index]);
+					}
+				}
+
+				if (!watches.Any())
+				{
+					return;
+				}
+
+				we.SetWatch(Watches.Domain, watches, WatchEditor.Mode.Edit);
+				Global.Sound.StopSound();
+				var result = we.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					Changes();
+				}
+
+				Global.Sound.StartSound();
+			}
+
+			UpdateValues();
+		}
+
+
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
@@ -516,6 +564,11 @@ namespace BizHawk.MultiClient
 		private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			AddNewWatch();
+		}
+
+		private void editWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditWatch();
 		}
 
 		private void removeWatchToolStripMenuItem_Click(object sender, EventArgs e)
