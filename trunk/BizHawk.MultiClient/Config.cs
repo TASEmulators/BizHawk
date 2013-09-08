@@ -182,6 +182,7 @@ namespace BizHawk.MultiClient
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
 		public bool RamWatchShowDomainColumn = true;
+		
 		public int RamWatchAddressWidth = -1;
 		public int RamWatchValueWidth = -1;
 		public int RamWatchPrevWidth = -1;
@@ -189,6 +190,18 @@ namespace BizHawk.MultiClient
 		public int RamWatchDiffWidth = -1;
 		public int RamWatchNotesWidth = -1;
 		public int RamWatchDomainWidth = -1;
+
+		public Dictionary<string, int> RamWatchColumnWidths = new Dictionary<string, int>()
+		{
+			{ "AddressColumn", -1 },
+			{ "ValueColumn", -1 },
+			{ "PrevColumn", -1 },
+			{ "ChangesColumn", -1 },
+			{ "DiffColumn", -1 },
+			{ "DomainColumn", -1 },
+			{ "NotesColumn",-1 },
+		};
+
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
@@ -196,6 +209,7 @@ namespace BizHawk.MultiClient
 		public int RamWatchDiffIndex = 4;
 		public int RamWatchDomainIndex = 5;
 		public int RamWatchNotesIndex = 6;
+		
 		public int RamWatchPrev_Type = 1;
 
 		// RamSearch Settings
