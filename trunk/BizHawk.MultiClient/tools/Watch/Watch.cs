@@ -247,7 +247,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public interface iWatchEntryDetails
+	public interface IWatchDetails
 	{
 		int ChangeCount { get; }
 		void ClearChangeCount();
@@ -385,7 +385,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedByteWatch : ByteWatch, iWatchEntryDetails
+	public class DetailedByteWatch : ByteWatch, IWatchDetails
 	{
 		private byte _value;
 		private byte _previous;
@@ -503,7 +503,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedWordWatch : WordWatch, iWatchEntryDetails
+	public class DetailedWordWatch : WordWatch, IWatchDetails
 	{
 		private ushort _value;
 		private ushort _previous;
@@ -624,7 +624,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedDWordWatch : DWordWatch, iWatchEntryDetails
+	public class DetailedDWordWatch : DWordWatch, IWatchDetails
 	{
 		private uint _value;
 		private uint _previous;
@@ -763,7 +763,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			var detailedWatches = _watchList.OfType<iWatchEntryDetails>().ToList();
+			var detailedWatches = _watchList.OfType<IWatchDetails>().ToList();
 			foreach (var watch in detailedWatches)
 			{
 				watch.Update();
@@ -795,7 +795,7 @@ namespace BizHawk.MultiClient
 
 		public void ClearChangeCounts()
 		{
-			var detailedWatches = _watchList.OfType<iWatchEntryDetails>().ToList();
+			var detailedWatches = _watchList.OfType<IWatchDetails>().ToList();
 			foreach (var watch in detailedWatches)
 			{
 				watch.ClearChangeCount();
@@ -878,7 +878,7 @@ namespace BizHawk.MultiClient
 						.Append(w.TypeAsChar).Append('\t')
 						.Append(w.BigEndian ? '1' : '0').Append('\t')
 						.Append(w.Domain.Name).Append('\t')
-						.Append(w is iWatchEntryDetails ? (w as iWatchEntryDetails).Notes : String.Empty)
+						.Append(w is IWatchDetails ? (w as IWatchDetails).Notes : String.Empty)
 						.AppendLine();
 				}
 
@@ -1025,9 +1025,9 @@ namespace BizHawk.MultiClient
 					Watch w = Watch.GenerateWatch(memDomain, addr, size, details);
 					w.BigEndian = bigEndian;
 					w.Type = type;
-					if (w is iWatchEntryDetails)
+					if (w is IWatchDetails)
 					{
-						(w as iWatchEntryDetails).Notes = notes;
+						(w as IWatchDetails).Notes = notes;
 					}
 
 					_watchList.Add(w);

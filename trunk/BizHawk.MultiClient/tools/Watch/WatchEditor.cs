@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						NotesBox.Text = (_watchList[0] as iWatchEntryDetails).Notes;
+						NotesBox.Text = (_watchList[0] as IWatchDetails).Notes;
 						AddressBox.Text = _watchList[0].AddressString;
 					}
 
@@ -266,7 +266,7 @@ namespace BizHawk.MultiClient
 					{
 						var newWatch = Watch.GenerateWatch(watch.Domain, watch.Address.Value, watch.Size, details: true);
 						newWatch.Type = watch.Type;
-						(newWatch as iWatchEntryDetails).Notes = (watch as iWatchEntryDetails).Notes;
+						(newWatch as IWatchDetails).Notes = (watch as IWatchDetails).Notes;
 						_watchList.Add(watch);
 					}
 					DoEdit();
@@ -309,7 +309,7 @@ namespace BizHawk.MultiClient
 
 			if (_watchList.Count == 1)
 			{
-				(_watchList[0] as iWatchEntryDetails).Notes = NotesBox.Text;
+				(_watchList[0] as IWatchDetails).Notes = NotesBox.Text;
 			}
 		}
 
