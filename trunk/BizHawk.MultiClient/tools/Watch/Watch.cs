@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
 		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float };
+		public enum PreviousType { OriginalValue = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 };
 
 		public static string DisplayTypeToString(DisplayType type)
 		{
@@ -415,13 +416,31 @@ namespace BizHawk.MultiClient
 
 		public string Notes { get; set; }
 
-		public void Update() //TODO: different notions of previous
+		public void Update()
 		{
-			_previous = _value;
-			_value = GetByte();
-			if (_value != Previous)
+			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				ChangeCount++;
+				case PreviousType.LastSearch: //TODO
+				case PreviousType.OriginalValue:
+					/*Do Nothing*/
+					break;
+				case PreviousType.LastChange:
+					var temp = _value;
+					_value = GetByte();
+					if (_value != temp)
+					{
+						_previous = _value;
+						ChangeCount++;
+					}
+					break;
+				case PreviousType.LastFrame:
+					_previous = _value;
+					_value = GetByte();
+					if (_value != Previous)
+					{
+						ChangeCount++;
+					}
+					break;
 			}
 		}
 	}
@@ -515,13 +534,32 @@ namespace BizHawk.MultiClient
 
 		public string Notes { get; set; }
 
-		public void Update() //TODO: different notions of previous
+		public void Update()
 		{
-			_previous = _value;
-			_value = GetWord();
-			if (_value != Previous)
+			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				ChangeCount++;
+				case PreviousType.LastSearch: //TODO
+				case PreviousType.OriginalValue:
+					/*Do Nothing*/
+					break;
+				case PreviousType.LastChange:
+					var temp = _value;
+					_value = GetWord();
+
+					if (_value != temp)
+					{
+						_previous = temp;
+						ChangeCount++;
+					}
+					break;
+				case PreviousType.LastFrame:
+					_previous = _value;
+					_value = GetWord();
+					if (_value != Previous)
+					{
+						ChangeCount++;
+					}
+					break;
 			}
 		}
 	}
@@ -616,13 +654,31 @@ namespace BizHawk.MultiClient
 
 		public string Notes { get; set; }
 
-		public void Update() //TODO: different notions of previous
+		public void Update()
 		{
-			_previous = _value;
-			_value = GetDWord();
-			if (_value != Previous)
+			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				ChangeCount++;
+				case PreviousType.LastSearch: //TODO
+				case PreviousType.OriginalValue:
+					/*Do Nothing*/
+					break;
+				case PreviousType.LastChange:
+					var temp = _value;
+					_value = GetDWord();
+					if (_value != temp)
+					{
+						_previous = _value;
+						ChangeCount++;
+					}
+					break;
+				case PreviousType.LastFrame:
+					_previous = _value;
+					_value = GetDWord();
+					if (_value != Previous)
+					{
+						ChangeCount++;
+					}
+					break;
 			}
 		}
 	}
