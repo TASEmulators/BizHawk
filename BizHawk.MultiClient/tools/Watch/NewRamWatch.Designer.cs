@@ -246,23 +246,23 @@
 			// PoketoolStripButton2
 			// 
 			this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PoketoolStripButton2.Enabled = false;
 			this.PoketoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PoketoolStripButton2.Name = "PoketoolStripButton2";
 			this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
 			this.PoketoolStripButton2.Text = "toolStripButton2";
 			this.PoketoolStripButton2.ToolTipText = "Poke address";
+			this.PoketoolStripButton2.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
 			// 
 			// FreezetoolStripButton2
 			// 
 			this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FreezetoolStripButton2.Enabled = false;
 			this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
 			this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
 			this.FreezetoolStripButton2.Text = "Freeze Address";
+			this.FreezetoolStripButton2.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
 			// 
 			// toolStripButton1
 			// 
@@ -481,21 +481,21 @@
 			// 
 			// pokeAddressToolStripMenuItem
 			// 
-			this.pokeAddressToolStripMenuItem.Enabled = false;
 			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
 			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
 			this.pokeAddressToolStripMenuItem.Text = "Poke Address";
+			this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Enabled = false;
 			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
 			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
+			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 

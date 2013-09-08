@@ -212,9 +212,7 @@ namespace BizHawk.MultiClient
 			DisplayCheatsList();
 			CheatListView.Refresh();
 
-			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.HexEditor1.UpdateValues();
+			UpdateOtherTools();
 		}
 
 		public void RemoveCheat(Cheat c)
@@ -227,7 +225,13 @@ namespace BizHawk.MultiClient
 			if (!IsHandleCreated || IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
+			UpdateOtherTools();
+		}
+
+		private void UpdateOtherTools()
+		{
 			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 		}
