@@ -292,13 +292,13 @@ namespace BizHawk.MultiClient
 				Watches.Clear();
 				DisplayWatches();
 				UpdateWatchCount();
-				MessageLabel.Text = "";
+				UpdateMessageLabel();
 				_sortReverse = false;
-				_sortedColumn = "";
+				_sortedColumn = String.Empty;
 			}
 		}
 
-		public void LoadWatchFromRecent(string path)
+		public void LoadFileFromRecent(string path)
 		{
 			bool ask_result = true;
 			if (Watches.Changes)
@@ -318,10 +318,28 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentWatches.Add(path);
 					DisplayWatches();
 					UpdateWatchCount();
-					MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
+					UpdateMessageLabel();
 					Watches.Changes = false;
 				}
 			}
+		}
+
+		private void UpdateMessageLabel(bool saved = false)
+		{
+			string message = String.Empty;
+			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
+			{
+				if (saved)
+				{
+					message = Path.GetFileName(Watches.CurrentFileName) + " saved.";
+				}
+				else
+				{
+					message = Path.GetFileName(Watches.CurrentFileName) + (Watches.Changes ? " *" : String.Empty);
+				}
+			}
+
+			MessageLabel.Text = message;
 		}
 
 		private void SetMemoryDomain(int pos)
@@ -344,7 +362,7 @@ namespace BizHawk.MultiClient
 		private void Changes()
 		{
 			Watches.Changes = true;
-			MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
+			UpdateMessageLabel();
 		}
 
 		private void MoveUp()
@@ -791,7 +809,7 @@ namespace BizHawk.MultiClient
 				{
 					Watches.Load(file.FullName, true, append);
 					DisplayWatches();
-					MessageLabel.Text = Path.GetFileNameWithoutExtension(Watches.CurrentFileName) + (Watches.Changes ? " *" : String.Empty);
+					UpdateMessageLabel();
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(Watches.CurrentFileName);
 					SetMemoryDomain(WatchCommon.GetDomainPos(Watches.Domain.ToString()));
@@ -801,10 +819,9 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bool result = Watches.Save();
-			if (result)
+			if (Watches.Save())
 			{
-				MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " saved.";
+				UpdateMessageLabel(saved: true);
 			}
 		}
 
@@ -813,7 +830,7 @@ namespace BizHawk.MultiClient
 			bool result = Watches.SaveAs();
 			if (result)
 			{
-				MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " saved.";
+				UpdateMessageLabel(saved: true);
 				Global.Config.RecentWatches.Add(Watches.CurrentFileName);
 			}
 		}
@@ -821,7 +838,7 @@ namespace BizHawk.MultiClient
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentWatches.GenerateRecentMenu(LoadWatchFromRecent));
+			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentWatches.GenerateRecentMenu(LoadFileFromRecent));
 			recentToolStripMenuItem.DropDownItems.Add(Global.Config.RecentWatches.GenerateAutoLoadItem());
 		}
 

@@ -4197,7 +4197,7 @@ namespace BizHawk.MultiClient
 				NewRamWatch1 = new NewRamWatch();
 				if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 				{
-					NewRamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches[0]);
+					NewRamWatch1.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 				}
 				if (load_dialog)
 				{
