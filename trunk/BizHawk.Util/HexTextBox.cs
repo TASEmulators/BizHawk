@@ -27,7 +27,6 @@ namespace BizHawk
         {
             if (e.KeyCode == Keys.Up)
             {
-                //TODO: check if enabled is a necessary condition.  Check if is valid hex number
                 if (InputValidate.IsValidHexNumber(Text))
                 {
                     int val = ToInt();
