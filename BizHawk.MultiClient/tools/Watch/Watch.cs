@@ -683,7 +683,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class WatchList : IEnumerable
+	public class WatchList : IEnumerable<Watch>
 	{
 		private string _currentFilename = "";
 
@@ -734,6 +734,159 @@ namespace BizHawk.MultiClient
 			get
 			{
 				return _watchList.Count;
+			}
+		}
+
+		public void OrderWatches(string column, bool reverse)
+		{
+			switch (column)
+			{
+				case NewRamWatch.ADDRESS:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => x.Address ?? 0)
+							.ThenBy(x => x.Domain.Name)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Domain.Name)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.VALUE:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => x.Value ?? 0)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => x.Value ?? 0)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.PREV: //Note: these only work if all entries are detailed objects!
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => (x as IWatchDetails).PreviousStr)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => (x as IWatchDetails).PreviousStr)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.DIFF:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => (x as IWatchDetails).Diff)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => (x as IWatchDetails).Diff)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.CHANGES:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => (x as IWatchDetails).ChangeCount)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => (x as IWatchDetails).ChangeCount)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.DOMAIN:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => x.Domain)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => x.Domain)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ThenBy(x => x.BigEndian)
+							.ToList();
+					}
+					break;
+				case NewRamWatch.NOTES:
+					if (reverse)
+					{
+						_watchList = _watchList
+							.OrderByDescending(x => (x as IWatchDetails).Notes)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					else
+					{
+						_watchList = _watchList
+							.OrderBy(x => (x as IWatchDetails).Notes)
+							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Size)
+							.ThenBy(x => x.Type)
+							.ToList();
+					}
+					break;
 			}
 		}
 
