@@ -278,6 +278,11 @@ namespace BizHawk.MultiClient
 
 		private void DoEdit()
 		{
+			if (_watchList.Count == 1)
+			{
+				(_watchList[0] as IWatchDetails).Notes = NotesBox.Text;
+			}
+
 			if (_changedSize = true)
 			{
 				for(int i = 0; i < _watchList.Count; i++)
@@ -295,7 +300,11 @@ namespace BizHawk.MultiClient
 							size = Watch.WatchSize.DWord;
 							break;
 					}
-					_watchList[i] = Watch.GenerateWatch(_watchList[i].Domain, _watchList[i].Address.Value, size, details: true);
+					_watchList[i] = Watch.GenerateWatch(
+						_watchList[i].Domain,
+						_watchList.Count == 1 ? AddressBox.ToInt() : _watchList[i].Address.Value,
+						size,
+						details: true);
 				}
 			}
 			if (_changedDisplayType)
@@ -305,11 +314,6 @@ namespace BizHawk.MultiClient
 			if (!(BigEndianCheckBox.CheckState == CheckState.Indeterminate))
 			{
 				_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
-			}
-
-			if (_watchList.Count == 1)
-			{
-				(_watchList[0] as IWatchDetails).Notes = NotesBox.Text;
 			}
 		}
 
