@@ -1819,16 +1819,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void LoadSearchFromRecent(string file)
+		private void LoadSearchFromRecent(string path)
 		{
-			bool r = LoadSearchFile(file, false, Searches);
-			if (!r)
+			if (!LoadSearchFile(path, false, Searches))
 			{
-				DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-				if (result == DialogResult.Yes)
-					Global.Config.RecentSearches.Remove(file);
+				Global.Config.RecentSearches.HandleLoadError(path);
 			}
-			DisplaySearchList();
+			else
+			{
+				DisplaySearchList();
+			}
 		}
 
 		bool LoadSearchFile(string path, bool append, List<Watch_Legacy> list)
@@ -1848,10 +1848,11 @@ namespace BizHawk.MultiClient
 				Global.Config.RecentSearches.Add(path);
 				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
 				return true;
-
 			}
 			else
+			{
 				return false;
+			}
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

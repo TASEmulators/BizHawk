@@ -96,6 +96,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void HandleLoadError(string path)
+		{
+			Global.Sound.StopSound();
+			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+			if (result == DialogResult.Yes)
+			{
+				Remove(path);
+			}
+
+			Global.Sound.StartSound();
+		}
+
 		public ToolStripItem[] GenerateRecentMenu(Action<string> loadFileCallback)
 		{
 			var items = new List<ToolStripItem>();
