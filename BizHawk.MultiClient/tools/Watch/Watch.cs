@@ -285,12 +285,12 @@ namespace BizHawk.MultiClient
 
 		public override string AddressString
 		{
-			get { return ""; }
+			get { return String.Empty; }
 		}
 
 		public override string ValueString
 		{
-			get { return ""; }
+			get { return String.Empty; }
 		}
 
 		public override string ToString()
@@ -411,7 +411,20 @@ namespace BizHawk.MultiClient
 
 		public string Diff
 		{
-			get { return FormatValue((byte)(_previous - _value)); }
+			get
+            {
+                string diff = String.Empty;
+                int diffVal = _value - _previous;
+                if (diffVal > 0)
+                {
+                    diff = "+";
+                }
+                else if (diffVal < 0)
+                {
+                    diff = "-";
+                }
+                return diff + FormatValue((byte)(_previous - _value));
+            }
 		}
 
 		public string Notes { get; set; }
