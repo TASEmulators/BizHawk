@@ -290,22 +290,22 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		public void LoadWatchFromRecent(string file)
+		public void LoadWatchFromRecent(string path)
 		{
-			bool z = true;
-			if (changes) z = AskSave();
+			bool ask_result = true;
+			if (changes) ask_result = AskSave();
 
-			if (z)
+			if (ask_result)
 			{
-				bool r = LoadWatchFile(file, false);
-				if (!r)
+				if (!LoadWatchFile(path, false))
 				{
-					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-					if (result == DialogResult.Yes)
-						Global.Config.RecentWatches.Remove(file);
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
-				DisplayWatchList();
-				changes = false;
+				else
+				{
+					DisplayWatchList();
+					changes = false;
+				}
 			}
 		}
 

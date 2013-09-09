@@ -973,14 +973,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!changes)
-			{
-				saveToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				saveToolStripMenuItem.Enabled = true;
-			}
+			saveToolStripMenuItem.Enabled = changes;
 		}
 
 		private void recentSessionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -989,26 +982,25 @@ namespace BizHawk.MultiClient
 			recentSessionsToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentLuaSession.GenerateRecentMenu(LoadSessionFromRecent));
 		}
 
-		public void LoadSessionFromRecent(string file)
+		public void LoadSessionFromRecent(string path)
 		{
-			bool z = true;
-			if (changes) z = AskSave();
+			bool doload = true;
+			if (changes) doload = AskSave();
 
-			if (z)
+			if (doload)
 			{
-				bool r = LoadLuaSession(file);
-				if (!r)
+				if (!LoadLuaSession(path))
 				{
-					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-					if (result == DialogResult.Yes)
-						Global.Config.RecentLuaSession.Remove(file);
+					Global.Config.RecentLuaSession.HandleLoadError(path);
 				}
-				RunLuaScripts();
-				DisplayLuaList();
-				//ClearOutput();
-				LuaListView.Refresh();
-				currentSessionFile = file;
-				Changes(false);
+				else
+				{
+					RunLuaScripts();
+					DisplayLuaList();
+					LuaListView.Refresh();
+					currentSessionFile = path;
+					Changes(false);
+				}
 			}
 		}
 

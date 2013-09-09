@@ -298,7 +298,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadWatchFromRecent(string file)
+		public void LoadWatchFromRecent(string path)
 		{
 			bool ask_result = true;
 			if (Watches.Changes)
@@ -308,26 +308,19 @@ namespace BizHawk.MultiClient
 
 			if (ask_result)
 			{
-				bool load_result = Watches.Load(file, details: true, append: false);
-				if (load_result)
+				bool load_result = Watches.Load(path, details: true, append: false);
+				if (!load_result)
 				{
-					Global.Config.RecentWatches.Add(file);
-					
+					Global.Config.RecentWatches.HandleLoadError(path);
 				}
 				else
 				{
-					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-					if (result == DialogResult.Yes)
-					{
-						Global.Config.RecentWatches.Remove(file);
-					}
+					Global.Config.RecentWatches.Add(path);
+					DisplayWatches();
+					UpdateWatchCount();
+					MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
+					Watches.Changes = false;
 				}
-
-				DisplayWatches();
-				UpdateWatchCount();
-				MessageLabel.Text = Path.GetFileName(Watches.CurrentFileName) + " *";
-				Watches.Changes = false;
-				
 			}
 		}
 

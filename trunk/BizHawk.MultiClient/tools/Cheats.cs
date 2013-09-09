@@ -236,23 +236,27 @@ namespace BizHawk.MultiClient
 			Global.MainForm.HexEditor1.UpdateValues();
 		}
 
-		public void LoadCheatFromRecent(string file)
+		public void LoadCheatFromRecent(string path)
 		{
-			bool z = true;
+			bool doload = true;
 
-			if (Global.CheatList.Changes) z = AskSave();
-
-			if (z)
+			if (Global.CheatList.Changes)
 			{
-				bool r = LoadCheatFile(file, false);
-				if (!r)
+				doload = AskSave();
+			}
+
+			if (doload)
+			{
+				bool result = LoadCheatFile(path, false);
+				if (!result)
 				{
-					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-					if (result == DialogResult.Yes)
-						Global.Config.RecentCheats.Remove(file);
+					Global.Config.RecentCheats.HandleLoadError(path);
 				}
-				DisplayCheatsList();
-				Global.CheatList.Changes = false;
+				else
+				{
+					DisplayCheatsList();
+					Global.CheatList.Changes = false;
+				}
 			}
 		}
 

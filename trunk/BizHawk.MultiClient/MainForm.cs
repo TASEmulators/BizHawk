@@ -723,32 +723,19 @@ namespace BizHawk.MultiClient
 
 		private void LoadRomFromRecent(string rom)
 		{
-			bool r = LoadRom(rom);
-			if (!r)
+			if (!LoadRom(rom))
 			{
-				Global.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Could not open " + rom + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.RecentRoms.Remove(rom);
-				}
-				Global.Sound.StartSound();
+				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
 		}
 
-		private void LoadMoviesFromRecent(string movie)
+		private void LoadMoviesFromRecent(string path)
 		{
-			Movie m = new Movie(movie);
+			Movie m = new Movie(path);
 
 			if (!m.Loaded)
 			{
-				Global.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Could not open " + movie + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.RecentMovies.Remove(movie);
-				}
-				Global.Sound.StartSound();
+				Global.Config.RecentMovies.HandleLoadError(path);
 			}
 			else
 			{
