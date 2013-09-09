@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace BizHawk
@@ -21,6 +22,35 @@ namespace BizHawk
 				e.Handled = true;
 			}
 		}
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+            {
+                //TODO: check if enabled is a necessary condition.  Check if is valid hex number
+                if (InputValidate.IsValidHexNumber(Text))
+                {
+                    int val = ToInt();
+                    val++;
+                    string formatstr = "{0:X" + MaxLength.ToString() + "}";
+                    Text = String.Format(formatstr, val);
+                }
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                if (InputValidate.IsValidHexNumber(Text))
+                {
+                    int val = ToInt();
+                    val--;
+                    string formatstr = "{0:X" + MaxLength.ToString() + "}";
+                    Text = String.Format(formatstr, val);
+                }
+            }
+            else
+            {
+                base.OnKeyDown(e);
+            }
+        }
 
 		public int ToInt()
 		{
