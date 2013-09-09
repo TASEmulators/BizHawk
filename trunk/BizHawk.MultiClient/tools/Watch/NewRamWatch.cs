@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,14 +13,14 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewRamWatch : Form
 	{
-		private const string ADDRESS = "AddressColumn";
-		private const string VALUE = "ValueColumn";
-		private const string PREV = "PrevColumn";
-		private const string CHANGES = "ChangesColumn";
-		private const string DIFF = "DiffColumn";
-		private const string DOMAIN = "DomainColumn";
-		private const string NOTES = "NotesColumn";
-
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string PREV = "PrevColumn";
+		public const string CHANGES = "ChangesColumn";
+		public const string DIFF = "DiffColumn";
+		public const string DOMAIN = "DomainColumn";
+		public const string NOTES = "NotesColumn";
+		
 		private Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>()
 		{
 			{ ADDRESS, 60 },
@@ -35,8 +36,8 @@ namespace BizHawk.MultiClient
 		private int defaultHeight;
 		private WatchList Watches = new WatchList();
 		private string systemID = "NULL";
-		private string sortedCol = "";
-		private bool sortReverse = false;
+		private string _sortedColumn = "";
+		private bool _sortReverse = false;
 
 		public NewRamWatch()
 		{
@@ -45,8 +46,8 @@ namespace BizHawk.MultiClient
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
-			sortedCol = "";
-			sortReverse = false;
+			_sortedColumn = "";
+			_sortReverse = false;
 		}
 
 		public void UpdateValues()
@@ -292,8 +293,8 @@ namespace BizHawk.MultiClient
 				DisplayWatches();
 				UpdateWatchCount();
 				MessageLabel.Text = "";
-				sortReverse = false;
-				sortedCol = "";
+				_sortReverse = false;
+				_sortedColumn = "";
 			}
 		}
 
@@ -426,21 +427,18 @@ namespace BizHawk.MultiClient
 
 		private void InsertSeparator()
 		{
-			Changes();
-
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			var indexes = WatchListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				if (indexes[0] > 0)
-				{
-					Watches.Insert(indexes[0], SeparatorWatch.Instance);
-				}
+				Watches.Insert(indexes[0], SeparatorWatch.Instance);
 			}
 			else
 			{
 				Watches.Add(SeparatorWatch.Instance);
 			}
 			DisplayWatches();
+			Changes();
+			UpdateWatchCount();
 		}
 
 		private Point GetPromptPoint()
@@ -725,9 +723,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void OrderColumn(int columnToOrder)
+		private void OrderColumn(int index)
 		{
-			//TODO
+			var column = WatchListView.Columns[index];
+			if (column.Name != _sortedColumn)
+			{
+				_sortReverse = false;
+			}
+
+			Watches.OrderWatches(column.Name, _sortReverse);
+
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			WatchListView.Refresh();
 		}
 
 		#region Winform Events
