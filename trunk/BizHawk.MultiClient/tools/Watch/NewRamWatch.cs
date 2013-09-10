@@ -494,21 +494,12 @@ namespace BizHawk.MultiClient
 					InitialLocation = GetPromptPoint(),
 				};
 
-				List<Watch> watches = new List<Watch>();
-				foreach (int index in indexes)
-				{
-					if (!Watches[index].IsSeparator)
-					{
-						watches.Add(Watches[index]);
-					}
-				}
-
-				if (!watches.Any())
+				if (!SelectedWatches.Any())
 				{
 					return;
 				}
 
-				we.SetWatch(Watches.Domain, watches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
+				we.SetWatch(Watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 				Global.Sound.StopSound();
 				var result = we.ShowDialog();
 				if (result == DialogResult.OK)
@@ -535,22 +526,23 @@ namespace BizHawk.MultiClient
 
 		private void PokeAddress()
 		{
-			return; //TODO
-			//TODO: WatchEditor can do the poking too
-
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
+			NewRamPoke poke = new NewRamPoke()
 			{
-				Global.Sound.StopSound();
-				RamPoke poke = new RamPoke()
-				{
-					NewLocation = GetPromptPoint()
-				};
-				poke.ShowDialog();
-				//poke.SetWatchObject(null); //TODO
-				UpdateValues();
-				Global.Sound.StartSound();
+				InitialLocation = GetPromptPoint()
+			};
+
+			if (SelectedWatches.Any())
+			{
+				poke.SetWatch(SelectedWatches);
 			}
+
+			Global.Sound.StopSound();
+			var result = poke.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				UpdateValues();
+			}
+			Global.Sound.StartSound();
 		}
 
 		private List<Watch> SelectedWatches
