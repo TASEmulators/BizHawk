@@ -202,6 +202,17 @@ namespace BizHawk.MultiClient
 			{ "NotesColumn",-1 },
 		};
 
+		public Dictionary<string, int> RamWatchColumnIndexes = new Dictionary<string, int>()
+		{
+			{ "AddressColumn", 0 },
+			{ "ValueColumn", 1 },
+			{ "PrevColumn", 2 },
+			{ "ChangesColumn", 3 },
+			{ "DiffColumn", 4 },
+			{ "DomainColumn", 5 },
+			{ "NotesColumn", 6 },
+		};
+
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
