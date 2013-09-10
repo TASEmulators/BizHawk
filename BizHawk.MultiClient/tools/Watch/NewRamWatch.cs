@@ -130,52 +130,56 @@ namespace BizHawk.MultiClient
 
 		public void SaveConfigSettings()
 		{
+			SaveColumnInfo();
+			Global.Config.RamWatchWndx = Location.X;
+			Global.Config.RamWatchWndy = Location.Y;
+			Global.Config.RamWatchWidth = Right - Left;
+			Global.Config.RamWatchHeight = Bottom - Top;
+		}
+
+		private void SaveColumnInfo()
+		{
 			if (WatchListView.Columns[ADDRESS] != null)
 			{
-				Global.Config.RamWatchAddressIndex = WatchListView.Columns[ADDRESS].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[ADDRESS] = WatchListView.Columns[ADDRESS].Width;
 			}
 
 			if (WatchListView.Columns[VALUE] != null)
 			{
-				Global.Config.RamWatchValueIndex = WatchListView.Columns[VALUE].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[VALUE] = WatchListView.Columns[VALUE].Width;
 			}
 
 			if (WatchListView.Columns[PREV] != null)
 			{
-				Global.Config.RamWatchPrevIndex = WatchListView.Columns[PREV].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[PREV] = WatchListView.Columns[PREV].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[PREV] = WatchListView.Columns[PREV].Width;
 			}
 
 			if (WatchListView.Columns[CHANGES] != null)
 			{
-				Global.Config.RamWatchChangeIndex = WatchListView.Columns[CHANGES].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
 			}
 
 			if (WatchListView.Columns[DIFF] != null)
 			{
-				Global.Config.RamWatchDiffIndex = WatchListView.Columns[DIFF].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[DIFF] = WatchListView.Columns[DIFF].Width;
 			}
 
 			if (WatchListView.Columns[DOMAIN] != null)
 			{
-				Global.Config.RamWatchDomainIndex = WatchListView.Columns[DOMAIN].DisplayIndex;
+				Global.Config.RamWatchColumnIndexes[DOMAIN] = WatchListView.Columns[DOMAIN].DisplayIndex;
 				Global.Config.RamWatchColumnWidths[DOMAIN] = WatchListView.Columns[DOMAIN].Width;
 			}
 
 			if (WatchListView.Columns[NOTES] != null)
 			{
-				Global.Config.RamWatchNotesIndex = WatchListView.Columns[NOTES].Index;
+				Global.Config.RamWatchColumnIndexes[NOTES] = WatchListView.Columns[NOTES].Index;
 				Global.Config.RamWatchColumnWidths[NOTES] = WatchListView.Columns[NOTES].Width;
 			}
-
-			Global.Config.RamWatchWndx = Location.X;
-			Global.Config.RamWatchWndy = Location.Y;
-			Global.Config.RamWatchWidth = Right - Left;
-			Global.Config.RamWatchHeight = Bottom - Top;
 		}
 
 		protected override void OnClosing(CancelEventArgs e)
@@ -356,7 +360,9 @@ namespace BizHawk.MultiClient
 		private void SelectAll()
 		{
 			for (int i = 0; i < Watches.Count; i++)
+			{
 				WatchListView.SelectItem(i, true);
+			}
 		}
 
 		private void Changes()
@@ -585,7 +591,7 @@ namespace BizHawk.MultiClient
 		}
 
 
-		private void AddRemoveColumn(string columnName, bool enabled)
+		private void AddColumn(string columnName, bool enabled)
 		{
 			if (enabled)
 			{
@@ -598,48 +604,18 @@ namespace BizHawk.MultiClient
 						Width = GetColumnWidth(columnName),
 					};
 
-					WatchListView.Columns.Add(column); //TODO: insert in right place
+					WatchListView.Columns.Add(column);
 				}
 			}
-			else
-			{
-				WatchListView.Columns.RemoveByKey(columnName);
-			}
-
-			DisplayWatches();
 		}
 
-		private void ColumnPositionSet() //TODO: fix indexing, thrown off by columns not existing
+		private void ColumnPositions()
 		{
-			var columnHeaders = new List<ColumnHeader>();
-			foreach(ColumnHeader column in WatchListView.Columns)
+			foreach (var kvp in Global.Config.RamWatchColumnIndexes)
 			{
-				columnHeaders.Add(column);
-			}
-			WatchListView.Columns.Clear();
-
-			var columnSettings = new List<KeyValuePair<int, string>>
+				if (WatchListView.Columns.ContainsKey(kvp.Key))
 				{
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, ADDRESS),
-					new KeyValuePair<int, string>(Global.Config.RamWatchValueIndex, VALUE),
-					new KeyValuePair<int, string>(Global.Config.RamWatchPrevIndex, PREV),
-					new KeyValuePair<int, string>(Global.Config.RamWatchChangeIndex, CHANGES),
-					new KeyValuePair<int, string>(Global.Config.RamWatchDiffIndex, DIFF),
-					new KeyValuePair<int, string>(Global.Config.RamWatchDomainIndex, DOMAIN),
-					new KeyValuePair<int, string>(Global.Config.RamWatchNotesIndex, NOTES)
-				};
-
-			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
-
-
-			foreach (KeyValuePair<int, string> t in columnSettings)
-			{
-				foreach (ColumnHeader t1 in columnHeaders)
-				{
-					if (t.Value == t1.Name)
-					{
-						WatchListView.Columns.Add(t1);
-					}
+					WatchListView.Columns[kvp.Key].DisplayIndex = kvp.Value < WatchListView.Columns.Count ? kvp.Value : WatchListView.Columns.Count - 1;
 				}
 			}
 		}
@@ -660,15 +636,21 @@ namespace BizHawk.MultiClient
 				Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
 			}
 
-			//Columns
-			ColumnPositionSet();
-			AddRemoveColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
-			AddRemoveColumn(DIFF, Global.Config.RamWatchShowDiffColumn);
-			AddRemoveColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
-			AddRemoveColumn(PREV, Global.Config.RamWatchShowPrevColumn);
-			WatchListView.Columns[ADDRESS].Width = GetColumnWidth(ADDRESS);
-			WatchListView.Columns[VALUE].Width = GetColumnWidth(VALUE);
-			WatchListView.Columns[NOTES].Width = GetColumnWidth(NOTES);
+			LoadColumnInfo();
+		}
+
+		private void LoadColumnInfo()
+		{
+			WatchListView.Columns.Clear();
+			AddColumn(ADDRESS, true);
+			AddColumn(VALUE, true);
+			AddColumn(PREV, Global.Config.RamWatchShowPrevColumn);
+			AddColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
+			AddColumn(DIFF, Global.Config.RamWatchShowDiffColumn);
+			AddColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
+			AddColumn(NOTES, true);
+
+			ColumnPositions();
 		}
 
 		private void RemoveWatch()
@@ -953,25 +935,36 @@ namespace BizHawk.MultiClient
 		private void showPreviousValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchShowPrevColumn ^= true;
-			AddRemoveColumn(PREV, Global.Config.RamWatchShowPrevColumn);
+			SaveColumnInfo();
+			//AddRemoveColumn(PREV, Global.Config.RamWatchShowPrevColumn);
+			LoadColumnInfo();
 		}
 
 		private void showChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchShowChangeColumn ^= true;
-			AddRemoveColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
+
+			SaveColumnInfo();
+			//AddRemoveColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
+			LoadColumnInfo();
 		}
 
 		private void diffToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchShowDiffColumn ^= true;
-			AddRemoveColumn(DIFF, Global.Config.RamWatchShowDiffColumn);
+
+			SaveColumnInfo();
+			//(DIFF, Global.Config.RamWatchShowDiffColumn);
+			LoadColumnInfo();
 		}
 
 		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchShowDomainColumn ^= true;
-			AddRemoveColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
+
+			SaveColumnInfo();
+			//AddRemoveColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
+			LoadColumnInfo();
 		}
 
 		/*************Options***********************/
@@ -1040,25 +1033,23 @@ namespace BizHawk.MultiClient
 		{
 			Size = new Size(defaultWidth, defaultHeight);
 
-			Global.Config.RamWatchAddressIndex = 0;
-			Global.Config.RamWatchValueIndex = 1;
-			Global.Config.RamWatchPrevIndex = 2;
-			Global.Config.RamWatchChangeIndex = 3;
-			Global.Config.RamWatchDiffIndex = 4;
-			Global.Config.RamWatchDomainIndex = 5;
-			Global.Config.RamWatchNotesIndex = 6;
+			Global.Config.RamWatchColumnIndexes = new Dictionary<string, int>()
+				{
+					{ "AddressColumn", 0 },
+					{ "ValueColumn", 1 },
+					{ "PrevColumn", 2 },
+					{ "ChangesColumn", 3 },
+					{ "DiffColumn", 4 },
+					{ "DomainColumn", 5 },
+					{ "NotesColumn", 6 },
+				};
 
-			ColumnPositionSet();
+			ColumnPositions();
 
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDomainColumn = true;
 			Global.Config.RamWatchShowPrevColumn = false;
 			Global.Config.RamWatchShowDiffColumn = false;
-
-			AddRemoveColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
-			AddRemoveColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
-			AddRemoveColumn(PREV, Global.Config.RamWatchShowPrevColumn);
-			AddRemoveColumn(DIFF, Global.Config.RamWatchShowDiffColumn);
 
 			WatchListView.Columns[ADDRESS].Width = DefaultColumnWidths[ADDRESS];
 			WatchListView.Columns[VALUE].Width = DefaultColumnWidths[VALUE];
@@ -1070,6 +1061,8 @@ namespace BizHawk.MultiClient
 			
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = true;
+
+			LoadColumnInfo();
 		}
 
 		/*************Context Menu***********************/
@@ -1176,6 +1169,17 @@ namespace BizHawk.MultiClient
 		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
+		}
+
+		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
+		{
+			Global.Config.RamWatchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[PREV] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[DOMAIN] = WatchListView.Columns[DOMAIN].DisplayIndex;
+			Global.Config.RamWatchColumnIndexes[NOTES] = WatchListView.Columns[NOTES].DisplayIndex;
 		}
 
 		#endregion
