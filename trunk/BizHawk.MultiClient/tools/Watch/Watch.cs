@@ -705,7 +705,10 @@ namespace BizHawk.MultiClient
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain = null;
 
-		public WatchList() { }
+		public WatchList(MemoryDomain domain)
+		{
+			_domain = domain;
+		}
 
 		public IEnumerator<Watch> GetEnumerator()
 		{

@@ -34,7 +34,7 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private WatchList Watches = new WatchList();
+		private WatchList Watches = new WatchList(Global.Emulator.MainMemory);
 		private string systemID = "NULL";
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
