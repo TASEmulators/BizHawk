@@ -73,7 +73,6 @@ namespace BizHawk
 			return true;
 		}
 
-
 		/// <summary>
 		/// validates is a Hex number 0-9, A-F (must be capital letters)
 		/// </summary>
@@ -145,6 +144,111 @@ namespace BizHawk
 				}
 			}
 			return output.ToString();
+		}
+
+
+		public static bool IsValidBinaryNumber(string s)
+		{
+			char[] input = (s.ToCharArray());
+			ASCIIEncoding AE = new ASCIIEncoding();
+			// Check each character in the new label to determine if it is a number.
+			for (int x = 0; x < input.Length; x++)
+			{
+				// Encode the character from the character array to its ASCII code.
+				byte[] bc = AE.GetBytes(input[x].ToString());
+
+				// Determine if the ASCII code is within the valid range of numerical values.
+				if (bc[0] != 47 && bc[0] != 48) //0 or 1
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool IsValidBinaryNumber(char c)
+		{
+			return (c == 47 || c == 48);
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9 or decimal
+		/// </summary>
+		/// <param name="Str"></param>
+		/// <returns></returns>
+		public static bool IsValidFixedPointNumber(string Str)
+		{
+			char[] input = (Str.Trim().ToCharArray());
+			ASCIIEncoding AE = new ASCIIEncoding();
+			// Check each character in the new label to determine if it is a number.
+			for (int x = 0; x < input.Length; x++)
+			{
+				// Encode the character from the character array to its ASCII code.
+				byte[] bc = AE.GetBytes(input[x].ToString());
+
+				// Determine if the ASCII code is within the valid range of numerical values.
+				if (bc[0] > 58)
+					return false;
+
+				if (bc[0] < 46)
+				{
+					if (bc[0] == 45 && x == 0)
+						continue;
+					else
+						return false;
+				}
+
+			}
+			return true;
+		}
+
+		public static bool IsValidFixedPointNumber(char c)
+		{
+			if (c == 46) return true;
+
+			if (c < 47 || c > 58)
+				return false;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9 or decimal or dash as the first character
+		/// </summary>
+		/// <param name="Str"></param>
+		/// <returns></returns>
+		public static bool IsValidDecimalNumber(string Str)
+		{
+			char[] input = (Str.Trim().ToCharArray());
+			ASCIIEncoding AE = new ASCIIEncoding();
+			// Check each character in the new label to determine if it is a number.
+			for (int x = 0; x < input.Length; x++)
+			{
+				// Encode the character from the character array to its ASCII code.
+				byte[] bc = AE.GetBytes(input[x].ToString());
+
+				// Determine if the ASCII code is within the valid range of numerical values.
+				if (bc[0] > 58)
+					return false;
+
+				if (bc[0] < 46)
+				{
+					if (bc[0] == 45 && x == 0)
+						continue;
+					else
+						return false;
+				}
+
+			}
+			return true;
+		}
+
+		public static bool IsValidDecimalNumber(char c)
+		{
+			if (c < 45 || c > 58) //45 = dash, 46 = dot
+				return false;
+
+			return true;
 		}
 	}
 }

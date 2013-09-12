@@ -30,47 +30,36 @@
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRamPoke));
 			this.label1 = new System.Windows.Forms.Label();
-			this.AddressBox = new BizHawk.HexTextBox();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.ValeLabel = new System.Windows.Forms.Label();
 			this.ValueBox = new System.Windows.Forms.TextBox();
 			this.ValueHexLabel = new System.Windows.Forms.Label();
-			this.DomainDropDown = new System.Windows.Forms.ComboBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
-			this.DisplayTypeLael = new System.Windows.Forms.Label();
-			this.DisplayTypeDropDown = new System.Windows.Forms.ComboBox();
+			this.DisplayTypeLabel = new System.Windows.Forms.Label();
+			this.SizeLabel = new System.Windows.Forms.Label();
+			this.BigEndianLabel = new System.Windows.Forms.Label();
+			this.AddressBox = new BizHawk.HexTextBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.SizeDropDown = new System.Windows.Forms.ComboBox();
+			this.label4 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(11, 33);
+			this.label1.Location = new System.Drawing.Point(20, 33);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(62, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Address: 0x";
 			// 
-			// AddressBox
-			// 
-			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AddressBox.Location = new System.Drawing.Point(73, 30);
-			this.AddressBox.MaxLength = 8;
-			this.AddressBox.Name = "AddressBox";
-			this.AddressBox.Size = new System.Drawing.Size(80, 20);
-			this.AddressBox.TabIndex = 5;
-			this.AddressBox.Text = "0000";
-			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OK.Location = new System.Drawing.Point(12, 293);
+			this.OK.Location = new System.Drawing.Point(12, 163);
 			this.OK.Name = "OK";
-			this.OK.Size = new System.Drawing.Size(75, 23);
+			this.OK.Size = new System.Drawing.Size(65, 23);
 			this.OK.TabIndex = 35;
 			this.OK.Text = "&Poke";
 			this.OK.UseVisualStyleBackColor = true;
@@ -80,9 +69,9 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(123, 293);
+			this.Cancel.Location = new System.Drawing.Point(136, 163);
 			this.Cancel.Name = "Cancel";
-			this.Cancel.Size = new System.Drawing.Size(75, 23);
+			this.Cancel.Size = new System.Drawing.Size(65, 23);
 			this.Cancel.TabIndex = 40;
 			this.Cancel.Text = "&Close";
 			this.Cancel.UseVisualStyleBackColor = true;
@@ -100,7 +89,7 @@
 			// ValeLabel
 			// 
 			this.ValeLabel.AutoSize = true;
-			this.ValeLabel.Location = new System.Drawing.Point(11, 59);
+			this.ValeLabel.Location = new System.Drawing.Point(31, 59);
 			this.ValeLabel.Name = "ValeLabel";
 			this.ValeLabel.Size = new System.Drawing.Size(37, 13);
 			this.ValeLabel.TabIndex = 10;
@@ -109,96 +98,87 @@
 			// ValueBox
 			// 
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ValueBox.Location = new System.Drawing.Point(73, 57);
+			this.ValueBox.Location = new System.Drawing.Point(82, 57);
 			this.ValueBox.MaxLength = 9;
 			this.ValueBox.Name = "ValueBox";
-			this.ValueBox.Size = new System.Drawing.Size(80, 20);
+			this.ValueBox.Size = new System.Drawing.Size(116, 20);
 			this.ValueBox.TabIndex = 10;
 			this.ValueBox.Text = "0000";
+			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			// 
 			// ValueHexLabel
 			// 
 			this.ValueHexLabel.AutoSize = true;
-			this.ValueHexLabel.Location = new System.Drawing.Point(55, 60);
+			this.ValueHexLabel.Location = new System.Drawing.Point(64, 60);
 			this.ValueHexLabel.Name = "ValueHexLabel";
 			this.ValueHexLabel.Size = new System.Drawing.Size(18, 13);
 			this.ValueHexLabel.TabIndex = 11;
 			this.ValueHexLabel.Text = "0x";
 			// 
-			// DomainDropDown
+			// DisplayTypeLabel
 			// 
-			this.DomainDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.DomainDropDown.FormattingEnabled = true;
-			this.DomainDropDown.Location = new System.Drawing.Point(12, 261);
-			this.DomainDropDown.Name = "DomainDropDown";
-			this.DomainDropDown.Size = new System.Drawing.Size(141, 21);
-			this.DomainDropDown.TabIndex = 30;
-			this.DomainDropDown.SelectedIndexChanged += new System.EventHandler(this.DomainComboBox_SelectedIndexChanged);
+			this.DisplayTypeLabel.AutoSize = true;
+			this.DisplayTypeLabel.Location = new System.Drawing.Point(81, 101);
+			this.DisplayTypeLabel.Name = "DisplayTypeLabel";
+			this.DisplayTypeLabel.Size = new System.Drawing.Size(52, 13);
+			this.DisplayTypeLabel.TabIndex = 24;
+			this.DisplayTypeLabel.Text = "Unsigned";
 			// 
-			// label6
+			// SizeLabel
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(11, 245);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(83, 13);
-			this.label6.TabIndex = 13;
-			this.label6.Text = "Memory Domain";
+			this.SizeLabel.AutoSize = true;
+			this.SizeLabel.Location = new System.Drawing.Point(82, 83);
+			this.SizeLabel.Name = "SizeLabel";
+			this.SizeLabel.Size = new System.Drawing.Size(28, 13);
+			this.SizeLabel.TabIndex = 23;
+			this.SizeLabel.Text = "Byte";
 			// 
-			// BigEndianCheckBox
+			// BigEndianLabel
 			// 
-			this.BigEndianCheckBox.AutoSize = true;
-			this.BigEndianCheckBox.Location = new System.Drawing.Point(17, 184);
-			this.BigEndianCheckBox.Name = "BigEndianCheckBox";
-			this.BigEndianCheckBox.Size = new System.Drawing.Size(77, 17);
-			this.BigEndianCheckBox.TabIndex = 25;
-			this.BigEndianCheckBox.Text = "Big Endian";
-			this.BigEndianCheckBox.UseVisualStyleBackColor = true;
+			this.BigEndianLabel.AutoSize = true;
+			this.BigEndianLabel.Location = new System.Drawing.Point(82, 119);
+			this.BigEndianLabel.Name = "BigEndianLabel";
+			this.BigEndianLabel.Size = new System.Drawing.Size(58, 13);
+			this.BigEndianLabel.TabIndex = 41;
+			this.BigEndianLabel.Text = "Big Endian";
 			// 
-			// DisplayTypeLael
+			// AddressBox
 			// 
-			this.DisplayTypeLael.AutoSize = true;
-			this.DisplayTypeLael.Location = new System.Drawing.Point(14, 131);
-			this.DisplayTypeLael.Name = "DisplayTypeLael";
-			this.DisplayTypeLael.Size = new System.Drawing.Size(68, 13);
-			this.DisplayTypeLael.TabIndex = 24;
-			this.DisplayTypeLael.Text = "Display Type";
+			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.AddressBox.Enabled = false;
+			this.AddressBox.Location = new System.Drawing.Point(82, 30);
+			this.AddressBox.MaxLength = 8;
+			this.AddressBox.Name = "AddressBox";
+			this.AddressBox.Size = new System.Drawing.Size(116, 20);
+			this.AddressBox.TabIndex = 5;
+			this.AddressBox.Text = "0000";
 			// 
-			// DisplayTypeDropDown
+			// label2
 			// 
-			this.DisplayTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.DisplayTypeDropDown.FormattingEnabled = true;
-			this.DisplayTypeDropDown.Items.AddRange(new object[] {
-            "1 Byte",
-            "2 Byte",
-            "4 Byte"});
-			this.DisplayTypeDropDown.Location = new System.Drawing.Point(15, 147);
-			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
-			this.DisplayTypeDropDown.Size = new System.Drawing.Size(141, 21);
-			this.DisplayTypeDropDown.TabIndex = 20;
-			this.DisplayTypeDropDown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropDown_SelectedIndexChanged);
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(39, 119);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(43, 13);
+			this.label2.TabIndex = 44;
+			this.label2.Text = "Endian:";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 89);
+			this.label3.Location = new System.Drawing.Point(11, 101);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(27, 13);
-			this.label3.TabIndex = 23;
-			this.label3.Text = "Size";
+			this.label3.Size = new System.Drawing.Size(71, 13);
+			this.label3.TabIndex = 43;
+			this.label3.Text = "Display Type:";
 			// 
-			// SizeDropDown
+			// label4
 			// 
-			this.SizeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.SizeDropDown.FormattingEnabled = true;
-			this.SizeDropDown.Items.AddRange(new object[] {
-            "1 Byte",
-            "2 Byte",
-            "4 Byte"});
-			this.SizeDropDown.Location = new System.Drawing.Point(13, 105);
-			this.SizeDropDown.Name = "SizeDropDown";
-			this.SizeDropDown.Size = new System.Drawing.Size(141, 21);
-			this.SizeDropDown.TabIndex = 15;
-			this.SizeDropDown.SelectedIndexChanged += new System.EventHandler(this.SizeDropDown_SelectedIndexChanged);
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(52, 83);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(30, 13);
+			this.label4.TabIndex = 42;
+			this.label4.Text = "Size:";
 			// 
 			// NewRamPoke
 			// 
@@ -206,14 +186,13 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(213, 332);
-			this.Controls.Add(this.BigEndianCheckBox);
-			this.Controls.Add(this.DisplayTypeLael);
-			this.Controls.Add(this.DisplayTypeDropDown);
+			this.ClientSize = new System.Drawing.Size(213, 202);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.SizeDropDown);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.DomainDropDown);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.BigEndianLabel);
+			this.Controls.Add(this.DisplayTypeLabel);
+			this.Controls.Add(this.SizeLabel);
 			this.Controls.Add(this.ValueHexLabel);
 			this.Controls.Add(this.ValueBox);
 			this.Controls.Add(this.ValeLabel);
@@ -244,12 +223,11 @@
         private System.Windows.Forms.Label ValeLabel;
         private System.Windows.Forms.TextBox ValueBox;
 		private System.Windows.Forms.Label ValueHexLabel;
-		private System.Windows.Forms.ComboBox DomainDropDown;
-		private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox BigEndianCheckBox;
-        private System.Windows.Forms.Label DisplayTypeLael;
-        private System.Windows.Forms.ComboBox DisplayTypeDropDown;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox SizeDropDown;
+		private System.Windows.Forms.Label DisplayTypeLabel;
+		private System.Windows.Forms.Label SizeLabel;
+		private System.Windows.Forms.Label BigEndianLabel;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label4;
     }
 }
