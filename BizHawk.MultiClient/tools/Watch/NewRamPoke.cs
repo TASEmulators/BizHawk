@@ -21,12 +21,7 @@ namespace BizHawk.MultiClient
 
 		public void SetWatch(List<Watch> watches)
 		{
-			if (watches != null)
-			{
-				_watchList = watches;
-			}
-
-			SetTitle();
+			_watchList = watches;
 		}
 
 		private void UnSupportedConfiguration()
@@ -64,10 +59,12 @@ namespace BizHawk.MultiClient
 
 			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
-			ValueBox.Text = _watchList[0].ValueString;
+			ValueBox.Text = _watchList[0].ValueString.Replace(" ", "");
+			DomainLabel.Text = _watchList[0].Domain.Name;
 			SizeLabel.Text = _watchList[0].Size.ToString();
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
 			BigEndianLabel.Text = _watchList[0].BigEndian ? "Big Endian" : "Little Endian";
+			SetTitle();
 		}
 
 		private void SetValueBoxProperties()
@@ -144,7 +141,7 @@ namespace BizHawk.MultiClient
 
 		private void SetTitle()
 		{
-			Text = "Ram Poke - " + _watchList[0].Domain;
+			Text = "Ram Poke - " + _watchList[0].Domain.Name;
 		}
 
 		#region Events
@@ -157,9 +154,23 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			//TODO
+			bool success = true;
+			foreach (var watch in _watchList)
+			{
+				if (!watch.Poke(ValueBox.Text))
+				{
+					success = false;
+				}
+			}
 
-			OutputLabel.Text = ValueBox.Text + " written to " + AddressBox.Text;
+			if (success)
+			{
+				OutputLabel.Text = "Value successfully written.";
+			}
+			else
+			{
+				OutputLabel.Text = "An error occured when writing Value.";
+			}
 		}
 
 		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -168,7 +179,15 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			
+
+			if (e.KeyChar == '.')
+			{
+				if (ValueBox.Text.Contains('.'))
+				{
+					e.Handled = true;
+				}
+			}
+
 			switch(_watchList[0].Type)
 			{
 				case Watch.DisplayType.Signed:

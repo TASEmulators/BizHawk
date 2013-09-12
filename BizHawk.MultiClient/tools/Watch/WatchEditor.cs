@@ -300,11 +300,13 @@ namespace BizHawk.MultiClient
 							size = Watch.WatchSize.DWord;
 							break;
 					}
+					string tempNotes = (_watchList[i] as IWatchDetails).Notes;
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
 						_watchList.Count == 1 ? AddressBox.ToInt() : _watchList[i].Address.Value,
 						size,
 						details: true);
+					(_watchList[i] as IWatchDetails).Notes = tempNotes;
 				}
 			}
 			if (_changedDisplayType)

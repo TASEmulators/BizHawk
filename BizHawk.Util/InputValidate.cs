@@ -158,7 +158,7 @@ namespace BizHawk
 				byte[] bc = AE.GetBytes(input[x].ToString());
 
 				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] != 47 && bc[0] != 48) //0 or 1
+				if (bc[0] != 48 && bc[0] != 49) //0 or 1
 				{
 					return false;
 				}
@@ -168,7 +168,7 @@ namespace BizHawk
 
 		public static bool IsValidBinaryNumber(char c)
 		{
-			return (c == 47 || c == 48);
+			return (c == 48 || c == 49);
 		}
 
 		/// <summary>
@@ -178,21 +178,30 @@ namespace BizHawk
 		/// <returns></returns>
 		public static bool IsValidFixedPointNumber(string Str)
 		{
+			if (StringHelpers.HowMany(Str, '.') > 1)
+			{
+				return false;
+			}
+
 			char[] input = (Str.Trim().ToCharArray());
 			ASCIIEncoding AE = new ASCIIEncoding();
 			// Check each character in the new label to determine if it is a number.
+
 			for (int x = 0; x < input.Length; x++)
 			{
 				// Encode the character from the character array to its ASCII code.
 				byte[] bc = AE.GetBytes(input[x].ToString());
 
 				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] > 58)
+				if (bc[x] > 58)
 					return false;
 
-				if (bc[0] < 46)
+				if (bc[x] == 46)
+					continue;
+
+				if (bc[0] < 48)
 				{
-					if (bc[0] == 45 && x == 0)
+					if (bc[x] == 45 && x == 0)
 						continue;
 					else
 						return false;
@@ -204,9 +213,9 @@ namespace BizHawk
 
 		public static bool IsValidFixedPointNumber(char c)
 		{
-			if (c == 46) return true;
+			if (c == 46 || c == 45) return true;
 
-			if (c < 47 || c > 58)
+			if (c < 48 || c > 58)
 				return false;
 
 			return true;
@@ -219,6 +228,11 @@ namespace BizHawk
 		/// <returns></returns>
 		public static bool IsValidDecimalNumber(string Str)
 		{
+			if (StringHelpers.HowMany(Str, '.') > 1)
+			{
+				return false;
+			}
+
 			char[] input = (Str.Trim().ToCharArray());
 			ASCIIEncoding AE = new ASCIIEncoding();
 			// Check each character in the new label to determine if it is a number.
@@ -228,12 +242,12 @@ namespace BizHawk
 				byte[] bc = AE.GetBytes(input[x].ToString());
 
 				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] > 58)
+				if (bc[x] > 58)
 					return false;
 
-				if (bc[0] < 46)
+				if (bc[x] < 48)
 				{
-					if (bc[0] == 45 && x == 0)
+					if (bc[x] == 45 && x == 0)
 						continue;
 					else
 						return false;
@@ -245,7 +259,7 @@ namespace BizHawk
 
 		public static bool IsValidDecimalNumber(char c)
 		{
-			if (c < 45 || c > 58) //45 = dash, 46 = dot
+			if (c < 48 || c > 58) //45 = dash, 46 = dot
 				return false;
 
 			return true;
