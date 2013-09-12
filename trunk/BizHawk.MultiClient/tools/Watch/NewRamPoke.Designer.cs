@@ -43,6 +43,8 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.DomainLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -57,7 +59,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OK.Location = new System.Drawing.Point(12, 163);
+			this.OK.Location = new System.Drawing.Point(12, 169);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(65, 23);
 			this.OK.TabIndex = 35;
@@ -69,7 +71,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(136, 163);
+			this.Cancel.Location = new System.Drawing.Point(136, 169);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(65, 23);
 			this.Cancel.TabIndex = 40;
@@ -118,7 +120,7 @@
 			// DisplayTypeLabel
 			// 
 			this.DisplayTypeLabel.AutoSize = true;
-			this.DisplayTypeLabel.Location = new System.Drawing.Point(81, 101);
+			this.DisplayTypeLabel.Location = new System.Drawing.Point(81, 118);
 			this.DisplayTypeLabel.Name = "DisplayTypeLabel";
 			this.DisplayTypeLabel.Size = new System.Drawing.Size(52, 13);
 			this.DisplayTypeLabel.TabIndex = 24;
@@ -127,7 +129,7 @@
 			// SizeLabel
 			// 
 			this.SizeLabel.AutoSize = true;
-			this.SizeLabel.Location = new System.Drawing.Point(82, 83);
+			this.SizeLabel.Location = new System.Drawing.Point(82, 101);
 			this.SizeLabel.Name = "SizeLabel";
 			this.SizeLabel.Size = new System.Drawing.Size(28, 13);
 			this.SizeLabel.TabIndex = 23;
@@ -136,7 +138,7 @@
 			// BigEndianLabel
 			// 
 			this.BigEndianLabel.AutoSize = true;
-			this.BigEndianLabel.Location = new System.Drawing.Point(82, 119);
+			this.BigEndianLabel.Location = new System.Drawing.Point(82, 135);
 			this.BigEndianLabel.Name = "BigEndianLabel";
 			this.BigEndianLabel.Size = new System.Drawing.Size(58, 13);
 			this.BigEndianLabel.TabIndex = 41;
@@ -156,7 +158,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(39, 119);
+			this.label2.Location = new System.Drawing.Point(39, 135);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(43, 13);
 			this.label2.TabIndex = 44;
@@ -165,7 +167,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(11, 101);
+			this.label3.Location = new System.Drawing.Point(11, 118);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(71, 13);
 			this.label3.TabIndex = 43;
@@ -174,11 +176,29 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(52, 83);
+			this.label4.Location = new System.Drawing.Point(52, 101);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(30, 13);
 			this.label4.TabIndex = 42;
 			this.label4.Text = "Size:";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(36, 84);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(46, 13);
+			this.label5.TabIndex = 46;
+			this.label5.Text = "Domain:";
+			// 
+			// DomainLabel
+			// 
+			this.DomainLabel.AutoSize = true;
+			this.DomainLabel.Location = new System.Drawing.Point(82, 84);
+			this.DomainLabel.Name = "DomainLabel";
+			this.DomainLabel.Size = new System.Drawing.Size(70, 13);
+			this.DomainLabel.TabIndex = 45;
+			this.DomainLabel.Text = "Main Memory";
 			// 
 			// NewRamPoke
 			// 
@@ -186,7 +206,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(213, 202);
+			this.ClientSize = new System.Drawing.Size(213, 208);
+			this.Controls.Add(this.label5);
+			this.Controls.Add(this.DomainLabel);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label4);
@@ -229,5 +251,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label DomainLabel;
     }
 }

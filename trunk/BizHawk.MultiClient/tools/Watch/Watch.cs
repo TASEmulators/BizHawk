@@ -50,7 +50,7 @@ namespace BizHawk.MultiClient
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 
-		public abstract void Poke(int value);
+		public abstract bool Poke(string value);
 
 		public virtual DisplayType Type { get { return _type; } set {  _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
@@ -342,9 +342,9 @@ namespace BizHawk.MultiClient
 			get { return DisplayType.Separator; }
 		}
 
-		public override void Poke(int value)
+		public override bool Poke(string value)
 		{
-			/*Do Nothing*/
+			return false;
 		}
 	}
 
@@ -413,9 +413,62 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public override void Poke(int value)
+		public override bool Poke(string value)
 		{
-			PokeByte((byte)value); //TODO: display types
+			try
+			{
+				byte val = 0;
+				switch (Type)
+				{
+					case DisplayType.Unsigned:
+						if (InputValidate.IsValidUnsignedNumber(value))
+						{
+							val = (byte)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Signed:
+						if (InputValidate.IsValidSignedNumber(value))
+						{
+							val = (byte)(sbyte)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Hex:
+						if (InputValidate.IsValidHexNumber(value))
+						{
+							val = (byte)int.Parse(value, NumberStyles.HexNumber);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Binary:
+						if (InputValidate.IsValidBinaryNumber(value))
+						{
+							val = (byte)Convert.ToInt32(value, 2);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+				}
+
+				PokeByte(val);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}
 
@@ -549,9 +602,71 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public override void Poke(int value)
+		public override bool Poke(string value)
 		{
-			PokeWord((ushort)value); //TODO: display types
+			try
+			{
+				ushort val = 0;
+				switch (Type)
+				{
+					case DisplayType.Unsigned:
+						if (InputValidate.IsValidUnsignedNumber(value))
+						{
+							val = (ushort)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Signed:
+						if (InputValidate.IsValidSignedNumber(value))
+						{
+							val = (ushort)(short)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Hex:
+						if (InputValidate.IsValidHexNumber(value))
+						{
+							val = (ushort)int.Parse(value, NumberStyles.HexNumber);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Binary:
+						if (InputValidate.IsValidBinaryNumber(value))
+						{
+							val = (ushort)Convert.ToInt32(value, 2);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.FixedPoint_12_4:
+						if (InputValidate.IsValidFixedPointNumber(value))
+						{
+							//TODO
+						}
+						else
+						{
+							return false;
+						}
+						break;
+				}
+				PokeWord(val);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}
 
@@ -675,9 +790,71 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public override void Poke(int value)
+		public override bool Poke(string value)
 		{
-			PokeDWord((uint)value); //TODO: display types
+			try
+			{
+				uint val = 0;
+				switch (Type)
+				{
+					case DisplayType.Unsigned:
+						if (InputValidate.IsValidUnsignedNumber(value))
+						{
+							val = (uint)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Signed:
+						if (InputValidate.IsValidSignedNumber(value))
+						{
+							val = (uint)int.Parse(value);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Hex:
+						if (InputValidate.IsValidHexNumber(value))
+						{
+							val = (uint)int.Parse(value, NumberStyles.HexNumber);
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.FixedPoint_20_12:
+						if (InputValidate.IsValidFixedPointNumber(value))
+						{
+							//TODO
+						}
+						else
+						{
+							return false;
+						}
+						break;
+					case DisplayType.Float:
+						if (InputValidate.IsValidDecimalNumber(value))
+						{
+							//TODO
+						}
+						else
+						{
+							return false;
+						}
+						break;
+				}
+				PokeDWord(val);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}
 

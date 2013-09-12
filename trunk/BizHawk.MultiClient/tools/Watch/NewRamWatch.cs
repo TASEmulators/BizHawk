@@ -526,23 +526,26 @@ namespace BizHawk.MultiClient
 
 		private void PokeAddress()
 		{
-			NewRamPoke poke = new NewRamPoke()
-			{
-				InitialLocation = GetPromptPoint()
-			};
-
 			if (SelectedWatches.Any())
 			{
-				poke.SetWatch(SelectedWatches);
-			}
+				NewRamPoke poke = new NewRamPoke()
+				{
+					InitialLocation = GetPromptPoint()
+				};
 
-			Global.Sound.StopSound();
-			var result = poke.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				UpdateValues();
+				if (SelectedWatches.Any())
+				{
+					poke.SetWatch(SelectedWatches);
+				}
+
+				Global.Sound.StopSound();
+				var result = poke.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					UpdateValues();
+				}
+				Global.Sound.StartSound();
 			}
-			Global.Sound.StartSound();
 		}
 
 		private List<Watch> SelectedWatches
