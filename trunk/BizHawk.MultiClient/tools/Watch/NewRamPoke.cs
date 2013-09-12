@@ -8,14 +8,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewRamPoke : Form
 	{
+		//TODO: don't use textboxes as labels
+
 		private List<Watch> _watchList = new List<Watch>();
-		private bool _loading = true;
-		private string _addressFormatStr = "{0:X2}";
 
-		private bool _changedSize = false;
-		private bool _changedDisplayType = false;
-
-		public List<Watch> Watches { get { return _watchList; } }
 		public Point InitialLocation = new Point(0, 0);
 
 		public NewRamPoke()
@@ -23,162 +19,132 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatch(List<Watch> watches = null)
+		public void SetWatch(List<Watch> watches)
 		{
 			if (watches != null)
 			{
-				_watchList.AddRange(watches);
+				_watchList = watches;
 			}
 
-			DoMemoryDomainDropdown(_watchList.Count == 1 ? _watchList[0].Domain : Global.Emulator.MainMemory);
 			SetTitle();
 		}
 
-		private void DoMemoryDomainDropdown(MemoryDomain startDomain)
+		private void UnSupportedConfiguration()
 		{
-			DomainDropDown.Items.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
-			{
-				foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
-				{
-					var result = DomainDropDown.Items.Add(domain.ToString());
-					if (domain.Name == startDomain.Name)
-					{
-						DomainDropDown.SelectedIndex = result;
-					}
-				}
-			}
+			MessageBox.Show("Ram Poke does not support mixed types", "Unsupported Options", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			Close();
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
+			_watchList = _watchList.Where(x => !x.IsSeparator).ToList(); //Weed out separators just in case
+
+			if (_watchList.Count == 0)
+			{
+				ValueBox.Enabled = false;
+				return;
+			}
+
 			if (InitialLocation.X > 0 || InitialLocation.Y > 0)
 			{
 				Location = InitialLocation;
 			}
 
-			if (_watchList.Count == 0)
+			if (_watchList.Count > 1)
 			{
-				DoMemoryDomainDropdown(Global.Emulator.MainMemory);
-			}
-			else
-			{
-				if (_watchList.Count > 1)
+				bool hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
+				bool hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
+				bool hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
+
+				if (hasMixedSizes || hasMixedTypes || hasMixedEndian)
 				{
-					AddressBox.Enabled = false;
-					AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
-					BigEndianCheckBox.ThreeState = true;
-					DoMemoryDomainDropdown(Global.Emulator.MainMemory);
-					DomainDropDown.Enabled = false;
-					SetBigEndianCheckBox();
-					//TODO: Mixed displaytypes are a problem for a value box!
-					//TODO: Mixed size types are a problem
+					UnSupportedConfiguration();
 				}
-				else
-				{
-					ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
+			}
 
-					AddressBox.Text = _watchList[0].AddressString;
+			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
+			ValueBox.Text = _watchList[0].ValueString;
+			SizeLabel.Text = _watchList[0].Size.ToString();
+			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
+			BigEndianLabel.Text = _watchList[0].BigEndian ? "Big Endian" : "Little Endian";
+		}
 
+		private void SetValueBoxProperties()
+		{
+			switch(_watchList[0].Type)
+			{
+				default:
+					ValueBox.MaxLength = 8;
+					break;
+				case Watch.DisplayType.Binary:
 					switch (_watchList[0].Size)
 					{
+						default:
 						case Watch.WatchSize.Byte:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+							ValueBox.MaxLength = 8;
 							break;
 						case Watch.WatchSize.Word:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
+							ValueBox.MaxLength = 16;
+							break;
+					}
+					break;
+				case Watch.DisplayType.Hex:
+					switch (_watchList[0].Size)
+					{
+						default:
+						case Watch.WatchSize.Byte:
+							ValueBox.MaxLength = 2;
+							break;
+						case Watch.WatchSize.Word:
+							ValueBox.MaxLength = 4;
 							break;
 						case Watch.WatchSize.DWord:
-							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
+							ValueBox.MaxLength = 8;
 							break;
 					}
-
-					//TODO: type
-
-					DoMemoryDomainDropdown(_watchList[0].Domain);
-					SetBigEndianCheckBox();
-				}
-			}
-		}
-
-		private void SetAddressBoxProperties()
-		{
-			if (!_loading)
-			{
-				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-				if (domain != null)
-				{
-					AddressBox.MaxLength = IntHelpers.GetNumDigits(domain.Size - 1);
-					_addressFormatStr = "{0:X" + AddressBox.MaxLength.ToString() + "}";
-					AddressBox.Text = String.Format(_addressFormatStr, 0);
-				}
-			}
-		}
-
-		private void SetBigEndianCheckBox()
-		{
-			if (_watchList != null)
-			{
-				if (_watchList.Count > 1)
-				{
-					//Aggregate state
-					var hasBig = _watchList.Any(x => x.BigEndian);
-					var hasLittle = _watchList.Any(x => x.BigEndian == false);
-
-					if (hasBig && hasLittle)
+					break;
+				case Watch.DisplayType.Signed:
+					switch (_watchList[0].Size)
 					{
-						BigEndianCheckBox.Checked = true;
-						BigEndianCheckBox.CheckState = CheckState.Indeterminate;
+						default:
+						case Watch.WatchSize.Byte:
+							ValueBox.MaxLength = 4;
+							break;
+						case Watch.WatchSize.Word:
+							ValueBox.MaxLength = 6;
+							break;
+						case Watch.WatchSize.DWord:
+							ValueBox.MaxLength = 11;
+							break;
 					}
-					else if (hasBig)
+					break;
+				case Watch.DisplayType.Unsigned:
+					switch (_watchList[0].Size)
 					{
-						BigEndianCheckBox.Checked = true;
+						default:
+						case Watch.WatchSize.Byte:
+							ValueBox.MaxLength = 3;
+							break;
+						case Watch.WatchSize.Word:
+							ValueBox.MaxLength = 5;
+							break;
+						case Watch.WatchSize.DWord:
+							ValueBox.MaxLength = 10;
+							break;
 					}
-					else
-					{
-						BigEndianCheckBox.Checked = false;
-					}
-				}
-				else if (_watchList.Count == 1)
-				{
-					BigEndianCheckBox.Checked = _watchList[0].BigEndian;
-					return;
-				}
+					break;
+				case Watch.DisplayType.Float:
+				case Watch.DisplayType.FixedPoint_12_4:
+				case Watch.DisplayType.FixedPoint_20_12:
+					ValueBox.MaxLength = 32;
+					break;
 			}
-
-			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-			if (domain == null)
-			{
-				domain = Global.Emulator.MainMemory;
-			}
-			BigEndianCheckBox.Checked = domain.Endian == Endian.Big ? true : false;
-
-			_loading = false;
-			SetAddressBoxProperties();
 		}
 
 		private void SetTitle()
 		{
 			Text = "Ram Poke - " + _watchList[0].Domain;
-		}
-
-		private void SetDisplayTypes()
-		{
-			DisplayTypeDropDown.Items.Clear();
-			switch (SizeDropDown.SelectedIndex)
-			{
-				default:
-				case 0:
-					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
-					break;
-				case 1:
-					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
-					break;
-				case 2:
-					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
-					break;
-			}
-			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
 		}
 
 		#region Events
@@ -196,29 +162,54 @@ namespace BizHawk.MultiClient
 			OutputLabel.Text = ValueBox.Text + " written to " + AddressBox.Text;
 		}
 
-		private void SizeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			SetDisplayTypes();
-			_changedSize = true;
-
-			if (!DisplayTypeDropDown.Enabled)
+			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 			{
-				DisplayTypeDropDown.Enabled = true;
-				_changedDisplayType = true;
+				return;
 			}
-		}
-
-		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			_changedDisplayType = true;
-		}
-
-		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			SetAddressBoxProperties();
-			SetBigEndianCheckBox();
-			_changedSize = true;
-			_changedDisplayType = true;
+			
+			switch(_watchList[0].Type)
+			{
+				case Watch.DisplayType.Signed:
+					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case Watch.DisplayType.Unsigned:
+					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case Watch.DisplayType.Hex:
+					if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case Watch.DisplayType.Binary:
+					if (!InputValidate.IsValidBinaryNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case Watch.DisplayType.FixedPoint_12_4:
+				case Watch.DisplayType.FixedPoint_20_12:
+					if (!InputValidate.IsValidFixedPointNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case Watch.DisplayType.Float:
+					if (!InputValidate.IsValidDecimalNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+					
+			}
 		}
 
 		#endregion

@@ -50,28 +50,18 @@ namespace BizHawk.MultiClient
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 
+		public abstract void Poke(int value);
+
 		public virtual DisplayType Type { get { return _type; } set {  _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
-		public MemoryDomain Domain
-		{
-			get { return _domain; }
-		}
+		public MemoryDomain Domain { get { return _domain; } }
 
-		public virtual int? Address
-		{
-			get { return _address; }
-		}
+		public virtual int? Address { get { return _address; } }
 
-		public virtual string AddressString
-		{
-			get { return _address.ToString(AddressFormatStr); }
-		}
+		public virtual string AddressString { get { return _address.ToString(AddressFormatStr); } }
 
-		public virtual bool IsSeparator
-		{
-			get { return false; }
-		}
+		public virtual bool IsSeparator { get { return false; } }
 
 		public char SizeAsChar
 		{
@@ -209,6 +199,43 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		protected void PokeByte(byte val)
+		{
+			_domain.PokeByte(_address, val);
+		}
+
+		protected void PokeWord(ushort val)
+		{
+			if (_bigEndian)
+			{
+				_domain.PokeByte(_address + 0, (byte)(val >> 8));
+				_domain.PokeByte(_address + 1, (byte)(val));
+			}
+			else
+			{
+				_domain.PokeByte(_address + 0, (byte)(val));
+				_domain.PokeByte(_address + 1, (byte)(val >> 8));
+			}
+		}
+
+		protected void PokeDWord(uint val)
+		{
+			if (_bigEndian)
+			{
+				_domain.PokeByte(_address + 0, (byte)(val >> 24));
+				_domain.PokeByte(_address + 1, (byte)(val >> 16));
+				_domain.PokeByte(_address + 2, (byte)(val >> 8));
+				_domain.PokeByte(_address + 3, (byte)(val));
+			}
+			else
+			{
+				_domain.PokeByte(_address + 0, (byte)(val));
+				_domain.PokeByte(_address + 1, (byte)(val >> 8));
+				_domain.PokeByte(_address + 2, (byte)(val >> 16));
+				_domain.PokeByte(_address + 3, (byte)(val >> 24));
+			}
+		}
+
 		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
 		{
 			switch (size)
@@ -267,10 +294,7 @@ namespace BizHawk.MultiClient
 
 		public static SeparatorWatch Instance
 		{
-			get
-			{
-				return new SeparatorWatch();
-			}
+			get { return new SeparatorWatch(); }
 		}
 
 		public override int? Address
@@ -316,6 +340,11 @@ namespace BizHawk.MultiClient
 		public override DisplayType Type
 		{
 			get { return DisplayType.Separator; }
+		}
+
+		public override void Poke(int value)
+		{
+			/*Do Nothing*/
 		}
 	}
 
@@ -382,6 +411,11 @@ namespace BizHawk.MultiClient
 				case DisplayType.Binary:
 					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
 			}
+		}
+
+		public override void Poke(int value)
+		{
+			PokeByte((byte)value); //TODO: display types
 		}
 	}
 
@@ -514,6 +548,11 @@ namespace BizHawk.MultiClient
 					return Convert.ToString(val, 2).PadLeft(16, '0').Insert(8, " ").Insert(4, " ").Insert(14, " ");
 			}
 		}
+
+		public override void Poke(int value)
+		{
+			PokeWord((ushort)value); //TODO: display types
+		}
 	}
 
 	public class DetailedWordWatch : WordWatch, IWatchDetails
@@ -634,6 +673,11 @@ namespace BizHawk.MultiClient
 					float _float = System.BitConverter.ToSingle(bytes, 0);
 					return String.Format("{0:F6}", _float);
 			}
+		}
+
+		public override void Poke(int value)
+		{
+			PokeDWord((uint)value); //TODO: display types
 		}
 	}
 
