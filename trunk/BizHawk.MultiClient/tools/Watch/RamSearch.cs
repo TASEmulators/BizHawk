@@ -312,7 +312,7 @@ namespace BizHawk.MultiClient
 				Global.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					Global.MainForm.RamWatch1.AddWatch(Searches[indexes[x]]);
+					Global.MainForm.NewRamWatch1.AddOldWatch(Searches[indexes[x]]);
 				}
 			}
 		}
@@ -2123,7 +2123,7 @@ namespace BizHawk.MultiClient
 			{
 				List<Watch_Legacy> temp = new List<Watch_Legacy>();
 				LoadSearchFile(file.FullName, false, temp);
-				TruncateList(temp);
+				TruncateList(temp.Select(watch => watch.Address));
 				DoTruncate();
 
 			}
@@ -2138,12 +2138,12 @@ namespace BizHawk.MultiClient
 		}
 
 
-		private void TruncateList(IEnumerable<Watch_Legacy> toRemove)
+		private void TruncateList(IEnumerable<int> toRemove)
 		{
 			ClearWeeded();
-			foreach (Watch_Legacy watch in toRemove)
+			foreach (int addr in toRemove)
 			{
-				var first_or_default = Searches.FirstOrDefault(x => x.Address == watch.Address);
+				var first_or_default = Searches.FirstOrDefault(x => x.Address == addr);
 				if (first_or_default != null)
 				{
 					first_or_default.Deleted = true;
@@ -2157,7 +2157,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		private void ExcludeRamWatchList()
 		{
-			TruncateList(Global.MainForm.RamWatch1.GetRamWatchList());
+			TruncateList(Global.MainForm.NewRamWatch1.AddressList);
 		}
 
 		private void TruncateFromFiletoolStripButton2_Click(object sender, EventArgs e)
@@ -2266,7 +2266,7 @@ namespace BizHawk.MultiClient
 
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
-				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.NewRamWatch1.UpdateValues();
 				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
@@ -2346,7 +2346,7 @@ namespace BizHawk.MultiClient
 
 				UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
-				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.NewRamWatch1.UpdateValues();
 				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
@@ -2699,7 +2699,7 @@ namespace BizHawk.MultiClient
 			Global.MainForm.Cheats1.RemoveAllCheats();
 			UpdateValues();
 
-			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
