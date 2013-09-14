@@ -52,19 +52,16 @@
 			this.clearPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.appendFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TruncateFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,38 +83,23 @@
 			this.fastModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExcludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CompareToBox = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.NumberOfChangesBox = new System.Windows.Forms.TextBox();
-			this.SpecificAddressBox = new BizHawk.HexTextBox();
-			this.SpecificValueBox = new System.Windows.Forms.TextBox();
-			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
-			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
-			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
-			this.PreviousValueRadio = new System.Windows.Forms.RadioButton();
-			this.ComparisonBox = new System.Windows.Forms.GroupBox();
-			this.DifferentByBox = new System.Windows.Forms.TextBox();
-			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
-			this.NotEqualToRadio = new System.Windows.Forms.RadioButton();
-			this.EqualToRadio = new System.Windows.Forms.RadioButton();
-			this.GreaterThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
-			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
-			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
-			this.LessThanRadio = new System.Windows.Forms.RadioButton();
+			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			this.AutoloadDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.MemoryDomainsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
-			this.CompareToBox.SuspendLayout();
-			this.ComparisonBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// searchToolStripMenuItem1
@@ -297,32 +279,18 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newSearchToolStripMenuItem,
-            this.toolStripSeparator1,
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.appendFileToolStripMenuItem,
             this.TruncateFromFileToolStripMenuItem,
-            this.recentToolStripMenuItem,
+            this.RecentSubMenu,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
-			// 
-			// newSearchToolStripMenuItem
-			// 
-			this.newSearchToolStripMenuItem.Enabled = false;
-			this.newSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.newSearchToolStripMenuItem.Text = "&New Search";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
+			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// openToolStripMenuItem
 			// 
@@ -366,14 +334,15 @@
 			this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
 			// 
-			// recentToolStripMenuItem
+			// RecentSubMenu
 			// 
-			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator2});
-			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
-			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-			this.recentToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.recentToolStripMenuItem.Text = "Recent";
+			this.RecentSubMenu.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.RecentSubMenu.Name = "RecentSubMenu";
+			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
+			this.RecentSubMenu.Text = "Recent";
+			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator2
 			// 
@@ -387,16 +356,17 @@
 			// 
 			// exitToolStripMenuItem
 			// 
-			this.exitToolStripMenuItem.Enabled = false;
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "&Close";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
 			this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.memoryDomainsToolStripMenuItem,
+            this.newSearchToolStripMenuItem,
+            this.toolStripSeparator7,
             searchToolStripMenuItem1,
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
@@ -413,13 +383,7 @@
 			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
 			this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
 			this.searchToolStripMenuItem.Text = "&Search";
-			// 
-			// memoryDomainsToolStripMenuItem
-			// 
-			this.memoryDomainsToolStripMenuItem.Enabled = false;
-			this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-			this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
+			this.searchToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SearchSubMenu_DropDownOpened);
 			// 
 			// undoToolStripMenuItem
 			// 
@@ -519,19 +483,22 @@
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MemoryDomainsSubMenu,
             this.definePreviousValueToolStripMenuItem,
             this.fastModeToolStripMenuItem,
             this.previewModeToolStripMenuItem,
             this.alwaysExcludeRamSearchListToolStripMenuItem,
-            this.autoloadDialogToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem,
+            this.useUndoHistoryToolStripMenuItem,
             this.toolStripSeparator11,
+            this.AutoloadDialogMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
             this.alwaysOnTopToolStripMenuItem,
-            this.restoreOriginalWindowSizeToolStripMenuItem,
-            this.useUndoHistoryToolStripMenuItem});
+            this.toolStripSeparator3,
+            this.restoreOriginalWindowSizeToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
+			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// definePreviousValueToolStripMenuItem
 			// 
@@ -594,12 +561,24 @@
 			this.alwaysExcludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.alwaysExcludeRamSearchListToolStripMenuItem.Text = "Always Exclude Ram Search List";
 			// 
-			// autoloadDialogToolStripMenuItem
+			// useUndoHistoryToolStripMenuItem
 			// 
-			this.autoloadDialogToolStripMenuItem.Enabled = false;
-			this.autoloadDialogToolStripMenuItem.Name = "autoloadDialogToolStripMenuItem";
-			this.autoloadDialogToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.autoloadDialogToolStripMenuItem.Text = "Autoload Dialog";
+			this.useUndoHistoryToolStripMenuItem.Enabled = false;
+			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
+			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
+			// 
+			// toolStripSeparator11
+			// 
+			this.toolStripSeparator11.Name = "toolStripSeparator11";
+			this.toolStripSeparator11.Size = new System.Drawing.Size(237, 6);
+			// 
+			// AutoloadDialogMenuItem
+			// 
+			this.AutoloadDialogMenuItem.Name = "AutoloadDialogMenuItem";
+			this.AutoloadDialogMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoloadDialogMenuItem.Text = "Autoload";
+			this.AutoloadDialogMenuItem.Click += new System.EventHandler(this.AutoloadDialogMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
@@ -608,11 +587,6 @@
 			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			// 
-			// toolStripSeparator11
-			// 
-			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(237, 6);
-			// 
 			// alwaysOnTopToolStripMenuItem
 			// 
 			this.alwaysOnTopToolStripMenuItem.Enabled = false;
@@ -620,216 +594,17 @@
 			this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
 			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(237, 6);
+			// 
 			// restoreOriginalWindowSizeToolStripMenuItem
 			// 
 			this.restoreOriginalWindowSizeToolStripMenuItem.Enabled = false;
 			this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
 			this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-			// 
-			// useUndoHistoryToolStripMenuItem
-			// 
-			this.useUndoHistoryToolStripMenuItem.Enabled = false;
-			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
-			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
-			// 
-			// CompareToBox
-			// 
-			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CompareToBox.Controls.Add(this.label1);
-			this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
-			this.CompareToBox.Controls.Add(this.SpecificAddressBox);
-			this.CompareToBox.Controls.Add(this.SpecificValueBox);
-			this.CompareToBox.Controls.Add(this.NumberOfChangesRadio);
-			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
-			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
-			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(248, 114);
-			this.CompareToBox.Name = "CompareToBox";
-			this.CompareToBox.Size = new System.Drawing.Size(211, 111);
-			this.CompareToBox.TabIndex = 0;
-			this.CompareToBox.TabStop = false;
-			this.CompareToBox.Text = "Compare To / By";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(116, 65);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(18, 13);
-			this.label1.TabIndex = 10;
-			this.label1.Text = "0x";
-			// 
-			// NumberOfChangesBox
-			// 
-			this.NumberOfChangesBox.Enabled = false;
-			this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 82);
-			this.NumberOfChangesBox.MaxLength = 8;
-			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
-			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
-			this.NumberOfChangesBox.TabIndex = 28;
-			// 
-			// SpecificAddressBox
-			// 
-			this.SpecificAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificAddressBox.Enabled = false;
-			this.SpecificAddressBox.Location = new System.Drawing.Point(135, 60);
-			this.SpecificAddressBox.MaxLength = 8;
-			this.SpecificAddressBox.Name = "SpecificAddressBox";
-			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificAddressBox.TabIndex = 26;
-			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
-			this.SpecificValueBox.MaxLength = 9;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 24;
-			// 
-			// NumberOfChangesRadio
-			// 
-			this.NumberOfChangesRadio.AutoSize = true;
-			this.NumberOfChangesRadio.Location = new System.Drawing.Point(7, 85);
-			this.NumberOfChangesRadio.Name = "NumberOfChangesRadio";
-			this.NumberOfChangesRadio.Size = new System.Drawing.Size(122, 17);
-			this.NumberOfChangesRadio.TabIndex = 3;
-			this.NumberOfChangesRadio.Text = "Number of Changes:";
-			this.NumberOfChangesRadio.UseVisualStyleBackColor = true;
-			// 
-			// SpecificAddressRadio
-			// 
-			this.SpecificAddressRadio.AutoSize = true;
-			this.SpecificAddressRadio.Location = new System.Drawing.Point(7, 63);
-			this.SpecificAddressRadio.Name = "SpecificAddressRadio";
-			this.SpecificAddressRadio.Size = new System.Drawing.Size(107, 17);
-			this.SpecificAddressRadio.TabIndex = 2;
-			this.SpecificAddressRadio.Text = "Specific Address:";
-			this.SpecificAddressRadio.UseVisualStyleBackColor = true;
-			// 
-			// SpecificValueRadio
-			// 
-			this.SpecificValueRadio.AutoSize = true;
-			this.SpecificValueRadio.Location = new System.Drawing.Point(7, 41);
-			this.SpecificValueRadio.Name = "SpecificValueRadio";
-			this.SpecificValueRadio.Size = new System.Drawing.Size(96, 17);
-			this.SpecificValueRadio.TabIndex = 22;
-			this.SpecificValueRadio.Text = "Specific Value:";
-			this.SpecificValueRadio.UseVisualStyleBackColor = true;
-			// 
-			// PreviousValueRadio
-			// 
-			this.PreviousValueRadio.AutoSize = true;
-			this.PreviousValueRadio.Checked = true;
-			this.PreviousValueRadio.Location = new System.Drawing.Point(7, 20);
-			this.PreviousValueRadio.Name = "PreviousValueRadio";
-			this.PreviousValueRadio.Size = new System.Drawing.Size(96, 17);
-			this.PreviousValueRadio.TabIndex = 20;
-			this.PreviousValueRadio.TabStop = true;
-			this.PreviousValueRadio.Text = "Previous Value";
-			this.PreviousValueRadio.UseVisualStyleBackColor = true;
-			// 
-			// ComparisonBox
-			// 
-			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ComparisonBox.Controls.Add(this.DifferentByBox);
-			this.ComparisonBox.Controls.Add(this.DifferentByRadio);
-			this.ComparisonBox.Controls.Add(this.NotEqualToRadio);
-			this.ComparisonBox.Controls.Add(this.EqualToRadio);
-			this.ComparisonBox.Controls.Add(this.GreaterThanOrEqualToRadio);
-			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
-			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
-			this.ComparisonBox.Controls.Add(this.LessThanRadio);
-			this.ComparisonBox.Location = new System.Drawing.Point(248, 231);
-			this.ComparisonBox.Name = "ComparisonBox";
-			this.ComparisonBox.Size = new System.Drawing.Size(211, 159);
-			this.ComparisonBox.TabIndex = 6;
-			this.ComparisonBox.TabStop = false;
-			this.ComparisonBox.Text = "Comparison Operator";
-			// 
-			// DifferentByBox
-			// 
-			this.DifferentByBox.Enabled = false;
-			this.DifferentByBox.Location = new System.Drawing.Point(90, 131);
-			this.DifferentByBox.MaxLength = 9;
-			this.DifferentByBox.Name = "DifferentByBox";
-			this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
-			this.DifferentByBox.TabIndex = 34;
-			// 
-			// DifferentByRadio
-			// 
-			this.DifferentByRadio.AutoSize = true;
-			this.DifferentByRadio.Location = new System.Drawing.Point(7, 134);
-			this.DifferentByRadio.Name = "DifferentByRadio";
-			this.DifferentByRadio.Size = new System.Drawing.Size(83, 17);
-			this.DifferentByRadio.TabIndex = 6;
-			this.DifferentByRadio.Text = "Different By:";
-			this.DifferentByRadio.UseVisualStyleBackColor = true;
-			// 
-			// NotEqualToRadio
-			// 
-			this.NotEqualToRadio.AutoSize = true;
-			this.NotEqualToRadio.Location = new System.Drawing.Point(7, 35);
-			this.NotEqualToRadio.Name = "NotEqualToRadio";
-			this.NotEqualToRadio.Size = new System.Drawing.Size(88, 17);
-			this.NotEqualToRadio.TabIndex = 5;
-			this.NotEqualToRadio.Text = "Not Equal To";
-			this.NotEqualToRadio.UseVisualStyleBackColor = true;
-			// 
-			// EqualToRadio
-			// 
-			this.EqualToRadio.AutoSize = true;
-			this.EqualToRadio.Checked = true;
-			this.EqualToRadio.Location = new System.Drawing.Point(7, 15);
-			this.EqualToRadio.Name = "EqualToRadio";
-			this.EqualToRadio.Size = new System.Drawing.Size(68, 17);
-			this.EqualToRadio.TabIndex = 32;
-			this.EqualToRadio.TabStop = true;
-			this.EqualToRadio.Text = "Equal To";
-			this.EqualToRadio.UseVisualStyleBackColor = true;
-			// 
-			// GreaterThanOrEqualToRadio
-			// 
-			this.GreaterThanOrEqualToRadio.AutoSize = true;
-			this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(7, 113);
-			this.GreaterThanOrEqualToRadio.Name = "GreaterThanOrEqualToRadio";
-			this.GreaterThanOrEqualToRadio.Size = new System.Drawing.Size(146, 17);
-			this.GreaterThanOrEqualToRadio.TabIndex = 3;
-			this.GreaterThanOrEqualToRadio.Text = "Greater Than or Equal To";
-			this.GreaterThanOrEqualToRadio.UseVisualStyleBackColor = true;
-			// 
-			// LessThanOrEqualToRadio
-			// 
-			this.LessThanOrEqualToRadio.AutoSize = true;
-			this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(7, 93);
-			this.LessThanOrEqualToRadio.Name = "LessThanOrEqualToRadio";
-			this.LessThanOrEqualToRadio.Size = new System.Drawing.Size(133, 17);
-			this.LessThanOrEqualToRadio.TabIndex = 2;
-			this.LessThanOrEqualToRadio.Text = "Less Than or Equal To";
-			this.LessThanOrEqualToRadio.UseVisualStyleBackColor = true;
-			// 
-			// GreaterThanRadio
-			// 
-			this.GreaterThanRadio.AutoSize = true;
-			this.GreaterThanRadio.Location = new System.Drawing.Point(7, 74);
-			this.GreaterThanRadio.Name = "GreaterThanRadio";
-			this.GreaterThanRadio.Size = new System.Drawing.Size(88, 17);
-			this.GreaterThanRadio.TabIndex = 1;
-			this.GreaterThanRadio.Text = "Greater Than";
-			this.GreaterThanRadio.UseVisualStyleBackColor = true;
-			// 
-			// LessThanRadio
-			// 
-			this.LessThanRadio.AutoSize = true;
-			this.LessThanRadio.Location = new System.Drawing.Point(7, 54);
-			this.LessThanRadio.Name = "LessThanRadio";
-			this.LessThanRadio.Size = new System.Drawing.Size(75, 17);
-			this.LessThanRadio.TabIndex = 0;
-			this.LessThanRadio.Text = "Less Than";
-			this.LessThanRadio.UseVisualStyleBackColor = true;
+			this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
 			// 
 			// MemDomainLabel
 			// 
@@ -850,6 +625,33 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
+			// newSearchToolStripMenuItem
+			// 
+			this.newSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
+			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.newSearchToolStripMenuItem.Text = "&New Search";
+			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
+			// 
+			// MemoryDomainsSubMenu
+			// 
+			this.MemoryDomainsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator6});
+			this.MemoryDomainsSubMenu.Name = "MemoryDomainsSubMenu";
+			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(240, 22);
+			this.MemoryDomainsSubMenu.Text = "&Memory Domains";
+			this.MemoryDomainsSubMenu.DropDownOpened += new System.EventHandler(this.MemoryDomainsSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
@@ -858,8 +660,6 @@
 			this.ClientSize = new System.Drawing.Size(470, 459);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
-			this.Controls.Add(this.ComparisonBox);
-			this.Controls.Add(this.CompareToBox);
 			this.Controls.Add(this.SearchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.menuStrip1);
@@ -872,10 +672,6 @@
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.CompareToBox.ResumeLayout(false);
-			this.CompareToBox.PerformLayout();
-			this.ComparisonBox.ResumeLayout(false);
-			this.ComparisonBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -890,36 +686,16 @@
         private System.Windows.Forms.ColumnHeader Previous;
 		private System.Windows.Forms.ColumnHeader Changes;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.GroupBox CompareToBox;
-        private System.Windows.Forms.RadioButton NumberOfChangesRadio;
-        private System.Windows.Forms.RadioButton SpecificAddressRadio;
-        private System.Windows.Forms.RadioButton SpecificValueRadio;
-        private System.Windows.Forms.RadioButton PreviousValueRadio;
-        private System.Windows.Forms.TextBox NumberOfChangesBox;
-        private HexTextBox SpecificAddressBox;
-		private System.Windows.Forms.TextBox SpecificValueBox;
-        private System.Windows.Forms.GroupBox ComparisonBox;
-        private System.Windows.Forms.RadioButton DifferentByRadio;
-        private System.Windows.Forms.RadioButton NotEqualToRadio;
-        private System.Windows.Forms.RadioButton EqualToRadio;
-        private System.Windows.Forms.RadioButton GreaterThanOrEqualToRadio;
-        private System.Windows.Forms.RadioButton LessThanOrEqualToRadio;
-        private System.Windows.Forms.RadioButton GreaterThanRadio;
-        private System.Windows.Forms.RadioButton LessThanRadio;
-		private System.Windows.Forms.TextBox DifferentByBox;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newSearchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreOriginalWindowSizeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.Label MemDomainLabel;
-        private System.Windows.Forms.Label MessageLabel;
-        private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+		private System.Windows.Forms.Label MessageLabel;
+		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
@@ -942,8 +718,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem startNewSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem memoryDomainsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
@@ -954,7 +729,7 @@
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadDialogMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
@@ -965,5 +740,10 @@
 		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
 		private System.Windows.Forms.ToolStripMenuItem clearPreviewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripMenuItem newSearchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripMenuItem MemoryDomainsSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
     }
 }
