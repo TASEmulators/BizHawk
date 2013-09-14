@@ -342,7 +342,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
-			if (IsFrozen(GetHighlightedAddress()))
+			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
 			{
 				freezeAddressToolStripMenuItem.Image = Properties.Resources.Unfreeze;
 				freezeAddressToolStripMenuItem.Text = "Un&freeze Address";
@@ -354,7 +354,7 @@ namespace BizHawk.MultiClient
 			}
 			
 
-			if (GetHighlightedAddress() >= 0)
+			if (HighlightedAddress.HasValue)
 			{
 				addToRamWatchToolStripMenuItem1.Enabled = true;
 				freezeAddressToolStripMenuItem.Enabled = true;
@@ -688,23 +688,19 @@ namespace BizHawk.MultiClient
 						BigEndian = BigEndian,
 						Type = Watch.DisplayType.Hex,
 					};
-					break;
 			}
 		}
 
 		private void AddToRamWatch()
 		{
-			//Add to RAM Watch
-			int address = GetHighlightedAddress();
-
-			if (address >= 0 || SecondaryHighlightedAddresses.Count > 0)
+			if (HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Count > 0)
 			{
 				Global.MainForm.LoadRamWatch(true);
 			}
 
-			if (address >= 0)
+			if (HighlightedAddress.HasValue)
 			{
-				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(address));
+				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
@@ -714,40 +710,40 @@ namespace BizHawk.MultiClient
 
 		private void PokeAddress()
 		{
-			//TODO: get rid of legacy watch, and support multiple address poking
-			int p = GetHighlightedAddress();
-			if (p < 0) return;
-			Watch_Legacy w = new Watch_Legacy
-				{
-					Address = p,
-					Value = MakeValue(p),
-					BigEndian = BigEndian,
-					Signed = Watch_Legacy.DISPTYPE.HEX,
-					Domain = Domain
-				};
-
-			switch (DataSize)
+			var addresses = new List<int>();
+			if (HighlightedAddress.HasValue)
 			{
-				default:
-				case 1:
-					w.Type = Watch_Legacy.TYPE.BYTE;
-					break;
-				case 2:
-					w.Type = Watch_Legacy.TYPE.WORD;
-					break;
-				case 4:
-					w.Type = Watch_Legacy.TYPE.DWORD;
-					break;
+				addresses.Add(HighlightedAddress.Value);
 			}
 
-			var poke = new RamPoke();
-			Watch watch = Watch.ConvertLegacyWatch(w);
-			poke.SetWatch(new List<Watch> { watch });
-			poke.InitialLocation = GetAddressCoordinates(p);
-			Global.Sound.StopSound();
-			poke.ShowDialog();
-			Global.Sound.StartSound();
-			UpdateValues();
+			if (SecondaryHighlightedAddresses.Count > 0)
+			{
+				addresses.AddRange(SecondaryHighlightedAddresses);
+			}
+
+			if (addresses.Any())
+			{
+				var poke = new RamPoke
+				{
+					InitialLocation = GetAddressCoordinates(addresses[0])
+				};
+
+				var Watches = new List<Watch>();
+				foreach (var address in addresses)
+				{
+					Watch w = Watch.GenerateWatch(Domain, address, (Watch.WatchSize)DataSize, false);
+					w.Type = Watch.DisplayType.Hex;
+
+					Watches.Add(w);
+				}
+
+				poke.SetWatch(Watches);
+
+				Global.Sound.StopSound();
+				var result = poke.ShowDialog();
+				UpdateValues();
+				Global.Sound.StartSound();
+			}
 		}
 
 		public int GetPointedAddress()
@@ -808,15 +804,18 @@ namespace BizHawk.MultiClient
 			ToggleFreeze();
 		}
 
-		public int GetHighlightedAddress()
+		public int? HighlightedAddress
 		{
-			if (addressHighlighted >= 0)
+			get
 			{
-				return addressHighlighted;
-			}
-			else
-			{
-				return -1; //Negative = no address highlighted
+				if (addressHighlighted >= 0)
+				{
+					return addressHighlighted;
+				}
+				else
+				{
+					return null; //Negative = no address highlighted
+				}
 			}
 		}
 
@@ -827,14 +826,13 @@ namespace BizHawk.MultiClient
 
 		private void ToggleFreeze()
 		{
-			int address = GetHighlightedAddress();
-			if (IsFrozen(address))
+			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
 			{
-				UnFreezeAddress(address);
+				UnFreezeAddress(HighlightedAddress.Value);
 			}
 			else
 			{
-				FreezeAddress(GetHighlightedAddress());
+				FreezeAddress(HighlightedAddress.Value);
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
@@ -1455,13 +1453,22 @@ namespace BizHawk.MultiClient
 					break;
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
+					{
 						RemoveAllCheats();
+					}
 					else
-						UnFreezeAddress(GetHighlightedAddress());
+					{
+						if (HighlightedAddress.HasValue)
+						{
+							UnFreezeAddress(HighlightedAddress.Value);
+						}
+					}
 					break;
 				case Keys.W:
 					if (e.Modifiers == Keys.Control)
+					{
 						AddToRamWatch();
+					}
 					break;
 				case Keys.Escape:
 					SecondaryHighlightedAddresses.Clear();
@@ -1689,9 +1696,9 @@ namespace BizHawk.MultiClient
 
 		private void IncrementAddress()
 		{
-			int address = GetHighlightedAddress();
-			if (address >= 0)
+			if (HighlightedAddress.HasValue)
 			{
+				int address = HighlightedAddress.Value;
 				byte value;
 				switch (DataSize)
 				{
@@ -1768,9 +1775,10 @@ namespace BizHawk.MultiClient
 
 		private void DecrementAddress()
 		{
-			int address = GetHighlightedAddress();
-			if (address >= 0)
+			
+			if (HighlightedAddress.HasValue)
 			{
+				int address = HighlightedAddress.Value;
 				byte value;
 				switch (DataSize)
 				{
@@ -1861,27 +1869,13 @@ namespace BizHawk.MultiClient
 
 		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
-			if (addressHighlighted > 0 || SecondaryHighlightedAddresses.Any())
-			{
-				copyToolStripMenuItem1.Visible = true;
-			}
-			else
-			{
-				copyToolStripMenuItem1.Visible = false;
-			}
+			copyToolStripMenuItem1.Visible = HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Any();
 
 			IDataObject iData = Clipboard.GetDataObject();
 
-			if (iData != null && iData.GetDataPresent(DataFormats.Text))
-			{
-				pasteToolStripMenuItem1.Visible = true;
-			}
-			else
-			{
-				pasteToolStripMenuItem1.Visible = false;
-			}
+			pasteToolStripMenuItem1.Visible = iData != null && iData.GetDataPresent(DataFormats.Text);
 
-			if (IsFrozen(GetHighlightedAddress()))
+			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
 			{
 				freezeToolStripMenuItem.Text = "Un&freeze";
 				freezeToolStripMenuItem.Image = Properties.Resources.Unfreeze;
@@ -1906,7 +1900,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				return "";
+				return String.Empty;
 			}
 		}
 
@@ -1931,9 +1925,9 @@ namespace BizHawk.MultiClient
 
 		private string GetFindValues()
 		{
-			if (addressHighlighted > 0)
+			if (HighlightedAddress.HasValue)
 			{
-				string values = ValueString(GetHighlightedAddress());
+				string values = ValueString(HighlightedAddress.Value);
 				return SecondaryHighlightedAddresses.Aggregate(values, (current, x) => current + ValueString(x));
 			}
 			else
@@ -2063,7 +2057,7 @@ namespace BizHawk.MultiClient
 
 		private void Copy()
 		{
-			string value = ValueString(GetHighlightedAddress());
+			string value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
 			value = SecondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
 			if (!String.IsNullOrWhiteSpace(value))
 			{
