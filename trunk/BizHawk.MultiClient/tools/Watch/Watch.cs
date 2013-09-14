@@ -276,14 +276,14 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public static Watch ConvertLegacyWatch(Watch_Legacy watch)
 		{
-			Watch w = Watch.GenerateWatch(
+			Watch w = GenerateWatch(
 				watch.Domain,
 				watch.Address,
-				Watch.SizeFromChar(watch.TypeChar),
+				SizeFromChar(watch.TypeChar),
 				!String.IsNullOrWhiteSpace(watch.Notes)
 				);
 
-			w.Type = Watch.DisplayTypeFromChar(watch.SignedChar);
+			w.Type = DisplayTypeFromChar(watch.SignedChar);
 
 			if (!String.IsNullOrWhiteSpace(watch.Notes))
 			{
