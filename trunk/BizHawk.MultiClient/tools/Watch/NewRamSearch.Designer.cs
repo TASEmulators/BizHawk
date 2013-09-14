@@ -32,11 +32,11 @@
 			System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem1;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRamSearch));
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
-			this.SearchListView = new BizHawk.VirtualListView();
-			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Previous = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Changes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.WatchListView = new BizHawk.VirtualListView();
+			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.PreviousColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +62,8 @@
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +77,8 @@
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MemoryDomainsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,10 +97,6 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.MemoryDomainsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -121,49 +121,49 @@
 			// 
 			// SearchListView
 			// 
-			this.SearchListView.AllowColumnReorder = true;
-			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.WatchListView.AllowColumnReorder = true;
+			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Address,
-            this.Value,
-            this.Previous,
-            this.Changes});
-			this.SearchListView.ContextMenuStrip = this.contextMenuStrip1;
-			this.SearchListView.FullRowSelect = true;
-			this.SearchListView.GridLines = true;
-			this.SearchListView.HideSelection = false;
-			this.SearchListView.ItemCount = 0;
-			this.SearchListView.LabelEdit = true;
-			this.SearchListView.Location = new System.Drawing.Point(9, 58);
-			this.SearchListView.Name = "SearchListView";
-			this.SearchListView.selectedItem = -1;
-			this.SearchListView.Size = new System.Drawing.Size(221, 363);
-			this.SearchListView.TabIndex = 1;
-			this.SearchListView.UseCompatibleStateImageBehavior = false;
-			this.SearchListView.View = System.Windows.Forms.View.Details;
-			this.SearchListView.VirtualMode = true;
+			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.AddressColumn,
+            this.ValueColumn,
+            this.PreviousColumn,
+            this.ChangesColumn});
+			this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
+			this.WatchListView.FullRowSelect = true;
+			this.WatchListView.GridLines = true;
+			this.WatchListView.HideSelection = false;
+			this.WatchListView.ItemCount = 0;
+			this.WatchListView.LabelEdit = true;
+			this.WatchListView.Location = new System.Drawing.Point(9, 58);
+			this.WatchListView.Name = "SearchListView";
+			this.WatchListView.selectedItem = -1;
+			this.WatchListView.Size = new System.Drawing.Size(221, 363);
+			this.WatchListView.TabIndex = 1;
+			this.WatchListView.UseCompatibleStateImageBehavior = false;
+			this.WatchListView.View = System.Windows.Forms.View.Details;
+			this.WatchListView.VirtualMode = true;
 			// 
-			// Address
+			// AddressColumn
 			// 
-			this.Address.Text = "Address";
-			this.Address.Width = 65;
+			this.AddressColumn.Text = "Address";
+			this.AddressColumn.Width = 65;
 			// 
-			// Value
+			// ValueColumn
 			// 
-			this.Value.Text = "Value";
-			this.Value.Width = 48;
+			this.ValueColumn.Text = "Value";
+			this.ValueColumn.Width = 48;
 			// 
-			// Previous
+			// PreviousColumn
 			// 
-			this.Previous.Text = "Prev";
-			this.Previous.Width = 48;
+			this.PreviousColumn.Text = "Prev";
+			this.PreviousColumn.Width = 48;
 			// 
-			// Changes
+			// ChangesColumn
 			// 
-			this.Changes.Text = "Changes";
-			this.Changes.Width = 55;
+			this.ChangesColumn.Text = "Changes";
+			this.ChangesColumn.Width = 55;
 			// 
 			// contextMenuStrip1
 			// 
@@ -385,6 +385,19 @@
 			this.searchToolStripMenuItem.Text = "&Search";
 			this.searchToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SearchSubMenu_DropDownOpened);
 			// 
+			// newSearchToolStripMenuItem
+			// 
+			this.newSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
+			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.newSearchToolStripMenuItem.Text = "&New Search";
+			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
+			// 
 			// undoToolStripMenuItem
 			// 
 			this.undoToolStripMenuItem.Enabled = false;
@@ -499,6 +512,20 @@
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+			// 
+			// MemoryDomainsSubMenu
+			// 
+			this.MemoryDomainsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator6});
+			this.MemoryDomainsSubMenu.Name = "MemoryDomainsSubMenu";
+			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(240, 22);
+			this.MemoryDomainsSubMenu.Text = "&Memory Domains";
+			this.MemoryDomainsSubMenu.DropDownOpened += new System.EventHandler(this.MemoryDomainsSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(57, 6);
 			// 
 			// definePreviousValueToolStripMenuItem
 			// 
@@ -625,33 +652,6 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
-			// newSearchToolStripMenuItem
-			// 
-			this.newSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.newSearchToolStripMenuItem.Text = "&New Search";
-			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
-			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
-			// 
-			// MemoryDomainsSubMenu
-			// 
-			this.MemoryDomainsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator6});
-			this.MemoryDomainsSubMenu.Name = "MemoryDomainsSubMenu";
-			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(240, 22);
-			this.MemoryDomainsSubMenu.Text = "&Memory Domains";
-			this.MemoryDomainsSubMenu.DropDownOpened += new System.EventHandler(this.MemoryDomainsSubMenu_DropDownOpened);
-			// 
-			// toolStripSeparator6
-			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
-			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
@@ -660,7 +660,7 @@
 			this.ClientSize = new System.Drawing.Size(470, 459);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
-			this.Controls.Add(this.SearchListView);
+			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -680,11 +680,11 @@
         #endregion
 
 		private System.Windows.Forms.Label TotalSearchLabel;
-        VirtualListView SearchListView;
-        private System.Windows.Forms.ColumnHeader Address;
-        private System.Windows.Forms.ColumnHeader Value;
-        private System.Windows.Forms.ColumnHeader Previous;
-		private System.Windows.Forms.ColumnHeader Changes;
+        VirtualListView WatchListView;
+        private System.Windows.Forms.ColumnHeader AddressColumn;
+        private System.Windows.Forms.ColumnHeader ValueColumn;
+        private System.Windows.Forms.ColumnHeader PreviousColumn;
+		private System.Windows.Forms.ColumnHeader ChangesColumn;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;

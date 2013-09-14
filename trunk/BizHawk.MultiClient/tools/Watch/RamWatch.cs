@@ -767,7 +767,6 @@ namespace BizHawk.MultiClient
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)

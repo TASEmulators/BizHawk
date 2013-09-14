@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 
 		private MemoryDomain _domain;
 		private Mode _mode;
+		private WatchList _watchList;
 
 		#region Constructors
 		
@@ -23,7 +24,18 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region Public
+		#region Initialize, Manipulate
+
+		public void Start()
+		{
+			_watchList = new WatchList(_domain);
+
+			//TODO: other byte sizes, mis-aligned
+			for(int i = 0; i < _domain.Size; i++)
+			{
+				_watchList.Add(Watch.GenerateWatch(_domain, i, Watch.WatchSize.Byte, true));
+			}
+		}
 
 		/// <summary>
 		/// Exposes the current watch state based on index
@@ -32,7 +44,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return SeparatorWatch.Instance; //TODO
+				return _watchList[index];
 			}
 		}
 
@@ -40,7 +52,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return 0; //TODO
+				return _watchList.Count;
 			}
 		}
 
@@ -52,6 +64,41 @@ namespace BizHawk.MultiClient
 		public string DomainName
 		{
 			get { return _domain.Name; }
+		}
+
+		public void Update()
+		{
+			if (_mode == Mode.Detailed)
+			{
+			}
+		}
+
+		#endregion
+
+		#region Comparisons
+
+		public void LessThan()
+		{
+		}
+
+		public void LessThanOrEqual()
+		{
+		}
+
+		public void GreaterThan()
+		{
+		}
+
+		public void GreaterThanOrEqual()
+		{
+		}
+
+		public void Equal()
+		{
+		}
+
+		public void NotEqual()
+		{
 		}
 
 		#endregion
