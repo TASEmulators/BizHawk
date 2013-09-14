@@ -669,6 +669,7 @@
     <Compile Include="tools\Watch\RamPoke.Designer.cs">
       <DependentUpon>RamPoke.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Watch\RamSearchEngine.cs" />
     <Compile Include="tools\Watch\RamWatch.cs">
       <SubType>Form</SubType>
     </Compile>

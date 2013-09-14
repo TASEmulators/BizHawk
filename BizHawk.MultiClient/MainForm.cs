@@ -2666,13 +2666,23 @@ namespace BizHawk.MultiClient
 
 		public void LoadRamSearch()
 		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			//TODO
+			if (MainForm.INTERIM && Global.Config.RecentSearches.AutoLoad)
 			{
-				RamSearch1 = new RamSearch();
-				RamSearch1.Show();
+				new NewRamSearch().Show();
 			}
 			else
-				RamSearch1.Focus();
+			{
+				if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+				{
+					RamSearch1 = new RamSearch();
+					RamSearch1.Show();
+				}
+				else
+				{
+					RamSearch1.Focus();
+				}
+			}
 		}
 
 		public void LoadNesSoundConfig()
