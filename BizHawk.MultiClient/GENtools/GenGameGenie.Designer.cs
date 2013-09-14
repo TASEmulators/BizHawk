@@ -55,11 +55,12 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(302, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(292, 24);
 			this.menuStrip1.TabIndex = 8;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -104,7 +105,7 @@
 			// GGCodeMaskBox
 			// 
 			this.GGCodeMaskBox.Location = new System.Drawing.Point(18, 30);
-			this.GGCodeMaskBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.GGCodeMaskBox.Margin = new System.Windows.Forms.Padding(2);
 			this.GGCodeMaskBox.Mask = ">AAAA-AAAA";
 			this.GGCodeMaskBox.Name = "GGCodeMaskBox";
 			this.GGCodeMaskBox.Size = new System.Drawing.Size(76, 20);
@@ -118,7 +119,7 @@
 			// 
 			this.addcheatbt.Enabled = false;
 			this.addcheatbt.Location = new System.Drawing.Point(156, 117);
-			this.addcheatbt.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.addcheatbt.Margin = new System.Windows.Forms.Padding(2);
 			this.addcheatbt.Name = "addcheatbt";
 			this.addcheatbt.Size = new System.Drawing.Size(72, 26);
 			this.addcheatbt.TabIndex = 10;
@@ -223,7 +224,7 @@
 			// ClearBT
 			// 
 			this.ClearBT.Location = new System.Drawing.Point(66, 117);
-			this.ClearBT.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.ClearBT.Margin = new System.Windows.Forms.Padding(2);
 			this.ClearBT.Name = "ClearBT";
 			this.ClearBT.Size = new System.Drawing.Size(68, 26);
 			this.ClearBT.TabIndex = 13;
@@ -235,9 +236,9 @@
 			// 
 			this.groupBox2.Controls.Add(this.cheatname);
 			this.groupBox2.Location = new System.Drawing.Point(20, 154);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
 			this.groupBox2.Size = new System.Drawing.Size(266, 50);
 			this.groupBox2.TabIndex = 14;
 			this.groupBox2.TabStop = false;
@@ -246,7 +247,7 @@
 			// cheatname
 			// 
 			this.cheatname.Location = new System.Drawing.Point(18, 24);
-			this.cheatname.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.cheatname.Margin = new System.Windows.Forms.Padding(2);
 			this.cheatname.Name = "cheatname";
 			this.cheatname.Size = new System.Drawing.Size(228, 20);
 			this.cheatname.TabIndex = 0;
@@ -255,7 +256,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(302, 217);
+			this.ClientSize = new System.Drawing.Size(292, 217);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.ClearBT);
 			this.Controls.Add(this.groupBox1);
@@ -272,6 +273,7 @@
 			this.Name = "GenGameGenie";
 			this.ShowIcon = false;
 			this.Text = "Genesis Game Genie Encoder / Decoder";
+			this.Load += new System.EventHandler(this.GENGameGenie_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.GameGenieCodeBox.ResumeLayout(false);

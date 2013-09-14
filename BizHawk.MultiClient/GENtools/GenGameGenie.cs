@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using BizHawk.Emulation.Consoles.Sega;
 
+#pragma warning disable 675 //TOOD: fix the potential problem this is masking
+
 namespace BizHawk.MultiClient
 {
 	public partial class GenGameGenie : Form
@@ -295,9 +297,11 @@ namespace BizHawk.MultiClient
 
 		private void GENGameGenie_Load(object sender, EventArgs e)
 		{
-			
+
 			if (Global.Config.GENGGSaveWindowPosition && Global.Config.GENGGWndx >= 0 && Global.Config.GENGGWndy >= 0)
+			{
 				Location = new Point(Global.Config.GENGGWndx, Global.Config.GENGGWndy);
+			}
 		}
 
 		private void SaveConfigSettings()

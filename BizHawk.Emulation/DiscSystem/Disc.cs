@@ -111,7 +111,7 @@ namespace BizHawk.DiscSystem
 				throw new NotImplementedException("Blob_ZeroPadAdapter hasnt been tested yet! please report this!");
 
 				//something about this seems unnecessarily complex, but... i dunno.
-
+				/*
 				//figure out how much remains until the zero-padding begins
 				long remain = byte_pos - padFrom;
 				int todo;
@@ -144,6 +144,7 @@ namespace BizHawk.DiscSystem
 				totalRead += todo;
 
 				return totalRead;
+				*/
 			}
 
 			public void Dispose()
