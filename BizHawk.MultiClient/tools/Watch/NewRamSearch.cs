@@ -15,7 +15,16 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class NewRamSearch : Form
 	{
-		RamSearchEngine Searches = new RamSearchEngine(Global.Emulator.MainMemory);
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string PREV = "PrevColumn";
+		public const string CHANGES = "ChangesColumn";
+		public const string DIFF = "DiffColumn";
+
+		private RamSearchEngine Searches = new RamSearchEngine(Global.Emulator.MainMemory);
+
+		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
 
 		#region Initialize, Load, and Save
 		
@@ -25,15 +34,15 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
-			SearchListView.QueryItemText += ListView_QueryItemText;
-			SearchListView.QueryItemBkColor += ListView_QueryItemBkColor;
-			SearchListView.VirtualMode = true;
+			WatchListView.QueryItemText += ListView_QueryItemText;
+			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
+			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
-
+			LoadConfigSettings();
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -43,8 +52,41 @@ namespace BizHawk.MultiClient
 
 		private void ListView_QueryItemText(int index, int column, out string text)
 		{
-			//TODO
 			text = "";
+
+			if (index >= Searches.Count)
+			{
+				return;
+			}
+
+			string columnName = WatchListView.Columns[column].Name;
+			switch (columnName)
+			{
+				case ADDRESS:
+					text = Searches[index].AddressString;
+					break;
+				case VALUE:
+					text = Searches[index].ValueString;
+					break;
+				case PREV:
+					if (Searches[index] is IWatchDetails)
+					{
+						text = (Searches[index] as IWatchDetails).PreviousStr;
+					}
+					break;
+				case CHANGES:
+					if (Searches[index] is IWatchDetails)
+					{
+						text = (Searches[index] as IWatchDetails).ChangeCount.ToString();
+					}
+					break;
+				case DIFF:
+					if (Searches[index] is IWatchDetails)
+					{
+						text = (Searches[index] as IWatchDetails).Diff;
+					}
+					break;
+			}
 		}
 		#endregion
 
@@ -61,7 +103,14 @@ namespace BizHawk.MultiClient
 
 		private void NewSearch()
 		{
-			//TODO
+			Searches.Start();
+			SetTotal();
+			WatchListView.ItemCount = Searches.Count;
+		}
+
+		private void SetTotal()
+		{
+			TotalSearchLabel.Text = String.Format("{0:n0}", Searches.Count) + " addresses";
 		}
 
 		private void LoadFileFromRecent(string path)
@@ -90,10 +139,60 @@ namespace BizHawk.MultiClient
 			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
 				Searches = new RamSearchEngine(Global.Emulator.MemoryDomains[pos]); //We have to start a new search
+				Searches.Start();
 			}
 
 			SetPlatformAndMemoryDomainLabel();
 			Update();
+		}
+
+		private void LoadConfigSettings()
+		{
+			//Size and Positioning
+			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = Size.Height;
+
+			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
+			{
+				Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
+			}
+
+			if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)
+			{
+				Size = new Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
+			}
+
+			LoadColumnInfo();
+		}
+
+		private void LoadColumnInfo()
+		{
+			WatchListView.Columns.Clear();
+			AddColumn(ADDRESS, true); //TODO: make things configurable
+			AddColumn(VALUE, true);
+			AddColumn(PREV, true);
+			AddColumn(CHANGES, true);
+			AddColumn(DIFF, false);
+
+			//ColumnPositions(); //TODO
+		}
+
+		private void AddColumn(string columnName, bool enabled)
+		{
+			if (enabled)
+			{
+				if (WatchListView.Columns[columnName] == null)
+				{
+					ColumnHeader column = new ColumnHeader
+					{
+						Name = columnName,
+						Text = columnName.Replace("Column", ""),
+						Width = 50, //TODO: GetColumnWidth(columnName),
+					};
+					
+					WatchListView.Columns.Add(column);
+				}
+			}
 		}
 
 		#endregion
