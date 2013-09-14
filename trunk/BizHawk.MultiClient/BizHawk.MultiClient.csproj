@@ -1062,6 +1062,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\watch.ico" />
     <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
@@ -1154,6 +1155,7 @@
     <None Include="config\ControllerImages\IntVController.png" />
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
+    <None Include="images\addWatch.ico" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
