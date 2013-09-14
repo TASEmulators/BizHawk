@@ -677,12 +677,6 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch\RamWatchNewWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\RamWatchNewWatch.Designer.cs">
-      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\Watch\Watch.cs" />
     <Compile Include="tools\Watch\WatchCommon.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
@@ -876,9 +870,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\RamWatchNewWatch.resx">
-      <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
