@@ -714,6 +714,7 @@ namespace BizHawk.MultiClient
 
 		private void PokeAddress()
 		{
+			//TODO: get rid of legacy watch, and support multiple address poking
 			int p = GetHighlightedAddress();
 			if (p < 0) return;
 			Watch_Legacy w = new Watch_Legacy
@@ -738,10 +739,11 @@ namespace BizHawk.MultiClient
 					w.Type = Watch_Legacy.TYPE.DWORD;
 					break;
 			}
-				
-			RamPoke poke = new RamPoke();
-			poke.SetWatchObject(w);
-			poke.NewLocation = GetAddressCoordinates(p);
+
+			var poke = new RamPoke();
+			Watch watch = Watch.ConvertLegacyWatch(w);
+			poke.SetWatch(new List<Watch> { watch });
+			poke.InitialLocation = GetAddressCoordinates(p);
 			Global.Sound.StopSound();
 			poke.ShowDialog();
 			Global.Sound.StartSound();

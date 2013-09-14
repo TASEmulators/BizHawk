@@ -111,21 +111,7 @@ namespace BizHawk.MultiClient
 		/// <param name="watch"></param>
 		public void AddOldWatch(Watch_Legacy watch)
 		{
-			Watch w = Watch.GenerateWatch(
-				watch.Domain,
-				watch.Address,
-				Watch.SizeFromChar(watch.TypeChar),
-				!String.IsNullOrWhiteSpace(watch.Notes)
-				);
-
-			w.Type = Watch.DisplayTypeFromChar(watch.SignedChar);
-
-			if (!String.IsNullOrWhiteSpace(watch.Notes))
-			{
-				(w as IWatchDetails).Notes = watch.Notes;
-			}
-
-			Watches.Add(w);
+			Watches.Add(Watch.ConvertLegacyWatch(watch));
 			DisplayWatches();
 			UpdateValues();
 			UpdateWatchCount();
@@ -591,7 +577,7 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedWatches.Any())
 			{
-				NewRamPoke poke = new NewRamPoke
+				RamPoke poke = new RamPoke
 					{
 						InitialLocation = GetPromptPoint()
 					};

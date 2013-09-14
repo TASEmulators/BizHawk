@@ -124,7 +124,7 @@
   <data name="GGGameGenie.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAJTSURBVFhH7VQ9a1RBFB1YMIXY6uIPSAo7LbJpAhEhYKNg
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJTSURBVFhH7VQ9a1RBFB1YMIXY6uIPSAo7LbJpAhEhYKNg
         OiHb5AsJCNbaiGgVCwnYpJAUKrHafokJhGhIJBKChDRaWaSKGwyBQK73zNszue+9eRujbPcuHO7MnXvP
         ObPzWFdGGWVEQrqMwvANy6sbXQV1IGgjNEw8fJzC5erV/wJ57t0f98gYCREVr1arol3i9vqkty5RgbNw
         ozaYMkBAM5FOovD2o5OPPEj2LzjLQFQcwDBv8l0kikYrAX4lN9MjrnnFr2EavMjggujIM4ma6GgA0K6o
@@ -140,7 +140,7 @@
   <data name="GBGameGenie.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAEQSURBVFhH7ZXRDYMwDEQzC7OwArMwS2dhBXZKdQ4XOZAQ
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEQSURBVFhH7ZXRDYMwDEQzC7OwArMwS2dhBXZKdQ4XOZAQ
         UMDpR096KgTse1/U/Xr8BsJfs/hpmgRcz/NMGRMRvyxLFCCQsBKRIkj0EoklvURk8TAMsQSciWAmjD6T
         KECuiGBuozlRwK0f4YqIvP+GwMevVRGeYzasaMtBgJREzARyIl0EyF/ARADJlYPXBQhjKrCXAIyZQE0E
         1yYChEUafY7ZsKItSSG+87zX50TfY3b7Y2pKsjQnQEoCJKy7n6SgJgFKAiSsvZ5kMRboMg2fnwmElfeS

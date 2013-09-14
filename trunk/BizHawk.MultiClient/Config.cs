@@ -182,7 +182,7 @@ namespace BizHawk.MultiClient
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
 		public bool RamWatchShowDomainColumn = true;
-		
+
 		public int RamWatchAddressWidth = -1;
 		public int RamWatchValueWidth = -1;
 		public int RamWatchPrevWidth = -1;
@@ -758,7 +758,6 @@ namespace BizHawk.MultiClient
 			        //Tools
 			        new Binding() { DisplayName = "Ram Watch", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 0 },
 			        new Binding() { DisplayName = "Ram Search", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 1 },
-			        new Binding() { DisplayName = "Ram Poke", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 2 },
 			        new Binding() { DisplayName = "Hex Editor", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 3 },
                     new Binding() { DisplayName = "Trace Logger", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 4 },
 			        new Binding() { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 5 },
@@ -870,7 +869,7 @@ namespace BizHawk.MultiClient
 			foreach (PathEntry path in missingDisplayPaths)
 			{
 				path.SystemDisplayName = DefaultValues.FirstOrDefault(x => x.System == path.System).SystemDisplayName;
-				
+
 			}
 		}
 
@@ -1045,11 +1044,11 @@ namespace BizHawk.MultiClient
 		public string System;
 		public int Ordinal;
 		public PathEntry() { }
-         public bool HasSystem(string systemID)
-        {
-            string[] ids = System.Split('_');
-            return ids.Contains(systemID);
-        }
+		public bool HasSystem(string systemID)
+		{
+			string[] ids = System.Split('_');
+			return ids.Contains(systemID);
+		}
 	}
 
 	public enum PLUGINTYPE { RICE, GLIDE, GLIDE64MK2 };
