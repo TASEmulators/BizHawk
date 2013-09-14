@@ -637,11 +637,16 @@ namespace BizHawk.MultiClient
 
 		private void ColumnPositions()
 		{
-			foreach (var kvp in Global.Config.RamWatchColumnIndexes)
+			List<KeyValuePair<string, int>> Columns = 
+				Global.Config.RamWatchColumnIndexes
+					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
+					.OrderBy(x => x.Value).ToList();
+
+			for (int i = 0; i < Columns.Count; i++)
 			{
-				if (WatchListView.Columns.ContainsKey(kvp.Key))
+				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
 				{
-					WatchListView.Columns[kvp.Key].DisplayIndex = kvp.Value < WatchListView.Columns.Count ? kvp.Value : WatchListView.Columns.Count - 1;
+					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
 				}
 			}
 		}
