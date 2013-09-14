@@ -659,6 +659,12 @@
     <Compile Include="tools\VirtualPads\VirtualPadSNESControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\Watch\NewRamSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\NewRamSearch.Designer.cs">
+      <DependentUpon>NewRamSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Watch\RamPoke.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -861,6 +867,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturnControl.resx">
       <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\NewRamSearch.resx">
+      <DependentUpon>NewRamSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamPoke.resx">
       <DependentUpon>RamPoke.cs</DependentUpon>
