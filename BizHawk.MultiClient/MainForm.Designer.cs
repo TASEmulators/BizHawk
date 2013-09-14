@@ -202,7 +202,6 @@
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.rAMWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rAMSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.hexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.traceLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tAStudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1801,7 +1800,6 @@
             this.toolStripSeparator12,
             this.rAMWatchToolStripMenuItem,
             this.rAMSearchToolStripMenuItem,
-            this.rAMPokeToolStripMenuItem,
             this.hexEditorToolStripMenuItem,
             this.traceLoggerToolStripMenuItem,
             this.tAStudioToolStripMenuItem,
@@ -1844,14 +1842,6 @@
 			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
 			this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
-			// 
-			// rAMPokeToolStripMenuItem
-			// 
-			this.rAMPokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-			this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
-			this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
 			// 
 			// hexEditorToolStripMenuItem
 			// 
@@ -3108,7 +3098,6 @@
 		private System.Windows.Forms.ToolStripMenuItem gUIToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem rAMPokeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem startPausedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem frameSkipToolStripMenuItem;

@@ -35,11 +35,6 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
-		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadRamPoke();
-		}
-
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveWindowPosition ^= true;
@@ -634,7 +629,6 @@ namespace BizHawk.MultiClient
 			toolBoxToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
 			rAMWatchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Watch"].Bindings;
 			rAMSearchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Search"].Bindings;
-			rAMPokeToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Poke"].Bindings;
 			hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hex Editor"].Bindings;
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lua Console"].Bindings;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;

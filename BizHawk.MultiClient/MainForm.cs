@@ -2064,7 +2064,6 @@ namespace BizHawk.MultiClient
 
 				case "Ram Watch": LoadRamWatch(true); break;
 				case "Ram Search": LoadRamSearch(); break;
-				case "Ram Poke": new RamPoke().Show(); break;
 				case "Hex Editor": LoadHexEditor(); break;
 				case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
@@ -3821,12 +3820,6 @@ namespace BizHawk.MultiClient
 #else
 			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #endif
-		}
-
-		public void LoadRamPoke()
-		{
-			RamPoke r = new RamPoke();
-			r.Show();
 		}
 
 		void ProcessMovieImport(string fn)

@@ -489,15 +489,16 @@ namespace BizHawk.MultiClient
 		{
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 			Global.Sound.StopSound();
-			RamPoke p = new RamPoke();
+			var poke = new RamPoke();
 			Global.Sound.StartSound();
 
 			if (indexes.Count > 0)
 			{
-				p.SetWatchObject(Searches[indexes[0]]);
+				var watch = Watch.ConvertLegacyWatch(Searches[indexes[0]]);
+				poke.SetWatch(new List<Watch> { watch });
 			}
-			p.NewLocation = GetPromptPoint();
-			p.ShowDialog();
+			poke.InitialLocation = GetPromptPoint();
+			poke.ShowDialog();
 			UpdateValues();
 		}
 

@@ -536,7 +536,6 @@ namespace BizHawk.MultiClient
 		                                              		"opentoolbox",
 		                                              		"openramwatch",
 		                                              		"openramsearch",
-		                                              		"openrampoke",
 		                                              		"openhexeditor",
 		                                              		"opentasstudio",
 		                                              		"opencheats",
@@ -2422,11 +2421,6 @@ namespace BizHawk.MultiClient
 		public void client_openramsearch()
 		{
 			Global.MainForm.LoadRamSearch();
-		}
-
-		public void client_openrampoke()
-		{
-			Global.MainForm.LoadRamPoke();
 		}
 
 		public void client_openhexeditor()
