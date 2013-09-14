@@ -4180,5 +4180,10 @@ namespace BizHawk.MultiClient
             if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 (Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName));
         }
+
+		private void newRamSearchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new NewRamSearch().Show();
+		}
 	}
 }
