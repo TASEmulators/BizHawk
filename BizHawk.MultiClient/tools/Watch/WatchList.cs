@@ -69,7 +69,7 @@ namespace BizHawk.MultiClient
 		{
 			switch (column)
 			{
-				case NewRamWatch.ADDRESS:
+				case RamWatch.ADDRESS:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -91,7 +91,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.VALUE:
+				case RamWatch.VALUE:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -113,7 +113,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.PREV: //Note: these only work if all entries are detailed objects!
+				case RamWatch.PREV: //Note: these only work if all entries are detailed objects!
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.DIFF:
+				case RamWatch.DIFF:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.CHANGES:
+				case RamWatch.CHANGES:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -173,7 +173,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.DOMAIN:
+				case RamWatch.DOMAIN:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -195,7 +195,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewRamWatch.NOTES:
+				case RamWatch.NOTES:
 					if (reverse)
 					{
 						_watchList = _watchList

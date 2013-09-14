@@ -106,7 +106,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();

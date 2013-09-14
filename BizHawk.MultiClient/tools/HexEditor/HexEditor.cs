@@ -665,23 +665,31 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
-		private Watch_Legacy MakeWatch(int address)
+		private Watch MakeWatch(int address)
 		{
-			Watch_Legacy w = new Watch_Legacy {Address = address, BigEndian = BigEndian, Signed = Watch_Legacy.DISPTYPE.HEX, Domain = Domain};
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					w.Type = Watch_Legacy.TYPE.BYTE;
-					break;
+					return new ByteWatch(Domain, address)
+					{
+						BigEndian = BigEndian,
+						Type = Watch.DisplayType.Hex,
+					};
 				case 2:
-					w.Type = Watch_Legacy.TYPE.WORD;
-					break;
+					return new WordWatch(Domain, address)
+					{
+						BigEndian = BigEndian,
+						Type = Watch.DisplayType.Hex,
+					};
 				case 4:
-					w.Type = Watch_Legacy.TYPE.DWORD;
+					return new DWordWatch(Domain, address)
+					{
+						BigEndian = BigEndian,
+						Type = Watch.DisplayType.Hex,
+					};
 					break;
 			}
-			return w;
 		}
 
 		private void AddToRamWatch()
@@ -696,11 +704,11 @@ namespace BizHawk.MultiClient
 
 			if (address >= 0)
 			{
-				Global.MainForm.RamWatch1.AddWatch(MakeWatch(address));
+				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(address));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				Global.MainForm.RamWatch1.AddWatch(MakeWatch(i));
+				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -839,7 +847,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
 
@@ -1645,7 +1653,7 @@ namespace BizHawk.MultiClient
 			MemoryViewerBox.Refresh();
 
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
 

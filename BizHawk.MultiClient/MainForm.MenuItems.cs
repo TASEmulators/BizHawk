@@ -246,31 +246,31 @@ namespace BizHawk.MultiClient
 			FlagNeedsReboot();
 		}
 
-        private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.SmsSpriteLimit ^= true;
+		private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsSpriteLimit ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceSpriteLimit ^= true;
+		private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSpriteLimit ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceEqualizeVolume ^= true;
+		private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceEqualizeVolume ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceArcadeCardRewindHack ^= true;
+		private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceArcadeCardRewindHack ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordMovie();
 		}
@@ -532,7 +532,7 @@ namespace BizHawk.MultiClient
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RamWatch1.AskSave())
+			if (NewRamWatch1.AskSave())
 				Close();
 		}
 
@@ -640,11 +640,9 @@ namespace BizHawk.MultiClient
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
-            traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
+			traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
 			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
-
-            newRamWatchToolStripMenuItem.Visible = MainForm.INTERIM;
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -692,7 +690,7 @@ namespace BizHawk.MultiClient
 		{
 			autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
 
-            if (!MainForm.INTERIM) loadTIFileToolStripMenuItem.Visible = false;
+			if (!MainForm.INTERIM) loadTIFileToolStripMenuItem.Visible = false;
 		}
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -865,7 +863,7 @@ namespace BizHawk.MultiClient
 			}
 			if (index < 0)
 			{
-				sub = new Subtitle {Frame = Global.Emulator.Frame};
+				sub = new Subtitle { Frame = Global.Emulator.Frame };
 			}
 			s.sub = sub;
 
@@ -930,7 +928,7 @@ namespace BizHawk.MultiClient
 			{
 				cmiOpenRom.Visible = InFullscreen;
 				configToolStripMenuItem1.Visible = InFullscreen;
-				
+
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
@@ -1098,7 +1096,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditCommentsForm c = new EditCommentsForm {ReadOnly = ReadOnly};
+				EditCommentsForm c = new EditCommentsForm { ReadOnly = ReadOnly };
 				c.GetMovie(Global.MovieSession.Movie);
 				c.ShowDialog();
 			}
@@ -1108,7 +1106,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditSubtitlesForm s = new EditSubtitlesForm {ReadOnly = ReadOnly};
+				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = ReadOnly };
 				s.GetMovie(Global.MovieSession.Movie);
 				s.ShowDialog();
 			}
@@ -1142,7 +1140,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!Global.Config.RunInBackground)
 			{
-				
+
 				if (!wasPaused)
 				{
 					UnpauseEmulator();
@@ -1160,9 +1158,9 @@ namespace BizHawk.MultiClient
 		{
 			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
 			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
-			stopMovieToolStripMenuItem.Enabled 
-				= playFromBeginningToolStripMenuItem.Enabled 
-				= saveMovieToolStripMenuItem.Enabled 
+			stopMovieToolStripMenuItem.Enabled
+				= playFromBeginningToolStripMenuItem.Enabled
+				= saveMovieToolStripMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
@@ -2194,8 +2192,7 @@ namespace BizHawk.MultiClient
 			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
-				RamWatch1.LoadWatchFile(filePaths[0], false);
-				RamWatch1.DisplayWatchList();
+				NewRamWatch1.LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
@@ -2203,9 +2200,13 @@ namespace BizHawk.MultiClient
 				//tries to open a legacy movie format as if it were a BKM, by importing it
 
 				if (CurrentlyOpenRom == null)
+				{
 					OpenROM();
+				}
 				else
+				{
 					LoadRom(CurrentlyOpenRom);
+				}
 
 				string errorMsg;
 				string warningMsg;
