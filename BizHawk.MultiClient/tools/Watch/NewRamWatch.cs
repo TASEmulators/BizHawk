@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -21,8 +19,8 @@ namespace BizHawk.MultiClient
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 		
-		private Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>()
-		{
+		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
+			{
 			{ ADDRESS, 60 },
 			{ VALUE, 59 },
 			{ PREV, 59 },
@@ -34,8 +32,7 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private WatchList Watches = new WatchList(Global.Emulator.MainMemory);
-		private string systemID = "NULL";
+		private readonly WatchList Watches = new WatchList(Global.Emulator.MainMemory);
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
 
@@ -465,7 +462,7 @@ namespace BizHawk.MultiClient
 
 		private void AddNewWatch()
 		{
-			WatchEditor we = new WatchEditor()
+			WatchEditor we = new WatchEditor
 			{
 				InitialLocation = GetPromptPoint()
 			};
@@ -489,7 +486,7 @@ namespace BizHawk.MultiClient
 
 			if (indexes.Count > 0)
 			{
-				WatchEditor we = new WatchEditor()
+				WatchEditor we = new WatchEditor
 				{
 					InitialLocation = GetPromptPoint(),
 				};
@@ -528,8 +525,8 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedWatches.Any())
 			{
-				NewRamPoke poke = new NewRamPoke()
-				{
+				NewRamPoke poke = new NewRamPoke
+					{
 					InitialLocation = GetPromptPoint()
 				};
 
@@ -568,32 +565,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private List<Watch> SelectedIndexes
-		{
-			get
-			{
-				var selected = new List<Watch>();
-				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-				if (indexes.Count > 0)
-				{
-					foreach (int index in indexes)
-					{
-						selected.Add(Watches[index]);
-					}
-				}
-				return selected;
-			}
-		}
-
-
 		private void AddColumn(string columnName, bool enabled)
 		{
 			if (enabled)
 			{
 				if (WatchListView.Columns[columnName] == null)
 				{
-					ColumnHeader column = new ColumnHeader()
-					{
+					ColumnHeader column = new ColumnHeader
+						{
 						Name = columnName,
 						Text = columnName.Replace("Column", ""),
 						Width = GetColumnWidth(columnName),
@@ -1028,7 +1007,7 @@ namespace BizHawk.MultiClient
 		{
 			Size = new Size(defaultWidth, defaultHeight);
 
-			Global.Config.RamWatchColumnIndexes = new Dictionary<string, int>()
+			Global.Config.RamWatchColumnIndexes = new Dictionary<string, int>
 				{
 					{ "AddressColumn", 0 },
 					{ "ValueColumn", 1 },

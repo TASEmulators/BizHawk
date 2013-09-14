@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 	{
 		public enum Mode { New, Duplicate, Edit };
 		
-		private List<Watch> _watchList = new List<Watch>();
+		private readonly List<Watch> _watchList = new List<Watch>();
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
 		private string _addressFormatStr = "{0:X2}";
@@ -102,13 +102,13 @@ namespace BizHawk.MultiClient
 			switch(_mode)
 			{
 				default:
-				case WatchEditor.Mode.New:
+				case Mode.New:
 					Text = "New Watch";
 					break;
-				case WatchEditor.Mode.Edit:
+				case Mode.Edit:
 					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : "");
 					break;
-				case WatchEditor.Mode.Duplicate:
+				case Mode.Duplicate:
 					Text = "Duplicate Watch";
 					break;
 			}
@@ -194,12 +194,9 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-			if (domain == null)
-			{
-				domain = Global.Emulator.MainMemory;
-			}
-			BigEndianCheckBox.Checked = domain.Endian == Endian.Big ? true : false;
+			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
+			             Global.Emulator.MainMemory;
+			BigEndianCheckBox.Checked = domain.Endian == Endian.Big;
 			
 		}
 
@@ -220,7 +217,7 @@ namespace BizHawk.MultiClient
 				default:
 				case Mode.New:
 					var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = (AddressBox as HexTextBox).ToInt();
+					var address = AddressBox.ToInt();
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigendian = BigEndianCheckBox.Checked;
@@ -283,7 +280,7 @@ namespace BizHawk.MultiClient
 				(_watchList[0] as IWatchDetails).Notes = NotesBox.Text;
 			}
 
-			if (_changedSize = true)
+			if (_changedSize)
 			{
 				for(int i = 0; i < _watchList.Count; i++)
 				{
@@ -313,7 +310,7 @@ namespace BizHawk.MultiClient
 			{
 				_watchList.ForEach(x => x.Type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()));
 			}
-			if (!(BigEndianCheckBox.CheckState == CheckState.Indeterminate))
+			if (BigEndianCheckBox.CheckState != CheckState.Indeterminate)
 			{
 				_watchList.ForEach(x => x.BigEndian = BigEndianCheckBox.Checked);
 			}

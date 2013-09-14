@@ -65,6 +65,7 @@ namespace BizHawk.MultiClient
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
 			BigEndianLabel.Text = _watchList[0].BigEndian ? "Big Endian" : "Little Endian";
 			SetTitle();
+			SetValueBoxProperties();
 		}
 
 		private void SetValueBoxProperties()
@@ -183,6 +184,13 @@ namespace BizHawk.MultiClient
 			if (e.KeyChar == '.')
 			{
 				if (ValueBox.Text.Contains('.'))
+				{
+					e.Handled = true;
+				}
+			}
+			else if (e.KeyChar == '-')
+			{
+				if (ValueBox.Text.Contains('-'))
 				{
 					e.Handled = true;
 				}
