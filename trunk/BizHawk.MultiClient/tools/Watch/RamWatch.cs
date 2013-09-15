@@ -288,10 +288,7 @@ namespace BizHawk.MultiClient
 					text = Watches[index].ValueString;
 					break;
 				case PREV:
-					if (Watches[index] is IWatchDetails)
-					{
-						text = (Watches[index] as IWatchDetails).PreviousStr;
-					}
+					text = Watches[index].PreviousStr;
 					break;
 				case CHANGES:
 					if (Watches[index] is IWatchDetails)
@@ -711,7 +708,7 @@ namespace BizHawk.MultiClient
 				case VALUE:
 					return Watches[index].ValueString;
 				case PREV:
-					return (Watches[index] as IWatchDetails).PreviousStr;
+					return Watches[index].PreviousStr;
 				case CHANGES:
 					return (Watches[index] as IWatchDetails).ChangeCount.ToString();
 				case DIFF:

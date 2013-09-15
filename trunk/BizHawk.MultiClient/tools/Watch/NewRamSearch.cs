@@ -69,10 +69,7 @@ namespace BizHawk.MultiClient
 					text = Searches[index].ValueString;
 					break;
 				case PREV:
-					if (Searches[index] is IWatchDetails)
-					{
-						text = (Searches[index] as IWatchDetails).PreviousStr;
-					}
+					text = Searches[index].PreviousStr;
 					break;
 				case CHANGES:
 					if (Searches[index] is IWatchDetails)
