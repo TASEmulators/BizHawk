@@ -232,6 +232,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.NewRamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 		}
 
@@ -782,6 +783,7 @@ namespace BizHawk.MultiClient
 
 				Global.MainForm.NewRamWatch1.UpdateValues();
 				Global.MainForm.RamSearch1.UpdateValues();
+				Global.MainForm.NewRamSearch1.UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 			}
 			UpdateNumberOfCheats();

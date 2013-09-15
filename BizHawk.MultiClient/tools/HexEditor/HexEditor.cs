@@ -847,6 +847,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.NewRamSearch1.UpdateValues();
 			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
@@ -1662,6 +1663,7 @@ namespace BizHawk.MultiClient
 			MemoryViewerBox.Refresh();
 
 			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.NewRamSearch1.UpdateValues();
 			Global.MainForm.NewRamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
