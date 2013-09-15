@@ -44,6 +44,10 @@ namespace BizHawk.MultiClient
 		public abstract int? Value { get; }
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
+		
+		public abstract int? Previous { get; }
+		public abstract string PreviousStr { get; }
+		public abstract void ResetPrevious();
 
 		public abstract bool Poke(string value);
 
@@ -298,13 +302,8 @@ namespace BizHawk.MultiClient
 	{
 		int ChangeCount { get; }
 		void ClearChangeCount();
-
-		int? Previous { get; }
-		string PreviousStr { get; }
-		void ResetPrevious();
 		string Diff { get; }
 		string Notes { get; set; }
-
 		void Update();
 	}
 
@@ -325,12 +324,22 @@ namespace BizHawk.MultiClient
 			get { return null; }
 		}
 
+		public override int? Previous
+		{
+			get { return null; }
+		}
+
 		public override string AddressString
 		{
 			get { return String.Empty; }
 		}
 
 		public override string ValueString
+		{
+			get { return String.Empty; }
+		}
+
+		public override string PreviousStr
 		{
 			get { return String.Empty; }
 		}
@@ -364,14 +373,22 @@ namespace BizHawk.MultiClient
 		{
 			return false;
 		}
+
+		public override void ResetPrevious()
+		{
+			return;
+		}
 	}
 
 	public class ByteWatch : Watch
 	{
+		protected byte _previous;
+
 		public ByteWatch(MemoryDomain domain, int address)
 		{
 			_address = address;
 			_domain = domain;
+			_previous = GetByte();
 		}
 
 		public override int? Address
@@ -387,6 +404,21 @@ namespace BizHawk.MultiClient
 		public override string ValueString
 		{
 			get { return FormatValue(GetByte()); }
+		}
+
+		public override int? Previous
+		{
+			get { return _previous; }
+		}
+
+		public override string PreviousStr
+		{
+			get { return FormatValue(_previous); }
+		}
+
+		public override void ResetPrevious()
+		{
+			_previous = GetByte();
 		}
 
 		public override string ToString()
@@ -490,16 +522,15 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedByteWatch : ByteWatch, IWatchDetails
+	public sealed class DetailedByteWatch : ByteWatch, IWatchDetails
 	{
 		private byte _value;
-		private byte _previous;
 
 		public DetailedByteWatch(MemoryDomain domain, int address)
 			: base(domain, address)
 		{
 			Notes = String.Empty;
-			_previous = _value = GetByte();
+			_value = GetByte();
 		}
 
 		public override string ToString()
@@ -509,10 +540,6 @@ namespace BizHawk.MultiClient
 
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public int? Previous { get { return _previous; } }
-		public string PreviousStr { get { return FormatValue(_previous); } }
-		public void ResetPrevious() { _previous = _value; }
 
 		public string Diff
 		{
@@ -565,15 +592,33 @@ namespace BizHawk.MultiClient
 
 	public class WordWatch : Watch
 	{
+		protected ushort _previous;
+
 		public WordWatch(MemoryDomain domain, int address)
 		{
 			_domain = domain;
 			_address = address;
+			_previous = GetWord();
 		}
 
 		public override int? Value
 		{
 			get { return GetWord(); }
+		}
+
+		public override int? Previous
+		{
+			get { return _previous; }
+		}
+
+		public override string PreviousStr
+		{
+			get { return FormatValue(_previous); }
+		}
+
+		public override void ResetPrevious()
+		{
+			_previous = GetWord();
 		}
 
 		public override WatchSize Size
@@ -688,16 +733,15 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedWordWatch : WordWatch, IWatchDetails
+	public sealed class DetailedWordWatch : WordWatch, IWatchDetails
 	{
 		private ushort _value;
-		private ushort _previous;
 
 		public DetailedWordWatch(MemoryDomain domain, int address)
 			: base(domain, address)
 		{
 			Notes = String.Empty;
-			_previous = _value = GetWord();
+			_value = GetWord();
 		}
 
 		public override string ToString()
@@ -707,10 +751,6 @@ namespace BizHawk.MultiClient
 
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public int? Previous { get { return _previous; } }
-		public string PreviousStr { get { return FormatValue(_previous); } }
-		public void ResetPrevious() { _previous = _value; }
 
 		public string Diff
 		{
@@ -751,15 +791,33 @@ namespace BizHawk.MultiClient
 
 	public class DWordWatch : Watch
 	{
+		protected uint _previous;
+
 		public DWordWatch(MemoryDomain domain, int address)
 		{
 			_domain = domain;
 			_address = address;
+			_previous = GetDWord();
 		}
 
 		public override int? Value
 		{
 			get { return (int)GetDWord(); }
+		}
+
+		public override int? Previous
+		{
+			get { return (int)_previous; }
+		}
+
+		public override string PreviousStr
+		{
+			get { return FormatValue(_previous); }
+		}
+
+		public override void ResetPrevious()
+		{
+			_previous = GetWord();
 		}
 
 		public override WatchSize Size
@@ -876,16 +934,15 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class DetailedDWordWatch : DWordWatch, IWatchDetails
+	public sealed class DetailedDWordWatch : DWordWatch, IWatchDetails
 	{
 		private uint _value;
-		private uint _previous;
 
 		public DetailedDWordWatch(MemoryDomain domain, int address)
 			: base(domain, address)
 		{
 			Notes = String.Empty;
-			_previous = _value = GetDWord();
+			_value = GetDWord();
 		}
 
 		public override string ToString()
@@ -894,10 +951,6 @@ namespace BizHawk.MultiClient
 		}
 		public int ChangeCount { get; private set; }
 		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public int? Previous { get { return (int)_previous; } }
-		public string PreviousStr { get { return FormatValue(_previous); } }
-		public void ResetPrevious() { _previous = _value; }
 
 		public string Diff
 		{

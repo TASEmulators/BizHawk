@@ -117,7 +117,7 @@ namespace BizHawk.MultiClient
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => (x as IWatchDetails).PreviousStr)
+							.OrderByDescending(x => x.PreviousStr)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -126,7 +126,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => (x as IWatchDetails).PreviousStr)
+							.OrderBy(x => x.PreviousStr)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
