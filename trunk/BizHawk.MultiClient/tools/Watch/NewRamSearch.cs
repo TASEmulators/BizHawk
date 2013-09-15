@@ -92,7 +92,18 @@ namespace BizHawk.MultiClient
 
 		#region Public
 
+		public void UpdateValues()
+		{
+			Searches.Update();
+			WatchListView.Refresh();
+		}
+
 		public void SaveConfigSettings()
+		{
+			//TODO
+		}
+
+		public void Restart()
 		{
 			//TODO
 		}

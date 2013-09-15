@@ -86,6 +86,8 @@ namespace BizHawk.MultiClient
 		//tool dialogs
 
 		private RamSearch _ramsearch = null;
+		private NewRamSearch _newramsearch = null;
+
 		private HexEditor _hexeditor = null;
 		private TraceLogger _tracelogger = null;
 		private SNESGraphicsDebugger _snesgraphicsdebugger = null;
@@ -109,6 +111,8 @@ namespace BizHawk.MultiClient
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
+		public NewRamSearch NewRamSearch1 { get { if (_newramsearch == null) _newramsearch = new NewRamSearch(); return _newramsearch; } set { _newramsearch = value; } }
+
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
@@ -1578,6 +1582,8 @@ namespace BizHawk.MultiClient
 				//    SyncThrottle();
 				//}
 				if (_ramsearch != null) RamSearch1.Restart();
+				if (_newramsearch != null) NewRamSearch1.Restart();
+
 				if (_newramwatch != null) NewRamWatch1.Restart();
 				if (_hexeditor != null) HexEditor1.Restart();
 				if (_nesppu != null) NESPPU1.Restart();
@@ -2324,6 +2330,8 @@ namespace BizHawk.MultiClient
 #endif
 			if (_newramwatch != null) NewRamWatch1.UpdateValues();
 			if (_ramsearch != null) RamSearch1.UpdateValues();
+			if (_newramsearch != null) NewRamSearch1.UpdateValues();
+
 			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
@@ -2669,7 +2677,15 @@ namespace BizHawk.MultiClient
 			//TODO
 			if (MainForm.INTERIM && Global.Config.RecentSearches.AutoLoad)
 			{
-				new NewRamSearch().Show();
+				if (!NewRamSearch1.IsHandleCreated || NewRamSearch1.IsDisposed)
+				{
+					NewRamSearch1 = new NewRamSearch();
+					NewRamSearch1.Show();
+				}
+				else
+				{
+					NewRamSearch1.Focus();
+				}
 			}
 			else
 			{
@@ -3196,6 +3212,7 @@ namespace BizHawk.MultiClient
 			RewireSound();
 			ResetRewindBuffer();
 			RamSearch1.Restart();
+			NewRamSearch1.Restart();
 			NewRamWatch1.Restart();
 			HexEditor1.Restart();
 			NESPPU1.Restart();
@@ -3239,6 +3256,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseForm(NewRamWatch1);
 			CloseForm(RamSearch1);
+			CloseForm(NewRamSearch1);
 			CloseForm(HexEditor1);
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
