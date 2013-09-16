@@ -8,18 +8,14 @@ namespace BizHawk.MultiClient
 {
 	class RamSearchEngine
 	{
-		public enum Mode { Fast, Detailed }
-
-		private MemoryDomain _domain;
-		private Mode _mode;
 		private WatchList _watchList;
+		private Settings _settings;
 
 		#region Constructors
-		
-		public RamSearchEngine(MemoryDomain domain, Mode mode = Mode.Detailed)
+
+		public RamSearchEngine(Settings settings)
 		{
-			_domain = domain;
-			_mode = mode;
+			_settings = settings;
 		}
 
 		#endregion
@@ -28,12 +24,12 @@ namespace BizHawk.MultiClient
 
 		public void Start()
 		{
-			_watchList = new WatchList(_domain);
+			_watchList = new WatchList(_settings.Domain);
 
 			//TODO: other byte sizes, mis-aligned
-			for(int i = 0; i < _domain.Size; i++)
+			for (int i = 0; i < _settings.Domain.Size; i++)
 			{
-				_watchList.Add(Watch.GenerateWatch(_domain, i, Watch.WatchSize.Byte, true));
+				_watchList.Add(Watch.GenerateWatch(_settings.Domain, i, _settings.Size, _settings.Mode == Settings.SearchMode.Detailed));
 			}
 		}
 
@@ -56,21 +52,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public Mode SearchMode
-		{
-			get { return _mode; }
-		}
-
 		public string DomainName
 		{
-			get { return _domain.Name; }
+			get { return _settings.Domain.Name; }
 		}
 
 		public void Update()
 		{
-			if (_mode == Mode.Detailed)
-			{
-			}
+			//TODO
 		}
 
 		#endregion
@@ -104,6 +93,22 @@ namespace BizHawk.MultiClient
 		#endregion
 
 		#region Private parts
+		#endregion
+
+		#region Classes
+		public class Settings
+		{
+			/*Require restart*/
+			public enum SearchMode { Fast, Detailed }
+			public SearchMode Mode = SearchMode.Detailed;
+			public MemoryDomain Domain = Global.Emulator.MainMemory;
+			public Watch.WatchSize Size = Watch.WatchSize.Byte;
+			public bool CheckMisAligned = false;
+
+			/*Can be changed mid-search*/
+			public Watch.DisplayType Type = Watch.DisplayType.Unsigned;
+			public bool BigEndian = false;
+		}
 		#endregion
 	}
 }

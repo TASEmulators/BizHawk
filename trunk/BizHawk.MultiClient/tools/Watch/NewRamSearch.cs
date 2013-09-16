@@ -21,7 +21,8 @@ namespace BizHawk.MultiClient
 		public const string CHANGES = "ChangesColumn";
 		public const string DIFF = "DiffColumn";
 
-		private RamSearchEngine Searches = new RamSearchEngine(Global.Emulator.MainMemory);
+		private RamSearchEngine Searches;
+		private RamSearchEngine.Settings Settings;
 
 		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
 		private int defaultHeight;
@@ -38,6 +39,9 @@ namespace BizHawk.MultiClient
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
+
+			Settings = new RamSearchEngine.Settings();
+			Searches = new RamSearchEngine(Settings);
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -85,6 +89,12 @@ namespace BizHawk.MultiClient
 					break;
 			}
 		}
+
+		private void SaveConfigSettings()
+		{
+			//TODO
+		}
+
 		#endregion
 
 		#region Public
@@ -93,11 +103,6 @@ namespace BizHawk.MultiClient
 		{
 			Searches.Update();
 			WatchListView.Refresh();
-		}
-
-		public void SaveConfigSettings()
-		{
-			//TODO
 		}
 
 		public void Restart()
@@ -146,12 +151,8 @@ namespace BizHawk.MultiClient
 		{
 			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				Searches = new RamSearchEngine(Global.Emulator.MemoryDomains[pos]); //We have to start a new search
-				Searches.Start();
+				Settings.Domain = Global.Emulator.MemoryDomains[pos];
 			}
-
-			SetPlatformAndMemoryDomainLabel();
-			Update();
 		}
 
 		private void LoadConfigSettings()
@@ -203,6 +204,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void DoDisplayTypeClick(Watch.DisplayType type)
+		{
+			Settings.Type = type;
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -224,6 +230,85 @@ namespace BizHawk.MultiClient
 			Close();
 		}
 
+		/*************Settings***********************/
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			CheckMisalignedMenuItem.Checked = Settings.CheckMisAligned;
+			BigEndianMenuItem.Checked = Settings.BigEndian;
+		}
+
+		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DetailedMenuItem.Checked = Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
+			FastMenuItem.Checked = Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast;
+		}
+
+		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MemoryDomainsSubMenu.DropDownItems.Clear();
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName));
+		}
+
+		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			_1ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.Byte;
+			_2ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.Word;
+			_4ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.DWord;
+		}
+
+		private void DisplayTypeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DisplayTypeSubMenu.DropDownItems.Clear();
+
+			foreach (var type in Watch.AvailableTypes(Settings.Size))
+			{
+				var item = new ToolStripMenuItem()
+				{
+					Name = type.ToString() + "ToolStripMenuItem",
+					Text = Watch.DisplayTypeToString(type),
+					Checked = Settings.Type == type,
+				};
+				item.Click += (o, ev) => DoDisplayTypeClick(type);
+
+				DisplayTypeSubMenu.DropDownItems.Add(item);
+			}
+		}
+
+		private void DetailedMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+		}
+
+		private void FastMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+		}
+
+		private void _1ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.Size = Watch.WatchSize.Byte;
+		}
+
+		private void _2ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.Size = Watch.WatchSize.Word;
+		}
+
+		private void _4ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.Size = Watch.WatchSize.DWord;
+		}
+
+		private void BigEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.BigEndian = BigEndianMenuItem.Checked;
+		}
+
+		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.CheckMisAligned = CheckMisalignedMenuItem.Checked;
+		}
+
 		/*************Search***********************/
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -241,11 +326,7 @@ namespace BizHawk.MultiClient
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 		}
 
-		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName));
-		}
+		
 
 		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
 		{

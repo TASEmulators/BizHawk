@@ -272,6 +272,21 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public static List<DisplayType> AvailableTypes(WatchSize size)
+		{
+			switch (size)
+			{
+				default:
+				case WatchSize.Separator:
+					return SeparatorWatch.ValidTypes;
+				case WatchSize.Byte:
+					return ByteWatch.ValidTypes;
+				case WatchSize.Word:
+					return WordWatch.ValidTypes;
+				case WatchSize.DWord:
+					return DWordWatch.ValidTypes;
+			}
+		}
 
 		/// <summary>
 		/// Temparary support of the legacy watch object
