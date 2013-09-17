@@ -2599,5 +2599,25 @@ namespace BizHawk.MultiClient
 		{
 			new RewindConfig().ShowDialog();
 		}
+
+        private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog OFD = new OpenFileDialog();
+
+            if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    (Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+                }
+                catch (IOException ex)
+                {
+                    string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
+
+                    if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        (Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+                }
+            }
+        }
 	}
 }
