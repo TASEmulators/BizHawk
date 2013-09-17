@@ -630,8 +630,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public Link LinkPort;
 		public class Link
 		{
-			byte[] FileData;
 			readonly TI83 Parent;
+
+            private FileStream CurrentFile;
+            private int FileBytesLeft;
+            private byte[] VariableData;
 
 			private Action NextStep;
 			private Queue<byte> CurrentData = new Queue<byte>();
@@ -786,42 +789,93 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				}
 			}
 
-			public void SendFileToCalc(FileStream FS)
+            public void SendFileToCalc(FileStream FS, bool Verify)
+            {
+                if (Verify)
+                    VerifyFile(FS);
+
+                FS.Seek(55, SeekOrigin.Begin);
+                CurrentFile = FS;
+                SendNextFile();
+            }
+
+			private void VerifyFile(FileStream FS)
 			{
-				FS.Seek(53, SeekOrigin.Begin);
+                //Verify the file format.
+                byte[] Expected = new byte[] { 0x2a, 0x2a, 0x54, 0x49, 0x38, 0x33, 0x2a, 0x2a, 0x1a, 0x0a, 0x00 };
+                byte[] Actual = new byte[11];
+
+                FS.Seek(0, SeekOrigin.Begin);
+                FS.Read(Actual, 0, 11);
+
+                //Check the header.
+                for (int n = 0; n < 11; n++)
+                    if (Expected[n] != Actual[n])
+                    {
+                        FS.Close();
+                        throw new IOException("Invalid Header.");
+                    }
+
+                //Seek to the end of the comment.
+                FS.Seek(53, SeekOrigin.Begin);
+
 				int Size = FS.ReadByte() + FS.ReadByte() * 256;
 
-				if (FS.Length != Size + 57)
-					throw new FormatException("Invalid calculator file.");
+                if (FS.Length != Size + 57)
+                {
+                    FS.Close();
+                    throw new IOException("Invalid file length.");
+                }
 
-				byte[] Header = new byte[13];
-				FS.Read(Header, 0, 13);
+                //Verify the checksum.
+                ushort Checksum = 0;
+                for (int n = 0; n < Size; n++)
+                    Checksum += (ushort)FS.ReadByte();
 
-				FileData = new byte[Size - 13];
-				FS.Read(FileData, 0, Size - 13);
+                ushort ActualChecksum = (ushort)(FS.ReadByte() + FS.ReadByte() * 256);
 
-				//Request to send the file.
-				CurrentData.Clear();
-
-				CurrentData.Enqueue(0x03);
-				CurrentData.Enqueue(0xC9);
-
-				foreach (byte B in Header)
-					CurrentData.Enqueue(B);
-
-				//Calculate the checksum for the command.
-				ushort Checksum = 0;
-				for (int n = 2; n < Header.Length; n++)
-					Checksum += Header[n];
-
-				CurrentData.Enqueue((byte)(Checksum % 256));
-				CurrentData.Enqueue((byte)(Checksum / 256));
-
-				//Finalize the command.
-				CurrentStatus = Status.PrepareReceive;
-				NextStep = ReceiveReqAck;
-				Parent.LinkActive = true;
+                if (Checksum != ActualChecksum)
+                {
+                    FS.Close();
+                    throw new IOException("Invalid Checksum.");
+                }
 			}
+
+            private void SendNextFile()
+            {
+                byte[] Header = new byte[13];
+                if (!CurrentFile.CanRead || CurrentFile.Read(Header, 0, 13) != 13)
+                {
+                    //End of file.
+                    CurrentFile.Close();
+                    return;
+                }
+
+                int Size = Header[2] + Header[3] * 256;
+                VariableData = new byte[Size + 2];
+                CurrentFile.Read(VariableData, 0, Size + 2);
+
+                //Request to send the file.
+                CurrentData.Clear();
+
+                CurrentData.Enqueue(0x03);
+                CurrentData.Enqueue(0xC9);
+                foreach (byte B in Header)
+                    CurrentData.Enqueue(B);
+
+                //Calculate the checksum for the command.
+                ushort Checksum = 0;
+                for (int n = 2; n < Header.Length; n++)
+                    Checksum += Header[n];
+
+                CurrentData.Enqueue((byte)(Checksum % 256));
+                CurrentData.Enqueue((byte)(Checksum / 256));
+
+                //Finalize the command.
+                CurrentStatus = Status.PrepareReceive;
+                NextStep = ReceiveReqAck;
+                Parent.LinkActive = true;
+            }
 
 			private void ReceiveReqAck()
 			{
@@ -858,13 +912,13 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					CurrentData.Enqueue(0x15);
 
 					//Add variable data.
-					foreach (byte B in FileData)
+                    foreach (byte B in VariableData)
 						CurrentData.Enqueue(B);
 
 					//Calculate the checksum.
 					ushort Checksum = 0;
-					for (int n = 2; n < FileData.Length; n++)
-						Checksum += FileData[n];
+                    for (int n = 2; n < VariableData.Length; n++)
+                        Checksum += VariableData[n];
 
 					CurrentData.Enqueue((byte)(Checksum % 256));
 					CurrentData.Enqueue((byte)(Checksum / 256));
@@ -903,6 +957,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 			private void OutOfMemory()
 			{
+                CurrentFile.Close();
 				Parent.LinkActive = false;
 				CurrentData.Clear();
 
@@ -932,6 +987,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				CurrentData.Clear();
 				Parent.LinkActive = false;
 				NextStep = null;
+                SendNextFile();
 			}
 		}
 	}
