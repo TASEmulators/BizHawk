@@ -28,6 +28,7 @@ namespace BizHawk.Core
 			ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
 			threadPaint = new Thread(PaintProc);
 			threadPaint.IsBackground = true;
+			threadPaint.Priority = ThreadPriority.Lowest;
 			threadPaint.Start();
 		}
 
