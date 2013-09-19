@@ -53,30 +53,35 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			Watches.UpdateValues();
 
-			if (Global.Config.DisplayRamWatch)
+			if (Watches.Any())
 			{
-				for (int x = 0; x < Watches.Count; x++)
+				Watches.UpdateValues();
+
+				if (Global.Config.DisplayRamWatch)
 				{
-					bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActiveCheat(Watches[x].Domain, Watches[x].Address.Value);
-					Global.OSD.AddGUIText(
-						Watches[x].ToString(),
-						Global.Config.DispRamWatchx,
-						(Global.Config.DispRamWatchy + (x * 14)),
-						alert,
-						Color.Black,
-						Color.White,
-						0
-					);
+					for (int x = 0; x < Watches.Count; x++)
+					{
+						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActiveCheat(Watches[x].Domain, Watches[x].Address.Value);
+						Global.OSD.AddGUIText(
+							Watches[x].ToString(),
+							Global.Config.DispRamWatchx,
+							(Global.Config.DispRamWatchy + (x * 14)),
+							alert,
+							Color.Black,
+							Color.White,
+							0
+						);
+					}
 				}
+
+
+				if (!IsHandleCreated || IsDisposed) return;
+
+				WatchListView.BlazingFast = true;
+				WatchListView.Refresh();
+				WatchListView.BlazingFast = false;
 			}
-
-			if (!IsHandleCreated || IsDisposed) return;
-
-			WatchListView.BlazingFast = true;
-			WatchListView.Refresh();
-			WatchListView.BlazingFast = false;
 		}
 
 		public void Restart()
