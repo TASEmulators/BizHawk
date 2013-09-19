@@ -326,8 +326,6 @@ namespace BizHawk.MultiClient
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 		}
 
-		
-
 		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RecentSearches.AutoLoad ^= true;

@@ -25,10 +25,10 @@ namespace BizHawk.MultiClient
 
 		public static DisplayType StringToDisplayType(string name)
 		{
-			switch(name)
+			switch (name)
 			{
 				default:
-					return (DisplayType) Enum.Parse(typeof(DisplayType), name);
+					return (DisplayType)Enum.Parse(typeof(DisplayType), name);
 				case "Fixed Point 12.4":
 					return DisplayType.FixedPoint_12_4;
 				case "Fixed Point 20.12":
@@ -44,14 +44,14 @@ namespace BizHawk.MultiClient
 		public abstract int? Value { get; }
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
-		
+
 		public abstract int? Previous { get; }
 		public abstract string PreviousStr { get; }
 		public abstract void ResetPrevious();
 
 		public abstract bool Poke(string value);
 
-		public virtual DisplayType Type { get { return _type; } set {  _type = value; } }
+		public virtual DisplayType Type { get { return _type; } set { _type = value; } }
 		public virtual bool BigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		public MemoryDomain Domain { get { return _domain; } }
@@ -269,6 +269,22 @@ namespace BizHawk.MultiClient
 					{
 						return new DWordWatch(domain, address);
 					}
+			}
+		}
+
+		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, bool bigendian, int prev, int changecount)
+		{
+			switch (size)
+			{
+				default:
+				case WatchSize.Separator:
+					return new SeparatorWatch();
+				case WatchSize.Byte:
+					return new DetailedByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
+				case WatchSize.Word:
+					return new DetailedWordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
+				case WatchSize.DWord:
+					return new DetailedDWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
 			}
 		}
 
@@ -548,6 +564,15 @@ namespace BizHawk.MultiClient
 			_value = GetByte();
 		}
 
+		public DetailedByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			ChangeCount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
+		}
+
 		public override string ToString()
 		{
 			return Notes + ": " + ValueString;
@@ -559,19 +584,19 @@ namespace BizHawk.MultiClient
 		public string Diff
 		{
 			get
-            {
-                string diff = String.Empty;
-                int diffVal = _value - _previous;
-                if (diffVal > 0)
-                {
-                    diff = "+";
-                }
-                else if (diffVal < 0)
-                {
-                    diff = "-";
-                }
-                return diff + FormatValue((byte)(_previous - _value));
-            }
+			{
+				string diff = String.Empty;
+				int diffVal = _value - _previous;
+				if (diffVal > 0)
+				{
+					diff = "+";
+				}
+				else if (diffVal < 0)
+				{
+					diff = "-";
+				}
+				return diff + FormatValue((byte)(_previous - _value));
+			}
 		}
 
 		public string Notes { get; set; }
@@ -757,6 +782,15 @@ namespace BizHawk.MultiClient
 		{
 			Notes = String.Empty;
 			_value = GetWord();
+		}
+
+		public DetailedWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			ChangeCount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
 		}
 
 		public override string ToString()
@@ -958,6 +992,15 @@ namespace BizHawk.MultiClient
 		{
 			Notes = String.Empty;
 			_value = GetDWord();
+		}
+
+		public DetailedDWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			ChangeCount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
 		}
 
 		public override string ToString()
