@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 	{
 		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
 		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float };
-		public enum PreviousType { OriginalValue = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 };
+		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 };
 
 		public static string DisplayTypeToString(DisplayType type)
 		{
@@ -606,7 +606,7 @@ namespace BizHawk.MultiClient
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
 				case PreviousType.LastSearch: //TODO
-				case PreviousType.OriginalValue:
+				case PreviousType.Original:
 					/*Do Nothing*/
 					break;
 				case PreviousType.LastChange:
@@ -813,7 +813,7 @@ namespace BizHawk.MultiClient
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
 				case PreviousType.LastSearch: //TODO
-				case PreviousType.OriginalValue:
+				case PreviousType.Original:
 					/*Do Nothing*/
 					break;
 				case PreviousType.LastChange:
@@ -1022,7 +1022,7 @@ namespace BizHawk.MultiClient
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
 				case PreviousType.LastSearch: //TODO
-				case PreviousType.OriginalValue:
+				case PreviousType.Original:
 					/*Do Nothing*/
 					break;
 				case PreviousType.LastChange:

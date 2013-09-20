@@ -101,8 +101,11 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			Searches.Update();
-			WatchListView.Refresh();
+			if (Searches.Count > 0)
+			{
+				Searches.Update();
+				WatchListView.Refresh();
+			}
 		}
 
 		public void Restart()
@@ -116,6 +119,7 @@ namespace BizHawk.MultiClient
 
 		private void NewSearch()
 		{
+			Searches = new RamSearchEngine(Settings);
 			Searches.Start();
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
@@ -207,6 +211,7 @@ namespace BizHawk.MultiClient
 		private void DoDisplayTypeClick(Watch.DisplayType type)
 		{
 			Settings.Type = type;
+			Searches.SetType(type);
 		}
 
 		#endregion
@@ -274,6 +279,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			Previous_LastSearchMenuItem.Checked = false;
+			Previous_LastChangeMenuItem.Checked = false;
+			Previous_LastFrameMenuItem.Checked = false;
+			Previous_OriginalMenuItem.Checked = false;
+
+			switch (Settings.PreviousType)
+			{
+				default:
+				case Watch.PreviousType.LastSearch:
+					Previous_LastSearchMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.LastChange:
+					Previous_LastChangeMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.LastFrame:
+					Previous_LastFrameMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.Original:
+					Previous_OriginalMenuItem.Checked = true;
+					break;
+			}
+		}
+
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
@@ -299,14 +329,39 @@ namespace BizHawk.MultiClient
 			Settings.Size = Watch.WatchSize.DWord;
 		}
 
-		private void BigEndianMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.BigEndian = BigEndianMenuItem.Checked;
-		}
-
 		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.CheckMisAligned = CheckMisalignedMenuItem.Checked;
+		}
+
+		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.PreviousType = Watch.PreviousType.LastFrame;
+			Searches.SetPreviousType(Watch.PreviousType.LastFrame);
+		}
+
+		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.PreviousType = Watch.PreviousType.LastSearch;
+			Searches.SetPreviousType(Watch.PreviousType.LastSearch);
+		}
+
+		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.PreviousType = Watch.PreviousType.LastChange;
+			Searches.SetPreviousType(Watch.PreviousType.LastChange);
+		}
+
+		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.PreviousType = Watch.PreviousType.Original;
+			Searches.SetPreviousType(Watch.PreviousType.Original);
+		}
+
+		private void BigEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.BigEndian = BigEndianMenuItem.Checked;
+			Searches.SetEndian(BigEndianMenuItem.Checked);
 		}
 
 		/*************Search***********************/

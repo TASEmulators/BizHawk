@@ -71,10 +71,16 @@
 			this._1ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this._2ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this._4ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CheckMisalignedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.DisplayTypeSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CheckMisalignedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -94,7 +100,7 @@
 			this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.fastModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -381,9 +387,11 @@
             this.modeToolStripMenuItem,
             this.MemoryDomainsSubMenu,
             this.sizeToolStripMenuItem,
+            this.CheckMisalignedMenuItem,
+            this.toolStripSeparator8,
             this.DisplayTypeSubMenu,
-            this.BigEndianMenuItem,
-            this.CheckMisalignedMenuItem});
+            this.DefinePreviousValueSubMenu,
+            this.BigEndianMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
@@ -395,21 +403,21 @@
             this.DetailedMenuItem,
             this.FastMenuItem});
 			this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-			this.modeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.modeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.modeToolStripMenuItem.Text = "&Mode";
 			this.modeToolStripMenuItem.DropDownOpened += new System.EventHandler(this.ModeSubMenu_DropDownOpened);
 			// 
 			// DetailedMenuItem
 			// 
 			this.DetailedMenuItem.Name = "DetailedMenuItem";
-			this.DetailedMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DetailedMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.DetailedMenuItem.Text = "&Detailed";
 			this.DetailedMenuItem.Click += new System.EventHandler(this.DetailedMenuItem_Click);
 			// 
 			// FastMenuItem
 			// 
 			this.FastMenuItem.Name = "FastMenuItem";
-			this.FastMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FastMenuItem.Size = new System.Drawing.Size(117, 22);
 			this.FastMenuItem.Text = "&Fast";
 			this.FastMenuItem.Click += new System.EventHandler(this.FastMenuItem_Click);
 			// 
@@ -418,7 +426,7 @@
 			this.MemoryDomainsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator6});
 			this.MemoryDomainsSubMenu.Name = "MemoryDomainsSubMenu";
-			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(173, 22);
+			this.MemoryDomainsSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.MemoryDomainsSubMenu.Text = "&Memory Domains";
 			this.MemoryDomainsSubMenu.DropDownOpened += new System.EventHandler(this.MemoryDomainsSubMenu_DropDownOpened);
 			// 
@@ -434,58 +442,103 @@
             this._2ByteMenuItem,
             this._4ByteMenuItem});
 			this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
-			this.sizeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.sizeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.sizeToolStripMenuItem.Text = "&Size";
 			this.sizeToolStripMenuItem.DropDownOpened += new System.EventHandler(this.SizeSubMenu_DropDownOpened);
 			// 
 			// _1ByteMenuItem
 			// 
 			this._1ByteMenuItem.Name = "_1ByteMenuItem";
-			this._1ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._1ByteMenuItem.Size = new System.Drawing.Size(106, 22);
 			this._1ByteMenuItem.Text = "&1 Byte";
 			this._1ByteMenuItem.Click += new System.EventHandler(this._1ByteMenuItem_Click);
 			// 
 			// _2ByteMenuItem
 			// 
 			this._2ByteMenuItem.Name = "_2ByteMenuItem";
-			this._2ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._2ByteMenuItem.Size = new System.Drawing.Size(106, 22);
 			this._2ByteMenuItem.Text = "&2 Byte";
 			this._2ByteMenuItem.Click += new System.EventHandler(this._2ByteMenuItem_Click);
 			// 
 			// _4ByteMenuItem
 			// 
 			this._4ByteMenuItem.Name = "_4ByteMenuItem";
-			this._4ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._4ByteMenuItem.Size = new System.Drawing.Size(106, 22);
 			this._4ByteMenuItem.Text = "&4 Byte";
 			this._4ByteMenuItem.Click += new System.EventHandler(this._4ByteMenuItem_Click);
+			// 
+			// CheckMisalignedMenuItem
+			// 
+			this.CheckMisalignedMenuItem.Name = "CheckMisalignedMenuItem";
+			this.CheckMisalignedMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.CheckMisalignedMenuItem.Text = "Check Mis-aligned";
+			this.CheckMisalignedMenuItem.Click += new System.EventHandler(this.CheckMisalignedMenuItem_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(185, 6);
 			// 
 			// DisplayTypeSubMenu
 			// 
 			this.DisplayTypeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator1});
 			this.DisplayTypeSubMenu.Name = "DisplayTypeSubMenu";
-			this.DisplayTypeSubMenu.Size = new System.Drawing.Size(173, 22);
+			this.DisplayTypeSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.DisplayTypeSubMenu.Text = "&Display Type";
 			this.DisplayTypeSubMenu.DropDownOpened += new System.EventHandler(this.DisplayTypeSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// BigEndianMenuItem
 			// 
 			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.BigEndianMenuItem.Text = "&Big Endian";
 			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
-			// CheckMisalignedMenuItem
+			// DefinePreviousValueSubMenu
 			// 
-			this.CheckMisalignedMenuItem.Name = "CheckMisalignedMenuItem";
-			this.CheckMisalignedMenuItem.Size = new System.Drawing.Size(173, 22);
-			this.CheckMisalignedMenuItem.Text = "Check Mis-aligned";
-			this.CheckMisalignedMenuItem.Click += new System.EventHandler(this.CheckMisalignedMenuItem_Click);
+			this.DefinePreviousValueSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.previousFrameToolStripMenuItem,
+            this.Previous_LastSearchMenuItem,
+            this.Previous_LastChangeMenuItem,
+            this.Previous_OriginalMenuItem});
+			this.DefinePreviousValueSubMenu.Name = "DefinePreviousValueSubMenu";
+			this.DefinePreviousValueSubMenu.Size = new System.Drawing.Size(188, 22);
+			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
+			this.DefinePreviousValueSubMenu.DropDownOpened += new System.EventHandler(this.DefinePreviousValueSubMenu_DropDownOpened);
+			// 
+			// previousFrameToolStripMenuItem
+			// 
+			this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
+			this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.previousFrameToolStripMenuItem.Text = "&Previous Frame";
+			this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
+			// 
+			// Previous_LastSearchMenuItem
+			// 
+			this.Previous_LastSearchMenuItem.Name = "Previous_LastSearchMenuItem";
+			this.Previous_LastSearchMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.Previous_LastSearchMenuItem.Text = "Last &Search";
+			this.Previous_LastSearchMenuItem.Click += new System.EventHandler(this.Previous_LastSearchMenuItem_Click);
+			// 
+			// Previous_LastChangeMenuItem
+			// 
+			this.Previous_LastChangeMenuItem.Name = "Previous_LastChangeMenuItem";
+			this.Previous_LastChangeMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.Previous_LastChangeMenuItem.Text = "Last &Change";
+			this.Previous_LastChangeMenuItem.Click += new System.EventHandler(this.Previous_LastChangeMenuItem_Click);
+			// 
+			// Previous_OriginalMenuItem
+			// 
+			this.Previous_OriginalMenuItem.Name = "Previous_OriginalMenuItem";
+			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.Previous_OriginalMenuItem.Text = "&Original";
+			this.Previous_OriginalMenuItem.Click += new System.EventHandler(this.Previous_OriginalMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
@@ -642,7 +695,7 @@
 			this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sinceLastSearchToolStripMenuItem,
             this.originalValueToolStripMenuItem,
-            this.sinceLastFrameToolStripMenuItem,
+            this.Previous_LastFrameMenuItem,
             this.sinceLastChangeToolStripMenuItem});
 			this.definePreviousValueToolStripMenuItem.Enabled = false;
 			this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
@@ -663,12 +716,12 @@
 			this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.originalValueToolStripMenuItem.Text = "Original value";
 			// 
-			// sinceLastFrameToolStripMenuItem
+			// Previous_LastFrameMenuItem
 			// 
-			this.sinceLastFrameToolStripMenuItem.Enabled = false;
-			this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
-			this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
+			this.Previous_LastFrameMenuItem.Enabled = false;
+			this.Previous_LastFrameMenuItem.Name = "Previous_LastFrameMenuItem";
+			this.Previous_LastFrameMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.Previous_LastFrameMenuItem.Text = "Since last Frame";
 			// 
 			// sinceLastChangeToolStripMenuItem
 			// 
@@ -818,7 +871,7 @@
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem definePreviousValueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sinceLastFrameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Previous_LastFrameMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
@@ -867,5 +920,11 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem BigEndianMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CheckMisalignedMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem DefinePreviousValueSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Previous_LastSearchMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Previous_OriginalMenuItem;
     }
 }
