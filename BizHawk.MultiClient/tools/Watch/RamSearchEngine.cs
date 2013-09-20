@@ -160,6 +160,14 @@ namespace BizHawk.MultiClient
 
 		public void SetPreviousType(Watch.PreviousType type)
 		{
+			if (_settings.Mode == Settings.SearchMode.Fast)
+			{
+				if (type == Watch.PreviousType.LastFrame || type == Watch.PreviousType.LastChange)
+				{
+					throw new InvalidOperationException();
+				}
+			}
+			
 			_settings.PreviousType = type;
 		}
 

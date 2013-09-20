@@ -214,6 +214,12 @@ namespace BizHawk.MultiClient
 			Searches.SetType(type);
 		}
 
+		private void SetPreviousStype(Watch.PreviousType type)
+		{
+			Settings.PreviousType = type;
+			Searches.SetPreviousType(type);
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -283,7 +289,7 @@ namespace BizHawk.MultiClient
 		{
 			Previous_LastSearchMenuItem.Checked = false;
 			Previous_LastChangeMenuItem.Checked = false;
-			Previous_LastFrameMenuItem.Checked = false;
+			PreviousFrameMenuItem.Checked = false;
 			Previous_OriginalMenuItem.Checked = false;
 
 			switch (Settings.PreviousType)
@@ -296,11 +302,22 @@ namespace BizHawk.MultiClient
 					Previous_LastChangeMenuItem.Checked = true;
 					break;
 				case Watch.PreviousType.LastFrame:
-					Previous_LastFrameMenuItem.Checked = true;
+					PreviousFrameMenuItem.Checked = true;
 					break;
 				case Watch.PreviousType.Original:
 					Previous_OriginalMenuItem.Checked = true;
 					break;
+			}
+
+			if (Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			{
+				Previous_LastChangeMenuItem.Enabled = false;
+				PreviousFrameMenuItem.Enabled = false;
+			}
+			else
+			{
+				Previous_LastChangeMenuItem.Enabled = true;
+				PreviousFrameMenuItem.Enabled = true;
 			}
 		}
 
@@ -312,6 +329,11 @@ namespace BizHawk.MultiClient
 		private void FastMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+
+			if (Settings.PreviousType == Watch.PreviousType.LastFrame || Settings.PreviousType == Watch.PreviousType.LastChange)
+			{
+				SetPreviousStype(Watch.PreviousType.LastSearch);
+			}
 		}
 
 		private void _1ByteMenuItem_Click(object sender, EventArgs e)
@@ -336,26 +358,22 @@ namespace BizHawk.MultiClient
 
 		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.PreviousType = Watch.PreviousType.LastFrame;
-			Searches.SetPreviousType(Watch.PreviousType.LastFrame);
+			SetPreviousStype(Watch.PreviousType.LastFrame);
 		}
 
 		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.PreviousType = Watch.PreviousType.LastSearch;
-			Searches.SetPreviousType(Watch.PreviousType.LastSearch);
+			SetPreviousStype(Watch.PreviousType.LastSearch);
 		}
 
 		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.PreviousType = Watch.PreviousType.LastChange;
-			Searches.SetPreviousType(Watch.PreviousType.LastChange);
+			SetPreviousStype(Watch.PreviousType.LastChange);
 		}
 
 		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.PreviousType = Watch.PreviousType.Original;
-			Searches.SetPreviousType(Watch.PreviousType.Original);
+			SetPreviousStype(Watch.PreviousType.Original);
 		}
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
