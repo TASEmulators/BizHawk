@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 {
 	class RamSearchEngine
 	{
-		private List<MiniWatch> _watchList = new List<MiniWatch>();
+		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings;
 
 		#region Constructors
@@ -29,21 +29,51 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case Watch.WatchSize.Byte:
-					for (int i = 0; i < _settings.Domain.Size; i++)
+					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						_watchList.Add(new MiniByteWatch(_settings.Domain, i));
+						for (int i = 0; i < _settings.Domain.Size; i++)
+						{
+							_watchList.Add(new MiniByteWatchDetailed(_settings.Domain, i));
+						}
+					}
+					else
+					{
+						for (int i = 0; i < _settings.Domain.Size; i++)
+						{
+							_watchList.Add(new MiniByteWatch(_settings.Domain, i));
+						}
 					}
 					break;
 				case Watch.WatchSize.Word:
-					for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						_watchList.Add(new MiniWordWatch(_settings.Domain, i, _settings.BigEndian));
+						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						{
+							_watchList.Add(new MiniWordWatchDetailed(_settings.Domain, i, _settings.BigEndian));
+						}
+					}
+					else
+					{
+						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						{
+							_watchList.Add(new MiniWordWatch(_settings.Domain, i, _settings.BigEndian));
+						}
 					}
 					break;
 				case Watch.WatchSize.DWord:
-					for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						_watchList.Add(new MiniDWordWatch(_settings.Domain, i, _settings.BigEndian));
+						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						{
+							_watchList.Add(new MiniDWordWatchDetailed(_settings.Domain, i, _settings.BigEndian));
+						}
+					}
+					else
+					{
+						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						{
+							_watchList.Add(new MiniDWordWatch(_settings.Domain, i, _settings.BigEndian));
+						}
 					}
 					break;
 			}
@@ -56,15 +86,30 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				//TODO: must set prev value, change count, and display type!
-				return Watch.GenerateWatch(
-					_settings.Domain,
-					_watchList[index].Address,
-					_settings.Size,
-					_settings.Type,
-					_settings.BigEndian,
-					_watchList[index].Value,
-					_watchList[index].Value /*TODO*/);
+				if (_settings.Mode == Settings.SearchMode.Detailed)
+				{
+					return Watch.GenerateWatch(
+						_settings.Domain,
+						_watchList[index].Address,
+						_settings.Size,
+						_settings.Type,
+						_settings.BigEndian,
+						_watchList[index].Previous,
+						(_watchList[index] as IMiniWatchDetails).ChangeCount
+					);
+				}
+				else
+				{
+					return Watch.GenerateWatch(
+						_settings.Domain,
+						_watchList[index].Address,
+						_settings.Size,
+						_settings.Type,
+						_settings.BigEndian,
+						_watchList[index].Previous,
+						0
+					);
+				}
 			}
 		}
 
@@ -83,7 +128,17 @@ namespace BizHawk.MultiClient
 
 		public void Update()
 		{
-			//TODO
+			if (_settings.Mode == Settings.SearchMode.Detailed)
+			{
+				foreach (IWatchDetails watch in _watchList)
+				{
+					watch.Update();
+				}
+			}
+			else
+			{
+				/*TODO*/
+			}
 		}
 
 		public void SetType(Watch.DisplayType type)
@@ -101,6 +156,11 @@ namespace BizHawk.MultiClient
 		public void SetEndian(bool bigendian)
 		{
 			_settings.BigEndian = bigendian;
+		}
+
+		public void SetPreviousType(Watch.PreviousType type)
+		{
+			_settings.PreviousType = type;
 		}
 
 		#endregion
@@ -137,58 +197,65 @@ namespace BizHawk.MultiClient
 		#endregion
 
 		#region Classes
-		private interface MiniWatch
+
+		private interface IMiniWatch
 		{
 			int Address { get; }
-			int Value { get; }
+			int Previous { get; }
 		}
 
-		private class MiniByteWatch : MiniWatch
+		private interface IMiniWatchDetails
+		{
+			int ChangeCount { get; }
+			void Update();
+		}
+
+		private class MiniByteWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
-			private byte val;
+			private byte _previous;
 
 			public MiniByteWatch(MemoryDomain domain, int addr)
 			{
 				Address = addr;
-				val = domain.PeekByte(addr);
+				_previous = domain.PeekByte(addr);
 			}
 
-			public int Value
+			public int Previous
 			{
-				get { return val; }
+				get { return _previous; }
 			}
 		}
 
-		private class MiniWordWatch : MiniWatch
+		private class MiniWordWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
-			private ushort val;
+			private ushort _previous;
 
 			public MiniWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
 				if (bigEndian)
 				{
-					val = (ushort)((domain.PeekByte(addr) << 8) | (domain.PeekByte(addr + 1)));
+					_previous = (ushort)((domain.PeekByte(addr) << 8) | (domain.PeekByte(addr + 1)));
 				}
 				else
 				{
-					val = (ushort)((domain.PeekByte(addr)) | (domain.PeekByte(addr + 1) << 8));
+					_previous = (ushort)((domain.PeekByte(addr)) | (domain.PeekByte(addr + 1) << 8));
 				}
 			}
 
-			public int Value
+			public int Previous
 			{
-				get { return val; }
+				get { return _previous; }
 			}
 
 		}
 
-		public class MiniDWordWatch : MiniWatch
+		public class MiniDWordWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
-			private uint val;
+			private uint _previous;
 
 			public MiniDWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
@@ -196,23 +263,128 @@ namespace BizHawk.MultiClient
 
 				if (bigEndian)
 				{
-					val = (uint)((domain.PeekByte(addr) << 24)
+					_previous = (uint)((domain.PeekByte(addr) << 24)
 						| (domain.PeekByte(addr + 1) << 16)
 						| (domain.PeekByte(addr + 2) << 8)
 						| (domain.PeekByte(addr + 3) << 0));
 				}
 				else
 				{
-					val = (uint)((domain.PeekByte(addr) << 0)
+					_previous = (uint)((domain.PeekByte(addr) << 0)
 						| (domain.PeekByte(addr + 1) << 8)
 						| (domain.PeekByte(addr + 2) << 16)
 						| (domain.PeekByte(addr + 3) << 24));
 				}
 			}
 
-			public int Value
+			public int Previous
 			{
-				get { return (int) val; }
+				get { return (int) _previous; }
+			}
+		}
+
+		private class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
+		{
+			public int Address { get; private set; }
+			private byte _previous;
+			int _changecount = 0;
+
+			public MiniByteWatchDetailed(MemoryDomain domain, int addr)
+			{
+				Address = addr;
+				_previous = domain.PeekByte(addr);
+			}
+
+			public int Previous
+			{
+				get { return _previous; }
+			}
+
+			public int ChangeCount
+			{
+				get { return _changecount; }
+			}
+
+			public void Update()
+			{
+				/*TODO*/
+			}
+		}
+
+		private class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+		{
+			public int Address { get; private set; }
+			private ushort _previous;
+			int _changecount = 0;
+
+			public MiniWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
+			{
+				Address = addr;
+				if (bigEndian)
+				{
+					_previous = (ushort)((domain.PeekByte(addr) << 8) | (domain.PeekByte(addr + 1)));
+				}
+				else
+				{
+					_previous = (ushort)((domain.PeekByte(addr)) | (domain.PeekByte(addr + 1) << 8));
+				}
+			}
+
+			public int Previous
+			{
+				get { return _previous; }
+			}
+
+			public int ChangeCount
+			{
+				get { return _changecount; }
+			}
+
+			public void Update()
+			{
+				/*TODO*/
+			}
+		}
+
+		public class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+		{
+			public int Address { get; private set; }
+			private uint _previous;
+			int _changecount = 0;
+
+			public MiniDWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
+			{
+				Address = addr;
+
+				if (bigEndian)
+				{
+					_previous = (uint)((domain.PeekByte(addr) << 24)
+						| (domain.PeekByte(addr + 1) << 16)
+						| (domain.PeekByte(addr + 2) << 8)
+						| (domain.PeekByte(addr + 3) << 0));
+				}
+				else
+				{
+					_previous = (uint)((domain.PeekByte(addr) << 0)
+						| (domain.PeekByte(addr + 1) << 8)
+						| (domain.PeekByte(addr + 2) << 16)
+						| (domain.PeekByte(addr + 3) << 24));
+				}
+			}
+
+			public int Previous
+			{
+				get { return (int)_previous; }
+			}
+
+			public int ChangeCount
+			{
+				get { return _changecount; }
+			}
+
+			public void Update()
+			{
+				/*TODO*/
 			}
 		}
 
@@ -220,6 +392,7 @@ namespace BizHawk.MultiClient
 		{
 			/*Require restart*/
 			public enum SearchMode { Fast, Detailed }
+			
 			public SearchMode Mode = SearchMode.Detailed;
 			public MemoryDomain Domain = Global.Emulator.MainMemory;
 			public Watch.WatchSize Size = Watch.WatchSize.Byte;
@@ -228,7 +401,9 @@ namespace BizHawk.MultiClient
 			/*Can be changed mid-search*/
 			public Watch.DisplayType Type = Watch.DisplayType.Unsigned;
 			public bool BigEndian = false;
+			public Watch.PreviousType PreviousType = Watch.PreviousType.LastSearch;
 		}
+
 		#endregion
 	}
 }

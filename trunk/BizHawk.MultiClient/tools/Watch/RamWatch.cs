@@ -1003,7 +1003,7 @@ namespace BizHawk.MultiClient
 				case Watch.PreviousType.LastChange:
 					lastChangeToolStripMenuItem.Checked = true;
 					break;
-				case Watch.PreviousType.OriginalValue:
+				case Watch.PreviousType.Original:
 					originalToolStripMenuItem.Checked = true;
 					break;
 			}
@@ -1021,7 +1021,7 @@ namespace BizHawk.MultiClient
 
 		private void originalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.OriginalValue;
+			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.Original;
 		}
 
 		private void displayWatchesOnScreenToolStripMenuItem_Click(object sender, EventArgs e)
