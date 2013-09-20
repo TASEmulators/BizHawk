@@ -77,7 +77,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,7 +100,7 @@
 			this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Previous_LastFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastFrameMenuItemOld = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.fastModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -503,7 +503,7 @@
 			// DefinePreviousValueSubMenu
 			// 
 			this.DefinePreviousValueSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.previousFrameToolStripMenuItem,
+            this.PreviousFrameMenuItem,
             this.Previous_LastSearchMenuItem,
             this.Previous_LastChangeMenuItem,
             this.Previous_OriginalMenuItem});
@@ -514,10 +514,10 @@
 			// 
 			// previousFrameToolStripMenuItem
 			// 
-			this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
-			this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.previousFrameToolStripMenuItem.Text = "&Previous Frame";
-			this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
+			this.PreviousFrameMenuItem.Name = "previousFrameToolStripMenuItem";
+			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.PreviousFrameMenuItem.Text = "&Previous Frame";
+			this.PreviousFrameMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
 			// 
 			// Previous_LastSearchMenuItem
 			// 
@@ -695,7 +695,7 @@
 			this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sinceLastSearchToolStripMenuItem,
             this.originalValueToolStripMenuItem,
-            this.Previous_LastFrameMenuItem,
+            this.Previous_LastFrameMenuItemOld,
             this.sinceLastChangeToolStripMenuItem});
 			this.definePreviousValueToolStripMenuItem.Enabled = false;
 			this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
@@ -718,10 +718,10 @@
 			// 
 			// Previous_LastFrameMenuItem
 			// 
-			this.Previous_LastFrameMenuItem.Enabled = false;
-			this.Previous_LastFrameMenuItem.Name = "Previous_LastFrameMenuItem";
-			this.Previous_LastFrameMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.Previous_LastFrameMenuItem.Text = "Since last Frame";
+			this.Previous_LastFrameMenuItemOld.Enabled = false;
+			this.Previous_LastFrameMenuItemOld.Name = "Previous_LastFrameMenuItem";
+			this.Previous_LastFrameMenuItemOld.Size = new System.Drawing.Size(167, 22);
+			this.Previous_LastFrameMenuItemOld.Text = "Since last Frame";
 			// 
 			// sinceLastChangeToolStripMenuItem
 			// 
@@ -871,7 +871,7 @@
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem definePreviousValueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Previous_LastFrameMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Previous_LastFrameMenuItemOld;
         private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
@@ -922,7 +922,7 @@
 		private System.Windows.Forms.ToolStripMenuItem CheckMisalignedMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem DefinePreviousValueSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PreviousFrameMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastSearchMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_OriginalMenuItem;
