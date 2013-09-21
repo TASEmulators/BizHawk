@@ -75,12 +75,12 @@
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.DisplayTypeSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -115,9 +115,20 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.CompareToBox = new System.Windows.Forms.GroupBox();
+			this.DifferenceRadio = new System.Windows.Forms.RadioButton();
+			this.label1 = new System.Windows.Forms.Label();
+			this.NumberOfChangesBox = new BizHawk.UnsignedIntegerBox();
+			this.SpecificAddressBox = new BizHawk.HexTextBox();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
+			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
+			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
+			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
+			this.PreviousValueRadio = new System.Windows.Forms.RadioButton();
 			searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			this.CompareToBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// searchToolStripMenuItem1
@@ -157,7 +168,7 @@
 			this.WatchListView.Location = new System.Drawing.Point(9, 58);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(221, 363);
+			this.WatchListView.Size = new System.Drawing.Size(232, 363);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -491,14 +502,7 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-			// 
-			// BigEndianMenuItem
-			// 
-			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.BigEndianMenuItem.Text = "&Big Endian";
-			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
 			// 
 			// DefinePreviousValueSubMenu
 			// 
@@ -512,9 +516,9 @@
 			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
 			this.DefinePreviousValueSubMenu.DropDownOpened += new System.EventHandler(this.DefinePreviousValueSubMenu_DropDownOpened);
 			// 
-			// previousFrameToolStripMenuItem
+			// PreviousFrameMenuItem
 			// 
-			this.PreviousFrameMenuItem.Name = "previousFrameToolStripMenuItem";
+			this.PreviousFrameMenuItem.Name = "PreviousFrameMenuItem";
 			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.PreviousFrameMenuItem.Text = "&Previous Frame";
 			this.PreviousFrameMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
@@ -539,6 +543,13 @@
 			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_OriginalMenuItem.Text = "&Original";
 			this.Previous_OriginalMenuItem.Click += new System.EventHandler(this.Previous_OriginalMenuItem_Click);
+			// 
+			// BigEndianMenuItem
+			// 
+			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.BigEndianMenuItem.Text = "&Big Endian";
+			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
@@ -716,10 +727,10 @@
 			this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.originalValueToolStripMenuItem.Text = "Original value";
 			// 
-			// Previous_LastFrameMenuItem
+			// Previous_LastFrameMenuItemOld
 			// 
 			this.Previous_LastFrameMenuItemOld.Enabled = false;
-			this.Previous_LastFrameMenuItemOld.Name = "Previous_LastFrameMenuItem";
+			this.Previous_LastFrameMenuItemOld.Name = "Previous_LastFrameMenuItemOld";
 			this.Previous_LastFrameMenuItemOld.Size = new System.Drawing.Size(167, 22);
 			this.Previous_LastFrameMenuItemOld.Text = "Since last Frame";
 			// 
@@ -811,9 +822,126 @@
 			this.MessageLabel.AutoSize = true;
 			this.MessageLabel.Location = new System.Drawing.Point(9, 434);
 			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(85, 13);
+			this.MessageLabel.Size = new System.Drawing.Size(106, 13);
 			this.MessageLabel.TabIndex = 9;
-			this.MessageLabel.Text = "                          ";
+			this.MessageLabel.Text = " todo                         ";
+			// 
+			// CompareToBox
+			// 
+			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.CompareToBox.Controls.Add(this.DifferenceRadio);
+			this.CompareToBox.Controls.Add(this.label1);
+			this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
+			this.CompareToBox.Controls.Add(this.SpecificAddressBox);
+			this.CompareToBox.Controls.Add(this.SpecificValueBox);
+			this.CompareToBox.Controls.Add(this.NumberOfChangesRadio);
+			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
+			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
+			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
+			this.CompareToBox.Location = new System.Drawing.Point(247, 58);
+			this.CompareToBox.Name = "CompareToBox";
+			this.CompareToBox.Size = new System.Drawing.Size(211, 125);
+			this.CompareToBox.TabIndex = 10;
+			this.CompareToBox.TabStop = false;
+			this.CompareToBox.Text = "Compare To / By";
+			// 
+			// DifferenceRadio
+			// 
+			this.DifferenceRadio.AutoSize = true;
+			this.DifferenceRadio.Location = new System.Drawing.Point(6, 100);
+			this.DifferenceRadio.Name = "DifferenceRadio";
+			this.DifferenceRadio.Size = new System.Drawing.Size(74, 17);
+			this.DifferenceRadio.TabIndex = 29;
+			this.DifferenceRadio.Text = "Difference";
+			this.DifferenceRadio.UseVisualStyleBackColor = true;
+			this.DifferenceRadio.Click += new System.EventHandler(this.DifferenceRadio_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(116, 62);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(18, 13);
+			this.label1.TabIndex = 10;
+			this.label1.Text = "0x";
+			// 
+			// NumberOfChangesBox
+			// 
+			this.NumberOfChangesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.NumberOfChangesBox.Enabled = false;
+			this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 78);
+			this.NumberOfChangesBox.MaxLength = 8;
+			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
+			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
+			this.NumberOfChangesBox.TabIndex = 28;
+			// 
+			// SpecificAddressBox
+			// 
+			this.SpecificAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificAddressBox.Enabled = false;
+			this.SpecificAddressBox.Location = new System.Drawing.Point(135, 58);
+			this.SpecificAddressBox.MaxLength = 8;
+			this.SpecificAddressBox.Name = "SpecificAddressBox";
+			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificAddressBox.TabIndex = 26;
+			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificValueBox.TabIndex = 24;
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			// 
+			// NumberOfChangesRadio
+			// 
+			this.NumberOfChangesRadio.AutoSize = true;
+			this.NumberOfChangesRadio.Location = new System.Drawing.Point(7, 80);
+			this.NumberOfChangesRadio.Name = "NumberOfChangesRadio";
+			this.NumberOfChangesRadio.Size = new System.Drawing.Size(122, 17);
+			this.NumberOfChangesRadio.TabIndex = 3;
+			this.NumberOfChangesRadio.Text = "Number of Changes:";
+			this.NumberOfChangesRadio.UseVisualStyleBackColor = true;
+			this.NumberOfChangesRadio.Click += new System.EventHandler(this.NumberOfChangesRadio_Click);
+			// 
+			// SpecificAddressRadio
+			// 
+			this.SpecificAddressRadio.AutoSize = true;
+			this.SpecificAddressRadio.Location = new System.Drawing.Point(7, 60);
+			this.SpecificAddressRadio.Name = "SpecificAddressRadio";
+			this.SpecificAddressRadio.Size = new System.Drawing.Size(107, 17);
+			this.SpecificAddressRadio.TabIndex = 2;
+			this.SpecificAddressRadio.Text = "Specific Address:";
+			this.SpecificAddressRadio.UseVisualStyleBackColor = true;
+			this.SpecificAddressRadio.Click += new System.EventHandler(this.SpecificAddressRadio_Click);
+			// 
+			// SpecificValueRadio
+			// 
+			this.SpecificValueRadio.AutoSize = true;
+			this.SpecificValueRadio.Location = new System.Drawing.Point(7, 40);
+			this.SpecificValueRadio.Name = "SpecificValueRadio";
+			this.SpecificValueRadio.Size = new System.Drawing.Size(96, 17);
+			this.SpecificValueRadio.TabIndex = 22;
+			this.SpecificValueRadio.Text = "Specific Value:";
+			this.SpecificValueRadio.UseVisualStyleBackColor = true;
+			this.SpecificValueRadio.Click += new System.EventHandler(this.SpecificValueRadio_Click);
+			// 
+			// PreviousValueRadio
+			// 
+			this.PreviousValueRadio.AutoSize = true;
+			this.PreviousValueRadio.Checked = true;
+			this.PreviousValueRadio.Location = new System.Drawing.Point(7, 20);
+			this.PreviousValueRadio.Name = "PreviousValueRadio";
+			this.PreviousValueRadio.Size = new System.Drawing.Size(96, 17);
+			this.PreviousValueRadio.TabIndex = 20;
+			this.PreviousValueRadio.TabStop = true;
+			this.PreviousValueRadio.Text = "Previous Value";
+			this.PreviousValueRadio.UseVisualStyleBackColor = true;
+			this.PreviousValueRadio.Click += new System.EventHandler(this.PreviousValueRadio_Click);
 			// 
 			// NewRamSearch
 			// 
@@ -821,6 +949,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(470, 459);
+			this.Controls.Add(this.CompareToBox);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchListView);
@@ -835,6 +964,8 @@
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.CompareToBox.ResumeLayout(false);
+			this.CompareToBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -926,5 +1057,15 @@
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastSearchMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_OriginalMenuItem;
+		private System.Windows.Forms.GroupBox CompareToBox;
+		private System.Windows.Forms.RadioButton DifferenceRadio;
+		private System.Windows.Forms.Label label1;
+		private UnsignedIntegerBox NumberOfChangesBox;
+		private HexTextBox SpecificAddressBox;
+		private WatchValueBox SpecificValueBox;
+		private System.Windows.Forms.RadioButton NumberOfChangesRadio;
+		private System.Windows.Forms.RadioButton SpecificAddressRadio;
+		private System.Windows.Forms.RadioButton SpecificValueRadio;
+		private System.Windows.Forms.RadioButton PreviousValueRadio;
     }
 }

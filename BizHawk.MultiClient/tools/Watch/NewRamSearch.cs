@@ -47,6 +47,8 @@ namespace BizHawk.MultiClient
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
+			SpecificValueBox.ByteSize = Settings.Size;
+			SpecificValueBox.Type = Settings.Type;
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -210,7 +212,7 @@ namespace BizHawk.MultiClient
 
 		private void DoDisplayTypeClick(Watch.DisplayType type)
 		{
-			Settings.Type = type;
+			SpecificValueBox.Type = Settings.Type = type;
 			Searches.SetType(type);
 		}
 
@@ -220,11 +222,17 @@ namespace BizHawk.MultiClient
 			Searches.SetPreviousType(type);
 		}
 
+		private void SetSize(Watch.WatchSize size)
+		{
+			SpecificValueBox.ByteSize = Settings.Size = size;
+		}
+
 		#endregion
 
 		#region Winform Events
 
-		/*************File***********************/
+		#region File
+		
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 
@@ -240,8 +248,11 @@ namespace BizHawk.MultiClient
 		{
 			Close();
 		}
+		
+		#endregion
 
-		/*************Settings***********************/
+		#region Settings
+
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			CheckMisalignedMenuItem.Checked = Settings.CheckMisAligned;
@@ -338,17 +349,17 @@ namespace BizHawk.MultiClient
 
 		private void _1ByteMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.Size = Watch.WatchSize.Byte;
+			SetSize(Watch.WatchSize.Byte);
 		}
 
 		private void _2ByteMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.Size = Watch.WatchSize.Word;
+			SetSize(Watch.WatchSize.Word);
 		}
 
 		private void _4ByteMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.Size = Watch.WatchSize.DWord;
+			SetSize(Watch.WatchSize.DWord);
 		}
 
 		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
@@ -382,7 +393,10 @@ namespace BizHawk.MultiClient
 			Searches.SetEndian(BigEndianMenuItem.Checked);
 		}
 
-		/*************Search***********************/
+		#endregion
+
+		#region Search
+
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 
@@ -393,7 +407,10 @@ namespace BizHawk.MultiClient
 			NewSearch();
 		}
 
-		/*************Options***********************/
+		#endregion
+
+		#region Options
+
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
@@ -403,6 +420,51 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.RecentSearches.AutoLoad ^= true;
 		}
+
+		#endregion
+
+		#region Dialog Widgets
+
+		#region Compare To Box
+		
+		private void PreviousValueRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+		}
+
+		private void SpecificValueRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = true;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+		}
+
+		private void SpecificAddressRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = true;
+			NumberOfChangesBox.Enabled = false;
+		}
+
+		private void NumberOfChangesRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = true;
+		}
+
+		private void DifferenceRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+		}
+		
+		#endregion
+
+		#endregion
 
 		#endregion
 	}
