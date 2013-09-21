@@ -227,6 +227,21 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.ByteSize = Settings.Size = size;
 		}
 
+		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
+		{
+			Searches.Operator = op;
+		}
+
+		private void SetCompareTo(RamSearchEngine.Compare comp)
+		{
+			Searches.CompareTo = comp;
+		}
+
+		private void SetCompareValue(int? value)
+		{
+			Searches.CompareValue = value;
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -407,6 +422,13 @@ namespace BizHawk.MultiClient
 			NewSearch();
 		}
 
+		private void SearchMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.DoSearch();
+			SetTotal();
+			WatchListView.ItemCount = Searches.Count;
+		}
+
 		#endregion
 
 		#region Options
@@ -423,15 +445,14 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region Dialog Widgets
-
 		#region Compare To Box
-		
+
 		private void PreviousValueRadio_Click(object sender, EventArgs e)
 		{
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.Previous);
 		}
 
 		private void SpecificValueRadio_Click(object sender, EventArgs e)
@@ -439,6 +460,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = true;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.SpecificValue);
 		}
 
 		private void SpecificAddressRadio_Click(object sender, EventArgs e)
@@ -446,6 +468,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = true;
 			NumberOfChangesBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
 		}
 
 		private void NumberOfChangesRadio_Click(object sender, EventArgs e)
@@ -453,6 +476,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = true;
+			SetCompareTo(RamSearchEngine.Compare.Changes);
 		}
 
 		private void DifferenceRadio_Click(object sender, EventArgs e)
@@ -460,9 +484,76 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.Difference);
 		}
-		
+
+		private void CompareToValue_TextChanged(object sender, EventArgs e)
+		{
+			SetCompareValue((sender as INumberBox).ToInt());
+		}
+
 		#endregion
+
+		#region Comparison Operator Box
+
+		private void EqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.Equal);
+		}
+
+		private void NotEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.NotEqual);
+		}
+
+		private void LessThanRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThan);
+		}
+
+		private void GreaterThanRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThan);
+		}
+
+		private void LessThanOrEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThanEqual);
+		}
+
+		private void GreaterThanOrEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThanEqual);
+		}
+
+		private void DifferentByRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = true;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
+			if (String.IsNullOrWhiteSpace(DifferentByBox.Text))
+			{
+				DifferentByBox.Text = "0";
+			}
+			DifferentByBox.Focus();
+		}
+
+		private void DifferentByBox_TextChanged(object sender, EventArgs e)
+		{
+			if (!String.IsNullOrWhiteSpace(DifferentByBox.Text))
+			{
+				Searches.DifferentBy = DifferentByBox.ToInt();
+			}
+			else
+			{
+				Searches.DifferentBy = null;
+			}
+		}
 
 		#endregion
 
