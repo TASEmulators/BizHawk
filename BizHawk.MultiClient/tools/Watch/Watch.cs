@@ -170,32 +170,12 @@ namespace BizHawk.MultiClient
 
 		protected ushort GetWord()
 		{
-			if (_bigEndian)
-			{
-				return (ushort)((_domain.PeekByte(_address) << 8) | (_domain.PeekByte(_address + 1)));
-			}
-			else
-			{
-				return (ushort)((_domain.PeekByte(_address)) | (_domain.PeekByte(_address + 1) << 8));
-			}
+			return _domain.PeekWord(_address, _bigEndian ? Endian.Big : Endian.Little);
 		}
 
 		protected uint GetDWord()
 		{
-			if (_bigEndian)
-			{
-				return (uint)((_domain.PeekByte(_address) << 24)
-					| (_domain.PeekByte(_address + 1) << 16)
-					| (_domain.PeekByte(_address + 2) << 8)
-					| (_domain.PeekByte(_address + 3) << 0));
-			}
-			else
-			{
-				return (uint)((_domain.PeekByte(_address) << 0)
-					| (_domain.PeekByte(_address + 1) << 8)
-					| (_domain.PeekByte(_address + 2) << 16)
-					| (_domain.PeekByte(_address + 3) << 24));
-			}
+			return _domain.PeekDWord(_address, _bigEndian ? Endian.Big : Endian.Little);
 		}
 
 		protected void PokeByte(byte val)
@@ -205,34 +185,12 @@ namespace BizHawk.MultiClient
 
 		protected void PokeWord(ushort val)
 		{
-			if (_bigEndian)
-			{
-				_domain.PokeByte(_address + 0, (byte)(val >> 8));
-				_domain.PokeByte(_address + 1, (byte)(val));
-			}
-			else
-			{
-				_domain.PokeByte(_address + 0, (byte)(val));
-				_domain.PokeByte(_address + 1, (byte)(val >> 8));
-			}
+			_domain.PokeWord(_address, val, _bigEndian ? Endian.Big : Endian.Little);
 		}
 
 		protected void PokeDWord(uint val)
 		{
-			if (_bigEndian)
-			{
-				_domain.PokeByte(_address + 0, (byte)(val >> 24));
-				_domain.PokeByte(_address + 1, (byte)(val >> 16));
-				_domain.PokeByte(_address + 2, (byte)(val >> 8));
-				_domain.PokeByte(_address + 3, (byte)(val));
-			}
-			else
-			{
-				_domain.PokeByte(_address + 0, (byte)(val));
-				_domain.PokeByte(_address + 1, (byte)(val >> 8));
-				_domain.PokeByte(_address + 2, (byte)(val >> 16));
-				_domain.PokeByte(_address + 3, (byte)(val >> 24));
-			}
+			_domain.PokeDWord(_address, val, _bigEndian ? Endian.Big : Endian.Little);
 		}
 
 		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
