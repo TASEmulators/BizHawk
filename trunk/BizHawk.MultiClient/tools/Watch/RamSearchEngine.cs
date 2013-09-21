@@ -8,8 +8,12 @@ namespace BizHawk.MultiClient
 {
 	class RamSearchEngine
 	{
+		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings;
+
+		public ComparisonOperator Operator;
+		public int? DifferentBy;
 
 		#region Constructors
 
@@ -115,10 +119,7 @@ namespace BizHawk.MultiClient
 
 		public int Count
 		{
-			get
-			{
-				return _watchList.Count;
-			}
+			get { return _watchList.Count; }
 		}
 
 		public string DomainName
@@ -130,9 +131,9 @@ namespace BizHawk.MultiClient
 		{
 			if (_settings.Mode == Settings.SearchMode.Detailed)
 			{
-				foreach (IWatchDetails watch in _watchList)
+				foreach (IMiniWatchDetails watch in _watchList)
 				{
-					watch.Update();
+					watch.Update(_settings.PreviousType, _settings.Domain);
 				}
 			}
 			else
@@ -167,7 +168,7 @@ namespace BizHawk.MultiClient
 					throw new InvalidOperationException();
 				}
 			}
-			
+
 			_settings.PreviousType = type;
 		}
 
@@ -175,33 +176,61 @@ namespace BizHawk.MultiClient
 
 		#region Comparisons
 
-		public void LessThan()
+		public void ComparePrevious()
 		{
+			switch (Operator)
+			{
+				case ComparisonOperator.Equal:
+					_watchList = _watchList.Where(x => x.Previous == GetValue(x.Address)).ToList();
+					break;
+			}
 		}
 
-		public void LessThanOrEqual()
+		public void CompareSpecificValue(int val)
 		{
+
 		}
 
-		public void GreaterThan()
+		public void CompareSpecificAddress(int addr)
 		{
+
 		}
 
-		public void GreaterThanOrEqual()
+		public void CompareChanges(int changes)
 		{
+
 		}
 
-		public void Equal()
+		public void CompareDifference()
 		{
-		}
 
-		public void NotEqual()
-		{
 		}
 
 		#endregion
 
 		#region Private parts
+
+		private int GetValue(int addr)
+		{
+			switch (_settings.Size)
+			{
+				default:
+				case Watch.WatchSize.Byte:
+					return _settings.Domain.PeekByte(addr);
+				case Watch.WatchSize.Word:
+					if (_settings.BigEndian)
+					{
+						return (ushort)((_settings.Domain.PeekByte(addr) << 8) | (_settings.Domain.PeekByte(addr + 1)));
+					}
+					else
+					{
+						return (ushort)((_settings.Domain.PeekByte(addr)) | (_settings.Domain.PeekByte(addr + 1) << 8));
+					}
+				case Watch.WatchSize.DWord:
+					return 0;
+			}
+		}
+
 		#endregion
 
 		#region Classes
@@ -215,7 +244,7 @@ namespace BizHawk.MultiClient
 		private interface IMiniWatchDetails
 		{
 			int ChangeCount { get; }
-			void Update();
+			void Update(Watch.PreviousType type, MemoryDomain domain);
 		}
 
 		private class MiniByteWatch : IMiniWatch
@@ -287,7 +316,7 @@ namespace BizHawk.MultiClient
 
 			public int Previous
 			{
-				get { return (int) _previous; }
+				get { return (int)_previous; }
 			}
 		}
 
@@ -313,9 +342,41 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update()
+			public void Update(Watch.PreviousType type, MemoryDomain domain)
 			{
-				/*TODO*/
+				byte value = domain.PeekByte(Address);
+
+				switch (type)
+				{
+					case Watch.PreviousType.Original:
+						if (value != Previous)
+						{
+							_changecount++;
+						}
+						break;
+					case Watch.PreviousType.LastSearch:
+						if (value != _previous)
+						{
+							_changecount++;
+							_previous = value;
+						}
+						break;
+					case Watch.PreviousType.LastFrame:
+						value = domain.PeekByte(Address);
+						if (value != Previous)
+						{
+							_changecount++;
+						}
+						_previous = value;
+						break;
+					case Watch.PreviousType.LastChange:
+						//TODO: this feature requires yet another variable, ugh
+						if (value != Previous)
+						{
+							_changecount++;
+						}
+						break;
+				}
 			}
 		}
 
@@ -348,9 +409,22 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update()
+			public void Update(Watch.PreviousType type, MemoryDomain domain)
 			{
-				/*TODO*/
+				ushort value;
+				switch (type)
+				{
+					case Watch.PreviousType.LastChange:
+						break;
+					case Watch.PreviousType.LastFrame:
+						value = domain.PeekByte(Address); //TODO: need big endian passed in
+						if (value != Previous)
+						{
+							_changecount++;
+							_previous = value;
+						}
+						break;
+				}
 			}
 		}
 
@@ -390,9 +464,15 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update()
+			public void Update(Watch.PreviousType type, MemoryDomain domain)
 			{
-				/*TODO*/
+				switch (type)
+				{
+					case Watch.PreviousType.LastChange:
+						break;
+					case Watch.PreviousType.LastFrame:
+						break;
+				}
 			}
 		}
 
@@ -400,7 +480,7 @@ namespace BizHawk.MultiClient
 		{
 			/*Require restart*/
 			public enum SearchMode { Fast, Detailed }
-			
+
 			public SearchMode Mode = SearchMode.Detailed;
 			public MemoryDomain Domain = Global.Emulator.MainMemory;
 			public Watch.WatchSize Size = Watch.WatchSize.Byte;
