@@ -4,7 +4,12 @@ using System.Windows.Forms;
 
 namespace BizHawk
 {
-	public class HexTextBox : TextBox
+	public interface INumberBox
+	{
+		int ToInt();
+	}
+
+	public class HexTextBox : TextBox, INumberBox
 	{
 		public HexTextBox()
 		{
@@ -57,7 +62,7 @@ namespace BizHawk
 		}
 	}
 
-	public class UnsignedIntegerBox : TextBox
+	public class UnsignedIntegerBox : TextBox, INumberBox
 	{
 		public UnsignedIntegerBox()
 		{

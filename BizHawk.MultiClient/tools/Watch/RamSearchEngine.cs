@@ -9,11 +9,15 @@ namespace BizHawk.MultiClient
 	class RamSearchEngine
 	{
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
+		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
+
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings;
 
-		public ComparisonOperator Operator;
-		public int? DifferentBy;
+		public Compare CompareTo = Compare.Previous;
+		public int? CompareValue = null;
+		public ComparisonOperator Operator = ComparisonOperator.Equal;
+		public int? DifferentBy = null;
 
 		#region Constructors
 
@@ -117,6 +121,34 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void DoSearch()
+		{
+			switch (CompareTo)
+			{
+				default:
+				case RamSearchEngine.Compare.Previous:
+					ComparePrevious();
+					break;
+				case RamSearchEngine.Compare.SpecificValue:
+					CompareSpecificValue();
+					break;
+				case RamSearchEngine.Compare.SpecificAddress:
+					CompareSpecificAddress();
+					break;
+				case RamSearchEngine.Compare.Changes:
+					CompareChanges();
+					break;
+				case RamSearchEngine.Compare.Difference:
+					throw new NotImplementedException();
+					
+			}
+
+			if (_settings.PreviousType == Watch.PreviousType.LastSearch)
+			{
+				_watchList.ForEach(x => x.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
+			}
+		}
+
 		public int Count
 		{
 			get { return _watchList.Count; }
@@ -176,32 +208,196 @@ namespace BizHawk.MultiClient
 
 		#region Comparisons
 
-		public void ComparePrevious()
+		private void ComparePrevious()
 		{
 			switch (Operator)
 			{
 				case ComparisonOperator.Equal:
-					_watchList = _watchList.Where(x => x.Previous == GetValue(x.Address)).ToList();
+					_watchList = _watchList.Where(x => GetValue(x.Address) == x.Previous).ToList();
+					break;
+				case ComparisonOperator.NotEqual:
+					_watchList = _watchList.Where(x => GetValue(x.Address) != x.Previous).ToList();
+					break;
+				case ComparisonOperator.GreaterThan:
+					_watchList = _watchList.Where(x => GetValue(x.Address) > x.Previous).ToList();
+					break;
+				case ComparisonOperator.GreaterThanEqual:
+					_watchList = _watchList.Where(x => GetValue(x.Address) >= x.Previous).ToList();
+					break;
+				case ComparisonOperator.LessThan:
+					_watchList = _watchList.Where(x => GetValue(x.Address) < x.Previous).ToList();
+					break;
+				case ComparisonOperator.LessThanEqual:
+					_watchList = _watchList.Where(x => GetValue(x.Address) <= x.Previous).ToList();
+					break;
+				case ComparisonOperator.DifferentBy:
+					if (DifferentBy.HasValue)
+					{
+						_watchList = _watchList.Where(x => (GetValue(x.Address) + DifferentBy.Value == x.Previous) || (GetValue(x.Address) - DifferentBy.Value == x.Previous)).ToList();
+					}
+					else
+					{
+						throw new InvalidOperationException();
+					}
 					break;
 			}
 		}
 
-		public void CompareSpecificValue(int val)
+		private void CompareSpecificValue()
 		{
-
+			if (CompareValue.HasValue)
+			{
+				switch (Operator)
+				{
+					case ComparisonOperator.Equal:
+						_watchList = _watchList.Where(x => GetValue(x.Address) == CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.NotEqual:
+						_watchList = _watchList.Where(x => GetValue(x.Address) != CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThan:
+						_watchList = _watchList.Where(x =>  GetValue(x.Address) > CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThanEqual:
+						_watchList = _watchList.Where(x => GetValue(x.Address) >= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThan:
+						_watchList = _watchList.Where(x => GetValue(x.Address) < CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThanEqual:
+						_watchList = _watchList.Where(x => GetValue(x.Address) <= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.DifferentBy:
+						if (DifferentBy.HasValue)
+						{
+							_watchList = _watchList.Where(x => (GetValue(x.Address) + DifferentBy.Value == CompareValue.Value) || (GetValue(x.Address) - DifferentBy.Value == CompareValue.Value)).ToList();
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+						break;
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public void CompareSpecificAddress(int addr)
+		private void CompareSpecificAddress()
 		{
-
+			if (CompareValue.HasValue)
+			{
+				switch (Operator)
+				{
+					case ComparisonOperator.Equal:
+						_watchList = _watchList.Where(x => x.Address == CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.NotEqual:
+						_watchList = _watchList.Where(x => x.Address != CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThan:
+						_watchList = _watchList.Where(x => x.Address > CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThanEqual:
+						_watchList = _watchList.Where(x => x.Address >= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThan:
+						_watchList = _watchList.Where(x => x.Address < CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThanEqual:
+						_watchList = _watchList.Where(x => x.Address <= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.DifferentBy:
+						if (DifferentBy.HasValue)
+						{
+							_watchList = _watchList.Where(x => (x.Address + DifferentBy.Value == CompareValue.Value) || (x.Address - DifferentBy.Value == CompareValue.Value)).ToList();
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+						break;
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public void CompareChanges(int changes)
+		public void CompareChanges()
 		{
-
+			if (_settings.Mode == Settings.SearchMode.Detailed && CompareValue.HasValue)
+			{
+				switch (Operator)
+				{
+					case ComparisonOperator.Equal:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount == CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.NotEqual:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount != CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.GreaterThan:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount > CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.GreaterThanEqual:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount >= CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.LessThan:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount < CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.LessThanEqual:
+						_watchList = _watchList
+							.Cast<IWatchDetails>()
+							.Where(x => x.ChangeCount <= CompareValue.Value)
+							.Cast<IMiniWatch>()
+							.ToList();
+						break;
+					case ComparisonOperator.DifferentBy:
+						if (DifferentBy.HasValue)
+						{
+							_watchList = _watchList
+								.Cast<IWatchDetails>()
+								.Where(x => (x.ChangeCount + DifferentBy.Value == CompareValue.Value) || (x.ChangeCount - DifferentBy.Value == CompareValue.Value))
+								.Cast<IMiniWatch>()
+								.ToList();
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+						break;
+				}
+			}
+			else
+			{
+				throw new InvalidCastException();
+			}
 		}
 
-		public void CompareDifference()
+		private void CompareDifference()
 		{
 
 		}
@@ -227,7 +423,7 @@ namespace BizHawk.MultiClient
 						return (ushort)((_settings.Domain.PeekByte(addr)) | (_settings.Domain.PeekByte(addr + 1) << 8));
 					}
 				case Watch.WatchSize.DWord:
-					return 0;
+					throw new NotImplementedException();
 			}
 		}
 
@@ -239,6 +435,7 @@ namespace BizHawk.MultiClient
 		{
 			int Address { get; }
 			int Previous { get; }
+			void SetPreviousToCurrent(MemoryDomain domain, bool bigendian);
 		}
 
 		private interface IMiniWatchDetails
@@ -255,12 +452,17 @@ namespace BizHawk.MultiClient
 			public MiniByteWatch(MemoryDomain domain, int addr)
 			{
 				Address = addr;
-				_previous = domain.PeekByte(addr);
+				SetPreviousToCurrent(domain, false);
 			}
 
 			public int Previous
 			{
 				get { return _previous; }
+			}
+
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekByte(Address);
 			}
 		}
 
@@ -272,14 +474,7 @@ namespace BizHawk.MultiClient
 			public MiniWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				if (bigEndian)
-				{
-					_previous = (ushort)((domain.PeekByte(addr) << 8) | (domain.PeekByte(addr + 1)));
-				}
-				else
-				{
-					_previous = (ushort)((domain.PeekByte(addr)) | (domain.PeekByte(addr + 1) << 8));
-				}
+				SetPreviousToCurrent(domain, bigEndian);
 			}
 
 			public int Previous
@@ -287,6 +482,10 @@ namespace BizHawk.MultiClient
 				get { return _previous; }
 			}
 
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
+			}
 		}
 
 		public class MiniDWordWatch : IMiniWatch
@@ -297,30 +496,21 @@ namespace BizHawk.MultiClient
 			public MiniDWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-
-				if (bigEndian)
-				{
-					_previous = (uint)((domain.PeekByte(addr) << 24)
-						| (domain.PeekByte(addr + 1) << 16)
-						| (domain.PeekByte(addr + 2) << 8)
-						| (domain.PeekByte(addr + 3) << 0));
-				}
-				else
-				{
-					_previous = (uint)((domain.PeekByte(addr) << 0)
-						| (domain.PeekByte(addr + 1) << 8)
-						| (domain.PeekByte(addr + 2) << 16)
-						| (domain.PeekByte(addr + 3) << 24));
-				}
+				SetPreviousToCurrent(domain, bigEndian);
 			}
 
 			public int Previous
 			{
 				get { return (int)_previous; }
 			}
+
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
+			}
 		}
 
-		private class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
+		private sealed class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
 			private byte _previous;
@@ -329,7 +519,12 @@ namespace BizHawk.MultiClient
 			public MiniByteWatchDetailed(MemoryDomain domain, int addr)
 			{
 				Address = addr;
-				_previous = domain.PeekByte(addr);
+				SetPreviousToCurrent(domain, false);
+			}
+
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekByte(Address);
 			}
 
 			public int Previous
@@ -358,7 +553,6 @@ namespace BizHawk.MultiClient
 						if (value != _previous)
 						{
 							_changecount++;
-							_previous = value;
 						}
 						break;
 					case Watch.PreviousType.LastFrame:
@@ -380,7 +574,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+		private sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
 			private ushort _previous;
@@ -389,14 +583,12 @@ namespace BizHawk.MultiClient
 			public MiniWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				if (bigEndian)
-				{
-					_previous = (ushort)((domain.PeekByte(addr) << 8) | (domain.PeekByte(addr + 1)));
-				}
-				else
-				{
-					_previous = (ushort)((domain.PeekByte(addr)) | (domain.PeekByte(addr + 1) << 8));
-				}
+				SetPreviousToCurrent(domain, bigEndian);
+			}
+
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
 			}
 
 			public int Previous
@@ -428,7 +620,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
+		public sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
 			private uint _previous;
@@ -437,21 +629,12 @@ namespace BizHawk.MultiClient
 			public MiniDWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
+				SetPreviousToCurrent(domain, bigEndian);
+			}
 
-				if (bigEndian)
-				{
-					_previous = (uint)((domain.PeekByte(addr) << 24)
-						| (domain.PeekByte(addr + 1) << 16)
-						| (domain.PeekByte(addr + 2) << 8)
-						| (domain.PeekByte(addr + 3) << 0));
-				}
-				else
-				{
-					_previous = (uint)((domain.PeekByte(addr) << 0)
-						| (domain.PeekByte(addr + 1) << 8)
-						| (domain.PeekByte(addr + 2) << 16)
-						| (domain.PeekByte(addr + 3) << 24));
-				}
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			{
+				_previous = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
 			}
 
 			public int Previous

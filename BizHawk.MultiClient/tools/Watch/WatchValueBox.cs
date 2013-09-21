@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Forms;
 namespace BizHawk.MultiClient
 {
-	class WatchValueBox : TextBox
+	class WatchValueBox : TextBox, INumberBox
 	{
 		private Watch.WatchSize _size = Watch.WatchSize.Byte;
 		private Watch.DisplayType _type = Watch.DisplayType.Hex;

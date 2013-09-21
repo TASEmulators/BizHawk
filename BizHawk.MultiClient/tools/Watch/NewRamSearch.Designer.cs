@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem1;
+			System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRamSearch));
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
 			this.WatchListView = new BizHawk.VirtualListView();
@@ -125,24 +125,40 @@
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
 			this.PreviousValueRadio = new System.Windows.Forms.RadioButton();
-			searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStrip1 = new ToolStripEx();
+			this.DoSearchToolButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.NewSearchToolButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+			this.ComparisonBox = new System.Windows.Forms.GroupBox();
+			this.DifferentByBox = new BizHawk.UnsignedIntegerBox();
+			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
+			this.NotEqualToRadio = new System.Windows.Forms.RadioButton();
+			this.EqualToRadio = new System.Windows.Forms.RadioButton();
+			this.GreaterThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
+			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
+			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
+			this.LessThanRadio = new System.Windows.Forms.RadioButton();
+			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.CompareToBox.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
+			this.ComparisonBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// searchToolStripMenuItem1
+			// SearchMenuItem
 			// 
-			searchToolStripMenuItem1.Enabled = false;
-			searchToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.search;
-			searchToolStripMenuItem1.Name = "searchToolStripMenuItem1";
-			searchToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
-			searchToolStripMenuItem1.Text = "&Search";
+			SearchMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.search;
+			SearchMenuItem.Name = "SearchMenuItem";
+			SearchMenuItem.Size = new System.Drawing.Size(215, 22);
+			SearchMenuItem.Text = "&Search";
+			SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
 			// TotalSearchLabel
 			// 
 			this.TotalSearchLabel.AutoSize = true;
-			this.TotalSearchLabel.Location = new System.Drawing.Point(13, 33);
+			this.TotalSearchLabel.Location = new System.Drawing.Point(12, 49);
 			this.TotalSearchLabel.Name = "TotalSearchLabel";
 			this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
 			this.TotalSearchLabel.TabIndex = 2;
@@ -165,10 +181,10 @@
 			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
 			this.WatchListView.LabelEdit = true;
-			this.WatchListView.Location = new System.Drawing.Point(9, 58);
+			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(232, 363);
+			this.WatchListView.Size = new System.Drawing.Size(232, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -556,7 +572,7 @@
 			this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newSearchToolStripMenuItem,
             this.toolStripSeparator7,
-            searchToolStripMenuItem1,
+            SearchMenuItem,
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
             this.copyValueToPrevToolStripMenuItem,
@@ -810,7 +826,7 @@
 			// MemDomainLabel
 			// 
 			this.MemDomainLabel.AutoSize = true;
-			this.MemDomainLabel.Location = new System.Drawing.Point(129, 33);
+			this.MemDomainLabel.Location = new System.Drawing.Point(135, 49);
 			this.MemDomainLabel.Name = "MemDomainLabel";
 			this.MemDomainLabel.Size = new System.Drawing.Size(70, 13);
 			this.MemDomainLabel.TabIndex = 8;
@@ -838,7 +854,7 @@
 			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
 			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(247, 58);
+			this.CompareToBox.Location = new System.Drawing.Point(247, 65);
 			this.CompareToBox.Name = "CompareToBox";
 			this.CompareToBox.Size = new System.Drawing.Size(211, 125);
 			this.CompareToBox.TabIndex = 10;
@@ -874,6 +890,7 @@
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
 			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
 			this.NumberOfChangesBox.TabIndex = 28;
+			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// SpecificAddressBox
 			// 
@@ -884,6 +901,7 @@
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificAddressBox.TabIndex = 26;
+			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// SpecificValueBox
 			// 
@@ -896,6 +914,7 @@
 			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificValueBox.TabIndex = 24;
 			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// NumberOfChangesRadio
 			// 
@@ -943,12 +962,164 @@
 			this.PreviousValueRadio.UseVisualStyleBackColor = true;
 			this.PreviousValueRadio.Click += new System.EventHandler(this.PreviousValueRadio_Click);
 			// 
+			// toolStrip1
+			// 
+			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DoSearchToolButton,
+            this.toolStripSeparator10,
+            this.NewSearchToolButton,
+            this.toolStripSeparator15});
+			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+			this.toolStrip1.Name = "toolStrip1";
+			this.toolStrip1.Size = new System.Drawing.Size(470, 25);
+			this.toolStrip1.TabIndex = 11;
+			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// DoSearchToolButton
+			// 
+			this.DoSearchToolButton.Image = ((System.Drawing.Image)(resources.GetObject("DoSearchToolButton.Image")));
+			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DoSearchToolButton.Name = "DoSearchToolButton";
+			this.DoSearchToolButton.Size = new System.Drawing.Size(65, 22);
+			this.DoSearchToolButton.Text = "Search ";
+			this.DoSearchToolButton.Click += new System.EventHandler(this.SearchMenuItem_Click);
+			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
+			// 
+			// NewSearchToolButton
+			// 
+			this.NewSearchToolButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.NewSearchToolButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.NewSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NewSearchToolButton.Name = "NewSearchToolButton";
+			this.NewSearchToolButton.Size = new System.Drawing.Size(23, 22);
+			this.NewSearchToolButton.Text = "New Search";
+			this.NewSearchToolButton.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
+			// 
+			// toolStripSeparator15
+			// 
+			this.toolStripSeparator15.Name = "toolStripSeparator15";
+			this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
+			// 
+			// ComparisonBox
+			// 
+			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ComparisonBox.Controls.Add(this.DifferentByBox);
+			this.ComparisonBox.Controls.Add(this.DifferentByRadio);
+			this.ComparisonBox.Controls.Add(this.NotEqualToRadio);
+			this.ComparisonBox.Controls.Add(this.EqualToRadio);
+			this.ComparisonBox.Controls.Add(this.GreaterThanOrEqualToRadio);
+			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
+			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
+			this.ComparisonBox.Controls.Add(this.LessThanRadio);
+			this.ComparisonBox.Location = new System.Drawing.Point(247, 196);
+			this.ComparisonBox.Name = "ComparisonBox";
+			this.ComparisonBox.Size = new System.Drawing.Size(211, 159);
+			this.ComparisonBox.TabIndex = 12;
+			this.ComparisonBox.TabStop = false;
+			this.ComparisonBox.Text = "Comparison Operator";
+			// 
+			// DifferentByBox
+			// 
+			this.DifferentByBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.DifferentByBox.Enabled = false;
+			this.DifferentByBox.Location = new System.Drawing.Point(90, 132);
+			this.DifferentByBox.MaxLength = 9;
+			this.DifferentByBox.Name = "DifferentByBox";
+			this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
+			this.DifferentByBox.TabIndex = 34;
+			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
+			// 
+			// DifferentByRadio
+			// 
+			this.DifferentByRadio.AutoSize = true;
+			this.DifferentByRadio.Location = new System.Drawing.Point(7, 134);
+			this.DifferentByRadio.Name = "DifferentByRadio";
+			this.DifferentByRadio.Size = new System.Drawing.Size(83, 17);
+			this.DifferentByRadio.TabIndex = 6;
+			this.DifferentByRadio.Text = "Different By:";
+			this.DifferentByRadio.UseVisualStyleBackColor = true;
+			this.DifferentByRadio.Click += new System.EventHandler(this.DifferentByRadio_Click);
+			// 
+			// NotEqualToRadio
+			// 
+			this.NotEqualToRadio.AutoSize = true;
+			this.NotEqualToRadio.Location = new System.Drawing.Point(7, 35);
+			this.NotEqualToRadio.Name = "NotEqualToRadio";
+			this.NotEqualToRadio.Size = new System.Drawing.Size(88, 17);
+			this.NotEqualToRadio.TabIndex = 5;
+			this.NotEqualToRadio.Text = "Not Equal To";
+			this.NotEqualToRadio.UseVisualStyleBackColor = true;
+			this.NotEqualToRadio.Click += new System.EventHandler(this.NotEqualToRadio_Click);
+			// 
+			// EqualToRadio
+			// 
+			this.EqualToRadio.AutoSize = true;
+			this.EqualToRadio.Checked = true;
+			this.EqualToRadio.Location = new System.Drawing.Point(7, 15);
+			this.EqualToRadio.Name = "EqualToRadio";
+			this.EqualToRadio.Size = new System.Drawing.Size(68, 17);
+			this.EqualToRadio.TabIndex = 32;
+			this.EqualToRadio.TabStop = true;
+			this.EqualToRadio.Text = "Equal To";
+			this.EqualToRadio.UseVisualStyleBackColor = true;
+			this.EqualToRadio.Click += new System.EventHandler(this.EqualToRadio_Click);
+			// 
+			// GreaterThanOrEqualToRadio
+			// 
+			this.GreaterThanOrEqualToRadio.AutoSize = true;
+			this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(7, 113);
+			this.GreaterThanOrEqualToRadio.Name = "GreaterThanOrEqualToRadio";
+			this.GreaterThanOrEqualToRadio.Size = new System.Drawing.Size(146, 17);
+			this.GreaterThanOrEqualToRadio.TabIndex = 3;
+			this.GreaterThanOrEqualToRadio.Text = "Greater Than or Equal To";
+			this.GreaterThanOrEqualToRadio.UseVisualStyleBackColor = true;
+			this.GreaterThanOrEqualToRadio.Click += new System.EventHandler(this.GreaterThanOrEqualToRadio_Click);
+			// 
+			// LessThanOrEqualToRadio
+			// 
+			this.LessThanOrEqualToRadio.AutoSize = true;
+			this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(7, 93);
+			this.LessThanOrEqualToRadio.Name = "LessThanOrEqualToRadio";
+			this.LessThanOrEqualToRadio.Size = new System.Drawing.Size(133, 17);
+			this.LessThanOrEqualToRadio.TabIndex = 2;
+			this.LessThanOrEqualToRadio.Text = "Less Than or Equal To";
+			this.LessThanOrEqualToRadio.UseVisualStyleBackColor = true;
+			this.LessThanOrEqualToRadio.Click += new System.EventHandler(this.LessThanOrEqualToRadio_Click);
+			// 
+			// GreaterThanRadio
+			// 
+			this.GreaterThanRadio.AutoSize = true;
+			this.GreaterThanRadio.Location = new System.Drawing.Point(7, 74);
+			this.GreaterThanRadio.Name = "GreaterThanRadio";
+			this.GreaterThanRadio.Size = new System.Drawing.Size(88, 17);
+			this.GreaterThanRadio.TabIndex = 1;
+			this.GreaterThanRadio.Text = "Greater Than";
+			this.GreaterThanRadio.UseVisualStyleBackColor = true;
+			this.GreaterThanRadio.Click += new System.EventHandler(this.GreaterThanRadio_Click);
+			// 
+			// LessThanRadio
+			// 
+			this.LessThanRadio.AutoSize = true;
+			this.LessThanRadio.Location = new System.Drawing.Point(7, 54);
+			this.LessThanRadio.Name = "LessThanRadio";
+			this.LessThanRadio.Size = new System.Drawing.Size(75, 17);
+			this.LessThanRadio.TabIndex = 0;
+			this.LessThanRadio.Text = "Less Than";
+			this.LessThanRadio.UseVisualStyleBackColor = true;
+			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
+			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(470, 459);
+			this.Controls.Add(this.ComparisonBox);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CompareToBox);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
@@ -966,6 +1137,10 @@
 			this.menuStrip1.PerformLayout();
 			this.CompareToBox.ResumeLayout(false);
 			this.CompareToBox.PerformLayout();
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
+			this.ComparisonBox.ResumeLayout(false);
+			this.ComparisonBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1067,5 +1242,19 @@
 		private System.Windows.Forms.RadioButton SpecificAddressRadio;
 		private System.Windows.Forms.RadioButton SpecificValueRadio;
 		private System.Windows.Forms.RadioButton PreviousValueRadio;
+		private ToolStripEx toolStrip1;
+		private System.Windows.Forms.ToolStripButton DoSearchToolButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private System.Windows.Forms.ToolStripButton NewSearchToolButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
+		private System.Windows.Forms.GroupBox ComparisonBox;
+		private UnsignedIntegerBox DifferentByBox;
+		private System.Windows.Forms.RadioButton DifferentByRadio;
+		private System.Windows.Forms.RadioButton NotEqualToRadio;
+		private System.Windows.Forms.RadioButton EqualToRadio;
+		private System.Windows.Forms.RadioButton GreaterThanOrEqualToRadio;
+		private System.Windows.Forms.RadioButton LessThanOrEqualToRadio;
+		private System.Windows.Forms.RadioButton GreaterThanRadio;
+		private System.Windows.Forms.RadioButton LessThanRadio;
     }
 }
