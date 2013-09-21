@@ -692,6 +692,7 @@
     </Compile>
     <Compile Include="tools\Watch\WatchLegacy.cs" />
     <Compile Include="tools\Watch\WatchList.cs" />
+    <Compile Include="tools\Watch\WatchValueBox.cs" />
     <Compile Include="XmlGame.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>

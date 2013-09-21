@@ -34,7 +34,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.ValeLabel = new System.Windows.Forms.Label();
-			this.ValueBox = new System.Windows.Forms.TextBox();
+			this.ValueBox = new WatchValueBox();
 			this.ValueHexLabel = new System.Windows.Forms.Label();
 			this.DisplayTypeLabel = new System.Windows.Forms.Label();
 			this.SizeLabel = new System.Windows.Forms.Label();
@@ -106,7 +106,6 @@
 			this.ValueBox.Size = new System.Drawing.Size(116, 20);
 			this.ValueBox.TabIndex = 10;
 			this.ValueBox.Text = "0000";
-			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			// 
 			// ValueHexLabel
 			// 
@@ -243,7 +242,7 @@
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label OutputLabel;
         private System.Windows.Forms.Label ValeLabel;
-        private System.Windows.Forms.TextBox ValueBox;
+        private WatchValueBox ValueBox;
 		private System.Windows.Forms.Label ValueHexLabel;
 		private System.Windows.Forms.Label DisplayTypeLabel;
 		private System.Windows.Forms.Label SizeLabel;

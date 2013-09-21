@@ -713,13 +713,12 @@ namespace BizHawk.MultiClient
 					case DisplayType.FixedPoint_12_4:
 						if (InputValidate.IsValidFixedPointNumber(value))
 						{
-							//TODO
+							throw new NotImplementedException();
 						}
 						else
 						{
 							return false;
 						}
-						break;
 				}
 				PokeWord(val);
 				return true;
@@ -913,23 +912,21 @@ namespace BizHawk.MultiClient
 					case DisplayType.FixedPoint_20_12:
 						if (InputValidate.IsValidFixedPointNumber(value))
 						{
-							//TODO
+							throw new NotImplementedException();
 						}
 						else
 						{
 							return false;
 						}
-						break;
 					case DisplayType.Float:
 						if (InputValidate.IsValidDecimalNumber(value))
 						{
-							//TODO
+							throw new NotImplementedException();
 						}
 						else
 						{
 							return false;
 						}
-						break;
 				}
 				PokeDWord(val);
 				return true;

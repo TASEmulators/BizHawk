@@ -65,87 +65,15 @@ namespace BizHawk.MultiClient
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
 			BigEndianLabel.Text = _watchList[0].BigEndian ? "Big Endian" : "Little Endian";
 			SetTitle();
-			SetValueBoxProperties();
-		}
 
-		private void SetValueBoxProperties()
-		{
-			switch(_watchList[0].Type)
-			{
-				default:
-					ValueBox.MaxLength = 8;
-					break;
-				case Watch.DisplayType.Binary:
-					switch (_watchList[0].Size)
-					{
-						default:
-						case Watch.WatchSize.Byte:
-							ValueBox.MaxLength = 8;
-							break;
-						case Watch.WatchSize.Word:
-							ValueBox.MaxLength = 16;
-							break;
-					}
-					break;
-				case Watch.DisplayType.Hex:
-					switch (_watchList[0].Size)
-					{
-						default:
-						case Watch.WatchSize.Byte:
-							ValueBox.MaxLength = 2;
-							break;
-						case Watch.WatchSize.Word:
-							ValueBox.MaxLength = 4;
-							break;
-						case Watch.WatchSize.DWord:
-							ValueBox.MaxLength = 8;
-							break;
-					}
-					break;
-				case Watch.DisplayType.Signed:
-					switch (_watchList[0].Size)
-					{
-						default:
-						case Watch.WatchSize.Byte:
-							ValueBox.MaxLength = 4;
-							break;
-						case Watch.WatchSize.Word:
-							ValueBox.MaxLength = 6;
-							break;
-						case Watch.WatchSize.DWord:
-							ValueBox.MaxLength = 11;
-							break;
-					}
-					break;
-				case Watch.DisplayType.Unsigned:
-					switch (_watchList[0].Size)
-					{
-						default:
-						case Watch.WatchSize.Byte:
-							ValueBox.MaxLength = 3;
-							break;
-						case Watch.WatchSize.Word:
-							ValueBox.MaxLength = 5;
-							break;
-						case Watch.WatchSize.DWord:
-							ValueBox.MaxLength = 10;
-							break;
-					}
-					break;
-				case Watch.DisplayType.Float:
-				case Watch.DisplayType.FixedPoint_12_4:
-				case Watch.DisplayType.FixedPoint_20_12:
-					ValueBox.MaxLength = 32;
-					break;
-			}
+			ValueBox.ByteSize = _watchList[0].Size;
+			ValueBox.Type = _watchList[0].Type;
 		}
 
 		private void SetTitle()
 		{
 			Text = "Ram Poke - " + _watchList[0].Domain.Name;
 		}
-
-		#region Events
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
@@ -173,72 +101,5 @@ namespace BizHawk.MultiClient
 				OutputLabel.Text = "An error occured when writing Value.";
 			}
 		}
-
-		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
-			{
-				return;
-			}
-
-			if (e.KeyChar == '.')
-			{
-				if (ValueBox.Text.Contains('.'))
-				{
-					e.Handled = true;
-				}
-			}
-			else if (e.KeyChar == '-')
-			{
-				if (ValueBox.Text.Contains('-'))
-				{
-					e.Handled = true;
-				}
-			}
-
-			switch(_watchList[0].Type)
-			{
-				case Watch.DisplayType.Signed:
-					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch.DisplayType.Unsigned:
-					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch.DisplayType.Hex:
-					if (!InputValidate.IsValidHexNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch.DisplayType.Binary:
-					if (!InputValidate.IsValidBinaryNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch.DisplayType.FixedPoint_12_4:
-				case Watch.DisplayType.FixedPoint_20_12:
-					if (!InputValidate.IsValidFixedPointNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch.DisplayType.Float:
-					if (!InputValidate.IsValidDecimalNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-					
-			}
-		}
-
-		#endregion
 	}
 }
