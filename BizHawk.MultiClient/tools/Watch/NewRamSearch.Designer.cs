@@ -86,9 +86,9 @@
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CopyValueToPrevMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearChangeCountsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.excludeRamWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,12 +97,6 @@
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Previous_LastFrameMenuItemOld = new System.Windows.Forms.ToolStripMenuItem();
-			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.fastModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExcludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +114,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumberOfChangesBox = new BizHawk.UnsignedIntegerBox();
 			this.SpecificAddressBox = new BizHawk.HexTextBox();
-			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
@@ -130,6 +123,9 @@
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.NewSearchToolButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+			this.CopyValueToPrevToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.ClearChangeCountsToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.RemoveToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ComparisonBox = new System.Windows.Forms.GroupBox();
 			this.DifferentByBox = new BizHawk.UnsignedIntegerBox();
 			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
@@ -139,6 +135,7 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -189,6 +186,8 @@
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.VirtualMode = true;
+			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
+			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			// 
 			// AddressColumn
 			// 
@@ -575,9 +574,9 @@
             SearchMenuItem,
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
-            this.copyValueToPrevToolStripMenuItem,
-            this.clearChangeCountsToolStripMenuItem,
-            this.removeSelectedToolStripMenuItem,
+            this.CopyValueToPrevMenuItem,
+            this.ClearChangeCountsMenuItem,
+            this.RemoveMenuItem,
             this.excludeRamWatchListToolStripMenuItem,
             this.toolStripSeparator5,
             this.addSelectedToRamWatchToolStripMenuItem,
@@ -622,29 +621,29 @@
 			this.redoToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			// 
-			// copyValueToPrevToolStripMenuItem
+			// CopyValueToPrevMenuItem
 			// 
-			this.copyValueToPrevToolStripMenuItem.Enabled = false;
-			this.copyValueToPrevToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
-			this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
-			this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
+			this.CopyValueToPrevMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
+			this.CopyValueToPrevMenuItem.Name = "CopyValueToPrevMenuItem";
+			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.CopyValueToPrevMenuItem.Text = "Copy Value to Prev";
+			this.CopyValueToPrevMenuItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
 			// 
-			// clearChangeCountsToolStripMenuItem
+			// ClearChangeCountsMenuItem
 			// 
-			this.clearChangeCountsToolStripMenuItem.Enabled = false;
-			this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
-			this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
+			this.ClearChangeCountsMenuItem.Name = "ClearChangeCountsMenuItem";
+			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearChangeCountsMenuItem.Text = "&Clear Change Counts";
+			this.ClearChangeCountsMenuItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
-			// removeSelectedToolStripMenuItem
+			// RemoveMenuItem
 			// 
-			this.removeSelectedToolStripMenuItem.Enabled = false;
-			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
-			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
-			this.removeSelectedToolStripMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.removeSelectedToolStripMenuItem.Text = "&Remove selected";
+			this.RemoveMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveMenuItem.Name = "RemoveMenuItem";
+			this.RemoveMenuItem.ShortcutKeyDisplayString = "Delete";
+			this.RemoveMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RemoveMenuItem.Text = "&Remove selected";
+			this.RemoveMenuItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
 			// excludeRamWatchListToolStripMenuItem
 			// 
@@ -701,8 +700,6 @@
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.definePreviousValueToolStripMenuItem,
-            this.fastModeToolStripMenuItem,
             this.previewModeToolStripMenuItem,
             this.alwaysExcludeRamSearchListToolStripMenuItem,
             this.useUndoHistoryToolStripMenuItem,
@@ -716,53 +713,6 @@
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// definePreviousValueToolStripMenuItem
-			// 
-			this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sinceLastSearchToolStripMenuItem,
-            this.originalValueToolStripMenuItem,
-            this.Previous_LastFrameMenuItemOld,
-            this.sinceLastChangeToolStripMenuItem});
-			this.definePreviousValueToolStripMenuItem.Enabled = false;
-			this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
-			this.definePreviousValueToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.definePreviousValueToolStripMenuItem.Text = "Define Previous Value As";
-			// 
-			// sinceLastSearchToolStripMenuItem
-			// 
-			this.sinceLastSearchToolStripMenuItem.Enabled = false;
-			this.sinceLastSearchToolStripMenuItem.Name = "sinceLastSearchToolStripMenuItem";
-			this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
-			// 
-			// originalValueToolStripMenuItem
-			// 
-			this.originalValueToolStripMenuItem.Enabled = false;
-			this.originalValueToolStripMenuItem.Name = "originalValueToolStripMenuItem";
-			this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.originalValueToolStripMenuItem.Text = "Original value";
-			// 
-			// Previous_LastFrameMenuItemOld
-			// 
-			this.Previous_LastFrameMenuItemOld.Enabled = false;
-			this.Previous_LastFrameMenuItemOld.Name = "Previous_LastFrameMenuItemOld";
-			this.Previous_LastFrameMenuItemOld.Size = new System.Drawing.Size(167, 22);
-			this.Previous_LastFrameMenuItemOld.Text = "Since last Frame";
-			// 
-			// sinceLastChangeToolStripMenuItem
-			// 
-			this.sinceLastChangeToolStripMenuItem.Enabled = false;
-			this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
-			this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
-			// 
-			// fastModeToolStripMenuItem
-			// 
-			this.fastModeToolStripMenuItem.Enabled = false;
-			this.fastModeToolStripMenuItem.Name = "fastModeToolStripMenuItem";
-			this.fastModeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.fastModeToolStripMenuItem.Text = "Fast Mode";
 			// 
 			// previewModeToolStripMenuItem
 			// 
@@ -903,19 +853,6 @@
 			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
-			this.SpecificValueBox.MaxLength = 2;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 24;
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
-			// 
 			// NumberOfChangesRadio
 			// 
 			this.NumberOfChangesRadio.AutoSize = true;
@@ -964,11 +901,15 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DoSearchToolButton,
             this.toolStripSeparator10,
             this.NewSearchToolButton,
-            this.toolStripSeparator15});
+            this.toolStripSeparator15,
+            this.CopyValueToPrevToolBarItem,
+            this.ClearChangeCountsToolBarItem,
+            this.RemoveToolBarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(470, 25);
@@ -996,13 +937,46 @@
 			this.NewSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewSearchToolButton.Name = "NewSearchToolButton";
 			this.NewSearchToolButton.Size = new System.Drawing.Size(23, 22);
-			this.NewSearchToolButton.Text = "New Search";
+			this.NewSearchToolButton.Text = "Start new search";
 			this.NewSearchToolButton.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator15
 			// 
 			this.toolStripSeparator15.Name = "toolStripSeparator15";
 			this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
+			// 
+			// CopyValueToPrevToolBarItem
+			// 
+			this.CopyValueToPrevToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.CopyValueToPrevToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
+			this.CopyValueToPrevToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.CopyValueToPrevToolBarItem.Name = "CopyValueToPrevToolBarItem";
+			this.CopyValueToPrevToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.CopyValueToPrevToolBarItem.Text = "Copy Value to Previous";
+			this.CopyValueToPrevToolBarItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
+			// 
+			// ClearChangeCountsToolBarItem
+			// 
+			this.ClearChangeCountsToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.ClearChangeCountsToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountsToolBarItem.Image")));
+			this.ClearChangeCountsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.ClearChangeCountsToolBarItem.Name = "ClearChangeCountsToolBarItem";
+			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.ClearChangeCountsToolBarItem.Text = "C";
+			this.ClearChangeCountsToolBarItem.ToolTipText = "Clear Change Counts";
+			this.ClearChangeCountsToolBarItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
+			// 
+			// RemoveToolBarItem
+			// 
+			this.RemoveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RemoveToolBarItem.Enabled = false;
+			this.RemoveToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RemoveToolBarItem.Name = "RemoveToolBarItem";
+			this.RemoveToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.RemoveToolBarItem.Text = "C&ut";
+			this.RemoveToolBarItem.ToolTipText = "Eliminate Selected Items";
+			this.RemoveToolBarItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
 			// ComparisonBox
 			// 
@@ -1112,6 +1086,19 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificValueBox.TabIndex = 24;
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
+			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
@@ -1169,21 +1156,16 @@
 		private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearChangeCountsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ClearChangeCountsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RemoveMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem addSelectedToRamWatchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem definePreviousValueToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Previous_LastFrameMenuItemOld;
-        private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem excludeRamWatchListToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem alwaysExcludeRamSearchListToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyValueToPrevToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CopyValueToPrevMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem startNewSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
@@ -1197,7 +1179,6 @@
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadDialogMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
@@ -1205,7 +1186,6 @@
         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
 		private System.Windows.Forms.ToolStripMenuItem clearUndoHistoryToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem fastModeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
 		private System.Windows.Forms.ToolStripMenuItem clearPreviewToolStripMenuItem;
@@ -1256,5 +1236,9 @@
 		private System.Windows.Forms.RadioButton LessThanOrEqualToRadio;
 		private System.Windows.Forms.RadioButton GreaterThanRadio;
 		private System.Windows.Forms.RadioButton LessThanRadio;
+		private System.Windows.Forms.ToolStripButton CopyValueToPrevToolBarItem;
+		private System.Windows.Forms.ToolStripButton ClearChangeCountsToolBarItem;
+		private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton RemoveToolBarItem;
     }
 }
