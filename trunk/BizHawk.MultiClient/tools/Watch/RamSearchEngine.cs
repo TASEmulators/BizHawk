@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -233,6 +234,49 @@ namespace BizHawk.MultiClient
 			}
 
 			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
+		}
+
+		public void AddRange(List<int> addresses, bool append)
+		{
+			if (!append)
+			{
+				_watchList.Clear();
+			}
+
+			switch(_settings.Size)
+			{
+				default:
+				case Watch.WatchSize.Byte:
+					if (_settings.Mode == Settings.SearchMode.Detailed)
+					{
+						foreach(var addr in addresses) { _watchList.Add(new MiniByteWatchDetailed(_settings.Domain, addr)); }
+					}
+					else
+					{
+						foreach(var addr in addresses) { _watchList.Add(new MiniByteWatch(_settings.Domain, addr)); }
+					}
+					break;
+				case Watch.WatchSize.Word:
+					if (_settings.Mode == Settings.SearchMode.Detailed)
+					{
+						foreach (var addr in addresses) { _watchList.Add(new MiniWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian)); }
+					}
+					else
+					{
+						foreach (var addr in addresses) { _watchList.Add(new MiniWordWatch(_settings.Domain, addr, _settings.BigEndian)); }
+					}
+					break;
+				case Watch.WatchSize.DWord:
+					if (_settings.Mode == Settings.SearchMode.Detailed)
+					{
+						foreach (var addr in addresses) { _watchList.Add(new MiniDWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian)); }
+					}
+					else
+					{
+						foreach (var addr in addresses) { _watchList.Add(new MiniDWordWatch(_settings.Domain, addr, _settings.BigEndian)); }
+					}
+					break;
+			}
 		}
 
 		#endregion

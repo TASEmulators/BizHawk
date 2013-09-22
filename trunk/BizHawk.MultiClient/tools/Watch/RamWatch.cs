@@ -810,7 +810,7 @@ namespace BizHawk.MultiClient
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			bool append = sender == appendFileToolStripMenuItem;
-			LoadWatchFile(WatchList.GetFileFromUser(Watches.CurrentFileName), false);
+			LoadWatchFile(WatchList.GetFileFromUser(Watches.CurrentFileName), append);
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
