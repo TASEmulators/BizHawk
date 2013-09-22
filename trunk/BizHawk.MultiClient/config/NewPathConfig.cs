@@ -33,12 +33,12 @@ namespace BizHawk.MultiClient
 			get
 			{
 				return new AutoCompleteStringCollection()
-                {
-                    "%recent%",
-                    "%exe%",
-                    ".\\",
-                    "..\\",
-                };
+				{
+					"%recent%",
+					"%exe%",
+					".\\",
+					"..\\",
+				};
 			}
 		}
 
@@ -220,7 +220,7 @@ namespace BizHawk.MultiClient
 				System = null;
 			}
 
-			FolderBrowserEx f = new FolderBrowserEx
+			var f = new FolderBrowserDialog
 			{
 				Description = "Set the directory for " + _Name,
 				SelectedPath = PathManager.MakeAbsolutePath(box.Text, System)
@@ -246,7 +246,7 @@ namespace BizHawk.MultiClient
 
 		private void BrowseBase_Click(object sender, EventArgs e)
 		{
-			FolderBrowserEx f = new FolderBrowserEx
+			var f = new FolderBrowserDialog
 			{
 				Description = "Set the directory for the base global path",
 				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
