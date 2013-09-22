@@ -168,17 +168,15 @@ namespace BizHawk.MultiClient
 
 		private void LoadFileFromRecent(string path)
 		{
-			//bool load_result = Watches.Load(path, details: true, append: false);
-			bool load_result = true; //TODO
-			if (!load_result)
+			FileInfo file = new FileInfo(path);
+
+			if (!file.Exists)
 			{
 				Global.Config.RecentSearches.HandleLoadError(path);
 			}
 			else
 			{
-				Global.Config.RecentSearches.Add(path);
-				
-				//TODO: update listview and refresh things
+				LoadWatchFile(file, append: false);
 			}
 		}
 
@@ -318,6 +316,22 @@ namespace BizHawk.MultiClient
 			WatchListView.SelectedIndices.Clear();
 		}
 
+		public void LoadWatchFile(FileInfo file, bool append)
+		{
+			if (file != null)
+			{
+				WatchList watches = new WatchList(Settings.Domain);
+				watches.Load(file.FullName, false, append);
+				List<int> addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
+				Searches.AddRange(addresses, append);
+
+				WatchListView.ItemCount = Searches.Count;
+				SetTotal();
+				MessageLabel.Text = file.Name + " loaded";
+				Global.Config.RecentSearches.Add(file.FullName);
+			}
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -333,6 +347,14 @@ namespace BizHawk.MultiClient
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentSearches.GenerateRecentMenu(LoadFileFromRecent));
+		}
+
+		private void OpenMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadWatchFile(
+				WatchList.GetFileFromUser(String.Empty),
+				sender == AppendFileMenuItem
+				);
 		}
 
 		private void CloseMenuItem_Click(object sender, EventArgs e)
