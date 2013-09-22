@@ -404,42 +404,42 @@ namespace BizHawk.MultiClient
 				{
 					case ComparisonOperator.Equal:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount == CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
 						break;
 					case ComparisonOperator.NotEqual:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount != CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
 						break;
 					case ComparisonOperator.GreaterThan:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount > CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
 						break;
 					case ComparisonOperator.GreaterThanEqual:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount >= CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
 						break;
 					case ComparisonOperator.LessThan:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount < CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
 						break;
 					case ComparisonOperator.LessThanEqual:
 						_watchList = _watchList
-							.Cast<IWatchDetails>()
+							.Cast<IMiniWatchDetails>()
 							.Where(x => x.ChangeCount <= CompareValue.Value)
 							.Cast<IMiniWatch>()
 							.ToList();
@@ -448,7 +448,7 @@ namespace BizHawk.MultiClient
 						if (DifferentBy.HasValue)
 						{
 							_watchList = _watchList
-								.Cast<IWatchDetails>()
+								.Cast<IMiniWatchDetails>()
 								.Where(x => (x.ChangeCount + DifferentBy.Value == CompareValue.Value) || (x.ChangeCount - DifferentBy.Value == CompareValue.Value))
 								.Cast<IMiniWatch>()
 								.ToList();
@@ -468,7 +468,44 @@ namespace BizHawk.MultiClient
 
 		private void CompareDifference()
 		{
-
+			if (CompareValue.HasValue)
+			{
+				switch (Operator)
+				{
+					case ComparisonOperator.Equal:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) == CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.NotEqual:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) != CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThan:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) > CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.GreaterThanEqual:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) >= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThan:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) < CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.LessThanEqual:
+						_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous) <= CompareValue.Value).ToList();
+						break;
+					case ComparisonOperator.DifferentBy:
+						if (DifferentBy.HasValue)
+						{
+							_watchList = _watchList.Where(x => (GetValue(x.Address) - x.Previous + DifferentBy.Value == CompareValue) || (GetValue(x.Address) - x.Previous - DifferentBy.Value == x.Previous)).ToList();
+						}
+						else
+						{
+							throw new InvalidOperationException();
+						}
+						break;
+				}
+			}
+			else
+			{
+				throw new InvalidCastException();
+			}
 		}
 
 		#endregion
@@ -510,6 +547,7 @@ namespace BizHawk.MultiClient
 		private interface IMiniWatchDetails
 		{
 			int ChangeCount { get; }
+			
 			void ClearChangeCount();
 			void Update(Watch.PreviousType type, MemoryDomain domain);
 		}

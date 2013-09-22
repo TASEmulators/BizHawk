@@ -299,8 +299,6 @@ namespace BizHawk.MultiClient
 			NumberOfChangesRadio.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			NumberOfChangesBox.Text = String.Empty;
-			DifferenceRadio.Enabled = false;
-			DifferentByBox.Enabled = false;
 			ClearChangeCountsToolBarItem.Enabled = false;
 
 			if (NumberOfChangesRadio.Checked || DifferenceRadio.Checked)
@@ -707,14 +705,17 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.Previous);
 		}
 
 		private void SpecificValueRadio_Click(object sender, EventArgs e)
 		{
 			SpecificValueBox.Enabled = true;
+			SpecificValueBox.Focus();
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.SpecificValue);
 		}
 
@@ -722,7 +723,9 @@ namespace BizHawk.MultiClient
 		{
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = true;
+			SpecificAddressBox.Focus();
 			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
 		}
 
@@ -731,6 +734,8 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = true;
+			NumberOfChangesBox.Focus();
+			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.Changes);
 		}
 
@@ -739,6 +744,8 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = true;
+			DifferenceBox.Focus();
 			SetCompareTo(RamSearchEngine.Compare.Difference);
 		}
 
