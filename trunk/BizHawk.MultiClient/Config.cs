@@ -672,9 +672,9 @@ namespace BizHawk.MultiClient
 		        {
 			        //General
 			        new Binding() { DisplayName = "Frame Advance", Bindings = "F", TabGroup = "General", DefaultBinding = "F", Ordinal = 0 },
-			        new Binding() { DisplayName = "Rewind", Bindings = "Shift+R, X1 LeftShoulder", TabGroup = "General", DefaultBinding = "Shift+R, X1 LeftShoulder", Ordinal = 1 },
+			        new Binding() { DisplayName = "Rewind", Bindings = "Shift+R, J1 B7, X1 Left Trigger", TabGroup = "General", DefaultBinding = "Shift+R, J1 B7, X1 Left Trigger", Ordinal = 1 },
 			        new Binding() { DisplayName = "Pause", Bindings = "Pause", TabGroup = "General", DefaultBinding = "Pause", Ordinal = 2 },
-			        new Binding() { DisplayName = "Fast Forward", Bindings = "Tab, X1 RightShoulder", TabGroup = "General", DefaultBinding = "Tab, X1 RightShoulder", Ordinal = 3 },
+			        new Binding() { DisplayName = "Fast Forward", Bindings = "Tab, J1 B8, X1 Right Trigger", TabGroup = "General", DefaultBinding = "Tab, J1 B8, X1 Right Trigger", Ordinal = 3 },
 			        new Binding() { DisplayName = "Turbo", Bindings = "Shift+Tab", TabGroup = "General", DefaultBinding = "Shift+Tab", Ordinal = 4 },
 			        new Binding() { DisplayName = "Toggle Throttle", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 5 },
 			        new Binding() { DisplayName = "Soft Reset", Bindings = "", TabGroup = "General", DefaultBinding = "", Ordinal = 6 },
