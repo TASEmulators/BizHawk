@@ -136,9 +136,10 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
-			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.DifferenceBox = new BizHawk.UnsignedIntegerBox();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -789,6 +790,7 @@
 			// CompareToBox
 			// 
 			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.CompareToBox.Controls.Add(this.DifferenceBox);
 			this.CompareToBox.Controls.Add(this.DifferenceRadio);
 			this.CompareToBox.Controls.Add(this.label1);
 			this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
@@ -1100,19 +1102,6 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
-			this.SpecificValueBox.MaxLength = 2;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 24;
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
-			// 
 			// PokeAddressToolBarItem
 			// 
 			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1134,6 +1123,30 @@
 			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.FreezeAddressToolBarItem.Text = "Freeze";
 			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+			// 
+			// DifferenceBox
+			// 
+			this.DifferenceBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.DifferenceBox.Enabled = false;
+			this.DifferenceBox.Location = new System.Drawing.Point(135, 98);
+			this.DifferenceBox.MaxLength = 8;
+			this.DifferenceBox.Name = "DifferenceBox";
+			this.DifferenceBox.Size = new System.Drawing.Size(65, 20);
+			this.DifferenceBox.TabIndex = 30;
+			this.DifferenceBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
+			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificValueBox.TabIndex = 24;
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// NewRamSearch
 			// 
@@ -1279,5 +1292,6 @@
 		private System.Windows.Forms.ToolStripButton AddToRamWatchToolBarItem;
 		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
+		private UnsignedIntegerBox DifferenceBox;
     }
 }
