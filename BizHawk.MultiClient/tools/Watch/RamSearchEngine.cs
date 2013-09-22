@@ -142,8 +142,8 @@ namespace BizHawk.MultiClient
 					CompareChanges();
 					break;
 				case RamSearchEngine.Compare.Difference:
-					throw new NotImplementedException();
-					
+					CompareDifference();
+					break;
 			}
 
 			if (_settings.PreviousType == Watch.PreviousType.LastSearch)
@@ -175,7 +175,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				/*TODO*/
+				return;
 			}
 		}
 
@@ -520,16 +520,9 @@ namespace BizHawk.MultiClient
 				case Watch.WatchSize.Byte:
 					return _settings.Domain.PeekByte(addr);
 				case Watch.WatchSize.Word:
-					if (_settings.BigEndian)
-					{
-						return (ushort)((_settings.Domain.PeekByte(addr) << 8) | (_settings.Domain.PeekByte(addr + 1)));
-					}
-					else
-					{
-						return (ushort)((_settings.Domain.PeekByte(addr)) | (_settings.Domain.PeekByte(addr + 1) << 8));
-					}
+					return _settings.Domain.PeekWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
 				case Watch.WatchSize.DWord:
-					throw new NotImplementedException();
+					return (int)_settings.Domain.PeekDWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
 			}
 		}
 
