@@ -481,25 +481,23 @@ namespace BizHawk.MultiClient
 
 		private Point GetPromptPoint()
 		{
-			Point p = new Point(SearchListView.Location.X, SearchListView.Location.Y);
-			return PointToScreen(p);
+			return PointToScreen(new Point(SearchListView.Location.X, SearchListView.Location.Y));
 		}
 
 		private void PokeAddress()
 		{
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			Global.Sound.StopSound();
-			var poke = new RamPoke();
-			Global.Sound.StartSound();
-
 			if (indexes.Count > 0)
 			{
+				Global.Sound.StopSound();
+				var poke = new RamPoke();
 				var watch = Watch.ConvertLegacyWatch(Searches[indexes[0]]);
 				poke.SetWatch(new List<Watch> { watch });
+				poke.InitialLocation = GetPromptPoint();
+				poke.ShowDialog();
+				UpdateValues();
+				Global.Sound.StartSound();
 			}
-			poke.InitialLocation = GetPromptPoint();
-			poke.ShowDialog();
-			UpdateValues();
 		}
 
 		private void PoketoolStripButton1_Click(object sender, EventArgs e)
