@@ -56,7 +56,7 @@
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppendFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TruncateFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TruncateFromFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -113,7 +113,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumberOfChangesBox = new BizHawk.UnsignedIntegerBox();
 			this.SpecificAddressBox = new BizHawk.HexTextBox();
-			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
@@ -135,6 +134,7 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -327,7 +327,7 @@
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.AppendFileMenuItem,
-            this.TruncateFromFileToolStripMenuItem,
+            this.TruncateFromFileMenuItem,
             this.RecentSubMenu,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
@@ -372,11 +372,11 @@
 			// 
 			// TruncateFromFileToolStripMenuItem
 			// 
-			this.TruncateFromFileToolStripMenuItem.Enabled = false;
-			this.TruncateFromFileToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
-			this.TruncateFromFileToolStripMenuItem.Name = "TruncateFromFileToolStripMenuItem";
-			this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
+			this.TruncateFromFileMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
+			this.TruncateFromFileMenuItem.Name = "TruncateFromFileToolStripMenuItem";
+			this.TruncateFromFileMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.TruncateFromFileMenuItem.Text = "&Truncate from File...";
+			this.TruncateFromFileMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 
@@ -843,19 +843,6 @@
 			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
-			this.SpecificValueBox.MaxLength = 2;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 24;
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
-			// 
 			// NumberOfChangesRadio
 			// 
 			this.NumberOfChangesRadio.AutoSize = true;
@@ -1089,6 +1076,19 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificValueBox.TabIndex = 24;
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
+			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
@@ -1152,7 +1152,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem addSelectedToRamWatchToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem alwaysExcludeRamSearchListToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CopyValueToPrevMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
