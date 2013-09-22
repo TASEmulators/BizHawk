@@ -22,6 +22,8 @@ namespace BizHawk.MultiClient
 		public const string CHANGES = "ChangesColumn";
 		public const string DIFF = "DiffColumn";
 
+		private string CurrentFileName = String.Empty;
+
 		private RamSearchEngine Searches;
 		private RamSearchEngine.Settings Settings;
 
@@ -330,6 +332,11 @@ namespace BizHawk.MultiClient
 		{
 			if (file != null)
 			{
+				if (!truncate)
+				{
+					CurrentFileName = file.FullName;
+				}
+
 				WatchList watches = new WatchList(Settings.Domain);
 				watches.Load(file.FullName, false, append);
 				List<int> addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
@@ -359,7 +366,7 @@ namespace BizHawk.MultiClient
 		
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-
+			SaveMenuItem.Enabled = !String.IsNullOrWhiteSpace(CurrentFileName);
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -375,6 +382,42 @@ namespace BizHawk.MultiClient
 				sender == AppendFileMenuItem,
 				sender == TruncateFromFileMenuItem
 				);
+		}
+
+		private void SaveMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!String.IsNullOrWhiteSpace(CurrentFileName))
+			{
+				WatchList watches = new WatchList(Settings.Domain);
+				watches.CurrentFileName = CurrentFileName;
+				for (int i = 0; i < Searches.Count; i++)
+				{
+					watches.Add(Searches[i]);
+				}
+
+				if (watches.Save())
+				{
+					CurrentFileName = watches.CurrentFileName;
+					MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+				}
+			}
+		}
+
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		{
+			WatchList watches = new WatchList(Settings.Domain);
+			watches.CurrentFileName = CurrentFileName;
+			for(int i = 0; i < Searches.Count; i++)
+			{
+				watches.Add(Searches[i]);
+			}
+
+			if (watches.SaveAs())
+			{
+				CurrentFileName = watches.CurrentFileName;
+				MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+				Global.Config.RecentSearches.Add(watches.CurrentFileName);
+			}
 		}
 
 		private void CloseMenuItem_Click(object sender, EventArgs e)

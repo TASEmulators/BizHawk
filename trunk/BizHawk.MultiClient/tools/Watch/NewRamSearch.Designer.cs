@@ -53,8 +53,8 @@
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppendFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TruncateFromFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -324,8 +324,8 @@
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenMenuItem,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
+            this.SaveMenuItem,
+            this.SaveAsMenuItem,
             this.AppendFileMenuItem,
             this.TruncateFromFileMenuItem,
             this.RecentSubMenu,
@@ -345,23 +345,23 @@
 			this.OpenMenuItem.Text = "&Open...";
 			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
-			// saveToolStripMenuItem
+			// SaveMenuItem
 			// 
-			this.saveToolStripMenuItem.Enabled = false;
-			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
-			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.saveToolStripMenuItem.Text = "&Save";
+			this.SaveMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.SaveMenuItem.Name = "SaveMenuItem";
+			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SaveMenuItem.Text = "&Save";
+			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
-			// saveAsToolStripMenuItem
+			// SaveAsMenuItem
 			// 
-			this.saveAsToolStripMenuItem.Enabled = false;
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
+			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.saveAsToolStripMenuItem.Text = "Save As...";
+			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SaveAsMenuItem.Text = "Save As...";
+			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// AppendFileMenuItem
 			// 
@@ -370,10 +370,10 @@
 			this.AppendFileMenuItem.Text = "&Append File...";
 			this.AppendFileMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
-			// TruncateFromFileToolStripMenuItem
+			// TruncateFromFileMenuItem
 			// 
 			this.TruncateFromFileMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
-			this.TruncateFromFileMenuItem.Name = "TruncateFromFileToolStripMenuItem";
+			this.TruncateFromFileMenuItem.Name = "TruncateFromFileMenuItem";
 			this.TruncateFromFileMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.TruncateFromFileMenuItem.Text = "&Truncate from File...";
 			this.TruncateFromFileMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
@@ -1133,8 +1133,8 @@
 		private System.Windows.Forms.ColumnHeader ChangesColumn;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreOriginalWindowSizeToolStripMenuItem;
