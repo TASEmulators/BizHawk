@@ -90,9 +90,9 @@
 			this.ClearChangeCountsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AddToRamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PokeAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FreezeAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,6 +125,8 @@
 			this.CopyValueToPrevToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ClearChangeCountsToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.RemoveToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+			this.AddToRamWatchToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ComparisonBox = new System.Windows.Forms.GroupBox();
 			this.DifferentByBox = new BizHawk.UnsignedIntegerBox();
 			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
@@ -135,6 +137,8 @@
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
+			this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -577,9 +581,9 @@
             this.ClearChangeCountsMenuItem,
             this.RemoveMenuItem,
             this.toolStripSeparator5,
-            this.addSelectedToRamWatchToolStripMenuItem,
-            this.pokeAddressToolStripMenuItem,
-            this.freezeAddressToolStripMenuItem,
+            this.AddToRamWatchMenuItem,
+            this.PokeAddressMenuItem,
+            this.FreezeAddressMenuItem,
             this.toolStripSeparator13,
             this.clearUndoHistoryToolStripMenuItem});
 			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
@@ -648,32 +652,32 @@
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(212, 6);
 			// 
-			// addSelectedToRamWatchToolStripMenuItem
+			// AddToRamWatchMenuItem
 			// 
-			this.addSelectedToRamWatchToolStripMenuItem.Enabled = false;
-			this.addSelectedToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
-			this.addSelectedToRamWatchToolStripMenuItem.Name = "addSelectedToRamWatchToolStripMenuItem";
-			this.addSelectedToRamWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-			this.addSelectedToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.addSelectedToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
+			this.AddToRamWatchMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
+			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.AddToRamWatchMenuItem.Text = "&Add to Ram Watch";
+			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
-			// pokeAddressToolStripMenuItem
+			// PokeAddressMenuItem
 			// 
-			this.pokeAddressToolStripMenuItem.Enabled = false;
-			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
-			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
+			this.PokeAddressMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
+			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+			this.PokeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.PokeAddressMenuItem.Text = "&Poke Address";
+			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
-			// freezeAddressToolStripMenuItem
+			// FreezeAddressMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Enabled = false;
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
-			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
-			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
+			this.FreezeAddressMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
+			this.FreezeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.FreezeAddressMenuItem.Text = "Freeze Address";
+			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
@@ -899,7 +903,11 @@
             this.toolStripSeparator15,
             this.CopyValueToPrevToolBarItem,
             this.ClearChangeCountsToolBarItem,
-            this.RemoveToolBarItem});
+            this.RemoveToolBarItem,
+            this.toolStripSeparator16,
+            this.AddToRamWatchToolBarItem,
+            this.PokeAddressToolBarItem,
+            this.FreezeAddressToolBarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(470, 25);
@@ -967,6 +975,22 @@
 			this.RemoveToolBarItem.Text = "C&ut";
 			this.RemoveToolBarItem.ToolTipText = "Eliminate Selected Items";
 			this.RemoveToolBarItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
+			// 
+			// toolStripSeparator16
+			// 
+			this.toolStripSeparator16.Name = "toolStripSeparator16";
+			this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
+			// 
+			// AddToRamWatchToolBarItem
+			// 
+			this.AddToRamWatchToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.AddToRamWatchToolBarItem.Enabled = false;
+			this.AddToRamWatchToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.AddToRamWatchToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.AddToRamWatchToolBarItem.Name = "AddToRamWatchToolBarItem";
+			this.AddToRamWatchToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.AddToRamWatchToolBarItem.Text = "Watch";
+			this.AddToRamWatchToolBarItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
 			// ComparisonBox
 			// 
@@ -1089,6 +1113,28 @@
 			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
+			// PokeAddressToolBarItem
+			// 
+			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PokeAddressToolBarItem.Enabled = false;
+			this.PokeAddressToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
+			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.PokeAddressToolBarItem.Text = "Poke";
+			this.PokeAddressToolBarItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+			// 
+			// FreezeAddressToolBarItem
+			// 
+			this.FreezeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FreezeAddressToolBarItem.Enabled = false;
+			this.FreezeAddressToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
+			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.FreezeAddressToolBarItem.Text = "Freeze";
+			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+			// 
 			// NewRamSearch
 			// 
 			this.AllowDrop = true;
@@ -1150,8 +1196,8 @@
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RemoveMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem addSelectedToRamWatchToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddToRamWatchMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PokeAddressMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TruncateFromFileMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem alwaysExcludeRamSearchListToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CopyValueToPrevMenuItem;
@@ -1159,7 +1205,7 @@
         private System.Windows.Forms.ToolStripMenuItem startNewSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FreezeAddressMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem1;
@@ -1229,5 +1275,9 @@
 		private System.Windows.Forms.ToolStripButton ClearChangeCountsToolBarItem;
 		private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton RemoveToolBarItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
+		private System.Windows.Forms.ToolStripButton AddToRamWatchToolBarItem;
+		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
+		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
     }
 }

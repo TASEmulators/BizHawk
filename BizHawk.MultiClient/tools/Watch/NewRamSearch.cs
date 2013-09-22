@@ -358,6 +358,69 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void AddToRamWatch()
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				Global.MainForm.LoadRamWatch(true);
+				for (int x = 0; x < SelectedIndices.Count; x++)
+				{
+					Global.MainForm.NewRamWatch1.AddWatch(Searches[SelectedIndices[x]]);
+				}
+			}
+		}
+
+		private Point GetPromptPoint()
+		{
+			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
+		}
+
+		private void PokeAddress()
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				Global.Sound.StopSound();
+				var poke = new RamPoke();
+
+				var watches = new List<Watch>();
+				for (int i = 0; i < SelectedIndices.Count; i++)
+				{
+					watches.Add(Searches[SelectedIndices[i]]);
+				}
+
+				poke.SetWatch(watches);
+				poke.InitialLocation = GetPromptPoint();
+				poke.ShowDialog();
+				UpdateValues();
+				Global.Sound.StartSound();
+			}
+		}
+
+		private List<Watch> SelectedWatches
+		{
+			get
+			{
+				var selected = new List<Watch>();
+				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					foreach (int index in indexes)
+					{
+						if (!Searches[index].IsSeparator)
+						{
+							selected.Add(Searches[index]);
+						}
+					}
+				}
+				return selected;
+			}
+		}
+
+		private void FreezeAddress()
+		{
+			ToolHelpers.FreezeAddress(SelectedWatches);
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -572,7 +635,11 @@ namespace BizHawk.MultiClient
 		{
 			ClearChangeCountsMenuItem.Enabled = Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
 
-			RemoveMenuItem.Enabled = SelectedIndices.Any();
+			RemoveMenuItem.Enabled =
+				AddToRamWatchMenuItem.Enabled =
+				PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
+				SelectedIndices.Any();
 		}
 
 		private void NewSearchMenuMenuItem_Click(object sender, EventArgs e)
@@ -600,6 +667,21 @@ namespace BizHawk.MultiClient
 		private void RemoveMenuItem_Click(object sender, EventArgs e)
 		{
 			RemoveAddresses();
+		}
+
+		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
+		{
+			AddToRamWatch();
+		}
+
+		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
+		}
+
+		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
+		{
+			FreezeAddress();
 		}
 
 		#endregion
@@ -742,7 +824,11 @@ namespace BizHawk.MultiClient
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			RemoveToolBarItem.Enabled = SelectedIndices.Any();
+			RemoveToolBarItem.Enabled =
+				AddToRamWatchToolBarItem.Enabled =
+				PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any();
 		}
 
 		#endregion
