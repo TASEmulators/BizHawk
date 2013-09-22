@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 
 		private void SetRemovedMessage(int val)
 		{
-			MessageLabel.Text = val.ToString() + " address" + (val == 1 ? "es" : String.Empty) + " removed";
+			MessageLabel.Text = val.ToString() + " address" + (val != 1 ? "es" : String.Empty) + " removed";
 		}
 
 		private void SetTotal()
@@ -309,25 +309,44 @@ namespace BizHawk.MultiClient
 
 		private void RemoveAddresses()
 		{
-			SetRemovedMessage(SelectedIndices.Count);
-			Searches.RemoveRange(SelectedIndices);
-			WatchListView.ItemCount = Searches.Count;
-			SetTotal();
-			WatchListView.SelectedIndices.Clear();
+			if (SelectedIndices.Count > 0)
+			{
+				SetRemovedMessage(SelectedIndices.Count);
+
+				var addresses = new List<int>();
+				foreach (int index in SelectedIndices)
+				{
+					addresses.Add(Searches[index].Address.Value);
+				}
+				Searches.RemoveRange(addresses);
+
+				WatchListView.ItemCount = Searches.Count;
+				SetTotal();
+				WatchListView.SelectedIndices.Clear();
+			}
 		}
 
-		public void LoadWatchFile(FileInfo file, bool append)
+		public void LoadWatchFile(FileInfo file, bool append, bool truncate = false)
 		{
 			if (file != null)
 			{
 				WatchList watches = new WatchList(Settings.Domain);
 				watches.Load(file.FullName, false, append);
 				List<int> addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
-				Searches.AddRange(addresses, append);
+
+				if (truncate)
+				{
+					SetRemovedMessage(addresses.Count);
+					Searches.RemoveRange(addresses);
+				}
+				else
+				{
+					Searches.AddRange(addresses, append);
+					MessageLabel.Text = file.Name + " loaded";
+				}
 
 				WatchListView.ItemCount = Searches.Count;
 				SetTotal();
-				MessageLabel.Text = file.Name + " loaded";
 				Global.Config.RecentSearches.Add(file.FullName);
 			}
 		}
@@ -353,7 +372,8 @@ namespace BizHawk.MultiClient
 		{
 			LoadWatchFile(
 				WatchList.GetFileFromUser(String.Empty),
-				sender == AppendFileMenuItem
+				sender == AppendFileMenuItem,
+				sender == TruncateFromFileMenuItem
 				);
 		}
 

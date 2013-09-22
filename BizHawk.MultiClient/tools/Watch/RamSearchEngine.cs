@@ -225,14 +225,8 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void RemoveRange(List<int> indices)
+		public void RemoveRange(List<int> addresses)
 		{
-			var addresses = new List<int>();
-			foreach (int index in indices)
-			{
-				addresses.Add(_watchList[index].Address);
-			}
-
 			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
 		}
 
