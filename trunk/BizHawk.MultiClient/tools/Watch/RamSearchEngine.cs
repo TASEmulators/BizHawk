@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region Initialize, Manipulate
+		#region API
 
 		public void Start()
 		{
@@ -121,8 +122,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void DoSearch()
+		public int DoSearch()
 		{
+			int before = _watchList.Count;
 			switch (CompareTo)
 			{
 				default:
@@ -145,8 +147,10 @@ namespace BizHawk.MultiClient
 
 			if (_settings.PreviousType == Watch.PreviousType.LastSearch)
 			{
-				_watchList.ForEach(x => x.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
+				SetPrevousToCurrent();
 			}
+
+			return before - _watchList.Count;
 		}
 
 		public int Count
@@ -202,6 +206,33 @@ namespace BizHawk.MultiClient
 			}
 
 			_settings.PreviousType = type;
+		}
+
+		public void SetPrevousToCurrent()
+		{
+			_watchList.ForEach(x => x.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
+		}
+
+		public void ClearChangeCounts()
+		{
+			if (_settings.Mode == Settings.SearchMode.Detailed)
+			{
+				foreach (IMiniWatchDetails watch in _watchList.Cast<IMiniWatchDetails>())
+				{
+					watch.ClearChangeCount();
+				}
+			}
+		}
+
+		public void RemoveRange(List<int> indices)
+		{
+			var addresses = new List<int>();
+			foreach (int index in indices)
+			{
+				addresses.Add(_watchList[index].Address);
+			}
+
+			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
 		}
 
 		#endregion
@@ -441,6 +472,7 @@ namespace BizHawk.MultiClient
 		private interface IMiniWatchDetails
 		{
 			int ChangeCount { get; }
+			void ClearChangeCount();
 			void Update(Watch.PreviousType type, MemoryDomain domain);
 		}
 
@@ -572,6 +604,11 @@ namespace BizHawk.MultiClient
 						break;
 				}
 			}
+
+			public void ClearChangeCount()
+			{
+				_changecount = 0;
+			}
 		}
 
 		private sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
@@ -618,6 +655,11 @@ namespace BizHawk.MultiClient
 						break;
 				}
 			}
+
+			public void ClearChangeCount()
+			{
+				_changecount = 0;
+			}
 		}
 
 		public sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
@@ -656,6 +698,11 @@ namespace BizHawk.MultiClient
 					case Watch.PreviousType.LastFrame:
 						break;
 				}
+			}
+
+			public void ClearChangeCount()
+			{
+				_changecount = 0;
 			}
 		}
 

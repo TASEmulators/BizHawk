@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -49,6 +50,7 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
+			MessageLabel.Text = String.Empty;
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -127,9 +129,41 @@ namespace BizHawk.MultiClient
 			WatchListView.ItemCount = Searches.Count;
 		}
 
+		private void DoSearch()
+		{
+			int removed = Searches.DoSearch();
+			SetTotal();
+			WatchListView.ItemCount = Searches.Count;
+			SetRemovedMessage(removed);
+
+		}
+
+		private List<int> SelectedIndices
+		{
+			get
+			{
+				var indices = new List<int>();
+				foreach (int index in WatchListView.SelectedIndices)
+				{
+					indices.Add(index);
+				}
+				return indices;
+			}
+		}
+
+		private void SetRemovedMessage(int val)
+		{
+			MessageLabel.Text = val.ToString() + " address" + (val == 1 ? "es" : String.Empty) + " removed";
+		}
+
 		private void SetTotal()
 		{
 			TotalSearchLabel.Text = String.Format("{0:n0}", Searches.Count) + " addresses";
+		}
+
+		private void SetDomainLabel()
+		{
+			MemDomainLabel.Text = Searches.DomainName;
 		}
 
 		private void LoadFileFromRecent(string path)
@@ -158,6 +192,7 @@ namespace BizHawk.MultiClient
 			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
 				Settings.Domain = Global.Emulator.MemoryDomains[pos];
+				SetDomainLabel();
 			}
 		}
 
@@ -240,6 +275,47 @@ namespace BizHawk.MultiClient
 		private void SetCompareValue(int? value)
 		{
 			Searches.CompareValue = value;
+		}
+
+		private void SetToDetailedMode()
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+			NumberOfChangesRadio.Enabled = true;
+			NumberOfChangesBox.Enabled = true;
+			DifferenceRadio.Enabled = true;
+			DifferentByBox.Enabled = true;
+			ClearChangeCountsToolBarItem.Enabled = true;
+		}
+
+		private void SetToFastMode()
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+
+			if (Settings.PreviousType == Watch.PreviousType.LastFrame || Settings.PreviousType == Watch.PreviousType.LastChange)
+			{
+				SetPreviousStype(Watch.PreviousType.LastSearch);
+			}
+
+			NumberOfChangesRadio.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+			NumberOfChangesBox.Text = String.Empty;
+			DifferenceRadio.Enabled = false;
+			DifferentByBox.Enabled = false;
+			ClearChangeCountsToolBarItem.Enabled = false;
+
+			if (NumberOfChangesRadio.Checked || DifferenceRadio.Checked)
+			{
+				PreviousValueRadio.Checked = true;
+			}
+		}
+
+		private void RemoveAddresses()
+		{
+			SetRemovedMessage(SelectedIndices.Count);
+			Searches.RemoveRange(SelectedIndices);
+			WatchListView.ItemCount = Searches.Count;
+			SetTotal();
+			WatchListView.SelectedIndices.Clear();
 		}
 
 		#endregion
@@ -349,17 +425,12 @@ namespace BizHawk.MultiClient
 
 		private void DetailedMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+			SetToDetailedMode();
 		}
 
 		private void FastMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
-
-			if (Settings.PreviousType == Watch.PreviousType.LastFrame || Settings.PreviousType == Watch.PreviousType.LastChange)
-			{
-				SetPreviousStype(Watch.PreviousType.LastSearch);
-			}
+			SetToFastMode();
 		}
 
 		private void _1ByteMenuItem_Click(object sender, EventArgs e)
@@ -414,7 +485,9 @@ namespace BizHawk.MultiClient
 
 		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			ClearChangeCountsMenuItem.Enabled = Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
 
+			RemoveMenuItem.Enabled = SelectedIndices.Any();
 		}
 
 		private void NewSearchMenuMenuItem_Click(object sender, EventArgs e)
@@ -424,9 +497,24 @@ namespace BizHawk.MultiClient
 
 		private void SearchMenuItem_Click(object sender, EventArgs e)
 		{
-			Searches.DoSearch();
-			SetTotal();
-			WatchListView.ItemCount = Searches.Count;
+			DoSearch();
+		}
+
+		private void CopyValueToPrevMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.SetPrevousToCurrent();
+			WatchListView.Refresh();
+		}
+
+		private void ClearChangeCountsMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.ClearChangeCounts();
+			WatchListView.Refresh();
+		}
+
+		private void RemoveMenuItem_Click(object sender, EventArgs e)
+		{
+			RemoveAddresses();
 		}
 
 		#endregion
@@ -553,6 +641,23 @@ namespace BizHawk.MultiClient
 			{
 				Searches.DifferentBy = null;
 			}
+		}
+
+		#endregion
+
+		#region ListView Events
+
+		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveAddresses();
+			}
+		}
+
+		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			RemoveToolBarItem.Enabled = SelectedIndices.Any();
 		}
 
 		#endregion
