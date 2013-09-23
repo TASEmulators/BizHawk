@@ -450,7 +450,7 @@ namespace BizHawk.MultiClient
 				}
 
 			}
-			if (Global.Config.AlwaysExcludeRamWatch)
+			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
 				ExcludeRamWatchList();
 			SetSpecificValueBoxMaxLength();
 			MessageLabel.Text = "New search started";
@@ -1897,7 +1897,7 @@ namespace BizHawk.MultiClient
 			fastModeToolStripMenuItem.Checked = Global.Config.RamSearchFastMode;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
-			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
+			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
 			autoloadDialogToolStripMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 		}
 
@@ -2176,7 +2176,7 @@ namespace BizHawk.MultiClient
 
 		private void alwaysExcludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AlwaysExcludeRamWatch ^= true;
+			Global.Config.RamSearchAlwaysExcludeRamWatch ^= true;
 		}
 
 		private void CopyValueToPrev()

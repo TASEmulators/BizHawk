@@ -36,6 +36,17 @@ namespace BizHawk.MultiClient
 			return items.ToArray();
 		}
 
+		public static void UnfreezeAll()
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+
+			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.NewRamSearch1.UpdateValues();
+		}
+
 		public static void FreezeAddress(List<Watch> watches)
 		{
 			foreach(var watch in watches)

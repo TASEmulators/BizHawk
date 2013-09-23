@@ -233,7 +233,7 @@ namespace BizHawk.MultiClient
 		public int RamSearchHeight = -1;
 		public int RamSearchPreviousAs = 0;
 		public bool RamSearchPreviewMode = true;
-		public bool AlwaysExcludeRamWatch = false;
+		public bool RamSearchAlwaysExcludeRamWatch = false;
 		public int RamSearchAddressWidth = -1;
 		public int RamSearchValueWidth = -1;
 		public int RamSearchPrevWidth = -1;
@@ -243,6 +243,7 @@ namespace BizHawk.MultiClient
 		public int RamSearchPrevIndex = 2;
 		public int RamSearchChangesIndex = 3;
 		public bool RamSearchFastMode = false;
+		public bool RamSearchAlwaysOnTop = false;
 
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
