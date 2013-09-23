@@ -154,6 +154,11 @@ namespace BizHawk.MultiClient
 			return before - _watchList.Count;
 		}
 
+		public bool Preview(int address)
+		{
+			return new Random().Next(0, 2) > 0;
+		}
+
 		public int Count
 		{
 			get { return _watchList.Count; }

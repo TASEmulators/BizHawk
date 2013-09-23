@@ -41,6 +41,7 @@ namespace BizHawk.MultiClient
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
 		private bool forcePreviewClear = false;
+		private bool autoSearch = false;
 
 		#region Initialize, Load, and Save
 		
@@ -72,7 +73,37 @@ namespace BizHawk.MultiClient
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			//TODO
+			if (Searches.Count > 0 && column == 0)
+			{
+				Color nextColor = Color.White;
+
+				bool isCheat = Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value);
+				bool isWeeded = Global.Config.RamSearchPreviewMode && Searches.Preview(Searches[index].Address.Value) && !forcePreviewClear;
+
+				if (isCheat)
+				{
+					if (isWeeded)
+					{
+						nextColor = Color.Lavender;
+					}
+					else
+					{
+						nextColor = Color.LightCyan;
+					}
+				}
+				else
+				{
+					if (isWeeded)
+					{
+						nextColor = Color.Pink;
+					}
+				}
+
+				if (color != nextColor)
+				{
+					color = nextColor;
+				}
+			}
 		}
 
 		private void ListView_QueryItemText(int index, int column, out string text)
@@ -138,6 +169,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			//TODO: autosearch logic
 			if (Searches.Count > 0)
 			{
 				Searches.Update();
@@ -724,6 +756,18 @@ namespace BizHawk.MultiClient
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 			SaveWinPositionMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
+			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
+			AutoSearchMenuItem.Checked = autoSearch;
+		}
+
+		private void PreviewModeMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviewMode ^= true;
+		}
+
+		private void AutoSearchMenuItem_Click(object sender, EventArgs e)
+		{
+			autoSearch ^= true;
 		}
 
 		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
@@ -740,7 +784,7 @@ namespace BizHawk.MultiClient
 			Global.Config.RecentSearches.AutoLoad ^= true;
 		}
 
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveWinPositionMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchSaveWindowPosition ^= true;
 		}
