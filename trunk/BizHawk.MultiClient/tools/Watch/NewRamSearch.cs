@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient
 		private int defaultHeight;
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
+		private bool forcePreviewClear = false;
 
 		#region Initialize, Load, and Save
 		
@@ -126,6 +127,8 @@ namespace BizHawk.MultiClient
 				Size = new Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
 			}
 
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
+
 			LoadColumnInfo();
 		}
 
@@ -166,6 +169,11 @@ namespace BizHawk.MultiClient
 		{
 			Searches = new RamSearchEngine(Settings);
 			Searches.Start();
+			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
+			{
+				RemoveRamWatchesFromList();
+			}
+
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
 		}
@@ -439,6 +447,11 @@ namespace BizHawk.MultiClient
 			ToolHelpers.FreezeAddress(SelectedWatches);
 		}
 
+		private void RemoveRamWatchesFromList()
+		{
+			Searches.RemoveRange(Global.MainForm.NewRamWatch1.AddressList);
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -709,6 +722,17 @@ namespace BizHawk.MultiClient
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
+			SaveWinPositionMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
+			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
+		}
+
+		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchAlwaysExcludeRamWatch ^= true;
+			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
+			{
+				RemoveRamWatchesFromList();
+			}
 		}
 
 		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
@@ -719,6 +743,85 @@ namespace BizHawk.MultiClient
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchSaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchAlwaysOnTop ^= true;
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
+		}
+
+		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		{
+			//TODO: finish
+
+			Global.Config.RamSearchAlwaysOnTop = TopMost = false;
+			Size = new Size(defaultWidth, defaultHeight);
+		}
+
+		#endregion
+
+		#region ContextMenu
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			DoSearchContextMenuItem.Enabled = Searches.Count > 0;
+			
+			RemoveContextMenuItem.Visible =
+				AddToRamWatchContextMenuItem.Visible =
+				PokeContextMenuItem.Visible =
+				FreezeContextMenuItem.Visible =
+				ContextMenuSeparator2.Visible =
+				
+				ViewInHexEditorContextMenuItem.Visible = 
+				SelectedIndices.Count > 0;
+
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.Any();
+
+			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.Any());
+
+			bool allCheats = true;
+			foreach (int index in SelectedIndices)
+			{
+				if (!Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value))
+				{
+					allCheats = false;
+				}
+			}
+
+			if (allCheats)
+			{
+				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
+			}
+			else
+			{
+				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
+			}
+		}
+
+		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
+		{
+			ToolHelpers.UnfreezeAll();
+		}
+
+		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.SetDomain(Settings.Domain);
+				Global.MainForm.HexEditor1.GoToAddress(Searches[SelectedIndices[0]].Address.Value);
+
+				//TODO: secondary highlighted on remaining indexes
+			}
+		}
+
+		private void ClearPreviewContextMenuItem_Click(object sender, EventArgs e)
+		{
+			forcePreviewClear = true;
+			WatchListView.Refresh();
 		}
 
 		#endregion
