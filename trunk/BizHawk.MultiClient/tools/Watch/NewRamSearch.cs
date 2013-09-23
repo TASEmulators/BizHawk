@@ -22,6 +22,15 @@ namespace BizHawk.MultiClient
 		public const string CHANGES = "ChangesColumn";
 		public const string DIFF = "DiffColumn";
 
+		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
+			{
+			{ ADDRESS, 60 },
+			{ VALUE, 59 },
+			{ PREV, 59 },
+			{ CHANGES, 55 },
+			{ DIFF, 59 },
+		};
+
 		private string CurrentFileName = String.Empty;
 
 		private RamSearchEngine Searches;
@@ -29,6 +38,8 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
 		private int defaultHeight;
+		private string _sortedColumn = "";
+		private bool _sortReverse = false;
 
 		#region Initialize, Load, and Save
 		
@@ -42,6 +53,9 @@ namespace BizHawk.MultiClient
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
+
+			_sortedColumn = "";
+			_sortReverse = false;
 
 			Settings = new RamSearchEngine.Settings();
 			Searches = new RamSearchEngine(Settings);
@@ -96,9 +110,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SaveConfigSettings()
+		private void LoadConfigSettings()
 		{
-			//TODO
+			//Size and Positioning
+			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = Size.Height;
+
+			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
+			{
+				Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
+			}
+
+			if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)
+			{
+				Size = new Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
+			}
+
+			LoadColumnInfo();
 		}
 
 		#endregion
@@ -117,6 +145,17 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			//TODO
+			if (!IsHandleCreated || IsDisposed) return;
+		}
+
+		public void SaveConfigSettings()
+		{
+			//TODO: columns
+
+			Global.Config.RamSearchWndx = Location.X;
+			Global.Config.RamSearchWndy = Location.Y;
+			Global.Config.RamSearchWidth = Right - Left;
+			Global.Config.RamSearchHeight = Bottom - Top;
 		}
 
 		#endregion
@@ -194,25 +233,6 @@ namespace BizHawk.MultiClient
 				Settings.Domain = Global.Emulator.MemoryDomains[pos];
 				SetDomainLabel();
 			}
-		}
-
-		private void LoadConfigSettings()
-		{
-			//Size and Positioning
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
-
-			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
-			{
-				Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
-			}
-
-			if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)
-			{
-				Size = new Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
-			}
-
-			LoadColumnInfo();
 		}
 
 		private void LoadColumnInfo()
@@ -694,6 +714,11 @@ namespace BizHawk.MultiClient
 		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RecentSearches.AutoLoad ^= true;
+		}
+
+		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchSaveWindowPosition ^= true;
 		}
 
 		#endregion
