@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 		public const string DIFF = "DiffColumn";
 
 		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
-			{
+		{
 			{ ADDRESS, 60 },
 			{ VALUE, 59 },
 			{ PREV, 59 },
@@ -208,6 +208,14 @@ namespace BizHawk.MultiClient
 
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
+			ToggleSearchDependentToolBarItems();
+		}
+
+		private void ToggleSearchDependentToolBarItems()
+		{
+			DoSearchToolButton.Enabled =
+				CopyValueToPrevToolBarItem.Enabled =
+				Searches.Count > 0;
 		}
 
 		private void DoSearch()
@@ -216,6 +224,7 @@ namespace BizHawk.MultiClient
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
 			SetRemovedMessage(removed);
+			ToggleSearchDependentToolBarItems();
 
 		}
 
