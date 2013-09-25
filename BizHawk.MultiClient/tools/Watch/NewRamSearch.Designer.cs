@@ -97,6 +97,8 @@
 			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviewModeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExcludeRamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
@@ -140,8 +142,6 @@
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
-			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -730,6 +730,18 @@
 			this.PreviewModeMenuItem.Text = "Preview Mode";
 			this.PreviewModeMenuItem.Click += new System.EventHandler(this.PreviewModeMenuItem_Click);
 			// 
+			// AutoSearchMenuItem
+			// 
+			this.AutoSearchMenuItem.Name = "AutoSearchMenuItem";
+			this.AutoSearchMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoSearchMenuItem.Text = "Auto-Search";
+			this.AutoSearchMenuItem.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
+			// 
+			// toolStripSeparator9
+			// 
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(237, 6);
+			// 
 			// ExcludeRamWatchMenuItem
 			// 
 			this.ExcludeRamWatchMenuItem.Name = "ExcludeRamWatchMenuItem";
@@ -930,8 +942,8 @@
             this.toolStripSeparator15,
             this.CopyValueToPrevToolBarItem,
             this.ClearChangeCountsToolBarItem,
-            this.RemoveToolBarItem,
             this.toolStripSeparator16,
+            this.RemoveToolBarItem,
             this.AddToRamWatchToolBarItem,
             this.PokeAddressToolBarItem,
             this.FreezeAddressToolBarItem});
@@ -943,6 +955,7 @@
 			// 
 			// DoSearchToolButton
 			// 
+			this.DoSearchToolButton.Enabled = false;
 			this.DoSearchToolButton.Image = ((System.Drawing.Image)(resources.GetObject("DoSearchToolButton.Image")));
 			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DoSearchToolButton.Name = "DoSearchToolButton";
@@ -957,12 +970,11 @@
 			// 
 			// NewSearchToolButton
 			// 
-			this.NewSearchToolButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.NewSearchToolButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.NewSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewSearchToolButton.Name = "NewSearchToolButton";
-			this.NewSearchToolButton.Size = new System.Drawing.Size(23, 22);
-			this.NewSearchToolButton.Text = "Start new search";
+			this.NewSearchToolButton.Size = new System.Drawing.Size(51, 22);
+			this.NewSearchToolButton.Text = "New";
 			this.NewSearchToolButton.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator15
@@ -973,6 +985,7 @@
 			// CopyValueToPrevToolBarItem
 			// 
 			this.CopyValueToPrevToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.CopyValueToPrevToolBarItem.Enabled = false;
 			this.CopyValueToPrevToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.CopyValueToPrevToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.CopyValueToPrevToolBarItem.Name = "CopyValueToPrevToolBarItem";
@@ -1161,18 +1174,6 @@
 			this.SpecificValueBox.TabIndex = 24;
 			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
-			// 
-			// AutoSearchMenuItem
-			// 
-			this.AutoSearchMenuItem.Name = "AutoSearchMenuItem";
-			this.AutoSearchMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.AutoSearchMenuItem.Text = "Auto-Search";
-			this.AutoSearchMenuItem.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
-			// 
-			// toolStripSeparator9
-			// 
-			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(237, 6);
 			// 
 			// NewRamSearch
 			// 
