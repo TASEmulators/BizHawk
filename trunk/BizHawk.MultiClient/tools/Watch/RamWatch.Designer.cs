@@ -115,6 +115,7 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -761,6 +762,7 @@
             this.definePreviousValueAsToolStripMenuItem,
             this.displayWatchesOnScreenToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem,
+            this.AlwaysOnTopMenuItem,
             this.toolStripSeparator7,
             this.restoreWindowSizeToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
@@ -903,6 +905,13 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
+			// AlwaysOnTopMenuItem
+			// 
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.AlwaysOnTopMenuItem.Text = "&Always On Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1019,5 +1028,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowPreviousValueContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDiffContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 	}
 }
