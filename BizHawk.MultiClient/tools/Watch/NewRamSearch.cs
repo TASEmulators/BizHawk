@@ -216,6 +216,7 @@ namespace BizHawk.MultiClient
 			DoSearchToolButton.Enabled =
 				CopyValueToPrevToolBarItem.Enabled =
 				Searches.Count > 0;
+			UpdateUndoToolBarButtons();
 		}
 
 		private void DoSearch()
@@ -225,7 +226,6 @@ namespace BizHawk.MultiClient
 			WatchListView.ItemCount = Searches.Count;
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
-
 		}
 
 		private List<int> SelectedIndices
@@ -499,6 +499,12 @@ namespace BizHawk.MultiClient
 			SetTotal();
 		}
 
+		private void UpdateUndoToolBarButtons()
+		{
+			UndoToolBarButton.Enabled = Searches.CanUndo;
+			RedoToolBarItem.Enabled = Searches.CanRedo;
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -718,6 +724,12 @@ namespace BizHawk.MultiClient
 				PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			UndoMenuItem.Enabled =
+				ClearUndoMenuItem.Enabled =
+				Searches.CanUndo;
+
+			RedoMenuItem.Enabled = Searches.CanRedo;
 		}
 
 		private void NewSearchMenuMenuItem_Click(object sender, EventArgs e)
@@ -728,6 +740,24 @@ namespace BizHawk.MultiClient
 		private void SearchMenuItem_Click(object sender, EventArgs e)
 		{
 			DoSearch();
+		}
+
+		private void UndoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Searches.CanUndo)
+			{
+				Searches.Undo();
+				UpdateUndoToolBarButtons();
+			}
+		}
+
+		private void RedoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Searches.CanRedo)
+			{
+				Searches.Redo();
+				UpdateUndoToolBarButtons();
+			}
 		}
 
 		private void CopyValueToPrevMenuItem_Click(object sender, EventArgs e)
@@ -760,6 +790,12 @@ namespace BizHawk.MultiClient
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
 			FreezeAddress();
+		}
+
+		private void ClearUndoMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.ClearHistory();
+			UpdateUndoToolBarButtons();
 		}
 
 		#endregion
