@@ -291,7 +291,7 @@ namespace BizHawk.MultiClient
 			AddColumn(VALUE, true);
 			AddColumn(PREV, true);
 			AddColumn(CHANGES, true);
-			AddColumn(DIFF, false);
+			AddColumn(DIFF, true);
 
 			//ColumnPositions(); //TODO
 		}

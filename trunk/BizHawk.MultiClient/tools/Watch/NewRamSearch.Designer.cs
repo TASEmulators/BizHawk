@@ -141,6 +141,7 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
+			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
@@ -177,7 +178,8 @@
             this.AddressColumn,
             this.ValueColumn,
             this.PreviousColumn,
-            this.ChangesColumn});
+            this.ChangesColumn,
+            this.DiffColumn});
 			this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.WatchListView.FullRowSelect = true;
 			this.WatchListView.GridLines = true;
@@ -198,7 +200,7 @@
 			// AddressColumn
 			// 
 			this.AddressColumn.Text = "Address";
-			this.AddressColumn.Width = 65;
+			this.AddressColumn.Width = 61;
 			// 
 			// ValueColumn
 			// 
@@ -1162,6 +1164,10 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
+			// DiffColumn
+			// 
+			this.DiffColumn.Text = "Diff";
+			// 
 			// SpecificValueBox
 			// 
 			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
@@ -1322,5 +1328,6 @@
 		private UnsignedIntegerBox DifferenceBox;
 		private System.Windows.Forms.ToolStripMenuItem AutoSearchMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+		private System.Windows.Forms.ColumnHeader DiffColumn;
     }
 }
