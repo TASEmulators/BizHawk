@@ -434,6 +434,11 @@ namespace BizHawk.MultiClient
 				{
 					Global.MainForm.NewRamWatch1.AddWatch(Searches[SelectedIndices[x]]);
 				}
+
+				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
+				{
+					RemoveRamWatchesFromList();
+				}
 			}
 		}
 
@@ -491,6 +496,7 @@ namespace BizHawk.MultiClient
 		private void RemoveRamWatchesFromList()
 		{
 			Searches.RemoveRange(Global.MainForm.NewRamWatch1.AddressList);
+			SetTotal();
 		}
 
 		#endregion
