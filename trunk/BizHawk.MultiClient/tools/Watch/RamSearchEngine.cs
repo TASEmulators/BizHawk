@@ -8,33 +8,31 @@ using System.Threading.Tasks;
 
 namespace BizHawk.MultiClient
 {
-	class RamSearchEngine
+	public class RamSearchEngine
 	{
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
-
-		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
-		private Settings _settings;
 
 		public Compare CompareTo = Compare.Previous;
 		public int? CompareValue = null;
 		public ComparisonOperator Operator = ComparisonOperator.Equal;
 		public int? DifferentBy = null;
 
-		#region Constructors
+		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
+		private Settings _settings;
+		private WatchHistory _history = new WatchHistory(true);
 
 		public RamSearchEngine(Settings settings)
 		{
 			_settings = settings;
 		}
 
-		#endregion
-
 		#region API
 
 		public void Start()
 		{
 			_watchList.Clear();
+			_history.Clear();
 			switch (_settings.Size)
 			{
 				default:
@@ -87,6 +85,8 @@ namespace BizHawk.MultiClient
 					}
 					break;
 			}
+
+			_history.AddState(_watchList);
 		}
 
 		/// <summary>
@@ -126,6 +126,7 @@ namespace BizHawk.MultiClient
 		public int DoSearch()
 		{
 			int before = _watchList.Count;
+			
 			switch (CompareTo)
 			{
 				default:
@@ -150,6 +151,8 @@ namespace BizHawk.MultiClient
 			{
 				SetPrevousToCurrent();
 			}
+
+			_history.AddState(_watchList);
 
 			return before - _watchList.Count;
 		}
@@ -289,6 +292,28 @@ namespace BizHawk.MultiClient
 					}
 					break;
 			}
+		}
+
+		#endregion
+		
+		#region Undo API
+		
+		public bool CanUndo { get { return _history.CanUndo; } }
+		public bool CanRedo { get { return _history.CanRedo; } }
+		
+		public void ClearHistory()
+		{
+			_history.Clear();
+		}
+
+		public void Undo()
+		{
+			_watchList = _history.Undo();
+		}
+
+		public void Redo()
+		{
+			_watchList = _history.Redo();
 		}
 
 		#endregion
@@ -512,7 +537,7 @@ namespace BizHawk.MultiClient
 
 		#region Classes
 
-		private interface IMiniWatch
+		public interface IMiniWatch
 		{
 			int Address { get; }
 			int Previous { get; }

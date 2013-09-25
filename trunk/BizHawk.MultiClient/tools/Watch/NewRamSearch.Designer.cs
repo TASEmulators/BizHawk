@@ -84,8 +84,8 @@
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.UndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CopyValueToPrevMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearChangeCountsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +94,7 @@
 			this.PokeAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FreezeAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-			this.clearUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearUndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviewModeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,6 +142,9 @@
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.UndoToolBarButton = new System.Windows.Forms.ToolStripButton();
+			this.RedoToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
@@ -590,8 +593,8 @@
             this.newSearchToolStripMenuItem,
             this.toolStripSeparator7,
             SearchMenuItem,
-            this.undoToolStripMenuItem,
-            this.redoToolStripMenuItem,
+            this.UndoMenuItem,
+            this.RedoMenuItem,
             this.CopyValueToPrevMenuItem,
             this.ClearChangeCountsMenuItem,
             this.RemoveMenuItem,
@@ -600,7 +603,7 @@
             this.PokeAddressMenuItem,
             this.FreezeAddressMenuItem,
             this.toolStripSeparator13,
-            this.clearUndoHistoryToolStripMenuItem});
+            this.ClearUndoMenuItem});
 			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
 			this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
 			this.searchToolStripMenuItem.Text = "&Search";
@@ -619,24 +622,24 @@
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
 			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
 			// 
-			// undoToolStripMenuItem
+			// UndoMenuItem
 			// 
-			this.undoToolStripMenuItem.Enabled = false;
-			this.undoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
-			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.undoToolStripMenuItem.Text = "&Undo";
+			this.UndoMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+			this.UndoMenuItem.Name = "UndoMenuItem";
+			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.UndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.UndoMenuItem.Text = "&Undo";
+			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
 			// 
-			// redoToolStripMenuItem
+			// RedoMenuItem
 			// 
-			this.redoToolStripMenuItem.Enabled = false;
-			this.redoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
-			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "";
-			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.redoToolStripMenuItem.Text = "&Redo";
+			this.RedoMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
+			this.RedoMenuItem.Name = "RedoMenuItem";
+			this.RedoMenuItem.ShortcutKeyDisplayString = "";
+			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.RedoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RedoMenuItem.Text = "&Redo";
+			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
 			// 
 			// CopyValueToPrevMenuItem
 			// 
@@ -699,12 +702,12 @@
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
 			this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
 			// 
-			// clearUndoHistoryToolStripMenuItem
+			// ClearUndoMenuItem
 			// 
-			this.clearUndoHistoryToolStripMenuItem.Enabled = false;
-			this.clearUndoHistoryToolStripMenuItem.Name = "clearUndoHistoryToolStripMenuItem";
-			this.clearUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.clearUndoHistoryToolStripMenuItem.Text = "Clear Undo History";
+			this.ClearUndoMenuItem.Name = "ClearUndoMenuItem";
+			this.ClearUndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearUndoMenuItem.Text = "Clear Undo History";
+			this.ClearUndoMenuItem.Click += new System.EventHandler(this.ClearUndoMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -948,7 +951,10 @@
             this.RemoveToolBarItem,
             this.AddToRamWatchToolBarItem,
             this.PokeAddressToolBarItem,
-            this.FreezeAddressToolBarItem});
+            this.FreezeAddressToolBarItem,
+            this.toolStripSeparator12,
+            this.UndoToolBarButton,
+            this.RedoToolBarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(470, 25);
@@ -1168,6 +1174,33 @@
 			// 
 			this.DiffColumn.Text = "Diff";
 			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
+			// 
+			// UndoToolBarButton
+			// 
+			this.UndoToolBarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.UndoToolBarButton.Enabled = false;
+			this.UndoToolBarButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+			this.UndoToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.UndoToolBarButton.Name = "UndoToolBarButton";
+			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 22);
+			this.UndoToolBarButton.Text = "Undo Search";
+			this.UndoToolBarButton.Click += new System.EventHandler(this.UndoMenuItem_Click);
+			// 
+			// RedoToolBarItem
+			// 
+			this.RedoToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RedoToolBarItem.Enabled = false;
+			this.RedoToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
+			this.RedoToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RedoToolBarItem.Name = "RedoToolBarItem";
+			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.RedoToolBarItem.Text = "Redo";
+			this.RedoToolBarItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
+			// 
 			// SpecificValueBox
 			// 
 			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
@@ -1239,7 +1272,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ClearChangeCountsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UndoMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RemoveMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem AddToRamWatchMenuItem;
@@ -1258,7 +1291,7 @@
 		private System.Windows.Forms.ToolStripMenuItem FreezeContextMenuItem;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RedoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ViewInHexEditorContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadDialogMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
@@ -1266,7 +1299,7 @@
 		private System.Windows.Forms.ToolStripSeparator ContextMenuSeparator3;
         private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-		private System.Windows.Forms.ToolStripMenuItem clearUndoHistoryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearUndoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator ContextMenuSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem ClearPreviewContextMenuItem;
@@ -1329,5 +1362,8 @@
 		private System.Windows.Forms.ToolStripMenuItem AutoSearchMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ColumnHeader DiffColumn;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripButton UndoToolBarButton;
+		private System.Windows.Forms.ToolStripButton RedoToolBarItem;
     }
 }
