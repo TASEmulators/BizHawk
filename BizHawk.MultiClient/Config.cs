@@ -174,6 +174,7 @@ namespace BizHawk.MultiClient
 		// RamWatch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
 		public bool RamWatchSaveWindowPosition = true;
+		public bool RamWatchAlwaysOnTop = false;
 		public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
 		public int RamWatchWndy = -1;
 		public int RamWatchWidth = -1;
@@ -182,14 +183,6 @@ namespace BizHawk.MultiClient
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
 		public bool RamWatchShowDomainColumn = true;
-
-		public int RamWatchAddressWidth = -1;
-		public int RamWatchValueWidth = -1;
-		public int RamWatchPrevWidth = -1;
-		public int RamWatchChangeWidth = -1;
-		public int RamWatchDiffWidth = -1;
-		public int RamWatchNotesWidth = -1;
-		public int RamWatchDomainWidth = -1;
 
 		public Dictionary<string, int> RamWatchColumnWidths = new Dictionary<string, int>()
 		{
@@ -213,18 +206,10 @@ namespace BizHawk.MultiClient
 			{ "NotesColumn", 6 },
 		};
 
-		public int RamWatchAddressIndex = 0;
-		public int RamWatchValueIndex = 1;
-		public int RamWatchPrevIndex = 2;
-		public int RamWatchChangeIndex = 3;
-		public int RamWatchDiffIndex = 4;
-		public int RamWatchDomainIndex = 5;
-		public int RamWatchNotesIndex = 6;
-
-		public int RamWatchPrev_Type = 1;
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 
 		// RamSearch Settings
+		public int RamSearchPrev_Type = 1;
 		public bool RamSearchSaveWindowPosition = true;
 		public RecentFiles RecentSearches = new RecentFiles(8);
 		public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
@@ -244,6 +229,25 @@ namespace BizHawk.MultiClient
 		public int RamSearchChangesIndex = 3;
 		public bool RamSearchFastMode = false;
 		public bool RamSearchAlwaysOnTop = false;
+
+		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>()
+		{
+			{ "AddressColumn", -1 },
+			{ "ValueColumn", -1 },
+			{ "PrevColumn", -1 },
+			{ "ChangesColumn", -1 },
+			{ "DiffColumn", -1 },
+		};
+
+		public Dictionary<string, int> RamSearchColumnIndexes = new Dictionary<string, int>()
+		{
+			{ "AddressColumn", 0 },
+			{ "ValueColumn", 1 },
+			{ "PrevColumn", 2 },
+			{ "ChangesColumn", 3 },
+			{ "DiffColumn", 4 },
+		};
+
 
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;

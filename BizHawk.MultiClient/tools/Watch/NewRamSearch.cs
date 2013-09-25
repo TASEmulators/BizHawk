@@ -61,6 +61,8 @@ namespace BizHawk.MultiClient
 
 			Settings = new RamSearchEngine.Settings();
 			Searches = new RamSearchEngine(Settings);
+
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -808,6 +810,7 @@ namespace BizHawk.MultiClient
 			SaveWinPositionMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
 			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchAlwaysOnTop;
 			AutoSearchMenuItem.Checked = autoSearch;
 		}
 

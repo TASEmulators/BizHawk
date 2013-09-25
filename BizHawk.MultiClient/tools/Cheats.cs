@@ -1138,12 +1138,12 @@ namespace BizHawk.MultiClient
 
 			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>
 				{
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Name"),
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Address"),
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Value"),
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Compare"),
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Domain"),
-					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "On")
+					new KeyValuePair<int, string>(Global.Config.CheatsNameIndex, "Name"),
+					new KeyValuePair<int, string>(Global.Config.CheatsAddressIndex, "Address"),
+					new KeyValuePair<int, string>(Global.Config.CheatsValueIndex, "Value"),
+					new KeyValuePair<int, string>(Global.Config.CheatsCompareIndex, "Compare"),
+					new KeyValuePair<int, string>(Global.Config.CheatsDomainIndex, "Domain"),
+					new KeyValuePair<int, string>(Global.Config.CheatsOnIndex, "On")
 				};
 
 			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();

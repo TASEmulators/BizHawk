@@ -45,6 +45,8 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) => SaveConfigSettings();
 			_sortedColumn = "";
 			_sortReverse = false;
+
+			TopMost = Global.Config.RamWatchAlwaysOnTop;
 		}
 
 		public void UpdateValues()
@@ -986,6 +988,7 @@ namespace BizHawk.MultiClient
 		{
 			displayWatchesOnScreenToolStripMenuItem.Checked = Global.Config.DisplayRamWatch;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamWatchAlwaysOnTop;
 		}
 
 		private void definePreviousValueAsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1041,6 +1044,12 @@ namespace BizHawk.MultiClient
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchSaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchAlwaysOnTop ^= true;
+			TopMost = Global.Config.RamWatchAlwaysOnTop;
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)

@@ -2644,7 +2644,7 @@ namespace BizHawk.MultiClient
 				case "value":
 					return Searches[watch_index].ValueString;
 				case "prev":
-					switch (Global.Config.RamWatchPrev_Type)
+					switch (Global.Config.RamSearchPrev_Type)
 					{
 						case 1:
 							return Searches[watch_index].PrevString;
@@ -2656,7 +2656,7 @@ namespace BizHawk.MultiClient
 				case "changes":
 					return Searches[watch_index].Changecount.ToString();
 				case "diff":
-					switch (Global.Config.RamWatchPrev_Type)
+					switch (Global.Config.RamSearchPrev_Type)
 					{
 						case 1:
 							return Searches[watch_index].DiffPrevString;
