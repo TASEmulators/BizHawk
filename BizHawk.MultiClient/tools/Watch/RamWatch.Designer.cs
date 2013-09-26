@@ -93,11 +93,6 @@
 			this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.diffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.definePreviousValueAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,8 +100,14 @@
 			this.originalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayWatchesOnScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowDomainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.VirtualListView();
 			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -115,7 +116,6 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -475,8 +475,8 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filesToolStripMenuItem,
             this.watchesToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.viewToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(359, 24);
@@ -714,48 +714,6 @@
 			this.selectAllToolStripMenuItem.Text = "Select &All";
 			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
 			// 
-			// viewToolStripMenuItem
-			// 
-			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showPreviousValueToolStripMenuItem,
-            this.showChangeCountsToolStripMenuItem,
-            this.diffToolStripMenuItem,
-            this.domainToolStripMenuItem});
-			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-			this.viewToolStripMenuItem.Text = "&View";
-			this.viewToolStripMenuItem.DropDownOpened += new System.EventHandler(this.viewToolStripMenuItem_DropDownOpened);
-			// 
-			// showPreviousValueToolStripMenuItem
-			// 
-			this.showPreviousValueToolStripMenuItem.Name = "showPreviousValueToolStripMenuItem";
-			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.showPreviousValueToolStripMenuItem.Text = "Previous Value";
-			this.showPreviousValueToolStripMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
-			// 
-			// showChangeCountsToolStripMenuItem
-			// 
-			this.showChangeCountsToolStripMenuItem.Checked = true;
-			this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
-			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.showChangeCountsToolStripMenuItem.Text = "Change Counts";
-			this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
-			// 
-			// diffToolStripMenuItem
-			// 
-			this.diffToolStripMenuItem.Name = "diffToolStripMenuItem";
-			this.diffToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.diffToolStripMenuItem.Text = "Difference";
-			this.diffToolStripMenuItem.Click += new System.EventHandler(this.diffToolStripMenuItem_Click);
-			// 
-			// domainToolStripMenuItem
-			// 
-			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
-			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.domainToolStripMenuItem.Text = "Domain";
-			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
-			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -816,6 +774,13 @@
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
+			// AlwaysOnTopMenuItem
+			// 
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.AlwaysOnTopMenuItem.Text = "&Always On Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -827,6 +792,48 @@
 			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.restoreWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
 			this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
+			// 
+			// viewToolStripMenuItem
+			// 
+			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowPreviousMenuItem,
+            this.ShowChangesMenuItem,
+            this.ShowDiffMenuItem,
+            this.ShowDomainMenuItem});
+			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+			this.viewToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+			this.viewToolStripMenuItem.Text = "&Columns";
+			this.viewToolStripMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
+			// 
+			// ShowPreviousMenuItem
+			// 
+			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
+			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowPreviousMenuItem.Text = "Previous Value";
+			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
+			// 
+			// ShowChangesMenuItem
+			// 
+			this.ShowChangesMenuItem.Checked = true;
+			this.ShowChangesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
+			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowChangesMenuItem.Text = "Change Counts";
+			this.ShowChangesMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
+			// 
+			// ShowDiffMenuItem
+			// 
+			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
+			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowDiffMenuItem.Text = "Difference";
+			this.ShowDiffMenuItem.Click += new System.EventHandler(this.diffToolStripMenuItem_Click);
+			// 
+			// ShowDomainMenuItem
+			// 
+			this.ShowDomainMenuItem.Name = "ShowDomainMenuItem";
+			this.ShowDomainMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowDomainMenuItem.Text = "Domain";
+			this.ShowDomainMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
 			// 
 			// WatchListView
 			// 
@@ -905,13 +912,6 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.AlwaysOnTopMenuItem.Text = "&Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -978,10 +978,10 @@
 		private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem showPreviousValueToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem showChangeCountsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem diffToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowDomainMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem definePreviousValueAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;

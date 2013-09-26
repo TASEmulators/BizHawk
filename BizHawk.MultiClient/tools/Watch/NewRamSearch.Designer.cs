@@ -37,6 +37,7 @@
 			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PreviousColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.DoSearchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewSearchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,11 +128,14 @@
 			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
 			this.CopyValueToPrevToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ClearChangeCountsToolBarItem = new System.Windows.Forms.ToolStripButton();
-			this.RemoveToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+			this.RemoveToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.AddToRamWatchToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.UndoToolBarButton = new System.Windows.Forms.ToolStripButton();
+			this.RedoToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ComparisonBox = new System.Windows.Forms.GroupBox();
 			this.DifferentByBox = new BizHawk.UnsignedIntegerBox();
 			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
@@ -141,10 +145,10 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
-			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-			this.UndoToolBarButton = new System.Windows.Forms.ToolStripButton();
-			this.RedoToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.ColumnsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
@@ -192,7 +196,7 @@
 			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(232, 366);
+			this.WatchListView.Size = new System.Drawing.Size(216, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -219,6 +223,10 @@
 			// 
 			this.ChangesColumn.Text = "Changes";
 			this.ChangesColumn.Width = 55;
+			// 
+			// DiffColumn
+			// 
+			this.DiffColumn.Text = "Diff";
 			// 
 			// contextMenuStrip1
 			// 
@@ -335,10 +343,11 @@
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.ColumnsMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(438, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -820,7 +829,7 @@
 			// 
 			// CompareToBox
 			// 
-			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.CompareToBox.Controls.Add(this.DifferenceBox);
 			this.CompareToBox.Controls.Add(this.DifferenceRadio);
 			this.CompareToBox.Controls.Add(this.label1);
@@ -831,9 +840,9 @@
 			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
 			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(247, 65);
+			this.CompareToBox.Location = new System.Drawing.Point(230, 65);
 			this.CompareToBox.Name = "CompareToBox";
-			this.CompareToBox.Size = new System.Drawing.Size(211, 125);
+			this.CompareToBox.Size = new System.Drawing.Size(197, 125);
 			this.CompareToBox.TabIndex = 10;
 			this.CompareToBox.TabStop = false;
 			this.CompareToBox.Text = "Compare To / By";
@@ -842,7 +851,7 @@
 			// 
 			this.DifferenceBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.DifferenceBox.Enabled = false;
-			this.DifferenceBox.Location = new System.Drawing.Point(135, 98);
+			this.DifferenceBox.Location = new System.Drawing.Point(126, 98);
 			this.DifferenceBox.MaxLength = 8;
 			this.DifferenceBox.Name = "DifferenceBox";
 			this.DifferenceBox.Size = new System.Drawing.Size(65, 20);
@@ -863,7 +872,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(116, 62);
+			this.label1.Location = new System.Drawing.Point(108, 62);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(18, 13);
 			this.label1.TabIndex = 10;
@@ -873,7 +882,7 @@
 			// 
 			this.NumberOfChangesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumberOfChangesBox.Enabled = false;
-			this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 78);
+			this.NumberOfChangesBox.Location = new System.Drawing.Point(126, 78);
 			this.NumberOfChangesBox.MaxLength = 8;
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
 			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
@@ -884,7 +893,7 @@
 			// 
 			this.SpecificAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificAddressBox.Enabled = false;
-			this.SpecificAddressBox.Location = new System.Drawing.Point(135, 58);
+			this.SpecificAddressBox.Location = new System.Drawing.Point(126, 58);
 			this.SpecificAddressBox.MaxLength = 8;
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
@@ -957,7 +966,7 @@
             this.RedoToolBarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(470, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(438, 25);
 			this.toolStrip1.TabIndex = 11;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -1012,6 +1021,11 @@
 			this.ClearChangeCountsToolBarItem.ToolTipText = "Clear Change Counts";
 			this.ClearChangeCountsToolBarItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
+			// toolStripSeparator16
+			// 
+			this.toolStripSeparator16.Name = "toolStripSeparator16";
+			this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
+			// 
 			// RemoveToolBarItem
 			// 
 			this.RemoveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1023,11 +1037,6 @@
 			this.RemoveToolBarItem.Text = "C&ut";
 			this.RemoveToolBarItem.ToolTipText = "Eliminate Selected Items";
 			this.RemoveToolBarItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
-			// 
-			// toolStripSeparator16
-			// 
-			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(6, 25);
 			// 
 			// AddToRamWatchToolBarItem
 			// 
@@ -1062,9 +1071,36 @@
 			this.FreezeAddressToolBarItem.Text = "Freeze";
 			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
+			// 
+			// UndoToolBarButton
+			// 
+			this.UndoToolBarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.UndoToolBarButton.Enabled = false;
+			this.UndoToolBarButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+			this.UndoToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.UndoToolBarButton.Name = "UndoToolBarButton";
+			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 22);
+			this.UndoToolBarButton.Text = "Undo Search";
+			this.UndoToolBarButton.Click += new System.EventHandler(this.UndoMenuItem_Click);
+			// 
+			// RedoToolBarItem
+			// 
+			this.RedoToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RedoToolBarItem.Enabled = false;
+			this.RedoToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
+			this.RedoToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RedoToolBarItem.Name = "RedoToolBarItem";
+			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.RedoToolBarItem.Text = "Redo";
+			this.RedoToolBarItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
+			// 
 			// ComparisonBox
 			// 
-			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ComparisonBox.Controls.Add(this.DifferentByBox);
 			this.ComparisonBox.Controls.Add(this.DifferentByRadio);
 			this.ComparisonBox.Controls.Add(this.NotEqualToRadio);
@@ -1073,9 +1109,9 @@
 			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
 			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
 			this.ComparisonBox.Controls.Add(this.LessThanRadio);
-			this.ComparisonBox.Location = new System.Drawing.Point(247, 196);
+			this.ComparisonBox.Location = new System.Drawing.Point(230, 196);
 			this.ComparisonBox.Name = "ComparisonBox";
-			this.ComparisonBox.Size = new System.Drawing.Size(211, 159);
+			this.ComparisonBox.Size = new System.Drawing.Size(197, 159);
 			this.ComparisonBox.TabIndex = 12;
 			this.ComparisonBox.TabStop = false;
 			this.ComparisonBox.Text = "Comparison Operator";
@@ -1170,43 +1206,44 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
-			// DiffColumn
+			// ColumnsMenuItem
 			// 
-			this.DiffColumn.Text = "Diff";
+			this.ColumnsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowPreviousMenuItem,
+            this.ShowChangesMenuItem,
+            this.ShowDiffMenuItem});
+			this.ColumnsMenuItem.Name = "ColumnsMenuItem";
+			this.ColumnsMenuItem.Size = new System.Drawing.Size(67, 20);
+			this.ColumnsMenuItem.Text = "&Columns";
+			this.ColumnsMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsMenuItem_DropDownOpened);
 			// 
-			// toolStripSeparator12
+			// ShowPreviousMenuItem
 			// 
-			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(6, 25);
+			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
+			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowPreviousMenuItem.Text = "&Previous Value";
+			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
 			// 
-			// UndoToolBarButton
+			// ShowChangesMenuItem
 			// 
-			this.UndoToolBarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.UndoToolBarButton.Enabled = false;
-			this.UndoToolBarButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
-			this.UndoToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.UndoToolBarButton.Name = "UndoToolBarButton";
-			this.UndoToolBarButton.Size = new System.Drawing.Size(23, 22);
-			this.UndoToolBarButton.Text = "Undo Search";
-			this.UndoToolBarButton.Click += new System.EventHandler(this.UndoMenuItem_Click);
+			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
+			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowChangesMenuItem.Text = "&Change Counts";
+			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
 			// 
-			// RedoToolBarItem
+			// ShowDiffMenuItem
 			// 
-			this.RedoToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RedoToolBarItem.Enabled = false;
-			this.RedoToolBarItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
-			this.RedoToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.RedoToolBarItem.Name = "RedoToolBarItem";
-			this.RedoToolBarItem.Size = new System.Drawing.Size(23, 22);
-			this.RedoToolBarItem.Text = "Redo";
-			this.RedoToolBarItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
+			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
+			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowDiffMenuItem.Text = "&Difference";
+			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
 			// 
 			// SpecificValueBox
 			// 
 			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
 			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+			this.SpecificValueBox.Location = new System.Drawing.Point(126, 38);
 			this.SpecificValueBox.MaxLength = 2;
 			this.SpecificValueBox.Name = "SpecificValueBox";
 			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
@@ -1219,7 +1256,7 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(470, 459);
+			this.ClientSize = new System.Drawing.Size(438, 459);
 			this.Controls.Add(this.ComparisonBox);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CompareToBox);
@@ -1230,7 +1267,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(291, 463);
+			this.MinimumSize = new System.Drawing.Size(291, 400);
 			this.Name = "NewRamSearch";
 			this.Text = "Brand New Experimental Ram Search";
 			this.Load += new System.EventHandler(this.RamSearch_Load);
@@ -1365,5 +1402,9 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripButton UndoToolBarButton;
 		private System.Windows.Forms.ToolStripButton RedoToolBarItem;
+		private System.Windows.Forms.ToolStripMenuItem ColumnsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
     }
 }

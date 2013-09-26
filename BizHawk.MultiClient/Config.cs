@@ -248,6 +248,9 @@ namespace BizHawk.MultiClient
 			{ "DiffColumn", 4 },
 		};
 
+		public bool RamSearchShowPrevColumn = true;
+		public bool RamSearchShowChangeColumn = true;
+		public bool RamSearchShowDiffColumn = false;
 
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
