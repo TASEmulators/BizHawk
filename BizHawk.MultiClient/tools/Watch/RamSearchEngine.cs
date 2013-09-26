@@ -302,6 +302,72 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void Sort(string column, bool reverse)
+		{
+			switch(column)
+			{
+				case NewRamSearch.ADDRESS:
+					if (reverse)
+					{
+						_watchList = _watchList.OrderByDescending(x => x.Address).ToList();
+					}
+					else
+					{
+						_watchList = _watchList.OrderBy(x => x.Address).ToList();
+					}
+					break;
+				case NewRamSearch.VALUE:
+					if (reverse)
+					{
+						_watchList = _watchList.OrderByDescending(x => GetValue(x.Address)).ToList();
+					}
+					else
+					{
+						_watchList = _watchList.OrderBy(x => GetValue(x.Address)).ToList();
+					}
+					break;
+				case NewRamSearch.PREV:
+					if (reverse)
+					{
+						_watchList = _watchList.OrderByDescending(x => x.Previous).ToList();
+					}
+					else
+					{
+						_watchList = _watchList.OrderBy(x => x.Previous).ToList();
+					}
+					break;
+				case NewRamSearch.CHANGES:
+					if (_settings.Mode == Settings.SearchMode.Detailed)
+					{
+						if (reverse)
+						{
+							_watchList = _watchList
+								.Cast<IMiniWatchDetails>()
+								.OrderByDescending(x => x.ChangeCount)
+								.Cast<IMiniWatch>().ToList();
+						}
+						else
+						{
+							_watchList = _watchList
+								.Cast<IMiniWatchDetails>()
+								.OrderBy(x => x.ChangeCount)
+								.Cast<IMiniWatch>().ToList();
+						}
+					}
+					break;
+				case NewRamSearch.DIFF:
+					if (reverse)
+					{
+						_watchList = _watchList.OrderByDescending(x => (GetValue(x.Address) - x.Previous)).ToList();
+					}
+					else
+					{
+						_watchList = _watchList.OrderBy(x => (GetValue(x.Address) - x.Previous)).ToList();
+					}
+					break;
+			}
+		}
+
 		#endregion
 		
 		#region Undo API
