@@ -939,20 +939,19 @@ namespace BizHawk.MultiClient
 			SelectAll();
 		}
 
-		/*************View***********************/
-		private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		/*************Columns***********************/
+		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			showPreviousValueToolStripMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
-			showChangeCountsToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
-			diffToolStripMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
-			domainToolStripMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
+			ShowPreviousMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
+			ShowChangesMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
+			ShowDiffMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
+			ShowDomainMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
 		}
 
 		private void showPreviousValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchShowPrevColumn ^= true;
 			SaveColumnInfo();
-			//AddRemoveColumn(PREV, Global.Config.RamWatchShowPrevColumn);
 			LoadColumnInfo();
 		}
 
@@ -961,7 +960,6 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchShowChangeColumn ^= true;
 
 			SaveColumnInfo();
-			//AddRemoveColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
 			LoadColumnInfo();
 		}
 
@@ -970,7 +968,6 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchShowDiffColumn ^= true;
 
 			SaveColumnInfo();
-			//(DIFF, Global.Config.RamWatchShowDiffColumn);
 			LoadColumnInfo();
 		}
 
@@ -979,7 +976,6 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchShowDomainColumn ^= true;
 
 			SaveColumnInfo();
-			//AddRemoveColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
 			LoadColumnInfo();
 		}
 
@@ -1084,6 +1080,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = true;
+			Global.Config.RamWatchAlwaysOnTop = TopMost = false;
 
 			LoadColumnInfo();
 		}
