@@ -149,6 +149,8 @@
 			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
+			this.SearchButton = new System.Windows.Forms.Button();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1242,6 +1244,35 @@
 			this.ShowDiffMenuItem.Text = "&Difference";
 			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
 			// 
+			// AutoSearchCheckBox
+			// 
+			this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.AutoSearchCheckBox.AutoSize = true;
+			this.AutoSearchCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.AutoSearch;
+			this.AutoSearchCheckBox.Location = new System.Drawing.Point(313, 361);
+			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
+			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
+			this.AutoSearchCheckBox.TabIndex = 37;
+			this.AutoSearchCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.toolTip1.SetToolTip(this.AutoSearchCheckBox, "Automatically search each frame");
+			this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
+			this.AutoSearchCheckBox.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
+			// 
+			// SearchButton
+			// 
+			this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SearchButton.Image = global::BizHawk.MultiClient.Properties.Resources.search;
+			this.SearchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.SearchButton.Location = new System.Drawing.Point(237, 361);
+			this.SearchButton.Name = "SearchButton";
+			this.SearchButton.Size = new System.Drawing.Size(70, 23);
+			this.SearchButton.TabIndex = 38;
+			this.SearchButton.Text = "&Search";
+			this.SearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.SearchButton.UseVisualStyleBackColor = true;
+			this.SearchButton.Click += new System.EventHandler(this.SearchMenuItem_Click);
+			// 
 			// SpecificValueBox
 			// 
 			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
@@ -1261,6 +1292,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(445, 459);
+			this.Controls.Add(this.SearchButton);
+			this.Controls.Add(this.AutoSearchCheckBox);
 			this.Controls.Add(this.ComparisonBox);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CompareToBox);
@@ -1410,5 +1443,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
+		private System.Windows.Forms.CheckBox AutoSearchCheckBox;
+		private System.Windows.Forms.Button SearchButton;
     }
 }

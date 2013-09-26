@@ -175,6 +175,12 @@ namespace BizHawk.MultiClient
 			if (Searches.Count > 0)
 			{
 				Searches.Update();
+
+				if (autoSearch)
+				{
+					DoSearch();
+				}
+
 				WatchListView.Refresh();
 			}
 		}
@@ -590,6 +596,15 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void ToggleAutoSearch()
+		{
+			autoSearch ^= true;
+			AutoSearchCheckBox.Checked = autoSearch;
+			DoSearchToolButton.Enabled =
+				SearchButton.Enabled =
+				!autoSearch;
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -905,7 +920,7 @@ namespace BizHawk.MultiClient
 
 		private void AutoSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			autoSearch ^= true;
+			ToggleAutoSearch();
 		}
 
 		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
