@@ -101,7 +101,7 @@
 			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExcludeRamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.useUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.UseUndoHistoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoloadDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWinPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -196,7 +196,7 @@
 			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(216, 366);
+			this.WatchListView.Size = new System.Drawing.Size(223, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -347,7 +347,7 @@
             this.ColumnsMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(438, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(445, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -725,7 +725,7 @@
             this.AutoSearchMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
-            this.useUndoHistoryToolStripMenuItem,
+            this.UseUndoHistoryMenuItem,
             this.toolStripSeparator11,
             this.AutoloadDialogMenuItem,
             this.SaveWinPositionMenuItem,
@@ -763,12 +763,12 @@
 			this.ExcludeRamWatchMenuItem.Text = "Always Exclude Ram Search List";
 			this.ExcludeRamWatchMenuItem.Click += new System.EventHandler(this.ExcludeRamWatchMenuItem_Click);
 			// 
-			// useUndoHistoryToolStripMenuItem
+			// UseUndoHistoryMenuItem
 			// 
-			this.useUndoHistoryToolStripMenuItem.Enabled = false;
-			this.useUndoHistoryToolStripMenuItem.Name = "useUndoHistoryToolStripMenuItem";
-			this.useUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.useUndoHistoryToolStripMenuItem.Text = "&Use Undo History";
+			this.UseUndoHistoryMenuItem.Name = "UseUndoHistoryMenuItem";
+			this.UseUndoHistoryMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.UseUndoHistoryMenuItem.Text = "&Use Undo History";
+			this.UseUndoHistoryMenuItem.Click += new System.EventHandler(this.UseUndoHistoryMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
@@ -840,7 +840,7 @@
 			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
 			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(230, 65);
+			this.CompareToBox.Location = new System.Drawing.Point(237, 65);
 			this.CompareToBox.Name = "CompareToBox";
 			this.CompareToBox.Size = new System.Drawing.Size(197, 125);
 			this.CompareToBox.TabIndex = 10;
@@ -966,7 +966,7 @@
             this.RedoToolBarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(438, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(445, 25);
 			this.toolStrip1.TabIndex = 11;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -1109,7 +1109,7 @@
 			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
 			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
 			this.ComparisonBox.Controls.Add(this.LessThanRadio);
-			this.ComparisonBox.Location = new System.Drawing.Point(230, 196);
+			this.ComparisonBox.Location = new System.Drawing.Point(237, 196);
 			this.ComparisonBox.Name = "ComparisonBox";
 			this.ComparisonBox.Size = new System.Drawing.Size(197, 159);
 			this.ComparisonBox.TabIndex = 12;
@@ -1256,7 +1256,7 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(438, 459);
+			this.ClientSize = new System.Drawing.Size(445, 459);
 			this.Controls.Add(this.ComparisonBox);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CompareToBox);
@@ -1337,7 +1337,7 @@
         private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
 		private System.Windows.Forms.ToolStripMenuItem ClearUndoMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem useUndoHistoryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem UseUndoHistoryMenuItem;
 		private System.Windows.Forms.ToolStripSeparator ContextMenuSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem ClearPreviewContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

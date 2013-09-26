@@ -873,6 +873,7 @@ namespace BizHawk.MultiClient
 			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
 			SaveWinPositionMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
+			UseUndoHistoryMenuItem.Checked = Searches.UndoEnabled;
 			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchAlwaysOnTop;
 			AutoSearchMenuItem.Checked = autoSearch;
@@ -895,6 +896,11 @@ namespace BizHawk.MultiClient
 			{
 				RemoveRamWatchesFromList();
 			}
+		}
+
+		private void UseUndoHistoryMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.UndoEnabled ^= true;
 		}
 
 		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
