@@ -44,7 +44,7 @@ namespace BizHawk.MultiClient
 		private bool autoSearch = false;
 
 		#region Initialize, Load, and Save
-		
+
 		public NewRamSearch()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -376,7 +376,7 @@ namespace BizHawk.MultiClient
 						Text = columnName.Replace("Column", ""),
 						Width = GetColumnWidth(columnName),
 					};
-					
+
 					WatchListView.Columns.Add(column);
 				}
 			}
@@ -494,6 +494,13 @@ namespace BizHawk.MultiClient
 				WatchListView.ItemCount = Searches.Count;
 				SetTotal();
 				Global.Config.RecentSearches.Add(file.FullName);
+
+				if (!append && !truncate)
+				{
+					Searches.ClearHistory();
+				}
+
+				ToggleSearchDependentToolBarItems();
 			}
 		}
 
@@ -568,6 +575,7 @@ namespace BizHawk.MultiClient
 		private void RemoveRamWatchesFromList()
 		{
 			Searches.RemoveRange(Global.MainForm.NewRamWatch1.AddressList);
+			WatchListView.ItemCount = Searches.Count;
 			SetTotal();
 		}
 
@@ -610,7 +618,7 @@ namespace BizHawk.MultiClient
 		#region Winform Events
 
 		#region File
-		
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveMenuItem.Enabled = !String.IsNullOrWhiteSpace(CurrentFileName);
@@ -654,7 +662,7 @@ namespace BizHawk.MultiClient
 		{
 			WatchList watches = new WatchList(Settings.Domain);
 			watches.CurrentFileName = CurrentFileName;
-			for(int i = 0; i < Searches.Count; i++)
+			for (int i = 0; i < Searches.Count; i++)
 			{
 				watches.Add(Searches[i]);
 			}
@@ -671,7 +679,7 @@ namespace BizHawk.MultiClient
 		{
 			Close();
 		}
-		
+
 		#endregion
 
 		#region Settings
@@ -1025,14 +1033,14 @@ namespace BizHawk.MultiClient
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 		{
 			DoSearchContextMenuItem.Enabled = Searches.Count > 0;
-			
+
 			RemoveContextMenuItem.Visible =
 				AddToRamWatchContextMenuItem.Visible =
 				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				ContextMenuSeparator2.Visible =
-				
-				ViewInHexEditorContextMenuItem.Visible = 
+
+				ViewInHexEditorContextMenuItem.Visible =
 				SelectedIndices.Count > 0;
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.Any();
@@ -1242,6 +1250,10 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
+			{
+				WatchListView.SelectedIndices.Clear();
+			}
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1287,6 +1299,33 @@ namespace BizHawk.MultiClient
 			if (SelectedIndices.Count > 0)
 			{
 				AddToRamWatch();
+			}
+		}
+
+		#endregion
+
+		#region Dialog Events
+
+		private void NewRamSearch_Activated(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
+
+		private void NewRamSearch_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void NewRamSearch_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".wch"))
+			{
+				var file = new FileInfo(filePaths[0]);
+				if (file.Exists)
+				{
+					LoadWatchFile(file, false);
+				}
 			}
 		}
 

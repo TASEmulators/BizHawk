@@ -108,15 +108,21 @@
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColumnsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.CompareToBox = new System.Windows.Forms.GroupBox();
 			this.DifferenceBox = new BizHawk.UnsignedIntegerBox();
 			this.DifferenceRadio = new System.Windows.Forms.RadioButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumberOfChangesBox = new BizHawk.UnsignedIntegerBox();
 			this.SpecificAddressBox = new BizHawk.HexTextBox();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
@@ -145,13 +151,7 @@
 			this.LessThanOrEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
-			this.ColumnsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.SearchButton = new System.Windows.Forms.Button();
-			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -814,6 +814,38 @@
 			this.RestoreDefaultsMenuItem.Text = "Restore Default Settings";
 			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
+			// ColumnsMenuItem
+			// 
+			this.ColumnsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowPreviousMenuItem,
+            this.ShowChangesMenuItem,
+            this.ShowDiffMenuItem});
+			this.ColumnsMenuItem.Name = "ColumnsMenuItem";
+			this.ColumnsMenuItem.Size = new System.Drawing.Size(67, 20);
+			this.ColumnsMenuItem.Text = "&Columns";
+			this.ColumnsMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsMenuItem_DropDownOpened);
+			// 
+			// ShowPreviousMenuItem
+			// 
+			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
+			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowPreviousMenuItem.Text = "&Previous Value";
+			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
+			// 
+			// ShowChangesMenuItem
+			// 
+			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
+			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowChangesMenuItem.Text = "&Change Counts";
+			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
+			// 
+			// ShowDiffMenuItem
+			// 
+			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
+			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.ShowDiffMenuItem.Text = "&Difference";
+			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
+			// 
 			// MemDomainLabel
 			// 
 			this.MemDomainLabel.AutoSize = true;
@@ -832,6 +864,21 @@
 			this.MessageLabel.Size = new System.Drawing.Size(106, 13);
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = " todo                         ";
+			// 
+			// AutoSearchCheckBox
+			// 
+			this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.AutoSearchCheckBox.AutoSize = true;
+			this.AutoSearchCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.AutoSearch;
+			this.AutoSearchCheckBox.Location = new System.Drawing.Point(313, 361);
+			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
+			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
+			this.AutoSearchCheckBox.TabIndex = 37;
+			this.AutoSearchCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.toolTip1.SetToolTip(this.AutoSearchCheckBox, "Automatically search each frame");
+			this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
+			this.AutoSearchCheckBox.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
 			// 
 			// CompareToBox
 			// 
@@ -905,6 +952,19 @@
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
+			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(126, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
+			this.SpecificValueBox.TabIndex = 24;
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// NumberOfChangesRadio
 			// 
@@ -1212,53 +1272,6 @@
 			this.LessThanRadio.UseVisualStyleBackColor = true;
 			this.LessThanRadio.Click += new System.EventHandler(this.LessThanRadio_Click);
 			// 
-			// ColumnsMenuItem
-			// 
-			this.ColumnsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowPreviousMenuItem,
-            this.ShowChangesMenuItem,
-            this.ShowDiffMenuItem});
-			this.ColumnsMenuItem.Name = "ColumnsMenuItem";
-			this.ColumnsMenuItem.Size = new System.Drawing.Size(67, 20);
-			this.ColumnsMenuItem.Text = "&Columns";
-			this.ColumnsMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsMenuItem_DropDownOpened);
-			// 
-			// ShowPreviousMenuItem
-			// 
-			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
-			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowPreviousMenuItem.Text = "&Previous Value";
-			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
-			// 
-			// ShowChangesMenuItem
-			// 
-			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
-			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowChangesMenuItem.Text = "&Change Counts";
-			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
-			// 
-			// ShowDiffMenuItem
-			// 
-			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
-			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowDiffMenuItem.Text = "&Difference";
-			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
-			// 
-			// AutoSearchCheckBox
-			// 
-			this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.AutoSearchCheckBox.AutoSize = true;
-			this.AutoSearchCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.AutoSearch;
-			this.AutoSearchCheckBox.Location = new System.Drawing.Point(313, 361);
-			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
-			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
-			this.AutoSearchCheckBox.TabIndex = 37;
-			this.AutoSearchCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.toolTip1.SetToolTip(this.AutoSearchCheckBox, "Automatically search each frame");
-			this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
-			this.AutoSearchCheckBox.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
-			// 
 			// SearchButton
 			// 
 			this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1272,19 +1285,6 @@
 			this.SearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.SearchButton.UseVisualStyleBackColor = true;
 			this.SearchButton.Click += new System.EventHandler(this.SearchMenuItem_Click);
-			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(126, 38);
-			this.SpecificValueBox.MaxLength = 2;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 24;
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// NewRamSearch
 			// 
@@ -1307,7 +1307,10 @@
 			this.MinimumSize = new System.Drawing.Size(291, 400);
 			this.Name = "NewRamSearch";
 			this.Text = "Brand New Experimental Ram Search";
+			this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
 			this.Load += new System.EventHandler(this.RamSearch_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragEnter);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
