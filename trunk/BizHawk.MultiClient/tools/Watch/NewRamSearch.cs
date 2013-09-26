@@ -571,6 +571,25 @@ namespace BizHawk.MultiClient
 			RedoToolBarItem.Enabled = Searches.CanRedo;
 		}
 
+		private string GetColumnValue(string name, int index)
+		{
+			switch (name)
+			{
+				default:
+					return String.Empty;
+				case ADDRESS:
+					return Searches[index].AddressString;
+				case VALUE:
+					return Searches[index].ValueString;
+				case PREV:
+					return Searches[index].PreviousStr;
+				case CHANGES:
+					return (Searches[index] as IWatchDetails).ChangeCount.ToString();
+				case DIFF:
+					return (Searches[index] as IWatchDetails).Diff;
+			}
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -1180,6 +1199,34 @@ namespace BizHawk.MultiClient
 			{
 				RemoveAddresses();
 			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < Searches.Count; x++)
+				{
+					WatchListView.SelectItem(x, true);
+				}
+			}
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				if (SelectedIndices.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+					foreach (int index in SelectedIndices)
+					{
+						foreach (ColumnHeader column in WatchListView.Columns)
+						{
+							sb.Append(GetColumnValue(column.Name, index)).Append('\t');
+						}
+						sb.Remove(sb.Length - 1, 1);
+						sb.AppendLine();
+					}
+
+					if (sb.Length > 0)
+					{
+						Clipboard.SetDataObject(sb.ToString());
+					}
+				}
+			}
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1191,10 +1238,45 @@ namespace BizHawk.MultiClient
 				SelectedIndices.Any();
 		}
 
-		#endregion
+		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
+		{
+			Global.Config.RamSearchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[PREV] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
+		}
+
+		private void WatchListView_Enter(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
+
+		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = WatchListView.Columns[e.Column];
+			if (column.Name != _sortedColumn)
+			{
+				_sortReverse = false;
+			}
+
+			Searches.Sort(column.Name, _sortReverse);
+
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			WatchListView.Refresh();
+		}
+
+		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				AddToRamWatch();
+			}
+		}
 
 		#endregion
 
-		
+		#endregion
 	}
 }

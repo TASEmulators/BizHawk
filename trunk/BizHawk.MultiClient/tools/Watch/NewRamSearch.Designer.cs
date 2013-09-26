@@ -201,8 +201,12 @@
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.VirtualMode = true;
+			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.WatchListView_ColumnReordered);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
+			this.WatchListView.Enter += new System.EventHandler(this.WatchListView_Enter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
+			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
 			// AddressColumn
 			// 
