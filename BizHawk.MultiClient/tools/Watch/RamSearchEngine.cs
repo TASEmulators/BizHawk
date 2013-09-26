@@ -17,10 +17,12 @@ namespace BizHawk.MultiClient
 		public int? CompareValue = null;
 		public ComparisonOperator Operator = ComparisonOperator.Equal;
 		public int? DifferentBy = null;
+		
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings;
 		private WatchHistory _history = new WatchHistory(true);
+		private bool _keepHistory = true;
 
 		public RamSearchEngine(Settings settings)
 		{
@@ -86,7 +88,10 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
-			_history.AddState(_watchList);
+			if (_keepHistory)
+			{
+				_history.AddState(_watchList);
+			}
 		}
 
 		/// <summary>
@@ -152,7 +157,10 @@ namespace BizHawk.MultiClient
 				SetPrevousToCurrent();
 			}
 
-			_history.AddState(_watchList);
+			if (_keepHistory)
+			{
+				_history.AddState(_watchList);
+			}
 
 			return before - _watchList.Count;
 		}
@@ -297,9 +305,22 @@ namespace BizHawk.MultiClient
 		#endregion
 		
 		#region Undo API
-		
-		public bool CanUndo { get { return _history.CanUndo; } }
-		public bool CanRedo { get { return _history.CanRedo; } }
+
+		public bool UndoEnabled
+		{
+			get { return _keepHistory; }
+			set { _keepHistory = value; }
+		}
+
+		public bool CanUndo
+		{
+			get { return _keepHistory && _history.CanUndo; }
+		}
+
+		public bool CanRedo
+		{
+			get { return _keepHistory && _history.CanRedo; }
+		}
 		
 		public void ClearHistory()
 		{
@@ -308,12 +329,18 @@ namespace BizHawk.MultiClient
 
 		public void Undo()
 		{
-			_watchList = _history.Undo();
+			if (_keepHistory)
+			{
+				_watchList = _history.Undo();
+			}
 		}
 
 		public void Redo()
 		{
-			_watchList = _history.Redo();
+			if (_keepHistory)
+			{
+				_watchList = _history.Redo();
+			}
 		}
 
 		#endregion
