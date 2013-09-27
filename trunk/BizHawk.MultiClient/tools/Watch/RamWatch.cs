@@ -1098,7 +1098,8 @@ namespace BizHawk.MultiClient
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
-				Separator2.Visible =
+				Separator6.Visible = 
+				toolStripSeparator4.Visible = 
 				indexes.Count > 0;
 
 
