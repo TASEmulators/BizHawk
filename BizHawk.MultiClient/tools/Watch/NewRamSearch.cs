@@ -72,6 +72,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
 			MessageLabel.Text = String.Empty;
+			NewSearch();
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)

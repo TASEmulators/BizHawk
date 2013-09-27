@@ -299,7 +299,6 @@
 			this.SearchListView.GridLines = true;
 			this.SearchListView.HideSelection = false;
 			this.SearchListView.ItemCount = 0;
-			this.SearchListView.LabelEdit = true;
 			this.SearchListView.Location = new System.Drawing.Point(9, 58);
 			this.SearchListView.Name = "SearchListView";
 			this.SearchListView.selectedItem = -1;
@@ -542,7 +541,7 @@
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator4
 			// 
