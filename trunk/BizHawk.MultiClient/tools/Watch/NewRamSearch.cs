@@ -63,6 +63,7 @@ namespace BizHawk.MultiClient
 			Searches = new RamSearchEngine(Settings);
 
 			TopMost = Global.Config.RamSearchAlwaysOnTop;
+			SetReboot(false);
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -217,6 +218,7 @@ namespace BizHawk.MultiClient
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
 			ToggleSearchDependentToolBarItems();
+			SetReboot(false);
 		}
 
 		private void ToggleSearchDependentToolBarItems()
@@ -289,6 +291,7 @@ namespace BizHawk.MultiClient
 			{
 				Settings.Domain = Global.Emulator.MemoryDomains[pos];
 				SetDomainLabel();
+				SetReboot(true);
 			}
 		}
 
@@ -397,6 +400,7 @@ namespace BizHawk.MultiClient
 		private void SetSize(Watch.WatchSize size)
 		{
 			SpecificValueBox.ByteSize = Settings.Size = size;
+			SetReboot(true);
 		}
 
 		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
@@ -414,6 +418,13 @@ namespace BizHawk.MultiClient
 			Searches.CompareValue = value;
 		}
 
+		private void SetReboot(bool rebootNeeded)
+		{
+			RebootToolBarSeparator.Visible =
+					RebootToolbarButton.Visible =
+					rebootNeeded;
+		}
+
 		private void SetToDetailedMode()
 		{
 			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
@@ -423,6 +434,7 @@ namespace BizHawk.MultiClient
 			DifferentByBox.Enabled = true;
 			ClearChangeCountsToolBarItem.Enabled = true;
 			WatchListView.Columns[CHANGES].Width = Global.Config.RamSearchColumnWidths[CHANGES];
+			SetReboot(true);
 		}
 
 		private void SetToFastMode()
@@ -446,6 +458,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config.RamSearchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
 			WatchListView.Columns[CHANGES].Width = 0;
+			SetReboot(true);
 		}
 
 		private void RemoveAddresses()
@@ -790,7 +803,8 @@ namespace BizHawk.MultiClient
 
 		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.CheckMisAligned = CheckMisalignedMenuItem.Checked;
+			Settings.CheckMisAligned ^= true;
+			SetReboot(true);
 		}
 
 		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
@@ -815,8 +829,8 @@ namespace BizHawk.MultiClient
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.BigEndian = BigEndianMenuItem.Checked;
-			Searches.SetEndian(BigEndianMenuItem.Checked);
+			Settings.BigEndian ^= true;
+			Searches.SetEndian(Settings.BigEndian);
 		}
 
 		#endregion
@@ -1028,7 +1042,7 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region ContextMenu
+		#region ContextMenu and Toolbar
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 		{
