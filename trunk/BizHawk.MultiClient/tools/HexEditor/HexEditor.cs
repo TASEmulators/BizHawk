@@ -671,23 +671,11 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					return new ByteWatch(Domain, address)
-					{
-						BigEndian = BigEndian,
-						Type = Watch.DisplayType.Hex,
-					};
+					return new ByteWatch(Domain, address, Watch.DisplayType.Hex, BigEndian, String.Empty);
 				case 2:
-					return new WordWatch(Domain, address)
-					{
-						BigEndian = BigEndian,
-						Type = Watch.DisplayType.Hex,
-					};
+					return new WordWatch(Domain, address, Watch.DisplayType.Hex, BigEndian, String.Empty);
 				case 4:
-					return new DWordWatch(Domain, address)
-					{
-						BigEndian = BigEndian,
-						Type = Watch.DisplayType.Hex,
-					};
+					return new DWordWatch(Domain, address, Watch.DisplayType.Hex, BigEndian, String.Empty);
 			}
 		}
 
@@ -731,10 +719,13 @@ namespace BizHawk.MultiClient
 				var Watches = new List<Watch>();
 				foreach (var address in addresses)
 				{
-					Watch w = Watch.GenerateWatch(Domain, address, (Watch.WatchSize)DataSize);
-					w.Type = Watch.DisplayType.Hex;
-
-					Watches.Add(w);
+					Watches.Add(Watch.GenerateWatch(
+							Domain, 
+							address, 
+							(Watch.WatchSize)DataSize, 
+							Watch.DisplayType.Hex,
+							String.Empty,
+							BigEndian));
 				}
 
 				poke.SetWatch(Watches);

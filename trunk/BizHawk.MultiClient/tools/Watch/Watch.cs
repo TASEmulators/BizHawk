@@ -199,20 +199,19 @@ namespace BizHawk.MultiClient
 
 		public string Notes { get { return _notes; } set { _notes = value; } }
 
-		//TODO: delete me
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size)
+		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, DisplayType type, string notes, bool bigEndian)
 		{
 			switch (size)
 			{
 				default:
 				case WatchSize.Separator:
-					return new SeparatorWatch();
+					return SeparatorWatch.Instance;
 				case WatchSize.Byte:
-					return new ByteWatch(domain, address);
+					return new ByteWatch(domain, address, type, bigEndian, notes);
 				case WatchSize.Word:
-					return new WordWatch(domain, address);
+					return new WordWatch(domain, address, type, bigEndian, notes);
 				case WatchSize.DWord:
-					return new DWordWatch(domain, address);
+					return new DWordWatch(domain, address, type, bigEndian, notes);
 			}
 		}
 
@@ -222,7 +221,7 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case WatchSize.Separator:
-					return new SeparatorWatch();
+					return SeparatorWatch.Instance;
 				case WatchSize.Byte:
 					return new ByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
 				case WatchSize.Word:
@@ -337,21 +336,27 @@ namespace BizHawk.MultiClient
 		private byte _previous;
 		private byte _value;
 
-		public ByteWatch(MemoryDomain domain, int address)
+		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
 		{
 			_address = address;
 			_domain = domain;
 			_value = _previous = GetByte();
-			Notes = String.Empty;
+			if (Watch.AvailableTypes(WatchSize.Byte).Contains(type))
+			{
+				_type = type;
+			}
+			_bigEndian = bigEndian;
+			if (notes != null)
+			{
+				Notes = notes;
+			}
 		}
 
-		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount)
-			: this(domain, address)
+		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
+			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
 			_changecount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
 		}
 
 		public override int? Address
@@ -534,21 +539,29 @@ namespace BizHawk.MultiClient
 		private ushort _previous;
 		private ushort _value;
 
-		public WordWatch(MemoryDomain domain, int address)
+		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
 			_value = _previous = GetWord();
-			Notes = String.Empty;
+
+			if (Watch.AvailableTypes(WatchSize.Word).Contains(type))
+			{
+				_type = type;
+			}
+			_bigEndian = bigEndian;
+
+			if (notes != null)
+			{
+				Notes = notes;
+			}
 		}
 
-		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount)
-			: this(domain, address)
+		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
+			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
 			_changecount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
 		}
 
 		public override int? Value
@@ -719,16 +732,26 @@ namespace BizHawk.MultiClient
 		private uint _value;
 		private uint _previous;
 
-		public DWordWatch(MemoryDomain domain, int address)
+		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, string notes)
 		{
 			_domain = domain;
 			_address = address;
 			_value = _previous = GetDWord();
-			Notes = String.Empty;
+			
+			if (Watch.AvailableTypes(WatchSize.DWord).Contains(type))
+			{
+				_type = type;
+			}
+			_bigEndian = bigEndian;
+
+			if (notes != null)
+			{
+				Notes = notes;
+			}
 		}
 
-		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount)
-			: this(domain, address)
+		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
+			: this(domain, address, type, bigEndian, notes)
 		{
 			_previous = prev;
 			_changecount = changeCount;

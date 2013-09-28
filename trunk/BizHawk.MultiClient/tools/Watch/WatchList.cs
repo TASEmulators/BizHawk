@@ -498,12 +498,14 @@ namespace BizHawk.MultiClient
 					startIndex = line.IndexOf('\t') + 1;
 					string notes = line.Substring(startIndex, line.Length - startIndex);
 
-					Watch w = Watch.GenerateWatch(memDomain, addr, size);
-					w.BigEndian = bigEndian;
-					w.Type = type;
-					w.Notes = notes;
-
-					_watchList.Add(w);
+					_watchList.Add(
+						Watch.GenerateWatch(
+							memDomain,
+							addr,
+							size,
+							type,
+							notes,
+							bigEndian));
 					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
 				}
 			}
