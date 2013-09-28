@@ -34,8 +34,16 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidHexNumber(Text))
 				{
-					int val = ToRawInt();
-					val++;
+					uint val = (uint)ToRawInt();
+
+					if (val == IntHelpers.MaxHexValueFromMaxDigits(MaxLength))
+					{
+						val = 0;
+					}
+					else
+					{
+						val++;
+					}
 					string formatstr = "{0:X" + MaxLength.ToString() + "}";
 					Text = String.Format(formatstr, val);
 				}
@@ -44,8 +52,16 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidHexNumber(Text))
 				{
-					int val = ToRawInt();
-					val--;
+					uint val = (uint)ToRawInt();
+					if (val == 0)
+					{
+						val = IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
+					}
+					else
+					{
+						val--;
+					}
+
 					string formatstr = "{0:X" + MaxLength.ToString() + "}";
 					Text = String.Format(formatstr, val);
 				}
@@ -102,8 +118,15 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidUnsignedNumber(Text))
 				{
-					int val = ToRawInt();
-					val++;
+					uint val = (uint)ToRawInt();
+					if (val == uint.MaxValue)
+					{
+						val = 0;
+					}
+					else
+					{
+						val++;
+					}
 					Text = val.ToString();
 				}
 			}
@@ -111,8 +134,17 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidUnsignedNumber(Text))
 				{
-					int val = ToRawInt();
-					val--;
+					uint val = (uint)ToRawInt();
+
+					if (val == 0)
+					{
+						val = uint.MaxValue;
+					}
+					else
+					{
+						val--;
+					}
+
 					Text = val.ToString();
 				}
 			}
@@ -138,7 +170,7 @@ namespace BizHawk
 			}
 			else
 			{
-				return int.Parse(Text);
+				return (int)uint.Parse(Text);
 			}
 		}
 	}

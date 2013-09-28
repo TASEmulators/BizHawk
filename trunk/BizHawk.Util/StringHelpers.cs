@@ -42,5 +42,32 @@ namespace BizHawk
             if (i < 0x1000000) return 6;
             else return 8;
         }
+
+		public static uint MaxHexValueFromMaxDigits(Int32 i)
+		{
+			switch (i)
+			{
+				case 0:
+					return 0;
+				case 1:
+					return 0xF;
+				case 2:
+					return 0xFF;
+				case 3:
+					return 0xFFF;
+				case 4:
+					return 0xFFFF;
+				case 5:
+					return 0xFFFFF;
+				case 6:
+					return 0xFFFFFF;
+				case 7:
+					return 0xFFFFFFF;
+				case 8:
+					return 0xFFFFFFFF;
+			}
+
+			return int.MaxValue;
+		}
     }
 }
