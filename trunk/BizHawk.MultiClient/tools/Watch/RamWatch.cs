@@ -1141,7 +1141,6 @@ namespace BizHawk.MultiClient
 			Global.MainForm.Cheats1.RemoveAllCheats();
 			UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.NewRamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}

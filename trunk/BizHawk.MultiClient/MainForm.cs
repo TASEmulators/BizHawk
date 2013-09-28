@@ -86,7 +86,6 @@ namespace BizHawk.MultiClient
 		//tool dialogs
 
 		private RamSearch _ramsearch = null;
-		private NewRamSearch _newramsearch = null;
 
 		private HexEditor _hexeditor = null;
 		private TraceLogger _tracelogger = null;
@@ -107,11 +106,10 @@ namespace BizHawk.MultiClient
 		private GBGameGenie _gbgg = null;
 		private GenGameGenie _gengg = null;
 		private NESSoundConfig _nessound = null;
-		private RamWatch _newramwatch = null;
+		private RamWatch _ramwatch = null;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
-		public NewRamSearch NewRamSearch1 { get { if (_newramsearch == null) _newramsearch = new NewRamSearch(); return _newramsearch; } set { _newramsearch = value; } }
 
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
@@ -133,7 +131,7 @@ namespace BizHawk.MultiClient
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 
-		public RamWatch NewRamWatch1 { get { if (_newramwatch == null) _newramwatch = new RamWatch(); return _newramwatch; } set { _newramwatch = value; } }
+		public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
 
 		//TODO: eventually start doing this, rather than tools attempting to talk to tools
 		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
@@ -1582,9 +1580,7 @@ namespace BizHawk.MultiClient
 				//    SyncThrottle();
 				//}
 				if (_ramsearch != null) RamSearch1.Restart();
-				if (_newramsearch != null) NewRamSearch1.Restart();
-
-				if (_newramwatch != null) NewRamWatch1.Restart();
+				if (_ramwatch != null) RamWatch1.Restart();
 				if (_hexeditor != null) HexEditor1.Restart();
 				if (_nesppu != null) NESPPU1.Restart();
 				if (_nesnametableview != null) NESNameTableViewer1.Restart();
@@ -2328,10 +2324,8 @@ namespace BizHawk.MultiClient
 			}
 
 #endif
-			if (_newramwatch != null) NewRamWatch1.UpdateValues();
+			if (_ramwatch != null) RamWatch1.UpdateValues();
 			if (_ramsearch != null) RamSearch1.UpdateValues();
-			if (_newramsearch != null) NewRamSearch1.UpdateValues();
-
 			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
@@ -2674,30 +2668,14 @@ namespace BizHawk.MultiClient
 
 		public void LoadRamSearch()
 		{
-			//TODO
-			if (MainForm.INTERIM && Global.Config.RecentSearches.AutoLoad)
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
 			{
-				if (!NewRamSearch1.IsHandleCreated || NewRamSearch1.IsDisposed)
-				{
-					NewRamSearch1 = new NewRamSearch();
-					NewRamSearch1.Show();
-				}
-				else
-				{
-					NewRamSearch1.Focus();
-				}
+				RamSearch1 = new RamSearch();
+				RamSearch1.Show();
 			}
 			else
 			{
-				if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-				{
-					RamSearch1 = new RamSearch();
-					RamSearch1.Show();
-				}
-				else
-				{
-					RamSearch1.Focus();
-				}
+				RamSearch1.Focus();
 			}
 		}
 
@@ -3212,8 +3190,7 @@ namespace BizHawk.MultiClient
 			RewireSound();
 			ResetRewindBuffer();
 			RamSearch1.Restart();
-			NewRamSearch1.Restart();
-			NewRamWatch1.Restart();
+			RamWatch1.Restart();
 			HexEditor1.Restart();
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
@@ -3254,9 +3231,8 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(NewRamWatch1);
+			CloseForm(RamWatch1);
 			CloseForm(RamSearch1);
-			CloseForm(NewRamSearch1);
 			CloseForm(HexEditor1);
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
@@ -4183,27 +4159,27 @@ namespace BizHawk.MultiClient
 
 		public void LoadRamWatch(bool load_dialog)
 		{
-			if (!NewRamWatch1.IsHandleCreated || NewRamWatch1.IsDisposed)
+			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
 			{
-				NewRamWatch1 = new RamWatch();
+				RamWatch1 = new RamWatch();
 				if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 				{
-					NewRamWatch1.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+					RamWatch1.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 				}
 				if (load_dialog)
 				{
-					NewRamWatch1.Show();
+					RamWatch1.Show();
 				}
 			}
 			else
 			{
-				NewRamWatch1.Focus();
+				RamWatch1.Focus();
 			}
 		}
 
 		private void newRamSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new NewRamSearch().Show();
+			new RamSearch().Show();
 		}
 	}
 }

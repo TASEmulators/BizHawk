@@ -230,9 +230,8 @@ namespace BizHawk.MultiClient
 
 		private void UpdateOtherTools()
 		{
-			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.NewRamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 		}
 
@@ -781,9 +780,8 @@ namespace BizHawk.MultiClient
 				}
 				CheatListView.Refresh();
 
-				Global.MainForm.NewRamWatch1.UpdateValues();
+				Global.MainForm.RamWatch1.UpdateValues();
 				Global.MainForm.RamSearch1.UpdateValues();
-				Global.MainForm.NewRamSearch1.UpdateValues();
 				Global.MainForm.HexEditor1.UpdateValues();
 			}
 			UpdateNumberOfCheats();

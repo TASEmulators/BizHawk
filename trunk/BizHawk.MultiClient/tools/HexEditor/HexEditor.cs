@@ -700,11 +700,11 @@ namespace BizHawk.MultiClient
 
 			if (HighlightedAddress.HasValue)
 			{
-				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
+				Global.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				Global.MainForm.NewRamWatch1.AddWatch(MakeWatch(i));
+				Global.MainForm.RamWatch1.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -847,8 +847,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.NewRamSearch1.UpdateValues();
-			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
 
@@ -1663,8 +1662,7 @@ namespace BizHawk.MultiClient
 			MemoryViewerBox.Refresh();
 
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.NewRamSearch1.UpdateValues();
-			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
 

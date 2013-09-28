@@ -659,23 +659,17 @@
     <Compile Include="tools\VirtualPads\VirtualPadSNESControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\Watch\NewRamSearch.cs">
+    <Compile Include="tools\Watch\RamSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\Watch\NewRamSearch.Designer.cs">
-      <DependentUpon>NewRamSearch.cs</DependentUpon>
+    <Compile Include="tools\Watch\RamSearch.Designer.cs">
+      <DependentUpon>RamSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\RamPoke.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\Watch\RamPoke.Designer.cs">
       <DependentUpon>RamPoke.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\RamSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\RamSearch.Designer.cs">
-      <DependentUpon>RamSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\RamSearchEngine.cs" />
     <Compile Include="tools\Watch\RamWatch.cs">
@@ -873,14 +867,11 @@
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadSaturnControl.resx">
       <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\NewRamSearch.resx">
-      <DependentUpon>NewRamSearch.cs</DependentUpon>
+    <EmbeddedResource Include="tools\Watch\RamSearch.resx">
+      <DependentUpon>RamSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamPoke.resx">
       <DependentUpon>RamPoke.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\RamSearch.resx">
-      <DependentUpon>RamSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
