@@ -6,7 +6,7 @@ namespace BizHawk
 {
 	public interface INumberBox
 	{
-		int ToInt();
+		int ToRawInt();
 	}
 
 	public class HexTextBox : TextBox, INumberBox
@@ -34,7 +34,7 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidHexNumber(Text))
 				{
-					int val = ToInt();
+					int val = ToRawInt();
 					val++;
 					string formatstr = "{0:X" + MaxLength.ToString() + "}";
 					Text = String.Format(formatstr, val);
@@ -44,7 +44,7 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidHexNumber(Text))
 				{
-					int val = ToInt();
+					int val = ToRawInt();
 					val--;
 					string formatstr = "{0:X" + MaxLength.ToString() + "}";
 					Text = String.Format(formatstr, val);
@@ -64,7 +64,7 @@ namespace BizHawk
 			}
 		}
 
-		public int ToInt()
+		public int ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
@@ -102,7 +102,7 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidUnsignedNumber(Text))
 				{
-					int val = ToInt();
+					int val = ToRawInt();
 					val++;
 					Text = val.ToString();
 				}
@@ -111,7 +111,7 @@ namespace BizHawk
 			{
 				if (InputValidate.IsValidUnsignedNumber(Text))
 				{
-					int val = ToInt();
+					int val = ToRawInt();
 					val--;
 					Text = val.ToString();
 				}
@@ -130,7 +130,7 @@ namespace BizHawk
 			}
 		}
 
-		public int ToInt()
+		public int ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{

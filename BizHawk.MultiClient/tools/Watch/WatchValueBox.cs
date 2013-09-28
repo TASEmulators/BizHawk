@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				int val = ToInt();
+				int val = ToRawInt();
 				val++;
 
 				switch (_type)
@@ -195,7 +195,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				int val = ToInt();
+				int val = ToRawInt();
 				val--;
 
 				switch (_type)
@@ -225,7 +225,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int ToInt()
+		public int ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
@@ -236,11 +236,22 @@ namespace BizHawk.MultiClient
 				switch (_type)
 				{
 					default:
+					case Watch.DisplayType.Signed:
 						return int.Parse(Text);
+					case Watch.DisplayType.Unsigned:
+						return (int)uint.Parse(Text);
 					case Watch.DisplayType.Binary:
 						return Convert.ToInt32(Text, 2);
 					case Watch.DisplayType.Hex:
 						return int.Parse(Text, NumberStyles.HexNumber);
+					case Watch.DisplayType.FixedPoint_12_4:
+						return (int)(double.Parse(Text) * 16.0);
+					case Watch.DisplayType.FixedPoint_20_12:
+						return (int)(double.Parse(Text) * 4096.0);
+					case Watch.DisplayType.Float:
+						float val = float.Parse(Text);
+						byte[] bytes = BitConverter.GetBytes(val);
+						return BitConverter.ToInt32(bytes, 0);
 				}
 			}
 		}

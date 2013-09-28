@@ -225,8 +225,56 @@ namespace BizHawk.MultiClient
 			UpdateUndoToolBarButtons();
 		}
 
+		private int? CompareToValue
+		{
+			get
+			{
+				if (PreviousValueRadio.Checked)
+				{
+					return null;
+				}
+				else if (SpecificValueRadio.Checked)
+				{
+					return SpecificValueBox.ToRawInt();
+				}
+				else if (SpecificAddressRadio.Checked)
+				{
+					return SpecificAddressBox.ToRawInt();
+				}
+				else if (NumberOfChangesRadio.Checked)
+				{
+					return NumberOfChangesBox.ToRawInt();
+				}
+				else if (DifferenceRadio.Checked)
+				{
+					return DifferenceBox.ToRawInt();
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		private int? DifferentByValue
+		{
+			get
+			{
+				if (DifferentByRadio.Checked)
+				{
+					return DifferentByBox.ToRawInt();
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
 		private void DoSearch()
 		{
+			Searches.CompareValue = CompareToValue;
+			Searches.DifferentBy = DifferentByValue;
 			int removed = Searches.DoSearch();
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
@@ -1176,7 +1224,7 @@ namespace BizHawk.MultiClient
 
 		private void CompareToValue_TextChanged(object sender, EventArgs e)
 		{
-			SetCompareValue((sender as INumberBox).ToInt());
+			SetCompareValue((sender as INumberBox).ToRawInt());
 		}
 
 		#endregion
@@ -1234,7 +1282,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!String.IsNullOrWhiteSpace(DifferentByBox.Text))
 			{
-				Searches.DifferentBy = DifferentByBox.ToInt();
+				Searches.DifferentBy = DifferentByBox.ToRawInt();
 			}
 			else
 			{
