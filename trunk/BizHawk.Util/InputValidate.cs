@@ -259,8 +259,14 @@ namespace BizHawk
 
 		public static bool IsValidDecimalNumber(char c)
 		{
-			if (c < 48 || c > 58) //45 = dash, 46 = dot
+			if (c == 45 || c == 46) //45 = dash, 46 = dot
+			{
+				return true;
+			}
+			else if (c < 48 || c > 58)
+			{
 				return false;
+			}
 
 			return true;
 		}
