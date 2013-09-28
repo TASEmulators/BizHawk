@@ -64,6 +64,8 @@ namespace BizHawk.MultiClient
 
 			TopMost = Global.Config.RamSearchAlwaysOnTop;
 			SetReboot(false);
+
+			
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -72,6 +74,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
 			MessageLabel.Text = String.Empty;
+			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
 			NewSearch();
 		}
 
@@ -336,6 +339,7 @@ namespace BizHawk.MultiClient
 				Settings.Domain = Global.Emulator.MemoryDomains[pos];
 				SetDomainLabel();
 				SetReboot(true);
+				SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Settings.Domain.Size);
 			}
 		}
 
@@ -431,6 +435,10 @@ namespace BizHawk.MultiClient
 
 		private void DoDisplayTypeClick(Watch.DisplayType type)
 		{
+			if (Settings.Type != type && !String.IsNullOrEmpty(SpecificValueBox.Text))
+			{
+				SpecificValueBox.Text = "0";
+			}
 			SpecificValueBox.Type = Settings.Type = type;
 			Searches.SetType(type);
 		}
@@ -444,6 +452,16 @@ namespace BizHawk.MultiClient
 		private void SetSize(Watch.WatchSize size)
 		{
 			SpecificValueBox.ByteSize = Settings.Size = size;
+			if (!String.IsNullOrEmpty(SpecificAddressBox.Text))
+			{
+				SpecificAddressBox.Text = "0";
+			}
+
+			if (!String.IsNullOrEmpty(SpecificValueBox.Text))
+			{
+				SpecificValueBox.Text = "0";
+			}
+			
 			SetReboot(true);
 		}
 

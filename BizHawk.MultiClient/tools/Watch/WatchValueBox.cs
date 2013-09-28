@@ -97,10 +97,14 @@ namespace BizHawk.MultiClient
 								break;
 						}
 						break;
-					case Watch.DisplayType.Float:
 					case Watch.DisplayType.FixedPoint_12_4:
+						MaxLength = 9;
+						break;
+					case Watch.DisplayType.Float:
+						MaxLength = 21;
+						break;
 					case Watch.DisplayType.FixedPoint_20_12:
-						MaxLength = 32;
+						MaxLength = 64;
 						break;
 				}
 			}
@@ -177,37 +181,187 @@ namespace BizHawk.MultiClient
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				int val = ToRawInt();
-				val++;
-
 				switch (_type)
 				{
 					default:
+					case Watch.DisplayType.Signed:
+						int val = ToRawInt();
+						if (val == MaxSignedInt)
+						{
+							val = 0;
+						}
+						else
+						{
+							val++;
+						}
 						Text = val.ToString();
 						break;
+					case Watch.DisplayType.Unsigned:
+						uint uval = (uint)ToRawInt();
+						if (uval == MaxUnsignedInt)
+						{
+							uval = 0;
+						}
+						else
+						{
+							uval++;
+						}
+						Text = uval.ToString();
+						break;
 					case Watch.DisplayType.Binary:
-						throw new NotImplementedException();
+						uint bval = (uint)ToRawInt();
+						if (bval == MaxUnsignedInt)
+						{
+							bval = 0;
+						}
+						else
+						{
+							bval++;
+						}
+						int numBits = ((int)ByteSize) * 8;
+						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						break;
 					case Watch.DisplayType.Hex:
+						uint hexVal = (uint)ToRawInt();
+						if (hexVal == MaxUnsignedInt)
+						{
+							hexVal = 0;
+						}
+						else
+						{
+							hexVal++;
+						}
 						string formatstr = "{0:X" + MaxLength.ToString() + "}";
-						Text = String.Format(formatstr, val);
+						Text = String.Format(formatstr, hexVal);
+						break;
+					case Watch.DisplayType.FixedPoint_12_4:
+						double f12val = double.Parse(Text);
+						if (f12val > Max12_4 - _12_4_Unit)
+						{
+							f12val = 0;
+						}
+						else
+						{
+							f12val += _12_4_Unit;
+						}
+						Text = f12val.ToString();
+						break;
+					case Watch.DisplayType.FixedPoint_20_12:
+						double f24val = double.Parse(Text);
+						if (f24val >= Max20_12 - _20_12_Unit)
+						{
+							f24val = 0;
+						}
+						else
+						{
+							f24val += _20_12_Unit;
+						}
+						Text = f24val.ToString();
+						break;
+					case Watch.DisplayType.Float:
+						double dval = double.Parse(Text);
+						if (dval > double.MaxValue - 1)
+						{
+							dval = 0;
+						}
+						else
+						{
+							dval++;
+						}
+						Text = dval.ToString();
 						break;
 				}
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				int val = ToRawInt();
-				val--;
-
 				switch (_type)
 				{
 					default:
+					case Watch.DisplayType.Signed:
+						int val = ToRawInt();
+						if (val == 0)
+						{
+							val = MaxSignedInt;
+						}
+						else
+						{
+							val--;
+						}
 						Text = val.ToString();
 						break;
+					case Watch.DisplayType.Unsigned:
+						uint uval = (uint)ToRawInt();
+						if (uval == 0)
+						{
+							uval = MaxUnsignedInt;
+						}
+						else
+						{
+							uval--;
+						}
+						Text = uval.ToString();
+						break;
 					case Watch.DisplayType.Binary:
-						throw new NotImplementedException();
+						uint bval = (uint)ToRawInt();
+						if (bval == 0)
+						{
+							bval = MaxUnsignedInt;
+						}
+						else
+						{
+							bval--;
+						}
+						int numBits = ((int)ByteSize) * 8;
+						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						break;
 					case Watch.DisplayType.Hex:
+						uint hexVal = (uint)ToRawInt();
+						if (hexVal == 0)
+						{
+							hexVal = MaxUnsignedInt;
+						}
+						else
+						{
+							hexVal++;
+						}
 						string formatstr = "{0:X" + MaxLength.ToString() + "}";
-						Text = String.Format(formatstr, val);
+						Text = String.Format(formatstr, hexVal);
+						break;
+					case Watch.DisplayType.FixedPoint_12_4:
+						double f12val = double.Parse(Text);
+						if (f12val < 0 + _12_4_Unit)
+						{
+							f12val = Max12_4;
+						}
+						else
+						{
+							f12val -= _12_4_Unit;
+						}
+						Text = f12val.ToString();
+						break;
+					case Watch.DisplayType.FixedPoint_20_12:
+						double f24val = double.Parse(Text);
+						if (f24val < 0 + _20_12_Unit)
+						{
+							f24val = Max20_12;
+						}
+						else
+						{
+							f24val -= _20_12_Unit;
+						}
+						Text = f24val.ToString();
+						break;
+					case Watch.DisplayType.Float:
+						double dval = double.Parse(Text);
+						if (dval > double.MaxValue - 1)
+						{
+							dval = 0;
+						}
+						else
+						{
+							dval--;
+						}
+						Text = dval.ToString();
 						break;
 				}
 			}
@@ -216,6 +370,60 @@ namespace BizHawk.MultiClient
 				base.OnKeyDown(e);
 			}
 		}
+
+		uint MaxUnsignedInt
+		{
+			get
+			{
+				switch (ByteSize)
+				{
+					default:
+					case Watch.WatchSize.Byte:
+						return byte.MaxValue;
+					case Watch.WatchSize.Word:
+						return ushort.MaxValue;
+					case Watch.WatchSize.DWord:
+						return uint.MaxValue;
+				}
+			}
+		}
+
+		int MaxSignedInt
+		{
+			get
+			{
+				switch (ByteSize)
+				{
+					default:
+					case Watch.WatchSize.Byte:
+						return sbyte.MaxValue;
+					case Watch.WatchSize.Word:
+						return short.MaxValue;
+					case Watch.WatchSize.DWord:
+						return int.MaxValue;
+				}
+			}
+		}
+
+		double Max12_4
+		{
+			get
+			{
+				return MaxUnsignedInt / 16.0;
+			}
+		}
+
+		double Max20_12
+		{
+			get
+			{
+				return MaxUnsignedInt / 4096.0;
+			}
+		}
+
+		double _12_4_Unit { get { return 1 / 16.0; } }
+		double _20_12_Unit { get { return 1 / 4096.0; } }
+
 
 		protected override void OnTextChanged(EventArgs e)
 		{
