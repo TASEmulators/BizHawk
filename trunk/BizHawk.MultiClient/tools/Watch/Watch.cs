@@ -40,6 +40,8 @@ namespace BizHawk.MultiClient
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
 		protected bool _bigEndian;
+		protected int _changecount;
+		protected string _notes = String.Empty;
 
 		public abstract int? Value { get; }
 		public abstract string ValueString { get; }
@@ -193,7 +195,12 @@ namespace BizHawk.MultiClient
 			_domain.PokeDWord(_address, val, _bigEndian ? Endian.Big : Endian.Little);
 		}
 
-		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size, bool details)
+		public void ClearChangeCount() { _changecount = 0; }
+
+		public string Notes { get { return _notes; } set { _notes = value; } }
+
+		//TODO: delete me
+		public static Watch GenerateWatch(MemoryDomain domain, int address, WatchSize size)
 		{
 			switch (size)
 			{
@@ -201,32 +208,11 @@ namespace BizHawk.MultiClient
 				case WatchSize.Separator:
 					return new SeparatorWatch();
 				case WatchSize.Byte:
-					if (details)
-					{
-						return new DetailedByteWatch(domain, address);
-					}
-					else
-					{
-						return new ByteWatch(domain, address);
-					}
+					return new ByteWatch(domain, address);
 				case WatchSize.Word:
-					if (details)
-					{
-						return new DetailedWordWatch(domain, address);
-					}
-					else
-					{
-						return new WordWatch(domain, address);
-					}
+					return new WordWatch(domain, address);
 				case WatchSize.DWord:
-					if (details)
-					{
-						return new DetailedDWordWatch(domain, address);
-					}
-					else
-					{
-						return new DWordWatch(domain, address);
-					}
+					return new DWordWatch(domain, address);
 			}
 		}
 
@@ -238,11 +224,11 @@ namespace BizHawk.MultiClient
 				case WatchSize.Separator:
 					return new SeparatorWatch();
 				case WatchSize.Byte:
-					return new DetailedByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
+					return new ByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
 				case WatchSize.Word:
-					return new DetailedWordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
+					return new WordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
 				case WatchSize.DWord:
-					return new DetailedDWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
+					return new DWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
 			}
 		}
 
@@ -261,18 +247,15 @@ namespace BizHawk.MultiClient
 					return DWordWatch.ValidTypes;
 			}
 		}
+
+		public int ChangeCount { get { return _changecount; } }
+		
+		public abstract string Diff { get; }
+		
+		public abstract void Update();
 	}
 
-	public interface IWatchDetails
-	{
-		int ChangeCount { get; }
-		void ClearChangeCount();
-		string Diff { get; }
-		string Notes { get; set; }
-		void Update();
-	}
-
-	public class SeparatorWatch : Watch
+	public sealed class SeparatorWatch : Watch
 	{
 		public static SeparatorWatch Instance
 		{
@@ -343,17 +326,32 @@ namespace BizHawk.MultiClient
 		{
 			return;
 		}
+
+		public override string Diff { get { return String.Empty; } }
+
+		public override void Update() { return; }
 	}
 
-	public class ByteWatch : Watch
+	public sealed class ByteWatch : Watch
 	{
-		protected byte _previous;
+		private byte _previous;
+		private byte _value;
 
 		public ByteWatch(MemoryDomain domain, int address)
 		{
 			_address = address;
 			_domain = domain;
-			_previous = GetByte();
+			_value = _previous = GetByte();
+			Notes = String.Empty;
+		}
+
+		public ByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			_changecount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
 		}
 
 		public override int? Address
@@ -388,7 +386,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return AddressString + ": " + ValueString;
+			return Notes + ": " + ValueString;
 		}
 
 		public override bool IsSeparator
@@ -412,7 +410,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		protected string FormatValue(byte val)
+		private string FormatValue(byte val)
 		{
 			switch (Type)
 			{
@@ -485,37 +483,8 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 		}
-	}
 
-	public sealed class DetailedByteWatch : ByteWatch, IWatchDetails
-	{
-		private byte _value;
-
-		public DetailedByteWatch(MemoryDomain domain, int address)
-			: base(domain, address)
-		{
-			Notes = String.Empty;
-			_value = GetByte();
-		}
-
-		public DetailedByteWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, byte prev, int changeCount)
-			: this(domain, address)
-		{
-			_previous = prev;
-			ChangeCount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
-		}
-
-		public override string ToString()
-		{
-			return Notes + ": " + ValueString;
-		}
-
-		public int ChangeCount { get; private set; }
-		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public string Diff
+		public override string Diff
 		{
 			get
 			{
@@ -533,23 +502,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string Notes { get; set; }
-
-		public void Update()
+		public override void Update()
 		{
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				case PreviousType.LastSearch: //TODO
 				case PreviousType.Original:
-					/*Do Nothing*/
-					break;
+					return;
 				case PreviousType.LastChange:
 					var temp = _value;
 					_value = GetByte();
 					if (_value != temp)
 					{
 						_previous = _value;
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 				case PreviousType.LastFrame:
@@ -557,22 +522,33 @@ namespace BizHawk.MultiClient
 					_value = GetByte();
 					if (_value != Previous)
 					{
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 			}
 		}
 	}
 
-	public class WordWatch : Watch
+	public sealed class WordWatch : Watch
 	{
-		protected ushort _previous;
+		private ushort _previous;
+		private ushort _value;
 
 		public WordWatch(MemoryDomain domain, int address)
 		{
 			_domain = domain;
 			_address = address;
-			_previous = GetWord();
+			_value = _previous = GetWord();
+			Notes = String.Empty;
+		}
+
+		public WordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			_changecount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
 		}
 
 		public override int? Value
@@ -618,10 +594,10 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return AddressString + ": " + ValueString;
+			return Notes + ": " + ValueString;
 		}
 
-		protected string FormatValue(ushort val)
+		private string FormatValue(ushort val)
 		{
 			switch (Type)
 			{
@@ -704,51 +680,18 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 		}
-	}
 
-	public sealed class DetailedWordWatch : WordWatch, IWatchDetails
-	{
-		private ushort _value;
-
-		public DetailedWordWatch(MemoryDomain domain, int address)
-			: base(domain, address)
-		{
-			Notes = String.Empty;
-			_value = GetWord();
-		}
-
-		public DetailedWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, ushort prev, int changeCount)
-			: this(domain, address)
-		{
-			_previous = prev;
-			ChangeCount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
-		}
-
-		public override string ToString()
-		{
-			return Notes + ": " + ValueString;
-		}
-
-		public int ChangeCount { get; private set; }
-		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public string Diff
+		public override string Diff
 		{
 			get { return FormatValue((ushort)(_previous - _value)); }
 		}
 
-		public string Notes { get; set; }
-
-		public void Update()
+		public override void Update()
 		{
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				case PreviousType.LastSearch: //TODO
 				case PreviousType.Original:
-					/*Do Nothing*/
-					break;
+					return;
 				case PreviousType.LastChange:
 					var temp = _value;
 					_value = GetWord();
@@ -756,7 +699,7 @@ namespace BizHawk.MultiClient
 					if (_value != temp)
 					{
 						_previous = temp;
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 				case PreviousType.LastFrame:
@@ -764,22 +707,33 @@ namespace BizHawk.MultiClient
 					_value = GetWord();
 					if (_value != Previous)
 					{
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 			}
 		}
 	}
 
-	public class DWordWatch : Watch
+	public sealed class DWordWatch : Watch
 	{
-		protected uint _previous;
+		private uint _value;
+		private uint _previous;
 
 		public DWordWatch(MemoryDomain domain, int address)
 		{
 			_domain = domain;
 			_address = address;
-			_previous = GetDWord();
+			_value = _previous = GetDWord();
+			Notes = String.Empty;
+		}
+
+		public DWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount)
+			: this(domain, address)
+		{
+			_previous = prev;
+			_changecount = changeCount;
+			_type = type;
+			_bigEndian = bigEndian;
 		}
 
 		public override int? Value
@@ -825,10 +779,10 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return AddressString + ": " + ValueString;
+			return Notes + ": " + ValueString;
 		}
 
-		protected string FormatValue(uint val)
+		private string FormatValue(uint val)
 		{
 			switch (Type)
 			{
@@ -912,57 +866,25 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 		}
-	}
 
-	public sealed class DetailedDWordWatch : DWordWatch, IWatchDetails
-	{
-		private uint _value;
-
-		public DetailedDWordWatch(MemoryDomain domain, int address)
-			: base(domain, address)
-		{
-			Notes = String.Empty;
-			_value = GetDWord();
-		}
-
-		public DetailedDWordWatch(MemoryDomain domain, int address, DisplayType type, bool bigEndian, uint prev, int changeCount)
-			: this(domain, address)
-		{
-			_previous = prev;
-			ChangeCount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
-		}
-
-		public override string ToString()
-		{
-			return Notes + ": " + ValueString;
-		}
-		public int ChangeCount { get; private set; }
-		public void ClearChangeCount() { ChangeCount = 0; }
-
-		public string Diff
+		public override string Diff
 		{
 			get { return FormatValue(_previous - _value); }
 		}
 
-		public string Notes { get; set; }
-
-		public void Update()
+		public override void Update()
 		{
 			switch (Global.Config.RamWatchDefinePrevious)
 			{
-				case PreviousType.LastSearch: //TODO
 				case PreviousType.Original:
-					/*Do Nothing*/
-					break;
+					return;
 				case PreviousType.LastChange:
 					var temp = _value;
 					_value = GetDWord();
 					if (_value != temp)
 					{
 						_previous = _value;
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 				case PreviousType.LastFrame:
@@ -970,7 +892,7 @@ namespace BizHawk.MultiClient
 					_value = GetDWord();
 					if (_value != Previous)
 					{
-						ChangeCount++;
+						_changecount++;
 					}
 					break;
 			}

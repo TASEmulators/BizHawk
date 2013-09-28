@@ -137,7 +137,7 @@ namespace BizHawk.MultiClient
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => (x as IWatchDetails).Diff)
+							.OrderByDescending(x => x.Diff)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => (x as IWatchDetails).Diff)
+							.OrderBy(x => x.Diff)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -157,7 +157,7 @@ namespace BizHawk.MultiClient
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => (x as IWatchDetails).ChangeCount)
+							.OrderByDescending(x => x.ChangeCount)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -166,7 +166,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => (x as IWatchDetails).ChangeCount)
+							.OrderBy(x => x.ChangeCount)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -199,7 +199,7 @@ namespace BizHawk.MultiClient
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => (x as IWatchDetails).Notes)
+							.OrderByDescending(x => x.Notes)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -208,7 +208,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => (x as IWatchDetails).Notes)
+							.OrderBy(x => x.Notes)
 							.ThenBy(x => x.Address ?? 0)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -244,8 +244,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			var detailedWatches = _watchList.OfType<IWatchDetails>().ToList();
-			foreach (var watch in detailedWatches)
+			foreach (var watch in _watchList)
 			{
 				watch.Update();
 			}
@@ -276,8 +275,7 @@ namespace BizHawk.MultiClient
 
 		public void ClearChangeCounts()
 		{
-			var detailedWatches = _watchList.OfType<IWatchDetails>().ToList();
-			foreach (var watch in detailedWatches)
+			foreach (var watch in _watchList)
 			{
 				watch.ClearChangeCount();
 			}
@@ -308,9 +306,9 @@ namespace BizHawk.MultiClient
 			return result;
 		}
 
-		public bool Load(string path, bool details, bool append)
+		public bool Load(string path, bool append)
 		{
-			bool result = LoadFile(path, details, append);
+			bool result = LoadFile(path, append);
 
 			if (result)
 			{
@@ -332,7 +330,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!String.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				LoadFile(CurrentFileName, true, false);
+				LoadFile(CurrentFileName, append:false);
 				Changes = false;
 			}
 		}
@@ -359,7 +357,7 @@ namespace BizHawk.MultiClient
 						.Append(w.TypeAsChar).Append('\t')
 						.Append(w.BigEndian ? '1' : '0').Append('\t')
 						.Append(w.Domain.Name).Append('\t')
-						.Append(w is IWatchDetails ? (w as IWatchDetails).Notes : String.Empty)
+						.Append(w.Notes)
 						.AppendLine();
 				}
 
@@ -383,7 +381,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool LoadFile(string path, bool details, bool append)
+		private bool LoadFile(string path, bool append)
 		{
 			string domain = "";
 			var file = new FileInfo(path);
@@ -500,13 +498,10 @@ namespace BizHawk.MultiClient
 					startIndex = line.IndexOf('\t') + 1;
 					string notes = line.Substring(startIndex, line.Length - startIndex);
 
-					Watch w = Watch.GenerateWatch(memDomain, addr, size, details);
+					Watch w = Watch.GenerateWatch(memDomain, addr, size);
 					w.BigEndian = bigEndian;
 					w.Type = type;
-					if (w is IWatchDetails)
-					{
-						(w as IWatchDetails).Notes = notes;
-					}
+					w.Notes = notes;
 
 					_watchList.Add(w);
 					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];

@@ -731,7 +731,7 @@ namespace BizHawk.MultiClient
 				var Watches = new List<Watch>();
 				foreach (var address in addresses)
 				{
-					Watch w = Watch.GenerateWatch(Domain, address, (Watch.WatchSize)DataSize, false);
+					Watch w = Watch.GenerateWatch(Domain, address, (Watch.WatchSize)DataSize);
 					w.Type = Watch.DisplayType.Hex;
 
 					Watches.Add(w);

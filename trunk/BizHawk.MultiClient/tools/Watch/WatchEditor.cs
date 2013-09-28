@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						NotesBox.Text = (_watchList[0] as IWatchDetails).Notes;
+						NotesBox.Text = _watchList[0].Notes;
 						AddressBox.Text = _watchList[0].AddressString;
 					}
 
@@ -224,7 +224,7 @@ namespace BizHawk.MultiClient
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							_watchList.Add(new DetailedByteWatch(domain, address)
+							_watchList.Add(new ByteWatch(domain, address)
 								{
 									Notes = notes,
 									Type = type,
@@ -233,7 +233,7 @@ namespace BizHawk.MultiClient
 							);
 							break;
 						case 1:
-							_watchList.Add(new DetailedWordWatch(domain, address)
+							_watchList.Add(new WordWatch(domain, address)
 								{
 									Notes = notes,
 									Type = type,
@@ -242,7 +242,7 @@ namespace BizHawk.MultiClient
 							);
 							break;
 						case 2:
-							_watchList.Add(new DetailedDWordWatch(domain, address)
+							_watchList.Add(new DWordWatch(domain, address)
 								{
 									Notes = notes,
 									Type = type,
@@ -261,9 +261,9 @@ namespace BizHawk.MultiClient
 					_watchList.Clear();
 					foreach (var watch in tempWatchList)
 					{
-						var newWatch = Watch.GenerateWatch(watch.Domain, watch.Address.Value, watch.Size, details: true);
+						var newWatch = Watch.GenerateWatch(watch.Domain, watch.Address.Value, watch.Size);
 						newWatch.Type = watch.Type;
-						(newWatch as IWatchDetails).Notes = (watch as IWatchDetails).Notes;
+						newWatch.Notes = watch.Notes;
 						_watchList.Add(watch);
 					}
 					DoEdit();
@@ -277,7 +277,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_watchList.Count == 1)
 			{
-				(_watchList[0] as IWatchDetails).Notes = NotesBox.Text;
+				_watchList[0].Notes = NotesBox.Text;
 			}
 
 			if (_changedSize)
@@ -297,13 +297,13 @@ namespace BizHawk.MultiClient
 							size = Watch.WatchSize.DWord;
 							break;
 					}
-					string tempNotes = (_watchList[i] as IWatchDetails).Notes;
+					string tempNotes = _watchList[i].Notes;
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
 						_watchList.Count == 1 ? AddressBox.ToInt() : _watchList[i].Address.Value,
-						size,
-						details: true);
-					(_watchList[i] as IWatchDetails).Notes = tempNotes;
+						size
+					);
+					_watchList[i].Notes = tempNotes;
 				}
 			}
 			if (_changedDisplayType)

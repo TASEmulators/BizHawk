@@ -132,16 +132,10 @@ namespace BizHawk.MultiClient
 					text = Searches[index].PreviousStr;
 					break;
 				case CHANGES:
-					if (Searches[index] is IWatchDetails)
-					{
-						text = (Searches[index] as IWatchDetails).ChangeCount.ToString();
-					}
+					text = Searches[index].ChangeCount.ToString();
 					break;
 				case DIFF:
-					if (Searches[index] is IWatchDetails)
-					{
-						text = (Searches[index] as IWatchDetails).Diff;
-					}
+					text = Searches[index].Diff;
 					break;
 			}
 		}
@@ -492,7 +486,7 @@ namespace BizHawk.MultiClient
 				}
 
 				WatchList watches = new WatchList(Settings.Domain);
-				watches.Load(file.FullName, false, append);
+				watches.Load(file.FullName, append);
 				List<int> addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
 
 				if (truncate)
@@ -613,9 +607,9 @@ namespace BizHawk.MultiClient
 				case PREV:
 					return Searches[index].PreviousStr;
 				case CHANGES:
-					return (Searches[index] as IWatchDetails).ChangeCount.ToString();
+					return Searches[index].ChangeCount.ToString();
 				case DIFF:
-					return (Searches[index] as IWatchDetails).Diff;
+					return Searches[index].Diff;
 			}
 		}
 
