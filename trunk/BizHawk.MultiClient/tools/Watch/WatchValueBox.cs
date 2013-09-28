@@ -177,23 +177,39 @@ namespace BizHawk.MultiClient
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				//if (InputValidate.IsValidHexNumber(Text))
-				//{
-				//	int val = ToInt();
-				//	val++;
-				//	string formatstr = "{0:X" + MaxLength.ToString() + "}";
-				//	Text = String.Format(formatstr, val);
-				//}
+				int val = ToInt();
+				val++;
+
+				switch (_type)
+				{
+					default:
+						Text = val.ToString();
+						break;
+					case Watch.DisplayType.Binary:
+						throw new NotImplementedException();
+					case Watch.DisplayType.Hex:
+						string formatstr = "{0:X" + MaxLength.ToString() + "}";
+						Text = String.Format(formatstr, val);
+						break;
+				}
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				//if (InputValidate.IsValidHexNumber(Text))
-				//{
-				//	int val = ToInt();
-				//	val--;
-				//	string formatstr = "{0:X" + MaxLength.ToString() + "}";
-				//	Text = String.Format(formatstr, val);
-				//}
+				int val = ToInt();
+				val--;
+
+				switch (_type)
+				{
+					default:
+						Text = val.ToString();
+						break;
+					case Watch.DisplayType.Binary:
+						throw new NotImplementedException();
+					case Watch.DisplayType.Hex:
+						string formatstr = "{0:X" + MaxLength.ToString() + "}";
+						Text = String.Format(formatstr, val);
+						break;
+				}
 			}
 			else
 			{
@@ -201,16 +217,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		protected override void OnTextChanged(EventArgs e)
+		{
+			if (String.IsNullOrWhiteSpace(Text))
+			{
+				Text = "0";
+			}
+		}
+
 		public int ToInt()
 		{
-			switch (_type)
+			if (String.IsNullOrWhiteSpace(Text))
 			{
-				default:
-					return int.Parse(Text);
-				case Watch.DisplayType.Binary:
-					return Convert.ToInt32(Text, 2);
-				case Watch.DisplayType.Hex:
-					return int.Parse(Text, NumberStyles.HexNumber);
+				return 0;
+			}
+			else
+			{
+				switch (_type)
+				{
+					default:
+						return int.Parse(Text);
+					case Watch.DisplayType.Binary:
+						return Convert.ToInt32(Text, 2);
+					case Watch.DisplayType.Hex:
+						return int.Parse(Text, NumberStyles.HexNumber);
+				}
 			}
 		}
 	}

@@ -56,9 +56,24 @@ namespace BizHawk
 			}
 		}
 
+		protected override void OnTextChanged(EventArgs e)
+		{
+			if (String.IsNullOrWhiteSpace(Text))
+			{
+				Text = "0";
+			}
+		}
+
 		public int ToInt()
 		{
-			return int.Parse(Text, NumberStyles.HexNumber);
+			if (String.IsNullOrWhiteSpace(Text))
+			{
+				return 0;
+			}
+			else
+			{
+				return int.Parse(Text, NumberStyles.HexNumber);
+			}
 		}
 	}
 
@@ -107,9 +122,24 @@ namespace BizHawk
 			}
 		}
 
+		protected override void OnTextChanged(EventArgs e)
+		{
+			if (String.IsNullOrWhiteSpace(Text))
+			{
+				Text = "0";
+			}
+		}
+
 		public int ToInt()
 		{
-			return int.Parse(Text);
+			if (String.IsNullOrWhiteSpace(Text))
+			{
+				return 0;
+			}
+			else
+			{
+				return int.Parse(Text);
+			}
 		}
 	}
 }
