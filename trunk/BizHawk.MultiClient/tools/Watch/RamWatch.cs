@@ -112,19 +112,6 @@ namespace BizHawk.MultiClient
 			Changes();
 		}
 
-		/// <summary>
-		/// Temporary to support legacy watches for now
-		/// </summary>
-		/// <param name="watch"></param>
-		public void AddOldWatch(Watch_Legacy watch)
-		{
-			Watches.Add(Watch.ConvertLegacyWatch(watch));
-			DisplayWatches();
-			UpdateValues();
-			UpdateWatchCount();
-			Changes();
-		}
-
 		public void LoadWatchFile(FileInfo file, bool append)
 		{
 			if (file != null)
@@ -142,9 +129,22 @@ namespace BizHawk.MultiClient
 					UpdateMessageLabel();
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(Watches.CurrentFileName);
-					SetMemoryDomain(WatchCommon.GetDomainPos(Watches.Domain.ToString()));
+					SetMemoryDomain(GetDomainPos(Watches.Domain.ToString()));
 				}
 			}
+		}
+
+		private int GetDomainPos(string name)
+		{
+			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			{
+				if (Global.Emulator.MemoryDomains[i].Name == name)
+				{
+					return i;
+				}
+			}
+			return 0;
 		}
 
 		public List<int> AddressList

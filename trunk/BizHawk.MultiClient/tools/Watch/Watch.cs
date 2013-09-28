@@ -261,30 +261,6 @@ namespace BizHawk.MultiClient
 					return DWordWatch.ValidTypes;
 			}
 		}
-
-		/// <summary>
-		/// Temparary support of the legacy watch object
-		/// </summary>
-		/// <param name="watch"></param>
-		/// <returns></returns>
-		public static Watch ConvertLegacyWatch(Watch_Legacy watch)
-		{
-			Watch w = GenerateWatch(
-				watch.Domain,
-				watch.Address,
-				SizeFromChar(watch.TypeChar),
-				!String.IsNullOrWhiteSpace(watch.Notes)
-				);
-
-			w.Type = DisplayTypeFromChar(watch.SignedChar);
-
-			if (!String.IsNullOrWhiteSpace(watch.Notes))
-			{
-				(w as IWatchDetails).Notes = watch.Notes;
-			}
-
-			return w;
-		}
 	}
 
 	public interface IWatchDetails

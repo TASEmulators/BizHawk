@@ -678,7 +678,6 @@
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\Watch.cs" />
-    <Compile Include="tools\Watch\WatchCommon.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -686,7 +685,6 @@
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Watch\WatchHistory.cs" />
-    <Compile Include="tools\Watch\WatchLegacy.cs" />
     <Compile Include="tools\Watch\WatchList.cs" />
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
