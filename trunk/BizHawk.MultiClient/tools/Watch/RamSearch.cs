@@ -461,7 +461,12 @@ namespace BizHawk.MultiClient
 			{
 				SpecificValueBox.Text = "0";
 			}
-			
+
+			if (!Watch.AvailableTypes(size).Contains(Settings.Type))
+			{
+				Settings.Type = Watch.AvailableTypes(size)[0];
+			}
+
 			SetReboot(true);
 		}
 
