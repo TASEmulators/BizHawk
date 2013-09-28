@@ -1294,7 +1294,7 @@
 			this.SearchButton.UseVisualStyleBackColor = true;
 			this.SearchButton.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
-			// NewRamSearch
+			// RamSearch
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1313,8 +1313,8 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(291, 400);
-			this.Name = "NewRamSearch";
-			this.Text = "Brand New Experimental Ram Search";
+			this.Name = "RamSearch";
+			this.Text = "Ram Search";
 			this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
 			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
