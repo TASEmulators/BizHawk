@@ -371,7 +371,7 @@ namespace BizHawk.MultiClient
 
 		public bool SaveAs()
 		{
-			var file = WatchCommon.GetSaveFileFromUser(CurrentFileName);
+			var file = GetSaveFileFromUser(CurrentFileName);
 			if (file != null)
 			{
 				CurrentFileName = file.FullName;
