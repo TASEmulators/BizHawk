@@ -527,7 +527,7 @@ namespace BizHawk.MultiClient
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (NewRamWatch1.AskSave())
+			if (RamWatch1.AskSave())
 				Close();
 		}
 
@@ -2186,7 +2186,7 @@ namespace BizHawk.MultiClient
 			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
-				NewRamWatch1.LoadWatchFile(new FileInfo(filePaths[0]), false);
+				RamWatch1.LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))

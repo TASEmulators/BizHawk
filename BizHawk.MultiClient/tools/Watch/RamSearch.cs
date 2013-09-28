@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -15,47 +16,34 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class RamSearch : Form
 	{
-		//TODO:
-		//Go To Address (Ctrl+G) feature
-		//Multiple undo levels (List<List<string>> UndoLists)
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string PREV = "PrevColumn";
+		public const string CHANGES = "ChangesColumn";
+		public const string DIFF = "DiffColumn";
 
-		private string systemID = "NULL";
-		private List<Watch_Legacy> Searches = new List<Watch_Legacy>();
-		private HistoryCollection SearchHistory = new HistoryCollection(enabled:true);
-		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
-		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
-		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
+		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
+		{
+			{ ADDRESS, 60 },
+			{ VALUE, 59 },
+			{ PREV, 59 },
+			{ CHANGES, 55 },
+			{ DIFF, 59 },
+		};
 
-		public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
-		public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
-		public enum SSigned { SIGNED, UNSIGNED, HEX };
+		private string CurrentFileName = String.Empty;
 
-		//Reset window position item
+		private RamSearchEngine Searches;
+		private RamSearchEngine.Settings Settings;
+
 		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
 		private int defaultHeight;
-		private int defaultAddressWidth;
-		private int defaultValueWidth;
-		private int defaultPrevWidth;
-		private int defaultChangesWidth;
-		private string currentFile = "";
-		private string addressFormatStr = "{0:X4}  ";
-		private bool sortReverse;
-		private string sortedCol;
+		private string _sortedColumn = "";
+		private bool _sortReverse = false;
 		private bool forcePreviewClear = false;
+		private bool autoSearch = false;
 
-		public void SaveConfigSettings()
-		{
-			ColumnPositionSet();
-			Global.Config.RamSearchAddressWidth = SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width;
-			Global.Config.RamSearchValueWidth = SearchListView.Columns[Global.Config.RamSearchValueIndex].Width;
-			Global.Config.RamSearchPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
-			Global.Config.RamSearchChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
-
-			Global.Config.RamSearchWndx = Location.X;
-			Global.Config.RamSearchWndy = Location.Y;
-			Global.Config.RamSearchWidth = Right - Left;
-			Global.Config.RamSearchHeight = Bottom - Top;
-		}
+		#region Initialize, Load, and Save
 
 		public RamSearch()
 		{
@@ -63,436 +51,510 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
+			WatchListView.QueryItemText += ListView_QueryItemText;
+			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
+			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
-		}
 
-		public void UpdateValues()
-		{
-			if (!IsHandleCreated || IsDisposed) return;
+			_sortedColumn = "";
+			_sortReverse = false;
 
-			if (Searches.Count > 8)
-			{
-				SearchListView.BlazingFast = true;
-			}
+			Settings = new RamSearchEngine.Settings();
+			Searches = new RamSearchEngine(Settings);
 
-			sortReverse = false;
-			sortedCol = "";
-
-			if (!Global.Config.RamSearchFastMode)
-			{
-				for (int x = Searches.Count - 1; x >= 0; x--)
-				{
-					Searches[x].PeekAddress();
-				}
-			}
-
-			if (AutoSearchCheckBox.Checked)
-			{
-				DoSearch();
-			}
-			else if (Global.Config.RamSearchPreviewMode)
-			{
-				DoPreview();
-			}
-
-			SearchListView.Refresh();
-			SearchListView.BlazingFast = false;
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
+			SetReboot(false);
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			SetMemoryDomainMenu();
+			SpecificValueBox.ByteSize = Settings.Size;
+			SpecificValueBox.Type = Settings.Type;
+			MessageLabel.Text = String.Empty;
+			NewSearch();
 		}
 
-		private void SetEndian()
+		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (Domain.Endian == Endian.Big)
+			if (Searches.Count > 0 && column == 0)
 			{
-				SetBigEndian();
+				Color nextColor = Color.White;
+
+				bool isCheat = Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value);
+				bool isWeeded = Global.Config.RamSearchPreviewMode && Searches.Preview(Searches[index].Address.Value) && !forcePreviewClear;
+
+				if (isCheat)
+				{
+					if (isWeeded)
+					{
+						nextColor = Color.Lavender;
+					}
+					else
+					{
+						nextColor = Color.LightCyan;
+					}
+				}
+				else
+				{
+					if (isWeeded)
+					{
+						nextColor = Color.Pink;
+					}
+				}
+
+				if (color != nextColor)
+				{
+					color = nextColor;
+				}
 			}
-			else
+		}
+
+		private void ListView_QueryItemText(int index, int column, out string text)
+		{
+			text = "";
+
+			if (index >= Searches.Count)
 			{
-				SetLittleEndian();
+				return;
+			}
+
+			string columnName = WatchListView.Columns[column].Name;
+			switch (columnName)
+			{
+				case ADDRESS:
+					text = Searches[index].AddressString;
+					break;
+				case VALUE:
+					text = Searches[index].ValueString;
+					break;
+				case PREV:
+					text = Searches[index].PreviousStr;
+					break;
+				case CHANGES:
+					if (Searches[index] is IWatchDetails)
+					{
+						text = (Searches[index] as IWatchDetails).ChangeCount.ToString();
+					}
+					break;
+				case DIFF:
+					if (Searches[index] is IWatchDetails)
+					{
+						text = (Searches[index] as IWatchDetails).Diff;
+					}
+					break;
 			}
 		}
 
 		private void LoadConfigSettings()
 		{
-			ColumnPositionSet();
-
+			//Size and Positioning
 			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
 			defaultHeight = Size.Height;
-			defaultAddressWidth = SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width;
-			defaultValueWidth = SearchListView.Columns[Global.Config.RamSearchValueIndex].Width;
-			defaultPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
-			defaultChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
-
-			SetEndian();
 
 			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
+			{
 				Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
+			}
 
 			if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)
 			{
 				Size = new Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
 			}
 
-			if (Global.Config.RamSearchAddressWidth > 0)
-				SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width = Global.Config.RamSearchAddressWidth;
-			if (Global.Config.RamSearchValueWidth > 0)
-				SearchListView.Columns[Global.Config.RamSearchValueIndex].Width = Global.Config.RamSearchValueWidth;
-			if (Global.Config.RamSearchPrevWidth > 0)
-				SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width = Global.Config.RamSearchPrevWidth;
-			if (Global.Config.RamSearchChangesWidth > 0)
-				SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width = Global.Config.RamSearchChangesWidth;
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
+
+			LoadColumnInfo();
 		}
 
-		private void SetMemoryDomainMenu()
+		#endregion
+
+		#region Public
+
+		public void UpdateValues()
 		{
-			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
+			if (Searches.Count > 0)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				Searches.Update();
+
+				if (autoSearch)
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
-					var item = new ToolStripMenuItem { Text = str };
-					{
-						int z = x;
-						item.Click += (o, ev) => SetMemoryDomainNew(z);
-					}
-					if (x == 0)
-					{
-						SetMemoryDomainNew(x);
-					}
-					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-					domainMenuItems.Add(item);
+					DoSearch();
 				}
+
+				WatchListView.Refresh();
 			}
-			else
-				memoryDomainsToolStripMenuItem.Enabled = false;
 		}
 
 		public void Restart()
 		{
+			//TODO
 			if (!IsHandleCreated || IsDisposed) return;
-			SetMemoryDomainMenu();  //Calls Start New Search
+			Settings.Domain = Global.Emulator.MainMemory;
+			NewSearch();
 		}
 
-		private void SetMemoryDomainNew(int pos)
+		public void SaveConfigSettings()
 		{
-			SetMemoryDomain(pos);
-			SetEndian();
-			StartNewSearch();
+			SaveColumnInfo();
+
+			Global.Config.RamSearchWndx = Location.X;
+			Global.Config.RamSearchWndy = Location.Y;
+			Global.Config.RamSearchWidth = Right - Left;
+			Global.Config.RamSearchHeight = Bottom - Top;
+		}
+
+		#endregion
+
+		#region Private
+
+		private void NewSearch()
+		{
+			Searches = new RamSearchEngine(Settings);
+			Searches.Start();
+			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
+			{
+				RemoveRamWatchesFromList();
+			}
+
+			SetTotal();
+			WatchListView.ItemCount = Searches.Count;
+			ToggleSearchDependentToolBarItems();
+			SetReboot(false);
+		}
+
+		private void ToggleSearchDependentToolBarItems()
+		{
+			DoSearchToolButton.Enabled =
+				CopyValueToPrevToolBarItem.Enabled =
+				Searches.Count > 0;
+			UpdateUndoToolBarButtons();
+		}
+
+		private void DoSearch()
+		{
+			int removed = Searches.DoSearch();
+			SetTotal();
+			WatchListView.ItemCount = Searches.Count;
+			SetRemovedMessage(removed);
+			ToggleSearchDependentToolBarItems();
+		}
+
+		private List<int> SelectedIndices
+		{
+			get
+			{
+				var indices = new List<int>();
+				foreach (int index in WatchListView.SelectedIndices)
+				{
+					indices.Add(index);
+				}
+				return indices;
+			}
+		}
+
+		private void SetRemovedMessage(int val)
+		{
+			MessageLabel.Text = val.ToString() + " address" + (val != 1 ? "es" : String.Empty) + " removed";
+		}
+
+		private void SetTotal()
+		{
+			TotalSearchLabel.Text = String.Format("{0:n0}", Searches.Count) + " addresses";
+		}
+
+		private void SetDomainLabel()
+		{
+			MemDomainLabel.Text = Searches.DomainName;
+		}
+
+		private void LoadFileFromRecent(string path)
+		{
+			FileInfo file = new FileInfo(path);
+
+			if (!file.Exists)
+			{
+				Global.Config.RecentSearches.HandleLoadError(path);
+			}
+			else
+			{
+				LoadWatchFile(file, append: false);
+			}
+		}
+
+		private void SetPlatformAndMemoryDomainLabel()
+		{
+			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Searches.DomainName;
 		}
 
 		private void SetMemoryDomain(int pos)
 		{
 			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				Domain = Global.Emulator.MemoryDomains[pos];
+				Settings.Domain = Global.Emulator.MemoryDomains[pos];
+				SetDomainLabel();
+				SetReboot(true);
 			}
-			SetPlatformAndMemoryDomainLabel();
-			addressFormatStr = "X" + GetNumDigits(Domain.Size - 1).ToString();
 		}
 
-		private void SetTotal()
+		private void LoadColumnInfo()
 		{
-			int x = Searches.Count;
-			string str;
-			if (x == 1)
-				str = " address";
-			else
-				str = " addresses";
-			TotalSearchLabel.Text = String.Format("{0:n0}", x) + str;
+			WatchListView.Columns.Clear();
+			AddColumn(ADDRESS, true);
+			AddColumn(VALUE, true);
+			AddColumn(PREV, Global.Config.RamSearchShowPrevColumn);
+			AddColumn(CHANGES, Global.Config.RamSearchShowChangeColumn);
+			AddColumn(DIFF, Global.Config.RamSearchShowDiffColumn);
+
+			ColumnPositions();
 		}
 
-		private void OpenSearchFile()
+		private void ColumnPositions()
 		{
-			var file = GetFileFromUser();
+			List<KeyValuePair<string, int>> Columns =
+				Global.Config.RamSearchColumnIndexes
+					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
+					.OrderBy(x => x.Value).ToList();
+
+			for (int i = 0; i < Columns.Count; i++)
+			{
+				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
+				{
+					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
+				}
+			}
+		}
+
+		private void SaveColumnInfo()
+		{
+			if (WatchListView.Columns[ADDRESS] != null)
+			{
+				Global.Config.RamSearchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[ADDRESS] = WatchListView.Columns[ADDRESS].Width;
+			}
+
+			if (WatchListView.Columns[VALUE] != null)
+			{
+				Global.Config.RamSearchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[VALUE] = WatchListView.Columns[VALUE].Width;
+			}
+
+			if (WatchListView.Columns[PREV] != null)
+			{
+				Global.Config.RamSearchColumnIndexes[PREV] = WatchListView.Columns[PREV].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[PREV] = WatchListView.Columns[PREV].Width;
+			}
+
+			if (WatchListView.Columns[CHANGES] != null)
+			{
+				Global.Config.RamSearchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
+			}
+
+			if (WatchListView.Columns[DIFF] != null)
+			{
+				Global.Config.RamSearchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[DIFF] = WatchListView.Columns[DIFF].Width;
+			}
+		}
+
+		private int GetColumnWidth(string columnName)
+		{
+			var width = Global.Config.RamSearchColumnWidths[columnName];
+			if (width == -1)
+			{
+				width = DefaultColumnWidths[columnName];
+			}
+
+			return width;
+		}
+
+		private void AddColumn(string columnName, bool enabled)
+		{
+			if (enabled)
+			{
+				if (WatchListView.Columns[columnName] == null)
+				{
+					ColumnHeader column = new ColumnHeader
+					{
+						Name = columnName,
+						Text = columnName.Replace("Column", ""),
+						Width = GetColumnWidth(columnName),
+					};
+
+					WatchListView.Columns.Add(column);
+				}
+			}
+		}
+
+		private void DoDisplayTypeClick(Watch.DisplayType type)
+		{
+			SpecificValueBox.Type = Settings.Type = type;
+			Searches.SetType(type);
+		}
+
+		private void SetPreviousStype(Watch.PreviousType type)
+		{
+			Settings.PreviousType = type;
+			Searches.SetPreviousType(type);
+		}
+
+		private void SetSize(Watch.WatchSize size)
+		{
+			SpecificValueBox.ByteSize = Settings.Size = size;
+			SetReboot(true);
+		}
+
+		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
+		{
+			Searches.Operator = op;
+		}
+
+		private void SetCompareTo(RamSearchEngine.Compare comp)
+		{
+			Searches.CompareTo = comp;
+		}
+
+		private void SetCompareValue(int? value)
+		{
+			Searches.CompareValue = value;
+		}
+
+		private void SetReboot(bool rebootNeeded)
+		{
+			RebootToolBarSeparator.Visible =
+					RebootToolbarButton.Visible =
+					rebootNeeded;
+		}
+
+		private void SetToDetailedMode()
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Detailed;
+			NumberOfChangesRadio.Enabled = true;
+			NumberOfChangesBox.Enabled = true;
+			DifferenceRadio.Enabled = true;
+			DifferentByBox.Enabled = true;
+			ClearChangeCountsToolBarItem.Enabled = true;
+			WatchListView.Columns[CHANGES].Width = Global.Config.RamSearchColumnWidths[CHANGES];
+			SetReboot(true);
+		}
+
+		private void SetToFastMode()
+		{
+			Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+
+			if (Settings.PreviousType == Watch.PreviousType.LastFrame || Settings.PreviousType == Watch.PreviousType.LastChange)
+			{
+				SetPreviousStype(Watch.PreviousType.LastSearch);
+			}
+
+			NumberOfChangesRadio.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+			NumberOfChangesBox.Text = String.Empty;
+			ClearChangeCountsToolBarItem.Enabled = false;
+
+			if (NumberOfChangesRadio.Checked || DifferenceRadio.Checked)
+			{
+				PreviousValueRadio.Checked = true;
+			}
+
+			Global.Config.RamSearchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
+			WatchListView.Columns[CHANGES].Width = 0;
+			SetReboot(true);
+		}
+
+		private void RemoveAddresses()
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				SetRemovedMessage(SelectedIndices.Count);
+
+				var addresses = new List<int>();
+				foreach (int index in SelectedIndices)
+				{
+					addresses.Add(Searches[index].Address.Value);
+				}
+				Searches.RemoveRange(addresses);
+
+				WatchListView.ItemCount = Searches.Count;
+				SetTotal();
+				WatchListView.SelectedIndices.Clear();
+			}
+		}
+
+		public void LoadWatchFile(FileInfo file, bool append, bool truncate = false)
+		{
 			if (file != null)
 			{
-				LoadSearchFile(file.FullName, false, Searches);
-				DisplaySearchList();
+				if (!truncate)
+				{
+					CurrentFileName = file.FullName;
+				}
+
+				WatchList watches = new WatchList(Settings.Domain);
+				watches.Load(file.FullName, false, append);
+				List<int> addresses = watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
+
+				if (truncate)
+				{
+					SetRemovedMessage(addresses.Count);
+					Searches.RemoveRange(addresses);
+				}
+				else
+				{
+					Searches.AddRange(addresses, append);
+					MessageLabel.Text = file.Name + " loaded";
+				}
+
+				WatchListView.ItemCount = Searches.Count;
+				SetTotal();
+				Global.Config.RecentSearches.Add(file.FullName);
+
+				if (!append && !truncate)
+				{
+					Searches.ClearHistory();
+				}
+
+				ToggleSearchDependentToolBarItems();
 			}
-		}
-
-		private void openToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenSearchFile();
-		}
-
-		private void openToolStripButton_Click(object sender, EventArgs e)
-		{
-			OpenSearchFile();
-		}
-
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAs();
-		}
-
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Hide();
-		}
-
-		private void SpecificValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (SpecificValueRadio.Checked)
-			{
-				if (SpecificValueBox.Text == "") SpecificValueBox.Text = "0";
-				SpecificValueBox.Enabled = true;
-				SpecificAddressBox.Enabled = false;
-				NumberOfChangesBox.Enabled = false;
-				SpecificValueBox.Focus();
-				SpecificValueBox.SelectAll();
-			}
-			DoPreview();
-		}
-
-		private void PreviousValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (PreviousValueRadio.Checked)
-			{
-				SpecificValueBox.Enabled = false;
-				SpecificAddressBox.Enabled = false;
-				NumberOfChangesBox.Enabled = false;
-			}
-			DoPreview();
-		}
-
-		private void SpecificAddressRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (SpecificAddressRadio.Checked)
-			{
-				if (SpecificAddressBox.Text == "") SpecificAddressBox.Text = "0";
-				SpecificValueBox.Enabled = false;
-				SpecificAddressBox.Enabled = true;
-				NumberOfChangesBox.Enabled = false;
-				SpecificAddressBox.Focus();
-				SpecificAddressBox.SelectAll();
-			}
-			DoPreview();
-		}
-
-		private void NumberOfChangesRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (NumberOfChangesRadio.Checked)
-			{
-				if (NumberOfChangesBox.Text == "") NumberOfChangesBox.Text = "0";
-				SpecificValueBox.Enabled = false;
-				SpecificAddressBox.Enabled = false;
-				NumberOfChangesBox.Enabled = true;
-				NumberOfChangesBox.Focus();
-				NumberOfChangesBox.SelectAll();
-			}
-		}
-
-		private void DifferentByRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (DifferentByRadio.Checked)
-			{
-				if (DifferentByBox.Text == "0") DifferentByBox.Text = "0";
-				DifferentByBox.Enabled = true;
-				DoPreview();
-			}
-			else
-				DifferentByBox.Enabled = false;
-			DifferentByBox.Focus();
-			DifferentByBox.SelectAll();
 		}
 
 		private void AddToRamWatch()
 		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-
-			if (indexes.Count > 0)
+			if (SelectedIndices.Count > 0)
 			{
 				Global.MainForm.LoadRamWatch(true);
-				for (int x = 0; x < indexes.Count; x++)
+				for (int x = 0; x < SelectedIndices.Count; x++)
 				{
-					Global.MainForm.NewRamWatch1.AddOldWatch(Searches[indexes[x]]);
-				}
-			}
-		}
-
-		private void restoreOriginalWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(defaultWidth, defaultHeight);
-			Global.Config.RamSearchAddressIndex = 0;
-			Global.Config.RamSearchValueIndex = 1;
-			Global.Config.RamSearchPrevIndex = 2;
-			Global.Config.RamSearchChangesIndex = 3;
-			ColumnPositionSet();
-
-			SearchListView.Columns[0].Width = defaultAddressWidth;
-			SearchListView.Columns[1].Width = defaultValueWidth;
-			SearchListView.Columns[2].Width = defaultPrevWidth;
-			SearchListView.Columns[3].Width = defaultChangesWidth;
-		}
-
-		private void NewSearchtoolStripButton_Click(object sender, EventArgs e)
-		{
-			StartNewSearch();
-		}
-
-		private Watch_Legacy.DISPTYPE GetDataType()
-		{
-			if (unsignedToolStripMenuItem.Checked)
-			{
-				return Watch_Legacy.DISPTYPE.UNSIGNED;
-			}
-			else if (signedToolStripMenuItem.Checked)
-			{
-				return Watch_Legacy.DISPTYPE.SIGNED;
-			}
-			else if (hexadecimalToolStripMenuItem.Checked)
-			{
-				return Watch_Legacy.DISPTYPE.HEX;
-			}
-			else
-			{
-				return Watch_Legacy.DISPTYPE.UNSIGNED;    //Just in case
-			}
-		}
-
-		private Watch_Legacy.TYPE GetDataSize()
-		{
-			if (byteToolStripMenuItem.Checked)
-			{
-				return Watch_Legacy.TYPE.BYTE;
-			}
-			else if (bytesToolStripMenuItem.Checked)
-			{
-				return Watch_Legacy.TYPE.WORD;
-			}
-			else if (dWordToolStripMenuItem1.Checked)
-			{
-				return Watch_Legacy.TYPE.DWORD;
-			}
-			else
-			{
-				return Watch_Legacy.TYPE.BYTE;
-			}
-		}
-
-		private bool GetBigEndian()
-		{
-			if (bigEndianToolStripMenuItem.Checked)
-				return true;
-			else
-				return false;
-		}
-
-		private void StartNewSearch()
-		{
-			useUndoHistoryToolStripMenuItem.Checked = true;
-			if (Global.Emulator.SystemId == "N64")
-			{
-				byteToolStripMenuItem.Checked = false;
-				bytesToolStripMenuItem.Checked = false;
-				dWordToolStripMenuItem1.Checked = true;
-				useUndoHistoryToolStripMenuItem.Checked = false;
-				Global.Config.RamSearchFastMode = true;
-				
-			}
-			IsAWeededList = false;
-			SearchHistory.Clear();
-			Searches.Clear();
-			SetPlatformAndMemoryDomainLabel();
-			int count = 0;
-			int divisor = 1;
-
-			if (!includeMisalignedToolStripMenuItem.Checked)
-			{
-				switch (GetDataSize())
-				{
-					case Watch_Legacy.TYPE.WORD:
-						divisor = 2;
-						break;
-					case Watch_Legacy.TYPE.DWORD:
-						divisor = 4;
-						break;
-				}
-			}
-
-			for (int x = 0; x <= ((Domain.Size / divisor) - 1); x++)
-			{
-				Searches.Add(new Watch_Legacy());
-				Searches[x].Address = count;
-				Searches[x].Type = GetDataSize();
-				Searches[x].BigEndian = GetBigEndian();
-				Searches[x].Signed = GetDataType();
-				Searches[x].Domain = Domain;
-				Searches[x].PeekAddress();
-				Searches[x].Prev = Searches[x].Value;
-				Searches[x].Original = Searches[x].Value;
-				Searches[x].LastChange = Searches[x].Value;
-				Searches[x].LastSearch = Searches[x].Value;
-				Searches[x].Changecount = 0;
-				if (includeMisalignedToolStripMenuItem.Checked)
-					count++;
-				else
-				{
-					switch (GetDataSize())
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							count++;
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							count += 2;
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							count += 4;
-							break;
-					}
+					Global.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
 				}
 
+				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
+				{
+					RemoveRamWatchesFromList();
+				}
 			}
-			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
-				ExcludeRamWatchList();
-			SetSpecificValueBoxMaxLength();
-			MessageLabel.Text = "New search started";
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-			SearchHistory = new HistoryCollection(Searches, useUndoHistoryToolStripMenuItem.Checked);
-			UpdateUndoRedoToolItems();
-		}
-
-		private void DisplaySearchList()
-		{
-			SearchListView.ItemCount = Searches.Count;
-			SetTotal();
-		}
-
-		private void newSearchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StartNewSearch();
-		}
-
-		private void SetPlatformAndMemoryDomainLabel()
-		{
-			string memoryDomain = Domain.ToString();
-			systemID = Global.Emulator.SystemId;
-			MemDomainLabel.Text = systemID + " " + memoryDomain;
 		}
 
 		private Point GetPromptPoint()
 		{
-			return PointToScreen(new Point(SearchListView.Location.X, SearchListView.Location.Y));
+			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
 		}
 
 		private void PokeAddress()
 		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
+			if (SelectedIndices.Count > 0)
 			{
 				Global.Sound.StopSound();
 				var poke = new RamPoke();
-				var watch = Watch.ConvertLegacyWatch(Searches[indexes[0]]);
-				poke.SetWatch(new List<Watch> { watch });
+
+				var watches = new List<Watch>();
+				for (int i = 0; i < SelectedIndices.Count; i++)
+				{
+					watches.Add(Searches[SelectedIndices[i]]);
+				}
+
+				poke.SetWatch(watches);
 				poke.InitialLocation = GetPromptPoint();
 				poke.ShowDialog();
 				UpdateValues();
@@ -500,2099 +562,697 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void PoketoolStripButton1_Click(object sender, EventArgs e)
+		private List<Watch> SelectedWatches
 		{
-			PokeAddress();
-		}
-
-		private string MakeAddressString(int num)
-		{
-			if (num == 1)
-				return " 1 address";
-			else if (num < 10)
-				return " " + num.ToString() + " addresses";
-			else
-				return num.ToString() + " addresses";
-		}
-
-		private void RemoveAddresses()
-		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
+			get
 			{
-				MessageLabel.Text = MakeAddressString(indexes.Count) + " removed";
-				for (int x = 0; x < indexes.Count; x++)
+				var selected = new List<Watch>();
+				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+				if (indexes.Count > 0)
 				{
-					Searches.Remove(Searches[indexes[x] - x]);
-				}
-				indexes.Clear();
-				DisplaySearchList();
-
-				SearchHistory.AddState(Searches);
-				UpdateUndoRedoToolItems();
-			}
-		}
-
-		private void cutToolStripButton_Click(object sender, EventArgs e)
-		{
-			RemoveAddresses();
-		}
-
-		private void UpdateUndoRedoToolItems()
-		{
-			UndotoolStripButton.Enabled = SearchHistory.CanUndo;
-			RedotoolStripButton2.Enabled = SearchHistory.CanRedo;
-		}
-
-		private void DoUndo()
-		{
-			if (SearchHistory.CanUndo)
-			{
-				int oldVal = Searches.Count;
-				Searches = SearchHistory.Undo();
-				int newVal = Searches.Count;
-				MessageLabel.Text = MakeAddressString(newVal - oldVal) + " restored";
-				UpdateUndoRedoToolItems();
-				DisplaySearchList();
-			}
-		}
-
-		private void DoRedo()
-		{
-			if (SearchHistory.CanRedo)
-			{
-				int oldVal = Searches.Count;
-				Searches = SearchHistory.Redo();
-				int newVal = Searches.Count;
-				MessageLabel.Text = MakeAddressString(newVal - oldVal) + " removed";
-				UpdateUndoRedoToolItems();
-				DisplaySearchList();
-			}
-		}
-
-		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
-		{
-			if (IsAWeededList && column == 0 && Searches[index].Deleted)
-			{
-				if (color == Color.Pink)
-				{
-					return;
-				}
-				else if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
-				{
-					if (forcePreviewClear)
+					foreach (int index in indexes)
 					{
-						color = Color.LightCyan;
-					}
-					else if (color == Color.Lavender)
-					{
-						return;
-					}
-					else
-					{
-						color = Color.Lavender;
+						if (!Searches[index].IsSeparator)
+						{
+							selected.Add(Searches[index]);
+						}
 					}
 				}
-				else
-				{
-					if (forcePreviewClear)
-					{
-						color = Color.White;
-					}
-					else if (color == Color.Pink)
-					{
-						return;
-					}
-					else
-					{
-						color = Color.Pink;
-					}
-				}
-			}
-			else if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
-			{
-				if (color == Color.LightCyan)
-				{
-					return;
-				}
-				else
-				{
-					color = Color.LightCyan;
-				}
-			}
-			else
-			{
-				if (color == Color.White)
-				{
-					return;
-				}
-				else
-				{
-					color = Color.White;
-				}
-			}
-		}
-
-		private void SearchListView_QueryItemText(int index, int column, out string text)
-		{
-			if (column == 0)
-			{
-				text = Searches[index].Address.ToString(addressFormatStr);
-			}
-			else if (column == 1)
-			{
-				text = Searches[index].ValueString;
-			}
-			else if (column == 2)
-			{
-				switch (Global.Config.RamSearchPreviousAs)
-				{
-					case 0:
-						text = Searches[index].LastSearchString;
-						break;
-					case 1:
-						text = Searches[index].OriginalString;
-						break;
-					default:
-					case 2:
-						text = Searches[index].PrevString;
-						break;
-					case 3:
-						text = Searches[index].LastChangeString;
-						break;
-				}
-			}
-			else if (column == 3)
-			{
-				text = Searches[index].Changecount.ToString();
-			}
-			else
-			{
-				text = "";
-			}
-		}
-
-		private void ClearChangeCounts()
-		{
-			foreach (Watch_Legacy t in Searches)
-			{
-				t.Changecount = 0;
-			}
-			DisplaySearchList();
-			MessageLabel.Text = "Change counts cleared";
-
-			SearchHistory.AddState(Searches);
-			UpdateUndoRedoToolItems();
-		}
-
-		private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
-		{
-			ClearChangeCounts();
-		}
-
-		private void UndotoolStripButton_Click_1(object sender, EventArgs e)
-		{
-			DoUndo();
-		}
-
-		private void DoPreview()
-		{
-			if (Global.Config.RamSearchPreviewMode)
-			{
-				forcePreviewClear = false;
-				GenerateWeedOutList();
-			}
-		}
-
-		private void TrimWeededList()
-		{
-			Searches = Searches.Where(x => x.Deleted == false).ToList();
-		}
-
-		private void DoSearch()
-		{
-			if (Global.Config.RamSearchFastMode)
-			{
-				for (int x = Searches.Count - 1; x >= 0; x--)
-				{
-					Searches[x].PeekAddress();
-				}
-			}
-
-			if (GenerateWeedOutList())
-			{
-				MessageLabel.Text = MakeAddressString(Searches.Count(x => x.Deleted)) + " removed";
-				TrimWeededList();
-				UpdateLastSearch();
-				DisplaySearchList();
-				SearchHistory.AddState(Searches);
-				UpdateUndoRedoToolItems();
-			}
-			else
-			{
-				MessageLabel.Text = "Search failed.";
-			}
-		}
-
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-			DoSearch();
-		}
-
-		private SCompareTo GetCompareTo()
-		{
-			if (PreviousValueRadio.Checked)
-				return SCompareTo.PREV;
-			if (SpecificValueRadio.Checked)
-				return SCompareTo.VALUE;
-			if (SpecificAddressRadio.Checked)
-				return SCompareTo.ADDRESS;
-			if (NumberOfChangesRadio.Checked)
-				return SCompareTo.CHANGES;
-
-			return SCompareTo.PREV; //Just in case
-		}
-
-		private SOperator GetOperator()
-		{
-			if (LessThanRadio.Checked)
-				return SOperator.LESS;
-			if (GreaterThanRadio.Checked)
-				return SOperator.GREATER;
-			if (LessThanOrEqualToRadio.Checked)
-				return SOperator.LESSEQUAL;
-			if (GreaterThanOrEqualToRadio.Checked)
-				return SOperator.GREATEREQUAL;
-			if (EqualToRadio.Checked)
-				return SOperator.EQUAL;
-			if (NotEqualToRadio.Checked)
-				return SOperator.NOTEQUAL;
-			if (DifferentByRadio.Checked)
-				return SOperator.DIFFBY;
-
-			return SOperator.LESS; //Just in case
-		}
-
-		private bool GenerateWeedOutList()
-		{
-			//Switch based on user criteria
-			//Generate search list
-			//Use search list to generate a list of flagged address (for displaying pink)
-			IsAWeededList = true;
-			switch (GetCompareTo())
-			{
-				case SCompareTo.PREV:
-					return DoPreviousValue();
-				case SCompareTo.VALUE:
-					return DoSpecificValue();
-				case SCompareTo.ADDRESS:
-					return DoSpecificAddress();
-				case SCompareTo.CHANGES:
-					return DoNumberOfChanges();
-				default:
-					return false;
-			}
-		}
-
-		private int GetPreviousValue(int pos)
-		{
-			switch (Global.Config.RamSearchPreviousAs)
-			{
-				case 0:
-					return Searches[pos].LastSearch;
-				case 1:
-					return Searches[pos].Original;
-				default:
-				case 2:
-					return Searches[pos].Prev;
-				case 3:
-					return Searches[pos].LastChange;
-			}
-		}
-
-		private bool DoPreviousValue()
-		{
-			switch (GetOperator())
-			{
-				case SOperator.LESS:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) < Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) < Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.GREATER:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) > Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) > Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.LESSEQUAL:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) <= Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) <= Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.GREATEREQUAL:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) >= Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) >= Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.EQUAL:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.NOTEQUAL:
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) != Searches[x].SignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) != Searches[x].UnsignedVal(previous))
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.DIFFBY:
-					int diff = GetDifferentBy();
-					if (diff < 0) return false;
-					for (int x = 0; x < Searches.Count; x++)
-					{
-						int previous = GetPreviousValue(x);
-						if (Searches[x].Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) + diff || Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) - diff)
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-						else
-						{
-							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous) + diff || Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous) - diff)
-							{
-								Searches[x].Deleted = false;
-							}
-							else
-							{
-								Searches[x].Deleted = true;
-							}
-						}
-					}
-					break;
-			}
-			return true;
-		}
-
-		private void ValidateSpecificValue(int? value)
-		{
-			if (value == null)
-			{
-				MessageBox.Show("Missing or invalid value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				SpecificValueBox.Text = "0";
-				SpecificValueBox.Focus();
-				SpecificValueBox.SelectAll();
-			}
-		}
-		private bool DoSpecificValue()
-		{
-			int? value = GetSpecificValue();
-			ValidateSpecificValue(value);
-			if (value == null)
-				return false;
-			switch (GetOperator())
-			{
-				case SOperator.LESS:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) < t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) < t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.GREATER:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) > t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) > t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.LESSEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) <= t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) <= t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.GREATEREQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) >= t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) >= t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.EQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) == t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) == t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.NOTEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) != t.SignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) != t.UnsignedVal((int)value))
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-				case SOperator.DIFFBY:
-					int diff = GetDifferentBy();
-					if (diff < 0) return false;
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Signed == Watch_Legacy.DISPTYPE.SIGNED)
-						{
-							if (t.SignedVal(t.Value) == t.SignedVal((int)value) + diff || t.SignedVal(t.Value) == t.SignedVal((int)value) - diff)
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-						else
-						{
-							if (t.UnsignedVal(t.Value) == t.UnsignedVal((int)value) + diff || t.UnsignedVal(t.Value) == t.UnsignedVal((int)value) - diff)
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-			}
-			return true;
-		}
-
-		private int? GetSpecificValue()
-		{
-			if (SpecificValueBox.Text == "" || SpecificValueBox.Text == "-") return 0;
-			bool i;
-			switch (GetDataType())
-			{
-				case Watch_Legacy.DISPTYPE.UNSIGNED:
-					i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
-					if (!i)
-						return null;
-					return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
-				case Watch_Legacy.DISPTYPE.SIGNED:
-					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
-					if (!i)
-						return null;
-					int value = (int)Int64.Parse(SpecificValueBox.Text);
-					switch (GetDataSize())
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							return (byte)value;
-						case Watch_Legacy.TYPE.WORD:
-							return (ushort)value;
-						case Watch_Legacy.TYPE.DWORD:
-							return (int)(uint)value;
-					}
-					return value;
-				case Watch_Legacy.DISPTYPE.HEX:
-					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
-					if (!i)
-						return null;
-					return (int)Int64.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
-			}
-			return null;
-		}
-
-		private int GetSpecificAddress()
-		{
-			if (SpecificAddressBox.Text == "") return 0;
-			bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
-			if (!i) return -1;
-
-			return int.Parse(SpecificAddressBox.Text, NumberStyles.HexNumber);
-		}
-
-		private int GetDifferentBy()
-		{
-			if (DifferentByBox.Text == "") return 0;
-			bool i = InputValidate.IsValidUnsignedNumber(DifferentByBox.Text);
-			if (!i)
-			{
-				MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				DifferentByBox.Focus();
-				DifferentByBox.SelectAll();
-				return -1;
-			}
-			else
-				return int.Parse(DifferentByBox.Text);
-		}
-
-		private bool DoSpecificAddress()
-		{
-			int address = GetSpecificAddress();
-			if (address < 0)
-			{
-				MessageBox.Show("Missing or invalid address", "Invalid address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				SpecificAddressBox.Focus();
-				SpecificAddressBox.SelectAll();
-				return false;
-			}
-			switch (GetOperator())
-			{
-				case SOperator.LESS:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address < address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.GREATER:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address > address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.LESSEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address <= address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.GREATEREQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address >= address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.EQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address == address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.NOTEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address != address)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.DIFFBY:
-					{
-						int diff = GetDifferentBy();
-						if (diff < 0) return false;
-						foreach (Watch_Legacy t in Searches)
-						{
-							if (t.Address == address + diff || t.Address == address - diff)
-							{
-								t.Deleted = false;
-							}
-							else
-							{
-								t.Deleted = true;
-							}
-						}
-					}
-					break;
-			}
-			return true;
-		}
-
-		private int GetSpecificChanges()
-		{
-			if (NumberOfChangesBox.Text == "") return 0;
-			bool i = InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text);
-			if (!i) return -1;
-
-			return int.Parse(NumberOfChangesBox.Text);
-		}
-
-		private bool DoNumberOfChanges()
-		{
-			int changes = GetSpecificChanges();
-			if (changes < 0)
-			{
-				MessageBox.Show("Missing or invalid number of changes", "Invalid number", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				NumberOfChangesBox.Focus();
-				NumberOfChangesBox.SelectAll();
-				return false;
-			}
-			switch (GetOperator())
-			{
-				case SOperator.LESS:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount < changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.GREATER:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount > changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.LESSEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount <= changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.GREATEREQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount >= changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.EQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount == changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.NOTEQUAL:
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Changecount != changes)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-				case SOperator.DIFFBY:
-					int diff = GetDifferentBy();
-					if (diff < 0) return false;
-					foreach (Watch_Legacy t in Searches)
-					{
-						if (t.Address == changes + diff || t.Address == changes - diff)
-						{
-							t.Deleted = false;
-						}
-						else
-						{
-							t.Deleted = true;
-						}
-					}
-					break;
-			}
-			return true;
-		}
-
-		private void ConvertListsDataType(Watch_Legacy.DISPTYPE s)
-		{
-			foreach (Watch_Legacy t in Searches)
-			{
-				t.Signed = s;
-			}
-
-			foreach (List<Watch_Legacy> state in SearchHistory.History)
-			{
-				foreach (Watch_Legacy watch in state)
-				{
-					watch.Signed = s;
-				}
-			}
-
-			SetSpecificValueBoxMaxLength();
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void ConvertListsDataSize(Watch_Legacy.TYPE s, bool bigendian)
-		{
-			ConvertDataSize(s, ref Searches);
-
-			//TODO
-			//for (int i = 0; i < SearchHistory.History.Count; i++)
-			//{
-			//    ConvertDataSize(s, bigendian, ref SearchHistory.History[i]);
-			//}
-
-			SetSpecificValueBoxMaxLength();
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void ConvertDataSize(Watch_Legacy.TYPE s, ref List<Watch_Legacy> list)
-		{
-			List<Watch_Legacy> converted = new List<Watch_Legacy>();
-			int divisor = 1;
-			if (!includeMisalignedToolStripMenuItem.Checked)
-			{
-				switch (s)
-				{
-					case Watch_Legacy.TYPE.WORD:
-						divisor = 2;
-						break;
-					case Watch_Legacy.TYPE.DWORD:
-						divisor = 4;
-						break;
-				}
-			}
-			foreach (Watch_Legacy t in list)
-				if (t.Address % divisor == 0)
-				{
-					int changes = t.Changecount;
-					t.Type = s;
-					t.BigEndian = GetBigEndian();
-					t.PeekAddress();
-					t.Prev = t.Value;
-					t.Original = t.Value;
-					t.LastChange = t.Value;
-					t.LastSearch = t.Value;
-					t.Changecount = changes;
-					converted.Add(t);
-				}
-			list = converted;
-		}
-
-		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Watch_Legacy specificValue = new Watch_Legacy();
-			int? value = GetSpecificValue();
-			ValidateSpecificValue(value);
-			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch_Legacy.DISPTYPE.UNSIGNED;
-			specificValue.Type = GetDataSize();
-			string converted = specificValue.ValueString;
-			unsignedToolStripMenuItem.Checked = true;
-			signedToolStripMenuItem.Checked = false;
-			hexadecimalToolStripMenuItem.Checked = false;
-			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch_Legacy.DISPTYPE.UNSIGNED);
-		}
-
-		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Watch_Legacy specificValue = new Watch_Legacy();
-			int? value = GetSpecificValue();
-			ValidateSpecificValue(value);
-			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch_Legacy.DISPTYPE.SIGNED;
-			specificValue.Type = GetDataSize();
-			string converted = specificValue.ValueString;
-			unsignedToolStripMenuItem.Checked = false;
-			signedToolStripMenuItem.Checked = true;
-			hexadecimalToolStripMenuItem.Checked = false;
-			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch_Legacy.DISPTYPE.SIGNED);
-		}
-
-		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Watch_Legacy specificValue = new Watch_Legacy();
-			int? value = GetSpecificValue();
-			ValidateSpecificValue(value);
-			if (value != null) specificValue.Value = (int)value;
-			specificValue.Signed = Watch_Legacy.DISPTYPE.HEX;
-			specificValue.Type = GetDataSize();
-			string converted = specificValue.ValueString;
-			unsignedToolStripMenuItem.Checked = false;
-			signedToolStripMenuItem.Checked = false;
-			hexadecimalToolStripMenuItem.Checked = true;
-			SpecificValueBox.Text = converted;
-			ConvertListsDataType(Watch_Legacy.DISPTYPE.HEX);
-		}
-
-		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				AddToRamWatch();
-			}
-		}
-
-		private void SetSpecificValueBoxMaxLength()
-		{
-			switch (GetDataType())
-			{
-				case Watch_Legacy.DISPTYPE.UNSIGNED:
-					switch (GetDataSize())
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							SpecificValueBox.MaxLength = 3;
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							SpecificValueBox.MaxLength = 5;
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							SpecificValueBox.MaxLength = 10;
-							break;
-						default:
-							SpecificValueBox.MaxLength = 10;
-							break;
-					}
-					break;
-				case Watch_Legacy.DISPTYPE.SIGNED:
-					switch (GetDataSize())
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							SpecificValueBox.MaxLength = 4;
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							SpecificValueBox.MaxLength = 6;
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							SpecificValueBox.MaxLength = 11;
-							break;
-						default:
-							SpecificValueBox.MaxLength = 11;
-							break;
-					}
-					break;
-				case Watch_Legacy.DISPTYPE.HEX:
-					switch (GetDataSize())
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							SpecificValueBox.MaxLength = 2;
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							SpecificValueBox.MaxLength = 4;
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							SpecificValueBox.MaxLength = 8;
-							break;
-						default:
-							SpecificValueBox.MaxLength = 8;
-							break;
-					}
-					break;
-				default:
-					SpecificValueBox.MaxLength = 11;
-					break;
-			}
-		}
-
-		private void byteToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			byteToolStripMenuItem.Checked = true;
-			bytesToolStripMenuItem.Checked = false;
-			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(Watch_Legacy.TYPE.BYTE, GetBigEndian());
-		}
-
-		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			byteToolStripMenuItem.Checked = false;
-			bytesToolStripMenuItem.Checked = true;
-			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(Watch_Legacy.TYPE.WORD, GetBigEndian());
-		}
-
-		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			byteToolStripMenuItem.Checked = false;
-			bytesToolStripMenuItem.Checked = false;
-			dWordToolStripMenuItem1.Checked = true;
-			ConvertListsDataSize(Watch_Legacy.TYPE.DWORD, GetBigEndian());
-		}
-
-		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			includeMisalignedToolStripMenuItem.Checked ^= true;
-			if (!includeMisalignedToolStripMenuItem.Checked)
-				ConvertListsDataSize(GetDataSize(), GetBigEndian());
-		}
-
-		private void SetLittleEndian()
-		{
-			bigEndianToolStripMenuItem.Checked = false;
-			littleEndianToolStripMenuItem.Checked = true;
-			ConvertListsDataSize(GetDataSize(), false);
-		}
-
-		private void SetBigEndian()
-		{
-			bigEndianToolStripMenuItem.Checked = true;
-			littleEndianToolStripMenuItem.Checked = false;
-			ConvertListsDataSize(GetDataSize(), true);
-		}
-
-		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetBigEndian();
-		}
-
-		private void littleEndianToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetLittleEndian();
-		}
-
-		private void AutoSearchCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			if (AutoSearchCheckBox.Checked)
-			{
-				AutoSearchCheckBox.BackColor = Color.Pink;
-			}
-			else
-			{
-				AutoSearchCheckBox.BackColor = BackColor;
-			}
-		}
-
-		private void SpecificValueBox_Leave(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void SpecificAddressBox_Leave(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void NumberOfChangesBox_Leave(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void DifferentByBox_Leave(object sender, EventArgs e)
-		{
-			if (!InputValidate.IsValidUnsignedNumber(DifferentByBox.Text))  //Actually the only way this could happen is from putting dashes after the first character
-			{
-				DifferentByBox.Focus();
-				DifferentByBox.SelectAll();
-				ToolTip t = new ToolTip();
-				t.Show("Must be a valid unsigned decimal value", DifferentByBox, 5000);
-				return;
-			}
-			DoPreview();
-		}
-
-		private void SaveSearchFile(string path)
-		{
-			WatchCommon.SaveWchFile(path, Domain.Name, Searches);
-		}
-
-		public void SaveAs()
-		{
-			var file = WatchCommon.GetSaveFileFromUser(currentFile);
-			if (file != null)
-			{
-				SaveSearchFile(file.FullName);
-				currentFile = file.FullName;
-				MessageLabel.Text = Path.GetFileName(currentFile) + " saved.";
-				Global.Config.RecentSearches.Add(currentFile);
-			}
-		}
-
-		private void LoadSearchFromRecent(string path)
-		{
-			if (!LoadSearchFile(path, false, Searches))
-			{
-				Global.Config.RecentSearches.HandleLoadError(path);
-			}
-			else
-			{
-				DisplaySearchList();
-			}
-		}
-
-		bool LoadSearchFile(string path, bool append, List<Watch_Legacy> list)
-		{
-			string domain;
-			bool result = WatchCommon.LoadWatchFile(path, append, list, out domain);
-
-			if (result)
-			{
-				if (!append)
-				{
-					currentFile = path;
-				}
-
-				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
-				SetTotal();
-				Global.Config.RecentSearches.Add(path);
-				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentSearches.GenerateRecentMenu(LoadSearchFromRecent));
-		}
-
-		private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var file = GetFileFromUser();
-			if (file != null)
-				LoadSearchFile(file.FullName, true, Searches);
-			DisplaySearchList();
-		}
-
-		private FileInfo GetFileFromUser()
-		{
-			var ofd = new OpenFileDialog();
-			if (currentFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			ofd.RestoreDirectory = true;
-			if (currentFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			Global.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
-		}
-
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchSaveWindowPosition ^= true;
-		}
-
-		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			fastModeToolStripMenuItem.Checked = Global.Config.RamSearchFastMode;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
-			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
-			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
-			autoloadDialogToolStripMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
-		}
-
-		private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			DoSearch();
-		}
-
-		private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearChangeCounts();
-		}
-
-		private void undoToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			DoUndo();
-		}
-
-		private void removeSelectedToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RemoveAddresses();
-		}
-
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (string.Compare(currentFile, "") == 0)
-				SaveAs();
-			else
-				SaveSearchFile(currentFile);
-		}
-
-		private void addSelectedToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			AddToRamWatch();
-		}
-
-		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PokeAddress();
-		}
-
-		private void searchToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			clearUndoHistoryToolStripMenuItem.Enabled = SearchHistory.HasHistory;
-			searchToolStripMenuItem.Enabled = Searches.Any();
-			undoToolStripMenuItem.Enabled = SearchHistory.CanUndo;
-			redoToolStripMenuItem.Enabled = SearchHistory.CanRedo;
-
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-
-			if (indexes.Count == 0)
-			{
-				removeSelectedToolStripMenuItem.Enabled = false;
-				addSelectedToRamWatchToolStripMenuItem.Enabled = false;
-				pokeAddressToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				removeSelectedToolStripMenuItem.Enabled = true;
-				addSelectedToRamWatchToolStripMenuItem.Enabled = true;
-				pokeAddressToolStripMenuItem.Enabled = true;
-			}
-		}
-
-		private void sinceLastSearchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 0;
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void originalValueToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 1;
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 2;
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void sinceLastChangeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 3;
-			sortReverse = false;
-			sortedCol = "";
-			DisplaySearchList();
-		}
-
-		private void definePreviousValueToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			switch (Global.Config.RamSearchPreviousAs)
-			{
-				case 0: //Since last Search
-					sinceLastSearchToolStripMenuItem.Checked = true;
-					originalValueToolStripMenuItem.Checked = false;
-					sinceLastFrameToolStripMenuItem.Checked = false;
-					sinceLastChangeToolStripMenuItem.Checked = false;
-					break;
-				case 1: //Original value (since Start new search)
-					sinceLastSearchToolStripMenuItem.Checked = false;
-					originalValueToolStripMenuItem.Checked = true;
-					sinceLastFrameToolStripMenuItem.Checked = false;
-					sinceLastChangeToolStripMenuItem.Checked = false;
-					break;
-				default:
-				case 2: //Since last Frame
-					sinceLastSearchToolStripMenuItem.Checked = false;
-					originalValueToolStripMenuItem.Checked = false;
-					sinceLastFrameToolStripMenuItem.Checked = true;
-					sinceLastChangeToolStripMenuItem.Checked = false;
-					break;
-				case 3: //Since last Change
-					sinceLastSearchToolStripMenuItem.Checked = false;
-					originalValueToolStripMenuItem.Checked = false;
-					sinceLastFrameToolStripMenuItem.Checked = false;
-					sinceLastChangeToolStripMenuItem.Checked = true;
-					break;
-			}
-		}
-
-		private void LessThanRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			if (!DifferentByRadio.Checked) DoPreview();
-		}
-
-		private void previewModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviewMode ^= true;
-		}
-
-		private void SpecificValueBox_TextChanged(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void SpecificValueBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b') return;
-
-			switch (GetDataType())
-			{
-				case Watch_Legacy.DISPTYPE.UNSIGNED:
-					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch_Legacy.DISPTYPE.SIGNED:
-					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-				case Watch_Legacy.DISPTYPE.HEX:
-					if (!InputValidate.IsValidHexNumber(e.KeyChar))
-					{
-						e.Handled = true;
-					}
-					break;
-			}
-		}
-
-		private void NumberOfChangesBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b') return;
-
-			if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
-				e.Handled = true;
-		}
-
-		private void DifferentByBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b') return;
-
-			if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
-				e.Handled = true;
-		}
-
-		private void SpecificAddressBox_TextChanged(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void NumberOfChangesBox_TextChanged(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void DifferentByBox_TextChanged(object sender, EventArgs e)
-		{
-			DoPreview();
-		}
-
-		private void TruncateFromFileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TruncateFromFile();
-		}
-
-		private void DoTruncate()
-		{
-			MessageLabel.Text = MakeAddressString(Searches.Count(x => x.Deleted)) + " removed";
-			TrimWeededList();
-			UpdateLastSearch();
-			DisplaySearchList();
-			SearchHistory.AddState(Searches);
-			UpdateUndoRedoToolItems();
-		}
-
-		private void TruncateFromFile()
-		{
-			//TODO: what about byte size? Think about the implications of this
-			var file = GetFileFromUser();
-			if (file != null)
-			{
-				List<Watch_Legacy> temp = new List<Watch_Legacy>();
-				LoadSearchFile(file.FullName, false, temp);
-				TruncateList(temp.Select(watch => watch.Address));
-				DoTruncate();
-
-			}
-		}
-
-		private void ClearWeeded()
-		{
-			foreach (Watch_Legacy watch in Searches)
-			{
-				watch.Deleted = false;
-			}
-		}
-
-
-		private void TruncateList(IEnumerable<int> toRemove)
-		{
-			ClearWeeded();
-			foreach (int addr in toRemove)
-			{
-				var first_or_default = Searches.FirstOrDefault(x => x.Address == addr);
-				if (first_or_default != null)
-				{
-					first_or_default.Deleted = true;
-				}
-			}
-			DoTruncate();
-		}
-
-		/// <summary>
-		/// Removes Ram Watch list from the search list
-		/// </summary>
-		private void ExcludeRamWatchList()
-		{
-			TruncateList(Global.MainForm.NewRamWatch1.AddressList);
-		}
-
-		private void TruncateFromFiletoolStripButton2_Click(object sender, EventArgs e)
-		{
-			TruncateFromFile();
-		}
-
-		private void excludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ExcludeRamWatchList();
-		}
-
-		private void ExcludeRamWatchtoolStripButton2_Click(object sender, EventArgs e)
-		{
-			ExcludeRamWatchList();
-		}
-
-		private void alwaysExcludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchAlwaysExcludeRamWatch ^= true;
-		}
-
-		private void CopyValueToPrev()
-		{
-			foreach (Watch_Legacy t in Searches)
-			{
-				t.LastSearch = t.Value;
-				t.Original = t.Value;
-				t.Prev = t.Value;
-				t.LastChange = t.Value;
-			}
-			DisplaySearchList();
-			DoPreview();
-		}
-
-		private void UpdateLastSearch()
-		{
-			foreach (Watch_Legacy t in Searches)
-			{
-				t.LastSearch = t.Value;
-			}
-		}
-
-		private void SetCurrToPrevtoolStripButton2_Click(object sender, EventArgs e)
-		{
-			CopyValueToPrev();
-		}
-
-		private void copyValueToPrevToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			CopyValueToPrev();
-		}
-
-		private void startNewSearchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StartNewSearch();
-		}
-
-		private void searchToolStripMenuItem2_Click(object sender, EventArgs e)
-		{
-			DoSearch();
-		}
-
-		private int GetNumDigits(Int32 i)
-		{
-			//if (i == 0) return 0;
-			//if (i < 0x10) return 1;
-			//if (i < 0x100) return 2;
-			//if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
-			if (i < 0x10000) return 4;
-			if (i < 0x100000) return 5;
-			if (i < 0x1000000) return 6;
-			if (i < 0x10000000) return 7;
-			else return 8;
-		}
-
-		private void FreezeAddressToolStrip_Click(object sender, EventArgs e)
-		{
-			FreezeAddress();
-		}
-
-		private void UnfreezeAddress()
-		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				for (int i = 0; i < indexes.Count; i++)
-				{
-					switch (Searches[indexes[i]].Type)
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 2);
-							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 3);
-							break;
-					}
-				}
-
-				UpdateValues();
-				Global.MainForm.HexEditor1.UpdateValues();
-				Global.MainForm.NewRamWatch1.UpdateValues();
-				Global.MainForm.Cheats_UpdateValues();
+				return selected;
 			}
 		}
 
 		private void FreezeAddress()
 		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				for (int i = 0; i < indexes.Count; i++)
-				{
-					switch (Searches[indexes[i]].Type)
-					{
-						case Watch_Legacy.TYPE.BYTE:
-							Cheat c = new Cheat("", Searches[indexes[i]].Address, (byte)Searches[indexes[i]].Value,
-								true, Domain);
-							Global.MainForm.Cheats1.AddCheat(c);
-							break;
-						case Watch_Legacy.TYPE.WORD:
-							{
-								byte low = (byte)(Searches[indexes[i]].Value / 256);
-								byte high = (byte)(Searches[indexes[i]].Value);
-								int a1 = Searches[indexes[i]].Address;
-								int a2 = Searches[indexes[i]].Address + 1;
-								if (Searches[indexes[i]].BigEndian)
-								{
-									Cheat c1 = new Cheat("", a1, low, true, Domain);
-									Cheat c2 = new Cheat("", a2, high, true, Domain);
-									Global.MainForm.Cheats1.AddCheat(c1);
-									Global.MainForm.Cheats1.AddCheat(c2);
-								}
-								else
-								{
-									Cheat c1 = new Cheat("", a1, high, true, Domain);
-									Cheat c2 = new Cheat("", a2, low, true, Domain);
-									Global.MainForm.Cheats1.AddCheat(c1);
-									Global.MainForm.Cheats1.AddCheat(c2);
-								}
-							}
-							break;
-						case Watch_Legacy.TYPE.DWORD:
-							{
-								byte HIWORDhigh = (byte)(Searches[indexes[i]].Value / 0x1000000);
-								byte HIWORDlow = (byte)(Searches[indexes[i]].Value / 0x10000);
-								byte LOWORDhigh = (byte)(Searches[indexes[i]].Value / 0x100);
-								byte LOWORDlow = (byte)(Searches[indexes[i]].Value);
-								int a1 = Searches[indexes[i]].Address;
-								int a2 = Searches[indexes[i]].Address + 1;
-								int a3 = Searches[indexes[i]].Address + 2;
-								int a4 = Searches[indexes[i]].Address + 3;
-								if (Searches[indexes[i]].BigEndian)
-								{
-									Cheat c1 = new Cheat("", a1, HIWORDhigh, true, Domain);
-									Cheat c2 = new Cheat("", a2, HIWORDlow, true, Domain);
-									Cheat c3 = new Cheat("", a3, LOWORDhigh, true, Domain);
-									Cheat c4 = new Cheat("", a4, LOWORDlow, true, Domain);
-									Global.MainForm.Cheats1.AddCheat(c1);
-									Global.MainForm.Cheats1.AddCheat(c2);
-									Global.MainForm.Cheats1.AddCheat(c3);
-									Global.MainForm.Cheats1.AddCheat(c4);
-								}
-								else
-								{
-									Cheat c1 = new Cheat("", a1, LOWORDlow, true, Domain);
-									Cheat c2 = new Cheat("", a2, LOWORDhigh, true, Domain);
-									Cheat c3 = new Cheat("", a3, HIWORDlow, true, Domain);
-									Cheat c4 = new Cheat("", a4, HIWORDhigh, true, Domain);
-									Global.MainForm.Cheats1.AddCheat(c1);
-									Global.MainForm.Cheats1.AddCheat(c2);
-									Global.MainForm.Cheats1.AddCheat(c3);
-									Global.MainForm.Cheats1.AddCheat(c4);
-								}
-							}
-							break;
-					}
-				}
+			ToolHelpers.FreezeAddress(SelectedWatches);
+		}
 
-				UpdateValues();
-				Global.MainForm.HexEditor1.UpdateValues();
-				Global.MainForm.NewRamWatch1.UpdateValues();
-				Global.MainForm.Cheats_UpdateValues();
+		private void RemoveRamWatchesFromList()
+		{
+			Searches.RemoveRange(Global.MainForm.RamWatch1.AddressList);
+			WatchListView.ItemCount = Searches.Count;
+			SetTotal();
+		}
+
+		private void UpdateUndoToolBarButtons()
+		{
+			UndoToolBarButton.Enabled = Searches.CanUndo;
+			RedoToolBarItem.Enabled = Searches.CanRedo;
+		}
+
+		private string GetColumnValue(string name, int index)
+		{
+			switch (name)
+			{
+				default:
+					return String.Empty;
+				case ADDRESS:
+					return Searches[index].AddressString;
+				case VALUE:
+					return Searches[index].ValueString;
+				case PREV:
+					return Searches[index].PreviousStr;
+				case CHANGES:
+					return (Searches[index] as IWatchDetails).ChangeCount.ToString();
+				case DIFF:
+					return (Searches[index] as IWatchDetails).Diff;
 			}
 		}
 
-		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ToggleAutoSearch()
 		{
-			FreezeAddress();
+			autoSearch ^= true;
+			AutoSearchCheckBox.Checked = autoSearch;
+			DoSearchToolButton.Enabled =
+				SearchButton.Enabled =
+				!autoSearch;
 		}
 
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		#endregion
+
+		#region Winform Events
+
+		#region File
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count == 0)
+			SaveMenuItem.Enabled = !String.IsNullOrWhiteSpace(CurrentFileName);
+		}
+
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentSearches.GenerateRecentMenu(LoadFileFromRecent));
+		}
+
+		private void OpenMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadWatchFile(
+				WatchList.GetFileFromUser(String.Empty),
+				sender == AppendFileMenuItem,
+				sender == TruncateFromFileMenuItem
+				);
+		}
+
+		private void SaveMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!String.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				removeSelectedToolStripMenuItem1.Visible = false;
-				addToRamWatchToolStripMenuItem.Visible = false;
-				pokeAddressToolStripMenuItem1.Visible = false;
-				freezeAddressToolStripMenuItem1.Visible = false;
-				toolStripSeparator14.Visible = false;
-				clearPreviewToolStripMenuItem.Visible = false;
+				WatchList watches = new WatchList(Settings.Domain);
+				watches.CurrentFileName = CurrentFileName;
+				for (int i = 0; i < Searches.Count; i++)
+				{
+					watches.Add(Searches[i]);
+				}
+
+				if (watches.Save())
+				{
+					CurrentFileName = watches.CurrentFileName;
+					MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+				}
+			}
+		}
+
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		{
+			WatchList watches = new WatchList(Settings.Domain);
+			watches.CurrentFileName = CurrentFileName;
+			for (int i = 0; i < Searches.Count; i++)
+			{
+				watches.Add(Searches[i]);
+			}
+
+			if (watches.SaveAs())
+			{
+				CurrentFileName = watches.CurrentFileName;
+				MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+				Global.Config.RecentSearches.Add(watches.CurrentFileName);
+			}
+		}
+
+		private void CloseMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		#endregion
+
+		#region Settings
+
+		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			CheckMisalignedMenuItem.Checked = Settings.CheckMisAligned;
+			BigEndianMenuItem.Checked = Settings.BigEndian;
+		}
+
+		private void ModeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DetailedMenuItem.Checked = Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
+			FastMenuItem.Checked = Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast;
+		}
+
+		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			MemoryDomainsSubMenu.DropDownItems.Clear();
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName));
+		}
+
+		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			_1ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.Byte;
+			_2ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.Word;
+			_4ByteMenuItem.Checked = Settings.Size == Watch.WatchSize.DWord;
+		}
+
+		private void DisplayTypeSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DisplayTypeSubMenu.DropDownItems.Clear();
+
+			foreach (var type in Watch.AvailableTypes(Settings.Size))
+			{
+				var item = new ToolStripMenuItem()
+				{
+					Name = type.ToString() + "ToolStripMenuItem",
+					Text = Watch.DisplayTypeToString(type),
+					Checked = Settings.Type == type,
+				};
+				item.Click += (o, ev) => DoDisplayTypeClick(type);
+
+				DisplayTypeSubMenu.DropDownItems.Add(item);
+			}
+		}
+
+		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			Previous_LastSearchMenuItem.Checked = false;
+			Previous_LastChangeMenuItem.Checked = false;
+			PreviousFrameMenuItem.Checked = false;
+			Previous_OriginalMenuItem.Checked = false;
+
+			switch (Settings.PreviousType)
+			{
+				default:
+				case Watch.PreviousType.LastSearch:
+					Previous_LastSearchMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.LastChange:
+					Previous_LastChangeMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.LastFrame:
+					PreviousFrameMenuItem.Checked = true;
+					break;
+				case Watch.PreviousType.Original:
+					Previous_OriginalMenuItem.Checked = true;
+					break;
+			}
+
+			if (Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			{
+				Previous_LastChangeMenuItem.Enabled = false;
+				PreviousFrameMenuItem.Enabled = false;
 			}
 			else
 			{
-				for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
-				{
-					contextMenuStrip1.Items[i].Visible = true;
-				}
-
-				if (indexes.Count == 1)
-				{
-					if (Global.CheatList.IsActiveCheat(Domain, Searches[indexes[0]].Address))
-					{
-						freezeAddressToolStripMenuItem1.Text = "&Unfreeze address";
-						freezeAddressToolStripMenuItem1.Image = Properties.Resources.Unfreeze;
-					}
-					else
-					{
-						freezeAddressToolStripMenuItem1.Text = "&Freeze address";
-						freezeAddressToolStripMenuItem1.Image = Properties.Resources.Freeze;
-					}
-				}
-				else
-				{
-					bool allCheats = true;
-					foreach (int i in indexes)
-					{
-						if (!Global.CheatList.IsActiveCheat(Domain, Searches[i].Address))
-						{
-							allCheats = false;
-						}
-					}
-
-					if (allCheats)
-					{
-						freezeAddressToolStripMenuItem1.Text = "&Unfreeze address";
-						freezeAddressToolStripMenuItem1.Image = Properties.Resources.Unfreeze;
-					}
-					else
-					{
-						freezeAddressToolStripMenuItem1.Text = "&Freeze address";
-						freezeAddressToolStripMenuItem1.Image = Properties.Resources.Freeze;
-					}
-				}
-
-
-				toolStripSeparator14.Visible = Global.Config.RamSearchPreviewMode;
-				clearPreviewToolStripMenuItem.Visible = Global.Config.RamSearchPreviewMode;
+				Previous_LastChangeMenuItem.Enabled = true;
+				PreviousFrameMenuItem.Enabled = true;
 			}
-
-			unfreezeAllToolStripMenuItem.Visible = Global.CheatList.HasActiveCheats;
 		}
 
-		private void removeSelectedToolStripMenuItem1_Click(object sender, EventArgs e)
+		private void DetailedMenuItem_Click(object sender, EventArgs e)
+		{
+			SetToDetailedMode();
+		}
+
+		private void FastMenuItem_Click(object sender, EventArgs e)
+		{
+			SetToFastMode();
+		}
+
+		private void _1ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetSize(Watch.WatchSize.Byte);
+		}
+
+		private void _2ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetSize(Watch.WatchSize.Word);
+		}
+
+		private void _4ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetSize(Watch.WatchSize.DWord);
+		}
+
+		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.CheckMisAligned ^= true;
+			SetReboot(true);
+		}
+
+		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			SetPreviousStype(Watch.PreviousType.LastFrame);
+		}
+
+		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
+		{
+			SetPreviousStype(Watch.PreviousType.LastSearch);
+		}
+
+		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
+		{
+			SetPreviousStype(Watch.PreviousType.LastChange);
+		}
+
+		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)
+		{
+			SetPreviousStype(Watch.PreviousType.Original);
+		}
+
+		private void BigEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.BigEndian ^= true;
+			Searches.SetEndian(Settings.BigEndian);
+		}
+
+		#endregion
+
+		#region Search
+
+		private void SearchSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ClearChangeCountsMenuItem.Enabled = Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed;
+
+			RemoveMenuItem.Enabled =
+				AddToRamWatchMenuItem.Enabled =
+				PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
+				SelectedIndices.Any();
+
+			UndoMenuItem.Enabled =
+				ClearUndoMenuItem.Enabled =
+				Searches.CanUndo;
+
+			RedoMenuItem.Enabled = Searches.CanRedo;
+		}
+
+		private void NewSearchMenuMenuItem_Click(object sender, EventArgs e)
+		{
+			NewSearch();
+		}
+
+		private void SearchMenuItem_Click(object sender, EventArgs e)
+		{
+			DoSearch();
+		}
+
+		private void UndoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Searches.CanUndo)
+			{
+				Searches.Undo();
+				UpdateUndoToolBarButtons();
+			}
+		}
+
+		private void RedoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Searches.CanRedo)
+			{
+				Searches.Redo();
+				UpdateUndoToolBarButtons();
+			}
+		}
+
+		private void CopyValueToPrevMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.SetPrevousToCurrent();
+			WatchListView.Refresh();
+		}
+
+		private void ClearChangeCountsMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.ClearChangeCounts();
+			WatchListView.Refresh();
+		}
+
+		private void RemoveMenuItem_Click(object sender, EventArgs e)
 		{
 			RemoveAddresses();
 		}
 
-		private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			AddToRamWatch();
 		}
 
-		private void pokeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
 			PokeAddress();
 		}
 
-		private void freezeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			if (sender.ToString().Contains("Unfreeze"))
+			FreezeAddress();
+		}
+
+		private void ClearUndoMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.ClearHistory();
+			UpdateUndoToolBarButtons();
+		}
+
+		#endregion
+
+		#region Options
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadDialogMenuItem.Checked = Global.Config.RecentSearches.AutoLoad;
+			SaveWinPositionMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
+			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
+			UseUndoHistoryMenuItem.Checked = Searches.UndoEnabled;
+			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchAlwaysOnTop;
+			AutoSearchMenuItem.Checked = autoSearch;
+		}
+
+		private void PreviewModeMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviewMode ^= true;
+		}
+
+		private void AutoSearchMenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleAutoSearch();
+		}
+
+		private void ExcludeRamWatchMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchAlwaysExcludeRamWatch ^= true;
+			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
 			{
-				UnfreezeAddress();
+				RemoveRamWatchesFromList();
+			}
+		}
+
+		private void UseUndoHistoryMenuItem_Click(object sender, EventArgs e)
+		{
+			Searches.UndoEnabled ^= true;
+		}
+
+		private void AutoloadDialogMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RecentSearches.AutoLoad ^= true;
+		}
+
+		private void SaveWinPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchSaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchAlwaysOnTop ^= true;
+			TopMost = Global.Config.RamSearchAlwaysOnTop;
+		}
+
+		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(defaultWidth, defaultHeight);
+
+			Global.Config.RamSearchColumnIndexes = new Dictionary<string, int>
+				{
+					{ "AddressColumn", 0 },
+					{ "ValueColumn", 1 },
+					{ "PrevColumn", 2 },
+					{ "ChangesColumn", 3 },
+					{ "DiffColumn", 4 },
+					{ "DomainColumn", 5 },
+					{ "NotesColumn", 6 },
+				};
+
+			ColumnPositions();
+
+			Global.Config.RamSearchShowChangeColumn = true;
+			Global.Config.RamSearchShowPrevColumn = true;
+			Global.Config.RamSearchShowDiffColumn = false;
+
+			WatchListView.Columns[ADDRESS].Width = DefaultColumnWidths[ADDRESS];
+			WatchListView.Columns[VALUE].Width = DefaultColumnWidths[VALUE];
+			//WatchListView.Columns[PREV].Width = DefaultColumnWidths[PREV];
+			WatchListView.Columns[CHANGES].Width = DefaultColumnWidths[CHANGES];
+			//WatchListView.Columns[DIFF].Width = DefaultColumnWidths[DIFF];
+
+			Global.Config.RamSearchSaveWindowPosition = true;
+			Global.Config.RamSearchAlwaysOnTop = TopMost = false;
+
+			LoadColumnInfo();
+		}
+
+		#endregion
+
+		#region Columns
+
+		private void ColumnsMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			ShowPreviousMenuItem.Checked = Global.Config.RamSearchShowPrevColumn;
+			ShowChangesMenuItem.Checked = Global.Config.RamSearchShowChangeColumn;
+			ShowDiffMenuItem.Checked = Global.Config.RamSearchShowDiffColumn;
+		}
+
+		private void ShowPreviousMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchShowPrevColumn ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		private void ShowChangesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchShowChangeColumn ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		private void ShowDiffMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchShowDiffColumn ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		#endregion
+
+		#region ContextMenu and Toolbar
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			DoSearchContextMenuItem.Enabled = Searches.Count > 0;
+
+			RemoveContextMenuItem.Visible =
+				AddToRamWatchContextMenuItem.Visible =
+				PokeContextMenuItem.Visible =
+				FreezeContextMenuItem.Visible =
+				ContextMenuSeparator2.Visible =
+
+				ViewInHexEditorContextMenuItem.Visible =
+				SelectedIndices.Count > 0;
+
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.Any();
+
+			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.Any());
+
+			bool allCheats = true;
+			foreach (int index in SelectedIndices)
+			{
+				if (!Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value))
+				{
+					allCheats = false;
+				}
+			}
+
+			if (allCheats)
+			{
+				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				FreezeAddress();
+				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
 			}
 		}
 
-		private void CheckDomainMenuItems()
+		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (ToolStripMenuItem t in domainMenuItems)
+			ToolHelpers.UnfreezeAll();
+		}
+
+		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedIndices.Count > 0)
 			{
-				if (Domain.Name == t.Text)
-				{
-					t.Checked = true;
-				}
-				else
-				{
-					t.Checked = false;
-				}
+				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.SetDomain(Settings.Domain);
+				Global.MainForm.HexEditor1.GoToAddress(Searches[SelectedIndices[0]].Address.Value);
+
+				//TODO: secondary highlighted on remaining indexes
 			}
 		}
 
-		private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void ClearPreviewContextMenuItem_Click(object sender, EventArgs e)
 		{
-			CheckDomainMenuItems();
+			forcePreviewClear = true;
+			WatchListView.Refresh();
 		}
 
-		private void SearchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
-		{
-			ColumnHeader header = e.Header;
+		#endregion
 
-			int lowIndex;
-			int highIndex;
-			int changeIndex;
-			if (e.NewDisplayIndex > e.OldDisplayIndex)
+		#region Compare To Box
+
+		private void PreviousValueRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.Previous);
+		}
+
+		private void SpecificValueRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(SpecificValueBox.Text))
 			{
-				changeIndex = -1;
-				highIndex = e.NewDisplayIndex;
-				lowIndex = e.OldDisplayIndex;
+				SpecificValueBox.Text = "0";
+				Searches.CompareValue = 0;
+			}
+			SpecificValueBox.Focus();
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.SpecificValue);
+		}
+
+		private void SpecificAddressRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(SpecificAddressBox.Text))
+			{
+				SpecificAddressBox.Text = "0";
+				Searches.CompareValue = 0;
+			}
+			SpecificAddressBox.Focus();
+			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
+		}
+
+		private void NumberOfChangesRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(NumberOfChangesBox.Text))
+			{
+				NumberOfChangesBox.Text = "0";
+				Searches.CompareValue = 0;
+			}
+			NumberOfChangesBox.Focus();
+			DifferenceBox.Enabled = false;
+			SetCompareTo(RamSearchEngine.Compare.Changes);
+		}
+
+		private void DifferenceRadio_Click(object sender, EventArgs e)
+		{
+			SpecificValueBox.Enabled = false;
+			SpecificAddressBox.Enabled = false;
+			NumberOfChangesBox.Enabled = false;
+			DifferenceBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(DifferenceBox.Text))
+			{
+				DifferenceBox.Text = "0";
+				Searches.CompareValue = 0;
+			}
+			DifferenceBox.Focus();
+			SetCompareTo(RamSearchEngine.Compare.Difference);
+		}
+
+		private void CompareToValue_TextChanged(object sender, EventArgs e)
+		{
+			SetCompareValue((sender as INumberBox).ToInt());
+		}
+
+		#endregion
+
+		#region Comparison Operator Box
+
+		private void EqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.Equal);
+		}
+
+		private void NotEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.NotEqual);
+		}
+
+		private void LessThanRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThan);
+		}
+
+		private void GreaterThanRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThan);
+		}
+
+		private void LessThanOrEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.LessThanEqual);
+		}
+
+		private void GreaterThanOrEqualToRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = false;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.GreaterThanEqual);
+		}
+
+		private void DifferentByRadio_Click(object sender, EventArgs e)
+		{
+			DifferentByBox.Enabled = true;
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
+			if (String.IsNullOrWhiteSpace(DifferentByBox.Text))
+			{
+				DifferentByBox.Text = "0";
+			}
+			DifferentByBox.Focus();
+		}
+
+		private void DifferentByBox_TextChanged(object sender, EventArgs e)
+		{
+			if (!String.IsNullOrWhiteSpace(DifferentByBox.Text))
+			{
+				Searches.DifferentBy = DifferentByBox.ToInt();
 			}
 			else
 			{
-				changeIndex = 1;
-				highIndex = e.OldDisplayIndex;
-				lowIndex = e.NewDisplayIndex;
-			}
-
-			if (Global.Config.RamSearchAddressIndex >= lowIndex && Global.Config.RamSearchAddressIndex <= highIndex)
-				Global.Config.RamSearchAddressIndex += changeIndex;
-			if (Global.Config.RamSearchValueIndex >= lowIndex && Global.Config.RamSearchValueIndex <= highIndex)
-				Global.Config.RamSearchValueIndex += changeIndex;
-			if (Global.Config.RamSearchPrevIndex >= lowIndex && Global.Config.RamSearchPrevIndex <= highIndex)
-				Global.Config.RamSearchPrevIndex += changeIndex;
-			if (Global.Config.RamSearchChangesIndex >= lowIndex && Global.Config.RamSearchChangesIndex <= highIndex)
-				Global.Config.RamSearchChangesIndex += changeIndex;
-
-			if (header.Text == "Address")
-				Global.Config.RamSearchAddressIndex = e.NewDisplayIndex;
-			else if (header.Text == "Value")
-				Global.Config.RamSearchValueIndex = e.NewDisplayIndex;
-			else if (header.Text == "Prev")
-				Global.Config.RamSearchPrevIndex = e.NewDisplayIndex;
-			else if (header.Text == "Changes")
-				Global.Config.RamSearchChangesIndex = e.NewDisplayIndex;
-		}
-
-		private void ColumnPositionSet()
-		{
-			List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
-			int i;
-			for (i = 0; i < SearchListView.Columns.Count; i++)
-			{
-				columnHeaders.Add(SearchListView.Columns[i]);
-			}
-
-			SearchListView.Columns.Clear();
-
-			i = 0;
-			do
-			{
-				string column = "";
-				if (Global.Config.RamSearchAddressIndex == i)
-					column = "Address";
-				else if (Global.Config.RamSearchValueIndex == i)
-					column = "Value";
-				else if (Global.Config.RamSearchPrevIndex == i)
-					column = "Prev";
-				else if (Global.Config.RamSearchChangesIndex == i)
-					column = "Changes";
-
-				for (int k = 0; k < columnHeaders.Count(); k++)
-				{
-					if (columnHeaders[k].Text == column)
-					{
-						SearchListView.Columns.Add(columnHeaders[k]);
-						columnHeaders.Remove(columnHeaders[k]);
-						break;
-					}
-				}
-				i++;
-			} while (columnHeaders.Any());
-		}
-
-		private void RamSearch_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
-		private void RamSearch_DragDrop(object sender, DragEventArgs e)
-		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == (".wch"))
-			{
-				LoadSearchFile(filePaths[0], false, Searches);
-				DisplaySearchList();
+				Searches.DifferentBy = null;
 			}
 		}
 
-		private void OrderColumn(int columnToOrder)
-		{
-			string columnName = SearchListView.Columns[columnToOrder].Text;
-			if (sortedCol.CompareTo(columnName) != 0)
-				sortReverse = false;
-			Searches.Sort((x, y) => x.CompareTo(y, columnName, (Watch_Legacy.PREVDEF)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
-			sortedCol = columnName;
-			sortReverse = !(sortReverse);
-			SearchListView.Refresh();
-		}
+		#endregion
 
-		private void SearchListView_ColumnClick(object sender, ColumnClickEventArgs e)
-		{
-			OrderColumn(e.Column);
-		}
+		#region ListView Events
 
-		private void RedotoolStripButton2_Click(object sender, EventArgs e)
-		{
-			DoRedo();
-		}
-
-		private void WatchtoolStripButton1_Click_1(object sender, EventArgs e)
-		{
-			AddToRamWatch();
-		}
-
-		private void SearchListView_Enter(object sender, EventArgs e)
-		{
-			SearchListView.Refresh();
-		}
-
-		private void RamSearch_Activated(object sender, EventArgs e)
-		{
-			SearchListView.Refresh();
-		}
-
-		private void SearchListView_KeyDown(object sender, KeyEventArgs e)
+		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
 			{
@@ -2602,138 +1262,111 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < Searches.Count; x++)
 				{
-					SearchListView.SelectItem(x, true);
+					WatchListView.SelectItem(x, true);
 				}
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
 			{
-				ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-				if (indexes.Count > 0)
+				if (SelectedIndices.Count > 0)
 				{
 					StringBuilder sb = new StringBuilder();
-					foreach (int index in indexes)
+					foreach (int index in SelectedIndices)
 					{
-						for (int i = 0; i < SearchListView.Columns.Count; i++)
+						foreach (ColumnHeader column in WatchListView.Columns)
 						{
-							if (SearchListView.Columns[i].Width > 0)
-							{
-								sb.Append(GetColumnValue(i, index));
-								sb.Append('\t');
-							}
+							sb.Append(GetColumnValue(column.Name, index)).Append('\t');
 						}
 						sb.Remove(sb.Length - 1, 1);
-						sb.Append('\n');
+						sb.AppendLine();
 					}
 
-					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					if (sb.Length > 0)
 					{
 						Clipboard.SetDataObject(sb.ToString());
 					}
 				}
 			}
-		}
-
-		private string GetColumnValue(int column, int watch_index)
-		{
-			switch (SearchListView.Columns[column].Text.ToLower())
+			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
 			{
-				default:
-					return "";
-				case "address":
-					return Searches[watch_index].Address.ToString(addressFormatStr);
-				case "value":
-					return Searches[watch_index].ValueString;
-				case "prev":
-					switch (Global.Config.RamSearchPrev_Type)
-					{
-						case 1:
-							return Searches[watch_index].PrevString;
-						case 2:
-							return Searches[watch_index].LastChangeString;
-						default:
-							return "";
-					}
-				case "changes":
-					return Searches[watch_index].Changecount.ToString();
-				case "diff":
-					switch (Global.Config.RamSearchPrev_Type)
-					{
-						case 1:
-							return Searches[watch_index].DiffPrevString;
-						case 2:
-							return Searches[watch_index].DiffLastChangeString;
-						default:
-							return "";
-					}
-				case "domain":
-					return Searches[watch_index].Domain.Name;
-				case "notes":
-					return Searches[watch_index].Notes;
+				WatchListView.SelectedIndices.Clear();
 			}
 		}
 
-		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			DoRedo();
+			RemoveToolBarItem.Enabled =
+				AddToRamWatchToolBarItem.Enabled =
+				PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any();
 		}
 
-		private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-			if (indexes.Count > 0)
+			Global.Config.RamSearchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[PREV] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
+		}
+
+		private void WatchListView_Enter(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
+
+		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = WatchListView.Columns[e.Column];
+			if (column.Name != _sortedColumn)
 			{
-				Global.MainForm.LoadHexEditor();
-				Global.MainForm.HexEditor1.SetDomain(Searches[indexes[0]].Domain);
-				Global.MainForm.HexEditor1.GoToAddress(Searches[indexes[0]].Address);
+				_sortReverse = false;
+			}
+
+			Searches.Sort(column.Name, _sortReverse);
+
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			WatchListView.Refresh();
+		}
+
+		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (SelectedIndices.Count > 0)
+			{
+				AddToRamWatch();
 			}
 		}
 
-		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
+		#endregion
+
+		#region Dialog Events
+
+		private void NewRamSearch_Activated(object sender, EventArgs e)
 		{
-			Global.Config.RecentSearches.AutoLoad ^= true;
+			WatchListView.Refresh();
 		}
 
-		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NewRamSearch_DragEnter(object sender, DragEventArgs e)
 		{
-			Global.MainForm.Cheats1.RemoveAllCheats();
-			UpdateValues();
-
-			Global.MainForm.NewRamWatch1.UpdateValues();
-			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NewRamSearch_DragDrop(object sender, DragEventArgs e)
 		{
-			alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
-			this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
-		}
-
-		private void clearUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SearchHistory.Clear();
-		}
-
-		private void fastModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchFastMode ^= true;
-			Global.Config.RamSearchPreviewMode = !Global.Config.RamSearchFastMode;
-			if (Global.Config.RamSearchFastMode && Global.Config.RamSearchPreviousAs > 1)
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".wch"))
 			{
-				Global.Config.RamSearchPreviousAs = 0;
+				var file = new FileInfo(filePaths[0]);
+				if (file.Exists)
+				{
+					LoadWatchFile(file, false);
+				}
 			}
 		}
 
-		private void useUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			useUndoHistoryToolStripMenuItem.Checked ^= true;
-			SearchHistory = new HistoryCollection(Searches, useUndoHistoryToolStripMenuItem.Checked);
-		}
+		#endregion
 
-		private void clearPreviewToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			forcePreviewClear = true;
-			SearchListView.Refresh();
-		}
+		#endregion
 	}
 }

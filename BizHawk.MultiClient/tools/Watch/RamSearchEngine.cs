@@ -306,7 +306,7 @@ namespace BizHawk.MultiClient
 		{
 			switch(column)
 			{
-				case NewRamSearch.ADDRESS:
+				case RamSearch.ADDRESS:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Address).ToList();
@@ -316,7 +316,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Address).ToList();
 					}
 					break;
-				case NewRamSearch.VALUE:
+				case RamSearch.VALUE:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => GetValue(x.Address)).ToList();
@@ -326,7 +326,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => GetValue(x.Address)).ToList();
 					}
 					break;
-				case NewRamSearch.PREV:
+				case RamSearch.PREV:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Previous).ToList();
@@ -336,7 +336,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Previous).ToList();
 					}
 					break;
-				case NewRamSearch.CHANGES:
+				case RamSearch.CHANGES:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
 						if (reverse)
@@ -355,7 +355,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 					break;
-				case NewRamSearch.DIFF:
+				case RamSearch.DIFF:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => (GetValue(x.Address) - x.Previous)).ToList();

@@ -40,11 +40,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.Cheats1.RemoveAllCheats();
 
-			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.NewRamSearch1.UpdateValues();
 		}
 
 		public static void FreezeAddress(List<Watch> watches)
@@ -117,7 +116,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			Global.MainForm.NewRamWatch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
