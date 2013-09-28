@@ -618,11 +618,14 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case Watch.WatchSize.Byte:
-					return _settings.Domain.PeekByte(addr);
+					var theByte = _settings.Domain.PeekByte(addr);
+					return theByte;
 				case Watch.WatchSize.Word:
-					return _settings.Domain.PeekWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					var theWord = _settings.Domain.PeekWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					return theWord;
 				case Watch.WatchSize.DWord:
-					return (int)_settings.Domain.PeekDWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					var theDWord = _settings.Domain.PeekDWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					return (int)theDWord;
 			}
 		}
 

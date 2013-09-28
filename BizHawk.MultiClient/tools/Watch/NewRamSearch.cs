@@ -1122,6 +1122,10 @@ namespace BizHawk.MultiClient
 		private void SpecificValueRadio_Click(object sender, EventArgs e)
 		{
 			SpecificValueBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(SpecificValueBox.Text))
+			{
+				SpecificValueBox.Text = "0";
+			}
 			SpecificValueBox.Focus();
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
@@ -1133,6 +1137,10 @@ namespace BizHawk.MultiClient
 		{
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(SpecificAddressBox.Text))
+			{
+				SpecificAddressBox.Text = "0";
+			}
 			SpecificAddressBox.Focus();
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
@@ -1144,6 +1152,10 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = false;
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(NumberOfChangesBox.Text))
+			{
+				NumberOfChangesBox.Text = "0";
+			}
 			NumberOfChangesBox.Focus();
 			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.Changes);
@@ -1155,6 +1167,10 @@ namespace BizHawk.MultiClient
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = true;
+			if (String.IsNullOrWhiteSpace(DifferenceBox.Text))
+			{
+				DifferenceBox.Text = "0";
+			}
 			DifferenceBox.Focus();
 			SetCompareTo(RamSearchEngine.Compare.Difference);
 		}
