@@ -1125,6 +1125,7 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(SpecificValueBox.Text))
 			{
 				SpecificValueBox.Text = "0";
+				Searches.CompareValue = 0;
 			}
 			SpecificValueBox.Focus();
 			SpecificAddressBox.Enabled = false;
@@ -1140,6 +1141,7 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(SpecificAddressBox.Text))
 			{
 				SpecificAddressBox.Text = "0";
+				Searches.CompareValue = 0;
 			}
 			SpecificAddressBox.Focus();
 			NumberOfChangesBox.Enabled = false;
@@ -1155,6 +1157,7 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(NumberOfChangesBox.Text))
 			{
 				NumberOfChangesBox.Text = "0";
+				Searches.CompareValue = 0;
 			}
 			NumberOfChangesBox.Focus();
 			DifferenceBox.Enabled = false;
@@ -1170,6 +1173,7 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(DifferenceBox.Text))
 			{
 				DifferenceBox.Text = "0";
+				Searches.CompareValue = 0;
 			}
 			DifferenceBox.Focus();
 			SetCompareTo(RamSearchEngine.Compare.Difference);
