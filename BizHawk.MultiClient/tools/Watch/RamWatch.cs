@@ -124,7 +124,7 @@ namespace BizHawk.MultiClient
 
 				if (result)
 				{
-					Watches.Load(file.FullName, true, append);
+					Watches.Load(file.FullName, append);
 					DisplayWatches();
 					UpdateMessageLabel();
 					UpdateWatchCount();
@@ -298,25 +298,19 @@ namespace BizHawk.MultiClient
 					text = Watches[index].PreviousStr;
 					break;
 				case CHANGES:
-					if (Watches[index] is IWatchDetails)
+					if (!Watches[index].IsSeparator)
 					{
-						text = (Watches[index] as IWatchDetails).ChangeCount.ToString();
+						text = Watches[index].ChangeCount.ToString();
 					}
 					break;
 				case DIFF:
-					if (Watches[index] is IWatchDetails)
-					{
-						text = (Watches[index] as IWatchDetails).Diff;
-					}
+					text = Watches[index].Diff;
 					break;
 				case DOMAIN:
 					text = Watches[index].Domain.Name;
 					break;
 				case NOTES:
-					if (Watches[index] is IWatchDetails)
-					{
-						text = (Watches[index] as IWatchDetails).Notes;
-					}
+					text = Watches[index].Notes;
 					break;
 			}
 		}
@@ -365,7 +359,7 @@ namespace BizHawk.MultiClient
 
 			if (ask_result)
 			{
-				bool load_result = Watches.Load(path, details: true, append: false);
+				bool load_result = Watches.Load(path, append: false);
 				if (!load_result)
 				{
 					Global.Config.RecentWatches.HandleLoadError(path);
@@ -717,13 +711,13 @@ namespace BizHawk.MultiClient
 				case PREV:
 					return Watches[index].PreviousStr;
 				case CHANGES:
-					return (Watches[index] as IWatchDetails).ChangeCount.ToString();
+					return Watches[index].ChangeCount.ToString();
 				case DIFF:
-					return (Watches[index] as IWatchDetails).Diff;
+					return Watches[index].Diff;
 				case DOMAIN:
 					return Watches[index].Domain.Name;
 				case NOTES:
-					return (Watches[index] as IWatchDetails).Notes;
+					return Watches[index].Notes;
 			}
 		}
 
@@ -788,7 +782,7 @@ namespace BizHawk.MultiClient
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == (".wch"))
 			{
-				Watches.Load(filePaths[0], true, false);
+				Watches.Load(filePaths[0], append:false);
 				DisplayWatches();
 			}
 		}
