@@ -224,31 +224,13 @@ namespace BizHawk.MultiClient
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							_watchList.Add(new ByteWatch(domain, address)
-								{
-									Notes = notes,
-									Type = type,
-									BigEndian = bigendian,
-								}
-							);
+							_watchList.Add(new ByteWatch(domain, address, type, bigendian, notes));
 							break;
 						case 1:
-							_watchList.Add(new WordWatch(domain, address)
-								{
-									Notes = notes,
-									Type = type,
-									BigEndian = bigendian,
-								}
-							);
+							_watchList.Add(new WordWatch(domain, address, type, bigendian, notes));
 							break;
 						case 2:
-							_watchList.Add(new DWordWatch(domain, address)
-								{
-									Notes = notes,
-									Type = type,
-									BigEndian = bigendian,
-								}
-							);
+							_watchList.Add(new DWordWatch(domain, address, type, bigendian, notes));
 							break;
 					}
 					break;
@@ -261,10 +243,13 @@ namespace BizHawk.MultiClient
 					_watchList.Clear();
 					foreach (var watch in tempWatchList)
 					{
-						var newWatch = Watch.GenerateWatch(watch.Domain, watch.Address.Value, watch.Size);
-						newWatch.Type = watch.Type;
-						newWatch.Notes = watch.Notes;
-						_watchList.Add(watch);
+						_watchList.Add(Watch.GenerateWatch(
+								watch.Domain,
+								watch.Address.Value,
+								watch.Size,
+								watch.Type,
+								watch.Notes,
+								watch.BigEndian));
 					}
 					DoEdit();
 					break;
@@ -301,9 +286,11 @@ namespace BizHawk.MultiClient
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
 						_watchList.Count == 1 ? AddressBox.ToInt() : _watchList[i].Address.Value,
-						size
+						size,
+						_watchList[i].Type,
+						_watchList[i].Notes,
+						_watchList[i].BigEndian
 					);
-					_watchList[i].Notes = tempNotes;
 				}
 			}
 			if (_changedDisplayType)
