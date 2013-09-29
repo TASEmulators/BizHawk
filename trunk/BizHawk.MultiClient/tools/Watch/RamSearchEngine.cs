@@ -200,7 +200,17 @@ namespace BizHawk.MultiClient
 		public Compare CompareTo
 		{
 			get { return _compareTo; }
-			set { _compareTo = value; } //TODO: check to see if this value is valid based on mode
+			set
+			{
+				if (CanDoCompareType(value))
+				{
+					_compareTo = value;
+				}
+				else
+				{
+					throw new InvalidOperationException();
+				}
+			}
 		}
 
 		public long? CompareValue
@@ -675,6 +685,18 @@ namespace BizHawk.MultiClient
 					{
 						return (uint)theDWord;
 					}
+			}
+		}
+
+		private bool CanDoCompareType(Compare compareType)
+		{
+			switch (_settings.Mode)
+			{
+				default:
+				case Settings.SearchMode.Detailed:
+					return true;
+				case Settings.SearchMode.Fast:
+					return !(compareType == Compare.Changes);
 			}
 		}
 
