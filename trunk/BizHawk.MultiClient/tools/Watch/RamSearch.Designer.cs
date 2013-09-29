@@ -79,7 +79,6 @@
 			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -455,9 +454,9 @@
             this.sizeToolStripMenuItem,
             this.CheckMisalignedMenuItem,
             this.toolStripSeparator8,
+            this.BigEndianMenuItem,
             this.DisplayTypeSubMenu,
-            this.DefinePreviousValueSubMenu,
-            this.BigEndianMenuItem});
+            this.DefinePreviousValueSubMenu});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
@@ -562,9 +561,8 @@
 			// DefinePreviousValueSubMenu
 			// 
 			this.DefinePreviousValueSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.PreviousFrameMenuItem,
             this.Previous_LastSearchMenuItem,
-            this.Previous_LastChangeMenuItem,
+            this.PreviousFrameMenuItem,
             this.Previous_OriginalMenuItem});
 			this.DefinePreviousValueSubMenu.Name = "DefinePreviousValueSubMenu";
 			this.DefinePreviousValueSubMenu.Size = new System.Drawing.Size(188, 22);
@@ -584,13 +582,6 @@
 			this.Previous_LastSearchMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_LastSearchMenuItem.Text = "Last &Search";
 			this.Previous_LastSearchMenuItem.Click += new System.EventHandler(this.Previous_LastSearchMenuItem_Click);
-			// 
-			// Previous_LastChangeMenuItem
-			// 
-			this.Previous_LastChangeMenuItem.Name = "Previous_LastChangeMenuItem";
-			this.Previous_LastChangeMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.Previous_LastChangeMenuItem.Text = "Last &Change";
-			this.Previous_LastChangeMenuItem.Click += new System.EventHandler(this.Previous_LastChangeMenuItem_Click);
 			// 
 			// Previous_OriginalMenuItem
 			// 
@@ -1477,7 +1468,6 @@
 		private System.Windows.Forms.ToolStripMenuItem DefinePreviousValueSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PreviousFrameMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_LastSearchMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Previous_OriginalMenuItem;
 		private System.Windows.Forms.GroupBox CompareToBox;
         private System.Windows.Forms.RadioButton DifferenceRadio;

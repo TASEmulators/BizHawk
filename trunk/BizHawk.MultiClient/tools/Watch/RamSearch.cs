@@ -880,7 +880,6 @@ namespace BizHawk.MultiClient
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Previous_LastSearchMenuItem.Checked = false;
-			Previous_LastChangeMenuItem.Checked = false;
 			PreviousFrameMenuItem.Checked = false;
 			Previous_OriginalMenuItem.Checked = false;
 
@@ -889,9 +888,6 @@ namespace BizHawk.MultiClient
 				default:
 				case Watch.PreviousType.LastSearch:
 					Previous_LastSearchMenuItem.Checked = true;
-					break;
-				case Watch.PreviousType.LastChange:
-					Previous_LastChangeMenuItem.Checked = true;
 					break;
 				case Watch.PreviousType.LastFrame:
 					PreviousFrameMenuItem.Checked = true;
@@ -903,12 +899,10 @@ namespace BizHawk.MultiClient
 
 			if (Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
 			{
-				Previous_LastChangeMenuItem.Enabled = false;
 				PreviousFrameMenuItem.Enabled = false;
 			}
 			else
 			{
-				Previous_LastChangeMenuItem.Enabled = true;
 				PreviousFrameMenuItem.Enabled = true;
 			}
 		}
@@ -952,11 +946,6 @@ namespace BizHawk.MultiClient
 		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
 		{
 			SetPreviousStype(Watch.PreviousType.LastSearch);
-		}
-
-		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
-		{
-			SetPreviousStype(Watch.PreviousType.LastChange);
 		}
 
 		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)

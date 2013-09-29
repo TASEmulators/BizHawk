@@ -268,9 +268,14 @@ namespace BizHawk.MultiClient
 
 		public void SetPreviousType(Watch.PreviousType type)
 		{
+			if (type == Watch.PreviousType.LastChange)
+			{
+				throw new InvalidOperationException();
+			}
+
 			if (_settings.Mode == Settings.SearchMode.Fast)
 			{
-				if (type == Watch.PreviousType.LastFrame || type == Watch.PreviousType.LastChange)
+				if (type == Watch.PreviousType.LastFrame)
 				{
 					throw new InvalidOperationException();
 				}
@@ -831,9 +836,6 @@ namespace BizHawk.MultiClient
 					case Watch.PreviousType.LastFrame:
 						_previous = value;
 						break;
-					case Watch.PreviousType.LastChange:
-						//TODO: this feature requires yet another variable, ugh
-						break;
 				}
 			}
 
@@ -885,9 +887,6 @@ namespace BizHawk.MultiClient
 					case Watch.PreviousType.LastFrame:
 						_previous = value;
 						break;
-					case Watch.PreviousType.LastChange:
-						//TODO: this feature requires yet another variable, ugh
-						break;
 				}
 			}
 
@@ -938,9 +937,6 @@ namespace BizHawk.MultiClient
 						break;
 					case Watch.PreviousType.LastFrame:
 						_previous = value;
-						break;
-					case Watch.PreviousType.LastChange:
-						//TODO: this feature requires yet another variable, ugh
 						break;
 				}
 			}
