@@ -486,7 +486,7 @@ namespace BizHawk.MultiClient
 			dropdown_dontfire = true;
 			DisplayTypeDropdown.SelectedItem = Watch.DisplayTypeToString(type);
 			dropdown_dontfire = false;
-
+			SpecificValueBox.Type = type;
 			WatchListView.Refresh();
 		}
 
@@ -529,7 +529,7 @@ namespace BizHawk.MultiClient
 			}
 			PopulateTypeDropDown();
 			dropdown_dontfire = false;
-
+			SpecificValueBox.Type = Settings.Type;
 			SetReboot(true);
 		}
 
