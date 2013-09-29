@@ -12,25 +12,26 @@ namespace BizHawk.MultiClient
 	{
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
-
-		
-		
 		
 		private int? _differentBy = null;
-
-		
 		private Compare _compareTo = Compare.Previous;
 		private long? _compareValue = null;
 		private ComparisonOperator _operator = ComparisonOperator.Equal;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
-		private Settings _settings;
+		private Settings _settings = new Settings();
 		private WatchHistory _history = new WatchHistory(true);
 		private bool _keepHistory = true;
 
 		public RamSearchEngine(Settings settings)
 		{
-			_settings = settings;
+			_settings.Mode = settings.Mode;
+			_settings.Domain = settings.Domain;
+			_settings.Size = settings.Size;
+			_settings.CheckMisAligned = settings.CheckMisAligned;
+			_settings.Type = settings.Type;
+			_settings.BigEndian = settings.BigEndian;
+			_settings.PreviousType = settings.PreviousType;
 		}
 
 		#region API
@@ -191,6 +192,8 @@ namespace BizHawk.MultiClient
 		{
 			get { return _watchList.Count; }
 		}
+
+		public Settings.SearchMode Mode { get { return _settings.Mode; } }
 
 		public MemoryDomain Domain
 		{
