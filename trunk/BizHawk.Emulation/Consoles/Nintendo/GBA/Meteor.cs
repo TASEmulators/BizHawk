@@ -254,16 +254,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			// even if the rom is less than 32MB, the whole is still valid in meteor
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
 			// special domain for system bus
-			MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, Endian.Little,
-				delegate(int addr)
-				{
-					return LibMeteor.libmeteor_peekbus((uint)addr);
-				},
-				delegate(int addr, byte val)
-				{
-					LibMeteor.libmeteor_writebus((uint)addr, val);
-				});
-			_MemoryDomains.Add(sb);
+			{
+				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, Endian.Little,
+					delegate(int addr)
+					{
+						return LibMeteor.libmeteor_peekbus((uint)addr);
+					},
+					delegate(int addr, byte val)
+					{
+						LibMeteor.libmeteor_writebus((uint)addr, val);
+					});
+				_MemoryDomains.Add(sb);
+			}
+			// special combined ram memory domain
+			{
+				var ew = _MemoryDomains[1];
+				var iw = _MemoryDomains[0];
+				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, Endian.Little,
+					delegate(int addr)
+					{
+						if (addr >= 256 * 1024)
+							return iw.PeekByte(addr & 32767);
+						else
+							return ew.PeekByte(addr);
+					},
+					delegate(int addr, byte val)
+					{
+						if (addr >= 256 * 1024)
+							iw.PokeByte(addr & 32767, val);
+						else
+							ew.PokeByte(addr, val);
+					});
+				_MemoryDomains.Add(cr);
+			}
 		}
 
 		public void GetGPUMemoryAreas(out IntPtr vram, out IntPtr palram, out IntPtr oam, out IntPtr mmio)
