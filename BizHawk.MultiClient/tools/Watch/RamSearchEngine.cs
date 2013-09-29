@@ -13,11 +13,15 @@ namespace BizHawk.MultiClient
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 
-		public Compare CompareTo = Compare.Previous;
-		public int? CompareValue = null;
-		public ComparisonOperator Operator = ComparisonOperator.Equal;
-		public int? DifferentBy = null;
 		
+		
+		
+		private int? _differentBy = null;
+
+		
+		private Compare _compareTo = Compare.Previous;
+		private long? _compareValue = null;
+		private ComparisonOperator _operator = ComparisonOperator.Equal;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings;
@@ -132,7 +136,7 @@ namespace BizHawk.MultiClient
 		{
 			int before = _watchList.Count;
 			
-			switch (CompareTo)
+			switch (_compareTo)
 			{
 				default:
 				case RamSearchEngine.Compare.Previous:
@@ -167,7 +171,7 @@ namespace BizHawk.MultiClient
 
 		public bool Preview(int address)
 		{
-			switch (CompareTo)
+			switch (_compareTo)
 			{
 				default:
 				case RamSearchEngine.Compare.Previous:
@@ -191,6 +195,30 @@ namespace BizHawk.MultiClient
 		public MemoryDomain Domain
 		{
 			get { return _settings.Domain; }
+		}
+
+		public Compare CompareTo
+		{
+			get { return _compareTo; }
+			set { _compareTo = value; } //TODO: check to see if this value is valid based on mode
+		}
+
+		public long? CompareValue
+		{
+			get { return _compareValue; }
+			set { _compareValue = value; }
+		}
+
+		public ComparisonOperator Operator
+		{
+			get { return _operator; }
+			set { _operator = value; }
+		}
+
+		public int? DifferentBy
+		{
+			get { return _differentBy; }
+			set { _differentBy = value; }
 		}
 
 		public void Update()
@@ -415,7 +443,7 @@ namespace BizHawk.MultiClient
 
 		private IEnumerable<IMiniWatch> ComparePrevious(IEnumerable<IMiniWatch> watchList)
 		{
-			switch (Operator)
+			switch (_operator)
 			{
 				default:
 				case ComparisonOperator.Equal:
@@ -431,9 +459,9 @@ namespace BizHawk.MultiClient
 				case ComparisonOperator.LessThanEqual:
 					return watchList.Where(x => GetValue(x.Address) <= x.Previous);
 				case ComparisonOperator.DifferentBy:
-					if (DifferentBy.HasValue)
+					if (_differentBy.HasValue)
 					{
-						return watchList.Where(x => (GetValue(x.Address) + DifferentBy.Value == x.Previous) || (GetValue(x.Address) - DifferentBy.Value == x.Previous));
+						return watchList.Where(x => (GetValue(x.Address) + _differentBy.Value == x.Previous) || (GetValue(x.Address) - _differentBy.Value == x.Previous));
 					}
 					else
 					{
@@ -445,27 +473,27 @@ namespace BizHawk.MultiClient
 
 		private IEnumerable<IMiniWatch> CompareSpecificValue(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (_compareValue.HasValue)
 			{
-				switch (Operator)
+				switch (_operator)
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(x => GetValue(x.Address) == CompareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) == _compareValue.Value);
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(x => GetValue(x.Address) != CompareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) != _compareValue.Value);
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(x =>  GetValue(x.Address) > CompareValue.Value);
+						return watchList.Where(x =>  GetValue(x.Address) > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(x => GetValue(x.Address) >= CompareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
-						return watchList.Where(x => GetValue(x.Address) < CompareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) < _compareValue.Value);
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(x => GetValue(x.Address) <= CompareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) <= _compareValue.Value);
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
+						if (_differentBy.HasValue)
 						{
-							return watchList.Where(x => (GetValue(x.Address) + DifferentBy.Value == CompareValue.Value) || (GetValue(x.Address) - DifferentBy.Value == CompareValue.Value));
+							return watchList.Where(x => (GetValue(x.Address) + _differentBy.Value == _compareValue.Value) || (GetValue(x.Address) - _differentBy.Value == _compareValue.Value));
 						}
 						else
 						{
@@ -481,27 +509,27 @@ namespace BizHawk.MultiClient
 
 		private IEnumerable<IMiniWatch> CompareSpecificAddress(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (_compareValue.HasValue)
 			{
-				switch (Operator)
+				switch (_operator)
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(x => x.Address == CompareValue.Value);
+						return watchList.Where(x => x.Address == _compareValue.Value);
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(x => x.Address != CompareValue.Value);
+						return watchList.Where(x => x.Address != _compareValue.Value);
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(x => x.Address > CompareValue.Value);
+						return watchList.Where(x => x.Address > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(x => x.Address >= CompareValue.Value);
+						return watchList.Where(x => x.Address >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
-						return watchList.Where(x => x.Address < CompareValue.Value);
+						return watchList.Where(x => x.Address < _compareValue.Value);
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(x => x.Address <= CompareValue.Value);
+						return watchList.Where(x => x.Address <= _compareValue.Value);
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
+						if (_differentBy.HasValue)
 						{
-							return watchList.Where(x => (x.Address + DifferentBy.Value == CompareValue.Value) || (x.Address - DifferentBy.Value == CompareValue.Value));
+							return watchList.Where(x => (x.Address + _differentBy.Value == _compareValue.Value) || (x.Address - _differentBy.Value == _compareValue.Value));
 						}
 						else
 						{
@@ -517,47 +545,47 @@ namespace BizHawk.MultiClient
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
 		{
-			if (_settings.Mode == Settings.SearchMode.Detailed && CompareValue.HasValue)
+			if (_settings.Mode == Settings.SearchMode.Detailed && _compareValue.HasValue)
 			{
-				switch (Operator)
+				switch (_operator)
 				{
 					default:
 					case ComparisonOperator.Equal:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount == CompareValue.Value)
+							.Where(x => x.ChangeCount == _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.NotEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount != CompareValue.Value)
+							.Where(x => x.ChangeCount != _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.GreaterThan:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount > CompareValue.Value)
+							.Where(x => x.ChangeCount > _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.GreaterThanEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount >= CompareValue.Value)
+							.Where(x => x.ChangeCount >= _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.LessThan:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount < CompareValue.Value)
+							.Where(x => x.ChangeCount < _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.LessThanEqual:
 						return watchList
 							.Cast<IMiniWatchDetails>()
-							.Where(x => x.ChangeCount <= CompareValue.Value)
+							.Where(x => x.ChangeCount <= _compareValue.Value)
 							.Cast<IMiniWatch>();
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
+						if (_differentBy.HasValue)
 						{
 							return watchList
 								.Cast<IMiniWatchDetails>()
-								.Where(x => (x.ChangeCount + DifferentBy.Value == CompareValue.Value) || (x.ChangeCount - DifferentBy.Value == CompareValue.Value))
+								.Where(x => (x.ChangeCount + _differentBy.Value == _compareValue.Value) || (x.ChangeCount - _differentBy.Value == _compareValue.Value))
 								.Cast<IMiniWatch>();
 						}
 						else
@@ -574,27 +602,27 @@ namespace BizHawk.MultiClient
 
 		private IEnumerable<IMiniWatch> CompareDifference(IEnumerable<IMiniWatch> watchList)
 		{
-			if (CompareValue.HasValue)
+			if (_compareValue.HasValue)
 			{
-				switch (Operator)
+				switch (_operator)
 				{
 					default:
 					case ComparisonOperator.Equal:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) == CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) == _compareValue.Value);
 					case ComparisonOperator.NotEqual:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) != CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) != _compareValue.Value);
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) > CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) >= CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) < CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) < _compareValue.Value);
 					case ComparisonOperator.LessThanEqual:
-						return watchList.Where(x => (GetValue(x.Address) - x.Previous) <= CompareValue.Value);
+						return watchList.Where(x => (GetValue(x.Address) - x.Previous) <= _compareValue.Value);
 					case ComparisonOperator.DifferentBy:
-						if (DifferentBy.HasValue)
+						if (_differentBy.HasValue)
 						{
-							return watchList.Where(x => (GetValue(x.Address) - x.Previous + DifferentBy.Value == CompareValue) || (GetValue(x.Address) - x.Previous - DifferentBy.Value == x.Previous));
+							return watchList.Where(x => (GetValue(x.Address) - x.Previous + _differentBy.Value == _compareValue) || (GetValue(x.Address) - x.Previous - _differentBy.Value == x.Previous));
 						}
 						else
 						{
@@ -612,7 +640,7 @@ namespace BizHawk.MultiClient
 
 		#region Private parts
 
-		private int GetValue(int addr)
+		private long GetValue(int addr)
 		{
 			switch (_settings.Size)
 			{
@@ -645,7 +673,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						return (int)theDWord; //TODO
+						return (uint)theDWord;
 					}
 			}
 		}
