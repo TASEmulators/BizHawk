@@ -600,10 +600,10 @@ namespace BizHawk.MultiClient
 			get
 			{
 				var selected = new List<Watch>();
-				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-				if (indexes.Count > 0)
+				ListView.SelectedIndexCollection indices = WatchListView.SelectedIndices;
+				if (indices.Count > 0)
 				{
-					foreach (int index in indexes)
+					foreach (int index in indices)
 					{
 						if (!Watches[index].IsSeparator)
 						{
@@ -1141,12 +1141,19 @@ namespace BizHawk.MultiClient
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
+			var selected = SelectedWatches;
+			if (selected.Any())
 			{
 				Global.MainForm.LoadHexEditor();
-				Global.MainForm.HexEditor1.SetDomain(Watches[indexes[0]].Domain);
-				Global.MainForm.HexEditor1.GoToAddress(Watches[indexes[0]].Address.Value);
+
+				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
+				{
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address.Value });
+				}
+				else
+				{
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address.Value));
+				}
 			}
 		}
 
