@@ -185,9 +185,8 @@
 			// WatchListView
 			// 
 			this.WatchListView.AllowColumnReorder = true;
-			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.AddressColumn,
             this.ValueColumn,
@@ -358,7 +357,7 @@
             this.ColumnsMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(451, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(445, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -876,10 +875,10 @@
 			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
 			this.AutoSearchCheckBox.AutoSize = true;
 			this.AutoSearchCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.AutoSearch;
-			this.AutoSearchCheckBox.Location = new System.Drawing.Point(320, 410);
+			this.AutoSearchCheckBox.Location = new System.Drawing.Point(316, 410);
 			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
 			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
-			this.AutoSearchCheckBox.TabIndex = 95;
+			this.AutoSearchCheckBox.TabIndex = 105;
 			this.AutoSearchCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.toolTip1.SetToolTip(this.AutoSearchCheckBox, "Automatically search each frame");
 			this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
@@ -887,7 +886,8 @@
 			// 
 			// CompareToBox
 			// 
-			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.CompareToBox.Controls.Add(this.DifferenceBox);
 			this.CompareToBox.Controls.Add(this.DifferenceRadio);
 			this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
@@ -899,7 +899,7 @@
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
 			this.CompareToBox.Location = new System.Drawing.Point(244, 65);
 			this.CompareToBox.Name = "CompareToBox";
-			this.CompareToBox.Size = new System.Drawing.Size(196, 125);
+			this.CompareToBox.Size = new System.Drawing.Size(190, 125);
 			this.CompareToBox.TabIndex = 10;
 			this.CompareToBox.TabStop = false;
 			this.CompareToBox.Text = "Compare To / By";
@@ -913,7 +913,7 @@
 			this.DifferenceBox.Location = new System.Drawing.Point(114, 98);
 			this.DifferenceBox.MaxLength = 8;
 			this.DifferenceBox.Name = "DifferenceBox";
-			this.DifferenceBox.Size = new System.Drawing.Size(78, 20);
+			this.DifferenceBox.Size = new System.Drawing.Size(72, 20);
 			this.DifferenceBox.TabIndex = 45;
 			this.DifferenceBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
@@ -937,7 +937,7 @@
 			this.NumberOfChangesBox.Location = new System.Drawing.Point(114, 78);
 			this.NumberOfChangesBox.MaxLength = 8;
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
-			this.NumberOfChangesBox.Size = new System.Drawing.Size(78, 20);
+			this.NumberOfChangesBox.Size = new System.Drawing.Size(72, 20);
 			this.NumberOfChangesBox.TabIndex = 35;
 			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
@@ -950,7 +950,7 @@
 			this.SpecificAddressBox.Location = new System.Drawing.Point(114, 58);
 			this.SpecificAddressBox.MaxLength = 8;
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
-			this.SpecificAddressBox.Size = new System.Drawing.Size(78, 20);
+			this.SpecificAddressBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificAddressBox.TabIndex = 25;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
@@ -1022,7 +1022,7 @@
             this.RebootToolbarButton});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(451, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(445, 25);
 			this.toolStrip1.TabIndex = 11;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -1171,7 +1171,8 @@
 			// 
 			// ComparisonBox
 			// 
-			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ComparisonBox.Controls.Add(this.DifferentByBox);
 			this.ComparisonBox.Controls.Add(this.DifferentByRadio);
 			this.ComparisonBox.Controls.Add(this.NotEqualToRadio);
@@ -1182,7 +1183,7 @@
 			this.ComparisonBox.Controls.Add(this.LessThanRadio);
 			this.ComparisonBox.Location = new System.Drawing.Point(244, 196);
 			this.ComparisonBox.Name = "ComparisonBox";
-			this.ComparisonBox.Size = new System.Drawing.Size(196, 159);
+			this.ComparisonBox.Size = new System.Drawing.Size(190, 159);
 			this.ComparisonBox.TabIndex = 12;
 			this.ComparisonBox.TabStop = false;
 			this.ComparisonBox.Text = "Comparison Operator";
@@ -1285,7 +1286,7 @@
 			this.SearchButton.Location = new System.Drawing.Point(244, 409);
 			this.SearchButton.Name = "SearchButton";
 			this.SearchButton.Size = new System.Drawing.Size(70, 23);
-			this.SearchButton.TabIndex = 90;
+			this.SearchButton.TabIndex = 100;
 			this.SearchButton.Text = "&Search";
 			this.SearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.SearchButton.UseVisualStyleBackColor = true;
@@ -1303,24 +1304,25 @@
 			this.SizeDropdown.Location = new System.Drawing.Point(244, 374);
 			this.SizeDropdown.Name = "SizeDropdown";
 			this.SizeDropdown.Size = new System.Drawing.Size(73, 21);
-			this.SizeDropdown.TabIndex = 96;
+			this.SizeDropdown.TabIndex = 90;
 			this.SizeDropdown.SelectedIndexChanged += new System.EventHandler(this.SizeDropdown_SelectedIndexChanged);
 			// 
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(248, 358);
+			this.label1.Location = new System.Drawing.Point(244, 358);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(27, 13);
 			this.label1.TabIndex = 97;
 			this.label1.Text = "Size";
+			this.label1.Click += new System.EventHandler(this.label1_Click);
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(335, 358);
+			this.label2.Location = new System.Drawing.Point(332, 358);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(41, 13);
 			this.label2.TabIndex = 99;
@@ -1335,10 +1337,10 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropdown.Location = new System.Drawing.Point(331, 374);
+			this.DisplayTypeDropdown.Location = new System.Drawing.Point(332, 374);
 			this.DisplayTypeDropdown.Name = "DisplayTypeDropdown";
-			this.DisplayTypeDropdown.Size = new System.Drawing.Size(109, 21);
-			this.DisplayTypeDropdown.TabIndex = 98;
+			this.DisplayTypeDropdown.Size = new System.Drawing.Size(102, 21);
+			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
 			// 
 			// SpecificValueBox
@@ -1351,7 +1353,7 @@
 			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
 			this.SpecificValueBox.MaxLength = 2;
 			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Size = new System.Drawing.Size(78, 20);
+			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificValueBox.TabIndex = 15;
 			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
@@ -1361,7 +1363,7 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(451, 459);
+			this.ClientSize = new System.Drawing.Size(445, 459);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.DisplayTypeDropdown);
 			this.Controls.Add(this.label1);

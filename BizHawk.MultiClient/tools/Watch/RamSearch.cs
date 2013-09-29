@@ -45,6 +45,8 @@ namespace BizHawk.MultiClient
 
 		private bool dropdown_dontfire = false; //Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
+		public const int MaxDetailedSize = 1048576; //1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
+
 		#region Initialize, Load, and Save
 
 		public RamSearch()
@@ -76,11 +78,13 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Type = Settings.Type;
 			MessageLabel.Text = String.Empty;
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
-			NewSearch();
 			SizeDropdown.SelectedIndex = 0;
 			PopulateTypeDropDown();
+			DoDomainSizeCheck();
 			SetReboot(false);
 			dropdown_dontfire = false;
+
+			NewSearch();
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -190,9 +194,11 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			//TODO
 			if (!IsHandleCreated || IsDisposed) return;
+			
 			Settings.Domain = Global.Emulator.MainMemory;
+			MessageLabel.Text = "Search restarted";
+			DoDomainSizeCheck();
 			NewSearch();
 		}
 
@@ -345,6 +351,18 @@ namespace BizHawk.MultiClient
 				SetDomainLabel();
 				SetReboot(true);
 				SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Settings.Domain.Size);
+				DoDomainSizeCheck();
+			}
+		}
+
+		private void DoDomainSizeCheck()
+		{
+			if (Settings.Domain.Size >= MaxDetailedSize 
+				&& Settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed)
+			{
+				Settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
+				SetReboot(true);
+				MessageLabel.Text = "Large domain, switching to fast mode";
 			}
 		}
 
@@ -1514,6 +1532,11 @@ namespace BizHawk.MultiClient
 		}
 
 		#endregion
+
+		private void label1_Click(object sender, EventArgs e)
+		{
+
+		}
 
 		#endregion
 	}
