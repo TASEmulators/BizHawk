@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
 {
 	class ToolHelpers
 	{
-		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "")
+		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
 
@@ -26,6 +26,11 @@ namespace BizHawk.MultiClient
 					if (temp == SelectedDomain)
 					{
 						item.Checked = true;
+					}
+
+					if (maxSize.HasValue && domain.Size > maxSize.Value)
+					{
+						item.Enabled = false;
 					}
 
 					items.Add(item);
