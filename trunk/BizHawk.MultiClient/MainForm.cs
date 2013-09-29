@@ -3776,7 +3776,7 @@ namespace BizHawk.MultiClient
 						StopAVI();
 						if (autoCloseOnDump)
 						{
-							Close();
+							exit = true;
 						}
 					}
 				}
