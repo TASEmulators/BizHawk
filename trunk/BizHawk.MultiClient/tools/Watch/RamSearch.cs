@@ -45,7 +45,8 @@ namespace BizHawk.MultiClient
 
 		private bool dropdown_dontfire = false; //Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
-		public const int MaxDetailedSize = 1048576; //1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
+		public const int MaxDetailedSize = (1024 * 1024); //1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
+		public const int MaxSupportedSize = (1024 * 1024 * 64); //64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
 
 		#region Initialize, Load, and Save
 
@@ -851,7 +852,7 @@ namespace BizHawk.MultiClient
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName));
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName, MaxSupportedSize));
 		}
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
