@@ -261,7 +261,7 @@ namespace BizHawk.MultiClient
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
 				else if (arg.StartsWith("--dump-length="))
 					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
-				else if (arg.StartsWith("--dump_close="))
+				else if (arg.StartsWith("--dump-close"))
 					autoCloseOnDump = true;
 				else
 					cmdRom = arg;
