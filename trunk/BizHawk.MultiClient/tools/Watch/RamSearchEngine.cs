@@ -237,7 +237,7 @@ namespace BizHawk.MultiClient
 			{
 				foreach (IMiniWatchDetails watch in _watchList)
 				{
-					watch.Update(_settings.PreviousType, _settings.Domain);
+					watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 				}
 			}
 			else
@@ -716,7 +716,7 @@ namespace BizHawk.MultiClient
 			int ChangeCount { get; }
 			
 			void ClearChangeCount();
-			void Update(Watch.PreviousType type, MemoryDomain domain);
+			void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian);
 		}
 
 		private class MiniByteWatch : IMiniWatch
@@ -812,38 +812,24 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update(Watch.PreviousType type, MemoryDomain domain)
+			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
 				byte value = domain.PeekByte(Address);
+				if (value != Previous)
+				{
+					_changecount++;
+				}
 
 				switch (type)
 				{
 					case Watch.PreviousType.Original:
-						if (value != Previous)
-						{
-							_changecount++;
-						}
-						break;
 					case Watch.PreviousType.LastSearch:
-						if (value != _previous)
-						{
-							_changecount++;
-						}
 						break;
 					case Watch.PreviousType.LastFrame:
-						value = domain.PeekByte(Address);
-						if (value != Previous)
-						{
-							_changecount++;
-						}
 						_previous = value;
 						break;
 					case Watch.PreviousType.LastChange:
 						//TODO: this feature requires yet another variable, ugh
-						if (value != Previous)
-						{
-							_changecount++;
-						}
 						break;
 				}
 			}
@@ -881,20 +867,23 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update(Watch.PreviousType type, MemoryDomain domain)
+			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				ushort value;
+				ushort value = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
+				if (value != Previous)
+				{
+					_changecount++;
+				}
 				switch (type)
 				{
-					case Watch.PreviousType.LastChange:
+					case Watch.PreviousType.Original:
+					case Watch.PreviousType.LastSearch:
 						break;
 					case Watch.PreviousType.LastFrame:
-						value = domain.PeekByte(Address); //TODO: need big endian passed in
-						if (value != Previous)
-						{
-							_changecount++;
-							_previous = value;
-						}
+						_previous = value;
+						break;
+					case Watch.PreviousType.LastChange:
+						//TODO: this feature requires yet another variable, ugh
 						break;
 				}
 			}
@@ -932,13 +921,23 @@ namespace BizHawk.MultiClient
 				get { return _changecount; }
 			}
 
-			public void Update(Watch.PreviousType type, MemoryDomain domain)
+			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
+				uint value = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
+				if (value != Previous)
+				{
+					_changecount++;
+				}
 				switch (type)
 				{
-					case Watch.PreviousType.LastChange:
+					case Watch.PreviousType.Original:
+					case Watch.PreviousType.LastSearch:
 						break;
 					case Watch.PreviousType.LastFrame:
+						_previous = value;
+						break;
+					case Watch.PreviousType.LastChange:
+						//TODO: this feature requires yet another variable, ugh
 						break;
 				}
 			}
