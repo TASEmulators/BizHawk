@@ -549,7 +549,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void GoToAddress(int address)
+		private void GoToAddress(int address)
 		{
 			if (address < 0)
 			{
@@ -566,6 +566,20 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			MemoryViewerBox.Refresh();
 			AddressLabel.Text = GenerateAddressString();
+		}
+
+		public void SetToAddresses(List<int> addresses)
+		{
+			if (addresses.Any())
+			{
+				SetHighlighted(addresses[0]);
+				SecondaryHighlightedAddresses.Clear();
+				SecondaryHighlightedAddresses.AddRange(addresses.Where(x => x != addresses[0]).ToList());
+				ClearNibbles();
+				UpdateValues();
+				MemoryViewerBox.Refresh();
+				AddressLabel.Text = GenerateAddressString();
+			}
 		}
 
 		public void SetHighlighted(int address)

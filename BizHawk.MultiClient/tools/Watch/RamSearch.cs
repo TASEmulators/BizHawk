@@ -310,6 +310,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private List<Watch> SelectedWatches
+		{
+			get
+			{
+				var selected = new List<Watch>();
+				ListView.SelectedIndexCollection indices = WatchListView.SelectedIndices;
+				if (indices.Count > 0)
+				{
+					foreach (int index in indices)
+					{
+						selected.Add(Searches[index]);
+					}
+				}
+				return selected;
+			}
+		}
+
 		private void SetRemovedMessage(int val)
 		{
 			MessageLabel.Text = val.ToString() + " address" + (val != 1 ? "es" : String.Empty) + " removed";
@@ -322,7 +339,7 @@ namespace BizHawk.MultiClient
 
 		private void SetDomainLabel()
 		{
-			MemDomainLabel.Text = Searches.DomainName;
+			MemDomainLabel.Text = Searches.Domain.Name;
 		}
 
 		private void LoadFileFromRecent(string path)
@@ -341,7 +358,7 @@ namespace BizHawk.MultiClient
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Searches.DomainName;
+			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Searches.Domain.Name;
 		}
 
 		private void SetMemoryDomain(int pos)
@@ -700,26 +717,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private List<Watch> SelectedWatches
-		{
-			get
-			{
-				var selected = new List<Watch>();
-				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-				if (indexes.Count > 0)
-				{
-					foreach (int index in indexes)
-					{
-						if (!Searches[index].IsSeparator)
-						{
-							selected.Add(Searches[index]);
-						}
-					}
-				}
-				return selected;
-			}
-		}
-
 		private void FreezeAddress()
 		{
 			ToolHelpers.FreezeAddress(SelectedWatches);
@@ -852,7 +849,7 @@ namespace BizHawk.MultiClient
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.DomainName, MaxSupportedSize));
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.Domain.Name, MaxSupportedSize));
 		}
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1229,13 +1226,9 @@ namespace BizHawk.MultiClient
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Count > 0)
+			if (SelectedWatches.Any())
 			{
-				Global.MainForm.LoadHexEditor();
-				Global.MainForm.HexEditor1.SetDomain(Settings.Domain);
-				Global.MainForm.HexEditor1.GoToAddress(Searches[SelectedIndices[0]].Address.Value);
-
-				//TODO: secondary highlighted on remaining indexes
+				ToolHelpers.ViewInHexEditor(Searches.Domain, SelectedWatches.Select(x => x.Address.Value));
 			}
 		}
 

@@ -125,5 +125,12 @@ namespace BizHawk.MultiClient
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 		}
+
+		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
+		{
+			Global.MainForm.LoadHexEditor();
+			Global.MainForm.HexEditor1.SetDomain(domain);
+			Global.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
+		}
 	}
 }

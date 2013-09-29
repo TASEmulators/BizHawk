@@ -188,9 +188,9 @@ namespace BizHawk.MultiClient
 			get { return _watchList.Count; }
 		}
 
-		public string DomainName
+		public MemoryDomain Domain
 		{
-			get { return _settings.Domain.Name; }
+			get { return _settings.Domain; }
 		}
 
 		public void Update()
