@@ -4176,10 +4176,5 @@ namespace BizHawk.MultiClient
 				RamWatch1.Focus();
 			}
 		}
-
-		private void newRamSearchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new RamSearch().Show();
-		}
 	}
 }

@@ -26,10 +26,6 @@ namespace BizHawk.MultiClient
 		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
 		
-		//private List<NamedLuaFunction> on_savestate_save_events = new List<NamedLuaFunction>();
-		//private List<NamedLuaFunction> on_savestate_load_events = new List<NamedLuaFunction>();
-		//private List<NamedLuaFunction> on_framestart_events = new List<NamedLuaFunction>();
-		//private List<NamedLuaFunction> on_frameend_events = new List<NamedLuaFunction>();
 		private LuaFunctionCollection lua_functions = new LuaFunctionCollection();
 
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
