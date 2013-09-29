@@ -43,6 +43,8 @@ namespace BizHawk.MultiClient
 		private bool forcePreviewClear = false;
 		private bool autoSearch = false;
 
+		private bool dropdown_dontfire = false; //Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
+
 		#region Initialize, Load, and Save
 
 		public RamSearch()
@@ -63,19 +65,22 @@ namespace BizHawk.MultiClient
 			Searches = new RamSearchEngine(Settings);
 
 			TopMost = Global.Config.RamSearchAlwaysOnTop;
-			SetReboot(false);
-
 			
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
+			dropdown_dontfire = true;
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
 			MessageLabel.Text = String.Empty;
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
 			NewSearch();
+			SizeDropdown.SelectedIndex = 0;
+			PopulateTypeDropDown();
+			SetReboot(false);
+			dropdown_dontfire = false;
 		}
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
@@ -441,6 +446,12 @@ namespace BizHawk.MultiClient
 			}
 			SpecificValueBox.Type = Settings.Type = type;
 			Searches.SetType(type);
+
+			dropdown_dontfire = true;
+			DisplayTypeDropdown.SelectedItem = Watch.DisplayTypeToString(type);
+			dropdown_dontfire = false;
+
+			WatchListView.Refresh();
 		}
 
 		private void SetPreviousStype(Watch.PreviousType type)
@@ -467,7 +478,50 @@ namespace BizHawk.MultiClient
 				Settings.Type = Watch.AvailableTypes(size)[0];
 			}
 
+			dropdown_dontfire = true;
+			switch(size)
+			{
+				case Watch.WatchSize.Byte:
+					SizeDropdown.SelectedIndex = 0;
+					break;
+				case Watch.WatchSize.Word:
+					SizeDropdown.SelectedIndex = 1;
+					break;
+				case Watch.WatchSize.DWord:
+					SizeDropdown.SelectedIndex = 2;
+					break;
+			}
+			PopulateTypeDropDown();
+			dropdown_dontfire = false;
+
 			SetReboot(true);
+		}
+
+		private void PopulateTypeDropDown()
+		{
+			string previous = DisplayTypeDropdown.SelectedItem != null ? DisplayTypeDropdown.SelectedItem.ToString() : String.Empty;
+			string next = String.Empty;
+
+			DisplayTypeDropdown.Items.Clear();
+			var types = Watch.AvailableTypes(Settings.Size);
+			foreach (var type in types)
+			{
+				string typeStr = Watch.DisplayTypeToString(type);
+				DisplayTypeDropdown.Items.Add(typeStr);
+				if (previous == typeStr)
+				{
+					next = typeStr;
+				}
+			}
+
+			if (!String.IsNullOrEmpty(next))
+			{
+				DisplayTypeDropdown.SelectedItem = next;
+			}
+			else
+			{
+				DisplayTypeDropdown.SelectedIndex = 0;
+			}
 		}
 
 		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
@@ -1170,6 +1224,35 @@ namespace BizHawk.MultiClient
 		{
 			forcePreviewClear = true;
 			WatchListView.Refresh();
+		}
+
+		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (dropdown_dontfire)
+			{
+				return;
+			}
+
+			switch (SizeDropdown.SelectedIndex)
+			{
+				case 0:
+					SetSize(Watch.WatchSize.Byte);
+					break;
+				case 1:
+					SetSize(Watch.WatchSize.Word);
+					break;
+				case 2:
+					SetSize(Watch.WatchSize.DWord);
+					break;
+			}
+		}
+
+		private void DisplayTypeDropdown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!dropdown_dontfire)
+			{
+				DoDisplayTypeClick(Watch.StringToDisplayType(DisplayTypeDropdown.SelectedItem.ToString()));
+			}
 		}
 
 		#endregion
