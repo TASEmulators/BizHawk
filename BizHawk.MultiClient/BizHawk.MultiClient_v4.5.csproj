@@ -486,6 +486,14 @@
     <Compile Include="SNESTools\SNESOptions.Designer.cs">
       <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Cheats\CheatList.cs" />
+    <Compile Include="tools\Cheats\NewCheat.cs" />
+    <Compile Include="tools\Cheats\NewCheatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Cheats\NewCheatForm.Designer.cs">
+      <DependentUpon>NewCheatForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexEditor\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
