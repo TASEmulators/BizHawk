@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-	class NewCheat
+	public class NewCheat
 	{
 		#region Constructors
 
@@ -59,6 +59,8 @@ namespace BizHawk.MultiClient
 		{
 			get { if (_compare.HasValue && !IsSeparator) return _compare; else return null; }
 		}
+
+		public MemoryDomain Domain { get { return _watch.Domain; } }
 
 		public Watch.WatchSize Size
 		{

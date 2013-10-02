@@ -172,6 +172,7 @@ namespace BizHawk.MultiClient
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatList();
+			Global.CheatList2 = new NewCheatList();
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
 

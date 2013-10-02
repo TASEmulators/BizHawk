@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		public static CoreComm CoreComm;
 		public static GameInfo Game;
 		public static CheatList CheatList;
+		public static NewCheatList CheatList2;
 		
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
