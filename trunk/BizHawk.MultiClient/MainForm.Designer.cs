@@ -342,6 +342,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.newCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1808,7 +1809,8 @@
             this.luaConsoleToolStripMenuItem,
             this.cheatsToolStripMenuItem,
             this.toolStripSeparator29,
-            this.createDualGBXMLToolStripMenuItem});
+            this.createDualGBXMLToolStripMenuItem,
+            this.newCheatsToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
 			this.toolsToolStripMenuItem.Text = "&Tools";
@@ -2977,6 +2979,13 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// newCheatsToolStripMenuItem
+			// 
+			this.newCheatsToolStripMenuItem.Name = "newCheatsToolStripMenuItem";
+			this.newCheatsToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.newCheatsToolStripMenuItem.Text = "New Cheats";
+			this.newCheatsToolStripMenuItem.Click += new System.EventHandler(this.newCheatsToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3331,6 +3340,7 @@
 		private System.Windows.Forms.ToolStripMenuItem rewindToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem firmwaresToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadTIFileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem newCheatsToolStripMenuItem;
 	}
 }
 
