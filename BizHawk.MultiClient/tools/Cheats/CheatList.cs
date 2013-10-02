@@ -33,6 +33,16 @@ namespace BizHawk.MultiClient
 			get { return _cheatList.Count; }
 		}
 
+		public int CheatCount
+		{
+			get { return _cheatList.Count(x => !x.IsSeparator); }
+		}
+
+		public int ActiveCheatCount
+		{
+			get { return _cheatList.Count(x => x.Enabled); }
+		}
+
 		public void Update()
 		{
 			_cheatList.ForEach(x => x.Pulse());
@@ -132,7 +142,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Load()
+		public bool Load(string path, bool append)
 		{
 			throw new NotImplementedException();
 		}

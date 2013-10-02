@@ -4177,5 +4177,10 @@ namespace BizHawk.MultiClient
 				RamWatch1.Focus();
 			}
 		}
+
+		private void newCheatsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new NewCheatForm().Show();
+		}
 	}
 }
