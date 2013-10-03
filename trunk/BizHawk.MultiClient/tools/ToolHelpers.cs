@@ -132,5 +132,19 @@ namespace BizHawk.MultiClient
 			Global.MainForm.HexEditor1.SetDomain(domain);
 			Global.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
 		}
+
+		public static MemoryDomain DomainByName(string name)
+		{
+			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
+			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
+			{
+				if (domain.Name == name)
+				{
+					return domain;
+				}
+			}
+
+			return Global.Emulator.MainMemory;
+		}
 	}
 }

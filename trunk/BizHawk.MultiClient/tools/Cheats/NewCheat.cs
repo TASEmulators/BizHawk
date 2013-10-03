@@ -37,7 +37,6 @@ namespace BizHawk.MultiClient
 		public bool Enabled
 		{
 			get { if (IsSeparator) return false; else return _enabled; }
-			set { if (!IsSeparator) { _enabled = value; } }
 		}
 
 		public int? Address
@@ -76,9 +75,25 @@ namespace BizHawk.MultiClient
 
 		#region Actions
 
+		public void Enable()
+		{
+			if (!IsSeparator)
+			{
+				_enabled = true;
+			}
+		}
+
+		public void Disable()
+		{
+			if (!IsSeparator)
+			{
+				_enabled = false;
+			}
+		}
+
 		public void Pulse()
 		{
-			if (!_watch.IsSeparator && _enabled)
+			if (!IsSeparator && _enabled)
 			{
 				if (_compare.HasValue)
 				{
