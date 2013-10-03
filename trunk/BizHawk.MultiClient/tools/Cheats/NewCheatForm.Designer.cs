@@ -72,7 +72,7 @@
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -186,12 +186,12 @@
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Enabled = false;
 			this.OpenMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
+			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// SaveMenuItem
 			// 
@@ -213,7 +213,6 @@
 			// 
 			// AppendMenuItem
 			// 
-			this.AppendMenuItem.Enabled = false;
 			this.AppendMenuItem.Name = "AppendMenuItem";
 			this.AppendMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.AppendMenuItem.Text = "Append File";
@@ -231,7 +230,7 @@
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -439,7 +438,7 @@
 			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
-            this.openToolStripButton,
+            this.OpenToolBarItem,
             this.saveToolStripButton,
             this.toolStripSeparator,
             this.cutToolStripButton,
@@ -465,15 +464,15 @@
 			this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.newToolStripButton.Text = "&New";
 			// 
-			// openToolStripButton
+			// OpenToolBarItem
 			// 
-			this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.openToolStripButton.Enabled = false;
-			this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
-			this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.openToolStripButton.Name = "openToolStripButton";
-			this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.openToolStripButton.Text = "&Open";
+			this.OpenToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.OpenToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("OpenToolBarItem.Image")));
+			this.OpenToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.OpenToolBarItem.Name = "OpenToolBarItem";
+			this.OpenToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.OpenToolBarItem.Text = "&Open";
+			this.OpenToolBarItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// saveToolStripButton
 			// 
@@ -643,7 +642,7 @@
 		private System.Windows.Forms.ToolStripMenuItem RestoreWindowSizeMenuItem;
 		private ToolStripEx toolStrip1;
 		private System.Windows.Forms.ToolStripButton newToolStripButton;
-		private System.Windows.Forms.ToolStripButton openToolStripButton;
+		private System.Windows.Forms.ToolStripButton OpenToolBarItem;
 		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
 		private System.Windows.Forms.ToolStripButton cutToolStripButton;
