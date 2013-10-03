@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -76,13 +77,13 @@ namespace BizHawk.MultiClient
 		public void DisableAll()
 		{
 			_changes = true;
-			_cheatList.ForEach(x => x.Enabled = false);
+			_cheatList.ForEach(x => x.Disable());
 		}
 
 		public void EnableAll()
 		{
 			_changes = true;
-			_cheatList.ForEach(x => x.Enabled = true);
+			_cheatList.ForEach(x => x.Enable());
 		}
 
 		public bool IsActive(MemoryDomain domain, int address)
@@ -169,7 +170,20 @@ namespace BizHawk.MultiClient
 				{
 					try
 					{
+						int ADDR, VALUE, COMPARE;
+						MemoryDomain DOMAIN;
+						bool ENABLED;
+						string NAME;
 
+						if (s.Length < 6) continue;
+						//NewCheat c = new NewCheat(
+						string[] vals = s.Split('\t');
+						ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
+						VALUE = Int32.Parse(vals[1], NumberStyles.HexNumber);
+						COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+						DOMAIN = ToolHelpers.DomainByName(vals[3]);
+						ENABLED = vals[4] == "1";
+						NAME = vals[5];
 					}
 					catch
 					{

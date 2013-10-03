@@ -818,6 +818,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\Cheats\NewCheatForm.resx">
+      <DependentUpon>NewCheatForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
     </EmbeddedResource>
