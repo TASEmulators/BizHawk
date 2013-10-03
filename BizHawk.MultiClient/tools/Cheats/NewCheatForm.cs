@@ -13,6 +13,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewCheatForm : Form
 	{
+		private NewCheatList Cheats = new NewCheatList();
+
 		public NewCheatForm()
 		{
 			InitializeComponent();
@@ -79,9 +81,28 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
+		private void LoadFile(FileInfo file, bool append)
+		{
+			if (file != null)
+			{
+				bool result = true;
+				if (Cheats.Changes)
+				{
+					result = AskSave();
+				}
+
+				if (result)
+				{
+					Cheats.Load(file.FullName, append);
+					UpdateListView();
+					Global.Config.RecentCheats.Add(Cheats.CurrentFileName);
+				}
+			}
+		}
+
 		private void NewCheatForm_Load(object sender, EventArgs e)
 		{
-		
+
 		}
 
 		#region Events
@@ -97,6 +118,12 @@ namespace BizHawk.MultiClient
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentCheats.GenerateRecentMenu(LoadFileFromRecent));
+		}
+
+		private void OpenMenuItem_Click(object sender, EventArgs e)
+		{
+			bool append = sender == AppendMenuItem;
+			LoadFile(NewCheatList.GetFileFromUser(Cheats.CurrentFileName), append);
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

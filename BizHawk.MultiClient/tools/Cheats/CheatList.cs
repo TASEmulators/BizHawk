@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
@@ -112,7 +114,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					switch(domain.Endian)
+					switch (domain.Endian)
 					{
 						default:
 						case Endian.Unknown:
@@ -144,6 +146,38 @@ namespace BizHawk.MultiClient
 
 		public bool Load(string path, bool append)
 		{
+			var file = new FileInfo(path);
+			if (file.Exists == false)
+			{
+				return false;
+			}
+
+			if (!append)
+			{
+				_currentFileName = path;
+			}
+
+			using (StreamReader sr = file.OpenText())
+			{
+				if (!append)
+				{
+					Clear();
+				}
+
+				string s;
+				while ((s = sr.ReadLine()) != null)
+				{
+					try
+					{
+
+					}
+					catch
+					{
+						continue;
+					}
+				}
+			}
+
 			throw new NotImplementedException();
 		}
 
@@ -162,6 +196,32 @@ namespace BizHawk.MultiClient
 		private bool SaveAs()
 		{
 			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#region File Handling
+
+		public static FileInfo GetFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(
+				Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"].Path,
+				Global.Emulator.SystemId);
+			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
+			ofd.RestoreDirectory = true;
+
+			Global.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(ofd.FileName);
+			return file;
 		}
 
 		#endregion
