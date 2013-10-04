@@ -436,7 +436,8 @@ namespace BizHawk.MultiClient
 				//but this avoids it being flagged falsely when the user did not select an index
 				Changes();
 			}
-			List<int> indices = new List<int>();
+
+			var indices = new List<int>();
 			for (int i = 0; i < indexes.Count; i++)
 			{
 				indices.Add(indexes[i] - 1);
@@ -453,7 +454,7 @@ namespace BizHawk.MultiClient
 
 		private void MoveDown()
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			var indexes = WatchListView.SelectedIndices;
 			if (indexes.Count == 0)
 			{
 				return;
@@ -469,12 +470,12 @@ namespace BizHawk.MultiClient
 					Watches.Insert(index + 1, watch);
 				}
 
-				//Note: here it will get flagged many times redundantly potnetially, 
+				//Note: here it will get flagged many times redundantly potentially, 
 				//but this avoids it being flagged falsely when the user did not select an index
 				Changes();
 			}
 
-			List<int> indices = new List<int>();
+			var indices = new List<int>();
 			for (int i = 0; i < indexes.Count; i++)
 			{
 				indices.Add(indexes[i] + 1);
