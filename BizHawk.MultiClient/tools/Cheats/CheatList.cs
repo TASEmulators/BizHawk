@@ -184,6 +184,18 @@ namespace BizHawk.MultiClient
 						DOMAIN = ToolHelpers.DomainByName(vals[3]);
 						ENABLED = vals[4] == "1";
 						NAME = vals[5];
+
+						Watch w = Watch.GenerateWatch(
+							DOMAIN,
+							ADDR,
+							Watch.WatchSize.Byte,
+							Watch.DisplayType.Hex,
+							NAME,
+							false
+						);
+
+						NewCheat c = new NewCheat(w, COMPARE, ENABLED);
+						_cheatList.Add(c);
 					}
 					catch
 					{
