@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 			{ ADDRESS, 60 },
 			{ VALUE, 59 },
 			{ COMPARE, 59 },
-			{ ON, 25 },
+			{ ON, 28 },
 			{ DOMAIN, 55 },
 		};
 
@@ -75,8 +75,21 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.RecentWatches.Add(path);
 					UpdateListView();
-					MessageLabel.Text = Path.GetFileName(path) + " loaded";
+					ShowFileName(loaded: true);
 				}
+			}
+		}
+
+		private void ShowFileName(bool loaded)
+		{
+			MessageLabel.Text = Path.GetFileName(Global.CheatList2.CurrentFileName);
+			if (loaded)
+			{
+				MessageLabel.Text += " loaded";
+			}
+			else if (Global.CheatList2.Changes)
+			{
+				MessageLabel.Text += " *";
 			}
 		}
 

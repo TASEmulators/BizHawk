@@ -274,6 +274,18 @@ namespace BizHawk.MultiClient
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
+		public static string GetCheatsPath(GameInfo game)
+		{
+			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Cheats"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			}
+
+			return MakeAbsolutePath(pathEntry.Path, game.System);
+		}
+
 		public static string ScreenshotPrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
