@@ -415,7 +415,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private string FormatValue(byte val)
+		public string FormatValue(byte val)
 		{
 			switch (Type)
 			{
@@ -610,7 +610,7 @@ namespace BizHawk.MultiClient
 			return Notes + ": " + ValueString;
 		}
 
-		private string FormatValue(ushort val)
+		public string FormatValue(ushort val)
 		{
 			switch (Type)
 			{
@@ -805,7 +805,7 @@ namespace BizHawk.MultiClient
 			return Notes + ": " + ValueString;
 		}
 
-		private string FormatValue(uint val)
+		public string FormatValue(uint val)
 		{
 			switch (Type)
 			{

@@ -78,17 +78,38 @@ namespace BizHawk.MultiClient
 
 		public string AddressStr
 		{
-			get { return "TODO"; }
+			get { return _watch.AddressString; }
 		}
 
 		public string ValueStr
 		{
-			get { return "TODO"; }
+			get { return _watch.ValueString; }
 		}
 
 		public string CompareStr
 		{
-			get { return "TODO"; }
+			get
+			{
+				if (_compare.HasValue)
+				{
+					switch (_watch.Size)
+					{
+						default:
+						case Watch.WatchSize.Separator:
+							return String.Empty;
+						case Watch.WatchSize.Byte:
+							return (_watch as ByteWatch).FormatValue((byte)_compare.Value);
+						case Watch.WatchSize.Word:
+							return (_watch as WordWatch).FormatValue((ushort)_compare.Value);
+						case Watch.WatchSize.DWord:
+							return (_watch as DWordWatch).FormatValue((uint)_compare.Value);
+					}
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
 		}
 
 		#endregion
