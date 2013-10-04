@@ -146,5 +146,23 @@ namespace BizHawk.MultiClient
 
 			return Global.Emulator.MainMemory;
 		}
+
+		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)
+		{
+			if (enabled)
+			{
+				if (listView.Columns[columnName] == null)
+				{
+					ColumnHeader column = new ColumnHeader
+					{
+						Name = columnName,
+						Text = columnName.Replace("Column", ""),
+						Width = columnWidth,
+					};
+
+					listView.Columns.Add(column);
+				}
+			}
+		}
 	}
 }

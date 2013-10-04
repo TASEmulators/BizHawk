@@ -412,6 +412,27 @@ namespace BizHawk.MultiClient
 		public int CheatsCompareIndex = 3;
 		public int CheatsOnIndex = 4;
 		public int CheatsDomainIndex = 5;
+		public bool CheatsAlwaysOnTop = false;
+
+		public Dictionary<string, int> CheatsColumnWidths = new Dictionary<string, int>()
+		{
+			{ "NamesColumn", -1 },
+			{ "AddressColumn", -1 },
+			{ "ValueColumn", -1 },
+			{ "CompareColumn", -1 },
+			{ "OnColumn", -1 },
+			{ "DomainColumn", -1 },
+		};
+
+		public Dictionary<string, int> CheatsColumnIndexes = new Dictionary<string, int>()
+		{
+			{ "NamesColumn", 0 },
+			{ "AddressColumn", 1 },
+			{ "ValueColumn", 2 },
+			{ "CompareColumn", 3 },
+			{ "OnColumn", 4 },
+			{ "DomainColumn", 5 },
+		};
 
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;

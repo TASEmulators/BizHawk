@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static NewCheat SeparatorInstance
+		public static NewCheat Separator
 		{
 			get { return new NewCheat(SeparatorWatch.Instance, null, false); }
 		}
@@ -69,6 +69,26 @@ namespace BizHawk.MultiClient
 		public Watch.DisplayType Type
 		{
 			get { return _watch.Type; }
+		}
+
+		public string Name
+		{
+			get { if (IsSeparator) return String.Empty; else return _watch.Notes; }
+		}
+
+		public string AddressStr
+		{
+			get { return "TODO"; }
+		}
+
+		public string ValueStr
+		{
+			get { return "TODO"; }
+		}
+
+		public string CompareStr
+		{
+			get { return "TODO"; }
 		}
 
 		#endregion

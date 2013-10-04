@@ -387,11 +387,11 @@ namespace BizHawk.MultiClient
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			AddColumn(ADDRESS, true);
-			AddColumn(VALUE, true);
-			AddColumn(PREV, Global.Config.RamSearchShowPrevColumn);
-			AddColumn(CHANGES, Global.Config.RamSearchShowChangeColumn);
-			AddColumn(DIFF, Global.Config.RamSearchShowDiffColumn);
+			ToolHelpers.AddColumn(WatchListView, ADDRESS, true, GetColumnWidth(ADDRESS));
+			ToolHelpers.AddColumn(WatchListView, VALUE, true, GetColumnWidth(VALUE));
+			ToolHelpers.AddColumn(WatchListView, PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(PREV));
+			ToolHelpers.AddColumn(WatchListView, CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(CHANGES));
+			ToolHelpers.AddColumn(WatchListView, DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(DIFF));
 
 			ColumnPositions();
 		}
@@ -454,24 +454,6 @@ namespace BizHawk.MultiClient
 			}
 
 			return width;
-		}
-
-		private void AddColumn(string columnName, bool enabled)
-		{
-			if (enabled)
-			{
-				if (WatchListView.Columns[columnName] == null)
-				{
-					ColumnHeader column = new ColumnHeader
-					{
-						Name = columnName,
-						Text = columnName.Replace("Column", ""),
-						Width = GetColumnWidth(columnName),
-					};
-
-					WatchListView.Columns.Add(column);
-				}
-			}
 		}
 
 		private void DoDisplayTypeClick(Watch.DisplayType type)

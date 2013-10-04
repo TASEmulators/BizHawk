@@ -67,6 +67,7 @@
 			this.ShowValuesAsHexMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -293,12 +294,12 @@
 			// 
 			// InsertSeparatorMenuItem
 			// 
-			this.InsertSeparatorMenuItem.Enabled = false;
 			this.InsertSeparatorMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.InsertSeparatorMenuItem.Name = "InsertSeparatorMenuItem";
 			this.InsertSeparatorMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.InsertSeparatorMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.InsertSeparatorMenuItem.Text = "Insert Separator";
+			this.InsertSeparatorMenuItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
@@ -365,6 +366,7 @@
             this.ShowValuesAsHexMenuItem,
             this.AutoloadDialogMenuItem,
             this.SaveWindowPositionMenuItem,
+            this.AlwaysOnTopMenuItem,
             this.toolStripSeparator5,
             this.RestoreWindowSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
@@ -409,10 +411,17 @@
 			// 
 			// SaveWindowPositionMenuItem
 			// 
-			this.SaveWindowPositionMenuItem.Enabled = false;
 			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
 			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(205, 22);
 			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
+			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
+			// 
+			// AlwaysOnTopMenuItem
+			// 
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -512,12 +521,12 @@
 			// toolStripButtonSeparator
 			// 
 			this.toolStripButtonSeparator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonSeparator.Enabled = false;
 			this.toolStripButtonSeparator.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.toolStripButtonSeparator.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
 			this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonSeparator.Text = "Insert Separator";
+			this.toolStripButtonSeparator.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -655,5 +664,6 @@
 		private System.Windows.Forms.Label TotalLabel;
 		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.Label MessageLabel;
+		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 	}
 }
