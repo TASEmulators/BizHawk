@@ -75,22 +75,27 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.RecentWatches.Add(path);
 					UpdateListView();
-					ShowFileName(loaded: true);
+					UpdateMessageLabel();
 				}
 			}
 		}
 
-		private void ShowFileName(bool loaded)
+		private void UpdateMessageLabel(bool saved = false)
 		{
-			MessageLabel.Text = Path.GetFileName(Global.CheatList2.CurrentFileName);
-			if (loaded)
+			string message = String.Empty;
+			if (!String.IsNullOrWhiteSpace(Global.CheatList2.CurrentFileName))
 			{
-				MessageLabel.Text += " loaded";
+				if (saved)
+				{
+					message = Path.GetFileName(Global.CheatList2.CurrentFileName) + " saved.";
+				}
+				else
+				{
+					message = Path.GetFileName(Global.CheatList2.CurrentFileName) + (Global.CheatList2.Changes ? " *" : String.Empty);
+				}
 			}
-			else if (Global.CheatList2.Changes)
-			{
-				MessageLabel.Text += " *";
-			}
+
+			MessageLabel.Text = message;
 		}
 
 		public bool AskSave()
@@ -280,6 +285,88 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void MoveUp()
+		{
+			var indices = CheatListView.SelectedIndices;
+			if (indices.Count == 0 || indices[0] == 0)
+			{
+				return;
+			}
+
+			foreach (int index in indices)
+			{
+				var cheat = Global.CheatList2[index];
+				Global.CheatList2.Remove(Global.CheatList2[index]);
+				Global.CheatList2.Insert(index - 1, cheat);
+			}
+
+			UpdateMessageLabel();
+
+			var newindices = new List<int>();
+			for (int i = 0; i < indices.Count; i++)
+			{
+				newindices.Add(indices[i] - 1);
+			}
+
+			CheatListView.SelectedIndices.Clear();
+			foreach (int newi in newindices)
+			{
+				CheatListView.SelectItem(newi, true);
+			}
+
+			UpdateListView();
+		}
+
+		private void MoveDown()
+		{
+			var indices = CheatListView.SelectedIndices;
+			if (indices.Count == 0)
+			{
+				return;
+			}
+
+			foreach (int index in indices)
+			{
+				var cheat = Global.CheatList2[index];
+
+				if (index < Global.CheatList2.Count - 1)
+				{
+					Global.CheatList2.Remove(Global.CheatList2[index]);
+					Global.CheatList2.Insert(index + 1, cheat);
+				}
+			}
+
+			UpdateMessageLabel();
+
+			var newindices = new List<int>();
+			for (int i = 0; i < indices.Count; i++)
+			{
+				newindices.Add(indices[i] + 1);
+			}
+
+			CheatListView.SelectedIndices.Clear();
+			foreach (int newi in newindices)
+			{
+				CheatListView.SelectItem(newi, true);
+			}
+
+			UpdateListView();
+		}
+
+		private void Remove()
+		{
+			if (SelectedIndices.Any())
+			{
+				foreach (int index in SelectedIndices)
+				{
+					Global.CheatList2.Remove(Global.CheatList2[SelectedIndices[0]]); //SelectedIndices[0] used since each iteration will make this the correct list index
+				}
+				CheatListView.SelectedIndices.Clear();
+			}
+
+			UpdateListView();
+		}
+
 		#region Events
 
 		#region File
@@ -312,7 +399,17 @@ namespace BizHawk.MultiClient
 
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			RemoveCheatMenuItem.Enabled =
+				MoveUpMenuItem.Enabled =
+				MoveDownMenuItem.Enabled =
+				SelectedIndices.Any();
 
+			DisableAllCheatsMenuItem.Enabled = Global.CheatList2.ActiveCheatCount > 0;
+		}
+
+		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
+		{
+			Remove();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -327,6 +424,29 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateListView();
+		}
+
+		private void MoveUpMenuItem_Click(object sender, EventArgs e)
+		{
+			MoveUp();
+		}
+
+		private void MoveDownMenuItem_Click(object sender, EventArgs e)
+		{
+			MoveDown();
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int i = 0; i < Global.CheatList2.Count; i++)
+			{
+				CheatListView.SelectItem(i, true);
+			}
+		}
+
+		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.CheatList2.DisableAll();
 		}
 
 		#endregion
