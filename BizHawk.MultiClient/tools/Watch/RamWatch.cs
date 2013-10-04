@@ -615,24 +615,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void AddColumn(string columnName, bool enabled)
-		{
-			if (enabled)
-			{
-				if (WatchListView.Columns[columnName] == null)
-				{
-					ColumnHeader column = new ColumnHeader
-						{
-							Name = columnName,
-							Text = columnName.Replace("Column", ""),
-							Width = GetColumnWidth(columnName),
-						};
-
-					WatchListView.Columns.Add(column);
-				}
-			}
-		}
-
 		private void ColumnPositions()
 		{
 			List<KeyValuePair<string, int>> Columns = 
@@ -671,13 +653,13 @@ namespace BizHawk.MultiClient
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			AddColumn(ADDRESS, true);
-			AddColumn(VALUE, true);
-			AddColumn(PREV, Global.Config.RamWatchShowPrevColumn);
-			AddColumn(CHANGES, Global.Config.RamWatchShowChangeColumn);
-			AddColumn(DIFF, Global.Config.RamWatchShowDiffColumn);
-			AddColumn(DOMAIN, Global.Config.RamWatchShowDomainColumn);
-			AddColumn(NOTES, true);
+			ToolHelpers.AddColumn(WatchListView, ADDRESS, true, GetColumnWidth(ADDRESS));
+			ToolHelpers.AddColumn(WatchListView, VALUE, true, GetColumnWidth(VALUE));
+			ToolHelpers.AddColumn(WatchListView, PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(PREV));
+			ToolHelpers.AddColumn(WatchListView, CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(CHANGES));
+			ToolHelpers.AddColumn(WatchListView, DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(DIFF));
+			ToolHelpers.AddColumn(WatchListView, DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(DOMAIN));
+			ToolHelpers.AddColumn(WatchListView, NOTES, true, GetColumnWidth(NOTES));
 
 			ColumnPositions();
 		}

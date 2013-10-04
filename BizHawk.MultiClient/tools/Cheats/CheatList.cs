@@ -57,6 +57,12 @@ namespace BizHawk.MultiClient
 			_cheatList.Add(c);
 		}
 
+		public void Insert(int index, NewCheat c)
+		{
+			_changes = true;
+			_cheatList.Insert(index, c);
+		}
+
 		public void Remove(NewCheat c)
 		{
 			_changes = true;
