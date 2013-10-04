@@ -166,9 +166,14 @@ namespace BizHawk.MultiClient
 
 			using (StreamReader sr = file.OpenText())
 			{
-				if (!append)
+				if (append)
+				{
+					_changes = true; 
+				}
+				else
 				{
 					Clear();
+					_changes = false;
 				}
 
 				string s;
@@ -176,7 +181,8 @@ namespace BizHawk.MultiClient
 				{
 					try
 					{
-						int ADDR, VALUE, COMPARE;
+						int ADDR, VALUE;
+						int? COMPARE;
 						MemoryDomain DOMAIN;
 						bool ENABLED;
 						string NAME;
@@ -186,7 +192,15 @@ namespace BizHawk.MultiClient
 						string[] vals = s.Split('\t');
 						ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
 						VALUE = Int32.Parse(vals[1], NumberStyles.HexNumber);
-						COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+
+						if (vals[2] == "N")
+						{
+							COMPARE = null;
+						}
+						else
+						{
+							COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+						}
 						DOMAIN = ToolHelpers.DomainByName(vals[3]);
 						ENABLED = vals[4] == "1";
 						NAME = vals[5];
@@ -210,7 +224,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			throw new NotImplementedException();
+			return true;
 		}
 
 		public string CurrentFileName
@@ -241,9 +255,7 @@ namespace BizHawk.MultiClient
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(
-				Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"].Path,
-				Global.Emulator.SystemId);
+			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
