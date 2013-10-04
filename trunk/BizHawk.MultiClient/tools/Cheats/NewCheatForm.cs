@@ -13,11 +13,13 @@ namespace BizHawk.MultiClient
 {
 	public partial class NewCheatForm : Form
 	{
-		private NewCheatList Cheats = new NewCheatList();
-
 		public NewCheatForm()
 		{
 			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
+			CheatListView.QueryItemText += CheatListView_QueryItemText;
+			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
+			CheatListView.VirtualMode = true;
 		}
 
 		private void UpdateListView()
@@ -86,16 +88,16 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				bool result = true;
-				if (Cheats.Changes)
+				if (Global.CheatList2.Changes)
 				{
 					result = AskSave();
 				}
 
 				if (result)
 				{
-					Cheats.Load(file.FullName, append);
+					Global.CheatList2.Load(file.FullName, append);
 					UpdateListView();
-					Global.Config.RecentCheats.Add(Cheats.CurrentFileName);
+					Global.Config.RecentCheats.Add(Global.CheatList2.CurrentFileName);
 				}
 			}
 		}
@@ -103,6 +105,40 @@ namespace BizHawk.MultiClient
 		private void NewCheatForm_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		public void SaveConfigSettings()
+		{
+			/*TODO*/
+		}
+
+		private void CheatListView_QueryItemText(int index, int column, out string text)
+		{
+			text = "";
+			if (Global.CheatList2[index].IsSeparator)
+			{
+				return;
+			}
+			/*TODO*/
+		}
+
+		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			if (index < Global.CheatList2.Count)
+			{
+				if (Global.CheatList2[index].IsSeparator)
+				{
+					color = Color.DarkGray;
+				}
+				else if (Global.CheatList2[index].Enabled)
+				{
+					color = Color.LightCyan;
+				}
+				else
+				{
+					color = BackColor;
+				}
+			}
 		}
 
 		#region Events
@@ -123,7 +159,7 @@ namespace BizHawk.MultiClient
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			bool append = sender == AppendMenuItem;
-			LoadFile(NewCheatList.GetFileFromUser(Cheats.CurrentFileName), append);
+			LoadFile(NewCheatList.GetFileFromUser(Global.CheatList2.CurrentFileName), append);
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
