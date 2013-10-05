@@ -66,8 +66,8 @@
 			this.GameGenieSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.OpenGameGenieEncoderDecoderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.LoadCheatFileByGameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveCheatsOnCloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysLoadCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSaveCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableCheatsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +100,7 @@
 			this.TotalLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatEditor = new BizHawk.MultiClient.CheatEdit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.CheatsMenu.SuspendLayout();
@@ -421,9 +422,10 @@
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LoadCheatFileByGameMenuItem,
-            this.SaveCheatsOnCloseMenuItem,
+            this.AlwaysLoadCheatsMenuItem,
+            this.AutoSaveCheatsMenuItem,
             this.DisableCheatsOnLoadMenuItem,
+            this.toolStripSeparator7,
             this.AutoloadMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
@@ -434,57 +436,57 @@
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
-			// LoadCheatFileByGameMenuItem
+			// AlwaysLoadCheatsMenuItem
 			// 
-			this.LoadCheatFileByGameMenuItem.Enabled = false;
-			this.LoadCheatFileByGameMenuItem.Name = "LoadCheatFileByGameMenuItem";
-			this.LoadCheatFileByGameMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.LoadCheatFileByGameMenuItem.Text = "Load Cheat File by Game";
+			this.AlwaysLoadCheatsMenuItem.Name = "AlwaysLoadCheatsMenuItem";
+			this.AlwaysLoadCheatsMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AlwaysLoadCheatsMenuItem.Text = "Always load cheats";
+			this.AlwaysLoadCheatsMenuItem.Click += new System.EventHandler(this.AlwaysLoadCheatsMenuItem_Click);
 			// 
-			// SaveCheatsOnCloseMenuItem
+			// AutoSaveCheatsMenuItem
 			// 
-			this.SaveCheatsOnCloseMenuItem.Enabled = false;
-			this.SaveCheatsOnCloseMenuItem.Name = "SaveCheatsOnCloseMenuItem";
-			this.SaveCheatsOnCloseMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.SaveCheatsOnCloseMenuItem.Text = "Save Cheats on Close";
+			this.AutoSaveCheatsMenuItem.Name = "AutoSaveCheatsMenuItem";
+			this.AutoSaveCheatsMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoSaveCheatsMenuItem.Text = "Autosave cheats";
+			this.AutoSaveCheatsMenuItem.Click += new System.EventHandler(this.AutoSaveCheatsMenuItem_Click);
 			// 
 			// DisableCheatsOnLoadMenuItem
 			// 
 			this.DisableCheatsOnLoadMenuItem.Name = "DisableCheatsOnLoadMenuItem";
-			this.DisableCheatsOnLoadMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.DisableCheatsOnLoadMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.DisableCheatsOnLoadMenuItem.Text = "Disable Cheats on Load";
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
 			// 
 			// AutoloadMenuItem
 			// 
 			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AutoloadMenuItem.Text = "Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
 			// SaveWindowPositionMenuItem
 			// 
 			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
 			// 
 			// AlwaysOnTopMenuItem
 			// 
 			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(202, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(196, 6);
 			// 
 			// RestoreWindowSizeMenuItem
 			// 
 			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
-			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
 			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreWindowSizeMenuItem_Click);
 			// 
@@ -725,7 +727,12 @@
 			this.CheatGroupBox.Size = new System.Drawing.Size(202, 284);
 			this.CheatGroupBox.TabIndex = 8;
 			this.CheatGroupBox.TabStop = false;
-			this.CheatGroupBox.Text = "Cheat";
+			this.CheatGroupBox.Text = "New Cheat";
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(196, 6);
 			// 
 			// CheatEditor
 			// 
@@ -799,8 +806,8 @@
 		private System.Windows.Forms.ToolStripSeparator GameGenieSeparator;
 		private System.Windows.Forms.ToolStripMenuItem OpenGameGenieEncoderDecoderMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem LoadCheatFileByGameMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveCheatsOnCloseMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AlwaysLoadCheatsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoSaveCheatsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisableCheatsOnLoadMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
@@ -839,5 +846,6 @@
 		private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem;
 		private System.Windows.Forms.GroupBox CheatGroupBox;
 		private CheatEdit CheatEditor;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 	}
 }

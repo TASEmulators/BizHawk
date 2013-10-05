@@ -33,10 +33,8 @@
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.AddressHexIndLabel = new System.Windows.Forms.Label();
 			this.AddressBox = new BizHawk.HexTextBox();
-			this.ValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.ValueHexIndLabel = new System.Windows.Forms.Label();
 			this.ValueLabel = new System.Windows.Forms.Label();
-			this.CompareBox = new BizHawk.MultiClient.WatchValueBox();
 			this.CompareHexIndLabel = new System.Windows.Forms.Label();
 			this.CompareLabel = new System.Windows.Forms.Label();
 			this.DomainLabel = new System.Windows.Forms.Label();
@@ -48,11 +46,13 @@
 			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
 			this.AddButton = new System.Windows.Forms.Button();
 			this.EditButton = new System.Windows.Forms.Button();
+			this.CompareBox = new BizHawk.MultiClient.WatchValueBox();
+			this.ValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.SuspendLayout();
 			// 
 			// NameBox
 			// 
-			this.NameBox.Location = new System.Drawing.Point(70, 15);
+			this.NameBox.Location = new System.Drawing.Point(70, 12);
 			this.NameBox.Name = "NameBox";
 			this.NameBox.Size = new System.Drawing.Size(108, 20);
 			this.NameBox.TabIndex = 5;
@@ -60,7 +60,7 @@
 			// NameLabel
 			// 
 			this.NameLabel.AutoSize = true;
-			this.NameLabel.Location = new System.Drawing.Point(12, 18);
+			this.NameLabel.Location = new System.Drawing.Point(32, 16);
 			this.NameLabel.Name = "NameLabel";
 			this.NameLabel.Size = new System.Drawing.Size(35, 13);
 			this.NameLabel.TabIndex = 4;
@@ -69,7 +69,7 @@
 			// AddressLabel
 			// 
 			this.AddressLabel.AutoSize = true;
-			this.AddressLabel.Location = new System.Drawing.Point(38, 45);
+			this.AddressLabel.Location = new System.Drawing.Point(22, 43);
 			this.AddressLabel.Name = "AddressLabel";
 			this.AddressLabel.Size = new System.Drawing.Size(45, 13);
 			this.AddressLabel.TabIndex = 6;
@@ -78,7 +78,7 @@
 			// AddressHexIndLabel
 			// 
 			this.AddressHexIndLabel.AutoSize = true;
-			this.AddressHexIndLabel.Location = new System.Drawing.Point(89, 45);
+			this.AddressHexIndLabel.Location = new System.Drawing.Point(92, 43);
 			this.AddressHexIndLabel.Name = "AddressHexIndLabel";
 			this.AddressHexIndLabel.Size = new System.Drawing.Size(18, 13);
 			this.AddressHexIndLabel.TabIndex = 8;
@@ -87,27 +87,17 @@
 			// AddressBox
 			// 
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AddressBox.Location = new System.Drawing.Point(113, 42);
+			this.AddressBox.Location = new System.Drawing.Point(113, 39);
 			this.AddressBox.MaxLength = 8;
 			this.AddressBox.Name = "AddressBox";
+			this.AddressBox.Nullable = true;
 			this.AddressBox.Size = new System.Drawing.Size(65, 20);
 			this.AddressBox.TabIndex = 9;
-			// 
-			// ValueBox
-			// 
-			this.ValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ValueBox.Location = new System.Drawing.Point(113, 68);
-			this.ValueBox.MaxLength = 2;
-			this.ValueBox.Name = "ValueBox";
-			this.ValueBox.Size = new System.Drawing.Size(65, 20);
-			this.ValueBox.TabIndex = 12;
-			this.ValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			// 
 			// ValueHexIndLabel
 			// 
 			this.ValueHexIndLabel.AutoSize = true;
-			this.ValueHexIndLabel.Location = new System.Drawing.Point(89, 71);
+			this.ValueHexIndLabel.Location = new System.Drawing.Point(92, 69);
 			this.ValueHexIndLabel.Name = "ValueHexIndLabel";
 			this.ValueHexIndLabel.Size = new System.Drawing.Size(18, 13);
 			this.ValueHexIndLabel.TabIndex = 11;
@@ -116,27 +106,16 @@
 			// ValueLabel
 			// 
 			this.ValueLabel.AutoSize = true;
-			this.ValueLabel.Location = new System.Drawing.Point(38, 71);
+			this.ValueLabel.Location = new System.Drawing.Point(33, 69);
 			this.ValueLabel.Name = "ValueLabel";
 			this.ValueLabel.Size = new System.Drawing.Size(34, 13);
 			this.ValueLabel.TabIndex = 10;
 			this.ValueLabel.Text = "Value";
 			// 
-			// CompareBox
-			// 
-			this.CompareBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.CompareBox.Location = new System.Drawing.Point(113, 94);
-			this.CompareBox.MaxLength = 2;
-			this.CompareBox.Name = "CompareBox";
-			this.CompareBox.Size = new System.Drawing.Size(65, 20);
-			this.CompareBox.TabIndex = 15;
-			this.CompareBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			// 
 			// CompareHexIndLabel
 			// 
 			this.CompareHexIndLabel.AutoSize = true;
-			this.CompareHexIndLabel.Location = new System.Drawing.Point(89, 97);
+			this.CompareHexIndLabel.Location = new System.Drawing.Point(92, 95);
 			this.CompareHexIndLabel.Name = "CompareHexIndLabel";
 			this.CompareHexIndLabel.Size = new System.Drawing.Size(18, 13);
 			this.CompareHexIndLabel.TabIndex = 14;
@@ -145,7 +124,7 @@
 			// CompareLabel
 			// 
 			this.CompareLabel.AutoSize = true;
-			this.CompareLabel.Location = new System.Drawing.Point(38, 97);
+			this.CompareLabel.Location = new System.Drawing.Point(18, 95);
 			this.CompareLabel.Name = "CompareLabel";
 			this.CompareLabel.Size = new System.Drawing.Size(49, 13);
 			this.CompareLabel.TabIndex = 13;
@@ -154,7 +133,7 @@
 			// DomainLabel
 			// 
 			this.DomainLabel.AutoSize = true;
-			this.DomainLabel.Location = new System.Drawing.Point(12, 124);
+			this.DomainLabel.Location = new System.Drawing.Point(24, 124);
 			this.DomainLabel.Name = "DomainLabel";
 			this.DomainLabel.Size = new System.Drawing.Size(43, 13);
 			this.DomainLabel.TabIndex = 16;
@@ -164,7 +143,7 @@
 			// 
 			this.DomainDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.DomainDropDown.FormattingEnabled = true;
-			this.DomainDropDown.Location = new System.Drawing.Point(78, 121);
+			this.DomainDropDown.Location = new System.Drawing.Point(78, 118);
 			this.DomainDropDown.Name = "DomainDropDown";
 			this.DomainDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DomainDropDown.TabIndex = 17;
@@ -173,7 +152,7 @@
 			// SizeLabel
 			// 
 			this.SizeLabel.AutoSize = true;
-			this.SizeLabel.Location = new System.Drawing.Point(20, 150);
+			this.SizeLabel.Location = new System.Drawing.Point(40, 150);
 			this.SizeLabel.Name = "SizeLabel";
 			this.SizeLabel.Size = new System.Drawing.Size(27, 13);
 			this.SizeLabel.TabIndex = 18;
@@ -187,7 +166,7 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.SizeDropDown.Location = new System.Drawing.Point(78, 147);
+			this.SizeDropDown.Location = new System.Drawing.Point(78, 144);
 			this.SizeDropDown.Name = "SizeDropDown";
 			this.SizeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.SizeDropDown.TabIndex = 19;
@@ -196,11 +175,11 @@
 			// DisplayTypeLael
 			// 
 			this.DisplayTypeLael.AutoSize = true;
-			this.DisplayTypeLael.Location = new System.Drawing.Point(4, 174);
+			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 174);
 			this.DisplayTypeLael.Name = "DisplayTypeLael";
-			this.DisplayTypeLael.Size = new System.Drawing.Size(68, 13);
+			this.DisplayTypeLael.Size = new System.Drawing.Size(56, 13);
 			this.DisplayTypeLael.TabIndex = 20;
-			this.DisplayTypeLael.Text = "Display Type";
+			this.DisplayTypeLael.Text = "Display As";
 			// 
 			// DisplayTypeDropDown
 			// 
@@ -210,7 +189,7 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 171);
+			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 168);
 			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
 			this.DisplayTypeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DisplayTypeDropDown.TabIndex = 21;
@@ -219,7 +198,7 @@
 			// BigEndianCheckBox
 			// 
 			this.BigEndianCheckBox.AutoSize = true;
-			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 198);
+			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 195);
 			this.BigEndianCheckBox.Name = "BigEndianCheckBox";
 			this.BigEndianCheckBox.Size = new System.Drawing.Size(77, 17);
 			this.BigEndianCheckBox.TabIndex = 22;
@@ -230,7 +209,7 @@
 			// 
 			this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddButton.Enabled = false;
-			this.AddButton.Location = new System.Drawing.Point(7, 226);
+			this.AddButton.Location = new System.Drawing.Point(7, 220);
 			this.AddButton.Name = "AddButton";
 			this.AddButton.Size = new System.Drawing.Size(65, 23);
 			this.AddButton.TabIndex = 23;
@@ -242,13 +221,39 @@
 			// 
 			this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.EditButton.Enabled = false;
-			this.EditButton.Location = new System.Drawing.Point(113, 226);
+			this.EditButton.Location = new System.Drawing.Point(113, 220);
 			this.EditButton.Name = "EditButton";
 			this.EditButton.Size = new System.Drawing.Size(65, 23);
 			this.EditButton.TabIndex = 24;
 			this.EditButton.Text = "&Edit";
 			this.EditButton.UseVisualStyleBackColor = true;
 			this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
+			// 
+			// CompareBox
+			// 
+			this.CompareBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.CompareBox.Location = new System.Drawing.Point(113, 91);
+			this.CompareBox.MaxLength = 2;
+			this.CompareBox.Name = "CompareBox";
+			this.CompareBox.Nullable = true;
+			this.CompareBox.Size = new System.Drawing.Size(65, 20);
+			this.CompareBox.TabIndex = 15;
+			this.CompareBox.Text = "00";
+			this.CompareBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			// 
+			// ValueBox
+			// 
+			this.ValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.ValueBox.Location = new System.Drawing.Point(113, 65);
+			this.ValueBox.MaxLength = 2;
+			this.ValueBox.Name = "ValueBox";
+			this.ValueBox.Nullable = true;
+			this.ValueBox.Size = new System.Drawing.Size(65, 20);
+			this.ValueBox.TabIndex = 12;
+			this.ValueBox.Text = "00";
+			this.ValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			// 
 			// CheatEdit
 			// 
@@ -275,7 +280,7 @@
 			this.Controls.Add(this.NameBox);
 			this.Controls.Add(this.NameLabel);
 			this.Name = "CheatEdit";
-			this.Size = new System.Drawing.Size(200, 266);
+			this.Size = new System.Drawing.Size(191, 253);
 			this.Load += new System.EventHandler(this.CheatEdit_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
