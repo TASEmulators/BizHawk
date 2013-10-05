@@ -422,9 +422,12 @@ namespace BizHawk.MultiClient
 			{ "CompareColumn", -1 },
 			{ "OnColumn", -1 },
 			{ "DomainColumn", -1 },
+			{ "SizeColumn", -1 },
+			{ "EndianColumn", -1 },
+			{ "DisplayTypeColumn", -1 },
 		};
 
-		public Dictionary<string, int> CheatsColumnIndexes = new Dictionary<string, int>()
+		public Dictionary<string, int> CheatsColumnIndices = new Dictionary<string, int>()
 		{
 			{ "NamesColumn", 0 },
 			{ "AddressColumn", 1 },
@@ -432,6 +435,22 @@ namespace BizHawk.MultiClient
 			{ "CompareColumn", 3 },
 			{ "OnColumn", 4 },
 			{ "DomainColumn", 5 },
+			{ "SizeColumn", 6 },
+			{ "EndianColumn", 7 },
+			{ "DisplayTypeColumn", 8 },
+		};
+
+		public Dictionary<string, bool> CheatsColumnShow = new Dictionary<string, bool>()
+		{
+			{ "NamesColumn", true },
+			{ "AddressColumn", true },
+			{ "ValueColumn", true },
+			{ "CompareColumn", true },
+			{ "OnColumn", true },
+			{ "DomainColumn", true },
+			{ "SizeColumn", true },
+			{ "EndianColumn", false },
+			{ "DisplayTypeColumn", false },
 		};
 
 		// TAStudio Dialog
