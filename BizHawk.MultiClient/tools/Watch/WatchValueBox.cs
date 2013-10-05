@@ -7,6 +7,9 @@ namespace BizHawk.MultiClient
 	{
 		private Watch.WatchSize _size = Watch.WatchSize.Byte;
 		private Watch.DisplayType _type = Watch.DisplayType.Hex;
+		private bool _nullable = true;
+
+		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
 		public WatchValueBox()
 		{
@@ -15,28 +18,33 @@ namespace BizHawk.MultiClient
 
 		public override void ResetText()
 		{
-			switch (Type)
+			if (_nullable)
 			{
-				default:
-				case Watch.DisplayType.Signed:
-				case Watch.DisplayType.Unsigned:
-					Text = "0";
-					break;
-				case Watch.DisplayType.Hex:
-					string formatstr = "{0:X" + MaxLength.ToString() + "}";
-					Text = String.Format(formatstr, 0);
-					break;
-				case Watch.DisplayType.FixedPoint_12_4:
-				case Watch.DisplayType.FixedPoint_20_12:
-				case Watch.DisplayType.Float:
-					Text = "0.0";
-					break;
-				case Watch.DisplayType.Binary:
-					Text = "0".PadLeft(((int)_size) * 8);
-					break;
+				Text = String.Empty;
 			}
-
-			
+			else
+			{
+				switch (Type)
+				{
+					default:
+					case Watch.DisplayType.Signed:
+					case Watch.DisplayType.Unsigned:
+						Text = "0";
+						break;
+					case Watch.DisplayType.Hex:
+						string formatstr = "{0:X" + MaxLength.ToString() + "}";
+						Text = String.Format(formatstr, 0);
+						break;
+					case Watch.DisplayType.FixedPoint_12_4:
+					case Watch.DisplayType.FixedPoint_20_12:
+					case Watch.DisplayType.Float:
+						Text = "0.0";
+						break;
+					case Watch.DisplayType.Binary:
+						Text = "0".PadLeft(((int)_size) * 8);
+						break;
+				}
+			}
 		}
 
 		public Watch.WatchSize ByteSize
@@ -44,14 +52,18 @@ namespace BizHawk.MultiClient
 			get { return _size; }
 			set
 			{
-				if (_size != value)
+				bool changed = _size != value;
+				
+				_size = value;
+				if (changed)
 				{
+					SetMaxLength();
 					if (!Watch.AvailableTypes(value).Contains(_type))
 					{
 						Type = Watch.AvailableTypes(value)[0];
 					}
+					ResetText();
 				}
-				_size = value;
 			}
 		}
 
@@ -60,79 +72,86 @@ namespace BizHawk.MultiClient
 			get { return _type; }
 			set
 			{
+				int val = ToRawInt();
 				_type = value;
-				switch(_type)
-				{
-					default:
-						MaxLength = 8;
-						break;
-					case Watch.DisplayType.Binary:
-						switch (_size)
-						{
-							default:
-							case Watch.WatchSize.Byte:
-								MaxLength = 8;
-								break;
-							case Watch.WatchSize.Word:
-								MaxLength = 16;
-								break;
-						}
-						break;
-					case Watch.DisplayType.Hex:
-						switch (_size)
-						{
-							default:
-							case Watch.WatchSize.Byte:
-								MaxLength = 2;
-								break;
-							case Watch.WatchSize.Word:
-								MaxLength = 4;
-								break;
-							case Watch.WatchSize.DWord:
-								MaxLength = 8;
-								break;
-						}
-						break;
-					case Watch.DisplayType.Signed:
-						switch (_size)
-						{
-							default:
-							case Watch.WatchSize.Byte:
-								MaxLength = 4;
-								break;
-							case Watch.WatchSize.Word:
-								MaxLength = 6;
-								break;
-							case Watch.WatchSize.DWord:
-								MaxLength = 11;
-								break;
-						}
-						break;
-					case Watch.DisplayType.Unsigned:
-						switch (_size)
-						{
-							default:
-							case Watch.WatchSize.Byte:
-								MaxLength = 3;
-								break;
-							case Watch.WatchSize.Word:
-								MaxLength = 5;
-								break;
-							case Watch.WatchSize.DWord:
-								MaxLength = 10;
-								break;
-						}
-						break;
-					case Watch.DisplayType.FixedPoint_12_4:
-						MaxLength = 9;
-						break;
-					case Watch.DisplayType.Float:
-						MaxLength = 21;
-						break;
-					case Watch.DisplayType.FixedPoint_20_12:
-						MaxLength = 64;
-						break;
-				}
+				SetMaxLength();
+				SetFromRawInt(val);
+			}
+		}
+
+		private void SetMaxLength()
+		{
+			switch (_type)
+			{
+				default:
+					MaxLength = 8;
+					break;
+				case Watch.DisplayType.Binary:
+					switch (_size)
+					{
+						default:
+						case Watch.WatchSize.Byte:
+							MaxLength = 8;
+							break;
+						case Watch.WatchSize.Word:
+							MaxLength = 16;
+							break;
+					}
+					break;
+				case Watch.DisplayType.Hex:
+					switch (_size)
+					{
+						default:
+						case Watch.WatchSize.Byte:
+							MaxLength = 2;
+							break;
+						case Watch.WatchSize.Word:
+							MaxLength = 4;
+							break;
+						case Watch.WatchSize.DWord:
+							MaxLength = 8;
+							break;
+					}
+					break;
+				case Watch.DisplayType.Signed:
+					switch (_size)
+					{
+						default:
+						case Watch.WatchSize.Byte:
+							MaxLength = 4;
+							break;
+						case Watch.WatchSize.Word:
+							MaxLength = 6;
+							break;
+						case Watch.WatchSize.DWord:
+							MaxLength = 11;
+							break;
+					}
+					break;
+				case Watch.DisplayType.Unsigned:
+					switch (_size)
+					{
+						default:
+						case Watch.WatchSize.Byte:
+							MaxLength = 3;
+							break;
+						case Watch.WatchSize.Word:
+							MaxLength = 5;
+							break;
+						case Watch.WatchSize.DWord:
+							MaxLength = 10;
+							break;
+					}
+					break;
+				case Watch.DisplayType.FixedPoint_12_4:
+					MaxLength = 9;
+					break;
+				case Watch.DisplayType.Float:
+					MaxLength = 21;
+					break;
+				case Watch.DisplayType.FixedPoint_20_12:
+					MaxLength = 64;
+					break;
 			}
 		}
 
@@ -397,7 +416,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		uint MaxUnsignedInt
+		private uint MaxUnsignedInt
 		{
 			get
 			{
@@ -414,7 +433,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		int MaxSignedInt
+		private int MaxSignedInt
 		{
 			get
 			{
@@ -431,7 +450,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		double Max12_4
+		private double Max12_4
 		{
 			get
 			{
@@ -439,7 +458,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		double Max20_12
+		private double Max20_12
 		{
 			get
 			{
@@ -447,15 +466,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		double _12_4_Unit { get { return 1 / 16.0; } }
-		double _20_12_Unit { get { return 1 / 4096.0; } }
-
+		private double _12_4_Unit { get { return 1 / 16.0; } }
+		private double _20_12_Unit { get { return 1 / 4096.0; } }
 
 		protected override void OnTextChanged(EventArgs e)
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				Text = "0";
+				ResetText();
 			}
 		}
 
@@ -487,6 +505,42 @@ namespace BizHawk.MultiClient
 						byte[] bytes = BitConverter.GetBytes(val);
 						return BitConverter.ToInt32(bytes, 0);
 				}
+			}
+		}
+
+		public void SetFromRawInt(int val)
+		{
+			switch (_type)
+			{
+				default:
+				case Watch.DisplayType.Signed:
+					Text = val.ToString();
+					break;
+				case Watch.DisplayType.Unsigned:
+					uint uval = (uint)val;
+					Text = uval.ToString();
+					break;
+				case Watch.DisplayType.Binary:
+					uint bval = (uint)val;
+					int numBits = ((int)ByteSize) * 8;
+					Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+					break;
+				case Watch.DisplayType.Hex:
+					uint hexVal = (uint)val;
+					string formatstr = "{0:X" + MaxLength.ToString() + "}";
+					Text = String.Format(formatstr, hexVal);
+					break;
+				case Watch.DisplayType.FixedPoint_12_4:
+					Text = String.Format("{0:F5}", (val / 16.0));
+					break;
+				case Watch.DisplayType.FixedPoint_20_12:
+					Text = String.Format("{0:F5}", (val / 4096.0));
+					break;
+				case Watch.DisplayType.Float:
+					byte[] bytes = BitConverter.GetBytes(val);
+					float _float = BitConverter.ToSingle(bytes, 0);
+					Text = String.Format("{0:F6}", _float);
+					break;
 			}
 		}
 	}

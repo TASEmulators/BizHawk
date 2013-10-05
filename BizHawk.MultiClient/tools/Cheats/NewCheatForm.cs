@@ -168,11 +168,30 @@ namespace BizHawk.MultiClient
 					|| (Global.Emulator.SystemId == "GB")
 					|| (Global.Game.System == "GG")
 					|| (Global.Emulator is LibsnesCore));
+
+			CheatEditor.SetAddEvent(AddCheat);
+			CheatEditor.SetEditEvent(EditCheat);
+		}
+
+		private void AddCheat()
+		{
+			Global.CheatList2.Add(CheatEditor.Cheat);
+			UpdateListView();
+			UpdateMessageLabel();
+		}
+
+		private void EditCheat()
+		{
+			MessageBox.Show("Edit clicked");
 		}
 
 		public void SaveConfigSettings()
 		{
-			/*TODO*/
+			SaveColumnInfo();
+			Global.Config.CheatsWndx = Location.X;
+			Global.Config.CheatsWndy = Location.Y;
+			Global.Config.CheatsWidth = Right - Left;
+			Global.Config.CheatsHeight = Bottom - Top;
 		}
 
 		private void LoadConfigSettings()
@@ -468,6 +487,18 @@ namespace BizHawk.MultiClient
 			Global.Config.CheatsColumnShow[column] ^= true;
 			SaveColumnInfo();
 			LoadColumnInfo();
+		}
+
+		private void DoSelectedIndexChange()
+		{
+			if (SelectedIndices.Any())
+			{
+				CheatEditor.SetCheat(Global.CheatList2[SelectedIndices[0]]);
+			}
+			else
+			{
+				CheatEditor.ClearForm();
+			}
 		}
 
 		#region Events
@@ -766,6 +797,67 @@ namespace BizHawk.MultiClient
 		private void ShowDisplayTypeMenuItem_Click(object sender, EventArgs e)
 		{
 			DoColumnToggle(TYPE);
+		}
+
+		#endregion
+
+		#region ListView Events
+
+		private void CheatListView_Click(object sender, EventArgs e)
+		{
+			DoSelectedIndexChange();
+		}
+
+		private void CheatListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
+		{
+
+			Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[COMPARE] = CheatListView.Columns[COMPARE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ON] = CheatListView.Columns[ON].DisplayIndex;
+			Global.Config.CheatsColumnIndices[DOMAIN] = CheatListView.Columns[DOMAIN].DisplayIndex;
+			Global.Config.CheatsColumnIndices[SIZE] = CheatListView.Columns[SIZE].DisplayIndex;
+			Global.Config.CheatsColumnIndices[ENDIAN] = CheatListView.Columns[ENDIAN].DisplayIndex;
+			Global.Config.CheatsColumnIndices[TYPE] = CheatListView.Columns[TYPE].DisplayIndex;
+		}
+
+		private void CheatListView_DoubleClick(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				Remove();
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				SelectAllMenuItem_Click(null, null);
+			}
+		}
+
+		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			DoSelectedIndexChange();
+		}
+
+		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".cht"))
+			{
+				LoadFile(new FileInfo(filePaths[0]), append: false);
+				UpdateListView();
+				UpdateMessageLabel();
+			}
+		}
+
+		private void NewCheatForm_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		#endregion
