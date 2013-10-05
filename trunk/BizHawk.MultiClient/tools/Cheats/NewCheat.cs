@@ -81,7 +81,13 @@ namespace BizHawk.MultiClient
 			get { if (_compare.HasValue && !IsSeparator) return _compare; else return null; }
 		}
 
-		public MemoryDomain Domain { get { return _watch.Domain; } }
+		public MemoryDomain Domain
+		{
+			get
+			{
+				return _watch.Domain;
+			}
+		}
 
 		public Watch.WatchSize Size
 		{
@@ -210,6 +216,14 @@ namespace BizHawk.MultiClient
 			if (!IsSeparator)
 			{
 				_val--;
+			}
+		}
+
+		public void SetType(Watch.DisplayType type)
+		{
+			if (Watch.AvailableTypes(_watch.Size).Contains(type))
+			{
+				_watch.Type = type;
 			}
 		}
 

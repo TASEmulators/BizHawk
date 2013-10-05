@@ -146,13 +146,24 @@ namespace BizHawk.MultiClient
 
 		public bool Save()
 		{
-			if (!String.IsNullOrWhiteSpace(_currentFileName))
+			if (String.IsNullOrWhiteSpace(_currentFileName))
 			{
-				return SaveFile();
+				_currentFileName = GenerateDefaultFilename();
+			}
+
+			return SaveFile(_currentFileName);
+		}
+
+		public bool SaveAs()
+		{
+			var file = GetSaveFileFromUser();
+			if (file != null)
+			{
+				return SaveFile(file.FullName);
 			}
 			else
 			{
-				return SaveAs();
+				return false;
 			}
 		}
 
@@ -186,41 +197,48 @@ namespace BizHawk.MultiClient
 				{
 					try
 					{
-						int ADDR, VALUE;
-						int? COMPARE;
-						MemoryDomain DOMAIN;
-						bool ENABLED;
-						string NAME;
-
-						if (s.Length < 6) continue;
-						//NewCheat c = new NewCheat(
-						string[] vals = s.Split('\t');
-						ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
-						VALUE = Int32.Parse(vals[1], NumberStyles.HexNumber);
-
-						if (vals[2] == "N")
+						if (s == "----")
 						{
-							COMPARE = null;
+							_cheatList.Add(NewCheat.Separator);
 						}
 						else
 						{
-							COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+							int ADDR, VALUE;
+							int? COMPARE;
+							MemoryDomain DOMAIN;
+							bool ENABLED;
+							string NAME;
+
+							if (s.Length < 6) continue;
+							//NewCheat c = new NewCheat(
+							string[] vals = s.Split('\t');
+							ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
+							VALUE = Int32.Parse(vals[1], NumberStyles.HexNumber);
+
+							if (vals[2] == "N")
+							{
+								COMPARE = null;
+							}
+							else
+							{
+								COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+							}
+							DOMAIN = ToolHelpers.DomainByName(vals[3]);
+							ENABLED = vals[4] == "1";
+							NAME = vals[5];
+
+							Watch w = Watch.GenerateWatch(
+								DOMAIN,
+								ADDR,
+								Watch.WatchSize.Byte,
+								Watch.DisplayType.Hex,
+								NAME,
+								false
+							);
+
+							NewCheat c = new NewCheat(w, COMPARE, ENABLED);
+							_cheatList.Add(c);
 						}
-						DOMAIN = ToolHelpers.DomainByName(vals[3]);
-						ENABLED = vals[4] == "1";
-						NAME = vals[5];
-
-						Watch w = Watch.GenerateWatch(
-							DOMAIN,
-							ADDR,
-							Watch.WatchSize.Byte,
-							Watch.DisplayType.Hex,
-							NAME,
-							false
-						);
-
-						NewCheat c = new NewCheat(w, COMPARE, ENABLED);
-						_cheatList.Add(c);
 					}
 					catch
 					{
@@ -239,14 +257,74 @@ namespace BizHawk.MultiClient
 
 		#region privates
 
-		private bool SaveFile()
+		private string GenerateDefaultFilename()
 		{
-			throw new NotImplementedException();
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+			}
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+			{
+				f.Directory.Create();
+			}
+
+			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
-		private bool SaveAs()
+		private bool SaveFile(string path)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				FileInfo file = new FileInfo(path);
+				if (file.Directory != null && !file.Directory.Exists)
+				{
+					file.Directory.Create();
+				}
+
+				using (StreamWriter sw = new StreamWriter(path))
+				{
+					StringBuilder sb = new StringBuilder();
+
+					foreach (var cheat in _cheatList)
+					{
+						if (cheat.IsSeparator)
+						{
+							sb.AppendLine("----");
+						}
+						else
+						{
+							//Set to hex for saving 
+							Watch.DisplayType type = cheat.Type;
+							cheat.SetType(Watch.DisplayType.Hex);
+
+							sb
+								.Append(cheat.AddressStr).Append('\t')
+								.Append(cheat.ValueStr).Append('\t')
+								.Append(cheat.Compare.HasValue ? cheat.Compare.Value : 'N').Append('\t')
+								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
+								.Append(cheat.Enabled ? '1' : '0').Append('\t')
+								.Append(cheat.Name)
+								.AppendLine();
+
+							//TODO: save big endian, size, and display type
+						}
+					}
+
+					sw.WriteLine(sb.ToString());
+				}
+
+				_changes = false;
+				_currentFileName = path;
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 
 		#endregion
@@ -270,6 +348,33 @@ namespace BizHawk.MultiClient
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
+			return file;
+		}
+
+		private FileInfo GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			if (!String.IsNullOrWhiteSpace(_currentFileName))
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.CurrentCheatFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			}
+			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
+			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			Global.Config.LastRomPath = file.DirectoryName;
 			return file;
 		}
 

@@ -204,21 +204,21 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Enabled = false;
 			this.SaveMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
+			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// SaveAsMenuItem
 			// 
-			this.SaveAsMenuItem.Enabled = false;
 			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
 			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
 			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
+			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// AppendMenuItem
 			// 
@@ -503,12 +503,12 @@
 			// SaveToolBarItem
 			// 
 			this.SaveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SaveToolBarItem.Enabled = false;
 			this.SaveToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("SaveToolBarItem.Image")));
 			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveToolBarItem.Name = "SaveToolBarItem";
 			this.SaveToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.SaveToolBarItem.Text = "&Save";
+			this.SaveToolBarItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// toolStripSeparator
 			// 

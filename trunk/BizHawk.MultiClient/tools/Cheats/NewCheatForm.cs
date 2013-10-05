@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 		{
 			CheatListView.ItemCount = Global.CheatList2.Count;
 			TotalLabel.Text = Global.CheatList2.CheatCount.ToString()
-				+ (Global.CheatList2.CheatCount == 1 ? " cheat" : " cheats")
+				+ (Global.CheatList2.CheatCount == 1 ? " cheat " : " cheats ")
 				+ Global.CheatList2.ActiveCheatCount.ToString() + " active";
 		}
 
@@ -87,16 +87,14 @@ namespace BizHawk.MultiClient
 		private void UpdateMessageLabel(bool saved = false)
 		{
 			string message = String.Empty;
-			if (!String.IsNullOrWhiteSpace(Global.CheatList2.CurrentFileName))
+			
+			if (saved)
 			{
-				if (saved)
-				{
-					message = Path.GetFileName(Global.CheatList2.CurrentFileName) + " saved.";
-				}
-				else
-				{
-					message = Path.GetFileName(Global.CheatList2.CurrentFileName) + (Global.CheatList2.Changes ? " *" : String.Empty);
-				}
+				message = Path.GetFileName(Global.CheatList2.CurrentFileName) + " saved.";
+			}
+			else
+			{
+				message = Path.GetFileName(Global.CheatList2.CurrentFileName) + (Global.CheatList2.Changes ? " *" : String.Empty);
 			}
 
 			MessageLabel.Text = message;
@@ -145,6 +143,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.CheatList2.Load(file.FullName, append);
 					UpdateListView();
+					UpdateMessageLabel();
 					Global.Config.RecentCheats.Add(Global.CheatList2.CurrentFileName);
 				}
 			}
@@ -397,6 +396,29 @@ namespace BizHawk.MultiClient
 			SaveMenuItem.Enabled = Global.CheatList2.Changes;
 		}
 
+		private void SaveMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.CheatList2.Changes)
+			{
+				if (Global.CheatList2.Save())
+				{
+					UpdateMessageLabel(saved: true);
+				}
+			}
+			else
+			{
+				SaveAsMenuItem_Click(sender, e);
+			}
+		}
+
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.CheatList2.SaveAs())
+			{
+				UpdateMessageLabel(saved: true);
+			}
+		}
+
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
@@ -467,8 +489,9 @@ namespace BizHawk.MultiClient
 			{
 				Global.CheatList2.Add(NewCheat.Separator);
 			}
-
+			
 			UpdateListView();
+			UpdateMessageLabel();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
