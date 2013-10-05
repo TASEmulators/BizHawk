@@ -41,6 +41,22 @@ namespace BizHawk.MultiClient
 			return items.ToArray();
 		}
 
+		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
+		{
+			dropdown.Items.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				foreach (var domain in Global.Emulator.MemoryDomains)
+				{
+					var result = dropdown.Items.Add(domain.ToString());
+					if (domain.Name == startDomain.Name)
+					{
+						dropdown.SelectedIndex = result;
+					}
+				}
+			}
+		}
+
 		public static void UnfreezeAll()
 		{
 			Global.MainForm.Cheats1.RemoveAllCheats();

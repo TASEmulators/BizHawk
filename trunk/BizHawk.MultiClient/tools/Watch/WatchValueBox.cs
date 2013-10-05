@@ -13,6 +13,32 @@ namespace BizHawk.MultiClient
 			CharacterCasing = CharacterCasing.Upper;
 		}
 
+		public override void ResetText()
+		{
+			switch (Type)
+			{
+				default:
+				case Watch.DisplayType.Signed:
+				case Watch.DisplayType.Unsigned:
+					Text = "0";
+					break;
+				case Watch.DisplayType.Hex:
+					string formatstr = "{0:X" + MaxLength.ToString() + "}";
+					Text = String.Format(formatstr, 0);
+					break;
+				case Watch.DisplayType.FixedPoint_12_4:
+				case Watch.DisplayType.FixedPoint_20_12:
+				case Watch.DisplayType.Float:
+					Text = "0.0";
+					break;
+				case Watch.DisplayType.Binary:
+					Text = "0".PadLeft(((int)_size) * 8);
+					break;
+			}
+
+			
+		}
+
 		public Watch.WatchSize ByteSize
 		{
 			get { return _size; }
@@ -322,7 +348,7 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							hexVal++;
+							hexVal--;
 						}
 						string formatstr = "{0:X" + MaxLength.ToString() + "}";
 						Text = String.Format(formatstr, hexVal);

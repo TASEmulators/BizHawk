@@ -486,6 +486,12 @@
     <Compile Include="SNESTools\SNESOptions.Designer.cs">
       <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Cheats\CheatEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\Cheats\CheatEdit.Designer.cs">
+      <DependentUpon>CheatEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Cheats\CheatList.cs" />
     <Compile Include="tools\Cheats\NewCheat.cs" />
     <Compile Include="tools\Cheats\NewCheatForm.cs">
@@ -818,6 +824,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
+      <DependentUpon>CheatEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\NewCheatForm.resx">
       <DependentUpon>NewCheatForm.cs</DependentUpon>
     </EmbeddedResource>
