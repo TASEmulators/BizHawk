@@ -214,6 +214,7 @@
 			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
 			this.DisplayTypeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DisplayTypeDropDown.TabIndex = 21;
+			this.DisplayTypeDropDown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropDown_SelectedIndexChanged);
 			// 
 			// BigEndianCheckBox
 			// 
@@ -235,6 +236,7 @@
 			this.AddButton.TabIndex = 23;
 			this.AddButton.Text = "&Add";
 			this.AddButton.UseVisualStyleBackColor = true;
+			this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
 			// 
 			// EditButton
 			// 
@@ -246,6 +248,7 @@
 			this.EditButton.TabIndex = 24;
 			this.EditButton.Text = "&Edit";
 			this.EditButton.UseVisualStyleBackColor = true;
+			this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
 			// 
 			// CheatEdit
 			// 

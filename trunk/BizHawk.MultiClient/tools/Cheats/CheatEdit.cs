@@ -12,20 +12,29 @@ namespace BizHawk.MultiClient
 {
 	public partial class CheatEdit : UserControl
 	{
-		//TODO: 
-		private NewCheat _cheat;
-		private const string HexInd = "0x";
-
-		private bool _loading = false;
-
 		public CheatEdit()
 		{
 			InitializeComponent();
+			AddressBox.Nullable = false;
+			ValueBox.Nullable = false;
 		}
+
+		#region Privates
+
+		private NewCheat _cheat;
+		private const string HexInd = "0x";
+		private bool _loading = false;
+		private bool _editmode = false;
+
+		private Action _addCallback = null;
+		private Action _editCallback = null;
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MainMemory);
+			if (Global.Emulator != null)
+			{
+				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MainMemory);
+			}
 			SetFormToDefault();
 		}
 
@@ -69,7 +78,11 @@ namespace BizHawk.MultiClient
 			PopulateTypeDropdown();
 
 			NameBox.Text = String.Empty;
-			AddressBox.SetHexProperties(Global.Emulator.MainMemory.Size);
+
+			if (Global.Emulator != null)
+			{
+				AddressBox.SetHexProperties(Global.Emulator.MainMemory.Size);
+			}
 
 			ValueBox.ByteSize = 
 				CompareBox.ByteSize =
@@ -87,6 +100,8 @@ namespace BizHawk.MultiClient
 				HexInd;
 
 			BigEndianCheckBox.Checked = false;
+
+			SetTypeSelected(Watch.DisplayType.Hex);
 
 			CheckFormState();
 			_loading = false;
@@ -154,9 +169,9 @@ namespace BizHawk.MultiClient
 
 		private void CheckFormState()
 		{
-			AddButton.Enabled =
-				EditButton.Enabled =
-				(!String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text));
+			bool valid = (!String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text));
+			AddButton.Enabled = valid;
+			EditButton.Enabled = _editmode && valid;
 		}
 
 		private void SizeDropDown_SelectedIndexChanged(object sender, EventArgs e)
@@ -195,10 +210,36 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ValueBox.Type =
+				CompareBox.Type =
+				Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
+		}
+
+		private void AddButton_Click(object sender, EventArgs e)
+		{
+			if (_addCallback != null)
+			{
+				_addCallback();
+			}
+		}
+
+		private void EditButton_Click(object sender, EventArgs e)
+		{
+			if (_editCallback != null)
+			{
+				_editCallback();
+			}
+		}
+
+		#endregion
+
 		#region API
 
 		public void SetCheat(NewCheat cheat)
 		{
+			_editmode = true;
 			_cheat = cheat;
 			if (cheat.IsSeparator)
 			{
@@ -211,11 +252,38 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//Add Cheat Callback
-		//Edit Cheat Callback
+		public void ClearForm()
+		{
+			SetFormToDefault();
+			_cheat = NewCheat.Separator;
+		}
+
+		public NewCheat Cheat
+		{
+			get
+			{
+				Watch w = Watch.GenerateWatch(
+					ToolHelpers.DomainByName(DomainDropDown.SelectedItem.ToString()),
+					AddressBox.ToRawInt(),
+					GetCurrentSize(),
+					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
+					NameBox.Text,
+					BigEndianCheckBox.Checked);
+
+				return new NewCheat(w, CompareBox.ToRawInt(), enabled: true);
+			}
+		}
+
+		public void SetAddEvent(Action AddCallback)
+		{
+			_addCallback = AddCallback;
+		}
+
+		public void SetEditEvent(Action EditCallback)
+		{
+			_editCallback = EditCallback;
+		}
 
 		#endregion
-
-		
 	}
 }

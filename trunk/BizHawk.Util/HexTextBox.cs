@@ -7,22 +7,49 @@ namespace BizHawk
 	public interface INumberBox
 	{
 		int ToRawInt();
+		void SetFromRawInt(int rawint);
+		bool Nullable { get; }
 	}
 
 	public class HexTextBox : TextBox, INumberBox
 	{
 		private string _addressFormatStr = "{0:X4}";
+		private int? _maxSize = null;
+		private bool _nullable = true;
+
+		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
 		public void SetHexProperties(int domainSize)
 		{
-			MaxLength = IntHelpers.GetNumDigits(domainSize - 1);
+			_maxSize = domainSize - 1;
+			MaxLength = IntHelpers.GetNumDigits(_maxSize.Value);
 			_addressFormatStr = "{0:X" + MaxLength.ToString() + "}";
+			
 			ResetText();
+		}
+
+		private uint GetMax()
+		{
+			if (_maxSize.HasValue)
+			{
+				return (uint)_maxSize.Value;
+			}
+			else
+			{
+				return IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
+			}
 		}
 
 		public override void ResetText()
 		{
-			Text = String.Format(_addressFormatStr, 0);
+			if (_nullable)
+			{
+				Text = String.Empty;
+			}
+			else
+			{
+				Text = String.Format(_addressFormatStr, 0);
+			}
 		}
 
 		public HexTextBox()
@@ -50,7 +77,7 @@ namespace BizHawk
 				{
 					uint val = (uint)ToRawInt();
 
-					if (val == IntHelpers.MaxHexValueFromMaxDigits(MaxLength))
+					if (val == GetMax())
 					{
 						val = 0;
 					}
@@ -69,7 +96,7 @@ namespace BizHawk
 					uint val = (uint)ToRawInt();
 					if (val == 0)
 					{
-						val = IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
+						val = GetMax();
 					}
 					else
 					{
@@ -104,6 +131,11 @@ namespace BizHawk
 				return int.Parse(Text, NumberStyles.HexNumber);
 			}
 		}
+
+		public void SetFromRawInt(int val)
+		{
+			Text = String.Format(_addressFormatStr, val);
+		}
 	}
 
 	public class UnsignedIntegerBox : TextBox, INumberBox
@@ -112,6 +144,10 @@ namespace BizHawk
 		{
 			CharacterCasing = CharacterCasing.Upper;
 		}
+
+		private bool _nullable = true;
+
+		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
@@ -127,7 +163,14 @@ namespace BizHawk
 
 		public override void ResetText()
 		{
-			Text = "0";
+			if (_nullable)
+			{
+				Text = String.Empty;
+			}
+			else
+			{
+				Text = "0";
+			}
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -190,6 +233,11 @@ namespace BizHawk
 			{
 				return (int)uint.Parse(Text);
 			}
+		}
+
+		public void SetFromRawInt(int val)
+		{
+			Text = val.ToString();
 		}
 	}
 }

@@ -53,7 +53,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AddCheatMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveCheatMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DuplicateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertSeparatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -134,6 +133,11 @@
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.UseCompatibleStateImageBehavior = false;
 			this.CheatListView.View = System.Windows.Forms.View.Details;
+			this.CheatListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.CheatListView_ColumnReordered);
+			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
+			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
+			this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
+			this.CheatListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CheatListView_KeyDown);
 			// 
 			// CheatName
 			// 
@@ -303,7 +307,6 @@
 			// CheatsSubMenu
 			// 
 			this.CheatsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AddCheatMenuItem,
             this.RemoveCheatMenuItem,
             this.DuplicateMenuItem,
             this.InsertSeparatorMenuItem,
@@ -320,14 +323,6 @@
 			this.CheatsSubMenu.Size = new System.Drawing.Size(55, 20);
 			this.CheatsSubMenu.Text = "&Cheats";
 			this.CheatsSubMenu.DropDownOpened += new System.EventHandler(this.CheatsSubMenu_DropDownOpened);
-			// 
-			// AddCheatMenuItem
-			// 
-			this.AddCheatMenuItem.Enabled = false;
-			this.AddCheatMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
-			this.AddCheatMenuItem.Name = "AddCheatMenuItem";
-			this.AddCheatMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.AddCheatMenuItem.Text = "&Add Cheat";
 			// 
 			// RemoveCheatMenuItem
 			// 
@@ -722,9 +717,9 @@
 			// 
 			this.CheatGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatGroupBox.Controls.Add(this.CheatEditor);
-			this.CheatGroupBox.Location = new System.Drawing.Point(432, 72);
+			this.CheatGroupBox.Location = new System.Drawing.Point(432, 66);
 			this.CheatGroupBox.Name = "CheatGroupBox";
-			this.CheatGroupBox.Size = new System.Drawing.Size(202, 278);
+			this.CheatGroupBox.Size = new System.Drawing.Size(202, 284);
 			this.CheatGroupBox.TabIndex = 8;
 			this.CheatGroupBox.TabStop = false;
 			this.CheatGroupBox.Text = "Cheat";
@@ -755,6 +750,8 @@
 			this.Name = "NewCheatForm";
 			this.Text = "New Cheat form";
 			this.Load += new System.EventHandler(this.NewCheatForm_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.CheatsMenu.ResumeLayout(false);
 			this.CheatsMenu.PerformLayout();
@@ -787,7 +784,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CheatsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AddCheatMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveCheatMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DuplicateMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InsertSeparatorMenuItem;
