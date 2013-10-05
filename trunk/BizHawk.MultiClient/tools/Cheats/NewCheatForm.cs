@@ -801,7 +801,7 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region ListView Events
+		#region ListView and Dialog Events
 
 		private void CheatListView_Click(object sender, EventArgs e)
 		{
@@ -842,6 +842,21 @@ namespace BizHawk.MultiClient
 		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			DoSelectedIndexChange();
+		}
+
+		private void CheatListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			var column = CheatListView.Columns[e.Column];
+			if (column.Name != _sortedColumn)
+			{
+				_sortReverse = false;
+			}
+
+			Global.CheatList2.Sort(column.Name, _sortReverse);
+
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			UpdateListView();
 		}
 
 		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
