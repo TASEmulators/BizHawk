@@ -11,6 +11,20 @@ namespace BizHawk
 
 	public class HexTextBox : TextBox, INumberBox
 	{
+		private string _addressFormatStr = "{0:X4}";
+
+		public void SetHexProperties(int domainSize)
+		{
+			MaxLength = IntHelpers.GetNumDigits(domainSize - 1);
+			_addressFormatStr = "{0:X" + MaxLength.ToString() + "}";
+			ResetText();
+		}
+
+		public override void ResetText()
+		{
+			Text = String.Format(_addressFormatStr, 0);
+		}
+
 		public HexTextBox()
 		{
 			CharacterCasing = CharacterCasing.Upper;
@@ -44,8 +58,8 @@ namespace BizHawk
 					{
 						val++;
 					}
-					string formatstr = "{0:X" + MaxLength.ToString() + "}";
-					Text = String.Format(formatstr, val);
+
+					Text = String.Format(_addressFormatStr, val);
 				}
 			}
 			else if (e.KeyCode == Keys.Down)
@@ -62,8 +76,7 @@ namespace BizHawk
 						val--;
 					}
 
-					string formatstr = "{0:X" + MaxLength.ToString() + "}";
-					Text = String.Format(formatstr, val);
+					Text = String.Format(_addressFormatStr, val);
 				}
 			}
 			else
@@ -76,7 +89,7 @@ namespace BizHawk
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				Text = "0";
+				ResetText();
 			}
 		}
 
@@ -110,6 +123,11 @@ namespace BizHawk
 			{
 				e.Handled = true;
 			}
+		}
+
+		public override void ResetText()
+		{
+			Text = "0";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -158,7 +176,7 @@ namespace BizHawk
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				Text = "0";
+				ResetText();
 			}
 		}
 
