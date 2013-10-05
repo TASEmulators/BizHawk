@@ -51,6 +51,13 @@ namespace BizHawk.MultiClient
 			get { return _cheatList.Count(x => x.Enabled); }
 		}
 
+		public void NewList()
+		{
+			_cheatList.Clear();
+			_currentFileName = String.Empty;
+			_changes = false;
+		}
+
 		public void Update()
 		{
 			_cheatList.ForEach(x => x.Pulse());
@@ -236,7 +243,7 @@ namespace BizHawk.MultiClient
 								false
 							);
 
-							NewCheat c = new NewCheat(w, COMPARE, ENABLED);
+							NewCheat c = new NewCheat(w, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
 							_cheatList.Add(c);
 						}
 					}
@@ -319,6 +326,7 @@ namespace BizHawk.MultiClient
 
 				_changes = false;
 				_currentFileName = path;
+				Global.Config.RecentCheats.Add(_currentFileName);
 				return true;
 			}
 			catch

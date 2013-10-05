@@ -23,6 +23,9 @@ namespace BizHawk.MultiClient
 		public const string COMPARE = "CompareColumn";
 		public const string ON = "OnColumn";
 		public const string DOMAIN = "DomainColumn";
+		public const string SIZE = "SizeColumn";
+		public const string ENDIAN = "EndianColumn";
+		public const string TYPE = "DisplayTypeColumn";
 
 		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
 		{
@@ -32,6 +35,9 @@ namespace BizHawk.MultiClient
 			{ COMPARE, 59 },
 			{ ON, 28 },
 			{ DOMAIN, 55 },
+			{ SIZE, 55 },
+			{ ENDIAN, 55 },
+			{ TYPE, 55 },
 		};
 
 		private int defaultWidth;
@@ -191,12 +197,15 @@ namespace BizHawk.MultiClient
 		private void LoadColumnInfo()
 		{
 			CheatListView.Columns.Clear();
-			ToolHelpers.AddColumn(CheatListView, NAME, true, GetColumnWidth(NAME));
-			ToolHelpers.AddColumn(CheatListView, ADDRESS, true, GetColumnWidth(ADDRESS));
-			ToolHelpers.AddColumn(CheatListView, VALUE, true, GetColumnWidth(VALUE));
-			ToolHelpers.AddColumn(CheatListView, COMPARE, true, GetColumnWidth(COMPARE));
-			ToolHelpers.AddColumn(CheatListView, ON, true, GetColumnWidth(ON));
-			ToolHelpers.AddColumn(CheatListView, DOMAIN, true, GetColumnWidth(DOMAIN));
+			ToolHelpers.AddColumn(CheatListView, NAME, Global.Config.CheatsColumnShow[NAME], GetColumnWidth(NAME));
+			ToolHelpers.AddColumn(CheatListView, ADDRESS, Global.Config.CheatsColumnShow[ADDRESS], GetColumnWidth(ADDRESS));
+			ToolHelpers.AddColumn(CheatListView, VALUE, Global.Config.CheatsColumnShow[VALUE], GetColumnWidth(VALUE));
+			ToolHelpers.AddColumn(CheatListView, COMPARE, Global.Config.CheatsColumnShow[COMPARE], GetColumnWidth(COMPARE));
+			ToolHelpers.AddColumn(CheatListView, ON, Global.Config.CheatsColumnShow[ON], GetColumnWidth(ON));
+			ToolHelpers.AddColumn(CheatListView, DOMAIN, Global.Config.CheatsColumnShow[DOMAIN], GetColumnWidth(DOMAIN));
+			ToolHelpers.AddColumn(CheatListView, SIZE, Global.Config.CheatsColumnShow[SIZE], GetColumnWidth(SIZE));
+			ToolHelpers.AddColumn(CheatListView, ENDIAN, Global.Config.CheatsColumnShow[ENDIAN], GetColumnWidth(ENDIAN));
+			ToolHelpers.AddColumn(CheatListView, TYPE, Global.Config.CheatsColumnShow[TYPE], GetColumnWidth(TYPE));
 		}
 
 		private int GetColumnWidth(string columnName)
@@ -240,6 +249,15 @@ namespace BizHawk.MultiClient
 				case DOMAIN:
 					text = Global.CheatList2[index].Domain.Name;
 					break;
+				case SIZE:
+					text = Global.CheatList2[index].Size.ToString();
+					break;
+				case ENDIAN:
+					text = Global.CheatList2[index].BigEndian.Value ? "Big" : "Little";
+					break;
+				case TYPE:
+					text = Watch.DisplayTypeToString(Global.CheatList2[index].Type);
+					break;
 			}
 		}
 
@@ -271,6 +289,7 @@ namespace BizHawk.MultiClient
 				return selected;
 			}
 		}
+
 		private List<NewCheat> SelectedItems
 		{
 			get
@@ -387,6 +406,70 @@ namespace BizHawk.MultiClient
 			UpdateListView();
 		}
 
+		private void SaveColumnInfo()
+		{
+			if (CheatListView.Columns[NAME] != null)
+			{
+				Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
+				Global.Config.CheatsColumnWidths[NAME] = CheatListView.Columns[NAME].Width;
+			}
+
+			if (CheatListView.Columns[ADDRESS] != null)
+			{
+				Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ADDRESS] = CheatListView.Columns[ADDRESS].Width;
+			}
+
+			if (CheatListView.Columns[VALUE] != null)
+			{
+				Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[VALUE] = CheatListView.Columns[VALUE].Width;
+			}
+
+			if (CheatListView.Columns[COMPARE] != null)
+			{
+				Global.Config.CheatsColumnIndices[COMPARE] = CheatListView.Columns[COMPARE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[COMPARE] = CheatListView.Columns[COMPARE].Width;
+			}
+
+			if (CheatListView.Columns[ON] != null)
+			{
+				Global.Config.CheatsColumnIndices[ON] = CheatListView.Columns[ON].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ON] = CheatListView.Columns[ON].Width;
+			}
+
+			if (CheatListView.Columns[DOMAIN] != null)
+			{
+				Global.Config.CheatsColumnIndices[DOMAIN] = CheatListView.Columns[DOMAIN].DisplayIndex;
+				Global.Config.CheatsColumnWidths[DOMAIN] = CheatListView.Columns[DOMAIN].Width;
+			}
+
+			if (CheatListView.Columns[SIZE] != null)
+			{
+				Global.Config.CheatsColumnIndices[SIZE] = CheatListView.Columns[SIZE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[SIZE] = CheatListView.Columns[SIZE].Width;
+			}
+
+			if (CheatListView.Columns[ENDIAN] != null)
+			{
+				Global.Config.CheatsColumnIndices[ENDIAN] = CheatListView.Columns[ENDIAN].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ENDIAN] = CheatListView.Columns[ENDIAN].Width;
+			}
+
+			if (CheatListView.Columns[TYPE] != null)
+			{
+				Global.Config.CheatsColumnIndices[TYPE] = CheatListView.Columns[TYPE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[TYPE] = CheatListView.Columns[TYPE].Width;
+			}
+		}
+
+		private void DoColumnToggle(string column)
+		{
+			Global.Config.CheatsColumnShow[column] ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
 		#region Events
 
 		#region File
@@ -394,6 +477,34 @@ namespace BizHawk.MultiClient
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveMenuItem.Enabled = Global.CheatList2.Changes;
+		}
+
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentCheats.GenerateRecentMenu(LoadFileFromRecent));
+		}
+
+		private void NewMenuItem_Click(object sender, EventArgs e)
+		{
+			bool result = true;
+			if (Global.CheatList2.Changes)
+			{
+				result = AskSave();
+			}
+
+			if (result)
+			{
+				Global.CheatList2.NewList();
+				UpdateListView();
+				UpdateMessageLabel();
+			}
+		}
+
+		private void OpenMenuItem_Click(object sender, EventArgs e)
+		{
+			bool append = sender == AppendMenuItem;
+			LoadFile(NewCheatList.GetFileFromUser(Global.CheatList2.CurrentFileName), append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -417,18 +528,6 @@ namespace BizHawk.MultiClient
 			{
 				UpdateMessageLabel(saved: true);
 			}
-		}
-
-		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentCheats.GenerateRecentMenu(LoadFileFromRecent));
-		}
-
-		private void OpenMenuItem_Click(object sender, EventArgs e)
-		{
-			bool append = sender == AppendMenuItem;
-			LoadFile(NewCheatList.GetFileFromUser(Global.CheatList2.CurrentFileName), append);
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -533,8 +632,19 @@ namespace BizHawk.MultiClient
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AlwaysOnTopMenuItem.Checked = Global.Config.CheatsAlwaysOnTop;
+			DisableCheatsOnLoadMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
+			AutoloadMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
 			SaveWindowPositionMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.CheatsAlwaysOnTop;
+		}
+
+		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisableCheatsOnLoad ^= true;
+		}
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RecentCheats.AutoLoad ^= true;
 		}
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
@@ -547,13 +657,115 @@ namespace BizHawk.MultiClient
 			Global.Config.CheatsAlwaysOnTop ^= true;
 		}
 
+		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(defaultWidth, defaultHeight);
+			Global.Config.CheatsSaveWindowPosition = true;
+			Global.Config.CheatsAlwaysOnTop = TopMost = false;
+			Global.Config.DisableCheatsOnLoad = false;
+
+			Global.Config.CheatsColumnIndices = new Dictionary<string, int>
+			{
+				{ "NamesColumn", 0 },
+				{ "AddressColumn", 1 },
+				{ "ValueColumn", 2 },
+				{ "CompareColumn", 3 },
+				{ "OnColumn", 4 },
+				{ "DomainColumn", 5 },
+				{ "SizeColumn", 6 },
+				{ "EndianColumn", 7 },
+				{ "DisplayTypeColumn", 8 },
+			};
+
+			Global.Config.CheatsColumnIndices = new Dictionary<string, int>
+			{
+				{ "NamesColumn", 0 },
+				{ "AddressColumn", 1 },
+				{ "ValueColumn", 2 },
+				{ "CompareColumn", 3 },
+				{ "OnColumn", 4 },
+				{ "DomainColumn", 5 },
+				{ "SizeColumn", 6 },
+				{ "EndianColumn", 7 },
+				{ "DisplayTypeColumn", 8 },
+			};
+
+			Global.Config.CheatsColumnShow = new Dictionary<string, bool>()
+			{
+				{ "NamesColumn", true },
+				{ "AddressColumn", true },
+				{ "ValueColumn", true },
+				{ "CompareColumn", true },
+				{ "OnColumn", true },
+				{ "DomainColumn", true },
+				{ "SizeColumn", true },
+				{ "EndianColumn", false },
+				{ "DisplayTypeColumn", false },
+			};
+
+			LoadColumnInfo();
+		}
+
 		#endregion
 
 		#region Columns
 
 		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			ShowNameMenuItem.Checked = Global.Config.CheatsColumnShow[NAME];
+			ShowAddressMenuItem.Checked = Global.Config.CheatsColumnShow[ADDRESS];
+			ShowValueMenuItem.Checked = Global.Config.CheatsColumnShow[VALUE];
+			ShowCompareMenuItem.Checked = Global.Config.CheatsColumnShow[COMPARE];
+			ShowOnMenuItem.Checked = Global.Config.CheatsColumnShow[ON];
+			ShowDomainMenuItem.Checked = Global.Config.CheatsColumnShow[DOMAIN];
+			ShowSizeMenuItem.Checked = Global.Config.CheatsColumnShow[SIZE];
+			ShowEndianMenuItem.Checked = Global.Config.CheatsColumnShow[ENDIAN];
+			ShowDisplayTypeMenuItem.Checked = Global.Config.CheatsColumnShow[TYPE];
+		}
 
+		private void ShowNameMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(NAME);
+		}
+
+		private void ShowAddressMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(ADDRESS);
+		}
+
+		private void ShowValueMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(VALUE);
+		}
+
+		private void ShowCompareMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(COMPARE);
+		}
+
+		private void ShowOnMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(ON);
+		}
+
+		private void ShowDomainMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(DOMAIN);
+		}
+
+		private void ShowSizeMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(SIZE);
+		}
+
+		private void ShowEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(ENDIAN);
+		}
+
+		private void ShowDisplayTypeMenuItem_Click(object sender, EventArgs e)
+		{
+			DoColumnToggle(TYPE);
 		}
 
 		#endregion
