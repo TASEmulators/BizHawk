@@ -215,6 +215,10 @@ namespace BizHawk.MultiClient
 							MemoryDomain DOMAIN;
 							bool ENABLED;
 							string NAME;
+							Watch.WatchSize SIZE = Watch.WatchSize.Byte;
+							Watch.DisplayType TYPE = Watch.DisplayType.Hex;
+							bool BIGENDIAN = false;
+
 
 							if (s.Length < 6) continue;
 							//NewCheat c = new NewCheat(
@@ -234,13 +238,21 @@ namespace BizHawk.MultiClient
 							ENABLED = vals[4] == "1";
 							NAME = vals[5];
 
+							//For backwards compatibility, don't assume these values exist
+							if (vals.Length > 6)
+							{
+								SIZE = Watch.SizeFromChar(vals[6][0]);
+								TYPE = Watch.DisplayTypeFromChar(vals[7][0]);
+								BIGENDIAN = vals[8] == "1";
+							}
+
 							Watch w = Watch.GenerateWatch(
 								DOMAIN,
 								ADDR,
-								Watch.WatchSize.Byte,
-								Watch.DisplayType.Hex,
+								SIZE,
+								TYPE,
 								NAME,
-								false
+								BIGENDIAN
 							);
 
 							NewCheat c = new NewCheat(w, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
@@ -480,9 +492,10 @@ namespace BizHawk.MultiClient
 								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name)
+								.Append(cheat.SizeAsChar).Append('\t')
+								.Append(cheat.SizeAsChar).Append('\t')
+								.Append(cheat.BigEndian.Value ? '1' : '0').Append('\t')
 								.AppendLine();
-
-							//TODO: save big endian, size, and display type
 						}
 					}
 

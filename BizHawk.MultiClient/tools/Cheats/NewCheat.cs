@@ -94,9 +94,19 @@ namespace BizHawk.MultiClient
 			get { return _watch.Size; }
 		}
 
+		public char SizeAsChar
+		{
+			get { return _watch.SizeAsChar; }
+		}
+
 		public Watch.DisplayType Type
 		{
 			get { return _watch.Type; }
+		}
+
+		public char TypeAsChar
+		{
+			get { return _watch.TypeAsChar; }
 		}
 
 		public string Name
