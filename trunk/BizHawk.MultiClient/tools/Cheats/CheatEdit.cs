@@ -254,8 +254,9 @@ namespace BizHawk.MultiClient
 
 		public void ClearForm()
 		{
-			SetFormToDefault();
 			_cheat = NewCheat.Separator;
+			_editmode = false;
+			SetFormToDefault();
 		}
 
 		public NewCheat Cheat

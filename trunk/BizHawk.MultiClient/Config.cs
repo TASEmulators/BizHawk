@@ -446,7 +446,7 @@ namespace BizHawk.MultiClient
 			{ "AddressColumn", true },
 			{ "ValueColumn", true },
 			{ "CompareColumn", true },
-			{ "OnColumn", true },
+			{ "OnColumn", false },
 			{ "DomainColumn", true },
 			{ "SizeColumn", true },
 			{ "EndianColumn", false },

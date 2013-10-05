@@ -491,13 +491,16 @@ namespace BizHawk.MultiClient
 
 		private void DoSelectedIndexChange()
 		{
-			if (SelectedIndices.Any())
+			if (SelectedCheats.Any())
 			{
-				CheatEditor.SetCheat(Global.CheatList2[SelectedIndices[0]]);
+				var cheat = SelectedCheats[0];
+				CheatEditor.SetCheat(cheat);
+				CheatGroupBox.Text = "Editing Cheat " + cheat.Name + " - " + cheat.AddressStr;
 			}
 			else
 			{
 				CheatEditor.ClearForm();
+				CheatGroupBox.Text = "New Cheat";
 			}
 		}
 
@@ -663,10 +666,22 @@ namespace BizHawk.MultiClient
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			AlwaysLoadCheatsMenuItem.Checked = Global.Config.LoadCheatFileByGame;
+			AutoSaveCheatsMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
 			DisableCheatsOnLoadMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
 			AutoloadMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
 			SaveWindowPositionMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Global.Config.CheatsAlwaysOnTop;
+		}
+
+		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LoadCheatFileByGame ^= true;
+		}
+
+		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.CheatsAutoSaveOnClose ^= true;
 		}
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
@@ -727,7 +742,7 @@ namespace BizHawk.MultiClient
 				{ "AddressColumn", true },
 				{ "ValueColumn", true },
 				{ "CompareColumn", true },
-				{ "OnColumn", true },
+				{ "OnColumn", false },
 				{ "DomainColumn", true },
 				{ "SizeColumn", true },
 				{ "EndianColumn", false },
