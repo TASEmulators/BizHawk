@@ -58,7 +58,7 @@
 			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.DisableAllCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.GameGenieSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.OpenGameGenieEncoderDecoderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadCheatFileByGameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,17 +72,17 @@
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
-			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.NewToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.OpenToolBarItem = new System.Windows.Forms.ToolStripButton();
-			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.SaveToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonSeparator = new System.Windows.Forms.ToolStripButton();
+			this.RemoveToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.DuplicateToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.SeparatorToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonLoadGameGenie = new System.Windows.Forms.ToolStripButton();
+			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.MoveDownToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.LoadGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.TotalLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.nameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,6 +91,8 @@
 			this.compareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GameGenieToolbarSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -265,7 +267,8 @@
             this.SelectAllMenuItem,
             this.toolStripSeparator6,
             this.DisableAllCheatsMenuItem,
-            this.toolStripSeparator7,
+            this.ToggleMenuItem,
+            this.GameGenieSeparator,
             this.OpenGameGenieEncoderDecoderMenuItem});
 			this.CheatsSubMenu.Name = "CheatsSubMenu";
 			this.CheatsSubMenu.Size = new System.Drawing.Size(55, 20);
@@ -291,12 +294,12 @@
 			// 
 			// DuplicateMenuItem
 			// 
-			this.DuplicateMenuItem.Enabled = false;
 			this.DuplicateMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
 			this.DuplicateMenuItem.Name = "DuplicateMenuItem";
 			this.DuplicateMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.DuplicateMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.DuplicateMenuItem.Text = "&Duplicate";
+			this.DuplicateMenuItem.Click += new System.EventHandler(this.DuplicateMenuItem_Click);
 			// 
 			// InsertSeparatorMenuItem
 			// 
@@ -351,17 +354,17 @@
 			this.DisableAllCheatsMenuItem.Text = "Disable all Cheats";
 			this.DisableAllCheatsMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
-			// toolStripSeparator7
+			// GameGenieSeparator
 			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(230, 6);
+			this.GameGenieSeparator.Name = "GameGenieSeparator";
+			this.GameGenieSeparator.Size = new System.Drawing.Size(230, 6);
 			// 
 			// OpenGameGenieEncoderDecoderMenuItem
 			// 
-			this.OpenGameGenieEncoderDecoderMenuItem.Enabled = false;
 			this.OpenGameGenieEncoderDecoderMenuItem.Name = "OpenGameGenieEncoderDecoderMenuItem";
 			this.OpenGameGenieEncoderDecoderMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.OpenGameGenieEncoderDecoderMenuItem.Text = "Game Genie Encoder/Decoder";
+			this.OpenGameGenieEncoderDecoderMenuItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
@@ -459,32 +462,33 @@
 			// 
 			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripButton,
+            this.NewToolBarItem,
             this.OpenToolBarItem,
-            this.saveToolStripButton,
+            this.SaveToolBarItem,
             this.toolStripSeparator,
-            this.cutToolStripButton,
-            this.copyToolStripButton,
-            this.toolStripButtonSeparator,
+            this.RemoveToolbarItem,
+            this.DuplicateToolBarItem,
+            this.SeparatorToolbarItem,
             this.toolStripSeparator2,
-            this.toolStripButtonMoveUp,
-            this.toolStripButtonMoveDown,
-            this.toolStripButtonLoadGameGenie});
+            this.MoveUpToolbarItem,
+            this.MoveDownToolbarItem,
+            this.GameGenieToolbarSeparator,
+            this.LoadGameGenieToolbarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(587, 25);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
-			// newToolStripButton
+			// NewToolBarItem
 			// 
-			this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newToolStripButton.Enabled = false;
-			this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
-			this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.newToolStripButton.Name = "newToolStripButton";
-			this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.newToolStripButton.Text = "&New";
+			this.NewToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.NewToolBarItem.Enabled = false;
+			this.NewToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("NewToolBarItem.Image")));
+			this.NewToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NewToolBarItem.Name = "NewToolBarItem";
+			this.NewToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.NewToolBarItem.Text = "&New";
 			// 
 			// OpenToolBarItem
 			// 
@@ -496,86 +500,86 @@
 			this.OpenToolBarItem.Text = "&Open";
 			this.OpenToolBarItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
-			// saveToolStripButton
+			// SaveToolBarItem
 			// 
-			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.saveToolStripButton.Enabled = false;
-			this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
-			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.saveToolStripButton.Name = "saveToolStripButton";
-			this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.saveToolStripButton.Text = "&Save";
+			this.SaveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.SaveToolBarItem.Enabled = false;
+			this.SaveToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("SaveToolBarItem.Image")));
+			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.SaveToolBarItem.Name = "SaveToolBarItem";
+			this.SaveToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.SaveToolBarItem.Text = "&Save";
 			// 
 			// toolStripSeparator
 			// 
 			this.toolStripSeparator.Name = "toolStripSeparator";
 			this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
-			// cutToolStripButton
+			// RemoveToolbarItem
 			// 
-			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
-			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.cutToolStripButton.Name = "cutToolStripButton";
-			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.cutToolStripButton.Text = "&Remove";
-			this.cutToolStripButton.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
+			this.RemoveToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RemoveToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RemoveToolbarItem.Name = "RemoveToolbarItem";
+			this.RemoveToolbarItem.Size = new System.Drawing.Size(23, 22);
+			this.RemoveToolbarItem.Text = "&Remove";
+			this.RemoveToolbarItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
-			// copyToolStripButton
+			// DuplicateToolBarItem
 			// 
-			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.copyToolStripButton.Enabled = false;
-			this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
-			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.copyToolStripButton.Name = "copyToolStripButton";
-			this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.copyToolStripButton.Text = "&Duplicate";
+			this.DuplicateToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.DuplicateToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateToolBarItem.Image")));
+			this.DuplicateToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DuplicateToolBarItem.Name = "DuplicateToolBarItem";
+			this.DuplicateToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.DuplicateToolBarItem.Text = "&Duplicate";
+			this.DuplicateToolBarItem.Click += new System.EventHandler(this.DuplicateMenuItem_Click);
 			// 
-			// toolStripButtonSeparator
+			// SeparatorToolbarItem
 			// 
-			this.toolStripButtonSeparator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonSeparator.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
-			this.toolStripButtonSeparator.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
-			this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonSeparator.Text = "Insert Separator";
-			this.toolStripButtonSeparator.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
+			this.SeparatorToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.SeparatorToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.SeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.SeparatorToolbarItem.Name = "SeparatorToolbarItem";
+			this.SeparatorToolbarItem.Size = new System.Drawing.Size(23, 22);
+			this.SeparatorToolbarItem.Text = "Insert Separator";
+			this.SeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripButtonMoveUp
+			// MoveUpToolbarItem
 			// 
-			this.toolStripButtonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonMoveUp.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
-			this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
-			this.toolStripButtonMoveUp.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonMoveUp.Text = "Move Up";
-			this.toolStripButtonMoveUp.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
+			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.MoveUpToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
+			this.MoveUpToolbarItem.Size = new System.Drawing.Size(23, 22);
+			this.MoveUpToolbarItem.Text = "Move Up";
+			this.MoveUpToolbarItem.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
-			// toolStripButtonMoveDown
+			// MoveDownToolbarItem
 			// 
-			this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonMoveDown.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
-			this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
-			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonMoveDown.Text = "Move Down";
-			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
+			this.MoveDownToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.MoveDownToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.MoveDownToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.MoveDownToolbarItem.Name = "MoveDownToolbarItem";
+			this.MoveDownToolbarItem.Size = new System.Drawing.Size(23, 22);
+			this.MoveDownToolbarItem.Text = "Move Down";
+			this.MoveDownToolbarItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
-			// toolStripButtonLoadGameGenie
+			// LoadGameGenieToolbarItem
 			// 
-			this.toolStripButtonLoadGameGenie.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButtonLoadGameGenie.Enabled = false;
-			this.toolStripButtonLoadGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadGameGenie.Image")));
-			this.toolStripButtonLoadGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonLoadGameGenie.Name = "toolStripButtonLoadGameGenie";
-			this.toolStripButtonLoadGameGenie.Size = new System.Drawing.Size(75, 22);
-			this.toolStripButtonLoadGameGenie.Text = "Game Genie";
-			this.toolStripButtonLoadGameGenie.ToolTipText = "Open the Game Genie Encoder/Decoder";
+			this.LoadGameGenieToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.LoadGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("LoadGameGenieToolbarItem.Image")));
+			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
+			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
+			this.LoadGameGenieToolbarItem.Text = "Game Genie";
+			this.LoadGameGenieToolbarItem.ToolTipText = "Open the Game Genie Encoder/Decoder";
+			this.LoadGameGenieToolbarItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
 			// 
 			// TotalLabel
 			// 
@@ -638,6 +642,19 @@
 			this.domainToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.domainToolStripMenuItem.Text = "&Domain";
 			// 
+			// ToggleMenuItem
+			// 
+			this.ToggleMenuItem.Name = "ToggleMenuItem";
+			this.ToggleMenuItem.ShortcutKeyDisplayString = "Enter";
+			this.ToggleMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.ToggleMenuItem.Text = "&Toggle";
+			this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
+			// 
+			// GameGenieToolbarSeparator
+			// 
+			this.GameGenieToolbarSeparator.Name = "GameGenieToolbarSeparator";
+			this.GameGenieToolbarSeparator.Size = new System.Drawing.Size(6, 25);
+			// 
 			// NewCheatForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -693,7 +710,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripMenuItem DisableAllCheatsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripSeparator GameGenieSeparator;
 		private System.Windows.Forms.ToolStripMenuItem OpenGameGenieEncoderDecoderMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem LoadCheatFileByGameMenuItem;
@@ -705,17 +722,17 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem RestoreWindowSizeMenuItem;
 		private ToolStripEx toolStrip1;
-		private System.Windows.Forms.ToolStripButton newToolStripButton;
+		private System.Windows.Forms.ToolStripButton NewToolBarItem;
 		private System.Windows.Forms.ToolStripButton OpenToolBarItem;
-		private System.Windows.Forms.ToolStripButton saveToolStripButton;
+		private System.Windows.Forms.ToolStripButton SaveToolBarItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-		private System.Windows.Forms.ToolStripButton cutToolStripButton;
-		private System.Windows.Forms.ToolStripButton copyToolStripButton;
-		private System.Windows.Forms.ToolStripButton toolStripButtonSeparator;
+		private System.Windows.Forms.ToolStripButton RemoveToolbarItem;
+		private System.Windows.Forms.ToolStripButton DuplicateToolBarItem;
+		private System.Windows.Forms.ToolStripButton SeparatorToolbarItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripButton toolStripButtonMoveUp;
-		private System.Windows.Forms.ToolStripButton toolStripButtonMoveDown;
-		private System.Windows.Forms.ToolStripButton toolStripButtonLoadGameGenie;
+		private System.Windows.Forms.ToolStripButton MoveUpToolbarItem;
+		private System.Windows.Forms.ToolStripButton MoveDownToolbarItem;
+		private System.Windows.Forms.ToolStripButton LoadGameGenieToolbarItem;
 		private System.Windows.Forms.Label TotalLabel;
 		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
 		private System.Windows.Forms.Label MessageLabel;
@@ -726,5 +743,7 @@
 		private System.Windows.Forms.ToolStripMenuItem compareToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
+		private System.Windows.Forms.ToolStripSeparator GameGenieToolbarSeparator;
 	}
 }

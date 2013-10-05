@@ -20,6 +20,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public NewCheat(NewCheat cheat)
+		{
+			if (cheat.IsSeparator)
+			{
+				_enabled = false;
+				_watch = SeparatorWatch.Instance;
+				_compare = null;
+			}
+			else
+			{
+				_enabled = cheat.Enabled;
+				_watch = Watch.GenerateWatch(cheat.Domain,
+					cheat.Address.Value,
+					cheat.Size,
+					cheat.Type,
+					cheat.Name,
+					cheat.BigEndian.Value
+					);
+				_compare = cheat.Compare;
+			}
+		}
+
 		public static NewCheat Separator
 		{
 			get { return new NewCheat(SeparatorWatch.Instance, null, false); }
@@ -129,6 +151,14 @@ namespace BizHawk.MultiClient
 			if (!IsSeparator)
 			{
 				_enabled = false;
+			}
+		}
+
+		public void Toggle()
+		{
+			if (!IsSeparator)
+			{
+				_enabled ^= true;
 			}
 		}
 

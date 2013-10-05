@@ -9,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Sega;
+
 namespace BizHawk.MultiClient
 {
 	public partial class NewCheatForm : Form
@@ -149,6 +153,16 @@ namespace BizHawk.MultiClient
 		private void NewCheatForm_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
+
+			if ((Global.Emulator is NES) || (Global.Emulator is Genesis) || (Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG") || (Global.Emulator is LibsnesCore))
+
+				GameGenieToolbarSeparator.Visible =
+					LoadGameGenieToolbarItem.Visible =
+					((Global.Emulator is NES)
+					|| (Global.Emulator is Genesis)
+					|| (Global.Emulator.SystemId == "GB")
+					|| (Global.Game.System == "GG")
+					|| (Global.Emulator is LibsnesCore));
 		}
 
 		public void SaveConfigSettings()
@@ -367,6 +381,13 @@ namespace BizHawk.MultiClient
 			UpdateListView();
 		}
 
+		private void Toggle()
+		{
+			SelectedCheats.ForEach(x => x.Toggle());
+			Global.CheatList2.FlagChanges();
+			UpdateListView();
+		}
+
 		#region Events
 
 		#region File
@@ -400,16 +421,40 @@ namespace BizHawk.MultiClient
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RemoveCheatMenuItem.Enabled =
+				DuplicateMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
+				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
 			DisableAllCheatsMenuItem.Enabled = Global.CheatList2.ActiveCheatCount > 0;
+
+			GameGenieSeparator.Visible =
+				OpenGameGenieEncoderDecoderMenuItem.Visible = 
+				((Global.Emulator is NES) 
+					|| (Global.Emulator is Genesis)
+					|| (Global.Emulator.SystemId == "GB")
+					|| (Global.Game.System == "GG")
+					|| (Global.Emulator is LibsnesCore));
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
 			Remove();
+		}
+
+		private void DuplicateMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CheatListView.SelectedIndices.Count > 0)
+			{
+				foreach (int index in CheatListView.SelectedIndices)
+				{
+					Global.CheatList2.Add(new NewCheat(Global.CheatList2[index]));
+				}
+			}
+
+			UpdateListView();
+			UpdateMessageLabel();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -444,9 +489,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void ToggleMenuItem_Click(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.CheatList2.DisableAll();
+		}
+
+		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
 		}
 
 		#endregion

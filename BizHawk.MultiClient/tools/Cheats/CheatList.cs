@@ -31,6 +31,11 @@ namespace BizHawk.MultiClient
 			get { return _cheatList[index]; }
 		}
 
+		public void FlagChanges()
+		{
+			_changes = true;
+		}
+
 		public int Count
 		{
 			get { return _cheatList.Count; }
