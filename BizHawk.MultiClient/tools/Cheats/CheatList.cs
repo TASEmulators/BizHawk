@@ -262,6 +262,171 @@ namespace BizHawk.MultiClient
 			get { return _currentFileName; }
 		}
 
+		public void Sort(string column, bool reverse)
+		{
+			switch (column)
+			{
+				case NewCheatForm.NAME:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.ADDRESS:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Address ?? 0)
+							.ThenBy(x => x.Name)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Name)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.VALUE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Value ?? 0)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Value ?? 0)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.COMPARE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Compare ?? 0)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Compare ?? 0)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.ON:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Enabled)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Enabled)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.DOMAIN:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Domain)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Domain)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.SIZE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => ((int)x.Size))
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => ((int)x.Size))
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.ENDIAN:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.BigEndian)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.BigEndian)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+				case NewCheatForm.TYPE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.Type)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.Type)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address.Value)
+							.ToList();
+					}
+					break;
+			}
+		}
+
 		#region privates
 
 		private string GenerateDefaultFilename()

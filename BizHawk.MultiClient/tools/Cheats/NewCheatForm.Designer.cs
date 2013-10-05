@@ -110,8 +110,9 @@
 			// CheatListView
 			// 
 			this.CheatListView.AllowColumnReorder = true;
-			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatListView.AutoArrange = false;
 			this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.CheatName,
@@ -133,6 +134,7 @@
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.UseCompatibleStateImageBehavior = false;
 			this.CheatListView.View = System.Windows.Forms.View.Details;
+			this.CheatListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.CheatListView_ColumnClick);
 			this.CheatListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.CheatListView_ColumnReordered);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
 			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
@@ -715,7 +717,8 @@
 			// 
 			// CheatGroupBox
 			// 
-			this.CheatGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatGroupBox.Controls.Add(this.CheatEditor);
 			this.CheatGroupBox.Location = new System.Drawing.Point(432, 66);
 			this.CheatGroupBox.Name = "CheatGroupBox";
