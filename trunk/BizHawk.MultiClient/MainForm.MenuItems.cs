@@ -439,7 +439,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenControllerConfig()
 		{
-			config.NewControllerConfig c = new config.NewControllerConfig(Global.Emulator.ControllerDefinition);
+			ControllerConfig c = new ControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{
@@ -455,7 +455,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenHotkeyDialog()
 		{
-			NewHotkeyWindow h = new NewHotkeyWindow();
+			HotkeyConfig h = new HotkeyConfig();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
 			{
@@ -691,7 +691,7 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new NewPathConfig().ShowDialog();
+			new PathConfig().ShowDialog();
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2330,7 +2330,7 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			new NewPathConfig().ShowDialog();
+			new PathConfig().ShowDialog();
 		}
 
 		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)

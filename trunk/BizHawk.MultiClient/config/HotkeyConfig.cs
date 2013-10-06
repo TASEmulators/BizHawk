@@ -9,22 +9,22 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NewHotkeyWindow : Form
+	public partial class HotkeyConfig : Form
 	{
-		public NewHotkeyWindow()
+		public HotkeyConfig()
 		{
 			InitializeComponent();
 		}
 
 		private void NewHotkeyWindow_Load(object sender, EventArgs e)
 		{
-            AutoCompleteStringCollection source = new AutoCompleteStringCollection();
-            source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
+			AutoCompleteStringCollection source = new AutoCompleteStringCollection();
+			source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
 
-            SearchBox.AutoCompleteCustomSource = source;
-            SearchBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+			SearchBox.AutoCompleteCustomSource = source;
+			SearchBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
-            AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
+			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			DoTabs();
 			DoFocus();
 		}
@@ -57,7 +57,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
 
-			foreach(InputWidget w in _inputWidgets)
+			foreach (InputWidget w in _inputWidgets)
 			{
 				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
 				b.Bindings = w.Text;
@@ -114,7 +114,7 @@ namespace BizHawk.MultiClient
 					InputWidget w = new InputWidget()
 					{
 						Bindings = b.Bindings,
-						Location = new Point(_x + iw_offset_x , _y + iw_offset_y),
+						Location = new Point(_x + iw_offset_x, _y + iw_offset_y),
 						AutoTab = AutoTabCheckBox.Checked,
 						Width = iw_width,
 						WidgetName = b.DisplayName,
@@ -172,29 +172,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            //Tab or Enter
-            if (!e.Control && !e.Alt && !e.Shift &&
-                (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
-            {
-                string user_selection = SearchBox.Text;
+		private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			//Tab or Enter
+			if (!e.Control && !e.Alt && !e.Shift &&
+				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
+			{
+				string user_selection = SearchBox.Text;
 
-                Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
+				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
 
-                //Found
-                if (b != null)
-                {
-                    InputWidget w = _inputWidgets.FirstOrDefault(x => x.WidgetName == b.DisplayName);
-                    if (w != null)
-                    {
-                        HotkeyTabControl.SelectTab((w.Parent as TabPage));
-                        w.Focus();
-                    }
-                }
+				//Found
+				if (b != null)
+				{
+					InputWidget w = _inputWidgets.FirstOrDefault(x => x.WidgetName == b.DisplayName);
+					if (w != null)
+					{
+						HotkeyTabControl.SelectTab((w.Parent as TabPage));
+						w.Focus();
+					}
+				}
 
-                e.Handled = true;
-            }
-        }
+				e.Handled = true;
+			}
+		}
 	}
 }

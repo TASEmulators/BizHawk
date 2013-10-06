@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.config.ControllerConfig
+namespace BizHawk.MultiClient
 {
 	public partial class AnalogBindControl : UserControl
 	{
