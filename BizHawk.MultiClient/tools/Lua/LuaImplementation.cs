@@ -3008,21 +3008,17 @@ namespace BizHawk.MultiClient
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
-				if (gg.Address > 0 && gg.Value > 0)
+				if (gg.Address.HasValue && gg.Value.HasValue)
 				{
-					LegacyCheat c = new LegacyCheat
-						{
-							Name = code,
-							Domain = Global.Emulator.MemoryDomains[1],
-							Address = gg.Address,
-							Value = (byte) gg.Value
-						};
-					if (gg.Compare != -1)
-					{
-						c.Compare = (byte)gg.Compare;
-					}
-					c.Enable();
-					Global.CheatList_Legacy.Add(c);
+					Watch watch = Watch.GenerateWatch(
+						Global.Emulator.MemoryDomains[1],
+						gg.Address.Value,
+						Watch.WatchSize.Byte,
+						Watch.DisplayType.Hex,
+						code,
+						false);
+
+					Global.CheatList.Add(new Cheat(watch, gg._compare, enabled: true));
 				}
 			}
 		}
@@ -3033,20 +3029,10 @@ namespace BizHawk.MultiClient
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
-				if (gg.Address > 0 && gg.Value > 0)
+				if (gg.Address.HasValue && gg.Value.HasValue)
 				{
-					LegacyCheat c = new LegacyCheat
-						{
-							Name = code,
-							Domain = Global.Emulator.MemoryDomains[1],
-							Address = gg.Address,
-							Value = (byte) gg.Value
-						};
-					if (gg.Compare != -1)
-					{
-						c.Compare = (byte)gg.Compare;
-					}
-					Global.CheatList_Legacy.Remove(Global.Emulator.MemoryDomains[1], c.Address);
+					var cheats = Global.CheatList.Where(x => x.Address == gg._address);
+					Global.CheatList.RemoveRange(cheats);
 				}
 			}
 		}

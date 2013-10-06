@@ -127,6 +127,7 @@
 			this.CompareBox.Location = new System.Drawing.Point(87, 39);
 			this.CompareBox.MaxLength = 2;
 			this.CompareBox.Name = "CompareBox";
+			this.CompareBox.Nullable = true;
 			this.CompareBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.CompareBox.Size = new System.Drawing.Size(27, 20);
 			this.CompareBox.TabIndex = 22;
@@ -138,6 +139,7 @@
 			this.ValueBox.Location = new System.Drawing.Point(87, 65);
 			this.ValueBox.MaxLength = 2;
 			this.ValueBox.Name = "ValueBox";
+			this.ValueBox.Nullable = true;
 			this.ValueBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.ValueBox.Size = new System.Drawing.Size(27, 20);
 			this.ValueBox.TabIndex = 23;
@@ -149,6 +151,7 @@
 			this.AddressBox.Location = new System.Drawing.Point(75, 13);
 			this.AddressBox.MaxLength = 4;
 			this.AddressBox.Name = "AddressBox";
+			this.AddressBox.Nullable = true;
 			this.AddressBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.AddressBox.Size = new System.Drawing.Size(39, 20);
 			this.AddressBox.TabIndex = 21;
@@ -157,7 +160,7 @@
 			// AddCheat
 			// 
 			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddCheat.Location = new System.Drawing.Point(202, 235);
+			this.AddCheat.Location = new System.Drawing.Point(202, 230);
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(69, 21);
 			this.AddCheat.TabIndex = 33;
@@ -361,7 +364,7 @@
 			this.groupBox1.Controls.Add(this.AddressBox);
 			this.groupBox1.Controls.Add(this.ValueBox);
 			this.groupBox1.Controls.Add(this.CompareBox);
-			this.groupBox1.Location = new System.Drawing.Point(31, 163);
+			this.groupBox1.Location = new System.Drawing.Point(31, 158);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(126, 93);
 			this.groupBox1.TabIndex = 5;
@@ -419,11 +422,12 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(302, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(292, 24);
 			this.menuStrip1.TabIndex = 8;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -470,7 +474,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(302, 262);
+			this.ClientSize = new System.Drawing.Size(292, 260);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);
@@ -481,7 +485,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(312, 295);
+			this.MaximumSize = new System.Drawing.Size(312, 302);
 			this.MinimumSize = new System.Drawing.Size(312, 295);
 			this.Name = "NESGameGenie";
 			this.ShowIcon = false;

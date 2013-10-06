@@ -9,10 +9,14 @@ namespace BizHawk.MultiClient
 {
 	public partial class NESGameGenie : Form
 	{
-		public int Address = -1;
-		public int Value = -1;
-		public int Compare = -1;
+		public int? _address = null;
+		public int? _value = null;
+		public int? _compare = null;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
+
+		public int? Address { get { return _address; } }
+		public int? Value { get { return _value; } }
+		public int? Compare { get { return _compare; } }
 
 		public NESGameGenie()
 		{
@@ -42,7 +46,9 @@ namespace BizHawk.MultiClient
 			AddCheat.Enabled = false;
 
 			if (Global.Config.NESGGSaveWindowPosition && Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
+			{
 				Location = new Point(Global.Config.NESGGWndx, Global.Config.NESGGWndy);
+			}
 		}
 
 		private void SaveConfigSettings()
@@ -78,105 +84,118 @@ namespace BizHawk.MultiClient
 				//Char # |   1   |   2   |   3   |   4   |   5   |   6   |
 				//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 				//maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|5|E|F|G|
-				Value = 0;
-				Address = 0x8000;
+				_value = 0;
+				_address = 0x8000;
 				int x;
 
 				GameGenieTable.TryGetValue(code[0], out x);
-				Value |= (x & 0x07);
-				Value |= (x & 0x08) << 4;
+				_value |= (x & 0x07);
+				_value |= (x & 0x08) << 4;
 
 				GameGenieTable.TryGetValue(code[1], out x);
-				Value |= (x & 0x07) << 4;
-				Address |= (x & 0x08) << 4;
+				_value |= (x & 0x07) << 4;
+				_address |= (x & 0x08) << 4;
 
 				GameGenieTable.TryGetValue(code[2], out x);
-				Address |= (x & 0x07) << 4;
+				_address |= (x & 0x07) << 4;
 
 				GameGenieTable.TryGetValue(code[3], out x);
-				Address |= (x & 0x07) << 12;
-				Address |= (x & 0x08);
+				_address |= (x & 0x07) << 12;
+				_address |= (x & 0x08);
 
 				GameGenieTable.TryGetValue(code[4], out x);
-				Address |= (x & 0x07);
-				Address |= (x & 0x08) << 8;
+				_address |= (x & 0x07);
+				_address |= (x & 0x08) << 8;
 
 				GameGenieTable.TryGetValue(code[5], out x);
-				Address |= (x & 0x07) << 8;
-				Value |= (x & 0x08);
+				_address |= (x & 0x07) << 8;
+				_value |= (x & 0x08);
 
 				SetProperties();
-
 			}
 			else if (code.Length == 8)
 			{
 				//Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
 				//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 				//maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|%|E|F|G|!|^|&|*|5|@|#|$|
-				Value = 0;
-				Address = 0x8000;
-				Compare = 0;
+				_value = 0;
+				_address = 0x8000;
+				_compare = 0;
 				int x;
 
 				GameGenieTable.TryGetValue(code[0], out x);
-				Value |= (x & 0x07);
-				Value |= (x & 0x08) << 4;
+				_value |= (x & 0x07);
+				_value |= (x & 0x08) << 4;
 
 				GameGenieTable.TryGetValue(code[1], out x);
-				Value |= (x & 0x07) << 4;
-				Address |= (x & 0x08) << 4;
+				_value |= (x & 0x07) << 4;
+				_address |= (x & 0x08) << 4;
 
 				GameGenieTable.TryGetValue(code[2], out x);
-				Address |= (x & 0x07) << 4;
+				_address |= (x & 0x07) << 4;
 
 				GameGenieTable.TryGetValue(code[3], out x);
-				Address |= (x & 0x07) << 12;
-				Address |= (x & 0x08);
+				_address |= (x & 0x07) << 12;
+				_address |= (x & 0x08);
 
 				GameGenieTable.TryGetValue(code[4], out x);
-				Address |= (x & 0x07);
-				Address |= (x & 0x08) << 8;
+				_address |= (x & 0x07);
+				_address |= (x & 0x08) << 8;
 
 				GameGenieTable.TryGetValue(code[5], out x);
-				Address |= (x & 0x07) << 8;
-				Compare |= (x & 0x08);
+				_address |= (x & 0x07) << 8;
+				_compare |= (x & 0x08);
 
 				GameGenieTable.TryGetValue(code[6], out x);
-				Compare |= (x & 0x07);
-				Compare |= (x & 0x08) << 4;
+				_compare |= (x & 0x07);
+				_compare |= (x & 0x08) << 4;
 
 				GameGenieTable.TryGetValue(code[7], out x);
-				Compare |= (x & 0x07) << 4;
-				Value |= (x & 0x08);
+				_compare |= (x & 0x07) << 4;
+				_value |= (x & 0x08);
 				SetProperties();
 			}
 		}
 
 		private void SetProperties()
 		{
-			if (Address >= 0)
-				AddressBox.Text = String.Format("{0:X4}", Address);
+			if (_address.HasValue)
+			{
+				AddressBox.SetFromRawInt(_address.Value);
+			}
 			else
-				AddressBox.Text = "";
+			{
+				AddressBox.ResetText();
+			}
 
-			if (Compare >= 0)
-				CompareBox.Text = String.Format("{0:X2}", Compare);
+			if (_compare.HasValue)
+			{
+				CompareBox.SetFromRawInt(_compare.Value);
+			}
 			else
-				CompareBox.Text = "";
+			{
+				CompareBox.ResetText();
+			}
 
-			if (Value >= 0)
-				ValueBox.Text = String.Format("{0:X2}", Value);
-
+			if (_value.HasValue)
+			{
+				ValueBox.SetFromRawInt(_value.Value);
+			}
+			else
+			{
+				ValueBox.ResetText();
+			}
 		}
 
 		private void ClearProperties()
 		{
-			Address = -1;
-			Value = -1;
-			Compare = -1;
-			AddressBox.Text = "";
-			CompareBox.Text = "";
-			ValueBox.Text = "";
+			_address = _value = _compare = null;
+
+			AddressBox.Text =
+				CompareBox.Text =
+				ValueBox.Text =
+				String.Empty;
+
 			AddCheat.Enabled = false;
 		}
 
@@ -228,7 +247,7 @@ namespace BizHawk.MultiClient
 				int a = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 				if (ValueBox.Text.Length > 0)
 				{
-					Address = a;
+					_address = a;
 					EncodeGameGenie();
 				}
 			}
@@ -246,14 +265,14 @@ namespace BizHawk.MultiClient
 					{
 						if (ValueBox.Text.Length > 0 && AddressBox.Text.Length > 0)
 						{
-							Compare = c;
+							_compare = c;
 							EncodeGameGenie();
 						}
 					}
 				}
 				else
 				{
-					Compare = -1;
+					_compare = -1;
 					EncodeGameGenie();
 				}
 			}
@@ -277,7 +296,7 @@ namespace BizHawk.MultiClient
 				{
 					if (AddressBox.Text.Length > 0)
 					{
-						Value = v;
+						_value = v;
 						EncodeGameGenie();
 					}
 				}
@@ -289,29 +308,29 @@ namespace BizHawk.MultiClient
 		private void EncodeGameGenie()
 		{
 			char[] letters = { 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
-			if (Address >= 0x8000)
-				Address -= 0x8000;
+			if (_address >= 0x8000)
+				_address -= 0x8000;
 			GameGenieCode.Text = "";
 			byte[] num = { 0, 0, 0, 0, 0, 0, 0, 0 };
-			num[0] = (byte)((Value & 7) + ((Value >> 4) & 8));
-			num[1] = (byte)(((Value >> 4) & 7) + ((Address >> 4) & 8));
-			num[2] = (byte)(((Address >> 4) & 7));
-			num[3] = (byte)((Address >> 12) + (Address & 8));
-			num[4] = (byte)((Address & 7) + ((Address >> 8) & 8));
-			num[5] = (byte)(((Address >> 8) & 7));
+			num[0] = (byte)((_value & 7) + ((_value >> 4) & 8));
+			num[1] = (byte)(((_value >> 4) & 7) + ((_address >> 4) & 8));
+			num[2] = (byte)(((_address >> 4) & 7));
+			num[3] = (byte)((_address >> 12) + (_address & 8));
+			num[4] = (byte)((_address & 7) + ((_address >> 8) & 8));
+			num[5] = (byte)(((_address >> 8) & 7));
 
-			if (Compare < 0 || CompareBox.Text.Length == 0)
+			if (_compare < 0 || CompareBox.Text.Length == 0)
 			{
-				num[5] += (byte)(Value & 8);
+				num[5] += (byte)(_value & 8);
 				for (int x = 0; x < 6; x++)
 					GameGenieCode.Text += letters[num[x]];
 			}
 			else
 			{
 				num[2] += 8;
-				num[5] += (byte)(Compare & 8);
-				num[6] = (byte)((Compare & 7) + ((Compare >> 4) & 8));
-				num[7] = (byte)(((Compare >> 4) & 7) + (Value & 8));
+				num[5] += (byte)(_compare & 8);
+				num[6] = (byte)((_compare & 7) + ((_compare >> 4) & 8));
+				num[7] = (byte)(((_compare >> 4) & 7) + (_value & 8));
 				for (int x = 0; x < 8; x++)
 					GameGenieCode.Text += letters[num[x]];
 			}
@@ -334,39 +353,26 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				LegacyCheat c = new LegacyCheat { Name = GameGenieCode.Text };
-
-				if (String.IsNullOrWhiteSpace(AddressBox.Text))
+				if (String.IsNullOrWhiteSpace(AddressBox.Text) || (String.IsNullOrWhiteSpace(ValueBox.Text)))
 				{
 					return;
 				}
-				else if (String.IsNullOrWhiteSpace(ValueBox.Text))
-				{
-					return;
-				}
-				c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-				c.Value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
 
+				Watch watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains[1], /*System Bus*/
+					AddressBox.ToRawInt(),
+					Watch.WatchSize.Byte,
+					Watch.DisplayType.Hex,
+					String.Empty,
+					false);
+
+				int? compare = null;
 				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
 				{
-					try
-					{
-						c.Compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
-					}
-					catch
-					{
-						c.Compare = null;
-					}
-				}
-				else
-				{
-					c.Compare = null;
+					compare = CompareBox.ToRawInt();
 				}
 
-				c.Domain = Global.Emulator.MemoryDomains[1]; //System Bus only
-				c.Enable();
-
-				Global.CheatList_Legacy.Add(c);
+				Global.CheatList.Add(new Cheat(watch, compare, enabled: true));
 			}
 		}
 
