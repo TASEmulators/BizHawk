@@ -3010,7 +3010,7 @@ namespace BizHawk.MultiClient
 				gg.DecodeGameGenieCode(code);
 				if (gg.Address > 0 && gg.Value > 0)
 				{
-					Cheat c = new Cheat
+					LegacyCheat c = new LegacyCheat
 						{
 							Name = code,
 							Domain = Global.Emulator.MemoryDomains[1],
@@ -3022,7 +3022,7 @@ namespace BizHawk.MultiClient
 						c.Compare = (byte)gg.Compare;
 					}
 					c.Enable();
-					Global.MainForm.Cheats1.AddCheat(c);
+					Global.CheatList_Legacy.Add(c);
 				}
 			}
 		}
@@ -3035,7 +3035,7 @@ namespace BizHawk.MultiClient
 				gg.DecodeGameGenieCode(code);
 				if (gg.Address > 0 && gg.Value > 0)
 				{
-					Cheat c = new Cheat
+					LegacyCheat c = new LegacyCheat
 						{
 							Name = code,
 							Domain = Global.Emulator.MemoryDomains[1],
@@ -3046,7 +3046,7 @@ namespace BizHawk.MultiClient
 					{
 						c.Compare = (byte)gg.Compare;
 					}
-					Global.CheatList.Remove(Global.Emulator.MemoryDomains[1], c.Address);
+					Global.CheatList_Legacy.Remove(Global.Emulator.MemoryDomains[1], c.Address);
 				}
 			}
 		}

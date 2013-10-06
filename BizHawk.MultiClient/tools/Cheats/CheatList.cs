@@ -8,15 +8,15 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public class NewCheatList : IEnumerable<NewCheat>
+	public class CheatList : IEnumerable<Cheat>
 	{
-		private List<NewCheat> _cheatList = new List<NewCheat>();
+		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _currentFileName = String.Empty;
 		private bool _changes = false;
 
-		public NewCheatList() { }
+		public CheatList() { }
 
-		public IEnumerator<NewCheat> GetEnumerator()
+		public IEnumerator<Cheat> GetEnumerator()
 		{
 			return _cheatList.GetEnumerator();
 		}
@@ -26,9 +26,27 @@ namespace BizHawk.MultiClient
 			return GetEnumerator();
 		}
 
-		public NewCheat this[int index]
+		public Cheat this[int index]
 		{
 			get { return _cheatList[index]; }
+		}
+
+		/// <summary>
+		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
+		/// </summary>
+		/// <returns></returns>
+		public bool AttemptToLoadCheatFile()
+		{
+			var file = new FileInfo(GenerateDefaultFilename());
+
+			if (file.Exists)
+			{
+				return Load(file.FullName, false);
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public void FlagChanges()
@@ -46,7 +64,7 @@ namespace BizHawk.MultiClient
 			get { return _cheatList.Count(x => !x.IsSeparator); }
 		}
 
-		public int ActiveCheatCount
+		public int ActiveCount
 		{
 			get { return _cheatList.Count(x => x.Enabled); }
 		}
@@ -56,6 +74,7 @@ namespace BizHawk.MultiClient
 			_cheatList.Clear();
 			_currentFileName = String.Empty;
 			_changes = false;
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void Update()
@@ -63,22 +82,35 @@ namespace BizHawk.MultiClient
 			_cheatList.ForEach(x => x.Pulse());
 		}
 
-		public void Add(NewCheat c)
+		public void Add(Cheat c)
 		{
 			_changes = true;
 			_cheatList.Add(c);
+			Global.MainForm.UpdateCheatStatus();
 		}
 
-		public void Insert(int index, NewCheat c)
+		public void Insert(int index, Cheat c)
 		{
 			_changes = true;
 			_cheatList.Insert(index, c);
+			Global.MainForm.UpdateCheatStatus();
 		}
 
-		public void Remove(NewCheat c)
+		public void Remove(Cheat c)
 		{
 			_changes = true;
 			_cheatList.Remove(c);
+			Global.MainForm.UpdateCheatStatus();
+		}
+
+		public void RemoveRange(IEnumerable<Cheat> cheats)
+		{
+			_changes = true;
+			foreach (var cheat in cheats)
+			{
+				_cheatList.Remove(cheat);
+			}
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public bool Changes
@@ -90,18 +122,21 @@ namespace BizHawk.MultiClient
 		{
 			_changes = true;
 			_cheatList.Clear();
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void DisableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Disable());
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void EnableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Enable());
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public bool IsActive(MemoryDomain domain, int address)
@@ -147,7 +182,28 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch w = Watch.GenerateWatch(domain, address, size, Watch.DisplayType.Unsigned, String.Empty, endian);
-				_cheatList.Add(new NewCheat(w, compare: null, enabled: true));
+				_cheatList.Add(new Cheat(w, compare: null, enabled: true));
+				Global.MainForm.UpdateCheatStatus();
+			}
+		}
+
+		public void SaveOnClose()
+		{
+			if (Global.Config.CheatsAutoSaveOnClose)
+			{
+				if (_changes && _cheatList.Any())
+				{
+					if (String.IsNullOrWhiteSpace(_currentFileName))
+					{
+						_currentFileName = GenerateDefaultFilename();
+					}
+
+					SaveFile(_currentFileName);
+				}
+				else if (!_cheatList.Any() && !String.IsNullOrWhiteSpace(_currentFileName))
+				{
+					new FileInfo(_currentFileName).Delete();
+				}
 			}
 		}
 
@@ -206,7 +262,7 @@ namespace BizHawk.MultiClient
 					{
 						if (s == "----")
 						{
-							_cheatList.Add(NewCheat.Separator);
+							_cheatList.Add(Cheat.Separator);
 						}
 						else
 						{
@@ -255,7 +311,7 @@ namespace BizHawk.MultiClient
 								BIGENDIAN
 							);
 
-							NewCheat c = new NewCheat(w, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
+							Cheat c = new Cheat(w, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
 							_cheatList.Add(c);
 						}
 					}
@@ -266,6 +322,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
+			Global.MainForm.UpdateCheatStatus();
 			return true;
 		}
 
@@ -542,7 +599,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog();
 			if (!String.IsNullOrWhiteSpace(_currentFileName))
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.CurrentCheatFile);
+				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList_Legacy.CurrentCheatFile);
 			}
 			else if (!(Global.Emulator is NullEmulator))
 			{

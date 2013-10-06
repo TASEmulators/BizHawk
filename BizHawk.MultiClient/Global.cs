@@ -22,8 +22,8 @@ namespace BizHawk.MultiClient
 		public static IEmulator Emulator;
 		public static CoreComm CoreComm;
 		public static GameInfo Game;
+		public static LegacyCheatList CheatList_Legacy;
 		public static CheatList CheatList;
-		public static NewCheatList CheatList2;
 		
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;

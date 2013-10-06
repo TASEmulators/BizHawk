@@ -94,7 +94,7 @@ namespace BizHawk.MultiClient
 			{
 				Color nextColor = Color.White;
 
-				bool isCheat = Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value);
+				bool isCheat = Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value);
 				bool isWeeded = Global.Config.RamSearchPreviewMode && Searches.Preview(Searches[index].Address.Value) && !forcePreviewClear;
 
 				if (isCheat)
@@ -1165,14 +1165,14 @@ namespace BizHawk.MultiClient
 				ViewInHexEditorContextMenuItem.Visible =
 				SelectedIndices.Count > 0;
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.Any();
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
-			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.Any());
+			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.ActiveCount > 0);
 
 			bool allCheats = true;
 			foreach (int index in SelectedIndices)
 			{
-				if (!Global.CheatList.IsActiveCheat(Settings.Domain, Searches[index].Address.Value))
+				if (!Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value))
 				{
 					allCheats = false;
 				}

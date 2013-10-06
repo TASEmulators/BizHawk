@@ -2984,7 +2984,6 @@
 			this.newCheatsToolStripMenuItem.Name = "newCheatsToolStripMenuItem";
 			this.newCheatsToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.newCheatsToolStripMenuItem.Text = "New Cheats";
-			this.newCheatsToolStripMenuItem.Click += new System.EventHandler(this.newCheatsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 

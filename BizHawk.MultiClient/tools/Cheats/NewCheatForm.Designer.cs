@@ -756,9 +756,9 @@
 			this.Controls.Add(this.CheatsMenu);
 			this.Controls.Add(this.CheatListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(285, 311);
+			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "NewCheatForm";
-			this.Text = "New Cheat form";
+			this.Text = "Cheats";
 			this.Load += new System.EventHandler(this.NewCheatForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);

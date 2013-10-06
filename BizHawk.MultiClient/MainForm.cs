@@ -96,7 +96,7 @@ namespace BizHawk.MultiClient
 		private GBtools.GBGPUView _gbgpuview = null;
 		private GBAtools.GBAGPUView _gbagpuview = null;
 		private PCEBGViewer _pcebgviewer = null;
-		private Cheats _cheats = null;
+		private NewCheatForm _cheats = null;
 		private ToolBox _toolbox = null;
 		private TI83KeyPad _ti83pad = null;
 		private TAStudio _tastudio = null;
@@ -110,7 +110,6 @@ namespace BizHawk.MultiClient
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
-
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
@@ -120,7 +119,6 @@ namespace BizHawk.MultiClient
 		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
 		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
 		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
-		public Cheats Cheats1 { get { if (_cheats == null) _cheats = new Cheats(); return _cheats; } set { _cheats = value; } }
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
@@ -135,6 +133,11 @@ namespace BizHawk.MultiClient
 
 		//TODO: eventually start doing this, rather than tools attempting to talk to tools
 		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
+		public void Cheats_Restart()
+		{
+			if (_cheats != null) _cheats.Restart();
+			else Global.CheatList.NewList();
+		}
 
 #if WINDOWS
 		private LuaConsole _luaconsole = null;
@@ -171,8 +174,8 @@ namespace BizHawk.MultiClient
 
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
+			Global.CheatList_Legacy = new LegacyCheatList();
 			Global.CheatList = new CheatList();
-			Global.CheatList2 = new NewCheatList();
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
 
@@ -200,7 +203,7 @@ namespace BizHawk.MultiClient
 
 			Closing += (o, e) =>
 			{
-				Global.CheatList.SaveSettings();
+				Global.CheatList.SaveOnClose();
 				CloseGame();
 				Global.MovieSession.Movie.Stop();
 				CloseTools();
@@ -1592,13 +1595,13 @@ namespace BizHawk.MultiClient
 				if (_ti83pad != null) TI83KeyPad1.Restart();
 				if (_tastudio != null) TAStudio1.Restart();
 				if (_vpad != null) VirtualPadForm1.Restart();
-				if (_cheats != null) Cheats1.Restart();
+				Cheats_Restart();
 				if (_toolbox != null) ToolBox1.Restart();
 				if (_tracelogger != null) TraceLogger1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
-					if (Global.CheatList.AttemptLoadCheatFile())
+					if (Global.CheatList.AttemptToLoadCheatFile())
 					{
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
@@ -2863,13 +2866,19 @@ namespace BizHawk.MultiClient
 
 		public void LoadCheatsWindow()
 		{
-			if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
+			if (_cheats == null)
 			{
-				Cheats1 = new Cheats();
-				Cheats1.Show();
+				_cheats = new NewCheatForm();
+			}
+
+			if (!_cheats.IsHandleCreated || _cheats.IsDisposed)
+			{
+				_cheats.Show();
 			}
 			else
-				Cheats1.Focus();
+			{
+				_cheats.Focus();
+			}
 		}
 
 		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
@@ -3200,7 +3209,7 @@ namespace BizHawk.MultiClient
 			GBAGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
-			Cheats1.Restart();
+			Cheats_Restart();
 			ToolBox1.Restart();
 #if WINDOWS
 			LuaConsole1.Restart();
@@ -3241,7 +3250,7 @@ namespace BizHawk.MultiClient
 			CloseForm(GBGPUView1);
 			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
-			CloseForm(Cheats1);
+			CloseForm(_cheats);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
 			CloseForm(TraceLogger1);
@@ -3253,7 +3262,7 @@ namespace BizHawk.MultiClient
 
 		private void CloseForm(Form form)
 		{
-			if (form.IsHandleCreated) form.Close();
+			if (form != null && form.IsHandleCreated) form.Close();
 		}
 
 		private void PreviousSlot()
@@ -4176,11 +4185,6 @@ namespace BizHawk.MultiClient
 			{
 				RamWatch1.Focus();
 			}
-		}
-
-		private void newCheatsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new NewCheatForm().Show();
 		}
 	}
 }

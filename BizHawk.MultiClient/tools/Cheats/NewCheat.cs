@@ -5,11 +5,11 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-	public class NewCheat
+	public class Cheat
 	{
 		#region Constructors
 
-		public NewCheat(Watch watch, int? compare = null, bool enabled = true)
+		public Cheat(Watch watch, int? compare = null, bool enabled = true)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public NewCheat(NewCheat cheat)
+		public Cheat(Cheat cheat)
 		{
 			if (cheat.IsSeparator)
 			{
@@ -42,9 +42,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static NewCheat Separator
+		public static Cheat Separator
 		{
-			get { return new NewCheat(SeparatorWatch.Instance, null, false); }
+			get { return new Cheat(SeparatorWatch.Instance, null, false); }
 		}
 
 		#endregion

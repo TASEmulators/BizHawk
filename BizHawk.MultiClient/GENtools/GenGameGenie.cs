@@ -224,8 +224,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is Genesis)
 			{
-				Cheat c = new Cheat();
-				Cheat d = new Cheat();
+				LegacyCheat c = new LegacyCheat();
+				LegacyCheat d = new LegacyCheat();
 				if (cheatname.Text.Length > 0)
 				{
 					c.Name = cheatname.Text + " Part 1";
@@ -269,10 +269,10 @@ namespace BizHawk.MultiClient
 					{
 						c.Domain = Global.Emulator.MemoryDomains[x];
 						c.Enable();
-						Global.MainForm.Cheats1.AddCheat(c);
+						Global.CheatList_Legacy.Add(c);
 						d.Domain = Global.Emulator.MemoryDomains[x];
 						d.Enable();
-						Global.MainForm.Cheats1.AddCheat(d);
+						Global.CheatList_Legacy.Add(d);
 						break;
 					}
 

@@ -334,7 +334,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				Cheat c = new Cheat { Name = GameGenieCode.Text };
+				LegacyCheat c = new LegacyCheat { Name = GameGenieCode.Text };
 
 				if (String.IsNullOrWhiteSpace(AddressBox.Text))
 				{
@@ -366,7 +366,7 @@ namespace BizHawk.MultiClient
 				c.Domain = Global.Emulator.MemoryDomains[1]; //System Bus only
 				c.Enable();
 
-				Global.MainForm.Cheats1.AddCheat(c);
+				Global.CheatList_Legacy.Add(c);
 			}
 		}
 

@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 
 		#region Privates
 
-		private NewCheat _cheat;
+		private Cheat _cheat;
 		private const string HexInd = "0x";
 		private bool _loading = false;
 		private bool _editmode = false;
@@ -237,7 +237,7 @@ namespace BizHawk.MultiClient
 
 		#region API
 
-		public void SetCheat(NewCheat cheat)
+		public void SetCheat(Cheat cheat)
 		{
 			_editmode = true;
 			_cheat = cheat;
@@ -254,12 +254,12 @@ namespace BizHawk.MultiClient
 
 		public void ClearForm()
 		{
-			_cheat = NewCheat.Separator;
+			_cheat = Cheat.Separator;
 			_editmode = false;
 			SetFormToDefault();
 		}
 
-		public NewCheat Cheat
+		public Cheat Cheat
 		{
 			get
 			{
@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 					NameBox.Text,
 					BigEndianCheckBox.Checked);
 
-				return new NewCheat(w, CompareBox.ToRawInt(), enabled: true);
+				return new Cheat(w, CompareBox.ToRawInt(), enabled: true);
 			}
 		}
 
