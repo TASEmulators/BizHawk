@@ -15,7 +15,7 @@ using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NewCheatForm : Form
+	public partial class Cheats : Form
 	{
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";
@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
 
-		public NewCheatForm()
+		public Cheats()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
