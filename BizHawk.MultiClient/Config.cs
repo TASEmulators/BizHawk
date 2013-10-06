@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 	{
 		public Config()
 		{
-			config.NewControllerConfig.ConfigCheckAllControlDefaults(this);
+			ControllerConfig.ConfigCheckAllControlDefaults(this);
 		}
 
 		public void ResolveDefaults()

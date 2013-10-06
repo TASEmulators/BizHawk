@@ -3,42 +3,41 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BizHawk.MultiClient.config.ControllerConfig;
 
-namespace BizHawk.MultiClient.config
+namespace BizHawk.MultiClient
 {
-	public partial class NewControllerConfig : Form
+	public partial class ControllerConfig : Form
 	{
 		static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
-		static NewControllerConfig()
+		static ControllerConfig()
 		{
 			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
-            ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
-            ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
-            ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
-            ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
-            ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
+			ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
+			ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
+			ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
+			ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
+			ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
 
-            ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
-            ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
-            ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
+			ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
+			ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
+			ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
 
-            ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
-            ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
-            ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
-            ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
+			ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
+			ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
+			ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
+			ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
 
-            ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
+			ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
-            ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
+			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
 
-            //ControllerImages.Add("PSP Controller", Properties.Resources); //TODO
+			//ControllerImages.Add("PSP Controller", Properties.Resources); //TODO
 		}
 
 		const int MAXPLAYERS = 8;
 		string ControllerType;
 
-		private NewControllerConfig()
+		private ControllerConfig()
 		{
 			InitializeComponent();
 		}
@@ -47,7 +46,7 @@ namespace BizHawk.MultiClient.config
 
 		Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
+			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill };
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}
@@ -102,7 +101,7 @@ namespace BizHawk.MultiClient.config
 			else
 			{
 				// create multiple player tabs
-				var tt = new TabControl {Dock = DockStyle.Fill};
+				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageidx = 0;
 				for (int i = 1; i <= MAXPLAYERS; i++)
@@ -131,8 +130,8 @@ namespace BizHawk.MultiClient.config
 		}
 
 		private ControllerDefinition the_definition;
-		
-		public NewControllerConfig(ControllerDefinition def)
+
+		public ControllerConfig(ControllerDefinition def)
 			: this()
 		{
 			the_definition = def;
@@ -186,22 +185,22 @@ namespace BizHawk.MultiClient.config
 			pictureBox1.Size = bmp.Size;
 			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
 
-            //Uberhack
-            if (ControlName == "Commodore 64 Controller")
-            {
-                PictureBox pictureBox2 = new PictureBox();
-                pictureBox2.Image = Properties.Resources.C64Keyboard;
-                pictureBox2.Size = Properties.Resources.C64Keyboard.Size;
-                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
-                pictureBox1.Height /= 2;
-                pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-                pictureBox1.Dock = DockStyle.Top;
-                pictureBox2.Location = new Point(pictureBox1.Location.X, pictureBox1.Location.Y + pictureBox1.Size.Height + 10);
-                tableLayoutPanel1.Controls.Add(pictureBox2, 1, 0);
+			//Uberhack
+			if (ControlName == "Commodore 64 Controller")
+			{
+				PictureBox pictureBox2 = new PictureBox();
+				pictureBox2.Image = Properties.Resources.C64Keyboard;
+				pictureBox2.Size = Properties.Resources.C64Keyboard.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
+				pictureBox1.Height /= 2;
+				pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+				pictureBox1.Dock = DockStyle.Top;
+				pictureBox2.Location = new Point(pictureBox1.Location.X, pictureBox1.Location.Y + pictureBox1.Size.Height + 10);
+				tableLayoutPanel1.Controls.Add(pictureBox2, 1, 0);
 
-                
-                pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-            }
+
+				pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+			}
 		}
 
 		// lazy methods, but they're not called often and actually
@@ -279,40 +278,40 @@ namespace BizHawk.MultiClient.config
 			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
 		}
 
-        private TabControl GetTabControl(System.Windows.Forms.Control.ControlCollection controls)
-        {
-            if (controls != null)
-            {
-                foreach (Control c in controls)
-                {
-                    if (c is TabControl)
-                    {
-                        return (c as TabControl);
-                    }
-                }
-            }
-            return null;
-        }
+		private TabControl GetTabControl(System.Windows.Forms.Control.ControlCollection controls)
+		{
+			if (controls != null)
+			{
+				foreach (Control c in controls)
+				{
+					if (c is TabControl)
+					{
+						return (c as TabControl);
+					}
+				}
+			}
+			return null;
+		}
 
 		private void buttonLoadDefaults_Click(object sender, EventArgs e)
 		{
-            tabControl1.SuspendLayout();
+			tabControl1.SuspendLayout();
 
-            string wasTabbedMain = tabControl1.SelectedTab.Name;
-            TabControl tb1 = GetTabControl(tabPage1.Controls ?? null);
-            TabControl tb2 = GetTabControl(tabPage2.Controls ?? null);
-            TabControl tb3 = GetTabControl(tabPage3.Controls ?? null);
-            int? wasTabbedPage1 = null;
-            int? wasTabbedPage2 = null;
-            int? wasTabbedPage3 = null;
+			string wasTabbedMain = tabControl1.SelectedTab.Name;
+			TabControl tb1 = GetTabControl(tabPage1.Controls ?? null);
+			TabControl tb2 = GetTabControl(tabPage2.Controls ?? null);
+			TabControl tb3 = GetTabControl(tabPage3.Controls ?? null);
+			int? wasTabbedPage1 = null;
+			int? wasTabbedPage2 = null;
+			int? wasTabbedPage3 = null;
 
-            if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
-            if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
-            if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage2 = tb3.SelectedIndex; }
+			if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
+			if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
+			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage2 = tb3.SelectedIndex; }
 
-            tabPage1.Controls.Clear();
-            tabPage2.Controls.Clear();
-            tabPage3.Controls.Clear();
+			tabPage1.Controls.Clear();
+			tabPage2.Controls.Clear();
+			tabPage3.Controls.Clear();
 
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
@@ -321,36 +320,36 @@ namespace BizHawk.MultiClient.config
 			cd = ConfigService.Load(ControlDefaultPath, cd);
 			LoadPanels(cd);
 
-            tabControl1.SelectTab(wasTabbedMain);
+			tabControl1.SelectTab(wasTabbedMain);
 
-            if (wasTabbedPage1.HasValue)
-            {
-                TabControl newTb1 = GetTabControl(tabPage1.Controls ?? null);
-                if (newTb1 != null)
-                {
-                    newTb1.SelectTab(wasTabbedPage1.Value);
-                }
-            }
+			if (wasTabbedPage1.HasValue)
+			{
+				TabControl newTb1 = GetTabControl(tabPage1.Controls ?? null);
+				if (newTb1 != null)
+				{
+					newTb1.SelectTab(wasTabbedPage1.Value);
+				}
+			}
 
-            if (wasTabbedPage2.HasValue)
-            {
-                TabControl newTb2 = GetTabControl(tabPage2.Controls ?? null);
-                if (newTb2 != null)
-                {
-                    newTb2.SelectTab(wasTabbedPage2.Value);
-                }
-            }
+			if (wasTabbedPage2.HasValue)
+			{
+				TabControl newTb2 = GetTabControl(tabPage2.Controls ?? null);
+				if (newTb2 != null)
+				{
+					newTb2.SelectTab(wasTabbedPage2.Value);
+				}
+			}
 
-            if (wasTabbedPage3.HasValue)
-            {
-                TabControl newTb3 = GetTabControl(tabPage3.Controls ?? null);
-                if (newTb3 != null)
-                {
-                    newTb3.SelectTab(wasTabbedPage3.Value);
-                }
-            }
+			if (wasTabbedPage3.HasValue)
+			{
+				TabControl newTb3 = GetTabControl(tabPage3.Controls ?? null);
+				if (newTb3 != null)
+				{
+					newTb3.SelectTab(wasTabbedPage3.Value);
+				}
+			}
 
-            tabControl1.ResumeLayout();
+			tabControl1.ResumeLayout();
 		}
 
 		class ControlDefaults

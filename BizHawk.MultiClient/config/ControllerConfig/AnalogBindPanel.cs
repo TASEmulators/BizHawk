@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace BizHawk.MultiClient.config.ControllerConfig
+namespace BizHawk.MultiClient
 {
 	class AnalogBindPanel : UserControl
 	{

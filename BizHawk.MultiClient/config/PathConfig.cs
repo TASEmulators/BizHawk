@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NewPathConfig : Form
+	public partial class PathConfig : Form
 	{
 		//All path text boxes should do some kind of error checking
 		//config path under base, config will default to %exe%
@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public NewPathConfig()
+		public PathConfig()
 		{
 			InitializeComponent();
 		}

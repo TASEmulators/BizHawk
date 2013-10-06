@@ -169,6 +169,12 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -196,6 +202,12 @@
     <Compile Include="config\GifAnimator.Designer.cs">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\HotkeyConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\HotkeyConfig.Designer.cs">
+      <DependentUpon>HotkeyConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -205,23 +217,11 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\NewControllerConfig.cs">
+    <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\NewControllerConfig.Designer.cs">
-      <DependentUpon>NewControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NewHotkeyWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NewHotkeyWindow.Designer.cs">
-      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NewPathConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NewPathConfig.Designer.cs">
-      <DependentUpon>NewPathConfig.cs</DependentUpon>
+    <Compile Include="config\PathConfig.Designer.cs">
+      <DependentUpon>PathConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathInfo.cs">
       <SubType>Form</SubType>
@@ -575,7 +575,9 @@
       <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
-    <Compile Include="tools\TI83\TI83KeyPad.cs" />
+    <Compile Include="tools\TI83\TI83KeyPad.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
@@ -727,6 +729,9 @@
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
       <DependentUpon>AnalogBindControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -739,14 +744,11 @@
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\NewControllerConfig.resx">
-      <DependentUpon>NewControllerConfig.cs</DependentUpon>
+    <EmbeddedResource Include="config\HotkeyConfig.resx">
+      <DependentUpon>HotkeyConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\NewHotkeyWindow.resx">
-      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NewPathConfig.resx">
-      <DependentUpon>NewPathConfig.cs</DependentUpon>
+    <EmbeddedResource Include="config\PathConfig.resx">
+      <DependentUpon>PathConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.MultiClient
 {
-	partial class NewPathConfig
+	partial class PathConfig
 	{
 		/// <summary>
 		/// Required designer variable.

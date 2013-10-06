@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.config.ControllerConfig
+﻿namespace BizHawk.MultiClient
 {
 	partial class AnalogBindControl
 	{
