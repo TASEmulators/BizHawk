@@ -751,6 +751,8 @@ namespace BizHawk.MultiClient
 			Global.Config.CheatsSaveWindowPosition = true;
 			Global.Config.CheatsAlwaysOnTop = TopMost = false;
 			Global.Config.DisableCheatsOnLoad = false;
+			Global.Config.LoadCheatFileByGame = true;
+			Global.Config.CheatsAutoSaveOnClose = true;
 
 			Global.Config.CheatsColumnIndices = new Dictionary<string, int>
 			{
