@@ -238,63 +238,6 @@
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="FirmwareManager.cs" />
-    <Compile Include="GBAtools\GBAGPUView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBAtools\GBAGPUView.Designer.cs">
-      <DependentUpon>GBAGPUView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBAtools\MobileBmpView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBAtools\MobileBmpView.Designer.cs">
-      <DependentUpon>MobileBmpView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBAtools\MobileDetailView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBAtools\MobileDetailView.Designer.cs">
-      <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\BmpView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GBtools\CGBColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBtools\CGBColorChooserForm.Designer.cs">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\ColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBtools\ColorChooserForm.designer.cs">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\DualGBFileSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GBtools\DualGBFileSelector.Designer.cs">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\DualGBXMLCreator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBtools\DualGBXMLCreator.Designer.cs">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\GBGPUView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBtools\GBGPUView.Designer.cs">
-      <DependentUpon>GBGPUView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GBtools\GBGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GBtools\GBGameGenie.Designer.cs">
-      <DependentUpon>GBGameGenie.cs</DependentUpon>
-    </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
@@ -374,116 +317,14 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NEStools\NameTableViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESDebugger.Designer.cs">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\NESGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESGameGenie.Designer.cs">
-      <DependentUpon>NESGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\NESGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESGraphicsConfig.Designer.cs">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\NESNameTableViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESNameTableViewer.Designer.cs">
-      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\NESPPU.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESPPU.Designer.cs">
-      <DependentUpon>NESPPU.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\NESSoundConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NEStools\NESSoundConfig.Designer.cs">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NEStools\PaletteViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NEStools\PatternViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NEStools\SpriteViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GENtools\GenGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GENtools\GenGameGenie.Designer.cs">
-      <DependentUpon>GenGameGenie.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\NewPathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="config\NewPathConfig.Designer.cs">
       <DependentUpon>NewPathConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCEtools\PCEBGCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="PCEtools\PCEBGViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PCEtools\PCEBGViewer.Designer.cs">
-      <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PCEtools\PCEGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PCEtools\PCEGraphicsConfig.Designer.cs">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SATTools\SaturnPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SATTools\SaturnPrefs.Designer.cs">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SNESTools\SNESGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SNESTools\SNESGameGenie.Designer.cs">
-      <DependentUpon>SNESGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SNESTools\SNESGraphicsDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SNESTools\SNESGraphicsDebugger.Designer.cs">
-      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SNESTools\SNESGraphicsViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SNESTools\SNESOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SNESTools\SNESOptions.Designer.cs">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="N64tools\N64VideoPluginconfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="N64tools\N64VideoPluginconfig.Designer.cs">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\Cheats\Cheat.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
@@ -498,6 +339,69 @@
       <DependentUpon>CheatForm.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Cheats\CheatList.cs" />
+    <Compile Include="tools\GBA\GBAGPUView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GBA\GBAGPUView.Designer.cs">
+      <DependentUpon>GBAGPUView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GBA\MobileBmpView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GBA\MobileBmpView.Designer.cs">
+      <DependentUpon>MobileBmpView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GBA\MobileDetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
+      <DependentUpon>MobileDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\BmpView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\GB\CGBColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\CGBColorChooserForm.Designer.cs">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\ColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\ColorChooserForm.Designer.cs">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\DualGBFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\GB\DualGBFileSelector.Designer.cs">
+      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\DualGBXMLCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\DualGBXMLCreator.Designer.cs">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\GBGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\GBGameGenie.Designer.cs">
+      <DependentUpon>GBGameGenie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GB\GBGPUView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GB\GBGPUView.Designer.cs">
+      <DependentUpon>GBGPUView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Genesis\GenGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Genesis\GenGameGenie.Designer.cs">
+      <DependentUpon>GenGameGenie.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexEditor\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -565,7 +469,114 @@
     <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\N64\N64VideoPluginconfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\N64\N64VideoPluginconfig.Designer.cs">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\MovieConvert.cs" />
+    <Compile Include="tools\NES\NameTableViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESDebugger.Designer.cs">
+      <DependentUpon>NESDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESGameGenie.Designer.cs">
+      <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESGraphicsConfig.Designer.cs">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESNameTableViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESNameTableViewer.Designer.cs">
+      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESPPU.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESPPU.Designer.cs">
+      <DependentUpon>NESPPU.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESSoundConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESSoundConfig.Designer.cs">
+      <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\PaletteViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\NES\PatternViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\NES\SpriteViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCEBGCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCEBGViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
+      <DependentUpon>PCEBGViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\PCE\PCEGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCEGraphicsConfig.Designer.cs">
+      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Saturn\SaturnPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Saturn\SaturnPrefs.Designer.cs">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\SMS\SMSGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SMS\SMSGraphicsConfig.Designer.cs">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\SNES\SNESGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SNES\SNESGameGenie.Designer.cs">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\SNES\SNESGraphicsDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SNES\SNESGraphicsDebugger.Designer.cs">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\SNES\SNESOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SNES\SNESOptions.Designer.cs">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
+    <Compile Include="tools\TI83\TI83KeyPad.cs" />
+    <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
+      <DependentUpon>TI83KeyPad.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\ToolHelpers.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
@@ -738,34 +749,6 @@
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GBAtools\GBAGPUView.resx">
-      <DependentUpon>GBAGPUView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBAtools\MobileBmpView.resx">
-      <DependentUpon>MobileBmpView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBAtools\MobileDetailView.resx">
-      <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\CGBColorChooserForm.resx">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\DualGBFileSelector.resx">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\DualGBXMLCreator.resx">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\GBGPUView.resx">
-      <DependentUpon>GBGPUView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GBtools\GBGameGenie.resx">
-      <DependentUpon>GBGameGenie.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -780,44 +763,13 @@
       <DependentUpon>NameStateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESSoundConfig.resx">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GENtools\GenGameGenie.resx">
-      <DependentUpon>GenGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\NewPathConfig.resx">
       <DependentUpon>NewPathConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PCEtools\PCEBGViewer.resx">
-      <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PCEtools\PCEGraphicsConfig.resx">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SATTools\SaturnPrefs.resx">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SNESTools\SNESGameGenie.resx">
-      <DependentUpon>SNESGameGenie.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
-      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SNESTools\SNESOptions.resx">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="N64tools\N64VideoPluginconfig.resx">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -829,6 +781,36 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatForm.resx">
       <DependentUpon>CheatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
+      <DependentUpon>GBAGPUView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GBA\MobileBmpView.resx">
+      <DependentUpon>MobileBmpView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
+      <DependentUpon>MobileDetailView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\CGBColorChooserForm.resx">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\ColorChooserForm.resx">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\DualGBFileSelector.resx">
+      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\DualGBXMLCreator.resx">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
+      <DependentUpon>GBGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GB\GBGPUView.resx">
+      <DependentUpon>GBGPUView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Genesis\GenGameGenie.resx">
+      <DependentUpon>GenGameGenie.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
@@ -856,6 +838,54 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaWriterColorConfig.resx">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\N64\N64VideoPluginconfig.resx">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESDebugger.resx">
+      <DependentUpon>NESDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
+      <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESGraphicsConfig.resx">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESNameTableViewer.resx">
+      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESPPU.resx">
+      <DependentUpon>NESPPU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESSoundConfig.resx">
+      <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\PatternViewer.resx">
+      <DependentUpon>PatternViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
+      <DependentUpon>PCEBGViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCEGraphicsConfig.resx">
+      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Saturn\SaturnPrefs.resx">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SMS\SMSGraphicsConfig.resx">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SNES\SNESGameGenie.resx">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SNES\SNESOptions.resx">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
+      <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
@@ -907,19 +937,7 @@
     </Compile>
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="SavestateManager.cs" />
-    <Compile Include="SMStools\SMSGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SMStools\SMSGraphicsConfig.Designer.cs">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="Throttle.cs" />
-    <Compile Include="TI83tools\TI83KeyPad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TI83tools\TI83KeyPad.Designer.cs">
-      <DependentUpon>TI83KeyPad.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -996,33 +1014,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="movie\SubtitleMaker.resx">
       <DependentUpon>SubtitleMaker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESDebugger.resx">
-      <DependentUpon>NESDebugger.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESGameGenie.resx">
-      <DependentUpon>NESGameGenie.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESGraphicsConfig.resx">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESNameTableViewer.resx">
-      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\NESPPU.resx">
-      <DependentUpon>NESPPU.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NEStools\PatternViewer.resx">
-      <DependentUpon>PatternViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TI83tools\TI83KeyPad.resx">
-      <DependentUpon>TI83KeyPad.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TraceLogger.resx">
       <DependentUpon>TraceLogger.cs</DependentUpon>
