@@ -525,9 +525,9 @@ namespace BizHawk.MultiClient
 								.Append(cheat.Compare.HasValue ? cheat.Compare.Value : 'N').Append('\t')
 								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
-								.Append(cheat.Name)
+								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')
-								.Append(cheat.SizeAsChar).Append('\t')
+								.Append(cheat.TypeAsChar).Append('\t')
 								.Append(cheat.BigEndian.Value ? '1' : '0').Append('\t')
 								.AppendLine();
 						}
