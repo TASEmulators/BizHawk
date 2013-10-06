@@ -903,7 +903,11 @@ namespace BizHawk.MultiClient
 					String.Empty,
 					BigEndian);
 
-				Global.CheatList.Add(new Cheat(watch, compare: null, enabled: true));
+				Global.CheatList.Add(new Cheat(
+					watch,
+					watch.Value.Value,
+					compare: null,
+					enabled: true));
 
 				MemoryViewerBox.Refresh();
 				UpdateRelatedDialogs();

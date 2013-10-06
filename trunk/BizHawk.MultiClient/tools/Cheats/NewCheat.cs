@@ -9,15 +9,14 @@ namespace BizHawk.MultiClient
 	{
 		#region Constructors
 
-		public Cheat(Watch watch, int? compare = null, bool enabled = true)
+		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true)
 		{
 			_enabled = enabled;
 			_watch = watch;
 			_compare = compare;
-			if (!_watch.IsSeparator)
-			{
-				_val = _watch.Value.Value;
-			}
+			_val = value;
+
+			Pulse();
 		}
 
 		public Cheat(Cheat cheat)
@@ -39,12 +38,15 @@ namespace BizHawk.MultiClient
 					cheat.BigEndian.Value
 					);
 				_compare = cheat.Compare;
+				_val = cheat.Value.Value;
+
+				Pulse();
 			}
 		}
 
 		public static Cheat Separator
 		{
-			get { return new Cheat(SeparatorWatch.Instance, null, false); }
+			get { return new Cheat(SeparatorWatch.Instance, 0, null, false); }
 		}
 
 		#endregion
@@ -83,10 +85,7 @@ namespace BizHawk.MultiClient
 
 		public MemoryDomain Domain
 		{
-			get
-			{
-				return _watch.Domain;
-			}
+			get { return _watch.Domain; }
 		}
 
 		public Watch.WatchSize Size

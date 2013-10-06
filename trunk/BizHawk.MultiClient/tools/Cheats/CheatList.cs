@@ -31,6 +31,14 @@ namespace BizHawk.MultiClient
 			get { return _cheatList[index]; }
 		}
 
+		public void Pulse()
+		{
+			foreach(var cheat in _cheatList)
+			{
+				cheat.Pulse();
+			}
+		}
+
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
@@ -154,37 +162,6 @@ namespace BizHawk.MultiClient
 			}
 
 			return false;
-		}
-
-		public void Freeze(MemoryDomain domain, int address, Watch.WatchSize size, int value, bool? bigendian = null)
-		{
-			var exists = _cheatList.Any(x => x.Domain == domain && x.Address == address && x.Size == size);
-			if (!exists)
-			{
-				bool endian = false;
-				if (bigendian.HasValue)
-				{
-					endian = bigendian.Value;
-				}
-				else
-				{
-					switch (domain.Endian)
-					{
-						default:
-						case Endian.Unknown:
-						case Endian.Little:
-							bigendian = false;
-							break;
-						case Endian.Big:
-							bigendian = true;
-							break;
-					}
-				}
-
-				Watch w = Watch.GenerateWatch(domain, address, size, Watch.DisplayType.Unsigned, String.Empty, endian);
-				_cheatList.Add(new Cheat(w, compare: null, enabled: true));
-				Global.MainForm.UpdateCheatStatus();
-			}
 		}
 
 		public void SaveOnClose()
@@ -311,7 +288,7 @@ namespace BizHawk.MultiClient
 								BIGENDIAN
 							);
 
-							Cheat c = new Cheat(w, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
+							Cheat c = new Cheat(w, VALUE, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
 							_cheatList.Add(c);
 						}
 					}

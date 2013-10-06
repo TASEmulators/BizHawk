@@ -186,6 +186,7 @@ namespace BizHawk.MultiClient
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(EditCheat);
+			UpdateValues();
 		}
 
 		protected override void OnClosing(CancelEventArgs e)

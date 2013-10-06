@@ -2243,10 +2243,10 @@ namespace BizHawk.MultiClient
 
 				coreskipaudio = Global.ClientControls["MaxTurbo"] && CurrAviWriter == null;
 				//=======================================
-				MemoryPulse.Pulse();
+				Global.CheatList.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
 				Global.DisplayManager.NeedsToPaint = true;
-				MemoryPulse.Pulse();
+				Global.CheatList.Pulse();
 				//=======================================
 
 				if (!PauseAVI)
@@ -2873,6 +2873,7 @@ namespace BizHawk.MultiClient
 
 			if (!_cheats.IsHandleCreated || _cheats.IsDisposed)
 			{
+				_cheats = new NewCheatForm();
 				_cheats.Show();
 			}
 			else
@@ -3196,7 +3197,7 @@ namespace BizHawk.MultiClient
 			SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
-			MemoryPulse.Clear();
+			
 			RewireSound();
 			ResetRewindBuffer();
 			RamSearch1.Restart();

@@ -3018,7 +3018,11 @@ namespace BizHawk.MultiClient
 						code,
 						false);
 
-					Global.CheatList.Add(new Cheat(watch, gg._compare, enabled: true));
+					Global.CheatList.Add(new Cheat(
+						watch,
+						gg.Value.Value,
+						gg.Compare,
+						enabled: true));
 				}
 			}
 		}
@@ -3031,7 +3035,7 @@ namespace BizHawk.MultiClient
 				gg.DecodeGameGenieCode(code);
 				if (gg.Address.HasValue && gg.Value.HasValue)
 				{
-					var cheats = Global.CheatList.Where(x => x.Address == gg._address);
+					var cheats = Global.CheatList.Where(x => x.Address == gg.Address);
 					Global.CheatList.RemoveRange(cheats);
 				}
 			}

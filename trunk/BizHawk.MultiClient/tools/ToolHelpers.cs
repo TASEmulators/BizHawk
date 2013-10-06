@@ -70,7 +70,10 @@ namespace BizHawk.MultiClient
 		{
 			foreach(var watch in watches)
 			{
-				Cheat cheat = new Cheat(watch, compare: null, enabled: true);
+				if (!watch.IsSeparator)
+				{
+					Cheat cheat = new Cheat(watch, watch.Value.Value, compare: null, enabled: true);
+				}
 			}
 
 			Global.MainForm.UpdateCheatStatus();
