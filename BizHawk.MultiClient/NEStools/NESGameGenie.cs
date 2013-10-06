@@ -9,9 +9,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class NESGameGenie : Form
 	{
-		public int? _address = null;
-		public int? _value = null;
-		public int? _compare = null;
+		private int? _address = null;
+		private int? _value = null;
+		private int? _compare = null;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 
 		public int? Address { get { return _address; } }
@@ -363,7 +363,7 @@ namespace BizHawk.MultiClient
 					AddressBox.ToRawInt(),
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
-					String.Empty,
+					GameGenieCode.Text,
 					false);
 
 				int? compare = null;
@@ -372,7 +372,13 @@ namespace BizHawk.MultiClient
 					compare = CompareBox.ToRawInt();
 				}
 
-				Global.CheatList.Add(new Cheat(watch, compare, enabled: true));
+				Global.CheatList.Add(new Cheat(
+					watch,
+					ValueBox.ToRawInt(),
+					compare,
+					enabled: true));
+
+				Global.MainForm.Cheats_UpdateValues();
 			}
 		}
 
