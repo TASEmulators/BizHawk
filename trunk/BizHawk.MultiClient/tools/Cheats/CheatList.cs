@@ -312,7 +312,7 @@ namespace BizHawk.MultiClient
 		{
 			switch (column)
 			{
-				case NewCheatForm.NAME:
+				case Cheats.NAME:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -328,7 +328,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.ADDRESS:
+				case Cheats.ADDRESS:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -344,7 +344,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.VALUE:
+				case Cheats.VALUE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -362,7 +362,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.COMPARE:
+				case Cheats.COMPARE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -380,7 +380,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.ON:
+				case Cheats.ON:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -398,7 +398,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.DOMAIN:
+				case Cheats.DOMAIN:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -416,7 +416,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.SIZE:
+				case Cheats.SIZE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -434,7 +434,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.ENDIAN:
+				case Cheats.ENDIAN:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -452,7 +452,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case NewCheatForm.TYPE:
+				case Cheats.TYPE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -576,7 +576,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog();
 			if (!String.IsNullOrWhiteSpace(_currentFileName))
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList_Legacy.CurrentCheatFile);
+				sfd.FileName = Path.GetFileNameWithoutExtension(_currentFileName);
 			}
 			else if (!(Global.Emulator is NullEmulator))
 			{

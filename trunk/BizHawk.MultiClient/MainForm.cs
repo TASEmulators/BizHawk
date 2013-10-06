@@ -96,7 +96,7 @@ namespace BizHawk.MultiClient
 		private GBtools.GBGPUView _gbgpuview = null;
 		private GBAtools.GBAGPUView _gbagpuview = null;
 		private PCEBGViewer _pcebgviewer = null;
-		private NewCheatForm _cheats = null;
+		private Cheats _cheats = null;
 		private ToolBox _toolbox = null;
 		private TI83KeyPad _ti83pad = null;
 		private TAStudio _tastudio = null;
@@ -174,7 +174,6 @@ namespace BizHawk.MultiClient
 
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
-			Global.CheatList_Legacy = new LegacyCheatList();
 			Global.CheatList = new CheatList();
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -2870,12 +2869,12 @@ namespace BizHawk.MultiClient
 		{
 			if (_cheats == null)
 			{
-				_cheats = new NewCheatForm();
+				_cheats = new Cheats();
 			}
 
 			if (!_cheats.IsHandleCreated || _cheats.IsDisposed)
 			{
-				_cheats = new NewCheatForm();
+				_cheats = new Cheats();
 				_cheats.Show();
 			}
 			else

@@ -224,58 +224,58 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is Genesis)
 			{
-				LegacyCheat c = new LegacyCheat();
-				LegacyCheat d = new LegacyCheat();
-				if (cheatname.Text.Length > 0)
+				string NAME;
+				int ADDRESS = 0;
+				int VALUE = 0;
+				int romDataDomainIndex = 0;
+
+
+				if (!String.IsNullOrWhiteSpace(cheatname.Text))
 				{
-					c.Name = cheatname.Text + " Part 1";
-					d.Name = cheatname.Text + " Part 2";
+					NAME = cheatname.Text;
 				}
 				else
 				{
 					Processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					c.Name = GGCodeMaskBox.Text + " Part 1";
-					d.Name = GGCodeMaskBox.Text + " Part 2";
+					NAME = GGCodeMaskBox.Text;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
 					Processing = false;
 				}
 
-				if (String.IsNullOrWhiteSpace(AddressBox.Text))
+				if (!String.IsNullOrWhiteSpace(AddressBox.Text))
 				{
-					c.Address = 0;
-					d.Address = 0 + 1;
+					ADDRESS = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 				}
-				else
-				{
-					c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-					d.Address = c.Address + 1;
-				}
-				if (String.IsNullOrWhiteSpace(ValueBox.Text))
-				{
-					c.Value = 0;
-					d.Value = 0;
-				}
-				else
-				{
-					c.Value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
-					d.Value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0x00FF);
-				}
-				c.Compare = null;
-				d.Compare = null;
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 
-					if (Global.Emulator.MemoryDomains[x].ToString() == "Rom Data")
+				if (!String.IsNullOrWhiteSpace(ValueBox.Text))
+				{
+					VALUE = ValueBox.ToRawInt();
+				}
+
+				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+				{
+					if (Global.Emulator.MemoryDomains[i].ToString() == "Rom Data")
 					{
-						c.Domain = Global.Emulator.MemoryDomains[x];
-						c.Enable();
-						Global.CheatList_Legacy.Add(c);
-						d.Domain = Global.Emulator.MemoryDomains[x];
-						d.Enable();
-						Global.CheatList_Legacy.Add(d);
-						break;
+						romDataDomainIndex = i;
 					}
+				}
 
+				Watch watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains[romDataDomainIndex],
+					ADDRESS,
+					Watch.WatchSize.Word,
+					Watch.DisplayType.Hex,
+					NAME,
+					bigEndian: true
+				);
+
+				Global.CheatList.Add(new Cheat(
+					watch,
+					VALUE,
+					compare: null,
+					enabled: true
+				));
 			}
 
 		}

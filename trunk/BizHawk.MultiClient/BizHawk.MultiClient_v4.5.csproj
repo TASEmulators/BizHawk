@@ -920,15 +920,6 @@
     <Compile Include="TI83tools\TI83KeyPad.Designer.cs">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Cheat.cs" />
-    <Compile Include="tools\CheatList.cs" />
-    <Compile Include="tools\Cheats.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Cheats.Designer.cs">
-      <DependentUpon>Cheats.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\MemoryPulse.cs" />
     <Compile Include="tools\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1031,10 +1022,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TI83tools\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Cheats.resx">
-      <DependentUpon>Cheats.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TraceLogger.resx">
