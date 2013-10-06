@@ -64,7 +64,7 @@ namespace BizHawk.MultiClient
 				{
 					for (int x = 0; x < Watches.Count; x++)
 					{
-						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActiveCheat(Watches[x].Domain, Watches[x].Address.Value);
+						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
 						Global.OSD.AddGUIText(
 							Watches[x].ToString(),
 							Global.Config.DispRamWatchx,
@@ -269,7 +269,7 @@ namespace BizHawk.MultiClient
 				{
 					color = BackColor;
 				}
-				else if (Global.CheatList.IsActiveCheat(Watches.Domain, Watches[index].Address.Value))
+				else if (Global.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
 				{
 					color = Color.LightCyan;
 				}
@@ -1085,7 +1085,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Watches[i].IsSeparator)
 				{
-					if (!Global.CheatList.IsActiveCheat(Watches[i].Domain, Watches[i].Address.Value))
+					if (!Global.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1108,18 +1108,14 @@ namespace BizHawk.MultiClient
 			ShowDiffContextMenuItem.Text = Global.Config.RamWatchShowDiffColumn ? "Hide difference value" : "Show difference value";
 			ShowDomainContextMenuItem.Text = Global.Config.RamWatchShowDomainColumn ? "Hide domain" : "Show domain";
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.HasActiveCheats;
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
 			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count == 1;
 		}
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.Cheats1.RemoveAllCheats();
-			UpdateValues();
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
+			ToolHelpers.UnfreezeAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

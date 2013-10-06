@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public class CheatList : IEnumerable<Cheat>
+	public class LegacyCheatList : IEnumerable<LegacyCheat>
 	{
-		private List<Cheat> cheatList = new List<Cheat>();
+		private List<LegacyCheat> cheatList = new List<LegacyCheat>();
 		public string CurrentCheatFile = "";
 		public bool Changes = false;
 		public int Count { get { return cheatList.Count; } }
@@ -35,7 +35,7 @@ namespace BizHawk.MultiClient
 					try
 					{
 						if (s.Length < 6) continue;
-						Cheat c = new Cheat();
+						LegacyCheat c = new LegacyCheat();
 						string temp = s.Substring(0, s.IndexOf('\t'));
 						c.Address = int.Parse(temp, NumberStyles.HexNumber);
 
@@ -103,7 +103,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisableCheatsOnLoad)
 			{
-				foreach (Cheat t in cheatList)
+				foreach (LegacyCheat t in cheatList)
 				{
 					t.Disable();
 				}
@@ -141,7 +141,7 @@ namespace BizHawk.MultiClient
 			return Global.Emulator.MemoryDomains[0];
 		}
 
-		public IEnumerator<Cheat> GetEnumerator()
+		public IEnumerator<LegacyCheat> GetEnumerator()
 		{
 			return cheatList.GetEnumerator();
 		}
@@ -171,7 +171,7 @@ namespace BizHawk.MultiClient
 
 		public void DisableAll()
 		{
-			foreach (Cheat c in cheatList)
+			foreach (LegacyCheat c in cheatList)
 			{
 				c.Disable();
 			}
@@ -210,7 +210,7 @@ namespace BizHawk.MultiClient
 			{
 				string str = "";
 
-				foreach (Cheat t in cheatList)
+				foreach (LegacyCheat t in cheatList)
 				{
 					str += FormatAddress(t.Address) + "\t";
 					str += String.Format("{0:X2}", t.Value) + "\t";
@@ -259,7 +259,7 @@ namespace BizHawk.MultiClient
 					if (CurrentCheatFile.Length == 0)
 						CurrentCheatFile = DefaultFilename;
 
-					SaveCheatFile(Global.CheatList.CurrentCheatFile);
+					SaveCheatFile(Global.CheatList_Legacy.CurrentCheatFile);
 				}
 				else if (cheatList.Count == 0 && CurrentCheatFile.Length > 0)
 				{
@@ -273,7 +273,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return Path.Combine(Global.CheatList.CheatsPath, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+				return Path.Combine(Global.CheatList_Legacy.CheatsPath, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 			}
 		}
 
@@ -315,7 +315,7 @@ namespace BizHawk.MultiClient
 			Global.MainForm.UpdateCheatStatus();
 		}
 
-		public void Remove(Cheat c)
+		public void Remove(LegacyCheat c)
 		{
 			c.DisposeOfCheat();
 			cheatList.Remove(c);
@@ -334,7 +334,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Add(Cheat c)
+		public void Add(LegacyCheat c)
 		{
 			if (c != null)
 			{
@@ -343,7 +343,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public Cheat this[int index]
+		public LegacyCheat this[int index]
 		{
 			get
 			{
@@ -351,7 +351,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Insert(int index, Cheat item)
+		public void Insert(int index, LegacyCheat item)
 		{
 			cheatList.Insert(index, item);
 			Global.MainForm.UpdateCheatStatus();

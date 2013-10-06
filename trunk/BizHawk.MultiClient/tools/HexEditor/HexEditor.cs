@@ -826,7 +826,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsFrozen(int address)
 		{
-			return Global.CheatList.IsActiveCheat(Domain, address);
+			return Global.CheatList.IsActive(Domain, address);
 		}
 
 		private void ToggleFreeze()
@@ -839,6 +839,7 @@ namespace BizHawk.MultiClient
 			{
 				FreezeAddress(HighlightedAddress.Value);
 			}
+
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
 				if (IsFrozen(i))
@@ -851,76 +852,62 @@ namespace BizHawk.MultiClient
 				}
 			}
 
+			UpdateRelatedDialogs();
+		}
+
+		private void UnFreezeAddress(int address) //TODO: refactor to int?
+		{
+			if (address >= 0)
+			{
+				var cheats = Global.CheatList.Where(x => x.Contains(address)).ToList();
+				Global.CheatList.RemoveRange(cheats);
+			}
+			MemoryViewerBox.Refresh();
+		}
+
+		private Watch.WatchSize WatchSize
+		{
+			get
+			{
+				switch (DataSize)
+				{
+					default:
+					case 1:
+						return Watch.WatchSize.Byte;
+					case 2:
+						return Watch.WatchSize.Word;
+					case 4:
+						return Watch.WatchSize.DWord;
+				}
+			}
+		}
+
+		private void UpdateRelatedDialogs()
+		{
+			Global.MainForm.UpdateCheatStatus();
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
+			UpdateValues();
 		}
 
-		private void UnFreezeAddress(int address)
+		private void FreezeAddress(int address) //TODO refactor to int?
 		{
 			if (address >= 0)
 			{
-				Cheat c = new Cheat {Address = address, Value = Domain.PeekByte(address), Domain = Domain};
-				Global.MainForm.Cheats1.RemoveCheat(c);
+				Watch watch = Watch.GenerateWatch(
+					Domain,
+					address,
+					WatchSize,
+					Watch.DisplayType.Hex,
+					String.Empty,
+					BigEndian);
 
-				switch (DataSize)
-				{
-					default:
-					case 1:
-						break;
-					case 2:
-						Cheat c2 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
-						c2.Enable();
-						Global.MainForm.Cheats1.RemoveCheat(c2);
-						break;
-					case 4:
-						Cheat c42 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
-						c42.Enable();
-						Global.MainForm.Cheats1.RemoveCheat(c42);
-						Cheat c43 = new Cheat {Address = address + 2, Domain = Domain, Value = Domain.PeekByte(address + 2)};
-						c43.Enable();
-						Global.MainForm.Cheats1.RemoveCheat(c43);
-						Cheat c44 = new Cheat {Address = address + 3, Domain = Domain, Value = Domain.PeekByte(address + 3)};
-						c44.Enable();
-						Global.MainForm.Cheats1.RemoveCheat(c44);
-						break;
-				}
+				Global.CheatList.Add(new Cheat(watch, compare: null, enabled: true));
+
+				MemoryViewerBox.Refresh();
+				UpdateRelatedDialogs();
 			}
-			MemoryViewerBox.Refresh();
-		}
-
-		private void FreezeAddress(int address)
-		{
-			if (address >= 0)
-			{
-				Cheat c = new Cheat {Address = address, Value = Domain.PeekByte(address), Domain = Domain};
-				c.Enable();
-				Global.MainForm.Cheats1.AddCheat(c);
-
-				switch (DataSize)
-				{
-					default:
-					case 1:
-						break;
-					case 2:
-						Cheat c2 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
-						c2.Enable();
-						Global.MainForm.Cheats1.AddCheat(c2);
-						break;
-					case 4:
-						Cheat c42 = new Cheat {Address = address + 1, Domain = Domain, Value = Domain.PeekByte(address + 1)};
-						c42.Enable();
-						Global.MainForm.Cheats1.AddCheat(c42);
-						Cheat c43 = new Cheat {Address = address + 2, Domain = Domain, Value = Domain.PeekByte(address + 2)};
-						c43.Enable();
-						Global.MainForm.Cheats1.AddCheat(c43);
-						Cheat c44 = new Cheat {Address = address + 3, Domain = Domain, Value = Domain.PeekByte(address + 3)};
-						c44.Enable();
-						Global.MainForm.Cheats1.AddCheat(c44);
-						break;
-				}
-			}
-			MemoryViewerBox.Refresh();
 		}
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1209,19 +1196,20 @@ namespace BizHawk.MultiClient
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			
-			for (int x = 0; x < Global.CheatList.Count; x++)
+			var activeCheats = Global.CheatList.Where(x => x.Enabled);
+			foreach(var cheat in activeCheats)
 			{
-				if (IsVisible(Global.CheatList[x].Address))
+				if (IsVisible(cheat.Address.Value))
 				{
-					if (Domain.ToString() == Global.CheatList[x].Domain.ToString())
+					if (Domain.ToString() == cheat.Domain.Name)
 					{
-						Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList[x].Address), new Size(15 * DataSize, fontHeight));
+						Rectangle rect = new Rectangle(GetAddressCoordinates(cheat.Address.Value), new Size(15 * DataSize, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
 				}
 			}
+
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
 				Point point = GetAddressCoordinates(addressHighlighted);
@@ -1233,7 +1221,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size((8 * DataSize), fontHeight));
 				
-				if (Global.CheatList.IsActiveCheat(Domain, addressHighlighted))
+				if (Global.CheatList.IsActive(Domain, addressHighlighted))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1255,7 +1243,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size(8, fontHeight));
 
-				if (Global.CheatList.IsActiveCheat(Domain, address))
+				if (Global.CheatList.IsActive(Domain, address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1459,7 +1447,7 @@ namespace BizHawk.MultiClient
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
 					{
-						RemoveAllCheats();
+						ToolHelpers.UnfreezeAll();
 					}
 					else
 					{
@@ -1661,24 +1649,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void RemoveAllCheats()
-		{
-			Global.MainForm.Cheats1.RemoveAllCheats();
-			MemoryViewerBox.Refresh();
-
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
-		}
-
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			RemoveAllCheats();
+			ToolHelpers.UnfreezeAll();
 		}
 
 		private void unfreezeAllToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			RemoveAllCheats();
+			ToolHelpers.UnfreezeAll();
 		}
 
 		private void HexEditor_MouseWheel(object sender, MouseEventArgs e)
@@ -1766,7 +1744,7 @@ namespace BizHawk.MultiClient
 
 		private void HexPokeAddress(int address, byte value)
 		{
-			if (Global.CheatList.IsActiveCheat(Domain, address))
+			if (Global.CheatList.IsActive(Domain, address))
 			{
 				UnFreezeAddress(address);
 				Domain.PokeByte(address, value);

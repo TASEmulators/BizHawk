@@ -2,7 +2,7 @@
 
 namespace BizHawk.MultiClient
 {
-	public class Cheat
+	public class LegacyCheat
 	{
 		public string Name { get; set; }
 		public int Address { get; set; }
@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 		
 		private bool enabled;
 
-		public Cheat()
+		public LegacyCheat()
 		{
 			Name = "";
 			Address = 0;
@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 			Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
 		}
 
-		public Cheat(Cheat c)
+		public LegacyCheat(LegacyCheat c)
 		{
 			Name = c.Name;
 			Address = c.Address;
@@ -40,7 +40,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public Cheat(string cname, int addr, byte val, bool e, MemoryDomain d, byte? comp = null)
+		public LegacyCheat(string cname, int addr, byte val, bool e, MemoryDomain d, byte? comp = null)
 		{
 			Name = cname;
 			Address = addr;
@@ -108,7 +108,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		~Cheat()
+		~LegacyCheat()
 		{
 			DisposeOfCheat();
 		}

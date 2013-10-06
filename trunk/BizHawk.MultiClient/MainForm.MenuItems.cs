@@ -1545,7 +1545,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.HasActiveCheats)
+			if (Global.CheatList.ActiveCount > 0)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = Properties.Resources.Freeze;
@@ -2181,9 +2181,8 @@ namespace BizHawk.MultiClient
 			}
 			else if (ext.ToUpper() == ".CHT")
 			{
+				Global.CheatList.Load(filePaths[0], false);
 				LoadCheatsWindow();
-				Cheats1.LoadCheatFile(filePaths[0], false);
-				Cheats1.DisplayCheatsList();
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{

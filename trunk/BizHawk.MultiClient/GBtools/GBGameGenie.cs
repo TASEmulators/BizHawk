@@ -348,7 +348,7 @@ namespace BizHawk.MultiClient
 		{
 			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
-				Cheat c = new Cheat();
+				LegacyCheat c = new LegacyCheat();
 				if (cheatname.Text.Length > 0)
 					c.Name = cheatname.Text;
 				else
@@ -391,7 +391,7 @@ namespace BizHawk.MultiClient
 					{
 						c.Domain = Global.Emulator.MemoryDomains[x];
 						c.Enable();
-						Global.MainForm.Cheats1.AddCheat(c);
+						Global.CheatList_Legacy.Add(c);
 						break;
 					}
 			}
