@@ -348,52 +348,69 @@ namespace BizHawk.MultiClient
 		{
 			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
-				LegacyCheat c = new LegacyCheat();
-				if (cheatname.Text.Length > 0)
-					c.Name = cheatname.Text;
+				string NAME = String.Empty;
+				int ADDRESS = 0;
+				int VALUE = 0;
+				int? COMPARE = null;
+				int sysBusIndex = 0;
+
+				if (!String.IsNullOrWhiteSpace(cheatname.Text))
+				{
+					NAME = cheatname.Text;
+				}
 				else
 				{
 					Processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					c.Name = GGCodeMaskBox.Text;
+					NAME = GGCodeMaskBox.Text;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
 					Processing = false;
 				}
 
-				if (String.IsNullOrWhiteSpace(AddressBox.Text))
-					c.Address = 0;
-				else
-					c.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				if (!String.IsNullOrWhiteSpace(AddressBox.Text))
+				{
+					ADDRESS = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				}
 
-				if (String.IsNullOrWhiteSpace(ValueBox.Text))
-					c.Value = 0;
-				else
-					c.Value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+				if (!String.IsNullOrWhiteSpace(ValueBox.Text))
+				{
+					VALUE = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+				}
 
 				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
 				{
 					try
 					{
-						c.Compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+						COMPARE = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					}
 					catch
 					{
-						c.Compare = null;
+						COMPARE = null;
 					}
 				}
-				else
-				{
-					c.Compare = null;
-				}
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 
-					if (Global.Emulator.MemoryDomains[x].ToString() == "System Bus")
+				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+				{
+					if (Global.Emulator.MemoryDomains[i].ToString() == "System Bus")
 					{
-						c.Domain = Global.Emulator.MemoryDomains[x];
-						c.Enable();
-						Global.CheatList_Legacy.Add(c);
+						sysBusIndex = i;
 						break;
 					}
+				}
+
+				Watch watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains[sysBusIndex],
+					ADDRESS,
+					Watch.WatchSize.Byte,
+					Watch.DisplayType.Hex,
+					NAME,
+					false);
+
+				Global.CheatList.Add(new Cheat(
+					watch,
+					VALUE,
+					COMPARE,
+					enabled: true));
 			}
 		}
 
