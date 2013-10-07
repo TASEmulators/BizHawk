@@ -422,6 +422,7 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\HexEditor\MemoryViewer.cs" />
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -825,6 +826,9 @@
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexEditor\MemoryViewer.resx">
+      <DependentUpon>MemoryViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </EmbeddedResource>
@@ -942,9 +946,6 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="Throttle.cs" />
-    <Compile Include="tools\MemoryViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\InputPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1021,10 +1022,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TraceLogger.resx">
       <DependentUpon>TraceLogger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\MemoryViewer.resx">
-      <DependentUpon>MemoryViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\InputPrompt.resx">
       <DependentUpon>InputPrompt.cs</DependentUpon>
