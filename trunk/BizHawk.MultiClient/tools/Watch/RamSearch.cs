@@ -110,7 +110,7 @@ namespace BizHawk.MultiClient
 				Color nextColor = Color.White;
 
 				bool isCheat = Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value);
-				bool isWeeded = Global.Config.RamSearchPreviewMode && Searches.Preview(Searches[index].Address.Value) && !forcePreviewClear;
+				bool isWeeded = Global.Config.RamSearchPreviewMode && !forcePreviewClear && Searches.Preview(Searches[index].Address.Value);
 
 				if (isCheat)
 				{
