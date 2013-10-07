@@ -205,6 +205,7 @@ namespace BizHawk.MultiClient
 				}
 
 				WatchListView.Refresh();
+				forcePreviewClear = false;
 			}
 		}
 
