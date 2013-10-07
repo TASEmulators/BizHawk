@@ -745,6 +745,26 @@ namespace BizHawk.MultiClient
 				!autoSearch;
 		}
 
+		private void GoToSpecifiedAddress()
+		{
+			WatchListView.SelectedIndices.Clear();
+			InputPrompt i = new InputPrompt { Text = "Go to Address" };
+			i.SetMessage("Enter a hexadecimal value");
+			Global.Sound.StopSound();
+			i.ShowDialog();
+			Global.Sound.StartSound();
+
+			if (i.UserOK)
+			{
+				if (InputValidate.IsValidHexNumber(i.UserText))
+				{
+					int addr = int.Parse(i.UserText, NumberStyles.HexNumber);
+					WatchListView.SelectItem(addr, true);
+					WatchListView.ensureVisible();
+				}
+			}
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -1005,6 +1025,11 @@ namespace BizHawk.MultiClient
 		private void RemoveMenuItem_Click(object sender, EventArgs e)
 		{
 			RemoveAddresses();
+		}
+
+		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
+		{
+			GoToSpecifiedAddress();
 		}
 
 		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
@@ -1497,11 +1522,6 @@ namespace BizHawk.MultiClient
 		}
 
 		#endregion
-
-		private void label1_Click(object sender, EventArgs e)
-		{
-
-		}
 
 		#endregion
 	}

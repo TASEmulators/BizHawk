@@ -74,13 +74,13 @@
 			this._4ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheckMisalignedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisplayTypeSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.DefinePreviousValueSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -156,6 +156,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
+			this.GoToAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -544,6 +545,13 @@
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(185, 6);
 			// 
+			// BigEndianMenuItem
+			// 
+			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.BigEndianMenuItem.Text = "&Big Endian";
+			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
+			// 
 			// DisplayTypeSubMenu
 			// 
 			this.DisplayTypeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -569,13 +577,6 @@
 			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
 			this.DefinePreviousValueSubMenu.DropDownOpened += new System.EventHandler(this.DefinePreviousValueSubMenu_DropDownOpened);
 			// 
-			// PreviousFrameMenuItem
-			// 
-			this.PreviousFrameMenuItem.Name = "PreviousFrameMenuItem";
-			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.PreviousFrameMenuItem.Text = "&Previous Frame";
-			this.PreviousFrameMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
-			// 
 			// Previous_LastSearchMenuItem
 			// 
 			this.Previous_LastSearchMenuItem.Name = "Previous_LastSearchMenuItem";
@@ -583,19 +584,19 @@
 			this.Previous_LastSearchMenuItem.Text = "Last &Search";
 			this.Previous_LastSearchMenuItem.Click += new System.EventHandler(this.Previous_LastSearchMenuItem_Click);
 			// 
+			// PreviousFrameMenuItem
+			// 
+			this.PreviousFrameMenuItem.Name = "PreviousFrameMenuItem";
+			this.PreviousFrameMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.PreviousFrameMenuItem.Text = "&Previous Frame";
+			this.PreviousFrameMenuItem.Click += new System.EventHandler(this.Previous_LastFrameMenuItem_Click);
+			// 
 			// Previous_OriginalMenuItem
 			// 
 			this.Previous_OriginalMenuItem.Name = "Previous_OriginalMenuItem";
 			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_OriginalMenuItem.Text = "&Original";
 			this.Previous_OriginalMenuItem.Click += new System.EventHandler(this.Previous_OriginalMenuItem_Click);
-			// 
-			// BigEndianMenuItem
-			// 
-			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.BigEndianMenuItem.Text = "&Big Endian";
-			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
@@ -609,6 +610,7 @@
             this.ClearChangeCountsMenuItem,
             this.RemoveMenuItem,
             this.toolStripSeparator5,
+            this.GoToAddressMenuItem,
             this.AddToRamWatchMenuItem,
             this.PokeAddressMenuItem,
             this.FreezeAddressMenuItem,
@@ -904,6 +906,7 @@
 			this.DifferenceBox.Location = new System.Drawing.Point(114, 98);
 			this.DifferenceBox.MaxLength = 8;
 			this.DifferenceBox.Name = "DifferenceBox";
+			this.DifferenceBox.Nullable = true;
 			this.DifferenceBox.Size = new System.Drawing.Size(72, 20);
 			this.DifferenceBox.TabIndex = 45;
 			this.DifferenceBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
@@ -928,6 +931,7 @@
 			this.NumberOfChangesBox.Location = new System.Drawing.Point(114, 78);
 			this.NumberOfChangesBox.MaxLength = 8;
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
+			this.NumberOfChangesBox.Nullable = true;
 			this.NumberOfChangesBox.Size = new System.Drawing.Size(72, 20);
 			this.NumberOfChangesBox.TabIndex = 35;
 			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
@@ -941,6 +945,7 @@
 			this.SpecificAddressBox.Location = new System.Drawing.Point(114, 58);
 			this.SpecificAddressBox.MaxLength = 8;
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
+			this.SpecificAddressBox.Nullable = true;
 			this.SpecificAddressBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificAddressBox.TabIndex = 25;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
@@ -1186,6 +1191,7 @@
 			this.DifferentByBox.Location = new System.Drawing.Point(88, 132);
 			this.DifferentByBox.MaxLength = 9;
 			this.DifferentByBox.Name = "DifferentByBox";
+			this.DifferentByBox.Nullable = true;
 			this.DifferentByBox.Size = new System.Drawing.Size(55, 20);
 			this.DifferentByBox.TabIndex = 85;
 			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
@@ -1307,13 +1313,12 @@
 			this.label1.Size = new System.Drawing.Size(27, 13);
 			this.label1.TabIndex = 97;
 			this.label1.Text = "Size";
-			this.label1.Click += new System.EventHandler(this.label1_Click);
 			// 
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(332, 358);
+			this.label2.Location = new System.Drawing.Point(327, 358);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(41, 13);
 			this.label2.TabIndex = 99;
@@ -1328,9 +1333,9 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropdown.Location = new System.Drawing.Point(332, 374);
+			this.DisplayTypeDropdown.Location = new System.Drawing.Point(327, 374);
 			this.DisplayTypeDropdown.Name = "DisplayTypeDropdown";
-			this.DisplayTypeDropdown.Size = new System.Drawing.Size(102, 21);
+			this.DisplayTypeDropdown.Size = new System.Drawing.Size(107, 21);
 			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
 			// 
@@ -1344,10 +1349,20 @@
 			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
 			this.SpecificValueBox.MaxLength = 2;
 			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Nullable = true;
 			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificValueBox.TabIndex = 15;
+			this.SpecificValueBox.Text = "00";
 			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
+			// 
+			// GoToAddressMenuItem
+			// 
+			this.GoToAddressMenuItem.Name = "GoToAddressMenuItem";
+			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+			this.GoToAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.GoToAddressMenuItem.Text = "&Go to Address...";
+			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
 			// 
 			// RamSearch
 			// 
@@ -1519,5 +1534,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox DisplayTypeDropdown;
+		private System.Windows.Forms.ToolStripMenuItem GoToAddressMenuItem;
     }
 }
