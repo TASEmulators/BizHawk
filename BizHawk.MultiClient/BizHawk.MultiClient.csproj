@@ -420,7 +420,9 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\HexEditor\MemoryViewer.cs" />
+    <Compile Include="tools\HexEditor\MemoryViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
