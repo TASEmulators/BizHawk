@@ -40,6 +40,9 @@ namespace BizHawk.MultiClient
 		{
 			_watchList.Clear();
 			_history.Clear();
+
+			var domain = _settings.Domain;
+
 			switch (_settings.Size)
 			{
 				default:
@@ -48,14 +51,14 @@ namespace BizHawk.MultiClient
 					{
 						for (int i = 0; i < _settings.Domain.Size; i++)
 						{
-							_watchList.Add(new MiniByteWatchDetailed(_settings.Domain, i));
+							_watchList.Add(new MiniByteWatchDetailed(domain, i));
 						}
 					}
 					else
 					{
 						for (int i = 0; i < _settings.Domain.Size; i++)
 						{
-							_watchList.Add(new MiniByteWatch(_settings.Domain, i));
+							_watchList.Add(new MiniByteWatch(domain, i));
 						}
 					}
 					break;
@@ -64,14 +67,14 @@ namespace BizHawk.MultiClient
 					{
 						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
 						{
-							_watchList.Add(new MiniWordWatchDetailed(_settings.Domain, i, _settings.BigEndian));
+							_watchList.Add(new MiniWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
 						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
 						{
-							_watchList.Add(new MiniWordWatch(_settings.Domain, i, _settings.BigEndian));
+							_watchList.Add(new MiniWordWatch(domain, i, _settings.BigEndian));
 						}
 					}
 					break;
@@ -80,14 +83,14 @@ namespace BizHawk.MultiClient
 					{
 						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
 						{
-							_watchList.Add(new MiniDWordWatchDetailed(_settings.Domain, i, _settings.BigEndian));
+							_watchList.Add(new MiniDWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
 						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
 						{
-							_watchList.Add(new MiniDWordWatch(_settings.Domain, i, _settings.BigEndian));
+							_watchList.Add(new MiniDWordWatch(domain, i, _settings.BigEndian));
 						}
 					}
 					break;
@@ -736,7 +739,7 @@ namespace BizHawk.MultiClient
 			public MiniByteWatch(MemoryDomain domain, int addr)
 			{
 				Address = addr;
-				SetPreviousToCurrent(domain, false);
+				_previous = domain.PeekByte(Address);
 			}
 
 			public int Previous
@@ -758,7 +761,7 @@ namespace BizHawk.MultiClient
 			public MiniWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				SetPreviousToCurrent(domain, bigEndian);
+				_previous = domain.PeekWord(Address, bigEndian ? Endian.Big : Endian.Little);
 			}
 
 			public int Previous
@@ -780,7 +783,7 @@ namespace BizHawk.MultiClient
 			public MiniDWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				SetPreviousToCurrent(domain, bigEndian);
+				_previous = domain.PeekDWord(Address, bigEndian ? Endian.Big : Endian.Little);
 			}
 
 			public int Previous
