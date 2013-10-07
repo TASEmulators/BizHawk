@@ -71,6 +71,33 @@ namespace BizHawk.MultiClient
 			
 		}
 
+		private void HardSetDisplayTypeDropDown(Watch.DisplayType type)
+		{
+			foreach (var item in DisplayTypeDropdown.Items)
+			{
+				if (Watch.DisplayTypeToString(type) == item.ToString())
+				{
+					DisplayTypeDropdown.SelectedItem = item;
+				}
+			}
+		}
+
+		private void HardSetSizeDropDown(Watch.WatchSize size)
+		{
+			switch (size)
+			{
+				case Watch.WatchSize.Byte:
+					SizeDropdown.SelectedIndex = 0;
+					break;
+				case Watch.WatchSize.Word:
+					SizeDropdown.SelectedIndex = 1;
+					break;
+				case Watch.WatchSize.DWord:
+					SizeDropdown.SelectedIndex = 2;
+					break;
+			}
+		}
+
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
 			dropdown_dontfire = true;
@@ -87,8 +114,9 @@ namespace BizHawk.MultiClient
 			
 			MessageLabel.Text = String.Empty;
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
-			SizeDropdown.SelectedIndex = 0;
+			HardSetSizeDropDown(Settings.Size);
 			PopulateTypeDropDown();
+			HardSetDisplayTypeDropDown(Settings.Type);
 			DoDomainSizeCheck();
 			SetReboot(false);
 
