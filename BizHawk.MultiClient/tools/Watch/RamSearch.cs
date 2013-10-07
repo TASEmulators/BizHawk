@@ -245,6 +245,7 @@ namespace BizHawk.MultiClient
 			WatchListView.ItemCount = Searches.Count;
 			ToggleSearchDependentToolBarItems();
 			SetReboot(false);
+			MessageLabel.Text = String.Empty;
 		}
 
 		private void ToggleSearchDependentToolBarItems()
