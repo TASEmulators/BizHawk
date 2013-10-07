@@ -172,19 +172,20 @@ namespace BizHawk.MultiClient
 
 		public bool Preview(int address)
 		{
+			var listOfOne = new List<IMiniWatch>() { _watchList.FirstOrDefault(x => x.Address == address) };
 			switch (_compareTo)
 			{
 				default:
 				case RamSearchEngine.Compare.Previous:
-					return ComparePrevious(_watchList.Where(x => x.Address == address)).Count() == 0;
+					return ComparePrevious(listOfOne).Count() == 0;
 				case RamSearchEngine.Compare.SpecificValue:
-					return CompareSpecificValue(_watchList.Where(x => x.Address == address)).Count() == 0;
+					return CompareSpecificValue(listOfOne).Count() == 0;
 				case RamSearchEngine.Compare.SpecificAddress:
-					return CompareSpecificAddress(_watchList.Where(x => x.Address == address)).Count() == 0;
+					return CompareSpecificAddress(listOfOne).Count() == 0;
 				case RamSearchEngine.Compare.Changes:
-					return CompareChanges(_watchList.Where(x => x.Address == address)).Count() == 0;
+					return CompareChanges(listOfOne).Count() == 0;
 				case RamSearchEngine.Compare.Difference:
-					return CompareDifference(_watchList.Where(x => x.Address == address)).Count() == 0;
+					return CompareDifference(listOfOne).Count() == 0;
 			}
 		}
 
