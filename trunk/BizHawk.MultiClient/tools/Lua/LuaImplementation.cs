@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole Caller;
 		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
-		
+
 		private LuaFunctionCollection lua_functions = new LuaFunctionCollection();
 
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
@@ -141,7 +141,7 @@ namespace BizHawk.MultiClient
 			foreach (string t in ConsoleFunctions)
 			{
 				lua.RegisterFunction("console." + t, this,
-				                     GetType().GetMethod("console_" + t));
+									 GetType().GetMethod("console_" + t));
 				docs.Add("console", t, GetType().GetMethod("console_" + t));
 			}
 
@@ -170,7 +170,7 @@ namespace BizHawk.MultiClient
 			foreach (string t in MainMemoryFunctions)
 			{
 				lua.RegisterFunction("mainmemory." + t, this,
-				                     GetType().GetMethod("mainmemory_" + t));
+									 GetType().GetMethod("mainmemory_" + t));
 				docs.Add("mainmemory", t, GetType().GetMethod("mainmemory_" + t));
 			}
 
@@ -178,7 +178,7 @@ namespace BizHawk.MultiClient
 			foreach (string t in SaveStateFunctions)
 			{
 				lua.RegisterFunction("savestate." + t, this,
-				                     GetType().GetMethod("savestate_" + t));
+									 GetType().GetMethod("savestate_" + t));
 				docs.Add("savestate", t, GetType().GetMethod("savestate_" + t));
 			}
 
@@ -207,7 +207,7 @@ namespace BizHawk.MultiClient
 			foreach (string t in MultiClientFunctions)
 			{
 				lua.RegisterFunction("client." + t, this,
-				                     GetType().GetMethod("client_" + t));
+									 GetType().GetMethod("client_" + t));
 				docs.Add("client", t, GetType().GetMethod("client_" + t));
 			}
 
@@ -361,273 +361,276 @@ namespace BizHawk.MultiClient
 		/****************************************************/
 
 		public static string[] ConsoleFunctions = new[]
-		                                          	{
-		                                          		"output",
-		                                          		"log",
-		                                          		"clear",
-		                                          		"getluafunctionslist"
-		                                          	};
+		{
+			"output",
+			"log",
+			"clear",
+			"getluafunctionslist"
+		};
 
 		public static string[] GuiFunctions = new[]
-		                                      	{
-		                                      		"text",
-		                                      		"alert",
-		                                      		"cleartext",
-		                                      		"drawPixel",
-		                                      		"drawLine",
-													"drawBox",
-		                                      		"drawRectangle",
-		                                      		"drawEllipse",
-		                                      		"drawPolygon",
-		                                      		"drawBezier",
-		                                      		"drawPie",
-		                                      		"drawIcon",
-		                                      		"drawImage",
-													"addmessage",
-													"drawText",
-													"drawString"
-		                                      	};
+		{
+			"text",
+			"alert",
+			"cleartext",
+			"drawPixel",
+			"drawLine",
+			"drawBox",
+			"drawRectangle",
+			"drawEllipse",
+			"drawPolygon",
+			"drawBezier",
+			"drawPie",
+			"drawIcon",
+			"drawImage",
+			"addmessage",
+			"drawText",
+			"drawString"
+		};
 
 		public static string[] EmuFunctions = new[]
-		                                      	{
-		                                      		"frameadvance",
-		                                      		"yield",
-		                                      		"pause",
-		                                      		"unpause",
-		                                      		"togglepause",
-		                                      		"ispaused",
-		                                      		"speedmode",
-		                                      		"framecount",
-		                                      		"lagcount",
-		                                      		"islagged",
-		                                      		"getsystemid",
-		                                      		"setrenderplanes",
-		                                      		"frameskip",
-		                                      		"minimizeframeskip",
-		                                      		"limitframerate",
-		                                      		"displayvsync",
-		                                      		"enablerewind",
-													"on_snoop"
-		                                      	};
+		{
+			"frameadvance",
+			"yield",
+			"pause",
+			"unpause",
+			"togglepause",
+			"ispaused",
+			"speedmode",
+			"framecount",
+			"lagcount",
+			"islagged",
+			"getsystemid",
+			"setrenderplanes",
+			"frameskip",
+			"minimizeframeskip",
+			"limitframerate",
+			"displayvsync",
+			"enablerewind",
+			"on_snoop"
+		};
 
 		public static string[] MemoryFunctions = new[]
-		                                         	{
-		                                         		"usememorydomain",
-		                                         		"getmemorydomainlist",
-		                                         		"getcurrentmemorydomain",
-														"getcurrentmemorydomainsize",
-		                                         		"read_s8",
-		                                         		"read_u8",
-		                                         		"read_s16_le",
-		                                         		"read_s24_le",
-		                                         		"read_s32_le",
-		                                         		"read_u16_le",
-		                                         		"read_u24_le",
-		                                         		"read_u32_le",
-		                                         		"read_s16_be",
-		                                         		"read_s24_be",
-		                                         		"read_s32_be",
-		                                         		"read_u16_be",
-		                                         		"read_u24_be",
-		                                         		"read_u32_be",
-		                                         		"write_s8",
-		                                         		"write_u8",
-		                                         		"write_s16_le",
-		                                         		"write_s24_le",
-		                                         		"write_s32_le",
-		                                         		"write_u16_le",
-		                                         		"write_u24_le",
-		                                         		"write_u32_le",
-		                                         		"write_s16_be",
-		                                         		"write_s24_be",
-		                                         		"write_s32_be",
-		                                         		"write_u16_be",
-		                                         		"write_u24_be",
-		                                         		"write_u32_be",
-		                                         		"readbyte",
-		                                         		"writebyte"
-		                                         		//"registerwrite",
-		                                         		//"registerread",
-		                                         	};
+		{
+			"usememorydomain",
+			"getmemorydomainlist",
+			"getcurrentmemorydomain",
+			"getcurrentmemorydomainsize",
+			"read_s8",
+			"read_u8",
+			"read_s16_le",
+			"read_s24_le",
+			"read_s32_le",
+			"read_u16_le",
+			"read_u24_le",
+			"read_u32_le",
+			"read_s16_be",
+			"read_s24_be",
+			"read_s32_be",
+			"read_u16_be",
+			"read_u24_be",
+			"read_u32_be",
+			"write_s8",
+			"write_u8",
+			"write_s16_le",
+			"write_s24_le",
+			"write_s32_le",
+			"write_u16_le",
+			"write_u24_le",
+			"write_u32_le",
+			"write_s16_be",
+			"write_s24_be",
+			"write_s32_be",
+			"write_u16_be",
+			"write_u24_be",
+			"write_u32_be",
+			"readbyte",
+			"writebyte",
+			"readfloat",
+			"writefloat"
+		};
 
 		public static string[] MainMemoryFunctions = new[]
-		                                             	{
-		                                             		"read_s8",
-		                                             		"read_u8",
-		                                             		"read_s16_le",
-		                                             		"read_s24_le",
-		                                             		"read_s32_le",
-		                                             		"read_u16_le",
-		                                             		"read_u24_le",
-		                                             		"read_u32_le",
-		                                             		"read_s16_be",
-		                                             		"read_s24_be",
-		                                             		"read_s32_be",
-		                                             		"read_u16_be",
-		                                             		"read_u24_be",
-		                                             		"read_u32_be",
-		                                             		"write_s8",
-		                                             		"write_u8",
-		                                             		"write_s16_le",
-		                                             		"write_s24_le",
-		                                             		"write_s32_le",
-		                                             		"write_u16_le",
-		                                             		"write_u24_le",
-		                                             		"write_u32_le",
-		                                             		"write_s16_be",
-		                                             		"write_s24_be",
-		                                             		"write_s32_be",
-		                                             		"write_u16_be",
-		                                             		"write_u24_be",
-		                                             		"write_u32_be",
-															"readbyterange",
-															"writebyterange"
-		                                             	};
+		{
+			"read_s8",
+			"read_u8",
+			"read_s16_le",
+			"read_s24_le",
+			"read_s32_le",
+			"read_u16_le",
+			"read_u24_le",
+			"read_u32_le",
+			"read_s16_be",
+			"read_s24_be",
+			"read_s32_be",
+			"read_u16_be",
+			"read_u24_be",
+			"read_u32_be",
+			"write_s8",
+			"write_u8",
+			"write_s16_le",
+			"write_s24_le",
+			"write_s32_le",
+			"write_u16_le",
+			"write_u24_le",
+			"write_u32_le",
+			"write_s16_be",
+			"write_s24_be",
+			"write_s32_be",
+			"write_u16_be",
+			"write_u24_be",
+			"write_u32_be",
+			"readbyterange",
+			"writebyterange",
+			"readfloat",
+			"writefloat"
+		};
 
 		public static string[] SaveStateFunctions = new[]
-		                                            	{
-		                                            		"saveslot",
-		                                            		"loadslot",
-		                                            		"save",
-		                                            		"load",
-		                                            		"registersave",
-		                                            		"registerload"
-		                                            	};
+		{
+			"saveslot",
+			"loadslot",
+			"save",
+			"load",
+			"registersave",
+			"registerload"
+		};
 
 		public static string[] MovieFunctions = new[]
-		                                        	{
-		                                        		"mode",
-		                                        		"isloaded",
-		                                        		"rerecordcount",
-		                                        		"length",
-		                                        		"stop",
-		                                        		"filename",
-		                                        		"getreadonly",
-		                                        		"setreadonly",
-		                                        		"getrerecordcounting",
-		                                        		"setrerecordcounting",
-		                                        		"getinput"
-		                                        	};
+		{
+			"mode",
+			"isloaded",
+			"rerecordcount",
+			"length",
+			"stop",
+			"filename",
+			"getreadonly",
+			"setreadonly",
+			"getrerecordcounting",
+			"setrerecordcounting",
+			"getinput"
+		};
 
 		public static string[] InputFunctions = new[]
-		                                        	{
-		                                        		"get",
-		                                        		"getmouse"
-		                                        	};
+		{
+			"get",
+			"getmouse"
+		};
 
 		public static string[] JoypadFunctions = new[]
-		                                         	{
-		                                         		"set",
-		                                         		"get",
-		                                         		"getimmediate",
-														"setanalog"
-		                                         	};
+		{
+			"set",
+			"get",
+			"getimmediate",
+			"setanalog"
+		};
 
 		public static string[] MultiClientFunctions = new[]
-		                                              	{
-		                                              		"getwindowsize",
-															"setwindowsize",
-		                                              		"openrom",
-		                                              		"closerom",
-		                                              		"opentoolbox",
-		                                              		"openramwatch",
-		                                              		"openramsearch",
-		                                              		"openhexeditor",
-		                                              		"opentasstudio",
-		                                              		"opencheats",
-															"screenwidth",
-                                                            "xpos",
-															"screenheight",
-                                                            "ypos",
-															"screenshot",
-															"screenshottoclipboard",
-															"setscreenshotosd",
-															"pause_av",
-															"unpause_av",
-															"reboot_core",
-		                                              	};
+		{
+			"getwindowsize",
+			"setwindowsize",
+			"openrom",
+			"closerom",
+			"opentoolbox",
+			"openramwatch",
+			"openramsearch",
+			"openhexeditor",
+			"opentasstudio",
+			"opencheats",
+			"screenwidth",
+			"xpos",
+			"screenheight",
+			"ypos",
+			"screenshot",
+			"screenshottoclipboard",
+			"setscreenshotosd",
+			"pause_av",
+			"unpause_av",
+			"reboot_core",
+		};
 
 		public static string[] FormsFunctions = new[]
-		                                        	{
-		                                        		"newform",
-		                                        		"destroy",
-		                                        		"destroyall",
-		                                        		"button",
-		                                        		"label",
-		                                        		"textbox",
-		                                        		"setlocation",
-		                                        		"setsize",
-		                                        		"settext",
-		                                        		"addclick",
-		                                        		"clearclicks",
-		                                        		"gettext",
-														"setproperty",
-														"getproperty",
-														"openfile"
-		                                        	};
+		{
+			"newform",
+			"destroy",
+			"destroyall",
+			"button",
+			"label",
+			"textbox",
+			"setlocation",
+			"setsize",
+			"settext",
+			"addclick",
+			"clearclicks",
+			"gettext",
+			"setproperty",
+			"getproperty",
+			"openfile"
+		};
 
 		public static string[] BitwiseFunctions = new[]
-		                                          	{
-		                                          		"band",
-		                                          		"lshift",
-		                                          		"rshift",
-		                                          		"rol",
-		                                          		"ror",
-		                                          		"bor",
-		                                          		"bxor",
-		                                          		"bnot"
-		                                          	};
+		{
+			"band",
+			"lshift",
+			"rshift",
+			"rol",
+			"ror",
+			"bor",
+			"bxor",
+			"bnot"
+		};
 
 		public static string[] NESFunctions = new[]
-		                                          	{
-		                                          		"setscanlines",
-														"gettopscanline",
-														"getbottomscanline",
-														"getclipleftandright",
-														"setclipleftandright",
-														"getdispbackground",
-														"setdispbackground",
-														"getdispsprites",
-														"setdispsprites",
-														"getallowmorethaneightsprites",
-														"setallowmorethaneightsprites",
-														"addgamegenie",
-														"removegamegenie"
-		                                          	};
+		{
+			"setscanlines",
+			"gettopscanline",
+			"getbottomscanline",
+			"getclipleftandright",
+			"setclipleftandright",
+			"getdispbackground",
+			"setdispbackground",
+			"getdispsprites",
+			"setdispsprites",
+			"getallowmorethaneightsprites",
+			"setallowmorethaneightsprites",
+			"addgamegenie",
+			"removegamegenie"
+		};
 
 		public static string[] SNESFunctions = new[]
-													{
-														"setlayer_bg_1",
-														"setlayer_bg_2",
-														"setlayer_bg_3",
-														"setlayer_bg_4",
-														"getlayer_bg_1",
-														"getlayer_bg_2",
-														"getlayer_bg_3",
-														"getlayer_bg_4",
+		{
+			"setlayer_bg_1",
+			"setlayer_bg_2",
+			"setlayer_bg_3",
+			"setlayer_bg_4",
+			"getlayer_bg_1",
+			"getlayer_bg_2",
+			"getlayer_bg_3",
+			"getlayer_bg_4",
 
-														"setlayer_obj_1",
-														"setlayer_obj_2",
-														"setlayer_obj_3",
-														"setlayer_obj_4",
-														"getlayer_obj_1",
-														"getlayer_obj_2",
-														"getlayer_obj_3",
-														"getlayer_obj_4"
-		                                          	};
+			"setlayer_obj_1",
+			"setlayer_obj_2",
+			"setlayer_obj_3",
+			"setlayer_obj_4",
+			"getlayer_obj_1",
+			"getlayer_obj_2",
+			"getlayer_obj_3",
+			"getlayer_obj_4"
+		};
 
 		public static string[] EventFunctions = new[]
-													{
-														"onloadstate",
-														"onsavestate",
-														"onframestart",
-														"onframeend",
-														"onmemoryread",
-														"onmemorywrite",
-														"oninputpoll",
-														"unregisterbyid",
-														"unregisterbyname"
-													};
+		{
+			"onloadstate",
+			"onsavestate",
+			"onframestart",
+			"onframeend",
+			"onmemoryread",
+			"onmemorywrite",
+			"oninputpoll",
+			"unregisterbyid",
+			"unregisterbyname"
+		};
+
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -644,43 +647,43 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-                if (lua_input is LuaTable)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    var lti = (lua_input as LuaTable);
+				if (lua_input is LuaTable)
+				{
+					StringBuilder sb = new StringBuilder();
+					var lti = (lua_input as LuaTable);
 
-                    List<string> Keys = new List<string>();
-                    List<string> Values = new List<string>();
-                    foreach (var key in lti.Keys) { Keys.Add(key.ToString()); }
-                    foreach (var value in lti.Values) { Values.Add(value.ToString()); }
+					List<string> Keys = new List<string>();
+					List<string> Values = new List<string>();
+					foreach (var key in lti.Keys) { Keys.Add(key.ToString()); }
+					foreach (var value in lti.Values) { Values.Add(value.ToString()); }
 
-                    List<KeyValuePair<string, string>> KVPs = new List<KeyValuePair<string, string>>();
-                    for (int i = 0; i < Keys.Count; i++)
-                    {
-                        if (i < Values.Count)
-                        {
-                            KeyValuePair<string, string> kvp = new KeyValuePair<string, string>(Keys[i], Values[i]);
-                            KVPs.Add(kvp);
-                        }
-                    }
-                    KVPs = KVPs.OrderBy(x => x.Key).ToList();
-                    foreach(var kvp in KVPs)
-                    {
-                        sb
-                            .Append("\"")
-                            .Append(kvp.Key)
-                            .Append("\": \"")
-                            .Append(kvp.Value)
-                            .Append("\"")
-                            .AppendLine();
-                    }
+					List<KeyValuePair<string, string>> KVPs = new List<KeyValuePair<string, string>>();
+					for (int i = 0; i < Keys.Count; i++)
+					{
+						if (i < Values.Count)
+						{
+							KeyValuePair<string, string> kvp = new KeyValuePair<string, string>(Keys[i], Values[i]);
+							KVPs.Add(kvp);
+						}
+					}
+					KVPs = KVPs.OrderBy(x => x.Key).ToList();
+					foreach (var kvp in KVPs)
+					{
+						sb
+							.Append("\"")
+							.Append(kvp.Key)
+							.Append("\": \"")
+							.Append(kvp.Value)
+							.Append("\"")
+							.AppendLine();
+					}
 
-                    Global.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
-                }
-                else
-                {
-                    Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
-                }
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
+				}
+				else
+				{
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+				}
 			}
 		}
 
@@ -748,7 +751,7 @@ namespace BizHawk.MultiClient
 			dx *= client_getwindowsize();
 			dy *= client_getwindowsize();
 
-			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),  a);
+			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
 		}
 
 		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
@@ -1609,6 +1612,25 @@ namespace BizHawk.MultiClient
 			M_W_U_BE(addr, v, 4);
 		}
 
+		public float memory_readfloat(object lua_addr, bool bigendian)
+		{
+			int addr = LuaInt(lua_addr);
+			uint val = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+
+			byte[] bytes = BitConverter.GetBytes(val);
+			float _float = BitConverter.ToSingle(bytes, 0);
+			return _float;
+		}
+
+		public void memory_writefloat(object lua_addr, object lua_v, bool bigendian)
+		{
+			int addr = LuaInt(lua_addr);
+			float dv = (float)(double)lua_v;
+			byte[] bytes = BitConverter.GetBytes(dv);
+			uint v = BitConverter.ToUInt32(bytes, 0);
+			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+		}
+
 		private int M_R_S_LE(int addr, int size)
 		{
 			return U2S(M_R_U_LE(addr, size), size);
@@ -1959,6 +1981,25 @@ namespace BizHawk.MultiClient
 			return s;
 		}
 
+		public float mainmemory_readfloat(object lua_addr, bool bigendian)
+		{
+			int addr = LuaInt(lua_addr);
+			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+
+			byte[] bytes = BitConverter.GetBytes(val);
+			float _float = BitConverter.ToSingle(bytes, 0);
+			return _float;
+		}
+
+		public void mainmemory_writefloat(object lua_addr, object lua_v, bool bigendian)
+		{
+			int addr = LuaInt(lua_addr);
+			float dv = (float)(double)lua_v;
+			byte[] bytes = BitConverter.GetBytes(dv);
+			uint v = BitConverter.ToUInt32(bytes, 0);
+			Global.Emulator.MainMemory.PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+		}
+
 		//----------------------------------------------------
 		//Bitwise Operator library
 		//----------------------------------------------------
@@ -2154,7 +2195,7 @@ namespace BizHawk.MultiClient
 			LuaTable input = _lua.NewTable();
 
 			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
-			MovieControllerAdapter m = new MovieControllerAdapter {Type = Global.MovieSession.MovieControllerAdapter.Type};
+			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(s);
 			foreach (string button in m.Type.BoolButtons)
 				input[button] = m[button];
@@ -2194,29 +2235,29 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
-            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-            {
-                if (controller == null)
-                {
-                    buttons[button] = Global.ControllerOutput[button];
-                }
-                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-                {
-                    buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
-                }
-            }
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+			{
+				if (controller == null)
+				{
+					buttons[button] = Global.ControllerOutput[button];
+				}
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				{
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+				}
+			}
 
-            foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
-            {
-                if (controller == null)
-                {
-                    buttons[button] = Global.ControllerOutput.GetFloat(button);
-                }
-                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-                {
-                    buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
-                }
-            }
+			foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
+			{
+				if (controller == null)
+				{
+					buttons[button] = Global.ControllerOutput.GetFloat(button);
+				}
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				{
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+				}
+			}
 
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
@@ -2242,7 +2283,7 @@ namespace BizHawk.MultiClient
 					bool invert = false;
 					bool? theValue;
 					string theValueStr = buttons[button].ToString();
-					
+
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
 						if (theValueStr.ToLower() == "false")
@@ -2263,7 +2304,7 @@ namespace BizHawk.MultiClient
 					{
 						theValue = null;
 					}
-					
+
 
 					if (!invert)
 					{
@@ -2319,7 +2360,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			catch { /*Eat it*/ } 
+			catch { /*Eat it*/ }
 		}
 
 		public void joypad_setanalog(LuaTable controls, object controller = null)
@@ -2380,19 +2421,19 @@ namespace BizHawk.MultiClient
 		{
 			return Global.RenderPanel.NativeSize.Width;
 		}
-        public int client_xpos()
-        {
-            return Global.MainForm.DesktopLocation.X;
-        }
+		public int client_xpos()
+		{
+			return Global.MainForm.DesktopLocation.X;
+		}
 
 		public int client_screenheight()
 		{
 			return Global.RenderPanel.NativeSize.Height;
 		}
-        public int client_ypos()
-        {
-            return Global.MainForm.DesktopLocation.Y;
-        }
+		public int client_ypos()
+		{
+			return Global.MainForm.DesktopLocation.Y;
+		}
 
 		public void client_openrom(object lua_input)
 		{
@@ -2844,13 +2885,13 @@ namespace BizHawk.MultiClient
 			OpenFileDialog openFileDialog1 = new OpenFileDialog();
 			if (InitialDirectory != null)
 			{
-				openFileDialog1.InitialDirectory = InitialDirectory; 
+				openFileDialog1.InitialDirectory = InitialDirectory;
 			}
 			if (FileName != null)
 			{
 				openFileDialog1.FileName = FileName;
 			}
-			 if (Filter != null)
+			if (Filter != null)
 			{
 				openFileDialog1.AddExtension = true;
 				openFileDialog1.Filter = Filter;
