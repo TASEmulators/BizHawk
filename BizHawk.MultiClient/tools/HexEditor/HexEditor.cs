@@ -523,9 +523,16 @@ namespace BizHawk.MultiClient
 			else return 8;
 		}
 
+		private Point GetPromptPoint()
+		{
+			Point p = new Point(MemoryViewerBox.Location.X + 30, MemoryViewerBox.Location.Y + 30);
+			return PointToScreen(p);
+		}
+
 		public void GoToSpecifiedAddress()
 		{
 			InputPrompt i = new InputPrompt {Text = "Go to Address"};
+			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
 			Global.Sound.StopSound();
 			i.ShowDialog();
