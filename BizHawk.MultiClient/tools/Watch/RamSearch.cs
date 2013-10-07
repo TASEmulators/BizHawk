@@ -77,12 +77,27 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
+
+			SpecificValueBox.Nullable =
+				SpecificAddressBox.Nullable =
+				NumberOfChangesBox.Nullable =
+				DifferenceBox.Nullable =
+				DifferentByBox.Nullable =
+				false;
+			
 			MessageLabel.Text = String.Empty;
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
 			SizeDropdown.SelectedIndex = 0;
 			PopulateTypeDropDown();
 			DoDomainSizeCheck();
 			SetReboot(false);
+
+			SpecificValueBox.ResetText();
+			SpecificAddressBox.ResetText();
+			NumberOfChangesBox.ResetText();
+			DifferenceBox.ResetText();
+			DifferentByBox.ResetText();
+
 			dropdown_dontfire = false;
 
 			NewSearch();
@@ -1281,9 +1296,9 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Enabled = true;
 			if (String.IsNullOrWhiteSpace(SpecificValueBox.Text))
 			{
-				SpecificValueBox.Text = "0";
-				Searches.CompareValue = 0;
+				SpecificAddressBox.ResetText();
 			}
+			Searches.CompareValue = SpecificValueBox.ToRawInt();
 			SpecificValueBox.Focus();
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
@@ -1297,9 +1312,10 @@ namespace BizHawk.MultiClient
 			SpecificAddressBox.Enabled = true;
 			if (String.IsNullOrWhiteSpace(SpecificAddressBox.Text))
 			{
-				SpecificAddressBox.Text = "0";
-				Searches.CompareValue = 0;
+				SpecificAddressBox.ResetText();
+				
 			}
+			Searches.CompareValue = SpecificAddressBox.ToRawInt();
 			SpecificAddressBox.Focus();
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
@@ -1313,9 +1329,10 @@ namespace BizHawk.MultiClient
 			NumberOfChangesBox.Enabled = true;
 			if (String.IsNullOrWhiteSpace(NumberOfChangesBox.Text))
 			{
-				NumberOfChangesBox.Text = "0";
-				Searches.CompareValue = 0;
+				NumberOfChangesBox.ResetText();
 			}
+
+			Searches.CompareValue = NumberOfChangesBox.ToRawInt();
 			NumberOfChangesBox.Focus();
 			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.Changes);
@@ -1329,9 +1346,9 @@ namespace BizHawk.MultiClient
 			DifferenceBox.Enabled = true;
 			if (String.IsNullOrWhiteSpace(DifferenceBox.Text))
 			{
-				DifferenceBox.Text = "0";
-				Searches.CompareValue = 0;
+				DifferenceBox.ResetText();
 			}
+			Searches.CompareValue = DifferenceBox.ToRawInt();
 			DifferenceBox.Focus();
 			SetCompareTo(RamSearchEngine.Compare.Difference);
 		}
@@ -1387,8 +1404,9 @@ namespace BizHawk.MultiClient
 			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
 			if (String.IsNullOrWhiteSpace(DifferentByBox.Text))
 			{
-				DifferentByBox.Text = "0";
+				DifferentByBox.ResetText();
 			}
+			Searches.DifferentBy = DifferenceBox.ToRawInt();
 			DifferentByBox.Focus();
 		}
 
