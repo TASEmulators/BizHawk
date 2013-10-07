@@ -766,6 +766,7 @@ namespace BizHawk.MultiClient
 		{
 			WatchListView.SelectedIndices.Clear();
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
+			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
 			Global.Sound.StopSound();
 			i.ShowDialog();
