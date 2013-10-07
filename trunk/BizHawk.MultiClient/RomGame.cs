@@ -21,33 +21,52 @@ namespace BizHawk.MultiClient
 			if (!file.Exists)
 				throw new Exception("The file needs to exist, yo.");
 
-			var stream = file.GetStream();
-			FileData = Util.ReadAllBytes(stream);
 			Extension = file.Extension;
+
+			var stream = file.GetStream();
+			int fileLength = (int)stream.Length;
+
+			//read the entire contents of the file into memory.
+			//unfortunate in the case of large files, but thats what we've got to work with for now.
+
 			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.
-			int header = (int)(stream.Length % BankSize);
-			if (header.In(0, 512) == false)
+			int headerOffset = fileLength % BankSize;
+			if (headerOffset.In(0, 512) == false)
 			{
-				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", header);
-				header = 0;
+				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", headerOffset);
+				headerOffset = 0;
 			}
-			else if (header > 0)
-				Console.WriteLine("Assuming header of {0} bytes.", header);
+			else if (headerOffset > 0)
+				Console.WriteLine("Assuming header of {0} bytes.", headerOffset);
 
-			stream.Position = header;
-			int length = (int)stream.Length - header;
+			//read the entire file into FileData.
+			FileData = new byte[fileLength];
+			stream.Read(FileData, 0, fileLength);
 
-			RomData = new byte[length];
-			stream.Read(RomData, 0, length);
+			//if there was no header offset, RomData is equivalent to FileData 
+			//(except in cases where the original interleaved file data is necessary.. in that case we'll have problems.. 
+			//but this whole architecture is not going to withstand every peculiarity and be fast as well.
+			if (headerOffset == 0)
+			{
+				RomData = FileData;
+			}
+			else
+			{
+				//if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isnt needed)
+				int romLength = fileLength - headerOffset;
+				RomData = new byte[romLength];
+				Buffer.BlockCopy(FileData, headerOffset, RomData, 0, romLength);
+			}
 
 			if (file.Extension == ".SMD")
 				RomData = DeInterleaveSMD(RomData);
 
 			if (file.Extension == ".Z64" || file.Extension == ".N64" || file.Extension == ".V64")
-				RomData = SwapN64(RomData);
+				RomData = MutateSwapN64(RomData);
 
+			//note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
 			
 			CheckForPatchOptions();
@@ -84,7 +103,7 @@ namespace BizHawk.MultiClient
 			return output;
 		}
 
-		private static byte[] SwapN64(byte[] source)
+		private unsafe static byte[] MutateSwapN64(byte[] source)
 		{
 			// N64 roms are in one of the following formats:
 			//  .Z64 = No swapping
@@ -94,34 +113,45 @@ namespace BizHawk.MultiClient
 			// File extension does not always match the format
 
 			int size = source.Length;
-			byte[] output = new byte[size];
 
 			// V64 format
-			if (source[0] == 0x37)
+			fixed (byte* pSource = &source[0])
 			{
-				for (int i = 0; i < size; i += 2)
+				if (pSource[0] == 0x37)
 				{
-					output[i] = source[i + 1];
-					output[i + 1] = source[i];
+					for (int i = 0; i < size; i += 2)
+					{
+						byte temp = pSource[i];
+						pSource[i] = pSource[i + 1];
+						pSource[i + 1] = temp;
+					}
+				}
+				// N64 format
+				else if (pSource[0] == 0x40)
+				{
+					for (int i = 0; i < size; i += 4)
+					{
+						//output[i] = source[i + 3];
+						//output[i + 3] = source[i];
+						//output[i + 1] = source[i + 2];
+						//output[i + 2] = source[i + 1];
+
+						byte temp = pSource[i];
+						pSource[i] = source[i + 3];
+						pSource[i + 3] = temp;
+
+						temp = pSource[i + 1];
+						pSource[i + 1] = pSource[i + 2];
+						pSource[i + 2] = temp;
+					}
+				}
+				// Z64 format (or some other unknown format)
+				else
+				{
 				}
 			}
-			// N64 format
-			else if (source[0] == 0x40)
-			{
-				for (int i = 0; i < size; i += 4)
-				{
-					output[i] = source[i + 3];
-					output[i + 3] = source[i];
-					output[i + 1] = source[i + 2];
-					output[i + 2] = source[i + 1];
-				}
-			}
-			// Z64 format (or some other unknown format)
-			else
-			{
-				return source;
-			}
-			return output;
+
+			return source;
 		}
 
 		private void CheckForPatchOptions()
