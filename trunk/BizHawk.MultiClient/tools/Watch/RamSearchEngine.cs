@@ -956,15 +956,71 @@ namespace BizHawk.MultiClient
 			/*Require restart*/
 			public enum SearchMode { Fast, Detailed }
 
-			public SearchMode Mode = SearchMode.Detailed;
-			public MemoryDomain Domain = Global.Emulator.MainMemory;
-			public Watch.WatchSize Size = Watch.WatchSize.Byte;
-			public bool CheckMisAligned = false;
+			public SearchMode Mode;
+			public MemoryDomain Domain;
+			public Watch.WatchSize Size;
+			public bool CheckMisAligned;
 
 			/*Can be changed mid-search*/
-			public Watch.DisplayType Type = Watch.DisplayType.Unsigned;
-			public bool BigEndian = false;
-			public Watch.PreviousType PreviousType = Watch.PreviousType.LastSearch;
+			public Watch.DisplayType Type;
+			public bool BigEndian;
+			public Watch.PreviousType PreviousType;
+
+			public Settings()
+			{
+				switch (Global.Emulator.SystemId)
+				{
+					case "N64":
+						Mode = SearchMode.Fast;
+						Size = Watch.WatchSize.DWord;
+						Type = Watch.DisplayType.Float;
+						BigEndian = true;
+						break;
+					case "GBA":
+						Mode = SearchMode.Detailed;
+						Size = Watch.WatchSize.DWord;
+						Type = Watch.DisplayType.Float;
+						BigEndian = false;
+						break;
+					case "GEN":
+						Mode = SearchMode.Detailed;
+						Size = Watch.WatchSize.Word;
+						Type = Watch.DisplayType.Unsigned;
+						BigEndian = true;
+						break;
+					case "SNES":
+						Mode = SearchMode.Detailed;
+						Size = Watch.WatchSize.Byte;
+						Type = Watch.DisplayType.Unsigned;
+						BigEndian = false;
+						break;
+					case "SAT":
+						Mode = SearchMode.Fast;
+						Size = Watch.WatchSize.DWord;
+						Type = Watch.DisplayType.Unsigned;
+						BigEndian = true;
+						break;
+					default:
+					case "NES":
+					case "A26":
+					case "A78":
+					case "TI83":
+					case "SMS":
+					case "GG":
+					case "SG":
+					case "Coleco":
+					case "C64":
+						Mode = SearchMode.Detailed;
+						Size = Watch.WatchSize.Byte;
+						Type = Watch.DisplayType.Unsigned;
+						BigEndian = false;
+						break;
+				}
+
+				Domain = Global.Emulator.MainMemory;
+				CheckMisAligned = false;
+				PreviousType = Watch.PreviousType.LastSearch;
+			}
 		}
 
 		#endregion
