@@ -178,6 +178,7 @@ namespace BizHawk.MultiClient
 
 		public static string[] MainMemoryFunctions = new[]
 		{
+			"getname",
 			"readbyte",
 			"readbyterange",
 			"readfloat",
@@ -2365,6 +2366,11 @@ namespace BizHawk.MultiClient
 		}
 
 		#endregion
+
+		public string mainmemory_getname()
+		{
+			return Global.Emulator.MainMemory.Name;
+		}
 
 		public uint mainmemory_readbyte(object lua_addr)
 		{
