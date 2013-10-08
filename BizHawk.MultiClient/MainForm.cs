@@ -2768,13 +2768,18 @@ namespace BizHawk.MultiClient
 
 		public void LoadTraceLogger()
 		{
-			if (!TraceLogger1.IsHandleCreated || TraceLogger1.IsDisposed)
+			if (Global.Emulator.CoreComm.CpuTraceAvailable)
 			{
-				TraceLogger1 = new TraceLogger();
-				TraceLogger1.Show();
+				if (!TraceLogger1.IsHandleCreated || TraceLogger1.IsDisposed)
+				{
+					TraceLogger1 = new TraceLogger();
+					TraceLogger1.Show();
+				}
+				else
+				{
+					TraceLogger1.Focus();
+				}
 			}
-			else
-				TraceLogger1.Focus();
 		}
 
 		public void LoadToolBox()
