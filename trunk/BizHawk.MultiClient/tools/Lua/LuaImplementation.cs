@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 			"openrom",
 			"opentasstudio",
 			"opentoolbox",
+			"opentracelogger",
 			"pause_av",
 			"reboot_core",
 			"screenheight",
@@ -600,6 +601,11 @@ namespace BizHawk.MultiClient
 		public void client_opentoolbox()
 		{
 			Global.MainForm.LoadToolBox();
+		}
+
+		public void client_opentracelogger()
+		{
+			Global.MainForm.LoadTraceLogger();
 		}
 
 		public void client_pause_av()
