@@ -2079,6 +2079,13 @@ namespace BizHawk.MultiClient
 				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
 
+				case "Do Search": RamSearch_DoSearch(); break;
+				case "New Search": RamSearch_NewSearch(); break;
+				case "Previous Compare To": RamSearch_PreviousCompareTo(); break;
+				case "Next Compare To": RamSearch_NextCompareTo(); break;
+				case "Previous Operator": RamSearch_PreviousOperator(); break;
+				case "Next Operator": RamSearch_NextOperator(); break;
+
 				case "Toggle BG 1": SNES_ToggleBG1(); break;
 				case "Toggle BG 2": SNES_ToggleBG2(); break;
 				case "Toggle BG 3": SNES_ToggleBG3(); break;
@@ -2681,6 +2688,78 @@ namespace BizHawk.MultiClient
 			else
 			{
 				RamSearch1.Focus();
+			}
+		}
+
+		private void RamSearch_DoSearch()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.DoSearch();
+			}
+		}
+
+		private void RamSearch_NewSearch()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.NewSearch();
+			}
+		}
+
+		private void RamSearch_NextCompareTo()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.NextCompareTo();
+			}
+		}
+
+		private void RamSearch_PreviousCompareTo()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.NextCompareTo(reverse: true);
+			}
+		}
+
+		private void RamSearch_NextOperator()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.NextOperator();
+			}
+		}
+
+		private void RamSearch_PreviousOperator()
+		{
+			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+			{
+				return;
+			}
+			else
+			{
+				RamSearch1.NextOperator(reverse: true);
 			}
 		}
 
