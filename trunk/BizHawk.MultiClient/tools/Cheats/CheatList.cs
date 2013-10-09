@@ -92,16 +92,22 @@ namespace BizHawk.MultiClient
 
 		public void Add(Cheat c)
 		{
-			_changes = true;
-			_cheatList.Add(c);
-			Global.MainForm.UpdateCheatStatus();
+			if (!_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			{
+				_changes = true;
+				_cheatList.Add(c);
+				Global.MainForm.UpdateCheatStatus();
+			}
 		}
 
 		public void Insert(int index, Cheat c)
 		{
-			_changes = true;
-			_cheatList.Insert(index, c);
-			Global.MainForm.UpdateCheatStatus();
+			if (!_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			{
+				_changes = true;
+				_cheatList.Insert(index, c);
+				Global.MainForm.UpdateCheatStatus();
+			}
 		}
 
 		public void Remove(Cheat c)
