@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -257,11 +258,7 @@ namespace BizHawk.MultiClient
 			Global.Config.RamSearchHeight = Bottom - Top;
 		}
 
-		#endregion
-
-		#region Private
-
-		private void NewSearch()
+		public void NewSearch()
 		{
 			Searches = new RamSearchEngine(Settings);
 			Searches.Start();
@@ -276,6 +273,92 @@ namespace BizHawk.MultiClient
 			SetReboot(false);
 			MessageLabel.Text = String.Empty;
 		}
+
+		public void NextCompareTo(bool reverse = false)
+		{
+			List<RadioButton> radios = new List<RadioButton>();
+			foreach (Control control in CompareToBox.Controls)
+			{
+				if (control is RadioButton)
+				{
+					radios.Add(control as RadioButton);
+				}
+			}
+
+			radios = radios.OrderBy(x => x.TabIndex).ToList();
+
+			var selected = radios.FirstOrDefault(x => x.Checked);
+			int index = radios.IndexOf(selected);
+
+			if (reverse)
+			{
+				if (index == 0)
+				{
+					index = radios.Count - 1;
+				}
+				else
+				{
+					index--;
+				}
+			}
+			else
+			{
+				index++;
+				if (index >= radios.Count)
+				{
+					index = 0;
+				}
+			}
+
+			radios[index].Checked = true;
+			MethodInfo mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
+			mi.Invoke(radios[index], new object[] { new EventArgs() });
+		}
+
+		public void NextOperator(bool reverse = false)
+		{
+			List<RadioButton> radios = new List<RadioButton>();
+			foreach (Control control in ComparisonBox.Controls)
+			{
+				if (control is RadioButton)
+				{
+					radios.Add(control as RadioButton);
+				}
+			}
+
+			radios = radios.OrderBy(x => x.TabIndex).ToList();
+
+			var selected = radios.FirstOrDefault(x => x.Checked);
+			int index = radios.IndexOf(selected);
+
+			if (reverse)
+			{
+				if (index == 0)
+				{
+					index = radios.Count - 1;
+				}
+				else
+				{
+					index--;
+				}
+			}
+			else
+			{
+				index++;
+				if (index >= radios.Count)
+				{
+					index = 0;
+				}
+			}
+
+			radios[index].Checked = true;
+			MethodInfo mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
+			mi.Invoke(radios[index], new object[] { new EventArgs() });
+		}
+
+		#endregion
+
+		#region Private
 
 		private void ToggleSearchDependentToolBarItems()
 		{
@@ -331,7 +414,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void DoSearch()
+		public void DoSearch()
 		{
 			Searches.CompareValue = CompareToValue;
 			Searches.DifferentBy = DifferentByValue;
@@ -1330,7 +1413,12 @@ namespace BizHawk.MultiClient
 				SpecificAddressBox.ResetText();
 			}
 			Searches.CompareValue = SpecificValueBox.ToRawInt();
-			SpecificValueBox.Focus();
+
+			if (this.Focused)
+			{
+				SpecificValueBox.Focus();
+			}
+			
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
@@ -1347,7 +1435,12 @@ namespace BizHawk.MultiClient
 				
 			}
 			Searches.CompareValue = SpecificAddressBox.ToRawInt();
-			SpecificAddressBox.Focus();
+
+			if (this.Focused)
+			{
+				SpecificAddressBox.Focus();
+			}
+
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.SpecificAddress);
@@ -1364,7 +1457,12 @@ namespace BizHawk.MultiClient
 			}
 
 			Searches.CompareValue = NumberOfChangesBox.ToRawInt();
-			NumberOfChangesBox.Focus();
+
+			if (this.Focused)
+			{
+				NumberOfChangesBox.Focus();
+			}
+
 			DifferenceBox.Enabled = false;
 			SetCompareTo(RamSearchEngine.Compare.Changes);
 		}
@@ -1380,7 +1478,12 @@ namespace BizHawk.MultiClient
 				DifferenceBox.ResetText();
 			}
 			Searches.CompareValue = DifferenceBox.ToRawInt();
-			DifferenceBox.Focus();
+
+			if (this.Focused)
+			{
+				DifferenceBox.Focus();
+			}
+
 			SetCompareTo(RamSearchEngine.Compare.Difference);
 		}
 
@@ -1438,7 +1541,11 @@ namespace BizHawk.MultiClient
 				DifferentByBox.ResetText();
 			}
 			Searches.DifferentBy = DifferenceBox.ToRawInt();
-			DifferentByBox.Focus();
+
+			if (this.Focused)
+			{
+				DifferentByBox.Focus();
+			}
 		}
 
 		private void DifferentByBox_TextChanged(object sender, EventArgs e)
