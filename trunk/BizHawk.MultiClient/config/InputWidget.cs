@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 		private int pos = 0;	 //Which mapping the widget will listen for
 		private Timer timer = new Timer();
 		private string[] _bindings = new string[4];
-		private string wasPressed = "";
+		private string wasPressed = String.Empty;
 		private ToolTip tooltip1 = new ToolTip();
 		private Color _highlight_color = Color.LightCyan;
 		private Color _no_highlight_color = SystemColors.Window;
@@ -73,7 +73,7 @@ namespace BizHawk.MultiClient
 		{
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
-			_clearBindings();
+			ClearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
@@ -84,7 +84,7 @@ namespace BizHawk.MultiClient
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			MaxBind = maxBindings;
 			_bindings = new string[MaxBind];
-			_clearBindings();
+			ClearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
@@ -94,11 +94,11 @@ namespace BizHawk.MultiClient
 			base.OnMouseClick(e);
 		}
 
-		private void _clearBindings()
+		private void ClearBindings()
 		{
-			for (int i = 0; i < MaxBind; i++)
+			for(int i = 0; i < MaxBind; i++)
 			{
-				_bindings[i] = "";
+				_bindings[i] = String.Empty;
 			}
 		}
 
@@ -126,16 +126,16 @@ namespace BizHawk.MultiClient
 
 		public void EraseMappings()
 		{
-			_clearBindings();
+			ClearBindings();
 			Conflicted = false;
-			Text = "";
+			Text = String.Empty;
 		}
 
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
 			string TempBindingStr = Input.Instance.GetNextBindEvent();
-			if (wasPressed != "" && TempBindingStr == wasPressed)
+			if (!String.IsNullOrEmpty(wasPressed) && TempBindingStr == wasPressed)
 			{
 				return;
 			}
@@ -143,14 +143,15 @@ namespace BizHawk.MultiClient
 			{
 				if (TempBindingStr == "Escape")
 				{
-					_clearBindings();
+					ClearBindings();
 					Conflicted = false;
 					Increment();
 					return;
 				}
-
-				if (TempBindingStr == "Alt+F4")
+				else if (TempBindingStr == "Alt+F4")
+				{
 					return;
+				}
 
 				if (!IsDuplicate(TempBindingStr))
 				{
@@ -175,7 +176,8 @@ namespace BizHawk.MultiClient
 			{
 				base.OnKeyUp(e);
 			}
-			wasPressed = "";
+
+			wasPressed = String.Empty;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -185,6 +187,7 @@ namespace BizHawk.MultiClient
 				base.OnKeyDown(e);
 				return;
 			}
+
 			e.Handled = true;
 		}
 
@@ -192,42 +195,44 @@ namespace BizHawk.MultiClient
 		public void Increment()
 		{
 			if (AutoTab)
+			{
 				this.Parent.SelectNextControl(this, true, true, true, true);
+			}
 			else
 			{
-				if (pos == MaxBind - 1)
-					pos = 0;
-				else
+				if (pos < MaxBind)
+				{
 					pos++;
-				UpdateLabel();
+				}
+				else
+				{
+					pos = 0;
+				}
 			}
 		}
 
 		public void Decrement()
 		{
 			if (AutoTab)
+			{
 				this.Parent.SelectNextControl(this, false, true, true, true);
+			}
 			else
 			{
 				if (pos == 0)
+				{
 					pos = MaxBind - 1;
+				}
 				else
+				{
 					pos--;
+				}
 			}
 		}
 
 		public void UpdateLabel()
 		{
-			Text = "";
-			for (int x = 0; x < MaxBind; x++)
-			{
-				if (_bindings[x].Length > 0)
-				{
-					Text += _bindings[x];
-					if (x < MaxBind - 1 && _bindings[x+1].Length > 0)
-						Text += ", ";
-				}
-			}
+			Text = String.Join(",", _bindings.Where(x => !String.IsNullOrWhiteSpace(x)));
 		}
 
 		public string Bindings
@@ -239,7 +244,7 @@ namespace BizHawk.MultiClient
 			set
 			{
 				Text = "";
-				_clearBindings();
+				ClearBindings();
 				string str = value.Trim();
 				int x;
 				for (int i = 0; i < MaxBind; i++)
@@ -304,9 +309,13 @@ namespace BizHawk.MultiClient
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			if (e.Delta > 0)
+			{
 				Decrement();
+			}
 			else
+			{
 				Increment();
+			}
 			base.OnMouseWheel(e);
 		}
 

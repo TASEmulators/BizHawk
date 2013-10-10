@@ -44,8 +44,8 @@ namespace BizHawk.MultiClient
 
 		private void DoConflicts()
 		{
-			List<KeyValuePair<int, string>> BindingList = new List<KeyValuePair<int, string>>();
-			HashSet<string> uniqueBindings = new HashSet<string>();
+			var BindingList = new List<KeyValuePair<int, string>>();
+			var uniqueBindings = new HashSet<string>();
 
 			for (int i = 0; i < Inputs.Count; i++)
 			{
@@ -146,7 +146,6 @@ namespace BizHawk.MultiClient
 				InputWidget iw = new InputWidget {Location = new Point(x, y), Size = new Size(InputSize, 23), TabIndex = i};
 				iw.AutoTab = Autotab;
 				iw.BringToFront();
-				iw.Enter += InputWidget_Enter;
 				iw.Leave += InputWidget_Leave;
 				Controls.Add(iw);
 				Inputs.Add(iw);
@@ -159,11 +158,6 @@ namespace BizHawk.MultiClient
 				Controls.Add(l);
 				Labels.Add(l);
 			}
-		}
-
-		private void InputWidget_Enter(object sender, EventArgs e)
-		{
-			DoConflicts();
 		}
 
 		private void InputWidget_Leave(object sender, EventArgs e)
