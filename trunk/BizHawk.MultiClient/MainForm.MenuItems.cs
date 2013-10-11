@@ -889,6 +889,10 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			ClearSRAMContextSeparator.Visible =
+				ClearSRAMContextMenuItem.Visible
+				= File.Exists(PathManager.SaveRamPath(Global.Game));
+			
 			wasPaused = EmulatorPaused;
 			didMenuPause = true;
 			PauseEmulator();
@@ -918,6 +922,7 @@ namespace BizHawk.MultiClient
 				cmiScreenshotClipboard.Visible = false;
 				cmiCloseRom.Visible = false;
 				cmiShowMenu.Visible = false;
+				ShowMenuContextMenuSeparator.Visible = false;
 				saveMovieToolStripMenuItem1.Visible = false;
 			}
 			else
@@ -1004,7 +1009,7 @@ namespace BizHawk.MultiClient
 
 			if (InFullscreen)
 			{
-				cmiShowMenu.Visible = true;
+				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = true;
 				if (MainMenuStrip.Visible)
 					cmiShowMenu.Text = "Hide Menu";
 				else
@@ -1012,17 +1017,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				cmiShowMenu.Visible = false;
+				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = false;
 			}
 
-			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges)
-			{
-				ContextMenuStopMovieNoSaving.Visible = true;
-			}
-			else
-			{
-				ContextMenuStopMovieNoSaving.Visible = false;
-			}
+			ContextMenuStopMovieNoSaving.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 		}
 
 
@@ -2601,24 +2599,24 @@ namespace BizHawk.MultiClient
 			new RewindConfig().ShowDialog();
 		}
 
-        private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog OFD = new OpenFileDialog();
+		private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog OFD = new OpenFileDialog();
 
-            if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                try
-                {
-                    (Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
-                }
-                catch (IOException ex)
-                {
-                    string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
+			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				try
+				{
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+				}
+				catch (IOException ex)
+				{
+					string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
-                    if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                        (Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
-                }
-            }
-        }
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+				}
+			}
+		}
 	}
 }

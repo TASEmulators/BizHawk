@@ -341,7 +341,10 @@
 			this.cmiScreenshot = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearSRAMContextSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2748,9 +2751,12 @@
             this.cmiScreenshot,
             this.cmiScreenshotClipboard,
             this.cmiCloseRom,
+            this.ClearSRAMContextSeparator,
+            this.ClearSRAMContextMenuItem,
+            this.ShowMenuContextMenuSeparator,
             this.cmiShowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(217, 440);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(217, 496);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2970,12 +2976,29 @@
 			this.cmiCloseRom.Text = "Close ROM";
 			this.cmiCloseRom.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
 			// 
+			// ClearSRAMContextSeparator
+			// 
+			this.ClearSRAMContextSeparator.Name = "ClearSRAMContextSeparator";
+			this.ClearSRAMContextSeparator.Size = new System.Drawing.Size(213, 6);
+			// 
+			// ClearSRAMContextMenuItem
+			// 
+			this.ClearSRAMContextMenuItem.Name = "ClearSRAMContextMenuItem";
+			this.ClearSRAMContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ClearSRAMContextMenuItem.Text = "Close and Clear SRAM";
+			this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.clearSRAMToolStripMenuItem_Click);
+			// 
 			// cmiShowMenu
 			// 
 			this.cmiShowMenu.Name = "cmiShowMenu";
 			this.cmiShowMenu.Size = new System.Drawing.Size(216, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
+			// 
+			// ShowMenuContextMenuSeparator
+			// 
+			this.ShowMenuContextMenuSeparator.Name = "ShowMenuContextMenuSeparator";
+			this.ShowMenuContextMenuSeparator.Size = new System.Drawing.Size(213, 6);
 			// 
 			// MainForm
 			// 
@@ -3331,6 +3354,9 @@
 		private System.Windows.Forms.ToolStripMenuItem rewindToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem firmwaresToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadTIFileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearSRAMContextMenuItem;
+		private System.Windows.Forms.ToolStripSeparator ClearSRAMContextSeparator;
+		private System.Windows.Forms.ToolStripSeparator ShowMenuContextMenuSeparator;
 	}
 }
 

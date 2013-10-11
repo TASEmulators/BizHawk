@@ -3257,12 +3257,27 @@ namespace BizHawk.MultiClient
 		//whats the difference between these two methods??
 		//its very tricky. rename to be more clear or combine them.
 
-		private void CloseGame()
+		private void CloseGame(bool clearSRAM = false)
 		{
 			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
+			{
 				SaveState("Auto");
-			if (Global.Emulator.SaveRamModified)
+			}
+
+			if (clearSRAM)
+			{
+				string path = PathManager.SaveRamPath(Global.Game);
+				if (File.Exists(path))
+				{
+					File.Delete(path);
+					Global.OSD.AddMessage("SRAM cleared.");
+				}
+			}
+			else if (Global.Emulator.SaveRamModified)
+			{
 				SaveRam();
+			}
+
 			StopAVI();
 			Global.Emulator.Dispose();
 			Global.CoreComm = new CoreComm();
@@ -3275,9 +3290,9 @@ namespace BizHawk.MultiClient
 			SetRebootIconStatus();
 		}
 
-		public void CloseROM()
+		public void CloseROM(bool clearSRAM = false)
 		{
-			CloseGame();
+			CloseGame(clearSRAM);
 			Global.CoreComm = new CoreComm();
 			SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
@@ -4271,6 +4286,11 @@ namespace BizHawk.MultiClient
 			{
 				RamWatch1.Focus();
 			}
+		}
+
+		private void clearSRAMToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CloseROM(clearSRAM: true);
 		}
 	}
 }
