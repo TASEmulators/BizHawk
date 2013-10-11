@@ -18,53 +18,9 @@ namespace BizHawk.MultiClient
 		private string[] _bindings = new string[4];
 		private string wasPressed = String.Empty;
 		private ToolTip tooltip1 = new ToolTip();
-		private Color _highlight_color = Color.LightCyan;
-		private Color _no_highlight_color = SystemColors.Window;
-		private bool conflicted = false;
 
 		public bool AutoTab = true;
 		public string WidgetName;
-
-		public bool Conflicted
-		{
-			get
-			{
-				return conflicted;
-			}
-			set
-			{
-				conflicted = value;
-				if (conflicted)
-				{
-					_no_highlight_color = Color.LightCoral;
-					_highlight_color = Color.Violet;
-				}
-				else
-				{
-					_highlight_color = Color.LightCyan;
-					_no_highlight_color = SystemColors.Window;
-				}
-
-				if (Focused)
-				{
-					Highlight();
-				}
-				else
-				{
-					UnHighlight();
-				}
-			}
-		}
-
-		private void Highlight()
-		{
-			BackColor = _highlight_color;
-		}
-
-		private void UnHighlight()
-		{
-			BackColor = _no_highlight_color;
-		}
 
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
@@ -96,7 +52,7 @@ namespace BizHawk.MultiClient
 
 		private void ClearBindings()
 		{
-			for(int i = 0; i < MaxBind; i++)
+			for (int i = 0; i < MaxBind; i++)
 			{
 				_bindings[i] = String.Empty;
 			}
@@ -106,9 +62,7 @@ namespace BizHawk.MultiClient
 		{
 			pos = 0;
 			timer.Start();
-			//Input.Update();
 
-			//zero: ??? what is this all about ???
 			wasPressed = Input.Instance.GetNextBindEvent();
 		}
 
@@ -127,7 +81,6 @@ namespace BizHawk.MultiClient
 		public void EraseMappings()
 		{
 			ClearBindings();
-			Conflicted = false;
 			Text = String.Empty;
 		}
 
@@ -144,7 +97,6 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Escape")
 				{
 					ClearBindings();
-					Conflicted = false;
 					Increment();
 					return;
 				}
@@ -164,7 +116,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//Checks if the key is already mapped to this widget
 		private bool IsDuplicate(string binding)
 		{
 			return _bindings.FirstOrDefault(x => x == binding) != null;
@@ -243,7 +194,7 @@ namespace BizHawk.MultiClient
 			}
 			set
 			{
-				Text = "";
+				Text = String.Empty;
 				ClearBindings();
 				string str = value.Trim();
 				int x;
@@ -254,7 +205,7 @@ namespace BizHawk.MultiClient
 					if (x < 0)
 					{
 						_bindings[i] = str;
-						str = "";
+						str = String.Empty;
 					}
 					else
 					{
@@ -277,30 +228,30 @@ namespace BizHawk.MultiClient
 			switch (m.Msg)
 			{
 				case 0x0201: //WM_LBUTTONDOWN
-				{
-					this.Focus();
-					return;
-				}
+					{
+						this.Focus();
+						return;
+					}
 				//case 0x0202://WM_LBUTTONUP
 				//{
 				//	return;
 				//}
 				case 0x0203://WM_LBUTTONDBLCLK
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0204://WM_RBUTTONDOWN
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0205://WM_RBUTTONUP
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0206://WM_RBUTTONDBLCLK
-				{
-					return;
-				}
+					{
+						return;
+					}
 			}
 
 			base.WndProc(ref m);
@@ -321,14 +272,11 @@ namespace BizHawk.MultiClient
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			//base.OnGotFocus(e);
 			HideCaret(this.Handle);
-			Highlight();
 		}
 
 		protected override void OnLostFocus(EventArgs e)
 		{
-			UnHighlight();
 			base.OnLostFocus(e);
 		}
 

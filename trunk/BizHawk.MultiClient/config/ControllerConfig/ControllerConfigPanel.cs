@@ -42,43 +42,9 @@ namespace BizHawk.MultiClient
 			
 		}
 
-		private void DoConflicts()
-		{
-			var BindingList = new List<KeyValuePair<int, string>>();
-			var uniqueBindings = new HashSet<string>();
-
-			for (int i = 0; i < Inputs.Count; i++)
-			{
-				if (!String.IsNullOrWhiteSpace(Inputs[i].Text))
-				{
-					string[] bindings = Inputs[i].Text.Split(',');
-					foreach (string binding in bindings)
-					{
-						BindingList.Add(new KeyValuePair<int, string>(i, binding));
-						uniqueBindings.Add(binding);
-					}
-				}
-			}
-
-			foreach (string binding in uniqueBindings)
-			{
-				List<KeyValuePair<int, string>> kvps = BindingList.Where(x => x.Value == binding).ToList();
-				if (kvps.Count > 1)
-				{
-					foreach(KeyValuePair<int, string> kvp in kvps)
-					{
-						Inputs[kvp.Key].Conflicted = true;
-					}
-				}
-			}
-		}
-
 		public void ClearAll()
 		{
-			foreach (InputWidget i in Inputs)
-			{
-				i.Clear();
-			}
+			Inputs.ForEach(x => x.Clear());
 		}
 
 		/// <summary>
@@ -143,34 +109,31 @@ namespace BizHawk.MultiClient
 					y = MarginTop;
 					x += ColumnWidth;
 				}
-				InputWidget iw = new InputWidget {Location = new Point(x, y), Size = new Size(InputSize, 23), TabIndex = i};
-				iw.AutoTab = Autotab;
+
+				InputWidget iw = new InputWidget
+				{
+					Location = new Point(x, y),
+					Size = new Size(InputSize, 23),
+					TabIndex = i,
+					AutoTab = this.Autotab
+				};
+
 				iw.BringToFront();
-				iw.Leave += InputWidget_Leave;
 				Controls.Add(iw);
 				Inputs.Add(iw);
-				Label l = new Label
+				Label label = new Label
 					{
 						Location = new Point(x + InputSize + LabelPadding, y + 3),
 						Text = buttons[i].Replace('_', ' ').Trim(),
-						//Width = LabelWidth
 					};
-				Controls.Add(l);
-				Labels.Add(l);
+				Controls.Add(label);
+				Labels.Add(label);
 			}
-		}
-
-		private void InputWidget_Leave(object sender, EventArgs e)
-		{
-			DoConflicts();
 		}
 
 		public void SetAutoTab(bool value)
 		{
-			foreach (InputWidget i in Inputs)
-			{
-				i.AutoTab = value;
-			}
+			Inputs.ForEach(x => x.AutoTab = value);
 		}
 
 		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
