@@ -64,13 +64,16 @@ namespace BizHawk.MultiClient
 			timer.Start();
 
 			wasPressed = Input.Instance.GetNextBindEvent();
+			BackColor = Color.LightCyan;
 		}
 
 		protected override void OnLeave(EventArgs e)
 		{
 			timer.Stop();
 			UpdateLabel();
+			BackColor = SystemColors.Control;
 			base.OnLeave(e);
+
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
