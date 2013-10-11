@@ -343,8 +343,12 @@
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearSRAMContextSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.firmwaresToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator30 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2756,7 +2760,7 @@
             this.ShowMenuContextMenuSeparator,
             this.cmiShowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(217, 496);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(217, 474);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2892,7 +2896,11 @@
             this.pathsToolStripMenuItem1,
             this.soundToolStripMenuItem1,
             this.autofireToolStripMenuItem1,
-            this.rewindToolStripMenuItem});
+            this.rewindToolStripMenuItem,
+            this.firmwaresToolStripMenuItem1,
+            this.toolStripSeparator30,
+            this.toolStripMenuItem6,
+            this.toolStripMenuItem7});
 			this.configToolStripMenuItem1.Name = "configToolStripMenuItem1";
 			this.configToolStripMenuItem1.Size = new System.Drawing.Size(216, 22);
 			this.configToolStripMenuItem1.Text = "Config";
@@ -2901,7 +2909,7 @@
 			// 
 			this.controllersToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem1.Name = "controllersToolStripMenuItem1";
-			this.controllersToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.controllersToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.controllersToolStripMenuItem1.Text = "&Controllers...";
 			this.controllersToolStripMenuItem1.Click += new System.EventHandler(this.controllersToolStripMenuItem1_Click);
 			// 
@@ -2909,7 +2917,7 @@
 			// 
 			this.hotkeysToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem1.Name = "hotkeysToolStripMenuItem1";
-			this.hotkeysToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.hotkeysToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.hotkeysToolStripMenuItem1.Text = "&Hotkeys...";
 			this.hotkeysToolStripMenuItem1.Click += new System.EventHandler(this.hotkeysToolStripMenuItem1_Click);
 			// 
@@ -2917,7 +2925,7 @@
 			// 
 			this.messagesToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem1.Name = "messagesToolStripMenuItem1";
-			this.messagesToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.messagesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.messagesToolStripMenuItem1.Text = "&Messages...";
 			this.messagesToolStripMenuItem1.Click += new System.EventHandler(this.messagesToolStripMenuItem1_Click);
 			// 
@@ -2925,7 +2933,7 @@
 			// 
 			this.pathsToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem1.Name = "pathsToolStripMenuItem1";
-			this.pathsToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.pathsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.pathsToolStripMenuItem1.Text = "Paths...";
 			this.pathsToolStripMenuItem1.Click += new System.EventHandler(this.pathsToolStripMenuItem1_Click);
 			// 
@@ -2933,7 +2941,7 @@
 			// 
 			this.soundToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem1.Name = "soundToolStripMenuItem1";
-			this.soundToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.soundToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.soundToolStripMenuItem1.Text = "&Sound...";
 			this.soundToolStripMenuItem1.Click += new System.EventHandler(this.soundToolStripMenuItem1_Click);
 			// 
@@ -2941,7 +2949,7 @@
 			// 
 			this.autofireToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem1.Name = "autofireToolStripMenuItem1";
-			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
+			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.autofireToolStripMenuItem1.Text = "&Autofire...";
 			this.autofireToolStripMenuItem1.Click += new System.EventHandler(this.autofireToolStripMenuItem1_Click);
 			// 
@@ -2949,7 +2957,7 @@
 			// 
 			this.rewindToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.rewindToolStripMenuItem.Name = "rewindToolStripMenuItem";
-			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.rewindToolStripMenuItem.Text = "&Rewind";
 			this.rewindToolStripMenuItem.Click += new System.EventHandler(this.rewindOptionsToolStripMenuItem_Click);
 			// 
@@ -2988,6 +2996,11 @@
 			this.ClearSRAMContextMenuItem.Text = "Close and Clear SRAM";
 			this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.clearSRAMToolStripMenuItem_Click);
 			// 
+			// ShowMenuContextMenuSeparator
+			// 
+			this.ShowMenuContextMenuSeparator.Name = "ShowMenuContextMenuSeparator";
+			this.ShowMenuContextMenuSeparator.Size = new System.Drawing.Size(213, 6);
+			// 
 			// cmiShowMenu
 			// 
 			this.cmiShowMenu.Name = "cmiShowMenu";
@@ -2995,10 +3008,33 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// ShowMenuContextMenuSeparator
+			// firmwaresToolStripMenuItem1
 			// 
-			this.ShowMenuContextMenuSeparator.Name = "ShowMenuContextMenuSeparator";
-			this.ShowMenuContextMenuSeparator.Size = new System.Drawing.Size(213, 6);
+			this.firmwaresToolStripMenuItem1.Name = "firmwaresToolStripMenuItem1";
+			this.firmwaresToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.firmwaresToolStripMenuItem1.Text = "&Firmwares";
+			this.firmwaresToolStripMenuItem1.Click += new System.EventHandler(this.firmwaresToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator30
+			// 
+			this.toolStripSeparator30.Name = "toolStripSeparator30";
+			this.toolStripSeparator30.Size = new System.Drawing.Size(149, 6);
+			// 
+			// toolStripMenuItem6
+			// 
+			this.toolStripMenuItem6.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
+			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+			this.toolStripMenuItem6.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem6.Text = "Save Config";
+			this.toolStripMenuItem6.Click += new System.EventHandler(this.saveConfigToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem7
+			// 
+			this.toolStripMenuItem7.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
+			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+			this.toolStripMenuItem7.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem7.Text = "Load Config";
+			this.toolStripMenuItem7.Click += new System.EventHandler(this.loadConfigToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3357,6 +3393,10 @@
 		private System.Windows.Forms.ToolStripMenuItem ClearSRAMContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator ClearSRAMContextSeparator;
 		private System.Windows.Forms.ToolStripSeparator ShowMenuContextMenuSeparator;
+		private System.Windows.Forms.ToolStripMenuItem firmwaresToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator30;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
 	}
 }
 
