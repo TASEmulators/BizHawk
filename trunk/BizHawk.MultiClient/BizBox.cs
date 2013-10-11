@@ -93,5 +93,11 @@ namespace BizHawk.MultiClient
 			linkLabel11.LinkVisited = true;
 			System.Diagnostics.Process.Start("https://bitbucket.org/wahrhaft/mupen64plus-video-glide64/");
 		}
+
+		private void SaturnLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			SaturnLinkLabel.LinkVisited = true;
+			System.Diagnostics.Process.Start("http://yabause.org");
+		}
 	}
 }
