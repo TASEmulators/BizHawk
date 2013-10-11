@@ -93,7 +93,7 @@ namespace BizHawk.MultiClient
 				_watchList.AddRange(watches);
 			}
 			_mode = mode;
-			DoMemoryDomainDropdown(domain ?? Global.Emulator.MainMemory);
+			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? Global.Emulator.MainMemory);
 			SetTitle();
 		}
 
@@ -111,22 +111,6 @@ namespace BizHawk.MultiClient
 				case Mode.Duplicate:
 					Text = "Duplicate Watch";
 					break;
-			}
-		}
-
-		private void DoMemoryDomainDropdown(MemoryDomain startDomain)
-		{
-			DomainDropDown.Items.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
-			{
-				foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
-				{
-					var result = DomainDropDown.Items.Add(domain.ToString());
-					if (domain.Name == startDomain.Name)
-					{
-						DomainDropDown.SelectedIndex = result;
-					}
-				}
 			}
 		}
 
@@ -197,7 +181,6 @@ namespace BizHawk.MultiClient
 			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
 			             Global.Emulator.MainMemory;
 			BigEndianCheckBox.Checked = domain.Endian == Endian.Big;
-			
 		}
 
 		#region Events
