@@ -75,6 +75,9 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
+			this.label32 = new System.Windows.Forms.Label();
+			this.SaturnLinkLabel = new System.Windows.Forms.LinkLabel();
+			this.label33 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -192,6 +195,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.label33);
+			this.panel1.Controls.Add(this.SaturnLinkLabel);
+			this.panel1.Controls.Add(this.label32);
 			this.panel1.Controls.Add(this.linkLabel11);
 			this.panel1.Controls.Add(this.linkLabel10);
 			this.panel1.Controls.Add(this.linkLabel9);
@@ -556,6 +562,35 @@
 			this.label27.TabIndex = 12;
 			this.label27.Text = "SaxxonPike, MasterofPuppets";
 			// 
+			// label32
+			// 
+			this.label32.AutoSize = true;
+			this.label32.Location = new System.Drawing.Point(204, 269);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(66, 13);
+			this.label32.TabIndex = 36;
+			this.label32.Text = "SaturnHawk";
+			// 
+			// SaturnLinkLabel
+			// 
+			this.SaturnLinkLabel.AutoSize = true;
+			this.SaturnLinkLabel.Location = new System.Drawing.Point(212, 282);
+			this.SaturnLinkLabel.Name = "SaturnLinkLabel";
+			this.SaturnLinkLabel.Size = new System.Drawing.Size(79, 13);
+			this.SaturnLinkLabel.TabIndex = 37;
+			this.SaturnLinkLabel.TabStop = true;
+			this.SaturnLinkLabel.Text = "Yabause v9.12";
+			this.SaturnLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SaturnLinkLabel_LinkClicked);
+			// 
+			// label33
+			// 
+			this.label33.AutoSize = true;
+			this.label33.Location = new System.Drawing.Point(212, 295);
+			this.label33.Name = "label33";
+			this.label33.Size = new System.Drawing.Size(76, 13);
+			this.label33.TabIndex = 38;
+			this.label33.Text = "Ported by: natt";
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -638,5 +673,8 @@
 		private System.Windows.Forms.LinkLabel linkLabel8;
 		private System.Windows.Forms.LinkLabel linkLabel7;
 		private System.Windows.Forms.LinkLabel linkLabel6;
+		private System.Windows.Forms.Label label33;
+		private System.Windows.Forms.LinkLabel SaturnLinkLabel;
+		private System.Windows.Forms.Label label32;
 	}
 }
