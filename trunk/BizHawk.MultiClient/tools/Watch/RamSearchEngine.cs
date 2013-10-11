@@ -77,10 +77,9 @@ namespace BizHawk.MultiClient
 
 		public void Start()
 		{
-			_watchList.Clear();
 			_history.Clear();
-
 			var domain = _settings.Domain;
+			_watchList = new List<IMiniWatch>(domain.Size);
 
 			switch (_settings.Size)
 			{
