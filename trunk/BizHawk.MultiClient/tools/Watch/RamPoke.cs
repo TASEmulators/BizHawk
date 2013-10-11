@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 					UnSupportedConfiguration();
 				}
 			}
-
+			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
 			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
 			ValueBox.Text = _watchList[0].ValueString.Replace(" ", "");

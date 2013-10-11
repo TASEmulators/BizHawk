@@ -13,7 +13,6 @@ namespace BizHawk.MultiClient
 		private readonly List<Watch> _watchList = new List<Watch>();
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
-		private string _addressFormatStr = "{0:X2}";
 
 		private bool _changedSize = false;
 		private bool _changedDisplayType = false;
@@ -62,7 +61,7 @@ namespace BizHawk.MultiClient
 					if (_watchList.Count > 1)
 					{
 						NotesBox.Enabled = false;
-						NotesBox.Text = "";
+						NotesBox.Text = String.Empty;
 
 						AddressBox.Enabled = false;
 						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
@@ -77,7 +76,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.Text = _watchList[0].AddressString;
+						AddressBox.SetFromRawInt(_watchList[0].Address.Value);
 					}
 
 					SetBigEndianCheckBox();
@@ -121,9 +120,7 @@ namespace BizHawk.MultiClient
 				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 				if (domain != null)
 				{
-					AddressBox.MaxLength = IntHelpers.GetNumDigits(domain.Size - 1);
-					_addressFormatStr = "{0:X" + AddressBox.MaxLength.ToString() + "}";
-					AddressBox.Text = String.Format(_addressFormatStr, 0);
+					AddressBox.SetHexProperties(domain.Size);
 				}
 			}
 		}

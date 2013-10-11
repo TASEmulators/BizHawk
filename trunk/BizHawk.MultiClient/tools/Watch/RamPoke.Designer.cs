@@ -34,7 +34,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.ValeLabel = new System.Windows.Forms.Label();
-			this.ValueBox = new WatchValueBox();
+			this.ValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.ValueHexLabel = new System.Windows.Forms.Label();
 			this.DisplayTypeLabel = new System.Windows.Forms.Label();
 			this.SizeLabel = new System.Windows.Forms.Label();
@@ -99,13 +99,16 @@
 			// 
 			// ValueBox
 			// 
+			this.ValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(82, 57);
 			this.ValueBox.MaxLength = 9;
 			this.ValueBox.Name = "ValueBox";
+			this.ValueBox.Nullable = false;
 			this.ValueBox.Size = new System.Drawing.Size(116, 20);
 			this.ValueBox.TabIndex = 10;
 			this.ValueBox.Text = "0000";
+			this.ValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
 			// 
 			// ValueHexLabel
 			// 
@@ -150,6 +153,7 @@
 			this.AddressBox.Location = new System.Drawing.Point(82, 30);
 			this.AddressBox.MaxLength = 8;
 			this.AddressBox.Name = "AddressBox";
+			this.AddressBox.Nullable = false;
 			this.AddressBox.Size = new System.Drawing.Size(116, 20);
 			this.AddressBox.TabIndex = 5;
 			this.AddressBox.Text = "0000";
@@ -199,7 +203,7 @@
 			this.DomainLabel.TabIndex = 45;
 			this.DomainLabel.Text = "Main Memory";
 			// 
-			// NewRamPoke
+			// RamPoke
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -226,7 +230,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "NewRamPoke";
+			this.Name = "RamPoke";
 			this.Text = "Ram Poke";
 			this.Load += new System.EventHandler(this.RamPoke_Load);
 			this.ResumeLayout(false);

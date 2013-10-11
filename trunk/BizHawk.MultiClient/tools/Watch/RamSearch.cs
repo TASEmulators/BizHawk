@@ -106,13 +106,6 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.ByteSize = Settings.Size;
 			SpecificValueBox.Type = Settings.Type;
 
-			SpecificValueBox.Nullable =
-				SpecificAddressBox.Nullable =
-				NumberOfChangesBox.Nullable =
-				DifferenceBox.Nullable =
-				DifferentByBox.Nullable =
-				false;
-			
 			MessageLabel.Text = String.Empty;
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
 			HardSetSizeDropDown(Settings.Size);
