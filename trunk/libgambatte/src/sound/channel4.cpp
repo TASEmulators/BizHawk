@@ -36,7 +36,7 @@ namespace gambatte {
 
 Channel4::Lfsr::Lfsr() :
 backupCounter(COUNTER_DISABLED),
-reg(0xFF),
+reg(0x7FFF),
 nr3(0),
 master(false)
 {}

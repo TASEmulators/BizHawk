@@ -48,7 +48,7 @@ class Channel4 {
 		void saveState(SaveState &state, const unsigned long cc);
 		void loadState(const SaveState &state);
 		void resetCounters(unsigned long oldCc);
-		void disableMaster() { killCounter(); master = false; reg = 0xFF; }
+		void disableMaster() { killCounter(); master = false; reg = 0x7FFF; }
 		void killCounter() { counter = COUNTER_DISABLED; }
 		void reviveCounter(unsigned long cc);
 	};
