@@ -428,6 +428,11 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateStatusSlots();
+
+			renderTarget.Paint += new System.Windows.Forms.PaintEventHandler(delegate
+			{
+				Global.DisplayManager.NeedsToPaint = true;
+			});
 		}
 
 		/// <summary>
@@ -4266,11 +4271,6 @@ namespace BizHawk.MultiClient
 		}
 
 		private void MainForm_Enter(object sender, EventArgs e)
-		{
-			Global.DisplayManager.NeedsToPaint = true;
-		}
-
-		private void MainForm_Paint(object sender, PaintEventArgs e)
 		{
 			Global.DisplayManager.NeedsToPaint = true;
 		}
