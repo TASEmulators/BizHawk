@@ -678,12 +678,13 @@ namespace BizHawk.MultiClient
 					case DisplayType.FixedPoint_12_4:
 						if (InputValidate.IsValidFixedPointNumber(value))
 						{
-							throw new NotImplementedException();
+							val = (ushort)(double.Parse(value) * 16.0);
 						}
 						else
 						{
 							return false;
 						}
+						break;
 				}
 				PokeWord(val);
 				return true;
@@ -817,11 +818,11 @@ namespace BizHawk.MultiClient
 				case DisplayType.Hex:
 					return String.Format("{0:X8}", val);
 				case DisplayType.FixedPoint_20_12:
-					return String.Format("{0:F5}", (val / 4096.0));
+					return String.Format("{0:0.######}", (val / 4096.0));
 				case DisplayType.Float:
 					byte[] bytes = BitConverter.GetBytes(val);
 					float _float = BitConverter.ToSingle(bytes, 0);
-					return String.Format("{0:F6}", _float);
+					return String.Format("{0:0.######}", _float);
 			}
 		}
 
@@ -865,12 +866,13 @@ namespace BizHawk.MultiClient
 					case DisplayType.FixedPoint_20_12:
 						if (InputValidate.IsValidFixedPointNumber(value))
 						{
-							throw new NotImplementedException();
+							val = (uint)(int)(double.Parse(value) * 4096.0);
 						}
 						else
 						{
 							return false;
 						}
+						break;
 					case DisplayType.Float:
 						if (InputValidate.IsValidDecimalNumber(value))
 						{
