@@ -655,6 +655,9 @@
     <Compile Include="tools\VirtualPads\VirtualPadN64.Designer.cs">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadN64Control.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPads\VirtualPadNES.cs">
       <SubType>Component</SubType>
     </Compile>
