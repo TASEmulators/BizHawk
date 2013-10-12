@@ -2050,16 +2050,19 @@ namespace BizHawk.MultiClient
 					{
 						Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
 					}
+					Global.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select All":
 					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 					Global.MovieSession.MultiTrack.RecordAll = true;
 					Global.OSD.MT = "Recording All";
+					Global.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select None":
 					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 					Global.MovieSession.MultiTrack.RecordAll = false;
 					Global.OSD.MT = "Recording None";
+					Global.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Increment Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer++;
@@ -2069,6 +2072,7 @@ namespace BizHawk.MultiClient
 						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 					}
 					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					Global.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Decrement Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer--;
@@ -2078,6 +2082,7 @@ namespace BizHawk.MultiClient
 						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
 					}
 					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					Global.DisplayManager.NeedsToPaint = true;
 					break;
 				case "Movie Poke": ToggleModePokeMode(); break;
 
