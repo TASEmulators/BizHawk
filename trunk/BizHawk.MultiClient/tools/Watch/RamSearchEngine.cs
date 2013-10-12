@@ -73,6 +73,14 @@ namespace BizHawk.MultiClient
 			_settings.PreviousType = settings.PreviousType;
 		}
 
+		public RamSearchEngine(Settings settings, Compare compareTo, long? compareValue, int? differentBy)
+			: this(settings)
+			{
+				_compareTo = compareTo;
+				_differentBy = differentBy;
+				_compareValue = compareValue;
+			}
+
 		#region API
 
 		public void Start()
