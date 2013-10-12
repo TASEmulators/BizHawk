@@ -3051,7 +3051,6 @@
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
 			this.Enter += new System.EventHandler(this.MainForm_Enter);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
