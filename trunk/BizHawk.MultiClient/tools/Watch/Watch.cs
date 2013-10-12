@@ -874,12 +874,14 @@ namespace BizHawk.MultiClient
 					case DisplayType.Float:
 						if (InputValidate.IsValidDecimalNumber(value))
 						{
-							throw new NotImplementedException();
+							byte[] bytes = BitConverter.GetBytes(float.Parse(value));
+							val = BitConverter.ToUInt32(bytes, 0);
 						}
 						else
 						{
 							return false;
 						}
+						break;
 				}
 				PokeDWord(val);
 				return true;

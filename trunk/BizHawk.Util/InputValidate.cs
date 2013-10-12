@@ -193,15 +193,15 @@ namespace BizHawk
 				byte[] bc = AE.GetBytes(input[x].ToString());
 
 				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[x] > 58)
+				if (bc[0] > 58)
 					return false;
 
-				if (bc[x] == 46)
+				if (bc[0] == 46)
 					continue;
 
 				if (bc[0] < 48)
 				{
-					if (bc[x] == 45 && x == 0)
+					if (bc[0] == 45 && x == 0)
 						continue;
 					else
 						return false;
@@ -242,12 +242,15 @@ namespace BizHawk
 				byte[] bc = AE.GetBytes(input[x].ToString());
 
 				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[x] > 58)
+				if (bc[0] > 58)
 					return false;
 
-				if (bc[x] < 48)
+				if (bc[0] == 46)
+					continue;
+
+				if (bc[0] < 48)
 				{
-					if (bc[x] == 45 && x == 0)
+					if (bc[0] == 45 && x == 0)
 						continue;
 					else
 						return false;
