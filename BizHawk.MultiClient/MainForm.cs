@@ -604,15 +604,11 @@ namespace BizHawk.MultiClient
 			throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 
 			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
-			throttle.signal_unthrottle = unthrottled;
+			throttle.signal_unthrottle = unthrottled || superfastforward;
 
 			if (fastforward)
 			{
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
-			}
-			else if (superfastforward)
-			{
-				throttle.SetSpeedPercent(int.MaxValue);
 			}
 			else
 			{
