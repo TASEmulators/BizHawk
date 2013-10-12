@@ -596,7 +596,8 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
-			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["Turbo"];
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
+			bool superfastforward = Global.ClientControls["Turbo"];
 			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -604,10 +605,20 @@ namespace BizHawk.MultiClient
 
 			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
 			throttle.signal_unthrottle = unthrottled;
+
 			if (fastforward)
+			{
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
+			}
+			else if (superfastforward)
+			{
+				throttle.SetSpeedPercent(int.MaxValue);
+			}
 			else
+			{
 				throttle.SetSpeedPercent(Global.Config.SpeedPercent);
+			}
+			
 		}
 
 		void SetSpeedPercentAlternate(int value)
