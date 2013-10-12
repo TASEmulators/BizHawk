@@ -253,7 +253,11 @@ namespace BizHawk.MultiClient
 
 		public void NewSearch()
 		{
-			Searches = new RamSearchEngine(Settings);
+			var compareTo = Searches.CompareTo;
+			var compareVal = Searches.CompareValue;
+			var differentBy = Searches.DifferentBy;
+
+			Searches = new RamSearchEngine(Settings, compareTo, compareVal, differentBy);
 			Searches.Start();
 			if (Global.Config.RamSearchAlwaysExcludeRamWatch)
 			{
