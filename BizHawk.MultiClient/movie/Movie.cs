@@ -715,12 +715,12 @@ namespace BizHawk.MultiClient
 					else if (line == "[/Input]") break;
 					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
 					{
-						string[] strs = line.Split(' ');
+						string[] strs = line.Split('x');
 						try
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } //TODO: message?
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
