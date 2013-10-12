@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-	public class VirtualPadNESControl : VirtualPad
+	public class VirtualPadN64Control : VirtualPad
 	{
-		public VirtualPadNESControl()
+		public VirtualPadN64Control()
 		{
 			ButtonPoints[0] = new Point(2, 2);
 			ButtonPoints[1] = new Point(56, 2);
@@ -110,7 +110,7 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "NES")
+			if (Global.Emulator.SystemId != "N64")
 			{
 				return;
 			}
@@ -134,7 +134,7 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "NES") return;
+			if (Global.Emulator.SystemId != "N64") return;
 
 			B1.Checked = false;
 			B2.Checked = false;

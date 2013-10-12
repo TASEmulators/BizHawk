@@ -90,6 +90,23 @@ namespace BizHawk.MultiClient
 					Pads.Add(controlpad1);
 					ControllerBox.Controls.Add(controlpad1);
 					break;
+				case "N64":
+					VirtualPadN64 n64pad1 = new VirtualPadN64 { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadN64 n64pad2 = new VirtualPadN64 { Location = new Point(208, 19), Controller = "P2" };
+					VirtualPadN64 n64pad3 = new VirtualPadN64 { Location = new Point(408, 19), Controller = "P3" };
+					VirtualPadN64 n64pad4 = new VirtualPadN64 { Location = new Point(608, 19), Controller = "P4" };
+					Pads.Add(n64pad1);
+					Pads.Add(n64pad2);
+					Pads.Add(n64pad3);
+					Pads.Add(n64pad4);
+					ControllerBox.Controls.Add(n64pad1);
+					ControllerBox.Controls.Add(n64pad2);
+					ControllerBox.Controls.Add(n64pad3);
+					ControllerBox.Controls.Add(n64pad4);
+					VirtualPadN64Control n64controlpad1 = new VirtualPadN64Control { Location = new Point(8, 350) };
+					Pads.Add(n64controlpad1);
+					ControllerBox.Controls.Add(n64controlpad1);
+					break;
 				case "SMS":
 				case "SG":
 				case "GG":
@@ -174,20 +191,7 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(_ataripad1);
 					ControllerBox.Controls.Add(_ataripad2);
 					break;
-				case "N64":
-					VirtualPadN64 n64pad1 = new VirtualPadN64 { Location = new Point(8, 19), Controller = "P1" };
-					VirtualPadN64 n64pad2 = new VirtualPadN64 { Location = new Point(208, 19), Controller = "P2" };
-					VirtualPadN64 n64pad3 = new VirtualPadN64 { Location = new Point(408, 19), Controller = "P3" };
-					VirtualPadN64 n64pad4 = new VirtualPadN64 { Location = new Point(608, 19), Controller = "P4" };
-					Pads.Add(n64pad1);
-					Pads.Add(n64pad2);
-					Pads.Add(n64pad3);
-					Pads.Add(n64pad4);
-					ControllerBox.Controls.Add(n64pad1);
-					ControllerBox.Controls.Add(n64pad2);
-					ControllerBox.Controls.Add(n64pad3);
-					ControllerBox.Controls.Add(n64pad4);
-					break;
+				
 				case "SAT":
 					VirtualPadSaturn saturnpad1 = new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" };
 					VirtualPadSaturn saturnpad2 = new VirtualPadSaturn { Location = new Point(213, 19), Controller = "P2" };
