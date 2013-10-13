@@ -226,8 +226,8 @@ namespace BizHawk.MultiClient
 					DoSearch();
 				}
 
-				WatchListView.Refresh();
 				forcePreviewClear = false;
+				WatchListView.Refresh();
 			}
 		}
 
@@ -420,6 +420,7 @@ namespace BizHawk.MultiClient
 			WatchListView.ItemCount = Searches.Count;
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
+			forcePreviewClear = true;
 		}
 
 		private List<int> SelectedIndices
