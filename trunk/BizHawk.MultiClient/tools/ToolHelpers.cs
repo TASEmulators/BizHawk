@@ -75,7 +75,6 @@ namespace BizHawk.MultiClient
 					Global.CheatList.Add(
 						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
 					);
-
 				}
 			}
 

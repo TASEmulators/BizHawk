@@ -50,9 +50,9 @@
 			// 
 			// listBox1
 			// 
-			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.Location = new System.Drawing.Point(5, 23);
 			this.listBox1.Name = "listBox1";
@@ -92,8 +92,8 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.Location = new System.Drawing.Point(8, 273);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
@@ -150,6 +150,7 @@
 			this.Controls.Add(this.label1);
 			this.MinimumSize = new System.Drawing.Size(300, 360);
 			this.Name = "FFmpegWriterForm";
+			this.ShowIcon = false;
 			this.Text = "Choose Video Format";
 			this.ResumeLayout(false);
 			this.PerformLayout();
