@@ -72,7 +72,10 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					Cheat cheat = new Cheat(watch, watch.Value.Value, compare: null, enabled: true);
+					Global.CheatList.Add(
+						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
+					);
+
 				}
 			}
 
