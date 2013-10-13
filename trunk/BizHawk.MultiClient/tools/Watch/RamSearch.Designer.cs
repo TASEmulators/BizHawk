@@ -185,6 +185,7 @@
 			// WatchListView
 			// 
 			this.WatchListView.AllowColumnReorder = true;
+			this.WatchListView.AllowDrop = true;
 			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -210,6 +211,8 @@
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.WatchListView_ColumnReordered);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
+			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
+			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragEnter);
 			this.WatchListView.Enter += new System.EventHandler(this.WatchListView_Enter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);

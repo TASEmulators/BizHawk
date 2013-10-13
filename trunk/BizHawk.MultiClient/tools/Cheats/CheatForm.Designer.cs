@@ -69,6 +69,7 @@
 			this.AlwaysLoadCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoSaveCheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableCheatsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,7 +101,6 @@
 			this.TotalLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatEditor = new BizHawk.MultiClient.CheatEdit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.CheatsMenu.SuspendLayout();
@@ -111,6 +111,7 @@
 			// CheatListView
 			// 
 			this.CheatListView.AllowColumnReorder = true;
+			this.CheatListView.AllowDrop = true;
 			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -139,6 +140,8 @@
 			this.CheatListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.CheatListView_ColumnReordered);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
 			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
+			this.CheatListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
+			this.CheatListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
 			this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
 			this.CheatListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CheatListView_KeyDown);
 			// 
@@ -457,6 +460,11 @@
 			this.DisableCheatsOnLoadMenuItem.Text = "Disable Cheats on Load";
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
 			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(196, 6);
+			// 
 			// AutoloadMenuItem
 			// 
 			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
@@ -729,11 +737,6 @@
 			this.CheatGroupBox.TabStop = false;
 			this.CheatGroupBox.Text = "New Cheat";
 			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(196, 6);
-			// 
 			// CheatEditor
 			// 
 			this.CheatEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -744,7 +747,7 @@
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);
 			this.CheatEditor.TabIndex = 0;
 			// 
-			// NewCheatForm
+			// Cheats
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -757,7 +760,7 @@
 			this.Controls.Add(this.CheatListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(285, 384);
-			this.Name = "NewCheatForm";
+			this.Name = "Cheats";
 			this.Text = "Cheats";
 			this.Load += new System.EventHandler(this.NewCheatForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
