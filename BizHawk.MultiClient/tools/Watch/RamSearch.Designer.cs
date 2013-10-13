@@ -121,7 +121,6 @@
 			this.DifferenceRadio = new System.Windows.Forms.RadioButton();
 			this.NumberOfChangesBox = new BizHawk.UnsignedIntegerBox();
 			this.SpecificAddressBox = new BizHawk.HexTextBox();
-			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
@@ -157,6 +156,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
+			this.SpecificValueBox = new BizHawk.MultiClient.WatchValueBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -199,7 +199,6 @@
 			this.WatchListView.GridLines = true;
 			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
-			this.WatchListView.LabelEdit = true;
 			this.WatchListView.Location = new System.Drawing.Point(9, 65);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
@@ -958,23 +957,6 @@
 			this.SpecificAddressBox.TabIndex = 25;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
-			// SpecificValueBox
-			// 
-			this.SpecificValueBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
-			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.SpecificValueBox.Enabled = false;
-			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
-			this.SpecificValueBox.MaxLength = 2;
-			this.SpecificValueBox.Name = "SpecificValueBox";
-			this.SpecificValueBox.Nullable = false;
-			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
-			this.SpecificValueBox.TabIndex = 15;
-			this.SpecificValueBox.Text = "00";
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
-			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
-			// 
 			// NumberOfChangesRadio
 			// 
 			this.NumberOfChangesRadio.AutoSize = true;
@@ -1362,6 +1344,23 @@
 			this.DisplayTypeDropdown.Size = new System.Drawing.Size(107, 21);
 			this.DisplayTypeDropdown.TabIndex = 95;
 			this.DisplayTypeDropdown.SelectedIndexChanged += new System.EventHandler(this.DisplayTypeDropdown_SelectedIndexChanged);
+			// 
+			// SpecificValueBox
+			// 
+			this.SpecificValueBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.SpecificValueBox.Enabled = false;
+			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
+			this.SpecificValueBox.MaxLength = 2;
+			this.SpecificValueBox.Name = "SpecificValueBox";
+			this.SpecificValueBox.Nullable = false;
+			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
+			this.SpecificValueBox.TabIndex = 15;
+			this.SpecificValueBox.Text = "00";
+			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// RamSearch
 			// 
