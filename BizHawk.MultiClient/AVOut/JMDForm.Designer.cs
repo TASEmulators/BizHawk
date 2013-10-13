@@ -44,10 +44,11 @@
 			// 
 			// okButton
 			// 
+			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(23, 224);
+			this.okButton.Location = new System.Drawing.Point(115, 147);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(117, 30);
+			this.okButton.Size = new System.Drawing.Size(70, 23);
 			this.okButton.TabIndex = 0;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -55,24 +56,24 @@
 			// 
 			// threadsBar
 			// 
-			this.threadsBar.Location = new System.Drawing.Point(88, 68);
+			this.threadsBar.Location = new System.Drawing.Point(56, 25);
 			this.threadsBar.Name = "threadsBar";
-			this.threadsBar.Size = new System.Drawing.Size(104, 42);
+			this.threadsBar.Size = new System.Drawing.Size(104, 45);
 			this.threadsBar.TabIndex = 5;
 			this.threadsBar.Scroll += new System.EventHandler(this.threadsBar_Scroll);
 			// 
 			// compressionBar
 			// 
-			this.compressionBar.Location = new System.Drawing.Point(88, 138);
+			this.compressionBar.Location = new System.Drawing.Point(56, 86);
 			this.compressionBar.Name = "compressionBar";
-			this.compressionBar.Size = new System.Drawing.Size(104, 42);
+			this.compressionBar.Size = new System.Drawing.Size(104, 45);
 			this.compressionBar.TabIndex = 9;
 			this.compressionBar.Scroll += new System.EventHandler(this.compressionBar_Scroll);
 			// 
 			// threadLeft
 			// 
 			this.threadLeft.AutoSize = true;
-			this.threadLeft.Location = new System.Drawing.Point(47, 68);
+			this.threadLeft.Location = new System.Drawing.Point(15, 25);
 			this.threadLeft.Name = "threadLeft";
 			this.threadLeft.Size = new System.Drawing.Size(35, 13);
 			this.threadLeft.TabIndex = 2;
@@ -81,7 +82,7 @@
 			// threadRight
 			// 
 			this.threadRight.AutoSize = true;
-			this.threadRight.Location = new System.Drawing.Point(198, 68);
+			this.threadRight.Location = new System.Drawing.Point(166, 25);
 			this.threadRight.Name = "threadRight";
 			this.threadRight.Size = new System.Drawing.Size(35, 13);
 			this.threadRight.TabIndex = 4;
@@ -90,7 +91,7 @@
 			// compressionLeft
 			// 
 			this.compressionLeft.AutoSize = true;
-			this.compressionLeft.Location = new System.Drawing.Point(47, 148);
+			this.compressionLeft.Location = new System.Drawing.Point(15, 96);
 			this.compressionLeft.Name = "compressionLeft";
 			this.compressionLeft.Size = new System.Drawing.Size(35, 13);
 			this.compressionLeft.TabIndex = 6;
@@ -99,7 +100,7 @@
 			// compressionRight
 			// 
 			this.compressionRight.AutoSize = true;
-			this.compressionRight.Location = new System.Drawing.Point(198, 148);
+			this.compressionRight.Location = new System.Drawing.Point(166, 96);
 			this.compressionRight.Name = "compressionRight";
 			this.compressionRight.Size = new System.Drawing.Size(35, 13);
 			this.compressionRight.TabIndex = 8;
@@ -108,7 +109,7 @@
 			// threadTop
 			// 
 			this.threadTop.AutoSize = true;
-			this.threadTop.Location = new System.Drawing.Point(94, 52);
+			this.threadTop.Location = new System.Drawing.Point(62, 9);
 			this.threadTop.Name = "threadTop";
 			this.threadTop.Size = new System.Drawing.Size(98, 13);
 			this.threadTop.TabIndex = 3;
@@ -118,7 +119,7 @@
 			// compressionTop
 			// 
 			this.compressionTop.AutoSize = true;
-			this.compressionTop.Location = new System.Drawing.Point(96, 122);
+			this.compressionTop.Location = new System.Drawing.Point(64, 70);
 			this.compressionTop.Name = "compressionTop";
 			this.compressionTop.Size = new System.Drawing.Size(96, 13);
 			this.compressionTop.TabIndex = 7;
@@ -127,10 +128,11 @@
 			// 
 			// cancelButton
 			// 
+			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(158, 224);
+			this.cancelButton.Location = new System.Drawing.Point(191, 147);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(122, 30);
+			this.cancelButton.Size = new System.Drawing.Size(70, 23);
 			this.cancelButton.TabIndex = 1;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -142,7 +144,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(292, 273);
+			this.ClientSize = new System.Drawing.Size(273, 182);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.compressionTop);
 			this.Controls.Add(this.threadTop);
@@ -153,9 +155,8 @@
 			this.Controls.Add(this.compressionBar);
 			this.Controls.Add(this.threadsBar);
 			this.Controls.Add(this.okButton);
-			this.MaximumSize = new System.Drawing.Size(300, 300);
-			this.MinimumSize = new System.Drawing.Size(300, 300);
 			this.Name = "JMDForm";
+			this.ShowIcon = false;
 			this.Text = "JMD Compression Options";
 			((System.ComponentModel.ISupportInitialize)(this.threadsBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.compressionBar)).EndInit();
