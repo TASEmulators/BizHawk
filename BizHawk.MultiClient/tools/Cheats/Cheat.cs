@@ -217,6 +217,7 @@ namespace BizHawk.MultiClient
 			if (!IsSeparator)
 			{
 				_val++;
+				Pulse();
 			}
 		}
 
@@ -225,6 +226,7 @@ namespace BizHawk.MultiClient
 			if (!IsSeparator)
 			{
 				_val--;
+				Pulse();
 			}
 		}
 

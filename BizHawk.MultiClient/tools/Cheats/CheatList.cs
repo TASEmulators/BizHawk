@@ -94,25 +94,30 @@ namespace BizHawk.MultiClient
 		{
 			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
 			{
-				var cheat = _cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address);
-				cheat.Enable();
+				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
 			}
 			else
 			{
-				_changes = true;
 				_cheatList.Add(c);
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
+
+			_changes = true;
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Insert(int index, Cheat c)
 		{
-			if (!_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
 			{
-				_changes = true;
-				_cheatList.Insert(index, c);
-				ToolHelpers.UpdateCheatRelatedTools();
+				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
 			}
+			else
+			{
+				_cheatList.Insert(index, c);
+			}
+
+			_changes = true;
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Remove(Cheat c)
@@ -545,7 +550,7 @@ namespace BizHawk.MultiClient
 							sb
 								.Append(cheat.AddressStr).Append('\t')
 								.Append(cheat.ValueStr).Append('\t')
-								.Append(cheat.Compare.HasValue ? cheat.Compare.Value : 'N').Append('\t')
+								.Append(cheat.Compare.HasValue ? cheat.Compare.Value.ToString() : "N").Append('\t')
 								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name).Append('\t')
