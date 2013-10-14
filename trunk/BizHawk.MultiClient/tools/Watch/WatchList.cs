@@ -352,11 +352,11 @@ namespace BizHawk.MultiClient
 				foreach (Watch w in _watchList)
 				{
 					sb
-						.Append(String.Format(AddressFormatStr, w.Address)).Append('\t')
+						.Append(String.Format(AddressFormatStr, w.Address ?? 0)).Append('\t')
 						.Append(w.SizeAsChar).Append('\t')
 						.Append(w.TypeAsChar).Append('\t')
 						.Append(w.BigEndian ? '1' : '0').Append('\t')
-						.Append(w.Domain.Name).Append('\t')
+						.Append(w.DomainName).Append('\t')
 						.Append(w.Notes)
 						.AppendLine();
 				}
@@ -364,6 +364,8 @@ namespace BizHawk.MultiClient
 				sw.WriteLine(sb.ToString());
 			}
 
+			Global.Config.RecentWatches.Add(CurrentFileName);
+			Changes = false;
 			return true;
 		}
 
@@ -383,7 +385,7 @@ namespace BizHawk.MultiClient
 
 		private bool LoadFile(string path, bool append)
 		{
-			string domain = "";
+			string domain = String.Empty;
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 			bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
@@ -392,7 +394,7 @@ namespace BizHawk.MultiClient
 			{
 				string line;
 
-				if (append == false)
+				if (!append)
 				{
 					Clear();
 				}
@@ -510,6 +512,15 @@ namespace BizHawk.MultiClient
 				}
 			}
 
+			if (!append)
+			{
+				Global.Config.RecentWatches.Add(path);
+				Changes = false;
+			}
+			else
+			{
+				Changes = true;
+			}
 			return true;
 		}
 
