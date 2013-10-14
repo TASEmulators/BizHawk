@@ -1692,8 +1692,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.CheatList.IsActive(Domain, address))
 			{
-				var cheat = Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address);
-				cheat.Increment();
+				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
+				Global.CheatList.FlagChanges();
 			}
 			else
 			{
@@ -1730,8 +1730,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.CheatList.IsActive(Domain, address))
 			{
-				var cheat = Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address);
-				cheat.Decrement();
+				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
+				Global.CheatList.FlagChanges();
 			}
 			else
 			{
