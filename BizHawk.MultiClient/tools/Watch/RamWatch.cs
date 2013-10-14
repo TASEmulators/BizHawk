@@ -888,7 +888,26 @@ namespace BizHawk.MultiClient
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ToolHelpers.FreezeAddress(SelectedWatches);
+			bool allCheats = true;
+			foreach (var watch in SelectedWatches)
+			{
+				if (!watch.IsSeparator)
+				{
+					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
+					{
+						allCheats = false;
+					}
+				}
+			}
+
+			if (allCheats)
+			{
+				ToolHelpers.UnfreezeAddress(SelectedWatches);
+			}
+			else
+			{
+				ToolHelpers.FreezeAddress(SelectedWatches);
+			}
 		}
 
 		private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)

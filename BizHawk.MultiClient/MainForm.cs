@@ -1616,6 +1616,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Global.CheatList.AttemptToLoadCheatFile())
 					{
+						ToolHelpers.UpdateCheatRelatedTools();
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}

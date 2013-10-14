@@ -175,7 +175,7 @@
 			// DisplayTypeLael
 			// 
 			this.DisplayTypeLael.AutoSize = true;
-			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 174);
+			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 176);
 			this.DisplayTypeLael.Name = "DisplayTypeLael";
 			this.DisplayTypeLael.Size = new System.Drawing.Size(56, 13);
 			this.DisplayTypeLael.TabIndex = 20;
@@ -189,7 +189,7 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 168);
+			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 170);
 			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
 			this.DisplayTypeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DisplayTypeDropDown.TabIndex = 21;
@@ -198,7 +198,7 @@
 			// BigEndianCheckBox
 			// 
 			this.BigEndianCheckBox.AutoSize = true;
-			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 195);
+			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 196);
 			this.BigEndianCheckBox.Name = "BigEndianCheckBox";
 			this.BigEndianCheckBox.Size = new System.Drawing.Size(77, 17);
 			this.BigEndianCheckBox.TabIndex = 22;

@@ -458,8 +458,8 @@ namespace BizHawk.MultiClient
 		private void Toggle()
 		{
 			SelectedCheats.ForEach(x => x.Toggle());
+			ToolHelpers.UpdateCheatRelatedTools();
 			Global.CheatList.FlagChanges();
-			UpdateListView();
 		}
 
 		private void SaveColumnInfo()
@@ -932,6 +932,15 @@ namespace BizHawk.MultiClient
 		private void NewCheatForm_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			ToggleContextMenuItem.Enabled =
+				RemoveContextMenuItem.Enabled =
+				SelectedCheats.Any();
+
+			DisableAllContextMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 		}
 
 		#endregion
