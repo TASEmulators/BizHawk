@@ -58,6 +58,8 @@ namespace BizHawk.MultiClient
 
 		public MemoryDomain Domain { get { return _domain; } }
 
+		public string DomainName { get { return _domain != null ? _domain.Name : String.Empty; } }
+
 		public virtual int? Address { get { return _address; } }
 
 		public virtual string AddressString { get { return _address.ToString(AddressFormatStr); } }
