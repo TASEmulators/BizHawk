@@ -57,13 +57,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static void UnfreezeAll()
+		public static void UpdateCheatRelatedTools()
 		{
-			Global.CheatList.DisableAll();
 			Global.MainForm.RamWatch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats_UpdateValues();
 			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.UpdateCheatStatus();
+		}
+
+		public static void UnfreezeAll()
+		{
+			Global.CheatList.DisableAll();
+			UpdateCheatRelatedTools();
 		}
 
 		public static void FreezeAddress(List<Watch> watches)
@@ -78,11 +84,20 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			Global.MainForm.UpdateCheatStatus();
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
+			UpdateCheatRelatedTools();
+		}
+
+		public static void UnfreezeAddress(List<Watch> watches)
+		{
+			foreach (var watch in watches)
+			{
+				if (!watch.IsSeparator)
+				{
+					Global.CheatList.Remove(watch);
+				}
+			}
+
+			UpdateCheatRelatedTools();
 		}
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)

@@ -825,11 +825,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void FreezeAddress()
-		{
-			ToolHelpers.FreezeAddress(SelectedWatches);
-		}
-
 		private void RemoveRamWatchesFromList()
 		{
 			Searches.RemoveRange(Global.MainForm.RamWatch1.AddressList);
@@ -1171,7 +1166,26 @@ namespace BizHawk.MultiClient
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			FreezeAddress();
+			bool allCheats = true;
+			foreach (var watch in SelectedWatches)
+			{
+				if (!watch.IsSeparator)
+				{
+					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
+					{
+						allCheats = false;
+					}
+				}
+			}
+
+			if (allCheats)
+			{
+				ToolHelpers.UnfreezeAddress(SelectedWatches);
+			}
+			else
+			{
+				ToolHelpers.FreezeAddress(SelectedWatches);
+			}
 		}
 
 		private void ClearUndoMenuItem_Click(object sender, EventArgs e)

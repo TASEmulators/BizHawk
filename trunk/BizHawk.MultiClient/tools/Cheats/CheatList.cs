@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 			_cheatList.Clear();
 			_currentFileName = String.Empty;
 			_changes = false;
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Update()
@@ -92,11 +92,16 @@ namespace BizHawk.MultiClient
 
 		public void Add(Cheat c)
 		{
-			if (!_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			{
+				var cheat = _cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address);
+				cheat.Enable();
+			}
+			else
 			{
 				_changes = true;
 				_cheatList.Add(c);
-				Global.MainForm.UpdateCheatStatus();
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -106,7 +111,7 @@ namespace BizHawk.MultiClient
 			{
 				_changes = true;
 				_cheatList.Insert(index, c);
-				Global.MainForm.UpdateCheatStatus();
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -114,7 +119,19 @@ namespace BizHawk.MultiClient
 		{
 			_changes = true;
 			_cheatList.Remove(c);
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
+		}
+
+		public void Remove(Watch w)
+		{
+			
+			var cheat = _cheatList.FirstOrDefault(x => x.Domain == w.Domain && x.Address == w.Address);
+			if (cheat != null)
+			{
+				_changes = true;
+				_cheatList.Remove(cheat);
+				ToolHelpers.UpdateCheatRelatedTools();
+			}
 		}
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
@@ -124,7 +141,7 @@ namespace BizHawk.MultiClient
 			{
 				_cheatList.Remove(cheat);
 			}
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public bool Changes
@@ -136,21 +153,21 @@ namespace BizHawk.MultiClient
 		{
 			_changes = true;
 			_cheatList.Clear();
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void DisableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Disable());
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void EnableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Enable());
-			Global.MainForm.UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public bool IsActive(MemoryDomain domain, int address)

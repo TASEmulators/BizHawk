@@ -38,9 +38,9 @@
 			this.On = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.disableAllCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ToggleContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DisableAllContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,7 +128,6 @@
 			this.CheatListView.GridLines = true;
 			this.CheatListView.HideSelection = false;
 			this.CheatListView.ItemCount = 0;
-			this.CheatListView.LabelEdit = true;
 			this.CheatListView.Location = new System.Drawing.Point(12, 72);
 			this.CheatListView.Name = "CheatListView";
 			this.CheatListView.selectedItem = -1;
@@ -178,37 +177,38 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toggleToolStripMenuItem,
-            this.removeSelectedToolStripMenuItem,
-            this.disableAllCheatsToolStripMenuItem});
+            this.ToggleContextMenuItem,
+            this.RemoveContextMenuItem,
+            this.DisableAllContextMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.Size = new System.Drawing.Size(158, 70);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
-			// toggleToolStripMenuItem
+			// ToggleContextMenuItem
 			// 
-			this.toggleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
-			this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
-			this.toggleToolStripMenuItem.ShortcutKeyDisplayString = "Enter";
-			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-			this.toggleToolStripMenuItem.Text = "&Toggle";
-			this.toggleToolStripMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
+			this.ToggleContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.ToggleContextMenuItem.Name = "ToggleContextMenuItem";
+			this.ToggleContextMenuItem.ShortcutKeyDisplayString = "Enter";
+			this.ToggleContextMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.ToggleContextMenuItem.Text = "&Toggle";
+			this.ToggleContextMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
 			// 
-			// removeSelectedToolStripMenuItem
+			// RemoveContextMenuItem
 			// 
-			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
-			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
-			this.removeSelectedToolStripMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-			this.removeSelectedToolStripMenuItem.Text = "&Remove";
-			this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
+			this.RemoveContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
+			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Delete";
+			this.RemoveContextMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.RemoveContextMenuItem.Text = "&Remove";
+			this.RemoveContextMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
-			// disableAllCheatsToolStripMenuItem
+			// DisableAllContextMenuItem
 			// 
-			this.disableAllCheatsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
-			this.disableAllCheatsToolStripMenuItem.Name = "disableAllCheatsToolStripMenuItem";
-			this.disableAllCheatsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-			this.disableAllCheatsToolStripMenuItem.Text = "&Disable All";
-			this.disableAllCheatsToolStripMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
+			this.DisableAllContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.DisableAllContextMenuItem.Name = "DisableAllContextMenuItem";
+			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.DisableAllContextMenuItem.Text = "&Disable All";
+			this.DisableAllContextMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
 			// CheatsMenu
 			// 
@@ -844,9 +844,9 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowEndianMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDisplayTypeMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ToggleContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RemoveContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DisableAllContextMenuItem;
 		private System.Windows.Forms.GroupBox CheatGroupBox;
 		private CheatEdit CheatEditor;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
