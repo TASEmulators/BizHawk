@@ -429,10 +429,10 @@ namespace BizHawk.MultiClient
 
 			UpdateStatusSlots();
 
-			renderTarget.Paint += new System.Windows.Forms.PaintEventHandler(delegate
+			renderTarget.Paint += (o, e) =>
 			{
 				Global.DisplayManager.NeedsToPaint = true;
-			});
+			};
 		}
 
 		/// <summary>
