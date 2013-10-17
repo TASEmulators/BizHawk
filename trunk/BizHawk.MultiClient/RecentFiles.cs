@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
@@ -10,7 +9,7 @@ namespace BizHawk.MultiClient
 	{
 		private readonly int MAX_RECENT_FILES;       //Maximum number of files
 		private readonly List<string> recentlist;    //List of recent files
-
+		
 		public bool AutoLoad = false;
 
 		public RecentFiles() : this(8) { }
@@ -77,7 +76,6 @@ namespace BizHawk.MultiClient
 
 		public List<string> GetRecentListTruncated(int length)
 		{
-			//iterate through list, truncating each item to length, and return the result in a List<string>
 			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
@@ -96,55 +94,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void HandleLoadError(string path)
-		{
-			Global.Sound.StopSound();
-			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-			if (result == DialogResult.Yes)
-			{
-				Remove(path);
-			}
-
-			Global.Sound.StartSound();
-		}
-
-		public ToolStripItem[] GenerateRecentMenu(Action<string> loadFileCallback)
-		{
-			var items = new List<ToolStripItem>();
-
-			if (Empty)
-			{
-				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
-				items.Add(none);
-			}
-			else
-			{
-				foreach (string filename in recentlist)
-				{
-					string temp = filename;
-					var item = new ToolStripMenuItem { Text = temp };
-					item.Click += (o, ev) => loadFileCallback(temp);
-					items.Add(item);
-				}
-			}
-
-			items.Add(new ToolStripSeparator());
-
-			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
-			clearitem.Click += (o, ev) => recentlist.Clear();
-			items.Add(clearitem);
-
-			return items.ToArray();
-		}
-
-		public ToolStripMenuItem GenerateAutoLoadItem()
-		{
-			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = AutoLoad };
-			auto.Click += (o, ev) => ToggleAutoLoad();
-			return auto;
-		}
-
-		private void ToggleAutoLoad()
+		public void ToggleAutoLoad()
 		{
 			AutoLoad ^= true;
 		}

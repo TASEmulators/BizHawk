@@ -533,7 +533,9 @@ namespace BizHawk.MultiClient
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentLua.GenerateRecentMenu(LoadLuaFromRecent));
+			recentToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent)
+			);
 		}
 
 		private void LoadLuaFromRecent(string path)
@@ -979,7 +981,9 @@ namespace BizHawk.MultiClient
 		private void recentSessionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentSessionsToolStripMenuItem.DropDownItems.Clear();
-			recentSessionsToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentLuaSession.GenerateRecentMenu(LoadSessionFromRecent));
+			recentSessionsToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent)
+			);
 		}
 
 		public void LoadSessionFromRecent(string path)
@@ -991,7 +995,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!LoadLuaSession(path))
 				{
-					Global.Config.RecentLuaSession.HandleLoadError(path);
+					ToolHelpers.HandleLoadError(Global.Config.RecentLuaSession, path);
 				}
 				else
 				{

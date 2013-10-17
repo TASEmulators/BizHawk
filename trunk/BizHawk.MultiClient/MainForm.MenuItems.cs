@@ -703,15 +703,23 @@ namespace BizHawk.MultiClient
 		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentROMToolStripMenuItem.DropDownItems.Clear();
-			recentROMToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentRoms.GenerateRecentMenu(LoadRomFromRecent));
-			recentROMToolStripMenuItem.DropDownItems.Add(Global.Config.RecentRoms.GenerateAutoLoadItem());
+			recentROMToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
+			);
+			recentROMToolStripMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
+			);
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentMovies.GenerateRecentMenu(LoadMoviesFromRecent));
-			recentToolStripMenuItem.DropDownItems.Add(Global.Config.RecentMovies.GenerateAutoLoadItem());
+			recentToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
+			);
+			recentToolStripMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
+			);
 		}
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
