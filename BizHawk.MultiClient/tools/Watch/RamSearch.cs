@@ -474,7 +474,7 @@ namespace BizHawk.MultiClient
 
 			if (!file.Exists)
 			{
-				Global.Config.RecentSearches.HandleLoadError(path);
+				ToolHelpers.HandleLoadError(Global.Config.RecentSearches, path);
 			}
 			else
 			{
@@ -901,7 +901,9 @@ namespace BizHawk.MultiClient
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentSearches.GenerateRecentMenu(LoadFileFromRecent));
+			RecentSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentSearches, LoadFileFromRecent)
+			);
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)

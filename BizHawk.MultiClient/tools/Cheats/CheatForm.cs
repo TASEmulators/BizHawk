@@ -104,7 +104,7 @@ namespace BizHawk.MultiClient
 				bool load_result = Global.CheatList.Load(path, append: false);
 				if (!load_result)
 				{
-					Global.Config.RecentWatches.HandleLoadError(path);
+					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
 				}
 				else
 				{
@@ -569,7 +569,9 @@ namespace BizHawk.MultiClient
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Global.Config.RecentCheats.GenerateRecentMenu(LoadFileFromRecent));
+			RecentSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentCheats, LoadFileFromRecent)
+			);
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)

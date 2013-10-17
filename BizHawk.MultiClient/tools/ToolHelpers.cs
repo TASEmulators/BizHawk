@@ -8,6 +8,54 @@ namespace BizHawk.MultiClient
 {
 	class ToolHelpers
 	{
+		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
+		{
+			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = recent.AutoLoad };
+			auto.Click += (o, ev) => recent.ToggleAutoLoad();
+			return auto;
+		}
+
+		public static ToolStripItem[] GenerateRecentMenu(RecentFiles recent, Action<string> loadFileCallback)
+		{
+			var items = new List<ToolStripItem>();
+
+			if (recent.Empty)
+			{
+				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
+				items.Add(none);
+			}
+			else
+			{
+				foreach (string filename in recent)
+				{
+					string temp = filename;
+					var item = new ToolStripMenuItem { Text = temp };
+					item.Click += (o, ev) => loadFileCallback(temp);
+					items.Add(item);
+				}
+			}
+
+			items.Add(new ToolStripSeparator());
+
+			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
+			clearitem.Click += (o, ev) => recent.Clear();
+			items.Add(clearitem);
+
+			return items.ToArray();
+		}
+
+		public static void HandleLoadError(RecentFiles recent, string path)
+		{
+			Global.Sound.StopSound();
+			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+			if (result == DialogResult.Yes)
+			{
+				recent.Remove(path);
+			}
+
+			Global.Sound.StartSound();
+		}
+
 		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();

@@ -362,7 +362,7 @@ namespace BizHawk.MultiClient
 				bool load_result = Watches.Load(path, append: false);
 				if (!load_result)
 				{
-					Global.Config.RecentWatches.HandleLoadError(path);
+					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
 				}
 				else
 				{
@@ -813,8 +813,12 @@ namespace BizHawk.MultiClient
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentWatches.GenerateRecentMenu(LoadFileFromRecent));
-			recentToolStripMenuItem.DropDownItems.Add(Global.Config.RecentWatches.GenerateAutoLoadItem());
+			recentToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentWatches, LoadFileFromRecent)
+			);
+			recentToolStripMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentWatches)
+			);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

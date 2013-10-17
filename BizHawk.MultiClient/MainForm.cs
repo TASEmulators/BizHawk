@@ -738,7 +738,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!LoadRom(rom))
 			{
-				Global.Config.RecentRoms.HandleLoadError(rom);
+				ToolHelpers.HandleLoadError(Global.Config.RecentRoms, rom);
 			}
 		}
 
@@ -748,7 +748,7 @@ namespace BizHawk.MultiClient
 
 			if (!m.Loaded)
 			{
-				Global.Config.RecentMovies.HandleLoadError(path);
+				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
 			}
 			else
 			{
