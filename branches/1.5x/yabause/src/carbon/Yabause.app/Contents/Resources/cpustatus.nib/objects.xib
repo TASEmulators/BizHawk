@@ -1,0 +1,1229 @@
+<?xml version="1.0" standalone="yes"?>
+<object class="NSIBObjectData">
+  <string name="targetFramework">IBCarbonFramework</string>
+  <object name="rootObject" class="NSCustomObject" id="1">
+    <string name="customClass">NSApplication</string>
+  </object>
+  <array count="98" name="allObjects">
+    <object class="IBCarbonWindow" id="166">
+      <string name="windowRect">404 468 747 1080 </string>
+      <string name="title">Processor Status</string>
+      <object name="rootControl" class="IBCarbonRootControl" id="167">
+        <string name="bounds">0 0 343 612 </string>
+        <string name="viewFrame">0 0 612 343 </string>
+        <array count="2" name="subviews">
+          <object class="IBCarbonGroupBox" id="180">
+            <string name="bounds">6 20 323 296 </string>
+            <string name="viewFrame">20 6 276 317 </string>
+            <array count="47" name="subviews">
+              <object class="IBCarbonStaticText" id="181">
+                <string name="bounds">36 36 49 73 </string>
+                <string name="viewFrame">16 30 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R0</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="182">
+                <string name="bounds">57 36 70 73 </string>
+                <string name="viewFrame">16 51 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R1</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="183">
+                <string name="bounds">78 36 91 73 </string>
+                <string name="viewFrame">16 72 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R2</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="184">
+                <string name="bounds">99 36 112 73 </string>
+                <string name="viewFrame">16 93 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R3</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="185">
+                <string name="bounds">120 36 133 73 </string>
+                <string name="viewFrame">16 114 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R4</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="186">
+                <string name="bounds">141 36 154 73 </string>
+                <string name="viewFrame">16 135 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R5</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="187">
+                <string name="bounds">162 36 175 73 </string>
+                <string name="viewFrame">16 156 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R6</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="189">
+                <string name="bounds">183 36 196 73 </string>
+                <string name="viewFrame">16 177 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R7</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="200">
+                <string name="bounds">36 162 49 199 </string>
+                <string name="viewFrame">142 30 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R8</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="201">
+                <string name="bounds">57 162 70 199 </string>
+                <string name="viewFrame">142 51 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R9</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="202">
+                <string name="bounds">78 162 91 199 </string>
+                <string name="viewFrame">142 72 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R10</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="203">
+                <string name="bounds">99 162 112 199 </string>
+                <string name="viewFrame">142 93 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R11</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="204">
+                <string name="bounds">120 162 133 199 </string>
+                <string name="viewFrame">142 114 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R12</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="205">
+                <string name="bounds">141 162 154 199 </string>
+                <string name="viewFrame">142 135 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R13</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="206">
+                <string name="bounds">162 162 175 199 </string>
+                <string name="viewFrame">142 156 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R14</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="207">
+                <string name="bounds">183 162 196 199 </string>
+                <string name="viewFrame">142 177 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R15</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="223">
+                <string name="bounds">38 84 48 151 </string>
+                <string name="viewFrame">64 32 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">1</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="231">
+                <string name="bounds">206 36 219 73 </string>
+                <string name="viewFrame">16 200 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">MACH</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="232">
+                <string name="bounds">208 84 218 151 </string>
+                <string name="viewFrame">64 202 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">17</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="233">
+                <string name="bounds">206 162 219 199 </string>
+                <string name="viewFrame">142 200 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">MACL</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="234">
+                <string name="bounds">229 36 242 73 </string>
+                <string name="viewFrame">16 223 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">GBR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="235">
+                <string name="bounds">231 84 241 151 </string>
+                <string name="viewFrame">64 225 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">19</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="236">
+                <string name="bounds">229 162 242 199 </string>
+                <string name="viewFrame">142 223 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">VBR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="237">
+                <string name="bounds">252 36 265 73 </string>
+                <string name="viewFrame">16 246 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">PC</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="238">
+                <string name="bounds">252 162 265 199 </string>
+                <string name="viewFrame">142 246 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">PR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="239">
+                <string name="bounds">59 84 69 151 </string>
+                <string name="viewFrame">64 53 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">2</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="240">
+                <string name="bounds">80 84 90 151 </string>
+                <string name="viewFrame">64 74 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">3</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="241">
+                <string name="bounds">101 84 111 151 </string>
+                <string name="viewFrame">64 95 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">4</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="242">
+                <string name="bounds">122 84 132 151 </string>
+                <string name="viewFrame">64 116 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">5</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="243">
+                <string name="bounds">143 84 153 151 </string>
+                <string name="viewFrame">64 137 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">6</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="244">
+                <string name="bounds">164 84 174 151 </string>
+                <string name="viewFrame">64 158 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">7</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="245">
+                <string name="bounds">185 84 195 151 </string>
+                <string name="viewFrame">64 179 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">8</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="246">
+                <string name="bounds">252 84 262 151 </string>
+                <string name="viewFrame">64 246 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">21</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="247">
+                <string name="bounds">38 210 48 277 </string>
+                <string name="viewFrame">190 32 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">9</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="248">
+                <string name="bounds">59 210 69 277 </string>
+                <string name="viewFrame">190 53 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">10</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="249">
+                <string name="bounds">80 210 90 277 </string>
+                <string name="viewFrame">190 74 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">11</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="250">
+                <string name="bounds">101 210 111 277 </string>
+                <string name="viewFrame">190 95 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">12</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="251">
+                <string name="bounds">122 210 132 277 </string>
+                <string name="viewFrame">190 116 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">13</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="252">
+                <string name="bounds">143 210 153 277 </string>
+                <string name="viewFrame">190 137 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">14</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="253">
+                <string name="bounds">164 210 174 277 </string>
+                <string name="viewFrame">190 158 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">15</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="254">
+                <string name="bounds">185 210 195 277 </string>
+                <string name="viewFrame">190 179 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">16</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="258">
+                <string name="bounds">208 210 218 277 </string>
+                <string name="viewFrame">190 202 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">18</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="259">
+                <string name="bounds">231 210 241 277 </string>
+                <string name="viewFrame">190 225 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">20</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="261">
+                <string name="bounds">252 210 262 277 </string>
+                <string name="viewFrame">190 246 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">22</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="262">
+                <string name="bounds">273 81 286 280 </string>
+                <string name="viewFrame">61 267 199 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">Status bits go here</string>
+                <int name="justification">-1</int>
+              </object>
+              <object class="IBCarbonStaticText" id="263">
+                <string name="bounds">294 36 307 73 </string>
+                <string name="viewFrame">16 288 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">SR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="264">
+                <string name="bounds">296 84 306 277 </string>
+                <string name="viewFrame">64 290 193 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">23</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+            </array>
+            <string name="title">Master</string>
+          </object>
+          <object class="IBCarbonGroupBox" id="265">
+            <string name="bounds">6 316 323 592 </string>
+            <string name="viewFrame">316 6 276 317 </string>
+            <array count="47" name="subviews">
+              <object class="IBCarbonStaticText" id="280">
+                <string name="bounds">36 332 49 369 </string>
+                <string name="viewFrame">16 30 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R0</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="297">
+                <string name="bounds">57 332 70 369 </string>
+                <string name="viewFrame">16 51 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R1</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="294">
+                <string name="bounds">78 332 91 369 </string>
+                <string name="viewFrame">16 72 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R2</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="288">
+                <string name="bounds">99 332 112 369 </string>
+                <string name="viewFrame">16 93 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R3</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="279">
+                <string name="bounds">120 332 133 369 </string>
+                <string name="viewFrame">16 114 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R4</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="276">
+                <string name="bounds">141 332 154 369 </string>
+                <string name="viewFrame">16 135 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R5</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="287">
+                <string name="bounds">162 332 175 369 </string>
+                <string name="viewFrame">16 156 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R6</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="309">
+                <string name="bounds">183 332 196 369 </string>
+                <string name="viewFrame">16 177 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R7</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="281">
+                <string name="bounds">36 458 49 495 </string>
+                <string name="viewFrame">142 30 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R8</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="305">
+                <string name="bounds">57 458 70 495 </string>
+                <string name="viewFrame">142 51 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R9</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="285">
+                <string name="bounds">78 458 91 495 </string>
+                <string name="viewFrame">142 72 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R10</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="282">
+                <string name="bounds">99 458 112 495 </string>
+                <string name="viewFrame">142 93 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R11</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="291">
+                <string name="bounds">120 458 133 495 </string>
+                <string name="viewFrame">142 114 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R12</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="275">
+                <string name="bounds">141 458 154 495 </string>
+                <string name="viewFrame">142 135 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R13</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="307">
+                <string name="bounds">162 458 175 495 </string>
+                <string name="viewFrame">142 156 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R14</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="278">
+                <string name="bounds">183 458 196 495 </string>
+                <string name="viewFrame">142 177 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">R15</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="277">
+                <string name="bounds">38 380 48 447 </string>
+                <string name="viewFrame">64 32 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">31</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="272">
+                <string name="bounds">206 332 219 369 </string>
+                <string name="viewFrame">16 200 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">MACH</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="304">
+                <string name="bounds">208 380 218 447 </string>
+                <string name="viewFrame">64 202 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">47</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="293">
+                <string name="bounds">206 458 219 495 </string>
+                <string name="viewFrame">142 200 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">MACL</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="292">
+                <string name="bounds">229 332 242 369 </string>
+                <string name="viewFrame">16 223 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">GBR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="270">
+                <string name="bounds">231 380 241 447 </string>
+                <string name="viewFrame">64 225 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">49</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="289">
+                <string name="bounds">229 458 242 495 </string>
+                <string name="viewFrame">142 223 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">VBR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="268">
+                <string name="bounds">252 332 265 369 </string>
+                <string name="viewFrame">16 246 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">PC</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonStaticText" id="290">
+                <string name="bounds">252 458 265 495 </string>
+                <string name="viewFrame">142 246 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">PR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="296">
+                <string name="bounds">59 380 69 447 </string>
+                <string name="viewFrame">64 53 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">32</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="286">
+                <string name="bounds">80 380 90 447 </string>
+                <string name="viewFrame">64 74 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">33</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="271">
+                <string name="bounds">101 380 111 447 </string>
+                <string name="viewFrame">64 95 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">34</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="267">
+                <string name="bounds">122 380 132 447 </string>
+                <string name="viewFrame">64 116 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">35</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="299">
+                <string name="bounds">143 380 153 447 </string>
+                <string name="viewFrame">64 137 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">36</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="300">
+                <string name="bounds">164 380 174 447 </string>
+                <string name="viewFrame">64 158 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">37</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="306">
+                <string name="bounds">185 380 195 447 </string>
+                <string name="viewFrame">64 179 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">38</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="308">
+                <string name="bounds">252 380 262 447 </string>
+                <string name="viewFrame">64 246 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">51</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="303">
+                <string name="bounds">38 506 48 573 </string>
+                <string name="viewFrame">190 32 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">39</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="266">
+                <string name="bounds">59 506 69 573 </string>
+                <string name="viewFrame">190 53 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">40</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="298">
+                <string name="bounds">80 506 90 573 </string>
+                <string name="viewFrame">190 74 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">41</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="273">
+                <string name="bounds">101 506 111 573 </string>
+                <string name="viewFrame">190 95 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">42</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="302">
+                <string name="bounds">122 506 132 573 </string>
+                <string name="viewFrame">190 116 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">43</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="274">
+                <string name="bounds">143 506 153 573 </string>
+                <string name="viewFrame">190 137 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">44</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="301">
+                <string name="bounds">164 506 174 573 </string>
+                <string name="viewFrame">190 158 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">45</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="269">
+                <string name="bounds">185 506 195 573 </string>
+                <string name="viewFrame">190 179 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">46</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="311">
+                <string name="bounds">208 506 218 573 </string>
+                <string name="viewFrame">190 202 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">48</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="310">
+                <string name="bounds">231 506 241 573 </string>
+                <string name="viewFrame">190 225 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">50</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonEditText" id="295">
+                <string name="bounds">252 506 262 573 </string>
+                <string name="viewFrame">190 246 67 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">52</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+              <object class="IBCarbonStaticText" id="284">
+                <string name="bounds">273 377 286 576 </string>
+                <string name="viewFrame">61 267 199 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">Status bits go here</string>
+                <int name="justification">-1</int>
+              </object>
+              <object class="IBCarbonStaticText" id="283">
+                <string name="bounds">294 332 307 369 </string>
+                <string name="viewFrame">16 288 37 13 </string>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <string name="title">SR</string>
+                <int name="justification">-2</int>
+              </object>
+              <object class="IBCarbonEditText" id="312">
+                <string name="bounds">296 380 306 573 </string>
+                <string name="viewFrame">64 290 193 10 </string>
+                <ostype name="controlSignature">cpus</ostype>
+                <int name="controlID">53</int>
+                <boolean name="enabled">FALSE</boolean>
+                <int name="fontStyle">-5</int>
+                <boolean name="small">TRUE</boolean>
+                <int name="controlSize">1</int>
+                <int name="justification">-1</int>
+                <boolean name="isUnicode">TRUE</boolean>
+                <boolean name="isSingleLine">TRUE</boolean>
+              </object>
+            </array>
+            <string name="title">Slave</string>
+          </object>
+        </array>
+      </object>
+      <boolean name="receiveUpdates">FALSE</boolean>
+      <boolean name="hasCollapseBox">FALSE</boolean>
+      <boolean name="hasHorizontalZoom">FALSE</boolean>
+      <boolean name="isResizable">FALSE</boolean>
+      <boolean name="hasVerticalZoom">FALSE</boolean>
+      <boolean name="compositing">TRUE</boolean>
+      <int name="carbonWindowClass">5</int>
+      <int name="themeBrush">5</int>
+      <boolean name="isConstrained">FALSE</boolean>
+      <boolean name="hideOnSuspend">TRUE</boolean>
+    </object>
+    <reference idRef="167"/>
+    <reference idRef="180"/>
+    <reference idRef="181"/>
+    <reference idRef="182"/>
+    <reference idRef="183"/>
+    <reference idRef="184"/>
+    <reference idRef="185"/>
+    <reference idRef="186"/>
+    <reference idRef="187"/>
+    <reference idRef="189"/>
+    <reference idRef="200"/>
+    <reference idRef="201"/>
+    <reference idRef="202"/>
+    <reference idRef="203"/>
+    <reference idRef="204"/>
+    <reference idRef="205"/>
+    <reference idRef="206"/>
+    <reference idRef="207"/>
+    <reference idRef="223"/>
+    <reference idRef="231"/>
+    <reference idRef="232"/>
+    <reference idRef="233"/>
+    <reference idRef="234"/>
+    <reference idRef="235"/>
+    <reference idRef="236"/>
+    <reference idRef="237"/>
+    <reference idRef="238"/>
+    <reference idRef="239"/>
+    <reference idRef="240"/>
+    <reference idRef="241"/>
+    <reference idRef="242"/>
+    <reference idRef="243"/>
+    <reference idRef="244"/>
+    <reference idRef="245"/>
+    <reference idRef="246"/>
+    <reference idRef="247"/>
+    <reference idRef="248"/>
+    <reference idRef="249"/>
+    <reference idRef="250"/>
+    <reference idRef="251"/>
+    <reference idRef="252"/>
+    <reference idRef="253"/>
+    <reference idRef="254"/>
+    <reference idRef="258"/>
+    <reference idRef="259"/>
+    <reference idRef="261"/>
+    <reference idRef="262"/>
+    <reference idRef="263"/>
+    <reference idRef="264"/>
+    <reference idRef="265"/>
+    <reference idRef="266"/>
+    <reference idRef="267"/>
+    <reference idRef="268"/>
+    <reference idRef="269"/>
+    <reference idRef="270"/>
+    <reference idRef="271"/>
+    <reference idRef="272"/>
+    <reference idRef="273"/>
+    <reference idRef="274"/>
+    <reference idRef="275"/>
+    <reference idRef="276"/>
+    <reference idRef="277"/>
+    <reference idRef="278"/>
+    <reference idRef="279"/>
+    <reference idRef="280"/>
+    <reference idRef="281"/>
+    <reference idRef="282"/>
+    <reference idRef="283"/>
+    <reference idRef="284"/>
+    <reference idRef="285"/>
+    <reference idRef="286"/>
+    <reference idRef="287"/>
+    <reference idRef="288"/>
+    <reference idRef="289"/>
+    <reference idRef="290"/>
+    <reference idRef="291"/>
+    <reference idRef="292"/>
+    <reference idRef="293"/>
+    <reference idRef="294"/>
+    <reference idRef="295"/>
+    <reference idRef="296"/>
+    <reference idRef="297"/>
+    <reference idRef="298"/>
+    <reference idRef="299"/>
+    <reference idRef="300"/>
+    <reference idRef="301"/>
+    <reference idRef="302"/>
+    <reference idRef="303"/>
+    <reference idRef="304"/>
+    <reference idRef="305"/>
+    <reference idRef="306"/>
+    <reference idRef="307"/>
+    <reference idRef="308"/>
+    <reference idRef="309"/>
+    <reference idRef="310"/>
+    <reference idRef="311"/>
+    <reference idRef="312"/>
+  </array>
+  <array count="98" name="allParents">
+    <reference idRef="1"/>
+    <reference idRef="166"/>
+    <reference idRef="167"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="180"/>
+    <reference idRef="167"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+    <reference idRef="265"/>
+  </array>
+  <dictionary count="2" name="nameTable">
+    <string>File&apos;s Owner</string>
+    <reference idRef="1"/>
+    <string>Window</string>
+    <reference idRef="166"/>
+  </dictionary>
+  <unsigned_int name="nextObjectID">313</unsigned_int>
+</object>

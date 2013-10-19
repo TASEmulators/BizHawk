@@ -1,0 +1,88 @@
+        _   _
+       / \_/ \            ___  _      ____ 
+       \     /___  ___   /   || | __ /    \ ____
+        \   //   ||   \ /    || | \ \\  \_//    \
+        /  //    ||   //  _  || |__\ \\  \    __/
+        \_//  _  ||   \\_/ \_||______/ \  \\  \__
+           \_/ \_||___/              \____/ \____\
+     Yet Another Buggy And Uncomplete Saturn Emulator
+
+        _________________________________________
+        Copyright (c) 2002-2011 Yabause team
+
+
+1) Special Notice...........................................21
+2) Compiling instructions...................................28
+3) How to use Yabause.......................................50
+4) Contact information......................................55
+5) Disclaimer...............................................71
+
+
+1 Special Notice______________________________________________
+
+Please note that the Wii port is in alpha status, and won't be
+officially supported until a later date. If you would like to
+contribute, please contact us(see the contact information
+section in README).
+
+2 Compiling instructions______________________________________
+
+Yabause is written in C using the devkitPro packages. You can
+download it from:
+
+http://www.devkitpro.org
+
+Once this is installed, you should be ready to install Yabause.
+
+To compile, either use the Makefile.wii file in the src
+subdirectory to compile it(e.g. make -f Makefile.wii) or you can
+use configure in the main directory as follows:
+
+./configure --build=i686-pc-linux-gnu --host=powerpc-gekko
+
+Once that's done, type "make". It should now take some time to
+compile so go grab yourself a sandwich or beer - whatever suits
+your fancy and it should be done in a few minutes. You should
+now have a file called "yabause.elf". Now all you have to do is
+load it on your Wii(which is something we won't cover here).
+
+
+3 How to use Yabause__________________________________________
+
+To be finished later.
+
+
+4 Contact information_________________________________________
+
+General inquiries should go to:
+E-mail:	guillaume@yabause.org
+E-mail: cwx@cyberwarriorx.com
+
+Windows Port-related inquiries should go to:
+E-mail: cwx@cyberwarriorx.com
+
+Web:    http://yabause.org
+
+Please don't ask for roms, bios files or any other copyrighted
+stuff. Please use the forum when you have any questions if
+possible.
+
+
+5 Disclaimer__________________________________________________
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as 
+published by the Free Software Foundation; either version 2 of 
+the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be
+useful,but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this program; if not, write to the Free
+Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301  USA
+
+See the GNU General Public License details in COPYING.

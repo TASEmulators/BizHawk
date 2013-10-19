@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E01193DF-F104-4B95-9D1B-FAD830F6F620}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EMU7800</RootNamespace>
+    <AssemblyName>EMU7800</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Core\AddressSpace.cs" />
+    <Compile Include="Core\Bios7800.cs" />
+    <Compile Include="Core\BufferElement.cs" />
+    <Compile Include="Core\Cart.cs" />
+    <Compile Include="Core\Cart7808.cs" />
+    <Compile Include="Core\Cart7816.cs" />
+    <Compile Include="Core\Cart7832.cs" />
+    <Compile Include="Core\Cart7832P.cs" />
+    <Compile Include="Core\Cart7848.cs" />
+    <Compile Include="Core\Cart78AB.cs" />
+    <Compile Include="Core\Cart78AC.cs" />
+    <Compile Include="Core\Cart78S4.cs" />
+    <Compile Include="Core\Cart78S9.cs" />
+    <Compile Include="Core\Cart78SG.cs" />
+    <Compile Include="Core\Cart78SGP.cs" />
+    <Compile Include="Core\CartA16K.cs" />
+    <Compile Include="Core\CartA16KR.cs" />
+    <Compile Include="Core\CartA2K.cs" />
+    <Compile Include="Core\CartA32K.cs" />
+    <Compile Include="Core\CartA32KR.cs" />
+    <Compile Include="Core\CartA4K.cs" />
+    <Compile Include="Core\CartA8K.cs" />
+    <Compile Include="Core\CartA8KR.cs" />
+    <Compile Include="Core\CartCBS12K.cs" />
+    <Compile Include="Core\CartDC8K.cs" />
+    <Compile Include="Core\CartDPC.cs" />
+    <Compile Include="Core\CartMN16K.cs" />
+    <Compile Include="Core\CartPB8K.cs" />
+    <Compile Include="Core\CartTV8K.cs" />
+    <Compile Include="Core\CartType.cs" />
+    <Compile Include="Core\ConsoleSwitch.cs" />
+    <Compile Include="Core\Controller.cs" />
+    <Compile Include="Core\ControllerAction.cs" />
+    <Compile Include="Core\DeserializationContext.cs" />
+    <Compile Include="Core\Emu7800Exception.cs" />
+    <Compile Include="Core\Emu7800SerializationException.cs" />
+    <Compile Include="Core\FontRenderer.cs" />
+    <Compile Include="Core\FrameBuffer.cs" />
+    <Compile Include="Core\HSC7800.cs" />
+    <Compile Include="Core\IDevice.cs" />
+    <Compile Include="Core\ILogger.cs" />
+    <Compile Include="Core\InputState.cs" />
+    <Compile Include="Core\M6502.cs" />
+    <Compile Include="Core\M6502DASM.cs" />
+    <Compile Include="Core\Machine2600.cs" />
+    <Compile Include="Core\Machine2600NTSC.cs" />
+    <Compile Include="Core\Machine2600PAL.cs" />
+    <Compile Include="Core\Machine7800.cs" />
+    <Compile Include="Core\Machine7800NTSC.cs" />
+    <Compile Include="Core\Machine7800PAL.cs" />
+    <Compile Include="Core\MachineBase.cs" />
+    <Compile Include="Core\MachineInput.cs" />
+    <Compile Include="Core\MachineType.cs" />
+    <Compile Include="Core\Maria.cs" />
+    <Compile Include="Core\MariaTables.cs" />
+    <Compile Include="Core\NullDevice.cs" />
+    <Compile Include="Core\NullLogger.cs" />
+    <Compile Include="Core\PIA.cs" />
+    <Compile Include="Core\PokeySound.cs" />
+    <Compile Include="Core\RAM6116.cs" />
+    <Compile Include="Core\SerializationContext.cs" />
+    <Compile Include="Core\TIA.cs" />
+    <Compile Include="Core\TIASound.cs" />
+    <Compile Include="Core\TIATables.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Win\GameProgram.cs" />
+    <Compile Include="Win\GameProgramLibrary.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\LICENSE.TXT" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /y $(TargetDir)$(TargetFileName) $(ProjectDir)..\Bizhawk.MultiClient\output\dll\$(TargetFileName)
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

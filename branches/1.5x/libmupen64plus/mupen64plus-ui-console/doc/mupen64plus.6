@@ -1,0 +1,188 @@
+.TH "mupen64plus" 6
+.SH NAME
+mupen64plus \- Console front\(hyend for the Mupen64Plus N64 emulator
+.SH SYNOPSIS
+.B mupen64plus
+[parameters(s)] [romfile]
+.SH DESCRIPTION
+Mupen64Plus is a plugin\(hybased N64 emulator for Linux/Unix, OSX, and Windows which is capable of accurately playing many games.
+Included are four MIPS R4300 CPU emulators, with dynamic recompilers for 32\(hybit x86 and 64\(hybit amd64 systems, and necessary plugins for audio, graphical rendering (RDP), signal co\(hyprocessor (RSP), and input.
+There are currently two OpenGL video plugins available: the included Rice Video, and Arachnoid (at http://bitbucket.org/wahrhaft/mupen64plus\-video\-arachnoid/).
+
+The most current documentation can be found at the project's homepage:
+
+http://code.google.com/p/mupen64plus
+.TP
+.B \-h, \-\-help
+Print help message.
+.TP
+.B \-\-noosd
+Disable onscreen display.
+.TP
+.B \-\-osd
+Enable onscreen display.
+.TP
+.B \-\-fullscreen
+Run emulator in fullscreen display mode.
+.TP
+.B \-\-windowed
+Run emulator in windowed display mode.
+.TP
+.B \-\-resolution \fRres
+Display resolution (640\(mu480, 800\(mu600, 1024\(mu768, etc)
+.TP
+.B \-\-cheats \fRcheat\(hyspec
+Enable or list cheat codes for the given rom file.
+.TP
+.B \-\-corelib \fRfilepath
+Specifies a filename (optionally with a preceding directory path) to load a specific Mupen64Plus core library.
+.TP
+.B \-\-configdir \fRdirectory
+Specifies a directory to look for the mupen64plus.cfg file.
+Default is \fI~/.config/mupen64plus/\fR.
+.TP
+.B \-\-datadir \fRdirectory
+Specifies a directory to search for shared data files (fonts, cheat codes, .ini files).
+Default is \fIPREFIX/share/mupen64plus/\fR.
+.TP
+.B \-\-plugindir \fRdirectory
+Specifies a directory to search for plugin files.
+Default is \fIPREFIX/lib/mupen64plus/\fR.
+.TP
+.B \-\-sshotdir \fRdirectory
+Specifies a directory to save screenshots captured during gameplay.
+Default is \fI~/.local/share/mupen64plus/screenshot/\fR.
+.TP
+.B \-\-gfx \fRplugin\(hyspec
+Specifies a \fIplugin\(hyspec\fR to select a graphics plugin for use during emulation.
+.TP
+.B \-\-audio \fRplugin\(hyspec
+Specifies a \fIplugin\(hyspec\fR to select an audio plugin for use during emulation.
+.TP
+.B \-\-input \fRplugin\(hyspec
+Specifies a \fIplugin\(hyspec\fR to select an input plugin for use during emulation.
+.TP
+.B \-\-rsp \fRplugin\(hyspec
+Specifies a \fIplugin\(hyspec\fR to select an RSP plugin for use during emulation.
+.TP
+.B \-\-emumode \fRmode
+Specifies which mode the emulator core should run in.
+\fImode\fR should be set to one of the following numbers: 0=Pure Interpreter, 1=Cached Interpreter, 2=Dynamic Recompiler (DynaRec).
+.TP
+.B \-\-testshots \fRlist
+Take screenshots at frames given in the comma\(hyseparated \fIlist\fR, then quit.
+.TP
+.B \-\-core\-compare\-send
+Use the core comparison debugging feature, in data sending mode.
+If the core was not compiled with support for the Core Comparison feature, then the emulator will exit with an error.
+.TP
+.B \-\-core\-compare\-recv
+Use the core comparison debugging feature, in data receiving mode.
+If the core was not compiled with support for the Core Comparison feature, then the emulator will exit with an error.
+.TP
+.B \-\-set \fRparam\(hyspec
+Set the value of a Mupen64Plus configuration parameter.
+This option may be used multiple times.
+The format of \fIparam\(hyspec\fR is Section\(hyName[Param\(hyName]=Value
+.TP
+.B \-\-saveoptions
+Save the given command\(hyline options into the mupen64plus configuration file to use as defaults in the future.
+Since the console front\(hyend needs to load the core library before reading the configuration file, the \-\-corelib option cannot be saved.
+.TP
+.B \-\-verbose
+Print lots of information.
+Useful for debugging but unnecessary for normal use.
+.SH plugin\(hyspec
+.TP
+.B (plugin\-name)
+Filename (without path) of plugin to use.
+Application will search through several directories to look for a matching plugin name.
+.TP
+.B (plugin\-path)
+Full directory path and filename of plugin.
+.TP
+.B 'dummy'
+Use the dummy plugin.
+.SH cheat\(hyspec
+.TP
+.B 'list'
+Show all of the available cheat codes.
+.TP
+.B 'all'
+Enable all of the available cheat codes.
+.TP
+.B (codelist)
+A comma separated list of cheat code numbers to enable.
+.SH KEY COMMANDS
+The following shortcut keys can be used during emulation.
+These are the default key values; nearly all of them may be set to different keys by editing the mupen64plus configuration file.
+.TP
+.B Escape
+Quit the emulator.
+.TP
+.B 0\-9
+Select virtual 'slot' for save/load state.
+.TP
+.B F5
+Save emulator state to current slot.
+.TP
+.B F7
+Load emulator state from current slot.
+.TP
+.B F9
+Reset emulator.
+.TP
+.B F10
+Slow down emulator speed by 5 percent.
+.TP
+.B F11
+Speed up emulator speed by 5 percent.
+.TP
+.B F12
+Take screenshot.
+.TP
+.B Alt\(hyEnter
+Toggle fullscreen mode.
+This is not supported on Windows.
+.TP
+.B p or P
+Pause/continue emulation.
+.TP
+.B m or M
+Mute/unmute sound.
+.TP
+.B f or F
+Fast Forward (playback at 250% normal speed as long as key is pressed).
+.TP
+.B g or G
+Press GameShark button (if cheats are enabled).
+.TP
+.B / or ?
+Advance one frame if paused.
+.TP
+.B [
+Decrease volume.
+.TP
+.B ]
+Increase volume.
+.SH FILES
+The default location for the Mupen64plus configuration file is \fI~/.config/mupen64plus/\fR.
+The default location of the saved screenshots is \fI~/.local/share/mupen64plus/screenshot/\fR.
+The default location of the save states is \fI~/.local/share/mupen64plus/save/\fR.
+.SH BUGS
+To report bugs or make feature requests, use the issue tracker on the Mupen64Plus project site:
+
+http://code.google.com/p/mupen64plus/issues/list
+.SH AUTHORS
+Mupen64Plus was originally started by Richard42 and nmn, and is based on Mupen64 (originally written by Hacktarux).
+
+This man page was written by ebenblues, and updated by Richard42.
+
+.SH COPYRIGHT
+Mupen64Plus is \(co 2008\-2010 The Mupen64Plus Team
+License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>
+
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+

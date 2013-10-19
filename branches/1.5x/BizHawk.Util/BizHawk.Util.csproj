@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BizHawk</RootNamespace>
+    <AssemblyName>BizHawk.Util</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
+    <Compile Include="7z\ArchiveExtractCallback.cs" />
+    <Compile Include="7z\ArchiveOpenCallback.cs" />
+    <Compile Include="7z\ArchiveUpdateCallback.cs" />
+    <Compile Include="7z\COM.cs" />
+    <Compile Include="7z\Common.cs" />
+    <Compile Include="7z\EventArgs.cs" />
+    <Compile Include="7z\Exceptions.cs" />
+    <Compile Include="7z\FileSignatureChecker.cs" />
+    <Compile Include="7z\Formats.cs" />
+    <Compile Include="7z\LibraryFeature.cs" />
+    <Compile Include="7z\LibraryManager.cs" />
+    <Compile Include="7z\LzmaDecodeStream.cs" />
+    <Compile Include="7z\LzmaEncodeStream.cs" />
+    <Compile Include="7z\LzmaProgressCallback.cs" />
+    <Compile Include="7z\NativeMethods.cs" />
+    <Compile Include="7z\sdk\Common\CRC.cs" />
+    <Compile Include="7z\sdk\Common\InBuffer.cs" />
+    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="7z\sdk\ICoder.cs" />
+    <Compile Include="7z\SevenZipCompressor.cs" />
+    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
+    <Compile Include="7z\SevenZipExtractor.cs" />
+    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
+    <Compile Include="7z\SevenZipSfx.cs" />
+    <Compile Include="7z\StreamWrappers.cs" />
+    <Compile Include="FolderBrowserDialogEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HexTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InputConfigBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputValidate.cs" />
+    <Compile Include="KeyTurbo.cs" />
+    <Compile Include="QuickProgressPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickProgressPopup.Designer.cs">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringHelpers.cs" />
+    <Compile Include="MiscControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\svnrev.cs" />
+    <Compile Include="SmartTextBoxControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextDebugView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Util.cs" />
+    <Compile Include="ViewportPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="VirtualListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Win32.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="7z\arch\Test.bzip2.7z" />
+    <EmbeddedResource Include="7z\arch\Test.lzma.7z" />
+    <EmbeddedResource Include="7z\arch\Test.lzma2.7z" />
+    <EmbeddedResource Include="7z\arch\Test.ppmd.7z" />
+    <EmbeddedResource Include="7z\arch\Test.rar" />
+    <EmbeddedResource Include="7z\arch\Test.tar" />
+    <EmbeddedResource Include="7z\arch\Test.txt.bz2" />
+    <EmbeddedResource Include="7z\arch\Test.txt.gz" />
+    <EmbeddedResource Include="7z\arch\Test.txt.xz" />
+    <EmbeddedResource Include="7z\arch\Test.zip" />
+    <EmbeddedResource Include="QuickProgressPopup.resx">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="7z\arch\Test.txt" />
+    <EmbeddedResource Include="InputConfigBase.resx">
+      <DependentUpon>InputConfigBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

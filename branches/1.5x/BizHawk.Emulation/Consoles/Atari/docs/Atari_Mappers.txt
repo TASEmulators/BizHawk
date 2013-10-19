@@ -1,0 +1,1409 @@
+Copied from:
+http://blog.kevtris.org/blogfiles/Atari%202600%20Mappers.txt
+
+Mostly Inclusive Atari 2600 Mapper / Selected Hardware Document
+---------------------------------------------------------------
+
+03/04/12
+Kevin Horton aka kevtris
+---
+
+Version 1.00
+
+
+Things covered in this document:
+--------------------------------
+
+"original" mappers from when the system was in production:
+
+2K
+4K 
+CV (Commavid)
+F8 (Atari 8K)
+F6 (Atari 16K)
+F4 (Atari 32K)
+FE (Activision 8K)
+E0 (Parker bros. 8K)
+3F (Tigervision 8K)
+FA (CBS RAM Plus 12K) 
+E7 (M-network 16K)
+F0 (Megaboy 64K)
+UA (UA Ltd 8K)
+
+"homebrew" mappers which are more recent:
+
+3F (Enhanced Tigervision style, up to 512K)
+3E (up to 512K of ROM, 256K of RAM)
+0840 (Econobanking)
+MC (Megacart)
+EF (16K)
+X07 (Atariage)
+4A50 (no name)
+
+Atari 2600 peripherals:
+
+Spectravideo Compumate
+Pitfall 2 DPC
+Supercharger
+Supercharger tape format
+Supercharger demo unit
+
+
+---
+
+
+"original" 2600 Mappers
+-----------------------
+
+2K (no name)
+-----
+
+2K of ROM.  no bankswitching.
+
+4K (no name)
+-----
+
+4K of ROM.  no bankswitching.
+
+CV Commavid
+-----
+
+This was used by Commavid.  It allowed for both ROM and RAM on the cartridge,
+without using bankswitching.  There's 2K of ROM and 1K of RAM.
+
+2K of ROM is mapped at 1800-1FFF.
+1K of RAM is mapped in at 1000-17FF.
+
+The read port is at 1000-13FF.
+The write port is at 1400-17FF.
+
+F8 (Atari style 8K)
+-----
+
+This is the fairly standard way 8K of cartridge ROM was implemented.  There are two
+4K ROM banks, which get mapped into the 4K of cartridge space.  Accessing 1FF8 or
+1FF9 selects one of the two 4K banks.  When one of these two addresses are accessed,
+the banks switch spontaniously.
+
+ANY kind of access will trigger the switching- reading or writing.  Usually games use
+LDA or BIT on 1FF8/1FF9 to perform the switch.
+
+When the switch occurs, the entire 4K ROM bank switches, including the code that is
+reading the 1FF8/1FF9 location.  Usually, games put a small stub of code in BOTH banks
+so when the switch occurs, the code won't crash.
+
+F6 (Atari style 16K)
+-----
+
+This is a fairly standard 16K bankswitching method.  It works like F8, except there's
+four 4K banks of ROM, selected by accessing 1FF6 through 1FF9.  These sequentially
+select one of the 4 banks.  i.e. 1FF6 selects bank 0, 1FF7 selects bank 1, etc.
+
+F4 (Atari style 32K)
+-----
+
+Again, this works like F8 and F6 except now there's 8 4K banks.  Selection is performed
+by accessing 1FF4 through 1FFB.
+
+FE (Activision special)
+-----
+
+Activision used this method on only three games:  Decathlon, Robot Tank, and the
+prototype Thwocker.  This mapper is one of the more interesting ones in that it uses
+stack access to select banks.  It is  composed of two 4K banks, similar to F8.  
+Unlike F8, however, switching occurs when the stack is accessed.
+
+This mapper allows for "automatic" bankswitching to occur, using JSR and RTS.  The
+addresses for all JSRs and RTS' are either Fxxx or Dxxx, and the mapper uses this to
+figure out which bank it should be going to.
+
+The cycles of a JSR are as such:
+
+1: opcode fetch
+2: fetch low byte of address
+3: read 100,s  : garbage fetch
+4: write 100,s : PCH, decrement S
+5: write 100,s : PCL, decrement S
+6: fetch high byte of address
+
+The cycles of an RTS are as such:
+
+1: opcode fetch
+2: fetch next opcode (and throw it away)
+3: read 100,S : increment S
+4: read 100,S : pull PCL from stack, increment S
+5: read 100,S : pull PCH from stack
+
+The chip can determine what instruction is being executed by watching the data and
+address bus.
+
+It watches for 20 (JSR) and 60 (RTS), and accesses to 100-1ff:
+
+(opcode cycles)
+
+20        (opcode)
+add low   (new add low)
+stack     (garbage read)
+stack     (push PCH)
+stack     (push PCL)
+add high  (new add hi)    : latch D5.  This is the NEW bank we need to be in.
+
+60        (opcode)
+xx        (garbage fetch)
+stack
+stack     (pull PCL)
+stack     (pull PCH)      : latch D5.  This is the NEW bank we need to be in.
+
+
+Using emulators or similar there is a large cheat that can be used.  A13 can be used
+to simply select which 8K bank to be in.
+
+E0 (Parker Bros)
+-----
+
+Parker Brothers used this, and it was used on one other game (Tooth Protectors).  It
+uses 8K of ROM and can map 1K sections of it.
+
+This mapper has 4 1K banks of ROM in the address space.  The address space is broken up
+into the following locations:
+
+1000-13FF : To select a 1K ROM bank here, access 1FE0-1FE7 (1FE0 = select first 1K, etc)
+1400-17FF : To select a 1K ROM bank, access 1FE8-1FEF
+1800-1BFF : To select a 1K ROM bank, access 1FF0-1FF7
+1C00-1FFF : This is fixed to the last 1K ROM bank of the 8K
+
+Like F8, F6, etc. accessing one of the locations indicated will perform the switch.
+
+3F (Tigervision)
+-----
+
+Traditionally, this method was used on the Tigervision games.  The ROMs were all 8K, and 
+there's two 2K pages in the 4K of address space.  The upper bank is fixed to the last 2K
+of the ROM.
+
+The first 2K is selectable by writing to any location between 0000 and 003F.  Yes, this
+overlaps the TIA, but this is not a big deal.  You simply use the mirrors of the TIA at
+40-7F instead!  To select a bank, the games write to 3Fh, because it's not implemented
+on the TIA.
+
+The homebrew community has decided that if 8K is good, more ROM is better!  This mapper
+can support up to 512K bytes of ROM just by implementing all 8 bits on the mapper
+register, and this has been done... however I do not think 512K ROMs have been made just
+yet.
+
+FA (RAM Plus)
+-----
+
+CBS Thought they'd throw a few tricks of their own at the 2600 with this.  It's got
+12K of ROM and 256 bytes of RAM.
+
+This works similar to F8, except there's only 3 4K ROM banks.  The banks are selected by
+accessing 1FF8, 1FF9, and 1FFA.   There's also 256 bytes of RAM mapped into 1000-11FF.
+The write port is at 1000-10FF, and the read port is 1100-11FF.
+
+E7 (M-Network)
+-----
+
+M-network wanted something of their own too, so they came up with what they called 
+"Big Game" (this was printed on the prototype ASICs on the prototype carts).  It
+can handle up to 16K of ROM and 2K of RAM.
+
+1000-17FF is selectable
+1800-19FF is RAM
+1A00-1FFF is fixed to the last 1.5K of ROM
+
+Accessing 1FE0 through 1FE6 selects bank 0 through bank 6 of the ROM into 1000-17FF.
+Accessing 1FE7 enables 1K of the 2K RAM, instead.
+
+When the RAM is enabled, this 1K appears at 1000-17FF.  1000-13FF is the write port, 1400-17FF
+is the read port.  
+
+1800-19FF also holds RAM. 1800-18FF is the write port, 1900-19FF is the read port.  
+Only 256 bytes of RAM is accessable at time, but there are four different 256 byte
+banks making a total of 1K accessable here.
+
+Accessing 1FE8 through 1FEB select which 256 byte bank shows up.
+
+F0 (Megaboy)
+-----
+
+This was used on one game, "megaboy".. Some kind of educational cartridge.  It supports
+64K of ROM making it the biggest single production game made during the original run
+of the 2600.
+
+Bankswitching is very simple. There's 16 4K banks, and accessing 1FF0 causes the bank 
+number to increment.
+
+This means that you must keep accessing 1FF0 until the bank you want is selected.  Each
+bank is numbered by means of one of the ROM locations, and the code simply keeps accessing
+1FF0 until the bank it is looking for comes up.
+
+
+UA (UA Ltd)
+-----
+
+This one was found out later on, lurking on a proto of Pleaides.  It works with 8K of ROM
+and banks it in 4K at a time.
+
+Accessing 0220 will select the first bank, and accessing 0240 will select the second.
+
+
+That's about it for the "Traditional" mappers that were used on commercial releases.
+
+-----------------------------------
+
+The 2600 programming community's been pretty busy with adding new mappers.  Here's the list
+of known (to me) mappers used on homebrew games.
+
+3E (Boulderdash
+-----
+
+This works similar to 3F (Tigervision) above, except RAM has been added.  The range of
+addresses has been restricted, too.  Only 3E and 3F can be written to now.
+
+1000-17FF - this bank is selectable
+1800-1FFF - this bank is the last 2K of the ROM
+
+To select a particular 2K ROM bank, its number is poked into address 3F.  Because there's
+8 bits, there's enough for 256 2K banks, or a maximum of 512K of ROM.
+
+Writing to 3E, however, is what's new.  Writing here selects a 1K RAM bank into 
+1000-17FF.  The example (Boulderdash) uses 16K of RAM, however there's theoretically
+enough space for 256K of RAM.  When RAM is selected, 1000-13FF is the read port while
+1400-17FF is the write port.
+
+0840 (Econobanking)
+-----
+
+This is another 8K bankswitching method with two 4K banks.  The rationale is that it's
+cheap and easy to implement with only a single 74HC153 or 253 dual 4:1 multiplexer.
+
+This multiplexer can act as a 1 bit latch AND the inverter for A12.
+
+To bankswitch, the following mask it used:
+
+A13           A0
+----------------
+0 1xxx xBxx xxxx
+
+Each bit corresponds to one of the 13 address lines.  a 0 or 1 means that bit must be
+0 or 1 to trigger the bankswitch. x is a bit that is not concidered (it can be either
+0 or 1 and is thus a "don't care" bit).
+
+B is the bank we will select.  sooo, accessing 0800 will select bank 0, and 0840
+will select bank 1.
+
+SB (Superbanking)
+-----
+
+This is the same as 0840, except A0-A6 are used instead of just A6, as so:
+
+A13           A0
+----------------
+0 1xxx xBBB BBBB
+
+By using 6 bits, the maximum ROM size has been increased from 8K to 256K.
+
+
+MC (Megacart)
+-----
+
+This is the mapper for the "Chris Wilkson's Megacart".  
+
+Only four addresses are used to bankswitch on this one.
+
+Up to 128K of ROM and 64K of RAM can be accessed.
+
+1000-13FF is selected by address 3C
+1400-17FF is selected by address 3D
+1800-1BFF is selected by address 3E
+1C00-1FFF is selected by address 3F
+
+The value written determines what will be selected:
+
+00-7F written will select one of the 128 1K ROM banks
+80-FF written will select one of the 128 512 byte RAM banks
+
+When a RAM bank is selected, the lower 512 bytes is the write port, while
+the upper 512 bytes is the read port.
+
+On accessing address FFFC or FFFD, the last 1K bank points to the last bank in ROM,
+to allow for system initialization.  Jumping out of the last bank disables this.
+It's debatable how easy this system would be to implement on a real system.
+
+Detecting when to disable the last bank fixing is difficult.  The documentation
+says:
+
+"
+  Megacart Specification, Rev1.1
+  (c) 1997 Chris Wilkson
+  cwilkson@mit.edu
+
+  Because the console's memory is randomized at powerup, there is no way to
+  predict the data initially contained in the "hot addresses".  Therefore,
+  hardware will force slot 3 to always point to ROM block $FF immediately
+  after any read or write to the RESET vector at $FFFC-$FFFD.  Block $FF
+  must contain code to initialize the 4 memory slots to point to the desired
+  physical memory blocks before any other code can be executed.  After program
+  execution jumps out of the boot code, the hardware will release slot 3 and
+  it will function just like any other slot.
+"
+
+Unfortunately, there's not an easy way to detect this.  Just watching the address
+bus won't work easily: Writing anywhere outside the bank 1C00-1FFF (i.e. bank
+registers, RAM, TIA registers) will cause the switching to revert bank 3, crashing
+the system.
+
+The only way I can see it working is to disregard any access to addresses 3C-3F.
+
+Emulators have it easier: they can simply watch the program counter, vs. the 
+address bus.  An actual system doesn't have that luxury, unfortunately, so it must
+disregard accesses to 3C-3F instead.
+
+EF (no name?)
+-----
+
+This is a fairly simple method that allows for up to 64K of ROM, using 16 4K banks.
+It works similar to F8, F6, etc.  Only the addresses to perform the switch is
+1FE0-1FEF.  Accessing one of these will select the desired bank. 1FE0 = bank 0,
+1FE1 = bank 1, etc.
+
+X07 (Atariage)
+-----
+
+Apparently, this was only used on one cart: Stella's Stocking.
+Similar to EF, there are 16 4K banks, for a total of up to 64K of ROM.  
+
+The addresses to select banks is below the ROM area, however.
+
+The following TWO masks are used:
+
+A13           A0
+----------------
+0 1xxx nnnn 1101
+
+This means the address 80B selects bank 0, 81B selects bank 1, etc.
+
+In addition to this, there is another way:
+
+A13           A0
+----------------
+0 0xxx 0nxx xxxx
+
+This is somewhat special purpose:  Accessing here does nothing, unless one of the
+last two banks are selected (banks 14 or 15).  In that case, the new bank is:
+
+111n   i.e. accessing 0000 will select bank 14 (Eh, 1110b) while accessing 0040
+will select bank 15 (Fh, 1111b).  This allows for bankswitching by accessing 
+TIA registers at 00-3F or 40-7F without incurring any overhead.
+
+
+
+4A50 (no name)
+-----
+
+Upon review, I don't think this method is terribly workable on real
+hardware.  There's so many problems that I kinda gave up trying to
+count them all.  Seems that this is more of a "pony" method than something
+actually usable. ("pony" referring to "I want this, and that, and that, and
+a pony too!")
+
+One major problem is that it specifies that memory can be read and written
+to at the same address, but this is nearly impossible to detect on a 2600
+cartridge.  You'd almost have to try and figure out what opcodes are being
+run, and what cycle it's on somehow, all just by watching address and
+data bus state.  Not very practical.
+
+The other problem is just the sheer volume of things it is supposed to do.
+There's just tons and tons of unnecessary things like attempting to detect
+BIT instructions, handling page wraps and other silly things.
+
+This all supposidly fit into a Xilinx XC9536XL but I am not sure how the
+chip could handle the RAM issue above at all.  It almost needs to see R/W
+and M2 (clock) to be able to properly do most of the things it's doing.
+
+
+----------------------------------------------
+
+Peripherals
+-----------
+
+
+Spectravideo Compumate Add-on
+-----
+
+This is more than just a cartridge mapper- it's also a "computer" add-on.  
+There's two 8K EPROMs soldered on top of each other.  There's two short
+wires with DB-9's on them which you plug into the two controller ports.
+A 42 or so key membrane keyboard with audio in and audio out, and 1K of RAM.
+
+Port A on the RIOT is used to run most of the functions on the Compumate:
+
+7       0
+---------
+ACRE 31BB
+
+A - Audio input from tape player
+C - Audio out to tape player and 4017 CLK
+R - 4017 RST, and RAM direction. (high = write, low = read)
+E - RAM enable. 1 = disable RAM, 0 = enable RAM
+3 - Row 3 of keyboard
+1 - Row 1 of keyboard 
+B - 2 bit ROM bank number
+
+All bits are outputs except for the 2 row inputs from the keyboard.
+
+Unlike most things, the Compumate uses all three of the TIA inputs on each
+joystick port (paddles and fire).
+
+TIA inputs:
+
+0 - function key
+1 - pulled high thru 20K resistor
+2 - pulled high thru 20K resistor
+3 - shift key
+4 - Row 0
+5 - Row 2
+
+
+Memory Map:
+-----------
+
+1000-1FFF : selectable 4K ROM bank (selected by D0, D1 on portA)
+
+On powerup, the port is all 1's, so the last bank of ROM is enabled, RAM is
+disabled.
+
+when RAM is enabled:
+
+1000-17FF : 2K of RAM.  It's mapped into 1000-17FF.  Unlike most 2600 carts,
+bit 5 of portA controls if the RAM is readable or writable.  When it's high,
+the RAM is write only.  When it's low, it is read only. There's no separate
+read and write ports.
+
+
+Keyboard:
+---------
+
+The keyboard's composed of a 4017 1 of 10 counter, driving the 10 columns of
+the keyboard.  It has 4 rows.  The 4 row outputs are buffered by inverters.
+
+Bit 5 of portA controls the reset line on the 4017.  Pulling it high will reset
+scanning to column 0.  Pulling it low will allow the counter to be clocked.
+
+Bit 6 of portA clocks the 4017.  Each rising edge advances the column one
+count.
+
+There's 10 columns labelled 0-9, and 4 rows, labelled 0-3.
+
+                         Column
+
+  0     1     2     3     4     5     6     7     8     9
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+| 7 | | 6 | | 8 | | 2 | | 3 | | 0 | | 9 | | 5 | | 1 | | 4 |  0
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+| U | | Y | | I | | W | | E | | P | | O | | T | | Q | | R |  1
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+     Row
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+| J | | H | | K | | S | | D | |ent| | L | | G | | A | | F |  2
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+| M | | N | | < | | X | | C | |spc| | > | | B | | Z | | V |  3
++---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+
+Function and Shift are separate keys that are read by 2 of the paddle inputs.
+These two buttons pull the specific paddle input low when pressed.
+
+Because the inputs are inverted, a low indicates a pressed button, and a high 
+is an unpressed one.
+
+The audio input/output are designed to drive a tape player.  The audio output is 
+buffered through an inverter and 2 resistors and a capacitor to reduce the level
+to feed it into the tape player.
+
+The audio input is passed through a .1uf capacitor and is pulled to 1/2 supply
+by two 20K resistors, then it goes through a hex inverting schmitt trigger to
+square it up.  This then runs into bit 7 of portA.
+
+
+DPC (Pitfall 2)
+-----
+
+Back in the day, this game was da shizzle (and IMO still is).  It did its trick via
+a custom chip in the cartridge.  Fortunately for us, there's a patent that describes
+lots of the internal workings of the chip (number 4644495, "video memory system").
+
+Interestingly, the patent shows the DPC as a *separate* device.  You plug a 
+passthrough cartridge into your 2600, then plug the game cartridge into the
+passthrough.  Apparently, Activision thought that people wouldn't like this, or
+there was some other reasoning behind it and they ditched that idea and went with
+the DPC inside the cartridge.
+
+Unfortunately for Activision, it was filed in January of 1984, during the height of
+the crash.  The inventor is listed as David Crane.
+
+OK, enough background.  Now onto the meat:
+
+The DPC chip is just 24 pins, and needs to pass through the chip enable to the
+game ROM on the cartridge, so it can only address 2K of memory.  This means the
+DPC shows up twice in the address space, once at 1000-107F and again at 1800-18FF.
+
+There's been some discussion about the pitch of the music generated by this chip,
+and how different carts will play the music at different pitches.  Turns out, on the
+cart, the frequency is determined by a resistor (560K ohms) and a capacitor integrated
+onto the die of the DPC chip itself.  The resistor is a 5% tolerance part, and the
+process variations of the DPC itself will control the frequency of the music produced
+by it.
+
+If you touch the resistor on the cartridge board, the music pitch will drastically 
+change, almost like you were playing it on a theremin!  Lowering the resistance makes
+the music pitch increase, increasing the resistance makes the pitch lower.
+
+It's extremely high impedance so body effects of you touching the pin makes it 
+vary wildly.
+
+Thus, I say there's really no "one true" pitch for the music.  The patent, however,
+says that the frequency of this oscillator is 42KHz in the "preferred embodiment".
+The patent says that it can range from 15KHz to 80KHz depending on the application
+and the particular design of the sound generator.  I chose 21KHz (half their preferred
+value) and it sounds fairly close to my actual cartridge.  
+
+Address map:
+
+Read Only:
+1000-1003	: random number generator
+1004-1005	: sound value (and MOVAMT value ANDed with draw line carry, with draw line add)
+1006-1007	: sound value (and MOVAMT value ANDed with draw line carry, no draw line add)
+1008-100F	: returned data value for fetcher 0-7
+1010-1017	: returned data value for fetcher 0-7, masked 
+1018-101F	: returned data value for fetcher 0-7, nybble swapped, masked 
+1020-1027	: returned data value for fetcher 0-7, byte reversed, masked
+1028-102F	: returned data value for fetcher 0-7, rotated right one bit, masked
+1030-1037	: returned data value for fetcher 0-7, rotated left one bit, masked
+1038-103F	: fetcher 0-7 mask
+
+Write Only:
+1040-1047	: fetcher 0-7 start count
+1048-104F	: fetcher 0-7 end count
+1050-1057	: fetcher 0-7 pointer low
+1058-105B	: fetcher 0-3 pointer high
+105C		: fetcher 4 pointer high and draw line enable
+105D-105F	: fetcher 5-7 pointer high and music enable
+1060-1067	: draw line movement value (MOVAMT)
+1068-106F	: not used
+1070-1077	: random number generator reset
+1078-107F	: not used
+
+random number generator
+-----------------------
+
+The random number generator is used on Pitfall 2 to make the eel flash between white and
+black, and nothing else.  Failure to emulate this will result in the eel not flashing.
+
+It's an 8 bit LFSR which can be reset to the all 0's condition by accessing 1070-1077.
+Unlike a regular LFSR, this one uses three XOR gates and an inverter, so the illegal 
+condition is the all 1's condition.  
+
+There's 255 states and the following code emulates it:
+
+LFSR = ((LFSR << 1) | (~(((LFSR >> 7) ^ (LFSR >> 5)) ^ ((LFSR >> 4) ^ (LFSR >> 3))) & 1)) & 0xff;
+
+Bits 3, 4, 5, and 7 are XOR'd together and inverted and fed back into bit 0 each time the
+LFSR is clocked.
+
+The LFSR is clocked each time it is read.  It wraps after it is read 255 times. (The
+256th read returns the same value as the 1st).
+
+data fetchers
+-------------
+
+Internal to the DPC is a 2K ROM containing the graphics and a few other bits and pieces
+(playfield values I think) of data that can be read via the auto-incrementing data
+fetchers.
+
+Each set of 8 addresses (1008-100F for example) return the data from one of the 8
+data fetcher pointers, returning the data in a slightly different format for each.
+The format for the 6 possible register ranges is as follows:
+
+For the byte "ABCDEFGH" (bit 7 to bit 0) it is returned:
+
+1008-100F: ABCDEFGH (never masked)
+1010-1017: ABCDEFGH
+1018-101F: EFGHABCD (nybble swap)
+1020-1027: HGFEDCBA (bit reversed)
+1028-102F: 0ABCDEFG (shifted right)
+1030-1037: BCDEFGH0 (shifted left)
+
+Reading from each set of locations above returns the byte of data from the DPC's
+internal ROM.  Reading from 1008 accesses data at DF (data fetcher) 0's pointer,
+then decrements the pointer.  Reading from 1009 accesses data at DF1, and so on.
+
+There is no difference except how the data is returned when reading from 1008,
+1010, 1018, 1020, etc.  All of them return data pointed to by DF0's pointer.  Only
+the order of the bits returned changes.
+
+I am not sure what purpose returning the data shifted left or right 1 bit serves,
+and it was not used on Pitfall 2, but that's what it does.  I guess you could
+use it to make a sprite appear to "wiggle" left and right a bit, if it were 6 pixels
+wide.
+
+All of these read ports returns the data masked by an enable signal, except for
+1008-100F.  The data here is never masked. (more about this in a minute)
+
+To read data out of the chip, first you program in its start address into the
+pointer registers.  These are at 1050-1057 for the lower 8 bits of the pointer
+value, and 1058-105F for the upper 4 bits of the pointer value.  This forms the
+12 bit address which can then be used to index the DPC's ROM.
+
+A few of the upper bits on 105C-105F are used for a few other purposes, which will be
+described later. 
+
+Masking the data:
+-----------------
+
+1038-103F is the readback for the mask value
+1040-1047 is the start count
+1048-104F is the end count
+
+
+The mask value can be read via 1038-103F.  It returns 0 when graphics are masked, and
+FFh when they are not masked.  (0 = reset, 1 = set)
+
+The basic synopsis is thus:
+
+When the lower 8 bits of the pointer equals the start count, the mask register is set.
+When the lower 8 bits of the pointer equals the end count, the mask register is reset.
+Writing to the start count register also sets the register.
+
+This allows one to have the sprites only show up on specific scanlines, by programming
+the proper start and end counts, and the proper starting value into the pointer.  This
+way, the sprite can be drawn from top to bottom of the screen, and have it only appear
+where it is desired without having to do anything else in the 2600 code.
+
+Making Music:
+-------------
+
+The music is generated by repurposing three of the fetchers, the last three. 
+Each fetcher can be individually selected for music or fetching.
+
+            7       0
+            ---------
+105D-105F:  xxSM PPPP
+
+S: Select clock input to fetching counter. 0 = read pulse when the proper returned
+data register is read (i.e. for fetcher 5, 1015 is being read) 1 = music oscillator.
+
+M: Music mode.  1 = enable music mode, 0 = disable music mode.
+
+P: upper 4 bits of the 12 bit data fetcher pointer.
+
+
+I am not sure why you can separately select the clock source and the music mode,
+but you can.  Maybe they had some plans for externally clocking the chip via some
+logic to bump the pointers.
+
+Normally you set both the M and P bits to make music.  
+
+When in music mode, the lower 8 bits of the fetcher pointer is used as an 8 bit down
+counter.  Each time the lower 8 bits equals FFh, it is reloaded from the start count
+register.
+
+To turn the data fetcher into a square wave generator takes very little hardware. The
+start/end count registers are used as-is to toggle the flag register.
+
+This means that the duty cycle of the square waves produced can be varied by adjusting
+the end count register relative to the start count register.  I suspect the game simply
+right shifts the start count by one and stuffs it into the end count to produce a 
+50% duty cycle waveform.
+
+The three flag outputs for fetchers 5 to 7 are fed into a cool little circuit composed
+of a 3 to 8 decoder and four 4 input NAND gates to produce the 4 bit audio output.
+
+The output is as follows:
+
+ fetcher   result
+   567      
+---------------------
+   000     0h
+   001     4h
+   010     5h
+   011     9h
+   100     6h
+   101     Ah
+   110     Bh
+   111     Fh
+
+
+This is a somewhat nonlinear mixing of the three channels, so the apparent volume of them
+is different relative to each other.
+
+The final 4 bit output value from the above table is then available to read at address
+1004-1007, in bits 0 to 3.
+
+Pitfall 2 just reads this location and stuffs it into the audio register every scanline or
+so.  The value read at 1004-1007 is the instantanious value generated by the fetchers and
+mixing hardware.
+
+
+HMOVE adjustment stuff:
+-----------------------
+
+I have not done much research on how this works, and P2 doesn't use it.  It appears to 
+let you draw curved lines using a missile or two, probably to make swinging vines.
+
+The patent explains how it works, but it just appears to be an adder that adds the start
+count value to itself via a multiplexer and stuff.  It appears to let you input an
+offset and it calculates a new hmove value.  Not sure how useful this really is.
+
+
+AR (Starpath Supercharger)
+--------------------------
+
+Aaah the good ol' Supercharger.  This is the large "cartridge" that you could plug into
+your 2600 that had 6K of RAM which you could download games into off of cassette tape.
+
+The idea being you plug your cassette player into the cable coming off of the cartridge,
+and then you can download games into RAM from it.
+
+When first turned on, it says "rewind tape" and "press play".  When this is done, it will
+start loading the game off tape and fill the screen in with blue bars from the sides 
+to the inside while a rising tone plays. When the screen is fully blue, it then clears
+the screen and says "stop tape", and then the game starts.
+
+If there is an error (corrupt tape, etc) it will continously flash "rewind tape" on
+the screen until the audio input stops toggling.
+
+Games can re-enable the BIOS ROM and load more data off tape at any time.
+
+So, that's what it is... but how does it work?
+
+I didn't find a whole huge amount of information on how the Supercharger actually
+WORKS.  There was some info about how to program it, but nothing on how the
+ASIC in the Supercharger does its thing.
+
+Well, turns out it's pretty cool and as far as I know, unique.
+
+First off, there are two registers on the Supercharger.   The first is the audio
+input register.  It's at FFF9:
+
+       7       0
+       ---------
+FFF9:  0000 000A
+
+A: Supercharger audio data.  0 = low input, 1 = high input.
+
+The audio input's just a filtered and schmitt triggered version of the audio data
+coming into the Supercharger. The upper 7 bits must all be 0's, or else it
+will not properly read the data.  For testing, I fed my FPGA 2600's Supercharger
+with data from Bankzilla's tape emulator.  This is simply a digital output that
+is fed into the Supercharger's audio pin (and to my FPGA board).
+
+The next register is the control register.
+
+      7       0
+      ---------
+FFF8: DDDB BBWE
+
+D: write delay (see below)
+B: bankswitching mode (see below)
+W: RAM write enable (1 = enabled, 0 = disabled)
+E: ROM power enable (0 = enabled, 1 = turn off ROM)
+
+To write to RAM or the control register on the Supercharger requires a somewhat
+round-about method.  First, you read a location at F000-F0FF, then you read
+either FFF8 to write to the control register, or somewhere else in RAM. 
+Sooo, to write to the control register, the following type of code is
+used:
+
+;A = value we will write to the banking register
+TAX
+LDA F000,X
+LDA FFF8
+
+The TAX moves the value we wish to write into F000,X (i.e. if we wish to write 16h
+to the control register, the location F016 is read).
+
+Next, we read FFF8 which performs the write.  *any* instruction that reads FFF8
+will suffice.  The BIOS uses BIT FFF8 and LDX FFF8 sometimes, depending on
+what's convenient, and what flags or registers need to be saved.  The
+instruction really does not matter, so long as it simply READS.
+
+Note: THERE IS NO UPPER LIMIT on the number of cycles that can elapse between
+reading F0xx and reading FFF8 to write to the control register.   Usually,
+it is written to immediately after reading F0xx, but not always.  The very
+last write to FFF8 which sets the RAM banking before launching the game
+after loading waits a very long time before reading FFF8 to set the banking
+mode.
+
+The basic method it does the final write is as such:
+
+LDA F000,X
+<thousands of cycles>
+
+FA0B : 9A       TXS			;X entered at ffh
+FA0C : A2 3     LDX #$3 
+FA0E : BC AB FD LDY $FDAB,X
+FA11 : 94 FA    STY $FA,X		;load cmp fff8h,  jmp opcode only
+FA13 : CA       DEX
+FA14 : 10 F8    BPL $FA0E 		;jmp target was at fe/ff
+FA16 : A0 0     LDY #$0 
+FA18 : 84 81    STY $81
+FA1A : 4C FA 0  JMP $FA  		;run the code we loaded in RAM
+
+00FA : CD F8 FF CMP $FFF8		;sets up control register for the game
+00FD : 4C xx xx JMP xxxx		;we now jump to the start of our code
+
+
+FDAB : CD F8 FF 4C			;this is the code loaded into RAM
+
+
+The control register contains a few different things.
+
+The ROM power can be turned on and off (which IMO is dumb.  The ROM doesn't
+draw appriciable power, but they have a PNP transistor that can turn it on
+and off anyways.  Most games turn it off when they are done loading, and
+then turn it back on if they need to load again from tape.  I guess they
+were worried it was going to vampire too much current from the system, so
+running it only as long as necessary was their solution.
+
+The next bit is the write enable.  If set, the RAM can be written to.
+If clear, it is read-only.  This is useful for loading 2K and 4K games into
+the Supercharger to play them.  Not much use otherwise.  The Supercharger
+will never attempt to write to ROM, and it will not write to RAM if this
+bit is clear.
+
+Banking mode.  The Supercharger allows for 8 different memory maps, depending
+on how these three bits are set.  The following are supported:
+
+BBB    1000-17FF,  1800-1FFF
+---    ---------------------
+000 -  RAM bank 3  ROM
+001 -  RAM bank 1  ROM
+010 -  RAM bank 3  RAM bank 1
+011 -  RAM bank 1  RAM bank 3
+100 -  RAM bank 3  ROM
+101 -  RAM bank 2  ROM
+110 -  RAM bank 3  RAM bank 2
+111 -  RAM bank 2  RAM bank 3
+
+ROM can never be mapped into 1000-17FF but this makes sense, since the code is
+written to only run from 1800-1FFF.  Also, a few combinations are not possible
+such as RAM bank 1, RAM bank 2,  and RAM bank 2, RAM bank 1.  All others are
+possible.
+
+The last part of the control register is the write pulse delay.  I don't think
+anything uses this and just keeps it at 0.  Heck, it may not even be implemented.
+
+So that takes care of how to read audio and how to access the control register.
+That leaves writing to RAM.
+
+The Supercharger watches all 13 address lines to determine when RAM should be
+written.  It first watches for a write to F0xx, just like when writing to the
+control register, then it waits 5 address bus transitions, then it attempts to
+write data to the RAM chip by pushing the value onto the data bus, while the CPU
+is reading.
+
+The usual way this is done in the BIOS is like so:
+
+;X = byte to write
+LDA F000,X			;tell the supercharger what to write
+LDA (8B),Y			;write it!
+
+If we look at bus transitions, it looks like this:
+
+Assume that the code is sitting at 1800, and 8B/8C holds the address 1100h.
+Also assume X = 66h
+
+c# address, data
+1: 1800     BD      ;LDA,X opcode
+2: 1801     00      ;low byte of add
+3: 1802     10      ;hi byte of add
+4: 1066     ??      ;read address 1066 (this is the RAM byte, could hold anything).
+5: 1803     B1      ;LDA (),y opcode
+6: 1804     8B      ;zeropage address of pointer
+7: 008B     00      ;low byte of destination
+8: 008C     11      ;hi byte of destination
+9: 1100     66      ;Supercharger writes data now to RAM by forcing value on bus
+
+As we can see, cycle 9 is exactly 5 cycles after cycle 4, where we read from F0xx.
+The supercharger will only attempt to write if writes are enabled, and the area
+we're attempting to write to is set up for RAM.  It will not attempt to write to
+ROM, or outside the range of 1000-1FFF.
+
+This method of operation has an interesting side effect.  Because the Supercharger
+forces a value onto the bus while the CPU is reading, the CPU will actually
+READ this value!  This makes sense-  the CPU doesn't know if it's reading RAM, ROM,
+or the Supercharger's write value.
+
+In fact, this is REQUIRED for it to even work.  It does some pretty extensive
+RAM tests on powerup, and if it cannot write to RAM it will flash the screen
+yellowish/black as it attempts to test RAM over and over.  If RAM fails to test
+properly, it will reset and start again.
+
+The RAM testing code looks like this:
+
+FF58 : A9 F1    LDA #$F1
+FF5A : 85 8C    STA $8C
+FF5C : A0 0     LDY #$0 		;start address = F100
+FF5E : 84 8B    STY $8B
+FF60 : AD 0  F0 LDA $F000		;write 00h
+FF63 : B1 8B    LDA ($8B),Y		;write !
+FF65 : D1 8B    CMP ($8B),Y		;is it 00h?
+FF67 : D0 14    BNE $FF7D 		;no
+FF69 : AD FF F0 LDA $F0FF		;write ffh
+FF6C : B1 8B    LDA ($8B),Y		;write !
+FF6E : D1 8B    CMP ($8B),Y		;is if ffh?
+FF70 : D0 B     BNE $FF7D 		;nope
+FF72 : C8       INY
+FF73 : D0 EB    BNE $FF60 		;last byte of page?
+FF75 : E6 8C    INC $8C
+FF77 : A5 8C    LDA $8C
+FF79 : C9 F8    CMP #$F8
+FF7B : D0 E3    BNE $FF60 		;last page?
+FF7D : 60       RTS			;return zero set if passed
+
+Basically what happens is this:  It first sets up the address F100 (aka 1100) into
+8B/8C, then it steps through the entire RAM area up to 17FF, and returns with
+Z flag set, if it passed, or NZ if it fails.
+
+The code at FF60-FF66 is very interesting:  It first reads from F000 so that
+we will write 00 to memory.  Then it writes it and immediately compares it.
+Remember that the CPU will READ what the Supercharger writes, so the accumulator
+will hold 00 after executing that LDA (),y!
+
+The same test is repeated, this time by writing FF.  If it can step through all
+locations without erroring out, it passes the test.  This code only tests one
+2K bank (minus the first 256 locations, more on that in a minute).  The code is 
+then called three times, testing each bank of RAM in turn.
+
+This testing brings up an interesting note about the Supercharger's RAM.
+
+When writes are enabled to RAM, you CANNOT READ FROM 10xx WITHOUT CORRUPTING RAM.
+This means, you cannot read data here, and you cannot excute code here!  Doing 
+so will trigger writes, which will overwrite whatever happens to be 5 cycles later
+if it's in RAM!  You *CAN* write to 1000-10FF, however just fine... you just
+cannot read it or execute from it without first disabling writes. In fact, the
+BIOS starts writing at 1000 when it's loading the game from tape.  Since it never
+attempts to execute code from there or read back the data, this is legal.
+
+The BIOS' RAM testing routine must therefore skip testing the first 256 bytes
+of each bank.  It *could* test it, but I guess they figured running the code from
+RAM to do it would've been too much of a hassle, concidering space was at
+a premium.
+
+Remember how I said the Supercharger counted *BUS TRANSITIONS* to know when to
+write to RAM? Well, this is very very important. You cannot just count CPU cycles.
+That won't work (because the Supercharger cannot see the CPU's clock line for one).
+
+Here's the other way that you can write to RAM:
+
+FFC7 : A0 8     LDY #$8 
+FFC9 : D9 0  F0 CMP $F000,Y
+FFCC : EA       NOP
+FFCD : CD E3 F7 CMP $F7E3
+
+This writes 8 to location 17E3.  Notice the NOP to "fill up" the cycles.  If we
+look at what the address/data bus is doing, we will see how this can work, even
+though the write occurs 6 cycles after the CMP, instead of 5.
+
+
+c# address, data
+1: FFC9     D9      ;CMP,Y opcode
+2: FFCA     00      ;low byte of add
+3: FFCB     F0      ;hi byte of add
+4: F008     xx      ;read RAM here, contents unimportant
+5: FFCC     EA      ;NOP opcode
+6: FFCD     CD      ;CMP opcode, but throw it away (NOP is 2 cycles)
+7: FFCD     CD      ;CMP opcode
+8: FFCE     E3      ;low byte of add
+9: FFCF     F7      ;hi byte of add
+10:F7E3     08      ;write to F7E3
+
+Yes, it does indeed take 6 cycles to get to the write... however, look at the address
+bus.  There's only FIVE transitions!  The byte at FFCD gets read twice.  This is
+because NOP is a 2 cycle instruction. NOP's second cycle reads the next opcode
+and throws it away, and does NOT increment the program counter.  So, the next
+cycle reads it too and fetches CD for the CMP opcode.  Pretty tricky stuff!
+
+Note that when I say "transition", I am talking about when one or more of the 13
+address lines changes.  The Supercharger can only count cycles by watching these
+address lines.  That's why it only counts up 5 transitions on the above code snippet.
+The double access to FFCD counts as 1 transition as far as the Supercharger is
+concerned.
+
+That about wraps up the Supercharger's hardware.  
+
+
+Supercharger Tape Format
+------------------------
+
+The tape format on the Supercharger is fairly straight forward.  It's a form of
+pulse width modulation.  Interestingly, the length of the pulses is not fixed, and
+the software on the Supercharger can adapt to a pretty wide range.
+
+According to the "tapedocs.txt" file:
+
+
+        "0" pulse  "1" pulse
+-------------------------------
+minimum   158uS      317uS
+optimal*  227uS      340uS 
+maximum   317uS     2450uS 
+
+* According to the tapedocs.txt file, the filters on the Supercharger are tuned
+specifically for 227uS and 340uS pulse lengths.
+
+
+NOTE: these times are for the entire pulse, i.e. the low and high portions of it.
+The low and high portions would thus be half these values. 
+
+
+i.e. if the pulse is 300uS long...
+
+    low         high 
+
+____________------------
+
+ \--150uS--/ \--150uS--/
+
+
+Here is a generic representation of what a typical signal looks like:
+
+____----____----____----________--------________--------____----________--------
+
+ \--0--/ \--0--/ \--0--/ \------1------/ \------1------/ \--0--/ \------1------/
+
+
+The "one" pulses only have to be approximately 90uS wider than the "zero" pulses,
+but it's a good idea to have them at least 25% wider so the Supercharger can
+adapt to tape speed fluctuations during the load. 
+
+
+A Supercharger tape load is composed of 6 separate parts:
+
+---------------------------------
+1. Preamble
+
+The preamble is a 50% duty cycle low frequency waveform that causes all the
+elements in the tape chain (amplifiers, the filter in the Supercharger proper,
+etc) to stabilize.  Without this preamble, the volume level into the 'charger
+can change while the capacitors in the signal chain charge.  
+
+A frequency of around 750Hz (666uS low, 666uS high) is pretty decent.
+
+The preamble needs to be at least 800 pulses long (i.e. around 1 second or more).
+
+---------------------------------
+2. Synchronization
+
+After the preamble, at least 256 or more bytes of 55h (0/1/0/1) bits need to be
+sent at the chosen bit rate.  The Supercharger software uses this to synchronize
+its decoder software.
+
+---------------------------------
+3. Start pulse
+
+To tell the Supercharger our data is coming, a final 0 pulse is sent.  After this
+point, the Supercharger header follows.
+
+---------------------------------
+4. Header data
+
+0:   WORD  Start address  
+2:   BYTE  Control word
+3:   BYTE  Block count
+4:   BYTE  Header checksum
+5:   BYTE  Multiload number
+6:   WORD  Progress bar speed
+
+All values are little endian.  Bytes are sent out, MSB first (i.e. left shift
+the data byte).
+
+Start address: The start address specifies where the 6502 will
+jump to after all the data is loaded from the tape.
+
+Control word:  Specifies the value to load into the Supercharger's control register.
+Usually the upper 3 bits should be clear.  (See above for more info on the control
+register in the Supercharger section).
+
+Block count:  How many 256 byte blocks will be sent in this transfer.
+
+Header checksum:  As the name indicates, a checksum of the header. The checksum
+is computed by starting out with 55h and subtracting every byte in the header
+(not including the sumcheck byte itself).  
+
+The result is that when the Supercharger adds up ALL bytes of the header (including
+the sumcheck byte) it will be 55h.  All carries/borrows are ignored when calculating
+the sumchecks.
+
+This is what the demo unit's header contains:
+
+  .dw 0ffc0h ;start address of code
+  .db 01bh   ;control word: 1000-17ff= b.3, 1800-1fff= b.2 ROM=off WR=on
+  .db 001h   ;# of 256 byte blocks
+  .db 06dh   ;header checksum
+  .db 000h   ;this is not a multiload
+  .dw 0010ch ;speed for progress bars
+
+when all these bytes (c0, ff, 1b, 01, 6d, 00, 0c, 01) are added together, the result
+is 255h... dropping carries (AND with ffh) results in 55h... meaning that the 
+sumcheck passes and the data was properly received.
+
+Multiload number:  If the game has no multiload, this byte is simply kept at 0.  If
+this game IS a multiload game, then the sequence number is stored here.  This lets 
+Supercharger BIOS know if the proper game load is being received or not.
+
+The first load of a multiload game is always 0.  When the first load wishes to
+load the second (or subsequent) part(s), the current load tells the Supercharger
+BIOS which load it is looking for and runs the BIOS' receive routine again.
+
+If the data received is not the proper load #, it will do a "false load" and load
+the data, but then throw the results away and wait for the next load to come around.
+This is repeated until the correct load number is reached and loaded.
+
+On Escape from the Mindmaster this can be seen if you lose all your lives in the first
+load. It will instruct you to press "play" on your tape player, and will load part 2.
+But the ending is not in part 2, so it throws the data away after loading it and
+proceeds to load part 3, which is thrown away, and then the final part is loaded.
+
+To prevent someone from getting cute, the multiload sequence numbers were never
+recycled.  They were allocated like so:
+
+Escape from the mindmaster uses 1, 2, and 3 
+Dragonstomper uses 4 and 5
+Survival Island uses 6 and 7
+
+Progress bar speed:  The value here specifies how fast the progress bars.. well..
+progress as the game is loaded.  If the value is wrong the bars will proceed to the
+middle before the game is fully loaded.
+
+The value is calculated by taking the block count and multiplying it by
+approximately 22.8  i.e.  for a game that's 6K in size (each block being 256 bytes)
+is 24 blocks * 22.8, which is 547 (223h).
+
+This works for most bank sizes, however when only 1 bank is loaded, the value
+has to be 10ch for some reason I have not researched.  
+
+---------------------------------
+5.  Data blocks
+
+Once the header is finished sending, the data is sent in 256 byte blocks.  Each
+block has a 2 byte header, followed by the 256 bytes of data.
+
+Block header:
+
+0:   BYTE  Block location
+1:   BYTE  Checksum
+
+
+Block location: This is the block location in RAM where the data will be loaded.
+Blocks are specified in the following format:
+
+7       0
+---------
+000B BBRR
+
+B: block number, from 0 to 7
+R: RAM chip #
+
+Ram chip number is specified like so (reffing the bank numbers in the Supercharger
+documentation above)
+
+00 - RAM bank 1
+01 - RAM bank 2
+10 - RAM bank 3
+11 - invalid (would select ROM)
+
+The block number is the particular 256 byte block in the specified RAM bank.
+
+So, to load data sequentially, from RAM bank 1's first block, to RAM bank 3's
+last block, the following block locations would be used:
+
+RAM 1: 00, 04, 08, 0C, 10, 14, 18, 1C
+RAM 2: 01, 05, 09, 0D, 11, 15, 19, 1D
+RAM 3: 02, 06, 0A, 0E, 12, 16, 1A, 1E
+
+Checksum:  The checksum for the block is calculated exactly like the header's
+checksum is.  All 258 bytes (256 data bytes, block location byte, and sumcheck)
+are added together, and the result must be 55h.  If the sumcheck fails, the
+"rewind tape" message flashes as long as audio data is coming in, then when the
+audio data stops coming in, it reverts to the "press play" message.
+
+---------------------------------
+6.  Postamble
+
+After all the blocks of data are sent, the Supercharger will play the "Press stop"
+message until audio data stops coming in, and then it starts running the game.
+
+The postamble is used to detect when stop is pressed.  The postamble is simply
+a string of "0" bits.  The length of the postamble should be at least 256 bits,
+but it can be as long as desired.  The Supercharger will not run the game 
+until the postamble stops, however.
+
+---
+
+
+Supercharger Demo Unit
+----------------------
+
+This doodad is pretty cool.  First, you plug a Supercharger into your 2600.  Then
+you plug the audio cable from it into this black box.  Then the black box plugs
+into the joystick port.
+
+You can optionally plug a regular joystick into the other joystick port.
+
+The demo unit itself is a nondescript black box with a label on it.  Inside the box is
+quite a bit of hardware.  
+
+* 8 2764 EPROMs 
+* 1 2732 EPROM
+* 1 6805E CPU
+* various discrete logic
+
+The basics of operation are as such:
+
+When powered up, a small bootloader is loaded into the Supercharger through its
+audio cable.  Once this initial bootloader is loaded, the audio cable is never used
+again until the system is reset or power cycled.
+
+After the bootloader is sent, the rest of the data to the Supercharger's RAM is loaded
+through the joystick port 4 bits at a time.
+
+The net result is incredibly high loading speeds.  A complete 6K of RAM data can be
+sent in around 250ms.
+
+Internally, there is a 6805E CPU made by Motorola.  This is similar to the 68705 and other
+microcontrollers Motorola made, except it's the external ROM version.  There is no
+ROM on the chip.
+
+The two IO ports are connected as such:
+
+PortA:  This port is used to send data out 8 bits at a time to the 2600 through the joystick
+port.  The byte of data is simply written here, and the 2600 picks it off when it's good
+and ready (there's an explaination later on of how this works exactly).
+
+PortB:
+
+7       0
+---------
+AExB BBBB
+
+A: Audio output.  This port pin connects to the Supercharger's audio cable through a resistor
+divider that cuts the audio level down to a level of a few hundred millivolts to prevent
+overloading the audio input.
+
+E: EPROM enable.  Must be low to enable the 8 2764 EPROMs.
+B: EPROM bank. Selects a 2K EPROM bank from the 2764's (more about this later)
+
+
+PortA's data is passed through a quad 2:1 multiplexer (a 74LS157).  The select line connects
+to bit 3 of the joystick port.  When it's low, the multiplexer outputs the lower nybble of
+the byte on PortA.  When it's high, it outputs the upper nybble.
+
+The data bits from the muxer connect like so:
+
+bit 3: this is acting as an output- it runs the select line of the 74LS157, and also
+connects to /IRQ on the CPU.
+bits 2 to 0 connect to the multiplexer's upper 3 bits.
+
+The fire button input connects to the multiplexer's lowest bit.
+
+So, to read a byte of data in through the controller port, the select line is pulled low
+via the RIOT register at 280h.  Bit 3 must be set as an output, while bits 0-2 are inputs.
+
+bits 3,2, and 1 of the data byte are read on 280 bits 2 to 0.  bit 0 of the data byte is
+read via 3Dh bit 7.
+
+the select line is thin pulled high via 280.3
+
+bits 7,6, and 5 are then read from 280 bits 2 to 0 . bit 4 of the data byte is read via
+3Dh bit 7.
+
+There's a very elegant piece of code that does this on the bootloader, which gets loaded
+into RAM:
+
+;enters with Y = 3fh
+0081 : CD 0  F0 CMP $F000	;select proper RAM bank (note: self modifying)
+0084 : CD F8 FF CMP $FFF8
+0087 : A9 7F    LDA #$7F
+0089 : C5 3D    CMP $3D		;puts fire button data into carry and invert it
+008B : 4D 80 2  EOR $280 	;get data, and invert it (data is sent inverted)
+008E : 8D 80 2  STA $280 	;write inverted data back (toggles bit 3 to demo unit)
+0091 : 2A       ROL
+0092 : A        ASL
+0093 : A        ASL
+0094 : A        ASL		;put lower 3 bits into bits 6 to 4, carry into 3
+0095 : 85 B7    STA $B7		;save for now
+0097 : A9 7F    LDA #$7F
+0099 : C5 3D    CMP $3D		;put fire button into carry and invert it
+009B : 4D 80 2  EOR $280 	;get data, and invert it
+009E : 8D 80 2  STA $280 	;write inverted data back
+00A1 : 29 7     AND #$7 	;strip off upper bits
+00A3 : 5  B7    ORA $B7		;or it on to add into bits 2 to 0
+00A5 : 2A       ROL		;finish up by putting carry into 0 and shifting the mess left
+00A6 : AA       TAX
+00A7 : DD 0  F0 CMP $F000,X	;write it to supercharger RAM
+00AA : D1 B9    CMP ($B9),Y
+00AC : 88       DEY
+00AD : 10 D8    BPL $FF8A 	;do all bytes
+00AF : CD 19 F0 CMP $F019	;bankswitch
+00B2 : CD F8 FF CMP $FFF8
+00B5 : 60       RTS
+
+
+This core routine is used to load data.  It lives in the FF00-FFBF range and is loaded
+into RIOT RAM when data needs to be transferred.
+
+Since bit 3 of 280h is also connected to the /IRQ line on the CPU, this is used to
+tell the 6805 when a byte of data has been read, and it should get the next one ready
+to go.
+
+That's about it for the 2600 to demo unit interface.
+
+The memory map of the demo unit is extremely simple:
+
+0000-0FFF : on-chip resources (ports, the timer, RAM)
+1000-17FF : 2K bank of data from the 64K worth of 2764's
+1800-1FFF : 2K of BIOS code from the 2732 EPROM.
+
+The 2K bank of data at 1000-17FF comes from the 64K of EPROMs.  PortB bits 0-4 select
+a desired 2K bank.  
+
+That's about it for the details.  There are a few other amusing (to me) details of the
+hardware, however.
+
+When the unit starts, there's a 10 second countdown.  This is there for a reason.  
+Those 8 2764's can draw a lot of power if they were all turned on at once, so to
+enable the EPROMs there are 8 PNP transistors connected to a decoder, which connect
+to the VCC lines of each EPROM.  So, when you wish to read from the EPROMs, you must
+actually enable the power line to it via a decoder chip (74LS42).  
+
+To prevent a huge power suck from the 2600, there's a large capacitor that supplies
+power to the EPROMs.  I can't remember how big it was, but I think it was 4700uF.
+This is connected through a resistor to 5V.  So, that 10 second countdown at the
+start is so this capacitor can charge.  The countdown code and bootstraps are stored
+in the 2K EPROM.
+
+Only one of the 8K EPROMs may be enabled at any time, and they can all be disabled
+to prevent them drawing any power by clearing bit 6 of portB.  The desired EPROM is
+selected via bits 2,3,4 of portB.  (bits 0 and 1 of portB connect to A11 and A12
+of the 8 EPROMs.)
+
+The 74LS42 is a 1 of 10 decoder, and the inputs are connected as such:
+
+7       0
+---------
+xDxC BAxx
+
+ABCD: the 4 selector inputs (A = LSB, D = MSB).  x = not used.
+
+Thus, to enable an EPROM, bit 6 must be clear.  When this bit is set, no outputs
+connected to EPROM power enable transistors will be turned on.
+
+I am not 100% sure of the speed the demo unit's CPU runs at.  It was 12 years ago, 
+but I think it was 4.1952MHz.  I am using this on my demo unit FPGA emulation and
+it works good.
+
+That about wraps up this mysterious piece of hardware.
+

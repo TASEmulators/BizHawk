@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+	<Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+        <Directory Id="BIZHAWK" Name="BizHawk">
+          <Component Id="BIZHAWK.MULTICLIENT.EXE" DiskId="1" Guid="E79C65FA-36FC-4D00-80F2-45AA1118E25B">
+            <File Id="BIZHAWK.MULTICLIENT.EXE" Name="BizHawk.MultiClient.exe" Source="..\BizHawk.MultiClient\output\BizHawk.MultiClient.exe">
+              <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="BizHawk" WorkingDirectory="INSTALLDIR" Advertise="yes" Icon="BizHawkIcon.exe" IconIndex="0" />
+              <netfx:NativeImage Id="ngen_BizHawk.exe" Platform="32bit" Priority="0" AppBaseDirectory="BIZHAWK" />
+              <Shortcut Id="BizhawkStartShortcut" Directory="ProgramMenuDir" Name="BizHawk" Advertise="yes" Icon="BizHawkIcon.exe" IconIndex="0" />
+            </File>
+          </Component>
+          <Component Id="DEFCTRL.JSON" DiskId="1" Guid="B12BC9CE-566A-42EE-8D3F-6F6D276E78E1">
+            <File Id="DEFCTRL.JSON" Name="defctrl.json" Source="..\BizHawk.MultiClient\output\defctrl.json" />
+          </Component>
+          <Component Id="DISCOHAWK.EXE" DiskId="1" Guid="479DBA0A-777D-454A-A2FC-769067A8CAD5">
+            <File Id="DISCOHAWK.EXE" Name="DiscoHawk.exe" Source="..\BizHawk.MultiClient\output\DiscoHawk.exe">
+              <Shortcut Id="DiscoStartShortcut" Directory="ProgramMenuDir" Name="DiscoHawk" Advertise="yes" Icon="DiscoHawkIcon.exe" IconIndex="0" />
+              <netfx:NativeImage Id="ngen_DiscoHawk.exe" Platform="32bit" Priority="0" AppBaseDirectory="BIZHAWK" />
+            </File>
+          </Component>
+          <Directory Id="DLL" Name="dll">
+            <Component Id="_7Z.DLL" DiskId="1" Guid="B14804D6-B2A0-46F8-8823-E6E0FA9AF481">
+              <File Id="_7Z.DLL" Name="7z.dll" Source="..\BizHawk.MultiClient\output\dll\7z.dll" />
+            </Component>
+            <Component Id="AT3PLUSDECODER.DLL" DiskId="1" Guid="D2D32E8D-E1CB-4796-A7ED-E74303A92E31">
+              <File Id="AT3PLUSDECODER.DLL" Name="at3plusdecoder.dll" Source="..\BizHawk.MultiClient\output\dll\at3plusdecoder.dll" />
+            </Component>
+            <Component Id="BIZHAWK.EMULATION.DLL" DiskId="1" Guid="5226EA11-7AC9-44CA-B2D4-2FCF9637C62E">
+              <File Id="BIZHAWK.EMULATION.DLL" Name="BizHawk.Emulation.dll" Source="..\BizHawk.MultiClient\output\dll\BizHawk.Emulation.dll" />
+            </Component>
+            <Component Id="BIZHAWK.UTIL.DLL" DiskId="1" Guid="4C40953E-8A1A-42A9-B337-795A72A6B0EE">
+              <File Id="BIZHAWK.UTIL.DLL" Name="BizHawk.Util.dll" Source="..\BizHawk.MultiClient\output\dll\BizHawk.Util.dll" />
+            </Component>
+            <Component Id="BLIP_BUF.DLL" DiskId="1" Guid="E6822154-601C-4819-9CBA-8F2F8CA2415A">
+              <File Id="BLIP_BUF.DLL" Name="blip_buf.dll" Source="..\BizHawk.MultiClient\output\dll\blip_buf.dll" />
+            </Component>
+            <Component Id="EMU7800.DLL" DiskId="1" Guid="00E1E0D3-D428-4497-BBAD-B308C53B9919">
+              <File Id="EMU7800.DLL" Name="EMU7800.dll" Source="..\BizHawk.MultiClient\output\dll\EMU7800.dll" />
+            </Component>
+            <Component Id="FFMPEG.EXE" DiskId="1" Guid="28CD4982-BB71-45A6-863D-64F29CA57BB3">
+              <File Id="FFMPEG.EXE" Name="ffmpeg.exe" Source="..\BizHawk.MultiClient\output\dll\ffmpeg.exe" />
+            </Component>
+            <Component Id="FFMPEG_README.TXT" DiskId="1" Guid="6261D0CF-D8BC-43F6-9015-471B2C67B4B7">
+              <File Id="FFMPEG_README.TXT" Name="ffmpeg_readme.txt" Source="..\BizHawk.MultiClient\output\dll\ffmpeg_readme.txt" />
+            </Component>
+            <Component Id="FREETYPE6.DLL" DiskId="1" Guid="65CFC533-4752-4652-AB32-15EDFCA78F60">
+              <File Id="FREETYPE6.DLL" Name="freetype6.dll" Source="..\BizHawk.MultiClient\output\dll\freetype6.dll" />
+            </Component>
+            <Component Id="ICSHARPCODE.SHARPZIPLIB.DLL" DiskId="1" Guid="2163AE2C-171D-43C7-93AC-843C581E84BC">
+              <File Id="ICSHARPCODE.SHARPZIPLIB.DLL" Name="ICSharpCode.SharpZipLib.dll" Source="..\BizHawk.MultiClient\output\dll\ICSharpCode.SharpZipLib.dll" />
+            </Component>
+            <Component Id="LIBCO_MSVC_WIN32.DLL" DiskId="1" Guid="F578C866-5879-44AD-A277-B9F3CF98B5F1">
+              <File Id="LIBCO_MSVC_WIN32.DLL" Name="libco_msvc_win32.dll" Source="..\BizHawk.MultiClient\output\dll\libco_msvc_win32.dll" />
+            </Component>
+            <Component Id="LIBGAMBATTE.DLL" DiskId="1" Guid="5C1F9145-429A-4D10-AD7F-00F950FF6A4E">
+              <File Id="LIBGAMBATTE.DLL" Name="libgambatte.dll" Source="..\BizHawk.MultiClient\output\dll\libgambatte.dll" />
+            </Component>
+            <Component Id="LIBMEDNAHAWK.DLL" DiskId="1" Guid="A66B6545-D9C0-4E6D-861A-99E9B18D7230">
+              <File Id="LIBMEDNAHAWK.DLL" Name="libmednahawk.dll" Source="..\BizHawk.MultiClient\output\dll\libmednahawk.dll" />
+            </Component>
+            <Component Id="LIBMETEOR.DLL" DiskId="1" Guid="1429BA8A-0DA5-4D26-B0A9-767847025630">
+              <File Id="LIBMETEOR.DLL" Name="libmeteor.dll" Source="..\BizHawk.MultiClient\output\dll\libmeteor.dll" />
+            </Component>
+            <Component Id="LIBPNG12.DLL" DiskId="1" Guid="1F27DDDE-96FF-4791-9E66-700EA90191C0">
+              <File Id="LIBPNG12.DLL" Name="libpng12.dll" Source="..\BizHawk.MultiClient\output\dll\libpng12.dll" />
+            </Component>
+            <Component Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" DiskId="1" Guid="43A50063-7CD3-4368-A424-19A1E819ED03">
+              <File Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" Name="libsneshawk-32-compatibility.exe" Source="..\BizHawk.MultiClient\output\dll\libsneshawk-32-compatibility.exe" />
+            </Component>
+            <Component Id="LIBSNESHAWK_32_PERFORMANCE.EXE" DiskId="1" Guid="346D15B7-EBFE-40F0-BFBE-422124457A9F">
+              <File Id="LIBSNESHAWK_32_PERFORMANCE.EXE" Name="libsneshawk-32-performance.exe" Source="..\BizHawk.MultiClient\output\dll\libsneshawk-32-performance.exe" />
+            </Component>
+            <Component Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" DiskId="1" Guid="E5BBA2FA-CE80-41A2-85F1-B98C8E03BC86">
+              <File Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" Name="libsneshawk-64-compatibility.exe" Source="..\BizHawk.MultiClient\output\dll\libsneshawk-64-compatibility.exe" />
+            </Component>
+            <Component Id="LIBSNESHAWK_64_PERFORMANCE.EXE" DiskId="1" Guid="452C5433-CC41-4F77-9511-AB7D6A374CDC">
+              <File Id="LIBSNESHAWK_64_PERFORMANCE.EXE" Name="libsneshawk-64-performance.exe" Source="..\BizHawk.MultiClient\output\dll\libsneshawk-64-performance.exe" />
+            </Component>
+            <Component Id="LIBSPEEXDSP.DLL" DiskId="1" Guid="412F9861-912B-4DF7-843D-8CE8F90E2152">
+              <File Id="LIBSPEEXDSP.DLL" Name="libspeexdsp.dll" Source="..\BizHawk.MultiClient\output\dll\libspeexdsp.dll" />
+            </Component>
+            <Component Id="LIBYABAUSE.DLL" DiskId="1" Guid="E8619162-E3A3-4F6E-8FD8-2037EDA3DC2F">
+              <File Id="LIBYABAUSE.DLL" Name="libyabause.dll" Source="..\BizHawk.MultiClient\output\dll\libyabause.dll" />
+            </Component>
+            <Component Id="LUA51.DLL" DiskId="1" Guid="6A502A8C-478A-4E14-99D3-499115CA8637">
+              <File Id="LUA51.DLL" Name="lua51.dll" Source="..\BizHawk.MultiClient\output\dll\lua51.dll" />
+            </Component>
+            <Component Id="LUAINTERFACE.DLL" DiskId="1" Guid="3CE27C98-A859-47CA-90DB-B40490347950">
+              <File Id="LUAINTERFACE.DLL" Name="LuaInterface.dll" Source="..\BizHawk.MultiClient\output\dll\LuaInterface.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_AUDIO_BKM.DLL" DiskId="1" Guid="FF4F7D80-8119-421C-A619-00B0BFAA241C">
+              <File Id="MUPEN64PLUS_AUDIO_BKM.DLL" Name="mupen64plus-audio-bkm.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-audio-bkm.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_INPUT_BKM.DLL" DiskId="1" Guid="5E0D7676-7947-43BA-9DEC-CBB965209A6D">
+              <File Id="MUPEN64PLUS_INPUT_BKM.DLL" Name="mupen64plus-input-bkm.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-input-bkm.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_RSP_HLE.DLL" DiskId="1" Guid="C7974037-C58E-4689-BA35-C651AA82E573">
+              <File Id="MUPEN64PLUS_RSP_HLE.DLL" Name="mupen64plus-rsp-hle.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-rsp-hle.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" DiskId="1" Guid="76DBC67D-5509-4A48-93C2-AB8B81832882">
+              <File Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" Name="mupen64plus-video-glide64.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-video-glide64.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" DiskId="1" Guid="77618617-D158-477E-8020-DEBCB63679E0">
+              <File Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" Name="mupen64plus-video-glide64mk2.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-video-glide64mk2.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_VIDEO_RICE.DLL" DiskId="1" Guid="CFC6DDCD-C56E-491C-A32A-22665C6BB6FA">
+              <File Id="MUPEN64PLUS_VIDEO_RICE.DLL" Name="mupen64plus-video-rice.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus-video-rice.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS.DLL" DiskId="1" Guid="27E777D0-5D88-4ABC-90A9-D0DB83CF1825">
+              <File Id="MUPEN64PLUS.DLL" Name="mupen64plus.dll" Source="..\BizHawk.MultiClient\output\dll\mupen64plus.dll" />
+            </Component>
+            <Component Id="MUSASHIDLL.DLL" DiskId="1" Guid="37A0F027-8F5A-4952-A3E0-289C52B4E122">
+              <File Id="MUSASHIDLL.DLL" Name="MusashiDLL.dll" Source="..\BizHawk.MultiClient\output\dll\MusashiDLL.dll" />
+            </Component>
+            <Component Id="NEWTONSOFT.JSON.DLL" DiskId="1" Guid="D3E5041E-3E64-4D60-9835-818A09C23312">
+              <File Id="NEWTONSOFT.JSON.DLL" Name="Newtonsoft.Json.dll" Source="..\BizHawk.MultiClient\output\dll\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="PPSSPPBIZHAWK.DLL" DiskId="1" Guid="46033756-E1C3-4AE1-BDEB-76AACFFA001A">
+              <File Id="PPSSPPBIZHAWK.DLL" Name="PPSSPPBizhawk.dll" Source="..\BizHawk.MultiClient\output\dll\PPSSPPBizhawk.dll" />
+            </Component>
+            <Component Id="SDL.DLL" DiskId="1" Guid="CC26DDB3-9DE0-46BD-8022-9EC267E99402">
+              <File Id="SDL.DLL" Name="SDL.dll" Source="..\BizHawk.MultiClient\output\dll\SDL.dll" />
+            </Component>
+            <Component Id="SLIMDX.DLL" DiskId="1" Guid="1A28A66F-AECB-4664-9180-98E085A5BD39">
+              <File Id="SLIMDX.DLL" Name="SlimDX.dll" Source="..\BizHawk.MultiClient\output\dll\SlimDX.dll" />
+            </Component>
+            <Component Id="ZLIB1.DLL" DiskId="1" Guid="26887919-C192-458D-8DD0-17CEE28D5D1E">
+              <File Id="ZLIB1.DLL" Name="zlib1.dll" Source="..\BizHawk.MultiClient\output\dll\zlib1.dll" />
+            </Component>
+          </Directory>
+          <Directory Id="FIRMWARE" Name="Firmware">
+            <Component Id="BIOS_INFO.TXT" DiskId="1" Guid="B2E3AEE5-1AC7-4899-BA89-D62775F0B8A9">
+              <File Id="BIOS_INFO.TXT" Name="BIOS_Info.txt" Source="..\BizHawk.MultiClient\output\Firmware\BIOS_Info.txt" />
+            </Component>
+          </Directory>
+          <Directory Id="GAMEBOY" Name="Gameboy">
+            <Directory Id="PALETTES" Name="Palettes">
+              <Component Id="ALLEY_WAY.PAL" DiskId="1" Guid="F0459324-42D2-4138-8B0B-28D90C5A96FC">
+                <File Id="ALLEY_WAY.PAL" Name="ALLEY WAY.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ALLEY WAY.pal" />
+              </Component>
+              <Component Id="ASTEROIDS_MISCMD.PAL" DiskId="1" Guid="2EA69F62-22B2-4290-99E0-D87FE45D6BEB">
+                <File Id="ASTEROIDS_MISCMD.PAL" Name="ASTEROIDS&amp;MISCMD.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ASTEROIDS&amp;MISCMD.pal" />
+              </Component>
+              <Component Id="BA.TOSHINDEN.PAL" DiskId="1" Guid="5C083530-DE1D-4750-AAB1-540AB6A79BDE">
+                <File Id="BA.TOSHINDEN.PAL" Name="BA.TOSHINDEN.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BA.TOSHINDEN.pal" />
+              </Component>
+              <Component Id="BALLOON_KID.PAL" DiskId="1" Guid="903AE0D6-83D8-44BB-A4C1-C881F13848DF">
+                <File Id="BALLOON_KID.PAL" Name="BALLOON KID.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BALLOON KID.pal" />
+              </Component>
+              <Component Id="BASEBALL.PAL" DiskId="1" Guid="1930A7A5-5502-466C-8D86-796B62139874">
+                <File Id="BASEBALL.PAL" Name="BASEBALL.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BASEBALL.pal" />
+              </Component>
+              <Component Id="BGB__LCD_GREEN_.PAL" DiskId="1" Guid="B08D5018-A326-461F-8762-98E79B8331D5">
+                <File Id="BGB__LCD_GREEN_.PAL" Name="BGB (lcd green).pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BGB (lcd green).pal" />
+              </Component>
+              <Component Id="BOY_AND_BLOB_GB1.PAL" DiskId="1" Guid="7E29744B-C8B8-4F1C-B6C8-7B6EA2A91129">
+                <File Id="BOY_AND_BLOB_GB1.PAL" Name="BOY AND BLOB GB1.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BOY AND BLOB GB1.pal" />
+              </Component>
+              <Component Id="BOY_AND_BLOB_GB2.PAL" DiskId="1" Guid="11D15D2D-4E00-4193-BF73-241CB4D5F4CF">
+                <File Id="BOY_AND_BLOB_GB2.PAL" Name="BOY AND BLOB GB2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BOY AND BLOB GB2.pal" />
+              </Component>
+              <Component Id="BSNES_V087.PAL" DiskId="1" Guid="B4D56F33-B8DF-4B9B-B8CD-B0F7B8489AEA">
+                <File Id="BSNES_V087.PAL" Name="bsnes v087.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\bsnes v087.pal" />
+              </Component>
+              <Component Id="BT2RAGNAROKWORLD.PAL" DiskId="1" Guid="B507C27C-2ABC-4289-BABA-3C4C8D160C56">
+                <File Id="BT2RAGNAROKWORLD.PAL" Name="BT2RAGNAROKWORLD.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\BT2RAGNAROKWORLD.pal" />
+              </Component>
+              <Component Id="DEFAULT.PAL" DiskId="1" Guid="D1C86FB9-BDB5-4180-AEF2-2BECD2317DB1">
+                <File Id="DEFAULT.PAL" Name="default.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\default.pal" />
+              </Component>
+              <Component Id="DEFENDER_JOUST.PAL" DiskId="1" Guid="DF3C0DA3-0DD7-4E0E-BAA0-8ADECFDF3638">
+                <File Id="DEFENDER_JOUST.PAL" Name="DEFENDER&amp;JOUST.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DEFENDER&amp;JOUST.pal" />
+              </Component>
+              <Component Id="DMG_FOOTBALL.PAL" DiskId="1" Guid="BBE4A256-9DCA-45F9-9901-ADCCDA8F9BF7">
+                <File Id="DMG_FOOTBALL.PAL" Name="DMG FOOTBALL.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DMG FOOTBALL.pal" />
+              </Component>
+              <Component Id="DONKEY_KONG.PAL" DiskId="1" Guid="1EC5E1EB-9AF9-4E99-BC17-79E8E55993DA">
+                <File Id="DONKEY_KONG.PAL" Name="DONKEY KONG.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DONKEY KONG.pal" />
+              </Component>
+              <Component Id="DONKEYKONGLAND_2.PAL" DiskId="1" Guid="07D9EF63-5782-4F96-97D3-42BF48649D5C">
+                <File Id="DONKEYKONGLAND_2.PAL" Name="DONKEYKONGLAND 2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DONKEYKONGLAND 2.pal" />
+              </Component>
+              <Component Id="DONKEYKONGLAND_3.PAL" DiskId="1" Guid="A0F8EAE9-7647-4C67-8368-9D28DB54F1C5">
+                <File Id="DONKEYKONGLAND_3.PAL" Name="DONKEYKONGLAND 3.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DONKEYKONGLAND 3.pal" />
+              </Component>
+              <Component Id="DONKEYKONGLAND.PAL" DiskId="1" Guid="58122005-67BA-4856-B49A-4F7691251A3F">
+                <File Id="DONKEYKONGLAND.PAL" Name="DONKEYKONGLAND.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DONKEYKONGLAND.pal" />
+              </Component>
+              <Component Id="DONKEYKONGLAND95.PAL" DiskId="1" Guid="78DC9A3B-F690-4923-8295-E791FD77DF91">
+                <File Id="DONKEYKONGLAND95.PAL" Name="DONKEYKONGLAND95.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DONKEYKONGLAND95.pal" />
+              </Component>
+              <Component Id="DR.MARIO.PAL" DiskId="1" Guid="7E1E7EF4-95B3-4339-B198-CDA5E21B8C63">
+                <File Id="DR.MARIO.PAL" Name="DR.MARIO.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DR.MARIO.pal" />
+              </Component>
+              <Component Id="DYNABLASTER.PAL" DiskId="1" Guid="19FEBB65-F16F-4D0A-8885-2D7BFCC44015">
+                <File Id="DYNABLASTER.PAL" Name="DYNABLASTER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\DYNABLASTER.pal" />
+              </Component>
+              <Component Id="F1RACE.PAL" DiskId="1" Guid="57DD843F-944F-4F88-B73B-BC30063CB581">
+                <File Id="F1RACE.PAL" Name="F1RACE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\F1RACE.pal" />
+              </Component>
+              <Component Id="G_W_GALLERY.PAL" DiskId="1" Guid="061F69B8-8255-4D10-8C17-64105E18B9A9">
+                <File Id="G_W_GALLERY.PAL" Name="G&amp;W GALLERY.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\G&amp;W GALLERY.pal" />
+              </Component>
+              <Component Id="GALAGA_GALAXIAN.PAL" DiskId="1" Guid="5E7133BF-90D8-4434-9438-E6A17BB21CA6">
+                <File Id="GALAGA_GALAXIAN.PAL" Name="GALAGA&amp;GALAXIAN.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GALAGA&amp;GALAXIAN.pal" />
+              </Component>
+              <Component Id="GAME_AND_WATCH_2.PAL" DiskId="1" Guid="C90C1CEF-D18E-49D7-8772-7A84DCAC1D57">
+                <File Id="GAME_AND_WATCH_2.PAL" Name="Game and Watch 2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\Game and Watch 2.pal" />
+              </Component>
+              <Component Id="GAME_WATCH.PAL" DiskId="1" Guid="E327C610-6E15-46DB-8FC9-E49998DD491B">
+                <File Id="GAME_WATCH.PAL" Name="GAME&amp;WATCH.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GAME&amp;WATCH.pal" />
+              </Component>
+              <Component Id="GAMEBOY_GALLERY.PAL" DiskId="1" Guid="997334E8-BB65-490D-B29D-18ED2CB4425E">
+                <File Id="GAMEBOY_GALLERY.PAL" Name="GAMEBOY GALLERY.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GAMEBOY GALLERY.pal" />
+              </Component>
+              <Component Id="GAMEBOY_GALLERY2.PAL" DiskId="1" Guid="B3B7AF1E-417C-4E57-9E82-B71B59C9C377">
+                <File Id="GAMEBOY_GALLERY2.PAL" Name="GAMEBOY GALLERY2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GAMEBOY GALLERY2.pal" />
+              </Component>
+              <Component Id="GBC___BLUE.PAL" DiskId="1" Guid="EB10442A-1014-49FA-B491-E06A267C4045">
+                <File Id="GBC___BLUE.PAL" Name="GBC - Blue.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Blue.pal" />
+              </Component>
+              <Component Id="GBC___BROWN.PAL" DiskId="1" Guid="368C81F7-D2D2-4A1C-BA1B-7B643FB8C566">
+                <File Id="GBC___BROWN.PAL" Name="GBC - Brown.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Brown.pal" />
+              </Component>
+              <Component Id="GBC___DARK_BLUE.PAL" DiskId="1" Guid="EDDA5552-CF78-445C-A666-6C13445DEC37">
+                <File Id="GBC___DARK_BLUE.PAL" Name="GBC - Dark Blue.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Dark Blue.pal" />
+              </Component>
+              <Component Id="GBC___DARK_BROWN.PAL" DiskId="1" Guid="55E7756D-E08A-40CE-AADD-6DE1DEA2E88C">
+                <File Id="GBC___DARK_BROWN.PAL" Name="GBC - Dark Brown.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Dark Brown.pal" />
+              </Component>
+              <Component Id="GBC___DARK_GREEN.PAL" DiskId="1" Guid="26C41D5F-0234-4E45-A1C5-D35D545C0EBC">
+                <File Id="GBC___DARK_GREEN.PAL" Name="GBC - Dark Green.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Dark Green.pal" />
+              </Component>
+              <Component Id="GBC___GRAYSCALE.PAL" DiskId="1" Guid="8CC4D817-1425-4681-865F-CF5ED397572E">
+                <File Id="GBC___GRAYSCALE.PAL" Name="GBC - Grayscale.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Grayscale.pal" />
+              </Component>
+              <Component Id="GBC___GREEN.PAL" DiskId="1" Guid="92BB544A-D8DD-40A8-AE0A-9B46E58F9EB3">
+                <File Id="GBC___GREEN.PAL" Name="GBC - Green.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Green.pal" />
+              </Component>
+              <Component Id="GBC___INVERTED.PAL" DiskId="1" Guid="2E2757F1-3737-46C2-8C1E-3E01940EDE15">
+                <File Id="GBC___INVERTED.PAL" Name="GBC - Inverted.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Inverted.pal" />
+              </Component>
+              <Component Id="GBC___ORANGE.PAL" DiskId="1" Guid="B55BCB70-5367-4067-ABE4-EA4A62CB0F88">
+                <File Id="GBC___ORANGE.PAL" Name="GBC - Orange.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Orange.pal" />
+              </Component>
+              <Component Id="GBC___PASTEL_MIX.PAL" DiskId="1" Guid="2F2EF2D9-B7AF-4EF2-851F-030D557F7BC3">
+                <File Id="GBC___PASTEL_MIX.PAL" Name="GBC - Pastel Mix.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Pastel Mix.pal" />
+              </Component>
+              <Component Id="GBC___RED.PAL" DiskId="1" Guid="A5A9A1C9-E7E8-4054-B8FC-F5720B64B17E">
+                <File Id="GBC___RED.PAL" Name="GBC - Red.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Red.pal" />
+              </Component>
+              <Component Id="GBC___YELLOW.PAL" DiskId="1" Guid="AEF9CB54-F49A-4A74-B94D-B0B065E1E2A4">
+                <File Id="GBC___YELLOW.PAL" Name="GBC - Yellow.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBC - Yellow.pal" />
+              </Component>
+              <Component Id="GBWARS.PAL" DiskId="1" Guid="E5EEA4F3-C4E2-4826-B86E-97CAECFAE793">
+                <File Id="GBWARS.PAL" Name="GBWARS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GBWARS.pal" />
+              </Component>
+              <Component Id="GOLF.PAL" DiskId="1" Guid="7D189907-F7E2-4BCE-B559-52095BD44A55">
+                <File Id="GOLF.PAL" Name="GOLF.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\GOLF.pal" />
+              </Component>
+              <Component Id="HOSHINOKA_BI.PAL" DiskId="1" Guid="582A7D1D-913C-49B3-AFFA-2DB5B6696A63">
+                <File Id="HOSHINOKA_BI.PAL" Name="HOSHINOKA-BI.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\HOSHINOKA-BI.pal" />
+              </Component>
+              <Component Id="JAMES__BOND__007.PAL" DiskId="1" Guid="E07BB61F-FF60-4ABF-BD17-E76CA2B32FD4">
+                <File Id="JAMES__BOND__007.PAL" Name="JAMES  BOND  007.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\JAMES  BOND  007.pal" />
+              </Component>
+              <Component Id="KAERUNOTAMENI.PAL" DiskId="1" Guid="C49419B6-2314-4355-A3E9-D8B4296E0957">
+                <File Id="KAERUNOTAMENI.PAL" Name="KAERUNOTAMENI.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KAERUNOTAMENI.pal" />
+              </Component>
+              <Component Id="KEN_GRIFFEY_JR.PAL" DiskId="1" Guid="D7800A2C-3880-4BF6-A23C-651C0E6D73F1">
+                <File Id="KEN_GRIFFEY_JR.PAL" Name="KEN GRIFFEY JR.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KEN GRIFFEY JR.pal" />
+              </Component>
+              <Component Id="KID_ICARUS.PAL" DiskId="1" Guid="FE5D2B4E-5BCB-4CD2-B892-C9CA63539336">
+                <File Id="KID_ICARUS.PAL" Name="KID ICARUS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KID ICARUS.pal" />
+              </Component>
+              <Component Id="KILLERINSTINCT95.PAL" DiskId="1" Guid="104AF51F-6527-448E-9A4D-59C760E7A736">
+                <File Id="KILLERINSTINCT95.PAL" Name="KILLERINSTINCT95.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KILLERINSTINCT95.pal" />
+              </Component>
+              <Component Id="KINGOFTHEZOO.PAL" DiskId="1" Guid="1E331169-482F-4699-BB5B-8E3C9783325A">
+                <File Id="KINGOFTHEZOO.PAL" Name="KINGOFTHEZOO.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KINGOFTHEZOO.pal" />
+              </Component>
+              <Component Id="KIRAKIRA_KIDS.PAL" DiskId="1" Guid="ACC7B00B-11AA-4D2C-9CBB-B0EC4872820A">
+                <File Id="KIRAKIRA_KIDS.PAL" Name="KIRAKIRA KIDS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KIRAKIRA KIDS.pal" />
+              </Component>
+              <Component Id="KIRBY_BLOCKBALL.PAL" DiskId="1" Guid="8CF8B6AE-98E0-4E41-89A4-C3C52A39C267">
+                <File Id="KIRBY_BLOCKBALL.PAL" Name="KIRBY BLOCKBALL.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KIRBY BLOCKBALL.pal" />
+              </Component>
+              <Component Id="KIRBY_DREAM_LAND.PAL" DiskId="1" Guid="55062267-8905-4CD6-84A5-15B05987100B">
+                <File Id="KIRBY_DREAM_LAND.PAL" Name="KIRBY DREAM LAND.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KIRBY DREAM LAND.pal" />
+              </Component>
+              <Component Id="KIRBY_S_PINBALL.PAL" DiskId="1" Guid="16D8D8EB-6B74-479C-A646-29B4E84EFFD4">
+                <File Id="KIRBY_S_PINBALL.PAL" Name="KIRBY'S PINBALL.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KIRBY'S PINBALL.pal" />
+              </Component>
+              <Component Id="KIRBY2.PAL" DiskId="1" Guid="76B84757-E074-46C3-886D-115D7962F990">
+                <File Id="KIRBY2.PAL" Name="KIRBY2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\KIRBY2.pal" />
+              </Component>
+              <Component Id="LOLO2.PAL" DiskId="1" Guid="D6D7E662-4CBA-4A36-926B-1EA3D909CEDD">
+                <File Id="LOLO2.PAL" Name="LOLO2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\LOLO2.pal" />
+              </Component>
+              <Component Id="MAGNETIC_SOCCER.PAL" DiskId="1" Guid="241B13FD-369D-4D62-8B3C-573B48AA6A28">
+                <File Id="MAGNETIC_SOCCER.PAL" Name="MAGNETIC SOCCER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MAGNETIC SOCCER.pal" />
+              </Component>
+              <Component Id="MANSELL.PAL" DiskId="1" Guid="4AEF4B10-BABB-4360-9453-1F885BCFCB0E">
+                <File Id="MANSELL.PAL" Name="MANSELL.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MANSELL.pal" />
+              </Component>
+              <Component Id="MARIO___YOSHI.PAL" DiskId="1" Guid="772E97CF-4935-4149-81FE-191B5790C157">
+                <File Id="MARIO___YOSHI.PAL" Name="MARIO &amp; YOSHI.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MARIO &amp; YOSHI.pal" />
+              </Component>
+              <Component Id="MARIO_S_PICROSS.PAL" DiskId="1" Guid="48D87CF3-FE6E-4B56-B8F9-2E16DF93EA9F">
+                <File Id="MARIO_S_PICROSS.PAL" Name="MARIO'S PICROSS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MARIO'S PICROSS.pal" />
+              </Component>
+              <Component Id="MARIOLAND2.PAL" DiskId="1" Guid="71C622EB-37E8-4AE6-9020-F51ABB1B3B9C">
+                <File Id="MARIOLAND2.PAL" Name="MARIOLAND2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MARIOLAND2.pal" />
+              </Component>
+              <Component Id="MEGA_MAN_2.PAL" DiskId="1" Guid="EA98F37B-C9EB-4A31-BF37-F444D27F2C55">
+                <File Id="MEGA_MAN_2.PAL" Name="MEGA MAN 2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MEGA MAN 2.pal" />
+              </Component>
+              <Component Id="MEGAMAN.PAL" DiskId="1" Guid="D52ED57A-A4F1-4CB7-B7C8-38BC45DF7FE3">
+                <File Id="MEGAMAN.PAL" Name="MEGAMAN.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MEGAMAN.pal" />
+              </Component>
+              <Component Id="MEGAMAN3.PAL" DiskId="1" Guid="FECC4950-88D8-42D5-B298-7D41D2341720">
+                <File Id="MEGAMAN3.PAL" Name="MEGAMAN3.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MEGAMAN3.pal" />
+              </Component>
+              <Component Id="METROID2.PAL" DiskId="1" Guid="290E7B25-9D03-4849-BECD-74AE39A4CF9F">
+                <File Id="METROID2.PAL" Name="METROID2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\METROID2.pal" />
+              </Component>
+              <Component Id="MILLI_CENTI_PEDE.PAL" DiskId="1" Guid="F26E5F1B-4805-4431-A041-B3DD0368B4E9">
+                <File Id="MILLI_CENTI_PEDE.PAL" Name="MILLI&amp;CENTI&amp;PEDE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MILLI&amp;CENTI&amp;PEDE.pal" />
+              </Component>
+              <Component Id="MOGURANYA.PAL" DiskId="1" Guid="7F6C70C1-D5ED-4081-9B13-93E0F9DF09A0">
+                <File Id="MOGURANYA.PAL" Name="MOGURANYA.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MOGURANYA.pal" />
+              </Component>
+              <Component Id="MYSTIC_QUEST.PAL" DiskId="1" Guid="B41FA3C2-41AD-42A1-90CA-7C6A5D2F5215">
+                <File Id="MYSTIC_QUEST.PAL" Name="MYSTIC QUEST.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\MYSTIC QUEST.pal" />
+              </Component>
+              <Component Id="NETTOU_KOF_95.PAL" DiskId="1" Guid="6D5C9925-6F3B-4BC7-9015-909403C01016">
+                <File Id="NETTOU_KOF_95.PAL" Name="NETTOU KOF 95.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\NETTOU KOF 95.pal" />
+              </Component>
+              <Component Id="NEW_CHESSMASTER.PAL" DiskId="1" Guid="E8EDCFF3-BB80-4E24-897C-D2E39B6F2F5F">
+                <File Id="NEW_CHESSMASTER.PAL" Name="NEW CHESSMASTER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\NEW CHESSMASTER.pal" />
+              </Component>
+              <Component Id="OTHELLO.PAL" DiskId="1" Guid="97F86A3B-3500-4339-AFDA-80CD3748FBEB">
+                <File Id="OTHELLO.PAL" Name="OTHELLO.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\OTHELLO.pal" />
+              </Component>
+              <Component Id="PAC_IN_TIME.PAL" DiskId="1" Guid="869D56C1-5A20-4E21-9D42-354D86E0BFAC">
+                <File Id="PAC_IN_TIME.PAL" Name="PAC-IN-TIME.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\PAC-IN-TIME.pal" />
+              </Component>
+              <Component Id="PICROSS_2.PAL" DiskId="1" Guid="7943B8B3-7119-4668-9688-630FECBE0EAA">
+                <File Id="PICROSS_2.PAL" Name="PICROSS 2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\PICROSS 2.pal" />
+              </Component>
+              <Component Id="PINOCCHIO.PAL" DiskId="1" Guid="D0B80ACA-0547-4E1A-94F9-35A2D57BC95A">
+                <File Id="PINOCCHIO.PAL" Name="PINOCCHIO.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\PINOCCHIO.pal" />
+              </Component>
+              <Component Id="POKEBOM.PAL" DiskId="1" Guid="DE8CDCE0-45EF-40F4-9D22-071E1FCE2967">
+                <File Id="POKEBOM.PAL" Name="POKEBOM.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\POKEBOM.pal" />
+              </Component>
+              <Component Id="POKEMON_BLUE.PAL" DiskId="1" Guid="7857A081-8263-4687-A2B0-4649DDE4DDE4">
+                <File Id="POKEMON_BLUE.PAL" Name="POKEMON BLUE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\POKEMON BLUE.pal" />
+              </Component>
+              <Component Id="POKEMON_GREEN.PAL" DiskId="1" Guid="C9B7C40A-0731-4577-B6B0-8DFD6837F83A">
+                <File Id="POKEMON_GREEN.PAL" Name="POKEMON GREEN.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\POKEMON GREEN.pal" />
+              </Component>
+              <Component Id="POKEMON_RED.PAL" DiskId="1" Guid="31F3E340-847E-4190-AC69-01A4E6DCB97D">
+                <File Id="POKEMON_RED.PAL" Name="POKEMON RED.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\POKEMON RED.pal" />
+              </Component>
+              <Component Id="POKEMON_YELLOW.PAL" DiskId="1" Guid="9FE23B9F-2889-425C-8725-96A4D5CE0521">
+                <File Id="POKEMON_YELLOW.PAL" Name="POKEMON YELLOW.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\POKEMON YELLOW.pal" />
+              </Component>
+              <Component Id="QIX.PAL" DiskId="1" Guid="5B906BB7-D51C-42C3-9928-69B8EA028DDC">
+                <File Id="QIX.PAL" Name="QIX.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\QIX.pal" />
+              </Component>
+              <Component Id="RADARMISSION.PAL" DiskId="1" Guid="B87EDB05-4656-4481-AC01-AE7A2B184532">
+                <File Id="RADARMISSION.PAL" Name="RADARMISSION.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\RADARMISSION.pal" />
+              </Component>
+              <Component Id="ROCKMAN_WORLD.PAL" DiskId="1" Guid="00306EDF-A325-4542-AAF7-FEB3C8B88818">
+                <File Id="ROCKMAN_WORLD.PAL" Name="ROCKMAN WORLD.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ROCKMAN WORLD.pal" />
+              </Component>
+              <Component Id="ROCKMAN_WORLD2.PAL" DiskId="1" Guid="3398F3CA-97C0-48CF-B19E-B90370A1A242">
+                <File Id="ROCKMAN_WORLD2.PAL" Name="ROCKMAN WORLD2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ROCKMAN WORLD2.pal" />
+              </Component>
+              <Component Id="ROCKMANWORLD3.PAL" DiskId="1" Guid="87CAA33E-BBAE-4906-B9A1-85664F2B7216">
+                <File Id="ROCKMANWORLD3.PAL" Name="ROCKMANWORLD3.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ROCKMANWORLD3.pal" />
+              </Component>
+              <Component Id="SEIKEN_DENSETSU.PAL" DiskId="1" Guid="0F698725-A3EC-4329-B289-0C72B37E596A">
+                <File Id="SEIKEN_DENSETSU.PAL" Name="SEIKEN DENSETSU.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SEIKEN DENSETSU.pal" />
+              </Component>
+              <Component Id="SOCCER.PAL" DiskId="1" Guid="52EEE4AA-1621-4501-BAEC-B20B7CFBED50">
+                <File Id="SOCCER.PAL" Name="SOCCER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SOCCER.pal" />
+              </Component>
+              <Component Id="SOLARSTRIKER.PAL" DiskId="1" Guid="3C2C85BE-4421-41BA-84E2-E0A65EAE7743">
+                <File Id="SOLARSTRIKER.PAL" Name="SOLARSTRIKER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SOLARSTRIKER.pal" />
+              </Component>
+              <Component Id="SPACE_INVADERS.PAL" DiskId="1" Guid="04E2612F-9925-4F5F-9DFA-99E8900637EA">
+                <File Id="SPACE_INVADERS.PAL" Name="SPACE INVADERS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SPACE INVADERS.pal" />
+              </Component>
+              <Component Id="STAR_STACKER.PAL" DiskId="1" Guid="064FF9C6-8DF1-4B1F-BF1D-3067DC46D8FA">
+                <File Id="STAR_STACKER.PAL" Name="STAR STACKER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\STAR STACKER.pal" />
+              </Component>
+              <Component Id="STAR_WARS_NOA.PAL" DiskId="1" Guid="B252B265-84D6-47CA-A19C-0CA6195EFD50">
+                <File Id="STAR_WARS_NOA.PAL" Name="STAR WARS-NOA.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\STAR WARS-NOA.pal" />
+              </Component>
+              <Component Id="STAR_WARS.PAL" DiskId="1" Guid="8131DAC1-895F-4875-8804-3881CB2717C5">
+                <File Id="STAR_WARS.PAL" Name="STAR WARS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\STAR WARS.pal" />
+              </Component>
+              <Component Id="STREET_FIGHTER_2.PAL" DiskId="1" Guid="9ADD5CED-F5EA-46F1-A0E4-88007803D3CE">
+                <File Id="STREET_FIGHTER_2.PAL" Name="STREET FIGHTER 2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\STREET FIGHTER 2.pal" />
+              </Component>
+              <Component Id="SUPER_MARIOLAND.PAL" DiskId="1" Guid="8EC9AD6A-CC1E-41F5-BD91-62DB2CFC5DE4">
+                <File Id="SUPER_MARIOLAND.PAL" Name="SUPER MARIOLAND.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SUPER MARIOLAND.pal" />
+              </Component>
+              <Component Id="SUPER_RC_PRO_AM.PAL" DiskId="1" Guid="E02AE23F-5157-498F-9292-CDE7F034DA97">
+                <File Id="SUPER_RC_PRO_AM.PAL" Name="SUPER RC PRO-AM.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SUPER RC PRO-AM.pal" />
+              </Component>
+              <Component Id="SUPERDONKEYKONG.PAL" DiskId="1" Guid="89601AF3-6764-4C7A-8C5A-DF51DDAF58A3">
+                <File Id="SUPERDONKEYKONG.PAL" Name="SUPERDONKEYKONG.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SUPERDONKEYKONG.pal" />
+              </Component>
+              <Component Id="SUPERMARIOLAND3.PAL" DiskId="1" Guid="8EC4CC42-5810-48B4-9A1C-0752BD79E398">
+                <File Id="SUPERMARIOLAND3.PAL" Name="SUPERMARIOLAND3.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\SUPERMARIOLAND3.pal" />
+              </Component>
+              <Component Id="TENNIS.PAL" DiskId="1" Guid="4D808111-8DC8-418E-ACBE-1C5226BFAA92">
+                <File Id="TENNIS.PAL" Name="TENNIS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TENNIS.pal" />
+              </Component>
+              <Component Id="TETRIS_ATTACK.PAL" DiskId="1" Guid="174772FD-1BC8-47C0-BB8A-CE56911846A8">
+                <File Id="TETRIS_ATTACK.PAL" Name="TETRIS ATTACK.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS ATTACK.pal" />
+              </Component>
+              <Component Id="TETRIS_BLAST.PAL" DiskId="1" Guid="AC4AC921-0C9E-45F1-975F-DAD438DF3881">
+                <File Id="TETRIS_BLAST.PAL" Name="TETRIS BLAST.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS BLAST.pal" />
+              </Component>
+              <Component Id="TETRIS_FLASH.PAL" DiskId="1" Guid="908D64A9-6BED-4A39-AAA4-6DC4C53B7DC7">
+                <File Id="TETRIS_FLASH.PAL" Name="TETRIS FLASH.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS FLASH.pal" />
+              </Component>
+              <Component Id="TETRIS_PLUS.PAL" DiskId="1" Guid="DA7613AC-99B8-4A83-85E5-102BD980C671">
+                <File Id="TETRIS_PLUS.PAL" Name="TETRIS PLUS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS PLUS.pal" />
+              </Component>
+              <Component Id="TETRIS.PAL" DiskId="1" Guid="A1642A0A-450D-4FB6-A98F-57C8500B8621">
+                <File Id="TETRIS.PAL" Name="TETRIS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS.pal" />
+              </Component>
+              <Component Id="TETRIS2.PAL" DiskId="1" Guid="125966ED-BF8F-4A09-9282-7910E410439F">
+                <File Id="TETRIS2.PAL" Name="TETRIS2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TETRIS2.pal" />
+              </Component>
+              <Component Id="THE_CHESSMASTER.PAL" DiskId="1" Guid="E401E904-D2C2-46C6-A3AA-5698D822FC3C">
+                <File Id="THE_CHESSMASTER.PAL" Name="THE CHESSMASTER.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\THE CHESSMASTER.pal" />
+              </Component>
+              <Component Id="TOPRANKINGTENNIS.PAL" DiskId="1" Guid="9CF73092-06DF-4C4D-9515-4A0E0AB59456">
+                <File Id="TOPRANKINGTENNIS.PAL" Name="TOPRANKINGTENNIS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TOPRANKINGTENNIS.pal" />
+              </Component>
+              <Component Id="TOPRANKTENNIS.PAL" DiskId="1" Guid="914F660F-96EA-4DB4-B369-9546968CFF21">
+                <File Id="TOPRANKTENNIS.PAL" Name="TOPRANKTENNIS.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TOPRANKTENNIS.pal" />
+              </Component>
+              <Component Id="TOY_STORY.PAL" DiskId="1" Guid="6CA6686A-AAFA-4148-834F-AE563F376606">
+                <File Id="TOY_STORY.PAL" Name="TOY STORY.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TOY STORY.pal" />
+              </Component>
+              <Component Id="TRIP_WORLD.PAL" DiskId="1" Guid="22C9E405-C7DC-4D88-8C2B-77292979E91E">
+                <File Id="TRIP_WORLD.PAL" Name="TRIP WORLD.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\TRIP WORLD.pal" />
+              </Component>
+              <Component Id="VEGAS_STAKES.PAL" DiskId="1" Guid="B5755E9F-DA68-410F-9E73-107944D6CFC9">
+                <File Id="VEGAS_STAKES.PAL" Name="VEGAS STAKES.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\VEGAS STAKES.pal" />
+              </Component>
+              <Component Id="WARIO_BLAST.PAL" DiskId="1" Guid="B5E058CA-8F81-48CD-A69A-B0A98BF44EFB">
+                <File Id="WARIO_BLAST.PAL" Name="WARIO BLAST.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\WARIO BLAST.pal" />
+              </Component>
+              <Component Id="WARIOLAND2.PAL" DiskId="1" Guid="1978FA12-4A2D-4466-86B6-3AE9432E6AE7">
+                <File Id="WARIOLAND2.PAL" Name="WARIOLAND2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\WARIOLAND2.pal" />
+              </Component>
+              <Component Id="WAVERACE.PAL" DiskId="1" Guid="17DE3C7F-88E9-40D5-9982-588DDCB7AAB5">
+                <File Id="WAVERACE.PAL" Name="WAVERACE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\WAVERACE.pal" />
+              </Component>
+              <Component Id="WORLD_CUP.PAL" DiskId="1" Guid="0BCCD4A9-CB4A-4C77-9D3A-CEC707723BCD">
+                <File Id="WORLD_CUP.PAL" Name="WORLD CUP.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\WORLD CUP.pal" />
+              </Component>
+              <Component Id="X.PAL" DiskId="1" Guid="C73DC467-11E1-48E9-A918-BBDB0F654ACB">
+                <File Id="X.PAL" Name="X.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\X.pal" />
+              </Component>
+              <Component Id="YAKUMAN.PAL" DiskId="1" Guid="C3CE0E55-F604-4105-BCA0-EF5A321D204B">
+                <File Id="YAKUMAN.PAL" Name="YAKUMAN.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\YAKUMAN.pal" />
+              </Component>
+              <Component Id="YOSHI_S_COOKIE.PAL" DiskId="1" Guid="9686FBC8-BC72-4892-9793-467429C0909A">
+                <File Id="YOSHI_S_COOKIE.PAL" Name="YOSHI'S COOKIE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\YOSHI'S COOKIE.pal" />
+              </Component>
+              <Component Id="YOSSY_NO_COOKIE.PAL" DiskId="1" Guid="68884F07-DCA6-401A-A100-483E7808CA23">
+                <File Id="YOSSY_NO_COOKIE.PAL" Name="YOSSY NO COOKIE.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\YOSSY NO COOKIE.pal" />
+              </Component>
+              <Component Id="YOSSY_NO_PANEPON.PAL" DiskId="1" Guid="DC51B035-122C-49D6-A13B-B3D1E3305581">
+                <File Id="YOSSY_NO_PANEPON.PAL" Name="YOSSY NO PANEPON.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\YOSSY NO PANEPON.pal" />
+              </Component>
+              <Component Id="YOSSY_NO_TAMAGO.PAL" DiskId="1" Guid="C0758109-C7E6-4E66-8B6B-9B05EDE77D75">
+                <File Id="YOSSY_NO_TAMAGO.PAL" Name="YOSSY NO TAMAGO.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\YOSSY NO TAMAGO.pal" />
+              </Component>
+              <Component Id="ZELDA.PAL" DiskId="1" Guid="8BFA9DD7-A8F9-402C-B79A-6A9D2FE7CFA5">
+                <File Id="ZELDA.PAL" Name="ZELDA.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ZELDA.pal" />
+              </Component>
+              <Component Id="ZELDA2.PAL" DiskId="1" Guid="6DCEF430-C3D9-474D-8346-05A0DDAC3331">
+                <File Id="ZELDA2.PAL" Name="ZELDA2.pal" Source="..\BizHawk.MultiClient\output\Gameboy\Palettes\ZELDA2.pal" />
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="GAMEDB" Name="gamedb">
+            <Component Id="EMU7800.CSV" DiskId="1" Guid="12F97BC8-6696-4F39-9E35-9A4DD8F58E99">
+              <File Id="EMU7800.CSV" Name="EMU7800.csv" Source="..\BizHawk.MultiClient\output\gamedb\EMU7800.csv" />
+            </Component>
+            <Component Id="GAMEDB.TXT" DiskId="1" Guid="C2893DE0-1302-4354-B68A-8A50E3F0365D">
+              <File Id="GAMEDB.TXT" Name="gamedb.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb.txt" />
+            </Component>
+            <Component Id="GAMEDB_A2600.TXT" DiskId="1" Guid="9E4FE301-70DF-41CB-AA59-8357B7A4E76B">
+              <File Id="GAMEDB_A2600.TXT" Name="gamedb_a2600.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_a2600.txt" />
+            </Component>
+            <Component Id="GAMEDB_COLECO.TXT" DiskId="1" Guid="9F7A3E82-FA6F-45D3-BB48-14D76D751137">
+              <File Id="GAMEDB_COLECO.TXT" Name="gamedb_coleco.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_coleco.txt" />
+            </Component>
+            <Component Id="GAMEDB_GB.TXT" DiskId="1" Guid="EFBF4FA3-737D-45F2-89EB-970B5F548981">
+              <File Id="GAMEDB_GB.TXT" Name="gamedb_gb.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_gb.txt" />
+            </Component>
+            <Component Id="GAMEDB_GBC.TXT" DiskId="1" Guid="2D6BCA82-C86E-46E9-A79F-3CAE70E11B6E">
+              <File Id="GAMEDB_GBC.TXT" Name="gamedb_gbc.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_gbc.txt" />
+            </Component>
+            <Component Id="GAMEDB_N64.TXT" DiskId="1" Guid="D7D5FA49-D66C-49CA-9402-1101888D8034">
+              <File Id="GAMEDB_N64.TXT" Name="gamedb_n64.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_n64.txt" />
+            </Component>
+            <Component Id="GAMEDB_NESHOMEBREW.TXT" DiskId="1" Guid="A2F0240E-C7B0-422D-BE2F-1CDC450CD51C">
+              <File Id="GAMEDB_NESHOMEBREW.TXT" Name="gamedb_neshomebrew.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_neshomebrew.txt" />
+            </Component>
+            <Component Id="GAMEDB_PCE_CD.TXT" DiskId="1" Guid="67E31707-2403-4525-8B06-C2D9A3EFC2FA">
+              <File Id="GAMEDB_PCE_CD.TXT" Name="gamedb_pce_cd.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_pce_cd.txt" />
+            </Component>
+            <Component Id="GAMEDB_PCE_HUCARDS.TXT" DiskId="1" Guid="A78AB715-D1F1-4F6D-92CC-C4EB444AEB7F">
+              <File Id="GAMEDB_PCE_HUCARDS.TXT" Name="gamedb_pce_hucards.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_pce_hucards.txt" />
+            </Component>
+            <Component Id="GAMEDB_SEGA_8BIT.TXT" DiskId="1" Guid="13FF33F6-E0C8-4428-8ACE-2A286CA7E4C7">
+              <File Id="GAMEDB_SEGA_8BIT.TXT" Name="gamedb_sega_8bit.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_sega_8bit.txt" />
+            </Component>
+            <Component Id="GAMEDB_SEGA_MD.TXT" DiskId="1" Guid="81786BE5-DA18-4543-8557-14265BF84123">
+              <File Id="GAMEDB_SEGA_MD.TXT" Name="gamedb_sega_md.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_sega_md.txt" />
+            </Component>
+            <Component Id="GAMEDB_SNES.TXT" DiskId="1" Guid="01701DBF-EA2E-4010-B31E-92B222A6BD0C">
+              <File Id="GAMEDB_SNES.TXT" Name="gamedb_snes.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_snes.txt" />
+            </Component>
+            <Component Id="GAMEDB_VS.TXT" DiskId="1" Guid="3C390A96-FBC2-43F8-A7E6-D38A64601D45">
+              <File Id="GAMEDB_VS.TXT" Name="gamedb_vs.txt" Source="..\BizHawk.MultiClient\output\gamedb\gamedb_vs.txt" />
+            </Component>
+            <Component Id="NESCARTS.7Z" DiskId="1" Guid="8AC012E3-708A-4E2A-ABE6-C88A6AFA7F0C">
+              <File Id="NESCARTS.7Z" Name="NesCarts.7z" Source="..\BizHawk.MultiClient\output\gamedb\NesCarts.7z" />
+            </Component>
+            <Component Id="UPDATE_GAMEDB.BAT" DiskId="1" Guid="417F6CBD-EEA8-4803-8DCC-53E941B977FA">
+              <File Id="UPDATE_GAMEDB.BAT" Name="update_gamedb.bat" Source="..\BizHawk.MultiClient\output\gamedb\update_gamedb.bat" />
+            </Component>
+            <Component Id="WGET.EXE" DiskId="1" Guid="45C53F05-582E-4E70-AF40-DBDEE62A12DF">
+              <File Id="WGET.EXE" Name="wget.exe" Source="..\BizHawk.MultiClient\output\gamedb\wget.exe" />
+            </Component>
+          </Directory>
+          <Directory Id="LUA" Name="Lua">
+            <Component Id="BUTTONCOUNT.LUA" DiskId="1" Guid="BA36D323-6A56-4B77-B12D-647802532C88">
+              <File Id="BUTTONCOUNT.LUA" Name="ButtonCount.lua" Source="..\BizHawk.MultiClient\output\Lua\ButtonCount.lua" />
+            </Component>
+            <Directory Id="GENESIS" Name="Genesis">
+              <Component Id="CASTLEVANIA_BLOODLINES.LUA" DiskId="1" Guid="179AFA68-0D1C-41A1-9A1A-42935EF23DB3">
+                <File Id="CASTLEVANIA_BLOODLINES.LUA" Name="Castlevania Bloodlines.lua" Source="..\BizHawk.MultiClient\output\Lua\Genesis\Castlevania Bloodlines.lua" />
+              </Component>
+              <Component Id="LEGEND_OF_TOKI.LUA" DiskId="1" Guid="556BB51E-49E9-45BB-9CA2-A2F7EED017D2">
+                <File Id="LEGEND_OF_TOKI.LUA" Name="Legend of Toki.lua" Source="..\BizHawk.MultiClient\output\Lua\Genesis\Legend of Toki.lua" />
+              </Component>
+            </Directory>
+            <Directory Id="N64" Name="N64">
+              <Component Id="M64_READER.LUA" DiskId="1" Guid="6C1AF992-BF1F-4D41-B329-DEF2942AE086">
+                <File Id="M64_READER.LUA" Name="M64_reader.lua" Source="..\BizHawk.MultiClient\output\Lua\N64\M64_reader.lua" />
+              </Component>
+            </Directory>
+            <Directory Id="NES" Name="NES">
+              <Component Id="CASTLEVANIA.LUA" DiskId="1" Guid="7897BB6D-1482-4940-8ABC-2F66C7D6C536">
+                <File Id="CASTLEVANIA.LUA" Name="Castlevania.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Castlevania.lua" />
+              </Component>
+              <Component Id="CONTRA_FORCE.LUA" DiskId="1" Guid="E228C8FF-50F4-46F5-8550-2D0C2EA54940">
+                <File Id="CONTRA_FORCE.LUA" Name="Contra force.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Contra force.lua" />
+              </Component>
+              <Component Id="CRYSTALIS.LUA" DiskId="1" Guid="8ACB7A66-C7F9-4CB6-A84E-9B6AB96DFB3B">
+                <File Id="CRYSTALIS.LUA" Name="Crystalis.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Crystalis.lua" />
+              </Component>
+              <Component Id="FAXANDU.LUA" DiskId="1" Guid="25B077E2-917D-482A-89D6-7260A2048493">
+                <File Id="FAXANDU.LUA" Name="Faxandu.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Faxandu.lua" />
+              </Component>
+              <Component Id="HOLY_DIVER.LUA" DiskId="1" Guid="4B747FDE-79E3-49BB-B384-6F85DB04E085">
+                <File Id="HOLY_DIVER.LUA" Name="Holy Diver.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Holy Diver.lua" />
+              </Component>
+              <Component Id="MEGAMAN_4.LUA" DiskId="1" Guid="27DFE32C-3360-4B81-967A-2D43C7AE58F0">
+                <File Id="MEGAMAN_4.LUA" Name="Megaman 4.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Megaman 4.lua" />
+              </Component>
+              <Component Id="NINJAGAIDEN_HITBOX.LUA" DiskId="1" Guid="45036ACE-303D-4835-A95E-7132B680A012">
+                <File Id="NINJAGAIDEN_HITBOX.LUA" Name="NinjaGaiden_Hitbox.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\NinjaGaiden_Hitbox.lua" />
+              </Component>
+              <Component Id="PUNCHOUTSTATS.LUA" DiskId="1" Guid="CC355B56-FA06-4E84-A8E3-CB626DB77FCD">
+                <File Id="PUNCHOUTSTATS.LUA" Name="PunchOutStats.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\PunchOutStats.lua" />
+              </Component>
+              <Component Id="RBIBASEBALL.LUA" DiskId="1" Guid="FA744A3A-9F5B-4C4F-AC08-D4D7EA951478">
+                <File Id="RBIBASEBALL.LUA" Name="RBIBaseball.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\RBIBaseball.lua" />
+              </Component>
+              <Component Id="SIMONS_QUEST.LUA" DiskId="1" Guid="C9FA72AB-BA4E-4A85-8D9B-DBAD59D5667E">
+                <File Id="SIMONS_QUEST.LUA" Name="Simons Quest.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Simons Quest.lua" />
+              </Component>
+              <Component Id="SMB2U.LUA" DiskId="1" Guid="82673BBF-57CA-426E-BA85-ADAAA022EFE1">
+                <File Id="SMB2U.LUA" Name="SMB2U.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\SMB2U.lua" />
+              </Component>
+              <Component Id="SNAKE_RATTLE_N__ROLL.LUA" DiskId="1" Guid="2FC6333B-5886-4A17-875C-8FFAB11F2362">
+                <File Id="SNAKE_RATTLE_N__ROLL.LUA" Name="Snake Rattle N' Roll.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Snake Rattle N' Roll.lua" />
+              </Component>
+              <Component Id="SUPER_C.LUA" DiskId="1" Guid="AA2020A2-BCFC-41F2-908C-304DBBEEAC4A">
+                <File Id="SUPER_C.LUA" Name="Super C.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Super C.lua" />
+              </Component>
+              <Component Id="VICE_PROJECT_DOOM.LUA" DiskId="1" Guid="69FCCC6A-DB2F-480C-A722-3A247377E1D2">
+                <File Id="VICE_PROJECT_DOOM.LUA" Name="Vice Project Doom.lua" Source="..\BizHawk.MultiClient\output\Lua\NES\Vice Project Doom.lua" />
+              </Component>
+            </Directory>
+            <Directory Id="PCE" Name="PCE">
+              <Component Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" DiskId="1" Guid="A54AAF18-5734-46E7-B8A4-26390883E3D4">
+                <File Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" Name="Castlevania_Rondo_of_Blood.lua" Source="..\BizHawk.MultiClient\output\Lua\PCE\Castlevania_Rondo_of_Blood.lua" />
+              </Component>
+            </Directory>
+            <Directory Id="SNES" Name="SNES">
+              <Component Id="CONGO_S_CAPER.LUA" DiskId="1" Guid="904E859B-78BB-41B5-AC10-A077CB450EC4">
+                <File Id="CONGO_S_CAPER.LUA" Name="Congo's Caper.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Congo's Caper.lua" />
+              </Component>
+              <Component Id="CONTRA_3.LUA" DiskId="1" Guid="B2821501-4A10-446A-A621-233A7DB461B3">
+                <File Id="CONTRA_3.LUA" Name="Contra 3.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Contra 3.lua" />
+              </Component>
+              <Component Id="DONKEY_KONG_COUNTRY_3.LUA" DiskId="1" Guid="E21E022C-D958-4878-9DB2-0DB7443CB48B">
+                <File Id="DONKEY_KONG_COUNTRY_3.LUA" Name="Donkey Kong Country 3.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Donkey Kong Country 3.lua" />
+              </Component>
+              <Component Id="MEGAMAN_X.LUA" DiskId="1" Guid="4CC621FD-8DE6-4F3A-8995-1638A4579971">
+                <File Id="MEGAMAN_X.LUA" Name="Megaman X.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Megaman X.lua" />
+              </Component>
+              <Component Id="MEGAMAN_X2.LUA" DiskId="1" Guid="02104F20-B35D-42D8-B41D-D7AD7A00CB0E">
+                <File Id="MEGAMAN_X2.LUA" Name="Megaman X2.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Megaman X2.lua" />
+              </Component>
+              <Component Id="MEGAMAN_X3.LUA" DiskId="1" Guid="E1FF2B8D-556A-48F1-AE40-30F6A2C4A605">
+                <File Id="MEGAMAN_X3.LUA" Name="Megaman X3.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Megaman X3.lua" />
+              </Component>
+              <Component Id="ROCKMAN___FORTE.LUA" DiskId="1" Guid="9E5D76C6-0ACA-4C93-B1E6-B2DA0C21D93E">
+                <File Id="ROCKMAN___FORTE.LUA" Name="Rockman &amp; Forte.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Rockman &amp; Forte.lua" />
+              </Component>
+              <Component Id="SUPER_CASTLEVANIA_4.LUA" DiskId="1" Guid="19BA6B26-0E19-4852-86FE-F3122118B8A1">
+                <File Id="SUPER_CASTLEVANIA_4.LUA" Name="Super Castlevania 4.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Super Castlevania 4.lua" />
+              </Component>
+              <Component Id="SUPER_GHOULS_N_GHOST.LUA" DiskId="1" Guid="324B061C-9AE4-4547-8765-8EBF9B1314C0">
+                <File Id="SUPER_GHOULS_N_GHOST.LUA" Name="Super Ghouls N Ghost.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Super Ghouls N Ghost.lua" />
+              </Component>
+              <Component Id="SUPER_MARIO_WORLD.LUA" DiskId="1" Guid="39844EF6-C830-458A-A1DC-E0D96AC1CBF4">
+                <File Id="SUPER_MARIO_WORLD.LUA" Name="Super Mario World.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Super Mario World.lua" />
+              </Component>
+              <Component Id="SUPER_METROID.LUA" DiskId="1" Guid="4C227AE1-395A-4E98-B987-70C1DEEE2659">
+                <File Id="SUPER_METROID.LUA" Name="Super Metroid.lua" Source="..\BizHawk.MultiClient\output\Lua\SNES\Super Metroid.lua" />
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="NES_1" Name="NES">
+            <Directory Id="PALETTES_1" Name="Palettes">
+              <Component Id="ASQ_REALITYA.PAL" DiskId="1" Guid="A72141BC-D16B-420A-B2B3-7ABAA00217AF">
+                <File Id="ASQ_REALITYA.PAL" Name="ASQ_realityA.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\ASQ_realityA.pal" />
+              </Component>
+              <Component Id="ASQ_REALITYB.PAL" DiskId="1" Guid="152CFA0E-0D13-4227-92AF-10A1A5562046">
+                <File Id="ASQ_REALITYB.PAL" Name="ASQ_realityB.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\ASQ_realityB.pal" />
+              </Component>
+              <Component Id="BMF_FINAL2.PAL" DiskId="1" Guid="F6192E79-6B26-4FF2-8568-9F3EA725DBF5">
+                <File Id="BMF_FINAL2.PAL" Name="BMF_final2.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\BMF_final2.pal" />
+              </Component>
+              <Component Id="BMF_FINAL3.PAL" DiskId="1" Guid="4AE331B6-1DB5-460F-BD06-650939AFAEEA">
+                <File Id="BMF_FINAL3.PAL" Name="BMF_final3.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\BMF_final3.pal" />
+              </Component>
+              <Component Id="FCEU_13_DEFAULT_NITSUJA.PAL" DiskId="1" Guid="211151D2-608F-4F79-9A65-CAAFEF43B05A">
+                <File Id="FCEU_13_DEFAULT_NITSUJA.PAL" Name="FCEU-13-default_nitsuja.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\FCEU-13-default_nitsuja.pal" />
+              </Component>
+              <Component Id="FCEU_15_NITSUJA_NEW.PAL" DiskId="1" Guid="F181D050-A9AD-4C06-A93C-FD1632601B5D">
+                <File Id="FCEU_15_NITSUJA_NEW.PAL" Name="FCEU-15-nitsuja_new.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\FCEU-15-nitsuja_new.pal" />
+              </Component>
+              <Component Id="FCEUX.PAL" DiskId="1" Guid="5CA26666-7C21-4EE8-92D6-20F24B4DBA57">
+                <File Id="FCEUX.PAL" Name="FCEUX.pal" Source="..\BizHawk.MultiClient\output\NES\Palettes\FCEUX.pal" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="DesktopFolder" />
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="BizHawk">
+          <Component Id="StartMenuShortcuts" Guid="C07E36C9-71A2-46F0-A3A5-DF0B3BA804AB">
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+	</Fragment>
+</Wix>

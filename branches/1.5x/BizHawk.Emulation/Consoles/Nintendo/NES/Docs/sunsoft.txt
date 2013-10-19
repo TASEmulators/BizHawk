@@ -1,0 +1,37 @@
+sunsoft games are confusing with the names of the boards and chips. here is some information.
+
+date			name				map	class		pcb literal label
+23-jul-1986		kanshakudama nage..	184	SUNSOFT-1	SUNSOFT-K
+17-apr-1986		atlantis no kazo	184	SUNSOFT-1	UNAMED-SUNSOFT-ATL
+18-dec-1986		wing of madoola		184	SUNSOFT-1	SUNSOFT-K
+20-jul-1987		fantasy zone		184	SUNSOFT-1	SUNSOFT-4 *must be emulated as mapper 93
+11-aug-1987		mito koumon			89	SUNSOFT-2	SUNSOFT-3
+04-dec-1987		shanghai			93	SUNSOFT-2	SUNSOFT-3R
+11-aug-1988		mito koumon II		67	SUNSOFT-3	LROG080-01
+20-dec-1988		fantasy zone II		67	SUNSOFT-3	UNAMED-SUNSOFT-FZII
+30-mar-1989		after burner		68	SUNSOFT-4	UNAMED-SUNSOFT-AFB
+29-sep-1989		maharaja			68	SUNSOFT-4	UNAMED-SUNSOFT-MHA
+22-dec-1989		batman				69	SUNSOFT-5A	BAT-E301
+26-oct-1990		nantettatte..		68	SUNSOFT-4	NTB-ROM-PCB
+14-dec-1990		gremlins 2			69	SUNSOFT-5B	GRM-E301
+20-sep-1991		hebereke			69	FME-7		BAT-E301
+XX-dec-1991		batman: return..	69	FME-7		NES-BTR
+20-dec-1991		dynamite batman		69	FME-7		FC-DBT-1
+31-jan-1992		gimmick!			69	SUNSOFT-5B	FC-GMK
+28-mar-1992		dodge danpei		69	FME-7		GRM-E301
+18-dec-1992		barcode world		69	FME-7		BBW-E301
+19-mar-1993		pyokotan no dai..	69	FME-7		PYK-E301
+26-mar-1993		dodge danpei 2		69	FME-7		DD2-E301
+19-may-1993		Mr Gimmick (PAL)	69	FME-7		NES-JLROM-01
+???????????		Mr Gimmick Proto	69	FME-7		NES-BTR
+
+* notes on fantasy zone
+
+one theory:
+due to having sunsoft-1 chip it was miscategorized against the advice of the elder mapper-making gods as 184 
+along with the other sunsoft-1 chips, but this pcb is wired differently, in a way they liked, and so sunsoft-2 
+which was released soon thereafter worked the same way
+
+nestopia calls mapper 89 sunsoft-2
+nestopia calls mapper 93 sunsoft 2 (a), including fantasy zone
+
