@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadN64 : UserControl, IVirtualPad
@@ -72,7 +74,7 @@ namespace BizHawk.MultiClient
 
 		public void Clear()
 		{
-			if (Global.Emulator.SystemId != "N64") return;
+			if (GlobalWinF.Emulator.SystemId != "N64") return;
 
 			foreach (var button in Buttons)
 			{
@@ -165,8 +167,8 @@ namespace BizHawk.MultiClient
 		{
 			int? x = hasValue ? X : (int?)null;
 			int? y = hasValue ? Y : (int?)null;
-			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
-			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
+			GlobalWinF.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
+			GlobalWinF.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
 
 			AnalogControl1.X = X;
 			AnalogControl1.Y = Y;

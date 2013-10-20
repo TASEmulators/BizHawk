@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
@@ -50,9 +52,9 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) Close();
+			if (!(GlobalWinF.Emulator is NES)) Close();
 			if (!IsHandleCreated || IsDisposed) return;
-			_nes = Global.Emulator as NES;
+			_nes = GlobalWinF.Emulator as NES;
 			Generate(true);
 		}
 
@@ -99,7 +101,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 
-			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
+			if (GlobalWinF.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = CheckChange();
 
@@ -231,14 +233,14 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is NES)) return;
+			if (!(GlobalWinF.Emulator is NES)) return;
 			_nes.ppu.PPUViewCallback = Callback;
 		}
 
 		private void NESPPU_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			_nes = Global.Emulator as NES;
+			_nes = GlobalWinF.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);

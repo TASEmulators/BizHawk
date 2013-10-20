@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public class MovieHeader
@@ -55,9 +57,9 @@ namespace BizHawk.MultiClient
 
 		public MovieHeader() //All required fields will be set to default values
 		{
-			if (Global.MainForm != null)
+			if (GlobalWinF.MainForm != null)
 			{
-				HeaderParams.Add(EMULATIONVERSION, Global.MainForm.GetEmuVersion());
+				HeaderParams.Add(EMULATIONVERSION, GlobalWinF.MainForm.GetEmuVersion());
 			}
 			else
 			{

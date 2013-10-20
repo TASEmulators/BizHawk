@@ -98,10 +98,10 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "A26") return;
+			if (GlobalWinF.Emulator.SystemId != "A26") return;
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Reset", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B1.Checked);
 				if (B1.Checked)
 				{
 					B1.BackColor = Color.Pink;
@@ -113,7 +113,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B2)
 			{
-				Global.StickyXORAdapter.SetSticky("Select", B2.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Select", B2.Checked);
 				if (B2.Checked)
 				{
 					B2.BackColor = Color.Pink;
@@ -127,10 +127,10 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "A26") return;
+			if (GlobalWinF.Emulator.SystemId != "A26") return;
 
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
-			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
+			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

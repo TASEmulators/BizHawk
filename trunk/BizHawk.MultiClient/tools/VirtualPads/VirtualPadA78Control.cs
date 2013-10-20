@@ -70,36 +70,36 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "A78")
+			if (GlobalWinF.Emulator.SystemId != "A78")
 			{
 				return;
 			}
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
 			}
 			else if (sender == B2)
 			{
-				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
 			else if (sender == B3)
 			{
-				Global.StickyXORAdapter.SetSticky("Select", B3.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Select", B3.Checked);
 			}
 			else if (sender == B4)
 			{
-				Global.StickyXORAdapter.SetSticky("Pause", B4.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Pause", B4.Checked);
 			}
 		}
 
 		public void Clear()
 		{
-			if (Global.Emulator.SystemId != "A78") return;
+			if (GlobalWinF.Emulator.SystemId != "A78") return;
 
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
-			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
-			if (B3.Checked) Global.StickyXORAdapter.SetSticky("Select", false);
-			if (B4.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
+			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
+			if (B3.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Select", false);
+			if (B4.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

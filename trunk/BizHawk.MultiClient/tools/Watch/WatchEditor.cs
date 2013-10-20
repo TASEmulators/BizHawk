@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class WatchEditor : Form
@@ -92,7 +94,7 @@ namespace BizHawk.MultiClient
 				_watchList.AddRange(watches);
 			}
 			_mode = mode;
-			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? Global.Emulator.MainMemory);
+			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? GlobalWinF.Emulator.MainMemory);
 			SetTitle();
 		}
 
@@ -117,7 +119,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!_loading)
 			{
-				var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+				var domain = GlobalWinF.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 				if (domain != null)
 				{
 					AddressBox.SetHexProperties(domain.Size);
@@ -175,8 +177,8 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
-			             Global.Emulator.MainMemory;
+			var domain = GlobalWinF.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
+			             GlobalWinF.Emulator.MainMemory;
 			BigEndianCheckBox.Checked = domain.Endian == Endian.Big;
 		}
 
@@ -196,7 +198,7 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case Mode.New:
-					var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+					var domain = GlobalWinF.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 					var address = AddressBox.ToRawInt();
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());

@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient.GBtools
 {
 	public partial class GBGPUView : Form
@@ -78,9 +80,9 @@ namespace BizHawk.MultiClient.GBtools
 
 		public void Restart()
 		{
-			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
+			if (GlobalWinF.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
-				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
+				gb = GlobalWinF.Emulator as Emulation.Consoles.GB.Gameboy;
 				cgb = gb.IsCGBMode();
 				_lcdc = 0;
 				if (!gb.GetGPUMemoryAreas(out vram, out bgpal, out sppal, out oam))
@@ -955,9 +957,9 @@ namespace BizHawk.MultiClient.GBtools
 				dlg.FullOpen = true;
 				dlg.Color = spriteback;
 
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var result = dlg.ShowDialog();
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 				if (result == DialogResult.OK)
 				{
 					// force full opaque

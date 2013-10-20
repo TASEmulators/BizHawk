@@ -6,6 +6,8 @@ using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 #endif
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 #if WINDOWS
@@ -135,7 +137,7 @@ namespace BizHawk.MultiClient
 			syncsoundProvider = null;
 			asyncsoundProvider = source;
 			semisync.BaseSoundProvider = source;
-			semisync.RecalculateMagic(Global.CoreComm.VsyncRate);
+			semisync.RecalculateMagic(GlobalWinF.CoreComm.VsyncRate);
 		}
 
 		static int circularDist(int from, int to, int size)
@@ -206,7 +208,7 @@ namespace BizHawk.MultiClient
 
 				samplesProvided = 2 * nsampgot;
 
-				if (!Global.ForceNoThrottle)
+				if (!GlobalWinF.ForceNoThrottle)
 					while (samplesNeeded < samplesProvided)
 					{
 						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time

@@ -81,23 +81,23 @@ namespace BizHawk.MultiClient
 
 		public void AddState(byte[] state)
 		{
-			if (Global.Emulator.Frame == 0)
+			if (GlobalWinF.Emulator.Frame == 0)
 			{
 				InitState = state;
 			}
-			if (Global.Emulator.Frame < StateFirstIndex)
+			if (GlobalWinF.Emulator.Frame < StateFirstIndex)
 			{
 				_state_records.Clear();
-				_state_records.Add(new StateRecord(Global.Emulator.Frame, state));
+				_state_records.Add(new StateRecord(GlobalWinF.Emulator.Frame, state));
 			}
-			if (Global.Emulator.Frame > StateLastIndex)
+			if (GlobalWinF.Emulator.Frame > StateLastIndex)
 			{
 				if (StateSizeInBytes + state.Length > MAXSTATERECORDSIZE)
 				{
 					// Discard the oldest state to save space.
 					_state_records.RemoveAt(0);
 				}
-				_state_records.Add(new StateRecord(Global.Emulator.Frame,state));
+				_state_records.Add(new StateRecord(GlobalWinF.Emulator.Frame,state));
 			}
 		}
 
@@ -127,12 +127,12 @@ namespace BizHawk.MultiClient
 				if (frame <= StateFirstIndex)
 				{
 					_state_records.Clear();
-					Global.MovieSession.Movie.RewindToFrame(0);
+					GlobalWinF.MovieSession.Movie.RewindToFrame(0);
 				}
 				else
 				{
 					_state_records.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
-					Global.MovieSession.Movie.RewindToFrame(frame);
+					GlobalWinF.MovieSession.Movie.RewindToFrame(frame);
 				}
 			}
 		}
@@ -231,7 +231,7 @@ namespace BizHawk.MultiClient
 			{
 				Index = index;
 				State = state;
-				Lagged = Global.Emulator.IsLagFrame;
+				Lagged = GlobalWinF.Emulator.IsLagFrame;
 			}
 
 			public readonly int Index;

@@ -87,13 +87,13 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "GB")
+			if (GlobalWinF.Emulator.SystemId != "GB")
 			{
 				return;
 			}
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
 				if (B1.Checked)
 				{
 					B1.BackColor = Color.Pink;
@@ -107,12 +107,12 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "GB")
+			if (GlobalWinF.Emulator.SystemId != "GB")
 			{
 				return;
 			}
 
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
 
 			B1.Checked = false;
 		}

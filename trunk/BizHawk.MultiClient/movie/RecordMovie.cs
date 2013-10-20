@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
@@ -60,7 +62,7 @@ namespace BizHawk.MultiClient
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, Global.MainForm.GetEmuVersion());
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, GlobalWinF.MainForm.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
@@ -76,45 +78,45 @@ namespace BizHawk.MultiClient
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 				}
 
-				if (Global.Emulator.BoardName != null)
+				if (GlobalWinF.Emulator.BoardName != null)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, Global.Emulator.BoardName);
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, GlobalWinF.Emulator.BoardName);
 				}
 
-				if (Global.Emulator is Gameboy)
+				if (GlobalWinF.Emulator is Gameboy)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
 				}
 
-				if (Global.Emulator is LibsnesCore)
+				if (GlobalWinF.Emulator is LibsnesCore)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
-					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((GlobalWinF.Emulator) as LibsnesCore).IsSGB.ToString());
+					if ((GlobalWinF.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (Global.Emulator is SMS)
+				else if (GlobalWinF.Emulator is SMS)
 				{
-					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
+					if ((GlobalWinF.Emulator as SMS).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (Global.Emulator is NES)
+				else if (GlobalWinF.Emulator is NES)
 				{
-					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
+					if ((GlobalWinF.Emulator as NES).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (Global.Emulator is ColecoVision)
+				else if (GlobalWinF.Emulator is ColecoVision)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
 				}
 
-				else if (Global.Emulator is N64)
+				else if (GlobalWinF.Emulator is N64)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.VIDEOPLUGIN, Global.Config.N64VidPlugin);
 
@@ -141,7 +143,7 @@ namespace BizHawk.MultiClient
 					MovieToRecord.StartsFromSavestate = true;
 					var temppath = path;
 					var writer = new StreamWriter(temppath);
-					Global.Emulator.SaveStateText(writer);
+					GlobalWinF.Emulator.SaveStateText(writer);
 					writer.Close();
 
 					var file = new FileInfo(temppath);
@@ -160,7 +162,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 				}
-				Global.MainForm.StartNewMovie(MovieToRecord, true);
+				GlobalWinF.MainForm.StartNewMovie(MovieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -194,9 +196,9 @@ namespace BizHawk.MultiClient
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				filename = sfd.FileName;

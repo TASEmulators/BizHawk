@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class MessageConfig : Form
@@ -68,17 +70,17 @@ namespace BizHawk.MultiClient
 
 		private void SetMaxXY()
 		{
-			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 12;
-			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 12;
-			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth + 2, Global.Emulator.VideoProvider.BufferHeight + 2);
+			XNumeric.Maximum = GlobalWinF.Emulator.VideoProvider.BufferWidth - 12;
+			YNumeric.Maximum = GlobalWinF.Emulator.VideoProvider.BufferHeight - 12;
+			PositionPanel.Size = new Size(GlobalWinF.Emulator.VideoProvider.BufferWidth + 2, GlobalWinF.Emulator.VideoProvider.BufferHeight + 2);
 
 			int width;
-			if (Global.Emulator.VideoProvider.BufferWidth > 128)
-				width = Global.Emulator.VideoProvider.BufferWidth + 44;
+			if (GlobalWinF.Emulator.VideoProvider.BufferWidth > 128)
+				width = GlobalWinF.Emulator.VideoProvider.BufferWidth + 44;
 			else
 				width = 128 + 44;
 
-			PositionGroupBox.Size = new Size(width, Global.Emulator.VideoProvider.BufferHeight + 52);
+			PositionGroupBox.Size = new Size(width, GlobalWinF.Emulator.VideoProvider.BufferHeight + 52);
 		}
 
 		private void SetColorBox()
@@ -227,7 +229,7 @@ namespace BizHawk.MultiClient
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			Global.OSD.AddMessage("Message settings saved");
+			GlobalWinF.OSD.AddMessage("Message settings saved");
 			this.Close();
 		}
 
@@ -287,7 +289,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			Global.OSD.AddMessage("Message config aborted");
+			GlobalWinF.OSD.AddMessage("Message config aborted");
 			this.Close();
 		}
 

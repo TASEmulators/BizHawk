@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public class WatchList : IEnumerable<Watch>
@@ -347,7 +349,7 @@ namespace BizHawk.MultiClient
 				StringBuilder sb = new StringBuilder();
 				sb
 					.Append("Domain ").AppendLine(_domain.Name)
-					.Append("SystemID ").AppendLine(Global.Emulator.SystemId);
+					.Append("SystemID ").AppendLine(GlobalWinF.Emulator.SystemId);
 
 				foreach (Watch w in _watchList)
 				{
@@ -449,7 +451,7 @@ namespace BizHawk.MultiClient
 					//Temporary, rename if kept
 					int addr;
 					bool bigEndian;
-					MemoryDomain memDomain = Global.Emulator.MainMemory;
+					MemoryDomain memDomain = GlobalWinF.Emulator.MainMemory;
 
 					string temp = line.Substring(0, line.IndexOf('\t'));
 					try
@@ -494,7 +496,7 @@ namespace BizHawk.MultiClient
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
+						memDomain = GlobalWinF.Emulator.MemoryDomains[GetDomainPos(temp)];
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
@@ -508,7 +510,7 @@ namespace BizHawk.MultiClient
 							type,
 							notes,
 							bigEndian));
-					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
+					_domain = GlobalWinF.Emulator.MemoryDomains[GetDomainPos(domain)];
 				}
 			}
 
@@ -527,9 +529,9 @@ namespace BizHawk.MultiClient
 		private static int GetDomainPos(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			for (int x = 0; x < GlobalWinF.Emulator.MemoryDomains.Count; x++)
 			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
+				if (GlobalWinF.Emulator.MemoryDomains[x].Name == name)
 					return x;
 			}
 			return 0;
@@ -544,9 +546,9 @@ namespace BizHawk.MultiClient
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -561,7 +563,7 @@ namespace BizHawk.MultiClient
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
 			}
-			else if (!(Global.Emulator is NullEmulator))
+			else if (!(GlobalWinF.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
@@ -573,9 +575,9 @@ namespace BizHawk.MultiClient
 			}
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);

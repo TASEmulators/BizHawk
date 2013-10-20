@@ -673,7 +673,7 @@ namespace BizHawk.MultiClient.GBAtools
 
 		public void Restart()
 		{
-			gba = Global.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
+			gba = GlobalWinF.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
 			if (gba != null)
 			{
 				gba.GetGPUMemoryAreas(out vram, out palram, out oam, out mmio);

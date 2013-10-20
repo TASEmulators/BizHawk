@@ -71,26 +71,26 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "SAT")
+			if (GlobalWinF.Emulator.SystemId != "SAT")
 			{
 				return;
 			}
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
 			}
 			else if (sender == B2)
 			{
-				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
 		}
 
 		public void Clear()
 		{
-			if (Global.Emulator.SystemId != "SAT") return;
+			if (GlobalWinF.Emulator.SystemId != "SAT") return;
 
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
-			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
+			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

@@ -2,13 +2,15 @@
 using System.Linq;
 using System.IO;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	class StateVisualizer
 	{
 		public StateVisualizer()
 		{
-			TimeLine movietimeline = new TimeLine(Global.MovieSession.Movie.LogDump);
+			TimeLine movietimeline = new TimeLine(GlobalWinF.MovieSession.Movie.LogDump);
 
 			Timelines = new List<TimeLine> {movietimeline};
 

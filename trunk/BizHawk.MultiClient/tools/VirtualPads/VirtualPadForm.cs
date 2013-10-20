@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Consoles.Nintendo.N64;
+using BizHawk.Client.Core;
 
 namespace BizHawk.MultiClient
 {
@@ -55,7 +57,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadPads()
 		{
-			switch (Global.Emulator.SystemId)
+			switch (GlobalWinF.Emulator.SystemId)
 			{
 				case "A26":
 					VirtualPadA26 ataripad1 = new VirtualPadA26 {Location = new Point(8, 19), Controller = "P1"};
@@ -206,7 +208,7 @@ namespace BizHawk.MultiClient
 			}
 
 			//Hack for now
-			if (Global.Emulator.SystemId == "C64")
+			if (GlobalWinF.Emulator.SystemId == "C64")
 			{
 				if (Width < 505)
 				{
@@ -224,8 +226,8 @@ namespace BizHawk.MultiClient
 		protected override void OnClosed(EventArgs e)
 		{
 			//is this a good idea?
-			Global.StickyXORAdapter.ClearStickies();
-			Global.StickyXORAdapter.ClearStickyFloats();
+			GlobalWinF.StickyXORAdapter.ClearStickies();
+			GlobalWinF.StickyXORAdapter.ClearStickyFloats();
 		}
 
 		public void ClearVirtualPadHolds()
@@ -252,12 +254,12 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 
-			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
+			if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsFinished)
 			{
-				string str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
+				string str = GlobalWinF.MovieSession.Movie.GetInput(GlobalWinF.Emulator.Frame);
 				if (Global.Config.TASUpdatePads && str != "")
 				{
-					switch (Global.Emulator.SystemId)
+					switch (GlobalWinF.Emulator.SystemId)
 					{
 						case "NES":
 							Pads[0].SetButtons(str.Substring(3, 8));
@@ -370,7 +372,7 @@ namespace BizHawk.MultiClient
 		public void BumpAnalogValue(int? dx, int? dy)
 		{
 			//TODO: make an analog flag in virtualpads that have it, and check the virtualpads loaded, instead of doing this hardcoded
-			if (Global.Emulator is N64)
+			if (GlobalWinF.Emulator is N64)
 			{
 				(Pads[0] as VirtualPadN64).FudgeAnalog(dx, dy);
 

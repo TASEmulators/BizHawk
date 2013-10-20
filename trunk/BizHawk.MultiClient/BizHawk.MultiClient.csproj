@@ -159,8 +159,6 @@
     <Compile Include="BizBox.Designer.cs">
       <DependentUpon>BizBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Config.cs" />
-    <Compile Include="ConfigService.cs" />
     <Compile Include="config\AutofireConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -244,7 +242,7 @@
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="FirmwareManager.cs" />
-    <Compile Include="Global.cs" />
+    <Compile Include="GlobalWinF.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -708,7 +706,6 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch\Watch.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -955,7 +952,6 @@
     <Compile Include="tools\InputPrompt.Designer.cs">
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="RecentFiles.cs" />
     <Compile Include="RenderPanel.cs" />
     <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
@@ -981,6 +977,10 @@
     <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
       <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
       <Name>BizHawk.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Core\Client.Core.csproj">
+      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
+      <Name>Client.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,8 @@
 using System.Text;
 using System.Collections.Generic;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -307,7 +309,7 @@ namespace BizHawk.MultiClient
 		{
 			if (stickySet.Contains(button))
 			{
-				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
 				if (a < On)
 					return this[button];
 				else
@@ -331,7 +333,7 @@ namespace BizHawk.MultiClient
 				{
 
 
-					int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+					int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
 					if (a < On)
 					{
 						source ^= true;

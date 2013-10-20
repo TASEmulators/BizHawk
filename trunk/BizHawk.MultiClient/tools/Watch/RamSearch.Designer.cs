@@ -1352,7 +1352,7 @@
 			// 
 			this.SpecificValueBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.SpecificValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.SpecificValueBox.ByteSize = BizHawk.Client.Core.Watch.WatchSize.Byte;
 			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificValueBox.Enabled = false;
 			this.SpecificValueBox.Location = new System.Drawing.Point(114, 38);
@@ -1362,7 +1362,7 @@
 			this.SpecificValueBox.Size = new System.Drawing.Size(72, 20);
 			this.SpecificValueBox.TabIndex = 15;
 			this.SpecificValueBox.Text = "00";
-			this.SpecificValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.SpecificValueBox.Type = BizHawk.Client.Core.Watch.DisplayType.Hex;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.CompareToValue_TextChanged);
 			// 
 			// RamSearch

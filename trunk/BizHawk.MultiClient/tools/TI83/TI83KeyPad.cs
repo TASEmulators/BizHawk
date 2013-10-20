@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Client.Core;
 
 namespace BizHawk.MultiClient
 {
@@ -93,7 +95,7 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is TI83))
+			if (!(GlobalWinF.Emulator is TI83))
 				Close();
 			if (!IsHandleCreated || IsDisposed) return;
 		}
@@ -122,247 +124,247 @@ namespace BizHawk.MultiClient
 
 		private void button42_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ENTER");
+			GlobalWinF.ClickyVirtualPadController.Click("ENTER");
 		}
 
 		private void button43_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DASH");
+			GlobalWinF.ClickyVirtualPadController.Click("DASH");
 		}
 
 		private void button39_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("2");
+			GlobalWinF.ClickyVirtualPadController.Click("2");
 		}
 
 		private void ONE_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("1");
+			GlobalWinF.ClickyVirtualPadController.Click("1");
 		}
 
 		private void THREE_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("3");
+			GlobalWinF.ClickyVirtualPadController.Click("3");
 		}
 
 		private void FOUR_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("4");
+			GlobalWinF.ClickyVirtualPadController.Click("4");
 		}
 
 		private void FIVE_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("5");
+			GlobalWinF.ClickyVirtualPadController.Click("5");
 		}
 
 		private void SIX_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("6");
+			GlobalWinF.ClickyVirtualPadController.Click("6");
 		}
 
 		private void SEVEN_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("7");
+			GlobalWinF.ClickyVirtualPadController.Click("7");
 		}
 
 		private void EIGHT_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("8");
+			GlobalWinF.ClickyVirtualPadController.Click("8");
 		}
 
 		private void NINE_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("9");
+			GlobalWinF.ClickyVirtualPadController.Click("9");
 		}
 
 		private void ON_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ON");
+			GlobalWinF.ClickyVirtualPadController.Click("ON");
 		}
 
 		private void STO_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("STO");
+			GlobalWinF.ClickyVirtualPadController.Click("STO");
 		}
 
 		private void PLUS_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PLUS");
+			GlobalWinF.ClickyVirtualPadController.Click("PLUS");
 		}
 
 		private void LN_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LN");
+			GlobalWinF.ClickyVirtualPadController.Click("LN");
 		}
 
 		private void MINUS_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MINUS");
+			GlobalWinF.ClickyVirtualPadController.Click("MINUS");
 		}
 
 		private void LOG_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LOG");
+			GlobalWinF.ClickyVirtualPadController.Click("LOG");
 		}
 
 		private void MULTIPLY_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MULTIPLY");
+			GlobalWinF.ClickyVirtualPadController.Click("MULTIPLY");
 		}
 
 		private void button26_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("SQUARED");
+			GlobalWinF.ClickyVirtualPadController.Click("SQUARED");
 		}
 
 		private void button25_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("COMMA");
+			GlobalWinF.ClickyVirtualPadController.Click("COMMA");
 		}
 
 		private void button24_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PARAOPEN");
+			GlobalWinF.ClickyVirtualPadController.Click("PARAOPEN");
 		}
 
 		private void button23_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PARACLOSE");
+			GlobalWinF.ClickyVirtualPadController.Click("PARACLOSE");
 		}
 
 		private void button22_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DIVIDE");
+			GlobalWinF.ClickyVirtualPadController.Click("DIVIDE");
 		}
 
 		private void button17_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("NEG1");
+			GlobalWinF.ClickyVirtualPadController.Click("NEG1");
 		}
 
 		private void button18_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("SIN");
+			GlobalWinF.ClickyVirtualPadController.Click("SIN");
 		}
 
 		private void button19_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("COS");
+			GlobalWinF.ClickyVirtualPadController.Click("COS");
 		}
 
 		private void button20_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("TAN");
+			GlobalWinF.ClickyVirtualPadController.Click("TAN");
 		}
 
 		private void button21_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("EXP");
+			GlobalWinF.ClickyVirtualPadController.Click("EXP");
 		}
 
 		private void button12_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MATH");
+			GlobalWinF.ClickyVirtualPadController.Click("MATH");
 		}
 
 		private void button13_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MATRIX");
+			GlobalWinF.ClickyVirtualPadController.Click("MATRIX");
 		}
 
 		private void button14_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("PRGM");
+			GlobalWinF.ClickyVirtualPadController.Click("PRGM");
 		}
 
 		private void button15_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("VARS");
+			GlobalWinF.ClickyVirtualPadController.Click("VARS");
 		}
 
 		private void button16_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("CLEAR");
+			GlobalWinF.ClickyVirtualPadController.Click("CLEAR");
 		}
 
 		private void button11_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ALPHA");
+			GlobalWinF.ClickyVirtualPadController.Click("ALPHA");
 		}
 
 		private void button4_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("X");
+			GlobalWinF.ClickyVirtualPadController.Click("X");
 		}
 
 		private void button10_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("STAT");
+			GlobalWinF.ClickyVirtualPadController.Click("STAT");
 		}
 
 		private void button5_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("2ND");
+			GlobalWinF.ClickyVirtualPadController.Click("2ND");
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("MODE");
+			GlobalWinF.ClickyVirtualPadController.Click("MODE");
 		}
 
 		private void button3_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DEL");
+			GlobalWinF.ClickyVirtualPadController.Click("DEL");
 		}
 
 		private void button47_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("LEFT");
+			GlobalWinF.ClickyVirtualPadController.Click("LEFT");
 		}
 
 		private void button49_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DOWN");
+			GlobalWinF.ClickyVirtualPadController.Click("DOWN");
 		}
 
 		private void button48_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("RIGHT");
+			GlobalWinF.ClickyVirtualPadController.Click("RIGHT");
 		}
 
 		private void button50_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("UP");
+			GlobalWinF.ClickyVirtualPadController.Click("UP");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("Y");
+			GlobalWinF.ClickyVirtualPadController.Click("Y");
 		}
 
 		private void button6_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("WINDOW");
+			GlobalWinF.ClickyVirtualPadController.Click("WINDOW");
 		}
 
 		private void button7_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("ZOOM");
+			GlobalWinF.ClickyVirtualPadController.Click("ZOOM");
 		}
 
 		private void button8_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("TRACE");
+			GlobalWinF.ClickyVirtualPadController.Click("TRACE");
 		}
 
 		private void button9_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("GRAPH");
+			GlobalWinF.ClickyVirtualPadController.Click("GRAPH");
 		}
 
 		private void PERIOD_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("DOT");
+			GlobalWinF.ClickyVirtualPadController.Click("DOT");
 		}
 
 		private void showHotkToolStripMenuItem_Click(object sender, EventArgs e)
@@ -381,7 +383,7 @@ namespace BizHawk.MultiClient
 
 		private void ZERO_Click(object sender, EventArgs e)
 		{
-			Global.ClickyVirtualPadController.Click("0");
+			GlobalWinF.ClickyVirtualPadController.Click("0");
 		}
 	}
 }

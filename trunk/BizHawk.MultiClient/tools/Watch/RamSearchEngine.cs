@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	//TODO: move me
@@ -1018,7 +1020,7 @@ namespace BizHawk.MultiClient
 
 			public Settings()
 			{
-				switch (Global.Emulator.SystemId)
+				switch (GlobalWinF.Emulator.SystemId)
 				{
 					case "N64":
 						Mode = SearchMode.Fast;
@@ -1067,7 +1069,7 @@ namespace BizHawk.MultiClient
 						break;
 				}
 
-				Domain = Global.Emulator.MainMemory;
+				Domain = GlobalWinF.Emulator.MainMemory;
 				CheckMisAligned = false;
 				PreviousType = Watch.PreviousType.LastSearch;
 			}

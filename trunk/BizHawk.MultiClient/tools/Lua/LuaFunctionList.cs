@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
+			foreach (LuaDocumentation.LibraryFunction l in GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
 				ListViewItem item = new ListViewItem {Text = l.ReturnType};
 				item.SubItems.Add(l.library + ".");
@@ -41,16 +41,16 @@ namespace BizHawk.MultiClient
 				switch (column)
 				{
 					case 0: //Return
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.ReturnType).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.ReturnType).ToList();
 						break;
 					case 1: //Library
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.library).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.library).ToList();
 						break;
 					case 2: //Name
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.name).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.name).ToList();
 						break;
 					case 3: //Parameters
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.ParameterList).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderByDescending(x => x.ParameterList).ToList();
 						break;
 				}
 			}
@@ -59,16 +59,16 @@ namespace BizHawk.MultiClient
 				switch (column)
 				{
 					case 0: //Return
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.ReturnType).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.ReturnType).ToList();
 						break;
 					case 1: //Library
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.library).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.library).ToList();
 						break;
 					case 2: //Name
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.name).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.name).ToList();
 						break;
 					case 3: //Parameters
-						Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.ParameterList).ToList();
+						GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList.OrderBy(x => x.ParameterList).ToList();
 						break;
 				}
 			}
@@ -132,7 +132,7 @@ namespace BizHawk.MultiClient
 
 					foreach (int index in indexes)
 					{
-						var library_function = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList[index];
+						var library_function = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList[index];
 						sb.Append(library_function.library).Append('.').Append(library_function.name).Append("()\n");
 					}
 

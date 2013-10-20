@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.Sega;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
@@ -222,7 +224,7 @@ namespace BizHawk.MultiClient
 
 		private void addcheatbt_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Genesis)
+			if (GlobalWinF.Emulator is Genesis)
 			{
 				string NAME;
 				int ADDRESS = 0;
@@ -253,16 +255,16 @@ namespace BizHawk.MultiClient
 					VALUE = ValueBox.ToRawInt();
 				}
 
-				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 				{
-					if (Global.Emulator.MemoryDomains[i].ToString() == "Rom Data")
+					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "Rom Data")
 					{
 						romDataDomainIndex = i;
 					}
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[romDataDomainIndex],
+					GlobalWinF.Emulator.MemoryDomains[romDataDomainIndex],
 					ADDRESS,
 					Watch.WatchSize.Word,
 					Watch.DisplayType.Hex,
@@ -270,7 +272,7 @@ namespace BizHawk.MultiClient
 					bigEndian: true
 				);
 
-				Global.CheatList.Add(new Cheat(
+				GlobalWinF.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					compare: null,

@@ -3,6 +3,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public sealed class PaletteViewer : Control
@@ -81,9 +83,9 @@ namespace BizHawk.MultiClient
 					RestoreDirectory = true
 				};
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 

@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -107,7 +109,7 @@ namespace BizHawk.MultiClient
 			SpecificValueBox.Type = Settings.Type;
 
 			MessageLabel.Text = String.Empty;
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
+			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(GlobalWinF.Emulator.MainMemory.Size);
 			HardSetSizeDropDown(Settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(Settings.Type);
@@ -131,7 +133,7 @@ namespace BizHawk.MultiClient
 			{
 				Color nextColor = Color.White;
 
-				bool isCheat = Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value);
+				bool isCheat = GlobalWinF.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value);
 				bool isWeeded = Global.Config.RamSearchPreviewMode && !forcePreviewClear && Searches.Preview(Searches[index].Address.Value);
 
 				if (isCheat)
@@ -235,7 +237,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 			
-			Settings.Domain = Global.Emulator.MainMemory;
+			Settings.Domain = GlobalWinF.Emulator.MainMemory;
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
@@ -484,14 +486,14 @@ namespace BizHawk.MultiClient
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Searches.Domain.Name;
+			MemDomainLabel.Text = GlobalWinF.Emulator.SystemId + " " + Searches.Domain.Name;
 		}
 
 		private void SetMemoryDomain(int pos)
 		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			if (pos < GlobalWinF.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				Settings.Domain = Global.Emulator.MemoryDomains[pos];
+				Settings.Domain = GlobalWinF.Emulator.MemoryDomains[pos];
 				SetDomainLabel();
 				SetReboot(true);
 				SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Settings.Domain.Size);
@@ -786,10 +788,10 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch(true);
+				GlobalWinF.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < SelectedIndices.Count; x++)
 				{
-					Global.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
+					GlobalWinF.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
 				}
 
 				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
@@ -808,7 +810,7 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var poke = new RamPoke();
 
 				var watches = new List<Watch>();
@@ -821,13 +823,13 @@ namespace BizHawk.MultiClient
 				poke.InitialLocation = GetPromptPoint();
 				poke.ShowDialog();
 				UpdateValues();
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 			}
 		}
 
 		private void RemoveRamWatchesFromList()
 		{
-			Searches.RemoveRange(Global.MainForm.RamWatch1.AddressList);
+			Searches.RemoveRange(GlobalWinF.MainForm.RamWatch1.AddressList);
 			WatchListView.ItemCount = Searches.Count;
 			SetTotal();
 		}
@@ -872,9 +874,9 @@ namespace BizHawk.MultiClient
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
 			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			i.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 
 			if (i.UserOK)
 			{
@@ -1173,7 +1175,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
+					if (!GlobalWinF.CheatList.IsActive(watch.Domain, watch.Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1333,14 +1335,14 @@ namespace BizHawk.MultiClient
 				ViewInHexEditorContextMenuItem.Visible =
 				SelectedIndices.Count > 0;
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = GlobalWinF.CheatList.ActiveCount > 0;
 
-			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.ActiveCount > 0);
+			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (GlobalWinF.CheatList.ActiveCount > 0);
 
 			bool allCheats = true;
 			foreach (int index in SelectedIndices)
 			{
-				if (!Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value))
+				if (!GlobalWinF.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value))
 				{
 					allCheats = false;
 				}

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	partial class MainForm
@@ -10,70 +12,70 @@ namespace BizHawk.MultiClient
 
 		public void ClearFrame()
 		{
-			if (Global.MovieSession.Movie.IsPlaying)
+			if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
-				Global.MovieSession.Movie.ClearFrame(Global.Emulator.Frame);
-				Global.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
+				GlobalWinF.MovieSession.Movie.ClearFrame(GlobalWinF.Emulator.Frame);
+				GlobalWinF.OSD.AddMessage("Scrubbed input at frame " + GlobalWinF.Emulator.Frame.ToString());
 			}
 		}
 
 		public void StartNewMovie(Movie m, bool record)
 		{
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.WriteMovie();
+				GlobalWinF.MovieSession.Movie.WriteMovie();
 			}
 
-			Global.MovieSession = new MovieSession {Movie = m};
+			GlobalWinF.MovieSession = new MovieSession {Movie = m};
 			RewireInputChain();
 
 			if (!record)
 			{
-				Global.MovieSession.Movie.LoadMovie();
+				GlobalWinF.MovieSession.Movie.LoadMovie();
 				SetSyncDependentSettings();
 			}
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom, true, !record);
+			LoadRom(GlobalWinF.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
-			if (Global.MovieSession.Movie.StartsFromSavestate)
+			if (GlobalWinF.MovieSession.Movie.StartsFromSavestate)
 			{
-				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
-				Global.Emulator.ResetFrameCounter();
+				LoadStateFile(GlobalWinF.MovieSession.Movie.Filename, Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename));
+				GlobalWinF.Emulator.ResetFrameCounter();
 			}
 			if (record)
 			{
-				Global.MovieSession.Movie.StartRecording();
+				GlobalWinF.MovieSession.Movie.StartRecording();
 				ReadOnly = false;
 			}
 			else
 			{
-				Global.MovieSession.Movie.StartPlayback();
+				GlobalWinF.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
 			VirtualPadForm1.Restart();
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void SetMainformMovieInfo()
 		{
-			if (Global.MovieSession.Movie.IsPlaying)
+			if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = Properties.Resources.Play;
 				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
 				PlayRecordStatus.Visible = true;
 			}
-			else if (Global.MovieSession.Movie.IsRecording)
+			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
 				PlayRecordStatus.Visible = true;
 			}
-			else if (!Global.MovieSession.Movie.IsActive)
+			else if (!GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
 				PlayRecordStatus.Image = Properties.Resources.Blank;
@@ -90,10 +92,10 @@ namespace BizHawk.MultiClient
 		public void RecordMovie()
 		{
 			// put any BEETA quality cores here
-			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
-				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
-				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
-                Global.Emulator is Emulation.Consoles.Sony.PSP.PSP)
+			if (GlobalWinF.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
+				GlobalWinF.Emulator is Emulation.Consoles.Sega.Genesis ||
+				GlobalWinF.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
+                GlobalWinF.Emulator is Emulation.Consoles.Sony.PSP.PSP)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
@@ -108,44 +110,44 @@ namespace BizHawk.MultiClient
 
 		public void PlayMovieFromBeginning()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				LoadRom(CurrentlyOpenRom, true, true);
-				if (Global.MovieSession.Movie.StartsFromSavestate)
+				if (GlobalWinF.MovieSession.Movie.StartsFromSavestate)
 				{
-					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
-					Global.Emulator.ResetFrameCounter();
+					LoadStateFile(GlobalWinF.MovieSession.Movie.Filename, Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename));
+					GlobalWinF.Emulator.ResetFrameCounter();
 				}
-				Global.MovieSession.Movie.StartPlayback();
+				GlobalWinF.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
-				Global.OSD.AddMessage("Replaying movie file in read-only mode");
-				Global.MainForm.ReadOnly = true;
+				GlobalWinF.OSD.AddMessage("Replaying movie file in read-only mode");
+				GlobalWinF.MainForm.ReadOnly = true;
 			}
 		}
 
 		public void StopMovie(bool abortchanges = false)
 		{
 			string message = "Movie ";
-			if (Global.MovieSession.Movie.IsRecording)
+			if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
 				message += "recording ";
 			}
-			else if (Global.MovieSession.Movie.IsPlaying)
+			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
 				message += "playback ";
 			}
 
 			message += "stopped.";
 
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.Stop(abortchanges);
+				GlobalWinF.MovieSession.Movie.Stop(abortchanges);
 				if (!abortchanges)
 				{
-					Global.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
+					GlobalWinF.OSD.AddMessage(Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename) + " written to disk.");
 				}
-				Global.OSD.AddMessage(message);
-				Global.MainForm.ReadOnly = true;
+				GlobalWinF.OSD.AddMessage(message);
+				GlobalWinF.MainForm.ReadOnly = true;
 				SetMainformMovieInfo();
 			}
 		}
@@ -161,44 +163,44 @@ namespace BizHawk.MultiClient
 		private bool HandleMovieLoadState(StreamReader reader)
 		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
-			if (!Global.MovieSession.Movie.IsActive)
+			if (!GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				return true;
 			}
 
-			else if (Global.MovieSession.Movie.IsRecording)
+			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
 
 				if (ReadOnly)
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
+					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
 					{
 						return false;	//Timeline/GUID error
 					}
 					else
 					{
-						Global.MovieSession.Movie.WriteMovie();
-						Global.MovieSession.Movie.SwitchToPlay();
+						GlobalWinF.MovieSession.Movie.WriteMovie();
+						GlobalWinF.MovieSession.Movie.SwitchToPlay();
 						SetMainformMovieInfo();
 					}
 				}
 				else
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
+					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
 						return false;	//GUID Error
 					}
 					reader.BaseStream.Position = 0;
 					reader.DiscardBufferedData();
-					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
+					GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
 
-			else if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
+			else if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsFinished)
 			{
 				if (ReadOnly)
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
+					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
 					{
 						return false;	//Timeline/GUID error
 					}
@@ -206,33 +208,33 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
+					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
 						return false;	//GUID Error
 					}
-					Global.MovieSession.Movie.SwitchToRecord();
+					GlobalWinF.MovieSession.Movie.SwitchToRecord();
 					SetMainformMovieInfo();
 					reader.BaseStream.Position = 0;
 					reader.DiscardBufferedData();
-					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
+					GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
-			else if (Global.MovieSession.Movie.IsFinished)
+			else if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
 				if (ReadOnly)
 				{
 					{
-						if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
+						if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
 						{
 							return false;	//Timeline/GUID error
 						}
-						else if (Global.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
+						else if (GlobalWinF.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
 						{
-							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 						}
 						else
 						{
-							Global.MovieSession.Movie.SwitchToPlay();
+							GlobalWinF.MovieSession.Movie.SwitchToPlay();
 							SetMainformMovieInfo();
 						}
 					}
@@ -240,17 +242,17 @@ namespace BizHawk.MultiClient
 				else
 				{
 					{
-						if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
+						if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
 						{
 							return false;	//GUID Error
 						}
 						else
 						{
-							Global.MovieSession.Movie.StartRecording();
+							GlobalWinF.MovieSession.Movie.StartRecording();
 							SetMainformMovieInfo();
 							reader.BaseStream.Position = 0;
 							reader.DiscardBufferedData();
-							Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
+							GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
 						}
 					}
 				}
@@ -260,98 +262,98 @@ namespace BizHawk.MultiClient
 
 		private void HandleMovieSaveState(StreamWriter writer)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.DumpLogIntoSavestateText(writer);
+				GlobalWinF.MovieSession.Movie.DumpLogIntoSavestateText(writer);
 			}
 		}
 
 		private void HandleMovieOnFrameLoop()
 		{
-			if (!Global.MovieSession.Movie.IsActive)
+			if (!GlobalWinF.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+				GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 			}
 
-			else if (Global.MovieSession.Movie.IsFinished)
+			else if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
-				if (Global.Emulator.Frame < Global.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (GlobalWinF.Emulator.Frame < GlobalWinF.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
-					Global.MovieSession.Movie.SwitchToPlay();
-					Global.MovieSession.LatchInputFromLog();
+					GlobalWinF.MovieSession.Movie.SwitchToPlay();
+					GlobalWinF.MovieSession.LatchInputFromLog();
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 				}
 			}
 
-			else if (Global.MovieSession.Movie.IsPlaying)
+			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
-				if (Global.Emulator.Frame >= Global.MovieSession.Movie.Frames)
+				if (GlobalWinF.Emulator.Frame >= GlobalWinF.MovieSession.Movie.Frames)
 				{
 					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
 					{
-						Global.MovieSession.Movie.CaptureState();
-						Global.MovieSession.LatchInputFromLog();
-						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+						GlobalWinF.MovieSession.Movie.CaptureState();
+						GlobalWinF.MovieSession.LatchInputFromLog();
+						GlobalWinF.MovieSession.Movie.CommitFrame(GlobalWinF.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
 					}
 					else
 					{
-						Global.MovieSession.Movie.Finish();
+						GlobalWinF.MovieSession.Movie.Finish();
 					}
 				}
 				else
 				{
-					Global.MovieSession.Movie.CaptureState();
-					Global.MovieSession.LatchInputFromLog();
-					if (Global.ClientControls["ClearFrame"])
+					GlobalWinF.MovieSession.Movie.CaptureState();
+					GlobalWinF.MovieSession.LatchInputFromLog();
+					if (GlobalWinF.ClientControls["ClearFrame"])
 					{
-						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 						ClearFrame();
 					}
 					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
 					{
-						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 						MnemonicsGenerator mg = new MnemonicsGenerator();
-						mg.SetSource( Global.MovieOutputHardpoint);
+						mg.SetSource( GlobalWinF.MovieOutputHardpoint);
 						if (!mg.IsEmpty)
 						{
-							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-							Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+							GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+							GlobalWinF.MovieSession.Movie.PokeFrame(GlobalWinF.Emulator.Frame, mg.GetControllersAsMnemonic());
 						}
 						else
 						{
-							Global.MovieSession.LatchInputFromLog();
+							GlobalWinF.MovieSession.LatchInputFromLog();
 						}
 					}
 				}
 			}
 
-			else if (Global.MovieSession.Movie.IsRecording)
+			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
-				Global.MovieSession.Movie.CaptureState();
-				if (Global.MovieSession.MultiTrack.IsActive)
+				GlobalWinF.MovieSession.Movie.CaptureState();
+				if (GlobalWinF.MovieSession.MultiTrack.IsActive)
 				{
-					Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
+					GlobalWinF.MovieSession.LatchMultitrackPlayerInput(GlobalWinF.MovieInputSourceAdapter, GlobalWinF.MultitrackRewiringControllerAdapter);
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
 				}
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				GlobalWinF.MovieSession.Movie.CommitFrame(GlobalWinF.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
 			}
 		}
 
 		//On movie load, these need to be set based on the contents of the movie file
 		private void SetSyncDependentSettings()
 		{
-			switch (Global.Emulator.SystemId)
+			switch (GlobalWinF.Emulator.SystemId)
 			{
 				case "Coleco":
-					string str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					string str = GlobalWinF.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
 					if (!String.IsNullOrWhiteSpace(str))
 					{
 						if (str.ToLower() == "true")

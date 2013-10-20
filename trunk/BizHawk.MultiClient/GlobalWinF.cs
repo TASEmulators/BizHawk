@@ -7,7 +7,7 @@ using SlimDX.DirectSound;
 
 namespace BizHawk.MultiClient
 {
-	public static class Global
+	public static class GlobalWinF
 	{
 		public static MainForm MainForm;
 #if WINDOWS
@@ -18,12 +18,9 @@ namespace BizHawk.MultiClient
 		public static IRenderer RenderPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager = new DisplayManager();
-		public static Config Config;
 		public static IEmulator Emulator;
 		public static CoreComm CoreComm;
-		public static GameInfo Game;
 		public static CheatList CheatList;
-		
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using LuaInterface;
 
-namespace BizHawk.MultiClient.tools
+namespace BizHawk.MultiClient
 {
 	public partial class LuaWinform : Form
 	{
@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient.tools
 
 		public void CloseThis()
 		{
-			Global.MainForm.LuaConsole1.LuaImp.WindowClosed(Handle);
+			GlobalWinF.MainForm.LuaConsole1.LuaImp.WindowClosed(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)

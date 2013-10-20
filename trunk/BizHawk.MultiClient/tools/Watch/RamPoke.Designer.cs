@@ -99,7 +99,7 @@
 			// 
 			// ValueBox
 			// 
-			this.ValueBox.ByteSize = BizHawk.MultiClient.Watch.WatchSize.Byte;
+			this.ValueBox.ByteSize = BizHawk.Client.Core.Watch.WatchSize.Byte;
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(82, 57);
 			this.ValueBox.MaxLength = 9;
@@ -108,7 +108,7 @@
 			this.ValueBox.Size = new System.Drawing.Size(116, 20);
 			this.ValueBox.TabIndex = 10;
 			this.ValueBox.Text = "0000";
-			this.ValueBox.Type = BizHawk.MultiClient.Watch.DisplayType.Hex;
+			this.ValueBox.Type = BizHawk.Client.Core.Watch.DisplayType.Hex;
 			// 
 			// ValueHexLabel
 			// 

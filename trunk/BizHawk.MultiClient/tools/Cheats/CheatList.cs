@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public class CheatList : IEnumerable<Cheat>
@@ -327,7 +329,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			Global.MainForm.UpdateCheatStatus();
+			GlobalWinF.MainForm.UpdateCheatStatus();
 			return true;
 		}
 
@@ -505,12 +507,12 @@ namespace BizHawk.MultiClient
 
 		private string GenerateDefaultFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			PathEntry pathEntry = Global.Config.PathEntries[GlobalWinF.Emulator.SystemId, "Cheats"];
 			if (pathEntry == null)
 			{
-				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+				pathEntry = Global.Config.PathEntries[GlobalWinF.Emulator.SystemId, "Base"];
 			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, GlobalWinF.Emulator.SystemId);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -590,9 +592,9 @@ namespace BizHawk.MultiClient
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -606,16 +608,16 @@ namespace BizHawk.MultiClient
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(_currentFileName);
 			}
-			else if (!(Global.Emulator is NullEmulator))
+			else if (!(GlobalWinF.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 			{
 				return null;

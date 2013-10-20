@@ -18,7 +18,7 @@
                 components.Dispose();
             }
 
-			Global.MovieSession.Movie.StateCapturing = false;
+			GlobalWinF.MovieSession.Movie.StateCapturing = false;
 
 			base.Dispose(disposing);
         }
