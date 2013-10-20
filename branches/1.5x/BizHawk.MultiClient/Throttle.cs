@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["Turbo"])
 				{
 					return 20;
 				}
@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["Turbo"])
 				{
 					return false;
 				}
@@ -52,7 +52,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["Turbo"])
 				{
 					return false;
 				}
