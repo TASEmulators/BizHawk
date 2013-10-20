@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Sega;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking

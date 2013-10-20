@@ -12,7 +12,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 
 #pragma warning disable 618
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

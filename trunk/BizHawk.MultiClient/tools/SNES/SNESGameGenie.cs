@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

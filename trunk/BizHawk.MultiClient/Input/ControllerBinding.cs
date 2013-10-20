@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
 
-		private readonly Dictionary<string, BizHawk.Client.Core.Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
+		private readonly Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
 
 		public Controller(ControllerDefinition definition)
 		{
@@ -155,7 +155,7 @@ namespace BizHawk.MultiClient
 				bindings[button].Add(control.Trim());
 		}
 
-		public void BindFloat(string button, BizHawk.Client.Core.Config.AnalogBind bind)
+		public void BindFloat(string button, BizHawk.Client.Common.Config.AnalogBind bind)
 		{
 			FloatBinds[button] = bind;
 		}

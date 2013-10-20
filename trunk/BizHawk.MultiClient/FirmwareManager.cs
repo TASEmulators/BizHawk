@@ -3,7 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 //IDEA: put filesizes in DB too. then scans can go real quick by only scanning filesizes that match (and then scanning filesizes that dont match, in case of an emergency)
 //this would be adviseable if we end up with a very large firmware file

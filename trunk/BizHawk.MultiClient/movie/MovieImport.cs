@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 #pragma warning disable 219
 

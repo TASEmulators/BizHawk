@@ -11,7 +11,7 @@ using SlimDX.Direct3D9;
 using d3d9font=SlimDX.Direct3D9.Font;
 #endif
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Core;
 
 namespace BizHawk.MultiClient

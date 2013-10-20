@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 //notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 //it will be implemented by the multiclient, and use firmware keys to fetch the firmware content.

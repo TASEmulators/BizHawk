@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -19,10 +19,10 @@ namespace BizHawk.MultiClient
 		}
 
 		public string ButtonName;
-		public BizHawk.Client.Core.Config.AnalogBind Bind;
+		public BizHawk.Client.Common.Config.AnalogBind Bind;
 		bool listening = false;
 
-		public AnalogBindControl(string ButtonName, BizHawk.Client.Core.Config.AnalogBind Bind)
+		public AnalogBindControl(string ButtonName, BizHawk.Client.Common.Config.AnalogBind Bind)
 			: this()
 		{
 			this.Bind = Bind;

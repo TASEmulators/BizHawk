@@ -29,7 +29,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Core;
 

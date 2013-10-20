@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk
 {

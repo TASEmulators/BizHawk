@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
