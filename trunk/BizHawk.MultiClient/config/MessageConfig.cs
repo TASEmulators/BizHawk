@@ -70,17 +70,17 @@ namespace BizHawk.MultiClient
 
 		private void SetMaxXY()
 		{
-			XNumeric.Maximum = GlobalWinF.Emulator.VideoProvider.BufferWidth - 12;
-			YNumeric.Maximum = GlobalWinF.Emulator.VideoProvider.BufferHeight - 12;
-			PositionPanel.Size = new Size(GlobalWinF.Emulator.VideoProvider.BufferWidth + 2, GlobalWinF.Emulator.VideoProvider.BufferHeight + 2);
+			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 12;
+			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 12;
+			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth + 2, Global.Emulator.VideoProvider.BufferHeight + 2);
 
 			int width;
-			if (GlobalWinF.Emulator.VideoProvider.BufferWidth > 128)
-				width = GlobalWinF.Emulator.VideoProvider.BufferWidth + 44;
+			if (Global.Emulator.VideoProvider.BufferWidth > 128)
+				width = Global.Emulator.VideoProvider.BufferWidth + 44;
 			else
 				width = 128 + 44;
 
-			PositionGroupBox.Size = new Size(width, GlobalWinF.Emulator.VideoProvider.BufferHeight + 52);
+			PositionGroupBox.Size = new Size(width, Global.Emulator.VideoProvider.BufferHeight + 52);
 		}
 
 		private void SetColorBox()

@@ -214,7 +214,7 @@ namespace BizHawk.MultiClient
 		{
 			if (autofire)
 			{
-				int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
 				if (a < On)
 					return buttons[button];
 				else
@@ -254,7 +254,7 @@ namespace BizHawk.MultiClient
 				foreach (var bound_button in kvp.Value)
 				{
 					if (buttons[kvp.Key] == false && controller[bound_button])
-						buttonStarts[kvp.Key] = GlobalWinF.Emulator.Frame;
+						buttonStarts[kvp.Key] = Global.Emulator.Frame;
 				}
 			}
 			

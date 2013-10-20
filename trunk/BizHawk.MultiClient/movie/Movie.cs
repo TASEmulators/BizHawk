@@ -565,7 +565,7 @@ namespace BizHawk.MultiClient
 		{
 			if (StateCapturing)
 			{
-				byte[] state = GlobalWinF.Emulator.SaveStateBinary();
+				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
 				GC.Collect();
 			}
@@ -577,11 +577,11 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			if (frame <= GlobalWinF.Emulator.Frame)
+			if (frame <= Global.Emulator.Frame)
 			{
 				if (frame <= Log.StateFirstIndex)
 				{
-					GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
 					if (GlobalWinF.MainForm.EmulatorPaused && frame > 0)
 					{
 						GlobalWinF.MainForm.UnpauseEmulator();
@@ -596,19 +596,19 @@ namespace BizHawk.MultiClient
 				{
 					if (frame == 0)
 					{
-						GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
 					}
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
 						GlobalWinF.MainForm.UpdateFrame = true;
 					}
 				}
 			}
 			else if (frame <= Log.StateLastIndex)
 			{
-				GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
 				GlobalWinF.MainForm.UpdateFrame = true;
 			}
 			else
@@ -630,10 +630,10 @@ namespace BizHawk.MultiClient
 			//this allows users to restore a movie with any savestate from that "timeline"
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (GlobalWinF.Emulator.Frame < Log.Length)
+				if (Global.Emulator.Frame < Log.Length)
 				{
-					Log.TruncateMovie(GlobalWinF.Emulator.Frame);
-					Log .TruncateStates(GlobalWinF.Emulator.Frame);
+					Log.TruncateMovie(Global.Emulator.Frame);
+					Log .TruncateStates(Global.Emulator.Frame);
 				}
 			}
 			changes = true;

@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			nes = GlobalWinF.Emulator as NES;
+			nes = Global.Emulator as NES;
 			LoadStuff();
 		}
 

@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.MultiClient.GBtools;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient.GBAtools
 {
 	public partial class GBAGPUView : Form
@@ -673,7 +675,7 @@ namespace BizHawk.MultiClient.GBAtools
 
 		public void Restart()
 		{
-			gba = GlobalWinF.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
+			gba = Global.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
 			if (gba != null)
 			{
 				gba.GetGPUMemoryAreas(out vram, out palram, out oam, out mmio);

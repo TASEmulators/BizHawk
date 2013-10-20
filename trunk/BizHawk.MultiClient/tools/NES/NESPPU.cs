@@ -52,9 +52,9 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(GlobalWinF.Emulator is NES)) Close();
+			if (!(Global.Emulator is NES)) Close();
 			if (!IsHandleCreated || IsDisposed) return;
-			_nes = GlobalWinF.Emulator as NES;
+			_nes = Global.Emulator as NES;
 			Generate(true);
 		}
 
@@ -101,7 +101,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 
-			if (GlobalWinF.Emulator.Frame % RefreshRate.Value == 0 || now)
+			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = CheckChange();
 
@@ -233,14 +233,14 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(GlobalWinF.Emulator is NES)) return;
+			if (!(Global.Emulator is NES)) return;
 			_nes.ppu.PPUViewCallback = Callback;
 		}
 
 		private void NESPPU_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			_nes = GlobalWinF.Emulator as NES;
+			_nes = Global.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);

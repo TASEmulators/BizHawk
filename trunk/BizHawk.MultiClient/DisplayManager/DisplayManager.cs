@@ -345,7 +345,7 @@ namespace BizHawk.MultiClient
 			if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
 				StringBuilder s = new StringBuilder();
-				s.Append(GlobalWinF.Emulator.Frame);
+				s.Append(Global.Emulator.Frame);
 				s.Append('/');
 				if (GlobalWinF.MovieSession.Movie.Frames.HasValue)
 				{
@@ -361,7 +361,7 @@ namespace BizHawk.MultiClient
 			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
 				StringBuilder s = new StringBuilder();
-				s.Append(GlobalWinF.Emulator.Frame);
+				s.Append(Global.Emulator.Frame);
 				s.Append('/');
 				if (GlobalWinF.MovieSession.Movie.Frames.HasValue)
 				{
@@ -375,17 +375,17 @@ namespace BizHawk.MultiClient
 			}
 			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
-				return GlobalWinF.Emulator.Frame.ToString();
+				return Global.Emulator.Frame.ToString();
 			}
 			else
 			{
-				return GlobalWinF.Emulator.Frame.ToString();
+				return Global.Emulator.Frame.ToString();
 			}
 		}
 
 		private string MakeLagCounter()
 		{
-			return GlobalWinF.Emulator.LagCount.ToString();
+			return Global.Emulator.LagCount.ToString();
 		}
 
 		private List<UIMessage> messages = new List<UIMessage>(5);
@@ -489,7 +489,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				s = new StringBuilder(GlobalWinF.MovieSession.Movie.GetInput(GlobalWinF.Emulator.Frame - 1));
+				s = new StringBuilder(GlobalWinF.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 			}
 
 			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
@@ -561,7 +561,7 @@ namespace BizHawk.MultiClient
 			{
 				string counter = MakeLagCounter();
 
-				if (GlobalWinF.Emulator.IsLagFrame)
+				if (Global.Emulator.IsLagFrame)
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
@@ -626,7 +626,7 @@ namespace BizHawk.MultiClient
 
 			if (GlobalWinF.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				List<Subtitle> s = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWinF.Emulator.Frame);
+				List<Subtitle> s = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
 				if (s == null)
 				{
 					return;

@@ -18,9 +18,8 @@ namespace BizHawk.MultiClient
 		public static IRenderer RenderPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager = new DisplayManager();
-		public static IEmulator Emulator;
 		public static CoreComm CoreComm;
-		public static CheatList CheatList;
+		
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
 

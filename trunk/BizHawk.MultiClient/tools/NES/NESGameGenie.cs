@@ -353,7 +353,7 @@ namespace BizHawk.MultiClient
 
 		private void AddCheatClick()
 		{
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				if (String.IsNullOrWhiteSpace(AddressBox.Text) || (String.IsNullOrWhiteSpace(ValueBox.Text)))
 				{
@@ -361,7 +361,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					GlobalWinF.Emulator.MemoryDomains[1], /*System Bus*/
+					Global.Emulator.MemoryDomains[1], /*System Bus*/
 					AddressBox.ToRawInt(),
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -374,7 +374,7 @@ namespace BizHawk.MultiClient
 					compare = CompareBox.ToRawInt();
 				}
 
-				GlobalWinF.CheatList.Add(new Cheat(
+				Global.CheatList.Add(new Cheat(
 					watch,
 					ValueBox.ToRawInt(),
 					compare,

@@ -57,7 +57,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadPads()
 		{
-			switch (GlobalWinF.Emulator.SystemId)
+			switch (Global.Emulator.SystemId)
 			{
 				case "A26":
 					VirtualPadA26 ataripad1 = new VirtualPadA26 {Location = new Point(8, 19), Controller = "P1"};
@@ -208,7 +208,7 @@ namespace BizHawk.MultiClient
 			}
 
 			//Hack for now
-			if (GlobalWinF.Emulator.SystemId == "C64")
+			if (Global.Emulator.SystemId == "C64")
 			{
 				if (Width < 505)
 				{
@@ -256,10 +256,10 @@ namespace BizHawk.MultiClient
 
 			if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsFinished)
 			{
-				string str = GlobalWinF.MovieSession.Movie.GetInput(GlobalWinF.Emulator.Frame);
+				string str = GlobalWinF.MovieSession.Movie.GetInput(Global.Emulator.Frame);
 				if (Global.Config.TASUpdatePads && str != "")
 				{
-					switch (GlobalWinF.Emulator.SystemId)
+					switch (Global.Emulator.SystemId)
 					{
 						case "NES":
 							Pads[0].SetButtons(str.Substring(3, 8));
@@ -372,7 +372,7 @@ namespace BizHawk.MultiClient
 		public void BumpAnalogValue(int? dx, int? dy)
 		{
 			//TODO: make an analog flag in virtualpads that have it, and check the virtualpads loaded, instead of doing this hardcoded
-			if (GlobalWinF.Emulator is N64)
+			if (Global.Emulator is N64)
 			{
 				(Pads[0] as VirtualPadN64).FudgeAnalog(dx, dy);
 

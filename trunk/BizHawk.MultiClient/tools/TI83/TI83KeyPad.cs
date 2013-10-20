@@ -95,7 +95,7 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(GlobalWinF.Emulator is TI83))
+			if (!(Global.Emulator is TI83))
 				Close();
 			if (!IsHandleCreated || IsDisposed) return;
 		}

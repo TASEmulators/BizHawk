@@ -117,7 +117,7 @@ namespace BizHawk.MultiClient
 				}
 				if (buckets[0].Count > 0)
 				{
-					if (GlobalWinF.Emulator.SystemId == "C64") //This is a kludge, if there starts to be more exceptions to this pattern, we will need a more robust solution
+					if (Global.Emulator.SystemId == "C64") //This is a kludge, if there starts to be more exceptions to this pattern, we will need a more robust solution
 					{
 						tt.TabPages.Add("Keyboard");
 					}

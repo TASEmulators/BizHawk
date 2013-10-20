@@ -80,9 +80,9 @@ namespace BizHawk.MultiClient.GBtools
 
 		public void Restart()
 		{
-			if (GlobalWinF.Emulator is Emulation.Consoles.GB.Gameboy)
+			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
-				gb = GlobalWinF.Emulator as Emulation.Consoles.GB.Gameboy;
+				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
 				cgb = gb.IsCGBMode();
 				_lcdc = 0;
 				if (!gb.GetGPUMemoryAreas(out vram, out bgpal, out sppal, out oam))

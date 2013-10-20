@@ -309,7 +309,7 @@ namespace BizHawk.MultiClient
 		{
 			if (stickySet.Contains(button))
 			{
-				int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
 				if (a < On)
 					return this[button];
 				else
@@ -333,7 +333,7 @@ namespace BizHawk.MultiClient
 				{
 
 
-					int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
+					int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
 					if (a < On)
 					{
 						source ^= true;

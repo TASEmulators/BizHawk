@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 
 		private void HideShowIcons()
 		{
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				NESPPU.Visible = true;
 				NESDebugger.Visible = true;
@@ -47,7 +47,7 @@ namespace BizHawk.MultiClient
 				NESNameTable.Visible = false;
 			}
 
-			if (GlobalWinF.Emulator is TI83)
+			if (Global.Emulator is TI83)
 			{
 				KeypadTool.Visible = true;
 			}
@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 				KeypadTool.Visible = false;
 			}
 
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				SNESGraphicsDebuggerButton.Visible = true;
 				SNESGameGenie.Visible = true;
@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 
 		private void KeyPadTool_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is TI83)
+			if (Global.Emulator is TI83)
 			{
 				GlobalWinF.MainForm.LoadTI83KeyPad();
 			}
@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 
 		private void SNESGraphicsDebuggerButton_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				GlobalWinF.MainForm.LoadSNESGraphicsDebugger();
 			}

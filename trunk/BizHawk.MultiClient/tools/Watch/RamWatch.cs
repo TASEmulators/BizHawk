@@ -34,7 +34,7 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private readonly WatchList Watches = new WatchList(GlobalWinF.Emulator.MainMemory);
+		private readonly WatchList Watches = new WatchList(Global.Emulator.MainMemory);
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
 
@@ -66,7 +66,7 @@ namespace BizHawk.MultiClient
 				{
 					for (int x = 0; x < Watches.Count; x++)
 					{
-						bool alert = Watches[x].IsSeparator ? false : GlobalWinF.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
+						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
 						GlobalWinF.OSD.AddGUIText(
 							Watches[x].ToString(),
 							Global.Config.DispRamWatchx,
@@ -139,9 +139,9 @@ namespace BizHawk.MultiClient
 		private int GetDomainPos(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
-				if (GlobalWinF.Emulator.MemoryDomains[i].Name == name)
+				if (Global.Emulator.MemoryDomains[i].Name == name)
 				{
 					return i;
 				}
@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 				{
 					color = BackColor;
 				}
-				else if (GlobalWinF.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
+				else if (Global.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
 				{
 					color = Color.LightCyan;
 				}
@@ -329,7 +329,7 @@ namespace BizHawk.MultiClient
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = GlobalWinF.Emulator.SystemId + " " + Watches.Domain.Name;
+			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Watches.Domain.Name;
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -397,9 +397,9 @@ namespace BizHawk.MultiClient
 
 		private void SetMemoryDomain(int pos)
 		{
-			if (pos < GlobalWinF.Emulator.MemoryDomains.Count)  //Sanity check
+			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				Watches.Domain = GlobalWinF.Emulator.MemoryDomains[pos];
+				Watches.Domain = Global.Emulator.MemoryDomains[pos];
 			}
 
 			SetPlatformAndMemoryDomainLabel();
@@ -899,7 +899,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					if (!GlobalWinF.CheatList.IsActive(watch.Domain, watch.Address.Value))
+					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1110,7 +1110,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Watches[i].IsSeparator)
 				{
-					if (!GlobalWinF.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
+					if (!Global.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1133,7 +1133,7 @@ namespace BizHawk.MultiClient
 			ShowDiffContextMenuItem.Text = Global.Config.RamWatchShowDiffColumn ? "Hide difference value" : "Show difference value";
 			ShowDomainContextMenuItem.Text = Global.Config.RamWatchShowDomainColumn ? "Hide domain" : "Show domain";
 
-			UnfreezeAllContextMenuItem.Visible = GlobalWinF.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
 			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count == 1;
 		}

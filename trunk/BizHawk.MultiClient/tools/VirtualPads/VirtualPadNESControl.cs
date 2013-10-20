@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public class VirtualPadNESControl : VirtualPad
@@ -110,7 +112,7 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator.SystemId != "NES")
+			if (Global.Emulator.SystemId != "NES")
 			{
 				return;
 			}
@@ -134,7 +136,7 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (GlobalWinF.Emulator.SystemId != "NES") return;
+			if (Global.Emulator.SystemId != "NES") return;
 
 			B1.Checked = false;
 			B2.Checked = false;

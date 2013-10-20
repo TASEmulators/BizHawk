@@ -227,7 +227,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				switch (GlobalWinF.Emulator.SystemId)
+				switch (Global.Emulator.SystemId)
 				{
 					default:
 					case "NULL":

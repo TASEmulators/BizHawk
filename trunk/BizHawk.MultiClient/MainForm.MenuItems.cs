@@ -30,7 +30,7 @@ namespace BizHawk.MultiClient
 
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
-			string details = GlobalWinF.Emulator.CoreComm.RomStatusDetails;
+			string details = Global.Emulator.CoreComm.RomStatusDetails;
 			if (string.IsNullOrEmpty(details)) return;
 			GlobalWinF.Sound.StopSound();
 			LogWindow.ShowReport("Dump Status Report", details, this);
@@ -441,7 +441,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenControllerConfig()
 		{
-			ControllerConfig c = new ControllerConfig(GlobalWinF.Emulator.ControllerDefinition);
+			ControllerConfig c = new ControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{
@@ -638,9 +638,9 @@ namespace BizHawk.MultiClient
 			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
-			traceLoggerToolStripMenuItem.Enabled = GlobalWinF.Emulator.CoreComm.CpuTraceAvailable;
+			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
 
-			cheatsToolStripMenuItem.Enabled = !(GlobalWinF.Emulator is NullEmulator);
+			cheatsToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -673,13 +673,13 @@ namespace BizHawk.MultiClient
 
 		private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(GlobalWinF.Emulator is TI83)) return;
+			if (!(Global.Emulator is TI83)) return;
 			Global.Config.TI83autoloadKeyPad ^= true;
 		}
 
 		private void keypadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(GlobalWinF.Emulator is TI83))
+			if (!(Global.Emulator is TI83))
 				return;
 			LoadTI83KeyPad();
 		}
@@ -861,7 +861,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < GlobalWinF.MovieSession.Movie.Subtitles.Count; x++)
 			{
 				sub = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
-				if (GlobalWinF.Emulator.Frame == sub.Frame)
+				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
 					break;
@@ -869,7 +869,7 @@ namespace BizHawk.MultiClient
 			}
 			if (index < 0)
 			{
-				sub = new Subtitle { Frame = GlobalWinF.Emulator.Frame };
+				sub = new Subtitle { Frame = Global.Emulator.Frame };
 			}
 			s.sub = sub;
 
@@ -1433,11 +1433,11 @@ namespace BizHawk.MultiClient
 		{
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 
-			resetToolStripMenuItem.Enabled = GlobalWinF.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
+			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
 					(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
 
 
-			hardResetToolStripMenuItem.Enabled = GlobalWinF.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
+			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
 				(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
@@ -1553,7 +1553,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateCheatStatus()
 		{
-			if (GlobalWinF.CheatList.ActiveCount > 0)
+			if (Global.CheatList.ActiveCount > 0)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = Properties.Resources.Freeze;
@@ -1599,10 +1599,10 @@ namespace BizHawk.MultiClient
 
 		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is Atari2600)
+			if (Global.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_BW ^= true;
-				((Atari2600)GlobalWinF.Emulator).SetBw(Global.Config.Atari2600_BW);
+				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_BW)
 					GlobalWinF.OSD.AddMessage("Setting to Black and White Switch to On");
 				else
@@ -1612,10 +1612,10 @@ namespace BizHawk.MultiClient
 
 		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is Atari2600)
+			if (Global.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_LeftDifficulty ^= true;
-				((Atari2600)GlobalWinF.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
+				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_LeftDifficulty)
 					GlobalWinF.OSD.AddMessage("Setting Left Difficulty to B");
 				else
@@ -1625,10 +1625,10 @@ namespace BizHawk.MultiClient
 
 		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is Atari2600)
+			if (Global.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_RightDifficulty ^= true;
-				((Atari2600)GlobalWinF.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
+				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_RightDifficulty)
 					GlobalWinF.OSD.AddMessage("Setting Right Difficulty to B");
 				else
@@ -1686,7 +1686,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1711,7 +1711,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1735,7 +1735,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1759,7 +1759,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1783,7 +1783,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleOBJ1(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1807,7 +1807,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleOBJ2(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1831,7 +1831,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1855,7 +1855,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -2122,7 +2122,7 @@ namespace BizHawk.MultiClient
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(GlobalWinF.Emulator.SystemId),
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
 				Multiselect = true,
 				Filter = FormatFilter(
 					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
@@ -2189,8 +2189,9 @@ namespace BizHawk.MultiClient
 			}
 			else if (ext.ToUpper() == ".CHT")
 			{
-				GlobalWinF.CheatList.Load(filePaths[0], false);
+				Global.CheatList.Load(filePaths[0], false);
 				LoadCheatsWindow();
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{
@@ -2363,9 +2364,9 @@ namespace BizHawk.MultiClient
 
 		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is Gameboy)
+			if (Global.Emulator is Gameboy)
 			{
-				var g = GlobalWinF.Emulator as Gameboy;
+				var g = Global.Emulator as Gameboy;
 				if (g.IsCGBMode())
 				{
 					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
@@ -2392,7 +2393,7 @@ namespace BizHawk.MultiClient
 
 		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if ((GlobalWinF.Emulator as LibsnesCore).IsSGB)
+			if ((Global.Emulator as LibsnesCore).IsSGB)
 			{
 				loadGBInSGBToolStripMenuItem.Visible = true;
 				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -2617,14 +2618,14 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					(GlobalWinF.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
 				}
 				catch (IOException ex)
 				{
 					string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
 					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-						(GlobalWinF.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 				}
 			}
 		}

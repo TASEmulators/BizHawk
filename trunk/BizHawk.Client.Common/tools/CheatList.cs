@@ -4,17 +4,15 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class CheatList : IEnumerable<Cheat>
 	{
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _currentFileName = String.Empty;
 		private bool _changes = false;
+		private string _defaultFileName = String.Empty;
 
 		public CheatList() { }
 
@@ -47,7 +45,7 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public bool AttemptToLoadCheatFile()
 		{
-			var file = new FileInfo(GenerateDefaultFilename());
+			var file = new FileInfo(_defaultFileName);
 
 			if (file.Exists)
 			{
@@ -79,12 +77,12 @@ namespace BizHawk.MultiClient
 			get { return _cheatList.Count(x => x.Enabled); }
 		}
 
-		public void NewList()
+		public void NewList(string defaultFileName)
 		{
+			_defaultFileName = defaultFileName;
 			_cheatList.Clear();
 			_currentFileName = String.Empty;
 			_changes = false;
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Update()
@@ -104,7 +102,6 @@ namespace BizHawk.MultiClient
 			}
 
 			_changes = true;
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Insert(int index, Cheat c)
@@ -119,14 +116,12 @@ namespace BizHawk.MultiClient
 			}
 
 			_changes = true;
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Remove(Cheat c)
 		{
 			_changes = true;
 			_cheatList.Remove(c);
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void Remove(Watch w)
@@ -137,7 +132,6 @@ namespace BizHawk.MultiClient
 			{
 				_changes = true;
 				_cheatList.Remove(cheat);
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -148,7 +142,6 @@ namespace BizHawk.MultiClient
 			{
 				_cheatList.Remove(cheat);
 			}
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public bool Changes
@@ -160,21 +153,18 @@ namespace BizHawk.MultiClient
 		{
 			_changes = true;
 			_cheatList.Clear();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void DisableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Disable());
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public void EnableAll()
 		{
 			_changes = true;
 			_cheatList.ForEach(x => x.Enable());
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		public bool IsActive(MemoryDomain domain, int address)
@@ -202,7 +192,7 @@ namespace BizHawk.MultiClient
 				{
 					if (String.IsNullOrWhiteSpace(_currentFileName))
 					{
-						_currentFileName = GenerateDefaultFilename();
+						_currentFileName = _defaultFileName;
 					}
 
 					SaveFile(_currentFileName);
@@ -218,20 +208,61 @@ namespace BizHawk.MultiClient
 		{
 			if (String.IsNullOrWhiteSpace(_currentFileName))
 			{
-				_currentFileName = GenerateDefaultFilename();
+				_currentFileName = _defaultFileName;
 			}
 
 			return SaveFile(_currentFileName);
 		}
 
-		public bool SaveAs()
+		public bool SaveFile(string path)
 		{
-			var file = GetSaveFileFromUser();
-			if (file != null)
+			try
 			{
-				return SaveFile(file.FullName);
+				FileInfo file = new FileInfo(path);
+				if (file.Directory != null && !file.Directory.Exists)
+				{
+					file.Directory.Create();
+				}
+
+				using (StreamWriter sw = new StreamWriter(path))
+				{
+					StringBuilder sb = new StringBuilder();
+
+					foreach (var cheat in _cheatList)
+					{
+						if (cheat.IsSeparator)
+						{
+							sb.AppendLine("----");
+						}
+						else
+						{
+							//Set to hex for saving 
+							Watch.DisplayType type = cheat.Type;
+							cheat.SetType(Watch.DisplayType.Hex);
+
+							sb
+								.Append(cheat.AddressStr).Append('\t')
+								.Append(cheat.ValueStr).Append('\t')
+								.Append(cheat.Compare.HasValue ? cheat.Compare.Value.ToString() : "N").Append('\t')
+								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
+								.Append(cheat.Enabled ? '1' : '0').Append('\t')
+								.Append(cheat.Name).Append('\t')
+								.Append(cheat.SizeAsChar).Append('\t')
+								.Append(cheat.TypeAsChar).Append('\t')
+								.Append(cheat.BigEndian.Value ? '1' : '0').Append('\t')
+								.AppendLine();
+						}
+					}
+
+					sw.WriteLine(sb.ToString());
+				}
+
+				_changes = false;
+				_currentFileName = path;
+				Global.Config.RecentCheats.Add(_currentFileName);
+				return true;
 			}
-			else
+			catch
 			{
 				return false;
 			}
@@ -297,7 +328,7 @@ namespace BizHawk.MultiClient
 							{
 								COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
 							}
-							DOMAIN = ToolHelpers.DomainByName(vals[3]);
+							DOMAIN = DomainByName(vals[3]);
 							ENABLED = vals[4] == "1";
 							NAME = vals[5];
 
@@ -329,7 +360,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			GlobalWinF.MainForm.UpdateCheatStatus();
 			return true;
 		}
 
@@ -342,7 +372,7 @@ namespace BizHawk.MultiClient
 		{
 			switch (column)
 			{
-				case Cheats.NAME:
+				case NAME:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -358,7 +388,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.ADDRESS:
+				case ADDRESS:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -374,7 +404,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.VALUE:
+				case VALUE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -392,7 +422,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.COMPARE:
+				case COMPARE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -410,7 +440,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.ON:
+				case ON:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -428,7 +458,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.DOMAIN:
+				case DOMAIN:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -446,7 +476,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.SIZE:
+				case SIZE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -464,7 +494,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.ENDIAN:
+				case ENDIAN:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -482,7 +512,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case Cheats.TYPE:
+				case TYPE:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -503,131 +533,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		#region privates
+		#region Privates
 
-		private string GenerateDefaultFilename()
+		private static MemoryDomain DomainByName(string name)
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[GlobalWinF.Emulator.SystemId, "Cheats"];
-			if (pathEntry == null)
+			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
+			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
 			{
-				pathEntry = Global.Config.PathEntries[GlobalWinF.Emulator.SystemId, "Base"];
-			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, GlobalWinF.Emulator.SystemId);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
-			{
-				f.Directory.Create();
-			}
-
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
-		}
-
-		private bool SaveFile(string path)
-		{
-			try
-			{
-				FileInfo file = new FileInfo(path);
-				if (file.Directory != null && !file.Directory.Exists)
+				if (domain.Name == name)
 				{
-					file.Directory.Create();
+					return domain;
 				}
-
-				using (StreamWriter sw = new StreamWriter(path))
-				{
-					StringBuilder sb = new StringBuilder();
-
-					foreach (var cheat in _cheatList)
-					{
-						if (cheat.IsSeparator)
-						{
-							sb.AppendLine("----");
-						}
-						else
-						{
-							//Set to hex for saving 
-							Watch.DisplayType type = cheat.Type;
-							cheat.SetType(Watch.DisplayType.Hex);
-
-							sb
-								.Append(cheat.AddressStr).Append('\t')
-								.Append(cheat.ValueStr).Append('\t')
-								.Append(cheat.Compare.HasValue ? cheat.Compare.Value.ToString() : "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : String.Empty).Append('\t')
-								.Append(cheat.Enabled ? '1' : '0').Append('\t')
-								.Append(cheat.Name).Append('\t')
-								.Append(cheat.SizeAsChar).Append('\t')
-								.Append(cheat.TypeAsChar).Append('\t')
-								.Append(cheat.BigEndian.Value ? '1' : '0').Append('\t')
-								.AppendLine();
-						}
-					}
-
-					sw.WriteLine(sb.ToString());
-				}
-
-				_changes = false;
-				_currentFileName = path;
-				Global.Config.RecentCheats.Add(_currentFileName);
-				return true;
 			}
-			catch
-			{
-				return false;
-			}
+
+			return Global.Emulator.MainMemory;
 		}
 
 		#endregion
 
-		#region File Handling
-
-		public static FileInfo GetFileFromUser(string currentFile)
-		{
-			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
-		}
-
-		private FileInfo GetSaveFileFromUser()
-		{
-			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(_currentFileName))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(_currentFileName);
-			}
-			else if (!(GlobalWinF.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			}
-			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			var file = new FileInfo(sfd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
-			return file;
-		}
-
-		#endregion
+		public const string NAME = "NamesColumn";
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string COMPARE = "CompareColumn";
+		public const string ON = "OnColumn";
+		public const string DOMAIN = "DomainColumn";
+		public const string SIZE = "SizeColumn";
+		public const string ENDIAN = "EndianColumn";
+		public const string TYPE = "DisplayTypeColumn";
 	}
 }

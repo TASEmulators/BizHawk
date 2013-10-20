@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 
 		public void Clear()
 		{
-			if (GlobalWinF.Emulator.SystemId != "N64") return;
+			if (Global.Emulator.SystemId != "N64") return;
 
 			foreach (var button in Buttons)
 			{

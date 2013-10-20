@@ -276,20 +276,40 @@
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="CoreFileProvider.cs" />
-    <Compile Include="CustomControls\FolderBrowserDialogEx.cs" />
-    <Compile Include="CustomControls\HexTextBox.cs" />
-    <Compile Include="CustomControls\InputConfigBase.cs" />
-    <Compile Include="CustomControls\MiscControls.cs" />
-    <Compile Include="CustomControls\QuickProgressPopup.cs" />
+    <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\HexTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputConfigBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\MiscControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\QuickProgressPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\SmartTextBoxControl.cs" />
-    <Compile Include="CustomControls\TextDebugView.cs" />
-    <Compile Include="CustomControls\ToolStripEx.cs" />
+    <Compile Include="CustomControls\SmartTextBoxControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\TextDebugView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\Util.cs" />
-    <Compile Include="CustomControls\ViewportPanel.cs" />
-    <Compile Include="CustomControls\VirtualListView.cs" />
+    <Compile Include="CustomControls\ViewportPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
@@ -375,7 +395,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="tools\Cheats\Cheat.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -388,7 +407,6 @@
     <Compile Include="tools\Cheats\CheatForm.Designer.cs">
       <DependentUpon>CheatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Cheats\CheatList.cs" />
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>

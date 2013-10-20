@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -81,23 +83,23 @@ namespace BizHawk.MultiClient
 
 		public void AddState(byte[] state)
 		{
-			if (GlobalWinF.Emulator.Frame == 0)
+			if (Global.Emulator.Frame == 0)
 			{
 				InitState = state;
 			}
-			if (GlobalWinF.Emulator.Frame < StateFirstIndex)
+			if (Global.Emulator.Frame < StateFirstIndex)
 			{
 				_state_records.Clear();
-				_state_records.Add(new StateRecord(GlobalWinF.Emulator.Frame, state));
+				_state_records.Add(new StateRecord(Global.Emulator.Frame, state));
 			}
-			if (GlobalWinF.Emulator.Frame > StateLastIndex)
+			if (Global.Emulator.Frame > StateLastIndex)
 			{
 				if (StateSizeInBytes + state.Length > MAXSTATERECORDSIZE)
 				{
 					// Discard the oldest state to save space.
 					_state_records.RemoveAt(0);
 				}
-				_state_records.Add(new StateRecord(GlobalWinF.Emulator.Frame,state));
+				_state_records.Add(new StateRecord(Global.Emulator.Frame,state));
 			}
 		}
 
@@ -231,7 +233,7 @@ namespace BizHawk.MultiClient
 			{
 				Index = index;
 				State = state;
-				Lagged = GlobalWinF.Emulator.IsLagFrame;
+				Lagged = Global.Emulator.IsLagFrame;
 			}
 
 			public readonly int Index;

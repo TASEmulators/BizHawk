@@ -293,7 +293,7 @@ namespace BizHawk.MultiClient
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is LibsnesCore)
+			if (Global.Emulator is LibsnesCore)
 			{
 				string NAME;
 				int ADDRESS = 0;
@@ -323,9 +323,9 @@ namespace BizHawk.MultiClient
 					VALUE = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 				}
 
-				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 				{
-					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "BUS")
+					if (Global.Emulator.MemoryDomains[i].ToString() == "BUS")
 					{
 						sysBusIndex = i;
 						break;
@@ -333,7 +333,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					GlobalWinF.Emulator.MemoryDomains[sysBusIndex],
+					Global.Emulator.MemoryDomains[sysBusIndex],
 					ADDRESS,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -341,12 +341,14 @@ namespace BizHawk.MultiClient
 					bigEndian: false
 				);
 
-				GlobalWinF.CheatList.Add(new Cheat(
+				Global.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					compare: null,
 					enabled: true
 				));
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

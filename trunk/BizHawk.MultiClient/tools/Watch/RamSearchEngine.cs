@@ -1020,7 +1020,7 @@ namespace BizHawk.MultiClient
 
 			public Settings()
 			{
-				switch (GlobalWinF.Emulator.SystemId)
+				switch (Global.Emulator.SystemId)
 				{
 					case "N64":
 						Mode = SearchMode.Fast;
@@ -1069,7 +1069,7 @@ namespace BizHawk.MultiClient
 						break;
 				}
 
-				Domain = GlobalWinF.Emulator.MainMemory;
+				Domain = Global.Emulator.MainMemory;
 				CheckMisAligned = false;
 				PreviousType = Watch.PreviousType.LastSearch;
 			}

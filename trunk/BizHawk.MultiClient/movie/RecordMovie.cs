@@ -78,45 +78,45 @@ namespace BizHawk.MultiClient
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 				}
 
-				if (GlobalWinF.Emulator.BoardName != null)
+				if (Global.Emulator.BoardName != null)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, GlobalWinF.Emulator.BoardName);
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, Global.Emulator.BoardName);
 				}
 
-				if (GlobalWinF.Emulator is Gameboy)
+				if (Global.Emulator is Gameboy)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
 				}
 
-				if (GlobalWinF.Emulator is LibsnesCore)
+				if (Global.Emulator is LibsnesCore)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((GlobalWinF.Emulator) as LibsnesCore).IsSGB.ToString());
-					if ((GlobalWinF.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
+					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (GlobalWinF.Emulator is SMS)
+				else if (Global.Emulator is SMS)
 				{
-					if ((GlobalWinF.Emulator as SMS).DisplayType == DisplayType.PAL)
+					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (GlobalWinF.Emulator is NES)
+				else if (Global.Emulator is NES)
 				{
-					if ((GlobalWinF.Emulator as NES).DisplayType == DisplayType.PAL)
+					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
 					{
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-				else if (GlobalWinF.Emulator is ColecoVision)
+				else if (Global.Emulator is ColecoVision)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
 				}
 
-				else if (GlobalWinF.Emulator is N64)
+				else if (Global.Emulator is N64)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.VIDEOPLUGIN, Global.Config.N64VidPlugin);
 
@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 					MovieToRecord.StartsFromSavestate = true;
 					var temppath = path;
 					var writer = new StreamWriter(temppath);
-					GlobalWinF.Emulator.SaveStateText(writer);
+					Global.Emulator.SaveStateText(writer);
 					writer.Close();
 
 					var file = new FileInfo(temppath);

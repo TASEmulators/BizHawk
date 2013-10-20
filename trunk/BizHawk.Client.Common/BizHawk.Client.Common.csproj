@@ -52,6 +52,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
+    <Compile Include="tools\Cheat.cs" />
+    <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\Watch.cs" />
   </ItemGroup>
   <ItemGroup>

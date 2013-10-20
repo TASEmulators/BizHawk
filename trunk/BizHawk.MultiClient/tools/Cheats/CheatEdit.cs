@@ -33,9 +33,9 @@ namespace BizHawk.MultiClient
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator != null)
+			if (Global.Emulator != null)
 			{
-				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, GlobalWinF.Emulator.MainMemory);
+				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MainMemory);
 			}
 			SetFormToDefault();
 		}
@@ -81,9 +81,9 @@ namespace BizHawk.MultiClient
 
 			NameBox.Text = String.Empty;
 
-			if (GlobalWinF.Emulator != null)
+			if (Global.Emulator != null)
 			{
-				AddressBox.SetHexProperties(GlobalWinF.Emulator.MainMemory.Size);
+				AddressBox.SetHexProperties(Global.Emulator.MainMemory.Size);
 			}
 
 			ValueBox.ByteSize = 
