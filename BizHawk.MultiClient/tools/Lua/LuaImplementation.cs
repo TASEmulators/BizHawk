@@ -853,8 +853,8 @@ namespace BizHawk.MultiClient
 		Graphics GetGraphics()
 		{
 			var g = luaSurface.GetGraphics();
-			int tx = GlobalWinF.Emulator.CoreComm.ScreenLogicalOffsetX;
-			int ty = GlobalWinF.Emulator.CoreComm.ScreenLogicalOffsetY;
+			int tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+			int ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
@@ -900,8 +900,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				dx -= GlobalWinF.Emulator.CoreComm.ScreenLogicalOffsetX;
-				dy -= GlobalWinF.Emulator.CoreComm.ScreenLogicalOffsetY;
+				dx -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 			// blah hacks
 			dx *= client_getwindowsize();
@@ -1255,12 +1255,12 @@ namespace BizHawk.MultiClient
 		// TODO: error handling for argument count mismatch
 		private void emu_setrenderplanes_do(object[] lua_p)
 		{
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				GlobalWinF.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
 				GlobalWinF.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
-			else if (GlobalWinF.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
+			else if (Global.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
 			{
 				GlobalWinF.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
 				GlobalWinF.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
@@ -1270,7 +1270,7 @@ namespace BizHawk.MultiClient
 					GlobalWinF.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
-			else if (GlobalWinF.Emulator is Emulation.Consoles.Sega.SMS)
+			else if (Global.Emulator is Emulation.Consoles.Sega.SMS)
 			{
 				GlobalWinF.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				GlobalWinF.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
@@ -1322,7 +1322,7 @@ namespace BizHawk.MultiClient
 
 		public int emu_framecount()
 		{
-			return GlobalWinF.Emulator.Frame;
+			return Global.Emulator.Frame;
 		}
 
 		public void emu_frameskip(object num_frames)
@@ -1349,12 +1349,12 @@ namespace BizHawk.MultiClient
 
 		public string emu_getsystemid()
 		{
-			return GlobalWinF.Emulator.SystemId;
+			return Global.Emulator.SystemId;
 		}
 
 		public bool emu_islagged()
 		{
-			return GlobalWinF.Emulator.IsLagFrame;
+			return Global.Emulator.IsLagFrame;
 		}
 
 		public bool emu_ispaused()
@@ -1364,7 +1364,7 @@ namespace BizHawk.MultiClient
 
 		public int emu_lagcount()
 		{
-			return GlobalWinF.Emulator.LagCount;
+			return Global.Emulator.LagCount;
 		}
 
 		public void emu_limitframerate(object boolean)
@@ -1405,7 +1405,7 @@ namespace BizHawk.MultiClient
 		{
 			if (luaf != null)
 			{
-				GlobalWinF.Emulator.CoreComm.InputCallback = delegate()
+				Global.Emulator.CoreComm.InputCallback = delegate()
 				{
 					try
 					{
@@ -1420,7 +1420,7 @@ namespace BizHawk.MultiClient
 				};
 			}
 			else
-				GlobalWinF.Emulator.CoreComm.InputCallback = null;
+				Global.Emulator.CoreComm.InputCallback = null;
 		}
 
 		public void emu_pause()
@@ -1607,8 +1607,8 @@ namespace BizHawk.MultiClient
 					_addr = LuaInt(address);
 				}
 
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.ReadAddr = _addr;
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
+				Global.Emulator.CoreComm.MemoryCallbackSystem.ReadAddr = _addr;
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
 				{
 					try
 					{
@@ -1625,7 +1625,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(null);
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(null);
 			}
 		}
 
@@ -1644,8 +1644,8 @@ namespace BizHawk.MultiClient
 					_addr = LuaInt(address);
 				}
 
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.WriteAddr = _addr;
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
+				Global.Emulator.CoreComm.MemoryCallbackSystem.WriteAddr = _addr;
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
 				{
 					try
 					{
@@ -1661,7 +1661,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
 			}
 		}
 
@@ -2351,12 +2351,12 @@ namespace BizHawk.MultiClient
 
 		private uint MM_R_U8(int addr)
 		{
-			return GlobalWinF.Emulator.MainMemory.PeekByte(addr);
+			return Global.Emulator.MainMemory.PeekByte(addr);
 		}
 
 		private void MM_W_U8(int addr, uint v)
 		{
-			GlobalWinF.Emulator.MainMemory.PokeByte(addr, (byte)v);
+			Global.Emulator.MainMemory.PokeByte(addr, (byte)v);
 		}
 
 		private int U2S(uint u, int size)
@@ -2371,7 +2371,7 @@ namespace BizHawk.MultiClient
 
 		public string mainmemory_getname()
 		{
-			return GlobalWinF.Emulator.MainMemory.Name;
+			return Global.Emulator.MainMemory.Name;
 		}
 
 		public uint mainmemory_readbyte(object lua_addr)
@@ -2389,7 +2389,7 @@ namespace BizHawk.MultiClient
 			for (int i = addr; i <= last_addr; i++)
 			{
 				string a = String.Format("{0:X2}", i);
-				byte v = GlobalWinF.Emulator.MainMemory.PeekByte(i);
+				byte v = Global.Emulator.MainMemory.PeekByte(i);
 				string vs = String.Format("{0:X2}", (int)v);
 				table[a] = vs;
 			}
@@ -2399,7 +2399,7 @@ namespace BizHawk.MultiClient
 		public float mainmemory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = GlobalWinF.Emulator.MainMemory.PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -2420,7 +2420,7 @@ namespace BizHawk.MultiClient
 				int a = LuaInt(address);
 				int v = LuaInt(memoryblock[address]);
 
-				GlobalWinF.Emulator.MainMemory.PokeByte(a, (byte)v);
+				Global.Emulator.MainMemory.PokeByte(a, (byte)v);
 			}
 		}
 
@@ -2430,7 +2430,7 @@ namespace BizHawk.MultiClient
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			GlobalWinF.Emulator.MainMemory.PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+			Global.Emulator.MainMemory.PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
 		}
 
 
@@ -2672,29 +2672,29 @@ namespace BizHawk.MultiClient
 
 		private uint M_R_U8(int addr)
 		{
-			return GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(addr);
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(addr);
 		}
 
 		private void M_W_U8(int addr, uint v)
 		{
-			GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte(addr, (byte)v);
+			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte(addr, (byte)v);
 		}
 
 		#endregion
 
 		public string memory_getmemorydomainlist()
 		{
-			return GlobalWinF.Emulator.MemoryDomains.Aggregate("", (current, t) => current + (t.Name + '\n'));
+			return Global.Emulator.MemoryDomains.Aggregate("", (current, t) => current + (t.Name + '\n'));
 		}
 
 		public string memory_getcurrentmemorydomain()
 		{
-			return GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
 		}
 
 		public int memory_getcurrentmemorydomainsize()
 		{
-			return GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].Size;
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Size;
 		}
 
 		public uint memory_readbyte(object lua_addr)
@@ -2706,7 +2706,7 @@ namespace BizHawk.MultiClient
 		public float memory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+			uint val = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -2726,7 +2726,7 @@ namespace BizHawk.MultiClient
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			GlobalWinF.Emulator.MemoryDomains[CurrentMemoryDomain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
 		}
 
 		public bool memory_usememorydomain(object lua_input)
@@ -2734,9 +2734,9 @@ namespace BizHawk.MultiClient
 			if (lua_input.GetType() != typeof(string))
 				return false;
 
-			for (int x = 0; x < GlobalWinF.Emulator.MemoryDomains.Count; x++)
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 			{
-				if (GlobalWinF.Emulator.MemoryDomains[x].Name == lua_input.ToString())
+				if (Global.Emulator.MemoryDomains[x].Name == lua_input.ToString())
 				{
 					CurrentMemoryDomain = x;
 					return true;
@@ -3037,26 +3037,28 @@ namespace BizHawk.MultiClient
 
 		public void nes_addgamegenie(string code)
 		{
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
 				if (gg.Address.HasValue && gg.Value.HasValue)
 				{
 					Watch watch = Watch.GenerateWatch(
-						GlobalWinF.Emulator.MemoryDomains[1],
+						Global.Emulator.MemoryDomains[1],
 						gg.Address.Value,
 						Watch.WatchSize.Byte,
 						Watch.DisplayType.Hex,
 						code,
 						false);
 
-					GlobalWinF.CheatList.Add(new Cheat(
+					Global.CheatList.Add(new Cheat(
 						watch,
 						gg.Value.Value,
 						gg.Compare,
 						enabled: true));
 				}
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -3106,33 +3108,35 @@ namespace BizHawk.MultiClient
 
 		public void nes_removegamegenie(string code)
 		{
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
 				if (gg.Address.HasValue && gg.Value.HasValue)
 				{
-					var cheats = GlobalWinF.CheatList.Where(x => x.Address == gg.Address);
-					GlobalWinF.CheatList.RemoveRange(cheats);
+					var cheats = Global.CheatList.Where(x => x.Address == gg.Address);
+					Global.CheatList.RemoveRange(cheats);
 				}
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
 		public void nes_setallowmorethaneightsprites(bool allow)
 		{
 			Global.Config.NESAllowMoreThanEightSprites = allow;
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
-				(GlobalWinF.Emulator as NES).CoreComm.NES_UnlimitedSprites = allow;
+				(Global.Emulator as NES).CoreComm.NES_UnlimitedSprites = allow;
 			}
 		}
 
 		public void nes_setclipleftandright(bool leftandright)
 		{
 			Global.Config.NESClipLeftAndRight = leftandright;
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
-				(GlobalWinF.Emulator as NES).SetClipLeftAndRight(leftandright);
+				(Global.Emulator as NES).SetClipLeftAndRight(leftandright);
 			}
 		}
 
@@ -3182,17 +3186,17 @@ namespace BizHawk.MultiClient
 				Global.Config.NTSC_NESBottomLine = last;
 			}
 
-			if (GlobalWinF.Emulator is NES)
+			if (Global.Emulator is NES)
 			{
 				if (pal)
 				{
-					(GlobalWinF.Emulator as NES).PAL_FirstDrawLine = first;
-					(GlobalWinF.Emulator as NES).PAL_LastDrawLine = last;
+					(Global.Emulator as NES).PAL_FirstDrawLine = first;
+					(Global.Emulator as NES).PAL_LastDrawLine = last;
 				}
 				else
 				{
-					(GlobalWinF.Emulator as NES).NTSC_FirstDrawLine = first;
-					(GlobalWinF.Emulator as NES).NTSC_LastDrawLine = last;
+					(Global.Emulator as NES).NTSC_FirstDrawLine = first;
+					(Global.Emulator as NES).NTSC_LastDrawLine = last;
 				}
 			}
 		}

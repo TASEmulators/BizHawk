@@ -86,23 +86,23 @@ namespace BizHawk.MultiClient
 
 		private void UpdateListView()
 		{
-			CheatListView.ItemCount = GlobalWinF.CheatList.Count;
-			TotalLabel.Text = GlobalWinF.CheatList.CheatCount.ToString()
-				+ (GlobalWinF.CheatList.CheatCount == 1 ? " cheat " : " cheats ")
-				+ GlobalWinF.CheatList.ActiveCount.ToString() + " active";
+			CheatListView.ItemCount = Global.CheatList.Count;
+			TotalLabel.Text = Global.CheatList.CheatCount.ToString()
+				+ (Global.CheatList.CheatCount == 1 ? " cheat " : " cheats ")
+				+ Global.CheatList.ActiveCount.ToString() + " active";
 		}
 
 		public void LoadFileFromRecent(string path)
 		{
 			bool ask_result = true;
-			if (GlobalWinF.CheatList.Changes)
+			if (Global.CheatList.Changes)
 			{
 				ask_result = AskSave();
 			}
 
 			if (ask_result)
 			{
-				bool load_result = GlobalWinF.CheatList.Load(path, append: false);
+				bool load_result = Global.CheatList.Load(path, append: false);
 				if (!load_result)
 				{
 					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
@@ -112,6 +112,7 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentWatches.Add(path);
 					UpdateListView();
 					UpdateMessageLabel();
+					ToolHelpers.UpdateCheatRelatedTools();
 				}
 			}
 		}
@@ -122,11 +123,11 @@ namespace BizHawk.MultiClient
 			
 			if (saved)
 			{
-				message = Path.GetFileName(GlobalWinF.CheatList.CurrentFileName) + " saved.";
+				message = Path.GetFileName(Global.CheatList.CurrentFileName) + " saved.";
 			}
 			else
 			{
-				message = Path.GetFileName(GlobalWinF.CheatList.CurrentFileName) + (GlobalWinF.CheatList.Changes ? " *" : String.Empty);
+				message = Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : String.Empty);
 			}
 
 			MessageLabel.Text = message;
@@ -139,14 +140,14 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (GlobalWinF.CheatList.Changes)
+			if (Global.CheatList.Changes)
 			{
 				GlobalWinF.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 				GlobalWinF.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					GlobalWinF.CheatList.Save();
+					Global.CheatList.Save();
 				}
 				else if (result == DialogResult.No)
 				{
@@ -166,18 +167,32 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				bool result = true;
-				if (GlobalWinF.CheatList.Changes)
+				if (Global.CheatList.Changes)
 				{
 					result = AskSave();
 				}
 
 				if (result)
 				{
-					GlobalWinF.CheatList.Load(file.FullName, append);
+					Global.CheatList.Load(file.FullName, append);
 					UpdateListView();
 					UpdateMessageLabel();
-					Global.Config.RecentCheats.Add(GlobalWinF.CheatList.CurrentFileName);
+					Global.Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
+					ToolHelpers.UpdateCheatRelatedTools();
 				}
+			}
+		}
+
+		private bool SaveAs()
+		{
+			var file = ToolHelpers.GetCheatSaveFileFromUser(Global.CheatList.CurrentFileName);
+			if (file != null)
+			{
+				return Global.CheatList.SaveFile(file.FullName);
+			}
+			else
+			{
+				return false;
 			}
 		}
 
@@ -204,18 +219,19 @@ namespace BizHawk.MultiClient
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				((GlobalWinF.Emulator is NES)
-				|| (GlobalWinF.Emulator is Genesis)
-				|| (GlobalWinF.Emulator.SystemId == "GB")
+				((Global.Emulator is NES)
+				|| (Global.Emulator is Genesis)
+				|| (Global.Emulator.SystemId == "GB")
 				|| (Global.Game.System == "GG")
-				|| (GlobalWinF.Emulator is LibsnesCore));
+				|| (Global.Emulator is LibsnesCore));
 		}
 
 		private void AddCheat()
 		{
-			GlobalWinF.CheatList.Add(CheatEditor.Cheat);
+			Global.CheatList.Add(CheatEditor.Cheat);
 			UpdateListView();
 			UpdateMessageLabel();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void EditCheat()
@@ -279,7 +295,7 @@ namespace BizHawk.MultiClient
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (index >= GlobalWinF.CheatList.Count || GlobalWinF.CheatList[index].IsSeparator)
+			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
 			{
 				return;
 			}
@@ -289,44 +305,44 @@ namespace BizHawk.MultiClient
 			switch (columnName)
 			{
 				case NAME:
-					text = GlobalWinF.CheatList[index].Name;
+					text = Global.CheatList[index].Name;
 					break;
 				case ADDRESS:
-					text = GlobalWinF.CheatList[index].AddressStr;
+					text = Global.CheatList[index].AddressStr;
 					break;
 				case VALUE:
-					text = GlobalWinF.CheatList[index].ValueStr;
+					text = Global.CheatList[index].ValueStr;
 					break;
 				case COMPARE:
-					text = GlobalWinF.CheatList[index].CompareStr;
+					text = Global.CheatList[index].CompareStr;
 					break;
 				case ON:
-					text = GlobalWinF.CheatList[index].Enabled ? "*" : "";
+					text = Global.CheatList[index].Enabled ? "*" : "";
 					break;
 				case DOMAIN:
-					text = GlobalWinF.CheatList[index].Domain.Name;
+					text = Global.CheatList[index].Domain.Name;
 					break;
 				case SIZE:
-					text = GlobalWinF.CheatList[index].Size.ToString();
+					text = Global.CheatList[index].Size.ToString();
 					break;
 				case ENDIAN:
-					text = GlobalWinF.CheatList[index].BigEndian.Value ? "Big" : "Little";
+					text = Global.CheatList[index].BigEndian.Value ? "Big" : "Little";
 					break;
 				case TYPE:
-					text = Watch.DisplayTypeToString(GlobalWinF.CheatList[index].Type);
+					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
 					break;
 			}
 		}
 
 		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index < GlobalWinF.CheatList.Count)
+			if (index < Global.CheatList.Count)
 			{
-				if (GlobalWinF.CheatList[index].IsSeparator)
+				if (Global.CheatList[index].IsSeparator)
 				{
 					color = BackColor;
 				}
-				else if (GlobalWinF.CheatList[index].Enabled)
+				else if (Global.CheatList[index].Enabled)
 				{
 					color = Color.LightCyan;
 				}
@@ -356,9 +372,9 @@ namespace BizHawk.MultiClient
 				{
 					foreach (int index in SelectedIndices)
 					{
-						if (!GlobalWinF.CheatList[index].IsSeparator)
+						if (!Global.CheatList[index].IsSeparator)
 						{
-							selected.Add(GlobalWinF.CheatList[index]);
+							selected.Add(Global.CheatList[index]);
 						}
 					}
 				}
@@ -384,9 +400,9 @@ namespace BizHawk.MultiClient
 
 			foreach (int index in indices)
 			{
-				var cheat = GlobalWinF.CheatList[index];
-				GlobalWinF.CheatList.Remove(GlobalWinF.CheatList[index]);
-				GlobalWinF.CheatList.Insert(index - 1, cheat);
+				var cheat = Global.CheatList[index];
+				Global.CheatList.Remove(Global.CheatList[index]);
+				Global.CheatList.Insert(index - 1, cheat);
 			}
 
 			UpdateMessageLabel();
@@ -404,6 +420,7 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateListView();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveDown()
@@ -416,12 +433,12 @@ namespace BizHawk.MultiClient
 
 			foreach (int index in indices)
 			{
-				var cheat = GlobalWinF.CheatList[index];
+				var cheat = Global.CheatList[index];
 
-				if (index < GlobalWinF.CheatList.Count - 1)
+				if (index < Global.CheatList.Count - 1)
 				{
-					GlobalWinF.CheatList.Remove(GlobalWinF.CheatList[index]);
-					GlobalWinF.CheatList.Insert(index + 1, cheat);
+					Global.CheatList.Remove(Global.CheatList[index]);
+					Global.CheatList.Insert(index + 1, cheat);
 				}
 			}
 
@@ -440,6 +457,7 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateListView();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void Remove()
@@ -448,7 +466,7 @@ namespace BizHawk.MultiClient
 			{
 				foreach (int index in SelectedIndices)
 				{
-					GlobalWinF.CheatList.Remove(GlobalWinF.CheatList[SelectedIndices[0]]); //SelectedIndices[0] used since each iteration will make this the correct list index
+					Global.CheatList.Remove(Global.CheatList[SelectedIndices[0]]); //SelectedIndices[0] used since each iteration will make this the correct list index
 				}
 				CheatListView.SelectedIndices.Clear();
 			}
@@ -460,7 +478,7 @@ namespace BizHawk.MultiClient
 		{
 			SelectedCheats.ForEach(x => x.Toggle());
 			ToolHelpers.UpdateCheatRelatedTools();
-			GlobalWinF.CheatList.FlagChanges();
+			Global.CheatList.FlagChanges();
 		}
 
 		private void SaveColumnInfo()
@@ -545,16 +563,17 @@ namespace BizHawk.MultiClient
 		private void NewList()
 		{
 			bool result = true;
-			if (GlobalWinF.CheatList.Changes)
+			if (Global.CheatList.Changes)
 			{
 				result = AskSave();
 			}
 
 			if (result)
 			{
-				GlobalWinF.CheatList.NewList();
+				Global.CheatList.NewList(GlobalWinF.MainForm.GenerateDefaultCheatFilename());
 				UpdateListView();
 				UpdateMessageLabel();
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -564,7 +583,7 @@ namespace BizHawk.MultiClient
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveMenuItem.Enabled = GlobalWinF.CheatList.Changes;
+			SaveMenuItem.Enabled = Global.CheatList.Changes;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -583,14 +602,14 @@ namespace BizHawk.MultiClient
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			bool append = sender == AppendMenuItem;
-			LoadFile(CheatList.GetFileFromUser(GlobalWinF.CheatList.CurrentFileName), append);
+			LoadFile(ToolHelpers.GetCheatFileFromUser(Global.CheatList.CurrentFileName), append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.CheatList.Changes)
+			if (Global.CheatList.Changes)
 			{
-				if (GlobalWinF.CheatList.Save())
+				if (Global.CheatList.Save())
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -603,7 +622,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.CheatList.SaveAs())
+			if (SaveAs())
 			{
 				UpdateMessageLabel(saved: true);
 			}
@@ -627,15 +646,15 @@ namespace BizHawk.MultiClient
 				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
-			DisableAllCheatsMenuItem.Enabled = GlobalWinF.CheatList.ActiveCount > 0;
+			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-				((GlobalWinF.Emulator is NES) 
-					|| (GlobalWinF.Emulator is Genesis)
-					|| (GlobalWinF.Emulator.SystemId == "GB")
+				((Global.Emulator is NES) 
+					|| (Global.Emulator is Genesis)
+					|| (Global.Emulator.SystemId == "GB")
 					|| (Global.Game.System == "GG")
-					|| (GlobalWinF.Emulator is LibsnesCore));
+					|| (Global.Emulator is LibsnesCore));
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
@@ -649,27 +668,29 @@ namespace BizHawk.MultiClient
 			{
 				foreach (int index in CheatListView.SelectedIndices)
 				{
-					GlobalWinF.CheatList.Add(new Cheat(GlobalWinF.CheatList[index]));
+					Global.CheatList.Add(new Cheat(Global.CheatList[index]));
 				}
 			}
 
 			UpdateListView();
 			UpdateMessageLabel();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedIndices.Any())
 			{
-				GlobalWinF.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
+				Global.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
 			}
 			else
 			{
-				GlobalWinF.CheatList.Add(Cheat.Separator);
+				Global.CheatList.Add(Cheat.Separator);
 			}
 			
 			UpdateListView();
 			UpdateMessageLabel();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
@@ -684,7 +705,7 @@ namespace BizHawk.MultiClient
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (int i = 0; i < GlobalWinF.CheatList.Count; i++)
+			for (int i = 0; i < Global.CheatList.Count; i++)
 			{
 				CheatListView.SelectItem(i, true);
 			}
@@ -697,7 +718,8 @@ namespace BizHawk.MultiClient
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.CheatList.DisableAll();
+			Global.CheatList.DisableAll();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
@@ -914,7 +936,7 @@ namespace BizHawk.MultiClient
 				_sortReverse = false;
 			}
 
-			GlobalWinF.CheatList.Sort(column.Name, _sortReverse);
+			Global.CheatList.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
 			_sortReverse ^= true;
@@ -943,7 +965,7 @@ namespace BizHawk.MultiClient
 				RemoveContextMenuItem.Enabled =
 				SelectedCheats.Any();
 
-			DisableAllContextMenuItem.Enabled = GlobalWinF.CheatList.ActiveCount > 0;
+			DisableAllContextMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 		}
 
 		#endregion

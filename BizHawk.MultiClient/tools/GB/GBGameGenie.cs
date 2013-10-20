@@ -348,7 +348,7 @@ namespace BizHawk.MultiClient
 
 		private void AddCheatClick(object sender, EventArgs e)
 		{
-			if ((GlobalWinF.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
 				string NAME = String.Empty;
 				int ADDRESS = 0;
@@ -391,9 +391,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 				{
-					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "System Bus")
+					if (Global.Emulator.MemoryDomains[i].ToString() == "System Bus")
 					{
 						sysBusIndex = i;
 						break;
@@ -401,18 +401,20 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					GlobalWinF.Emulator.MemoryDomains[sysBusIndex],
+					Global.Emulator.MemoryDomains[sysBusIndex],
 					ADDRESS,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
 					NAME,
 					false);
 
-				GlobalWinF.CheatList.Add(new Cheat(
+				Global.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					COMPARE,
 					enabled: true));
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

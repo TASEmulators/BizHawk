@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
 
 			if (now == false)
 			{
-				if (GlobalWinF.Emulator.Frame % RefreshRate.Value != 0) return;
+				if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
 			}
 
 			BitmapData bmpdata = NameTableView.Nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -107,15 +107,15 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(GlobalWinF.Emulator is NES)) return;
-			NES.PPU ppu = (GlobalWinF.Emulator as NES).ppu;
+			if (!(Global.Emulator is NES)) return;
+			NES.PPU ppu = (Global.Emulator as NES).ppu;
 			ppu.NTViewCallback = Callback;
 		}
 
 		public void Restart()
 		{
-			if (!(GlobalWinF.Emulator is NES)) Close();
-			_nes = GlobalWinF.Emulator as NES;
+			if (!(Global.Emulator is NES)) Close();
+			_nes = Global.Emulator as NES;
 			Generate(true);
 		}
 
@@ -124,7 +124,7 @@ namespace BizHawk.MultiClient
 			if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
 				Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
 
-			_nes = GlobalWinF.Emulator as NES;
+			_nes = Global.Emulator as NES;
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}

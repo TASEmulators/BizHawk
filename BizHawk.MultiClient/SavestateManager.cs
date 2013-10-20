@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 
 		public void Update()
 		{
-			if (Global.Game == null || GlobalWinF.Emulator == null)
+			if (Global.Game == null || Global.Emulator == null)
 			{
 				for (int x = 0; x < 10; x++)
 					slots[x] = false;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -10,6 +11,53 @@ namespace BizHawk.MultiClient
 {
 	class ToolHelpers
 	{
+		public static FileInfo GetCheatFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
+			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
+			ofd.RestoreDirectory = true;
+
+			GlobalWinF.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(ofd.FileName);
+			return file;
+		}
+
+		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
+		{
+			var sfd = new SaveFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			}
+			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
+			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			GlobalWinF.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			var file = new FileInfo(sfd.FileName);
+			Global.Config.LastRomPath = file.DirectoryName;
+			return file;
+		}
+
 		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
 		{
 			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = recent.AutoLoad };
@@ -62,10 +110,10 @@ namespace BizHawk.MultiClient
 		{
 			var items = new List<ToolStripMenuItem>();
 
-			if (GlobalWinF.Emulator.MemoryDomains.Any())
+			if (Global.Emulator.MemoryDomains.Any())
 			{
 				int counter = 0;
-				foreach (var domain in GlobalWinF.Emulator.MemoryDomains)
+				foreach (var domain in Global.Emulator.MemoryDomains)
 				{
 					string temp = domain.ToString();
 					var item = new ToolStripMenuItem { Text = temp };
@@ -94,9 +142,9 @@ namespace BizHawk.MultiClient
 		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
 		{
 			dropdown.Items.Clear();
-			if (GlobalWinF.Emulator.MemoryDomains.Count > 0)
+			if (Global.Emulator.MemoryDomains.Count > 0)
 			{
-				foreach (var domain in GlobalWinF.Emulator.MemoryDomains)
+				foreach (var domain in Global.Emulator.MemoryDomains)
 				{
 					var result = dropdown.Items.Add(domain.ToString());
 					if (domain.Name == startDomain.Name)
@@ -118,7 +166,7 @@ namespace BizHawk.MultiClient
 
 		public static void UnfreezeAll()
 		{
-			GlobalWinF.CheatList.DisableAll();
+			Global.CheatList.DisableAll();
 			UpdateCheatRelatedTools();
 		}
 
@@ -128,7 +176,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					GlobalWinF.CheatList.Add(
+					Global.CheatList.Add(
 						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
 					);
 				}
@@ -143,7 +191,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					GlobalWinF.CheatList.Remove(watch);
+					Global.CheatList.Remove(watch);
 				}
 			}
 
@@ -160,7 +208,7 @@ namespace BizHawk.MultiClient
 		public static MemoryDomain DomainByName(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			foreach (MemoryDomain domain in GlobalWinF.Emulator.MemoryDomains)
+			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
 			{
 				if (domain.Name == name)
 				{
@@ -168,7 +216,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			return GlobalWinF.Emulator.MainMemory;
+			return Global.Emulator.MainMemory;
 		}
 
 		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)

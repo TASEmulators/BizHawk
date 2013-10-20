@@ -1,4 +1,6 @@
-﻿namespace BizHawk.MultiClient
+﻿using BizHawk.Client.Common;
+
+namespace BizHawk.MultiClient
 {
 	public class MovieSession
 	{
@@ -29,7 +31,7 @@
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			string loggedFrame = Movie.GetInput(GlobalWinF.Emulator.Frame);
+			string loggedFrame = Movie.GetInput(Global.Emulator.Frame);
 			MovieControllerAdapter.SetControllersAsMnemonic(loggedFrame);
 		}
 	}

@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 
 		public unsafe void Generate()
 		{
-			if (GlobalWinF.Emulator.Frame % RefreshRate.Value != 0) return;
+			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
 
 			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
 
@@ -67,18 +67,18 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(GlobalWinF.Emulator is PCEngine))
+			if (!(Global.Emulator is PCEngine))
 			{
 				Close();
 				return;
 			}
-			pce = GlobalWinF.Emulator as PCEngine;
+			pce = Global.Emulator as PCEngine;
 		}
 
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(GlobalWinF.Emulator is PCEngine)) return;
+			if (!(Global.Emulator is PCEngine)) return;
 			Generate();
 		}
 
@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
-			pce = GlobalWinF.Emulator as PCEngine;
+			pce = Global.Emulator as PCEngine;
 			LoadConfigSettings();
 			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
 			{

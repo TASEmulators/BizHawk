@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	class VirtualPadA26Control : VirtualPad
@@ -98,7 +100,7 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator.SystemId != "A26") return;
+			if (Global.Emulator.SystemId != "A26") return;
 			else if (sender == B1)
 			{
 				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B1.Checked);
@@ -127,7 +129,7 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (GlobalWinF.Emulator.SystemId != "A26") return;
+			if (Global.Emulator.SystemId != "A26") return;
 
 			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
 			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);

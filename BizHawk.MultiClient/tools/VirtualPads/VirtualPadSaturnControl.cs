@@ -2,6 +2,8 @@
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadSaturnControl : UserControl, IVirtualPad
@@ -71,7 +73,7 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator.SystemId != "SAT")
+			if (Global.Emulator.SystemId != "SAT")
 			{
 				return;
 			}
@@ -87,7 +89,7 @@ namespace BizHawk.MultiClient
 
 		public void Clear()
 		{
-			if (GlobalWinF.Emulator.SystemId != "SAT") return;
+			if (Global.Emulator.SystemId != "SAT") return;
 
 			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
 			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);

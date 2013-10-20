@@ -259,9 +259,9 @@ namespace BizHawk.MultiClient
 
 		private int? GetDomainInt(string name)
 		{
-			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
-				if (GlobalWinF.Emulator.MemoryDomains[i].Name == name)
+				if (Global.Emulator.MemoryDomains[i].Name == name)
 				{
 					return i;
 				}
@@ -457,9 +457,9 @@ namespace BizHawk.MultiClient
 				//<zeromus> THIS IS HORRIBLE.
 				Domain = ROMDomain;
 			}
-			else if (pos < GlobalWinF.Emulator.MemoryDomains.Count)  //Sanity check
+			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				SetMemoryDomain(GlobalWinF.Emulator.MemoryDomains[pos]);
+				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
 			SetHeader();
 			UpdateGroupBoxTitle();
@@ -471,7 +471,7 @@ namespace BizHawk.MultiClient
 		private void UpdateGroupBoxTitle()
 		{
 			string memoryDomain = Domain.ToString();
-			string systemID = GlobalWinF.Emulator.SystemId;
+			string systemID = Global.Emulator.SystemId;
 			int addresses = Domain.Size / DataSize;
 			string addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
 			//if ((addresses & 0x3FF) == 0)
@@ -484,11 +484,11 @@ namespace BizHawk.MultiClient
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
 
-			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
-				if (GlobalWinF.Emulator.MemoryDomains[i].Size > 0)
+				if (Global.Emulator.MemoryDomains[i].Size > 0)
 				{
-					string str = GlobalWinF.Emulator.MemoryDomains[i].ToString();
+					string str = Global.Emulator.MemoryDomains[i].ToString();
 					var item = new ToolStripMenuItem { Text = str };
 					{
 						int z = i;
@@ -835,7 +835,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsFrozen(int address)
 		{
-			return GlobalWinF.CheatList.IsActive(Domain, address);
+			return Global.CheatList.IsActive(Domain, address);
 		}
 
 		private void ToggleFreeze()
@@ -868,10 +868,11 @@ namespace BizHawk.MultiClient
 		{
 			if (address >= 0)
 			{
-				var cheats = GlobalWinF.CheatList.Where(x => x.Contains(address)).ToList();
-				GlobalWinF.CheatList.RemoveRange(cheats);
+				var cheats = Global.CheatList.Where(x => x.Contains(address)).ToList();
+				Global.CheatList.RemoveRange(cheats);
 			}
 			MemoryViewerBox.Refresh();
+			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private Watch.WatchSize WatchSize
@@ -912,7 +913,7 @@ namespace BizHawk.MultiClient
 					String.Empty,
 					BigEndian);
 
-				GlobalWinF.CheatList.Add(new Cheat(
+				Global.CheatList.Add(new Cheat(
 					watch,
 					watch.Value.Value,
 					compare: null,
@@ -999,13 +1000,13 @@ namespace BizHawk.MultiClient
 		{
 			var sfd = new SaveFileDialog();
 
-			if (!(GlobalWinF.Emulator is NullEmulator))
+			if (!(Global.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			else
 				sfd.FileName = "MemoryDump";
 
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(GlobalWinF.Emulator.SystemId);
+			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
@@ -1036,13 +1037,13 @@ namespace BizHawk.MultiClient
 		{
 			var sfd = new SaveFileDialog();
 
-			if (!(GlobalWinF.Emulator is NullEmulator))
+			if (!(Global.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			else
 				sfd.FileName = "MemoryDump";
 
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(GlobalWinF.Emulator.SystemId);
+			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
 			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
@@ -1209,7 +1210,7 @@ namespace BizHawk.MultiClient
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			var activeCheats = GlobalWinF.CheatList.Where(x => x.Enabled);
+			var activeCheats = Global.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
 				if (IsVisible(cheat.Address.Value))
@@ -1234,7 +1235,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size((8 * DataSize), fontHeight));
 
-				if (GlobalWinF.CheatList.IsActive(Domain, addressHighlighted))
+				if (Global.CheatList.IsActive(Domain, addressHighlighted))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1256,7 +1257,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size(8, fontHeight));
 
-				if (GlobalWinF.CheatList.IsActive(Domain, address))
+				if (Global.CheatList.IsActive(Domain, address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1692,10 +1693,10 @@ namespace BizHawk.MultiClient
 
 		private void IncrementAddress(int address)
 		{
-			if (GlobalWinF.CheatList.IsActive(Domain, address))
+			if (Global.CheatList.IsActive(Domain, address))
 			{
-				GlobalWinF.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
-				GlobalWinF.CheatList.FlagChanges();
+				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
+				Global.CheatList.FlagChanges();
 			}
 			else
 			{
@@ -1730,10 +1731,10 @@ namespace BizHawk.MultiClient
 
 		private void DecrementAddress(int address)
 		{
-			if (GlobalWinF.CheatList.IsActive(Domain, address))
+			if (Global.CheatList.IsActive(Domain, address))
 			{
-				GlobalWinF.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
-				GlobalWinF.CheatList.FlagChanges();
+				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
+				Global.CheatList.FlagChanges();
 			}
 			else
 			{

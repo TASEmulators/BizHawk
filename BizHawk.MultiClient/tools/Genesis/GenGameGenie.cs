@@ -224,7 +224,7 @@ namespace BizHawk.MultiClient
 
 		private void addcheatbt_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Emulator is Genesis)
+			if (Global.Emulator is Genesis)
 			{
 				string NAME;
 				int ADDRESS = 0;
@@ -255,16 +255,16 @@ namespace BizHawk.MultiClient
 					VALUE = ValueBox.ToRawInt();
 				}
 
-				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 				{
-					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "Rom Data")
+					if (Global.Emulator.MemoryDomains[i].ToString() == "Rom Data")
 					{
 						romDataDomainIndex = i;
 					}
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					GlobalWinF.Emulator.MemoryDomains[romDataDomainIndex],
+					Global.Emulator.MemoryDomains[romDataDomainIndex],
 					ADDRESS,
 					Watch.WatchSize.Word,
 					Watch.DisplayType.Hex,
@@ -272,12 +272,14 @@ namespace BizHawk.MultiClient
 					bigEndian: true
 				);
 
-				GlobalWinF.CheatList.Add(new Cheat(
+				Global.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					compare: null,
 					enabled: true
 				));
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 
 		}

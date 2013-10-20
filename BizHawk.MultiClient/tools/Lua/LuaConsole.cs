@@ -909,7 +909,7 @@ namespace BizHawk.MultiClient
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentSessionFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentSessionFile);
 			}
-			else if (!(GlobalWinF.Emulator is NullEmulator))
+			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.GetLuaPath();

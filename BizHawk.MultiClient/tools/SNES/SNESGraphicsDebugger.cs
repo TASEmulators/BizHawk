@@ -154,7 +154,7 @@ namespace BizHawk.MultiClient
 
 		void SyncCore()
 		{
-			LibsnesCore core = GlobalWinF.Emulator as LibsnesCore;
+			LibsnesCore core = Global.Emulator as LibsnesCore;
 			if (currentSnesCore != core && currentSnesCore != null)
 			{
 				currentSnesCore.ScanlineHookManager.Unregister(this);

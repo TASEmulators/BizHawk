@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 				TASView.BlazingFast = false;
 			}
 
-			if (GlobalWinF.Emulator.Frame < stopOnFrame)
+			if (Global.Emulator.Frame < stopOnFrame)
 			{
 				GlobalWinF.MainForm.PressFrameAdvance = true;
 			}
@@ -120,7 +120,7 @@ namespace BizHawk.MultiClient
 					color = Color.LightGreen;
 				}
 			}
-			if (index == GlobalWinF.Emulator.Frame)
+			if (index == Global.Emulator.Frame)
 			{
 				if (color != Color.LightBlue)
 				{
@@ -146,12 +146,12 @@ namespace BizHawk.MultiClient
 		private void DisplayList()
 		{
 			TASView.ItemCount = GlobalWinF.MovieSession.Movie.RawFrames;
-			if (GlobalWinF.MovieSession.Movie.Frames == GlobalWinF.Emulator.Frame && GlobalWinF.MovieSession.Movie.StateLastIndex == GlobalWinF.Emulator.Frame - 1)
+			if (GlobalWinF.MovieSession.Movie.Frames == Global.Emulator.Frame && GlobalWinF.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
 				TASView.ItemCount++;
 			}
-			TASView.ensureVisible(GlobalWinF.Emulator.Frame - 1);
+			TASView.ensureVisible(Global.Emulator.Frame - 1);
 		}
 
 		public void Restart()
@@ -262,14 +262,14 @@ namespace BizHawk.MultiClient
 			if (GlobalWinF.MovieSession.Movie.IsFinished || !GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				GlobalWinF.MainForm.Rewind(1);
-				if (GlobalWinF.Emulator.Frame <= GlobalWinF.MovieSession.Movie.Frames)
+				if (Global.Emulator.Frame <= GlobalWinF.MovieSession.Movie.Frames)
 				{
 					GlobalWinF.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 			else
 			{
-				GlobalWinF.MovieSession.Movie.RewindToFrame(GlobalWinF.Emulator.Frame - 1);
+				GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 			}
 			UpdateValues();
 		}
@@ -311,7 +311,7 @@ namespace BizHawk.MultiClient
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.Rewind(GlobalWinF.Emulator.Frame);
+			GlobalWinF.MainForm.Rewind(Global.Emulator.Frame);
 			DisplayList();
 		}
 
@@ -480,7 +480,7 @@ namespace BizHawk.MultiClient
 
 				if (e.Delta > 0) //Scroll up
 				{
-					GlobalWinF.MovieSession.Movie.RewindToFrame(GlobalWinF.Emulator.Frame - 1);
+					GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 				}
 				else if (e.Delta < 0) //Scroll down
 				{

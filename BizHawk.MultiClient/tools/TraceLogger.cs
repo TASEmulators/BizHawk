@@ -80,10 +80,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				if (GlobalWinF.Emulator.CoreComm.CpuTraceAvailable)
+				if (Global.Emulator.CoreComm.CpuTraceAvailable)
 				{
 					ClearList();
-					TraceView.Columns[0].Text = GlobalWinF.Emulator.CoreComm.TraceHeader;
+					TraceView.Columns[0].Text = Global.Emulator.CoreComm.TraceHeader;
 				}
 				else
 				{

@@ -14,8 +14,8 @@ namespace BizHawk.MultiClient
 		{
 			if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
-				GlobalWinF.MovieSession.Movie.ClearFrame(GlobalWinF.Emulator.Frame);
-				GlobalWinF.OSD.AddMessage("Scrubbed input at frame " + GlobalWinF.Emulator.Frame.ToString());
+				GlobalWinF.MovieSession.Movie.ClearFrame(Global.Emulator.Frame);
+				GlobalWinF.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 			if (GlobalWinF.MovieSession.Movie.StartsFromSavestate)
 			{
 				LoadStateFile(GlobalWinF.MovieSession.Movie.Filename, Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename));
-				GlobalWinF.Emulator.ResetFrameCounter();
+				Global.Emulator.ResetFrameCounter();
 			}
 			if (record)
 			{
@@ -92,10 +92,10 @@ namespace BizHawk.MultiClient
 		public void RecordMovie()
 		{
 			// put any BEETA quality cores here
-			if (GlobalWinF.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
-				GlobalWinF.Emulator is Emulation.Consoles.Sega.Genesis ||
-				GlobalWinF.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
-                GlobalWinF.Emulator is Emulation.Consoles.Sony.PSP.PSP)
+			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
+				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
+				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
+                Global.Emulator is Emulation.Consoles.Sony.PSP.PSP)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
@@ -116,7 +116,7 @@ namespace BizHawk.MultiClient
 				if (GlobalWinF.MovieSession.Movie.StartsFromSavestate)
 				{
 					LoadStateFile(GlobalWinF.MovieSession.Movie.Filename, Path.GetFileName(GlobalWinF.MovieSession.Movie.Filename));
-					GlobalWinF.Emulator.ResetFrameCounter();
+					Global.Emulator.ResetFrameCounter();
 				}
 				GlobalWinF.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
@@ -277,7 +277,7 @@ namespace BizHawk.MultiClient
 
 			else if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
-				if (GlobalWinF.Emulator.Frame < GlobalWinF.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Global.Emulator.Frame < GlobalWinF.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					GlobalWinF.MovieSession.Movie.SwitchToPlay();
 					GlobalWinF.MovieSession.LatchInputFromLog();
@@ -290,13 +290,13 @@ namespace BizHawk.MultiClient
 
 			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
-				if (GlobalWinF.Emulator.Frame >= GlobalWinF.MovieSession.Movie.Frames)
+				if (Global.Emulator.Frame >= GlobalWinF.MovieSession.Movie.Frames)
 				{
 					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
 					{
 						GlobalWinF.MovieSession.Movie.CaptureState();
 						GlobalWinF.MovieSession.LatchInputFromLog();
-						GlobalWinF.MovieSession.Movie.CommitFrame(GlobalWinF.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+						GlobalWinF.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
 					}
 					else
 					{
@@ -320,7 +320,7 @@ namespace BizHawk.MultiClient
 						if (!mg.IsEmpty)
 						{
 							GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
-							GlobalWinF.MovieSession.Movie.PokeFrame(GlobalWinF.Emulator.Frame, mg.GetControllersAsMnemonic());
+							GlobalWinF.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
 						}
 						else
 						{
@@ -343,14 +343,14 @@ namespace BizHawk.MultiClient
 				}
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				GlobalWinF.MovieSession.Movie.CommitFrame(GlobalWinF.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+				GlobalWinF.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
 			}
 		}
 
 		//On movie load, these need to be set based on the contents of the movie file
 		private void SetSyncDependentSettings()
 		{
-			switch (GlobalWinF.Emulator.SystemId)
+			switch (Global.Emulator.SystemId)
 			{
 				case "Coleco":
 					string str = GlobalWinF.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);

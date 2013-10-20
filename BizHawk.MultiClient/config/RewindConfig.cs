@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 			
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
-			StateSize = GlobalWinF.Emulator.SaveStateBinary().Length;
+			StateSize = Global.Emulator.SaveStateBinary().Length;
 			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
 
 			MediumStateSize = Global.Config.Rewind_MediumStateSize;
@@ -266,7 +266,7 @@ namespace BizHawk.MultiClient
                 }
                 else
                 {
-                    avg_state_size = GlobalWinF.Emulator.SaveStateBinary().Length;
+                    avg_state_size = Global.Emulator.SaveStateBinary().Length;
                 }
             }
             else

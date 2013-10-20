@@ -40,9 +40,9 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(GlobalWinF.Emulator is NES)) Close();
+			if (!(Global.Emulator is NES)) Close();
 			if (!IsHandleCreated || IsDisposed) return;
-			_nes = GlobalWinF.Emulator as NES;
+			_nes = Global.Emulator as NES;
 		}
 
 		public void UpdateValues()
@@ -80,7 +80,7 @@ namespace BizHawk.MultiClient
 		private void NESDebugger_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			_nes = GlobalWinF.Emulator as NES;
+			_nes = Global.Emulator as NES;
 		}
 
 		private void LoadConfigSettings()
