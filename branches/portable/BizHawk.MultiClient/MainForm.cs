@@ -26,9 +26,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm : Form
 	{
-		public static bool INTERIM = true;
+		public static bool INTERIM = false;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "August 22, 2013";
+		public const string RELEASEDATE = "October 20, 2013";
 		public string CurrentlyOpenRom;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
@@ -3338,7 +3338,8 @@ namespace BizHawk.MultiClient
 		int LastOpenRomFilter;
 		private void OpenROM()
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
+			var ofd = HawkUIFactory.CreateOpenFileDialog ();
+			ofd.InitialDirectory = PathManager.GetRomsPath (Global.Emulator.SystemId);
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 
 			//adelikat: ugly design for this, I know
