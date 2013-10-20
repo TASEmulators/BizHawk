@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;

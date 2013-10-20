@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

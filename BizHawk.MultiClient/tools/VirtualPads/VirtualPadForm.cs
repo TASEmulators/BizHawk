@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Consoles.Nintendo.N64;
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

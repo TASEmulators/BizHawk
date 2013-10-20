@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient

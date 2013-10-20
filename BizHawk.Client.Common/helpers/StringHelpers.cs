@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BizHawk.Client.Core
+namespace BizHawk.Client.Common
 {
 	public static class StringHelpers
 	{

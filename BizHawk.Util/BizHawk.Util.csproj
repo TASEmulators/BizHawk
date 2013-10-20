@@ -188,9 +188,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client.Core\Client.Core.csproj">
+    <ProjectReference Include="..\Client.Core\BizHawk.Client.Common.csproj">
       <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
-      <Name>Client.Core</Name>
+      <Name>BizHawk.Client.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Threading;
 using System.Globalization;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 using System.Text;
 

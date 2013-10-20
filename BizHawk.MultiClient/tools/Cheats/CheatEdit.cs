@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

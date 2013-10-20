@@ -2,7 +2,7 @@
 using System.Linq;
 using System.IO;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

@@ -3,7 +3,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 #pragma warning disable 162
 

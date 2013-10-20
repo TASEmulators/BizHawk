@@ -47,12 +47,12 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigService.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="InputValidate.cs" />
+    <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecentFiles.cs" />
-    <Compile Include="StringHelpers.cs" />
-    <Compile Include="Watch.cs" />
+    <Compile Include="helpers\StringHelpers.cs" />
+    <Compile Include="tools\Watch.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">

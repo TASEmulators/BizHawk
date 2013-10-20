@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

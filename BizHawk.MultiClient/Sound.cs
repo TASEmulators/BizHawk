@@ -6,7 +6,7 @@ using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 #endif
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

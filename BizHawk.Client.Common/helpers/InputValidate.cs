@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BizHawk.Client.Core
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Includes helper functions to validate user input

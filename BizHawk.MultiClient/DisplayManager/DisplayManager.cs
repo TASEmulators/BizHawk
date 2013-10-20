@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 //using dx=SlimDX;
 //using d3d=SlimDX.Direct3D9;
 
-using BizHawk.Client.Core;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
