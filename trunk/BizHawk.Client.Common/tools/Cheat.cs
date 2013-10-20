@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -31,14 +28,14 @@ namespace BizHawk.Client.Common
 			{
 				_enabled = cheat.Enabled;
 				_watch = Watch.GenerateWatch(cheat.Domain,
-					cheat.Address.Value,
+					cheat.Address ?? 0,
 					cheat.Size,
 					cheat.Type,
 					cheat.Name,
-					cheat.BigEndian.Value
+					cheat.BigEndian ?? false
 					);
 				_compare = cheat.Compare;
-				_val = cheat.Value.Value;
+				_val = cheat.Value ?? 0;
 
 				Pulse();
 			}
@@ -203,12 +200,12 @@ namespace BizHawk.Client.Common
 				case Watch.WatchSize.Separator:
 					return false;
 				case Watch.WatchSize.Byte:
-					return _watch.Address.Value == addr;
+					return (_watch.Address ?? 0) == addr;
 				case Watch.WatchSize.Word:
-					return (addr == _watch.Address.Value) || (addr == _watch.Address + 1);
+					return (addr == (_watch.Address ?? 0)) || (addr == (_watch.Address ?? 0) + 1);
 				case Watch.WatchSize.DWord:
-					return (addr == _watch.Address.Value) || (addr == _watch.Address + 1) ||
-						(addr == _watch.Address.Value + 2) || (addr == _watch.Address + 3);
+					return (addr == (_watch.Address ?? 0)) || (addr == (_watch.Address ?? 0) + 1) ||
+						(addr == (_watch.Address ?? 0) + 2) || (addr == (_watch.Address ?? 0) + 3);
 			}
 		}
 
@@ -242,7 +239,7 @@ namespace BizHawk.Client.Common
 
 		#region private parts
 
-		private Watch _watch;
+		private readonly Watch _watch;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;

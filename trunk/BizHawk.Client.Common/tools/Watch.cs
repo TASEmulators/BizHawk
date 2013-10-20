@@ -343,7 +343,7 @@ namespace BizHawk.Client.Common
 			_address = address;
 			_domain = domain;
 			_value = _previous = GetByte();
-			if (Watch.AvailableTypes(WatchSize.Byte).Contains(type))
+			if (AvailableTypes(WatchSize.Byte).Contains(type))
 			{
 				_type = type;
 			}
@@ -547,7 +547,7 @@ namespace BizHawk.Client.Common
 			_address = address;
 			_value = _previous = GetWord();
 
-			if (Watch.AvailableTypes(WatchSize.Word).Contains(type))
+			if (AvailableTypes(WatchSize.Word).Contains(type))
 			{
 				_type = type;
 			}
@@ -741,7 +741,7 @@ namespace BizHawk.Client.Common
 			_address = address;
 			_value = _previous = GetDWord();
 			
-			if (Watch.AvailableTypes(WatchSize.DWord).Contains(type))
+			if (AvailableTypes(WatchSize.DWord).Contains(type))
 			{
 				_type = type;
 			}

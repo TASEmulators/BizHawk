@@ -11,10 +11,8 @@ namespace BizHawk.Client.Common
 	{
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _currentFileName = String.Empty;
-		private bool _changes = false;
+		private bool _changes;
 		private string _defaultFileName = String.Empty;
-
-		public CheatList() { }
 
 		public IEnumerator<Cheat> GetEnumerator()
 		{
@@ -237,7 +235,6 @@ namespace BizHawk.Client.Common
 						else
 						{
 							//Set to hex for saving 
-							Watch.DisplayType type = cheat.Type;
 							cheat.SetType(Watch.DisplayType.Hex);
 
 							sb
@@ -249,7 +246,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')
 								.Append(cheat.TypeAsChar).Append('\t')
-								.Append(cheat.BigEndian.Value ? '1' : '0').Append('\t')
+								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
 								.AppendLine();
 						}
 					}
@@ -304,52 +301,48 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							int ADDR, VALUE;
-							int? COMPARE;
-							MemoryDomain DOMAIN;
-							bool ENABLED;
-							string NAME;
-							Watch.WatchSize SIZE = Watch.WatchSize.Byte;
-							Watch.DisplayType TYPE = Watch.DisplayType.Hex;
+							int? compare;
+							Watch.WatchSize size = Watch.WatchSize.Byte;
+							Watch.DisplayType type = Watch.DisplayType.Hex;
 							bool BIGENDIAN = false;
 
 
 							if (s.Length < 6) continue;
 							//NewCheat c = new NewCheat(
 							string[] vals = s.Split('\t');
-							ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
-							VALUE = Int32.Parse(vals[1], NumberStyles.HexNumber);
+							int ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
+							int value = Int32.Parse(vals[1], NumberStyles.HexNumber);
 
 							if (vals[2] == "N")
 							{
-								COMPARE = null;
+								compare = null;
 							}
 							else
 							{
-								COMPARE = Int32.Parse(vals[2], NumberStyles.HexNumber);
+								compare = Int32.Parse(vals[2], NumberStyles.HexNumber);
 							}
-							DOMAIN = DomainByName(vals[3]);
-							ENABLED = vals[4] == "1";
-							NAME = vals[5];
+							MemoryDomain domain = DomainByName(vals[3]);
+							bool ENABLED = vals[4] == "1";
+							string name = vals[5];
 
 							//For backwards compatibility, don't assume these values exist
 							if (vals.Length > 6)
 							{
-								SIZE = Watch.SizeFromChar(vals[6][0]);
-								TYPE = Watch.DisplayTypeFromChar(vals[7][0]);
+								size = Watch.SizeFromChar(vals[6][0]);
+								type = Watch.DisplayTypeFromChar(vals[7][0]);
 								BIGENDIAN = vals[8] == "1";
 							}
 
 							Watch w = Watch.GenerateWatch(
-								DOMAIN,
+								domain,
 								ADDR,
-								SIZE,
-								TYPE,
-								NAME,
+								size,
+								type,
+								name,
 								BIGENDIAN
 							);
 
-							Cheat c = new Cheat(w, VALUE, COMPARE, Global.Config.DisableCheatsOnLoad ? false : ENABLED);
+							Cheat c = new Cheat(w, value, compare, !Global.Config.DisableCheatsOnLoad && ENABLED);
 							_cheatList.Add(c);
 						}
 					}
@@ -410,7 +403,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.Value ?? 0)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -418,7 +411,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.Value ?? 0)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -428,7 +421,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.Compare ?? 0)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -436,7 +429,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.Compare ?? 0)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -446,7 +439,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.Enabled)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -454,7 +447,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.Enabled)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -464,7 +457,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.Domain)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -472,7 +465,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.Domain)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -482,7 +475,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => ((int)x.Size))
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -490,7 +483,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => ((int)x.Size))
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -500,7 +493,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.BigEndian)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -508,7 +501,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.BigEndian)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
@@ -518,7 +511,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderByDescending(x => x.Type)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					else
@@ -526,7 +519,7 @@ namespace BizHawk.Client.Common
 						_cheatList = _cheatList
 							.OrderBy(x => x.Type)
 							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address.Value)
+							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
 					break;
