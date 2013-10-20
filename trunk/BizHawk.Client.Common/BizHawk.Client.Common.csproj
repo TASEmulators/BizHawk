@@ -8,8 +8,8 @@
     <ProjectGuid>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Client.Core</RootNamespace>
-    <AssemblyName>Client.Core</AssemblyName>
+    <RootNamespace>BizHawk.Client.Common</RootNamespace>
+    <AssemblyName>BizHawk.Client.Common</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
