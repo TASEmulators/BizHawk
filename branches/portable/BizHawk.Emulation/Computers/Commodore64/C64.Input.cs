@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class Motherboard
+	sealed public partial class Motherboard
 	{
 		private int[] joystickPressed = new int[10];
 		private int[] keyboardPressed = new int[64];
@@ -28,9 +28,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-        protected byte cia0InputLatchA;
-        protected byte cia0InputLatchB;
-        protected int pollIndex;
+        byte cia0InputLatchA;
+        byte cia0InputLatchB;
+        int pollIndex;
 
 		public void PollInput()
 		{

@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/Namco_163_audio
-	public class Namco163Audio : IDisposable
+	public sealed class Namco163Audio : IDisposable
 	{
 		//ByteBuffer ram = new ByteBuffer(0x80);
 		byte[] ram = new byte[0x80];

@@ -7,7 +7,7 @@
 
 	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
 
-	class Irem_H3001 : NES.NESBoardBase
+	public sealed class Irem_H3001 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

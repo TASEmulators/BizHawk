@@ -41,11 +41,6 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
-		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadRamPoke();
-		}
-
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveWindowPosition ^= true;
@@ -254,31 +249,31 @@ namespace BizHawk.MultiClient
 			FlagNeedsReboot();
 		}
 
-        private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.SmsSpriteLimit ^= true;
+		private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsSpriteLimit ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceSpriteLimit ^= true;
+		private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSpriteLimit ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceEqualizeVolume ^= true;
+		private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceEqualizeVolume ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.PceArcadeCardRewindHack ^= true;
+		private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceArcadeCardRewindHack ^= true;
 			FlagNeedsReboot();
-        }
+		}
 
-        private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordMovie();
 		}
@@ -309,17 +304,6 @@ namespace BizHawk.MultiClient
 			LoadRamSearch();
 		}
 
-
-		private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			UpdateAutoLoadRecentRom();
-		}
-
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RecentRoms.Clear();
-		}
-		
 		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveSlot = 1;
@@ -420,7 +404,7 @@ namespace BizHawk.MultiClient
 			RebootCore();
 		}
 
-		void RebootCore()
+		public void RebootCore()
 		{
 			LoadRom(CurrentlyOpenRom);
 		}
@@ -466,7 +450,7 @@ namespace BizHawk.MultiClient
 		private void OpenControllerConfig()
 		{
 			RunLoopBlocked = true;
-			config.NewControllerConfig c = new config.NewControllerConfig(Global.Emulator.ControllerDefinition);
+			ControllerConfig c = new ControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{
@@ -484,7 +468,7 @@ namespace BizHawk.MultiClient
 		private void OpenHotkeyDialog()
 		{
 			RunLoopBlocked = true;
-			NewHotkeyWindow h = new NewHotkeyWindow();
+			HotkeyConfig h = new HotkeyConfig();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
 			{
@@ -496,21 +480,25 @@ namespace BizHawk.MultiClient
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleFPS();
 		}
 
 		private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleFrameCounter();
 		}
 
 		private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleInputDisplay();
 		}
 
 		private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			ToggleLagCounter();
 		}
 
@@ -655,15 +643,16 @@ namespace BizHawk.MultiClient
 			toolBoxToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
 			rAMWatchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Watch"].Bindings;
 			rAMSearchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Search"].Bindings;
-			rAMPokeToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Poke"].Bindings;
 			hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hex Editor"].Bindings;
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lua Console"].Bindings;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
-            traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
+			traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
 			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+
+			cheatsToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -712,85 +701,43 @@ namespace BizHawk.MultiClient
 		private void tI83ToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
+
+			if (!MainForm.INTERIM) loadTIFileToolStripMenuItem.Visible = false;
 		}
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            RunLoopBlocked = true;
-			new NewPathConfig().ShowDialog();
-            RunLoopBlocked = false;
+			RunLoopBlocked = true;
+			new PathConfig().ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
 		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Roms list
-			//repopulate it with an up to date list
 			recentROMToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentRoms.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentROMToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentRoms.Count; x++)
-				{
-					string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadRomFromRecent(path);
-					recentROMToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentROMToolStripMenuItem.DropDownItems.Add("-");
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
-			recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
-			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
-			auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
-			auto.Checked = Global.Config.AutoLoadMostRecentRom;
-			recentROMToolStripMenuItem.DropDownItems.Add(auto);
+			recentROMToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
+			);
+			recentROMToolStripMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
+			);
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Movies list
-			//repopulate it with an up to date list
-
 			recentToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentMovies.Empty)
-			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
-				recentToolStripMenuItem.DropDownItems.Add(none);
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentMovies.Count; x++)
-				{
-					string path = Global.Config.RecentMovies.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem {Text = path};
-					item.Click += (o, ev) => LoadMoviesFromRecent(path);
-					recentToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
-			clearitem.Click += (o, ev) => Global.Config.RecentMovies.Clear();
-			recentToolStripMenuItem.DropDownItems.Add(clearitem);
-
-			var auto = new ToolStripMenuItem {Text = "&Autoload Most Recent"};
-			auto.Click += (o, ev) => UpdateAutoLoadRecentMovie();
-			auto.Checked = Global.Config.AutoLoadMostRecentMovie;
-			recentToolStripMenuItem.DropDownItems.Add(auto);
+			recentToolStripMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
+			);
+			recentToolStripMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
+			);
 		}
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -898,7 +845,7 @@ namespace BizHawk.MultiClient
 
 		private void loadLastROMToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+			LoadRomFromRecent(Global.Config.RecentRoms[0]);
 		}
 
 		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
@@ -926,7 +873,7 @@ namespace BizHawk.MultiClient
 
 		private void loadLastMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadMoviesFromRecent(Global.Config.RecentMovies.GetRecentFileByPosition(0));
+			LoadMoviesFromRecent(Global.Config.RecentMovies[0]);
 		}
 
 		private void AddSubtitleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -947,7 +894,7 @@ namespace BizHawk.MultiClient
 			}
 			if (index < 0)
 			{
-				sub = new Subtitle {Frame = Global.Emulator.Frame};
+				sub = new Subtitle { Frame = Global.Emulator.Frame };
 			}
 			s.sub = sub;
 
@@ -978,6 +925,10 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			ClearSRAMContextSeparator.Visible =
+				ClearSRAMContextMenuItem.Visible
+				= File.Exists(PathManager.SaveRamPath(Global.Game));
+			
 			wasPaused = EmulatorPaused;
 			didMenuPause = true;
 			PauseEmulator();
@@ -1007,13 +958,14 @@ namespace BizHawk.MultiClient
 				cmiScreenshotClipboard.Visible = false;
 				cmiCloseRom.Visible = false;
 				cmiShowMenu.Visible = false;
+				ShowMenuContextMenuSeparator.Visible = false;
 				saveMovieToolStripMenuItem1.Visible = false;
 			}
 			else
 			{
 				cmiOpenRom.Visible = InFullscreen;
 				configToolStripMenuItem1.Visible = InFullscreen;
-				
+
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
@@ -1093,7 +1045,7 @@ namespace BizHawk.MultiClient
 
 			if (InFullscreen)
 			{
-				cmiShowMenu.Visible = true;
+				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = true;
 				if (MainMenuStrip.Visible)
 					cmiShowMenu.Text = "Hide Menu";
 				else
@@ -1101,17 +1053,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				cmiShowMenu.Visible = false;
+				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = false;
 			}
 
-			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges)
-			{
-				ContextMenuStopMovieNoSaving.Visible = true;
-			}
-			else
-			{
-				ContextMenuStopMovieNoSaving.Visible = false;
-			}
+			ContextMenuStopMovieNoSaving.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 		}
 
 
@@ -1155,6 +1100,7 @@ namespace BizHawk.MultiClient
 
 		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
 		}
 
@@ -1181,7 +1127,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				RunLoopBlocked = true;
-				EditCommentsForm c = new EditCommentsForm {ReadOnly = ReadOnly};
+				EditCommentsForm c = new EditCommentsForm { ReadOnly = ReadOnly };
 				c.GetMovie(Global.MovieSession.Movie);
 				c.ShowDialog();
 				RunLoopBlocked = false;
@@ -1193,7 +1139,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				RunLoopBlocked = true;
-				EditSubtitlesForm s = new EditSubtitlesForm {ReadOnly = ReadOnly};
+				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = ReadOnly };
 				s.GetMovie(Global.MovieSession.Movie);
 				s.ShowDialog();
 				RunLoopBlocked = false;
@@ -1228,7 +1174,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!Global.Config.RunInBackground)
 			{
-				
+
 				if (!wasPaused)
 				{
 					UnpauseEmulator();
@@ -1246,9 +1192,9 @@ namespace BizHawk.MultiClient
 		{
 			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
 			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
-			stopMovieToolStripMenuItem.Enabled 
-				= playFromBeginningToolStripMenuItem.Enabled 
-				= saveMovieToolStripMenuItem.Enabled 
+			stopMovieToolStripMenuItem.Enabled
+				= playFromBeginningToolStripMenuItem.Enabled
+				= saveMovieToolStripMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
@@ -1359,6 +1305,7 @@ namespace BizHawk.MultiClient
 
 		private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			if (!wasPaused)
 			{
 				UnpauseEmulator();
@@ -1507,7 +1454,6 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
-			autoloadMostRecentToolStripMenuItem.Checked = Global.Config.AutoLoadMostRecentRom;
 			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
 			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
 			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
@@ -1637,7 +1583,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.HasActiveCheats)
+			if (Global.CheatList.ActiveCount > 0)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = Properties.Resources.Freeze;
@@ -2278,15 +2224,13 @@ namespace BizHawk.MultiClient
 			}
 			else if (ext.ToUpper() == ".CHT")
 			{
+				Global.CheatList.Load(filePaths[0], false);
 				LoadCheatsWindow();
-				Cheats1.LoadCheatFile(filePaths[0], false);
-				Cheats1.DisplayCheatsList();
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
-				RamWatch1.LoadWatchFile(filePaths[0], false);
-				RamWatch1.DisplayWatchList();
+				RamWatch1.LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
@@ -2294,9 +2238,13 @@ namespace BizHawk.MultiClient
 				//tries to open a legacy movie format as if it were a BKM, by importing it
 
 				if (CurrentlyOpenRom == null)
+				{
 					OpenROM();
+				}
 				else
+				{
 					LoadRom(CurrentlyOpenRom);
+				}
 
 				string errorMsg;
 				string warningMsg;
@@ -2434,7 +2382,7 @@ namespace BizHawk.MultiClient
 		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			RunLoopBlocked = true;
-			new NewPathConfig().ShowDialog();
+			new PathConfig().ShowDialog();
 			RunLoopBlocked = false;
 		}
 
@@ -2709,6 +2657,26 @@ namespace BizHawk.MultiClient
 			RunLoopBlocked = true;
 			new RewindConfig().ShowDialog();
 			RunLoopBlocked = false;
+		}
+
+		private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog OFD = new OpenFileDialog();
+
+			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				try
+				{
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+				}
+				catch (IOException ex)
+				{
+					string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
+
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+				}
+			}
 		}
 	}
 }

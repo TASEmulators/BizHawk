@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips
 {
-    static public class Presets
+    static public class ChipPresets
     {
         static public Cia Cia6526(bool todJumper) { return new Cia(Settings6526(todJumper)); }
         static public Cia Cia6526A(bool todJumper) { return new Cia(Settings6526A(todJumper)); }

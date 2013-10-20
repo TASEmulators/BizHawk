@@ -6,77 +6,104 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    public abstract partial class Vic
+    sealed public partial class Vic
     {
-        protected int backgroundColor0;
-        protected int backgroundColor1;
-        protected int backgroundColor2;
-        protected int backgroundColor3;
-        protected int baCount;
-        protected bool badline;
-        protected bool badlineEnable;
-        protected int bitmapColumn;
-        protected bool bitmapMode;
-        protected int borderB;
-        protected bool borderCheckLEnable;
-        protected bool borderCheckREnable;
-        protected int borderColor;
-        protected int borderL;
-        protected bool borderOnMain;
-        protected bool borderOnVertical;
-        protected int borderR;
-        protected int borderT;
-        protected int[] bufferC;
-        protected int[] bufferG;
-        protected int cycle;
-        protected int cycleIndex;
-        protected bool columnSelect;
-        protected int dataC;
-        protected int dataG;
-        protected bool debugScreen;
-        protected bool displayEnable;
-        protected int displayIndex;
-        protected int displayC;
-        protected bool enableIntLightPen;
-        protected bool enableIntRaster;
-        protected bool enableIntSpriteCollision;
-        protected bool enableIntSpriteDataCollision;
-        protected bool extraColorMode;
-        protected bool idle;
-        protected bool intLightPen;
-        protected bool intRaster;
-        protected bool intSpriteCollision;
-        protected bool intSpriteDataCollision;
-        protected int lastRasterLine;
-        protected int lightPenX;
-        protected int lightPenY;
-        protected bool multicolorMode;
-        protected bool pinAEC = true;
-        protected bool pinBA = true;
-        protected bool pinIRQ = true;
-        protected int[] pixelDataBuffer;
-        protected int pointerCB;
-        protected int pointerVM;
-        protected int rasterInterruptLine;
-        protected int rasterLine;
-        protected int rasterX;
-        protected int rc;
-        protected int refreshCounter;
-        protected bool renderEnabled;
-        protected bool rowSelect;
-        protected int spriteMulticolor0;
-        protected int spriteMulticolor1;
-        protected Sprite[] sprites;
-        protected int sr;
-        protected int vc;
-        protected int vcbase;
-        protected int vmli;
-        protected int xOffset;
-        protected int xScroll;
-        protected int yScroll;
+        int backgroundColor0;
+        int backgroundColor1;
+        int backgroundColor2;
+        int backgroundColor3;
+        int baCount;
+        bool badline;
+        bool badlineEnable;
+        int bitmapColumn;
+        bool bitmapMode;
+        int borderB;
+        bool borderCheckLEnable;
+        bool borderCheckREnable;
+        int borderColor;
+        int borderL;
+        bool borderOnMain;
+        bool borderOnVertical;
+        int borderR;
+        int borderT;
+        int[] bufferC;
+        int[] bufferG;
+        int cycle;
+        int cycleIndex;
+        bool columnSelect;
+        int dataC;
+        int dataG;
+        bool displayEnable;
+        int displayC;
+        bool enableIntLightPen;
+        bool enableIntRaster;
+        bool enableIntSpriteCollision;
+        bool enableIntSpriteDataCollision;
+        bool extraColorMode;
+        bool hblank;
+        bool idle;
+        bool intLightPen;
+        bool intRaster;
+        bool intSpriteCollision;
+        bool intSpriteDataCollision;
+        int hblankEnd;
+        int hblankStart;
+        bool hblankCheckEnableL;
+        bool hblankCheckEnableR;
+        int lastRasterLine;
+        int lightPenX;
+        int lightPenY;
+        bool multicolorMode;
+        bool pinAEC = true;
+        bool pinBA = true;
+        bool pinIRQ = true;
+        int pointerCB;
+        int pointerVM;
+        int rasterInterruptLine;
+        int rasterLine;
+        int rasterX;
+        bool rasterXHold;
+        int rc;
+        int refreshCounter;
+        bool renderEnabled;
+        bool rowSelect;
+        int spriteMulticolor0;
+        int spriteMulticolor1;
+        SpriteGenerator[] sprites;
+        int sr;
+        int srMask;
+        int srMask1;
+        int srMask2;
+        int srMask3;
+        int srMaskMC;
+        int srSpriteMask;
+        int srSpriteMask1;
+        int srSpriteMask2;
+        int srSpriteMask3;
+        int srSpriteMaskMC;
+        bool vblank;
+        int vblankEnd;
+        int vblankStart;
+        int vc;
+        int vcbase;
+        int vmli;
+        int xScroll;
+        int yScroll;
 
         public void HardReset()
         {
+            // *** SHIFT REGISTER BITMASKS ***
+            srMask1 = 0x20000;
+            srMask2 = srMask1 << 1;
+            srMask3 = srMask1 | srMask2;
+            srMask = srMask2;
+            srMaskMC = srMask3;
+            srSpriteMask1 = 0x400000;
+            srSpriteMask2 = srSpriteMask1 << 1;
+            srSpriteMask3 = srSpriteMask1 | srSpriteMask2;
+            srSpriteMask = srSpriteMask2;
+            srSpriteMaskMC = srSpriteMask3;
+
             pinAEC = true;
             pinBA = true;
             pinIRQ = true;
@@ -98,12 +125,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             borderOnVertical = true;
             columnSelect = false;
             displayEnable = false;
-            displayIndex = 0;
             enableIntLightPen = false;
             enableIntRaster = false;
             enableIntSpriteCollision = false;
             enableIntSpriteDataCollision = false;
             extraColorMode = false;
+            hblank = true;
             idle = true;
             intLightPen = false;
             intRaster = false;
@@ -113,8 +140,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             lightPenX = 0;
             lightPenY = 0;
             multicolorMode = false;
-            pixelBufferIndex = 0;
-            pixelBackgroundBufferIndex = 0;
             pointerCB = 0;
             pointerVM = 0;
             rasterInterruptLine = 0;
@@ -126,10 +151,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
             spriteMulticolor0 = 0;
             spriteMulticolor1 = 0;
             sr = 0;
+            vblank = true;
             vc = 0;
             vcbase = 0;
             vmli = 0;
-            xOffset = 0;
             xScroll = 0;
             yScroll = 0;
 
@@ -144,25 +169,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 bufferG[i] = 0;
             }
 
-            // clear pixel buffer
-            for (int i = 0; i < pixelBufferDelay; i++)
-            {
-                pixelBuffer[i] = 0;
-                pixelDataBuffer[i] = 0;
-            }
-            for (int i = 0; i < pixelBackgroundBufferDelay; i++)
-                pixelBackgroundBuffer[i] = 0;
-
+            pixBuffer = new int[pixBufferSize];
             UpdateBorder();
         }
 
         public void SyncState(Serializer ser)
         {
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
             for (int i = 0; i < 8; i++)
             {
                 ser.BeginSection("sprite" + i.ToString());
-                Sync.SyncObject(ser, sprites[i]);
+                SaveState.SyncObject(ser, sprites[i]);
                 ser.EndSection();
             }
         }

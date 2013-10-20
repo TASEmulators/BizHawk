@@ -2,7 +2,7 @@
 {
 	//mapper 73 AKA salamander
 	//different IRQ logic than other VRC
-	public class VRC3 : NES.NESBoardBase
+	public sealed class VRC3 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

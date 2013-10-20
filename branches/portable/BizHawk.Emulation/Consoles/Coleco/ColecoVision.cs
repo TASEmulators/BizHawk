@@ -244,6 +244,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public IVideoProvider VideoProvider { get { return VDP; } }
 		public ISoundProvider SoundProvider { get { return PSG; } }
 
+		public string BoardName { get { return null; } }
+
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }

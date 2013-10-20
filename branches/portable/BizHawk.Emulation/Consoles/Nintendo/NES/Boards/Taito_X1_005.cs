@@ -38,7 +38,7 @@
 	+-------+-------+-------+-------+
 	*/
 
-	class TAITO_X1_005 : NES.NESBoardBase
+	public sealed class TAITO_X1_005 : NES.NESBoardBase
 	{
 		int prg_bank_mask, chr_bank_mask;
 		ByteBuffer chr_regs_1k = new ByteBuffer(8);

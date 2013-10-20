@@ -1,9 +1,9 @@
 ﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// sid
-	public class MOS6581 : Sid
+	static public class MOS6581
 	{
-        static protected int[][] waveTable = new int[][]
+        static int[][] waveTable = new int[][]
 		{
 			new int[] {
 				0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 
@@ -4119,8 +4119,9 @@
 			}
 		};
 
-		public MOS6581(int newSampleRate, Region newRegion) : base(waveTable, newSampleRate, newRegion)
-		{
-		}
+        static public Sid Create(int newSampleRate, Region newRegion)
+        {
+            return new Sid(waveTable, newSampleRate, newRegion);
+        }
 	}
 }

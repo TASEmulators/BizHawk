@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class Mapper191 : MMC3Board_Base
+	public sealed class Mapper191 : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

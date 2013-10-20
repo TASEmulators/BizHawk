@@ -5,7 +5,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class  C64 : IEmulator
+	sealed public partial class C64 : IEmulator
 	{
 		// internal variables
 		private bool _islag = true;
@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// game/rom specific
 		public GameInfo game;
 		public string SystemId { get { return "C64"; } }
+
+		public string BoardName { get { return null; } }
 
 		// memory domains
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }

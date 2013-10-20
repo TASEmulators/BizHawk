@@ -12,7 +12,7 @@
 	Ninja Jajamaru Kun - JF_06
 	Argus (J) - JF_07
 	*/
-	class JALECO_JF_05_06_07 : NES.NESBoardBase
+	public sealed class JALECO_JF_05_06_07 : NES.NESBoardBase
 	{
 		bool hibit, lowbit;
 

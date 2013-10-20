@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.
-	public class VRC2_4 : NES.NESBoardBase
+	public sealed class VRC2_4 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;

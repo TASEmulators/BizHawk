@@ -7,7 +7,7 @@
 	//Moero!! Pro Yakyuu (Black)
 	//Moero!! Pro Yakyuu (Red)
 
-	class JALECO_JF_13 : NES.NESBoardBase
+	public sealed class JALECO_JF_13 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k;

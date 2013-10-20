@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class MLT_ACTION52 : NES.NESBoardBase
+	public sealed class MLT_ACTION52 : NES.NESBoardBase
 	{
 		/*
 		 Here are Disch's original notes:
@@ -102,7 +102,9 @@
 				cheetahmen = true;
 			}
 
-			prg_mode = false;
+			prg_mode = bool.Parse(InitialRegisterValues["prg_mode"] ?? "false");
+			prg_reg = int.Parse(InitialRegisterValues["prg_reg"] ?? "0");
+
 			return true;
 		}
 

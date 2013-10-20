@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class Mapper249 : MMC3Board_Base
+	public sealed class Mapper249 : MMC3Board_Base
 	{
 		bool piratecrap = false;
 

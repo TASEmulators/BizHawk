@@ -7,7 +7,7 @@
 	* Buzz and Waldog (K)
 	* General's Son (K) 
 	*/
-	public class Mapper156 : NES.NESBoardBase
+	public sealed class Mapper156 : NES.NESBoardBase
 	{
 		int prg_mask;
 		int chr_mask;

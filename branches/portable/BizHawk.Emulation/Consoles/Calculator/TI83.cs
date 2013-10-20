@@ -16,14 +16,24 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		private byte[] ram;
 		private int romPageLow3Bits;
 		private int romPageHighBit;
-		private bool maskOn;
+		private byte maskOn;
 		private bool onPressed;
 		private int keyboardMask;
 
 		private int disp_mode;
 		private int disp_move;
 		private uint disp_x, disp_y;
-		private int m_LinkOutput, m_LinkState;
+		private int m_LinkOutput, m_LinkInput;
+
+		private int m_LinkState
+		{
+			get
+			{
+				return (m_LinkOutput | m_LinkInput) ^ 3;
+			}
+		}
+
+		private bool LinkActive;
 		private bool m_CursorMoved;
 
 		//-------
@@ -34,7 +44,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			int romPage = romPageLow3Bits | (romPageHighBit << 3);
 			//Console.WriteLine("read memory: {0:X4}", addr);
 			if (addr < 0x4000)
-				ret =  rom[addr]; //ROM zero-page
+				ret = rom[addr]; //ROM zero-page
 			else if (addr < 0x8000)
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
@@ -68,7 +78,15 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				case 0: //PORT_LINK
 					romPageHighBit = (value >> 4) & 1;
 					m_LinkOutput = value & 3;
-					m_LinkState = m_LinkOutput ^ 3;
+
+					if (LinkActive)
+					{
+						//Prevent rom calls from disturbing link port activity
+						if (LinkActive && cpu.RegisterPC < 0x4000)
+							return;
+
+						LinkPort.Update();
+					}
 					break;
 				case 1: //PORT_KEYBOARD:
 					lagged = false;
@@ -79,7 +97,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					romPageLow3Bits = value & 0x7;
 					break;
 				case 3: //PORT_STATUS
-					maskOn = ((value & 1) == 1);
+					maskOn = (byte)(value & 1);
 					break;
 				case 16: //PORT_DISPCTRL
 					//Console.WriteLine("write PORT_DISPCTRL {0}",value);
@@ -97,6 +115,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			switch (addr)
 			{
 				case 0: //PORT_LINK
+					LinkPort.Update();
 					return (byte)((romPageHighBit << 4) | (m_LinkState << 2) | m_LinkOutput);
 				case 1: //PORT_KEYBOARD:
 					//Console.WriteLine("read PORT_KEYBOARD");
@@ -106,7 +125,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				case 3: //PORT_STATUS
 					{
 						//Console.WriteLine("read PORT_STATUS");
-						byte ret = 0;
 						// Bits:
 						// 0   - Set if ON key is down and ON key is trapped
 						// 1   - Update things (keyboard etc)
@@ -115,9 +133,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 						// 4-7 - Unknown
 						//if (onPressed && maskOn) ret |= 1;
 						//if (!onPressed) ret |= 0x8;
-						ret |= 0x8; //on key is up
-						ret |= 0x2; //link isnt emulated
-						return ret;
+						return (byte)((Controller.IsPressed("ON") ? maskOn : 8) | (LinkActive ? 0 : 2));
 					}
 
 				case 4: //PORT_INTCTRL
@@ -337,13 +353,14 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			cpu.NMICallback = NMICallback;
 
 			this.rom = rom;
+			LinkPort = new Link(this);
 
 			//different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
 			//if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
 			//else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
 
-            if (game["initPC"])
-                startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
+			if (game["initPC"])
+				startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
 
 			HardReset();
 			SetupMemoryDomains();
@@ -389,17 +406,19 @@ namespace BizHawk.Emulation.Consoles.Calculator
 							unchecked { pixels[i++] = (int)0xFFFFFFFF; }
 						else
 							pixels[i++] = 0;
-							
+
 					}
 				return pixels;
 			}
-            public int VirtualWidth { get { return 96; } }
+			public int VirtualWidth { get { return 96; } }
 			public int BufferWidth { get { return 96; } }
 			public int BufferHeight { get { return 64; } }
 			public int BackgroundColor { get { return 0; } }
 		}
-		public IVideoProvider VideoProvider { 
-			get { return new MyVideoProvider(this); } }
+		public IVideoProvider VideoProvider
+		{
+			get { return new MyVideoProvider(this); }
+		}
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
@@ -423,12 +442,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public ControllerDefinition ControllerDefinition { get { return TI83Controller; } }
 
-		IController controller;
-		public IController Controller
-		{
-			get { return controller; }
-			set { controller = value; }
-		}
+		public IController Controller { get; set; }
+
 		//configuration
 		ushort startPC;
 
@@ -465,7 +480,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			cpu.IFF2 = false;
 			cpu.InterruptMode = 2;
 
-			maskOn = false;
+			maskOn = 1;
 			romPageHighBit = 0;
 			romPageLow3Bits = 0;
 			keyboardMask = 0;
@@ -519,7 +534,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			writer.WriteLine("onPressed {0}", onPressed);
 			writer.WriteLine("keyboardMask {0}", keyboardMask);
 			writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
-			writer.WriteLine("m_LinkState {0}", m_LinkState);
+			writer.WriteLine("m_LinkInput {0}", m_LinkInput);
 			writer.WriteLine("lag {0}", _lagcount);
 			writer.WriteLine("islag {0}", islag);
 			writer.WriteLine("vram {0}", Util.BytesToHexString(vram));
@@ -555,15 +570,15 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				else if (args[0] == "m_CursorMoved")
 					m_CursorMoved = bool.Parse(args[1]);
 				else if (args[0] == "maskOn")
-					maskOn = bool.Parse(args[1]);
+					maskOn = byte.Parse(args[1]);
 				else if (args[0] == "onPressed")
 					onPressed = bool.Parse(args[1]);
 				else if (args[0] == "keyboardMask")
 					keyboardMask = int.Parse(args[1]);
 				else if (args[0] == "m_LinkOutput")
 					m_LinkOutput = int.Parse(args[1]);
-				else if (args[0] == "m_LinkState")
-					m_LinkState = int.Parse(args[1]);
+				else if (args[0] == "m_LinkInput")
+					m_LinkInput = int.Parse(args[1]);
 				else if (args[0] == "lag")
 					_lagcount = int.Parse(args[1]);
 				else if (args[0] == "islag")
@@ -592,6 +607,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public string SystemId { get { return "TI83"; } }
 
+		public string BoardName { get { return null; } }
+
 		private IList<MemoryDomain> memoryDomains;
 		private const ushort RamSizeMask = 0x7FFF;
 
@@ -609,5 +626,369 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 		public void Dispose() { }
+
+		public Link LinkPort;
+		public class Link
+		{
+			readonly TI83 Parent;
+
+            private FileStream CurrentFile;
+            private int FileBytesLeft;
+            private byte[] VariableData;
+
+			private Action NextStep;
+			private Queue<byte> CurrentData = new Queue<byte>();
+			private ushort BytesToSend;
+			private byte BitsLeft;
+			private byte CurrentByte;
+			private byte StepsLeft;
+
+			private Status CurrentStatus = Status.Inactive;
+
+			private enum Status
+			{
+				Inactive,
+				PrepareReceive,
+				PrepareSend,
+				Receive,
+				Send
+			}
+
+			public Link(TI83 Parent)
+			{
+				this.Parent = Parent;
+			}
+
+			public void Update()
+			{
+				if (CurrentStatus == Status.PrepareReceive)
+				{
+					//Get the first byte, and start sending it.
+					CurrentByte = CurrentData.Dequeue();
+					CurrentStatus = Status.Receive;
+					BitsLeft = 8;
+					StepsLeft = 5;
+				}
+
+				if (CurrentStatus == Status.PrepareSend && Parent.m_LinkState != 3)
+				{
+					CurrentStatus = Status.Send;
+					BitsLeft = 8;
+					StepsLeft = 5;
+					CurrentByte = 0;
+				}
+
+				if (CurrentStatus == Status.Receive)
+				{
+					switch (StepsLeft)
+					{
+						case 5:
+							//Receive step 1: Lower the other device's line.
+							Parent.m_LinkInput = ((CurrentByte & 1) == 1) ? 2 : 1;
+							CurrentByte >>= 1;
+							StepsLeft--;
+							break;
+
+						case 4:
+							//Receive step 2: Wait for the calc to lower the other line.
+							if ((Parent.m_LinkState & 3) == 0)
+								StepsLeft--;
+							break;
+
+						case 3:
+							//Receive step 3: Raise the other device's line back up.
+							Parent.m_LinkInput = 0;
+							StepsLeft--;
+							break;
+
+						case 2:
+							//Receive step 4: Wait for the calc to raise its line back up.
+							if ((Parent.m_LinkState & 3) == 3)
+								StepsLeft--;
+							break;
+
+						case 1:
+							//Receive step 5: Finish.   
+							BitsLeft--;
+
+							if (BitsLeft == 0)
+							{
+								if (CurrentData.Count > 0)
+									CurrentStatus = Status.PrepareReceive;
+								else
+								{
+									CurrentStatus = Status.Inactive;
+									if (NextStep != null)
+										NextStep();
+								}
+							}
+							else
+								//next bit in the current byte.
+								StepsLeft = 5;
+							break;
+					}
+				}
+				else if (CurrentStatus == Status.Send)
+				{
+					switch (StepsLeft)
+					{
+						case 5:
+							//Send step 1: Calc lowers a line.
+							if (Parent.m_LinkState != 3)
+							{
+								int Bit = Parent.m_LinkState & 1;
+								int Shift = 8 - BitsLeft;
+								CurrentByte |= (byte)(Bit << Shift);
+								StepsLeft--;
+							}
+							break;
+
+						case 4:
+							//send step 2: Lower our line.
+							Parent.m_LinkInput = Parent.m_LinkOutput ^ 3;
+							StepsLeft--;
+							break;
+
+						case 3:
+							//Send step 3: wait for the calc to raise its line.
+							if ((Parent.m_LinkOutput & 3) == 0)
+								StepsLeft--;
+							break;
+
+						case 2:
+							//Send step 4: raise the other devices lines.
+							Parent.m_LinkInput = 0;
+							StepsLeft--;
+							break;
+
+						case 1:
+							//Send step 5: Finish
+							BitsLeft--;
+
+							if (BitsLeft == 0)
+							{
+								BytesToSend--;
+								CurrentData.Enqueue(CurrentByte);
+
+								if (BytesToSend > 0)
+									CurrentStatus = Status.PrepareSend;
+								else
+								{
+									CurrentStatus = Status.Inactive;
+									if (NextStep != null)
+										NextStep();
+								}
+							}
+							else
+							{
+								//next bit in the current byte.
+								StepsLeft = 5;
+							}
+							break;
+					}
+				}
+			}
+
+            public void SendFileToCalc(FileStream FS, bool Verify)
+            {
+                if (Verify)
+                    VerifyFile(FS);
+
+                FS.Seek(55, SeekOrigin.Begin);
+                CurrentFile = FS;
+                SendNextFile();
+            }
+
+			private void VerifyFile(FileStream FS)
+			{
+                //Verify the file format.
+                byte[] Expected = new byte[] { 0x2a, 0x2a, 0x54, 0x49, 0x38, 0x33, 0x2a, 0x2a, 0x1a, 0x0a, 0x00 };
+                byte[] Actual = new byte[11];
+
+                FS.Seek(0, SeekOrigin.Begin);
+                FS.Read(Actual, 0, 11);
+
+                //Check the header.
+                for (int n = 0; n < 11; n++)
+                    if (Expected[n] != Actual[n])
+                    {
+                        FS.Close();
+                        throw new IOException("Invalid Header.");
+                    }
+
+                //Seek to the end of the comment.
+                FS.Seek(53, SeekOrigin.Begin);
+
+				int Size = FS.ReadByte() + FS.ReadByte() * 256;
+
+                if (FS.Length != Size + 57)
+                {
+                    FS.Close();
+                    throw new IOException("Invalid file length.");
+                }
+
+                //Verify the checksum.
+                ushort Checksum = 0;
+                for (int n = 0; n < Size; n++)
+                    Checksum += (ushort)FS.ReadByte();
+
+                ushort ActualChecksum = (ushort)(FS.ReadByte() + FS.ReadByte() * 256);
+
+                if (Checksum != ActualChecksum)
+                {
+                    FS.Close();
+                    throw new IOException("Invalid Checksum.");
+                }
+			}
+
+            private void SendNextFile()
+            {
+                byte[] Header = new byte[13];
+                if (!CurrentFile.CanRead || CurrentFile.Read(Header, 0, 13) != 13)
+                {
+                    //End of file.
+                    CurrentFile.Close();
+                    return;
+                }
+
+                int Size = Header[2] + Header[3] * 256;
+                VariableData = new byte[Size + 2];
+                CurrentFile.Read(VariableData, 0, Size + 2);
+
+                //Request to send the file.
+                CurrentData.Clear();
+
+                CurrentData.Enqueue(0x03);
+                CurrentData.Enqueue(0xC9);
+                foreach (byte B in Header)
+                    CurrentData.Enqueue(B);
+
+                //Calculate the checksum for the command.
+                ushort Checksum = 0;
+                for (int n = 2; n < Header.Length; n++)
+                    Checksum += Header[n];
+
+                CurrentData.Enqueue((byte)(Checksum % 256));
+                CurrentData.Enqueue((byte)(Checksum / 256));
+
+                //Finalize the command.
+                CurrentStatus = Status.PrepareReceive;
+                NextStep = ReceiveReqAck;
+                Parent.LinkActive = true;
+            }
+
+			private void ReceiveReqAck()
+			{
+				Parent.LinkActive = false;
+				CurrentData.Clear();
+
+				//Prepare to receive the Aknowledgement response from the calculator.
+				BytesToSend = 8;
+				CurrentStatus = Status.PrepareSend;
+				NextStep = SendVariableData;
+			}
+
+			private void SendVariableData()
+			{
+				//Check to see if out of memory first.
+				CurrentData.Dequeue();
+				CurrentData.Dequeue();
+				CurrentData.Dequeue();
+				CurrentData.Dequeue();
+				CurrentData.Dequeue();
+
+				if (CurrentData.Dequeue() == 0x36)
+					OutOfMemory();
+				else
+				{
+					CurrentData.Clear();
+
+					CurrentData.Enqueue(0x03);
+					CurrentData.Enqueue(0x56);
+					CurrentData.Enqueue(0x00);
+					CurrentData.Enqueue(0x00);
+
+					CurrentData.Enqueue(0x03);
+					CurrentData.Enqueue(0x15);
+
+					//Add variable data.
+                    foreach (byte B in VariableData)
+						CurrentData.Enqueue(B);
+
+					//Calculate the checksum.
+					ushort Checksum = 0;
+                    for (int n = 2; n < VariableData.Length; n++)
+                        Checksum += VariableData[n];
+
+					CurrentData.Enqueue((byte)(Checksum % 256));
+					CurrentData.Enqueue((byte)(Checksum / 256));
+
+					CurrentStatus = Status.PrepareReceive;
+					NextStep = ReceiveDataAck;
+					Parent.LinkActive = true;
+				}
+			}
+
+			private void ReceiveDataAck()
+			{
+				Parent.LinkActive = false;
+				CurrentData.Clear();
+
+				//Prepare to receive the Aknowledgement response from the calculator.
+				BytesToSend = 4;
+				CurrentStatus = Status.PrepareSend;
+				NextStep = EndTransmission;
+			}
+
+			private void EndTransmission()
+			{
+				CurrentData.Clear();
+
+				//Send the end transmission command.
+				CurrentData.Enqueue(0x03);
+				CurrentData.Enqueue(0x92);
+				CurrentData.Enqueue(0x00);
+				CurrentData.Enqueue(0x00);
+
+				CurrentStatus = Status.PrepareReceive;
+				NextStep = Finalize;
+				Parent.LinkActive = true;
+			}
+
+			private void OutOfMemory()
+			{
+                CurrentFile.Close();
+				Parent.LinkActive = false;
+				CurrentData.Clear();
+
+				//Prepare to receive the Aknowledgement response from the calculator.
+				BytesToSend = 3;
+				CurrentStatus = Status.PrepareSend;
+				NextStep = EndOutOfMemory;
+			}
+
+			private void EndOutOfMemory()
+			{
+				CurrentData.Clear();
+
+				//Send the end transmission command.
+				CurrentData.Enqueue(0x03);
+				CurrentData.Enqueue(0x56);
+				CurrentData.Enqueue(0x01);
+				CurrentData.Enqueue(0x00);
+
+				CurrentStatus = Status.PrepareReceive;
+				NextStep = Finalize;
+				Parent.LinkActive = true;
+			}
+
+			private void Finalize()
+			{
+				CurrentData.Clear();
+				Parent.LinkActive = false;
+				NextStep = null;
+                SendNextFile();
+			}
+		}
 	}
 }

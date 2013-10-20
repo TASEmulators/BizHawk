@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class BANDAI_74_161_02_74 : NES.NESBoardBase
+	public sealed class BANDAI_74_161_02_74 : NES.NESBoardBase
 	{
 		/*
 		Here are Disch's original notes:  

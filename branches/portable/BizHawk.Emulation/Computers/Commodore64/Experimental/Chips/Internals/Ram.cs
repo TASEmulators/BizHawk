@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
     sealed public class Ram
     {
-        protected int addressMask;
-        protected int dataMask;
-        protected int[] memory;
+        int addressMask;
+        int dataMask;
+        int[] memory;
 
         public Ram(int size, int addressMask, int dataMask)
         {
@@ -38,6 +38,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
             memory[addr & addressMask] = val & dataMask;
         }
 
-        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

@@ -2,7 +2,7 @@
 {
 	//AKA mapper 071
 	//TODO - apparently this mapper contains good nes timing test cases
-	class Camerica_Mapper071 : NES.NESBoardBase
+	public sealed class Camerica_Mapper071 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

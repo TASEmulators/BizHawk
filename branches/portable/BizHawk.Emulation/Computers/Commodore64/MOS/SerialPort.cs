@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// the functions on this port are at the point of
 	// view of an external device.
 
-	public class SerialPort
+	sealed public class SerialPort
 	{
         public Func<bool> ReadAtnOut;
         public Func<bool> ReadClockOut;
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void SyncState(Serializer ser)
         {
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
         }
 
         public bool WriteClockIn()

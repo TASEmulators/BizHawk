@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class JALECO_SS8806 : NES.NESBoardBase
+	public sealed class JALECO_SS8806 : NES.NESBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_018
 

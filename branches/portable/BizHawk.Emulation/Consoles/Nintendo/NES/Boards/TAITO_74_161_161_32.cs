@@ -4,7 +4,7 @@
 	//Arkanoid 2 (J)
 	//Gegege no Kitarou 2
 
-	class TAITO_74_161_161_32 : NES.NESBoardBase
+	public sealed class TAITO_74_161_161_32 : NES.NESBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;

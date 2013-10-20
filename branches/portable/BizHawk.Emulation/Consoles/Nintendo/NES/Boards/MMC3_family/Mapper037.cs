@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// mmc3 multi, PAL, "Super Mario Bros. / Tetris / Nintendo World Cup"
-	public class Mapper037 : MMC3Board_Base
+	public sealed class Mapper037 : MMC3Board_Base
 	{
 		int exreg;
 

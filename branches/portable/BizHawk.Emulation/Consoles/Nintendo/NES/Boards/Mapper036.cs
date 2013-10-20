@@ -4,7 +4,7 @@
 	// Strike Wolf (MGC-014) [!].nes
 	// like an oversize GxROM
 	// information from fceux
-	public class Mapper036 : NES.NESBoardBase
+	public sealed class Mapper036 : NES.NESBoardBase
 	{
 		int chr;
 		int prg;

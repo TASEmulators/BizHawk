@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class MLT_MAX15 : NES.NESBoardBase
+	public sealed class MLT_MAX15 : NES.NESBoardBase
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_234
 

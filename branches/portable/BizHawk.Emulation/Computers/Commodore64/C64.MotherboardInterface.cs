@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-    public partial class Motherboard
+    sealed public partial class Motherboard
     {
         bool CassPort_ReadDataOutput()
         {

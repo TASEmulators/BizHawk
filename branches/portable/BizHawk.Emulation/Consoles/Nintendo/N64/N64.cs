@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 	{	
 		public string SystemId { get { return "N64"; } }
 
+		public string BoardName { get { return null; } }
+
 		public CoreComm CoreComm { get; private set; }
 		public byte[] rom;
 		public GameInfo game;

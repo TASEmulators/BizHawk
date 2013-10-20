@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//TODO - look for a mirror=H UNROM--maybe there are none? this may be fixed to the board type.
 
 	[NES.INESBoardImplPriority]
-	public class UxROM : NES.NESBoardBase
+	public sealed class UxROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_mask;

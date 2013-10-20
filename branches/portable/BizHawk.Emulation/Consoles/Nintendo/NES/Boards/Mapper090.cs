@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper090 : NES.NESBoardBase
+	public sealed class Mapper090 : NES.NESBoardBase
 	{
 		ByteBuffer prg_banks = new ByteBuffer(4);
 		IntBuffer chr_banks = new IntBuffer(8);

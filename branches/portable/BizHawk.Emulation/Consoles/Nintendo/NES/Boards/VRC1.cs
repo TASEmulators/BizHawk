@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA mapper 75
-	public class VRC1 : NES.NESBoardBase
+	public sealed class VRC1 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;

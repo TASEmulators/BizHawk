@@ -6,7 +6,7 @@
 	//Major League
 	//Kaiketsu Yanchamaru 2
 
-	class Irem_G101 : NES.NESBoardBase
+	public sealed class Irem_G101 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask, chr_bank_mask;

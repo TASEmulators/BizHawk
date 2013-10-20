@@ -204,6 +204,7 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.checkBoxResize);
 			this.Name = "VideoWriterChooserForm";
+			this.ShowIcon = false;
 			this.Text = "Choose A\\V Writer";
 			this.tableLayoutPanel4.ResumeLayout(false);
 			this.tableLayoutPanel4.PerformLayout();

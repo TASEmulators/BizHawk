@@ -33,6 +33,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public bool Port5 { get { return (Port & 0x20) != 0; } }
         public bool Port6 { get { return (Port & 0x40) != 0; } }
         public bool Port7 { get { return (Port & 0x80) != 0; } }
-        public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

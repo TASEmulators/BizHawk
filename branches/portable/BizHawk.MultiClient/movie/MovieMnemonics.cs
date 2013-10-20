@@ -142,8 +142,8 @@ namespace BizHawk.MultiClient
 			{"PC Engine Controller", new Dictionary<string, string> {}},
 			{"SMS Controller", new Dictionary<string, string> {{"Pause", "p"}, {"Reset", "r"}}},
 			{"TI83 Controller", new Dictionary<string, string> {}},
-			{"Nintento 64 Controller", new Dictionary<string, string> {{"Pause", "p"}, {"Reset", "r"}}},
-			{"Saturn Controller", new Dictionary<string, string> {{"Pause", "p"}, {"Reset", "r"}}},
+			{"Nintento 64 Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
+			{"Saturn Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 		};
 
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>

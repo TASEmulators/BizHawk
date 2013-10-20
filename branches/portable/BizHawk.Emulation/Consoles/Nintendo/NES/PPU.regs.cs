@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		partial class PPU
+		sealed partial class PPU
 		{
 			public class Reg_2001
 			{

@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		protected void RunCpuOne()
+		private void RunCpuOne()
 		{
 			cpu_stepcounter++;
 			if (cpu_stepcounter == cpu_sequence[cpu_step])

@@ -99,12 +99,6 @@ namespace BizHawk.MultiClient
 			Global.MainForm.LoadRamSearch();
 		}
 
-		private void toolStripButton4_Click(object sender, EventArgs e)
-		{
-			RamPoke r = new RamPoke();
-			r.Show();
-		}
-
 		private void HexEditor_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.LoadHexEditor();

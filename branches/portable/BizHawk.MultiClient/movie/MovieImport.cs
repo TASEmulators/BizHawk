@@ -708,7 +708,8 @@ namespace BizHawk.MultiClient
 					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
 				}
 			}
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, fds ? "FDS" : "NES");
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+			if (fds) { m.Header.SetHeaderLine(MovieHeader.BOARDNAME, "FDS"); }
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 			r.Close();
 			fs.Close();
@@ -756,13 +757,16 @@ namespace BizHawk.MultiClient
 			if (((flags >> 5) & 0x1) != 0)
 			{
 				FDS = true;
-				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "FDS");
+				m.Header.SetHeaderLine(MovieHeader.BOARDNAME, "FDS");
 			}
 			else
 			{
 				FDS = false;
-				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+				
 			}
+
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+
 			// bit 6: uses controller 2
 			bool controller2 = (((flags >> 6) & 0x1) != 0);
 			// bit 7: uses controller 1

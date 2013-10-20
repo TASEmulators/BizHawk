@@ -124,6 +124,7 @@ namespace BizHawk.MultiClient
 		public Bitmap PeekBitmap()
 		{
 			ToBitmap();
+            if (bmp == null) bmp = new Bitmap(320, 240);
 			return bmp;
 		}
 
@@ -391,16 +392,21 @@ namespace BizHawk.MultiClient
 
 		public void AddMessage(string message)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
 		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
 		{
+			Global.DisplayManager.NeedsToPaint = true;
 			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
 		{
+            if(Global.DisplayManager != null)
+			    Global.DisplayManager.NeedsToPaint = true;
+
 			GUITextList.Clear();
 		}
 
@@ -645,6 +651,7 @@ namespace BizHawk.MultiClient
 
 		readonly SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 
+		public bool NeedsToPaint { get; set; }
 
 		DisplaySurface luaEmuSurface = null;
 		public void PreFrameUpdateLuaSource()
@@ -712,6 +719,8 @@ namespace BizHawk.MultiClient
 			if (filteredSurface != null)
 				filteredSurface.Dispose();
 			filteredSurface = null;
+
+			NeedsToPaint = false;
 		}
 
 		public bool Disposed { get; private set; }

@@ -2,7 +2,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//pretty much just one game. 
 	//wires the mapper outputs to control the nametables. check out the companion board TLSROM
-	public class Mapper095 : Namcot108Board_Base
+	public sealed class Mapper095 : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

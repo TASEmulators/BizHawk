@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class NES_QJ : MMC3Board_Base
+	public sealed class NES_QJ : MMC3Board_Base
 	{
 		//state
 		int block;

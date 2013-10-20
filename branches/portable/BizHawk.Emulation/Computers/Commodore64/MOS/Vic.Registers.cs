@@ -5,9 +5,8 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    public abstract partial class Vic
+    sealed public partial class Vic
     {
-
         public byte Peek(int addr)
         {
             return ReadRegister((addr & 0x3F));
@@ -130,7 +129,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                 case 0x18:
                     result &= 0x01;
                     result |= (byte)(
-                        ((pointerVM & 0xF) << 4) |
+                        ((pointerVM & 0x3C00) >> 6) |
                         ((pointerCB & 0x7) << 1)
                         );
                     break;
@@ -353,6 +352,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     rasterInterruptLine &= 0xFF;
                     rasterInterruptLine |= (val & 0x80) << 1;
                     UpdateBorder();
+                    UpdateVideoMode();
                     break;
                 case 0x12:
                     rasterInterruptLine &= 0x100;
@@ -379,6 +379,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     columnSelect = ((val & 0x08) != 0);
                     multicolorMode = ((val & 0x10) != 0);
                     UpdateBorder();
+                    UpdateVideoMode();
                     break;
                 case 0x17:
                     sprites[0].yExpand = ((val & 0x01) != 0);
@@ -391,7 +392,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
                     sprites[7].yExpand = ((val & 0x80) != 0);
                     break;
                 case 0x18:
-                    pointerVM = ((val >> 4) & 0xF);
+                    pointerVM = ((val << 6) & 0x3C00);
                     pointerCB = ((val >> 1) & 0x7);
                     break;
                 case 0x19:

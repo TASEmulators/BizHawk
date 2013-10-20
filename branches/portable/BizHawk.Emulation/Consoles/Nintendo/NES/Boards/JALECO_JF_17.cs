@@ -13,7 +13,7 @@
 	//when the top 2 bits arent 0, theyre written to the latch
 	//interestingly, this works (for pinball quest) only when bus conflicts are applied, otherwise the game cant get past the title
 
-	class JALECO_JF_17 : NES.NESBoardBase
+	public sealed class JALECO_JF_17 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_16k;

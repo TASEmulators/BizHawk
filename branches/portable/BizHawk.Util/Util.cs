@@ -11,7 +11,10 @@ namespace BizHawk
 		//extension method to make Control.Invoke easier to use
 		public static void Invoke(this Control control, Action action)
 		{
-			control.Invoke((Delegate)action);
+            if (control.Created)
+            {
+                control.Invoke((Delegate)action);
+            }
 		}
 	}
 

@@ -16,55 +16,11 @@ namespace BizHawk.MultiClient
 		private int pos = 0;	 //Which mapping the widget will listen for
 		private Timer timer = new Timer();
 		private string[] _bindings = new string[4];
-		private string wasPressed = "";
+		private string wasPressed = String.Empty;
 		private ToolTip tooltip1 = new ToolTip();
-		private Color _highlight_color = Color.LightCyan;
-		private Color _no_highlight_color = SystemColors.Window;
-		private bool conflicted = false;
 
 		public bool AutoTab = true;
 		public string WidgetName;
-
-		public bool Conflicted
-		{
-			get
-			{
-				return conflicted;
-			}
-			set
-			{
-				conflicted = value;
-				if (conflicted)
-				{
-					_no_highlight_color = Color.LightCoral;
-					_highlight_color = Color.Violet;
-				}
-				else
-				{
-					_highlight_color = Color.LightCyan;
-					_no_highlight_color = SystemColors.Window;
-				}
-
-				if (Focused)
-				{
-					Highlight();
-				}
-				else
-				{
-					UnHighlight();
-				}
-			}
-		}
-
-		private void Highlight()
-		{
-			BackColor = _highlight_color;
-		}
-
-		private void UnHighlight()
-		{
-			BackColor = _no_highlight_color;
-		}
 
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
@@ -73,7 +29,7 @@ namespace BizHawk.MultiClient
 		{
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
-			_clearBindings();
+			ClearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
@@ -84,7 +40,7 @@ namespace BizHawk.MultiClient
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			MaxBind = maxBindings;
 			_bindings = new string[MaxBind];
-			_clearBindings();
+			ClearBindings();
 			tooltip1.AutoPopDelay = 2000;
 		}
 
@@ -96,11 +52,11 @@ namespace BizHawk.MultiClient
 		}
 #endif
 
-		private void _clearBindings()
+		private void ClearBindings()
 		{
 			for (int i = 0; i < MaxBind; i++)
 			{
-				_bindings[i] = "";
+				_bindings[i] = String.Empty;
 			}
 		}
 
@@ -108,17 +64,18 @@ namespace BizHawk.MultiClient
 		{
 			pos = 0;
 			timer.Start();
-			//Input.Update();
 
-			//zero: ??? what is this all about ???
 			wasPressed = Input.Instance.GetNextBindEvent();
+			BackColor = Color.LightCyan;
 		}
 
 		protected override void OnLeave(EventArgs e)
 		{
 			timer.Stop();
 			UpdateLabel();
+			BackColor = SystemColors.Control;
 			base.OnLeave(e);
+
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
@@ -128,16 +85,15 @@ namespace BizHawk.MultiClient
 
 		public void EraseMappings()
 		{
-			_clearBindings();
-			Conflicted = false;
-			Text = "";
+			ClearBindings();
+			Text = String.Empty;
 		}
 
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
 			string TempBindingStr = Input.Instance.GetNextBindEvent();
-			if (wasPressed != "" && TempBindingStr == wasPressed)
+			if (!String.IsNullOrEmpty(wasPressed) && TempBindingStr == wasPressed)
 			{
 				return;
 			}
@@ -145,14 +101,14 @@ namespace BizHawk.MultiClient
 			{
 				if (TempBindingStr == "Escape")
 				{
-					_clearBindings();
-					Conflicted = false;
+					ClearBindings();
 					Increment();
 					return;
 				}
-
-				if (TempBindingStr == "Alt+F4")
+				else if (TempBindingStr == "Alt+F4")
+				{
 					return;
+				}
 
 				if (!IsDuplicate(TempBindingStr))
 				{
@@ -165,7 +121,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//Checks if the key is already mapped to this widget
 		private bool IsDuplicate(string binding)
 		{
 			return _bindings.FirstOrDefault(x => x == binding) != null;
@@ -177,7 +132,8 @@ namespace BizHawk.MultiClient
 			{
 				base.OnKeyUp(e);
 			}
-			wasPressed = "";
+
+			wasPressed = String.Empty;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -187,6 +143,7 @@ namespace BizHawk.MultiClient
 				base.OnKeyDown(e);
 				return;
 			}
+
 			e.Handled = true;
 		}
 
@@ -194,42 +151,44 @@ namespace BizHawk.MultiClient
 		public void Increment()
 		{
 			if (AutoTab)
+			{
 				this.Parent.SelectNextControl(this, true, true, true, true);
+			}
 			else
 			{
-				if (pos == MaxBind - 1)
-					pos = 0;
-				else
+				if (pos < MaxBind)
+				{
 					pos++;
-				UpdateLabel();
+				}
+				else
+				{
+					pos = 0;
+				}
 			}
 		}
 
 		public void Decrement()
 		{
 			if (AutoTab)
+			{
 				this.Parent.SelectNextControl(this, false, true, true, true);
+			}
 			else
 			{
 				if (pos == 0)
+				{
 					pos = MaxBind - 1;
+				}
 				else
+				{
 					pos--;
+				}
 			}
 		}
 
 		public void UpdateLabel()
 		{
-			Text = "";
-			for (int x = 0; x < MaxBind; x++)
-			{
-				if (_bindings[x].Length > 0)
-				{
-					Text += _bindings[x];
-					if (x < MaxBind - 1 && _bindings[x+1].Length > 0)
-						Text += ", ";
-				}
-			}
+			Text = String.Join(",", _bindings.Where(x => !String.IsNullOrWhiteSpace(x)));
 		}
 
 		public string Bindings
@@ -240,8 +199,8 @@ namespace BizHawk.MultiClient
 			}
 			set
 			{
-				Text = "";
-				_clearBindings();
+				Text = String.Empty;
+				ClearBindings();
 				string str = value.Trim();
 				int x;
 				for (int i = 0; i < MaxBind; i++)
@@ -251,7 +210,7 @@ namespace BizHawk.MultiClient
 					if (x < 0)
 					{
 						_bindings[i] = str;
-						str = "";
+						str = String.Empty;
 					}
 					else
 					{
@@ -275,30 +234,30 @@ namespace BizHawk.MultiClient
 			switch (m.Msg)
 			{
 				case 0x0201: //WM_LBUTTONDOWN
-				{
-					this.Focus();
-					return;
-				}
+					{
+						this.Focus();
+						return;
+					}
 				//case 0x0202://WM_LBUTTONUP
 				//{
 				//	return;
 				//}
 				case 0x0203://WM_LBUTTONDBLCLK
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0204://WM_RBUTTONDOWN
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0205://WM_RBUTTONUP
-				{
-					return;
-				}
+					{
+						return;
+					}
 				case 0x0206://WM_RBUTTONDBLCLK
-				{
-					return;
-				}
+					{
+						return;
+					}
 			}
 			
 			base.WndProc(ref m);
@@ -308,24 +267,25 @@ namespace BizHawk.MultiClient
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			if (e.Delta > 0)
+			{
 				Decrement();
+			}
 			else
+			{
 				Increment();
+			}
 			base.OnMouseWheel(e);
 		}
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			//base.OnGotFocus(e);
 #if WINDOWS
 			HideCaret(this.Handle);
 #endif
-			Highlight();
 		}
 
 		protected override void OnLostFocus(EventArgs e)
 		{
-			UnHighlight();
 			base.OnLostFocus(e);
 		}
 

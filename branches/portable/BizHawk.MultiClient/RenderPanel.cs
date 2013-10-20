@@ -180,8 +180,18 @@ namespace BizHawk.MultiClient
 
 		void IBlitter.Open()
 		{
-			g = Graphics.FromImage(tempBuffer.PeekBitmap());
-			ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height);
+            lock (this)
+            {
+                if (tempBuffer != null)
+                {
+                    var bmp = tempBuffer.PeekBitmap();
+                    if (bmp != null)
+                    {
+                        g = Graphics.FromImage(bmp);
+                        ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height);
+                    }
+                }
+            }
 		}
 
 		void IBlitter.Close()
@@ -220,18 +230,21 @@ namespace BizHawk.MultiClient
 
 		void RenderInternal(DisplaySurface surface, bool transparent = false)
 		{
-			using (var g = Graphics.FromImage(tempBuffer.PeekBitmap()))
-			{
-				g.PixelOffsetMode = sysdrawing2d.PixelOffsetMode.HighSpeed;
-				g.InterpolationMode = Global.Config.DispBlurry ? sysdrawing2d.InterpolationMode.Bilinear : sysdrawing2d.InterpolationMode.NearestNeighbor;
-				if (transparent) g.CompositingMode = sysdrawing2d.CompositingMode.SourceOver;
-				else g.CompositingMode = sysdrawing2d.CompositingMode.SourceCopy;
-				g.CompositingQuality = sysdrawing2d.CompositingQuality.HighSpeed;
-				if (backingControl.Width == surface.Width && backingControl.Height == surface.Height)
-					g.DrawImageUnscaled(surface.PeekBitmap(), 0, 0);
-				else
-					g.DrawImage(surface.PeekBitmap(), 0, 0, backingControl.Width, backingControl.Height);
-			}
+            lock (this)
+            {
+                using (var g = Graphics.FromImage(tempBuffer.PeekBitmap()))
+                {
+                    g.PixelOffsetMode = sysdrawing2d.PixelOffsetMode.HighSpeed;
+                    g.InterpolationMode = Global.Config.DispBlurry ? sysdrawing2d.InterpolationMode.Bilinear : sysdrawing2d.InterpolationMode.NearestNeighbor;
+                    if (transparent) g.CompositingMode = sysdrawing2d.CompositingMode.SourceOver;
+                    else g.CompositingMode = sysdrawing2d.CompositingMode.SourceCopy;
+                    g.CompositingQuality = sysdrawing2d.CompositingQuality.HighSpeed;
+                    if (backingControl.Width == surface.Width && backingControl.Height == surface.Height)
+                        g.DrawImageUnscaled(surface.PeekBitmap(), 0, 0);
+                    else
+                        g.DrawImage(surface.PeekBitmap(), 0, 0, backingControl.Width, backingControl.Height);
+                }
+            }
 			if (!transparent)
 			{
 				lastsize = new Size(surface.Width, surface.Height);
@@ -250,7 +263,8 @@ namespace BizHawk.MultiClient
 
 		public void Present()
 		{
-			backingControl.SetBitmap(tempBuffer.PeekBitmap());
+            if(tempBuffer != null)
+			    backingControl.SetBitmap(tempBuffer.PeekBitmap());
 			tempBuffer = null;
 		}
 
@@ -433,7 +447,8 @@ namespace BizHawk.MultiClient
 				backingControl.Invoke(() => CreateDevice());
 
 			Resized = false;
-			_device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
+            if(_device !=null)
+			    _device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
 			Present();
 		}
 
@@ -467,6 +482,7 @@ namespace BizHawk.MultiClient
 				if (Global.Sound != null) Global.Sound.StopSound();
 				do
 				{
+                    if (_device == null) break;
 					r = _device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
@@ -488,13 +504,14 @@ namespace BizHawk.MultiClient
 
 		public void Clear(Color color)
 		{
-			_device.Clear(ClearFlags.Target, col(color), 0.0f, 0);
+            if(_device != null)
+			    _device.Clear(ClearFlags.Target, col(color), 0.0f, 0);
 		}
 
 		private void RenderExec(DisplaySurface surface, bool overlay)
 		{
 			RenderPrep();
-			if (surface == null)
+			if (surface == null || Texture == null)
 			{
 				Render();
 				return;
@@ -562,7 +579,7 @@ namespace BizHawk.MultiClient
 					stopwatchtmr -= stopwatchthrottle / 4;
 				}
 			}
-			else
+			else if(_device != null)
 				_device.Present(SlimDX.Direct3D9.Present.None);
 		}
 

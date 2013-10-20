@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	// http://pdf1.alldatasheet.com/datasheet-pdf/view/56094/ATMEL/24C01.html 24C01
 	// http://www.atmel.com/Images/doc0180.pdf 24C02 and others
-	public class SEEPROM
+	public sealed class SEEPROM
 	{
 		/// <summary>
 		/// true if 256byte

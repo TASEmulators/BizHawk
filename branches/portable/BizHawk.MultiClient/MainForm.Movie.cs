@@ -54,6 +54,7 @@ namespace BizHawk.MultiClient
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
 			VirtualPadForm1.Restart();
+			Global.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void SetMainformMovieInfo()
@@ -84,8 +85,8 @@ namespace BizHawk.MultiClient
 		public void PlayMovie()
 		{
 			RunLoopBlocked = true;
-			PlayMovie p = new PlayMovie();
-			p.ShowDialog();
+			new PlayMovie().ShowDialog();
+
 			RunLoopBlocked = false;
 		}
 
@@ -106,8 +107,7 @@ namespace BizHawk.MultiClient
 				if (result != DialogResult.Yes)
 					return;
 			}
-			RecordMovie r = new RecordMovie();
-			r.ShowDialog();
+			new RecordMovie().ShowDialog();
 			RunLoopBlocked = false;
 		}
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		public partial class PPU
+		public sealed partial class PPU
 		{
 			// this only handles region differences within the PPU
 			int preNMIlines;

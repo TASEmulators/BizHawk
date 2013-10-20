@@ -22,7 +22,7 @@
 	No CIC present
 	*/
 
-	class BANDAI_FCG_1 : NES.NESBoardBase 
+	public sealed class BANDAI_FCG_1 : NES.NESBoardBase 
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;

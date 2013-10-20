@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			Init(game, rom);
 		}
 
+		public string BoardName { get { return null; } }
+
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom)
 		{
 			CoreComm = comm;

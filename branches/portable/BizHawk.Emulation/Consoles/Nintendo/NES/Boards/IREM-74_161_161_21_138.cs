@@ -5,7 +5,7 @@
 
 	//the 4screen implementation is a bit of a guess, but it seems to work
 
-	class IREM_74_161_161_21_138 : NES.NESBoardBase
+	public sealed class IREM_74_161_161_21_138 : NES.NESBoardBase
 	{
 		int chr, prg;
 		public override bool Configure(NES.EDetectionOrigin origin)

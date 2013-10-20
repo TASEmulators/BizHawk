@@ -13,19 +13,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public Func<int, int> ReadRam;
 
         // outputs
-        public bool AEC { get { return aec; } }
-        public bool BA { get { return ba; } }
-        public bool IRQ { get { return irq; } }
-        public bool OutputAEC() { return aec; }
-        public bool OutputBA() { return ba; }
-        public bool OutputIRQ() { return irq; }
+        public bool AEC { get { return true; } }
+        public bool BA { get { return true; } }
+        public bool IRQ { get { return true; } }
+        public bool OutputAEC() { return true; }
+        public bool OutputBA() { return true; }
+        public bool OutputIRQ() { return true; }
 
         // exposed internal data
         public int Address { get { return address; } }
-        public int CharacterData { get { return characterData; } }
-        public int ColorData { get { return colorData; } }
+        public int CyclesPerFrame { get { return rasterCount * rasterWidth / 8; } }
+        public int CyclesPerSecond { get { return frequency; } }
         public int Data { get { return data; } }
         public int DataPhi1 { get { return phi1Data; } }
-        public int GraphicsData { get { return graphicsData; } }
     }
 }

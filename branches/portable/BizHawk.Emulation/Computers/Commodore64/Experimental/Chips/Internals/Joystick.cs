@@ -11,6 +11,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
         public int OutputData() { return Data; }
         public int OutputPot() { return Pot; }
         virtual public int Pot { get { return 0xFF; } }
-        virtual public void SyncState(Serializer ser) { Sync.SyncObject(ser, this); }
+        virtual public void SyncState(Serializer ser) { SaveState.SyncObject(ser, this); }
     }
 }

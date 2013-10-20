@@ -91,7 +91,7 @@ namespace BizHawk.MultiClient
 					{
 						new SingleInstanceController(args).Run(args);
 					}
-					catch (ObjectDisposedException ex)
+					catch (ObjectDisposedException)
 					{
 						/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
 					}

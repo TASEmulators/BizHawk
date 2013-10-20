@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public bool BinarySaveStatesPreferred { get { return true; } }
 		public CoreComm CoreComm { get; private set; }
 
+		public string BoardName { get { return null; } }
 
 		PPSSPPDll.LogCB logcallback = null;
 		Queue<string> debugmsgs = new Queue<string>();

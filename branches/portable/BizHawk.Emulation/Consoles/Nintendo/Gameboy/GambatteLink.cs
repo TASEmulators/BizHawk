@@ -192,6 +192,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		public string SystemId { get { return "DGB"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
+		public string BoardName { get { return L.BoardName + '|' + R.BoardName; } }
+
 		#region saveram
 
 		public byte[] ReadSaveRam()

@@ -57,7 +57,7 @@
 
 	Mirroring bit of appropriate reg selects NTA or NTB
 	*/
-	class Mapper207 : NES.NESBoardBase
+	public sealed class Mapper207 : NES.NESBoardBase
 	{
 		int prg_bank_mask, chr_bank_mask;
 		ByteBuffer chr_regs_1k = new ByteBuffer(8);

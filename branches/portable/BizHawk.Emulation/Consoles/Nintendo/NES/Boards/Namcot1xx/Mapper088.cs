@@ -14,7 +14,7 @@
 	*/
 
 
-	class Mapper088 : Namcot108Board_Base
+	public sealed class Mapper088 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;

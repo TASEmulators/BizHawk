@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		public virtual void SyncState(Serializer ser)
 		{
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
 		}
 
 		public bool Valid

@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA mapper 64
-	public class TENGEN_800032 : NES.NESBoardBase
+	public sealed class TENGEN_800032 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;

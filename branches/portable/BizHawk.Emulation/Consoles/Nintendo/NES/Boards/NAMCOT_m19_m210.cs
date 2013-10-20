@@ -5,7 +5,7 @@
 	//I'm not sure why bootgod turned all of these into mapper 19.. 
 	//some of them (example: family circuit) cannot work on mapper 19 because it clobbers nametable[0]
 	//luckily, we work by board
-	public class NAMCOT_m19_m210 : NES.NESBoardBase
+	public sealed class NAMCOT_m19_m210 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;

@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	public class MOS6510
+    sealed public class MOS6510
 	{
 		// ------------------------------------
 
-        protected MOS6502X cpu;
-        protected bool pinNMILast;
-        protected LatchedPort port;
-        protected bool thisNMI;
+        MOS6502X cpu;
+        bool pinNMILast;
+        LatchedPort port;
+        bool thisNMI;
 
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
         public void SyncState(Serializer ser)
         {
             cpu.SyncState(ser);
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
         }
 
         public void Write(ushort addr, byte val)

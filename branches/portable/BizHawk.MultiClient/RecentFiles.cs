@@ -1,18 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.MultiClient
 {
-	public class RecentFiles
+	public class RecentFiles : IEnumerable
 	{
 		private readonly int MAX_RECENT_FILES;       //Maximum number of files
 		private readonly List<string> recentlist;    //List of recent files
+		
+		public bool AutoLoad = false;
 
 		public RecentFiles() : this(8) { }
 		public RecentFiles(int max)
 		{
 			recentlist = new List<string>();
 			MAX_RECENT_FILES = max;
+		}
+
+		public IEnumerator<string> GetEnumerator()
+		{
+			return recentlist.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 
 		public void Clear()
@@ -62,20 +76,27 @@ namespace BizHawk.MultiClient
 
 		public List<string> GetRecentListTruncated(int length)
 		{
-			//iterate through list, truncating each item to length, and return the result in a List<string>
 			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
-		public string GetRecentFileByPosition(int position)
+		public string this[int index]
 		{
-			if (recentlist.Count > 0)
+			get
 			{
-				return recentlist[position];
+				if (recentlist.Any())
+				{
+					return recentlist[index];
+				}
+				else
+				{
+					return "";
+				}
 			}
-			else
-			{
-				return "";
-			}
+		}
+
+		public void ToggleAutoLoad()
+		{
+			AutoLoad ^= true;
 		}
 	}
 }

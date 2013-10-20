@@ -3,13 +3,13 @@ using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public class CartridgePort
+	sealed public class CartridgePort
 	{
         public Func<bool> ReadIRQ;
         public Func<bool> ReadNMI;
 
-		protected Cart cart;
-        protected bool connected;
+		Cart cart;
+        bool connected;
 
 		public CartridgePort()
 		{
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
         public void SyncState(Serializer ser)
 		{
-            Sync.SyncObject(ser, this);
+            SaveState.SyncObject(ser, this);
 		}
 	}
 }

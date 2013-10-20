@@ -2,18 +2,19 @@
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Vic : IVideoProvider
+    sealed public partial class Vic : IVideoProvider
 	{
-		protected int[] buf;
-		protected int bufHeight;
-		protected int bufLength;
-		protected int bufOffset;
-		protected Point bufPoint;
-		protected Rectangle bufRect;
-		protected int bufWidth;
+		int[] buf;
+		int bufHeight;
+		int bufLength;
+		int bufOffset;
+		int bufWidth;
+        int pixBufferSize = 12;
+        int[] pixBuffer;
+        int pixBufferIndex;
 
 		// palette
-		protected int[] palette =
+		int[] palette =
         {
                 Colors.ARGB(0x00, 0x00, 0x00),
                 Colors.ARGB(0xFF, 0xFF, 0xFF),
@@ -40,12 +41,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int BufferHeight
 		{
-			get { return bufRect.Height; }
+			get { return bufHeight; }
 		}
 
 		public int BufferWidth
 		{
-			get { return bufRect.Width; }
+			get { return bufWidth; }
 		}
 
 		public int[] GetVideoBuffer()
@@ -55,7 +56,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int VirtualWidth
 		{
-			get { return bufRect.Width; }
+            get { return bufWidth; }
 		}
 	}
 }

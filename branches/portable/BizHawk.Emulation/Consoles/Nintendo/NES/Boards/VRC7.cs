@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 85
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.
-	public class VRC7 : NES.NESBoardBase
+	public sealed class VRC7 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;

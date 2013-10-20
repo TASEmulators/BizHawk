@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
@@ -15,6 +16,8 @@ namespace BizHawk.MultiClient
 		public Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
 		public List<string> Comments = new List<string>();
 
+		public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
+
 		public const string EMULATIONVERSION = "emuVersion";
 		public const string MOVIEVERSION = "MovieVersion";
 		public const string PLATFORM = "Platform";
@@ -27,6 +30,7 @@ namespace BizHawk.MultiClient
 		public const string SHA1 = "SHA1";
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
+		public const string BOARDNAME = "BoardName";
 
 		//Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
@@ -38,6 +42,9 @@ namespace BizHawk.MultiClient
 
 		//Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
+
+		//Board properties
+		public const string BOARDPROPERTIES = "BoardProperty";
 
 		public static string MovieVersion = "BizHawk v0.0.1";
 
@@ -109,6 +116,11 @@ namespace BizHawk.MultiClient
 			foreach (KeyValuePair<string, string> kvp in HeaderParams)
 			{
 				sw.WriteLine(kvp.Key + " " + kvp.Value);
+			}
+
+			foreach (KeyValuePair<string, string> kvp in BoardProperties)
+			{
+				sw.WriteLine(BOARDPROPERTIES + " " + kvp.Key + " " + kvp.Value);
 			}
 
 			foreach (string t in Comments)
@@ -207,6 +219,12 @@ namespace BizHawk.MultiClient
 			{
 				line = ParseHeader(line, VIDEOPLUGIN);
 				AddHeaderLine(VIDEOPLUGIN, line);
+			}
+			else if (line.Contains(BOARDPROPERTIES))
+			{
+				line = ParseHeader(line, BOARDPROPERTIES);
+				string[] vals = line.Split(' ');
+				BoardProperties.Add(vals[0], vals[1]);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{

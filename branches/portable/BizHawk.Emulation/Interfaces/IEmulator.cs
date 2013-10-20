@@ -38,6 +38,11 @@ namespace BizHawk
 		bool DeterministicEmulation { get; }
 
 		/// <summary>
+		/// identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
+		/// </summary>
+		string BoardName { get; }
+
+		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
 		/// </summary>
 		byte[] ReadSaveRam();
@@ -112,6 +117,72 @@ namespace BizHawk
 		public override string ToString()
 		{
 			return Name;
+		}
+
+		public ushort PeekWord(int addr, Endian endian)
+		{
+			switch (endian)
+			{
+				default:
+				case Endian.Big:
+					return (ushort)((PeekByte(addr) << 8) | (PeekByte(addr + 1)));
+				case Endian.Little:
+					return (ushort)((PeekByte(addr)) | (PeekByte(addr + 1) << 8));
+			}
+		}
+
+		public uint PeekDWord(int addr, Endian endian)
+		{
+			switch (endian)
+			{
+				default:
+				case Endian.Big:
+					return (uint)((PeekByte(addr) << 24)
+					| (PeekByte(addr + 1) << 16)
+					| (PeekByte(addr + 2) << 8)
+					| (PeekByte(addr + 3) << 0));
+				case Endian.Little:
+					return (uint)((PeekByte(addr) << 0)
+					| (PeekByte(addr + 1) << 8)
+					| (PeekByte(addr + 2) << 16)
+					| (PeekByte(addr + 3) << 24));
+			}
+		}
+
+		public void PokeWord(int addr, ushort val, Endian endian)
+		{
+			switch (endian)
+			{
+				default:
+				case Endian.Big:
+					PokeByte(addr + 0, (byte)(val >> 8));
+					PokeByte(addr + 1, (byte)(val));
+					break;
+				case Endian.Little:
+					PokeByte(addr + 0, (byte)(val));
+					PokeByte(addr + 1, (byte)(val >> 8));
+					break;
+			}
+		}
+
+		public void PokeDWord(int addr, uint val, Endian endian)
+		{
+			switch (endian)
+			{
+				default:
+				case Endian.Big:
+					PokeByte(addr + 0, (byte)(val >> 24));
+					PokeByte(addr + 1, (byte)(val >> 16));
+					PokeByte(addr + 2, (byte)(val >> 8));
+					PokeByte(addr + 3, (byte)(val));
+					break;
+				case Endian.Little:
+					PokeByte(addr + 0, (byte)(val));
+					PokeByte(addr + 1, (byte)(val >> 8));
+					PokeByte(addr + 2, (byte)(val >> 16));
+					PokeByte(addr + 3, (byte)(val >> 24));
+					break;
+			}
 		}
 	}
 
