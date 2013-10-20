@@ -239,6 +239,21 @@
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="CoreFileProvider.cs" />
+    <Compile Include="CustomControls\FolderBrowserDialogEx.cs" />
+    <Compile Include="CustomControls\HexTextBox.cs" />
+    <Compile Include="CustomControls\InputConfigBase.cs" />
+    <Compile Include="CustomControls\MiscControls.cs" />
+    <Compile Include="CustomControls\QuickProgressPopup.cs" />
+    <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\SmartTextBoxControl.cs" />
+    <Compile Include="CustomControls\TextDebugView.cs" />
+    <Compile Include="CustomControls\ToolStripEx.cs" />
+    <Compile Include="CustomControls\Util.cs" />
+    <Compile Include="CustomControls\ViewportPanel.cs" />
+    <Compile Include="CustomControls\VirtualListView.cs" />
+    <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="FirmwareManager.cs" />
@@ -756,6 +771,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
+      <DependentUpon>InputConfigBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
