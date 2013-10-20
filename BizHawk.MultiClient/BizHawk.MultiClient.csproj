@@ -970,6 +970,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
+      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
+      <Name>BizHawk.Client.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>
@@ -977,10 +981,6 @@
     <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
       <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
       <Name>BizHawk.Util</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Client.Core\BizHawk.Client.Common.csproj">
-      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
-      <Name>BizHawk.Client.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

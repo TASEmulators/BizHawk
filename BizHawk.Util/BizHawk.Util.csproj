@@ -188,7 +188,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client.Core\BizHawk.Client.Common.csproj">
+    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
       <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
       <Name>BizHawk.Client.Common</Name>
     </ProjectReference>
