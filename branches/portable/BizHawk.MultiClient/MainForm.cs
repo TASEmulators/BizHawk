@@ -1216,7 +1216,9 @@ namespace BizHawk.MultiClient
 									string biosPath = this.FirmwareManager.Request("SAT", "J");
 									if (!File.Exists(biosPath))
 									{
+										RunLoopBlocked = true;
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
+										RunLoopBlocked = false;
 										return false;
 									}
 									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
@@ -1456,7 +1458,9 @@ namespace BizHawk.MultiClient
 										}
 										else
 										{
+											RunLoopBlocked = true;
 											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											RunLoopBlocked = false;
 											Global.Config.GB_AsSGB = false;
 											game.System = "GB";
 											goto RETRY;
@@ -1563,7 +1567,9 @@ namespace BizHawk.MultiClient
 								}
 								catch (InvalidDataException ex)
 								{
+									RunLoopBlocked = true;
 									MessageBox.Show(ex.Message, "Region specific bios missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									RunLoopBlocked = false;
 									return false;
 								}
 								break;

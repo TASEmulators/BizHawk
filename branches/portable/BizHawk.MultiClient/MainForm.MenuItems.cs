@@ -1154,8 +1154,9 @@ namespace BizHawk.MultiClient
 		private void singleInstanceModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SingleInstanceMode ^= true;
-
+			RunLoopBlocked = true;
 			MessageBox.Show("BizHawk must be restarted for this setting to take effect.", "Reboot Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			RunLoopBlocked = false;
 		}
 
 		private void MainForm_Deactivate(object sender, EventArgs e)
@@ -1699,6 +1700,7 @@ namespace BizHawk.MultiClient
 
 		private void miSnesOptions_Click(object sender, EventArgs e)
 		{
+			RunLoopBlocked = true;
 			var so = new SNESOptions
 				{
 					UseRingBuffer = Global.Config.SNESUseRingBuffer,
@@ -1714,6 +1716,7 @@ namespace BizHawk.MultiClient
 				if (reboot) FlagNeedsReboot();
 				SyncCoreCommInputSignals();
 			}
+			RunLoopBlocked = false;
 		}
 
 		public void SNES_ToggleBG1(bool? setto = null)
@@ -2152,11 +2155,10 @@ namespace BizHawk.MultiClient
 
 		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Multiselect = true,
-				Filter = FormatFilter(
+			var ofd = HawkUIFactory.CreateOpenFileDialog ();
+			ofd.InitialDirectory = PathManager.GetRomsPath (Global.Emulator.SystemId);
+			ofd.Multiselect = true;
+			ofd.Filter = FormatFilter(
 					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
@@ -2170,13 +2172,14 @@ namespace BizHawk.MultiClient
 					"Nintendulator", "*.nmv",
 					"Snes9x", "*.smv",
 					"ZSNES", "*.zmv",
-					"All Files", "*.*"),
-				RestoreDirectory = false
-			};
+				"All Files", "*.*");
+			ofd.RestoreDirectory = false;
 
+			RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
+			RunLoopBlocked = false;
 			if (result != DialogResult.OK)
 				return;
 
@@ -2251,7 +2254,9 @@ namespace BizHawk.MultiClient
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
+					RunLoopBlocked = true;
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					RunLoopBlocked = false;
 				}
 				else
 				{
@@ -2661,7 +2666,8 @@ namespace BizHawk.MultiClient
 
 		private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog OFD = new OpenFileDialog();
+			RunLoopBlocked = true;
+			var OFD = HawkUIFactory.CreateOpenFileDialog ();
 
 			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
@@ -2677,6 +2683,7 @@ namespace BizHawk.MultiClient
 						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 				}
 			}
+			RunLoopBlocked = false;
 		}
 	}
 }
