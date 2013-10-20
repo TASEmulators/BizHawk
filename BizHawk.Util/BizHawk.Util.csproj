@@ -110,43 +110,8 @@
     <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
-    <Compile Include="FolderBrowserDialogEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="HexTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="InputConfigBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="QuickProgressPopup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="QuickProgressPopup.Designer.cs">
-      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MiscControls.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\svnrev.cs" />
-    <Compile Include="SmartTextBoxControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TextDebugView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ToolStripEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Util.cs" />
-    <Compile Include="ViewportPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="VirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7z\arch\Test.bzip2.7z" />
@@ -159,16 +124,9 @@
     <EmbeddedResource Include="7z\arch\Test.txt.gz" />
     <EmbeddedResource Include="7z\arch\Test.txt.xz" />
     <EmbeddedResource Include="7z\arch\Test.zip" />
-    <EmbeddedResource Include="QuickProgressPopup.resx">
-      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7z\arch\Test.txt" />
-    <EmbeddedResource Include="InputConfigBase.resx">
-      <DependentUpon>InputConfigBase.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
