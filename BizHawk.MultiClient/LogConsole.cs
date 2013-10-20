@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Client.Core;
+
 #pragma warning disable 162
 
 //thanks! - http://sharp-developer.net/ru/CodeBank/WinForms/GuiConsole.aspx

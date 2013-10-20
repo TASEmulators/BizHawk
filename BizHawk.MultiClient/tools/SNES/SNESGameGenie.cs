@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class SNESGameGenie : Form
@@ -13,7 +15,7 @@ namespace BizHawk.MultiClient
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 		private bool Processing = false;
 
-         		public SNESGameGenie()
+		public SNESGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
@@ -291,7 +293,7 @@ namespace BizHawk.MultiClient
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				string NAME;
 				int ADDRESS = 0;
@@ -321,9 +323,9 @@ namespace BizHawk.MultiClient
 					VALUE = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 				}
 
-				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 				{
-					if (Global.Emulator.MemoryDomains[i].ToString() == "BUS")
+					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "BUS")
 					{
 						sysBusIndex = i;
 						break;
@@ -331,7 +333,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[sysBusIndex],
+					GlobalWinF.Emulator.MemoryDomains[sysBusIndex],
 					ADDRESS,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -339,7 +341,7 @@ namespace BizHawk.MultiClient
 					bigEndian: false
 				);
 
-				Global.CheatList.Add(new Cheat(
+				GlobalWinF.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					compare: null,

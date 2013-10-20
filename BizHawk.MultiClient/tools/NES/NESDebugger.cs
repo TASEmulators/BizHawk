@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class NESDebugger : Form
@@ -38,9 +40,9 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) Close();
+			if (!(GlobalWinF.Emulator is NES)) Close();
 			if (!IsHandleCreated || IsDisposed) return;
-			_nes = Global.Emulator as NES;
+			_nes = GlobalWinF.Emulator as NES;
 		}
 
 		public void UpdateValues()
@@ -78,7 +80,7 @@ namespace BizHawk.MultiClient
 		private void NESDebugger_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			_nes = Global.Emulator as NES;
+			_nes = GlobalWinF.Emulator as NES;
 		}
 
 		private void LoadConfigSettings()

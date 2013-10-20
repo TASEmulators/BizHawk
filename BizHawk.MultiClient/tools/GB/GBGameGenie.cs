@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class GBGameGenie : Form
@@ -346,7 +348,7 @@ namespace BizHawk.MultiClient
 
 		private void AddCheatClick(object sender, EventArgs e)
 		{
-			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			if ((GlobalWinF.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
 				string NAME = String.Empty;
 				int ADDRESS = 0;
@@ -389,9 +391,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+				for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 				{
-					if (Global.Emulator.MemoryDomains[i].ToString() == "System Bus")
+					if (GlobalWinF.Emulator.MemoryDomains[i].ToString() == "System Bus")
 					{
 						sysBusIndex = i;
 						break;
@@ -399,14 +401,14 @@ namespace BizHawk.MultiClient
 				}
 
 				Watch watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[sysBusIndex],
+					GlobalWinF.Emulator.MemoryDomains[sysBusIndex],
 					ADDRESS,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
 					NAME,
 					false);
 
-				Global.CheatList.Add(new Cheat(
+				GlobalWinF.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
 					COMPARE,

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class AutofireConfig : Form
@@ -37,18 +39,18 @@ namespace BizHawk.MultiClient
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
-			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
+			GlobalWinF.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
+			GlobalWinF.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
 			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
-			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+			GlobalWinF.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
-			Global.OSD.AddMessage("Autofire settings saved");
+			GlobalWinF.OSD.AddMessage("Autofire settings saved");
 			this.Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			Global.OSD.AddMessage("Autofire config aborted");
+			GlobalWinF.OSD.AddMessage("Autofire config aborted");
 			this.Close();
 		}
 	}

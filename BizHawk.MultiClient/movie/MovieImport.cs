@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+using BizHawk.Client.Core;
+
 #pragma warning disable 219
 
 namespace BizHawk.MultiClient

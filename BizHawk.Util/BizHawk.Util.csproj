@@ -119,15 +119,12 @@
     <Compile Include="InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputValidate.cs" />
-    <Compile Include="KeyTurbo.cs" />
     <Compile Include="QuickProgressPopup.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="QuickProgressPopup.Designer.cs">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </Compile>
-    <Compile Include="StringHelpers.cs" />
     <Compile Include="MiscControls.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -189,6 +186,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Client.Core\Client.Core.csproj">
+      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
+      <Name>Client.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

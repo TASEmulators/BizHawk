@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class RamWatch : Form
@@ -32,7 +34,7 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private readonly WatchList Watches = new WatchList(Global.Emulator.MainMemory);
+		private readonly WatchList Watches = new WatchList(GlobalWinF.Emulator.MainMemory);
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
 
@@ -64,8 +66,8 @@ namespace BizHawk.MultiClient
 				{
 					for (int x = 0; x < Watches.Count; x++)
 					{
-						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
-						Global.OSD.AddGUIText(
+						bool alert = Watches[x].IsSeparator ? false : GlobalWinF.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
+						GlobalWinF.OSD.AddGUIText(
 							Watches[x].ToString(),
 							Global.Config.DispRamWatchx,
 							(Global.Config.DispRamWatchy + (x * 14)),
@@ -137,9 +139,9 @@ namespace BizHawk.MultiClient
 		private int GetDomainPos(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Name == name)
+				if (GlobalWinF.Emulator.MemoryDomains[i].Name == name)
 				{
 					return i;
 				}
@@ -164,9 +166,9 @@ namespace BizHawk.MultiClient
 
 			if (Watches.Changes)
 			{
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					Watches.Save();
@@ -269,7 +271,7 @@ namespace BizHawk.MultiClient
 				{
 					color = BackColor;
 				}
-				else if (Global.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
+				else if (GlobalWinF.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
 				{
 					color = Color.LightCyan;
 				}
@@ -327,7 +329,7 @@ namespace BizHawk.MultiClient
 
 		private void SetPlatformAndMemoryDomainLabel()
 		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Watches.Domain.Name;
+			MemDomainLabel.Text = GlobalWinF.Emulator.SystemId + " " + Watches.Domain.Name;
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -395,9 +397,9 @@ namespace BizHawk.MultiClient
 
 		private void SetMemoryDomain(int pos)
 		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			if (pos < GlobalWinF.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				Watches.Domain = Global.Emulator.MemoryDomains[pos];
+				Watches.Domain = GlobalWinF.Emulator.MemoryDomains[pos];
 			}
 
 			SetPlatformAndMemoryDomainLabel();
@@ -518,9 +520,9 @@ namespace BizHawk.MultiClient
 				InitialLocation = GetPromptPoint()
 			};
 			we.SetWatch(Watches.Domain);
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			we.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 
 			if (we.DialogResult == DialogResult.OK)
 			{
@@ -548,7 +550,7 @@ namespace BizHawk.MultiClient
 				}
 
 				we.SetWatch(Watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var result = we.ShowDialog();
 				if (result == DialogResult.OK)
 				{
@@ -567,7 +569,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 				UpdateValues();
 			}
 		}
@@ -586,13 +588,13 @@ namespace BizHawk.MultiClient
 					poke.SetWatch(SelectedWatches);
 				}
 
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var result = poke.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					UpdateValues();
 				}
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 			}
 		}
 
@@ -897,7 +899,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
+					if (!GlobalWinF.CheatList.IsActive(watch.Domain, watch.Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1029,7 +1031,7 @@ namespace BizHawk.MultiClient
 
 			if (!Global.Config.DisplayRamWatch)
 			{
-				Global.OSD.ClearGUIText();
+				GlobalWinF.OSD.ClearGUIText();
 			}
 			else
 			{
@@ -1108,7 +1110,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Watches[i].IsSeparator)
 				{
-					if (!Global.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
+					if (!GlobalWinF.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
 					{
 						allCheats = false;
 					}
@@ -1131,7 +1133,7 @@ namespace BizHawk.MultiClient
 			ShowDiffContextMenuItem.Text = Global.Config.RamWatchShowDiffColumn ? "Hide difference value" : "Show difference value";
 			ShowDomainContextMenuItem.Text = Global.Config.RamWatchShowDomainColumn ? "Hide domain" : "Show domain";
 
-			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = GlobalWinF.CheatList.ActiveCount > 0;
 
 			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count == 1;
 		}
@@ -1146,7 +1148,7 @@ namespace BizHawk.MultiClient
 			var selected = SelectedWatches;
 			if (selected.Any())
 			{
-				Global.MainForm.LoadHexEditor();
+				GlobalWinF.MainForm.LoadHexEditor();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{

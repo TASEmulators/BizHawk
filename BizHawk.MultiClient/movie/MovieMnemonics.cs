@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public static class MnemonicConstants
@@ -225,7 +227,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				switch (Global.Emulator.SystemId)
+				switch (GlobalWinF.Emulator.SystemId)
 				{
 					default:
 					case "NULL":

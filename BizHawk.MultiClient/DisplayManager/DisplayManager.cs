@@ -11,6 +11,8 @@ using System.Drawing.Imaging;
 //using dx=SlimDX;
 //using d3d=SlimDX.Direct3D9;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -340,14 +342,14 @@ namespace BizHawk.MultiClient
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MovieSession.Movie.IsFinished)
+			if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
 				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
+				s.Append(GlobalWinF.Emulator.Frame);
 				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
+				if (GlobalWinF.MovieSession.Movie.Frames.HasValue)
 				{
-					s.Append(Global.MovieSession.Movie.Frames);
+					s.Append(GlobalWinF.MovieSession.Movie.Frames);
 				}
 				else
 				{
@@ -356,14 +358,14 @@ namespace BizHawk.MultiClient
 				s.Append(" (Finished)");
 				return s.ToString();
 			}
-			else if (Global.MovieSession.Movie.IsPlaying)
+			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
 			{
 				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
+				s.Append(GlobalWinF.Emulator.Frame);
 				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
+				if (GlobalWinF.MovieSession.Movie.Frames.HasValue)
 				{
-					s.Append(Global.MovieSession.Movie.Frames);
+					s.Append(GlobalWinF.MovieSession.Movie.Frames);
 				}
 				else
 				{
@@ -371,19 +373,19 @@ namespace BizHawk.MultiClient
 				}
 				return s.ToString();
 			}
-			else if (Global.MovieSession.Movie.IsRecording)
+			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
-				return Global.Emulator.Frame.ToString();
+				return GlobalWinF.Emulator.Frame.ToString();
 			}
 			else
 			{
-				return Global.Emulator.Frame.ToString();
+				return GlobalWinF.Emulator.Frame.ToString();
 			}
 		}
 
 		private string MakeLagCounter()
 		{
-			return Global.Emulator.LagCount.ToString();
+			return GlobalWinF.Emulator.LagCount.ToString();
 		}
 
 		private List<UIMessage> messages = new List<UIMessage>(5);
@@ -391,19 +393,19 @@ namespace BizHawk.MultiClient
 
 		public void AddMessage(string message)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
 		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 
 			GUITextList.Clear();
 		}
@@ -411,7 +413,7 @@ namespace BizHawk.MultiClient
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!Global.ClientControls["MaxTurbo"])
+			if (!GlobalWinF.ClientControls["MaxTurbo"])
 			{
 				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 				int line = 1;
@@ -481,13 +483,13 @@ namespace BizHawk.MultiClient
 		public string MakeInputDisplay()
 		{
 			StringBuilder s;
-			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
+			if (!GlobalWinF.MovieSession.Movie.IsActive || GlobalWinF.MovieSession.Movie.IsFinished)
 			{
-				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+				s = new StringBuilder(GlobalWinF.GetOutputControllersAsMnemonic());
 			}
 			else
 			{
-				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+				s = new StringBuilder(GlobalWinF.MovieSession.Movie.GetInput(GlobalWinF.Emulator.Frame - 1));
 			}
 
 			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
@@ -497,9 +499,9 @@ namespace BizHawk.MultiClient
 
 		public string MakeRerecordCount()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
+				return "Rerecord Count: " + GlobalWinF.MovieSession.Movie.Rerecords.ToString();
 			}
 			else
 			{
@@ -526,7 +528,7 @@ namespace BizHawk.MultiClient
 				Color c;
 				float x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
 				float y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
-				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsRecording)
+				if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsRecording)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
 				}
@@ -538,7 +540,7 @@ namespace BizHawk.MultiClient
 				g.DrawString(input, MessageFont, Color.Black, x+1,y+1);
 				g.DrawString(input, MessageFont, c, x,y);
 			}
-			if (Global.MovieSession.MultiTrack.IsActive)
+			if (GlobalWinF.MovieSession.MultiTrack.IsActive)
 			{
 				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
 				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
@@ -559,7 +561,7 @@ namespace BizHawk.MultiClient
 			{
 				string counter = MakeLagCounter();
 
-				if (Global.Emulator.IsLagFrame)
+				if (GlobalWinF.Emulator.IsLagFrame)
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
@@ -584,17 +586,17 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
+			if (GlobalWinF.ClientControls["Autohold"] || GlobalWinF.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 
-				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
+				foreach (string s in GlobalWinF.StickyXORAdapter.CurrentStickies)
 				{
 					disp.Append(s);
 					disp.Append(' ');
 				}
 
-				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
+				foreach (string s in GlobalWinF.AutofireStickyXORAdapter.CurrentStickies)
 				{
 					disp.Append("Auto-");
 					disp.Append(s);
@@ -622,9 +624,9 @@ namespace BizHawk.MultiClient
 			//    //g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
 			//}
 
-			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
+			if (GlobalWinF.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				List<Subtitle> s = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
+				List<Subtitle> s = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitles(GlobalWinF.Emulator.Frame);
 				if (s == null)
 				{
 					return;
@@ -660,7 +662,7 @@ namespace BizHawk.MultiClient
 		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			UpdateSourceEx(videoProvider, Global.RenderPanel);
+			UpdateSourceEx(videoProvider, GlobalWinF.RenderPanel);
 		}
 
 		/// <summary>
@@ -773,10 +775,10 @@ namespace BizHawk.MultiClient
 
 		void RenderOSD(IBlitter renderPanel)
 		{
-			Global.OSD.Begin(renderPanel);
+			GlobalWinF.OSD.Begin(renderPanel);
 			renderPanel.Open();
-			Global.OSD.DrawScreenInfo(renderPanel);
-			Global.OSD.DrawMessages(renderPanel);
+			GlobalWinF.OSD.DrawScreenInfo(renderPanel);
+			GlobalWinF.OSD.DrawMessages(renderPanel);
 			renderPanel.Close();
 		}
 

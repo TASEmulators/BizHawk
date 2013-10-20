@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class HexEditor : Form
@@ -257,9 +259,9 @@ namespace BizHawk.MultiClient
 
 		private int? GetDomainInt(string name)
 		{
-			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Name == name)
+				if (GlobalWinF.Emulator.MemoryDomains[i].Name == name)
 				{
 					return i;
 				}
@@ -384,7 +386,7 @@ namespace BizHawk.MultiClient
 
 		private bool CurrentROMIsArchive()
 		{
-			string path = Global.MainForm.CurrentlyOpenRom;
+			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return false;
@@ -412,7 +414,7 @@ namespace BizHawk.MultiClient
 
 		private byte[] GetRomBytes()
 		{
-			string path = Global.MainForm.CurrentlyOpenRom;
+			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return null;
@@ -455,9 +457,9 @@ namespace BizHawk.MultiClient
 				//<zeromus> THIS IS HORRIBLE.
 				Domain = ROMDomain;
 			}
-			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			else if (pos < GlobalWinF.Emulator.MemoryDomains.Count)  //Sanity check
 			{
-				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
+				SetMemoryDomain(GlobalWinF.Emulator.MemoryDomains[pos]);
 			}
 			SetHeader();
 			UpdateGroupBoxTitle();
@@ -469,7 +471,7 @@ namespace BizHawk.MultiClient
 		private void UpdateGroupBoxTitle()
 		{
 			string memoryDomain = Domain.ToString();
-			string systemID = Global.Emulator.SystemId;
+			string systemID = GlobalWinF.Emulator.SystemId;
 			int addresses = Domain.Size / DataSize;
 			string addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
 			//if ((addresses & 0x3FF) == 0)
@@ -482,11 +484,11 @@ namespace BizHawk.MultiClient
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
 
-			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			for (int i = 0; i < GlobalWinF.Emulator.MemoryDomains.Count; i++)
 			{
-				if (Global.Emulator.MemoryDomains[i].Size > 0)
+				if (GlobalWinF.Emulator.MemoryDomains[i].Size > 0)
 				{
-					string str = Global.Emulator.MemoryDomains[i].ToString();
+					string str = GlobalWinF.Emulator.MemoryDomains[i].ToString();
 					var item = new ToolStripMenuItem { Text = str };
 					{
 						int z = i;
@@ -534,9 +536,9 @@ namespace BizHawk.MultiClient
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
 			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			i.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 
 			if (i.UserOK)
 			{
@@ -704,16 +706,16 @@ namespace BizHawk.MultiClient
 		{
 			if (HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch(true);
+				GlobalWinF.MainForm.LoadRamWatch(true);
 			}
 
 			if (HighlightedAddress.HasValue)
 			{
-				Global.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
+				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				Global.MainForm.RamWatch1.AddWatch(MakeWatch(i));
+				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -751,10 +753,10 @@ namespace BizHawk.MultiClient
 
 				poke.SetWatch(Watches);
 
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var result = poke.ShowDialog();
 				UpdateValues();
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 			}
 		}
 
@@ -833,7 +835,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsFrozen(int address)
 		{
-			return Global.CheatList.IsActive(Domain, address);
+			return GlobalWinF.CheatList.IsActive(Domain, address);
 		}
 
 		private void ToggleFreeze()
@@ -866,8 +868,8 @@ namespace BizHawk.MultiClient
 		{
 			if (address >= 0)
 			{
-				var cheats = Global.CheatList.Where(x => x.Contains(address)).ToList();
-				Global.CheatList.RemoveRange(cheats);
+				var cheats = GlobalWinF.CheatList.Where(x => x.Contains(address)).ToList();
+				GlobalWinF.CheatList.RemoveRange(cheats);
 			}
 			MemoryViewerBox.Refresh();
 		}
@@ -891,10 +893,10 @@ namespace BizHawk.MultiClient
 
 		private void UpdateRelatedDialogs()
 		{
-			Global.MainForm.UpdateCheatStatus();
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
+			GlobalWinF.MainForm.UpdateCheatStatus();
+			GlobalWinF.MainForm.RamSearch1.UpdateValues();
+			GlobalWinF.MainForm.RamWatch1.UpdateValues();
+			GlobalWinF.MainForm.Cheats_UpdateValues();
 			UpdateValues();
 		}
 
@@ -910,7 +912,7 @@ namespace BizHawk.MultiClient
 					String.Empty,
 					BigEndian);
 
-				Global.CheatList.Add(new Cheat(
+				GlobalWinF.CheatList.Add(new Cheat(
 					watch,
 					watch.Value.Value,
 					compare: null,
@@ -997,19 +999,19 @@ namespace BizHawk.MultiClient
 		{
 			var sfd = new SaveFileDialog();
 
-			if (!(Global.Emulator is NullEmulator))
+			if (!(GlobalWinF.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			else
 				sfd.FileName = "MemoryDump";
 
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+			sfd.InitialDirectory = PathManager.GetPlatformBase(GlobalWinF.Emulator.SystemId);
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1020,7 +1022,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Domain.Name == "ROM File")
 			{
-				string extension = Path.GetExtension(Global.MainForm.CurrentlyOpenRom);
+				string extension = Path.GetExtension(GlobalWinF.MainForm.CurrentlyOpenRom);
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
@@ -1034,19 +1036,19 @@ namespace BizHawk.MultiClient
 		{
 			var sfd = new SaveFileDialog();
 
-			if (!(Global.Emulator is NullEmulator))
+			if (!(GlobalWinF.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			else
 				sfd.FileName = "MemoryDump";
 
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+			sfd.InitialDirectory = PathManager.GetPlatformBase(GlobalWinF.Emulator.SystemId);
 
 			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1207,7 +1209,7 @@ namespace BizHawk.MultiClient
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			var activeCheats = Global.CheatList.Where(x => x.Enabled);
+			var activeCheats = GlobalWinF.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
 				if (IsVisible(cheat.Address.Value))
@@ -1232,7 +1234,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size((8 * DataSize), fontHeight));
 
-				if (Global.CheatList.IsActive(Domain, addressHighlighted))
+				if (GlobalWinF.CheatList.IsActive(Domain, addressHighlighted))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1254,7 +1256,7 @@ namespace BizHawk.MultiClient
 
 				Rectangle textrect = new Rectangle(textpoint, new Size(8, fontHeight));
 
-				if (Global.CheatList.IsActive(Domain, address))
+				if (GlobalWinF.CheatList.IsActive(Domain, address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
@@ -1690,10 +1692,10 @@ namespace BizHawk.MultiClient
 
 		private void IncrementAddress(int address)
 		{
-			if (Global.CheatList.IsActive(Domain, address))
+			if (GlobalWinF.CheatList.IsActive(Domain, address))
 			{
-				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
-				Global.CheatList.FlagChanges();
+				GlobalWinF.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
+				GlobalWinF.CheatList.FlagChanges();
 			}
 			else
 			{
@@ -1728,10 +1730,10 @@ namespace BizHawk.MultiClient
 
 		private void DecrementAddress(int address)
 		{
-			if (Global.CheatList.IsActive(Domain, address))
+			if (GlobalWinF.CheatList.IsActive(Domain, address))
 			{
-				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
-				Global.CheatList.FlagChanges();
+				GlobalWinF.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
+				GlobalWinF.CheatList.FlagChanges();
 			}
 			else
 			{
@@ -2059,9 +2061,9 @@ namespace BizHawk.MultiClient
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			h.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2121,7 +2123,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				FileInfo file = new FileInfo(Global.MainForm.CurrentlyOpenRom);
+				FileInfo file = new FileInfo(GlobalWinF.MainForm.CurrentlyOpenRom);
 				SaveFileBinary(file);
 			}
 		}

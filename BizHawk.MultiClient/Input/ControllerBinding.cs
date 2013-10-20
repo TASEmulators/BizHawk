@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public class Controller : IController
@@ -14,7 +16,7 @@ namespace BizHawk.MultiClient
 
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
 
-		private readonly Dictionary<string, Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
+		private readonly Dictionary<string, BizHawk.Client.Core.Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
 
 		public Controller(ControllerDefinition definition)
 		{
@@ -153,7 +155,7 @@ namespace BizHawk.MultiClient
 				bindings[button].Add(control.Trim());
 		}
 
-		public void BindFloat(string button, Config.AnalogBind bind)
+		public void BindFloat(string button, BizHawk.Client.Core.Config.AnalogBind bind)
 		{
 			FloatBinds[button] = bind;
 		}
@@ -212,7 +214,7 @@ namespace BizHawk.MultiClient
 		{
 			if (autofire)
 			{
-				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				int a = (GlobalWinF.Emulator.Frame - buttonStarts[button]) % (On + Off);
 				if (a < On)
 					return buttons[button];
 				else
@@ -252,7 +254,7 @@ namespace BizHawk.MultiClient
 				foreach (var bound_button in kvp.Value)
 				{
 					if (buttons[kvp.Key] == false && controller[bound_button])
-						buttonStarts[kvp.Key] = Global.Emulator.Frame;
+						buttonStarts[kvp.Key] = GlobalWinF.Emulator.Frame;
 				}
 			}
 			

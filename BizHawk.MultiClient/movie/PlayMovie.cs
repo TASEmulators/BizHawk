@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
@@ -65,12 +67,12 @@ namespace BizHawk.MultiClient
 			//Import file if necessary
 
 			
-			Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
+			GlobalWinF.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
+			GlobalWinF.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
 			Run();
 			Close();
 		}
@@ -81,9 +83,9 @@ namespace BizHawk.MultiClient
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);
@@ -387,7 +389,7 @@ namespace BizHawk.MultiClient
 						}
 						break;
 					case MovieHeader.EMULATIONVERSION:
-						if (kvp.Value != Global.MainForm.GetEmuVersion())
+						if (kvp.Value != GlobalWinF.MainForm.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}

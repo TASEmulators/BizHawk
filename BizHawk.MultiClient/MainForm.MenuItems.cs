@@ -7,6 +7,8 @@ using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	partial class MainForm
@@ -28,11 +30,11 @@ namespace BizHawk.MultiClient
 
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
-			string details = Global.Emulator.CoreComm.RomStatusDetails;
+			string details = GlobalWinF.Emulator.CoreComm.RomStatusDetails;
 			if (string.IsNullOrEmpty(details)) return;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			LogWindow.ShowReport("Dump Status Report", details, this);
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -62,7 +64,7 @@ namespace BizHawk.MultiClient
 				old = Global.Config.VSyncThrottle;
 				Global.Config.VSyncThrottle = false;
 				if (old)
-					Global.RenderPanel.Resized = true;
+					GlobalWinF.RenderPanel.Resized = true;
 			}
 			LimitFrameRateMessage();
 		}
@@ -77,7 +79,7 @@ namespace BizHawk.MultiClient
 				bool old = Global.Config.VSyncThrottle;
 				Global.Config.VSyncThrottle = false;
 				if (old)
-					Global.RenderPanel.Resized = true;
+					GlobalWinF.RenderPanel.Resized = true;
 			}
 
 		}
@@ -85,7 +87,7 @@ namespace BizHawk.MultiClient
 		private void miDisplayVsync_Click(object sender, EventArgs e)
 		{
 			Global.Config.VSyncThrottle ^= true;
-			Global.RenderPanel.Resized = true;
+			GlobalWinF.RenderPanel.Resized = true;
 			if (Global.Config.VSyncThrottle)
 			{
 				Global.Config.ClockThrottle = false;
@@ -101,18 +103,18 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.VSync ^= true;
 			if (!Global.Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
-				Global.RenderPanel.Resized = true;
+				GlobalWinF.RenderPanel.Resized = true;
 		}
 
 		public void LimitFrameRateMessage()
 		{
 			if (Global.Config.ClockThrottle)
 			{
-				Global.OSD.AddMessage("Framerate limiting on");
+				GlobalWinF.OSD.AddMessage("Framerate limiting on");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Framerate limiting off");
+				GlobalWinF.OSD.AddMessage("Framerate limiting off");
 			}
 		}
 
@@ -121,11 +123,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.VSyncThrottle)
 			{
-				Global.OSD.AddMessage("Display Vsync is set to on");
+				GlobalWinF.OSD.AddMessage("Display Vsync is set to on");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Display Vsync is set to off");
+				GlobalWinF.OSD.AddMessage("Display Vsync is set to off");
 			}
 		}
 
@@ -138,11 +140,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.AutoMinimizeSkipping)
 			{
-				Global.OSD.AddMessage("Autominimizing set to on");
+				GlobalWinF.OSD.AddMessage("Autominimizing set to on");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Autominimizing set to off");
+				GlobalWinF.OSD.AddMessage("Autominimizing set to off");
 			}
 		}
 
@@ -159,7 +161,7 @@ namespace BizHawk.MultiClient
 
 		public void FrameSkipMessage()
 		{
-			Global.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
+			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
 		}
 
 		public void ClickSpeedItem(int num)
@@ -439,7 +441,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenControllerConfig()
 		{
-			ControllerConfig c = new ControllerConfig(Global.Emulator.ControllerDefinition);
+			ControllerConfig c = new ControllerConfig(GlobalWinF.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{
@@ -466,25 +468,25 @@ namespace BizHawk.MultiClient
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			ToggleFPS();
 		}
 
 		private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			ToggleFrameCounter();
 		}
 
 		private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			ToggleInputDisplay();
 		}
 
 		private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			ToggleLagCounter();
 		}
 
@@ -636,9 +638,9 @@ namespace BizHawk.MultiClient
 			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			traceLoggerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			toolBoxToolStripMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
-			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
+			traceLoggerToolStripMenuItem.Enabled = GlobalWinF.Emulator.CoreComm.CpuTraceAvailable;
 
-			cheatsToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+			cheatsToolStripMenuItem.Enabled = !(GlobalWinF.Emulator is NullEmulator);
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -671,13 +673,13 @@ namespace BizHawk.MultiClient
 
 		private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(Global.Emulator is TI83)) return;
+			if (!(GlobalWinF.Emulator is TI83)) return;
 			Global.Config.TI83autoloadKeyPad ^= true;
 		}
 
 		private void keypadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(Global.Emulator is TI83))
+			if (!(GlobalWinF.Emulator is TI83))
 				return;
 			LoadTI83KeyPad();
 		}
@@ -696,7 +698,7 @@ namespace BizHawk.MultiClient
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
@@ -733,9 +735,9 @@ namespace BizHawk.MultiClient
 					Filter = "PNG File (*.png)|*.png"
 				};
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 			TakeScreenshot(sfd.FileName);
@@ -761,11 +763,11 @@ namespace BizHawk.MultiClient
 			Global.Config.AcceptBackgroundInput ^= true;
 			if (Global.Config.AcceptBackgroundInput)
 			{
-				Global.OSD.AddMessage("Background Input enabled");
+				GlobalWinF.OSD.AddMessage("Background Input enabled");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Background Input disabled");
+				GlobalWinF.OSD.AddMessage("Background Input disabled");
 			}
 		}
 
@@ -827,11 +829,11 @@ namespace BizHawk.MultiClient
 			Global.Config.ShowContextMenu ^= true;
 			if (Global.Config.ShowContextMenu)
 			{
-				Global.OSD.AddMessage("Context menu enabled");
+				GlobalWinF.OSD.AddMessage("Context menu enabled");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Context menu disabled");
+				GlobalWinF.OSD.AddMessage("Context menu disabled");
 			}
 		}
 
@@ -856,10 +858,10 @@ namespace BizHawk.MultiClient
 			s.DisableFrame();
 			int index = -1;
 			Subtitle sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
+			for (int x = 0; x < GlobalWinF.MovieSession.Movie.Subtitles.Count; x++)
 			{
-				sub = Global.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
-				if (Global.Emulator.Frame == sub.Frame)
+				sub = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
+				if (GlobalWinF.Emulator.Frame == sub.Frame)
 				{
 					index = x;
 					break;
@@ -867,15 +869,15 @@ namespace BizHawk.MultiClient
 			}
 			if (index < 0)
 			{
-				sub = new Subtitle { Frame = Global.Emulator.Frame };
+				sub = new Subtitle { Frame = GlobalWinF.Emulator.Frame };
 			}
 			s.sub = sub;
 
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				if (index >= 0)
-					Global.MovieSession.Movie.Subtitles.Remove(index);
-				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
+					GlobalWinF.MovieSession.Movie.Subtitles.Remove(index);
+				GlobalWinF.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
 		}
 
@@ -941,7 +943,7 @@ namespace BizHawk.MultiClient
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
-				if (Global.MovieSession.Movie.IsActive)
+				if (GlobalWinF.MovieSession.Movie.IsActive)
 				{
 					cmiRecordMovie.Visible = false;
 					cmiPlayMovie.Visible = false;
@@ -1028,7 +1030,7 @@ namespace BizHawk.MultiClient
 				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = false;
 			}
 
-			ContextMenuStopMovieNoSaving.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			ContextMenuStopMovieNoSaving.Visible = GlobalWinF.MovieSession.Movie.IsActive && GlobalWinF.MovieSession.Movie.HasChanges;
 		}
 
 
@@ -1042,7 +1044,7 @@ namespace BizHawk.MultiClient
 
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.WriteBackup();
+			GlobalWinF.MovieSession.Movie.WriteBackup();
 		}
 
 		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1072,7 +1074,7 @@ namespace BizHawk.MultiClient
 
 		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
 		}
 
@@ -1096,20 +1098,20 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				EditCommentsForm c = new EditCommentsForm { ReadOnly = ReadOnly };
-				c.GetMovie(Global.MovieSession.Movie);
+				c.GetMovie(GlobalWinF.MovieSession.Movie);
 				c.ShowDialog();
 			}
 		}
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (GlobalWinF.MovieSession.Movie.IsActive)
 			{
 				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = ReadOnly };
-				s.GetMovie(Global.MovieSession.Movie);
+				s.GetMovie(GlobalWinF.MovieSession.Movie);
 				s.ShowDialog();
 			}
 		}
@@ -1158,12 +1160,12 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
-			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			fullMovieLoadstatesToolStripMenuItem.Enabled = !GlobalWinF.MovieSession.MultiTrack.IsActive;
+			stopMovieWithoutSavingToolStripMenuItem.Enabled = GlobalWinF.MovieSession.Movie.IsActive && GlobalWinF.MovieSession.Movie.HasChanges;
 			stopMovieToolStripMenuItem.Enabled
 				= playFromBeginningToolStripMenuItem.Enabled
 				= saveMovieToolStripMenuItem.Enabled
-				= Global.MovieSession.Movie.IsActive;
+				= GlobalWinF.MovieSession.Movie.IsActive;
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
 			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
@@ -1181,14 +1183,14 @@ namespace BizHawk.MultiClient
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveConfig();
-			Global.OSD.AddMessage("Saved settings");
+			GlobalWinF.OSD.AddMessage("Saved settings");
 		}
 
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load(PathManager.DefaultIniPath, Global.Config);
 			Global.Config.ResolveDefaults();
-			Global.OSD.AddMessage("Config file loaded");
+			GlobalWinF.OSD.AddMessage("Config file loaded");
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1273,7 +1275,7 @@ namespace BizHawk.MultiClient
 
 		private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
 		{
-			Global.DisplayManager.NeedsToPaint = true;
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			if (!wasPaused)
 			{
 				UnpauseEmulator();
@@ -1431,12 +1433,12 @@ namespace BizHawk.MultiClient
 		{
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 
-			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
-					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
+			resetToolStripMenuItem.Enabled = GlobalWinF.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
+					(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
 
 
-			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
-				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
+			hardResetToolStripMenuItem.Enabled = GlobalWinF.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
+				(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause)
@@ -1500,11 +1502,11 @@ namespace BizHawk.MultiClient
 			Global.Config.BackupSavestates ^= true;
 			if (Global.Config.BackupSavestates)
 			{
-				Global.OSD.AddMessage("Backup savestates enabled");
+				GlobalWinF.OSD.AddMessage("Backup savestates enabled");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Backup savestates disabled");
+				GlobalWinF.OSD.AddMessage("Backup savestates disabled");
 			}
 		}
 
@@ -1513,11 +1515,11 @@ namespace BizHawk.MultiClient
 			Global.Config.AutoSavestates ^= true;
 			if (Global.Config.AutoSavestates)
 			{
-				Global.OSD.AddMessage("AutoSavestates enabled");
+				GlobalWinF.OSD.AddMessage("AutoSavestates enabled");
 			}
 			else
 			{
-				Global.OSD.AddMessage("AutoSavestates disabled");
+				GlobalWinF.OSD.AddMessage("AutoSavestates disabled");
 			}
 		}
 
@@ -1526,11 +1528,11 @@ namespace BizHawk.MultiClient
 			Global.Config.SaveScreenshotWithStates ^= true;
 			if (Global.Config.SaveScreenshotWithStates)
 			{
-				Global.OSD.AddMessage("Screenshots will be saved in savestates");
+				GlobalWinF.OSD.AddMessage("Screenshots will be saved in savestates");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Screenshots will not be saved in savestates");
+				GlobalWinF.OSD.AddMessage("Screenshots will not be saved in savestates");
 			}
 		}
 
@@ -1538,7 +1540,7 @@ namespace BizHawk.MultiClient
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State";
 			SwapBackupSavestate(path);
-			Global.OSD.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
+			GlobalWinF.OSD.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
 		}
 
 		private void FreezeStatus_Click(object sender, EventArgs e)
@@ -1551,7 +1553,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.ActiveCount > 0)
+			if (GlobalWinF.CheatList.ActiveCount > 0)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = Properties.Resources.Freeze;
@@ -1597,40 +1599,40 @@ namespace BizHawk.MultiClient
 
 		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Atari2600)
+			if (GlobalWinF.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_BW ^= true;
-				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
+				((Atari2600)GlobalWinF.Emulator).SetBw(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_BW)
-					Global.OSD.AddMessage("Setting to Black and White Switch to On");
+					GlobalWinF.OSD.AddMessage("Setting to Black and White Switch to On");
 				else
-					Global.OSD.AddMessage("Setting to Black and White Switch to Off");
+					GlobalWinF.OSD.AddMessage("Setting to Black and White Switch to Off");
 			}
 		}
 
 		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Atari2600)
+			if (GlobalWinF.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_LeftDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
+				((Atari2600)GlobalWinF.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_LeftDifficulty)
-					Global.OSD.AddMessage("Setting Left Difficulty to B");
+					GlobalWinF.OSD.AddMessage("Setting Left Difficulty to B");
 				else
-					Global.OSD.AddMessage("Setting Left Difficulty to A");
+					GlobalWinF.OSD.AddMessage("Setting Left Difficulty to A");
 			}
 		}
 
 		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Atari2600)
+			if (GlobalWinF.Emulator is Atari2600)
 			{
 				Global.Config.Atari2600_RightDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
+				((Atari2600)GlobalWinF.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
 				if (Global.Config.Atari2600_RightDifficulty)
-					Global.OSD.AddMessage("Setting Right Difficulty to B");
+					GlobalWinF.OSD.AddMessage("Setting Right Difficulty to B");
 				else
-					Global.OSD.AddMessage("Setting Right Difficulty to A");
+					GlobalWinF.OSD.AddMessage("Setting Right Difficulty to A");
 			}
 		}
 
@@ -1684,7 +1686,7 @@ namespace BizHawk.MultiClient
 
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1698,18 +1700,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG1_1)
 				{
-					Global.OSD.AddMessage("BG 1 Layer On");
+					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("BG 1 Layer Off");
+					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1722,18 +1724,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG2_1)
 				{
-					Global.OSD.AddMessage("BG 2 Layer On");
+					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("BG 2 Layer Off");
+					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1746,18 +1748,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG3_1)
 				{
-					Global.OSD.AddMessage("BG 3 Layer On");
+					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("BG 3 Layer Off");
+					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1770,18 +1772,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG4_1)
 				{
-					Global.OSD.AddMessage("BG 4 Layer On");
+					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("BG 4 Layer Off");
+					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleOBJ1(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1794,18 +1796,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ1)
 				{
-					Global.OSD.AddMessage("OBJ 1 Layer On");
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("OBJ 1 Layer Off");
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleOBJ2(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1818,18 +1820,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ2)
 				{
-					Global.OSD.AddMessage("OBJ 2 Layer On");
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("OBJ 2 Layer Off");
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1842,18 +1844,18 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ3)
 				{
-					Global.OSD.AddMessage("OBJ 3 Layer On");
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("OBJ 3 Layer Off");
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
 				}
 			}
 		}
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				if (setto.HasValue)
 				{
@@ -1866,11 +1868,11 @@ namespace BizHawk.MultiClient
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ4)
 				{
-					Global.OSD.AddMessage("OBJ 4 Layer On");
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
 				}
 				else
 				{
-					Global.OSD.AddMessage("OBJ 4 Layer Off");
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
 				}
 			}
 		}
@@ -2120,7 +2122,7 @@ namespace BizHawk.MultiClient
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				InitialDirectory = PathManager.GetRomsPath(GlobalWinF.Emulator.SystemId),
 				Multiselect = true,
 				Filter = FormatFilter(
 					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
@@ -2140,9 +2142,9 @@ namespace BizHawk.MultiClient
 				RestoreDirectory = false
 			};
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 
@@ -2187,7 +2189,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (ext.ToUpper() == ".CHT")
 			{
-				Global.CheatList.Load(filePaths[0], false);
+				GlobalWinF.CheatList.Load(filePaths[0], false);
 				LoadCheatsWindow();
 			}
 			else if (ext.ToUpper() == ".WCH")
@@ -2225,7 +2227,7 @@ namespace BizHawk.MultiClient
 					m.WriteMovie();
 					StartNewMovie(m, false);
 				}
-				Global.OSD.AddMessage(warningMsg);
+				GlobalWinF.OSD.AddMessage(warningMsg);
 			}
 			else
 				LoadRom(filePaths[0]);
@@ -2258,12 +2260,12 @@ namespace BizHawk.MultiClient
 
 		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			using (var dlg = new GBtools.DualGBXMLCreator())
 			{
 				dlg.ShowDialog(this);
 			}
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 		}
 
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2271,11 +2273,11 @@ namespace BizHawk.MultiClient
 			var result = new N64VideoPluginconfig().ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				Global.OSD.AddMessage("Plugin settings saved");
+				GlobalWinF.OSD.AddMessage("Plugin settings saved");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Plugin settings aborted");
+				GlobalWinF.OSD.AddMessage("Plugin settings aborted");
 			}
 		}
 
@@ -2309,7 +2311,7 @@ namespace BizHawk.MultiClient
 
 		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var dlg = new SATTools.SaturnPrefs())
+			using (var dlg = new SaturnPrefs())
 			{
 				var result = dlg.ShowDialog(this);
 				if (result == DialogResult.OK)
@@ -2361,9 +2363,9 @@ namespace BizHawk.MultiClient
 
 		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy)
+			if (GlobalWinF.Emulator is Gameboy)
 			{
-				var g = Global.Emulator as Gameboy;
+				var g = GlobalWinF.Emulator as Gameboy;
 				if (g.IsCGBMode())
 				{
 					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
@@ -2390,7 +2392,7 @@ namespace BizHawk.MultiClient
 
 		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if ((Global.Emulator as LibsnesCore).IsSGB)
+			if ((GlobalWinF.Emulator as LibsnesCore).IsSGB)
 			{
 				loadGBInSGBToolStripMenuItem.Visible = true;
 				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -2412,7 +2414,7 @@ namespace BizHawk.MultiClient
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			Global.RenderPanel.Resized = true;
+			GlobalWinF.RenderPanel.Resized = true;
 		}
 
 		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2420,11 +2422,11 @@ namespace BizHawk.MultiClient
 			Global.Config.BackupSaveram ^= true;
 			if (Global.Config.BackupSaveram)
 			{
-				Global.OSD.AddMessage("Backup saveram enabled");
+				GlobalWinF.OSD.AddMessage("Backup saveram enabled");
 			}
 			else
 			{
-				Global.OSD.AddMessage("Backup saveram disabled");
+				GlobalWinF.OSD.AddMessage("Backup saveram disabled");
 			}
 
 		}
@@ -2447,13 +2449,13 @@ namespace BizHawk.MultiClient
 		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGShowClippedRegions ^= true;
-			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			GlobalWinF.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 
 		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			GlobalWinF.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 
 		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2615,14 +2617,14 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+					(GlobalWinF.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
 				}
 				catch (IOException ex)
 				{
 					string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
 					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+						(GlobalWinF.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
 				}
 			}
 		}

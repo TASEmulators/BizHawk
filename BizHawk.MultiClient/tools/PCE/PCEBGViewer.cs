@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 
 namespace BizHawk.MultiClient
@@ -20,7 +22,7 @@ namespace BizHawk.MultiClient
 
 		public unsafe void Generate()
 		{
-			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
+			if (GlobalWinF.Emulator.Frame % RefreshRate.Value != 0) return;
 
 			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
 
@@ -65,18 +67,18 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is PCEngine))
+			if (!(GlobalWinF.Emulator is PCEngine))
 			{
 				Close();
 				return;
 			}
-			pce = Global.Emulator as PCEngine;
+			pce = GlobalWinF.Emulator as PCEngine;
 		}
 
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is PCEngine)) return;
+			if (!(GlobalWinF.Emulator is PCEngine)) return;
 			Generate();
 		}
 
@@ -95,7 +97,7 @@ namespace BizHawk.MultiClient
 
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
-			pce = Global.Emulator as PCEngine;
+			pce = GlobalWinF.Emulator as PCEngine;
 			LoadConfigSettings();
 			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
 			{

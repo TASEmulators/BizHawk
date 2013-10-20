@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Core
 {
 	public class RecentFiles : IEnumerable
 	{

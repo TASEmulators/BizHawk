@@ -1,4 +1,4 @@
-﻿namespace BizHawk
+﻿namespace BizHawk.Client.Core
 {
 	public class TurboKey
 	{

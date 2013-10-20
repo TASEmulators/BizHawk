@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class CheatEdit : UserControl
@@ -31,9 +33,9 @@ namespace BizHawk.MultiClient
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator != null)
+			if (GlobalWinF.Emulator != null)
 			{
-				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MainMemory);
+				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, GlobalWinF.Emulator.MainMemory);
 			}
 			SetFormToDefault();
 		}
@@ -79,9 +81,9 @@ namespace BizHawk.MultiClient
 
 			NameBox.Text = String.Empty;
 
-			if (Global.Emulator != null)
+			if (GlobalWinF.Emulator != null)
 			{
-				AddressBox.SetHexProperties(Global.Emulator.MainMemory.Size);
+				AddressBox.SetHexProperties(GlobalWinF.Emulator.MainMemory.Size);
 			}
 
 			ValueBox.ByteSize = 

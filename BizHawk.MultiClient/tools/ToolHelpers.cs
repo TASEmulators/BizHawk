@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	class ToolHelpers
@@ -46,24 +48,24 @@ namespace BizHawk.MultiClient
 
 		public static void HandleLoadError(RecentFiles recent, string path)
 		{
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 			if (result == DialogResult.Yes)
 			{
 				recent.Remove(path);
 			}
 
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 		}
 
 		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
 
-			if (Global.Emulator.MemoryDomains.Any())
+			if (GlobalWinF.Emulator.MemoryDomains.Any())
 			{
 				int counter = 0;
-				foreach (var domain in Global.Emulator.MemoryDomains)
+				foreach (var domain in GlobalWinF.Emulator.MemoryDomains)
 				{
 					string temp = domain.ToString();
 					var item = new ToolStripMenuItem { Text = temp };
@@ -92,9 +94,9 @@ namespace BizHawk.MultiClient
 		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
 		{
 			dropdown.Items.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
+			if (GlobalWinF.Emulator.MemoryDomains.Count > 0)
 			{
-				foreach (var domain in Global.Emulator.MemoryDomains)
+				foreach (var domain in GlobalWinF.Emulator.MemoryDomains)
 				{
 					var result = dropdown.Items.Add(domain.ToString());
 					if (domain.Name == startDomain.Name)
@@ -107,16 +109,16 @@ namespace BizHawk.MultiClient
 
 		public static void UpdateCheatRelatedTools()
 		{
-			Global.MainForm.RamWatch1.UpdateValues();
-			Global.MainForm.HexEditor1.UpdateValues();
-			Global.MainForm.Cheats_UpdateValues();
-			Global.MainForm.RamSearch1.UpdateValues();
-			Global.MainForm.UpdateCheatStatus();
+			GlobalWinF.MainForm.RamWatch1.UpdateValues();
+			GlobalWinF.MainForm.HexEditor1.UpdateValues();
+			GlobalWinF.MainForm.Cheats_UpdateValues();
+			GlobalWinF.MainForm.RamSearch1.UpdateValues();
+			GlobalWinF.MainForm.UpdateCheatStatus();
 		}
 
 		public static void UnfreezeAll()
 		{
-			Global.CheatList.DisableAll();
+			GlobalWinF.CheatList.DisableAll();
 			UpdateCheatRelatedTools();
 		}
 
@@ -126,7 +128,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					Global.CheatList.Add(
+					GlobalWinF.CheatList.Add(
 						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
 					);
 				}
@@ -141,7 +143,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!watch.IsSeparator)
 				{
-					Global.CheatList.Remove(watch);
+					GlobalWinF.CheatList.Remove(watch);
 				}
 			}
 
@@ -150,15 +152,15 @@ namespace BizHawk.MultiClient
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
 		{
-			Global.MainForm.LoadHexEditor();
-			Global.MainForm.HexEditor1.SetDomain(domain);
-			Global.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
+			GlobalWinF.MainForm.LoadHexEditor();
+			GlobalWinF.MainForm.HexEditor1.SetDomain(domain);
+			GlobalWinF.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
 		}
 
 		public static MemoryDomain DomainByName(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
+			foreach (MemoryDomain domain in GlobalWinF.Emulator.MemoryDomains)
 			{
 				if (domain.Name == name)
 				{
@@ -166,7 +168,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			return Global.Emulator.MainMemory;
+			return GlobalWinF.Emulator.MainMemory;
 		}
 
 		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)

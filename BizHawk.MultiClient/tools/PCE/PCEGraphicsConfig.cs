@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class PCEGraphicsConfig : Form

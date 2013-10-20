@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 //notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 //it will be implemented by the multiclient, and use firmware keys to fetch the firmware content.
 //however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
@@ -175,7 +177,7 @@ namespace BizHawk.MultiClient
 			DoScan();
 		}
 
-		FirmwareManager Manager { get { return Global.MainForm.FirmwareManager; } }
+		FirmwareManager Manager { get { return GlobalWinF.MainForm.FirmwareManager; } }
 
 		private void DoScan()
 		{

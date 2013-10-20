@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.GB;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient.GBtools
 {
 	public partial class CGBColorChooserForm : Form

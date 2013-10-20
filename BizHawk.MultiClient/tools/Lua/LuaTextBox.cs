@@ -1,5 +1,7 @@
 ﻿using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient.tools
 {
 	enum BoxType { ALL, SIGNED, UNSIGNED, HEX };

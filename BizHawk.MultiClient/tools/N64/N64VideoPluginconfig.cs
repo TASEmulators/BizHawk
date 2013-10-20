@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class N64VideoPluginconfig : Form
@@ -38,7 +40,7 @@ namespace BizHawk.MultiClient
 			Global.Config.N64VideoSizeX = Int32.Parse(strArr[0].Trim());
 			Global.Config.N64VideoSizeY = Int32.Parse(strArr[1].Trim());
 			Global.Config.N64VidPlugin = PluginComboBox.Text;
-			Global.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
+			GlobalWinF.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
 			
 			//Rice
 			Global.Config.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;

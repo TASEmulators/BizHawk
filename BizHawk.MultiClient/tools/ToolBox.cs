@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
@@ -17,8 +19,8 @@ namespace BizHawk.MultiClient
 
 		private void ToolBox_Load(object sender, EventArgs e)
 		{
-			int x = Global.MainForm.Location.X + Global.MainForm.Size.Width;
-			int y = Global.MainForm.Location.Y;
+			int x = GlobalWinF.MainForm.Location.X + GlobalWinF.MainForm.Size.Width;
+			int y = GlobalWinF.MainForm.Location.Y;
 			Location = new Point(x, y);
 			HideShowIcons();
 		}
@@ -30,7 +32,7 @@ namespace BizHawk.MultiClient
 
 		private void HideShowIcons()
 		{
-			if (Global.Emulator is NES)
+			if (GlobalWinF.Emulator is NES)
 			{
 				NESPPU.Visible = true;
 				NESDebugger.Visible = true;
@@ -45,7 +47,7 @@ namespace BizHawk.MultiClient
 				NESNameTable.Visible = false;
 			}
 
-			if (Global.Emulator is TI83)
+			if (GlobalWinF.Emulator is TI83)
 			{
 				KeypadTool.Visible = true;
 			}
@@ -54,7 +56,7 @@ namespace BizHawk.MultiClient
 				KeypadTool.Visible = false;
 			}
 
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
 				SNESGraphicsDebuggerButton.Visible = true;
 				SNESGameGenie.Visible = true;
@@ -86,88 +88,88 @@ namespace BizHawk.MultiClient
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadCheatsWindow();
+			GlobalWinF.MainForm.LoadCheatsWindow();
 		}
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadRamWatch(true);
+			GlobalWinF.MainForm.LoadRamWatch(true);
 		}
 
 		private void toolStripButton3_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadRamSearch();
+			GlobalWinF.MainForm.LoadRamSearch();
 		}
 
 		private void HexEditor_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadHexEditor();
+			GlobalWinF.MainForm.LoadHexEditor();
 		}
 
 		private void toolStripButton5_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.OpenLuaConsole();
+			GlobalWinF.MainForm.OpenLuaConsole();
 		}
 
 		private void NESPPU_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadNESPPU();
+			GlobalWinF.MainForm.LoadNESPPU();
 		}
 
 		private void NESDebugger_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadNESDebugger();
+			GlobalWinF.MainForm.LoadNESDebugger();
 		}
 
 		private void NESGameGenie_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadGameGenieEC();
+			GlobalWinF.MainForm.LoadGameGenieEC();
 		}
 
 		private void NESNameTable_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadNESNameTable();
+			GlobalWinF.MainForm.LoadNESNameTable();
 		}
 
 		private void KeyPadTool_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is TI83)
+			if (GlobalWinF.Emulator is TI83)
 			{
-				Global.MainForm.LoadTI83KeyPad();
+				GlobalWinF.MainForm.LoadTI83KeyPad();
 			}
 		}
 
 		private void TAStudioButton_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadTAStudio();
+			GlobalWinF.MainForm.LoadTAStudio();
 		}
 
 		private void SNESGraphicsDebuggerButton_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is LibsnesCore)
+			if (GlobalWinF.Emulator is LibsnesCore)
 			{
-				Global.MainForm.LoadSNESGraphicsDebugger();
+				GlobalWinF.MainForm.LoadSNESGraphicsDebugger();
 			}
 		}
 
 		private void TAStudioButton_Click_1(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadVirtualPads();
+			GlobalWinF.MainForm.LoadVirtualPads();
 		}
 
 		private void SNESGameGenie_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadGameGenieEC();
+			GlobalWinF.MainForm.LoadGameGenieEC();
 		}
 
 		private void GGGameGenie_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadGameGenieEC();
+			GlobalWinF.MainForm.LoadGameGenieEC();
 		}
 
 		private void GBGameGenie_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadGameGenieEC();
+			GlobalWinF.MainForm.LoadGameGenieEC();
 		}
 
 

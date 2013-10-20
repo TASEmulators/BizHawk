@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+
+using BizHawk.Client.Core;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Core;
 
@@ -152,7 +154,7 @@ namespace BizHawk.MultiClient
 
 		void SyncCore()
 		{
-			LibsnesCore core = Global.Emulator as LibsnesCore;
+			LibsnesCore core = GlobalWinF.Emulator as LibsnesCore;
 			if (currentSnesCore != core && currentSnesCore != null)
 			{
 				currentSnesCore.ScanlineHookManager.Unregister(this);
@@ -1384,7 +1386,7 @@ namespace BizHawk.MultiClient
 				suppression = false;
 			}
 
-			Global.MainForm.SyncCoreCommInputSignals();
+			GlobalWinF.MainForm.SyncCoreCommInputSignals();
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)

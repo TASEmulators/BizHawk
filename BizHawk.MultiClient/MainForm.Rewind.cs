@@ -4,6 +4,8 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public partial class MainForm
@@ -388,9 +390,9 @@ namespace BizHawk.MultiClient
 
 		
 			//log a frame
-			if (LastState != null && Global.Emulator.Frame % RewindFrequency == 0)
+			if (LastState != null && GlobalWinF.Emulator.Frame % RewindFrequency == 0)
 			{
-				byte[] CurrentState = Global.Emulator.SaveStateBinary();
+				byte[] CurrentState = GlobalWinF.Emulator.SaveStateBinary();
 				RewindThread.Capture(CurrentState);
 			}
 		}
@@ -399,12 +401,12 @@ namespace BizHawk.MultiClient
 		{
 			if (RewindActive != enabled)
 			{
-				Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+				GlobalWinF.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
 			}
 
 			if (RewindFrequency != frequency && enabled)
 			{
-				Global.OSD.AddMessage("Rewind frequency set to " + frequency);
+				GlobalWinF.OSD.AddMessage("Rewind frequency set to " + frequency);
 			}
 
 			RewindActive = enabled;
@@ -417,7 +419,7 @@ namespace BizHawk.MultiClient
 		public void DoRewindSettings()
 		{
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-			LastState = Global.Emulator.SaveStateBinary();
+			LastState = GlobalWinF.Emulator.SaveStateBinary();
 
 			int state_size = 0;
 			if (LastState.Length >= Global.Config.Rewind_LargeStateSize)
@@ -570,7 +572,7 @@ namespace BizHawk.MultiClient
 			bool fullstate = reader.ReadBoolean();
 			if (fullstate)
 			{
-				Global.Emulator.LoadStateBinary(reader);
+				GlobalWinF.Emulator.LoadStateBinary(reader);
 			}
 			else
 			{
@@ -588,7 +590,7 @@ namespace BizHawk.MultiClient
 				}
 				reader.Close();
 				output.Position = 0;
-				Global.Emulator.LoadStateBinary(new BinaryReader(output));
+				GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(output));
 			}
 		}
 
@@ -601,7 +603,7 @@ namespace BizHawk.MultiClient
 		{
 			for (int i = 0; i < frames; i++)
 			{
-				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
+				if (RewindBuf.Count == 0 || (GlobalWinF.MovieSession.Movie.Loaded && 0 == GlobalWinF.MovieSession.Movie.Frames))
 					return;
 
 				if (LastState.Length < 0x10000)

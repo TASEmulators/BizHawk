@@ -3,6 +3,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
 
+using BizHawk.Client.Core;
+
 namespace BizHawk.MultiClient
 {
 	public class Movie
@@ -239,7 +241,7 @@ namespace BizHawk.MultiClient
 		/// <param name="truncate"></param>
 		public void StartRecording(bool truncate = true)
 		{
-			Global.MainForm.ClearSaveRAM();
+			GlobalWinF.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
 			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 			{
@@ -254,7 +256,7 @@ namespace BizHawk.MultiClient
 
 		public void StartPlayback()
 		{
-			Global.MainForm.ClearSaveRAM();
+			GlobalWinF.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
 		}
 
@@ -372,7 +374,7 @@ namespace BizHawk.MultiClient
 			var directory_info = new FileInfo(BackupName).Directory;
 			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
 
-			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
+			GlobalWinF.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
 			{
 				WriteText(BackupName);
@@ -563,7 +565,7 @@ namespace BizHawk.MultiClient
 		{
 			if (StateCapturing)
 			{
-				byte[] state = Global.Emulator.SaveStateBinary();
+				byte[] state = GlobalWinF.Emulator.SaveStateBinary();
 				Log.AddState(state);
 				GC.Collect();
 			}
@@ -575,43 +577,43 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			if (frame <= Global.Emulator.Frame)
+			if (frame <= GlobalWinF.Emulator.Frame)
 			{
 				if (frame <= Log.StateFirstIndex)
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
-					if (Global.MainForm.EmulatorPaused && frame > 0)
+					GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+					if (GlobalWinF.MainForm.EmulatorPaused && frame > 0)
 					{
-						Global.MainForm.UnpauseEmulator();
+						GlobalWinF.MainForm.UnpauseEmulator();
 					}
 					if (MOVIEMODE.RECORD == Mode)
 					{
 						Mode = MOVIEMODE.PLAY;
-						Global.MainForm.RestoreReadWriteOnStop = true;
+						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
 					}
 				}
 				else
 				{
 					if (frame == 0)
 					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+						GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
 					}
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-						Global.MainForm.UpdateFrame = true;
+						GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+						GlobalWinF.MainForm.UpdateFrame = true;
 					}
 				}
 			}
 			else if (frame <= Log.StateLastIndex)
 			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-				Global.MainForm.UpdateFrame = true;
+				GlobalWinF.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				GlobalWinF.MainForm.UpdateFrame = true;
 			}
 			else
 			{
-				Global.MainForm.UnpauseEmulator();
+				GlobalWinF.MainForm.UnpauseEmulator();
 			}
 		}
 
@@ -628,10 +630,10 @@ namespace BizHawk.MultiClient
 			//this allows users to restore a movie with any savestate from that "timeline"
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (Global.Emulator.Frame < Log.Length)
+				if (GlobalWinF.Emulator.Frame < Log.Length)
 				{
-					Log.TruncateMovie(Global.Emulator.Frame);
-					Log .TruncateStates(Global.Emulator.Frame);
+					Log.TruncateMovie(GlobalWinF.Emulator.Frame);
+					Log .TruncateStates(GlobalWinF.Emulator.Frame);
 				}
 			}
 			changes = true;
@@ -664,7 +666,7 @@ namespace BizHawk.MultiClient
 		{
 			int? stateFrame = null;
 			//We are in record mode so replace the movie log with the one from the savestate
-			if (!Global.MovieSession.MultiTrack.IsActive)
+			if (!GlobalWinF.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 				{
@@ -686,7 +688,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -695,7 +697,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					if (line[0] == '|')
 					{
@@ -720,7 +722,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -843,7 +845,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 					}
-					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
+					catch { GlobalWinF.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line.Contains("Frame "))
 				{
@@ -852,7 +854,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1]);
 					}
-					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
+					catch { GlobalWinF.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
