@@ -65,6 +65,9 @@ namespace BizHawk
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM lParam);
 
+		/// <summary>
+		/// Dumps the contents of the ListView into a tab separated list of lines
+		/// </summary>
 		public static string CopyItemsAsText(this ListView listViewControl)
 		{
 			ListView.SelectedIndexCollection indexes = listViewControl.SelectedIndices;
