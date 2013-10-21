@@ -275,7 +275,6 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="CoreFileProvider.cs" />
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -313,7 +312,6 @@
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
-    <Compile Include="FirmwareManager.cs" />
     <Compile Include="GlobalWinF.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
