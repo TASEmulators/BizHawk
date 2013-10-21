@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="ConfigService.cs" />
+    <Compile Include="config\Binding.cs" />
+    <Compile Include="config\Config.cs" />
+    <Compile Include="config\ConfigService.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
