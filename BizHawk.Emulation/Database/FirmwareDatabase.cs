@@ -33,7 +33,6 @@ namespace BizHawk
 			FirmwareAndOption("300C20DF6731A33952DED8C436F7F186D25D3492", "GBA", "Bios", "gbabios.rom", "Bios");
 			//FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
 			//FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
-			FirmwareAndOption("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "TI83", "Rom", "ti83_1.rom", "TI-83 Rom");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", "INTV", "EROM", "erom.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", "INTV", "GROM", "grom.bin", "Graphics Rom");
 			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", "C64", "Kernal", "c64-kernal.bin", "Kernal Rom");
@@ -61,6 +60,18 @@ namespace BizHawk
 			Option("SAT", "E", ss_100a_ue);
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
+
+			var ti83_1unk = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "ti83_1.rom", "TI-83 Rom v1.??");
+			var ti83_102 = File("oops:4EDF419CAA9FB0542B4FED8BCD8B54C2", "ti83_102.rom", "TI-83 Rom v1.02");
+			var ti83_103 = File("oops:28308683219BC1242B3A423F05061E69 ", "ti83_103.rom", "TI-83 Rom v1.03");
+			var ti83_104 = File("oops:02D48EAAD98A74619E2F68DE23AC212F ", "ti83_104.rom", "TI-83 Rom v1.04");
+			var ti83_107 = File("oops:D4448D09BBFDE687C04F9E3310E023AB ", "ti83_107.rom", "TI-83 Rom v1.07");
+			Firmware("TI83", "Rom", "TI-83 Rom");
+			Option("TI83", "Rom", ti83_1unk);
+			Option("TI83", "Rom", ti83_102);
+			Option("TI83", "Rom", ti83_103);
+			Option("TI83", "Rom", ti83_104);
+			Option("TI83", "Rom", ti83_107);
 		}
 
 		//adds a defined firmware ID to the database
