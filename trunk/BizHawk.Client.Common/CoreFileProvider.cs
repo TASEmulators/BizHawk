@@ -2,9 +2,9 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
-	class CoreFileProvider : ICoreFileProvider
+	public class CoreFileProvider : ICoreFileProvider
 	{
 		public string SubfileDirectory;
 		public FirmwareManager FirmwareManager;
