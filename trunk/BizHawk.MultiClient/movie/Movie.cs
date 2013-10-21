@@ -21,15 +21,15 @@ namespace BizHawk.MultiClient
 
 		public Movie()
 		{
+			string version = GlobalWinF.MainForm != null ? GlobalWinF.MainForm.GetEmuVersion() : MainForm.EMUVERSION;
+			Header = new MovieHeader(version);
+
 			Filename = String.Empty;
 			preload_framecount = 0;
 			StartsFromSavestate = false;
 			IsCountingRerecords = true;
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
-
-			string version = GlobalWinF.MainForm != null ? GlobalWinF.MainForm.GetEmuVersion() : MainForm.EMUVERSION;
-			Header = new MovieHeader(version);
 		}
 
 		#endregion
