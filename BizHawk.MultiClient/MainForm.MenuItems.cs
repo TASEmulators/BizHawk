@@ -860,7 +860,7 @@ namespace BizHawk.MultiClient
 			Subtitle sub = new Subtitle();
 			for (int x = 0; x < GlobalWinF.MovieSession.Movie.Subtitles.Count; x++)
 			{
-				sub = GlobalWinF.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
+				sub = GlobalWinF.MovieSession.Movie.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -876,7 +876,7 @@ namespace BizHawk.MultiClient
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				if (index >= 0)
-					GlobalWinF.MovieSession.Movie.Subtitles.Remove(index);
+					GlobalWinF.MovieSession.Movie.Subtitles.RemoveAt(index);
 				GlobalWinF.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
 		}

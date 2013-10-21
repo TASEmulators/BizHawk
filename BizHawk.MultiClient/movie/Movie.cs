@@ -12,33 +12,30 @@ namespace BizHawk.MultiClient
 		#region Constructors
 
 		public Movie(string filename)
+			: this()
 		{
-			Mode = MOVIEMODE.INACTIVE;
 			Rerecords = 0;
 			Filename = filename;
-			IsText = true;
-			preload_framecount = 0;
-			IsCountingRerecords = true;
-			StartsFromSavestate = false;
-			if (filename.Length > 0)
-				Loaded = true;
+			Loaded = filename.Length > 0;
 		}
 
 		public Movie()
 		{
-			Filename = "";
-			Mode = MOVIEMODE.INACTIVE;
-			IsText = true;
+			Filename = String.Empty;
 			preload_framecount = 0;
 			StartsFromSavestate = false;
-			Loaded = false;
 			IsCountingRerecords = true;
+			Mode = MOVIEMODE.INACTIVE;
+			IsText = true;
+
+			string version = GlobalWinF.MainForm != null ? GlobalWinF.MainForm.GetEmuVersion() : MainForm.EMUVERSION;
+			Header = new MovieHeader(version);
 		}
 
 		#endregion
 
 		#region Properties
-		public MovieHeader Header = new MovieHeader();
+		public MovieHeader Header;
 		public SubtitleList Subtitles = new SubtitleList();
 		
 		public bool MakeBackup = true; //make backup before altering movie
