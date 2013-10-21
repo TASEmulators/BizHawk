@@ -1,9 +1,8 @@
 ﻿using BizHawk.DiscSystem;
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
-#if WINDOWS
 
-#endif
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

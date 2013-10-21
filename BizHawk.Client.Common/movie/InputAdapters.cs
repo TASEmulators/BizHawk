@@ -2,9 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// will hold buttons for 1 frame and then release them. (Calling Click() from your button click is what you want to do)
