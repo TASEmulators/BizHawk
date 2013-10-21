@@ -61,17 +61,24 @@ namespace BizHawk
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
 
-			var ti83_1unk = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "ti83_1.rom", "TI-83 Rom v1.??");
-			var ti83_102 = File("oops:4EDF419CAA9FB0542B4FED8BCD8B54C2", "ti83_102.rom", "TI-83 Rom v1.02");
-			var ti83_103 = File("oops:28308683219BC1242B3A423F05061E69 ", "ti83_103.rom", "TI-83 Rom v1.03");
-			var ti83_104 = File("oops:02D48EAAD98A74619E2F68DE23AC212F ", "ti83_104.rom", "TI-83 Rom v1.04");
-			var ti83_107 = File("oops:D4448D09BBFDE687C04F9E3310E023AB ", "ti83_107.rom", "TI-83 Rom v1.07");
+			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", "ti83_102.rom", "TI-83 Rom v1.02");
+			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", "ti83_103.rom", "TI-83 Rom v1.03");
+			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", "ti83_104.rom", "TI-83 Rom v1.04");
+			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", "ti83_106.rom", "TI-83 Rom v1.06");
+			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "ti83_107.rom", "TI-83 Rom v1.07"); //formerly the 1.?? recommended one
+			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", "ti83_108.rom", "TI-83 Rom v1.08");
+			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", "ti83p_103b.rom", "TI-83 Plus Rom v1.03");
+			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", "ti83p_112.rom", "TI-83 Plus Rom v1.12");
+
 			Firmware("TI83", "Rom", "TI-83 Rom");
-			Option("TI83", "Rom", ti83_1unk);
 			Option("TI83", "Rom", ti83_102);
 			Option("TI83", "Rom", ti83_103);
 			Option("TI83", "Rom", ti83_104);
+			Option("TI83", "Rom", ti83_106);
 			Option("TI83", "Rom", ti83_107);
+			Option("TI83", "Rom", ti83_108);
+			Option("TI83", "Rom", ti83p_103);
+			Option("TI83", "Rom", ti83p_112);
 		}
 
 		//adds a defined firmware ID to the database
