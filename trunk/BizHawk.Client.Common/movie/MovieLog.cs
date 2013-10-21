@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
+	//TODO: what is this object really trying to accomplish? COnsider making it a collection (ICollection, IEnumerable perhaps)
+
 	/// <summary>
 	/// Represents the controller key presses of a movie
 	/// </summary>
@@ -129,12 +129,12 @@ namespace BizHawk.MultiClient
 				if (frame <= StateFirstIndex)
 				{
 					_state_records.Clear();
-					GlobalWinF.MovieSession.Movie.RewindToFrame(0);
+					//Global.MovieSession.Movie.RewindToFrame(0); //TODO: unbreak this, also don't do it this way
 				}
 				else
 				{
 					_state_records.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
-					GlobalWinF.MovieSession.Movie.RewindToFrame(frame);
+					//Global.MovieSession.Movie.RewindToFrame(frame); //TODO: unbreak this, also don't do it this way
 				}
 			}
 		}

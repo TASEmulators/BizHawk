@@ -6,6 +6,8 @@ using System.Threading;
 using SlimDX.DirectInput;
 #endif
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	//coalesces events back into instantaneous states

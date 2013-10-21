@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.Common
 {
 	public class MultitrackRecording
 	{

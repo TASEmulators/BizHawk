@@ -345,7 +345,6 @@
     <Compile Include="movie\EditCommentsForm.Designer.cs">
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -365,10 +364,7 @@
     </Compile>
     <Compile Include="movie\Movie.cs" />
     <Compile Include="movie\MovieImport.cs" />
-    <Compile Include="movie\MovieLog.cs" />
-    <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieSession.cs" />
-    <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
