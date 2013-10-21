@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class EditSubtitlesForm : Form
@@ -53,7 +55,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!ReadOnly)
 			{
-				selectedMovie.Subtitles.ClearSubtitles();
+				selectedMovie.Subtitles.Clear();
 				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
 				{
 					Subtitle s = new Subtitle();
@@ -86,12 +88,12 @@ namespace BizHawk.MultiClient
 		public void GetMovie(Movie m)
 		{
 			selectedMovie = m;
-			SubtitleList subs = new SubtitleList(m);
+			SubtitleList subs = new SubtitleList(m.Subtitles);
 			if (subs.Count == 0) return;
 
 			for (int x = 0; x < subs.Count; x++)
 			{
-				Subtitle s = subs.GetSubtitleByIndex(x);
+				Subtitle s = subs[x];
 				SubGrid.Rows.Add();
 				DataGridViewCell c = SubGrid.Rows[x].Cells[0];
 				c.Value = s.Frame;

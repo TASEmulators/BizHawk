@@ -52,6 +52,9 @@
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="movie\MovieHeader.cs" />
+    <Compile Include="movie\Subtitle.cs" />
+    <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />

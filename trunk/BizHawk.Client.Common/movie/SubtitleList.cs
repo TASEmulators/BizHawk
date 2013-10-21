@@ -1,62 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.IO;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
-	public class SubtitleList
+	public class SubtitleList : IEnumerable<Subtitle>
 	{
-		private readonly List<Subtitle> subs = new List<Subtitle>();
+		private readonly List<Subtitle> _subtitles = new List<Subtitle>();
 
-		public SubtitleList()
+		public SubtitleList() { }
+
+		public SubtitleList(SubtitleList subtitles)
 		{
-
-		}
-
-		public SubtitleList(Movie m)
-		{
-			if (m != null && m.Subtitles.Count == 0)
+			foreach (var subtitle in subtitles)
 			{
-				return;
-			}
-
-			for (int x = 0; x < m.Subtitles.Count; x++)
-			{
-				Subtitle s = new Subtitle(m.Subtitles.GetSubtitleByIndex(x));
-				subs.Add(s);
+				_subtitles.Add(new Subtitle(subtitle)); //TODO: Multiclient.EditSubtitlesForm needs a deep copy here, refactor it so that it doesn't
 			}
 		}
 
-		public Subtitle GetSubtitleByIndex(int index)
+		public IEnumerator<Subtitle> GetEnumerator()
 		{
-			if (index >= subs.Count || index < 0) return new Subtitle();
-
-			return subs[index];
+			return _subtitles.GetEnumerator();
 		}
 
-		public string GetSubtitleText(int index)
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			if (index >= subs.Count || index < 0)
-			{
-				return "";
-			}
+			return GetEnumerator();
+		}
 
-			StringBuilder sb = new StringBuilder("subtitle ");
-			sb.Append(subs[index].Frame.ToString());
-			sb.Append(" ");
-			sb.Append(subs[index].X.ToString());
-			sb.Append(" ");
-			sb.Append(subs[index].Y.ToString());
-			sb.Append(" ");
-			sb.Append(subs[index].Duration.ToString());
-			sb.Append(" ");
-			sb.Append(string.Format("{0:X8}", subs[index].Color));
-			sb.Append(" ");
-			sb.Append(subs[index].Message);
-			return sb.ToString();
+		public Subtitle this[int index]
+		{
+			get
+			{
+				return _subtitles[index];
+			}
 		}
 
 		/// <summary>
@@ -66,45 +50,42 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public string GetSubtitleMessage(int frame)
 		{
-			if (subs.Count == 0) return "";
+			if (_subtitles.Count == 0) return "";
 
-			foreach (Subtitle t in subs)
+			foreach (Subtitle t in _subtitles)
 			{
 				if (frame >= t.Frame && frame <= t.Frame + t.Duration)
 				{
 					return t.Message;
 				}
 			}
-			return "";
+			return String.Empty;
 		}
 
 		public Subtitle GetSubtitle(int frame)
 		{
-			if (subs.Count == 0) return new Subtitle();
-
-			foreach (Subtitle t in subs)
+			if (_subtitles.Any())
 			{
-				if (frame >= t.Frame && frame <= t.Frame + t.Duration)
+				foreach (Subtitle t in _subtitles)
 				{
-					return t;
+					if (frame >= t.Frame && frame <= t.Frame + t.Duration)
+					{
+						return t;
+					}
 				}
 			}
+			
 			return new Subtitle();
 		}
 
 		public List<Subtitle> GetSubtitles(int frame)
 		{
-			if (subs.Count == 0)
-			{
-				return null;
-			}
-
-			return subs.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration).ToList();
+			return _subtitles.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration).ToList();
 		}
 
 		public int Count
 		{
-			get { return subs.Count; }
+			get { return _subtitles.Count; }
 		}
 
 		//TODO
@@ -119,9 +100,12 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		/// <param name="subtitleStr"></param>
 		/// <returns></returns>
-		public bool AddSubtitle(string subtitleStr)
+		public bool AddSubtitle(string subtitleStr) //TODO: refactor with String.Split
 		{
-			if (subtitleStr.Length == 0) return false;
+			if (!String.IsNullOrWhiteSpace(subtitleStr))
+			{
+				return false;
+			}
 
 			Subtitle s = new Subtitle();
 
@@ -199,34 +183,33 @@ namespace BizHawk.MultiClient
 			}
 
 			s.Message = str;
-			subs.Add(s);
+			_subtitles.Add(s);
 
 			return true;
 		}
 
 		public void AddSubtitle(Subtitle s)
 		{
-			subs.Add(s);
+			_subtitles.Add(s);
 		}
 
-		public void ClearSubtitles()
+		public void Clear()
 		{
-			subs.Clear();
+			_subtitles.Clear();
 		}
 
-		public void Remove(int index)
+		public void RemoveAt(int index)
 		{
-			if (index >= subs.Count) return;
+			if (index >= _subtitles.Count) return;
 
-			subs.RemoveAt(index);
+			_subtitles.RemoveAt(index);
 		}
 
 		public void WriteText(StreamWriter sw)
 		{
-			int length = subs.Count;
-			for (int x = 0; x < length; x++)
+			foreach(var subtitle in _subtitles)
 			{
-				sw.WriteLine(GetSubtitleText(x));
+				sw.WriteLine(subtitle.ToString());
 			}
 		}
 	}

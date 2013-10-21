@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class MovieHeader
 	{
@@ -55,16 +52,10 @@ namespace BizHawk.MultiClient
 			return System.Guid.NewGuid().ToString();
 		}
 
-		public MovieHeader() //All required fields will be set to default values
+		public MovieHeader(string version) //All required fields will be set to default values
 		{
-			if (GlobalWinF.MainForm != null)
-			{
-				HeaderParams.Add(EMULATIONVERSION, GlobalWinF.MainForm.GetEmuVersion());
-			}
-			else
-			{
-				HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);
-			}
+			
+			HeaderParams.Add(EMULATIONVERSION, version);
 			HeaderParams.Add(MOVIEVERSION, MovieVersion);
 			HeaderParams.Add(PLATFORM, "");
 			HeaderParams.Add(GAMENAME, "");
@@ -285,15 +276,12 @@ namespace BizHawk.MultiClient
 
 		public void ReadHeader(StreamReader reader)
 		{
-			using (reader)
+			string str;
+			while ((str = reader.ReadLine()) != null)
 			{
-				string str;
-				while ((str = reader.ReadLine()) != null)
-				{
-					AddHeaderFromLine(str);
-				}
-				reader.Close();
+				AddHeaderFromLine(str);
 			}
+			reader.Close();
 		}
 	}
 }
