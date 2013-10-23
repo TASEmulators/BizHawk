@@ -152,6 +152,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void ShowError(string error)
+		{
+			if (!String.IsNullOrWhiteSpace(error))
+			{
+				MessageBox.Show(error, "Loadstate Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 		private bool HandleMovieLoadState(string path)
 		{
 			using (var sr = new StreamReader(path))
@@ -160,8 +168,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//OMG this needs to be refactored!
 		private bool HandleMovieLoadState(StreamReader reader)
 		{
+			string ErrorMSG = String.Empty;
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
 			if (!GlobalWinF.MovieSession.Movie.IsActive)
 			{
@@ -170,29 +180,94 @@ namespace BizHawk.MultiClient
 
 			else if (GlobalWinF.MovieSession.Movie.IsRecording)
 			{
-
 				if (ReadOnly)
 				{
-					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
-					{
-						return false;	//Timeline/GUID error
-					}
-					else
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result == Movie.LoadStateResult.Pass)
 					{
 						GlobalWinF.MovieSession.Movie.WriteMovie();
 						GlobalWinF.MovieSession.Movie.SwitchToPlay();
 						SetMainformMovieInfo();
+						return true;
+					}
+					else
+					{
+						if (result == Movie.LoadStateResult.GuidMismatch)
+						{
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									GlobalWinF.MovieSession.Movie.WriteMovie();
+									GlobalWinF.MovieSession.Movie.SwitchToPlay();
+									SetMainformMovieInfo();
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							ShowError(ErrorMSG);
+							return false;
+						}
 					}
 				}
 				else
 				{
-					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: true, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result == Movie.LoadStateResult.Pass)
 					{
-						return false;	//GUID Error
+						reader.BaseStream.Position = 0;
+						reader.DiscardBufferedData();
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
 					}
-					reader.BaseStream.Position = 0;
-					reader.DiscardBufferedData();
-					GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+					else
+					{
+						if (result == Movie.LoadStateResult.GuidMismatch)
+						{
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									reader.BaseStream.Position = 0;
+									reader.DiscardBufferedData();
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							ShowError(ErrorMSG);
+							return false;
+						}
+					}
 				}
 			}
 
@@ -200,63 +275,193 @@ namespace BizHawk.MultiClient
 			{
 				if (ReadOnly)
 				{
-					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result == Movie.LoadStateResult.Pass)
 					{
-						return false;	//Timeline/GUID error
+						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
+						return true;
 					}
-					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
+					else
+					{
+						if (result == Movie.LoadStateResult.GuidMismatch)
+						{
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							ShowError(ErrorMSG);
+							return false;
+						}
+					}
 				}
 				else
 				{
-					if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result == Movie.LoadStateResult.Pass)
 					{
-						return false;	//GUID Error
+						GlobalWinF.MovieSession.Movie.SwitchToRecord();
+						SetMainformMovieInfo();
+						reader.BaseStream.Position = 0;
+						reader.DiscardBufferedData();
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+						return true;
 					}
-					GlobalWinF.MovieSession.Movie.SwitchToRecord();
-					SetMainformMovieInfo();
-					reader.BaseStream.Position = 0;
-					reader.DiscardBufferedData();
-					GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+					else
+					{
+						if (result == Movie.LoadStateResult.GuidMismatch)
+						{
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									GlobalWinF.MovieSession.Movie.SwitchToRecord();
+									SetMainformMovieInfo();
+									reader.BaseStream.Position = 0;
+									reader.DiscardBufferedData();
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							ShowError(ErrorMSG);
+							return false;
+						}
+					}
 				}
 			}
 			else if (GlobalWinF.MovieSession.Movie.IsFinished)
 			{
 				if (ReadOnly)
 				{
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result != Movie.LoadStateResult.Pass)
 					{
-						if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, false))
+						if (result == Movie.LoadStateResult.GuidMismatch)
 						{
-							return false;	//Timeline/GUID error
-						}
-						else if (GlobalWinF.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
-						{
-							GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									GlobalWinF.MovieSession.Movie.SwitchToPlay();
+									SetMainformMovieInfo();
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
 						}
 						else
 						{
-							GlobalWinF.MovieSession.Movie.SwitchToPlay();
-							SetMainformMovieInfo();
+							ShowError(ErrorMSG);
+							return false;
 						}
+					}
+					else if (GlobalWinF.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
+					{
+						GlobalWinF.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+					}
+					else
+					{
+						GlobalWinF.MovieSession.Movie.SwitchToPlay();
+						SetMainformMovieInfo();
 					}
 				}
 				else
 				{
+					var result = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					if (result == Movie.LoadStateResult.Pass)
 					{
-						if (!GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, true))
+						GlobalWinF.MovieSession.Movie.StartRecording();
+						SetMainformMovieInfo();
+						reader.BaseStream.Position = 0;
+						reader.DiscardBufferedData();
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+						return true;
+					}
+					else
+					{
+						if (result == Movie.LoadStateResult.GuidMismatch)
 						{
-							return false;	//GUID Error
+							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
+								"GUID Mismatch error",
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							if (dresult == DialogResult.Yes)
+							{
+								var newresult = GlobalWinF.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								if (newresult == Movie.LoadStateResult.Pass)
+								{
+									GlobalWinF.MovieSession.Movie.StartRecording();
+									SetMainformMovieInfo();
+									reader.BaseStream.Position = 0;
+									reader.DiscardBufferedData();
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									return true;
+								}
+								else
+								{
+									ShowError(ErrorMSG);
+									return false;
+								}
+							}
+							else
+							{
+								return false;
+							}
 						}
 						else
 						{
-							GlobalWinF.MovieSession.Movie.StartRecording();
-							SetMainformMovieInfo();
-							reader.BaseStream.Position = 0;
-							reader.DiscardBufferedData();
-							GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+							ShowError(ErrorMSG);
+							return false;
 						}
 					}
 				}
 			}
+
 			return true;
 		}
 
