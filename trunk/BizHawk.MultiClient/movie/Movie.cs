@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
@@ -796,18 +795,20 @@ namespace BizHawk.MultiClient
 			return time;
 		}
 
-		public bool CheckTimeLines(TextReader reader, bool OnlyGUID)
+		public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
+
+		public LoadStateResult CheckTimeLines(TextReader reader, bool OnlyGUID, bool IgnoreGuidMismatch, out string ErrorMessage)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
-
-			MovieLog l = new MovieLog();
+			ErrorMessage = String.Empty;
+			var log = new MovieLog();
 			int stateFrame = 0;
 			while (true)
 			{
 				string line = reader.ReadLine();
 				if (line == null)
 				{
-					return false;
+					return LoadStateResult.EmptyLog;
 				}
 				else if (line.Trim() == "")
 				{
@@ -818,21 +819,10 @@ namespace BizHawk.MultiClient
 					string guid = ParseHeader(line, MovieHeader.GUID);
 					if (Header.GetHeaderLine(MovieHeader.GUID) != guid)
 					{
-						//GUID Mismatch error
-						var result = MessageBox.Show(guid + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" +
-							"The savestate GUID does not match the current movie.  Proceed anyway?", "GUID Mismatch error",
-							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-						if (result == DialogResult.No)
+						if (!IgnoreGuidMismatch)
 						{
-							//reader.Close();
-							return false;
+							return LoadStateResult.GuidMismatch;
 						}
-					}
-					else if (OnlyGUID)
-					{
-						//reader.Close();
-						return true;
 					}
 				}
 				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
@@ -842,7 +832,11 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 					}
-					catch { GlobalWinF.OSD.AddMessage("Savestate Frame number failed to parse"); }
+					catch
+					{
+						ErrorMessage = "Savestate Frame number failed to parse";
+						return LoadStateResult.MissingFrameNumber;
+					}
 				}
 				else if (line.Contains("Frame "))
 				{
@@ -851,69 +845,68 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1]);
 					}
-					catch { GlobalWinF.OSD.AddMessage("Savestate Frame number failed to parse"); }
+					catch
+					{
+						ErrorMessage = "Savestate Frame number failed to parse";
+						return LoadStateResult.MissingFrameNumber;
+					}
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
 				else if (line[0] == '|')
-					l.AppendFrame(line);
-			}
-
-			//reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
-
-			if (OnlyGUID)
-			{
-				//reader.Close();
-				return true;
-			}
-
-			
-
-			if (stateFrame == 0)
-			{
-				stateFrame = l.Length;  //In case the frame count failed to parse, revert to using the entire state input log
-			}
-			if (Log.Length < stateFrame)
-			{
-				//Future event error
-				MessageBox.Show("The savestate is from frame " + l.Length.ToString() + " which is greater than the current movie length of " +
-					Log.Length.ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//reader.Close();
-				return false;
-			}
-			for (int x = 0; x < stateFrame; x++)
-			{
-				string xs = Log.GetFrame(x);
-				string ys = l.GetFrame(x);
-				if (xs != ys)
 				{
-					//TimeLine Error
-					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
-						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					//reader.Close();
-					return false;
+					log.AppendFrame(line);
 				}
 			}
 
+			if (OnlyGUID)
+			{
+				return LoadStateResult.Pass;
+			}
 
+			if (stateFrame == 0)
+			{
+				stateFrame = log.Length;  //In case the frame count failed to parse, revert to using the entire state input log
+			}
+			if (Log.Length < stateFrame)
+			{
+				ErrorMessage = "The savestate is from frame "
+					+ log.Length.ToString()
+					+ " which is greater than the current movie length of "
+					+ Log.Length.ToString();
+				return LoadStateResult.FutureEventError;
+			}
+			for (int i = 0; i < stateFrame; i++)
+			{
+				string xs = Log.GetFrame(i);
+				string ys = log.GetFrame(i); //TODO: huh??
+				if (xs != ys)
+				{
+					ErrorMessage = "The savestate input does not match the movie input at frame "
+						+ (i + 1).ToString()
+						+ ".";
+					return LoadStateResult.TimeLineError;
+				}
+			}
 
-			if (stateFrame > l.Length) //stateFrame is greater than state input log, so movie finished mode
+			if (stateFrame > log.Length) //stateFrame is greater than state input log, so movie finished mode
 			{
 				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
 				{
 					Mode = MOVIEMODE.FINISHED;
-					return true;
+					return LoadStateResult.Pass;
 				}
 				else
-					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+				{
+					return LoadStateResult.NotInRecording; //TODO: For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+				}
 			}
 			else if (Mode == MOVIEMODE.FINISHED)
 			{
 				Mode = MOVIEMODE.PLAY;
 			}
 
-			//reader.Close();
-			return true;
+			return LoadStateResult.Pass;
 		}
 
 		#endregion
