@@ -10,8 +10,7 @@ namespace BizHawk.MultiClient
 	public partial class EditSubtitlesForm : Form
 	{
 		public bool ReadOnly;
-		private Movie selectedMovie = new Movie();
-
+		private Movie selectedMovie;
 
 		public EditSubtitlesForm()
 		{

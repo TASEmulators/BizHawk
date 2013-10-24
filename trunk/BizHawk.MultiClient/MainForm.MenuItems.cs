@@ -1044,6 +1044,7 @@ namespace BizHawk.MultiClient
 
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			GlobalWinF.OSD.AddMessage("Backup movie saved.");
 			GlobalWinF.MovieSession.Movie.WriteBackup();
 		}
 
@@ -2179,7 +2180,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (IsValidMovieExtension(ext))
 			{
-				Movie m = new Movie(filePaths[0]);
+				Movie m = new Movie(filePaths[0], GlobalWinF.MainForm.GetEmuVersion());
 				StartNewMovie(m, false);
 
 			}

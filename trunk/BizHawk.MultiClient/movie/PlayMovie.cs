@@ -95,7 +95,7 @@ namespace BizHawk.MultiClient
 				{
 					if (file.Extension.ToUpper() == "STATE")
 					{
-						Movie m = new Movie(file.FullName);
+						Movie m = new Movie(file.FullName, GlobalWinF.MainForm.GetEmuVersion());
 						m.LoadMovie(); //State files will have to load everything unfortunately
 						if (m.Frames == 0)
 						{
@@ -124,7 +124,7 @@ namespace BizHawk.MultiClient
 					int x = IsDuplicate(filename);
 					if (x == 0)
 					{
-						Movie m = new Movie(file.CanonicalFullPath);
+						Movie m = new Movie(file.CanonicalFullPath, GlobalWinF.MainForm.GetEmuVersion());
 						m.LoadMovie(); //State files will have to load everything unfortunately
 						if (m.Frames > 0)
 						{
@@ -176,7 +176,7 @@ namespace BizHawk.MultiClient
 
 		private void PreLoadMovieFile(HawkFile path, bool force)
 		{
-			Movie m = new Movie(path.CanonicalFullPath);
+			Movie m = new Movie(path.CanonicalFullPath, GlobalWinF.MainForm.GetEmuVersion());
 			m.PreLoadText();
 			if (path.Extension == ".FM2")
 			{
