@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
@@ -269,7 +269,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1, GlobalWinF.MainForm.EmulatorPaused);
+				RewindToFrame(Global.Emulator.Frame - 1);
 			}
 			UpdateValues();
 		}
@@ -427,11 +427,11 @@ namespace BizHawk.MultiClient
 			if (TASView.selectedItem <= GlobalWinF.MovieSession.Movie.StateLastIndex)
 			{
 				stopOnFrame = 0;
-				GlobalWinF.MovieSession.Movie.RewindToFrame(TASView.selectedItem, GlobalWinF.MainForm.EmulatorPaused);
+				RewindToFrame(TASView.selectedItem);
 			}
 			else
 			{
-				GlobalWinF.MovieSession.Movie.RewindToFrame(GlobalWinF.MovieSession.Movie.StateLastIndex, GlobalWinF.MainForm.EmulatorPaused);
+				RewindToFrame(GlobalWinF.MovieSession.Movie.StateLastIndex);
 				stopOnFrame = TASView.selectedItem;
 				GlobalWinF.MainForm.PressFrameAdvance = true;
 			}
@@ -480,7 +480,7 @@ namespace BizHawk.MultiClient
 
 				if (e.Delta > 0) //Scroll up
 				{
-					GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1, GlobalWinF.MainForm.EmulatorPaused);
+					RewindToFrame(Global.Emulator.Frame - 1);
 				}
 				else if (e.Delta < 0) //Scroll down
 				{
@@ -543,12 +543,70 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
+		private void RewindToFrame(int frame)
+		{
+			if (!GlobalWinF.MovieSession.Movie.IsActive || GlobalWinF.MovieSession.Movie.IsFinished)
+			{
+				return;
+			}
+			else if (frame <= Global.Emulator.Frame)
+			{
+				if (frame <= GlobalWinF.MovieSession.Movie.StateFirstIndex)
+				{
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.InitState)));
+					if (GlobalWinF.MovieSession.Movie.IsRecording)
+					{
+						GlobalWinF.MovieSession.Movie.StartPlayback();
+						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
+					}
+				}
+				else
+				{
+					if (frame == 0)
+					{
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.InitState)));
+					}
+					else
+					{
+						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.GetState(frame - 1))));
+						GlobalWinF.MainForm.UpdateFrame = true;
+					}
+				}
+			}
+			else if (frame <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			{
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.GetState(frame - 1))));
+				GlobalWinF.MainForm.UpdateFrame = true;
+			}
+			else
+			{
+				GlobalWinF.MainForm.UnpauseEmulator();
+			}
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			if (frame <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			{
+				if (frame <= GlobalWinF.MovieSession.Movie.StateFirstIndex)
+				{
+					RewindToFrame(0);
+				}
+				else
+				{
+					RewindToFrame(frame);
+				}
+			}
+			GlobalWinF.MovieSession.Movie.DeleteFrame(frame);
+		}
+
 		private void DeleteFrames()
 		{
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			foreach (object t in list)
 			{
-				GlobalWinF.MovieSession.Movie.DeleteFrame(list[0], GlobalWinF.MainForm.EmulatorPaused); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
+				GlobalWinF.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
 			}
 
 			UpdateValues();
@@ -741,7 +799,7 @@ namespace BizHawk.MultiClient
 				{
 					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = GlobalWinF.MovieSession.Movie.GetInput(list[i])};
 					Clipboard.Add(entry);
-					GlobalWinF.MovieSession.Movie.DeleteFrame(list[0], GlobalWinF.MainForm.EmulatorPaused);
+					DeleteFrame(list[0]);
 				}
 
 				UpdateValues();

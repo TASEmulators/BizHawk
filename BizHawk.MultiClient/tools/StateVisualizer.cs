@@ -22,9 +22,17 @@ namespace BizHawk.MultiClient
 				if (File.Exists(path))
 				{
 					Movie m = new Movie(GlobalWinF.MainForm.GetEmuVersion());
-					m.LoadLogFromSavestateText(path);
+					LoadLogFromSavestateText(m, path);
 					AddLog(m.LogDump, i);
 				}
+			}
+		}
+
+		private void LoadLogFromSavestateText(Movie movie, string path)
+		{
+			using (var reader = new StreamReader(path))
+			{
+				movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 			}
 		}
 
