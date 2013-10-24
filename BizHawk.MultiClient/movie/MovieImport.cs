@@ -33,9 +33,9 @@ namespace BizHawk.MultiClient
 		public const string UNITCODE = "UnitCode";
 
 		// Attempt to import another type of movie file into a movie object.
-		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
+		public static Movie ImportFile(string path, string bizVersion, out string errorMsg, out string warningMsg)
 		{
-			Movie m = new Movie(GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(bizVersion);
 			errorMsg = String.Empty;
 			warningMsg = String.Empty;
 

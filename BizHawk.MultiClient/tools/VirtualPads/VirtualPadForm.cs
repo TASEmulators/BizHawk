@@ -254,9 +254,9 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 
-			if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				string str = GlobalWinF.MovieSession.Movie.GetInput(Global.Emulator.Frame);
+				string str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
 				if (Global.Config.TASUpdatePads && str != "")
 				{
 					switch (Global.Emulator.SystemId)

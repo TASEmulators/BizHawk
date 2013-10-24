@@ -603,7 +603,7 @@ namespace BizHawk.MultiClient
 		{
 			for (int i = 0; i < frames; i++)
 			{
-				if (RewindBuf.Count == 0 || (GlobalWinF.MovieSession.Movie.Loaded && 0 == GlobalWinF.MovieSession.Movie.Frames))
+				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
 					return;
 
 				if (LastState.Length < 0x10000)

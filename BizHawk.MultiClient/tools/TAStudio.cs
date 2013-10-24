@@ -62,7 +62,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!IsHandleCreated || IsDisposed) return;
 			TASView.BlazingFast = true;
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				DisplayList();
 			}
@@ -71,7 +71,7 @@ namespace BizHawk.MultiClient
 				TASView.ItemCount = 0;
 			}
 
-			if (GlobalWinF.MovieSession.Movie.IsPlaying && !GlobalWinF.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				TASView.BlazingFast = false;
 			}
@@ -99,21 +99,21 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index == 0 && GlobalWinF.MovieSession.Movie.StateFirstIndex == 0)
+			if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
 			{
 				if (color != Color.LightGreen)
 				{
 					color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
 				}
 			}
-			else if (GlobalWinF.MovieSession.Movie.FrameLagged(index))
+			else if (Global.MovieSession.Movie.FrameLagged(index))
 			{
 				if (color != Color.Pink)
 				{
 					color = Color.Pink;
 				}
 			}
-			else if (index > GlobalWinF.MovieSession.Movie.StateFirstIndex && index <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
 			{
 				if (color != Color.LightGreen)
 				{
@@ -134,19 +134,19 @@ namespace BizHawk.MultiClient
 			text = "";
 
 			//If this is just for an actual frame and not just the list view cursor at the end
-			if (GlobalWinF.MovieSession.Movie.Frames != index)
+			if (Global.MovieSession.Movie.Frames != index)
 			{
 				if (column == 0)
 					text = String.Format("{0:#,##0}", index);
 				if (column == 1)
-					text = GlobalWinF.MovieSession.Movie.GetInput(index);
+					text = Global.MovieSession.Movie.GetInput(index);
 			}
 		}
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = GlobalWinF.MovieSession.Movie.RawFrames;
-			if (GlobalWinF.MovieSession.Movie.Frames == Global.Emulator.Frame && GlobalWinF.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
+			TASView.ItemCount = Global.MovieSession.Movie.RawFrames;
+			if (Global.MovieSession.Movie.Frames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
 				TASView.ItemCount++;
@@ -168,9 +168,9 @@ namespace BizHawk.MultiClient
 			GlobalWinF.MainForm.PauseEmulator();
 			Engaged = true;
 			GlobalWinF.OSD.AddMessage("TAStudio engaged");
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWinF.MovieSession.Movie.StateCapturing = true;
+				Global.MovieSession.Movie.StateCapturing = true;
 				ReadOnlyCheckBox.Checked = GlobalWinF.MainForm.ReadOnly;
 			}
 			else
@@ -259,12 +259,12 @@ namespace BizHawk.MultiClient
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
 			stopOnFrame = 0;
-			if (GlobalWinF.MovieSession.Movie.IsFinished || !GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsFinished || !Global.MovieSession.Movie.IsActive)
 			{
 				GlobalWinF.MainForm.Rewind(1);
-				if (Global.Emulator.Frame <= GlobalWinF.MovieSession.Movie.Frames)
+				if (Global.Emulator.Frame <= Global.MovieSession.Movie.Frames)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToPlay();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 			else
@@ -291,9 +291,9 @@ namespace BizHawk.MultiClient
 				GlobalWinF.MainForm.SetReadOnly(true);
 				ReadOnlyCheckBox.BackColor = SystemColors.Control;
 
-				if (GlobalWinF.MovieSession.Movie.IsActive)
+				if (Global.MovieSession.Movie.IsActive)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToPlay();
+					Global.MovieSession.Movie.SwitchToPlay();
 					toolTip1.SetToolTip(ReadOnlyCheckBox, "Currently Read-Only Mode");
 				}
 			}
@@ -301,9 +301,9 @@ namespace BizHawk.MultiClient
 			{
 				GlobalWinF.MainForm.SetReadOnly(false);
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
-				if (GlobalWinF.MovieSession.Movie.IsActive)
+				if (Global.MovieSession.Movie.IsActive)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToRecord();
+					Global.MovieSession.Movie.SwitchToRecord();
 					toolTip1.SetToolTip(ReadOnlyCheckBox, "Currently Read+Write Mode");
 				}
 			}
@@ -381,7 +381,7 @@ namespace BizHawk.MultiClient
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MovieSession.Movie.WriteMovie();
+			Global.MovieSession.Movie.WriteMovie();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -390,8 +390,8 @@ namespace BizHawk.MultiClient
 
 			if ("" != fileName)
 			{
-				GlobalWinF.MovieSession.Movie.Filename = fileName;
-				GlobalWinF.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Filename = fileName;
+				Global.MovieSession.Movie.WriteMovie();
 			}
 		}
 
@@ -424,14 +424,14 @@ namespace BizHawk.MultiClient
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
-			if (TASView.selectedItem <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
 			{
 				stopOnFrame = 0;
 				RewindToFrame(TASView.selectedItem);
 			}
 			else
 			{
-				RewindToFrame(GlobalWinF.MovieSession.Movie.StateLastIndex);
+				RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
 				stopOnFrame = TASView.selectedItem;
 				GlobalWinF.MainForm.PressFrameAdvance = true;
 			}
@@ -455,7 +455,7 @@ namespace BizHawk.MultiClient
 				{
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null),
 					DefaultExt = "." + Global.Config.MovieExtension,
-					FileName = GlobalWinF.MovieSession.Movie.Filename
+					FileName = Global.MovieSession.Movie.Filename
 				};
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
@@ -537,7 +537,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
-				GlobalWinF.MovieSession.Movie.InsertBlankFrame(list[index]);
+				Global.MovieSession.Movie.InsertBlankFrame(list[index]);
 			}
 
 			UpdateValues();
@@ -545,18 +545,18 @@ namespace BizHawk.MultiClient
 
 		private void RewindToFrame(int frame)
 		{
-			if (!GlobalWinF.MovieSession.Movie.IsActive || GlobalWinF.MovieSession.Movie.IsFinished)
+			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
 			{
 				return;
 			}
 			else if (frame <= Global.Emulator.Frame)
 			{
-				if (frame <= GlobalWinF.MovieSession.Movie.StateFirstIndex)
+				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.InitState)));
-					if (GlobalWinF.MovieSession.Movie.IsRecording)
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
+					if (Global.MovieSession.Movie.IsRecording)
 					{
-						GlobalWinF.MovieSession.Movie.StartPlayback();
+						Global.MovieSession.Movie.StartPlayback();
 						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
 					}
 				}
@@ -564,19 +564,19 @@ namespace BizHawk.MultiClient
 				{
 					if (frame == 0)
 					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.InitState)));
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
 					}
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.GetState(frame - 1))));
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
 						GlobalWinF.MainForm.UpdateFrame = true;
 					}
 				}
 			}
-			else if (frame <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			else if (frame <= Global.MovieSession.Movie.StateLastIndex)
 			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(GlobalWinF.MovieSession.Movie.GetState(frame - 1))));
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
 				GlobalWinF.MainForm.UpdateFrame = true;
 			}
 			else
@@ -587,9 +587,9 @@ namespace BizHawk.MultiClient
 
 		public void DeleteFrame(int frame)
 		{
-			if (frame <= GlobalWinF.MovieSession.Movie.StateLastIndex)
+			if (frame <= Global.MovieSession.Movie.StateLastIndex)
 			{
-				if (frame <= GlobalWinF.MovieSession.Movie.StateFirstIndex)
+				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
 				{
 					RewindToFrame(0);
 				}
@@ -598,7 +598,7 @@ namespace BizHawk.MultiClient
 					RewindToFrame(frame);
 				}
 			}
-			GlobalWinF.MovieSession.Movie.DeleteFrame(frame);
+			Global.MovieSession.Movie.DeleteFrame(frame);
 		}
 
 		private void DeleteFrames()
@@ -606,7 +606,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			foreach (object t in list)
 			{
-				GlobalWinF.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
+				Global.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
 			}
 
 			UpdateValues();
@@ -617,7 +617,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
-				GlobalWinF.MovieSession.Movie.InsertFrame(GlobalWinF.MovieSession.Movie.GetInput(list[index]), list[index]);
+				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInput(list[index]), list[index]);
 			}
 
 			UpdateValues();
@@ -628,7 +628,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
-				GlobalWinF.MovieSession.Movie.ClearFrame(list[index]);
+				Global.MovieSession.Movie.ClearFrame(list[index]);
 			}
 
 			UpdateValues();
@@ -649,7 +649,7 @@ namespace BizHawk.MultiClient
 					int frames = int.Parse(prompt.UserText);
 					for (int i = 0; i < frames; i++)
 					{
-						GlobalWinF.MovieSession.Movie.InsertBlankFrame(list[0] + i);
+						Global.MovieSession.Movie.InsertBlankFrame(list[0] + i);
 					}
 				}
 			}
@@ -694,7 +694,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			if (list.Count > 0)
 			{
-				GlobalWinF.MovieSession.Movie.TruncateMovie(list[0]);
+				Global.MovieSession.Movie.TruncateMovie(list[0]);
 				UpdateValues();
 			}
 		}
@@ -715,7 +715,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int i = 0; i < list.Count; i++)
 			{
-				ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = GlobalWinF.MovieSession.Movie.GetInput(list[i])};
+				ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = Global.MovieSession.Movie.GetInput(list[i])};
 				Clipboard.Add(entry);
 			}
 			UpdateSlicerDisplay();
@@ -760,7 +760,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < Clipboard.Count; i++)
 				{
-					GlobalWinF.MovieSession.Movie.ModifyFrame(Clipboard[i].Inputstr, list[0] + i);
+					Global.MovieSession.Movie.ModifyFrame(Clipboard[i].Inputstr, list[0] + i);
 				}
 			}
 			UpdateValues();
@@ -773,7 +773,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < Clipboard.Count; i++)
 				{
-					GlobalWinF.MovieSession.Movie.InsertFrame(Clipboard[i].Inputstr, list[0] + i);
+					Global.MovieSession.Movie.InsertFrame(Clipboard[i].Inputstr, list[0] + i);
 				}
 			}
 			UpdateValues();
@@ -797,7 +797,7 @@ namespace BizHawk.MultiClient
 				Clipboard.Clear();
 				for (int i = 0; i < list.Count; i++)
 				{
-					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = GlobalWinF.MovieSession.Movie.GetInput(list[i])};
+					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = Global.MovieSession.Movie.GetInput(list[i])};
 					Clipboard.Add(entry);
 					DeleteFrame(list[0]);
 				}

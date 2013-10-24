@@ -363,7 +363,6 @@
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\MovieImport.cs" />
-    <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
