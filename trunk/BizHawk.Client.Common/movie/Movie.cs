@@ -2,9 +2,7 @@
 using System.IO;
 using System.Globalization;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class Movie
 	{
@@ -136,6 +134,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//TODO: these are getting too lengthy perhaps the log should just be exposed?
 		public int StateFirstIndex
 		{
 			get { return Log.StateFirstIndex; }
@@ -158,6 +157,16 @@ namespace BizHawk.MultiClient
 				}
 				
 			}
+		}
+
+		public byte[] GetState(int frame)
+		{
+			return Log.GetState(frame);
+		}
+
+		public byte[] InitState
+		{
+			get { return Log.InitState; }
 		}
 
 		#endregion
@@ -511,19 +520,8 @@ namespace BizHawk.MultiClient
 			changes = true;
 		}
 
-		public void DeleteFrame(int frame, bool isPaused)
+		public void DeleteFrame(int frame)
 		{
-			if (frame <= StateLastIndex)
-			{
-				if (frame <= StateFirstIndex)
-				{
-					RewindToFrame(0, isPaused);
-				}
-				else
-				{
-					RewindToFrame(frame, isPaused);
-				}
-			}
 			Log.DeleteFrame(frame);
 			changes = true;
 		}
@@ -559,48 +557,6 @@ namespace BizHawk.MultiClient
 				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
 				GC.Collect();
-			}
-		}
-
-		public void RewindToFrame(int frame, bool isPaused)
-		{
-			if (Mode == MOVIEMODE.INACTIVE || Mode == MOVIEMODE.FINISHED)
-			{
-				return;
-			}
-			if (frame <= Global.Emulator.Frame)
-			{
-				if (frame <= Log.StateFirstIndex)
-				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
-					if (MOVIEMODE.RECORD == Mode)
-					{
-						Mode = MOVIEMODE.PLAY;
-						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
-					}
-				}
-				else
-				{
-					if (frame == 0)
-					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
-					}
-					else
-					{
-						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-						GlobalWinF.MainForm.UpdateFrame = true;
-					}
-				}
-			}
-			else if (frame <= Log.StateLastIndex)
-			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-				GlobalWinF.MainForm.UpdateFrame = true;
-			}
-			else
-			{
-				GlobalWinF.MainForm.UnpauseEmulator(); /*TODO*/
 			}
 		}
 
@@ -641,19 +597,11 @@ namespace BizHawk.MultiClient
 			writer.WriteLine("[/Input]");
 		}
 
-		public void LoadLogFromSavestateText(string path)
-		{
-			using (var reader = new StreamReader(path))
-			{
-				LoadLogFromSavestateText(reader);
-			}
-		}
-
-		public void LoadLogFromSavestateText(TextReader reader)
+		public void LoadLogFromSavestateText(TextReader reader, bool isMultitracking)
 		{
 			int? stateFrame = null;
 			//We are in record mode so replace the movie log with the one from the savestate
-			if (!GlobalWinF.MovieSession.MultiTrack.IsActive)
+			if (!isMultitracking)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 				{

@@ -235,7 +235,7 @@ namespace BizHawk.MultiClient
 					{
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 					}
 					else
 					{
@@ -251,7 +251,7 @@ namespace BizHawk.MultiClient
 								{
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 									return true;
 								}
 								else
@@ -325,7 +325,7 @@ namespace BizHawk.MultiClient
 						SetMainformMovieInfo();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 						return true;
 					}
 					else
@@ -344,7 +344,7 @@ namespace BizHawk.MultiClient
 									SetMainformMovieInfo();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 									return true;
 								}
 								else
@@ -424,7 +424,7 @@ namespace BizHawk.MultiClient
 						SetMainformMovieInfo();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+						GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 						return true;
 					}
 					else
@@ -444,7 +444,7 @@ namespace BizHawk.MultiClient
 									SetMainformMovieInfo();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader);
+									GlobalWinF.MovieSession.Movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
 									return true;
 								}
 								else

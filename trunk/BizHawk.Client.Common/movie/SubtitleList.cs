@@ -7,9 +7,7 @@ using System.Text;
 using System.Drawing;
 using System.IO;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class SubtitleList : IEnumerable<Subtitle>
 	{
