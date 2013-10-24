@@ -2935,15 +2935,15 @@ namespace BizHawk.MultiClient
 
 		public string movie_filename()
 		{
-			return GlobalWinF.MovieSession.Movie.Filename;
+			return Global.MovieSession.Movie.Filename;
 		}
 
 		public LuaTable movie_getinput(object frame)
 		{
 			LuaTable input = _lua.NewTable();
 
-			string s = GlobalWinF.MovieSession.Movie.GetInput(LuaInt(frame));
-			MovieControllerAdapter m = new MovieControllerAdapter { Type = GlobalWinF.MovieSession.MovieControllerAdapter.Type };
+			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
+			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(s);
 			foreach (string button in m.Type.BoolButtons)
 				input[button] = m[button];
@@ -2958,12 +2958,12 @@ namespace BizHawk.MultiClient
 
 		public bool movie_getrerecordcounting()
 		{
-			return GlobalWinF.MovieSession.Movie.IsCountingRerecords;
+			return Global.MovieSession.Movie.IsCountingRerecords;
 		}
 
 		public bool movie_isloaded()
 		{
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				return true;
 			}
@@ -2975,9 +2975,9 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			if (GlobalWinF.MovieSession.Movie.Frames.HasValue)
+			if (Global.MovieSession.Movie.Frames.HasValue)
 			{
-				return GlobalWinF.MovieSession.Movie.Frames.Value;
+				return Global.MovieSession.Movie.Frames.Value;
 			}
 			else
 			{
@@ -2987,15 +2987,15 @@ namespace BizHawk.MultiClient
 
 		public string movie_mode()
 		{
-			if (GlobalWinF.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsFinished)
 			{
 				return "FINISHED";
 			}
-			else if (GlobalWinF.MovieSession.Movie.IsPlaying)
+			else if (Global.MovieSession.Movie.IsPlaying)
 			{
 				return "PLAY";
 			}
-			else if (GlobalWinF.MovieSession.Movie.IsRecording)
+			else if (Global.MovieSession.Movie.IsRecording)
 			{
 				return "RECORD";
 			}
@@ -3007,7 +3007,7 @@ namespace BizHawk.MultiClient
 
 		public string movie_rerecordcount()
 		{
-			return GlobalWinF.MovieSession.Movie.Rerecords.ToString();
+			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
 
 		public void movie_setreadonly(object lua_input)
@@ -3021,14 +3021,14 @@ namespace BizHawk.MultiClient
 		public void movie_setrerecordcounting(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-				GlobalWinF.MovieSession.Movie.IsCountingRerecords = true;
+				Global.MovieSession.Movie.IsCountingRerecords = true;
 			else
-				GlobalWinF.MovieSession.Movie.IsCountingRerecords = false;
+				Global.MovieSession.Movie.IsCountingRerecords = false;
 		}
 
 		public void movie_stop()
 		{
-			GlobalWinF.MovieSession.Movie.Stop();
+			Global.MovieSession.Movie.Stop();
 		}
 
 		#endregion

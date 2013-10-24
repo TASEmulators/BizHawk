@@ -230,9 +230,9 @@ namespace BizHawk.MultiClient
 		public static string SaveRamPath(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(GlobalWinF.MovieSession.Movie.Filename);
+				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
 			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Save RAM"];
@@ -261,9 +261,9 @@ namespace BizHawk.MultiClient
 		{
 			string name = FilesystemSafeName(game);
 			
-			if (Global.Config.BindSavestatesToMovies && GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.Config.BindSavestatesToMovies && Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(GlobalWinF.MovieSession.Movie.Filename);
+				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}
 
 			PathEntry pathEntry = Global.Config.PathEntries[game.System, "Savestates"];

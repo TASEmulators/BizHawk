@@ -180,7 +180,7 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			GlobalWinF.MainForm = this;
-			GlobalWinF.MovieSession = new MovieSession { Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()) };
+			Global.MovieSession = new MovieSession { Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()) };
 			MainWait = new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
@@ -226,7 +226,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.CheatList.SaveOnClose();
 				CloseGame();
-				GlobalWinF.MovieSession.Movie.Stop();
+				Global.MovieSession.Movie.Stop();
 				CloseTools();
 				SaveConfig();
 			};
@@ -938,7 +938,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
-					if (!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished)
+					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 					{
 						GlobalWinF.ClickyVirtualPadController.Click(button);
 						GlobalWinF.OSD.AddMessage(msg);
@@ -1057,19 +1057,19 @@ namespace BizHawk.MultiClient
 			GlobalWinF.StickyXORAdapter.Source = GlobalWinF.UD_LR_ControllerAdapter;
 			GlobalWinF.AutofireStickyXORAdapter.Source = GlobalWinF.StickyXORAdapter;
 
-			GlobalWinF.MultitrackRewiringControllerAdapter.Source = GlobalWinF.AutofireStickyXORAdapter;
-			GlobalWinF.ForceOffAdaptor.Source = GlobalWinF.MultitrackRewiringControllerAdapter;
+			Global.MultitrackRewiringControllerAdapter.Source = GlobalWinF.AutofireStickyXORAdapter;
+			GlobalWinF.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
 
 			GlobalWinF.MovieInputSourceAdapter.Source = GlobalWinF.ForceOffAdaptor;
 			GlobalWinF.ControllerOutput.Source = GlobalWinF.MovieOutputHardpoint;
 
 			Global.Emulator.Controller = GlobalWinF.ControllerOutput;
-			GlobalWinF.MovieSession.MovieControllerAdapter.Type = GlobalWinF.MovieInputSourceAdapter.Type;
+			Global.MovieSession.MovieControllerAdapter.Type = GlobalWinF.MovieInputSourceAdapter.Type;
 
 			//connect the movie session before MovieOutputHardpoint if it is doing anything
 			//otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
-			if (GlobalWinF.MovieSession.Movie != null)
-				GlobalWinF.MovieOutputHardpoint.Source = GlobalWinF.MovieSession.MovieControllerAdapter;
+			if (Global.MovieSession.Movie != null)
+				GlobalWinF.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
 			else
 				GlobalWinF.MovieOutputHardpoint.Source = GlobalWinF.MovieInputSourceAdapter;
 		}
@@ -1343,7 +1343,7 @@ namespace BizHawk.MultiClient
 										}
 									}
 
-									NES nes = new NES(nextComm, game, rom.FileData, bios, GlobalWinF.MovieSession.Movie.Header.BoardProperties)
+									NES nes = new NES(nextComm, game, rom.FileData, bios, Global.MovieSession.Movie.Header.BoardProperties)
 										{
 											SoundOn = Global.Config.SoundEnabled,
 											NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
@@ -2046,7 +2046,7 @@ namespace BizHawk.MultiClient
 				case "Play from beginning": PlayMovieFromBeginning(); break;
 				case "Save Movie": SaveMovie(); break;
 				case "Toggle MultiTrack":
-					if (GlobalWinF.MovieSession.Movie.IsActive)
+					if (Global.MovieSession.Movie.IsActive)
 					{
 
 						if (Global.Config.VBAStyleMovieLoadState)
@@ -2055,8 +2055,8 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							GlobalWinF.MovieSession.MultiTrack.IsActive = !GlobalWinF.MovieSession.MultiTrack.IsActive;
-							if (GlobalWinF.MovieSession.MultiTrack.IsActive)
+							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+							if (Global.MovieSession.MultiTrack.IsActive)
 							{
 								GlobalWinF.OSD.AddMessage("MultiTrack Enabled");
 								GlobalWinF.OSD.MT = "Recording None";
@@ -2065,8 +2065,8 @@ namespace BizHawk.MultiClient
 							{
 								GlobalWinF.OSD.AddMessage("MultiTrack Disabled");
 							}
-							GlobalWinF.MovieSession.MultiTrack.RecordAll = false;
-							GlobalWinF.MovieSession.MultiTrack.CurrentPlayer = 0;
+							Global.MovieSession.MultiTrack.RecordAll = false;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						}
 					}
 					else
@@ -2076,35 +2076,35 @@ namespace BizHawk.MultiClient
 					GlobalWinF.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select All":
-					GlobalWinF.MovieSession.MultiTrack.CurrentPlayer = 0;
-					GlobalWinF.MovieSession.MultiTrack.RecordAll = true;
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = true;
 					GlobalWinF.OSD.MT = "Recording All";
 					GlobalWinF.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select None":
-					GlobalWinF.MovieSession.MultiTrack.CurrentPlayer = 0;
-					GlobalWinF.MovieSession.MultiTrack.RecordAll = false;
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = false;
 					GlobalWinF.OSD.MT = "Recording None";
 					GlobalWinF.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Increment Player":
-					GlobalWinF.MovieSession.MultiTrack.CurrentPlayer++;
-					GlobalWinF.MovieSession.MultiTrack.RecordAll = false;
-					if (GlobalWinF.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+					Global.MovieSession.MultiTrack.CurrentPlayer++;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
 					{
-						GlobalWinF.MovieSession.MultiTrack.CurrentPlayer = 1;
+						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 					}
-					GlobalWinF.OSD.MT = "Recording Player " + GlobalWinF.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 					GlobalWinF.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Decrement Player":
-					GlobalWinF.MovieSession.MultiTrack.CurrentPlayer--;
-					GlobalWinF.MovieSession.MultiTrack.RecordAll = false;
-					if (GlobalWinF.MovieSession.MultiTrack.CurrentPlayer < 1)
+					Global.MovieSession.MultiTrack.CurrentPlayer--;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
 					{
-						GlobalWinF.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
+						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
 					}
-					GlobalWinF.OSD.MT = "Recording Player " + GlobalWinF.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 					GlobalWinF.DisplayManager.NeedsToPaint = true;
 					break;
 				case "Movie Poke": ToggleModePokeMode(); break;
@@ -2211,7 +2211,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			bool ReturnToRecording = GlobalWinF.MovieSession.Movie.IsRecording;
+			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
 			if (RewindActive && (GlobalWinF.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
@@ -2225,17 +2225,17 @@ namespace BizHawk.MultiClient
 					runFrame = true;
 				}
 				//we don't want to capture input when rewinding, even in record mode
-				if (GlobalWinF.MovieSession.Movie.IsRecording)
+				if (Global.MovieSession.Movie.IsRecording)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToPlay();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 			if (UpdateFrame)
 			{
 				runFrame = true;
-				if (GlobalWinF.MovieSession.Movie.IsRecording)
+				if (Global.MovieSession.Movie.IsRecording)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToPlay();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 
@@ -2319,7 +2319,7 @@ namespace BizHawk.MultiClient
 				UpdateToolsAfter();
 				if (ReturnToRecording)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToRecord();
+					Global.MovieSession.Movie.SwitchToRecord();
 				}
 				PressRewind = false;
 			}
@@ -2327,7 +2327,7 @@ namespace BizHawk.MultiClient
 			{
 				if (ReturnToRecording)
 				{
-					GlobalWinF.MovieSession.Movie.SwitchToRecord();
+					Global.MovieSession.Movie.SwitchToRecord();
 				}
 				UpdateFrame = false;
 			}
@@ -2535,7 +2535,7 @@ namespace BizHawk.MultiClient
 								bw.Flush();
 							});
 					}
-					if (GlobalWinF.MovieSession.Movie.IsActive)
+					if (Global.MovieSession.Movie.IsActive)
 					{
 						bs.PutInputLog(
 							delegate(Stream s)
@@ -2589,7 +2589,7 @@ namespace BizHawk.MultiClient
 				{
 					bool succeed = false;
 
-					if (GlobalWinF.MovieSession.Movie.IsActive)
+					if (Global.MovieSession.Movie.IsActive)
 					{
 						bw.GetInputLogRequired(
 							delegate(Stream s)
@@ -3011,9 +3011,9 @@ namespace BizHawk.MultiClient
 		{
 			string PluginToUse = "";
 
-			if (hasmovie && GlobalWinF.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && GlobalWinF.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
-				PluginToUse = GlobalWinF.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
+				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
 			}
 
 			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64"))
@@ -3039,14 +3039,14 @@ namespace BizHawk.MultiClient
 				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
 			}
 
-			if (hasmovie && GlobalWinF.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && GlobalWinF.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
 				List<string> settings = new List<string>(video_settings.Parameters.Keys);
 				foreach (string setting in settings)
 				{
-					if (GlobalWinF.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
+					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
 					{
-						string Value = GlobalWinF.MovieSession.Movie.Header.HeaderParams[setting];
+						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
 						if (video_settings.Parameters[setting] is bool)
 						{
 							try
@@ -3325,7 +3325,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator(GlobalWinF.CoreComm);
 			GlobalWinF.ActiveController = GlobalWinF.NullControls;
 			GlobalWinF.AutoFireController = GlobalWinF.AutofireNullControls;
-			GlobalWinF.MovieSession.Movie.Stop();
+			Global.MovieSession.Movie.Stop();
 			NeedsReboot = false;
 			SetRebootIconStatus();
 		}
@@ -3450,7 +3450,7 @@ namespace BizHawk.MultiClient
 
 		public void ToggleReadOnly()
 		{
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				ReadOnly ^= true;
 				if (ReadOnly)
@@ -3527,7 +3527,7 @@ namespace BizHawk.MultiClient
 			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
-				if (!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished)
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					GlobalWinF.ClickyVirtualPadController.Click("Reset");
 					GlobalWinF.OSD.AddMessage("Reset button pressed.");
@@ -3540,7 +3540,7 @@ namespace BizHawk.MultiClient
 			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
-				if (!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished)
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					GlobalWinF.ClickyVirtualPadController.Click("Power");
 					GlobalWinF.OSD.AddMessage("Power button pressed.");
@@ -3982,7 +3982,7 @@ namespace BizHawk.MultiClient
 			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
 			string errorMsg;
 			string warningMsg;
-			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
+			Movie m = MovieImport.ImportFile(fn, GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
 			if (errorMsg.Length > 0)
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			if (warningMsg.Length > 0)
@@ -4202,10 +4202,10 @@ namespace BizHawk.MultiClient
 
 		private void SaveMovie()
 		{
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWinF.MovieSession.Movie.WriteMovie();
-				GlobalWinF.OSD.AddMessage(GlobalWinF.MovieSession.Movie.Filename + " saved.");
+				Global.MovieSession.Movie.WriteMovie();
+				GlobalWinF.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
 		}
 

@@ -858,9 +858,9 @@ namespace BizHawk.MultiClient
 			s.DisableFrame();
 			int index = -1;
 			Subtitle sub = new Subtitle();
-			for (int x = 0; x < GlobalWinF.MovieSession.Movie.Subtitles.Count; x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
 			{
-				sub = GlobalWinF.MovieSession.Movie.Subtitles[x];
+				sub = Global.MovieSession.Movie.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -876,8 +876,8 @@ namespace BizHawk.MultiClient
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				if (index >= 0)
-					GlobalWinF.MovieSession.Movie.Subtitles.RemoveAt(index);
-				GlobalWinF.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
+					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
+				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
 		}
 
@@ -943,7 +943,7 @@ namespace BizHawk.MultiClient
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
-				if (GlobalWinF.MovieSession.Movie.IsActive)
+				if (Global.MovieSession.Movie.IsActive)
 				{
 					cmiRecordMovie.Visible = false;
 					cmiPlayMovie.Visible = false;
@@ -1030,7 +1030,7 @@ namespace BizHawk.MultiClient
 				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = false;
 			}
 
-			ContextMenuStopMovieNoSaving.Visible = GlobalWinF.MovieSession.Movie.IsActive && GlobalWinF.MovieSession.Movie.HasChanges;
+			ContextMenuStopMovieNoSaving.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 		}
 
 
@@ -1045,7 +1045,7 @@ namespace BizHawk.MultiClient
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWinF.OSD.AddMessage("Backup movie saved.");
-			GlobalWinF.MovieSession.Movie.WriteBackup();
+			Global.MovieSession.Movie.WriteBackup();
 		}
 
 		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1099,20 +1099,20 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				EditCommentsForm c = new EditCommentsForm { ReadOnly = ReadOnly };
-				c.GetMovie(GlobalWinF.MovieSession.Movie);
+				c.GetMovie(Global.MovieSession.Movie);
 				c.ShowDialog();
 			}
 		}
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = ReadOnly };
-				s.GetMovie(GlobalWinF.MovieSession.Movie);
+				s.GetMovie(Global.MovieSession.Movie);
 				s.ShowDialog();
 			}
 		}
@@ -1161,12 +1161,12 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			fullMovieLoadstatesToolStripMenuItem.Enabled = !GlobalWinF.MovieSession.MultiTrack.IsActive;
-			stopMovieWithoutSavingToolStripMenuItem.Enabled = GlobalWinF.MovieSession.Movie.IsActive && GlobalWinF.MovieSession.Movie.HasChanges;
+			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
+			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 			stopMovieToolStripMenuItem.Enabled
 				= playFromBeginningToolStripMenuItem.Enabled
 				= saveMovieToolStripMenuItem.Enabled
-				= GlobalWinF.MovieSession.Movie.IsActive;
+				= Global.MovieSession.Movie.IsActive;
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
 			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
@@ -1435,11 +1435,11 @@ namespace BizHawk.MultiClient
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 
 			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
-					(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
+					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
 
 
 			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
-				(!GlobalWinF.MovieSession.Movie.IsPlaying || GlobalWinF.MovieSession.Movie.IsFinished);
+				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause)
@@ -2215,7 +2215,7 @@ namespace BizHawk.MultiClient
 
 				string errorMsg;
 				string warningMsg;
-				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+				Movie m = MovieImport.ImportFile(filePaths[0], GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);

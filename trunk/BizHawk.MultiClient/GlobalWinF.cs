@@ -31,13 +31,6 @@ namespace BizHawk.MultiClient
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 
-		/// <summary>
-		/// the global MovieSession can use this to deal with multitrack player remapping (should this be here? maybe it should be in MovieSession)
-		/// </summary>
-		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
-
-		public static MovieSession MovieSession = new MovieSession();
-
 		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
 		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game

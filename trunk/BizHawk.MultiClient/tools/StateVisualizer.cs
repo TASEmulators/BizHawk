@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 	{
 		public StateVisualizer()
 		{
-			TimeLine movietimeline = new TimeLine(GlobalWinF.MovieSession.Movie.LogDump);
+			TimeLine movietimeline = new TimeLine(Global.MovieSession.Movie.LogDump);
 
 			Timelines = new List<TimeLine> {movietimeline};
 
@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		{
 			using (var reader = new StreamReader(path))
 			{
-				movie.LoadLogFromSavestateText(reader, GlobalWinF.MovieSession.MultiTrack.IsActive);
+				movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
 			}
 		}
 
