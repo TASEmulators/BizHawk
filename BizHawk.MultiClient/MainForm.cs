@@ -179,7 +179,8 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
-			GlobalWinF.MovieSession = new MovieSession { Movie = new Movie() };
+			GlobalWinF.MainForm = this;
+			GlobalWinF.MovieSession = new MovieSession { Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()) };
 			MainWait = new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
@@ -206,7 +207,7 @@ namespace BizHawk.MultiClient
 				using (HawkFile NesCartFile = new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
-			GlobalWinF.MainForm = this;
+
 			//Global.CoreComm = new CoreComm();
 			//SyncCoreCommInputSignals();
 
@@ -313,7 +314,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					Movie m = new Movie(cmdMovie);
+					Movie m = new Movie(cmdMovie, GlobalWinF.MainForm.GetEmuVersion());
 					ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
@@ -332,7 +333,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					Movie m = new Movie(Global.Config.RecentMovies[0]);
+					Movie m = new Movie(Global.Config.RecentMovies[0], GlobalWinF.MainForm.GetEmuVersion());
 					StartNewMovie(m, false);
 				}
 			}
@@ -765,7 +766,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			Movie m = new Movie(path);
+			Movie m = new Movie(path, GetEmuVersion());
 
 			if (!m.Loaded)
 			{

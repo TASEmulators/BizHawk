@@ -10,19 +10,17 @@ namespace BizHawk.MultiClient
 	{
 		#region Constructors
 
-		public Movie(string filename)
-			: this()
+		public Movie(string filename, string version)
+			: this(version)
 		{
 			Rerecords = 0;
 			Filename = filename;
 			Loaded = filename.Length > 0;
 		}
 
-		public Movie()
+		public Movie(string version)
 		{
-			string version = GlobalWinF.MainForm != null ? GlobalWinF.MainForm.GetEmuVersion() : MainForm.EMUVERSION;
 			Header = new MovieHeader(version);
-
 			Filename = String.Empty;
 			preload_framecount = 0;
 			StartsFromSavestate = false;
@@ -237,7 +235,6 @@ namespace BizHawk.MultiClient
 		/// <param name="truncate"></param>
 		public void StartRecording(bool truncate = true)
 		{
-			GlobalWinF.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
 			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 			{
@@ -252,7 +249,6 @@ namespace BizHawk.MultiClient
 
 		public void StartPlayback()
 		{
-			GlobalWinF.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
 		}
 
@@ -370,7 +366,6 @@ namespace BizHawk.MultiClient
 			var directory_info = new FileInfo(BackupName).Directory;
 			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
 
-			GlobalWinF.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
 			{
 				WriteText(BackupName);
@@ -516,17 +511,17 @@ namespace BizHawk.MultiClient
 			changes = true;
 		}
 
-		public void DeleteFrame(int frame)
+		public void DeleteFrame(int frame, bool isPaused)
 		{
 			if (frame <= StateLastIndex)
 			{
 				if (frame <= StateFirstIndex)
 				{
-					RewindToFrame(0);
+					RewindToFrame(0, isPaused);
 				}
 				else
 				{
-					RewindToFrame(frame);
+					RewindToFrame(frame, isPaused);
 				}
 			}
 			Log.DeleteFrame(frame);
@@ -567,7 +562,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void RewindToFrame(int frame)
+		public void RewindToFrame(int frame, bool isPaused)
 		{
 			if (Mode == MOVIEMODE.INACTIVE || Mode == MOVIEMODE.FINISHED)
 			{
@@ -578,10 +573,6 @@ namespace BizHawk.MultiClient
 				if (frame <= Log.StateFirstIndex)
 				{
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
-					if (GlobalWinF.MainForm.EmulatorPaused && frame > 0)
-					{
-						GlobalWinF.MainForm.UnpauseEmulator();
-					}
 					if (MOVIEMODE.RECORD == Mode)
 					{
 						Mode = MOVIEMODE.PLAY;
@@ -609,7 +600,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.MainForm.UnpauseEmulator();
+				GlobalWinF.MainForm.UnpauseEmulator(); /*TODO*/
 			}
 		}
 
@@ -684,7 +675,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -693,7 +684,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { } //TODO: message?
 					}
 					if (line[0] == '|')
 					{
@@ -718,7 +709,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { GlobalWinF.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+						catch { } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{

@@ -269,7 +269,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+				GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1, GlobalWinF.MainForm.EmulatorPaused);
 			}
 			UpdateValues();
 		}
@@ -427,11 +427,11 @@ namespace BizHawk.MultiClient
 			if (TASView.selectedItem <= GlobalWinF.MovieSession.Movie.StateLastIndex)
 			{
 				stopOnFrame = 0;
-				GlobalWinF.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+				GlobalWinF.MovieSession.Movie.RewindToFrame(TASView.selectedItem, GlobalWinF.MainForm.EmulatorPaused);
 			}
 			else
 			{
-				GlobalWinF.MovieSession.Movie.RewindToFrame(GlobalWinF.MovieSession.Movie.StateLastIndex);
+				GlobalWinF.MovieSession.Movie.RewindToFrame(GlobalWinF.MovieSession.Movie.StateLastIndex, GlobalWinF.MainForm.EmulatorPaused);
 				stopOnFrame = TASView.selectedItem;
 				GlobalWinF.MainForm.PressFrameAdvance = true;
 			}
@@ -480,7 +480,7 @@ namespace BizHawk.MultiClient
 
 				if (e.Delta > 0) //Scroll up
 				{
-					GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+					GlobalWinF.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1, GlobalWinF.MainForm.EmulatorPaused);
 				}
 				else if (e.Delta < 0) //Scroll down
 				{
@@ -548,7 +548,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			foreach (object t in list)
 			{
-				GlobalWinF.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
+				GlobalWinF.MovieSession.Movie.DeleteFrame(list[0], GlobalWinF.MainForm.EmulatorPaused); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
 			}
 
 			UpdateValues();
@@ -741,7 +741,7 @@ namespace BizHawk.MultiClient
 				{
 					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = GlobalWinF.MovieSession.Movie.GetInput(list[i])};
 					Clipboard.Add(entry);
-					GlobalWinF.MovieSession.Movie.DeleteFrame(list[0]);
+					GlobalWinF.MovieSession.Movie.DeleteFrame(list[0], GlobalWinF.MainForm.EmulatorPaused);
 				}
 
 				UpdateValues();

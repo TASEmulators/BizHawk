@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
 				}
 
 
-				MovieToRecord = new Movie(path);
+				MovieToRecord = new Movie(path, GlobalWinF.MainForm.GetEmuVersion());
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);

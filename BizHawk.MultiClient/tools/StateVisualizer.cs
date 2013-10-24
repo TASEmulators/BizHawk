@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 				string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 				if (File.Exists(path))
 				{
-					Movie m = new Movie();
+					Movie m = new Movie(GlobalWinF.MainForm.GetEmuVersion());
 					m.LoadLogFromSavestateText(path);
 					AddLog(m.LogDump, i);
 				}
