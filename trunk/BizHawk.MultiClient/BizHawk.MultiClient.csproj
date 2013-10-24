@@ -60,7 +60,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>WINDOWS;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
+    <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
