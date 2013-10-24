@@ -105,42 +105,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
-    <Compile Include="7z\ArchiveExtractCallback.cs" />
-    <Compile Include="7z\ArchiveOpenCallback.cs" />
-    <Compile Include="7z\ArchiveUpdateCallback.cs" />
-    <Compile Include="7z\COM.cs" />
-    <Compile Include="7z\Common.cs" />
-    <Compile Include="7z\EventArgs.cs" />
-    <Compile Include="7z\Exceptions.cs" />
-    <Compile Include="7z\FileSignatureChecker.cs" />
-    <Compile Include="7z\Formats.cs" />
-    <Compile Include="7z\LibraryFeature.cs" />
-    <Compile Include="7z\LibraryManager.cs" />
-    <Compile Include="7z\LzmaDecodeStream.cs" />
-    <Compile Include="7z\LzmaEncodeStream.cs" />
-    <Compile Include="7z\LzmaProgressCallback.cs" />
-    <Compile Include="7z\NativeMethods.cs" />
-    <Compile Include="7z\sdk\Common\CRC.cs" />
-    <Compile Include="7z\sdk\Common\InBuffer.cs" />
-    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7z\sdk\ICoder.cs" />
-    <Compile Include="7z\SevenZipCompressor.cs" />
-    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipExtractor.cs" />
-    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipSfx.cs" />
-    <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -319,7 +283,6 @@
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="GlobalWinF.cs" />
-    <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
@@ -390,6 +353,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RomGame.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1008,16 +972,6 @@
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="7z\arch\Test.bzip2.7z" />
-    <None Include="7z\arch\Test.lzma.7z" />
-    <None Include="7z\arch\Test.lzma2.7z" />
-    <None Include="7z\arch\Test.ppmd.7z" />
-    <None Include="7z\arch\Test.rar" />
-    <None Include="7z\arch\Test.tar" />
-    <None Include="7z\arch\Test.txt.bz2" />
-    <None Include="7z\arch\Test.txt.gz" />
-    <None Include="7z\arch\Test.txt.xz" />
-    <None Include="7z\arch\Test.zip" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -1037,7 +991,6 @@
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="RenderPanel.cs" />
-    <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="tools\TAStudio.cs">
@@ -1237,7 +1190,6 @@
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
     <None Include="config\ControllerImages\IntVController.png" />
-    <Content Include="7z\arch\Test.txt" />
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
