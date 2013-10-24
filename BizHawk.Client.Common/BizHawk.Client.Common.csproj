@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -44,12 +44,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
+    <Compile Include="7z\ArchiveExtractCallback.cs" />
+    <Compile Include="7z\ArchiveOpenCallback.cs" />
+    <Compile Include="7z\ArchiveUpdateCallback.cs" />
+    <Compile Include="7z\COM.cs" />
+    <Compile Include="7z\Common.cs" />
+    <Compile Include="7z\EventArgs.cs" />
+    <Compile Include="7z\Exceptions.cs" />
+    <Compile Include="7z\FileSignatureChecker.cs" />
+    <Compile Include="7z\Formats.cs" />
+    <Compile Include="7z\LibraryFeature.cs" />
+    <Compile Include="7z\LibraryManager.cs" />
+    <Compile Include="7z\LzmaDecodeStream.cs" />
+    <Compile Include="7z\LzmaEncodeStream.cs" />
+    <Compile Include="7z\LzmaProgressCallback.cs" />
+    <Compile Include="7z\NativeMethods.cs" />
+    <Compile Include="7z\sdk\Common\CRC.cs" />
+    <Compile Include="7z\sdk\Common\InBuffer.cs" />
+    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="7z\sdk\ICoder.cs" />
+    <Compile Include="7z\SevenZipCompressor.cs" />
+    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
+    <Compile Include="7z\SevenZipExtractor.cs" />
+    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
+    <Compile Include="7z\SevenZipSfx.cs" />
+    <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="HawkFile.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="movie\InputAdapters.cs" />
@@ -73,6 +110,21 @@
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="7z\arch\Test.bzip2.7z" />
+    <None Include="7z\arch\Test.lzma.7z" />
+    <None Include="7z\arch\Test.lzma2.7z" />
+    <None Include="7z\arch\Test.ppmd.7z" />
+    <None Include="7z\arch\Test.rar" />
+    <None Include="7z\arch\Test.tar" />
+    <None Include="7z\arch\Test.txt.bz2" />
+    <None Include="7z\arch\Test.txt.gz" />
+    <None Include="7z\arch\Test.txt.xz" />
+    <None Include="7z\arch\Test.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="7z\arch\Test.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

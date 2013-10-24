@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	//todo:
 	//split into "bind" and "open (the bound thing)"
