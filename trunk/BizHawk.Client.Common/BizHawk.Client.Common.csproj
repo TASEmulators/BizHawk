@@ -82,6 +82,7 @@
     <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
+    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="RomGame.cs" />
+    <Compile Include="SavestateManager.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />
