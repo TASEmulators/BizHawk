@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>

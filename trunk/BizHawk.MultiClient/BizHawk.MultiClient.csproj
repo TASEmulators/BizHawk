@@ -84,7 +84,6 @@
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -232,7 +231,6 @@
     <Compile Include="config\PathInfo.Designer.cs">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PathManager.cs" />
     <Compile Include="config\RewindConfig.cs">
       <SubType>Form</SubType>
     </Compile>
