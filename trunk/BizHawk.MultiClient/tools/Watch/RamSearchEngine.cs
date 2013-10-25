@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	//TODO: move me

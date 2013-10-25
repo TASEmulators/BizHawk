@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class HexColors_Form : Form
@@ -27,8 +25,8 @@ namespace BizHawk.MultiClient
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
 				Global.Config.HexBackgrndColor = colorDialog1.Color;
-				GlobalWinF.MainForm.HexEditor1.Header.BackColor = colorDialog1.Color;
-				GlobalWinF.MainForm.HexEditor1.MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
+				Global.MainForm.HexEditor1.Header.BackColor = colorDialog1.Color;
+				Global.MainForm.HexEditor1.MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
 				HexBackgrnd.BackColor = colorDialog1.Color;
 			}
 		}
@@ -38,8 +36,8 @@ namespace BizHawk.MultiClient
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
 				Global.Config.HexForegrndColor = colorDialog1.Color;
-				GlobalWinF.MainForm.HexEditor1.Header.ForeColor = colorDialog1.Color;
-				GlobalWinF.MainForm.HexEditor1.MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
+				Global.MainForm.HexEditor1.Header.ForeColor = colorDialog1.Color;
+				Global.MainForm.HexEditor1.MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
 				HexForegrnd.BackColor = colorDialog1.Color;
 
 			}
@@ -50,7 +48,7 @@ namespace BizHawk.MultiClient
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
 				Global.Config.HexMenubarColor = colorDialog1.Color;
-				GlobalWinF.MainForm.HexEditor1.menuStrip1.BackColor = Global.Config.HexMenubarColor;
+				Global.MainForm.HexEditor1.menuStrip1.BackColor = Global.Config.HexMenubarColor;
 				HexMenubar.BackColor = colorDialog1.Color;
 			}
 		}

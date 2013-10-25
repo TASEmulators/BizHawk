@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient.GBtools
 {
 	public partial class ColorChooserForm : Form

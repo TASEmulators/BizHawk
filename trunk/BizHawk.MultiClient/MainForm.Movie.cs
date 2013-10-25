@@ -2,8 +2,6 @@
 using System.IO;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	partial class MainForm
@@ -15,7 +13,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsPlaying)
 			{
 				Global.MovieSession.Movie.ClearFrame(Global.Emulator.Frame);
-				GlobalWinF.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
+				Global.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
 			}
 		}
 
@@ -27,7 +25,7 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.WriteMovie();
 			}
 
-			Global.MovieSession = new MovieSession { Movie = m };
+			Global.MovieSession = new MovieSession {Movie = m};
 			RewireInputChain();
 
 			if (!record)
@@ -36,7 +34,7 @@ namespace BizHawk.MultiClient
 				SetSyncDependentSettings();
 			}
 
-			LoadRom(GlobalWinF.MainForm.CurrentlyOpenRom, true, !record);
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -46,19 +44,17 @@ namespace BizHawk.MultiClient
 			}
 			if (record)
 			{
-				GlobalWinF.MainForm.ClearSaveRAM();
 				Global.MovieSession.Movie.StartRecording();
 				ReadOnly = false;
 			}
 			else
 			{
-				GlobalWinF.MainForm.ClearSaveRAM();
 				Global.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
 			VirtualPadForm1.Restart();
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void SetMainformMovieInfo()
@@ -120,11 +116,10 @@ namespace BizHawk.MultiClient
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetFrameCounter();
 				}
-				GlobalWinF.MainForm.ClearSaveRAM();
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
-				GlobalWinF.OSD.AddMessage("Replaying movie file in read-only mode");
-				GlobalWinF.MainForm.ReadOnly = true;
+				Global.OSD.AddMessage("Replaying movie file in read-only mode");
+				Global.MainForm.ReadOnly = true;
 			}
 		}
 
@@ -147,19 +142,11 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.Stop(abortchanges);
 				if (!abortchanges)
 				{
-					GlobalWinF.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
+					Global.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
 				}
-				GlobalWinF.OSD.AddMessage(message);
-				GlobalWinF.MainForm.ReadOnly = true;
+				Global.OSD.AddMessage(message);
+				Global.MainForm.ReadOnly = true;
 				SetMainformMovieInfo();
-			}
-		}
-
-		private void ShowError(string error)
-		{
-			if (!String.IsNullOrWhiteSpace(error))
-			{
-				MessageBox.Show(error, "Loadstate Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -171,10 +158,8 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//OMG this needs to be refactored!
 		private bool HandleMovieLoadState(StreamReader reader)
 		{
-			string ErrorMSG = String.Empty;
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
 			if (!Global.MovieSession.Movie.IsActive)
 			{
@@ -183,94 +168,29 @@ namespace BizHawk.MultiClient
 
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
+
 				if (ReadOnly)
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result == Movie.LoadStateResult.Pass)
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
+					{
+						return false;	//Timeline/GUID error
+					}
+					else
 					{
 						Global.MovieSession.Movie.WriteMovie();
 						Global.MovieSession.Movie.SwitchToPlay();
 						SetMainformMovieInfo();
-						return true;
-					}
-					else
-					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
-						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									Global.MovieSession.Movie.WriteMovie();
-									Global.MovieSession.Movie.SwitchToPlay();
-									SetMainformMovieInfo();
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							ShowError(ErrorMSG);
-							return false;
-						}
 					}
 				}
 				else
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: true, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result == Movie.LoadStateResult.Pass)
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
+						return false;	//GUID Error
 					}
-					else
-					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
-						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							ShowError(ErrorMSG);
-							return false;
-						}
-					}
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
 
@@ -278,195 +198,63 @@ namespace BizHawk.MultiClient
 			{
 				if (ReadOnly)
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result == Movie.LoadStateResult.Pass)
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
 					{
-						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
-						return true;
+						return false;	//Timeline/GUID error
 					}
-					else
-					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
-						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							ShowError(ErrorMSG);
-							return false;
-						}
-					}
+					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 				}
 				else
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result == Movie.LoadStateResult.Pass)
+					if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 					{
-						Global.MovieSession.Movie.SwitchToRecord();
-						SetMainformMovieInfo();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
-						return true;
+						return false;	//GUID Error
 					}
-					else
-					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
-						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									Global.MovieSession.Movie.SwitchToRecord();
-									SetMainformMovieInfo();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							ShowError(ErrorMSG);
-							return false;
-						}
-					}
+					Global.MovieSession.Movie.SwitchToRecord();
+					SetMainformMovieInfo();
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 				}
 			}
 			else if (Global.MovieSession.Movie.IsFinished)
 			{
 				if (ReadOnly)
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result != Movie.LoadStateResult.Pass)
 					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
+						if (!Global.MovieSession.Movie.CheckTimeLines(reader, false))
 						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									Global.MovieSession.Movie.SwitchToPlay();
-									SetMainformMovieInfo();
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
+							return false;	//Timeline/GUID error
+						}
+						else if (Global.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
+						{
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						}
 						else
 						{
-							ShowError(ErrorMSG);
-							return false;
+							Global.MovieSession.Movie.SwitchToPlay();
+							SetMainformMovieInfo();
 						}
-					}
-					else if (Global.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
-					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
-					}
-					else
-					{
-						Global.MovieSession.Movie.SwitchToPlay();
-						SetMainformMovieInfo();
 					}
 				}
 				else
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
-					if (result == Movie.LoadStateResult.Pass)
 					{
-						GlobalWinF.MainForm.ClearSaveRAM();
-						Global.MovieSession.Movie.StartRecording();
-						SetMainformMovieInfo();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
-						return true;
-					}
-					else
-					{
-						if (result == Movie.LoadStateResult.GuidMismatch)
+						if (!Global.MovieSession.Movie.CheckTimeLines(reader, true))
 						{
-							var dresult = MessageBox.Show("The savestate GUID does not match the current movie.  Proceed anyway?",
-								"GUID Mismatch error",
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-							if (dresult == DialogResult.Yes)
-							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
-								if (newresult == Movie.LoadStateResult.Pass)
-								{
-									GlobalWinF.MainForm.ClearSaveRAM();
-									Global.MovieSession.Movie.StartRecording();
-									SetMainformMovieInfo();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Global.MovieSession.Movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									ShowError(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
+							return false;	//GUID Error
 						}
 						else
 						{
-							ShowError(ErrorMSG);
-							return false;
+							Global.MovieSession.Movie.StartRecording();
+							SetMainformMovieInfo();
+							reader.BaseStream.Position = 0;
+							reader.DiscardBufferedData();
+							Global.MovieSession.Movie.LoadLogFromSavestateText(reader);
 						}
 					}
 				}
 			}
-
 			return true;
 		}
 
@@ -482,7 +270,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+				Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
 
 			else if (Global.MovieSession.Movie.IsFinished)
@@ -494,7 +282,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
 
@@ -506,7 +294,7 @@ namespace BizHawk.MultiClient
 					{
 						Global.MovieSession.Movie.CaptureState();
 						Global.MovieSession.LatchInputFromLog();
-						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 					}
 					else
 					{
@@ -517,19 +305,19 @@ namespace BizHawk.MultiClient
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
-					if (GlobalWinF.ClientControls["ClearFrame"])
+					if (Global.ClientControls["ClearFrame"])
 					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						ClearFrame();
 					}
 					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
 					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						MnemonicsGenerator mg = new MnemonicsGenerator();
-						mg.SetSource( GlobalWinF.MovieOutputHardpoint);
+						mg.SetSource( Global.MovieOutputHardpoint);
 						if (!mg.IsEmpty)
 						{
-							Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
 						}
 						else
@@ -545,15 +333,15 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.CaptureState();
 				if (Global.MovieSession.MultiTrack.IsActive)
 				{
-					Global.MovieSession.LatchMultitrackPlayerInput(GlobalWinF.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
+					Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 			}
 		}
 

@@ -5,8 +5,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
@@ -67,12 +65,12 @@ namespace BizHawk.MultiClient
 			//Import file if necessary
 
 			
-			GlobalWinF.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
+			Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
+			Global.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
 			Run();
 			Close();
 		}
@@ -83,9 +81,9 @@ namespace BizHawk.MultiClient
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);
@@ -95,7 +93,7 @@ namespace BizHawk.MultiClient
 				{
 					if (file.Extension.ToUpper() == "STATE")
 					{
-						Movie m = new Movie(file.FullName, GlobalWinF.MainForm.GetEmuVersion());
+						Movie m = new Movie(file.FullName);
 						m.LoadMovie(); //State files will have to load everything unfortunately
 						if (m.Frames == 0)
 						{
@@ -124,7 +122,7 @@ namespace BizHawk.MultiClient
 					int x = IsDuplicate(filename);
 					if (x == 0)
 					{
-						Movie m = new Movie(file.CanonicalFullPath, GlobalWinF.MainForm.GetEmuVersion());
+						Movie m = new Movie(file.CanonicalFullPath);
 						m.LoadMovie(); //State files will have to load everything unfortunately
 						if (m.Frames > 0)
 						{
@@ -176,7 +174,7 @@ namespace BizHawk.MultiClient
 
 		private void PreLoadMovieFile(HawkFile path, bool force)
 		{
-			Movie m = new Movie(path.CanonicalFullPath, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path.CanonicalFullPath);
 			m.PreLoadText();
 			if (path.Extension == ".FM2")
 			{
@@ -389,7 +387,7 @@ namespace BizHawk.MultiClient
 						}
 						break;
 					case MovieHeader.EMULATIONVERSION:
-						if (kvp.Value != GlobalWinF.MainForm.GetEmuVersion())
+						if (kvp.Value != Global.MainForm.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}

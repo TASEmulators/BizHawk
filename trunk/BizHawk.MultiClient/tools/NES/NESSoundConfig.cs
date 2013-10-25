@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class NESSoundConfig : Form
@@ -47,7 +45,7 @@ namespace BizHawk.MultiClient
 			Global.Config.NESTriangle = tr;
 			Global.Config.NESNoise = no;
 			Global.Config.NESDMC = dmc;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 			Close();
 		}
 
@@ -77,35 +75,35 @@ namespace BizHawk.MultiClient
 		{
 			label6.Text = trackBar1.Value.ToString();
 			Global.Config.NESSquare1 = trackBar1.Value;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 		}
 
 		private void trackBar2_ValueChanged(object sender, EventArgs e)
 		{
 			label7.Text = trackBar2.Value.ToString();
 			Global.Config.NESSquare2 = trackBar2.Value;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 		}
 
 		private void trackBar3_ValueChanged(object sender, EventArgs e)
 		{
 			label8.Text = trackBar3.Value.ToString();
 			Global.Config.NESTriangle = trackBar3.Value;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 		}
 
 		private void trackBar4_ValueChanged(object sender, EventArgs e)
 		{
 			label9.Text = trackBar4.Value.ToString();
 			Global.Config.NESNoise = trackBar4.Value;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 		}
 
 		private void trackBar5_ValueChanged(object sender, EventArgs e)
 		{
 			label10.Text = trackBar5.Value.ToString();
 			Global.Config.NESDMC = trackBar5.Value;
-			GlobalWinF.MainForm.SetNESSoundChannels();
+			Global.MainForm.SetNESSoundChannels();
 		}
 	}
 }

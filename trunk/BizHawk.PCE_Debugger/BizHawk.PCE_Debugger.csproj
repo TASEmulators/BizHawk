@@ -81,6 +81,10 @@
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
+      <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
+      <Name>BizHawk.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

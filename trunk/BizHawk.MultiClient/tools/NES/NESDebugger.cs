@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class NESDebugger : Form

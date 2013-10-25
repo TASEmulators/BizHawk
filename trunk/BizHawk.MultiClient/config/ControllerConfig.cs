@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class ControllerConfig : Form
@@ -53,7 +51,7 @@ namespace BizHawk.MultiClient
 			return cp;
 		}
 
-		Control CreateAnalogPanel(Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> settings, List<string> buttons, Size size)
+		Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
 			var acp = new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
 			return acp;
@@ -155,7 +153,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadPanels(Dictionary<string, Dictionary<string, string>> normal,
 			Dictionary<string, Dictionary<string, string>> autofire,
-			Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> analog)
+			Dictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
 			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, normal, "", CreateNormalPanel);
 			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, autofire, "", CreateNormalPanel);
@@ -172,7 +170,7 @@ namespace BizHawk.MultiClient
 			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
 		}
 
-		private void LoadPanels(BizHawk.Client.Common.Config c)
+		private void LoadPanels(Config c)
 		{
 			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog);
 		}
@@ -259,14 +257,14 @@ namespace BizHawk.MultiClient
 
 			Save();
 
-			GlobalWinF.OSD.AddMessage("Controller settings saved");
+			Global.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Controller config aborted");
+			Global.OSD.AddMessage("Controller config aborted");
 			Close();
 		}
 
@@ -358,10 +356,10 @@ namespace BizHawk.MultiClient
 		{
 			public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
 			public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
-			public Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>>();
+			public Dictionary<string, Dictionary<string, Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, Config.AnalogBind>>();
 		}
 
-		public static void ConfigCheckAllControlDefaults(BizHawk.Client.Common.Config c)
+		public static void ConfigCheckAllControlDefaults(Config c)
 		{
 			if (c.AllTrollers.Count == 0 && c.AllTrollersAutoFire.Count == 0 && c.AllTrollersAnalog.Count == 0)
 			{
@@ -382,7 +380,7 @@ namespace BizHawk.MultiClient
 				cd = ConfigService.Load(ControlDefaultPath, cd);
 				cd.AllTrollers[the_definition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[the_definition.Name] = new Dictionary<string, string>();
-				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>();
+				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, Config.AnalogBind>();
 
 				SaveToDefaults(cd);
 

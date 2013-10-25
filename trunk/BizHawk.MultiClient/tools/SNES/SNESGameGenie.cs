@@ -6,8 +6,6 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class SNESGameGenie : Form
@@ -15,7 +13,7 @@ namespace BizHawk.MultiClient
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 		private bool Processing = false;
 
-		public SNESGameGenie()
+         		public SNESGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
@@ -347,8 +345,6 @@ namespace BizHawk.MultiClient
 					compare: null,
 					enabled: true
 				));
-
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

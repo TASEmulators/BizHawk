@@ -6,8 +6,6 @@ using System.Threading;
 using SlimDX.DirectInput;
 #endif
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	//coalesces events back into instantaneous states
@@ -339,7 +337,7 @@ namespace BizHawk.MultiClient
 
 					}
 
-					bool swallow = !GlobalWinF.MainForm.AllowInput;
+					bool swallow = !Global.MainForm.AllowInput;
 
 					foreach (var ie in _NewEvents)
 					{
@@ -401,7 +399,7 @@ namespace BizHawk.MultiClient
 			lock (this)
 			{
 				if (InputEvents.Count == 0) return null;
-				if (!GlobalWinF.MainForm.AllowInput) return null;
+				if (!Global.MainForm.AllowInput) return null;
 
 				//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl

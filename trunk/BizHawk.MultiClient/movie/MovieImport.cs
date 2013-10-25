@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 #pragma warning disable 219
 
 namespace BizHawk.MultiClient
@@ -33,11 +31,11 @@ namespace BizHawk.MultiClient
 		public const string UNITCODE = "UnitCode";
 
 		// Attempt to import another type of movie file into a movie object.
-		public static Movie ImportFile(string path, string bizVersion, out string errorMsg, out string warningMsg)
+		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
-			Movie m = new Movie(bizVersion);
-			errorMsg = String.Empty;
-			warningMsg = String.Empty;
+			Movie m = new Movie();
+			errorMsg = "";
+			warningMsg = "";
 
 			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 			try
@@ -84,7 +82,7 @@ namespace BizHawk.MultiClient
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
-				if (errorMsg == String.Empty)
+				if (errorMsg == "")
 				{
 					m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				}
@@ -290,7 +288,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
 			string emulator = "";
@@ -472,7 +470,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -729,7 +727,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -872,7 +870,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -998,7 +996,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			HawkFile hf = new HawkFile(path);
 			// .LSMV movies are .zip files containing data files.
 			if (!hf.IsArchive)
@@ -1231,7 +1229,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte	"MDFNMOVI" signature
@@ -1355,7 +1353,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -1472,7 +1470,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1702,7 +1700,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
@@ -1976,7 +1974,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -2249,7 +2247,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
@@ -2470,7 +2468,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, GlobalWinF.MainForm.GetEmuVersion());
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 3-byte signature: 5A 4D 56 "ZMV"

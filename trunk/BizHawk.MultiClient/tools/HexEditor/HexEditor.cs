@@ -8,8 +8,6 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class HexEditor : Form
@@ -386,7 +384,7 @@ namespace BizHawk.MultiClient
 
 		private bool CurrentROMIsArchive()
 		{
-			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
+			string path = Global.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return false;
@@ -414,7 +412,7 @@ namespace BizHawk.MultiClient
 
 		private byte[] GetRomBytes()
 		{
-			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
+			string path = Global.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return null;
@@ -536,9 +534,9 @@ namespace BizHawk.MultiClient
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
 			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			i.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 
 			if (i.UserOK)
 			{
@@ -706,16 +704,16 @@ namespace BizHawk.MultiClient
 		{
 			if (HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Count > 0)
 			{
-				GlobalWinF.MainForm.LoadRamWatch(true);
+				Global.MainForm.LoadRamWatch(true);
 			}
 
 			if (HighlightedAddress.HasValue)
 			{
-				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
+				Global.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(i));
+				Global.MainForm.RamWatch1.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -753,10 +751,10 @@ namespace BizHawk.MultiClient
 
 				poke.SetWatch(Watches);
 
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				var result = poke.ShowDialog();
 				UpdateValues();
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 			}
 		}
 
@@ -872,7 +870,6 @@ namespace BizHawk.MultiClient
 				Global.CheatList.RemoveRange(cheats);
 			}
 			MemoryViewerBox.Refresh();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private Watch.WatchSize WatchSize
@@ -894,10 +891,10 @@ namespace BizHawk.MultiClient
 
 		private void UpdateRelatedDialogs()
 		{
-			GlobalWinF.MainForm.UpdateCheatStatus();
-			GlobalWinF.MainForm.RamSearch1.UpdateValues();
-			GlobalWinF.MainForm.RamWatch1.UpdateValues();
-			GlobalWinF.MainForm.Cheats_UpdateValues();
+			Global.MainForm.UpdateCheatStatus();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
 			UpdateValues();
 		}
 
@@ -1010,9 +1007,9 @@ namespace BizHawk.MultiClient
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1023,7 +1020,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Domain.Name == "ROM File")
 			{
-				string extension = Path.GetExtension(GlobalWinF.MainForm.CurrentlyOpenRom);
+				string extension = Path.GetExtension(Global.MainForm.CurrentlyOpenRom);
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
@@ -1047,9 +1044,9 @@ namespace BizHawk.MultiClient
 
 			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -2062,9 +2059,9 @@ namespace BizHawk.MultiClient
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			h.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2124,7 +2121,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				FileInfo file = new FileInfo(GlobalWinF.MainForm.CurrentlyOpenRom);
+				FileInfo file = new FileInfo(Global.MainForm.CurrentlyOpenRom);
 				SaveFileBinary(file);
 			}
 		}

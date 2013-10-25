@@ -34,28 +34,26 @@
 			this.lvFirmwares = new System.Windows.Forms.ListView();
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiClearCustomization = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiInfo = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.toolStrip1 = new ToolStripEx();
 			this.tbbGroup = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.tbbScan = new System.Windows.Forms.ToolStripButton();
 			this.tbbOrganize = new System.Windows.Forms.ToolStripButton();
-			this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
-			this.lvFirmwaresContextMenuStrip.SuspendLayout();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.tsmiClearCustomization = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
+			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// imageList1
@@ -98,61 +96,10 @@
 			// 
 			this.columnHeader1.Text = "System";
 			// 
-			// columnHeader6
-			// 
-			this.columnHeader6.Text = "Id";
-			// 
 			// columnHeader4
 			// 
 			this.columnHeader4.Text = "Description";
 			this.columnHeader4.Width = 165;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Resolved With";
-			this.columnHeader2.Width = 116;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Location";
-			this.columnHeader3.Width = 252;
-			// 
-			// columnHeader7
-			// 
-			this.columnHeader7.Text = "Hash";
-			this.columnHeader7.Width = 340;
-			// 
-			// lvFirmwaresContextMenuStrip
-			// 
-			this.lvFirmwaresContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiSetCustomization,
-            this.tsmiClearCustomization,
-            this.tsmiInfo,
-            this.tsmiCopy});
-			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
-			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(170, 114);
-			this.lvFirmwaresContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.lvFirmwaresContextMenuStrip_Opening);
-			// 
-			// tsmiSetCustomization
-			// 
-			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
-			this.tsmiSetCustomization.Size = new System.Drawing.Size(169, 22);
-			this.tsmiSetCustomization.Text = "&Set Customization";
-			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
-			// 
-			// tsmiClearCustomization
-			// 
-			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
-			this.tsmiClearCustomization.Size = new System.Drawing.Size(169, 22);
-			this.tsmiClearCustomization.Text = "C&lear Customization";
-			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
-			// 
-			// tsmiInfo
-			// 
-			this.tsmiInfo.Name = "tsmiInfo";
-			this.tsmiInfo.Size = new System.Drawing.Size(169, 22);
-			this.tsmiInfo.Text = "&Info";
-			this.tsmiInfo.Click += new System.EventHandler(this.tsmiInfo_Click);
 			// 
 			// panel1
 			// 
@@ -165,24 +112,8 @@
 			this.panel1.Size = new System.Drawing.Size(773, 472);
 			this.panel1.TabIndex = 24;
 			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(779, 478);
-			this.tableLayoutPanel1.TabIndex = 25;
-			// 
 			// toolStrip1
 			// 
-			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbbGroup,
             this.toolStripSeparator2,
@@ -232,12 +163,61 @@
 			this.tbbOrganize.Text = "Organize";
 			this.tbbOrganize.Click += new System.EventHandler(this.tbbOrganize_Click);
 			// 
-			// tsmiCopy
+			// tableLayoutPanel1
 			// 
-			this.tsmiCopy.Name = "tsmiCopy";
-			this.tsmiCopy.Size = new System.Drawing.Size(169, 22);
-			this.tsmiCopy.Text = "&Copy";
-			this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(779, 478);
+			this.tableLayoutPanel1.TabIndex = 25;
+			// 
+			// columnHeader6
+			// 
+			this.columnHeader6.Text = "Id";
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "Resolved With";
+			this.columnHeader2.Width = 116;
+			// 
+			// columnHeader7
+			// 
+			this.columnHeader7.Text = "Hash";
+			this.columnHeader7.Width = 340;
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Location";
+			this.columnHeader3.Width = 252;
+			// 
+			// lvFirmwaresContextMenuStrip
+			// 
+			this.lvFirmwaresContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSetCustomization,
+            this.tsmiClearCustomization});
+			this.lvFirmwaresContextMenuStrip.Name = "lvFirmwaresContextMenuStrip";
+			this.lvFirmwaresContextMenuStrip.Size = new System.Drawing.Size(170, 48);
+			// 
+			// tsmiClearCustomization
+			// 
+			this.tsmiClearCustomization.Name = "tsmiClearCustomization";
+			this.tsmiClearCustomization.Size = new System.Drawing.Size(169, 22);
+			this.tsmiClearCustomization.Text = "&Clear Customization";
+			this.tsmiClearCustomization.Click += new System.EventHandler(this.tsmiClearCustomization_Click);
+			// 
+			// tsmiSetCustomization
+			// 
+			this.tsmiSetCustomization.Name = "tsmiSetCustomization";
+			this.tsmiSetCustomization.Size = new System.Drawing.Size(169, 22);
+			this.tsmiSetCustomization.Text = "&Set Customization";
+			this.tsmiSetCustomization.Click += new System.EventHandler(this.tsmiSetCustomization_Click);
 			// 
 			// FirmwaresConfig
 			// 
@@ -250,12 +230,12 @@
 			this.Text = "Firmwares";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FirmwaresConfig_FormClosed);
 			this.Load += new System.EventHandler(this.FirmwaresConfig_Load);
-			this.lvFirmwaresContextMenuStrip.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
-			this.tableLayoutPanel1.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.lvFirmwaresContextMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -282,7 +262,5 @@
 				private System.Windows.Forms.ContextMenuStrip lvFirmwaresContextMenuStrip;
 				private System.Windows.Forms.ToolStripMenuItem tsmiSetCustomization;
 				private System.Windows.Forms.ToolStripMenuItem tsmiClearCustomization;
-				private System.Windows.Forms.ToolStripMenuItem tsmiInfo;
-				private System.Windows.Forms.ToolStripMenuItem tsmiCopy;
     }
 }

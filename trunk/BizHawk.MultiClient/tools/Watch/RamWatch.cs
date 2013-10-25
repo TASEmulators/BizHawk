@@ -7,8 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class RamWatch : Form
@@ -67,7 +65,7 @@ namespace BizHawk.MultiClient
 					for (int x = 0; x < Watches.Count; x++)
 					{
 						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
-						GlobalWinF.OSD.AddGUIText(
+						Global.OSD.AddGUIText(
 							Watches[x].ToString(),
 							Global.Config.DispRamWatchx,
 							(Global.Config.DispRamWatchy + (x * 14)),
@@ -166,9 +164,9 @@ namespace BizHawk.MultiClient
 
 			if (Watches.Changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					Watches.Save();
@@ -520,9 +518,9 @@ namespace BizHawk.MultiClient
 				InitialLocation = GetPromptPoint()
 			};
 			we.SetWatch(Watches.Domain);
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			we.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 
 			if (we.DialogResult == DialogResult.OK)
 			{
@@ -550,7 +548,7 @@ namespace BizHawk.MultiClient
 				}
 
 				we.SetWatch(Watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				var result = we.ShowDialog();
 				if (result == DialogResult.OK)
 				{
@@ -569,7 +567,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 				UpdateValues();
 			}
 		}
@@ -588,13 +586,13 @@ namespace BizHawk.MultiClient
 					poke.SetWatch(SelectedWatches);
 				}
 
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				var result = poke.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					UpdateValues();
 				}
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 			}
 		}
 
@@ -1031,7 +1029,7 @@ namespace BizHawk.MultiClient
 
 			if (!Global.Config.DisplayRamWatch)
 			{
-				GlobalWinF.OSD.ClearGUIText();
+				Global.OSD.ClearGUIText();
 			}
 			else
 			{
@@ -1148,7 +1146,7 @@ namespace BizHawk.MultiClient
 			var selected = SelectedWatches;
 			if (selected.Any())
 			{
-				GlobalWinF.MainForm.LoadHexEditor();
+				Global.MainForm.LoadHexEditor();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{

@@ -2,8 +2,6 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class RewindConfig : Form
@@ -11,7 +9,7 @@ namespace BizHawk.MultiClient
 		private long StateSize;
 		private int MediumStateSize;
 		private int LargeStateSize;
-		private int StateSizeCategory = 1; //1 = small, 2 = med, 3 = larg //TODO: enum
+        private int StateSizeCategory = 1; //1 = small, 2 = med, 3 = larg //TODO: enum
 		public RewindConfig()
 		{
 			InitializeComponent();
@@ -19,10 +17,10 @@ namespace BizHawk.MultiClient
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MainForm.RewindBuf != null)
+			if (Global.MainForm.RewindBuf != null)
 			{
-				FullnessLabel.Text = String.Format("{0:0.00}", GlobalWinF.MainForm.Rewind_FullnessRatio * 100) + "%";
-				RewindFramesUsedLabel.Text = GlobalWinF.MainForm.Rewind_Count.ToString();
+				FullnessLabel.Text = String.Format("{0:0.00}", Global.MainForm.Rewind_FullnessRatio * 100) + "%";
+				RewindFramesUsedLabel.Text = Global.MainForm.Rewind_Count.ToString();
 			}
 			else
 			{
@@ -111,13 +109,13 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Rewind config aborted");
+			Global.OSD.AddMessage("Rewind config aborted");
 			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Rewind settings saved");
+			Global.OSD.AddMessage("Rewind settings saved");
 
 			Global.Config.RewindFrequencySmall = (int)SmallSavestateNumeric.Value;
 			Global.Config.RewindFrequencyMedium = (int)MediumSavestateNumeric.Value;
@@ -127,7 +125,7 @@ namespace BizHawk.MultiClient
 			Global.Config.RewindEnabledMedium = MediumStateEnabledBox.Checked;
 			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
 
-			GlobalWinF.MainForm.DoRewindSettings();
+			Global.MainForm.DoRewindSettings();
 
 			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
 
@@ -137,7 +135,7 @@ namespace BizHawk.MultiClient
 			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
 			if (Global.Config.Rewind_IsThreaded != RewindIsThreadedCheckbox.Checked)
 			{
-				GlobalWinF.MainForm.FlagNeedsReboot();
+				Global.MainForm.FlagNeedsReboot();
 				Global.Config.Rewind_IsThreaded = RewindIsThreadedCheckbox.Checked;
 			}
 
@@ -260,9 +258,9 @@ namespace BizHawk.MultiClient
             if (UseDeltaCompression.Checked || StateSize == 0)
             {
 
-                if (GlobalWinF.MainForm.Rewind_Count > 0)
+                if (Global.MainForm.Rewind_Count > 0)
                 {
-                    avg_state_size = (long)(GlobalWinF.MainForm.Rewind_Size / GlobalWinF.MainForm.Rewind_Count);
+                    avg_state_size = (long)(Global.MainForm.Rewind_Size / Global.MainForm.Rewind_Count);
                 }
                 else
                 {

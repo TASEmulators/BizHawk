@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Sega;
@@ -112,7 +111,6 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentWatches.Add(path);
 					UpdateListView();
 					UpdateMessageLabel();
-					ToolHelpers.UpdateCheatRelatedTools();
 				}
 			}
 		}
@@ -142,9 +140,9 @@ namespace BizHawk.MultiClient
 
 			if (Global.CheatList.Changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					Global.CheatList.Save();
@@ -178,21 +176,7 @@ namespace BizHawk.MultiClient
 					UpdateListView();
 					UpdateMessageLabel();
 					Global.Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
-					ToolHelpers.UpdateCheatRelatedTools();
 				}
-			}
-		}
-
-		private bool SaveAs()
-		{
-			var file = ToolHelpers.GetCheatSaveFileFromUser(Global.CheatList.CurrentFileName);
-			if (file != null)
-			{
-				return Global.CheatList.SaveFile(file.FullName);
-			}
-			else
-			{
-				return false;
 			}
 		}
 
@@ -231,7 +215,6 @@ namespace BizHawk.MultiClient
 			Global.CheatList.Add(CheatEditor.Cheat);
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void EditCheat()
@@ -420,7 +403,6 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateListView();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveDown()
@@ -457,7 +439,6 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateListView();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void Remove()
@@ -570,10 +551,9 @@ namespace BizHawk.MultiClient
 
 			if (result)
 			{
-				Global.CheatList.NewList(GlobalWinF.MainForm.GenerateDefaultCheatFilename());
+				Global.CheatList.NewList();
 				UpdateListView();
 				UpdateMessageLabel();
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -602,7 +582,7 @@ namespace BizHawk.MultiClient
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			bool append = sender == AppendMenuItem;
-			LoadFile(ToolHelpers.GetCheatFileFromUser(Global.CheatList.CurrentFileName), append);
+			LoadFile(CheatList.GetFileFromUser(Global.CheatList.CurrentFileName), append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -622,7 +602,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SaveAs())
+			if (Global.CheatList.SaveAs())
 			{
 				UpdateMessageLabel(saved: true);
 			}
@@ -674,7 +654,6 @@ namespace BizHawk.MultiClient
 
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -690,7 +669,6 @@ namespace BizHawk.MultiClient
 			
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
@@ -719,12 +697,11 @@ namespace BizHawk.MultiClient
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.CheatList.DisableAll();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			Global.MainForm.LoadGameGenieEC();
 		}
 
 		#endregion

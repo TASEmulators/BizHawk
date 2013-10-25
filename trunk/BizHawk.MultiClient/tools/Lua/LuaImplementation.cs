@@ -8,11 +8,9 @@ using System.Drawing;
 using System.Threading;
 using System.Globalization;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.MultiClient.tools;
 using System.Text;
-
-using BizHawk.MultiClient.tools; //TODO: remove me, this is not an intended namespace
 
 namespace BizHawk.MultiClient
 {
@@ -563,7 +561,7 @@ namespace BizHawk.MultiClient
 
 		public void client_closerom()
 		{
-			GlobalWinF.MainForm.CloseROM();
+			Global.MainForm.CloseROM();
 		}
 
 		public int client_getwindowsize()
@@ -573,74 +571,74 @@ namespace BizHawk.MultiClient
 
 		public void client_opencheats()
 		{
-			GlobalWinF.MainForm.LoadCheatsWindow();
+			Global.MainForm.LoadCheatsWindow();
 		}
 
 		public void client_openhexeditor()
 		{
-			GlobalWinF.MainForm.LoadHexEditor();
+			Global.MainForm.LoadHexEditor();
 		}
 
 		public void client_openramwatch()
 		{
-			GlobalWinF.MainForm.LoadRamWatch(true);
+			Global.MainForm.LoadRamWatch(true);
 		}
 
 		public void client_openramsearch()
 		{
-			GlobalWinF.MainForm.LoadRamSearch();
+			Global.MainForm.LoadRamSearch();
 		}
 
 		public void client_openrom(object lua_input)
 		{
-			GlobalWinF.MainForm.LoadRom(lua_input.ToString());
+			Global.MainForm.LoadRom(lua_input.ToString());
 		}
 
 		public void client_opentasstudio()
 		{
-			GlobalWinF.MainForm.LoadTAStudio();
+			Global.MainForm.LoadTAStudio();
 		}
 
 		public void client_opentoolbox()
 		{
-			GlobalWinF.MainForm.LoadToolBox();
+			Global.MainForm.LoadToolBox();
 		}
 
 		public void client_opentracelogger()
 		{
-			GlobalWinF.MainForm.LoadTraceLogger();
+			Global.MainForm.LoadTraceLogger();
 		}
 
 		public void client_pause_av()
 		{
-			GlobalWinF.MainForm.PauseAVI = true;
+			Global.MainForm.PauseAVI = true;
 		}
 
 		public void client_reboot_core()
 		{
-			GlobalWinF.MainForm.RebootCore();
+			Global.MainForm.RebootCore();
 		}
 
 		public int client_screenheight()
 		{
-			return GlobalWinF.RenderPanel.NativeSize.Height;
+			return Global.RenderPanel.NativeSize.Height;
 		}
 
 		public void client_screenshot(object path = null)
 		{
 			if (path == null)
 			{
-				GlobalWinF.MainForm.TakeScreenshot();
+				Global.MainForm.TakeScreenshot();
 			}
 			else
 			{
-				GlobalWinF.MainForm.TakeScreenshot(path.ToString());
+				Global.MainForm.TakeScreenshot(path.ToString());
 			}
 		}
 
 		public void client_screenshottoclipboard()
 		{
-			GlobalWinF.MainForm.TakeScreenshotToClipboard();
+			Global.MainForm.TakeScreenshotToClipboard();
 		}
 
 		public void client_setscreenshotosd(bool value)
@@ -650,7 +648,7 @@ namespace BizHawk.MultiClient
 
 		public int client_screenwidth()
 		{
-			return GlobalWinF.RenderPanel.NativeSize.Width;
+			return Global.RenderPanel.NativeSize.Width;
 		}
 
 		public void client_setwindowsize(object window_size)
@@ -662,8 +660,8 @@ namespace BizHawk.MultiClient
 				if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 				{
 					Global.Config.TargetZoomFactor = size;
-					GlobalWinF.MainForm.FrameBufferResized();
-					GlobalWinF.OSD.AddMessage("Window size set to " + size.ToString() + "x");
+					Global.MainForm.FrameBufferResized();
+					Global.OSD.AddMessage("Window size set to " + size.ToString() + "x");
 				}
 				else
 				{
@@ -679,17 +677,17 @@ namespace BizHawk.MultiClient
 
 		public void client_unpause_av()
 		{
-			GlobalWinF.MainForm.PauseAVI = false;
+			Global.MainForm.PauseAVI = false;
 		}
 
 		public int client_xpos()
 		{
-			return GlobalWinF.MainForm.DesktopLocation.X;
+			return Global.MainForm.DesktopLocation.X;
 		}
 
 		public int client_ypos()
 		{
-			return GlobalWinF.MainForm.DesktopLocation.Y;
+			return Global.MainForm.DesktopLocation.Y;
 		}
 
 		#endregion
@@ -698,13 +696,13 @@ namespace BizHawk.MultiClient
 
 		public void console_clear()
 		{
-			GlobalWinF.MainForm.LuaConsole1.ClearOutputWindow();
+			Global.MainForm.LuaConsole1.ClearOutputWindow();
 		}
 
 		public string console_getluafunctionslist()
 		{
 			string list = "";
-			foreach (LuaDocumentation.LibraryFunction l in GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
+			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
 				list += l.name + "\n";
 			}
@@ -721,7 +719,7 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input == null)
 			{
-				GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow("NULL");
+				Global.MainForm.LuaConsole1.WriteToOutputWindow("NULL");
 			}
 			else
 			{
@@ -756,11 +754,11 @@ namespace BizHawk.MultiClient
 							.AppendLine();
 					}
 
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
 				}
 				else
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 				}
 			}
 		}
@@ -812,7 +810,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_clearGraphics()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			luaSurface.Clear();
 		}
 
@@ -825,12 +823,12 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void gui_drawNew()
 		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaSurfaceNative();
+			luaSurface = Global.DisplayManager.GetLuaSurfaceNative();
 		}
 
 		public void gui_drawNewEmu()
 		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaEmuSurfaceEmu();
+			luaSurface = Global.DisplayManager.GetLuaEmuSurfaceEmu();
 		}
 
 		/// <summary>
@@ -840,13 +838,13 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void gui_drawFinish()
 		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			Global.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
 			luaSurface = null;
 		}
 
 		public void gui_drawFinishEmu()
 		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceEmu(luaSurface);
+			Global.DisplayManager.SetLuaSurfaceEmu(luaSurface);
 			luaSurface = null;
 		}
 
@@ -907,14 +905,14 @@ namespace BizHawk.MultiClient
 			dx *= client_getwindowsize();
 			dy *= client_getwindowsize();
 
-			GlobalWinF.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
+			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
 		}
 
 		#endregion
 
 		public void gui_addmessage(object luaStr)
 		{
-			GlobalWinF.OSD.AddMessage(luaStr.ToString());
+			Global.OSD.AddMessage(luaStr.ToString());
 		}
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
@@ -924,12 +922,12 @@ namespace BizHawk.MultiClient
 
 		public void gui_cleartext()
 		{
-			GlobalWinF.OSD.ClearGUIText();
+			Global.OSD.ClearGUIText();
 		}
 
 		public void gui_drawBezier(LuaTable points, object color)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1000,7 +998,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1022,7 +1020,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1048,7 +1046,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1071,7 +1069,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1088,7 +1086,7 @@ namespace BizHawk.MultiClient
 		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
 								object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1111,7 +1109,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPixel(object X, object Y, object color = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
@@ -1128,7 +1126,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPolygon(LuaTable points, object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			//this is a test
 			using (var g = GetGraphics())
 			{
@@ -1183,13 +1181,13 @@ namespace BizHawk.MultiClient
 		
 		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			gui_drawText(X, Y, message, color, fontsize, fontfamily, fontstyle);
 		}
 
 		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -1257,23 +1255,23 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				GlobalWinF.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
-				GlobalWinF.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
+				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
+				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
 			else if (Global.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				GlobalWinF.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
-				GlobalWinF.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
+				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
+				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
 				{
-					GlobalWinF.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
-					GlobalWinF.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
+					Global.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
+					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
 			else if (Global.Emulator is Emulation.Consoles.Sega.SMS)
 			{
-				GlobalWinF.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
-				GlobalWinF.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
+				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
+				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
 		}
 
@@ -1292,7 +1290,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.VSyncThrottle = true;
 				}
-				GlobalWinF.MainForm.VsyncMessage();
+				Global.MainForm.VsyncMessage();
 			}
 		}
 
@@ -1303,13 +1301,13 @@ namespace BizHawk.MultiClient
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					GlobalWinF.MainForm.RewindActive = false;
-					GlobalWinF.OSD.AddMessage("Rewind suspended");
+					Global.MainForm.RewindActive = false;
+					Global.OSD.AddMessage("Rewind suspended");
 				}
 				else
 				{
-					GlobalWinF.MainForm.RewindActive = true;
-					GlobalWinF.OSD.AddMessage("Rewind enabled");
+					Global.MainForm.RewindActive = true;
+					Global.OSD.AddMessage("Rewind enabled");
 				}
 			}
 		}
@@ -1334,7 +1332,7 @@ namespace BizHawk.MultiClient
 				if (frames > 0)
 				{
 					Global.Config.FrameSkip = frames;
-					GlobalWinF.MainForm.FrameSkipMessage();
+					Global.MainForm.FrameSkipMessage();
 				}
 				else
 				{
@@ -1359,7 +1357,7 @@ namespace BizHawk.MultiClient
 
 		public bool emu_ispaused()
 		{
-			return GlobalWinF.MainForm.EmulatorPaused;
+			return Global.MainForm.EmulatorPaused;
 		}
 
 		public int emu_lagcount()
@@ -1380,7 +1378,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.ClockThrottle = true;
 				}
-				GlobalWinF.MainForm.LimitFrameRateMessage();
+				Global.MainForm.LimitFrameRateMessage();
 			}
 		}
 
@@ -1397,7 +1395,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.AutoMinimizeSkipping = true;
 				}
-				GlobalWinF.MainForm.MinimizeFrameskipMessage();
+				Global.MainForm.MinimizeFrameskipMessage();
 			}
 		}
 
@@ -1413,7 +1411,7 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
 							"error running function attached by lua function emu.on_snoop" +
 							"\nError message: " + e.Message);
 					}
@@ -1425,7 +1423,7 @@ namespace BizHawk.MultiClient
 
 		public void emu_pause()
 		{
-			GlobalWinF.MainForm.PauseEmulator();
+			Global.MainForm.PauseEmulator();
 		}
 
 		public void emu_setrenderplanes( // For now, it accepts arguments up to 5.
@@ -1443,7 +1441,7 @@ namespace BizHawk.MultiClient
 				int speed = Convert.ToInt32(temp);
 				if (speed > 0 && speed < 1000) //arbituarily capping it at 1000%
 				{
-					GlobalWinF.MainForm.ClickSpeedItem(speed);
+					Global.MainForm.ClickSpeedItem(speed);
 				}
 				else
 				{
@@ -1458,17 +1456,17 @@ namespace BizHawk.MultiClient
 
 		public void emu_togglepause()
 		{
-			GlobalWinF.MainForm.TogglePause();
+			Global.MainForm.TogglePause();
 		}
 
 		public void emu_unpause()
 		{
-			GlobalWinF.MainForm.UnpauseEmulator();
+			Global.MainForm.UnpauseEmulator();
 		}
 
 		public void emu_yield()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			currThread.Yield(0);
 		}
 
@@ -1496,7 +1494,7 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
 						"error running function attached by lua function savestate.registersave" +
 						"\nError message: " + e.Message);
 				}
@@ -1517,7 +1515,7 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
 						"error running function attached by lua function savestate.registerload" +
 						"\nError message: " + e.Message);
 				}
@@ -1538,7 +1536,7 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
 						"error running function attached by lua function emu.registerbefore" +
 						"\nError message: " + e.Message);
 				}
@@ -1559,7 +1557,7 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
 						"error running function attached by lua function emu.registerafter" +
 						"\nError message: " + e.Message);
 				}
@@ -1616,7 +1614,7 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
 							"error running function attached by lua function event.onmemoryread" +
 							"\nError message: " + e.Message);
 					}
@@ -1653,7 +1651,7 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
 							"error running function attached by lua function event.onmemoryread" +
 							"\nError message: " + e.Message);
 					}
@@ -2110,7 +2108,7 @@ namespace BizHawk.MultiClient
 		public LuaTable input_get()
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (var kvp in GlobalWinF.ControllerInputCoalescer.BoolButtons())
+			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons())
 				if (kvp.Value)
 					buttons[kvp.Key] = true;
 			return buttons;
@@ -2119,7 +2117,7 @@ namespace BizHawk.MultiClient
 		public LuaTable input_getmouse()
 		{
 			LuaTable buttons = _lua.NewTable();
-			Point p = GlobalWinF.RenderPanel.ScreenToScreen(Control.MousePosition);
+			Point p = Global.RenderPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
 			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;
@@ -2138,27 +2136,27 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in GlobalWinF.ControllerOutput.Source.Type.BoolButtons)
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
 				if (controller == null)
 				{
-					buttons[button] = GlobalWinF.ControllerOutput[button];
+					buttons[button] = Global.ControllerOutput[button];
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = GlobalWinF.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
 				}
 			}
 
-			foreach (string button in GlobalWinF.ControllerOutput.Source.Type.FloatControls)
+			foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
 			{
 				if (controller == null)
 				{
-					buttons[button] = GlobalWinF.ControllerOutput.GetFloat(button);
+					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = GlobalWinF.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
 				}
 			}
 
@@ -2172,8 +2170,8 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_getimmediate()
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in GlobalWinF.ActiveController.Type.BoolButtons)
-				buttons[button] = GlobalWinF.ActiveController[button];
+			foreach (string button in Global.ActiveController.Type.BoolButtons)
+				buttons[button] = Global.ActiveController[button];
 			return buttons;
 		}
 
@@ -2215,24 +2213,24 @@ namespace BizHawk.MultiClient
 						{
 							if (controller == null) //Force On
 							{
-								GlobalWinF.ClickyVirtualPadController.Click(button.ToString());
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+								Global.ClickyVirtualPadController.Click(button.ToString());
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 							}
 							else
 							{
-								GlobalWinF.ClickyVirtualPadController.Click("P" + controller + " " + button);
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+								Global.ClickyVirtualPadController.Click("P" + controller + " " + button);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 						else if (theValue == false) //Force off
 						{
 							if (controller == null)
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), true);
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
 							}
 							else
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
 							}
 						}
 						else
@@ -2240,11 +2238,11 @@ namespace BizHawk.MultiClient
 							//Turn everything off
 							if (controller == null)
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 							}
 							else
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 					}
@@ -2252,13 +2250,13 @@ namespace BizHawk.MultiClient
 					{
 						if (controller == null)
 						{
-							GlobalWinF.StickyXORAdapter.SetSticky(button.ToString(), true);
-							GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							Global.StickyXORAdapter.SetSticky(button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 						}
 						else
 						{
-							GlobalWinF.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
-							GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+							Global.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
+							Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 						}
 					}
 				}
@@ -2281,11 +2279,11 @@ namespace BizHawk.MultiClient
 							float theValue = float.Parse(theValueStr);
 							if (controller == null)
 							{
-								GlobalWinF.StickyXORAdapter.SetFloat(name.ToString(), theValue);
+								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
 							}
 							else
 							{
-								GlobalWinF.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 							}
 						}
 						catch { }
@@ -2953,7 +2951,7 @@ namespace BizHawk.MultiClient
 
 		public bool movie_getreadonly()
 		{
-			return GlobalWinF.MainForm.ReadOnly;
+			return Global.MainForm.ReadOnly;
 		}
 
 		public bool movie_getrerecordcounting()
@@ -3013,9 +3011,9 @@ namespace BizHawk.MultiClient
 		public void movie_setreadonly(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-				GlobalWinF.MainForm.SetReadOnly(true);
+				Global.MainForm.SetReadOnly(true);
 			else
-				GlobalWinF.MainForm.SetReadOnly(false);
+				Global.MainForm.SetReadOnly(false);
 		}
 
 		public void movie_setrerecordcounting(object lua_input)
@@ -3057,8 +3055,6 @@ namespace BizHawk.MultiClient
 						gg.Compare,
 						enabled: true));
 				}
-
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -3117,8 +3113,6 @@ namespace BizHawk.MultiClient
 					var cheats = Global.CheatList.Where(x => x.Address == gg.Address);
 					Global.CheatList.RemoveRange(cheats);
 				}
-
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -3143,13 +3137,13 @@ namespace BizHawk.MultiClient
 		public void nes_setdispbackground(bool show)
 		{
 			Global.Config.NESDispBackground = show;
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		public void nes_setdispsprites(bool show)
 		{
 			Global.Config.NESDispSprites = show;
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		public void nes_setscanlines(object top, object bottom, bool pal = false)
@@ -3209,7 +3203,7 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input is string)
 			{
-				GlobalWinF.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
+				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
 			}
 		}
 
@@ -3229,7 +3223,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			GlobalWinF.MainForm.LoadState("QuickSave" + x.ToString(), true);
+			Global.MainForm.LoadState("QuickSave" + x.ToString(), true);
 		}
 
 		public string savestate_registerload(LuaFunction luaf, object name)
@@ -3251,7 +3245,7 @@ namespace BizHawk.MultiClient
 			if (lua_input is string)
 			{
 				string path = lua_input.ToString();
-				GlobalWinF.MainForm.SaveStateFile(path, path, true);
+				Global.MainForm.SaveStateFile(path, path, true);
 			}
 		}
 
@@ -3271,7 +3265,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			GlobalWinF.MainForm.SaveState("QuickSave" + x.ToString());
+			Global.MainForm.SaveState("QuickSave" + x.ToString());
 		}
 
 		#endregion
@@ -3320,42 +3314,42 @@ namespace BizHawk.MultiClient
 
 		public void snes_setlayer_bg_1(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG1(value);
+			Global.MainForm.SNES_ToggleBG1(value);
 		}
 
 		public void snes_setlayer_bg_2(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG2(value);
+			Global.MainForm.SNES_ToggleBG2(value);
 		}
 
 		public void snes_setlayer_bg_3(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG3(value);
+			Global.MainForm.SNES_ToggleBG3(value);
 		}
 
 		public void snes_setlayer_bg_4(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG4(value);
+			Global.MainForm.SNES_ToggleBG4(value);
 		}
 
 		public void snes_setlayer_obj_1(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ1(value);
+			Global.MainForm.SNES_ToggleOBJ1(value);
 		}
 
 		public void snes_setlayer_obj_2(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ2(value);
+			Global.MainForm.SNES_ToggleOBJ2(value);
 		}
 
 		public void snes_setlayer_obj_3(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ3(value);
+			Global.MainForm.SNES_ToggleOBJ3(value);
 		}
 
 		public void snes_setlayer_obj_4(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ4(value);
+			Global.MainForm.SNES_ToggleOBJ4(value);
 		}
 
 		#endregion

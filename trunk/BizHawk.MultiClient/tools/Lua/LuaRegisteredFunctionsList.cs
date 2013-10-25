@@ -30,7 +30,7 @@ namespace BizHawk.MultiClient
 		{
 			FunctionView.Items.Clear();
 			
-			List<NamedLuaFunction> nlfs = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
+			List<NamedLuaFunction> nlfs = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
 			foreach (NamedLuaFunction nlf in nlfs)
 			{
 				ListViewItem item = new ListViewItem { Text = nlf.Event };
@@ -55,7 +55,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]].Call();
+				Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]].Call();
 			}
 		}
 
@@ -64,8 +64,8 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				NamedLuaFunction nlf = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]];
-				GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Remove(nlf);
+				NamedLuaFunction nlf = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions[indexes[0]];
+				Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Remove(nlf);
 				PopulateListView();
 			}
 		}

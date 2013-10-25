@@ -10,8 +10,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -788,10 +786,10 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				GlobalWinF.MainForm.LoadRamWatch(true);
+				Global.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < SelectedIndices.Count; x++)
 				{
-					GlobalWinF.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
+					Global.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
 				}
 
 				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
@@ -810,7 +808,7 @@ namespace BizHawk.MultiClient
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				var poke = new RamPoke();
 
 				var watches = new List<Watch>();
@@ -823,13 +821,13 @@ namespace BizHawk.MultiClient
 				poke.InitialLocation = GetPromptPoint();
 				poke.ShowDialog();
 				UpdateValues();
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 			}
 		}
 
 		private void RemoveRamWatchesFromList()
 		{
-			Searches.RemoveRange(GlobalWinF.MainForm.RamWatch1.AddressList);
+			Searches.RemoveRange(Global.MainForm.RamWatch1.AddressList);
 			WatchListView.ItemCount = Searches.Count;
 			SetTotal();
 		}
@@ -874,9 +872,9 @@ namespace BizHawk.MultiClient
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
 			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			i.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 
 			if (i.UserOK)
 			{

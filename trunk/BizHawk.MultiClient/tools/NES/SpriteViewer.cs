@@ -3,8 +3,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public sealed class SpriteViewer : Control
@@ -49,9 +47,9 @@ namespace BizHawk.MultiClient
 					RestoreDirectory = true
 				};
 
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 

@@ -5,8 +5,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class TraceLogger : Form
@@ -31,7 +29,7 @@ namespace BizHawk.MultiClient
 
 		public void SaveConfigSettings()
 		{
-			GlobalWinF.CoreComm.Tracer.Enabled = false;
+			Global.CoreComm.Tracer.Enabled = false;
 			Global.Config.TraceLoggerWndx = Location.X;
 			Global.Config.TraceLoggerWndy = Location.Y;
 		}
@@ -62,7 +60,7 @@ namespace BizHawk.MultiClient
 
 			ClearList();
 			LoggingEnabled.Checked = true;
-			GlobalWinF.CoreComm.Tracer.Enabled = true;
+			Global.CoreComm.Tracer.Enabled = true;
 			SetTracerBoxTitle();
 			Restart();
 		}
@@ -106,7 +104,7 @@ namespace BizHawk.MultiClient
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			GlobalWinF.CoreComm.Tracer.Enabled = LoggingEnabled.Checked;
+			Global.CoreComm.Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 		}
 
@@ -132,13 +130,13 @@ namespace BizHawk.MultiClient
 		{
 			using (StreamWriter sw = new StreamWriter(LogFile.FullName, true))
 			{
-				sw.Write(GlobalWinF.CoreComm.Tracer.TakeContents());
+				sw.Write(Global.CoreComm.Tracer.TakeContents());
 			}
 		}
 
 		private void LogToWindow()
 		{
-			string[] instructions = GlobalWinF.CoreComm.Tracer.TakeContents().Split('\n');
+			string[] instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
 			if (!String.IsNullOrWhiteSpace(instructions[0]))
 			{
 				foreach (string s in instructions)
@@ -199,7 +197,7 @@ namespace BizHawk.MultiClient
 
 		private void SetTracerBoxTitle()
 		{
-			if (GlobalWinF.CoreComm.Tracer.Enabled)
+			if (Global.CoreComm.Tracer.Enabled)
 			{
 				if (ToFileRadio.Checked)
 				{
@@ -320,10 +318,10 @@ namespace BizHawk.MultiClient
 
 			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -341,7 +339,7 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				DumpListToDisk(file);
-				GlobalWinF.OSD.AddMessage("Log dumped to " + file.FullName);
+				Global.OSD.AddMessage("Log dumped to " + file.FullName);
 			}
 		}
 

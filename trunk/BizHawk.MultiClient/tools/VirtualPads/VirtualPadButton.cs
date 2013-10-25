@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 
 		protected void SetSticky()
 		{
-			GlobalWinF.StickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.StickyXORAdapter.SetSticky(ControllerButton, Checked);
 
 			if (Checked == false)
 			{
@@ -55,7 +55,7 @@ namespace BizHawk.MultiClient
 
 		protected void SetAutofireSticky()
 		{
-			GlobalWinF.AutofireStickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, Checked);
 
 			if (Checked == false)
 			{
@@ -92,8 +92,8 @@ namespace BizHawk.MultiClient
 			_rightClicked = false;
 			ForeColor = Color.Black;
 			Checked = false;
-			GlobalWinF.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
-			GlobalWinF.StickyXORAdapter.SetSticky(ControllerButton, false);
+			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
+			Global.StickyXORAdapter.SetSticky(ControllerButton, false);
 		}
 	}
 }

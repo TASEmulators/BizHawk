@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class PathConfig : Form
@@ -58,13 +56,13 @@ namespace BizHawk.MultiClient
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			GlobalWinF.OSD.AddMessage("Path settings saved");
+			Global.OSD.AddMessage("Path settings saved");
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Path config aborted");
+			Global.OSD.AddMessage("Path config aborted");
 			Close();
 		}
 

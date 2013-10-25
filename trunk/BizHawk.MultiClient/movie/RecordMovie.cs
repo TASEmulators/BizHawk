@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
@@ -58,11 +56,11 @@ namespace BizHawk.MultiClient
 				}
 
 
-				MovieToRecord = new Movie(path, GlobalWinF.MainForm.GetEmuVersion());
+				MovieToRecord = new Movie(path);
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, GlobalWinF.MainForm.GetEmuVersion());
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, Global.MainForm.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
@@ -162,7 +160,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 				}
-				GlobalWinF.MainForm.StartNewMovie(MovieToRecord, true);
+				Global.MainForm.StartNewMovie(MovieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -196,9 +194,9 @@ namespace BizHawk.MultiClient
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				filename = sfd.FileName;
