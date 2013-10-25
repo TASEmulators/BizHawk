@@ -106,10 +106,15 @@
     <Compile Include="RomGame.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
+    <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch.cs" />
     <Compile Include="tools\WatchList.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>

@@ -7,9 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BizHawk.Common;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	//TODO: move me
 	//http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
