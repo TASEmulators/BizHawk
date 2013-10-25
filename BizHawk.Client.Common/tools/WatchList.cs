@@ -4,16 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class WatchList : IEnumerable<Watch>
 	{
-
-
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
 		public const string PREV = "PrevColumn";
@@ -297,26 +292,6 @@ namespace BizHawk.MultiClient
 		public string CurrentFileName { get { return _currentFilename; } set { _currentFilename = value; } }
 		public bool Changes { get; set; }
 
-		public bool Save()
-		{
-			bool result;
-			if (!String.IsNullOrWhiteSpace(CurrentFileName))
-			{
-				result = SaveFile();
-			}
-			else
-			{
-				result = SaveAs();
-			}
-
-			if (result)
-			{
-				Changes = false;
-			}
-
-			return result;
-		}
-
 		public bool Load(string path, bool append)
 		{
 			bool result = LoadFile(path, append);
@@ -346,7 +321,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool SaveFile()
+		public bool Save()
 		{
 			if (String.IsNullOrWhiteSpace(CurrentFileName))
 			{
@@ -380,13 +355,12 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		public bool SaveAs()
+		public bool SaveAs(FileInfo file)
 		{
-			var file = GetSaveFileFromUser(CurrentFileName);
 			if (file != null)
 			{
 				CurrentFileName = file.FullName;
-				return SaveFile();
+				return Save();
 			}
 			else
 			{
@@ -544,53 +518,6 @@ namespace BizHawk.MultiClient
 					return x;
 			}
 			return 0;
-		}
-
-		public static FileInfo GetFileFromUser(string currentFile)
-		{
-			var ofd = new OpenFileDialog();
-			if (currentFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
-		}
-
-		public static FileInfo GetSaveFileFromUser(string currentFile)
-		{
-			var sfd = new SaveFileDialog();
-			if (currentFile.Length > 0)
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			}
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
 		}
 
 		#endregion

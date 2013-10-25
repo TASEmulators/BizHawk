@@ -911,7 +911,7 @@ namespace BizHawk.MultiClient
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadWatchFile(
-				WatchList.GetFileFromUser(String.Empty),
+				ToolHelpers.GetWatchFileFromUser(String.Empty),
 				sender == AppendFileMenuItem,
 				sender == TruncateFromFileMenuItem
 				);
@@ -928,10 +928,22 @@ namespace BizHawk.MultiClient
 					watches.Add(Searches[i]);
 				}
 
-				if (watches.Save())
+				if (!String.IsNullOrWhiteSpace(watches.CurrentFileName))
 				{
-					CurrentFileName = watches.CurrentFileName;
-					MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+					if (watches.Save())
+					{
+						CurrentFileName = watches.CurrentFileName;
+						MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+					}
+				}
+				else
+				{
+					bool result = watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName));
+					if (result)
+					{
+						MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+						Global.Config.RecentWatches.Add(watches.CurrentFileName);
+					}
 				}
 			}
 		}
@@ -945,7 +957,7 @@ namespace BizHawk.MultiClient
 				watches.Add(Searches[i]);
 			}
 
-			if (watches.SaveAs())
+			if (watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName)))
 			{
 				CurrentFileName = watches.CurrentFileName;
 				MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
