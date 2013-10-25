@@ -107,6 +107,7 @@
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\Watch.cs" />
+    <Compile Include="tools\WatchList.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
