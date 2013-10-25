@@ -2,8 +2,6 @@
 using System.Linq;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	class StateVisualizer
@@ -21,18 +19,10 @@ namespace BizHawk.MultiClient
 				string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 				if (File.Exists(path))
 				{
-					Movie m = new Movie(GlobalWinF.MainForm.GetEmuVersion());
-					LoadLogFromSavestateText(m, path);
+					Movie m = new Movie();
+					m.LoadLogFromSavestateText(path);
 					AddLog(m.LogDump, i);
 				}
-			}
-		}
-
-		private void LoadLogFromSavestateText(Movie movie, string path)
-		{
-			using (var reader = new StreamReader(path))
-			{
-				movie.LoadLogFromSavestateText(reader, Global.MovieSession.MultiTrack.IsActive);
 			}
 		}
 

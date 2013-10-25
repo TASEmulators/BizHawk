@@ -5,8 +5,6 @@ using System.Text;
 using System.IO;
 using System.Xml;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public class XmlGame

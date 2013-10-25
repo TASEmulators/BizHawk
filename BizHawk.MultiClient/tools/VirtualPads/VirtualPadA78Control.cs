@@ -2,8 +2,6 @@
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadA78Control : UserControl, IVirtualPad
@@ -78,19 +76,19 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B1)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
 			}
 			else if (sender == B2)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
 			else if (sender == B3)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Select", B3.Checked);
+				Global.StickyXORAdapter.SetSticky("Select", B3.Checked);
 			}
 			else if (sender == B4)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Pause", B4.Checked);
+				Global.StickyXORAdapter.SetSticky("Pause", B4.Checked);
 			}
 		}
 
@@ -98,10 +96,10 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "A78") return;
 
-			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
-			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
-			if (B3.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Select", false);
-			if (B4.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+			if (B3.Checked) Global.StickyXORAdapter.SetSticky("Select", false);
+			if (B4.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

@@ -2,8 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using BizHawk.Client.Common;
-
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
 namespace BizHawk.MultiClient
@@ -25,7 +23,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return 20;
 				}
@@ -39,7 +37,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}
@@ -54,7 +52,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}

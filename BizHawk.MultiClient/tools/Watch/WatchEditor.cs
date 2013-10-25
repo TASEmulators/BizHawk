@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class WatchEditor : Form

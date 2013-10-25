@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class SoundConfig : Form
@@ -49,16 +47,16 @@ namespace BizHawk.MultiClient
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.Sound.UpdateSoundSettings();
-			GlobalWinF.Sound.StartSound();
-			GlobalWinF.OSD.AddMessage("Sound settings saved");
+			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
+			Global.Sound.UpdateSoundSettings();
+			Global.Sound.StartSound();
+			Global.OSD.AddMessage("Sound settings saved");
 			this.Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Sound config aborted");
+			Global.OSD.AddMessage("Sound config aborted");
 			this.Close();
 		}
 

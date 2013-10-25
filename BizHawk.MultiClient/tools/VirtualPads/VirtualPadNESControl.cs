@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public class VirtualPadNESControl : VirtualPad
@@ -118,7 +116,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B1)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
 				if (B1.Checked)
 					B1.BackColor = Color.Pink;
 				else
@@ -126,7 +124,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B2)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 				if (B2.Checked)
 					B2.BackColor = Color.Pink;
 				else
@@ -141,7 +139,7 @@ namespace BizHawk.MultiClient
 			B1.Checked = false;
 			B2.Checked = false;
 
-			GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
+			Global.StickyXORAdapter.SetSticky("Reset", false);
 		}
 	}
 }

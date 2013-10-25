@@ -33,6 +33,7 @@ namespace BizHawk
 			FirmwareAndOption("300C20DF6731A33952DED8C436F7F186D25D3492", "GBA", "Bios", "gbabios.rom", "Bios");
 			//FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
 			//FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
+			FirmwareAndOption("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "TI83", "Rom", "ti83_1.rom", "TI-83 Rom");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", "INTV", "EROM", "erom.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", "INTV", "GROM", "grom.bin", "Graphics Rom");
 			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", "C64", "Kernal", "c64-kernal.bin", "Kernal Rom");
@@ -60,25 +61,6 @@ namespace BizHawk
 			Option("SAT", "E", ss_100a_ue);
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
-
-			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", "ti83_102.rom", "TI-83 Rom v1.02");
-			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", "ti83_103.rom", "TI-83 Rom v1.03");
-			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", "ti83_104.rom", "TI-83 Rom v1.04");
-			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", "ti83_106.rom", "TI-83 Rom v1.06");
-			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", "ti83_107.rom", "TI-83 Rom v1.07"); //formerly the 1.?? recommended one
-			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", "ti83_108.rom", "TI-83 Rom v1.08");
-			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", "ti83p_103b.rom", "TI-83 Plus Rom v1.03");
-			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", "ti83p_112.rom", "TI-83 Plus Rom v1.12");
-
-			Firmware("TI83", "Rom", "TI-83 Rom");
-			Option("TI83", "Rom", ti83_102);
-			Option("TI83", "Rom", ti83_103);
-			Option("TI83", "Rom", ti83_104);
-			Option("TI83", "Rom", ti83_106);
-			Option("TI83", "Rom", ti83_107);
-			Option("TI83", "Rom", ti83_108);
-			Option("TI83", "Rom", ti83p_103);
-			Option("TI83", "Rom", ti83p_112);
 		}
 
 		//adds a defined firmware ID to the database

@@ -1,63 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
 	class ToolHelpers
 	{
-		public static FileInfo GetCheatFileFromUser(string currentFile)
-		{
-			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
-		}
-
-		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
-		{
-			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			}
-			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			var file = new FileInfo(sfd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
-			return file;
-		}
-
 		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
 		{
 			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = recent.AutoLoad };
@@ -96,14 +46,14 @@ namespace BizHawk.MultiClient
 
 		public static void HandleLoadError(RecentFiles recent, string path)
 		{
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 			if (result == DialogResult.Yes)
 			{
 				recent.Remove(path);
 			}
 
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 		}
 
 		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
@@ -157,11 +107,11 @@ namespace BizHawk.MultiClient
 
 		public static void UpdateCheatRelatedTools()
 		{
-			GlobalWinF.MainForm.RamWatch1.UpdateValues();
-			GlobalWinF.MainForm.HexEditor1.UpdateValues();
-			GlobalWinF.MainForm.Cheats_UpdateValues();
-			GlobalWinF.MainForm.RamSearch1.UpdateValues();
-			GlobalWinF.MainForm.UpdateCheatStatus();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats_UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public static void UnfreezeAll()
@@ -200,9 +150,9 @@ namespace BizHawk.MultiClient
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
 		{
-			GlobalWinF.MainForm.LoadHexEditor();
-			GlobalWinF.MainForm.HexEditor1.SetDomain(domain);
-			GlobalWinF.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
+			Global.MainForm.LoadHexEditor();
+			Global.MainForm.HexEditor1.SetDomain(domain);
+			Global.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
 		}
 
 		public static MemoryDomain DomainByName(string name)

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace BizHawk.MultiClient
+namespace BizHawk.MultiClient.tools
 {
 	public class LuaDocumentation
 	{

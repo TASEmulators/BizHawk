@@ -28,8 +28,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Core;
 
@@ -1386,7 +1384,7 @@ namespace BizHawk.MultiClient
 				suppression = false;
 			}
 
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)

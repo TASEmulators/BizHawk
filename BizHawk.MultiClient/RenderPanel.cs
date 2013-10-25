@@ -10,8 +10,6 @@ using SlimDX;
 using SlimDX.Direct3D9;
 using d3d9font=SlimDX.Direct3D9.Font;
 #endif
-
-using BizHawk.Client.Common;
 using BizHawk.Core;
 
 namespace BizHawk.MultiClient
@@ -348,13 +346,13 @@ namespace BizHawk.MultiClient
 			d3d = direct3D;
 			backingControl = control;
 			control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
-			control.MouseClick += (o, e) => GlobalWinF.MainForm.MainForm_MouseClick(o, e);
+			control.MouseClick += (o, e) => Global.MainForm.MainForm_MouseClick(o, e);
 		}
 
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
-				GlobalWinF.MainForm.ToggleFullscreen();
+				Global.MainForm.ToggleFullscreen();
 		}
 
 		private void DestroyDevice()
@@ -392,7 +390,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (GlobalWinF.ForceNoThrottle)
+				if (Global.ForceNoThrottle)
 					return false;
 				return Global.Config.VSyncThrottle || Global.Config.VSync;
 			}
@@ -463,13 +461,13 @@ namespace BizHawk.MultiClient
 				// Wait until device is available or user gets annoyed and closes app
 				Result r;
 				// it can take a while for the device to be ready again, so avoid sound looping during the wait
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StopSound();
+				if (Global.Sound != null) Global.Sound.StopSound();
 				do
 				{
 					r = _device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StartSound();
+				if (Global.Sound != null) Global.Sound.StartSound();
 
 				// lets try recovery!
 				DestroyDevice();

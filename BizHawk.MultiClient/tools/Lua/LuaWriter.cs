@@ -6,8 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
-
-using BizHawk.Client.Common;
+using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -434,7 +433,7 @@ namespace BizHawk.MultiClient
 		private void GenerateLibraryRegex()
 		{
 			StringBuilder list = new StringBuilder();
-			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
+			List<string> Libs = Global.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
 			for (int i = 0; i < Libs.Count; i++)
 			{
 				list.Append(Libs[i]);
@@ -577,9 +576,9 @@ namespace BizHawk.MultiClient
 			}
 			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -659,7 +658,7 @@ namespace BizHawk.MultiClient
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
+					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
 
 					// Position autocomplete box near the cursor's current position
                     int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
@@ -783,7 +782,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsLibraryWord(string word)
 		{
-			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
+			List<string> Libs = Global.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
 			if (Libs.Contains(word))
 			{
 				return true;

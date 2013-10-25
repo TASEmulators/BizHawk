@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -78,7 +76,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Emulator.Frame < stopOnFrame)
 			{
-				GlobalWinF.MainForm.PressFrameAdvance = true;
+				Global.MainForm.PressFrameAdvance = true;
 			}
 		}
 
@@ -165,13 +163,13 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: don't engage until new/open project
 			//
-			GlobalWinF.MainForm.PauseEmulator();
+			Global.MainForm.PauseEmulator();
 			Engaged = true;
-			GlobalWinF.OSD.AddMessage("TAStudio engaged");
+			Global.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.StateCapturing = true;
-				ReadOnlyCheckBox.Checked = GlobalWinF.MainForm.ReadOnly;
+				ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
 			}
 			else
 			{
@@ -247,13 +245,13 @@ namespace BizHawk.MultiClient
 
 		private void StopButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.StopMovie();
+			Global.MainForm.StopMovie();
 			Restart();
 		}
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.PressFrameAdvance = true;
+			Global.MainForm.PressFrameAdvance = true;
 		}
 
 		private void RewindButton_Click(object sender, EventArgs e)
@@ -261,7 +259,7 @@ namespace BizHawk.MultiClient
 			stopOnFrame = 0;
 			if (Global.MovieSession.Movie.IsFinished || !Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWinF.MainForm.Rewind(1);
+				Global.MainForm.Rewind(1);
 				if (Global.Emulator.Frame <= Global.MovieSession.Movie.Frames)
 				{
 					Global.MovieSession.Movie.SwitchToPlay();
@@ -269,14 +267,14 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				RewindToFrame(Global.Emulator.Frame - 1);
+				Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 			}
 			UpdateValues();
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.TogglePause();
+			Global.MainForm.TogglePause();
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -288,7 +286,7 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-				GlobalWinF.MainForm.SetReadOnly(true);
+				Global.MainForm.SetReadOnly(true);
 				ReadOnlyCheckBox.BackColor = SystemColors.Control;
 
 				if (Global.MovieSession.Movie.IsActive)
@@ -299,7 +297,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.MainForm.SetReadOnly(false);
+				Global.MainForm.SetReadOnly(false);
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				if (Global.MovieSession.Movie.IsActive)
 				{
@@ -311,7 +309,7 @@ namespace BizHawk.MultiClient
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.Rewind(Global.Emulator.Frame);
+			Global.MainForm.Rewind(Global.Emulator.Frame);
 			DisplayList();
 		}
 
@@ -320,7 +318,7 @@ namespace BizHawk.MultiClient
 			//TODO: adelikat: I removed the stop on frame feature, so this will keep playing into movie finished mode, need to rebuild that functionality
 
 			FastFowardToEnd.Checked ^= true;
-			GlobalWinF.MainForm.FastForward = FastFowardToEnd.Checked;
+			Global.MainForm.FastForward = FastFowardToEnd.Checked;
 			if (FastFowardToEnd.Checked)
 			{
 				FastForward.Checked = false;
@@ -371,12 +369,12 @@ namespace BizHawk.MultiClient
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.RecordMovie();
+			Global.MainForm.RecordMovie();
 		}
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.PlayMovie();
+			Global.MainForm.PlayMovie();
 		}
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -398,7 +396,7 @@ namespace BizHawk.MultiClient
 		private void FastForward_Click(object sender, EventArgs e)
 		{
 			FastForward.Checked ^= true;
-			GlobalWinF.MainForm.FastForward = FastForward.Checked;
+			Global.MainForm.FastForward = FastForward.Checked;
 			if (FastForward.Checked)
 			{
 				TurboFastForward.Checked = false;
@@ -408,7 +406,7 @@ namespace BizHawk.MultiClient
 
 		private void TurboFastForward_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.TurboFastForward ^= true;
+			Global.MainForm.TurboFastForward ^= true;
 			TurboFastForward.Checked ^= true;
 			if (TurboFastForward.Checked)
 			{
@@ -427,13 +425,13 @@ namespace BizHawk.MultiClient
 			if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
 			{
 				stopOnFrame = 0;
-				RewindToFrame(TASView.selectedItem);
+				Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 			}
 			else
 			{
-				RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
+				Global.MovieSession.Movie.RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
 				stopOnFrame = TASView.selectedItem;
-				GlobalWinF.MainForm.PressFrameAdvance = true;
+				Global.MainForm.PressFrameAdvance = true;
 			}
 
 			UpdateValues();
@@ -460,9 +458,9 @@ namespace BizHawk.MultiClient
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				return sfd.FileName;
@@ -480,11 +478,11 @@ namespace BizHawk.MultiClient
 
 				if (e.Delta > 0) //Scroll up
 				{
-					RewindToFrame(Global.Emulator.Frame - 1);
+					Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 				}
 				else if (e.Delta < 0) //Scroll down
 				{
-					GlobalWinF.MainForm.PressFrameAdvance = true;
+					Global.MainForm.PressFrameAdvance = true;
 				}
 
 				UpdateValues();
@@ -541,64 +539,6 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateValues();
-		}
-
-		private void RewindToFrame(int frame)
-		{
-			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
-			{
-				return;
-			}
-			else if (frame <= Global.Emulator.Frame)
-			{
-				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
-				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
-					if (Global.MovieSession.Movie.IsRecording)
-					{
-						Global.MovieSession.Movie.StartPlayback();
-						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
-					}
-				}
-				else
-				{
-					if (frame == 0)
-					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
-					}
-					else
-					{
-						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-						GlobalWinF.MainForm.UpdateFrame = true;
-					}
-				}
-			}
-			else if (frame <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-				GlobalWinF.MainForm.UpdateFrame = true;
-			}
-			else
-			{
-				GlobalWinF.MainForm.UnpauseEmulator();
-			}
-		}
-
-		public void DeleteFrame(int frame)
-		{
-			if (frame <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
-				{
-					RewindToFrame(0);
-				}
-				else
-				{
-					RewindToFrame(frame);
-				}
-			}
-			Global.MovieSession.Movie.DeleteFrame(frame);
 		}
 
 		private void DeleteFrames()
@@ -799,7 +739,7 @@ namespace BizHawk.MultiClient
 				{
 					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = Global.MovieSession.Movie.GetInput(list[i])};
 					Clipboard.Add(entry);
-					DeleteFrame(list[0]);
+					Global.MovieSession.Movie.DeleteFrame(list[0]);
 				}
 
 				UpdateValues();
@@ -828,13 +768,13 @@ namespace BizHawk.MultiClient
 		{
 			if (e.Button == MouseButtons.Middle)
 			{
-				GlobalWinF.MainForm.TogglePause();
+				Global.MainForm.TogglePause();
 			}
 		}
 
 		private void TAStudio_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			GlobalWinF.MainForm.ProcessInput();
+			Global.MainForm.ProcessInput();
 		}
 
 		private void button1_Click(object sender, EventArgs e)

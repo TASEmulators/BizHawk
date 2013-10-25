@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	class VirtualPadGBA : VirtualPad
@@ -231,41 +229,41 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "GBA") return;
 			if (sender == PU)
-				GlobalWinF.StickyXORAdapter.SetSticky("Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky("Up", PU.Checked);
 			else if (sender == PD)
-				GlobalWinF.StickyXORAdapter.SetSticky("Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky("Down", PD.Checked);
 			else if (sender == PL)
-				GlobalWinF.StickyXORAdapter.SetSticky("Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky("Left", PL.Checked);
 			else if (sender == PR)
-				GlobalWinF.StickyXORAdapter.SetSticky("Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky("Right", PR.Checked);
 			else if (sender == B1)
-				GlobalWinF.StickyXORAdapter.SetSticky("Select", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Select", B1.Checked);
 			else if (sender == B2)
-				GlobalWinF.StickyXORAdapter.SetSticky("Start", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Start", B2.Checked);
 			else if (sender == B3)
-				GlobalWinF.StickyXORAdapter.SetSticky("B", B3.Checked);
+				Global.StickyXORAdapter.SetSticky("B", B3.Checked);
 			else if (sender == B4)
-				GlobalWinF.StickyXORAdapter.SetSticky("A", B4.Checked);
+				Global.StickyXORAdapter.SetSticky("A", B4.Checked);
 			else if (sender == B5)
-				GlobalWinF.StickyXORAdapter.SetSticky("L", B5.Checked);
+				Global.StickyXORAdapter.SetSticky("L", B5.Checked);
 			else if (sender == B6)
-				GlobalWinF.StickyXORAdapter.SetSticky("R", B6.Checked);
+				Global.StickyXORAdapter.SetSticky("R", B6.Checked);
 		}
 
 		public override void Clear()
 		{
 			if (Global.Emulator.SystemId != "GBA") return;
 
-			if (PU.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Up", false);
-			if (PD.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Down", false);
-			if (PL.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Left", false);
-			if (PR.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Right", false);
-			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Select", false);
-			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Start", false);
-			if (B3.Checked) GlobalWinF.StickyXORAdapter.SetSticky("B", false);
-			if (B4.Checked) GlobalWinF.StickyXORAdapter.SetSticky("A", false);
-			if (B5.Checked) GlobalWinF.StickyXORAdapter.SetSticky("L", false);
-			if (B6.Checked) GlobalWinF.StickyXORAdapter.SetSticky("R", false);
+			if (PU.Checked) Global.StickyXORAdapter.SetSticky("Up", false);
+			if (PD.Checked) Global.StickyXORAdapter.SetSticky("Down", false);
+			if (PL.Checked) Global.StickyXORAdapter.SetSticky("Left", false);
+			if (PR.Checked) Global.StickyXORAdapter.SetSticky("Right", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Select", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Start", false);
+			if (B3.Checked) Global.StickyXORAdapter.SetSticky("B", false);
+			if (B4.Checked) Global.StickyXORAdapter.SetSticky("A", false);
+			if (B5.Checked) Global.StickyXORAdapter.SetSticky("L", false);
+			if (B6.Checked) Global.StickyXORAdapter.SetSticky("R", false);
 
 			PU.Checked = false;
 			PD.Checked = false;

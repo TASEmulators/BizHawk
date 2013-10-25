@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.MultiClient.GBtools;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient.GBAtools
 {
 	public partial class GBAGPUView : Form

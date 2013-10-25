@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	/// <summary>

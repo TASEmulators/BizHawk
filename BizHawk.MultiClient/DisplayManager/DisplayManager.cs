@@ -11,8 +11,6 @@ using System.Drawing.Imaging;
 //using dx=SlimDX;
 //using d3d=SlimDX.Direct3D9;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	/// <summary>
@@ -393,19 +391,19 @@ namespace BizHawk.MultiClient
 
 		public void AddMessage(string message)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
 		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			Global.DisplayManager.NeedsToPaint = true;
 
 			GUITextList.Clear();
 		}
@@ -413,7 +411,7 @@ namespace BizHawk.MultiClient
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!GlobalWinF.ClientControls["MaxTurbo"])
+			if (!Global.ClientControls["MaxTurbo"])
 			{
 				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 				int line = 1;
@@ -485,7 +483,7 @@ namespace BizHawk.MultiClient
 			StringBuilder s;
 			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
 			{
-				s = new StringBuilder(GlobalWinF.GetOutputControllersAsMnemonic());
+				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			}
 			else
 			{
@@ -586,17 +584,17 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (GlobalWinF.ClientControls["Autohold"] || GlobalWinF.ClientControls["Autofire"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 
-				foreach (string s in GlobalWinF.StickyXORAdapter.CurrentStickies)
+				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
 				{
 					disp.Append(s);
 					disp.Append(' ');
 				}
 
-				foreach (string s in GlobalWinF.AutofireStickyXORAdapter.CurrentStickies)
+				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
 				{
 					disp.Append("Auto-");
 					disp.Append(s);
@@ -662,7 +660,7 @@ namespace BizHawk.MultiClient
 		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			UpdateSourceEx(videoProvider, GlobalWinF.RenderPanel);
+			UpdateSourceEx(videoProvider, Global.RenderPanel);
 		}
 
 		/// <summary>
@@ -775,10 +773,10 @@ namespace BizHawk.MultiClient
 
 		void RenderOSD(IBlitter renderPanel)
 		{
-			GlobalWinF.OSD.Begin(renderPanel);
+			Global.OSD.Begin(renderPanel);
 			renderPanel.Open();
-			GlobalWinF.OSD.DrawScreenInfo(renderPanel);
-			GlobalWinF.OSD.DrawMessages(renderPanel);
+			Global.OSD.DrawScreenInfo(renderPanel);
+			Global.OSD.DrawMessages(renderPanel);
 			renderPanel.Close();
 		}
 

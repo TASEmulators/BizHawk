@@ -6,8 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
@@ -180,9 +178,9 @@ namespace BizHawk.MultiClient
 			if (!Directory.Exists(ofd.InitialDirectory))
 				Directory.CreateDirectory(ofd.InitialDirectory);
 
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -710,9 +708,9 @@ namespace BizHawk.MultiClient
 
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			new LuaFunctionList().Show();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 		}
 
 		public bool LoadLuaSession(string path)
@@ -922,9 +920,9 @@ namespace BizHawk.MultiClient
 			}
 			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1019,9 +1017,9 @@ namespace BizHawk.MultiClient
 
 			if (changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					if (string.Compare(currentSessionFile, "") == 0)
@@ -1101,7 +1099,7 @@ namespace BizHawk.MultiClient
 			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
 
 
-			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
+			showRegisteredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -1247,7 +1245,7 @@ namespace BizHawk.MultiClient
 
 		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any())
+			if (Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any())
 			{
 				LuaRegisteredFunctionsList dialog = new LuaRegisteredFunctionsList();
 				dialog.ShowDialog();
@@ -1256,7 +1254,7 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
 		{
-			registeredFunctionsToolStripMenuItem.Enabled = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
+			registeredFunctionsToolStripMenuItem.Enabled = Global.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
 		}
 	}
 }

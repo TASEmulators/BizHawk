@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 
 namespace BizHawk.MultiClient

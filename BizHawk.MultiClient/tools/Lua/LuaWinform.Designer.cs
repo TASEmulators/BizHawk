@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.MultiClient.tools
 {
 	partial class LuaWinform
 	{

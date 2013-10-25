@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	class VirtualPadA26Control : VirtualPad
@@ -103,7 +101,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.SystemId != "A26") return;
 			else if (sender == B1)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Reset", B1.Checked);
 				if (B1.Checked)
 				{
 					B1.BackColor = Color.Pink;
@@ -115,7 +113,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B2)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Select", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Select", B2.Checked);
 				if (B2.Checked)
 				{
 					B2.BackColor = Color.Pink;
@@ -131,8 +129,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "A26") return;
 
-			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
-			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

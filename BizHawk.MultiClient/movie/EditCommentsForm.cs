@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	public partial class EditCommentsForm : Form
 	{
 		public bool ReadOnly;
-		private Movie selectedMovie;
+		private Movie selectedMovie = new Movie();
 
 		public EditCommentsForm()
 		{

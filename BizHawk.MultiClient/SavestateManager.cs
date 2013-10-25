@@ -1,7 +1,5 @@
 ﻿using System.IO;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.MultiClient
 {
 	class SavestateManager
