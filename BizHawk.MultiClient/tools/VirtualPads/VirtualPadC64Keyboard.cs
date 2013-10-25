@@ -2,6 +2,8 @@
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadC64Keyboard : UserControl , IVirtualPad
@@ -19,319 +21,319 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == KF1)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F1", KF1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key F1", KF1.Checked);
 			}
 			else if (sender == KF3)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F3", KF3.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key F3", KF3.Checked);
 			}
 			else if (sender == KF5)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F5", KF5.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key F5", KF5.Checked);
 			}
 			else if (sender == KF7)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F7", KF7.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key F7", KF7.Checked);
 			}
 			else if (sender == KLeftArrow)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Left Arrow", KLeftArrow.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Left Arrow", KLeftArrow.Checked);
 			}
 			else if (sender == K1)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 1", K1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 1", K1.Checked);
 			}
 			else if (sender == K2)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 2", K2.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 2", K2.Checked);
 			}
 			else if (sender == K3)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 3", K3.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 3", K3.Checked);
 			}
 			else if (sender == K4)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 4", K4.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 4", K4.Checked);
 			}
 			else if (sender == K5)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 5", K5.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 5", K5.Checked);
 			}
 			else if (sender == K6)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 6", K6.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 6", K6.Checked);
 			}
 			else if (sender == K7)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 7", K7.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 7", K7.Checked);
 			}
 			else if (sender == K8)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 8", K8.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 8", K8.Checked);
 			}
 			else if (sender == K9)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 9", K9.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 9", K9.Checked);
 			}
 			else if (sender == K0)
 			{
-				Global.StickyXORAdapter.SetSticky("Key 0", K0.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key 0", K0.Checked);
 			}
 			else if (sender == KPlus)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Plus", KPlus.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Plus", KPlus.Checked);
 			}
 			else if (sender == KMinus)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Minus", KMinus.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Minus", KMinus.Checked);
 			}
 			else if (sender == KPound)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Pound", KPound.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Pound", KPound.Checked);
 			}
 			else if (sender == KClear)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Clear/Home", KClear.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Clear/Home", KClear.Checked);
 			}
 			else if (sender == KInsert)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Insert/Delete", KInsert.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Insert/Delete", KInsert.Checked);
 			}
 			else if (sender == KCtrl)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Control", KCtrl.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Control", KCtrl.Checked);
 			}
 			else if (sender == KQ)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Q", KQ.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Q", KQ.Checked);
 			}
 			else if (sender == KW)
 			{
-				Global.StickyXORAdapter.SetSticky("Key W", KW.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key W", KW.Checked);
 			}
 			else if (sender == KE)
 			{
-				Global.StickyXORAdapter.SetSticky("Key E", KE.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key E", KE.Checked);
 			}
 			else if (sender == KR)
 			{
-				Global.StickyXORAdapter.SetSticky("Key R", KR.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key R", KR.Checked);
 			}
 			else if (sender == KT)
 			{
-				Global.StickyXORAdapter.SetSticky("Key T", KT.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key T", KT.Checked);
 			}
 			else if (sender == KY)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Y", KY.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Y", KY.Checked);
 			}
 			else if (sender == KU)
 			{
-				Global.StickyXORAdapter.SetSticky("Key U", KU.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key U", KU.Checked);
 			}
 			else if (sender == KI)
 			{
-				Global.StickyXORAdapter.SetSticky("Key I", KI.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key I", KI.Checked);
 			}
 			else if (sender == KO)
 			{
-				Global.StickyXORAdapter.SetSticky("Key O", KO.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key O", KO.Checked);
 			}
 			else if (sender == KP)
 			{
-				Global.StickyXORAdapter.SetSticky("Key P", KP.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key P", KP.Checked);
 			}
 			else if (sender == KAt)
 			{
-				Global.StickyXORAdapter.SetSticky("Key At", KAt.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key At", KAt.Checked);
 			}
 			else if (sender == KAsterisk)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Asterisk", KAsterisk.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Asterisk", KAsterisk.Checked);
 			}
 			else if (sender == KUpArrow)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Up Arrow", KUpArrow.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Up Arrow", KUpArrow.Checked);
 			}
 			else if (sender == KRST)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Restore", KRST.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Restore", KRST.Checked);
 			}
 			else if (sender == KRun)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Run/Stop", KRun.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Run/Stop", KRun.Checked);
 			}
 			else if (sender == KLck)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Lck", KLck.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Lck", KLck.Checked);
 			}
 			else if (sender == KA)
 			{
-				Global.StickyXORAdapter.SetSticky("Key A", KA.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key A", KA.Checked);
 			}
 			else if (sender == KS)
 			{
-				Global.StickyXORAdapter.SetSticky("Key S", KS.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key S", KS.Checked);
 			}
 			else if (sender == KD)
 			{
-				Global.StickyXORAdapter.SetSticky("Key D", KD.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key D", KD.Checked);
 			}
 			else if (sender == KF)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F", KF.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key F", KF.Checked);
 			}
 			else if (sender == KG)
 			{
-				Global.StickyXORAdapter.SetSticky("Key G", KG.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key G", KG.Checked);
 			}
 			else if (sender == KH)
 			{
-				Global.StickyXORAdapter.SetSticky("Key H", KH.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key H", KH.Checked);
 			}
 			else if (sender == KJ)
 			{
-				Global.StickyXORAdapter.SetSticky("Key J", KJ.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key J", KJ.Checked);
 			}
 			else if (sender == KK)
 			{
-				Global.StickyXORAdapter.SetSticky("Key K", KK.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key K", KK.Checked);
 			}
 			else if (sender == KL)
 			{
-				Global.StickyXORAdapter.SetSticky("Key L", KL.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key L", KL.Checked);
 			}
 			else if (sender == KColon)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Colon", KColon.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Colon", KColon.Checked);
 			}
 			else if (sender == KSemicolon)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Semicolon", KSemicolon.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Semicolon", KSemicolon.Checked);
 			}
 			else if (sender == KEquals)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Equal", KEquals.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Equal", KEquals.Checked);
 			}
 			else if (sender == KReturn)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Return", KReturn.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Return", KReturn.Checked);
 			}
 			else if (sender == KCommodore)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Commodore", KCommodore.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Commodore", KCommodore.Checked);
 			}
 			else if (sender == KLeftShift)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Left Shift", KLeftShift.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Left Shift", KLeftShift.Checked);
 			}
 			else if (sender == KZ)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Z", KZ.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Z", KZ.Checked);
 			}
 			else if (sender == KX)
 			{
-				Global.StickyXORAdapter.SetSticky("Key X", KX.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key X", KX.Checked);
 			}
 			else if (sender == KC)
 			{
-				Global.StickyXORAdapter.SetSticky("Key C", KC.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key C", KC.Checked);
 			}
 			else if (sender == KV)
 			{
-				Global.StickyXORAdapter.SetSticky("Key V", KV.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key V", KV.Checked);
 			}
 			else if (sender == KB)
 			{
-				Global.StickyXORAdapter.SetSticky("Key B", KB.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key B", KB.Checked);
 			}
 			else if (sender == KN)
 			{
-				Global.StickyXORAdapter.SetSticky("Key N", KN.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key N", KN.Checked);
 			}
 			else if (sender == KM)
 			{
-				Global.StickyXORAdapter.SetSticky("Key M", KM.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key M", KM.Checked);
 			}
 			else if (sender == KComma)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Comma", KComma.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Comma", KComma.Checked);
 			}
 			else if (sender == KSemicolon)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Semicolon", KSemicolon.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Semicolon", KSemicolon.Checked);
 			}
 			else if (sender == KEquals)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Equal", KEquals.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Equal", KEquals.Checked);
 			}
 			else if (sender == KReturn)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Return", KReturn.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Return", KReturn.Checked);
 			}
 			else if (sender == KCommodore)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Commodore", KCommodore.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Commodore", KCommodore.Checked);
 			}
 			else if (sender == KLeftShift)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Left Shift", KLeftShift.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Left Shift", KLeftShift.Checked);
 			}
 			else if (sender == KZ)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Z", KZ.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Z", KZ.Checked);
 			}
 			else if (sender == KX)
 			{
-				Global.StickyXORAdapter.SetSticky("Key X", KX.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key X", KX.Checked);
 			}
 			else if (sender == KC)
 			{
-				Global.StickyXORAdapter.SetSticky("Key C", KC.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key C", KC.Checked);
 			}
 			else if (sender == KV)
 			{
-				Global.StickyXORAdapter.SetSticky("Key V", KV.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key V", KV.Checked);
 			}
 			else if (sender == KB)
 			{
-				Global.StickyXORAdapter.SetSticky("Key B", KB.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key B", KB.Checked);
 			}
 			else if (sender == KN)
 			{
-				Global.StickyXORAdapter.SetSticky("Key N", KN.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key N", KN.Checked);
 			}
 			else if (sender == KM)
 			{
-				Global.StickyXORAdapter.SetSticky("Key M", KM.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key M", KM.Checked);
 			}
 			else if (sender == KComma)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Comma", KComma.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Comma", KComma.Checked);
 			}
 			else if (sender == KPeriod)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Period", KPeriod.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Period", KPeriod.Checked);
 			}
 			else if (sender == KSlash)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Slash", KSlash.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Slash", KSlash.Checked);
 			}
 			else if (sender == KRightShift)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Right Shift", KRightShift.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Right Shift", KRightShift.Checked);
 			}
 			else if (sender == KCursorUp)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Cursor Up/Down", KCursorUp.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Cursor Up/Down", KCursorUp.Checked);
 			}
 			else if (sender == KCursorLeft)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Cursor Left/Right", KCursorLeft.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Cursor Left/Right", KCursorLeft.Checked);
 			}
 			else if (sender == KSpace)
 			{
-				Global.StickyXORAdapter.SetSticky("Key Space", KSpace.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Key Space", KSpace.Checked);
 			}
 		}
 
@@ -343,71 +345,71 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				if (KF1.Checked) Global.StickyXORAdapter.SetSticky("Key F1", false);
-				if (KF3.Checked) Global.StickyXORAdapter.SetSticky("Key F3", false);
-				if (KF5.Checked) Global.StickyXORAdapter.SetSticky("Key F5", false);
-				if (KF7.Checked) Global.StickyXORAdapter.SetSticky("Key F7", false);
-				if (KLeftArrow.Checked) Global.StickyXORAdapter.SetSticky("Key Left Arrow", false);
-				if (K1.Checked) Global.StickyXORAdapter.SetSticky("Key 1", false);
-				if (K2.Checked) Global.StickyXORAdapter.SetSticky("Key 2", false);
-				if (K3.Checked) Global.StickyXORAdapter.SetSticky("Key 3", false);
-				if (K4.Checked) Global.StickyXORAdapter.SetSticky("Key 4", false);
-				if (K5.Checked) Global.StickyXORAdapter.SetSticky("Key 5", false);
-				if (K6.Checked) Global.StickyXORAdapter.SetSticky("Key 6", false);
-				if (K7.Checked) Global.StickyXORAdapter.SetSticky("Key 7", false);
-				if (K8.Checked) Global.StickyXORAdapter.SetSticky("Key 8", false);
-				if (K9.Checked) Global.StickyXORAdapter.SetSticky("Key 9", false);
-				if (K0.Checked) Global.StickyXORAdapter.SetSticky("Key Plus", false);
-				if (KPlus.Checked) Global.StickyXORAdapter.SetSticky("Key Minus", false);
-				if (KMinus.Checked) Global.StickyXORAdapter.SetSticky("Key Pound", false);
-				if (KPound.Checked) Global.StickyXORAdapter.SetSticky("Key Clear/Home", false);
-				if (KClear.Checked) Global.StickyXORAdapter.SetSticky("Key Insert/Delete", false);
-				if (KInsert.Checked) Global.StickyXORAdapter.SetSticky("Key Control", false);
-				if (KCtrl.Checked) Global.StickyXORAdapter.SetSticky("Key Q", false);
-				if (KQ.Checked) Global.StickyXORAdapter.SetSticky("Key W", false);
-				if (KW.Checked) Global.StickyXORAdapter.SetSticky("Key E", false);
-				if (KE.Checked) Global.StickyXORAdapter.SetSticky("Key R", false);
-				if (KR.Checked) Global.StickyXORAdapter.SetSticky("Key T", false);
-				if (KT.Checked) Global.StickyXORAdapter.SetSticky("Key Y", false);
-				if (KY.Checked) Global.StickyXORAdapter.SetSticky("Key U", false);
-				if (KU.Checked) Global.StickyXORAdapter.SetSticky("Key I", false);
-				if (KI.Checked) Global.StickyXORAdapter.SetSticky("Key O", false);
-				if (KO.Checked) Global.StickyXORAdapter.SetSticky("Key P", false);
-				if (KP.Checked) Global.StickyXORAdapter.SetSticky("Key At", false);
-				if (KAt.Checked) Global.StickyXORAdapter.SetSticky("Key Asterisk", false);
-				if (KAsterisk.Checked) Global.StickyXORAdapter.SetSticky("Key Up Arrow", false);
-				if (KUpArrow.Checked) Global.StickyXORAdapter.SetSticky("Key Restore", false);
-				if (KRST.Checked) Global.StickyXORAdapter.SetSticky("Key Run/Stop", false);
-				if (KRun.Checked) Global.StickyXORAdapter.SetSticky("Key Lck", false);
-				if (KLck.Checked) Global.StickyXORAdapter.SetSticky("Key A", false);
-				if (KA.Checked) Global.StickyXORAdapter.SetSticky("Key S", false);
-				if (KS.Checked) Global.StickyXORAdapter.SetSticky("Key D", false);
-				if (KD.Checked) Global.StickyXORAdapter.SetSticky("Key F", false);
-				if (KF.Checked) Global.StickyXORAdapter.SetSticky("Key G", false);
-				if (KG.Checked) Global.StickyXORAdapter.SetSticky("Key H", false);
-				if (KH.Checked) Global.StickyXORAdapter.SetSticky("Key J", false);
-				if (KJ.Checked) Global.StickyXORAdapter.SetSticky("Key K", false);
-				if (KK.Checked) Global.StickyXORAdapter.SetSticky("Key L", false);
-				if (KL.Checked) Global.StickyXORAdapter.SetSticky("Key Colon", false);
-				if (KColon.Checked) Global.StickyXORAdapter.SetSticky("Key Semicolon", false);
-				if (KSemicolon.Checked) Global.StickyXORAdapter.SetSticky("Key Equal", false);
-				if (KEquals.Checked) Global.StickyXORAdapter.SetSticky("Key Return", false);
-				if (KReturn.Checked) Global.StickyXORAdapter.SetSticky("Key Commodore", false);
-				if (KCommodore.Checked) Global.StickyXORAdapter.SetSticky("Key Left Shift", false);
-				if (KLeftShift.Checked) Global.StickyXORAdapter.SetSticky("Key Z", false);
-				if (KZ.Checked) Global.StickyXORAdapter.SetSticky("Key X", false);
-				if (KX.Checked) Global.StickyXORAdapter.SetSticky("Key C", false);
-				if (KC.Checked) Global.StickyXORAdapter.SetSticky("Key V", false);
-				if (KV.Checked) Global.StickyXORAdapter.SetSticky("Key B", false);
-				if (KB.Checked) Global.StickyXORAdapter.SetSticky("Key N", false);
-				if (KN.Checked) Global.StickyXORAdapter.SetSticky("Key M", false);
-				if (KM.Checked) Global.StickyXORAdapter.SetSticky("Key Comma", false);
-				if (KComma.Checked) Global.StickyXORAdapter.SetSticky("Key Period", false);
-				if (KPeriod.Checked) Global.StickyXORAdapter.SetSticky("Key Slash", false);
-				if (KSlash.Checked) Global.StickyXORAdapter.SetSticky("Key Right Shift", false);
-				if (KRightShift.Checked) Global.StickyXORAdapter.SetSticky("Key Cursor Up/Down", false);
-				if (KCursorUp.Checked) Global.StickyXORAdapter.SetSticky("Key Cursor Left/Right", false);
-				if (KCursorLeft.Checked) Global.StickyXORAdapter.SetSticky("Key Space", false);
+				if (KF1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key F1", false);
+				if (KF3.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key F3", false);
+				if (KF5.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key F5", false);
+				if (KF7.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key F7", false);
+				if (KLeftArrow.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Left Arrow", false);
+				if (K1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 1", false);
+				if (K2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 2", false);
+				if (K3.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 3", false);
+				if (K4.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 4", false);
+				if (K5.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 5", false);
+				if (K6.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 6", false);
+				if (K7.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 7", false);
+				if (K8.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 8", false);
+				if (K9.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key 9", false);
+				if (K0.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Plus", false);
+				if (KPlus.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Minus", false);
+				if (KMinus.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Pound", false);
+				if (KPound.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Clear/Home", false);
+				if (KClear.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Insert/Delete", false);
+				if (KInsert.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Control", false);
+				if (KCtrl.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Q", false);
+				if (KQ.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key W", false);
+				if (KW.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key E", false);
+				if (KE.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key R", false);
+				if (KR.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key T", false);
+				if (KT.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Y", false);
+				if (KY.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key U", false);
+				if (KU.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key I", false);
+				if (KI.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key O", false);
+				if (KO.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key P", false);
+				if (KP.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key At", false);
+				if (KAt.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Asterisk", false);
+				if (KAsterisk.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Up Arrow", false);
+				if (KUpArrow.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Restore", false);
+				if (KRST.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Run/Stop", false);
+				if (KRun.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Lck", false);
+				if (KLck.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key A", false);
+				if (KA.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key S", false);
+				if (KS.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key D", false);
+				if (KD.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key F", false);
+				if (KF.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key G", false);
+				if (KG.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key H", false);
+				if (KH.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key J", false);
+				if (KJ.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key K", false);
+				if (KK.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key L", false);
+				if (KL.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Colon", false);
+				if (KColon.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Semicolon", false);
+				if (KSemicolon.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Equal", false);
+				if (KEquals.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Return", false);
+				if (KReturn.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Commodore", false);
+				if (KCommodore.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Left Shift", false);
+				if (KLeftShift.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Z", false);
+				if (KZ.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key X", false);
+				if (KX.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key C", false);
+				if (KC.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key V", false);
+				if (KV.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key B", false);
+				if (KB.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key N", false);
+				if (KN.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key M", false);
+				if (KM.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Comma", false);
+				if (KComma.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Period", false);
+				if (KPeriod.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Slash", false);
+				if (KSlash.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Right Shift", false);
+				if (KRightShift.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Cursor Up/Down", false);
+				if (KCursorUp.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Cursor Left/Right", false);
+				if (KCursorLeft.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Key Space", false);
 
 				KF1.Checked = false;
 				KF3.Checked = false;

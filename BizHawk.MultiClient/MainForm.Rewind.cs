@@ -4,6 +4,8 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class MainForm
@@ -399,12 +401,12 @@ namespace BizHawk.MultiClient
 		{
 			if (RewindActive != enabled)
 			{
-				Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+				GlobalWinF.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
 			}
 
 			if (RewindFrequency != frequency && enabled)
 			{
-				Global.OSD.AddMessage("Rewind frequency set to " + frequency);
+				GlobalWinF.OSD.AddMessage("Rewind frequency set to " + frequency);
 			}
 
 			RewindActive = enabled;

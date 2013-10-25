@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class NESGraphicsConfig : Form
@@ -73,7 +75,7 @@ namespace BizHawk.MultiClient
 					{
 						Global.Config.NESPaletteFile = palette.Name;
 						nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
-						Global.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						GlobalWinF.OSD.AddMessage("Palette file loaded: " + palette.Name);
 					}
 				}
 			}
@@ -81,7 +83,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.Config.NESPaletteFile = "";
 				nes.SetPalette(NES.Palettes.FCEUX_Standard);
-				Global.OSD.AddMessage("Standard Palette set");
+				GlobalWinF.OSD.AddMessage("Standard Palette set");
 			}
 
 			Global.Config.NTSC_NESTopLine = (int)NTSC_FirstLineNumeric.Value;

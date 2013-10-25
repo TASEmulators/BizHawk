@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 //todo - perks - pause, copy to clipboard, backlog length limiting
 
 namespace BizHawk.MultiClient
@@ -18,7 +20,7 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) =>
 			{
 				Global.Config.ShowLogWindow = false;
-				Global.MainForm.notifyLogWindowClosing();
+				GlobalWinF.MainForm.notifyLogWindowClosing();
 				LogConsole.notifyLogWindowClosing();
 				SaveConfigSettings();
 			};

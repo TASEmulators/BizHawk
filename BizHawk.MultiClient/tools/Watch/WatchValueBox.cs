@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	class WatchValueBox : TextBox, INumberBox

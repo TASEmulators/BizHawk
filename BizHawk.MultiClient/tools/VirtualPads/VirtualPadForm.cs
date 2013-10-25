@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Consoles.Nintendo.N64;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -224,8 +226,8 @@ namespace BizHawk.MultiClient
 		protected override void OnClosed(EventArgs e)
 		{
 			//is this a good idea?
-			Global.StickyXORAdapter.ClearStickies();
-			Global.StickyXORAdapter.ClearStickyFloats();
+			GlobalWinF.StickyXORAdapter.ClearStickies();
+			GlobalWinF.StickyXORAdapter.ClearStickyFloats();
 		}
 
 		public void ClearVirtualPadHolds()

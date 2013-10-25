@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 //notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 //it will be implemented by the multiclient, and use firmware keys to fetch the firmware content.
 //however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
@@ -175,7 +177,7 @@ namespace BizHawk.MultiClient
 			DoScan();
 		}
 
-		FirmwareManager Manager { get { return Global.MainForm.FirmwareManager; } }
+		FirmwareManager Manager { get { return GlobalWinF.MainForm.FirmwareManager; } }
 
 		private void DoScan()
 		{
@@ -279,9 +281,14 @@ namespace BizHawk.MultiClient
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
 			{
-				var str = lvFirmwares.CopyItemsAsText();
-				if (str.Length > 0) Clipboard.SetDataObject(str);
+				PerformListCopy();
 			}
+		}
+
+		void PerformListCopy()
+		{
+			var str = lvFirmwares.CopyItemsAsText();
+			if (str.Length > 0) Clipboard.SetDataObject(str);
 		}
 
 		private void lvFirmwares_MouseClick(object sender, MouseEventArgs e)
@@ -302,7 +309,7 @@ namespace BizHawk.MultiClient
 					//remember the location we selected this firmware from, maybe there are others
 					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
 
-					//for each selected item, set the user choice (hey, thats the expected semantic
+					//for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
 					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 					{
 						var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
@@ -324,6 +331,53 @@ namespace BizHawk.MultiClient
 			}
 
 			DoScan();
+		}
+
+		private void tsmiInfo_Click(object sender, EventArgs e)
+		{
+			var lvi = lvFirmwares.SelectedItems[0];
+			var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+
+			//get all options for this firmware (in order)
+			var options =
+				from fo in FirmwareDatabase.FirmwareOptions
+				where fo.systemId == fr.systemId && fo.firmwareId == fr.firmwareId
+				select fo;
+
+			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo();
+			fciDialog.lblFirmware.Text = string.Format("{0} : {1} ({2})", fr.systemId, fr.firmwareId, fr.descr);
+			foreach (var o in options)
+			{
+				ListViewItem olvi = new ListViewItem();
+				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
+				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
+				var ff = FirmwareDatabase.FirmwareFilesByHash[o.hash];
+				olvi.SubItems[0].Text = o.hash;
+				olvi.SubItems[0].Font = fixedFont;
+				olvi.SubItems[1].Text = ff.recommendedName;
+				olvi.SubItems[1].Font = this.Font; //why doesnt this work?
+				olvi.SubItems[2].Text = ff.descr;
+				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
+				fciDialog.lvOptions.Items.Add(olvi);
+			}
+
+			fciDialog.lvOptions.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
+			fciDialog.lvOptions.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
+			fciDialog.lvOptions.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+
+			fciDialog.ShowDialog();
+		}
+
+		private void lvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			//hide menu items that arent appropriate for multi-select
+			tsmiSetCustomization.Visible = lvFirmwares.SelectedItems.Count == 1;
+			tsmiInfo.Visible = lvFirmwares.SelectedItems.Count == 1;
+		}
+
+		private void tsmiCopy_Click(object sender, EventArgs e)
+		{
+			PerformListCopy();
 		}
 
 	}		//class FirmwaresConfig

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
@@ -378,7 +380,7 @@ namespace BizHawk.MultiClient
 					compare,
 					enabled: true));
 
-				Global.MainForm.Cheats_UpdateValues();
+				GlobalWinF.MainForm.Cheats_UpdateValues();
 			}
 		}
 

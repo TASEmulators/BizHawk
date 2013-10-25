@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class MessageConfig : Form
@@ -227,7 +229,7 @@ namespace BizHawk.MultiClient
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			Global.OSD.AddMessage("Message settings saved");
+			GlobalWinF.OSD.AddMessage("Message settings saved");
 			this.Close();
 		}
 
@@ -287,7 +289,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			Global.OSD.AddMessage("Message config aborted");
+			GlobalWinF.OSD.AddMessage("Message config aborted");
 			this.Close();
 		}
 

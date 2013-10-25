@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.SATTools
+﻿namespace BizHawk.MultiClient
 {
 	partial class SaturnPrefs
 	{

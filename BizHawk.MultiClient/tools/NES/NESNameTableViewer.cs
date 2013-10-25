@@ -4,6 +4,8 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class NESNameTableViewer : Form
