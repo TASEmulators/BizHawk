@@ -503,7 +503,6 @@
     <Compile Include="tools\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\NES\MovieConvert.cs" />
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
