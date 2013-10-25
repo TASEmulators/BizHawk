@@ -734,13 +734,13 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Watch\UndoHistory.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\Watch\WatchEditor.Designer.cs">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch\WatchHistory.cs" />
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
     </Compile>
