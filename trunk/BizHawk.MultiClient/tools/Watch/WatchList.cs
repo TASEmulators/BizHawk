@@ -12,12 +12,21 @@ namespace BizHawk.MultiClient
 {
 	public class WatchList : IEnumerable<Watch>
 	{
-		private string _currentFilename = "";
+
+
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string PREV = "PrevColumn";
+		public const string CHANGES = "ChangesColumn";
+		public const string DIFF = "DiffColumn";
+		public const string DOMAIN = "DomainColumn";
+		public const string NOTES = "NotesColumn";
 
 		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange };
 
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
+		private string _currentFilename = String.Empty;
 
 		public WatchList(MemoryDomain domain)
 		{
@@ -71,7 +80,7 @@ namespace BizHawk.MultiClient
 		{
 			switch (column)
 			{
-				case RamWatch.ADDRESS:
+				case ADDRESS:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -93,7 +102,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.VALUE:
+				case VALUE:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -115,7 +124,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.PREV: //Note: these only work if all entries are detailed objects!
+				case PREV: //Note: these only work if all entries are detailed objects!
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -135,7 +144,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.DIFF:
+				case DIFF:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -155,7 +164,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.CHANGES:
+				case CHANGES:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -175,7 +184,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.DOMAIN:
+				case DOMAIN:
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -197,7 +206,7 @@ namespace BizHawk.MultiClient
 							.ToList();
 					}
 					break;
-				case RamWatch.NOTES:
+				case NOTES:
 					if (reverse)
 					{
 						_watchList = _watchList
