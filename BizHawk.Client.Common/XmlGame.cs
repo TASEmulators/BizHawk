@@ -5,9 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class XmlGame
 	{
@@ -96,10 +94,9 @@ namespace BizHawk.MultiClient
 				}
 				return ret;
 			}
-			catch (Exception e)
+			catch(Exception ex)
 			{
-				System.Windows.Forms.MessageBox.Show(e.ToString(), "XMLGame Load Error");
-				return null;
+				throw new InvalidOperationException(ex.ToString());
 			}
 		}
 
