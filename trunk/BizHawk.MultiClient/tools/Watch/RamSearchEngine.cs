@@ -49,8 +49,6 @@ namespace BizHawk.MultiClient
 
 	public class RamSearchEngine
 	{
-		
-
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 		
@@ -408,7 +406,7 @@ namespace BizHawk.MultiClient
 		{
 			switch(column)
 			{
-				case RamSearch.ADDRESS:
+				case WatchList.ADDRESS:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Address).ToList();
@@ -418,7 +416,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Address).ToList();
 					}
 					break;
-				case RamSearch.VALUE:
+				case WatchList.VALUE:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => GetValue(x.Address)).ToList();
@@ -428,7 +426,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => GetValue(x.Address)).ToList();
 					}
 					break;
-				case RamSearch.PREV:
+				case WatchList.PREV:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Previous).ToList();
@@ -438,7 +436,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Previous).ToList();
 					}
 					break;
-				case RamSearch.CHANGES:
+				case WatchList.CHANGES:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
 						if (reverse)
@@ -457,7 +455,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 					break;
-				case RamSearch.DIFF:
+				case WatchList.DIFF:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => (GetValue(x.Address) - x.Previous)).ToList();
