@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
-	public class WatchHistory
+	public class UndoHistory<T>
 	{
-		private List<List<RamSearchEngine.IMiniWatch>> _history = new List<List<RamSearchEngine.IMiniWatch>>();
+		private List<List<T>> _history = new List<List<T>>();
 		private int curPos; //1-based
+
 		public bool Enabled { get; private set; }
 
-		public WatchHistory(bool enabled)
+		public UndoHistory(bool enabled)
 		{
 			Enabled = enabled;
 		}
 
-		public WatchHistory(List<RamSearchEngine.IMiniWatch> newState, bool enabled)
+		public UndoHistory(IEnumerable<T> newState, bool enabled)
 		{
 			AddState(newState);
 			Enabled = enabled;
@@ -22,7 +23,7 @@ namespace BizHawk.MultiClient
 
 		public void Clear()
 		{
-			_history = new List<List<RamSearchEngine.IMiniWatch>>();
+			_history = new List<List<T>>();
 			curPos = 0;
 		}
 
@@ -41,7 +42,7 @@ namespace BizHawk.MultiClient
 			get { return Enabled && _history.Any(); }
 		}
 
-		public void AddState(List<RamSearchEngine.IMiniWatch> newState)
+		public void AddState(IEnumerable<T> newState)
 		{
 			if (Enabled)
 			{
@@ -53,12 +54,12 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				_history.Add(newState);
+				_history.Add(newState.ToList());
 				curPos = _history.Count;
 			}
 		}
 
-		public List<RamSearchEngine.IMiniWatch> Undo()
+		public IEnumerable<T> Undo()
 		{
 			if (CanUndo && Enabled)
 			{
@@ -71,7 +72,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public List<RamSearchEngine.IMiniWatch> Redo()
+		public IEnumerable<T> Redo()
 		{
 			if (CanRedo && Enabled)
 			{

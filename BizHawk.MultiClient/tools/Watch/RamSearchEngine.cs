@@ -59,7 +59,7 @@ namespace BizHawk.MultiClient
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings = new Settings();
-		private WatchHistory _history = new WatchHistory(true);
+		private UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _keepHistory = true;
 
 		public RamSearchEngine(Settings settings)
@@ -497,7 +497,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_keepHistory)
 			{
-				_watchList = _history.Undo();
+				_watchList = _history.Undo().ToList();
 			}
 		}
 
@@ -505,7 +505,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_keepHistory)
 			{
-				_watchList = _history.Redo();
+				_watchList = _history.Redo().ToList();
 			}
 		}
 
