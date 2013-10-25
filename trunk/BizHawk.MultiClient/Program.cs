@@ -12,6 +12,8 @@ using Microsoft.VisualBasic.ApplicationServices;
 
 #pragma warning disable 618
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	static class Program
@@ -67,13 +69,13 @@ namespace BizHawk.MultiClient
 			Global.Config.ResolveDefaults();
 
 #if WINDOWS
-			try { Global.DSound = SoundEnumeration.Create(); }
+			try { GlobalWinF.DSound = SoundEnumeration.Create(); }
 			catch
 			{
 				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			try { Global.Direct3D = new Direct3D(); }
+			try { GlobalWinF.Direct3D = new Direct3D(); }
 			catch
 			{
 				//fallback to GDI rendering
@@ -122,10 +124,10 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			finally
 			{
-				if (Global.DSound != null && Global.DSound.Disposed == false)
-					Global.DSound.Dispose();
-				if (Global.Direct3D != null && Global.Direct3D.Disposed == false)
-					Global.Direct3D.Dispose();
+				if (GlobalWinF.DSound != null && GlobalWinF.DSound.Disposed == false)
+					GlobalWinF.DSound.Dispose();
+				if (GlobalWinF.Direct3D != null && GlobalWinF.Direct3D.Disposed == false)
+					GlobalWinF.Direct3D.Dispose();
 				GamePad.CloseAll();
 			}
 #endif

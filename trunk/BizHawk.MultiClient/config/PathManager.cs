@@ -3,6 +3,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public static class PathManager

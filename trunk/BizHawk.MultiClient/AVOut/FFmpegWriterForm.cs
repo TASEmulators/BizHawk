@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>

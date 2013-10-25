@@ -7,6 +7,8 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	/// <summary>

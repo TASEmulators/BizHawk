@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public class WatchList : IEnumerable<Watch>
@@ -544,9 +546,9 @@ namespace BizHawk.MultiClient
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -573,9 +575,9 @@ namespace BizHawk.MultiClient
 			}
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);

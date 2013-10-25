@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class GBGameGenie : Form
@@ -411,6 +413,8 @@ namespace BizHawk.MultiClient
 					VALUE,
 					COMPARE,
 					enabled: true));
+
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

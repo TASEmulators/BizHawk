@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient.AVOut
 {
 	public class GifWriter : IVideoWriter

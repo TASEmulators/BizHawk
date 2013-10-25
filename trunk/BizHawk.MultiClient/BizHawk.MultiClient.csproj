@@ -60,6 +60,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -159,8 +160,6 @@
     <Compile Include="BizBox.Designer.cs">
       <DependentUpon>BizBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Config.cs" />
-    <Compile Include="ConfigService.cs" />
     <Compile Include="config\AutofireConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -193,6 +192,12 @@
     </Compile>
     <Compile Include="config\FirmwaresConfig.Designer.cs">
       <DependentUpon>FirmwaresConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\FirmwaresConfigInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
+      <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
@@ -240,12 +245,44 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="CoreFileProvider.cs" />
+    <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\HexTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputConfigBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\MiscControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\QuickProgressPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\SmartTextBoxControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\TextDebugView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\Util.cs" />
+    <Compile Include="CustomControls\ViewportPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
-    <Compile Include="FirmwareManager.cs" />
-    <Compile Include="Global.cs" />
-    <Compile Include="HawkFile.cs" />
+    <Compile Include="GlobalWinF.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
@@ -271,7 +308,6 @@
     <Compile Include="movie\EditCommentsForm.Designer.cs">
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -289,13 +325,7 @@
     <Compile Include="movie\EditSubtitlesForm.Designer.cs">
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\Movie.cs" />
-    <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
-    <Compile Include="movie\MovieLog.cs" />
-    <Compile Include="movie\MovieMnemonics.cs" />
-    <Compile Include="movie\MovieSession.cs" />
-    <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -308,8 +338,6 @@
     <Compile Include="movie\RecordMovie.Designer.cs">
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\Subtitle.cs" />
-    <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="movie\SubtitleMaker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -325,7 +353,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="tools\Cheats\Cheat.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -338,7 +365,6 @@
     <Compile Include="tools\Cheats\CheatForm.Designer.cs">
       <DependentUpon>CheatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Cheats\CheatList.cs" />
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -708,7 +734,6 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch\Watch.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -745,6 +770,9 @@
     <EmbeddedResource Include="config\FirmwaresConfig.resx">
       <DependentUpon>FirmwaresConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\FirmwaresConfigInfo.resx">
+      <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
@@ -759,6 +787,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
+      <DependentUpon>InputConfigBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
+      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -955,9 +989,7 @@
     <Compile Include="tools\InputPrompt.Designer.cs">
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="RecentFiles.cs" />
     <Compile Include="RenderPanel.cs" />
-    <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="tools\TAStudio.cs">
@@ -974,13 +1006,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
+      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
+      <Name>BizHawk.Client.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
-      <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
-      <Name>BizHawk.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

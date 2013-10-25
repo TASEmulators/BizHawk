@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient.GBtools
 {
 	public partial class GBGPUView : Form
@@ -955,9 +957,9 @@ namespace BizHawk.MultiClient.GBtools
 				dlg.FullOpen = true;
 				dlg.Color = spriteback;
 
-				Global.Sound.StopSound();
+				GlobalWinF.Sound.StopSound();
 				var result = dlg.ShowDialog();
-				Global.Sound.StartSound();
+				GlobalWinF.Sound.StartSound();
 				if (result == DialogResult.OK)
 				{
 					// force full opaque

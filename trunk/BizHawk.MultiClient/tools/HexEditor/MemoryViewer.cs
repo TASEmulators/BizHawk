@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Text;
 using System.Globalization;
 
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -517,9 +518,9 @@ namespace BizHawk.MultiClient
 		{
 			InputPrompt i = new InputPrompt {Text = "Go to Address"};
 			i.SetMessage("Enter a hexadecimal value");
-			Global.Sound.StopSound();
+			GlobalWinF.Sound.StopSound();
 			i.ShowDialog();
-			Global.Sound.StartSound();
+			GlobalWinF.Sound.StartSound();
 
 			if (i.UserOK)
 			{

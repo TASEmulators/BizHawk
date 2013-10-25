@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class HotkeyConfig : Form
@@ -31,14 +33,14 @@ namespace BizHawk.MultiClient
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)
 		{
-			Global.OSD.AddMessage("Hotkey config aborted");
+			GlobalWinF.OSD.AddMessage("Hotkey config aborted");
 			Close();
 		}
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
 			Save();
-			Global.OSD.AddMessage("Hotkey settings saved");
+			GlobalWinF.OSD.AddMessage("Hotkey settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -59,7 +61,7 @@ namespace BizHawk.MultiClient
 
 			foreach (InputWidget w in _inputWidgets)
 			{
-				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
 				b.Bindings = w.Text;
 			}
 		}
@@ -95,14 +97,14 @@ namespace BizHawk.MultiClient
 				tb.Name = tab;
 				tb.Text = tab;
 
-				List<Binding> bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
+				var bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
 
 				int _x = 6;
 				int _y = 14;
 				int iw_offset_x = 110;
 				int iw_offset_y = -4;
 				int iw_width = 120;
-				foreach (Binding b in bindings)
+				foreach (var b in bindings)
 				{
 					Label l = new Label()
 					{
@@ -139,7 +141,7 @@ namespace BizHawk.MultiClient
 		{
 			foreach (InputWidget w in _inputWidgets)
 			{
-				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
 				w.Text = b.DefaultBinding;
 			}
 		}
@@ -180,7 +182,7 @@ namespace BizHawk.MultiClient
 			{
 				string user_selection = SearchBox.Text;
 
-				Binding b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
 
 				//Found
 				if (b != null)

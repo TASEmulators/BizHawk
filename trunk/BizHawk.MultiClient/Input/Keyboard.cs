@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 
 			if (keyboard == null || keyboard.Disposed)
 				keyboard = new Keyboard(dinput);
-			keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+			keyboard.SetCooperativeLevel(GlobalWinF.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 		}
 
 		public static void Update()

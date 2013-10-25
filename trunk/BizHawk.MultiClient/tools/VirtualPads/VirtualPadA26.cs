@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	class VirtualPadA26 : VirtualPad
@@ -146,15 +148,15 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
 			if (sender == PU)
-				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
 			else if (sender == PD)
-				Global.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
 			else if (sender == PL)
-				Global.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
 			else if (sender == PR)
-				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
 			else if (sender == B1)
-				Global.StickyXORAdapter.SetSticky(Controller + " Button", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Button", B1.Checked);
 		}
 
 		public override void Clear()
@@ -162,11 +164,11 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
 			
 
-			if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky(Controller + " B", false);
+			if (PU.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			if (PD.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			if (PL.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			if (PR.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " B", false);
 
 			PU.Checked = false;
 			PD.Checked = false;

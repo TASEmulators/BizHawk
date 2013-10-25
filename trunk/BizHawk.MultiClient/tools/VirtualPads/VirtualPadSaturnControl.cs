@@ -2,6 +2,8 @@
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadSaturnControl : UserControl, IVirtualPad
@@ -77,11 +79,11 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
 			}
 			else if (sender == B2)
 			{
-				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
 		}
 
@@ -89,8 +91,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SAT") return;
 
-			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
-			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
+			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
 
 			B1.Checked = false;
 			B2.Checked = false;
