@@ -1228,10 +1228,9 @@ namespace BizHawk.MultiClient
 					}
 					else if (file.Extension.ToLower() == ".xml")
 					{
-						var XMLG = XmlGame.Create(file);
-
-						if (XMLG != null)
+						try
 						{
+							var XMLG = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 							game = XMLG.GI;
 
 							switch (game.System)
@@ -1256,9 +1255,11 @@ namespace BizHawk.MultiClient
 								default:
 									return false;
 							}
-
 						}
-						// if load fails, are we supposed to retry as a bsnes XML????????
+						catch(Exception ex)
+						{
+							System.Windows.Forms.MessageBox.Show(ex.ToString(), "XMLGame Load Error");
+						}
 					}
 					else // most extensions
 					{
