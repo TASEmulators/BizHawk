@@ -344,7 +344,6 @@
     <Compile Include="movie\SubtitleMaker.Designer.cs">
       <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="MruStack.cs" />
     <Compile Include="NameStateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -734,7 +733,6 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Watch\UndoHistory.cs" />
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1008,6 +1006,10 @@
     <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
       <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
       <Name>BizHawk.Client.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>

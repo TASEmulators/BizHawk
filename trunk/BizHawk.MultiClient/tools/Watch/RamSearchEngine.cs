@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
