@@ -152,7 +152,6 @@
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\WavWriter.cs" />
-    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BizBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -974,7 +973,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Properties\svnrev.cs" />
-    <Compile Include="SavestateManager.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="tools\InputPrompt.cs">
       <SubType>Form</SubType>

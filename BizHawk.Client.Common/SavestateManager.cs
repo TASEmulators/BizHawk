@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	class SavestateManager
+	public class SavestateManager
 	{
 		private readonly bool[] slots = new bool[10];
 		private readonly bool[] redo = new bool[10];
