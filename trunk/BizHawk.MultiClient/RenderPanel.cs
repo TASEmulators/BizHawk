@@ -392,7 +392,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (GlobalWinF.ForceNoThrottle)
+				if (Global.ForceNoThrottle)
 					return false;
 				return Global.Config.VSyncThrottle || Global.Config.VSync;
 			}

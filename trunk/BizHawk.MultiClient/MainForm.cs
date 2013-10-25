@@ -625,7 +625,7 @@ namespace BizHawk.MultiClient
 		{
 			bool fastforward = GlobalWinF.ClientControls["Fast Forward"] || FastForward;
 			bool superfastforward = GlobalWinF.ClientControls["Turbo"];
-			GlobalWinF.ForceNoThrottle = unthrottled || fastforward;
+			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
