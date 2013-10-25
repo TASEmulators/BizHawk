@@ -114,21 +114,6 @@
       <Name>BizHawk.Emulation</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="7z\arch\Test.bzip2.7z" />
-    <None Include="7z\arch\Test.lzma.7z" />
-    <None Include="7z\arch\Test.lzma2.7z" />
-    <None Include="7z\arch\Test.ppmd.7z" />
-    <None Include="7z\arch\Test.rar" />
-    <None Include="7z\arch\Test.tar" />
-    <None Include="7z\arch\Test.txt.bz2" />
-    <None Include="7z\arch\Test.txt.gz" />
-    <None Include="7z\arch\Test.txt.xz" />
-    <None Include="7z\arch\Test.zip" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="7z\arch\Test.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
