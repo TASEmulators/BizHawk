@@ -205,7 +205,8 @@ namespace SevenZip
             }
         }
 		
-		static readonly string Namespace = Assembly.GetExecutingAssembly().GetManifestResourceNames()[0].Split('.')[0];
+		//static readonly string Namespace = Assembly.GetExecutingAssembly().GetManifestResourceNames()[0].Split('.')[0];
+		static readonly string Namespace = "BizHawk"; //Remove dirty hack above
 
         private static string GetResourceString(string str)
         {			
