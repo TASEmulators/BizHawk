@@ -189,7 +189,7 @@ namespace BizHawk.MultiClient
 			{
 				ShowConsole();
 				//PsxApi.StdioFixes();
-				displayLogWindowToolStripMenuItem.Checked = true;
+				DisplayLogWindowMenuItem.Checked = true;
 			}
 
 			throttle = new Throttle();
@@ -429,7 +429,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				displayStatusBarToolStripMenuItem.Checked = true;
+				DisplayStatusBarMenuItem.Checked = true;
 			}
 
 			if (Global.Config.StartPaused)
@@ -4033,19 +4033,19 @@ namespace BizHawk.MultiClient
 		private void ShowConsole()
 		{
 			LogConsole.ShowConsole();
-			logWindowAsConsoleToolStripMenuItem.Enabled = false;
+			LogWindowAsConsoleMenuItem.Enabled = false;
 		}
 
 		private void HideConsole()
 		{
 			LogConsole.HideConsole();
-			logWindowAsConsoleToolStripMenuItem.Enabled = true;
+			LogWindowAsConsoleMenuItem.Enabled = true;
 		}
 
 		public void notifyLogWindowClosing()
 		{
-			displayLogWindowToolStripMenuItem.Checked = false;
-			logWindowAsConsoleToolStripMenuItem.Enabled = true;
+			DisplayLogWindowMenuItem.Checked = false;
+			LogWindowAsConsoleMenuItem.Enabled = true;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -4284,16 +4284,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void configToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			controllersToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-		}
-
-		private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new FirmwaresConfig().Show();
-		}
-
 		private void menuStrip1_Leave(object sender, EventArgs e)
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
@@ -4327,6 +4317,66 @@ namespace BizHawk.MultiClient
 		private void clearSRAMToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			CloseROM(clearSRAM: true);
+		}
+
+		public void ToggleBackgroundInput()
+		{
+			Global.Config.AcceptBackgroundInput ^= true;
+			if (Global.Config.AcceptBackgroundInput)
+			{
+				GlobalWinF.OSD.AddMessage("Background Input enabled");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Background Input disabled");
+			}
+		}
+
+		public void LimitFrameRateMessage()
+		{
+			if (Global.Config.ClockThrottle)
+			{
+				GlobalWinF.OSD.AddMessage("Framerate limiting on");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Framerate limiting off");
+			}
+		}
+
+		public void ClickSpeedItem(int num)
+		{
+			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
+			else SetSpeedPercent(num);
+		}
+
+		public void VsyncMessage()
+		{
+			if (Global.Config.VSyncThrottle)
+			{
+				GlobalWinF.OSD.AddMessage("Display Vsync is set to on");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Display Vsync is set to off");
+			}
+		}
+
+		public void MinimizeFrameskipMessage()
+		{
+			if (Global.Config.AutoMinimizeSkipping)
+			{
+				GlobalWinF.OSD.AddMessage("Autominimizing set to on");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Autominimizing set to off");
+			}
+		}
+
+		public void FrameSkipMessage()
+		{
+			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
 		}
 	}
 }
