@@ -30,14 +30,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasSavestateSlots()
+		public bool HasSavestateSlots
 		{
-			Update();
-			for (int x = 0; x < 10; x++)
+			get
 			{
-				if (slots[x]) return true;
+				Update();
+				for (int x = 0; x < 10; x++)
+				{
+					if (slots[x]) return true;
+				}
+				return false;
 			}
-			return false;
 		}
 
 		public bool HasSlot(int slot)

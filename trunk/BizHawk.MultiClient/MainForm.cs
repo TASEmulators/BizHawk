@@ -3207,7 +3207,7 @@ namespace BizHawk.MultiClient
 		//sends an alt+mnemonic combination
 		void SendAltKeyChar(char c)
 		{
-			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, menuStrip1, new object[] { c });
+			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
 		}
 
 		string FormatFilter(params string[] args)

@@ -13,20 +13,504 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
-		private void openROMToolStripMenuItem_Click(object sender, EventArgs e)
+		#region File Menu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			OpenRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
+			CloseRomMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
+
+			MovieSubMenu.Enabled =
+					AVSubMenu.Enabled =
+					ScreenshotSubMenu.Enabled =
+					CloseRomMenuItem.Enabled =
+					!IsNullEmulator();
+		}
+
+		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentRomSubMenu.DropDownItems.Clear();
+			RecentRomSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
+			);
+			RecentRomSubMenu.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
+			);
+		}
+
+		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveState0MenuItem.Font = new Font(
+				SaveState0MenuItem.Font.FontFamily,
+				SaveState0MenuItem.Font.Size,
+				 StateSlots.HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState1MenuItem.Font = new Font(
+				SaveState1MenuItem.Font.FontFamily,
+				SaveState1MenuItem.Font.Size,
+				StateSlots.HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState2MenuItem.Font = new Font(
+				SaveState2MenuItem.Font.FontFamily,
+				SaveState2MenuItem.Font.Size,
+				StateSlots.HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState3MenuItem.Font = new Font(
+				SaveState3MenuItem.Font.FontFamily,
+				SaveState3MenuItem.Font.Size,
+				StateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+			
+			SaveState4MenuItem.Font = new Font(
+				SaveState4MenuItem.Font.FontFamily,
+				SaveState4MenuItem.Font.Size,
+				StateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+			
+			SaveState5MenuItem.Font = new Font(
+				SaveState5MenuItem.Font.FontFamily,
+				SaveState5MenuItem.Font.Size,
+				StateSlots.HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState6MenuItem.Font = new Font(
+				SaveState6MenuItem.Font.FontFamily,
+				SaveState6MenuItem.Font.Size,
+				StateSlots.HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState7MenuItem.Font = new Font(
+				SaveState7MenuItem.Font.FontFamily,
+				SaveState7MenuItem.Font.Size,
+				StateSlots.HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState8MenuItem.Font = new Font(
+				SaveState8MenuItem.Font.FontFamily,
+				SaveState8MenuItem.Font.Size,
+				StateSlots.HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState9MenuItem.Font = new Font(
+				SaveState9MenuItem.Font.FontFamily,
+				SaveState9MenuItem.Font.Size,
+				StateSlots.HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+			);
+
+			SaveState1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 1"].Bindings;
+			SaveState2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 2"].Bindings;
+			SaveState3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 3"].Bindings;
+			SaveState4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 4"].Bindings;
+			SaveState5MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 5"].Bindings;
+			SaveState6MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 6"].Bindings;
+			SaveState7MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 7"].Bindings;
+			SaveState8MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 8"].Bindings;
+			SaveState9MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 9"].Bindings;
+			SaveState0MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 0"].Bindings;
+			SaveNamedStateMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Named State"].Bindings;
+
+			SaveNamedStateMenuItem.Enabled =
+				SaveState1MenuItem.Enabled =
+				SaveState2MenuItem.Enabled =
+				SaveState3MenuItem.Enabled =
+				SaveState4MenuItem.Enabled =
+				SaveState5MenuItem.Enabled =
+				SaveState6MenuItem.Enabled =
+				SaveState7MenuItem.Enabled =
+				SaveState8MenuItem.Enabled =
+				SaveState9MenuItem.Enabled =
+				SaveState0MenuItem.Enabled =
+				!IsNullEmulator();
+		}
+
+		private void LoadStateSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			LoadState1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 1"].Bindings;
+			LoadState2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 2"].Bindings;
+			LoadState3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 3"].Bindings;
+			LoadState4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 4"].Bindings;
+			LoadState5MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 5"].Bindings;
+			LoadState6MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 6"].Bindings;
+			LoadState7MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 7"].Bindings;
+			LoadState8MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 8"].Bindings;
+			LoadState9MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 9"].Bindings;
+			LoadState0MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 0"].Bindings;
+			LoadNamedStateMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load Named State"].Bindings;
+
+			AutoloadLastSlotMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
+
+			LoadNamedStateMenuItem.Enabled = !IsNullEmulator();
+			LoadState1MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(1);
+			LoadState2MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(2);
+			LoadState3MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(3);
+			LoadState4MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(4);
+			LoadState5MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(5);
+			LoadState6MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(6);
+			LoadState7MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(7);
+			LoadState8MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(8);
+			LoadState9MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(9);
+			LoadState0MenuItem.Enabled = !IsNullEmulator() && StateSlots.HasSlot(0);
+		}
+
+		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SelectSlot0MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 0"].Bindings;
+			SelectSlot1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 1"].Bindings;
+			SelectSlot2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 2"].Bindings;
+			SelectSlot3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 3"].Bindings;
+			SelectSlot4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 4"].Bindings;
+			SelectSlot5MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 5"].Bindings;
+			SelectSlot6MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 6"].Bindings;
+			SelectSlot7MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 7"].Bindings;
+			SelectSlot8MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 8"].Bindings;
+			SelectSlot9MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 9"].Bindings;
+			PreviousSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Previous Slot"].Bindings;
+			NextSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Next Slot"].Bindings;
+			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Save"].Bindings;
+			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Load"].Bindings;
+
+			SaveToCurrentSlotMenuItem.Enabled = LoadCurrentSlotMenuItem.Enabled = !IsNullEmulator();
+
+			SelectSlot0MenuItem.Checked = false;
+			SelectSlot1MenuItem.Checked = false;
+			SelectSlot2MenuItem.Checked = false;
+			SelectSlot3MenuItem.Checked = false;
+			SelectSlot4MenuItem.Checked = false;
+			SelectSlot5MenuItem.Checked = false;
+			SelectSlot6MenuItem.Checked = false;
+			SelectSlot7MenuItem.Checked = false;
+			SelectSlot8MenuItem.Checked = false;
+			SelectSlot9MenuItem.Checked = false;
+			SelectSlot1MenuItem.Checked = false;
+
+			switch (Global.Config.SaveSlot)
+			{
+				case 0:
+					SelectSlot0MenuItem.Checked = true;
+					break;
+				case 1:
+					SelectSlot1MenuItem.Checked = true;
+					break;
+				case 2:
+					SelectSlot2MenuItem.Checked = true;
+					break;
+				case 3:
+					SelectSlot3MenuItem.Checked = true;
+					break;
+				case 4:
+					SelectSlot4MenuItem.Checked = true;
+					break;
+				case 5:
+					SelectSlot5MenuItem.Checked = true;
+					break;
+				case 6:
+					SelectSlot6MenuItem.Checked = true;
+					break;
+				case 7:
+					SelectSlot7MenuItem.Checked = true;
+					break;
+				case 8:
+					SelectSlot8MenuItem.Checked = true;
+					break;
+				case 9:
+					SelectSlot9MenuItem.Checked = true;
+					break;
+			}
+		}
+
+		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			FullMovieLoadstatesMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
+			StopMovieWithoutSavingMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			StopMovieMenuItem.Enabled
+				= PlayFromBeginningMenuItem.Enabled
+				= SaveMovieMenuItem.Enabled
+				= Global.MovieSession.Movie.IsActive;
+
+			ReadonlyMenuItem.Checked = ReadOnly;
+			BindSavestatesToMoviesMenuItem.Checked = Global.Config.BindSavestatesToMovies;
+			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
+			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
+
+			ReadonlyMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle read-only"].Bindings;
+			RecordMovieMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record Movie"].Bindings;
+			PlayMovieMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play Movie"].Bindings;
+			StopMovieMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop Movie"].Bindings;
+			PlayFromBeginningMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play from beginning"].Bindings;
+			SaveMovieMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Movie"].Bindings;
+		}
+
+		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentMenuItem.DropDownItems.Clear();
+			RecentMenuItem.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
+			);
+			RecentMenuItem.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
+			);
+		}
+
+		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
+			StopAVIMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
+			CaptureOSDMenuItem.Checked = Global.Config.AVI_CaptureOSD;
+
+			if (CurrAviWriter == null)
+			{
+				RecordAVMenuItem.Enabled = true;
+				StopAVIMenuItem.Enabled = false;
+			}
+			else
+			{
+				RecordAVMenuItem.Enabled = false;
+				StopAVIMenuItem.Enabled = true;
+			}
+		}
+
+		private void ScreenshotSubMenu_DropDownOpening(object sender, EventArgs e)
+		{
+			ScreenshotCaptureOSDMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
+			ScreenshotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
+		}
+
+		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenROM();
 		}
 
-		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
+		private void CloseRomMenuItem_Click(object sender, EventArgs e)
+		{
+			CloseROM();
+		}
+
+		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
+		private void Savestate2MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave2"); }
+		private void Savestate3MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave3"); }
+		private void Savestate4MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave4"); }
+		private void Savestate5MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave5"); }
+		private void Savestate6MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave6"); }
+		private void Savestate7MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave7"); }
+		private void Savestate8MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave8"); }
+		private void Savestate9MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave9"); }
+		private void Savestate0MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave0"); }
+
+		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveStateAs();
+		}
+
+		private void Loadstate1MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
+		private void Loadstate2MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
+		private void Loadstate3MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
+		private void Loadstate4MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
+		private void Loadstate5MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
+		private void Loadstate6MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
+		private void Loadstate7MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
+		private void Loadstate8MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
+		private void Loadstate9MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
+		private void Loadstate0MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
+
+		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadStateAs();
+		}
+
+		private void AutoloadLastSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLastSaveSlot ^= true;
+		}
+
+		private void SelectSlotMenuItems_Click(object sender, EventArgs e)
+		{
+			if (sender == SelectSlot0MenuItem) Global.Config.SaveSlot = 0;
+			else if (sender == SelectSlot1MenuItem) Global.Config.SaveSlot = 1;
+			else if (sender == SelectSlot2MenuItem) Global.Config.SaveSlot = 2;
+			else if (sender == SelectSlot3MenuItem) Global.Config.SaveSlot = 3;
+			else if (sender == SelectSlot4MenuItem) Global.Config.SaveSlot = 4;
+			else if (sender == SelectSlot5MenuItem) Global.Config.SaveSlot = 5;
+			else if (sender == SelectSlot6MenuItem) Global.Config.SaveSlot = 6;
+			else if (sender == SelectSlot7MenuItem) Global.Config.SaveSlot = 7;
+			else if (sender == SelectSlot8MenuItem) Global.Config.SaveSlot = 8;
+			else if (sender == SelectSlot9MenuItem) Global.Config.SaveSlot = 9;
+
+			UpdateStatusSlots();
+			SaveSlotSelectedMessage();
+		}
+
+		private void PreviousSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			PreviousSlot();
+		}
+
+		private void NextSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			NextSlot();
+		}
+
+		private void SaveToCurrentSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+		}
+
+		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
+		}
+
+		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleReadOnly();
+		}
+
+		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			RecordMovie();
+		}
+
+		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			PlayMovie();
+		}
+
+		private void StopMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			StopMovie();
+		}
+
+		private void PlayFromBeginningMenuItem_Click(object sender, EventArgs e)
+		{
+			PlayMovieFromBeginning();
+		}
+
+		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Multiselect = true,
+				Filter = FormatFilter(
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
+					"FCEUX", "*.fm2",
+					"PCEjin/Mednafen", "*.mc2;*.mcm",
+					"Dega", "*.mmv",
+					"Gens", "*.gmv",
+					"Visual Boy Advance", "*.vbm",
+					"LSNES", "*.lsmv",
+					"FCEU", "*.fcm",
+					"Famtasia", "*.fmv",
+					"VirtuaNES", "*.vmv",
+					"Nintendulator", "*.nmv",
+					"Snes9x", "*.smv",
+					"ZSNES", "*.zmv",
+					"All Files", "*.*"),
+				RestoreDirectory = false
+			};
+
+			GlobalWinF.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+			else
+			{
+				foreach (string fn in ofd.FileNames)
+				{
+					ProcessMovieImport(fn);
+				}
+			}
+		}
+
+		private void SaveMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
+		}
+
+		private void stopMovieWithoutSaveMenuItem_Click(object sender, EventArgs e)
+		{
+			StopMovie(true);
+		}
+
+		private void BindSavestatesToMoviesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.BindSavestatesToMovies ^= true;
+		}
+
+		private void AutomaticMovieBackupMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.EnableBackupMovies ^= true;
+		}
+
+		private void FullMovieLoadstatesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.VBAStyleMovieLoadState ^= true;
+		}
+
+		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordAVI();
 		}
 
-		private void stopAVIToolStripMenuItem_Click(object sender, EventArgs e)
+		private void StopAVMenuItem_Click(object sender, EventArgs e)
 		{
 			StopAVI();
 		}
+
+		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AVI_CaptureOSD ^= true;
+		}
+
+		private void ScreenshotMenuItem_Click(object sender, EventArgs e)
+		{
+			TakeScreenshot();
+		}
+
+		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
+		{
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+
+			SaveFileDialog sfd = new SaveFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "PNG File (*.png)|*.png"
+			};
+
+			GlobalWinF.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+			if (result == DialogResult.OK)
+			{
+				TakeScreenshot(sfd.FileName);
+			}
+		}
+
+		private void ScreenshotClipboardMenuItem_Click(object sender, EventArgs e)
+		{
+			TakeScreenshotToClipboard();
+		}
+
+		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Screenshot_CaptureOSD ^= true;
+		}
+
+		private void ExitMenuItem_Click(object sender, EventArgs e)
+		{
+			if (RamWatch1.AskSave())
+			{
+				Close();
+			}
+		}
+
+		#endregion
 
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
@@ -267,26 +751,6 @@ namespace BizHawk.MultiClient
 			FlagNeedsReboot();
 		}
 
-		private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RecordMovie();
-		}
-
-		private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PlayMovie();
-		}
-
-		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopMovie();
-		}
-
-		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PlayMovieFromBeginning();
-		}
-
 
 		private void RAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -296,101 +760,6 @@ namespace BizHawk.MultiClient
 		private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadRamSearch();
-		}
-
-		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 1;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 2;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot3ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 3;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot4ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 4;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot5ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 5;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot6ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 6;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot7ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 7;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot8ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 8;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot9ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 9;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void selectSlot10ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveSlot = 0;
-			UpdateStatusSlots();
-			SaveSlotSelectedMessage();
-		}
-
-		private void previousSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PreviousSlot();
-		}
-
-		private void nextSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			NextSlot();
-		}
-
-		private void saveToCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
-		}
-
-		private void loadCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
-		}
-
-		private void closeROMToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			CloseROM();
 		}
 
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -490,47 +859,9 @@ namespace BizHawk.MultiClient
 			ToggleLagCounter();
 		}
 
-		private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TakeScreenshot();
-		}
-
 		private void forumsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
-		}
-
-		private void screenshotClipboardToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TakeScreenshotToClipboard();
-		}
-
-		private void savestate1toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
-		private void savestate2toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave2"); }
-		private void savestate3toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave3"); }
-		private void savestate4toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave4"); }
-		private void savestate5toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave5"); }
-		private void savestate6toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave6"); }
-		private void savestate7toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave7"); }
-		private void savestate8toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave8"); }
-		private void savestate9toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave9"); }
-		private void savestate0toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave0"); }
-
-		private void loadstate1toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
-		private void loadstate2toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
-		private void loadstate3toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
-		private void loadstate4toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
-		private void loadstate5toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
-		private void loadstate6toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
-		private void loadstate7toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
-		private void loadstate8toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
-		private void loadstate9toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
-		private void loadstate0toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
-
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (RamWatch1.AskSave())
-				Close();
 		}
 
 		private void PPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -574,51 +905,9 @@ namespace BizHawk.MultiClient
 			LoadNESDebugger();
 		}
 
-		private void saveStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			savestate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 1"].Bindings;
-			savestate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 2"].Bindings;
-			savestate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 3"].Bindings;
-			savestate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 4"].Bindings;
-			savestate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 5"].Bindings;
-			savestate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 6"].Bindings;
-			savestate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 7"].Bindings;
-			savestate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 8"].Bindings;
-			savestate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 9"].Bindings;
-			savestate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 0"].Bindings;
-			saveNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Named State"].Bindings;
-		}
-
-		private void loadStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 1"].Bindings;
-			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 2"].Bindings;
-			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 3"].Bindings;
-			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 4"].Bindings;
-			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 5"].Bindings;
-			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 6"].Bindings;
-			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 7"].Bindings;
-			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 8"].Bindings;
-			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 9"].Bindings;
-			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load State 0"].Bindings;
-			loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Load Named State"].Bindings;
-
-			autoLoadLastSlotToolStripMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
-		}
-
 		private void nametableViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadNESNameTable();
-		}
-
-		private void saveNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveStateAs();
-		}
-
-		private void loadNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadStateAs();
 		}
 
 		private void toolBoxToolStripMenuItem_Click(object sender, EventArgs e)
@@ -641,24 +930,6 @@ namespace BizHawk.MultiClient
 			traceLoggerToolStripMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
 
 			cheatsToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-		}
-
-		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			selectSlot10ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 0"].Bindings;
-			selectSlot1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 1"].Bindings;
-			selectSlot2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 2"].Bindings;
-			selectSlot3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 3"].Bindings;
-			selectSlot4ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 4"].Bindings;
-			selectSlot5ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 5"].Bindings;
-			selectSlot6ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 6"].Bindings;
-			selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 7"].Bindings;
-			selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 8"].Bindings;
-			selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select State 9"].Bindings;
-			previousSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Previous Slot"].Bindings;
-			nextSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Next Slot"].Bindings;
-			saveToCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Save"].Bindings;
-			loadCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Quick Load"].Bindings;
 		}
 
 		private void switchToFullscreenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -702,55 +973,9 @@ namespace BizHawk.MultiClient
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
-		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentROMToolStripMenuItem.DropDownItems.Clear();
-			recentROMToolStripMenuItem.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentRoms, LoadRomFromRecent)
-			);
-			recentROMToolStripMenuItem.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentRoms)
-			);
-		}
-
-		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentMovies, LoadMoviesFromRecent)
-			);
-			recentToolStripMenuItem.DropDownItems.Add(
-				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentMovies)
-			);
-		}
-
-		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
-
-			SaveFileDialog sfd = new SaveFileDialog
-				{
-					InitialDirectory = Path.GetDirectoryName(path),
-					FileName = Path.GetFileName(path),
-					Filter = "PNG File (*.png)|*.png"
-				};
-
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-			TakeScreenshot(sfd.FileName);
-		}
-
 		private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RunInBackground ^= true;
-		}
-
-		private void bindSavestatesToMoviesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BindSavestatesToMovies ^= true;
 		}
 
 		private void acceptBackgroundInputToolStripMenuItem_Click(object sender, EventArgs e)
@@ -808,7 +1033,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
 			{
-				Point p = new Point(e.X, e.Y + menuStrip1.Height);
+				Point p = new Point(e.X, e.Y + MainformMenu.Height);
 				Point po = PointToScreen(p);
 				contextMenuStrip1.Show(po);
 			}
@@ -1048,11 +1273,6 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie.WriteBackup();
 		}
 
-		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.EnableBackupMovies ^= true;
-		}
-
 		private void stopMovieToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			StopMovie();
@@ -1077,24 +1297,6 @@ namespace BizHawk.MultiClient
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
-		}
-
-		private void aVIWAVToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recordAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
-			stopAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
-			captureOSDToolStripMenuItem.Checked = Global.Config.AVI_CaptureOSD;
-
-			if (CurrAviWriter == null)
-			{
-				recordAVIToolStripMenuItem.Enabled = true;
-				stopAVIToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				recordAVIToolStripMenuItem.Enabled = false;
-				stopAVIToolStripMenuItem.Enabled = true;
-			}
 		}
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1152,33 +1354,6 @@ namespace BizHawk.MultiClient
 				}
 				wasPaused = false;
 			}
-		}
-
-		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ToggleReadOnly();
-		}
-
-		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			fullMovieLoadstatesToolStripMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
-			stopMovieWithoutSavingToolStripMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
-			stopMovieToolStripMenuItem.Enabled
-				= playFromBeginningToolStripMenuItem.Enabled
-				= saveMovieToolStripMenuItem.Enabled
-				= Global.MovieSession.Movie.IsActive;
-
-			readonlyToolStripMenuItem.Checked = ReadOnly;
-			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
-			automaticallyBackupMoviesToolStripMenuItem.Checked = Global.Config.EnableBackupMovies;
-			fullMovieLoadstatesToolStripMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
-
-			readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle read-only"].Bindings;
-			recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record Movie"].Bindings;
-			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play Movie"].Bindings;
-			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop Movie"].Bindings;
-			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Play from beginning"].Bindings;
-			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save Movie"].Bindings;
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1312,122 +1487,6 @@ namespace BizHawk.MultiClient
 				case 5: x5MenuItem.Checked = true; break;
 				case 10: mzMenuItem.Checked = true; break;
 			}
-		}
-
-		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if (IsNullEmulator())
-			{
-				movieToolStripMenuItem.Enabled = false;
-				AVIWAVToolStripMenuItem.Enabled = false;
-				screenshotToolStripMenuItem.Enabled = false;
-				closeROMToolStripMenuItem.Enabled = false;
-				saveToCurrentSlotToolStripMenuItem.Enabled = false;
-				loadCurrentSlotToolStripMenuItem.Enabled = false;
-				loadNamedStateToolStripMenuItem.Enabled = false;
-				saveNamedStateToolStripMenuItem.Enabled = false;
-				savestate1toolStripMenuItem.Enabled = false;
-				savestate2toolStripMenuItem.Enabled = false;
-				savestate3toolStripMenuItem.Enabled = false;
-				savestate4toolStripMenuItem.Enabled = false;
-				savestate5toolStripMenuItem.Enabled = false;
-				savestate6toolStripMenuItem.Enabled = false;
-				savestate7toolStripMenuItem.Enabled = false;
-				savestate8toolStripMenuItem.Enabled = false;
-				savestate9toolStripMenuItem.Enabled = false;
-				savestate0toolStripMenuItem.Enabled = false;
-				loadstate1toolStripMenuItem.Enabled = false;
-				loadstate2toolStripMenuItem.Enabled = false;
-				loadstate3toolStripMenuItem.Enabled = false;
-				loadstate4toolStripMenuItem.Enabled = false;
-				loadstate5toolStripMenuItem.Enabled = false;
-				loadstate6toolStripMenuItem.Enabled = false;
-				loadstate7toolStripMenuItem.Enabled = false;
-				loadstate8toolStripMenuItem.Enabled = false;
-				loadstate9toolStripMenuItem.Enabled = false;
-				loadstate0toolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				movieToolStripMenuItem.Enabled = true;
-				AVIWAVToolStripMenuItem.Enabled = true;
-				screenshotToolStripMenuItem.Enabled = true;
-				closeROMToolStripMenuItem.Enabled = true;
-				saveToCurrentSlotToolStripMenuItem.Enabled = true;
-				loadCurrentSlotToolStripMenuItem.Enabled = true;
-				loadNamedStateToolStripMenuItem.Enabled = true;
-				saveNamedStateToolStripMenuItem.Enabled = true;
-				savestate1toolStripMenuItem.Enabled = true;
-				savestate2toolStripMenuItem.Enabled = true;
-				savestate3toolStripMenuItem.Enabled = true;
-				savestate4toolStripMenuItem.Enabled = true;
-				savestate5toolStripMenuItem.Enabled = true;
-				savestate6toolStripMenuItem.Enabled = true;
-				savestate7toolStripMenuItem.Enabled = true;
-				savestate8toolStripMenuItem.Enabled = true;
-				savestate9toolStripMenuItem.Enabled = true;
-				savestate0toolStripMenuItem.Enabled = true;
-				loadstate1toolStripMenuItem.Enabled = true;
-				loadstate2toolStripMenuItem.Enabled = true;
-				loadstate3toolStripMenuItem.Enabled = true;
-				loadstate4toolStripMenuItem.Enabled = true;
-				loadstate5toolStripMenuItem.Enabled = true;
-				loadstate6toolStripMenuItem.Enabled = true;
-				loadstate7toolStripMenuItem.Enabled = true;
-				loadstate8toolStripMenuItem.Enabled = true;
-				loadstate9toolStripMenuItem.Enabled = true;
-				loadstate0toolStripMenuItem.Enabled = true;
-			}
-
-			selectSlot10ToolStripMenuItem.Checked = false;
-			selectSlot1ToolStripMenuItem.Checked = false;
-			selectSlot2ToolStripMenuItem.Checked = false;
-			selectSlot3ToolStripMenuItem.Checked = false;
-			selectSlot4ToolStripMenuItem.Checked = false;
-			selectSlot5ToolStripMenuItem.Checked = false;
-			selectSlot6ToolStripMenuItem.Checked = false;
-			selectSlot7ToolStripMenuItem.Checked = false;
-			selectSlot8ToolStripMenuItem.Checked = false;
-			selectSlot9ToolStripMenuItem.Checked = false;
-			selectSlot1ToolStripMenuItem.Checked = false;
-
-			switch (Global.Config.SaveSlot)
-			{
-				case 0:
-					selectSlot10ToolStripMenuItem.Checked = true;
-					break;
-				case 1:
-					selectSlot1ToolStripMenuItem.Checked = true;
-					break;
-				case 2:
-					selectSlot2ToolStripMenuItem.Checked = true;
-					break;
-				case 3:
-					selectSlot3ToolStripMenuItem.Checked = true;
-					break;
-				case 4:
-					selectSlot4ToolStripMenuItem.Checked = true;
-					break;
-				case 5:
-					selectSlot5ToolStripMenuItem.Checked = true;
-					break;
-				case 6:
-					selectSlot6ToolStripMenuItem.Checked = true;
-					break;
-				case 7:
-					selectSlot7ToolStripMenuItem.Checked = true;
-					break;
-				case 8:
-					selectSlot8ToolStripMenuItem.Checked = true;
-					break;
-				case 9:
-					selectSlot9ToolStripMenuItem.Checked = true;
-					break;
-			}
-
-			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
-			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Open ROM"].Bindings;
-			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Close ROM"].Bindings;
 		}
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1571,11 +1630,6 @@ namespace BizHawk.MultiClient
 		private void autofireToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new AutofireConfig().ShowDialog();
-		}
-
-		private void autoLoadLastSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadLastSaveSlot ^= true;
 		}
 
 		private void logWindowAsConsoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1941,11 +1995,6 @@ namespace BizHawk.MultiClient
 			oBJ3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
 		}
 
-		private void captureOSDToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AVI_CaptureOSD ^= true;
-		}
-
 		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_ForceDMG ^= true;
@@ -2119,42 +2168,6 @@ namespace BizHawk.MultiClient
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Multiselect = true,
-				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
-					"FCEUX", "*.fm2",
-					"PCEjin/Mednafen", "*.mc2;*.mcm",
-					"Dega", "*.mmv",
-					"Gens", "*.gmv",
-					"Visual Boy Advance", "*.vbm",
-					"LSNES", "*.lsmv",
-					"FCEU", "*.fcm",
-					"Famtasia", "*.fmv",
-					"VirtuaNES", "*.vmv",
-					"Nintendulator", "*.nmv",
-					"Snes9x", "*.smv",
-					"ZSNES", "*.zmv",
-					"All Files", "*.*"),
-				RestoreDirectory = false
-			};
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-
-			foreach (string fn in ofd.FileNames)
-			{
-				ProcessMovieImport(fn);
-			}
-		}
-
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -2236,11 +2249,6 @@ namespace BizHawk.MultiClient
 		}
 
 		private void toolStripMenuItem6_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
-		}
-
-		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			StopMovie(true);
 		}
@@ -2382,16 +2390,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			Global.Config.Screenshot_CaptureOSD ^= true;
-		}
-
-		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-		{
-			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
-		}
-
 		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if ((Global.Emulator as LibsnesCore).IsSGB)
@@ -2458,11 +2456,6 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
 			GlobalWinF.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-		}
-
-		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
 		}
 
 		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2599,11 +2592,6 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			UpdateKeyPriorityIcon();
-		}
-
-		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VBAStyleMovieLoadState ^= true;
 		}
 
 		private void rewindOptionsToolStripMenuItem_Click(object sender, EventArgs e)
