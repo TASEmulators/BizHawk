@@ -432,7 +432,7 @@ namespace BizHawk.MultiClient
 			SaveMovie();
 		}
 
-		private void stopMovieWithoutSaveMenuItem_Click(object sender, EventArgs e)
+		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
 			StopMovie(true);
 		}
@@ -1776,72 +1776,150 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		private void DumpStatus_Click(object sender, EventArgs e)
+		#region Context Menu
+
+		private void MainFormContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			string details = Global.Emulator.CoreComm.RomStatusDetails;
-			if (string.IsNullOrEmpty(details)) return;
-			GlobalWinF.Sound.StopSound();
-			LogWindow.ShowReport("Dump Status Report", details, this);
-			GlobalWinF.Sound.StartSound();
-		}
+			wasPaused = EmulatorPaused;
+			didMenuPause = true;
+			PauseEmulator();
 
+			OpenRomContextMenuItem.Visible = IsNullEmulator() || InFullscreen;
 
+			ShowMenuContextMenuItem.Visible =
+				ShowMenuContextMenuSeparator.Visible =
+				InFullscreen;
 
-		public void RebootCore()
-		{
-			LoadRom(CurrentlyOpenRom);
-		}
+			LoadLastRomContextMenuItem.Visible =
+				IsNullEmulator();
+			
+			ContextSeparator_AfterMovie.Visible =
+				ContextSeparator_AfterUndo.Visible =
+				ScreenshotContextMenuItem.Visible =
+				CloseRomContextMenuItem.Visible =
+				UndoSavestateContextMenuItem.Visible =
+				!IsNullEmulator();
+			
+			RecordMovieContextMenuItem.Visible = 
+				PlayMovieContextMenuItem.Visible = 
+				LoadLastMovieContextMenuItem.Visible =
+				!IsNullEmulator() && !Global.MovieSession.Movie.IsActive;
+			
+			RestartMovieContextMenuItem.Visible =
+				StopMovieContextMenuItem.Visible =
+				BackupMovieContextMenuItem.Visible =
+				ViewSubtitlesContextMenuItem.Visible =
+				ViewCommentsContextMenuItem.Visible =
+				SaveMovieContextMenuItem.Visible =
+				Global.MovieSession.Movie.IsActive;
 
+			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 
+			AddSubtitleContextMenuItem.Visible = !IsNullEmulator() && Global.MovieSession.Movie.IsActive && ReadOnly;
 
-		private void MainForm_Shown(object sender, EventArgs e)
-		{
-			HandlePlatformMenus();
-		}
+			ConfigContextMenuItem.Visible = InFullscreen;
+			
+			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Global.Game));
 
+			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 
+			LoadLastRomContextMenuItem.Enabled = !Global.Config.RecentRoms.Empty;
+			LoadLastMovieContextMenuItem.Enabled = !Global.Config.RecentMovies.Empty;
 
-
-
-		public void MainForm_MouseClick(object sender, MouseEventArgs e)
-		{
-			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
+			if (Global.MovieSession.Movie.IsActive)
 			{
-				Point p = new Point(e.X, e.Y + MainformMenu.Height);
-				Point po = PointToScreen(p);
-				contextMenuStrip1.Show(po);
+				if (ReadOnly)
+				{
+					ViewSubtitlesContextMenuItem.Text = "View Subtitles";
+					ViewCommentsContextMenuItem.Text = "View Comments";
+				}
+				else
+				{
+					ViewSubtitlesContextMenuItem.Text = "Edit Subtitles";
+					ViewCommentsContextMenuItem.Text = "Edit Comments";
+				}
+			}
+
+			var file = new FileInfo(
+				PathManager.SaveStatePrefix(Global.Game) + 
+				".QuickSave" + 
+				Global.Config.SaveSlot +
+				".State.bak"
+			);
+			
+			if (file.Exists)
+			{
+				UndoSavestateContextMenuItem.Enabled = true;
+				if (StateSlots.IsRedo(Global.Config.SaveSlot))
+				{
+					UndoSavestateContextMenuItem.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
+					UndoSavestateContextMenuItem.Image = Properties.Resources.redo;
+				}
+				else
+				{
+					UndoSavestateContextMenuItem.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
+					UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+				}
+			}
+			else
+			{
+				UndoSavestateContextMenuItem.Enabled = false;
+				UndoSavestateContextMenuItem.Text = "Undo Savestate";
+				UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+			}
+
+			if (InFullscreen)
+			{
+				if (MainMenuStrip.Visible)
+				{
+					ShowMenuContextMenuItem.Text = "Hide Menu";
+				}
+				else
+				{
+					ShowMenuContextMenuItem.Text = "Show Menu";
+				}
 			}
 		}
 
-		private void openRomToolStripMenuItem1_Click(object sender, EventArgs e)
+		private void MainFormContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
-			OpenROM();
+			if (!wasPaused)
+			{
+				UnpauseEmulator();
+			}
 		}
 
-		private void loadLastROMToolStripMenuItem_Click(object sender, EventArgs e)
+		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadRomFromRecent(Global.Config.RecentRoms[0]);
 		}
 
-		private void recordMovieToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			RecordMovie();
-		}
-
-		private void playMovieToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			PlayMovie();
-		}
-
-		private void loadLastMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		private void LoadLastMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadMoviesFromRecent(Global.Config.RecentMovies[0]);
 		}
 
-		private void AddSubtitleToolStripMenuItem_Click(object sender, EventArgs e)
+		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			SubtitleMaker s = new SubtitleMaker();
-			s.DisableFrame();
+			GlobalWinF.OSD.AddMessage("Backup movie saved.");
+			Global.MovieSession.Movie.WriteBackup();
+		}
+
+		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				EditSubtitlesForm form = new EditSubtitlesForm { ReadOnly = ReadOnly };
+				form.GetMovie(Global.MovieSession.Movie);
+				form.ShowDialog();
+			}
+		}
+
+		private void AddSubtitleContextMenuItem_Click(object sender, EventArgs e)
+		{
+			SubtitleMaker subForm = new SubtitleMaker();
+			subForm.DisableFrame();
+
 			int index = -1;
 			Subtitle sub = new Subtitle();
 			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
@@ -1853,215 +1931,81 @@ namespace BizHawk.MultiClient
 					break;
 				}
 			}
+
 			if (index < 0)
 			{
 				sub = new Subtitle { Frame = Global.Emulator.Frame };
 			}
-			s.sub = sub;
 
-			if (s.ShowDialog() == DialogResult.OK)
+			subForm.sub = sub;
+
+			if (subForm.ShowDialog() == DialogResult.OK)
 			{
 				if (index >= 0)
+				{
 					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
-				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
-			}
-		}
-
-		private void closeROMToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			CloseROM();
-		}
-
-
-		private void screenshotToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TakeScreenshotToClipboard();
-		}
-
-		private void restartMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PlayMovieFromBeginning();
-		}
-
-		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			ClearSRAMContextSeparator.Visible =
-				ClearSRAMContextMenuItem.Visible
-				= File.Exists(PathManager.SaveRamPath(Global.Game));
-			
-			wasPaused = EmulatorPaused;
-			didMenuPause = true;
-			PauseEmulator();
-
-			//TODO - MUST refactor this to hide all and then view a set depending on the state
-
-			configToolStripMenuItem1.Visible = InFullscreen;
-
-			if (IsNullEmulator())
-			{
-				cmiOpenRom.Visible = true;
-				cmiLoadLastRom.Visible = true;
-				toolStripSeparator_afterRomLoading.Visible = false;
-				cmiRecordMovie.Visible = false;
-				cmiPlayMovie.Visible = false;
-				cmiRestartMovie.Visible = false;
-				cmiStopMovie.Visible = false;
-				cmiLoadLastMovie.Visible = false;
-				cmiMakeMovieBackup.Visible = false;
-				cmiViewSubtitles.Visible = false;
-				cmiViewComments.Visible = false;
-				toolStripSeparator_afterMovie.Visible = false;
-				cmiAddSubtitle.Visible = false;
-				cmiUndoSavestate.Visible = false;
-				cmiSeparator20.Visible = false;
-				cmiScreenshot.Visible = false;
-				cmiScreenshotClipboard.Visible = false;
-				cmiCloseRom.Visible = false;
-				cmiShowMenu.Visible = false;
-				ShowMenuContextMenuSeparator.Visible = false;
-				saveMovieToolStripMenuItem1.Visible = false;
-			}
-			else
-			{
-				cmiOpenRom.Visible = InFullscreen;
-				configToolStripMenuItem1.Visible = InFullscreen;
-
-				cmiLoadLastRom.Visible = false;
-				toolStripSeparator_afterRomLoading.Visible = false;
-
-				if (Global.MovieSession.Movie.IsActive)
-				{
-					cmiRecordMovie.Visible = false;
-					cmiPlayMovie.Visible = false;
-					cmiRestartMovie.Visible = true;
-					cmiStopMovie.Visible = true;
-					cmiLoadLastMovie.Visible = false;
-					cmiMakeMovieBackup.Visible = true;
-					cmiViewSubtitles.Visible = true;
-					cmiViewComments.Visible = true;
-					saveMovieToolStripMenuItem1.Visible = true;
-					toolStripSeparator_afterMovie.Visible = true;
-					if (ReadOnly)
-					{
-						cmiViewSubtitles.Text = "View Subtitles";
-						cmiViewComments.Text = "View Comments";
-						cmiAddSubtitle.Visible = false;
-					}
-					else
-					{
-						cmiViewSubtitles.Text = "Edit Subtitles";
-						cmiViewComments.Text = "Edit Comments";
-						cmiAddSubtitle.Visible = true;
-					}
-				}
-				else
-				{
-					cmiRecordMovie.Visible = true;
-					cmiPlayMovie.Visible = true;
-					cmiRestartMovie.Visible = false;
-					cmiStopMovie.Visible = false;
-					cmiLoadLastMovie.Visible = true;
-					cmiMakeMovieBackup.Visible = false;
-					cmiViewSubtitles.Visible = false;
-					cmiViewComments.Visible = false;
-					toolStripSeparator_afterMovie.Visible = true;
-					cmiAddSubtitle.Visible = false;
-					saveMovieToolStripMenuItem1.Visible = false;
 				}
 
-				cmiUndoSavestate.Visible = true;
-				cmiSeparator20.Visible = true;
-				cmiScreenshot.Visible = true;
-				cmiScreenshotClipboard.Visible = true;
-				cmiCloseRom.Visible = true;
-			}
-
-			cmiLoadLastRom.Enabled = !Global.Config.RecentRoms.Empty;
-			cmiLoadLastMovie.Enabled = !Global.Config.RecentMovies.Empty;
-
-			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
-			var file = new FileInfo(path);
-			if (file.Exists)
-			{
-				if (StateSlots.IsRedo(Global.Config.SaveSlot))
-				{
-					cmiUndoSavestate.Enabled = true;
-					cmiUndoSavestate.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
-					cmiUndoSavestate.Image = Properties.Resources.redo;
-				}
-				else
-				{
-					cmiUndoSavestate.Enabled = true;
-					cmiUndoSavestate.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
-					cmiUndoSavestate.Image = Properties.Resources.undo;
-				}
-			}
-			else
-			{
-				cmiUndoSavestate.Enabled = false;
-				cmiUndoSavestate.Text = "Undo Savestate";
-				cmiUndoSavestate.Image = Properties.Resources.undo;
-			}
-
-			if (InFullscreen)
-			{
-				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = true;
-				if (MainMenuStrip.Visible)
-					cmiShowMenu.Text = "Hide Menu";
-				else
-					cmiShowMenu.Text = "Show Menu";
-			}
-			else
-			{
-				ShowMenuContextMenuSeparator.Visible = cmiShowMenu.Visible = false;
-			}
-
-			ContextMenuStopMovieNoSaving.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
-		}
-
-
-		private void contextMenuStrip1_Closing(object sender, ToolStripDropDownClosingEventArgs e)
-		{
-			if (!wasPaused)
-			{
-				UnpauseEmulator();
+				Global.MovieSession.Movie.Subtitles.AddSubtitle(subForm.sub);
 			}
 		}
 
-		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ViewCommentsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Backup movie saved.");
-			Global.MovieSession.Movie.WriteBackup();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				EditCommentsForm form = new EditCommentsForm { ReadOnly = ReadOnly };
+				form.GetMovie(Global.MovieSession.Movie);
+				form.ShowDialog();
+			}
 		}
 
-		private void stopMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			StopMovie();
+			SwapBackupSavestate(
+				PathManager.SaveStatePrefix(Global.Game) +
+				".QuickSave" +
+				Global.Config.SaveSlot +
+				".State"
+			);
+
+			GlobalWinF.OSD.AddMessage("Save slot " + Global.Config.SaveSlot + " restored.");
+		}
+
+		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
+		{
+			ShowHideMenu();
+		}
+
+		#endregion
+
+		private void DumpStatus_Click(object sender, EventArgs e)
+		{
+			string details = Global.Emulator.CoreComm.RomStatusDetails;
+			if (string.IsNullOrEmpty(details)) return;
+			GlobalWinF.Sound.StopSound();
+			LogWindow.ShowReport("Dump Status Report", details, this);
+			GlobalWinF.Sound.StartSound();
+		}
+
+		private void MainForm_Shown(object sender, EventArgs e)
+		{
+			HandlePlatformMenus();
+		}
+
+		public void MainForm_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
+			{
+				Point p = new Point(e.X, e.Y + MainformMenu.Height);
+				Point po = PointToScreen(p);
+				MainFormContextMenu.Show(po);
+			}
 		}
 
 		private void PauseStrip_Click(object sender, EventArgs e)
 		{
 			TogglePause();
-		}
-
-		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				EditCommentsForm c = new EditCommentsForm { ReadOnly = ReadOnly };
-				c.GetMovie(Global.MovieSession.Movie);
-				c.ShowDialog();
-			}
-		}
-
-		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = ReadOnly };
-				s.GetMovie(Global.MovieSession.Movie);
-				s.ShowDialog();
-			}
 		}
 
 		private void MainForm_Deactivate(object sender, EventArgs e)
@@ -2118,232 +2062,11 @@ namespace BizHawk.MultiClient
 			base.OnClosed(e);
 		}
 
-		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State";
-			SwapBackupSavestate(path);
-			GlobalWinF.OSD.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
-		}
-
 		private void FreezeStatus_Click(object sender, EventArgs e)
 		{
 			if (CheatStatus.Visible)
 			{
 				LoadCheatsWindow();
-			}
-		}
-
-		public void UpdateCheatStatus()
-		{
-			if (Global.CheatList.ActiveCount > 0)
-			{
-				CheatStatus.ToolTipText = "Cheats are currently active";
-				CheatStatus.Image = Properties.Resources.Freeze;
-				CheatStatus.Visible = true;
-			}
-			else
-			{
-				CheatStatus.ToolTipText = "";
-				CheatStatus.Image = Properties.Resources.Blank;
-				CheatStatus.Visible = false;
-			}
-		}
-
-		private void showMenuToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ShowHideMenu();
-		}
-
-		public void SNES_ToggleBG1(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
-				}
-
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG1_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG2(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG2_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG3(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG3_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG4(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG4_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ1(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ1 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ1 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ1)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ2(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ2 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ2 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ2)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ3(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ3 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ3 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ3)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ4(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ4 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ4 ^= true;
-				}
-				SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ4)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
-				}
 			}
 		}
 
@@ -2582,26 +2305,6 @@ namespace BizHawk.MultiClient
 				LoadRom(filePaths[0]);
 		}
 
-		private void toolStripMenuItem6_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
-		}
-
-		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new MessageConfig().ShowDialog();
-		}
-
-		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new PathConfig().ShowDialog();
-		}
-
-		private void autofireToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new AutofireConfig().ShowDialog();
-		}
-
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			GlobalWinF.RenderPanel.Resized = true;
@@ -2610,11 +2313,6 @@ namespace BizHawk.MultiClient
 		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
 		{
 			RebootCore();
-		}
-
-		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
 		}
 
 		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
