@@ -22,6 +22,11 @@ namespace BizHawk.MultiClient
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
 
+		/// <summary>
+		/// whether throttling is force-disabled by use of fast forward
+		/// </summary>
+		public static bool ForceNoThrottle;
+
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();

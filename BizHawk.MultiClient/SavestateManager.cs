@@ -1,8 +1,10 @@
 ﻿using System.IO;
 
-namespace BizHawk.Client.Common
+using BizHawk.Client.Common;
+
+namespace BizHawk.MultiClient
 {
-	public class SavestateManager
+	class SavestateManager
 	{
 		private readonly bool[] slots = new bool[10];
 		private readonly bool[] redo = new bool[10];
@@ -30,17 +32,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HasSavestateSlots
+		public bool HasSavestateSlots()
 		{
-			get
+			Update();
+			for (int x = 0; x < 10; x++)
 			{
-				Update();
-				for (int x = 0; x < 10; x++)
-				{
-					if (slots[x]) return true;
-				}
-				return false;
+				if (slots[x]) return true;
 			}
+			return false;
 		}
 
 		public bool HasSlot(int slot)

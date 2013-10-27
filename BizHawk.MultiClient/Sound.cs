@@ -208,7 +208,7 @@ namespace BizHawk.MultiClient
 
 				samplesProvided = 2 * nsampgot;
 
-				if (!Global.ForceNoThrottle)
+				if (!GlobalWinF.ForceNoThrottle)
 					while (samplesNeeded < samplesProvided)
 					{
 						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time

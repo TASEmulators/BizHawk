@@ -3,13 +3,17 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
-namespace BizHawk.Client.Common
+using BizHawk.Client.Common;
+
+namespace BizHawk.MultiClient
 {
 	public static class PathManager
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			return AppDomain.CurrentDomain.BaseDirectory;
+			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
+			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
+			return Path.GetDirectoryName(module);
 		}
 
 		/// <summary>

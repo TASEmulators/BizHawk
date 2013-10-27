@@ -737,16 +737,6 @@ namespace BizHawk.MultiClient
 			WatchListView.Refresh();
 		}
 
-		private void SaveAs()
-		{
-			bool result = Watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(Watches.CurrentFileName));
-			if (result)
-			{
-				UpdateMessageLabel(saved: true);
-				Global.Config.RecentWatches.Add(Watches.CurrentFileName);
-			}
-		}
-
 		#region Winform Events
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
@@ -793,27 +783,25 @@ namespace BizHawk.MultiClient
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			bool append = sender == appendFileToolStripMenuItem;
-			LoadWatchFile(ToolHelpers.GetWatchFileFromUser(Watches.CurrentFileName), append);
+			LoadWatchFile(WatchList.GetFileFromUser(Watches.CurrentFileName), append);
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
+			if (Watches.Save())
 			{
-				if (Watches.Save())
-				{
-					UpdateMessageLabel(saved: true);
-				}
-			}
-			else
-			{
-				SaveAs();
+				UpdateMessageLabel(saved: true);
 			}
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAs();
+			bool result = Watches.SaveAs();
+			if (result)
+			{
+				UpdateMessageLabel(saved: true);
+				Global.Config.RecentWatches.Add(Watches.CurrentFileName);
+			}
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

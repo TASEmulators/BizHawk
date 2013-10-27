@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.PCE_Debugger", "Biz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.Common", "BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Common", "BizHawk.Common\BizHawk.Common.csproj", "{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,18 +89,6 @@ Global
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Release|Win32.ActiveCfg = Release|Any CPU
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Release|x86.ActiveCfg = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|Win32.ActiveCfg = Release|Any CPU
-		{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

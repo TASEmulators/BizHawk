@@ -19,15 +19,19 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class RamSearch : Form
 	{
-		//TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
+		public const string ADDRESS = "AddressColumn";
+		public const string VALUE = "ValueColumn";
+		public const string PREV = "PrevColumn";
+		public const string CHANGES = "ChangesColumn";
+		public const string DIFF = "DiffColumn";
 
 		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
 		{
-			{ WatchList.ADDRESS, 60 },
-			{ WatchList.VALUE, 59 },
-			{ WatchList.PREV, 59 },
-			{ WatchList.CHANGES, 55 },
-			{ WatchList.DIFF, 59 },
+			{ ADDRESS, 60 },
+			{ VALUE, 59 },
+			{ PREV, 59 },
+			{ CHANGES, 55 },
+			{ DIFF, 59 },
 		};
 
 		private string CurrentFileName = String.Empty;
@@ -170,19 +174,19 @@ namespace BizHawk.MultiClient
 			string columnName = WatchListView.Columns[column].Name;
 			switch (columnName)
 			{
-				case WatchList.ADDRESS:
+				case ADDRESS:
 					text = Searches[index].AddressString;
 					break;
-				case WatchList.VALUE:
+				case VALUE:
 					text = Searches[index].ValueString;
 					break;
-				case WatchList.PREV:
+				case PREV:
 					text = Searches[index].PreviousStr;
 					break;
-				case WatchList.CHANGES:
+				case CHANGES:
 					text = Searches[index].ChangeCount.ToString();
 					break;
-				case WatchList.DIFF:
+				case DIFF:
 					text = Searches[index].Diff;
 					break;
 			}
@@ -409,39 +413,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private RamSearchEngine.ComparisonOperator Operator
-		{
-			get
-			{
-				if (NotEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.NotEqual;
-				else if (LessThanRadio.Checked) return RamSearchEngine.ComparisonOperator.LessThan;
-				else if (GreaterThanRadio.Checked) return RamSearchEngine.ComparisonOperator.GreaterThan;
-				else if (LessThanOrEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.LessThanEqual;
-				else if (GreaterThanOrEqualToRadio.Checked) return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
-				else if (DifferentByRadio.Checked) return RamSearchEngine.ComparisonOperator.DifferentBy;
-				else return RamSearchEngine.ComparisonOperator.Equal;
-			}
-		}
-
-		private RamSearchEngine.Compare Compare
-		{
-			get
-			{
-				if (SpecificValueRadio.Checked) return RamSearchEngine.Compare.SpecificValue;
-				else if (SpecificAddressRadio.Checked) return RamSearchEngine.Compare.SpecificAddress;
-				else if (NumberOfChangesRadio.Checked) return RamSearchEngine.Compare.Changes;
-				else if (DifferenceRadio.Checked) return RamSearchEngine.Compare.Difference;
-				else return RamSearchEngine.Compare.Previous;
-			}
-		}
-
 		public void DoSearch()
 		{
 			Searches.CompareValue = CompareToValue;
 			Searches.DifferentBy = DifferentByValue;
-			Searches.Operator = Operator;
-			Searches.CompareTo = Compare;
-
 			int removed = Searches.DoSearch();
 			SetTotal();
 			WatchListView.ItemCount = Searches.Count;
@@ -540,11 +515,11 @@ namespace BizHawk.MultiClient
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			ToolHelpers.AddColumn(WatchListView, ADDRESS, true, GetColumnWidth(ADDRESS));
+			ToolHelpers.AddColumn(WatchListView, VALUE, true, GetColumnWidth(VALUE));
+			ToolHelpers.AddColumn(WatchListView, PREV, Global.Config.RamSearchShowPrevColumn, GetColumnWidth(PREV));
+			ToolHelpers.AddColumn(WatchListView, CHANGES, Global.Config.RamSearchShowChangeColumn, GetColumnWidth(CHANGES));
+			ToolHelpers.AddColumn(WatchListView, DIFF, Global.Config.RamSearchShowDiffColumn, GetColumnWidth(DIFF));
 
 			ColumnPositions();
 		}
@@ -567,34 +542,34 @@ namespace BizHawk.MultiClient
 
 		private void SaveColumnInfo()
 		{
-			if (WatchListView.Columns[WatchList.ADDRESS] != null)
+			if (WatchListView.Columns[ADDRESS] != null)
 			{
-				Global.Config.RamSearchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-				Global.Config.RamSearchColumnWidths[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].Width;
+				Global.Config.RamSearchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[ADDRESS] = WatchListView.Columns[ADDRESS].Width;
 			}
 
-			if (WatchListView.Columns[WatchList.VALUE] != null)
+			if (WatchListView.Columns[VALUE] != null)
 			{
-				Global.Config.RamSearchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
-				Global.Config.RamSearchColumnWidths[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].Width;
+				Global.Config.RamSearchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[VALUE] = WatchListView.Columns[VALUE].Width;
 			}
 
-			if (WatchListView.Columns[WatchList.PREV] != null)
+			if (WatchListView.Columns[PREV] != null)
 			{
-				Global.Config.RamSearchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.PREV].DisplayIndex;
-				Global.Config.RamSearchColumnWidths[WatchList.PREV] = WatchListView.Columns[WatchList.PREV].Width;
+				Global.Config.RamSearchColumnIndexes[PREV] = WatchListView.Columns[PREV].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[PREV] = WatchListView.Columns[PREV].Width;
 			}
 
-			if (WatchListView.Columns[WatchList.CHANGES] != null)
+			if (WatchListView.Columns[CHANGES] != null)
 			{
-				Global.Config.RamSearchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
-				Global.Config.RamSearchColumnWidths[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].Width;
+				Global.Config.RamSearchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
 			}
 
-			if (WatchListView.Columns[WatchList.DIFF] != null)
+			if (WatchListView.Columns[DIFF] != null)
 			{
-				Global.Config.RamSearchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
-				Global.Config.RamSearchColumnWidths[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].Width;
+				Global.Config.RamSearchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
+				Global.Config.RamSearchColumnWidths[DIFF] = WatchListView.Columns[DIFF].Width;
 			}
 		}
 
@@ -725,7 +700,7 @@ namespace BizHawk.MultiClient
 			DifferenceRadio.Enabled = true;
 			DifferentByBox.Enabled = true;
 			ClearChangeCountsToolBarItem.Enabled = true;
-			WatchListView.Columns[WatchList.CHANGES].Width = Global.Config.RamSearchColumnWidths[WatchList.CHANGES];
+			WatchListView.Columns[CHANGES].Width = Global.Config.RamSearchColumnWidths[CHANGES];
 			SetReboot(true);
 		}
 
@@ -748,8 +723,8 @@ namespace BizHawk.MultiClient
 				PreviousValueRadio.Checked = true;
 			}
 
-			Global.Config.RamSearchColumnWidths[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].Width;
-			WatchListView.Columns[WatchList.CHANGES].Width = 0;
+			Global.Config.RamSearchColumnWidths[CHANGES] = WatchListView.Columns[CHANGES].Width;
+			WatchListView.Columns[CHANGES].Width = 0;
 			SetReboot(true);
 		}
 
@@ -871,15 +846,15 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return String.Empty;
-				case WatchList.ADDRESS:
+				case ADDRESS:
 					return Searches[index].AddressString;
-				case WatchList.VALUE:
+				case VALUE:
 					return Searches[index].ValueString;
-				case WatchList.PREV:
+				case PREV:
 					return Searches[index].PreviousStr;
-				case WatchList.CHANGES:
+				case CHANGES:
 					return Searches[index].ChangeCount.ToString();
-				case WatchList.DIFF:
+				case DIFF:
 					return Searches[index].Diff;
 			}
 		}
@@ -936,7 +911,7 @@ namespace BizHawk.MultiClient
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadWatchFile(
-				ToolHelpers.GetWatchFileFromUser(String.Empty),
+				WatchList.GetFileFromUser(String.Empty),
 				sender == AppendFileMenuItem,
 				sender == TruncateFromFileMenuItem
 				);
@@ -953,22 +928,10 @@ namespace BizHawk.MultiClient
 					watches.Add(Searches[i]);
 				}
 
-				if (!String.IsNullOrWhiteSpace(watches.CurrentFileName))
+				if (watches.Save())
 				{
-					if (watches.Save())
-					{
-						CurrentFileName = watches.CurrentFileName;
-						MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
-					}
-				}
-				else
-				{
-					bool result = watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName));
-					if (result)
-					{
-						MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
-						Global.Config.RecentWatches.Add(watches.CurrentFileName);
-					}
+					CurrentFileName = watches.CurrentFileName;
+					MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
 				}
 			}
 		}
@@ -982,7 +945,7 @@ namespace BizHawk.MultiClient
 				watches.Add(Searches[i]);
 			}
 
-			if (watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName)))
+			if (watches.SaveAs())
 			{
 				CurrentFileName = watches.CurrentFileName;
 				MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
@@ -1160,10 +1123,6 @@ namespace BizHawk.MultiClient
 			if (Searches.CanUndo)
 			{
 				Searches.Undo();
-				SetTotal();
-				WatchListView.ItemCount = Searches.Count;
-				ToggleSearchDependentToolBarItems();
-				forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
@@ -1173,10 +1132,6 @@ namespace BizHawk.MultiClient
 			if (Searches.CanRedo)
 			{
 				Searches.Redo();
-				SetTotal();
-				WatchListView.ItemCount = Searches.Count;
-				ToggleSearchDependentToolBarItems();
-				forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
@@ -1319,11 +1274,11 @@ namespace BizHawk.MultiClient
 			Global.Config.RamSearchShowPrevColumn = true;
 			Global.Config.RamSearchShowDiffColumn = false;
 
-			WatchListView.Columns[WatchList.ADDRESS].Width = DefaultColumnWidths[WatchList.ADDRESS];
-			WatchListView.Columns[WatchList.VALUE].Width = DefaultColumnWidths[WatchList.VALUE];
-			//WatchListView.Columns[WatchList.PREV].Width = DefaultColumnWidths[WatchList.PREV];
-			WatchListView.Columns[WatchList.CHANGES].Width = DefaultColumnWidths[WatchList.CHANGES];
-			//WatchListView.Columns[WatchList.DIFF].Width = DefaultColumnWidths[WatchList.DIFF];
+			WatchListView.Columns[ADDRESS].Width = DefaultColumnWidths[ADDRESS];
+			WatchListView.Columns[VALUE].Width = DefaultColumnWidths[VALUE];
+			//WatchListView.Columns[PREV].Width = DefaultColumnWidths[PREV];
+			WatchListView.Columns[CHANGES].Width = DefaultColumnWidths[CHANGES];
+			//WatchListView.Columns[DIFF].Width = DefaultColumnWidths[DIFF];
 
 			Global.Config.RamSearchSaveWindowPosition = true;
 			Global.Config.RamSearchAlwaysOnTop = TopMost = false;
@@ -1676,11 +1631,11 @@ namespace BizHawk.MultiClient
 
 		private void WatchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
 		{
-			Global.Config.RamSearchColumnIndexes[WatchList.ADDRESS] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.VALUE] = WatchListView.Columns[WatchList.VALUE].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.PREV] = WatchListView.Columns[WatchList.ADDRESS].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.CHANGES] = WatchListView.Columns[WatchList.CHANGES].DisplayIndex;
-			Global.Config.RamSearchColumnIndexes[WatchList.DIFF] = WatchListView.Columns[WatchList.DIFF].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[ADDRESS] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[VALUE] = WatchListView.Columns[VALUE].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[PREV] = WatchListView.Columns[ADDRESS].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[CHANGES] = WatchListView.Columns[CHANGES].DisplayIndex;
+			Global.Config.RamSearchColumnIndexes[DIFF] = WatchListView.Columns[DIFF].DisplayIndex;
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)

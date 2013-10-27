@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BizHawk.Client.Common
+using BizHawk.Client.Common;
+
+namespace BizHawk.MultiClient
 {
 	public class Controller : IController
 	{
