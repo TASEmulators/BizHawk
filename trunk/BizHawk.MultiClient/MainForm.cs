@@ -425,7 +425,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisplayStatusBar == false)
 			{
-				StatusSlot0.Visible = false;
+				MainStatusBar.Visible = false;
 			}
 			else
 			{
@@ -738,15 +738,15 @@ namespace BizHawk.MultiClient
 		{
 			if (EmulatorPaused)
 			{
-				PauseStrip.Image = Properties.Resources.Pause;
-				PauseStrip.Visible = true;
-				PauseStrip.ToolTipText = "Emulator Paused";
+				PauseStatusButton.Image = Properties.Resources.Pause;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator Paused";
 			}
 			else
 			{
-				PauseStrip.Image = Properties.Resources.Blank;
-				PauseStrip.Visible = false;
-				PauseStrip.ToolTipText = "";
+				PauseStatusButton.Image = Properties.Resources.Blank;
+				PauseStatusButton.Visible = false;
+				PauseStatusButton.ToolTipText = "";
 			}
 		}
 
@@ -1695,8 +1695,8 @@ namespace BizHawk.MultiClient
 
 		private void UpdateDumpIcon()
 		{
-			DumpStatus.Image = Properties.Resources.Blank;
-			DumpStatus.ToolTipText = "";
+			DumpStatusButton.Image = Properties.Resources.Blank;
+			DumpStatusButton.ToolTipText = "";
 
 			if (Global.Emulator == null) return;
 			if (Global.Game == null) return;
@@ -1705,48 +1705,48 @@ namespace BizHawk.MultiClient
 			string annotation;
 			if (status == RomStatus.BadDump)
 			{
-				DumpStatus.Image = Properties.Resources.ExclamationRed;
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
 				annotation = "Warning: Bad ROM Dump";
 			}
 			else if (status == RomStatus.Overdump)
 			{
-				DumpStatus.Image = Properties.Resources.ExclamationRed;
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
 				annotation = "Warning: Overdump";
 			}
 			else if (status == RomStatus.NotInDatabase)
 			{
-				DumpStatus.Image = Properties.Resources.RetroQuestion;
+				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
 				annotation = "Warning: Unknown ROM";
 			}
 			else if (status == RomStatus.TranslatedRom)
 			{
-				DumpStatus.Image = Properties.Resources.Translation;
+				DumpStatusButton.Image = Properties.Resources.Translation;
 				annotation = "Translated ROM";
 			}
 			else if (status == RomStatus.Homebrew)
 			{
-				DumpStatus.Image = Properties.Resources.HomeBrew;
+				DumpStatusButton.Image = Properties.Resources.HomeBrew;
 				annotation = "Homebrew ROM";
 			}
 			else if (Global.Game.Status == RomStatus.Hack)
 			{
-				DumpStatus.Image = Properties.Resources.Hack;
+				DumpStatusButton.Image = Properties.Resources.Hack;
 				annotation = "Hacked ROM";
 			}
 			else if (Global.Game.Status == RomStatus.Unknown)
 			{
-				DumpStatus.Image = Properties.Resources.Hack;
+				DumpStatusButton.Image = Properties.Resources.Hack;
 				annotation = "Warning: ROM of Unknown Character";
 			}
 			else
 			{
-				DumpStatus.Image = Properties.Resources.GreenCheck;
+				DumpStatusButton.Image = Properties.Resources.GreenCheck;
 				annotation = "Verified good dump";
 			}
 			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
 				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
 
-			DumpStatus.ToolTipText = annotation;
+			DumpStatusButton.ToolTipText = annotation;
 		}
 
 
@@ -3160,7 +3160,7 @@ namespace BizHawk.MultiClient
 					MainMenuStrip.Visible = true;
 				else
 					MainMenuStrip.Visible = false;
-				StatusSlot0.Visible = false;
+				MainStatusBar.Visible = false;
 				PerformLayout();
 				GlobalWinF.RenderPanel.Resized = true;
 				InFullscreen = true;
@@ -3170,7 +3170,7 @@ namespace BizHawk.MultiClient
 				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
-				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
+				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				Location = _windowed_location;
 				PerformLayout();
 				FrameBufferResized();
@@ -3555,124 +3555,124 @@ namespace BizHawk.MultiClient
 
 			if (StateSlots.HasSlot(1))
 			{
-				StatusSlot1.ForeColor = Color.Black;
+				Slot1StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot1.ForeColor = Color.Gray;
+				Slot1StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(2))
 			{
-				StatusSlot2.ForeColor = Color.Black;
+				Slot2StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot2.ForeColor = Color.Gray;
+				Slot2StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(3))
 			{
-				StatusSlot3.ForeColor = Color.Black;
+				Slot3StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot3.ForeColor = Color.Gray;
+				Slot3StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(3))
 			{
-				StatusSlot3.ForeColor = Color.Black;
+				Slot3StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot3.ForeColor = Color.Gray;
+				Slot3StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(4))
 			{
-				StatusSlot4.ForeColor = Color.Black;
+				Slot4StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot4.ForeColor = Color.Gray;
+				Slot4StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(5))
 			{
-				StatusSlot5.ForeColor = Color.Black;
+				Slot5StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot5.ForeColor = Color.Gray;
+				Slot5StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(6))
 			{
-				StatusSlot6.ForeColor = Color.Black;
+				Slot6StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot6.ForeColor = Color.Gray;
+				Slot6StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(7))
 			{
-				StatusSlot7.ForeColor = Color.Black;
+				Slot7StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot7.ForeColor = Color.Gray;
+				Slot7StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(8))
 			{
-				StatusSlot8.ForeColor = Color.Black;
+				Slot8StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot8.ForeColor = Color.Gray;
+				Slot8StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(9))
 			{
-				StatusSlot9.ForeColor = Color.Black;
+				Slot9StatusButton.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot9.ForeColor = Color.Gray;
+				Slot9StatusButton.ForeColor = Color.Gray;
 			}
 
 			if (StateSlots.HasSlot(0))
 			{
-				StatusSlot0.ForeColor = Color.Black;
+				MainStatusBar.ForeColor = Color.Black;
 			}
 			else
 			{
-				StatusSlot0.ForeColor = Color.Gray;
+				MainStatusBar.ForeColor = Color.Gray;
 			}
 
-			StatusSlot1.BackColor = SystemColors.Control;
-			StatusSlot2.BackColor = SystemColors.Control;
-			StatusSlot3.BackColor = SystemColors.Control;
-			StatusSlot4.BackColor = SystemColors.Control;
-			StatusSlot5.BackColor = SystemColors.Control;
-			StatusSlot6.BackColor = SystemColors.Control;
-			StatusSlot7.BackColor = SystemColors.Control;
-			StatusSlot8.BackColor = SystemColors.Control;
-			StatusSlot9.BackColor = SystemColors.Control;
-			StatusSlot10.BackColor = SystemColors.Control;
+			Slot1StatusButton.BackColor = SystemColors.Control;
+			Slot2StatusButton.BackColor = SystemColors.Control;
+			Slot3StatusButton.BackColor = SystemColors.Control;
+			Slot4StatusButton.BackColor = SystemColors.Control;
+			Slot5StatusButton.BackColor = SystemColors.Control;
+			Slot6StatusButton.BackColor = SystemColors.Control;
+			Slot7StatusButton.BackColor = SystemColors.Control;
+			Slot8StatusButton.BackColor = SystemColors.Control;
+			Slot9StatusButton.BackColor = SystemColors.Control;
+			Slot0StatusButton.BackColor = SystemColors.Control;
 
-			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 0) Slot0StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 1) Slot1StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 2) Slot2StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 3) Slot3StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 4) Slot4StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 5) Slot5StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 6) Slot6StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 7) Slot7StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 8) Slot8StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 9) Slot9StatusButton.BackColor = SystemColors.ControlDark;
 		}
 
 		#region AVI Stuff
@@ -4053,7 +4053,7 @@ namespace BizHawk.MultiClient
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 
 			//Hide Status bar icons
-			PlayRecordStatus.Visible = false;
+			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
 			UpdateCheatStatus();
@@ -4212,28 +4212,28 @@ namespace BizHawk.MultiClient
 
 		private void HandleToggleLight()
 		{
-			if (StatusSlot0.Visible)
+			if (MainStatusBar.Visible)
 			{
 				if (Global.Emulator.CoreComm.UsesDriveLed)
 				{
-					if (!StatusBarLedLight.Visible)
+					if (!LedLightStatusLabel.Visible)
 					{
-						StatusBarLedLight.Visible = true;
+						LedLightStatusLabel.Visible = true;
 					}
 					if (Global.Emulator.CoreComm.DriveLED)
 					{
-						StatusBarLedLight.Image = Properties.Resources.LightOn;
+						LedLightStatusLabel.Image = Properties.Resources.LightOn;
 					}
 					else
 					{
-						StatusBarLedLight.Image = Properties.Resources.LightOff;
+						LedLightStatusLabel.Image = Properties.Resources.LightOff;
 					}
 				}
 				else
 				{
-					if (StatusBarLedLight.Visible)
+					if (LedLightStatusLabel.Visible)
 					{
-						StatusBarLedLight.Visible = false;
+						LedLightStatusLabel.Visible = false;
 					}
 				}
 			}
@@ -4245,16 +4245,16 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 0:
-					KeyPriorityStatusBarLabel.Image = Properties.Resources.Both;
-					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
+					KeyPriorityStatusLabel.Image = Properties.Resources.Both;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
 					break;
 				case 1:
-					KeyPriorityStatusBarLabel.Image = Properties.Resources.GameController;
-					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
+					KeyPriorityStatusLabel.Image = Properties.Resources.GameController;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
 					break;
 				case 2:
-					KeyPriorityStatusBarLabel.Image = Properties.Resources.HotKeys;
-					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
+					KeyPriorityStatusLabel.Image = Properties.Resources.HotKeys;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
 					break;
 			}
 		}
@@ -4284,16 +4284,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void menuStrip1_Leave(object sender, EventArgs e)
-		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
-		}
-
-		private void MainForm_Enter(object sender, EventArgs e)
-		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
-		}
-
 		public void LoadRamWatch(bool load_dialog)
 		{
 			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
@@ -4312,11 +4302,6 @@ namespace BizHawk.MultiClient
 			{
 				RamWatch1.Focus();
 			}
-		}
-
-		private void clearSRAMToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			CloseROM(clearSRAM: true);
 		}
 
 		public void ToggleBackgroundInput()
@@ -4383,15 +4368,15 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.CheatList.ActiveCount > 0)
 			{
-				CheatStatus.ToolTipText = "Cheats are currently active";
-				CheatStatus.Image = Properties.Resources.Freeze;
-				CheatStatus.Visible = true;
+				CheatStatusButton.ToolTipText = "Cheats are currently active";
+				CheatStatusButton.Image = Properties.Resources.Freeze;
+				CheatStatusButton.Visible = true;
 			}
 			else
 			{
-				CheatStatus.ToolTipText = "";
-				CheatStatus.Image = Properties.Resources.Blank;
-				CheatStatus.Visible = false;
+				CheatStatusButton.ToolTipText = "";
+				CheatStatusButton.Image = Properties.Resources.Blank;
+				CheatStatusButton.Visible = false;
 			}
 		}
 

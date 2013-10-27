@@ -683,7 +683,7 @@ namespace BizHawk.MultiClient
 			
 			if (!InFullscreen)
 			{
-				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
+				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				PerformLayout();
 				FrameBufferResized();
 			}
@@ -1972,6 +1972,11 @@ namespace BizHawk.MultiClient
 			GlobalWinF.OSD.AddMessage("Save slot " + Global.Config.SaveSlot + " restored.");
 		}
 
+		private void ClearSRAMContextMenuItem_Click(object sender, EventArgs e)
+		{
+			CloseROM(clearSRAM: true);
+		}
+
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
 		{
 			ShowHideMenu();
@@ -1979,33 +1984,86 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		private void DumpStatus_Click(object sender, EventArgs e)
+		#region Status Bar
+
+		private void DumpStatusButton_Click(object sender, EventArgs e)
 		{
 			string details = Global.Emulator.CoreComm.RomStatusDetails;
-			if (string.IsNullOrEmpty(details)) return;
-			GlobalWinF.Sound.StopSound();
-			LogWindow.ShowReport("Dump Status Report", details, this);
-			GlobalWinF.Sound.StartSound();
-		}
-
-		private void MainForm_Shown(object sender, EventArgs e)
-		{
-			HandlePlatformMenus();
-		}
-
-		public void MainForm_MouseClick(object sender, MouseEventArgs e)
-		{
-			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
+			if (!String.IsNullOrEmpty(details))
 			{
-				Point p = new Point(e.X, e.Y + MainformMenu.Height);
-				Point po = PointToScreen(p);
-				MainFormContextMenu.Show(po);
+				GlobalWinF.Sound.StopSound();
+				LogWindow.ShowReport("Dump Status Report", details, this);
+				GlobalWinF.Sound.StartSound();
 			}
 		}
 
-		private void PauseStrip_Click(object sender, EventArgs e)
+		private void SlotStatusButtons_MouseUp(object sender, MouseEventArgs e)
 		{
-			TogglePause();
+			int slot = 0;
+			if (sender == Slot1StatusButton) slot = 1;
+			if (sender == Slot2StatusButton) slot = 2;
+			if (sender == Slot3StatusButton) slot = 3;
+			if (sender == Slot4StatusButton) slot = 4;
+			if (sender == Slot5StatusButton) slot = 5;
+			if (sender == Slot6StatusButton) slot = 6;
+			if (sender == Slot7StatusButton) slot = 7;
+			if (sender == Slot8StatusButton) slot = 8;
+			if (sender == Slot9StatusButton) slot = 9;
+			if (sender == Slot0StatusButton) slot = 0;
+
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(slot))
+				{
+					LoadState("QuickSave" + slot);
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave" + slot);
+			}
+		}
+
+		private void KeyPriorityStatusLabel_Click(object sender, EventArgs e)
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					Global.Config.Input_Hotkey_OverrideOptions = 1;
+					break;
+				case 1:
+					Global.Config.Input_Hotkey_OverrideOptions = 2;
+					break;
+				case 2:
+					Global.Config.Input_Hotkey_OverrideOptions = 0;
+					break;
+			}
+			UpdateKeyPriorityIcon();
+		}
+
+		private void FreezeStatus_Click(object sender, EventArgs e)
+		{
+			if (CheatStatusButton.Visible)
+			{
+				LoadCheatsWindow();
+			}
+		}
+
+		#endregion
+
+		#region Form Events
+
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			if (!Global.Config.RunInBackground)
+			{
+				if (!wasPaused)
+				{
+					UnpauseEmulator();
+				}
+				wasPaused = false;
+			}
 		}
 
 		private void MainForm_Deactivate(object sender, EventArgs e)
@@ -2020,40 +2078,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void MainForm_Activated(object sender, EventArgs e)
-		{
-			if (!Global.Config.RunInBackground)
-			{
-
-				if (!wasPaused)
-				{
-					UnpauseEmulator();
-				}
-				wasPaused = false;
-			}
-		}
-
-		private void menuStrip1_MenuActivate(object sender, EventArgs e)
-		{
-			HandlePlatformMenus();
-			if (Global.Config.PauseWhenMenuActivated)
-			{
-				if (EmulatorPaused)
-					wasPaused = true;
-				else
-					wasPaused = false;
-				didMenuPause = true;
-				PauseEmulator();
-			}
-		}
-
-		private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
+		private void MainForm_Enter(object sender, EventArgs e)
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
-			if (!wasPaused)
+		}
+
+		public void MainForm_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
 			{
-				UnpauseEmulator();
+				MainFormContextMenu.Show(
+					PointToScreen(new Point(e.X, e.Y + MainformMenu.Height))
+				);
 			}
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			GlobalWinF.RenderPanel.Resized = true;
+		}
+
+		private void MainForm_Shown(object sender, EventArgs e)
+		{
+			HandlePlatformMenus();
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -2062,161 +2109,28 @@ namespace BizHawk.MultiClient
 			base.OnClosed(e);
 		}
 
-		private void FreezeStatus_Click(object sender, EventArgs e)
+		private void MainformMenu_Leave(object sender, EventArgs e)
 		{
-			if (CheatStatus.Visible)
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
+		}
+
+		private void MainformMenu_MenuActivate(object sender, EventArgs e)
+		{
+			HandlePlatformMenus();
+			if (Global.Config.PauseWhenMenuActivated)
 			{
-				LoadCheatsWindow();
+				EmulatorPaused = wasPaused;
+				didMenuPause = true;
+				PauseEmulator();
 			}
 		}
 
-		private void StatusSlot1_MouseUp(object sender, MouseEventArgs e)
+		private void MainformMenu_MenuDeactivate(object sender, EventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			if (!wasPaused)
 			{
-				if (StateSlots.HasSlot(1))
-				{
-					LoadState("QuickSave1");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave1");
-			}
-		}
-
-		private void StatusSlot2_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(2))
-				{
-					LoadState("QuickSave2");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave2");
-			}
-		}
-
-		private void StatusSlot3_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(3))
-				{
-					LoadState("QuickSave3");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave3");
-			}
-		}
-
-		private void StatusSlot4_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(4))
-				{
-					LoadState("QuickSave4");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave4");
-			}
-		}
-
-		private void StatusSlot5_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(5))
-				{
-					LoadState("QuickSave5");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave5");
-			}
-		}
-
-		private void StatusSlot6_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(6))
-				{
-					LoadState("QuickSave6");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave6");
-			}
-		}
-
-		private void StatusSlot7_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(7))
-				{
-					LoadState("QuickSave7");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave7");
-			}
-		}
-
-		private void StatusSlot8_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(8))
-				{
-					LoadState("QuickSave8");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave8");
-			}
-		}
-
-		private void StatusSlot9_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(9))
-				{
-					LoadState("QuickSave9");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave9");
-			}
-		}
-
-		private void StatusSlot10_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (StateSlots.HasSlot(0))
-				{
-					LoadState("QuickSave0");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveState("QuickSave0");
+				UnpauseEmulator();
 			}
 		}
 
@@ -2250,9 +2164,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (IsValidMovieExtension(ext))
 			{
-				Movie m = new Movie(filePaths[0], GlobalWinF.MainForm.GetEmuVersion());
-				StartNewMovie(m, false);
-
+				StartNewMovie(new Movie(filePaths[0], GlobalWinF.MainForm.GetEmuVersion()), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2273,7 +2185,6 @@ namespace BizHawk.MultiClient
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				//tries to open a legacy movie format as if it were a BKM, by importing it
-
 				if (CurrentlyOpenRom == null)
 				{
 					OpenROM();
@@ -2285,7 +2196,7 @@ namespace BizHawk.MultiClient
 
 				string errorMsg;
 				string warningMsg;
-				Movie m = MovieImport.ImportFile(filePaths[0], GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
+				Movie movie = MovieImport.ImportFile(filePaths[0], GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2295,42 +2206,18 @@ namespace BizHawk.MultiClient
 					//fix movie extension to something palatable for these purposes. 
 					//for instance, something which doesnt clobber movies you already may have had.
 					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					m.Filename += ".autoimported." + Global.Config.MovieExtension;
-					m.WriteMovie();
-					StartNewMovie(m, false);
+					movie.Filename += ".autoimported." + Global.Config.MovieExtension;
+					movie.WriteMovie();
+					StartNewMovie(movie, false);
 				}
 				GlobalWinF.OSD.AddMessage(warningMsg);
 			}
 			else
-				LoadRom(filePaths[0]);
-		}
-
-		private void MainForm_Resize(object sender, EventArgs e)
-		{
-			GlobalWinF.RenderPanel.Resized = true;
-		}
-
-		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
-		{
-			RebootCore();
-		}
-
-		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
 			{
-				default:
-				case 0:
-					Global.Config.Input_Hotkey_OverrideOptions = 1;
-					break;
-				case 1:
-					Global.Config.Input_Hotkey_OverrideOptions = 2;
-					break;
-				case 2:
-					Global.Config.Input_Hotkey_OverrideOptions = 0;
-					break;
+				LoadRom(filePaths[0]);
 			}
-			UpdateKeyPriorityIcon();
 		}
+
+		#endregion
 	}
 }
