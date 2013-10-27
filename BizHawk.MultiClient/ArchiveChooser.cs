@@ -13,9 +13,11 @@ namespace BizHawk.MultiClient
 		public ArchiveChooser(HawkFile hawkfile)
 		{
 			InitializeComponent();
-			foreach (var item in hawkfile.ArchiveItems)
+			var items = hawkfile.ArchiveItems;
+			for(int i=0;i<items.Count;i++)
 			{
-				var lvi = new ListViewItem {Tag = item};
+				var item = items[i];
+				var lvi = new ListViewItem {Tag = i};
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = item.name;
 				long size = item.size;
@@ -90,15 +92,8 @@ namespace BizHawk.MultiClient
 			get
 			{
 				if (lvMembers.SelectedIndices.Count == 0) return -1;
-				var ai = lvMembers.SelectedItems[0].Tag as HawkFile.ArchiveItem;
-				if (ai != null)
-				{
-					return ai.index;
-				}
-				else
-				{
-					return -1;
-				}
+				int? ai = lvMembers.SelectedItems[0].Tag as int?;
+				return ai ?? -1;
 			}
 		}
 

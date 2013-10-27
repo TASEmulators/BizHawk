@@ -3,14 +3,121 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+//the HawkFile class is excessively engineered with the IHawkFileArchiveHandler to decouple the archive handling from the basic file handling.
+//This is so we could drop in an unamanged dearchiver library optionally later as a performance optimization without ruining the portability of the code.
+//Also, we want to be able to use HawkFiles in BizHawk.Common withuot bringing in a large 7-zip dependency
+
 namespace BizHawk.Client.Common
 {
 	//todo:
 	//split into "bind" and "open (the bound thing)"
 	//scan archive to flatten interior directories down to a path (maintain our own archive item list)
 
+	public interface IHawkFileArchiveHandler : IDisposable
+	{
+		//todo - could this receive a hawkfile itself? possibly handy, in very clever scenarios of mounting fake files
+		bool CheckSignature(string fileName, out int offset, out bool isExecutable);
+
+		List<HawkFileArchiveItem> Scan();
+
+		IHawkFileArchiveHandler Construct(string path);
+
+		void ExtractFile(int index, Stream stream);
+	}
+
+	public class HawkFileArchiveItem
+	{
+		/// <summary>
+		/// member name
+		/// </summary>
+		public string name;
+
+		/// <summary>
+		/// size of member file
+		/// </summary>
+		public long size;
+
+		/// <summary>
+		/// the index of this archive item
+		/// </summary>
+		public int index;
+
+		/// <summary>
+		/// the index WITHIN THE ARCHIVE (for internal tracking by a IHawkFileArchiveHandler) of the member
+		/// </summary>
+		public int archiveIndex;
+	}
+
+	/// <summary>
+	/// Implementation of IHawkFileArchiveHandler using SevenZipSharp pure managed code
+	/// </summary>
+	class SevenZipSharpArchiveHandler : IHawkFileArchiveHandler
+	{
+		public void Dispose()
+		{
+			if(extractor != null)
+			{
+				extractor.Dispose();
+				extractor = null;
+			}
+		}
+
+		public bool CheckSignature(string fileName, out int offset, out bool isExecutable)
+		{
+			SevenZip.FileChecker.ThrowExceptions = false;
+			return SevenZip.FileChecker.CheckSignature(fileName, out offset, out isExecutable) != SevenZip.InArchiveFormat.None;
+		}
+
+		public IHawkFileArchiveHandler Construct(string path)
+		{
+			SevenZipSharpArchiveHandler ret = new SevenZipSharpArchiveHandler();
+			ret.Open(path);
+			return ret;
+		}
+
+		void Open(string path)
+		{
+			extractor = new SevenZip.SevenZipExtractor(path);
+		}
+
+		SevenZip.SevenZipExtractor extractor;
+
+		public List<HawkFileArchiveItem> Scan()
+		{
+			List<HawkFileArchiveItem> ret = new List<HawkFileArchiveItem>();
+			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+			{
+				var afd = extractor.ArchiveFileData[i];
+				if (afd.IsDirectory) continue;
+				var ai = new HawkFileArchiveItem {name = HawkFile.Util_FixArchiveFilename(afd.FileName), size = (long) afd.Size, archiveIndex = i, index = ret.Count};
+				ret.Add(ai);
+			}
+
+			return ret;
+		}
+
+		public void ExtractFile(int index, Stream stream)
+		{
+			extractor.ExtractFile(index, stream);
+		}
+	}
+
+	/// <summary>
+	/// HawkFile allows a variety of objects (actual files, archive members) to be treated as normal filesystem objects to be opened, closed, and read.
+	/// It can understand paths in 'canonical' format which includes /path/to/archive.zip|member.rom as well as /path/to/file.rom
+	/// When opening an archive, it won't always be clear automatically which member should actually be used. 
+	/// Therefore there is a concept of 'binding' where a HawkFile attaches itself to an archive member which is the file that it will actually be using.
+	/// </summary>
 	public sealed class HawkFile : IDisposable
 	{
+		/// <summary>
+		/// Set this with an instance which can construct archive handlers as necessary for archive handling.
+		/// </summary>
+		public static IHawkFileArchiveHandler ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+
+		/// <summary>
+		/// Utility: Uses full HawkFile processing to determine whether a file exists at the provided path
+		/// </summary>
 		public static bool ExistsAt(string path)
 		{
 			using (var file = new HawkFile(path))
@@ -19,6 +126,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Utility: attempts to read all the content from the provided path.
+		/// </summary>
 		public static byte[] ReadAllBytes(string path)
 		{
 			using (var file = new HawkFile(path))
@@ -92,14 +202,14 @@ namespace BizHawk.Client.Common
 		}
 
 
-		public class ArchiveItem
-		{
-			public string name;
-			public long size;
-			public int index;
-		}
+		//public class ArchiveItem
+		//{
+		//  public string name;
+		//  public long size;
+		//  public int index;
+		//}
 
-		public IEnumerable<ArchiveItem> ArchiveItems
+		public IList<HawkFileArchiveItem> ArchiveItems
 		{
 			get
 			{
@@ -119,8 +229,8 @@ namespace BizHawk.Client.Common
 		string rootPath;
 		string memberPath;
 		Stream rootStream, boundStream;
-		SevenZip.SevenZipExtractor extractor;
-		List<ArchiveItem> archiveItems;
+		IHawkFileArchiveHandler extractor;
+		List<HawkFileArchiveItem> archiveItems;
 
 		public HawkFile()
 		{
@@ -165,12 +275,16 @@ namespace BizHawk.Client.Common
 			else
 			{
 				autobind = autobind.ToUpperInvariant();
-				for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+				if (extractor != null)
 				{
-					if (FixArchiveFilename(extractor.ArchiveFileNames[i]).ToUpperInvariant() == autobind)
+					var scanResults = extractor.Scan();
+					for (int i = 0; i < scanResults.Count; i++)
 					{
-						BindArchiveMember(i);
-						return;
+						if (scanResults[i].name.ToUpperInvariant() == autobind)
+						{
+							BindArchiveMember(i);
+							return;
+						}
 					}
 				}
 
@@ -178,54 +292,27 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Makes a new HawkFile based on the provided path.
+		/// </summary>
 		public HawkFile(string path)
 		{
 			Open(path);
 		}
 
-		/// <summary>
-		/// is the supplied path a canonical name including an archive?
-		/// </summary>
-		bool IsCanonicalArchivePath(string path)
-		{
-			return (path.IndexOf('|') != -1);
-		}
-
-		/// <summary>
-		/// converts a canonical name to a bound name (the bound part, whether or not it is an archive)
-		/// </summary>
-		string GetBoundNameFromCanonical(string canonical)
-		{
-			string[] parts = canonical.Split('|');
-			return parts[parts.Length - 1];
-		}
-
-		/// <summary>
-		/// makes a canonical name from two parts
-		/// </summary>
-		string MakeCanonicalName(string root, string member)
-		{
-			if (member == null) return root;
-			else return string.Format("{0}|{1}", root, member);
-		}
-
-		string FixArchiveFilename(string fn)
-		{
-			return fn.Replace('\\', '/');
-		}
 
 		/// <summary>
 		/// binds the specified ArchiveItem which you should have gotten by interrogating an archive hawkfile
 		/// </summary>
-		public HawkFile BindArchiveMember(ArchiveItem item)
+		public HawkFile BindArchiveMember(HawkFileArchiveItem item)
 		{
-			return BindArchiveMember(item.index);
+			return BindArchiveMember(item.archiveIndex);
 		}
 
 		/// <summary>
 		/// finds an ArchiveItem with the specified name (path) within the archive; returns null if it doesnt exist
 		/// </summary>
-		public ArchiveItem FindArchiveMember(string name)
+		public HawkFileArchiveItem FindArchiveMember(string name)
 		{
 			return ArchiveItems.FirstOrDefault(ai => ai.name == name);
 		}
@@ -243,15 +330,16 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// binds the selected archive index
 		/// </summary>
-		public HawkFile BindArchiveMember(int archiveIndex)
+		public HawkFile BindArchiveMember(int index)
 		{
 			if (!rootExists) return this;
 			if (boundStream != null) throw new InvalidOperationException("stream already bound!");
 
 			boundStream = new MemoryStream();
+			int archiveIndex = archiveItems[index].archiveIndex;
 			extractor.ExtractFile(archiveIndex, boundStream);
 			boundStream.Position = 0;
-			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
+			memberPath = archiveItems[index].name; //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
 			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
 			BoundIndex = archiveIndex;
 			return this;
@@ -320,11 +408,10 @@ namespace BizHawk.Client.Common
 			}
 
 			var candidates = new List<int>();
-			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+			for (int i = 0; i < archiveItems.Count; i++)
 			{
-				var e = extractor.ArchiveFileData[i];
-				if (e.IsDirectory) continue;
-				var extension = Path.GetExtension(e.FileName).ToUpperInvariant();
+				var e = archiveItems[i];
+				var extension = Path.GetExtension(e.name).ToUpperInvariant();
 				extension = extension.TrimStart('.');
 				if (extensions.Length == 0 || extension.In(extensions))
 				{
@@ -341,32 +428,27 @@ namespace BizHawk.Client.Common
 			return this;
 		}
 
-
 		void ScanArchive()
 		{
-			archiveItems = new List<ArchiveItem>();
-			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
-			{
-				var afd = extractor.ArchiveFileData[i];
-				if (afd.IsDirectory) continue;
-				var ai = new ArchiveItem {name = FixArchiveFilename(afd.FileName), size = (long) afd.Size, index = i};
-				archiveItems.Add(ai);
-			}
+			archiveItems = extractor.Scan();
 		}
 
 		private void AnalyzeArchive(string path)
 		{
-			SevenZip.FileChecker.ThrowExceptions = false;
+			//no archive handler == no analysis
+			if (ArchiveHandlerFactory == null)
+				return;
+
 			int offset;
 			bool isExecutable;
 			if (NonArchiveExtensions.Any(ext => Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower()))
 			{
 				return;
 			}
-			
-			if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
+
+			if (ArchiveHandlerFactory.CheckSignature(path, out offset, out isExecutable))
 			{
-				extractor = new SevenZip.SevenZipExtractor(path);
+				extractor = ArchiveHandlerFactory.Construct(path);
 				try
 				{
 					ScanArchive();
@@ -390,5 +472,40 @@ namespace BizHawk.Client.Common
 			extractor = null;
 			rootStream = null;
 		}
+
+		/// <summary>
+		/// is the supplied path a canonical name including an archive?
+		/// </summary>
+		static bool IsCanonicalArchivePath(string path)
+		{
+			return (path.IndexOf('|') != -1);
+		}
+
+		/// <summary>
+		/// Repairs paths from an archive which contain offensive characters
+		/// </summary>
+		public static string Util_FixArchiveFilename(string fn)
+		{
+			return fn.Replace('\\', '/');
+		}
+
+		/// <summary>
+		/// converts a canonical name to a bound name (the bound part, whether or not it is an archive)
+		/// </summary>
+		static string GetBoundNameFromCanonical(string canonical)
+		{
+			string[] parts = canonical.Split('|');
+			return parts[parts.Length - 1];
+		}
+
+		/// <summary>
+		/// makes a canonical name from two parts
+		/// </summary>
+		string MakeCanonicalName(string root, string member)
+		{
+			if (member == null) return root;
+			else return string.Format("{0}|{1}", root, member);
+		}
+
 	}
 }
