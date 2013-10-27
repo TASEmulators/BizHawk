@@ -2,6 +2,8 @@
 
 using System;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)

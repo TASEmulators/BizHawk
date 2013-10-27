@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     // HuC6260 Video Color Encoder

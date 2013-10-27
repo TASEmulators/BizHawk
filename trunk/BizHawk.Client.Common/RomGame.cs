@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient

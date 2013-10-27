@@ -3,6 +3,8 @@ using BizHawk.Emulation.Sound;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public sealed class ADPCM : ISoundProvider

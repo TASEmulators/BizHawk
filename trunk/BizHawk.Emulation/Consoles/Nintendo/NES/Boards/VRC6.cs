@@ -1,5 +1,7 @@
 ﻿using System;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 24 + 26

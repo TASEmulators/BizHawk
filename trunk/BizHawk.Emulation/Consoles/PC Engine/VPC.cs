@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.CPUs.H6280;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx

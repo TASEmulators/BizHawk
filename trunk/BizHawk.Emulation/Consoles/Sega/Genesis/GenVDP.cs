@@ -2,6 +2,8 @@
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Sega
 {
     public sealed partial class GenVDP : IVideoProvider

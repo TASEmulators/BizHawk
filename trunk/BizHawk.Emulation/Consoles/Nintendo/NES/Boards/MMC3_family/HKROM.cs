@@ -1,3 +1,5 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//aka MMC6 aka StarTropics and StarTropics 2

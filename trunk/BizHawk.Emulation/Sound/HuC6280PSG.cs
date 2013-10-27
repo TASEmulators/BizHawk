@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Sound
 {
     // Emulates PSG audio unit of a PC Engine / Turbografx-16 / SuperGrafx.

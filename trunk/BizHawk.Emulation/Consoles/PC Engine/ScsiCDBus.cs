@@ -4,6 +4,8 @@ using BizHawk.Emulation.Sound;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     // TODO we can adjust this to have Think take the number of cycles and not require

@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Sega.Saturn
 {
 	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider

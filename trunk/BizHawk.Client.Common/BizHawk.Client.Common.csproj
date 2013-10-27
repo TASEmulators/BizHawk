@@ -95,7 +95,6 @@
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="HawkFile.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="movie\InputAdapters.cs" />
@@ -114,6 +113,7 @@
     <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="RomGame.cs" />
     <Compile Include="SavestateManager.cs" />
+    <Compile Include="SevenZipSharpArchiveHandler.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />

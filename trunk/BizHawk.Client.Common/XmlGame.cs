@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class XmlGame

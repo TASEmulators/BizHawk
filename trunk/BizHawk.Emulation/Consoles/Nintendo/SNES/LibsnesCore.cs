@@ -15,6 +15,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
 

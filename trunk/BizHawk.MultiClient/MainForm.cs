@@ -22,6 +22,7 @@ using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient

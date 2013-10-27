@@ -2,6 +2,8 @@
 
 using System;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public sealed class Mapper116 : NES.NESBoardBase

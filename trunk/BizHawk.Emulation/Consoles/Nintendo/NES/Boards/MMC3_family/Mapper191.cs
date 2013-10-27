@@ -1,5 +1,7 @@
 ﻿using System;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public sealed class Mapper191 : MMC3Board_Base

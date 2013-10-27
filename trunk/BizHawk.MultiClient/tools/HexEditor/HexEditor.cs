@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4
