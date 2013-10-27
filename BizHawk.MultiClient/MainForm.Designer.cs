@@ -290,27 +290,27 @@
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StatusSlot0 = new System.Windows.Forms.StatusStrip();
-			this.DumpStatus = new System.Windows.Forms.ToolStripDropDownButton();
+			this.MainStatusBar = new System.Windows.Forms.StatusStrip();
+			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
-			this.PlayRecordStatus = new System.Windows.Forms.ToolStripDropDownButton();
-			this.PauseStrip = new System.Windows.Forms.ToolStripDropDownButton();
+			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
+			this.PauseStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.RebootStatusBarIcon = new System.Windows.Forms.ToolStripStatusLabel();
 			this.AVIStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusBarLedLight = new System.Windows.Forms.ToolStripStatusLabel();
-			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot1 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot2 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot3 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot4 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot5 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot6 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot7 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot8 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot9 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusSlot10 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.CheatStatus = new System.Windows.Forms.ToolStripStatusLabel();
-			this.KeyPriorityStatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.LedLightStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.SaveSlotsStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot1StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot2StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot3StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot4StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot5StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot6StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot7StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot8StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot9StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.Slot0StatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.CheatStatusButton = new System.Windows.Forms.ToolStripStatusLabel();
+			this.KeyPriorityStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.OpenRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadLastRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -347,7 +347,7 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
-			this.StatusSlot0.SuspendLayout();
+			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -378,9 +378,9 @@
 			this.MainformMenu.Size = new System.Drawing.Size(470, 42);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
-			this.MainformMenu.MenuActivate += new System.EventHandler(this.menuStrip1_MenuActivate);
-			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
-			this.MainformMenu.Leave += new System.EventHandler(this.menuStrip1_Leave);
+			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
+			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.MainformMenu_MenuDeactivate);
+			this.MainformMenu.Leave += new System.EventHandler(this.MainformMenu_Leave);
 			// 
 			// FileSubMenu
 			// 
@@ -2535,75 +2535,75 @@
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
-			// StatusSlot0
+			// MainStatusBar
 			// 
-			this.StatusSlot0.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.DumpStatus,
+			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DumpStatusButton,
             this.EmuStatus,
-            this.PlayRecordStatus,
-            this.PauseStrip,
+            this.PlayRecordStatusButton,
+            this.PauseStatusButton,
             this.RebootStatusBarIcon,
             this.AVIStatusLabel,
-            this.StatusBarLedLight,
-            this.toolStripStatusLabel1,
-            this.StatusSlot1,
-            this.StatusSlot2,
-            this.StatusSlot3,
-            this.StatusSlot4,
-            this.StatusSlot5,
-            this.StatusSlot6,
-            this.StatusSlot7,
-            this.StatusSlot8,
-            this.StatusSlot9,
-            this.StatusSlot10,
-            this.CheatStatus,
-            this.KeyPriorityStatusBarLabel});
-			this.StatusSlot0.Location = new System.Drawing.Point(0, 386);
-			this.StatusSlot0.Name = "StatusSlot0";
-			this.StatusSlot0.ShowItemToolTips = true;
-			this.StatusSlot0.Size = new System.Drawing.Size(470, 22);
-			this.StatusSlot0.SizingGrip = false;
-			this.StatusSlot0.TabIndex = 1;
-			this.StatusSlot0.Text = "0";
+            this.LedLightStatusLabel,
+            this.SaveSlotsStatusLabel,
+            this.Slot1StatusButton,
+            this.Slot2StatusButton,
+            this.Slot3StatusButton,
+            this.Slot4StatusButton,
+            this.Slot5StatusButton,
+            this.Slot6StatusButton,
+            this.Slot7StatusButton,
+            this.Slot8StatusButton,
+            this.Slot9StatusButton,
+            this.Slot0StatusButton,
+            this.CheatStatusButton,
+            this.KeyPriorityStatusLabel});
+			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
+			this.MainStatusBar.Name = "MainStatusBar";
+			this.MainStatusBar.ShowItemToolTips = true;
+			this.MainStatusBar.Size = new System.Drawing.Size(470, 22);
+			this.MainStatusBar.SizingGrip = false;
+			this.MainStatusBar.TabIndex = 1;
+			this.MainStatusBar.Text = "0";
 			// 
-			// DumpStatus
+			// DumpStatusButton
 			// 
-			this.DumpStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DumpStatus.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
-			this.DumpStatus.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.DumpStatus.Name = "DumpStatus";
-			this.DumpStatus.ShowDropDownArrow = false;
-			this.DumpStatus.Size = new System.Drawing.Size(20, 20);
-			this.DumpStatus.Text = "No ROM loaded";
-			this.DumpStatus.Click += new System.EventHandler(this.DumpStatus_Click);
+			this.DumpStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.DumpStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.DumpStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DumpStatusButton.Name = "DumpStatusButton";
+			this.DumpStatusButton.ShowDropDownArrow = false;
+			this.DumpStatusButton.Size = new System.Drawing.Size(20, 20);
+			this.DumpStatusButton.Text = "No ROM loaded";
+			this.DumpStatusButton.Click += new System.EventHandler(this.DumpStatusButton_Click);
 			// 
 			// EmuStatus
 			// 
 			this.EmuStatus.Name = "EmuStatus";
 			this.EmuStatus.Size = new System.Drawing.Size(0, 17);
 			// 
-			// PlayRecordStatus
+			// PlayRecordStatusButton
 			// 
-			this.PlayRecordStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PlayRecordStatus.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
-			this.PlayRecordStatus.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PlayRecordStatus.Name = "PlayRecordStatus";
-			this.PlayRecordStatus.ShowDropDownArrow = false;
-			this.PlayRecordStatus.Size = new System.Drawing.Size(20, 20);
-			this.PlayRecordStatus.Text = "No movie is active";
+			this.PlayRecordStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PlayRecordStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.PlayRecordStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PlayRecordStatusButton.Name = "PlayRecordStatusButton";
+			this.PlayRecordStatusButton.ShowDropDownArrow = false;
+			this.PlayRecordStatusButton.Size = new System.Drawing.Size(20, 20);
+			this.PlayRecordStatusButton.Text = "No movie is active";
 			// 
-			// PauseStrip
+			// PauseStatusButton
 			// 
-			this.PauseStrip.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.PauseStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PauseStrip.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
-			this.PauseStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PauseStrip.Name = "PauseStrip";
-			this.PauseStrip.ShowDropDownArrow = false;
-			this.PauseStrip.Size = new System.Drawing.Size(20, 20);
-			this.PauseStrip.Text = "toolStripDropDownButton1";
-			this.PauseStrip.ToolTipText = "Emulator is paused";
-			this.PauseStrip.Click += new System.EventHandler(this.PauseStrip_Click);
+			this.PauseStatusButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.PauseStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PauseStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.PauseStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PauseStatusButton.Name = "PauseStatusButton";
+			this.PauseStatusButton.ShowDropDownArrow = false;
+			this.PauseStatusButton.Size = new System.Drawing.Size(20, 20);
+			this.PauseStatusButton.Text = "toolStripDropDownButton1";
+			this.PauseStatusButton.ToolTipText = "Emulator is paused";
+			this.PauseStatusButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
 			// RebootStatusBarIcon
 			// 
@@ -2614,7 +2614,7 @@
 			this.RebootStatusBarIcon.Size = new System.Drawing.Size(16, 17);
 			this.RebootStatusBarIcon.Text = "Reboot";
 			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take affect";
-			this.RebootStatusBarIcon.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
+			this.RebootStatusBarIcon.Click += new System.EventHandler(this.PowerMenuItem_Click);
 			// 
 			// AVIStatusLabel
 			// 
@@ -2624,104 +2624,104 @@
 			this.AVIStatusLabel.Size = new System.Drawing.Size(16, 17);
 			this.AVIStatusLabel.Text = "AVI Capture";
 			// 
-			// StatusBarLedLight
+			// LedLightStatusLabel
 			// 
-			this.StatusBarLedLight.Image = global::BizHawk.MultiClient.Properties.Resources.LightOff;
-			this.StatusBarLedLight.Name = "StatusBarLedLight";
-			this.StatusBarLedLight.Size = new System.Drawing.Size(16, 17);
-			this.StatusBarLedLight.ToolTipText = "Disk Drive LED Light";
+			this.LedLightStatusLabel.Image = global::BizHawk.MultiClient.Properties.Resources.LightOff;
+			this.LedLightStatusLabel.Name = "LedLightStatusLabel";
+			this.LedLightStatusLabel.Size = new System.Drawing.Size(16, 17);
+			this.LedLightStatusLabel.ToolTipText = "Disk Drive LED Light";
 			// 
-			// toolStripStatusLabel1
+			// SaveSlotsStatusLabel
 			// 
-			this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
-			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(58, 17);
-			this.toolStripStatusLabel1.Text = "Save slots";
+			this.SaveSlotsStatusLabel.BackColor = System.Drawing.SystemColors.Control;
+			this.SaveSlotsStatusLabel.Name = "SaveSlotsStatusLabel";
+			this.SaveSlotsStatusLabel.Size = new System.Drawing.Size(58, 17);
+			this.SaveSlotsStatusLabel.Text = "Save slots";
 			// 
-			// StatusSlot1
+			// Slot1StatusButton
 			// 
-			this.StatusSlot1.Name = "StatusSlot1";
-			this.StatusSlot1.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot1.Text = "1";
-			this.StatusSlot1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot1_MouseUp);
+			this.Slot1StatusButton.Name = "Slot1StatusButton";
+			this.Slot1StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot1StatusButton.Text = "1";
+			this.Slot1StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot2
+			// Slot2StatusButton
 			// 
-			this.StatusSlot2.Name = "StatusSlot2";
-			this.StatusSlot2.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot2.Text = "2";
-			this.StatusSlot2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot2_MouseUp);
+			this.Slot2StatusButton.Name = "Slot2StatusButton";
+			this.Slot2StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot2StatusButton.Text = "2";
+			this.Slot2StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot3
+			// Slot3StatusButton
 			// 
-			this.StatusSlot3.Name = "StatusSlot3";
-			this.StatusSlot3.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot3.Text = "3";
-			this.StatusSlot3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot3_MouseUp);
+			this.Slot3StatusButton.Name = "Slot3StatusButton";
+			this.Slot3StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot3StatusButton.Text = "3";
+			this.Slot3StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot4
+			// Slot4StatusButton
 			// 
-			this.StatusSlot4.Name = "StatusSlot4";
-			this.StatusSlot4.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot4.Text = "4";
-			this.StatusSlot4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot4_MouseUp);
+			this.Slot4StatusButton.Name = "Slot4StatusButton";
+			this.Slot4StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot4StatusButton.Text = "4";
+			this.Slot4StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot5
+			// Slot5StatusButton
 			// 
-			this.StatusSlot5.Name = "StatusSlot5";
-			this.StatusSlot5.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot5.Text = "5";
-			this.StatusSlot5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot5_MouseUp);
+			this.Slot5StatusButton.Name = "Slot5StatusButton";
+			this.Slot5StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot5StatusButton.Text = "5";
+			this.Slot5StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot6
+			// Slot6StatusButton
 			// 
-			this.StatusSlot6.Name = "StatusSlot6";
-			this.StatusSlot6.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot6.Text = "6";
-			this.StatusSlot6.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot6_MouseUp);
+			this.Slot6StatusButton.Name = "Slot6StatusButton";
+			this.Slot6StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot6StatusButton.Text = "6";
+			this.Slot6StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot7
+			// Slot7StatusButton
 			// 
-			this.StatusSlot7.Name = "StatusSlot7";
-			this.StatusSlot7.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot7.Text = "7";
-			this.StatusSlot7.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot7_MouseUp);
+			this.Slot7StatusButton.Name = "Slot7StatusButton";
+			this.Slot7StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot7StatusButton.Text = "7";
+			this.Slot7StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot8
+			// Slot8StatusButton
 			// 
-			this.StatusSlot8.Name = "StatusSlot8";
-			this.StatusSlot8.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot8.Text = "8";
-			this.StatusSlot8.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot8_MouseUp);
+			this.Slot8StatusButton.Name = "Slot8StatusButton";
+			this.Slot8StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot8StatusButton.Text = "8";
+			this.Slot8StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot9
+			// Slot9StatusButton
 			// 
-			this.StatusSlot9.Name = "StatusSlot9";
-			this.StatusSlot9.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot9.Text = "9";
-			this.StatusSlot9.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot9_MouseUp);
+			this.Slot9StatusButton.Name = "Slot9StatusButton";
+			this.Slot9StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot9StatusButton.Text = "9";
+			this.Slot9StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
-			// StatusSlot10
+			// Slot0StatusButton
 			// 
-			this.StatusSlot10.Name = "StatusSlot10";
-			this.StatusSlot10.Size = new System.Drawing.Size(13, 17);
-			this.StatusSlot10.Text = "0";
-			this.StatusSlot10.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot10_MouseUp);
+			this.Slot0StatusButton.Name = "Slot0StatusButton";
+			this.Slot0StatusButton.Size = new System.Drawing.Size(13, 17);
+			this.Slot0StatusButton.Text = "0";
+			this.Slot0StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// CheatStatus
 			// 
-			this.CheatStatus.Name = "CheatStatus";
-			this.CheatStatus.Size = new System.Drawing.Size(0, 17);
-			this.CheatStatus.Click += new System.EventHandler(this.FreezeStatus_Click);
+			this.CheatStatusButton.Name = "CheatStatus";
+			this.CheatStatusButton.Size = new System.Drawing.Size(0, 17);
+			this.CheatStatusButton.Click += new System.EventHandler(this.FreezeStatus_Click);
 			// 
-			// KeyPriorityStatusBarLabel
+			// KeyPriorityStatusLabel
 			// 
-			this.KeyPriorityStatusBarLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.KeyPriorityStatusBarLabel.Image = global::BizHawk.MultiClient.Properties.Resources.Both;
-			this.KeyPriorityStatusBarLabel.Name = "KeyPriorityStatusBarLabel";
-			this.KeyPriorityStatusBarLabel.Size = new System.Drawing.Size(16, 17);
-			this.KeyPriorityStatusBarLabel.Text = "KeyPriority";
-			this.KeyPriorityStatusBarLabel.Click += new System.EventHandler(this.KeyPriorityStatusBarLabel_Click);
+			this.KeyPriorityStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.KeyPriorityStatusLabel.Image = global::BizHawk.MultiClient.Properties.Resources.Both;
+			this.KeyPriorityStatusLabel.Name = "KeyPriorityStatusLabel";
+			this.KeyPriorityStatusLabel.Size = new System.Drawing.Size(16, 17);
+			this.KeyPriorityStatusLabel.Text = "KeyPriority";
+			this.KeyPriorityStatusLabel.Click += new System.EventHandler(this.KeyPriorityStatusLabel_Click);
 			// 
 			// MainFormContextMenu
 			// 
@@ -2899,7 +2899,7 @@
 			// 
 			this.controllersToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem1.Name = "controllersToolStripMenuItem1";
-			this.controllersToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.controllersToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.controllersToolStripMenuItem1.Text = "&Controllers...";
 			this.controllersToolStripMenuItem1.Click += new System.EventHandler(this.ControllersMenuItem_Click);
 			// 
@@ -2907,7 +2907,7 @@
 			// 
 			this.hotkeysToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem1.Name = "hotkeysToolStripMenuItem1";
-			this.hotkeysToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.hotkeysToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.hotkeysToolStripMenuItem1.Text = "&Hotkeys...";
 			this.hotkeysToolStripMenuItem1.Click += new System.EventHandler(this.HotkeysMenuItem_Click);
 			// 
@@ -2915,7 +2915,7 @@
 			// 
 			this.messagesToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem1.Name = "messagesToolStripMenuItem1";
-			this.messagesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.messagesToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.messagesToolStripMenuItem1.Text = "&Messages...";
 			this.messagesToolStripMenuItem1.Click += new System.EventHandler(this.MessagesMenuItem_Click);
 			// 
@@ -2923,7 +2923,7 @@
 			// 
 			this.pathsToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem1.Name = "pathsToolStripMenuItem1";
-			this.pathsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.pathsToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.pathsToolStripMenuItem1.Text = "Paths...";
 			this.pathsToolStripMenuItem1.Click += new System.EventHandler(this.PathsMenuItem_Click);
 			// 
@@ -2931,7 +2931,7 @@
 			// 
 			this.soundToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem1.Name = "soundToolStripMenuItem1";
-			this.soundToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.soundToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.soundToolStripMenuItem1.Text = "&Sound...";
 			this.soundToolStripMenuItem1.Click += new System.EventHandler(this.SoundMenuItem_Click);
 			// 
@@ -2939,34 +2939,34 @@
 			// 
 			this.autofireToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem1.Name = "autofireToolStripMenuItem1";
-			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.autofireToolStripMenuItem1.Text = "&Autofire...";
 			// 
 			// rewindToolStripMenuItem
 			// 
 			this.rewindToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.rewindToolStripMenuItem.Name = "rewindToolStripMenuItem";
-			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.rewindToolStripMenuItem.Text = "&Rewind";
 			this.rewindToolStripMenuItem.Click += new System.EventHandler(this.RewindOptionsMenuItem_Click);
 			// 
 			// firmwaresToolStripMenuItem1
 			// 
 			this.firmwaresToolStripMenuItem1.Name = "firmwaresToolStripMenuItem1";
-			this.firmwaresToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.firmwaresToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.firmwaresToolStripMenuItem1.Text = "&Firmwares";
 			this.firmwaresToolStripMenuItem1.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
 			// 
 			// toolStripSeparator30
 			// 
 			this.toolStripSeparator30.Name = "toolStripSeparator30";
-			this.toolStripSeparator30.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator30.Size = new System.Drawing.Size(138, 6);
 			// 
 			// toolStripMenuItem6
 			// 
 			this.toolStripMenuItem6.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
 			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-			this.toolStripMenuItem6.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem6.Size = new System.Drawing.Size(141, 22);
 			this.toolStripMenuItem6.Text = "Save Config";
 			this.toolStripMenuItem6.Click += new System.EventHandler(this.SaveConfigMenuItem_Click);
 			// 
@@ -2974,7 +2974,7 @@
 			// 
 			this.toolStripMenuItem7.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
 			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-			this.toolStripMenuItem7.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem7.Size = new System.Drawing.Size(141, 22);
 			this.toolStripMenuItem7.Text = "Load Config";
 			this.toolStripMenuItem7.Click += new System.EventHandler(this.LoadConfigMenuItem_Click);
 			// 
@@ -2999,7 +2999,7 @@
 			this.ClearSRAMContextMenuItem.Name = "ClearSRAMContextMenuItem";
 			this.ClearSRAMContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ClearSRAMContextMenuItem.Text = "Close and Clear SRAM";
-			this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.clearSRAMToolStripMenuItem_Click);
+			this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.ClearSRAMContextMenuItem_Click);
 			// 
 			// ShowMenuContextMenuSeparator
 			// 
@@ -3018,7 +3018,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(470, 408);
-			this.Controls.Add(this.StatusSlot0);
+			this.Controls.Add(this.MainStatusBar);
 			this.Controls.Add(this.MainformMenu);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainMenuStrip = this.MainformMenu;
@@ -3033,8 +3033,8 @@
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();
-			this.StatusSlot0.ResumeLayout(false);
-			this.StatusSlot0.PerformLayout();
+			this.MainStatusBar.ResumeLayout(false);
+			this.MainStatusBar.PerformLayout();
 			this.MainFormContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -3170,7 +3170,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ToolBoxMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem SwitchToFullscreenMenuItem;
-		private System.Windows.Forms.StatusStrip StatusSlot0;
+		private System.Windows.Forms.StatusStrip MainStatusBar;
 		private System.Windows.Forms.ToolStripStatusLabel EmuStatus;
 		private System.Windows.Forms.ToolStripMenuItem MessagesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TI83SubMenu;
@@ -3209,23 +3209,23 @@
 		private System.Windows.Forms.ToolStripMenuItem BackupMovieContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutomaticallyBackupMoviesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopMovieContextMenuItem;
-		private System.Windows.Forms.ToolStripDropDownButton PauseStrip;
-		private System.Windows.Forms.ToolStripDropDownButton PlayRecordStatus;
-		private System.Windows.Forms.ToolStripDropDownButton DumpStatus;
+		private System.Windows.Forms.ToolStripDropDownButton PauseStatusButton;
+		private System.Windows.Forms.ToolStripDropDownButton PlayRecordStatusButton;
+		private System.Windows.Forms.ToolStripDropDownButton DumpStatusButton;
 		private System.Windows.Forms.ToolStripMenuItem ViewSubtitlesContextMenuItem;
 		private MenuStripEx MainformMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBSubMenu;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot1;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot2;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot3;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot4;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot5;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot6;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot7;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot8;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot9;
-		private System.Windows.Forms.ToolStripStatusLabel StatusSlot10;
+		private System.Windows.Forms.ToolStripStatusLabel SaveSlotsStatusLabel;
+		private System.Windows.Forms.ToolStripStatusLabel Slot1StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot2StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot3StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot4StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot5StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot6StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot7StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot8StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot9StatusButton;
+		private System.Windows.Forms.ToolStripStatusLabel Slot0StatusButton;
 		private System.Windows.Forms.ToolStripMenuItem ViewCommentsContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayLogWindowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplaySubtitlesMenuItem;
@@ -3234,7 +3234,7 @@
 		private System.Windows.Forms.ToolStripMenuItem StopAVIMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel AVIStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem RestartMovieContextMenuItem;
-		private System.Windows.Forms.ToolStripStatusLabel CheatStatus;
+		private System.Windows.Forms.ToolStripStatusLabel CheatStatusButton;
 		private System.Windows.Forms.ToolStripMenuItem AutofireMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadLastSlotMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
@@ -3328,14 +3328,14 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSkipBiosMenuItem;
-		private System.Windows.Forms.ToolStripStatusLabel StatusBarLedLight;
+		private System.Windows.Forms.ToolStripStatusLabel LedLightStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem GBASubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GbaGpuViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem KeyPrioritySubMenu;
 		private System.Windows.Forms.ToolStripMenuItem BothHkAndControllerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InputOverHkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem HkOverInputMenuItem;
-		private System.Windows.Forms.ToolStripStatusLabel KeyPriorityStatusBarLabel;
+		private System.Windows.Forms.ToolStripStatusLabel KeyPriorityStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem SnesOptionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FullMovieLoadstatesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StopNoSaveContextMenuItem;
