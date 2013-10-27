@@ -1205,6 +1205,577 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
+		#region NES
+
+		private void NESDebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNESDebugger();
+		}
+
+		private void NESPPUViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNESPPU();
+		}
+
+		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNESNameTable();
+		}
+
+		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new NESGraphicsConfig().ShowDialog();
+			SyncCoreCommInputSignals();
+		}
+
+		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNesSoundConfig();
+		}
+
+		#endregion
+
+		#region PCE
+
+		private void PCESubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			PCEAlwaysPerformSpriteLimitMenuItem.Checked = Global.Config.PceSpriteLimit;
+			PCEAlwaysEqualizeVolumesMenuItem.Checked = Global.Config.PceEqualizeVolume;
+			PCEArcadeCardRewindEnableMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
+		}
+
+		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadPCEBGViewer();
+		}
+
+		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceSpriteLimit ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void PCEAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceEqualizeVolume ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void PCEArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PceArcadeCardRewindHack ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PCEGraphicsConfig().ShowDialog();
+			SyncCoreCommInputSignals();
+		}
+
+		#endregion
+
+		#region SMS
+
+		private void SMSSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SMSEnableFMChipMenuItem.Checked = Global.Config.SmsEnableFM;
+			SMSOverclockMenuItem.Checked = Global.Config.SmsAllowOverlock;
+			SMSForceStereoMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
+			SMSSpriteLimitMenuItem.Checked = Global.Config.SmsSpriteLimit;
+			ShowClippedRegionsMenuItem.Checked = Global.Config.GGShowClippedRegions;
+			HighlightActiveDisplayRegionMenuItem.Checked = Global.Config.GGHighlightActiveDisplayRegion;
+
+			SMSEnableFMChipMenuItem.Visible =
+				SMSOverclockMenuItem.Visible =
+				SMSForceStereoMenuItem.Visible =
+				!(Global.Game.System == "GG");
+
+			ShowClippedRegionsMenuItem.Visible =
+				HighlightActiveDisplayRegionMenuItem.Visible =
+				GGGameGenieMenuItem.Visible =
+				Global.Game.System == "GG";
+		}
+
+		private void SMSEnableFMChipMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsEnableFM ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void SMSOverclockMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsAllowOverlock ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void SMSForceStereoMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsForceStereoSeparation ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void SMSSpriteLimitMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SmsSpriteLimit ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void ShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGShowClippedRegions ^= true;
+			GlobalWinF.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+		}
+
+		private void HighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGHighlightActiveDisplayRegion ^= true;
+			GlobalWinF.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+		}
+
+		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new SMSGraphicsConfig().ShowDialog();
+			SyncCoreCommInputSignals();
+		}
+
+		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		#endregion
+
+		#region TI83
+
+		private void TI83SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadKeypadMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
+		}
+
+		private void KeypadMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is TI83)
+			{
+				LoadTI83KeyPad();
+			}
+		}
+
+		private void AutoloadKeypadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TI83autoloadKeyPad ^= true;
+		}
+
+		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog OFD = new OpenFileDialog();
+
+			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				try
+				{
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+				}
+				catch (IOException ex)
+				{
+					string Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
+
+					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+					{
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Atari
+
+		private void AtariSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AtariBWMenuItem.Checked = Global.Config.Atari2600_BW;
+			AtariLeftDifficultyMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
+			AtariRightDifficultyMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
+
+			AtariShowBGMenuItem.Checked = Global.Config.Atari2600_ShowBG;
+			ShowPlayer1MenuItem.Checked = Global.Config.Atari2600_ShowPlayer1;
+			ShowPlayer2MenuItem.Checked = Global.Config.Atari2600_ShowPlayer2;
+			ShowMissle1MenuItem.Checked = Global.Config.Atari2600_ShowMissle1;
+			ShowMissle2MenuItem.Checked = Global.Config.Atari2600_ShowMissle2;
+			ShowBallMenuItem.Checked = Global.Config.Atari2600_ShowBall;
+			AtariShowPlayfieldMenuItem.Checked = Global.Config.Atari2600_ShowPlayfield;
+		}
+
+		private void AtariBWMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_BW ^= true;
+
+			if (Global.Emulator is Atari2600)
+			{
+				(Global.Emulator as Atari2600).SetBw(Global.Config.Atari2600_BW);
+			}
+
+			if (Global.Config.Atari2600_BW)
+			{
+				GlobalWinF.OSD.AddMessage("Setting the Black and White Switch to On");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Setting the Black and White Switch to Off");
+			}
+		}
+
+		private void AtariLeftDifficultyMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_LeftDifficulty ^= true;
+
+			if (Global.Emulator is Atari2600)
+			{
+				(Global.Emulator as Atari2600).SetP0Diff(Global.Config.Atari2600_BW);
+			}
+
+			if (Global.Config.Atari2600_LeftDifficulty)
+			{
+				GlobalWinF.OSD.AddMessage("Setting Left Difficulty to B");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Setting Left Difficulty to A");
+			}
+		}
+
+		private void AtariRightDifficultyMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_RightDifficulty ^= true;
+
+			if (Global.Emulator is Atari2600)
+			{
+				(Global.Emulator as Atari2600).SetP1Diff(Global.Config.Atari2600_BW);
+			}
+
+			if (Global.Config.Atari2600_RightDifficulty)
+			{
+				GlobalWinF.OSD.AddMessage("Setting Right Difficulty to B");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Setting Right Difficulty to A");
+			}
+		}
+
+		private void AtariShowBGMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBG ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void AtariShowPlayfieldMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayfield ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void ShowPlayer1MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer1 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void ShowPlayer2MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer2 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void ShowMissle1MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle1 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void ShowMissle2MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle2 ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		private void ShowBallMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBall ^= true;
+			SyncCoreCommInputSignals();
+		}
+
+		#endregion
+
+		#region GB
+
+		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBForceDMGMenuItem.Checked = Global.Config.GB_ForceDMG;
+			GBAInCGBModeMenuItem.Checked = Global.Config.GB_GBACGB;
+			GBMulticartCompatibilityMenuItem.Checked = Global.Config.GB_MulticartCompat;
+			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+		}
+
+		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_ForceDMG ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void GBAInCGBModeMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_GBACGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void GBMulticartCompatibilityMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_MulticartCompat ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void GBPaletteConfigMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				var gb = Global.Emulator as Gameboy;
+				if (gb.IsCGBMode())
+				{
+					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
+					{
+						gb.SetCGBColors(Global.Config.CGBColors);
+					}
+				}
+				else
+				{
+					GBtools.ColorChooserForm.DoColorChooserFormDialog(gb.ChangeDMGColors, this);
+				}
+			}
+		}
+
+		private void LoadGBInSGBMenuItem_Click(object sender, EventArgs e)
+		{
+			SnesGBInSGBMenuItem_Click(sender, e);
+		}
+
+		private void GBGPUViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBGPUView();
+		}
+
+		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		#endregion
+
+		#region GBA
+
+		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBAGPUView();
+		}
+
+		#endregion
+
+		#region SNES
+
+		private void SNESSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if ((Global.Emulator as LibsnesCore).IsSGB)
+			{
+				SnesGBInSGBMenuItem.Visible = true;
+				SnesGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			}
+			else
+			{
+				SnesGBInSGBMenuItem.Visible = false;
+			}
+		}
+
+		private void SNESDisplayMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			SnesBg1MenuItem.Checked = Global.Config.SNES_ShowBG1_1;
+			SnesBg2MenuItem.Checked = Global.Config.SNES_ShowBG2_1;
+			SnesBg3MenuItem.Checked = Global.Config.SNES_ShowBG3_1;
+			SnesBg4MenuItem.Checked = Global.Config.SNES_ShowBG4_1;
+
+			SnesObj1MenuItem.Checked = Global.Config.SNES_ShowOBJ1;
+			SnesObj2MenuItem.Checked = Global.Config.SNES_ShowOBJ2;
+			SnesObj3MenuItem.Checked = Global.Config.SNES_ShowOBJ3;
+			SnesObj4MenuItem.Checked = Global.Config.SNES_ShowOBJ4;
+
+			SnesBg1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
+			SnesBg2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
+			SnesBg3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 3"].Bindings;
+			SnesBg4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 4"].Bindings;
+
+			SnesObj1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 1"].Bindings;
+			SnesObj2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 2"].Bindings;
+			SnesObj3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 3"].Bindings;
+			SnesObj4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
+		}
+
+		private void SnesBg1MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG1();
+		}
+
+		private void SnesBg2MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG2();
+		}
+
+		private void SnesBg3MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG3();
+		}
+
+		private void SnesBg4MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG4();
+		}
+
+		private void SnesObj1MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ1();
+		}
+
+		private void SnesObj2MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ2();
+		}
+
+		private void SnesObj3MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ3();
+		}
+
+		private void SnesObj4MenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ4();
+		}
+
+		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSNESGraphicsDebugger();
+		}
+
+		private void SnesGBInSGBMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void SnesGameGenieMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			var so = new SNESOptions
+			{
+				UseRingBuffer = Global.Config.SNESUseRingBuffer,
+				AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize,
+				Profile = Global.Config.SNESProfile
+			};
+			if (so.ShowDialog() == DialogResult.OK)
+			{
+				Global.Config.SNESProfile = so.Profile;
+				Global.Config.SNESUseRingBuffer = so.UseRingBuffer;
+				Global.Config.SNESAlwaysDoubleSize = so.AlwaysDoubleSize;
+				if (Global.Config.SNESProfile != so.Profile)
+				{
+					FlagNeedsReboot();
+				}
+				SyncCoreCommInputSignals();
+			}
+		}
+
+		#endregion
+
+		#region Coleco
+
+		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ColecoSkipBiosMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
+		}
+
+		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ColecoSkipBiosIntro ^= true;
+			FlagNeedsReboot();
+		}
+
+		#endregion
+
+		#region N64
+
+		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
+			{
+				GlobalWinF.OSD.AddMessage("Plugin settings saved");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Plugin settings aborted");
+			}
+		}
+
+		#endregion
+
+		#region Saturn
+
+		private void SaturnPreferencesMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new SaturnPrefs())
+			{
+				var result = dlg.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					SaturnSetPrefs();
+				}
+			}
+		}
+
+		#endregion
+
+		#region Help
+
+		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.html");
+		}
+
+		private void ForumsMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
+		}
+
+		private void AboutMenuItem_Click(object sender, EventArgs e)
+		{
+			if (INTERIM)
+			{
+				new AboutBox().ShowDialog();
+			}
+			else
+			{
+				new BizBox().ShowDialog();
+			}
+		}
+
+		#endregion
+
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
 			string details = Global.Emulator.CoreComm.RomStatusDetails;
@@ -1214,138 +1785,23 @@ namespace BizHawk.MultiClient
 			GlobalWinF.Sound.StartSound();
 		}
 
-		
 
-		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsEnableFM ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void smsOverclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsAllowOverlock ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void smsForceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsForceStereoSeparation ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SmsSpriteLimit ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceSpriteLimit ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceEqualizeVolume ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceArcadeCardRewindHack ^= true;
-			FlagNeedsReboot();
-		}
 
 		public void RebootCore()
 		{
 			LoadRom(CurrentlyOpenRom);
 		}
 
-		private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.html");
-		}
 
-		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (INTERIM)
-				new AboutBox().ShowDialog();
-			else
-				new BizBox().ShowDialog();
-		}
-
-		private void forumsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
-		}
-
-		private void PPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNESPPU();
-		}
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
 			HandlePlatformMenus();
 		}
 
-		private void gameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
 
-		private void debuggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNESDebugger();
-		}
 
-		private void nametableViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNESNameTable();
-		}
 
-		private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!(Global.Emulator is TI83)) return;
-			Global.Config.TI83autoloadKeyPad ^= true;
-		}
-
-		private void keypadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!(Global.Emulator is TI83))
-				return;
-			LoadTI83KeyPad();
-		}
-
-		private void tI83ToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
-
-			if (!MainForm.INTERIM) loadTIFileToolStripMenuItem.Visible = false;
-		}
-
-		private void graphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			NESGraphicsConfig g = new NESGraphicsConfig();
-			g.ShowDialog();
-			SyncCoreCommInputSignals();
-		}
-
-		private void pceGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PCEGraphicsConfig g = new PCEGraphicsConfig();
-			g.ShowDialog();
-			SyncCoreCommInputSignals();
-		}
-
-		private void smsGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SMSGraphicsConfig g = new SMSGraphicsConfig();
-			g.ShowDialog();
-			SyncCoreCommInputSignals();
-		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -1656,45 +2112,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			pceAlwaysPerformSpriteLimitToolStripMenuItem.Checked = Global.Config.PceSpriteLimit;
-			pceAlwaysEqualizeVolumesToolStripMenuItem.Checked = Global.Config.PceEqualizeVolume;
-			pceArcadeCardRewindEnableHackToolStripMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
-		}
-
-		private void sMSToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			smsEnableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
-			smsOverclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
-			smsForceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
-			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
-			showClippedRegionsToolStripMenuItem.Checked = Global.Config.GGShowClippedRegions;
-			highlightActiveDisplayRegionToolStripMenuItem.Checked = Global.Config.GGHighlightActiveDisplayRegion;
-
-			if (Global.Game.System == "GG")
-			{
-				smsEnableFMChipToolStripMenuItem.Visible = false;
-				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = false;
-				smsForceStereoSeparationToolStripMenuItem.Visible = false;
-
-				showClippedRegionsToolStripMenuItem.Visible = true;
-				highlightActiveDisplayRegionToolStripMenuItem.Visible = true;
-				GGgameGenieEncoderDecoderToolStripMenuItem.Visible = true;
-			}
-			else
-			{
-				smsEnableFMChipToolStripMenuItem.Visible = true;
-				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = true;
-				smsForceStereoSeparationToolStripMenuItem.Visible = true;
-
-				showClippedRegionsToolStripMenuItem.Visible = false;
-				highlightActiveDisplayRegionToolStripMenuItem.Visible = false;
-				GGgameGenieEncoderDecoderToolStripMenuItem.Visible = false;
-			}
-
-		}
-
 		protected override void OnClosed(EventArgs e)
 		{
 			exit = true;
@@ -1735,98 +2152,6 @@ namespace BizHawk.MultiClient
 		private void showMenuToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ShowHideMenu();
-		}
-
-		private void justatestToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadPCEBGViewer();
-		}
-
-		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_BW ^= true;
-				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
-				if (Global.Config.Atari2600_BW)
-					GlobalWinF.OSD.AddMessage("Setting to Black and White Switch to On");
-				else
-					GlobalWinF.OSD.AddMessage("Setting to Black and White Switch to Off");
-			}
-		}
-
-		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_LeftDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
-				if (Global.Config.Atari2600_LeftDifficulty)
-					GlobalWinF.OSD.AddMessage("Setting Left Difficulty to B");
-				else
-					GlobalWinF.OSD.AddMessage("Setting Left Difficulty to A");
-			}
-		}
-
-		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_RightDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
-				if (Global.Config.Atari2600_RightDifficulty)
-					GlobalWinF.OSD.AddMessage("Setting Right Difficulty to B");
-				else
-					GlobalWinF.OSD.AddMessage("Setting Right Difficulty to A");
-			}
-		}
-
-		private void atariToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
-			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
-			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
-
-			showBGToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBG;
-			showPlayer1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer1;
-			showPlayer2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer2;
-			showMissle1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle1;
-			showMissle2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle2;
-			showBallToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBall;
-			showPlayfieldToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayfield;
-		}
-
-		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;
-			gBAInCGBModeToolStripMenuItem.Checked = Global.Config.GB_GBACGB;
-			multicartCompatibilityToolStripMenuItem.Checked = Global.Config.GB_MulticartCompat;
-
-			loadGBInSGBToolStripMenuItem1.Checked = Global.Config.GB_AsSGB;
-		}
-
-		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadSNESGraphicsDebugger();
-		}
-
-		private void miSnesOptions_Click(object sender, EventArgs e)
-		{
-			var so = new SNESOptions
-				{
-					UseRingBuffer = Global.Config.SNESUseRingBuffer,
-					AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize,
-					Profile = Global.Config.SNESProfile
-				};
-			if (so.ShowDialog() == DialogResult.OK)
-			{
-				bool reboot = Global.Config.SNESProfile != so.Profile;
-				Global.Config.SNESProfile = so.Profile;
-				Global.Config.SNESUseRingBuffer = so.UseRingBuffer;
-				Global.Config.SNESAlwaysDoubleSize = so.AlwaysDoubleSize;
-				if (reboot) FlagNeedsReboot();
-				SyncCoreCommInputSignals();
-			}
 		}
 
 		public void SNES_ToggleBG1(bool? setto = null)
@@ -2020,87 +2345,6 @@ namespace BizHawk.MultiClient
 					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
 				}
 			}
-		}
-
-		private void bG1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG1();
-		}
-
-		private void bG1ToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			SNES_ToggleBG2();
-		}
-
-		private void bG2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG3();
-		}
-
-		private void bG3ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG4();
-		}
-
-		private void oBJ0ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ1();
-		}
-
-		private void oBJ1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ2();
-		}
-
-		private void oBJ2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ3();
-		}
-
-		private void oBJ3ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ4();
-		}
-
-		private void displayToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			bG0ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG1_1;
-			bG1ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG2_1;
-			bG2ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG3_1;
-			bG3ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG4_1;
-
-			oBJ0ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ1;
-			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ2;
-			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ3;
-			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ4;
-
-			bG0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
-			bG1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
-			bG2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 3"].Bindings;
-			bG3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 4"].Bindings;
-
-			oBJ0ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 1"].Bindings;
-			oBJ1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 2"].Bindings;
-			oBJ2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 3"].Bindings;
-			oBJ3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
-		}
-
-		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_ForceDMG ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_GBACGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_MulticartCompat ^= true;
-			FlagNeedsReboot();
 		}
 
 		private void StatusSlot1_MouseUp(object sender, MouseEventArgs e)
@@ -2343,46 +2587,6 @@ namespace BizHawk.MultiClient
 			StopMovie(true);
 		}
 
-		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var result = new N64VideoPluginconfig().ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				GlobalWinF.OSD.AddMessage("Plugin settings saved");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Plugin settings aborted");
-			}
-		}
-
-		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (var dlg = new SaturnPrefs())
-			{
-				var result = dlg.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					SaturnSetPrefs();
-				}
-			}
-		}
-
 		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			new MessageConfig().ShowDialog();
@@ -2398,52 +2602,6 @@ namespace BizHawk.MultiClient
 			new AutofireConfig().ShowDialog();
 		}
 
-		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNesSoundConfig();
-		}
-
-		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Gameboy)
-			{
-				var g = Global.Emulator as Gameboy;
-				if (g.IsCGBMode())
-				{
-					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
-					{
-						g.SetCGBColors(Global.Config.CGBColors);
-					}
-				}
-				else
-				{
-					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
-				}
-			}
-		}
-
-		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if ((Global.Emulator as LibsnesCore).IsSGB)
-			{
-				loadGBInSGBToolStripMenuItem.Visible = true;
-				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			}
-			else
-				loadGBInSGBToolStripMenuItem.Visible = false;
-		}
-
-		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			loadGBInSGBToolStripMenuItem_Click(sender, e);
-		}
-
-		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			GlobalWinF.RenderPanel.Resized = true;
@@ -2454,84 +2612,9 @@ namespace BizHawk.MultiClient
 			RebootCore();
 		}
 
-		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGShowClippedRegions ^= true;
-			GlobalWinF.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
-		}
-
-		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			GlobalWinF.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-		}
-
 		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			SaveMovie();
-		}
-
-		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBG ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBall ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayfield ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBGPUView();
-		}
-
-		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.ColecoSkipBiosIntro ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
-		}
-
-		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBAGPUView();
 		}
 
 		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
@@ -2550,26 +2633,6 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			UpdateKeyPriorityIcon();
-		}
-
-		private void loadTIFileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog OFD = new OpenFileDialog();
-
-			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
-				try
-				{
-					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
-				}
-				catch (IOException ex)
-				{
-					string Message = string.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
-
-					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
-				}
-			}
 		}
 	}
 }
