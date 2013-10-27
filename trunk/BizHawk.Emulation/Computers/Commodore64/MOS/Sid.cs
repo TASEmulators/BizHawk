@@ -1,5 +1,9 @@
 ﻿using System;
 
+#pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
+#pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete
+#pragma warning disable 219 //adelikat: Disable dumb warnings until this file is complete
+
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	sealed public partial class Sid

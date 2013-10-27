@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
 
+#pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
+
 namespace BizHawk.Emulation.Consoles.PSX
 {
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider

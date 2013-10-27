@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	//split into "bind" and "open (the bound thing)"
 	//scan archive to flatten interior directories down to a path (maintain our own archive item list)
 
-	public class HawkFile : IDisposable
+	public sealed class HawkFile : IDisposable
 	{
 		public static bool ExistsAt(string path)
 		{
