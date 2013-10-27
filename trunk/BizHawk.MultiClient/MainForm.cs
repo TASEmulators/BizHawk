@@ -439,7 +439,7 @@ namespace BizHawk.MultiClient
 
 			if (!INTERIM)
 			{
-				debuggerToolStripMenuItem.Enabled = false;
+				NESDebuggerMenuItem.Enabled = false;
 				//luaConsoleToolStripMenuItem.Enabled = false;
 			}
 
@@ -857,17 +857,17 @@ namespace BizHawk.MultiClient
 				system = Global.Game.System;
 			}
 
-			tI83ToolStripMenuItem.Visible = false;
-			NESToolStripMenuItem.Visible = false;
-			pCEToolStripMenuItem.Visible = false;
-			sMSToolStripMenuItem.Visible = false;
-			gBToolStripMenuItem.Visible = false;
-			gBAToolStripMenuItem.Visible = false;
-			atariToolStripMenuItem.Visible = false;
-			sNESToolStripMenuItem.Visible = false;
-			colecoToolStripMenuItem.Visible = false;
-			n64ToolStripMenuItem.Visible = false;
-			saturnToolStripMenuItem.Visible = false;
+			TI83SubMenu.Visible = false;
+			NESSubMenu.Visible = false;
+			PCESubMenu.Visible = false;
+			SMSSubMenu.Visible = false;
+			GBSubMenu.Visible = false;
+			GBASubMenu.Visible = false;
+			AtariSubMenu.Visible = false;
+			SNESSubMenu.Visible = false;
+			ColecoSubMenu.Visible = false;
+			N64SubMenu.Visible = false;
+			SaturnSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -875,66 +875,66 @@ namespace BizHawk.MultiClient
 				case "GEN":
 					break;
 				case "NULL":
-					n64ToolStripMenuItem.Visible = true;
+					N64SubMenu.Visible = true;
 					break;
 				case "TI83":
-					tI83ToolStripMenuItem.Visible = true;
+					TI83SubMenu.Visible = true;
 					break;
 				case "NES":
-					NESToolStripMenuItem.Visible = true;
+					NESSubMenu.Visible = true;
 					NESSpeicalMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
 				case "SGX":
-					pCEToolStripMenuItem.Visible = true;
+					PCESubMenu.Visible = true;
 					break;
 				case "SMS":
-					sMSToolStripMenuItem.Text = "SMS";
-					sMSToolStripMenuItem.Visible = true;
+					SMSSubMenu.Text = "SMS";
+					SMSSubMenu.Visible = true;
 					break;
 				case "SG":
-					sMSToolStripMenuItem.Text = "SG";
-					sMSToolStripMenuItem.Visible = true;
+					SMSSubMenu.Text = "SG";
+					SMSSubMenu.Visible = true;
 					break;
 				case "GG":
-					sMSToolStripMenuItem.Text = "GG";
-					sMSToolStripMenuItem.Visible = true;
+					SMSSubMenu.Text = "GG";
+					SMSSubMenu.Visible = true;
 					break;
 				case "GB":
 				case "GBC":
-					gBToolStripMenuItem.Visible = true;
+					GBSubMenu.Visible = true;
 					break;
 				case "GBA":
-					gBAToolStripMenuItem.Visible = true;
+					GBASubMenu.Visible = true;
 					break;
 				case "A26":
-					atariToolStripMenuItem.Visible = true;
+					AtariSubMenu.Visible = true;
 					break;
 				case "SNES":
 				case "SGB":
 					if ((Global.Emulator as LibsnesCore).IsSGB)
-						sNESToolStripMenuItem.Text = "&SGB";
+						SNESSubMenu.Text = "&SGB";
 					else
-						sNESToolStripMenuItem.Text = "&SNES";
-					sNESToolStripMenuItem.Visible = true;
+						SNESSubMenu.Text = "&SNES";
+					SNESSubMenu.Visible = true;
 					break;
 				case "Coleco":
-					colecoToolStripMenuItem.Visible = true;
+					ColecoSubMenu.Visible = true;
 					break;
 				case "N64":
-					n64ToolStripMenuItem.Visible = true;
+					N64SubMenu.Visible = true;
 					break;
 				case "SAT":
-					saturnToolStripMenuItem.Visible = true;
+					SaturnSubMenu.Visible = true;
 					break;
 			}
 		}
 
 		void NESSpeicalMenuAdd(string name, string button, string msg)
 		{
-			nESSpeicalToolStripMenuItem.Visible = true;
-			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate
+			NESSpecialControlsMenuItem.Visible = true;
+			NESSpecialControlsMenuItem.DropDownItems.Add(name, null, delegate
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
@@ -950,8 +950,8 @@ namespace BizHawk.MultiClient
 		void NESSpeicalMenuControls()
 		{
 			// ugly and hacky
-			nESSpeicalToolStripMenuItem.Visible = false;
-			nESSpeicalToolStripMenuItem.DropDownItems.Clear();
+			NESSpecialControlsMenuItem.Visible = false;
+			NESSpecialControlsMenuItem.DropDownItems.Clear();
 			var ss = Global.Emulator.ControllerDefinition.BoolButtons;
 			if (ss.Contains("FDS Eject"))
 				NESSpeicalMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");

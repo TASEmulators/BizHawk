@@ -212,7 +212,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//check fceux's PowerNES and FCEU_MemoryRand function for more information:
 			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
-			for(int i=0;i<0x800;i++) if((i&4)!=0) ram[i] = 0xFF; else ram[i] = 0x00;
+			
+			//for(int i=0;i<0x800;i++) if((i&4)!=0) ram[i] = 0xFF; else ram[i] = 0x00;
+			Random r = new Random();
+			for (int i = 0; i < 0x800; i++)
+			{
+				ram[i] = (byte)(r.Next(0, 256));
+			}
 
 			SetupMemoryDomains();
 
