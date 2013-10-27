@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -52,14 +47,14 @@ namespace BizHawk.Client.Common
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 		
-		private int? _differentBy = null;
+		private int? _differentBy;
 		private Compare _compareTo = Compare.Previous;
-		private long? _compareValue = null;
+		private long? _compareValue;
 		private ComparisonOperator _operator = ComparisonOperator.Equal;
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
-		private Settings _settings = new Settings();
-		private UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
+		private readonly Settings _settings = new Settings();
+		private readonly UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _keepHistory = true;
 
 		public RamSearchEngine(Settings settings)
@@ -189,19 +184,19 @@ namespace BizHawk.Client.Common
 			switch (_compareTo)
 			{
 				default:
-				case RamSearchEngine.Compare.Previous:
+				case Compare.Previous:
 					_watchList = ComparePrevious(_watchList).ToList();
 					break;
-				case RamSearchEngine.Compare.SpecificValue:
+				case Compare.SpecificValue:
 					_watchList = CompareSpecificValue(_watchList).ToList();
 					break;
-				case RamSearchEngine.Compare.SpecificAddress:
+				case Compare.SpecificAddress:
 					_watchList = CompareSpecificAddress(_watchList).ToList();
 					break;
-				case RamSearchEngine.Compare.Changes:
+				case Compare.Changes:
 					_watchList = CompareChanges(_watchList).ToList();
 					break;
-				case RamSearchEngine.Compare.Difference:
+				case Compare.Difference:
 					_watchList = CompareDifference(_watchList).ToList();
 					break;
 			}
@@ -229,16 +224,16 @@ namespace BizHawk.Client.Common
 			switch (_compareTo)
 			{
 				default:
-				case RamSearchEngine.Compare.Previous:
-					return ComparePrevious(listOfOne).Count() == 0;
-				case RamSearchEngine.Compare.SpecificValue:
-					return CompareSpecificValue(listOfOne).Count() == 0;
-				case RamSearchEngine.Compare.SpecificAddress:
-					return CompareSpecificAddress(listOfOne).Count() == 0;
-				case RamSearchEngine.Compare.Changes:
-					return CompareChanges(listOfOne).Count() == 0;
-				case RamSearchEngine.Compare.Difference:
-					return CompareDifference(listOfOne).Count() == 0;
+				case Compare.Previous:
+					return !ComparePrevious(listOfOne).Any();
+				case Compare.SpecificValue:
+					return !CompareSpecificValue(listOfOne).Any();
+				case Compare.SpecificAddress:
+					return !CompareSpecificAddress(listOfOne).Any();
+				case Compare.Changes:
+					return !CompareChanges(listOfOne).Any();
+				case Compare.Difference:
+					return !CompareDifference(listOfOne).Any();
 			}
 		}
 
@@ -745,7 +740,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						return (uint)theDWord;
+						return theDWord;
 					}
 			}
 		}
@@ -758,7 +753,7 @@ namespace BizHawk.Client.Common
 				case Settings.SearchMode.Detailed:
 					return true;
 				case Settings.SearchMode.Fast:
-					return !(compareType == Compare.Changes);
+					return compareType != Compare.Changes;
 			}
 		}
 
@@ -851,7 +846,7 @@ namespace BizHawk.Client.Common
 		{
 			public int Address { get; private set; }
 			private byte _previous;
-			int _changecount = 0;
+			int _changecount;
 
 			public MiniByteWatchDetailed(MemoryDomain domain, int addr)
 			{
@@ -903,7 +898,7 @@ namespace BizHawk.Client.Common
 		{
 			public int Address { get; private set; }
 			private ushort _previous;
-			int _changecount = 0;
+			int _changecount;
 
 			public MiniWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{
@@ -954,7 +949,7 @@ namespace BizHawk.Client.Common
 		{
 			public int Address { get; private set; }
 			private uint _previous;
-			int _changecount = 0;
+			int _changecount;
 
 			public MiniDWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{

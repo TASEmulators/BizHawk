@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml;
 
@@ -23,11 +21,16 @@ namespace BizHawk.Client.Common
 				if (y == null)
 					return null;
 
-				var ret = new XmlGame();
-				ret.GI.System = y.Attributes["System"].Value;
-				ret.GI.Name = y.Attributes["Name"].Value;
-				ret.GI.Status = RomStatus.Unknown;
-				ret.Xml = x;
+				var ret = new XmlGame
+					{
+						GI =
+							{
+								System = y.Attributes["System"].Value,
+								Name = y.Attributes["Name"].Value,
+								Status = RomStatus.Unknown
+							},
+						Xml = x
+					};
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
@@ -61,7 +64,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							string fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|')[0]);
+							string fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|')[0]) ?? String.Empty;
 							fullpath = Path.Combine(fullpath, filename);
 							try
 							{

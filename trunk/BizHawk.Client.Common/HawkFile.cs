@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool IsArchive { get { return extractor != null; } }
 
-		int? BoundIndex = null;
+		int? BoundIndex;
 
 		public int? GetBoundIndex()
 		{

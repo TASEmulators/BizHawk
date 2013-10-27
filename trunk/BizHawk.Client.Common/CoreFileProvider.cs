@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -22,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		public string PathSubfile(string fname)
 		{
-			return Path.Combine(Path.GetDirectoryName(SubfileDirectory), fname);
+			return Path.Combine(Path.GetDirectoryName(SubfileDirectory) ?? String.Empty, fname);
 		}
 	}
 }

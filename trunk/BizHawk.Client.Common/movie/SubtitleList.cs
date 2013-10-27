@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
@@ -15,7 +14,7 @@ namespace BizHawk.Client.Common
 
 		public SubtitleList() { }
 
-		public SubtitleList(SubtitleList subtitles)
+		public SubtitleList(IEnumerable<Subtitle> subtitles)
 		{
 			foreach (var subtitle in subtitles)
 			{

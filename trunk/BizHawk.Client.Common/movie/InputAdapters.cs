@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
@@ -109,7 +108,7 @@ namespace BizHawk.Client.Common
 
 		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
 		{
-			foreach (var kvp in Buttons) yield return kvp;
+			return Buttons;
 		}
 
 		public virtual void LatchFrom(IController source)
@@ -200,7 +199,7 @@ namespace BizHawk.Client.Common
 
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
-		WorkingDictionary<string,float?> FloatSet = new WorkingDictionary<string,float?>();
+		readonly WorkingDictionary<string,float?> FloatSet = new WorkingDictionary<string,float?>();
 		public void SetFloat(string name, float? value)
 		{
 			if (value.HasValue)
