@@ -4378,5 +4378,219 @@ namespace BizHawk.MultiClient
 		{
 			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
 		}
+
+		public void UpdateCheatStatus()
+		{
+			if (Global.CheatList.ActiveCount > 0)
+			{
+				CheatStatus.ToolTipText = "Cheats are currently active";
+				CheatStatus.Image = Properties.Resources.Freeze;
+				CheatStatus.Visible = true;
+			}
+			else
+			{
+				CheatStatus.ToolTipText = "";
+				CheatStatus.Image = Properties.Resources.Blank;
+				CheatStatus.Visible = false;
+			}
+		}
+
+		public void SNES_ToggleBG1(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				}
+
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG1_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG2(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG2_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG3(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG3_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG4(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG4_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ1(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ1 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ1 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ1)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ2(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ2 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ2 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ2)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ3(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ3 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ3 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ3)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ4(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ4 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ4 ^= true;
+				}
+				SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ4)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
+				}
+			}
+		}
+
+		public void RebootCore()
+		{
+			LoadRom(CurrentlyOpenRom);
+		}
 	}
 }
