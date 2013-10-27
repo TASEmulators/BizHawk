@@ -321,7 +321,6 @@
     <Compile Include="movie\EditSubtitlesForm.Designer.cs">
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
