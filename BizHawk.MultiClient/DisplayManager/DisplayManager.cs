@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -626,16 +627,12 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				List<Subtitle> s = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
-				if (s == null)
-				{
-					return;
-				}
+				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
 
-				for (int i = 0; i < s.Count; i++)
+				for (int i = 0; i < subList.Count; i++)
 				{
-					g.DrawString(s[i].Message, MessageFont, Color.Black, s[i].X + 1, s[i].Y + 1);
-					g.DrawString(s[i].Message, MessageFont, Color.FromArgb((int)s[i].Color), s[i].X, s[i].Y);
+					g.DrawString(subList[i].Message, MessageFont, Color.Black, subList[i].X + 1, subList[i].Y + 1);
+					g.DrawString(subList[i].Message, MessageFont, Color.FromArgb((int)subList[i].Color), subList[i].X, subList[i].Y);
 				}
 			}
 		}

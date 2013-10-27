@@ -75,8 +75,8 @@
 			// 
 			// Message
 			// 
-			this.Message.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.Message.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.Message.Location = new System.Drawing.Point(12, 69);
 			this.Message.MaxLength = 512;
 			this.Message.Name = "Message";
@@ -163,6 +163,7 @@
 			this.ColorPanel.Size = new System.Drawing.Size(56, 19);
 			this.ColorPanel.TabIndex = 35;
 			this.ColorPanel.TabStop = true;
+			this.ColorPanel.Click += new System.EventHandler(this.ColorPanel_DoubleClick);
 			this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
 			// 
 			// label5
@@ -223,7 +224,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(272, 214);
+			this.MinimumSize = new System.Drawing.Size(272, 225);
 			this.Name = "SubtitleMaker";
 			this.Text = "Subtitle Maker";
 			this.Load += new System.EventHandler(this.SubtitleMaker_Load);
