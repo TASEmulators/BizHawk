@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Common
+﻿namespace BizHawk.MultiClient
 {
 	public class MruStack<T>
 	{

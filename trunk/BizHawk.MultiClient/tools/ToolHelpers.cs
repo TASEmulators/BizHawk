@@ -11,55 +11,6 @@ namespace BizHawk.MultiClient
 {
 	class ToolHelpers
 	{
-		public static FileInfo GetWatchFileFromUser(string currentFile)
-		{
-			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
-		}
-
-		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
-		{
-			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
-			}
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
-		}
-
 		public static FileInfo GetCheatFileFromUser(string currentFile)
 		{
 			var ofd = new OpenFileDialog();

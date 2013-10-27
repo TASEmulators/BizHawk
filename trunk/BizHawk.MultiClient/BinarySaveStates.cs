@@ -5,7 +5,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.MultiClient
 {
 	public class BinaryStateFileNames
 	{
