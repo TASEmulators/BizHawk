@@ -583,7 +583,12 @@
   <ItemGroup>
     <Folder Include="Computers\Commodore64\Peripheral\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />

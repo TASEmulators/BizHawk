@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BizHawk.Client.Common;
+using BizHawk.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	//TODO: move me
 	//http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
@@ -49,8 +49,6 @@ namespace BizHawk.MultiClient
 
 	public class RamSearchEngine
 	{
-		
-
 		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 		
@@ -61,7 +59,7 @@ namespace BizHawk.MultiClient
 
 		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
 		private Settings _settings = new Settings();
-		private WatchHistory _history = new WatchHistory(true);
+		private UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _keepHistory = true;
 
 		public RamSearchEngine(Settings settings)
@@ -408,7 +406,7 @@ namespace BizHawk.MultiClient
 		{
 			switch(column)
 			{
-				case RamSearch.ADDRESS:
+				case WatchList.ADDRESS:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Address).ToList();
@@ -418,7 +416,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Address).ToList();
 					}
 					break;
-				case RamSearch.VALUE:
+				case WatchList.VALUE:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => GetValue(x.Address)).ToList();
@@ -428,7 +426,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => GetValue(x.Address)).ToList();
 					}
 					break;
-				case RamSearch.PREV:
+				case WatchList.PREV:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => x.Previous).ToList();
@@ -438,7 +436,7 @@ namespace BizHawk.MultiClient
 						_watchList = _watchList.OrderBy(x => x.Previous).ToList();
 					}
 					break;
-				case RamSearch.CHANGES:
+				case WatchList.CHANGES:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
 						if (reverse)
@@ -457,7 +455,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 					break;
-				case RamSearch.DIFF:
+				case WatchList.DIFF:
 					if (reverse)
 					{
 						_watchList = _watchList.OrderByDescending(x => (GetValue(x.Address) - x.Previous)).ToList();
@@ -499,7 +497,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_keepHistory)
 			{
-				_watchList = _history.Undo();
+				_watchList = _history.Undo().ToList();
 			}
 		}
 
@@ -507,7 +505,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_keepHistory)
 			{
-				_watchList = _history.Redo();
+				_watchList = _history.Redo().ToList();
 			}
 		}
 

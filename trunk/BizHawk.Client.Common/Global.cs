@@ -14,5 +14,10 @@
 		/// </summary>
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 		public static MovieSession MovieSession = new MovieSession();
+
+		/// <summary>
+		/// whether throttling is force-disabled by use of fast forward
+		/// </summary>
+		public static bool ForceNoThrottle;
 	}
 }
