@@ -22,8 +22,12 @@ namespace BizHawk.Client.Common
 						config = (T)s.Deserialize(r, typeof(T));
 					}
 			}
-			catch (Exception e) { /*TODO MessageBox.Show(e.ToString(), "Config Error"); */ }
-			if (config == null) return new T();
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException("Config Error", ex);
+			}
+
+			//if (config == null) return new T();
 
 			//patch up arrays in the config with the minimum number of things
 			foreach(var fi in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public))

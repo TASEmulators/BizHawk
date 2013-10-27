@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 			public string Hash;
 		}
 
-		Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> ResolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
+		readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> ResolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
 
 
 		public ResolutionInfo Resolve(string sysId, string firmwareId)
@@ -41,7 +40,7 @@ namespace BizHawk.Client.Common
 
 		RETRY:
 
-			ResolutionInfo resolved = null;
+			ResolutionInfo resolved;
 			ResolutionDictionary.TryGetValue(record, out resolved);
 
 			//couldnt find it! do a scan and resolve to try harder
@@ -68,8 +67,7 @@ namespace BizHawk.Client.Common
 			byte[] buffer = new byte[0];
 			public RealFirmwareFile Read(FileInfo fi)
 			{
-				RealFirmwareFile rff = new RealFirmwareFile();
-				rff.fi = fi;
+				RealFirmwareFile rff = new RealFirmwareFile {fi = fi};
 				long len = fi.Length;
 				if (len > buffer.Length) buffer = new byte[len];
 				using (var fs = fi.OpenRead()) fs.Read(buffer, 0, (int)len);
@@ -78,8 +76,8 @@ namespace BizHawk.Client.Common
 				files.Add(rff);
 				return rff;
 			}
-			public Dictionary<string, RealFirmwareFile> dict = new Dictionary<string, RealFirmwareFile>();
-			public List<RealFirmwareFile> files = new List<RealFirmwareFile>();
+			public readonly Dictionary<string, RealFirmwareFile> dict = new Dictionary<string, RealFirmwareFile>();
+			private readonly List<RealFirmwareFile> files = new List<RealFirmwareFile>();
 		}
 
 		public void DoScanAndResolve()
@@ -109,9 +107,10 @@ namespace BizHawk.Client.Common
 				ResolutionDictionary.Remove(fr);
 
 				//get all options for this firmware (in order)
+				FirmwareDatabase.FirmwareRecord fr1 = fr;
 				var options =
 					from fo in FirmwareDatabase.FirmwareOptions
-					where fo.systemId == fr.systemId && fo.firmwareId == fr.firmwareId
+					where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId
 					select fo;
 
 				//try each option
@@ -122,10 +121,12 @@ namespace BizHawk.Client.Common
 					if (reader.dict.ContainsKey(hash))
 					{
 						//rad! then we can use it
-						var ri = new ResolutionInfo();
-						ri.FilePath = reader.dict[hash].fi.FullName;
-						ri.KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash];
-						ri.Hash = hash;
+						var ri = new ResolutionInfo
+							{
+								FilePath = reader.dict[hash].fi.FullName,
+								KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
+								Hash = hash
+							};
 						ResolutionDictionary[fr] = ri;
 						goto DONE_FIRMWARE;
 					}
@@ -138,13 +139,13 @@ namespace BizHawk.Client.Common
 			//apply user overrides
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				string userSpec = null;
+				string userSpec;
 				
 				//do we have a user specification for this firmware record?
 				if (Global.Config.FirmwareUserSpecifications.TryGetValue(fr.ConfigKey, out userSpec))
 				{
 					//flag it as user specified
-					ResolutionInfo ri = null;
+					ResolutionInfo ri;
 					if (!ResolutionDictionary.TryGetValue(fr, out ri))
 					{
 						ri = new ResolutionInfo();
@@ -168,7 +169,7 @@ namespace BizHawk.Client.Common
 					ri.Hash = rff.hash;
 
 					//check whether it was a known file anyway, and go ahead and bind to the known file, as a perk (the firmwares config doesnt really use this information right now)
-					FirmwareDatabase.FirmwareFile ff = null;
+					FirmwareDatabase.FirmwareFile ff;
 					if(FirmwareDatabase.FirmwareFilesByHash.TryGetValue(rff.hash,out ff))
 					{
 						ri.KnownFirmwareFile = ff;

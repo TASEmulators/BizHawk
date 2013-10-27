@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Client.Common
@@ -108,16 +107,16 @@ namespace BizHawk.Client.Common
 				}
 			},
 			{
-				"Nintento 64 Controller", new Dictionary<string, string>()
-				{
+				"Nintento 64 Controller", new Dictionary<string, string>
+					{
 					{"DPad U", "U"}, {"DPad D", "D"}, {"DPad L", "L"}, {"DPad R", "R"},
 					{"B", "B"}, {"A", "A"}, {"Z", "Z"}, {"Start", "S"}, {"L", "L"}, {"R", "R"},
 					{"C Up", "u"}, {"C Down", "d"}, {"C Left", "l"}, {"C Right", "r"}
 				}
 			},
 			{
-				"Saturn Controller", new Dictionary<string, string>()
-				{
+				"Saturn Controller", new Dictionary<string, string>
+					{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"},
 					{"Start", "S"}, {"X", "X"}, {"Y", "Y"}, {"Z", "Z"}, {"A", "A"}, {"B", "B"}, {"C", "C"},
 					{"L", "l"}, {"R", "r"},
@@ -139,9 +138,9 @@ namespace BizHawk.Client.Common
 			{"Genesis 3-Button Controller", new Dictionary<string, string> {{"Reset", "r"}}},
 			{"NES Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Power", "P"}, {"FDS Eject", "E"}, {"FDS Insert 0", "0"}, {"FDS Insert 1", "1"}, {"VS Coin 1", "c"}, {"VS Coin 2", "C"}}},
 			{"SNES Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
-			{"PC Engine Controller", new Dictionary<string, string> {}},
+			{"PC Engine Controller", new Dictionary<string, string>()},
 			{"SMS Controller", new Dictionary<string, string> {{"Pause", "p"}, {"Reset", "r"}}},
-			{"TI83 Controller", new Dictionary<string, string> {}},
+			{"TI83 Controller", new Dictionary<string, string>()},
 			{"Nintento 64 Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 			{"Saturn Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 		};
@@ -155,7 +154,7 @@ namespace BizHawk.Client.Common
 
 		// just experimenting with different possibly more painful ways to handle mnemonics
 		// |P|UDLRsSBA|
-		public static Tuple<string, char>[] DGBMnemonic = new Tuple<string, char>[]
+		public static Tuple<string, char>[] DGBMnemonic = new[]
 		{
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("P1 Power", 'P'),
@@ -406,7 +405,7 @@ namespace BizHawk.Client.Common
 				{
 					foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
 					{
-						int val = 0;
+						int val;
 						
 						//Nasty hackery
 						if (name == "Y Axis")

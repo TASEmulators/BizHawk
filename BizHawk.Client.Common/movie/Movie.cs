@@ -370,7 +370,7 @@ namespace BizHawk.Client.Common
 
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			BackupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(BackupName));
+			BackupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(BackupName) ?? String.Empty);
 
 			var directory_info = new FileInfo(BackupName).Directory;
 			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);

@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
 
-		private readonly Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
+		private readonly Dictionary<string, Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
 
 		public Controller(ControllerDefinition definition)
 		{
@@ -43,32 +43,13 @@ namespace BizHawk.Client.Common
 		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
-			var ret = new List<string>();
-			foreach (var kvp in bindings)
-			{
-				foreach (var bound_button in kvp.Value)
-				{
-					if (bound_button == button)
-						ret.Add(kvp.Key);
-				}
-			}
-			return ret;
+			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
 		}
 
 		//Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
 		public bool HasBinding(string button)
 		{
-			foreach (var kvp in bindings)
-			{
-				foreach (var bound_button in kvp.Value)
-				{
-					if (bound_button == button)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
+			return bindings.SelectMany(kvp => kvp.Value).Any(bound_button => bound_button == button);
 		}
 
 		/// <summary>
@@ -153,7 +134,7 @@ namespace BizHawk.Client.Common
 				bindings[button].Add(control.Trim());
 		}
 
-		public void BindFloat(string button, BizHawk.Client.Common.Config.AnalogBind bind)
+		public void BindFloat(string button, Config.AnalogBind bind)
 		{
 			FloatBinds[button] = bind;
 		}
@@ -164,17 +145,7 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public List<KeyValuePair<string, string>> MappingList()
 		{
-			List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>();
-
-			foreach (KeyValuePair<string, List<string>> key in bindings)
-			{
-				foreach (string binding in key.Value)
-				{
-					list.Add(new KeyValuePair<string, string>(binding, key.Key));
-				}
-			}
-
-			return list;
+			return (from key in bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
 		}
 
 		public List<string> PressedButtons
@@ -188,9 +159,9 @@ namespace BizHawk.Client.Common
 
 	public class AutofireController : IController
 	{
-		private ControllerDefinition type;
-		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
-		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
+		private readonly ControllerDefinition type;
+		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
+		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
 
 		private bool autofire = true;
@@ -229,16 +200,7 @@ namespace BizHawk.Client.Common
 		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
-			var ret = new List<string>();
-			foreach (var kvp in bindings)
-			{
-				foreach (var bound_button in kvp.Value)
-				{
-					if (bound_button == button)
-						ret.Add(kvp.Key);
-				}
-			}
-			return ret;
+			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
 		}
 
 		/// <summary>

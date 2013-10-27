@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 
@@ -9,16 +6,16 @@ namespace BizHawk.Client.Common
 {
 	public class BinaryStateFileNames
 	{
-		public const string versiontag = "BizState 1.0";
-		public const string corestate = "Core";
-		public const string framebuffer = "Framebuffer";
-		public const string input = "Input Log";
+		public const string Versiontag = "BizState 1.0";
+		public const string Corestate = "Core";
+		public const string Framebuffer = "Framebuffer";
+		public const string Input = "Input Log";
 	}
 
 
 	public class BinaryStateLoader : IDisposable
 	{
-		private bool isDisposed = false;
+		private bool isDisposed;
 		public void Dispose()
 		{
 			Dispose(true);
@@ -50,7 +47,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				ret.zip = new ZipFile(Filename);
-				var e = ret.zip.GetEntry(BinaryStateFileNames.versiontag);
+				var e = ret.zip.GetEntry(BinaryStateFileNames.Versiontag);
 				if (e == null)
 				{
 					ret.zip.Close();
@@ -87,23 +84,23 @@ namespace BizHawk.Client.Common
 
 		public void GetCoreState(Action<Stream> callback)
 		{
-			GetFileByName(BinaryStateFileNames.corestate, true, callback);
+			GetFileByName(BinaryStateFileNames.Corestate, true, callback);
 		}
 
 		public bool GetFrameBuffer(Action<Stream> callback)
 		{
-			return GetFileByName(BinaryStateFileNames.framebuffer, false, callback);
+			return GetFileByName(BinaryStateFileNames.Framebuffer, false, callback);
 		}
 
 		public void GetInputLogRequired(Action<Stream> callback)
 		{
-			GetFileByName(BinaryStateFileNames.input, true, callback);
+			GetFileByName(BinaryStateFileNames.Input, true, callback);
 		}
 	}
 
 	public class BinaryStateSaver : IDisposable
 	{
-		ZipOutputStream zip;
+		private readonly ZipOutputStream zip;
 
 		/// <summary>
 		/// 
@@ -111,18 +108,19 @@ namespace BizHawk.Client.Common
 		/// <param name="s">not closed when finished!</param>
 		public BinaryStateSaver(Stream s)
 		{
-			zip = new ZipOutputStream(s);
-			zip.IsStreamOwner = false;
+			zip = new ZipOutputStream(s)
+				{
+					IsStreamOwner = false,
+					UseZip64 = UseZip64.Off
+				};
 			zip.SetLevel(0);
-			zip.UseZip64 = UseZip64.Off;
 
-			PutFileByName(BinaryStateFileNames.versiontag, (ss) => { });	
+			PutFileByName(BinaryStateFileNames.Versiontag, ss => { });	
 		}
 
 		void PutFileByName(string Name, Action<Stream> callback)
 		{
-			var e = new ZipEntry(Name);
-			e.CompressionMethod = CompressionMethod.Stored;
+			var e = new ZipEntry(Name) {CompressionMethod = CompressionMethod.Stored};
 			zip.PutNextEntry(e);
 			callback(zip);
 			zip.CloseEntry();
@@ -130,20 +128,20 @@ namespace BizHawk.Client.Common
 
 		public void PutCoreState(Action<Stream> callback)
 		{
-			PutFileByName(BinaryStateFileNames.corestate, callback);
+			PutFileByName(BinaryStateFileNames.Corestate, callback);
 		}
 
 		public void PutFrameBuffer(Action<Stream> callback)
 		{
-			PutFileByName(BinaryStateFileNames.framebuffer, callback);
+			PutFileByName(BinaryStateFileNames.Framebuffer, callback);
 		}
 
 		public void PutInputLog(Action<Stream> callback)
 		{
-			PutFileByName(BinaryStateFileNames.input, callback);
+			PutFileByName(BinaryStateFileNames.Input, callback);
 		}
 
-		private bool isDisposed = false;
+		private bool isDisposed;
 		public void Dispose()
 		{
 			Dispose(true);
