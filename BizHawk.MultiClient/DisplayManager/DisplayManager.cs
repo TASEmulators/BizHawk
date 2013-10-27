@@ -485,7 +485,7 @@ namespace BizHawk.MultiClient
 			StringBuilder s;
 			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
 			{
-				s = new StringBuilder(GlobalWinF.GetOutputControllersAsMnemonic());
+				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			}
 			else
 			{

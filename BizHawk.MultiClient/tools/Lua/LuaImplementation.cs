@@ -1257,23 +1257,23 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				GlobalWinF.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
-				GlobalWinF.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
+				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
+				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
 			else if (Global.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				GlobalWinF.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
-				GlobalWinF.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
+				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
+				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
 				{
-					GlobalWinF.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
-					GlobalWinF.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
+					Global.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
+					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
 			else if (Global.Emulator is Emulation.Consoles.Sega.SMS)
 			{
-				GlobalWinF.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
-				GlobalWinF.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
+				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
+				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
 		}
 
@@ -2138,27 +2138,27 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in GlobalWinF.ControllerOutput.Source.Type.BoolButtons)
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
 				if (controller == null)
 				{
-					buttons[button] = GlobalWinF.ControllerOutput[button];
+					buttons[button] = Global.ControllerOutput[button];
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = GlobalWinF.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
 				}
 			}
 
-			foreach (string button in GlobalWinF.ControllerOutput.Source.Type.FloatControls)
+			foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
 			{
 				if (controller == null)
 				{
-					buttons[button] = GlobalWinF.ControllerOutput.GetFloat(button);
+					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = GlobalWinF.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
 				}
 			}
 
@@ -2172,8 +2172,8 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_getimmediate()
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in GlobalWinF.ActiveController.Type.BoolButtons)
-				buttons[button] = GlobalWinF.ActiveController[button];
+			foreach (string button in Global.ActiveController.Type.BoolButtons)
+				buttons[button] = Global.ActiveController[button];
 			return buttons;
 		}
 
