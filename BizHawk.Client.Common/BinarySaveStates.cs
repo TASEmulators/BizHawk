@@ -18,13 +18,23 @@ namespace BizHawk.Client.Common
 
 	public class BinaryStateLoader : IDisposable
 	{
-		bool disposed = false;
+		private bool isDisposed = false;
 		public void Dispose()
 		{
-			if (!disposed)
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!isDisposed)
 			{
-				disposed = true;
-				zip.Close();
+				isDisposed = true;
+
+				if (disposing)
+				{
+					zip.Close();
+				}
 			}
 		}
 
@@ -95,8 +105,6 @@ namespace BizHawk.Client.Common
 	{
 		ZipOutputStream zip;
 
-		bool disposed = false;
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -135,12 +143,23 @@ namespace BizHawk.Client.Common
 			PutFileByName(BinaryStateFileNames.input, callback);
 		}
 
+		private bool isDisposed = false;
 		public void Dispose()
 		{
-			if (!disposed)
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!isDisposed)
 			{
-				disposed = true;
-				zip.Dispose();
+				isDisposed = true;
+
+				if (disposing)
+				{
+					zip.Close();
+				}
 			}
 		}
 

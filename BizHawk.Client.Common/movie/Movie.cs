@@ -436,7 +436,6 @@ namespace BizHawk.Client.Common
 						Header.Comments.Add(str);
 					}
 				}
-				sr.Close();
 			}
 
 			return true;

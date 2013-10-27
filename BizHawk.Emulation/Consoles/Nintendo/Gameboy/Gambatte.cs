@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <summary>
 		/// RTC time when emulation begins.
 		/// </summary>
-		long zerotime;
+		long zerotime = 0;
 
 		LibGambatte.RTCCallback TimeCallback;
 
