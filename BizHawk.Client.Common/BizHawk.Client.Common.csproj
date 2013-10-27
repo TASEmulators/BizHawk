@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -82,9 +85,11 @@
     <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
+    <Compile Include="BinarySaveStates.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />
+    <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
@@ -100,15 +105,24 @@
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
+    <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="RomGame.cs" />
+    <Compile Include="SavestateManager.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
+    <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch.cs" />
+    <Compile Include="tools\WatchList.cs" />
+    <Compile Include="XmlGame.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
       <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
       <Name>BizHawk.Emulation</Name>
