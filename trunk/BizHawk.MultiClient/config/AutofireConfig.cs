@@ -39,8 +39,8 @@ namespace BizHawk.MultiClient
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
-			GlobalWinF.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
+			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
+			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
 			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
 			GlobalWinF.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 

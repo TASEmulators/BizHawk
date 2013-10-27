@@ -1,5 +1,4 @@
-﻿using BizHawk.DiscSystem;
-using SlimDX.Direct3D9;
+﻿using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
 
 using BizHawk.Client.Common;
@@ -17,28 +16,7 @@ namespace BizHawk.MultiClient
 		public static IRenderer RenderPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager = new DisplayManager();
-		public static CoreComm CoreComm;
-		
-		public static Controller NullControls;
-		public static AutofireController AutofireNullControls;
 
-		//the movie will be spliced inbetween these if it is present
-		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
-		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
-
-		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
-		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
-		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
-		//(1)->Input Display
-
-		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
-		public static Controller ActiveController;
-
-		//rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
-		public static AutofireController AutoFireController;
-
-		//the "output" port for the controller chain.
-		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
 		//input state which has been destined for game controller inputs are coalesced here
 		public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
@@ -72,14 +50,5 @@ namespace BizHawk.MultiClient
 		public static SimpleController MovieOutputController = new SimpleController();
 
 		public static Controller ClientControls;
-
-		public static string GetOutputControllersAsMnemonic()
-		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			mg.SetSource(ControllerOutput);
-			return mg.GetControllersAsMnemonic();
-		}
-
-		public static DiscHopper DiscHopper = new DiscHopper();
 	}
 }

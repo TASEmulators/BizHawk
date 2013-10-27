@@ -1329,13 +1329,13 @@ namespace BizHawk.MultiClient
 		private void ShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGShowClippedRegions ^= true;
-			GlobalWinF.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 
 		private void HighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			GlobalWinF.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)

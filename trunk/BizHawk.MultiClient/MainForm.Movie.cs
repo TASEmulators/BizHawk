@@ -406,7 +406,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (Global.MovieSession.Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
 					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
 					else
 					{
@@ -482,7 +482,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+				Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
 
 			else if (Global.MovieSession.Movie.IsFinished)
@@ -494,7 +494,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
 
@@ -506,7 +506,7 @@ namespace BizHawk.MultiClient
 					{
 						Global.MovieSession.Movie.CaptureState();
 						Global.MovieSession.LatchInputFromLog();
-						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 					}
 					else
 					{
@@ -519,17 +519,17 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.LatchInputFromLog();
 					if (GlobalWinF.ClientControls["ClearFrame"])
 					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						ClearFrame();
 					}
 					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
 					{
-						Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						MnemonicsGenerator mg = new MnemonicsGenerator();
-						mg.SetSource( GlobalWinF.MovieOutputHardpoint);
+						mg.SetSource( Global.MovieOutputHardpoint);
 						if (!mg.IsEmpty)
 						{
-							Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
 						}
 						else
@@ -545,15 +545,15 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.CaptureState();
 				if (Global.MovieSession.MultiTrack.IsActive)
 				{
-					Global.MovieSession.LatchMultitrackPlayerInput(GlobalWinF.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
+					Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 				}
 				else
 				{
-					Global.MovieSession.LatchInputFromPlayer(GlobalWinF.MovieInputSourceAdapter);
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, GlobalWinF.MovieOutputHardpoint);
+				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 			}
 		}
 

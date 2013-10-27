@@ -244,11 +244,11 @@ namespace BizHawk.MultiClient
 
 			Input.Initialize();
 			InitControls();
-			GlobalWinF.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm();
 			SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(GlobalWinF.CoreComm);
-			GlobalWinF.ActiveController = GlobalWinF.NullControls;
-			GlobalWinF.AutoFireController = GlobalWinF.AutofireNullControls;
+			Global.Emulator = new NullEmulator(Global.CoreComm);
+			Global.ActiveController = Global.NullControls;
+			Global.AutoFireController = Global.AutofireNullControls;
 			GlobalWinF.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 #if WINDOWS
 			GlobalWinF.Sound = new Sound(Handle, GlobalWinF.DSound);
@@ -412,7 +412,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
-				if (GlobalWinF.CoreComm.CpuTraceAvailable)
+				if (Global.CoreComm.CpuTraceAvailable)
 				{
 					LoadTraceLogger();
 				}
@@ -560,7 +560,7 @@ namespace BizHawk.MultiClient
 
 		public void SyncCoreCommInputSignals()
 		{
-			SyncCoreCommInputSignals(GlobalWinF.CoreComm);
+			SyncCoreCommInputSignals(Global.CoreComm);
 		}
 
 		void SyncPresentationMode()
@@ -669,19 +669,19 @@ namespace BizHawk.MultiClient
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
 				GlobalWinF.ClientControls.LatchFromPhysical(GlobalWinF.HotkeyCoalescer);
-				GlobalWinF.ActiveController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
+				Global.ActiveController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
 
-				GlobalWinF.ActiveController.OR_FromLogical(GlobalWinF.ClickyVirtualPadController);
-				GlobalWinF.AutoFireController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
+				Global.ActiveController.OR_FromLogical(GlobalWinF.ClickyVirtualPadController);
+				Global.AutoFireController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
 
 				if (GlobalWinF.ClientControls["Autohold"])
 				{
-					GlobalWinF.StickyXORAdapter.MassToggleStickyState(GlobalWinF.ActiveController.PressedButtons);
-					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(GlobalWinF.AutoFireController.PressedButtons);
+					GlobalWinF.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
 				else if (GlobalWinF.ClientControls["Autofire"])
 				{
-					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(GlobalWinF.ActiveController.PressedButtons);
+					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
 
 				//if (!EmulatorPaused)
@@ -794,8 +794,8 @@ namespace BizHawk.MultiClient
 			}
 
 			GlobalWinF.ClientControls = controls;
-			GlobalWinF.NullControls = new Controller(NullEmulator.NullController);
-			GlobalWinF.AutofireNullControls = new AutofireController(NullEmulator.NullController);
+			Global.NullControls = new Controller(NullEmulator.NullController);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
 		}
 
@@ -1036,22 +1036,22 @@ namespace BizHawk.MultiClient
 		{
 			var def = Global.Emulator.ControllerDefinition;
 
-			GlobalWinF.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
-			GlobalWinF.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
+			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
+			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
 
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
-			GlobalWinF.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
+			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
 			GlobalWinF.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
 			RewireInputChain();
 		}
 
 		void RewireInputChain()
 		{
-			GlobalWinF.ControllerInputCoalescer = new ControllerInputCoalescer { Type = GlobalWinF.ActiveController.Type };
+			GlobalWinF.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
 
-			GlobalWinF.OrControllerAdapter.Source = GlobalWinF.ActiveController;
-			GlobalWinF.OrControllerAdapter.SourceOr = GlobalWinF.AutoFireController;
+			GlobalWinF.OrControllerAdapter.Source = Global.ActiveController;
+			GlobalWinF.OrControllerAdapter.SourceOr = Global.AutoFireController;
 			GlobalWinF.UD_LR_ControllerAdapter.Source = GlobalWinF.OrControllerAdapter;
 
 			GlobalWinF.StickyXORAdapter.Source = GlobalWinF.UD_LR_ControllerAdapter;
@@ -1060,18 +1060,18 @@ namespace BizHawk.MultiClient
 			Global.MultitrackRewiringControllerAdapter.Source = GlobalWinF.AutofireStickyXORAdapter;
 			GlobalWinF.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
 
-			GlobalWinF.MovieInputSourceAdapter.Source = GlobalWinF.ForceOffAdaptor;
-			GlobalWinF.ControllerOutput.Source = GlobalWinF.MovieOutputHardpoint;
+			Global.MovieInputSourceAdapter.Source = GlobalWinF.ForceOffAdaptor;
+			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
-			Global.Emulator.Controller = GlobalWinF.ControllerOutput;
-			Global.MovieSession.MovieControllerAdapter.Type = GlobalWinF.MovieInputSourceAdapter.Type;
+			Global.Emulator.Controller = Global.ControllerOutput;
+			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
 
 			//connect the movie session before MovieOutputHardpoint if it is doing anything
 			//otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
 			if (Global.MovieSession.Movie != null)
-				GlobalWinF.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
+				Global.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
 			else
-				GlobalWinF.MovieOutputHardpoint.Source = GlobalWinF.MovieInputSourceAdapter;
+				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
@@ -1561,7 +1561,7 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.Emulator.Dispose();
 				Global.Emulator = nextEmulator;
-				GlobalWinF.CoreComm = nextComm;
+				Global.CoreComm = nextComm;
 				Global.Game = game;
 				SyncCoreCommInputSignals();
 				SyncControls();
@@ -1910,7 +1910,7 @@ namespace BizHawk.MultiClient
 						break;
 					case 1: //Input overrides Hokeys
 						GlobalWinF.ControllerInputCoalescer.Receive(ie);
-						bool inputisbound = GlobalWinF.ActiveController.HasBinding(ie.LogicalButton.ToString());
+						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
 						if (!inputisbound)
 						{
 							handled = false;
@@ -2305,7 +2305,7 @@ namespace BizHawk.MultiClient
 
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
-					GlobalWinF.AutoFireController.IncrementStarts();
+					Global.AutoFireController.IncrementStarts();
 				}
 
 				PressFrameAdvance = false;
@@ -3321,11 +3321,11 @@ namespace BizHawk.MultiClient
 
 			StopAVI();
 			Global.Emulator.Dispose();
-			GlobalWinF.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm();
 			SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(GlobalWinF.CoreComm);
-			GlobalWinF.ActiveController = GlobalWinF.NullControls;
-			GlobalWinF.AutoFireController = GlobalWinF.AutofireNullControls;
+			Global.Emulator = new NullEmulator(Global.CoreComm);
+			Global.ActiveController = Global.NullControls;
+			Global.AutoFireController = Global.AutofireNullControls;
 			Global.MovieSession.Movie.Stop();
 			NeedsReboot = false;
 			SetRebootIconStatus();
@@ -3334,9 +3334,9 @@ namespace BizHawk.MultiClient
 		public void CloseROM(bool clearSRAM = false)
 		{
 			CloseGame(clearSRAM);
-			GlobalWinF.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm();
 			SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(GlobalWinF.CoreComm);
+			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
 			
 			RewireSound();
