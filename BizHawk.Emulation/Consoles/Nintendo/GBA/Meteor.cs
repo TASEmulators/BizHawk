@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 {
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider

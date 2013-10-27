@@ -1,5 +1,8 @@
 //http://nesdev.parodius.com/6502_cpu.txt
+
 using System;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.CPUs.M6502
 {

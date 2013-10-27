@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt

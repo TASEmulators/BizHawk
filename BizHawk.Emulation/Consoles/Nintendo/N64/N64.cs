@@ -4,6 +4,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo.N64
 {
 	public class N64 : IEmulator, IVideoProvider

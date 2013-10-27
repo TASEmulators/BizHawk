@@ -27,6 +27,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.DiscSystem
 {
 	partial class Disc

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 
 //TODO - refactor length counter to be separate component
 
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {

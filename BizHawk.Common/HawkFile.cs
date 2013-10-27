@@ -7,100 +7,11 @@ using System.Linq;
 //This is so we could drop in an unamanged dearchiver library optionally later as a performance optimization without ruining the portability of the code.
 //Also, we want to be able to use HawkFiles in BizHawk.Common withuot bringing in a large 7-zip dependency
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Common
 {
 	//todo:
 	//split into "bind" and "open (the bound thing)"
 	//scan archive to flatten interior directories down to a path (maintain our own archive item list)
-
-	public interface IHawkFileArchiveHandler : IDisposable
-	{
-		//todo - could this receive a hawkfile itself? possibly handy, in very clever scenarios of mounting fake files
-		bool CheckSignature(string fileName, out int offset, out bool isExecutable);
-
-		List<HawkFileArchiveItem> Scan();
-
-		IHawkFileArchiveHandler Construct(string path);
-
-		void ExtractFile(int index, Stream stream);
-	}
-
-	public class HawkFileArchiveItem
-	{
-		/// <summary>
-		/// member name
-		/// </summary>
-		public string name;
-
-		/// <summary>
-		/// size of member file
-		/// </summary>
-		public long size;
-
-		/// <summary>
-		/// the index of this archive item
-		/// </summary>
-		public int index;
-
-		/// <summary>
-		/// the index WITHIN THE ARCHIVE (for internal tracking by a IHawkFileArchiveHandler) of the member
-		/// </summary>
-		public int archiveIndex;
-	}
-
-	/// <summary>
-	/// Implementation of IHawkFileArchiveHandler using SevenZipSharp pure managed code
-	/// </summary>
-	class SevenZipSharpArchiveHandler : IHawkFileArchiveHandler
-	{
-		public void Dispose()
-		{
-			if(extractor != null)
-			{
-				extractor.Dispose();
-				extractor = null;
-			}
-		}
-
-		public bool CheckSignature(string fileName, out int offset, out bool isExecutable)
-		{
-			SevenZip.FileChecker.ThrowExceptions = false;
-			return SevenZip.FileChecker.CheckSignature(fileName, out offset, out isExecutable) != SevenZip.InArchiveFormat.None;
-		}
-
-		public IHawkFileArchiveHandler Construct(string path)
-		{
-			SevenZipSharpArchiveHandler ret = new SevenZipSharpArchiveHandler();
-			ret.Open(path);
-			return ret;
-		}
-
-		void Open(string path)
-		{
-			extractor = new SevenZip.SevenZipExtractor(path);
-		}
-
-		SevenZip.SevenZipExtractor extractor;
-
-		public List<HawkFileArchiveItem> Scan()
-		{
-			List<HawkFileArchiveItem> ret = new List<HawkFileArchiveItem>();
-			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
-			{
-				var afd = extractor.ArchiveFileData[i];
-				if (afd.IsDirectory) continue;
-				var ai = new HawkFileArchiveItem {name = HawkFile.Util_FixArchiveFilename(afd.FileName), size = (long) afd.Size, archiveIndex = i, index = ret.Count};
-				ret.Add(ai);
-			}
-
-			return ret;
-		}
-
-		public void ExtractFile(int index, Stream stream)
-		{
-			extractor.ExtractFile(index, stream);
-		}
-	}
 
 	/// <summary>
 	/// HawkFile allows a variety of objects (actual files, archive members) to be treated as normal filesystem objects to be opened, closed, and read.
@@ -113,7 +24,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Set this with an instance which can construct archive handlers as necessary for archive handling.
 		/// </summary>
-		public static IHawkFileArchiveHandler ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+		public static IHawkFileArchiveHandler ArchiveHandlerFactory;
 
 		/// <summary>
 		/// Utility: Uses full HawkFile processing to determine whether a file exists at the provided path
@@ -506,6 +417,50 @@ namespace BizHawk.Client.Common
 			if (member == null) return root;
 			else return string.Format("{0}|{1}", root, member);
 		}
+	
+	} //class HawkFile
 
+
+	/// <summary>
+	/// Bridge between HawkFile and the frontend's implementation of archive management
+	/// </summary>
+	public interface IHawkFileArchiveHandler : IDisposable
+	{
+		//todo - could this receive a hawkfile itself? possibly handy, in very clever scenarios of mounting fake files
+		bool CheckSignature(string fileName, out int offset, out bool isExecutable);
+
+		List<HawkFileArchiveItem> Scan();
+
+		IHawkFileArchiveHandler Construct(string path);
+
+		void ExtractFile(int index, Stream stream);
 	}
-}
+
+	/// <summary>
+	/// Members returned by IHawkFileArchiveHandler
+	/// </summary>
+	public class HawkFileArchiveItem
+	{
+		/// <summary>
+		/// member name
+		/// </summary>
+		public string name;
+
+		/// <summary>
+		/// size of member file
+		/// </summary>
+		public long size;
+
+		/// <summary>
+		/// the index of this archive item
+		/// </summary>
+		public int index;
+
+		/// <summary>
+		/// the index WITHIN THE ARCHIVE (for internal tracking by a IHawkFileArchiveHandler) of the member
+		/// </summary>
+		public int archiveIndex;
+	}
+
+} //namespace BizHawk.Common
+ 

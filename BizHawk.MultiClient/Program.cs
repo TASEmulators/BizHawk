@@ -12,6 +12,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 
 #pragma warning disable 618
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
@@ -67,6 +68,8 @@ namespace BizHawk.MultiClient
 
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 			Global.Config.ResolveDefaults();
+
+			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
 #if WINDOWS
 			try { GlobalWinF.DSound = SoundEnumeration.Create(); }

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA MMC2 Mike Tyson's Punch-Out!!
 	//AKA MMC4 (similar enough to combine in one fle)

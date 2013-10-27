@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Computers.Commodore64
 {
     static class SaveState

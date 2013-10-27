@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient

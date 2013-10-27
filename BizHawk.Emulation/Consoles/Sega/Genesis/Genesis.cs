@@ -3,11 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 using BizHawk.Emulation.CPUs.M68000;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
 using Native68000;
-using System.Runtime.InteropServices;
+
 
 namespace BizHawk.Emulation.Consoles.Sega
 {

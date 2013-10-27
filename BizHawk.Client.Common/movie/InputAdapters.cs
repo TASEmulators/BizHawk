@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>
