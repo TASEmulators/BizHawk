@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string GetEmptyMnemonic
+		public static string GetEmptyMnemonic
 		{
 			get
 			{
