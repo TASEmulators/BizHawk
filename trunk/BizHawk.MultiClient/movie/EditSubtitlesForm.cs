@@ -86,6 +86,7 @@ namespace BizHawk.MultiClient
 
 		public void GetMovie(Movie m)
 		{
+			selectedMovie = m;
 			SubtitleList subs = new SubtitleList(m.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
