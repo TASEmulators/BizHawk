@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		string currentSessionFile = "";
 		List<LuaFile> luaList = new List<LuaFile>();
-		public LuaImplementation LuaImp;
+		public EmuLuaLibrary LuaImp;
 		string lastLuaFile = ""; //TODO: this isn't getting used!
 		bool changes = false;
 
@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 		public LuaConsole()
 		{
 			InitializeComponent();
-			LuaImp = new LuaImplementation(this);
+			LuaImp = new EmuLuaLibrary(this);
 			Closing += (o, e) => SaveConfigSettings();
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
@@ -711,7 +711,7 @@ namespace BizHawk.MultiClient
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWinF.Sound.StopSound();
-			new LuaFunctionList().Show();
+			new LuaFunctionsForm().Show();
 			GlobalWinF.Sound.StartSound();
 		}
 

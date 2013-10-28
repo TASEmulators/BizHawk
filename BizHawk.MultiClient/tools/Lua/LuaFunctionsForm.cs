@@ -6,11 +6,11 @@ using BizHawk.MultiClient;
 
 namespace BizHawk.MultiClient
 {
-	public partial class LuaFunctionList : Form
+	public partial class LuaFunctionsForm : Form
 	{
 		private readonly Sorting ColumnSort = new Sorting();
 		
-		public LuaFunctionList()
+		public LuaFunctionsForm()
 		{
 			InitializeComponent();
 		}
