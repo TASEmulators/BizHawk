@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -12,7 +13,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		private readonly List<Movie> MovieList = new List<Movie>();
+		private List<Movie> MovieList = new List<Movie>();
 		private bool sortReverse;
 		private string sortedCol;
 
@@ -473,11 +474,97 @@ namespace BizHawk.MultiClient
 		private void OrderColumn(int columnToOrder)
 		{
 			string columnName = MovieView.Columns[columnToOrder].Text;
-			if (sortedCol.CompareTo(columnName) != 0)
+			if (sortedCol != columnName)
+			{
 				sortReverse = false;
-			MovieList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			}
+
+			switch (columnName)
+			{
+				case "File":
+					if (sortReverse)
+					{
+						MovieList = MovieList
+							.OrderByDescending(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					else
+					{
+						MovieList = MovieList
+							.OrderBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					break;
+				case "SysID":
+					if (sortReverse)
+					{
+						MovieList = MovieList
+							.OrderByDescending(x => x.SysID)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					else
+					{
+						MovieList = MovieList
+							.OrderBy(x => x.SysID)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					break;
+				case "Game":
+					if (sortReverse)
+					{
+						MovieList = MovieList
+							.OrderByDescending(x => x.GameName)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					else
+					{
+						MovieList = MovieList
+							.OrderBy(x => x.GameName)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ToList();
+					}
+					break;
+				case "Length (est.)":
+					if (sortReverse)
+					{
+						MovieList = MovieList
+							.OrderByDescending(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.GameName)
+							.ToList();
+					}
+					else
+					{
+						MovieList = MovieList
+							.OrderBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => Path.GetFileName(x.Filename))
+							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.GameName)
+							.ToList();
+					}
+					break;
+			}
+
 			sortedCol = columnName;
-			sortReverse = !(sortReverse);
+			sortReverse = !sortReverse;
 			MovieView.Refresh();
 		}
 
