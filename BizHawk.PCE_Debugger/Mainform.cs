@@ -20,5 +20,10 @@ namespace BizHawk.PCE_Debugger
         {
             Close();
         }
+
+        private void Mainform_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
