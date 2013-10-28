@@ -12,8 +12,6 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 using System.Text;
 
-using BizHawk.MultiClient.tools; //TODO: remove me, this is not an intended namespace
-
 namespace BizHawk.MultiClient
 {
 	public class LuaImplementation
