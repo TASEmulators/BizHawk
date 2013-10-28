@@ -369,25 +369,32 @@ namespace BizHawk.Client.Common
 
 		public string GetInput(int frame)
 		{
-			int getframe;
-
-			if (_loopOffset.HasValue)
+			if (frame >= 0)
 			{
-				if (frame < _log.Length)
+				int getframe;
+
+				if (_loopOffset.HasValue)
 				{
-					getframe = frame;
+					if (frame < _log.Length)
+					{
+						getframe = frame;
+					}
+					else
+					{
+						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+					}
 				}
 				else
 				{
-					getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+					getframe = frame;
 				}
+
+				return _log[getframe];
 			}
 			else
 			{
-				getframe = frame;
+				return String.Empty;
 			}
-
-			return _log[getframe];
 		}
 
 		public void ModifyFrame(string record, int frame)
