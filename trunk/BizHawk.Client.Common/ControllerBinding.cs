@@ -24,8 +24,6 @@ namespace BizHawk.Client.Common
 				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
 				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
 			}
-			//FloatBinds.Add("J5 X", new Config.AnalogBind("P1 X Axis", 1.0f));
-			//FloatBinds.Add("J5 Y", new Config.AnalogBind("P1 Y Axis", -1.0f));
 		}
 
 		public ControllerDefinition Type { get { return type; } }
@@ -59,6 +57,7 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController controller)
 		{
 			buttons.Clear();
+			
 			foreach (var kvp in bindings)
 			{
 				buttons[kvp.Key] = false;
@@ -68,6 +67,7 @@ namespace BizHawk.Client.Common
 						buttons[kvp.Key] = true;
 				}
 			}
+
 			foreach (var kvp in FloatBinds)
 			{
 				float input = controller.GetFloat(kvp.Value.Value);
@@ -115,7 +115,6 @@ namespace BizHawk.Client.Common
 					if (controller.IsPressed(button))
 					{
 						buttons[button] = true;
-						//Console.WriteLine(button);
 					}
 				}
 		}
@@ -171,7 +170,6 @@ namespace BizHawk.Client.Common
 
 		public AutofireController(ControllerDefinition definition)
 		{
-			
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
 			type = definition;
@@ -183,16 +181,21 @@ namespace BizHawk.Client.Common
 		{
 			if (autofire)
 			{
-				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				int a = (Global.Emulator.Frame - buttonStarts[button])%(On + Off);
 				if (a < On)
+				{
 					return buttons[button];
+				}
 				else
+				{
 					return false;
+				}
 			}
 			else
+			{
 				return buttons[button];
+			}
 		}
-
 
 		public float GetFloat(string name) { throw new NotImplementedException(); }
 		public void UpdateControls(int frame) { }
@@ -254,11 +257,14 @@ namespace BizHawk.Client.Common
 
 		public void BindMulti(string button, string controlString)
 		{
-			if (string.IsNullOrEmpty(controlString))
-				return;
-			string[] controlbindings = controlString.Split(',');
-			foreach (string control in controlbindings)
-				bindings[button].Add(control.Trim());
+			if (!String.IsNullOrEmpty(controlString))
+			{
+				string[] controlbindings = controlString.Split(',');
+				foreach (string control in controlbindings)
+				{
+					bindings[button].Add(control.Trim());
+				}
+			}
 		}
 
 		public void IncrementStarts()
