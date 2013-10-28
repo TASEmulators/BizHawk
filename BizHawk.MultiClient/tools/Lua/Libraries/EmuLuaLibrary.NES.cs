@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using LuaInterface;
+﻿using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 
@@ -25,13 +20,14 @@ namespace BizHawk.MultiClient
 						Watch.WatchSize.Byte,
 						Watch.DisplayType.Hex,
 						code,
-						false);
+						false
+					);
 
 					Global.CheatList.Add(new Cheat(
 						watch,
 						gg.Value.Value,
-						gg.Compare,
-						enabled: true));
+						gg.Compare
+					));
 				}
 
 				ToolHelpers.UpdateCheatRelatedTools();

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
@@ -62,12 +58,12 @@ namespace BizHawk.MultiClient
 
 		private uint M_R_U8(int addr)
 		{
-			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(addr);
+			return Global.Emulator.MemoryDomains[_current_memory_domain].PeekByte(addr);
 		}
 
 		private void M_W_U8(int addr, uint v)
 		{
-			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte(addr, (byte)v);
+			Global.Emulator.MemoryDomains[_current_memory_domain].PokeByte(addr, (byte)v);
 		}
 
 		#endregion
@@ -79,12 +75,12 @@ namespace BizHawk.MultiClient
 
 		public string memory_getcurrentmemorydomain()
 		{
-			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
+			return Global.Emulator.MemoryDomains[_current_memory_domain].Name;
 		}
 
 		public int memory_getcurrentmemorydomainsize()
 		{
-			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Size;
+			return Global.Emulator.MemoryDomains[_current_memory_domain].Size;
 		}
 
 		public uint memory_readbyte(object lua_addr)
@@ -96,7 +92,7 @@ namespace BizHawk.MultiClient
 		public float memory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+			uint val = Global.Emulator.MemoryDomains[_current_memory_domain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -116,7 +112,7 @@ namespace BizHawk.MultiClient
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+			Global.Emulator.MemoryDomains[_current_memory_domain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
 		}
 
 		public bool memory_usememorydomain(object lua_input)
@@ -128,7 +124,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.MemoryDomains[x].Name == lua_input.ToString())
 				{
-					CurrentMemoryDomain = x;
+					_current_memory_domain = x;
 					return true;
 				}
 			}

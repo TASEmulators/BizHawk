@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using LuaInterface;
 using BizHawk.Client.Common;
 
@@ -12,7 +10,7 @@ namespace BizHawk.MultiClient
 	{
 		#region Events Library Helpers
 
-		private LuaFunctionList lua_functions = new LuaFunctionList();
+		private readonly LuaFunctionList lua_functions = new LuaFunctionList();
 
 		public LuaFunctionList RegisteredFunctions { get { return lua_functions; } }
 
@@ -104,14 +102,14 @@ namespace BizHawk.MultiClient
 
 		public string event_onframeend(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameEnd", name != null ? name.ToString() : null);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameEnd", name);
 			lua_functions.Add(nlf);
 			return nlf.GUID.ToString();
 		}
 
-		public string event_onframestart(LuaFunction luaf, object name = null)
+		public string event_onframestart(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameStart", name != null ? name.ToString() : null);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameStart", name);
 			lua_functions.Add(nlf);
 			return nlf.GUID.ToString();
 		}

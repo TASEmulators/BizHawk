@@ -434,7 +434,7 @@ namespace BizHawk.MultiClient
 		private void GenerateLibraryRegex()
 		{
 			StringBuilder list = new StringBuilder();
-			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
+			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.GetLibraryList();
 			for (int i = 0; i < Libs.Count; i++)
 			{
 				list.Append(Libs[i]);
@@ -659,7 +659,7 @@ namespace BizHawk.MultiClient
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
+					List<string> libfunctions = GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.GetFunctionsByLibrary(currentword);
 
 					// Position autocomplete box near the cursor's current position
                     int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
@@ -783,7 +783,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsLibraryWord(string word)
 		{
-			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
+			List<string> Libs = GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.GetLibraryList();
 			if (Libs.Contains(word))
 			{
 				return true;

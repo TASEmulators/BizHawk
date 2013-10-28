@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-
 using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
 	public class NamedLuaFunction
 	{
-		private LuaFunction _function;
-		private string _name;
-		private string _event;
+		private readonly LuaFunction _function;
+		private readonly string _name;
+		private readonly string _event;
 
 		public NamedLuaFunction(LuaFunction function, string theevent, string name = null)
 		{
