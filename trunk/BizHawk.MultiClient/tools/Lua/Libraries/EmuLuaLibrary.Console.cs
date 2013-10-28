@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 using LuaInterface;
-using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -18,7 +16,7 @@ namespace BizHawk.MultiClient
 		public string console_getluafunctionslist()
 		{
 			string list = "";
-			foreach (LuaDocumentation.LibraryFunction l in GlobalWinF.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
+			foreach (LuaDocumentation.LibraryFunction l in GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.FunctionList)
 			{
 				list += l.name + "\n";
 			}
@@ -44,10 +42,8 @@ namespace BizHawk.MultiClient
 					StringBuilder sb = new StringBuilder();
 					var lti = (lua_input as LuaTable);
 
-					List<string> Keys = new List<string>();
-					List<string> Values = new List<string>();
-					foreach (var key in lti.Keys) { Keys.Add(key.ToString()); }
-					foreach (var value in lti.Values) { Values.Add(value.ToString()); }
+					List<string> Keys = (from object key in lti.Keys select key.ToString()).ToList();
+					List<string> Values = (from object value in lti.Values select value.ToString()).ToList();
 
 					List<KeyValuePair<string, string>> KVPs = new List<KeyValuePair<string, string>>();
 					for (int i = 0; i < Keys.Count; i++)

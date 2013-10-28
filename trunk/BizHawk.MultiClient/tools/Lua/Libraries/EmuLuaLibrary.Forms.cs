@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using LuaInterface;
-using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -14,7 +12,7 @@ namespace BizHawk.MultiClient
 	{
 		#region Forms Library Helpers
 
-		private List<LuaWinform> LuaForms = new List<LuaWinform>();
+		private readonly List<LuaWinform> LuaForms = new List<LuaWinform>();
 
 		public void WindowClosed(IntPtr handle)
 		{

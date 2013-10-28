@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using LuaInterface;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
@@ -166,8 +162,8 @@ namespace BizHawk.MultiClient
 		{
 			if (luaf != null)
 			{
-				Global.Emulator.CoreComm.InputCallback = delegate()
-				{
+				Global.Emulator.CoreComm.InputCallback = delegate
+					{
 					try
 					{
 						luaf.Call();
