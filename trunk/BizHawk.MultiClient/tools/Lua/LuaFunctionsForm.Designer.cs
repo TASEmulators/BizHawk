@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.MultiClient
 {
-	partial class LuaFunctionList
+	partial class LuaFunctionsForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaFunctionList));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaFunctionsForm));
 			this.OK = new System.Windows.Forms.Button();
 			this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
 			this.FunctionView = new System.Windows.Forms.ListView();

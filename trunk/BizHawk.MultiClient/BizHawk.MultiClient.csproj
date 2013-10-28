@@ -443,6 +443,22 @@
     <Compile Include="tools\HexEditor\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\Lua\EmuLuaLibrary.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Bit.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Emu.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Events.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Forms.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Joypad.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.MainMemory.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Memory.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Movie.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.NES.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.SNES.cs" />
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -453,13 +469,12 @@
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Lua\LuaDocumentation.cs" />
-    <Compile Include="tools\Lua\LuaFunctionList.cs">
+    <Compile Include="tools\Lua\LuaFunctionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\Lua\LuaFunctionList.Designer.cs">
-      <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    <Compile Include="tools\Lua\LuaFunctionsForm.Designer.cs">
+      <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\LuaImplementation.cs" />
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -856,8 +871,8 @@
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaFunctionList.resx">
-      <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    <EmbeddedResource Include="tools\Lua\LuaFunctionsForm.resx">
+      <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaRegisteredFunctionsList.resx">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
