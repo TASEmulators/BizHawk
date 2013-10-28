@@ -71,7 +71,7 @@
     </Reference>
     <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT' ">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\LuaInterface.dll</HintPath>
+      <HintPath>..\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -453,7 +453,6 @@
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Lua\LuaDocumentation.cs" />
-    <Compile Include="tools\Lua\LuaFiles.cs" />
     <Compile Include="tools\Lua\LuaFunctionList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -467,7 +466,6 @@
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\LuaText.cs" />
     <Compile Include="tools\Lua\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
