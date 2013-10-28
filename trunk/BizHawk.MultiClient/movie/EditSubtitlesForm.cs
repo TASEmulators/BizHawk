@@ -77,7 +77,7 @@ namespace BizHawk.MultiClient
 					try { c = SubGrid.Rows[x].Cells[5]; }
 					catch { ShowError(x, 5); return; }
 					s.Message = c.Value.ToString();
-					selectedMovie.Subtitles.AddSubtitle(s);
+					selectedMovie.Subtitles.Add(s);
 				}
 				selectedMovie.WriteMovie();
 			}
@@ -87,7 +87,8 @@ namespace BizHawk.MultiClient
 		public void GetMovie(Movie m)
 		{
 			selectedMovie = m;
-			SubtitleList subs = new SubtitleList(m.Subtitles);
+			SubtitleList subs = new SubtitleList();
+			subs.AddRange(m.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
 			{
@@ -152,7 +153,7 @@ namespace BizHawk.MultiClient
 			c = SubGrid.Rows[index].Cells[5];
 			try { s.Message = c.Value.ToString(); }
 			catch { }
-			selectedMovie.Subtitles.AddSubtitle(s);
+			selectedMovie.Subtitles.Add(s);
 
 			return s;
 		}

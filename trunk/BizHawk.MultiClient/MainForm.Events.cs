@@ -1946,7 +1946,7 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Subtitles.AddSubtitle(subForm.sub);
+				Global.MovieSession.Movie.Subtitles.Add(subForm.sub);
 			}
 		}
 

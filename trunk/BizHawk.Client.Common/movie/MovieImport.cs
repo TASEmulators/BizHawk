@@ -278,7 +278,7 @@ namespace BizHawk.Client.Common
 					length = line.Substring(first + 1, second - first - 1);
 				}
 				string message = line.Substring(second + 1).Trim();
-				m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
+				m.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
 			}
 			return m;
 		}

@@ -324,7 +324,7 @@ namespace BizHawk.Client.Common
 
 					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
-						Subtitles.AddSubtitle(str);
+						Subtitles.AddFromString(str);
 					}
 					else if (str[0] == '|')
 					{
@@ -867,7 +867,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
-						Subtitles.AddSubtitle(str);
+						Subtitles.AddFromString(str);
 					}
 					else if (Header.AddHeaderFromLine(str))
 					{

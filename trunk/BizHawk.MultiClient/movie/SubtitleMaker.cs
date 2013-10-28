@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 			sub.Frame = (int)FrameNumeric.Value;
 			sub.Message = Message.Text;
 			sub.X = (int)XNumeric.Value;
+			sub.Y = (int)YNumeric.Value;
 			sub.Duration = (int)DurationNumeric.Value;
 			sub.Color = (uint)colorDialog1.Color.ToArgb();
 			DialogResult = DialogResult.OK;
