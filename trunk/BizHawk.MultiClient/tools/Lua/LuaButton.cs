@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.tools
+namespace BizHawk.MultiClient
 {
 	class LuaButton : Button
 	{
