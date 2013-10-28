@@ -68,17 +68,7 @@ namespace BizHawk.Client.Common
 
 		public int RawFrames
 		{
-			get
-			{
-				if (Loaded)
-				{
-					return _log.Length;
-				}
-				else
-				{
-					return _preload_framecount;
-				}
-			}
+			get { return Loaded ? _log.Length : _preload_framecount; }
 		}
 
 		public int? Frames
@@ -141,7 +131,6 @@ namespace BizHawk.Client.Common
 				{
 					_log.ClearStates();
 				}
-				
 			}
 		}
 
@@ -252,26 +241,6 @@ namespace BizHawk.Client.Common
 
 		#region Public File Handling
 
-		public void WriteMovie(Stream stream)
-		{
-			if (!Loaded)
-			{
-				return;
-			}
-
-			var directory_info = new FileInfo(Filename).Directory;
-			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
-			
-			if (IsText)
-			{
-				WriteText(stream);
-			}
-			else
-			{
-				WriteBinary(stream);
-			}
-		}
-
 		public void WriteMovie(string path)
 		{
 			if (!Loaded)
@@ -293,11 +262,7 @@ namespace BizHawk.Client.Common
 
 		public void WriteMovie()
 		{
-			if (!Loaded)
-			{
-				return;
-			}
-			else if (Filename == "")
+			if (!Loaded || String.IsNullOrWhiteSpace(Filename))
 			{
 				return;
 			}
@@ -308,11 +273,7 @@ namespace BizHawk.Client.Common
 
 		public void WriteBackup()
 		{
-			if (!Loaded)
-			{
-				return;
-			}
-			else if (Filename == "")
+			if (!Loaded || String.IsNullOrWhiteSpace(Filename))
 			{
 				return;
 			}
@@ -356,7 +317,7 @@ namespace BizHawk.Client.Common
 				string str;
 				while ((str = sr.ReadLine()) != null)
 				{
-					if (str == "" || Header.AddHeaderFromLine(str))
+					if (String.IsNullOrWhiteSpace(str) || Header.AddHeaderFromLine(str))
 					{
 						continue;
 					}
@@ -426,14 +387,7 @@ namespace BizHawk.Client.Common
 				getframe = frame;
 			}
 
-			if (getframe < _log.Length)
-			{
-				return _log.GetFrame(getframe);
-			}
-			else
-			{
-				return "";
-			}
+			return _log[getframe];
 		}
 
 		public void ModifyFrame(string record, int frame)
@@ -485,10 +439,7 @@ namespace BizHawk.Client.Common
 
 		public MovieLog LogDump
 		{
-			get
-			{
-				return _log;
-			}
+			get { return _log; }
 		}
 
 		public bool FrameLagged(int frame)
@@ -500,8 +451,7 @@ namespace BizHawk.Client.Common
 		{
 			if (StateCapturing)
 			{
-				byte[] state = Global.Emulator.SaveStateBinary();
-				_log.AddState(state);
+				_log.AddState(Global.Emulator.SaveStateBinary());
 				GC.Collect();
 			}
 		}
@@ -534,12 +484,13 @@ namespace BizHawk.Client.Common
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
-			writer.WriteLine(s);
+			writer.WriteLine(MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID));
+
 			for (int x = 0; x < _log.Length; x++)
 			{
-				writer.WriteLine(_log.GetFrame(x));
+				writer.WriteLine(_log[x]);
 			}
+
 			writer.WriteLine("[/Input]");
 		}
 
@@ -648,7 +599,7 @@ namespace BizHawk.Client.Common
 
 		public string GetTime(bool preLoad)
 		{
-			string time = "";
+			string time = String.Empty;
 
 			double seconds;
 			if (preLoad)
@@ -763,9 +714,7 @@ namespace BizHawk.Client.Common
 			}
 			for (int i = 0; i < stateFrame; i++)
 			{
-				string xs = _log.GetFrame(i);
-				string ys = log.GetFrame(i); //TODO: huh??
-				if (xs != ys)
+				if (_log[i] != log[i])
 				{
 					ErrorMessage = "The savestate input does not match the movie input at frame "
 						+ (i + 1).ToString()

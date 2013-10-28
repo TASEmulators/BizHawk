@@ -488,7 +488,7 @@ namespace BizHawk.MultiClient
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					else
@@ -497,7 +497,7 @@ namespace BizHawk.MultiClient
 							.OrderBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					break;
@@ -508,7 +508,7 @@ namespace BizHawk.MultiClient
 							.OrderByDescending(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					else
@@ -517,7 +517,7 @@ namespace BizHawk.MultiClient
 							.OrderBy(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					break;
@@ -528,7 +528,7 @@ namespace BizHawk.MultiClient
 							.OrderByDescending(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					else
@@ -537,7 +537,7 @@ namespace BizHawk.MultiClient
 							.OrderBy(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.Frames ?? int.MaxValue)
+							.ThenBy(x => x.RawFrames)
 							.ToList();
 					}
 					break;
@@ -545,7 +545,7 @@ namespace BizHawk.MultiClient
 					if (sortReverse)
 					{
 						MovieList = MovieList
-							.OrderByDescending(x => x.Frames ?? int.MaxValue)
+							.OrderByDescending(x => x.RawFrames)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
@@ -554,7 +554,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						MovieList = MovieList
-							.OrderBy(x => x.Frames ?? int.MaxValue)
+							.OrderBy(x => x.RawFrames)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)

@@ -137,7 +137,7 @@ namespace BizHawk.MultiClient
 				{
 					for (int i = 0; i < log.Length; i++)
 					{
-						if (log.GetFrame(i) != timeline.Log.GetFrame(i))
+						if (log[i] != timeline.Log[i])
 						{
 							isdifferent = true;
 						}
@@ -158,7 +158,7 @@ namespace BizHawk.MultiClient
 				{
 					for (int i = 0; i < timeline.Log.Length; i++)
 					{
-						if (log.GetFrame(i) != timeline.Log.GetFrame(i))
+						if (log[i] != timeline.Log[i])
 						{
 							isdifferent = true;
 						}
