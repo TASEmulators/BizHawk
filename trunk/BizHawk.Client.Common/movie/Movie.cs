@@ -780,21 +780,27 @@ namespace BizHawk.Client.Common
 				WriteBinary(fs);
 		}
 
-
 		private void WriteText(Stream stream)
 		{
 			using (StreamWriter sw = new StreamWriter(stream))
 			{
-				Header.WriteText(sw);
+				sw.Write(Header.ToString());
 
 				//TODO: clean this up
-				if (_loopOffset >= 0)
+				if (_loopOffset.HasValue)
 				{
 					sw.WriteLine("LoopOffset " + _loopOffset.ToString());
 				}
 
-				Subtitles.WriteText(sw);
-				_log.WriteText(sw);
+				foreach (var subtitle in Subtitles)
+				{
+					sw.WriteLine(subtitle.ToString());
+				}
+
+				for (int i = 0; i < _log.Length; i++)
+				{
+					sw.WriteLine(_log[i]);
+				}
 			}
 		}
 

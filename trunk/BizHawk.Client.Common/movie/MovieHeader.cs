@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -104,22 +105,36 @@ namespace BizHawk.Client.Common
 			HeaderParams[key] = value;
 		}
 
-		public void WriteText(StreamWriter sw)
+		public override string ToString()
 		{
+			StringBuilder sb = new StringBuilder();
+
 			foreach (KeyValuePair<string, string> kvp in HeaderParams)
 			{
-				sw.WriteLine(kvp.Key + " " + kvp.Value);
+				sb
+					.Append(kvp.Key)
+					.Append(' ')
+					.Append(kvp.Value)
+					.AppendLine();
 			}
 
 			foreach (KeyValuePair<string, string> kvp in BoardProperties)
 			{
-				sw.WriteLine(BOARDPROPERTIES + " " + kvp.Key + " " + kvp.Value);
+				sb
+					.Append(BOARDPROPERTIES)
+					.Append(' ')
+					.Append(kvp.Key)
+					.Append(' ')
+					.Append(kvp.Value)
+					.AppendLine();
 			}
 
 			foreach (string t in Comments)
 			{
-				sw.WriteLine(t);
+				sb.AppendLine(t);
 			}
+
+			return sb.ToString();
 		}
 
 		private string ParseHeader(string line, string headerName)

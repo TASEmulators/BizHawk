@@ -177,14 +177,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void WriteText(StreamWriter sw)
-		{
-			foreach (var record in _movie_records)
-			{
-				sw.WriteLine(record);
-			}
-		}
-
 		public void TruncateMovie(int frame)
 		{
 			if (frame < _movie_records.Count)
