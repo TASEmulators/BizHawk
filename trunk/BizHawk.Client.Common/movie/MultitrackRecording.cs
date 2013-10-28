@@ -2,14 +2,8 @@
 {
 	public class MultitrackRecording
 	{
-		public bool IsActive;
-		public int CurrentPlayer;
-		public bool RecordAll;
-		public MultitrackRecording()
-		{
-			IsActive = false;
-			CurrentPlayer = 0;
-			RecordAll = false;
-		}
+		public bool IsActive { get; set; }
+		public int CurrentPlayer { get; set; }
+		public bool RecordAll { get; set; }
 	}
 }
