@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -50,14 +51,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (_state_records.Count > 0)
-				{
-					return StateCount * _state_records[0].State.Length;
-				}
-				else
-				{
-					return 0;
-				}
+				return _state_records.Any() ? StateCount * _state_records[0].State.Length : 0;
 			}
 		}
 
@@ -105,7 +99,7 @@ namespace BizHawk.Client.Common
 
 		public void SetFrameAt(int frameNum, string frame)
 		{
-			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != GetFrame(frameNum)))
+			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != _movie_records[frameNum]))
 			{
 				TruncateStates(frameNum+1);
 			}
@@ -175,23 +169,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string GetFrame(int frame)
+		public string this[int frame]
 		{
-			if (frame >= 0 && frame < _movie_records.Count)
+			get
 			{
 				return _movie_records[frame];
-			}
-			else
-			{
-				return "";  //TODO: throw an exception?
 			}
 		}
 
 		public void WriteText(StreamWriter sw)
 		{
-			for (int i = 0; i < _movie_records.Count; i++)
+			foreach (var record in _movie_records)
 			{
-				sw.WriteLine(GetFrame(i));
+				sw.WriteLine(record);
 			}
 		}
 
@@ -236,9 +226,9 @@ namespace BizHawk.Client.Common
 				Lagged = Global.Emulator.IsLagFrame;
 			}
 
-			public readonly int Index;
-			public readonly byte[] State;
-			public readonly bool Lagged;
+			public int Index { get; private set; }
+			public byte[] State { get; private set; }
+			public bool Lagged { get; private set; }
 		}
 
 		private readonly List<string> _movie_records = new List<string>();
