@@ -443,10 +443,10 @@
     <Compile Include="tools\HexEditor\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\Lua\EmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Bit.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Emu.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Events.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Forms.cs" />
