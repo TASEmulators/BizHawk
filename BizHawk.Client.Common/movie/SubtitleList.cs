@@ -109,13 +109,5 @@ namespace BizHawk.Client.Common
 
 			_subtitles.RemoveAt(index);
 		}
-
-		public void WriteText(StreamWriter sw)
-		{
-			foreach(var subtitle in _subtitles)
-			{
-				sw.WriteLine(subtitle.ToString());
-			}
-		}
 	}
 }
