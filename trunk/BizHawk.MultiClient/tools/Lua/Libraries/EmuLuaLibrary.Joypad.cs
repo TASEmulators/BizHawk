@@ -16,9 +16,9 @@ namespace BizHawk.MultiClient
 				{
 					buttons[button] = Global.ControllerOutput[button];
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaCommon.LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaCommon.LuaInt(controller) + " " + button.Substring(3)];
 				}
 			}
 
@@ -28,9 +28,9 @@ namespace BizHawk.MultiClient
 				{
 					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaCommon.LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaCommon.LuaInt(controller) + " " + button.Substring(3));
 				}
 			}
 

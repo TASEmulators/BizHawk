@@ -1,45 +1,62 @@
-﻿namespace BizHawk.MultiClient
+﻿using System;
+
+namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public static class BitLuaLibrary
 	{
-		public uint bit_band(object val, object amt)
+		public static string Name = "bit";
+		public static string[] Functions = new[]
 		{
-			return (uint)(LuaInt(val) & LuaInt(amt));
+			"band",
+			"bnot",
+			"bor",
+			"bxor",
+			"lshift",
+			"rol",
+			"ror",
+			"rshift",
+		};
+
+		public static uint bit_band(object val, object amt)
+		{
+			return (uint)(LuaCommon.LuaInt(val) & LuaCommon.LuaInt(amt));
 		}
 
-		public uint bit_bnot(object val)
+		public static uint bit_bnot(object val)
 		{
-			return (uint)(~LuaInt(val));
+			return (uint)(~LuaCommon.LuaInt(val));
 		}
 
-		public uint bit_bor(object val, object amt)
+		public static uint bit_bor(object val, object amt)
 		{
-			return (uint)(LuaInt(val) | LuaInt(amt));
+			return (uint)(LuaCommon.LuaInt(val) | LuaCommon.LuaInt(amt));
 		}
 
-		public uint bit_bxor(object val, object amt)
+		public static uint bit_bxor(object val, object amt)
 		{
-			return (uint)(LuaInt(val) ^ LuaInt(amt));
+			return (uint)(LuaCommon.LuaInt(val) ^ LuaCommon.LuaInt(amt));
 		}
 
-		public uint bit_lshift(object val, object amt)
+		public static uint bit_lshift(object val, object amt)
 		{
-			return (uint)(LuaInt(val) << LuaInt(amt));
+			return (uint)(LuaCommon.LuaInt(val) << LuaCommon.LuaInt(amt));
 		}
 
-		public uint bit_rol(object val, object amt)
+		public static uint bit_rol(object val, object amt)
 		{
-			return (uint)((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
+			return (uint)((LuaCommon.LuaInt(val) << LuaCommon.LuaInt(amt)) 
+				| (LuaCommon.LuaInt(val) >> (32 - LuaCommon.LuaInt(amt))));
 		}
 
-		public uint bit_ror(object val, object amt)
+		public static uint bit_ror(object val, object amt)
 		{
-			return (uint)((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
+			return (uint)((LuaCommon.LuaInt(val) >> LuaCommon.LuaInt(amt))
+				| (LuaCommon.LuaInt(val) << (32 - LuaCommon.LuaInt(amt))));
 		}
 
-		public uint bit_rshift(object val, object amt)
+		public static uint bit_rshift(object val, object amt)
 		{
-			return (uint)(LuaInt(val) >> LuaInt(amt));
+			return (uint)(LuaCommon.LuaInt(val) >> LuaCommon.LuaInt(amt));
 		}
 	}
 }
