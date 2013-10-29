@@ -95,12 +95,12 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					console_log("Invalid frame skip value");
+					ConsoleLuaLibrary.console_log("Invalid frame skip value");
 				}
 			}
 			catch
 			{
-				console_log("Invalid frame skip value");
+				ConsoleLuaLibrary.console_log("Invalid frame skip value");
 			}
 		}
 
@@ -204,12 +204,12 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					console_log("Invalid speed value");
+					ConsoleLuaLibrary.console_log("Invalid speed value");
 				}
 			}
 			catch
 			{
-				console_log("Invalid speed value");
+				ConsoleLuaLibrary.console_log("Invalid speed value");
 			}
 		}
 

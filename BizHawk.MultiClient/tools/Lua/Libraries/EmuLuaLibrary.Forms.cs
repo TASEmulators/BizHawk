@@ -181,10 +181,10 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception ex)
 			{
-				console_output(ex.Message);
+				ConsoleLuaLibrary.console_output(ex.Message);
 			}
 
-			return "";
+			return String.Empty;
 		}
 
 		public string forms_gettext(object handle)
@@ -212,10 +212,10 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception ex)
 			{
-				console_output(ex.Message);
+				ConsoleLuaLibrary.console_output(ex.Message);
 			}
 
-			return "";
+			return String.Empty;
 		}
 
 		public int forms_label(object form_handle, object caption, object X = null, object Y = null, object width = null, object height = null)
