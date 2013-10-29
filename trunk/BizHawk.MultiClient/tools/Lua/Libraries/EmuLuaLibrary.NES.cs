@@ -4,9 +4,27 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public static class NESLuaLibrary
 	{
-		public void nes_addgamegenie(string code)
+		public static string Name = "nes";
+		public static string[] Functions = new[]
+		{
+			"addgamegenie",
+			"getallowmorethaneightsprites",
+			"getbottomscanline",
+			"getclipleftandright",
+			"getdispbackground",
+			"getdispsprites",
+			"gettopscanline",
+			"removegamegenie",
+			"setallowmorethaneightsprites",
+			"setclipleftandright",
+			"setdispbackground",
+			"setdispsprites",
+			"setscanlines",
+		};
+
+		public static void nes_addgamegenie(string code)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -34,12 +52,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public bool nes_getallowmorethaneightsprites()
+		public static bool nes_getallowmorethaneightsprites()
 		{
 			return Global.Config.NESAllowMoreThanEightSprites;
 		}
 
-		public int nes_getbottomscanline(bool pal = false)
+		public static int nes_getbottomscanline(bool pal = false)
 		{
 			if (pal)
 			{
@@ -51,22 +69,22 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public bool nes_getclipleftandright()
+		public static bool nes_getclipleftandright()
 		{
 			return Global.Config.NESClipLeftAndRight;
 		}
 
-		public bool nes_getdispbackground()
+		public static bool nes_getdispbackground()
 		{
 			return Global.Config.NESDispBackground;
 		}
 
-		public bool nes_getdispsprites()
+		public static bool nes_getdispsprites()
 		{
 			return Global.Config.NESDispSprites;
 		}
 
-		public int nes_gettopscanline(bool pal = false)
+		public static int nes_gettopscanline(bool pal = false)
 		{
 			if (pal)
 			{
@@ -78,7 +96,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void nes_removegamegenie(string code)
+		public static void nes_removegamegenie(string code)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -94,7 +112,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void nes_setallowmorethaneightsprites(bool allow)
+		public static void nes_setallowmorethaneightsprites(bool allow)
 		{
 			Global.Config.NESAllowMoreThanEightSprites = allow;
 			if (Global.Emulator is NES)
@@ -103,7 +121,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void nes_setclipleftandright(bool leftandright)
+		public static void nes_setclipleftandright(bool leftandright)
 		{
 			Global.Config.NESClipLeftAndRight = leftandright;
 			if (Global.Emulator is NES)
@@ -112,19 +130,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void nes_setdispbackground(bool show)
+		public static void nes_setdispbackground(bool show)
 		{
 			Global.Config.NESDispBackground = show;
 			GlobalWinF.MainForm.SyncCoreCommInputSignals();
 		}
 
-		public void nes_setdispsprites(bool show)
+		public static void nes_setdispsprites(bool show)
 		{
 			Global.Config.NESDispSprites = show;
 			GlobalWinF.MainForm.SyncCoreCommInputSignals();
 		}
 
-		public void nes_setscanlines(object top, object bottom, bool pal = false)
+		public static void nes_setscanlines(object top, object bottom, bool pal = false)
 		{
 
 			int first = LuaCommon.LuaInt(top);

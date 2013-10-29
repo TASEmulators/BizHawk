@@ -14,11 +14,15 @@ namespace BizHawk.MultiClient
 		{
 			LuaTable input = _lua.NewTable();
 
-			string s = Global.MovieSession.Movie.GetInput(LuaCommon.LuaInt(frame));
 			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
-			m.SetControllersAsMnemonic(s);
+			m.SetControllersAsMnemonic(
+				Global.MovieSession.Movie.GetInput(LuaCommon.LuaInt(frame))
+			);
+
 			foreach (string button in m.Type.BoolButtons)
+			{
 				input[button] = m[button];
+			}
 
 			return input;
 		}

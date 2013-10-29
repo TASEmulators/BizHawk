@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+
 using LuaInterface;
 using BizHawk.Client.Common;
 
@@ -144,8 +145,8 @@ namespace BizHawk.MultiClient
 				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 			// blah hacks
-			dx *= client_getwindowsize();
-			dy *= client_getwindowsize();
+			dx *= MultiClientLuaLibrary.client_getwindowsize();
+			dy *= MultiClientLuaLibrary.client_getwindowsize();
 
 			GlobalWinF.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
 		}

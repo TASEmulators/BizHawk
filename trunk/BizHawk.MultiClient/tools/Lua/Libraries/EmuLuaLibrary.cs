@@ -33,39 +33,6 @@ namespace BizHawk.MultiClient
 
 		#region Register Library Functions
 
-		public static string[] MultiClientFunctions = new[]
-		{
-			"closerom",
-			"getwindowsize",
-			"opencheats",
-			"openhexeditor",
-			"openramwatch",
-			"openramsearch",
-			"openrom",
-			"opentasstudio",
-			"opentoolbox",
-			"opentracelogger",
-			"pause_av",
-			"reboot_core",
-			"screenheight",
-			"screenshot",
-			"screenshottoclipboard",
-			"screenwidth",
-			"setscreenshotosd",
-			"setwindowsize",
-			"unpause_av",
-			"xpos",
-			"ypos",
-		};
-
-		public static string[] ConsoleFunctions = new[]
-		{
-			"clear",
-			"getluafunctionslist",
-			"log",
-			"output",
-		};
-
 		public static string[] GuiFunctions = new[]
 		{
 			"addmessage",
@@ -250,23 +217,6 @@ namespace BizHawk.MultiClient
 			"stop",
 		};
 
-		public static string[] NESFunctions = new[]
-		{
-			"addgamegenie",
-			"getallowmorethaneightsprites",
-			"getbottomscanline",
-			"getclipleftandright",
-			"getdispbackground",
-			"getdispsprites",
-			"gettopscanline",
-			"removegamegenie",
-			"setallowmorethaneightsprites",
-			"setclipleftandright",
-			"setdispbackground",
-			"setdispsprites",
-			"setscanlines",
-		};
-
 		public static string[] SaveStateFunctions = new[]
 		{
 			"load",
@@ -275,26 +225,6 @@ namespace BizHawk.MultiClient
 			"registersave",
 			"save",
 			"saveslot",
-		};
-
-		public static string[] SNESFunctions = new[]
-		{
-			"getlayer_bg_1",
-			"getlayer_bg_2",
-			"getlayer_bg_3",
-			"getlayer_bg_4",
-			"getlayer_obj_1",
-			"getlayer_obj_2",
-			"getlayer_obj_3",
-			"getlayer_obj_4",
-			"setlayer_bg_1",
-			"setlayer_bg_2",
-			"setlayer_bg_3",
-			"setlayer_bg_4",
-			"setlayer_obj_1",
-			"setlayer_obj_2",
-			"setlayer_obj_3",
-			"setlayer_obj_4",
 		};
 
 		public void LuaRegister(Lua lua)
@@ -310,13 +240,40 @@ namespace BizHawk.MultiClient
 				Docs.Add(BitLuaLibrary.Name, funcName, method);
 			}
 
-			//Register libraries
-			lua.NewTable("console");
-			foreach (string t in ConsoleFunctions)
+			lua.NewTable("client");
+			foreach (var funcName in MultiClientLuaLibrary.Functions)
 			{
-				lua.RegisterFunction("console." + t, this,
-									 GetType().GetMethod("console_" + t));
-				Docs.Add("console", t, GetType().GetMethod("console_" + t));
+				string libName = MultiClientLuaLibrary.Name + "." + funcName;
+				var method = (typeof(MultiClientLuaLibrary)).GetMethod(MultiClientLuaLibrary.Name + "_" + funcName);
+				lua.RegisterFunction(libName, this, method);
+				Docs.Add(MultiClientLuaLibrary.Name, funcName, method);
+			}
+
+			lua.NewTable("console");
+			foreach (var funcName in ConsoleLuaLibrary.Functions)
+			{
+				string libName = ConsoleLuaLibrary.Name + "." + funcName;
+				var method = (typeof(ConsoleLuaLibrary)).GetMethod(ConsoleLuaLibrary.Name + "_" + funcName);
+				lua.RegisterFunction(libName, this, method);
+				Docs.Add(ConsoleLuaLibrary.Name, funcName, method);
+			}
+
+			lua.NewTable("nes");
+			foreach (var funcName in NESLuaLibrary.Functions)
+			{
+				string libName = NESLuaLibrary.Name + "." + funcName;
+				var method = (typeof(NESLuaLibrary)).GetMethod(NESLuaLibrary.Name + "_" + funcName);
+				lua.RegisterFunction(libName, this, method);
+				Docs.Add(NESLuaLibrary.Name, funcName, method);
+			}
+
+			lua.NewTable("snes");
+			foreach (var funcName in SNESLuaLibrary.Functions)
+			{
+				string libName = SNESLuaLibrary.Name + "." + funcName;
+				var method = (typeof(SNESLuaLibrary)).GetMethod(SNESLuaLibrary.Name + "_" + funcName);
+				lua.RegisterFunction(libName, this, method);
+				Docs.Add(SNESLuaLibrary.Name, funcName, method);
 			}
 
 			lua.NewTable("gui");
@@ -377,33 +334,11 @@ namespace BizHawk.MultiClient
 				Docs.Add("joypad", t, GetType().GetMethod("joypad_" + t));
 			}
 
-			lua.NewTable("client");
-			foreach (string t in MultiClientFunctions)
-			{
-				lua.RegisterFunction("client." + t, this,
-									 GetType().GetMethod("client_" + t));
-				Docs.Add("client", t, GetType().GetMethod("client_" + t));
-			}
-
 			lua.NewTable("forms");
 			foreach (string t in FormsFunctions)
 			{
 				lua.RegisterFunction("forms." + t, this, GetType().GetMethod("forms_" + t));
 				Docs.Add("forms", t, GetType().GetMethod("forms_" + t));
-			}
-
-			lua.NewTable("nes");
-			foreach (string t in NESFunctions)
-			{
-				lua.RegisterFunction("nes." + t, this, GetType().GetMethod("nes_" + t));
-				Docs.Add("nes", t, GetType().GetMethod("nes_" + t));
-			}
-
-			lua.NewTable("snes");
-			foreach (string t in SNESFunctions)
-			{
-				lua.RegisterFunction("snes." + t, this, GetType().GetMethod("snes_" + t));
-				Docs.Add("snes", t, GetType().GetMethod("snes_" + t));
 			}
 
 			lua.NewTable("event");

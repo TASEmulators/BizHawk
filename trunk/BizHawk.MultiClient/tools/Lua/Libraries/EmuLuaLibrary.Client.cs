@@ -3,74 +3,100 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public static class MultiClientLuaLibrary
 	{
-		public void client_closerom()
+		public static string Name = "client";
+		public static string[] Functions = new[]
+		{
+			"closerom",
+			"getwindowsize",
+			"opencheats",
+			"openhexeditor",
+			"openramwatch",
+			"openramsearch",
+			"openrom",
+			"opentasstudio",
+			"opentoolbox",
+			"opentracelogger",
+			"pause_av",
+			"reboot_core",
+			"screenheight",
+			"screenshot",
+			"screenshottoclipboard",
+			"screenwidth",
+			"setscreenshotosd",
+			"setwindowsize",
+			"unpause_av",
+			"xpos",
+			"ypos",
+		};
+
+		public static void client_closerom()
 		{
 			GlobalWinF.MainForm.CloseROM();
 		}
 
-		public int client_getwindowsize()
+		public static int client_getwindowsize()
 		{
 			return Global.Config.TargetZoomFactor;
 		}
 
-		public void client_opencheats()
+		public static void client_opencheats()
 		{
 			GlobalWinF.MainForm.LoadCheatsWindow();
 		}
 
-		public void client_openhexeditor()
+		public static void client_openhexeditor()
 		{
 			GlobalWinF.MainForm.LoadHexEditor();
 		}
 
-		public void client_openramwatch()
+		public static void client_openramwatch()
 		{
 			GlobalWinF.MainForm.LoadRamWatch(true);
 		}
 
-		public void client_openramsearch()
+		public static void client_openramsearch()
 		{
 			GlobalWinF.MainForm.LoadRamSearch();
 		}
 
-		public void client_openrom(object lua_input)
+		public static void client_openrom(object lua_input)
 		{
 			GlobalWinF.MainForm.LoadRom(lua_input.ToString());
 		}
 
-		public void client_opentasstudio()
+		public static void client_opentasstudio()
 		{
 			GlobalWinF.MainForm.LoadTAStudio();
 		}
 
-		public void client_opentoolbox()
+		public static void client_opentoolbox()
 		{
 			GlobalWinF.MainForm.LoadToolBox();
 		}
 
-		public void client_opentracelogger()
+		public static void client_opentracelogger()
 		{
 			GlobalWinF.MainForm.LoadTraceLogger();
 		}
 
-		public void client_pause_av()
+		public static void client_pause_av()
 		{
 			GlobalWinF.MainForm.PauseAVI = true;
 		}
 
-		public void client_reboot_core()
+		public static void client_reboot_core()
 		{
 			GlobalWinF.MainForm.RebootCore();
 		}
 
-		public int client_screenheight()
+		public static int client_screenheight()
 		{
 			return GlobalWinF.RenderPanel.NativeSize.Height;
 		}
 
-		public void client_screenshot(object path = null)
+		public static void client_screenshot(object path = null)
 		{
 			if (path == null)
 			{
@@ -82,22 +108,22 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void client_screenshottoclipboard()
+		public static void client_screenshottoclipboard()
 		{
 			GlobalWinF.MainForm.TakeScreenshotToClipboard();
 		}
 
-		public void client_setscreenshotosd(bool value)
+		public static void client_setscreenshotosd(bool value)
 		{
 			Global.Config.Screenshot_CaptureOSD = value;
 		}
 
-		public int client_screenwidth()
+		public static int client_screenwidth()
 		{
 			return GlobalWinF.RenderPanel.NativeSize.Width;
 		}
 
-		public void client_setwindowsize(object window_size)
+		public static void client_setwindowsize(object window_size)
 		{
 			try
 			{
@@ -111,27 +137,27 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					console_log("Invalid window size");
+					ConsoleLuaLibrary.console_log("Invalid window size");
 				}
 			}
 			catch
 			{
-				console_log("Invalid window size");
+				ConsoleLuaLibrary.console_log("Invalid window size");
 			}
 
 		}
 
-		public void client_unpause_av()
+		public static void client_unpause_av()
 		{
 			GlobalWinF.MainForm.PauseAVI = false;
 		}
 
-		public int client_xpos()
+		public static int client_xpos()
 		{
 			return GlobalWinF.MainForm.DesktopLocation.X;
 		}
 
-		public int client_ypos()
+		public static int client_ypos()
 		{
 			return GlobalWinF.MainForm.DesktopLocation.Y;
 		}
