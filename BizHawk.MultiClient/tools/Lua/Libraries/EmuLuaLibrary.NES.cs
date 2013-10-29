@@ -127,8 +127,8 @@ namespace BizHawk.MultiClient
 		public void nes_setscanlines(object top, object bottom, bool pal = false)
 		{
 
-			int first = LuaInt(top);
-			int last = LuaInt(bottom);
+			int first = LuaCommon.LuaInt(top);
+			int last = LuaCommon.LuaInt(bottom);
 			if (first > 127)
 			{
 				first = 127;

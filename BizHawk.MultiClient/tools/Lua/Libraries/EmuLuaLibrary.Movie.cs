@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 		{
 			LuaTable input = _lua.NewTable();
 
-			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
+			string s = Global.MovieSession.Movie.GetInput(LuaCommon.LuaInt(frame));
 			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(s);
 			foreach (string button in m.Type.BoolButtons)

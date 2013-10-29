@@ -33,18 +33,6 @@ namespace BizHawk.MultiClient
 
 		#region Register Library Functions
 
-		public static string[] BitwiseFunctions = new[]
-		{
-			"band",
-			"bnot",
-			"bor",
-			"bxor",
-			"lshift",
-			"rol",
-			"ror",
-			"rshift",
-		};
-
 		public static string[] MultiClientFunctions = new[]
 		{
 			"closerom",
@@ -313,6 +301,15 @@ namespace BizHawk.MultiClient
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
 
+			lua.NewTable("bit");
+			foreach (var funcName in BitLuaLibrary.Functions)
+			{
+				string libName = BitLuaLibrary.Name + "." + funcName;
+				var method = (typeof(BitLuaLibrary)).GetMethod(BitLuaLibrary.Name + "_" + funcName);
+				lua.RegisterFunction(libName, this, method);
+				Docs.Add(BitLuaLibrary.Name, funcName, method);
+			}
+
 			//Register libraries
 			lua.NewTable("console");
 			foreach (string t in ConsoleFunctions)
@@ -395,13 +392,6 @@ namespace BizHawk.MultiClient
 				Docs.Add("forms", t, GetType().GetMethod("forms_" + t));
 			}
 
-			lua.NewTable("bit");
-			foreach (string t in BitwiseFunctions)
-			{
-				lua.RegisterFunction("bit." + t, this, GetType().GetMethod("bit_" + t));
-				Docs.Add("bit", t, GetType().GetMethod("bit_" + t));
-			}
-
 			lua.NewTable("nes");
 			foreach (string t in NESFunctions)
 			{
@@ -437,16 +427,6 @@ namespace BizHawk.MultiClient
 			var main = t.LoadFile(File);
 			t.Push(main); //push main function on to stack for subsequent resuming
 			return t;
-		}
-
-		public int LuaInt(object lua_arg)
-		{
-			return Convert.ToInt32((double)lua_arg);
-		}
-
-		private uint LuaUInt(object lua_arg)
-		{
-			return Convert.ToUInt32((double)lua_arg);
 		}
 
 		/// <summary>
