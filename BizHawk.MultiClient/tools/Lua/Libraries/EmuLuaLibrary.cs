@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
+
 using LuaInterface;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
@@ -10,6 +12,7 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole _caller;
 		private Lua currThread;
 		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
+		private EventLuaLibrary _eventLibrary = new EventLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
 		public bool IsRunning;
@@ -19,6 +22,31 @@ namespace BizHawk.MultiClient
 		public void WindowClosed(IntPtr handle)
 		{
 			_formsLibrary.WindowClosed(handle);
+		}
+
+		public void CallSaveStateEvent(string name)
+		{
+			_eventLibrary.CallSaveStateEvent(name);
+		}
+
+		public void CallLoadStateEvent(string name)
+		{
+			_eventLibrary.CallLoadStateEvent(name);
+		}
+
+		public LuaFunctionList RegisteredFunctions
+		{
+			get { return _eventLibrary.RegisteredFunctions; }
+		}
+
+		public void CallFrameBeforeEvent()
+		{
+			_eventLibrary.CallFrameBeforeEvent();
+		}
+
+		public void CallFrameAfterEvent()
+		{
+			_eventLibrary.CallFrameAfterEvent();
 		}
 
 		public EmuLuaLibrary(LuaConsole passed)
@@ -80,19 +108,6 @@ namespace BizHawk.MultiClient
 			"yield",
 		};
 
-		public static string[] EventFunctions = new[]
-		{
-			"onframeend",
-			"onframestart",
-			"oninputpoll",
-			"onloadstate",
-			"onmemoryread",
-			"onmemorywrite",
-			"onsavestate",
-			"unregisterbyid",
-			"unregisterbyname",
-		};
-
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
@@ -100,6 +115,7 @@ namespace BizHawk.MultiClient
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
@@ -122,13 +138,6 @@ namespace BizHawk.MultiClient
 			{
 				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
 				Docs.Add("emu", t, GetType().GetMethod("emu_" + t));
-			}
-
-			lua.NewTable("event");
-			foreach (string t in EventFunctions)
-			{
-				lua.RegisterFunction("event." + t, this, GetType().GetMethod("event_" + t));
-				Docs.Add("event", t, GetType().GetMethod("event_" + t));
 			}
 
 			Docs.Sort();

@@ -6,15 +6,35 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class EventLuaLibrary : LuaLibraryBase
 	{
+		public override string Name { get { return "event"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"onframeend",
+					"onframestart",
+					"oninputpoll",
+					"onloadstate",
+					"onmemoryread",
+					"onmemorywrite",
+					"onsavestate",
+					"unregisterbyid",
+					"unregisterbyname",
+				};
+			}
+		}
+
 		#region Events Library Helpers
 
 		private readonly LuaFunctionList lua_functions = new LuaFunctionList();
 
 		public LuaFunctionList RegisteredFunctions { get { return lua_functions; } }
 
-		public void SavestateRegisterSave(string name)
+		public void CallSaveStateEvent(string name)
 		{
 			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateSave").ToList();
 			if (lfs.Any())
@@ -35,7 +55,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void SavestateRegisterLoad(string name)
+		public void CallLoadStateEvent(string name)
 		{
 			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateLoad").ToList();
 			if (lfs.Any())
@@ -56,7 +76,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void FrameRegisterBefore()
+		public void CallFrameBeforeEvent()
 		{
 			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameStart").ToList();
 			if (lfs.Any())
@@ -77,7 +97,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void FrameRegisterAfter()
+		public void CallFrameAfterEvent()
 		{
 			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameEnd").ToList();
 			if (lfs.Any())
@@ -116,7 +136,26 @@ namespace BizHawk.MultiClient
 
 		public void event_oninputpoll(LuaFunction luaf)
 		{
-			emu_on_snoop(luaf);
+			if (luaf != null)
+			{
+				Global.Emulator.CoreComm.InputCallback = delegate
+				{
+					try
+					{
+						luaf.Call();
+					}
+					catch (SystemException e)
+					{
+						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function emu.on_snoop" +
+							"\nError message: " + e.Message);
+					}
+				};
+			}
+			else
+			{
+				Global.Emulator.CoreComm.InputCallback = null;
+			}
 		}
 
 		public string event_onloadstate(LuaFunction luaf, object name = null)

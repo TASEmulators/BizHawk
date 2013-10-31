@@ -78,5 +78,10 @@ namespace BizHawk.MultiClient
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
 		}
+
+		private void FunctionView_DoubleClick(object sender, EventArgs e)
+		{
+			CallFunction();
+		}
 	}
 }
