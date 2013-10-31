@@ -6,16 +6,22 @@ using LuaInterface;
 
 namespace BizHawk.MultiClient
 {
-	public static class ConsoleLuaLibrary
+	public class ConsoleLuaLibrary : LuaLibraryBase
 	{
-		public static string Name = "console";
-		public static string[] Functions = new[]
+		public override string Name { get { return "console"; } }
+		public override string[] Functions
 		{
-			"clear",
-			"getluafunctionslist",
-			"log",
-			"output",
-		};
+			get
+			{
+				return new[]
+				{
+					"clear",
+					"getluafunctionslist",
+					"log",
+					"output",
+				};
+			}
+		}
 
 		public static void console_clear()
 		{
@@ -24,13 +30,12 @@ namespace BizHawk.MultiClient
 
 		public static string console_getluafunctionslist()
 		{
-			string list = "";
-			foreach (LuaDocumentation.LibraryFunction l in GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.FunctionList)
+			StringBuilder list = new StringBuilder();
+			foreach (var function in GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.FunctionList)
 			{
-				list += l.name + "\n";
+				list.AppendLine(function.Name);
 			}
-
-			return list;
+			return list.ToString();
 		}
 
 		public static void console_log(object lua_input)

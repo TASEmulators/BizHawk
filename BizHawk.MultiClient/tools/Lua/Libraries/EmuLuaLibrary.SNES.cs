@@ -2,28 +2,34 @@
 
 namespace BizHawk.MultiClient
 {
-	public static class SNESLuaLibrary
+	public class SNESLuaLibrary : LuaLibraryBase
 	{
-		public static string Name = "snes";
-		public static string[] Functions = new[]
+		public override string Name { get { return "snes"; } }
+		public override string[] Functions
 		{
-			"getlayer_bg_1",
-			"getlayer_bg_2",
-			"getlayer_bg_3",
-			"getlayer_bg_4",
-			"getlayer_obj_1",
-			"getlayer_obj_2",
-			"getlayer_obj_3",
-			"getlayer_obj_4",
-			"setlayer_bg_1",
-			"setlayer_bg_2",
-			"setlayer_bg_3",
-			"setlayer_bg_4",
-			"setlayer_obj_1",
-			"setlayer_obj_2",
-			"setlayer_obj_3",
-			"setlayer_obj_4",
-		};
+			get
+			{
+				return new[]
+				{
+					"getlayer_bg_1",
+					"getlayer_bg_2",
+					"getlayer_bg_3",
+					"getlayer_bg_4",
+					"getlayer_obj_1",
+					"getlayer_obj_2",
+					"getlayer_obj_3",
+					"getlayer_obj_4",
+					"setlayer_bg_1",
+					"setlayer_bg_2",
+					"setlayer_bg_3",
+					"setlayer_bg_4",
+					"setlayer_obj_1",
+					"setlayer_obj_2",
+					"setlayer_obj_3",
+					"setlayer_obj_4",
+				};
+			}
+		}
 
 		public static bool snes_getlayer_bg_1()
 		{
