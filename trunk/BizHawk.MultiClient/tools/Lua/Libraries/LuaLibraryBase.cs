@@ -16,12 +16,7 @@ namespace BizHawk.MultiClient
 			{
 				string func = Name + "." + methodName;
 				var method = GetType().GetMethod(Name + "_" + methodName);
-
-				lua.RegisterFunction(
-					Name + "." + methodName,
-					this,
-					GetType().GetMethod(Name + "_" + methodName)
-				);
+				lua.RegisterFunction(func, this, method);
 
 				if (docs != null)
 				{

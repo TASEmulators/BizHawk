@@ -800,9 +800,9 @@ namespace BizHawk.MultiClient
 		{
 			if (luaList != null && luaList.Count > 0)
 			{
-				if (LuaImp.luaSurface == null)
+				if (LuaImp.GuiLibrary.SurfaceIsNull)
 				{
-					LuaImp.gui_drawNewEmu();
+					LuaImp.GuiLibrary.DrawNewEmu();
 				}
 				foreach (var lf in luaList)
 				{
@@ -853,22 +853,19 @@ namespace BizHawk.MultiClient
 		{
 			if (luaList != null && luaList.Count > 0)
 			{
-				if (LuaImp.luaSurface == null)
-					LuaImp.gui_drawNewEmu();
+				if (LuaImp.GuiLibrary.SurfaceIsNull)
+				{
+					LuaImp.GuiLibrary.DrawNewEmu();
+				}
 			}
 		}
 
 		public void EndLuaDrawing()
 		{
-			if (luaList != null && luaList.Count > 0)
+			if (luaList != null && luaList.Any())
 			{
-				LuaImp.gui_drawFinishEmu();
+				LuaImp.GuiLibrary.DrawFinishEmu();
 			}
-		}
-
-		public bool IsRunning()
-		{
-			return true;
 		}
 
 		public bool WaitOne(int timeout)
