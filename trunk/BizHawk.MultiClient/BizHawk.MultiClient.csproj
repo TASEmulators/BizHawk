@@ -443,7 +443,6 @@
     <Compile Include="tools\HexEditor\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Bit.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Common.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
@@ -460,7 +459,6 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.NES.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.SNES.cs" />
-    <Compile Include="tools\Lua\Libraries\LuaLibraryBase.cs" />
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -470,7 +468,6 @@
     <Compile Include="tools\Lua\LuaConsole.Designer.cs">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\LuaDocumentation.cs" />
     <Compile Include="tools\Lua\LuaFunctionsForm.cs">
       <SubType>Form</SubType>
     </Compile>

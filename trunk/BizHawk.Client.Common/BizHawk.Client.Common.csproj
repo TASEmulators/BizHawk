@@ -101,8 +101,11 @@
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
+    <Compile Include="lua\LuaDocumentation.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />
+    <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="movie\Movie.cs" />
