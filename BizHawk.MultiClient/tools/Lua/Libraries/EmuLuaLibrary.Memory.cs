@@ -4,9 +4,67 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class MemoryLuaLibrary : LuaLibraryBase
 	{
+		public override string Name { get { return "memory"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"getcurrentmemorydomain",
+					"getcurrentmemorydomainsize",
+					"getmemorydomainlist",
+					"readbyte",
+					"readfloat",
+					"usememorydomain",
+					"writebyte",
+					"writefloat",
+
+					"read_s8",
+					"read_u8",
+					"read_s16_le",
+					"read_s24_le",
+					"read_s32_le",
+					"read_u16_le",
+					"read_u24_le",
+					"read_u32_le",
+					"read_s16_be",
+					"read_s24_be",
+					"read_s32_be",
+					"read_u16_be",
+					"read_u24_be",
+					"read_u32_be",
+					"write_s8",
+					"write_u8",
+					"write_s16_le",
+					"write_s24_le",
+					"write_s32_le",
+					"write_u16_le",
+					"write_u24_le",
+					"write_u32_le",
+					"write_s16_be",
+					"write_s24_be",
+					"write_s32_be",
+					"write_u16_be",
+					"write_u24_be",
+					"write_u32_be",
+				};
+			}
+		}
+
+		private int _current_memory_domain; //Main memory by default
+
 		#region Memory Library Helpers
+
+		private static int U2S(uint u, int size)
+		{
+			int s = (int)u;
+			s <<= 8 * (4 - size);
+			s >>= 8 * (4 - size);
+			return s;
+		}
 
 		private int M_R_S_LE(int addr, int size)
 		{
@@ -30,7 +88,9 @@ namespace BizHawk.MultiClient
 		{
 			uint v = 0;
 			for (int i = 0; i < size; ++i)
+			{
 				v |= M_R_U8(addr + i) << 8 * (size - 1 - i);
+			}
 			return v;
 		}
 
@@ -42,7 +102,9 @@ namespace BizHawk.MultiClient
 		private void M_W_U_LE(int addr, uint v, int size)
 		{
 			for (int i = 0; i < size; ++i)
+			{
 				M_W_U8(addr + i, (v >> (8 * i)) & 0xFF);
+			}
 		}
 
 		private void M_W_S_BE(int addr, int v, int size)
@@ -131,7 +193,6 @@ namespace BizHawk.MultiClient
 
 			return false;
 		}
-
 
 		public int memory_read_s8(object lua_addr)
 		{

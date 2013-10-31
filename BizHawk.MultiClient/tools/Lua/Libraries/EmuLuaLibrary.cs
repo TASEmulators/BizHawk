@@ -8,7 +8,6 @@ namespace BizHawk.MultiClient
 	{
 		private Lua _lua = new Lua();
 		private readonly LuaConsole _caller;
-		private int _current_memory_domain; //Main memory by default
 		private Lua currThread;
 
 		public LuaDocumentation Docs = new LuaDocumentation();
@@ -107,87 +106,6 @@ namespace BizHawk.MultiClient
 			"textbox",
 		};
 
-		public static string[] MainMemoryFunctions = new[]
-		{
-			"getname",
-			"readbyte",
-			"readbyterange",
-			"readfloat",
-			"writebyte",
-			"writebyterange",
-			"writefloat",
-
-			"read_s8",
-			"read_u8",
-			"read_s16_le",
-			"read_s24_le",
-			"read_s32_le",
-			"read_u16_le",
-			"read_u24_le",
-			"read_u32_le",
-			"read_s16_be",
-			"read_s24_be",
-			"read_s32_be",
-			"read_u16_be",
-			"read_u24_be",
-			"read_u32_be",
-			"write_s8",
-			"write_u8",
-			"write_s16_le",
-			"write_s24_le",
-			"write_s32_le",
-			"write_u16_le",
-			"write_u24_le",
-			"write_u32_le",
-			"write_s16_be",
-			"write_s24_be",
-			"write_s32_be",
-			"write_u16_be",
-			"write_u24_be",
-			"write_u32_be",
-		};
-
-		public static string[] MemoryFunctions = new[]
-		{
-			"getcurrentmemorydomain",
-			"getcurrentmemorydomainsize",
-			"getmemorydomainlist",
-			"readbyte",
-			"readfloat",
-			"usememorydomain",
-			"writebyte",
-			"writefloat",
-
-			"read_s8",
-			"read_u8",
-			"read_s16_le",
-			"read_s24_le",
-			"read_s32_le",
-			"read_u16_le",
-			"read_u24_le",
-			"read_u32_le",
-			"read_s16_be",
-			"read_s24_be",
-			"read_s32_be",
-			"read_u16_be",
-			"read_u24_be",
-			"read_u32_be",
-			"write_s8",
-			"write_u8",
-			"write_s16_le",
-			"write_s24_le",
-			"write_s32_le",
-			"write_u16_le",
-			"write_u24_le",
-			"write_u32_le",
-			"write_s16_be",
-			"write_s24_be",
-			"write_s32_be",
-			"write_u16_be",
-			"write_u24_be",
-			"write_u32_be",
-		};
-
 		public static string[] SaveStateFunctions = new[]
 		{
 			"load",
@@ -207,6 +125,8 @@ namespace BizHawk.MultiClient
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new MemoryLuaLibrary().LuaRegister(lua, Docs);
+			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new NESLuaLibrary().LuaRegister(lua, Docs);
 			new SNESLuaLibrary().LuaRegister(lua, Docs);
@@ -223,21 +143,6 @@ namespace BizHawk.MultiClient
 			{
 				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
 				Docs.Add("emu", t, GetType().GetMethod("emu_" + t));
-			}
-
-			lua.NewTable("memory");
-			foreach (string t in MemoryFunctions)
-			{
-				lua.RegisterFunction("memory." + t, this, GetType().GetMethod("memory_" + t));
-				Docs.Add("memory", t, GetType().GetMethod("memory_" + t));
-			}
-
-			lua.NewTable("mainmemory");
-			foreach (string t in MainMemoryFunctions)
-			{
-				lua.RegisterFunction("mainmemory." + t, this,
-									 GetType().GetMethod("mainmemory_" + t));
-				Docs.Add("mainmemory", t, GetType().GetMethod("mainmemory_" + t));
 			}
 
 			lua.NewTable("savestate");
