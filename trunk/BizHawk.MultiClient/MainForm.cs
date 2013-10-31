@@ -2351,7 +2351,7 @@ namespace BizHawk.MultiClient
 			if (_luaconsole != null)
 			{
 				if (!fromLua) LuaConsole1.StartLuaDrawing();
-				LuaConsole1.LuaImp.FrameRegisterBefore();
+				LuaConsole1.LuaImp.CallFrameBeforeEvent();
 			}
 #endif
 			if (_nesnametableview != null) NESNameTableViewer1.UpdateValues();
@@ -2392,7 +2392,7 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			if (_luaconsole != null)
 			{
-				LuaConsole1.LuaImp.FrameRegisterAfter();
+				LuaConsole1.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
 					GlobalWinF.DisplayManager.PreFrameUpdateLuaSource();
@@ -2492,7 +2492,7 @@ namespace BizHawk.MultiClient
 			}
 
 			SaveStateFile(path, name, false);
-			LuaConsole1.LuaImp.SavestateRegisterSave(name);
+			LuaConsole1.LuaImp.CallSaveStateEvent(name);
 		}
 
 		public void SaveStateFile(string filename, string name, bool fromLua)
@@ -2672,7 +2672,7 @@ namespace BizHawk.MultiClient
 			UpdateToolsAfter(fromLua);
 			UpdateToolsLoadstate();
 			GlobalWinF.OSD.AddMessage("Loaded state: " + name);
-			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
+			LuaConsole1.LuaImp.CallLoadStateEvent(name);
 		}
 
 		public void LoadState(string name, bool fromLua = false)

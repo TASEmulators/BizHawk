@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		public NamedLuaFunction(LuaFunction function, string theevent, string name = null)
 		{
 			_function = function;
-			_name = name ?? "Anonymous Function";
+			_name = name ?? "Anonymous";
 			_event = theevent;
 			GUID = Guid.NewGuid();
 		}

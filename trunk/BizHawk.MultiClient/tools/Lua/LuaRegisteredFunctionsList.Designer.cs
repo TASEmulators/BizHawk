@@ -61,6 +61,7 @@
 			this.FunctionView.UseCompatibleStateImageBehavior = false;
 			this.FunctionView.View = System.Windows.Forms.View.Details;
 			this.FunctionView.SelectedIndexChanged += new System.EventHandler(this.FunctionView_SelectedIndexChanged);
+			this.FunctionView.DoubleClick += new System.EventHandler(this.FunctionView_DoubleClick);
 			// 
 			// FunctionsEvent
 			// 
