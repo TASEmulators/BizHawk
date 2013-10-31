@@ -4,8 +4,23 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class SavestateLuaLibrary : LuaLibraryBase
 	{
+		public override string Name { get { return "savestate"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"load",
+					"loadslot",
+					"save",
+					"saveslot",
+				};
+			}
+		}
+
 		public void savestate_load(object lua_input)
 		{
 			if (lua_input is string)
@@ -16,35 +31,12 @@ namespace BizHawk.MultiClient
 
 		public void savestate_loadslot(object lua_input)
 		{
-			int x;
+			int slot = LuaInt(lua_input);
 
-			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
+			if (slot >= 0 && slot <= 9)
 			{
-				x = int.Parse(lua_input.ToString());
+				GlobalWinF.MainForm.LoadState("QuickSave" + slot.ToString(), true);
 			}
-			catch
-			{
-				return;
-			}
-
-			if (x < 0 || x > 9)
-				return;
-
-			GlobalWinF.MainForm.LoadState("QuickSave" + x.ToString(), true);
-		}
-
-		public string savestate_registerload(LuaFunction luaf, object name)
-		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", name != null ? name.ToString() : null);
-			lua_functions.Add(nlf);
-			return nlf.GUID.ToString();
-		}
-
-		public string savestate_registersave(LuaFunction luaf, object name)
-		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateSave", name != null ? name.ToString() : null);
-			lua_functions.Add(nlf);
-			return nlf.GUID.ToString();
 		}
 
 		public void savestate_save(object lua_input)
@@ -58,21 +50,12 @@ namespace BizHawk.MultiClient
 
 		public void savestate_saveslot(object lua_input)
 		{
-			int x;
+			int slot = LuaInt(lua_input);
 
-			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
+			if (slot >= 0 && slot <= 9)
 			{
-				x = int.Parse(lua_input.ToString());
+				GlobalWinF.MainForm.SaveState("QuickSave" + slot.ToString());
 			}
-			catch
-			{
-				return;
-			}
-
-			if (x < 0 || x > 9)
-				return;
-
-			GlobalWinF.MainForm.SaveState("QuickSave" + x.ToString());
 		}
 	}
 }
