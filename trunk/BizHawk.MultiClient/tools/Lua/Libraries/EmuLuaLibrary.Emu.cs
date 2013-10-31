@@ -5,12 +5,40 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public partial class EmulatorLuaLibrary : LuaLibraryBase
 	{
-		#region Emu Library Helpers
+		public EmulatorLuaLibrary(Action frameAdvanceCallback, Action yieldCallback)
+			: base()
+		{
+			_frameAdvanceCallback = frameAdvanceCallback;
+			_yieldCallback = yieldCallback;
+		}
 
-		// TODO: error handling for argument count mismatch
-		private void emu_setrenderplanes_do(object[] lua_p)
+		public override string Name { get { return "emu"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"displayvsync",
+					"frameadvance",
+					"framecount",
+					"getsystemid",
+					"islagged",
+					"lagcount",
+					"limitframerate",
+					"minimizeframeskip",
+					"setrenderplanes",
+					"yield",
+				};
+			}
+		}
+
+		private Action _frameAdvanceCallback;
+		private Action _yieldCallback;
+
+		private static void emu_setrenderplanes_do(object[] lua_p)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -34,9 +62,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		#endregion
-
-		public void emu_displayvsync(object boolean)
+		public static void emu_displayvsync(object boolean)
 		{
 			string temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
@@ -53,78 +79,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void emu_enablerewind(object boolean)
-		{
-			string temp = boolean.ToString();
-			if (!String.IsNullOrWhiteSpace(temp))
-			{
-				if (temp == "0" || temp.ToLower() == "false")
-				{
-					GlobalWinF.MainForm.RewindActive = false;
-					GlobalWinF.OSD.AddMessage("Rewind suspended");
-				}
-				else
-				{
-					GlobalWinF.MainForm.RewindActive = true;
-					GlobalWinF.OSD.AddMessage("Rewind enabled");
-				}
-			}
-		}
-
 		public void emu_frameadvance()
 		{
-			FrameAdvanceRequested = true;
-			currThread.Yield(0);
+			_frameAdvanceCallback();
 		}
 
-		public int emu_framecount()
+		public static int emu_framecount()
 		{
 			return Global.Emulator.Frame;
 		}
 
-		public void emu_frameskip(object num_frames)
-		{
-			try
-			{
-				string temp = num_frames.ToString();
-				int frames = Convert.ToInt32(temp);
-				if (frames > 0)
-				{
-					Global.Config.FrameSkip = frames;
-					GlobalWinF.MainForm.FrameSkipMessage();
-				}
-				else
-				{
-					ConsoleLuaLibrary.console_log("Invalid frame skip value");
-				}
-			}
-			catch
-			{
-				ConsoleLuaLibrary.console_log("Invalid frame skip value");
-			}
-		}
-
-		public string emu_getsystemid()
+		public static string emu_getsystemid()
 		{
 			return Global.Emulator.SystemId;
 		}
 
-		public bool emu_islagged()
+		public static bool emu_islagged()
 		{
 			return Global.Emulator.IsLagFrame;
 		}
 
-		public bool emu_ispaused()
-		{
-			return GlobalWinF.MainForm.EmulatorPaused;
-		}
-
-		public int emu_lagcount()
+		public static int emu_lagcount()
 		{
 			return Global.Emulator.LagCount;
 		}
 
-		public void emu_limitframerate(object boolean)
+		public static void emu_limitframerate(object boolean)
 		{
 			string temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
@@ -141,7 +121,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void emu_minimizeframeskip(object boolean)
+		public static void emu_minimizeframeskip(object boolean)
 		{
 			string temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
@@ -158,75 +138,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void emu_on_snoop(LuaFunction luaf)
-		{
-			if (luaf != null)
-			{
-				Global.Emulator.CoreComm.InputCallback = delegate
-					{
-					try
-					{
-						luaf.Call();
-					}
-					catch (SystemException e)
-					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-							"error running function attached by lua function emu.on_snoop" +
-							"\nError message: " + e.Message);
-					}
-				};
-			}
-			else
-				Global.Emulator.CoreComm.InputCallback = null;
-		}
-
-		public void emu_pause()
-		{
-			GlobalWinF.MainForm.PauseEmulator();
-		}
-
-		public void emu_setrenderplanes( // For now, it accepts arguments up to 5.
+		public static void emu_setrenderplanes( // For now, it accepts arguments up to 5.
 			object lua_p0, object lua_p1 = null, object lua_p2 = null,
 			object lua_p3 = null, object lua_p4 = null)
 		{
 			emu_setrenderplanes_do(LuaVarArgs(lua_p0, lua_p1, lua_p2, lua_p3, lua_p4));
 		}
 
-		public void emu_speedmode(object percent)
-		{
-			try
-			{
-				string temp = percent.ToString();
-				int speed = Convert.ToInt32(temp);
-				if (speed > 0 && speed < 1000) //arbituarily capping it at 1000%
-				{
-					GlobalWinF.MainForm.ClickSpeedItem(speed);
-				}
-				else
-				{
-					ConsoleLuaLibrary.console_log("Invalid speed value");
-				}
-			}
-			catch
-			{
-				ConsoleLuaLibrary.console_log("Invalid speed value");
-			}
-		}
-
-		public void emu_togglepause()
-		{
-			GlobalWinF.MainForm.TogglePause();
-		}
-
-		public void emu_unpause()
-		{
-			GlobalWinF.MainForm.UnpauseEmulator();
-		}
-
 		public void emu_yield()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
-			currThread.Yield(0);
+			_yieldCallback();
 		}
 	}
 }

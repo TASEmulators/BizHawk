@@ -86,28 +86,6 @@ namespace BizHawk.MultiClient
 			"text",
 		};
 
-		public static string[] EmuFunctions = new[]
-		{
-			"displayvsync",
-			"enablerewind",
-			"frameadvance",
-			"framecount",
-			"frameskip",
-			"getsystemid",
-			"islagged",
-			"ispaused",
-			"lagcount",
-			"limitframerate",
-			"minimizeframeskip",
-			"on_snoop",
-			"pause",
-			"setrenderplanes",
-			"speedmode",
-			"togglepause",
-			"unpause",
-			"yield",
-		};
-
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
@@ -115,6 +93,12 @@ namespace BizHawk.MultiClient
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			
+			new EmulatorLuaLibrary(
+				new Action(Frameadvance),
+				new Action(EmuYield)
+			).LuaRegister(lua, Docs);
+
 			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
@@ -133,13 +117,6 @@ namespace BizHawk.MultiClient
 				Docs.Add("gui", t, GetType().GetMethod("gui_" + t));
 			}
 
-			lua.NewTable("emu");
-			foreach (string t in EmuFunctions)
-			{
-				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
-				Docs.Add("emu", t, GetType().GetMethod("emu_" + t));
-			}
-
 			Docs.Sort();
 		}
 
@@ -154,24 +131,6 @@ namespace BizHawk.MultiClient
 			var main = t.LoadFile(File);
 			t.Push(main); //push main function on to stack for subsequent resuming
 			return t;
-		}
-
-		/// <summary>
-		/// LuaInterface requires the exact match of parameter count, except optional parameters. 
-		/// So, if you want to support variable arguments, declare them as optional and pass
-		/// them to this method.
-		/// </summary>
-		/// <param name="lua_args"></param>
-		/// <returns></returns>
-		private object[] LuaVarArgs(params object[] lua_args)
-		{
-			int n = lua_args.Length;
-			int trim = 0;
-			for (int i = n - 1; i >= 0; --i)
-				if (lua_args[i] == null) ++trim;
-			object[] lua_result = new object[n - trim];
-			Array.Copy(lua_args, lua_result, n - trim);
-			return lua_result;
 		}
 
 		public class ResumeResult
@@ -203,6 +162,18 @@ namespace BizHawk.MultiClient
 		public void print(string s)
 		{
 			_caller.AddText(s);
+		}
+
+		private void Frameadvance()
+		{
+			FrameAdvanceRequested = true;
+			currThread.Yield(0);
+		}
+
+		private void EmuYield()
+		{
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			currThread.Yield(0);
 		}
 
 		#endregion
