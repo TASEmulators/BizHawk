@@ -8,14 +8,95 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class GuiLuaLibrary : LuaLibraryBase
 	{
-		#region Gui Library Helpers
+		public override string Name { get { return "gui"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"addmessage",
+					"alert",
+					"clearGraphics",
+					"cleartext",
+					"drawBezier",
+					"drawBox",
+					"drawEllipse",
+					"drawIcon",
+					"drawImage",
+					"drawLine",
+					"drawPie",
+					"drawPixel",
+					"drawPolygon",
+					"drawRectangle",
+					"drawString",
+					"drawText",
+					"text",
+				};
+			}
+		}
 
+		#region Gui API
+
+		public void Dispose()
+		{
+			foreach (var brush in SolidBrushes.Values) brush.Dispose();
+			foreach (var brush in Pens.Values) brush.Dispose();
+		}
+
+		public bool SurfaceIsNull
+		{
+			get
+			{
+				return luaSurface == null;
+			}
+		}
+
+		/// <summary>
+		/// sets the current drawing context to a new surface.
+		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
+		/// could be more powerful.
+		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
+		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
+		/// </summary>
+		public void DrawNew()
+		{
+			luaSurface = GlobalWinF.DisplayManager.GetLuaSurfaceNative();
+		}
+
+		public void DrawNewEmu()
+		{
+			luaSurface = GlobalWinF.DisplayManager.GetLuaEmuSurfaceEmu();
+		}
+
+		/// <summary>
+		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
+		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
+		/// most notably, the client output [emulated] resolution 
+		/// </summary>
+		public void DrawFinish()
+		{
+			GlobalWinF.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			luaSurface = null;
+		}
+
+		public void DrawFinishEmu()
+		{
+			GlobalWinF.DisplayManager.SetLuaSurfaceEmu(luaSurface);
+			luaSurface = null;
+		}
+
+		#endregion
+
+		#region Helpers
+
+		private DisplaySurface luaSurface;
 		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 
-		public Color GetColor(object color)
+		private static Color GetColor(object color)
 		{
 			if (color is double)
 			{
@@ -27,7 +108,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public SolidBrush GetBrush(object color)
+		private SolidBrush GetBrush(object color)
 		{
 			Color c = GetColor(color);
 			SolidBrush b;
@@ -39,7 +120,7 @@ namespace BizHawk.MultiClient
 			return b;
 		}
 
-		public Pen GetPen(object color)
+		private Pen GetPen(object color)
 		{
 			Color c = GetColor(color);
 			Pen p;
@@ -51,47 +132,7 @@ namespace BizHawk.MultiClient
 			return p;
 		}
 
-		public void gui_clearGraphics()
-		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
-			luaSurface.Clear();
-		}
-
-		/// <summary>
-		/// sets the current drawing context to a new surface.
-		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
-		/// could be more powerful.
-		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
-		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
-		/// </summary>
-		public void gui_drawNew()
-		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaSurfaceNative();
-		}
-
-		public void gui_drawNewEmu()
-		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaEmuSurfaceEmu();
-		}
-
-		/// <summary>
-		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
-		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
-		/// most notably, the client output [emulated] resolution 
-		/// </summary>
-		public void gui_drawFinish()
-		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
-			luaSurface = null;
-		}
-
-		public void gui_drawFinishEmu()
-		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceEmu(luaSurface);
-			luaSurface = null;
-		}
-
-		Graphics GetGraphics()
+		private Graphics GetGraphics()
 		{
 			var g = luaSurface.GetGraphics();
 			int tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
@@ -105,9 +146,7 @@ namespace BizHawk.MultiClient
 			return g;
 		}
 
-		public DisplaySurface luaSurface;
-
-		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null,
+		private void DoGuiText(object luaX, object luaY, object luaStr, bool alert, object background = null,
 								 object forecolor = null, object anchor = null)
 		{
 			if (!alert)
@@ -160,10 +199,16 @@ namespace BizHawk.MultiClient
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, true, null, null, anchor);
+			DoGuiText(luaX, luaY, luaStr, true, null, null, anchor);
 		}
 
-		public void gui_cleartext()
+		public void gui_clearGraphics()
+		{
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			luaSurface.Clear();
+		}
+
+		public static void gui_cleartext()
 		{
 			GlobalWinF.OSD.ClearGUIText();
 		}
@@ -421,10 +466,8 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-
 		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			gui_drawText(X, Y, message, color, fontsize, fontfamily, fontstyle);
 		}
 
@@ -484,7 +527,7 @@ namespace BizHawk.MultiClient
 		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
 							 object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, false, background, forecolor, anchor);
+			DoGuiText(luaX, luaY, luaStr, false, background, forecolor, anchor);
 		}
 	}
 }

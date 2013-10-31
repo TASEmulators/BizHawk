@@ -13,11 +13,20 @@ namespace BizHawk.MultiClient
 		private Lua currThread;
 		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
 		private EventLuaLibrary _eventLibrary = new EventLuaLibrary();
+		private GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
 		public bool IsRunning;
 		public EventWaitHandle LuaWait;
 		public bool FrameAdvanceRequested;
+
+		public GuiLuaLibrary GuiLibrary
+		{
+			get
+			{
+				return _guiLibrary;
+			}
+		}
 
 		public void WindowClosed(IntPtr handle)
 		{
@@ -60,31 +69,8 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			_lua = new Lua();
-			foreach (var brush in SolidBrushes.Values) brush.Dispose();
-			foreach (var brush in Pens.Values) brush.Dispose();
+			_guiLibrary.Dispose();
 		}
-
-		#region Register Library Functions
-
-		public static string[] GuiFunctions = new[]
-		{
-			"addmessage",
-			"alert",
-			"cleartext",
-			"drawBezier",
-			"drawBox",
-			"drawEllipse",
-			"drawIcon",
-			"drawImage",
-			"drawLine",
-			"drawPie",
-			"drawPixel",
-			"drawPolygon",
-			"drawRectangle",
-			"drawString",
-			"drawText",
-			"text",
-		};
 
 		public void LuaRegister(Lua lua)
 		{
@@ -101,6 +87,7 @@ namespace BizHawk.MultiClient
 
 			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
+			_guiLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MemoryLuaLibrary().LuaRegister(lua, Docs);
@@ -110,19 +97,8 @@ namespace BizHawk.MultiClient
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SNESLuaLibrary().LuaRegister(lua, Docs);
 
-			lua.NewTable("gui");
-			foreach (string t in GuiFunctions)
-			{
-				lua.RegisterFunction("gui." + t, this, GetType().GetMethod("gui_" + t));
-				Docs.Add("gui", t, GetType().GetMethod("gui_" + t));
-			}
-
 			Docs.Sort();
 		}
-
-		#endregion
-
-		#region Library Helpers
 
 		public Lua SpawnCoroutine(string File)
 		{
@@ -175,7 +151,5 @@ namespace BizHawk.MultiClient
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			currThread.Yield(0);
 		}
-
-		#endregion
 	}
 }
