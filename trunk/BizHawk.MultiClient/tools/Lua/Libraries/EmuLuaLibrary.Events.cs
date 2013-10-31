@@ -121,7 +121,9 @@ namespace BizHawk.MultiClient
 
 		public string event_onloadstate(LuaFunction luaf, object name = null)
 		{
-			return savestate_registerload(luaf, name);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		public void event_onmemoryread(LuaFunction luaf, object address = null)
@@ -199,7 +201,9 @@ namespace BizHawk.MultiClient
 
 		public string event_onsavestate(LuaFunction luaf, object name = null)
 		{
-			return savestate_registersave(luaf, name);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateSave", name != null ? name.ToString() : null);
+			lua_functions.Add(nlf);
+			return nlf.GUID.ToString();
 		}
 
 		public bool event_unregisterbyid(object guid)

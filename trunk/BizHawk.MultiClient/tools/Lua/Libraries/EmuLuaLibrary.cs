@@ -61,7 +61,7 @@ namespace BizHawk.MultiClient
 			"frameskip",
 			"getsystemid",
 			"islagged",
-			"ispaused",		
+			"ispaused",
 			"lagcount",
 			"limitframerate",
 			"minimizeframeskip",
@@ -106,16 +106,6 @@ namespace BizHawk.MultiClient
 			"textbox",
 		};
 
-		public static string[] SaveStateFunctions = new[]
-		{
-			"load",
-			"loadslot",
-			"registerload",
-			"registersave",
-			"save",
-			"saveslot",
-		};
-
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
@@ -129,6 +119,7 @@ namespace BizHawk.MultiClient
 			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new NESLuaLibrary().LuaRegister(lua, Docs);
+			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SNESLuaLibrary().LuaRegister(lua, Docs);
 
 			lua.NewTable("gui");
@@ -143,14 +134,6 @@ namespace BizHawk.MultiClient
 			{
 				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
 				Docs.Add("emu", t, GetType().GetMethod("emu_" + t));
-			}
-
-			lua.NewTable("savestate");
-			foreach (string t in SaveStateFunctions)
-			{
-				lua.RegisterFunction("savestate." + t, this,
-									 GetType().GetMethod("savestate_" + t));
-				Docs.Add("savestate", t, GetType().GetMethod("savestate_" + t));
 			}
 
 			lua.NewTable("forms");
