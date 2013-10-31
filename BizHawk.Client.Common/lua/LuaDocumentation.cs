@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public interface ILuaDocumentation
 	{

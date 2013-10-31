@@ -2,7 +2,7 @@
 
 using LuaInterface;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{

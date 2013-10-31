@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class BitLuaLibrary : LuaLibraryBase
 	{

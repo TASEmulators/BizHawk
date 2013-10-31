@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using LuaInterface;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 
 using LuaInterface;
+using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
