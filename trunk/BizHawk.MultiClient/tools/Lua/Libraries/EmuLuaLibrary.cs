@@ -9,11 +9,17 @@ namespace BizHawk.MultiClient
 		private Lua _lua = new Lua();
 		private readonly LuaConsole _caller;
 		private Lua currThread;
+		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
 		public bool IsRunning;
 		public EventWaitHandle LuaWait;
 		public bool FrameAdvanceRequested;
+
+		public void WindowClosed(IntPtr handle)
+		{
+			_formsLibrary.WindowClosed(handle);
+		}
 
 		public EmuLuaLibrary(LuaConsole passed)
 		{
@@ -87,25 +93,6 @@ namespace BizHawk.MultiClient
 			"unregisterbyname",
 		};
 
-		public static string[] FormsFunctions = new[]
-		{
-			"addclick",
-			"button",
-			"clearclicks",
-			"destroy",
-			"destroyall",
-			"getproperty",
-			"gettext",
-			"label",
-			"newform",
-			"openfile",
-			"setlocation",
-			"setproperty",
-			"setsize",
-			"settext",
-			"textbox",
-		};
-
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
@@ -113,6 +100,7 @@ namespace BizHawk.MultiClient
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			_formsLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MemoryLuaLibrary().LuaRegister(lua, Docs);
@@ -134,13 +122,6 @@ namespace BizHawk.MultiClient
 			{
 				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
 				Docs.Add("emu", t, GetType().GetMethod("emu_" + t));
-			}
-
-			lua.NewTable("forms");
-			foreach (string t in FormsFunctions)
-			{
-				lua.RegisterFunction("forms." + t, this, GetType().GetMethod("forms_" + t));
-				Docs.Add("forms", t, GetType().GetMethod("forms_" + t));
 			}
 
 			lua.NewTable("event");

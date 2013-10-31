@@ -8,8 +8,34 @@ using LuaInterface;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public partial class FormsLuaLibrary : LuaLibraryBase
 	{
+		public override string Name { get { return "forms"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"addclick",
+					"button",
+					"clearclicks",
+					"destroy",
+					"destroyall",
+					"getproperty",
+					"gettext",
+					"label",
+					"newform",
+					"openfile",
+					"setlocation",
+					"setproperty",
+					"setsize",
+					"settext",
+					"textbox",
+				};
+			}
+		}
+
 		#region Forms Library Helpers
 
 		private readonly List<LuaWinform> LuaForms = new List<LuaWinform>();
@@ -38,15 +64,10 @@ namespace BizHawk.MultiClient
 			{
 				if (X != null && Y != null)
 				{
-					int x = LuaCommon.LuaInt(X);
-					int y = LuaCommon.LuaInt(Y);
-					control.Location = new Point(x, y);
+					control.Location = new Point(LuaInt(X), LuaInt(Y));
 				}
 			}
-			catch
-			{
-				//Do nothing
-			}
+			catch { /*Do nothing*/ }
 		}
 
 		private void SetSize(Control control, object Width, object Height)
@@ -55,15 +76,10 @@ namespace BizHawk.MultiClient
 			{
 				if (Width != null && Height != null)
 				{
-					int width = LuaCommon.LuaInt(Width);
-					int height = LuaCommon.LuaInt(Height);
-					control.Size = new Size(width, height);
+					control.Size = new Size(LuaInt(Width), LuaInt(Height));
 				}
 			}
-			catch
-			{
-				//Do nothing
-			}
+			catch { /*Do nothing*/ }
 		}
 
 		private void SetText(Control control, object caption)
@@ -104,11 +120,8 @@ namespace BizHawk.MultiClient
 			form.Controls.Add(button);
 			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
 
-			if (X != null && Y != null)
-				SetLocation(button, X, Y);
-
-			if (width != null & height != null)
-				SetSize(button, width, height);
+			SetLocation(button, X, Y);
+			SetSize(button, width, height);
 
 			return (int)button.Handle;
 		}
@@ -229,11 +242,8 @@ namespace BizHawk.MultiClient
 			Label label = new Label();
 			SetText(label, caption);
 			form.Controls.Add(label);
-			if (X != null && Y != null)
-				SetLocation(label, X, Y);
-
-			if (width != null & height != null)
-				SetSize(label, width, height);
+			SetLocation(label, X, Y);
+			SetSize(label, width, height);
 
 			return (int)label.Handle;
 		}
@@ -248,11 +258,7 @@ namespace BizHawk.MultiClient
 				theForm.Size = new Size(LuaCommon.LuaInt(Width), LuaCommon.LuaInt(Height));
 			}
 
-			if (title != null)
-			{
-				theForm.Text = title.ToString();
-			}
-
+			theForm.Text = (string)title;
 			theForm.Show();
 			return (int)theForm.Handle;
 		}
@@ -265,19 +271,26 @@ namespace BizHawk.MultiClient
 			{
 				openFileDialog1.InitialDirectory = InitialDirectory;
 			}
+			
 			if (FileName != null)
 			{
 				openFileDialog1.FileName = FileName;
 			}
+			
 			if (Filter != null)
 			{
 				openFileDialog1.AddExtension = true;
 				openFileDialog1.Filter = Filter;
 			}
+			
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			{
 				return openFileDialog1.FileName;
+			}
 			else
-				return "";
+			{
+				return String.Empty;
+			}
 		}
 
 		public void forms_setlocation(object handle, object X, object Y)
@@ -378,12 +391,8 @@ namespace BizHawk.MultiClient
 
 			LuaTextBox textbox = new LuaTextBox();
 			SetText(textbox, caption);
-
-			if (X != null && Y != null)
-				SetLocation(textbox, X, Y);
-
-			if (width != null & height != null)
-				SetSize(textbox, width, height);
+			SetLocation(textbox, X, Y);
+			SetSize(textbox, width, height);
 
 			if (boxtype != null)
 			{
