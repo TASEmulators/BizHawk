@@ -231,50 +231,11 @@ namespace BizHawk.MultiClient
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
 
-			lua.NewTable("bit");
-			foreach (var funcName in BitLuaLibrary.Functions)
-			{
-				string libName = BitLuaLibrary.Name + "." + funcName;
-				var method = (typeof(BitLuaLibrary)).GetMethod(BitLuaLibrary.Name + "_" + funcName);
-				lua.RegisterFunction(libName, this, method);
-				Docs.Add(BitLuaLibrary.Name, funcName, method);
-			}
-
-			lua.NewTable("client");
-			foreach (var funcName in MultiClientLuaLibrary.Functions)
-			{
-				string libName = MultiClientLuaLibrary.Name + "." + funcName;
-				var method = (typeof(MultiClientLuaLibrary)).GetMethod(MultiClientLuaLibrary.Name + "_" + funcName);
-				lua.RegisterFunction(libName, this, method);
-				Docs.Add(MultiClientLuaLibrary.Name, funcName, method);
-			}
-
-			lua.NewTable("console");
-			foreach (var funcName in ConsoleLuaLibrary.Functions)
-			{
-				string libName = ConsoleLuaLibrary.Name + "." + funcName;
-				var method = (typeof(ConsoleLuaLibrary)).GetMethod(ConsoleLuaLibrary.Name + "_" + funcName);
-				lua.RegisterFunction(libName, this, method);
-				Docs.Add(ConsoleLuaLibrary.Name, funcName, method);
-			}
-
-			lua.NewTable("nes");
-			foreach (var funcName in NESLuaLibrary.Functions)
-			{
-				string libName = NESLuaLibrary.Name + "." + funcName;
-				var method = (typeof(NESLuaLibrary)).GetMethod(NESLuaLibrary.Name + "_" + funcName);
-				lua.RegisterFunction(libName, this, method);
-				Docs.Add(NESLuaLibrary.Name, funcName, method);
-			}
-
-			lua.NewTable("snes");
-			foreach (var funcName in SNESLuaLibrary.Functions)
-			{
-				string libName = SNESLuaLibrary.Name + "." + funcName;
-				var method = (typeof(SNESLuaLibrary)).GetMethod(SNESLuaLibrary.Name + "_" + funcName);
-				lua.RegisterFunction(libName, this, method);
-				Docs.Add(SNESLuaLibrary.Name, funcName, method);
-			}
+			new BitLuaLibrary().LuaRegister(lua, Docs);
+			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
+			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			new NESLuaLibrary().LuaRegister(lua, Docs);
+			new SNESLuaLibrary().LuaRegister(lua, Docs);
 
 			lua.NewTable("gui");
 			foreach (string t in GuiFunctions)

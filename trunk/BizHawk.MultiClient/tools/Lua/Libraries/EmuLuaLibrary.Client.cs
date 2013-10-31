@@ -3,33 +3,49 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public static class MultiClientLuaLibrary
+	public class MultiClientLuaLibrary : LuaLibraryBase
 	{
-		public static string Name = "client";
-		public static string[] Functions = new[]
+		public MultiClientLuaLibrary(Action<string> logOutputCallback)
+			: this()
 		{
-			"closerom",
-			"getwindowsize",
-			"opencheats",
-			"openhexeditor",
-			"openramwatch",
-			"openramsearch",
-			"openrom",
-			"opentasstudio",
-			"opentoolbox",
-			"opentracelogger",
-			"pause_av",
-			"reboot_core",
-			"screenheight",
-			"screenshot",
-			"screenshottoclipboard",
-			"screenwidth",
-			"setscreenshotosd",
-			"setwindowsize",
-			"unpause_av",
-			"xpos",
-			"ypos",
-		};
+			LogOutputCallback = logOutputCallback;
+		}
+
+		public MultiClientLuaLibrary() : base() { }
+
+		public override string Name { get { return "client"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new []
+				{
+					"closerom",
+					"getwindowsize",
+					"opencheats",
+					"openhexeditor",
+					"openramwatch",
+					"openramsearch",
+					"openrom",
+					"opentasstudio",
+					"opentoolbox",
+					"opentracelogger",
+					"pause_av",
+					"reboot_core",
+					"screenheight",
+					"screenshot",
+					"screenshottoclipboard",
+					"screenwidth",
+					"setscreenshotosd",
+					"setwindowsize",
+					"unpause_av",
+					"xpos",
+					"ypos",
+				};
+			}
+		}
+
+		public Action<string> LogOutputCallback = null;
 
 		public static void client_closerom()
 		{
@@ -123,7 +139,7 @@ namespace BizHawk.MultiClient
 			return GlobalWinF.RenderPanel.NativeSize.Width;
 		}
 
-		public static void client_setwindowsize(object window_size)
+		public void client_setwindowsize(object window_size)
 		{
 			try
 			{
@@ -137,12 +153,15 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					ConsoleLuaLibrary.console_log("Invalid window size");
+					if (LogOutputCallback != null)
+					{
+						LogOutputCallback("Invalid window size");
+					}
 				}
 			}
 			catch
 			{
-				ConsoleLuaLibrary.console_log("Invalid window size");
+				LogOutputCallback("Invalid window size");
 			}
 
 		}

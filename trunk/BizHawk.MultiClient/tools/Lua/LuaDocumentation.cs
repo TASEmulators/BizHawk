@@ -1,11 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 
 namespace BizHawk.MultiClient
 {
-	public class LuaDocumentation
+	public interface ILuaDocumentation
+	{
+		void Add(string method_lib, string method_name, System.Reflection.MethodInfo method);
+	}
+
+	public class LuaDocumentation : ILuaDocumentation
 	{
 		public List<LibraryFunction> FunctionList = new List<LibraryFunction>();
 
@@ -22,7 +28,7 @@ namespace BizHawk.MultiClient
 
 		public void Sort()
 		{
-			FunctionList = FunctionList.OrderBy(x => x.library).ThenBy(x => x.name).ToList();
+			FunctionList = FunctionList.OrderBy(x => x.Library).ThenBy(x => x.Name).ToList();
 		}
 
 		public List<string> GetLibraryList()
@@ -30,7 +36,7 @@ namespace BizHawk.MultiClient
 			HashSet<string> libs = new HashSet<string>();
 			foreach (LibraryFunction function in FunctionList)
 			{
-				libs.Add(function.library);
+				libs.Add(function.Library);
 			}
 
 			return libs.ToList();
@@ -38,27 +44,27 @@ namespace BizHawk.MultiClient
 
 		public List<string> GetFunctionsByLibrary(string library)
 		{
-			return (from t in FunctionList where t.library == library select t.name).ToList();
+			return (from t in FunctionList where t.Library == library select t.Name).ToList();
 		}
 
 		public class LibraryFunction
 		{
 			public LibraryFunction(string method_lib, string method_name, System.Reflection.MethodInfo method)
 			{
-				library = method_lib;
-				name = method_name;
+				Library = method_lib;
+				Name = method_name;
 				System.Reflection.ParameterInfo[] info = method.GetParameters();
 				foreach (System.Reflection.ParameterInfo p in info)
 				{
-					parameters.Add(p.ToString());
+					Parameters.Add(p.ToString());
 				}
 				return_type = method.ReturnType.ToString();
 			}
 			
-			public string library = "";
-			public string name = "";
-			public List<string> parameters = new List<string>();
-			public string return_type = "";
+			public string Library = String.Empty;
+			public string Name = String.Empty;
+			public List<string> Parameters = new List<string>();
+			public string return_type = String.Empty;
 
 			public string ParameterList
 			{
@@ -66,11 +72,11 @@ namespace BizHawk.MultiClient
 				{
 					StringBuilder list = new StringBuilder();
 					list.Append('(');
-					for (int i = 0; i < parameters.Count; i++)
+					for (int i = 0; i < Parameters.Count; i++)
 					{
-						string param = parameters[i].Replace("System", "").Replace("Object", "").Replace(" ", "").Replace(".", "").Replace("LuaInterface", "");
+						string param = Parameters[i].Replace("System", "").Replace("Object", "").Replace(" ", "").Replace(".", "").Replace("LuaInterface", "");
 						list.Append(param);
-						if (i < parameters.Count - 1)
+						if (i < Parameters.Count - 1)
 						{
 							list.Append(',');
 						}

@@ -4,25 +4,31 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-	public static class NESLuaLibrary
+	public class NESLuaLibrary : LuaLibraryBase
 	{
-		public static string Name = "nes";
-		public static string[] Functions = new[]
+		public override string Name { get { return "nes"; } }
+		public override string[] Functions
 		{
-			"addgamegenie",
-			"getallowmorethaneightsprites",
-			"getbottomscanline",
-			"getclipleftandright",
-			"getdispbackground",
-			"getdispsprites",
-			"gettopscanline",
-			"removegamegenie",
-			"setallowmorethaneightsprites",
-			"setclipleftandright",
-			"setdispbackground",
-			"setdispsprites",
-			"setscanlines",
-		};
+			get
+			{
+				return new[]
+				{
+					"addgamegenie",
+					"getallowmorethaneightsprites",
+					"getbottomscanline",
+					"getclipleftandright",
+					"getdispbackground",
+					"getdispsprites",
+					"gettopscanline",
+					"removegamegenie",
+					"setallowmorethaneightsprites",
+					"setclipleftandright",
+					"setdispbackground",
+					"setdispsprites",
+					"setscanlines",
+				};
+			}
+		}
 
 		public static void nes_addgamegenie(string code)
 		{
@@ -145,8 +151,8 @@ namespace BizHawk.MultiClient
 		public static void nes_setscanlines(object top, object bottom, bool pal = false)
 		{
 
-			int first = LuaCommon.LuaInt(top);
-			int last = LuaCommon.LuaInt(bottom);
+			int first = LuaInt(top);
+			int last = LuaInt(bottom);
 			if (first > 127)
 			{
 				first = 127;
