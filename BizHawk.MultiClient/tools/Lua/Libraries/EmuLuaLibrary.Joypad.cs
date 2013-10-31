@@ -4,9 +4,31 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class JoypadLuaLibrary : LuaLibraryBase
 	{
-		//Currently sends all controllers, needs to control which ones it sends
+		public JoypadLuaLibrary(Lua lua)
+			: base()
+		{
+			_lua = lua;
+		}
+
+		public override string Name { get { return "joypad"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"get",
+					"getimmediate",
+					"set",
+					"setanalog"
+				};
+			}
+		}
+
+		private Lua _lua;
+
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
@@ -16,9 +38,9 @@ namespace BizHawk.MultiClient
 				{
 					buttons[button] = Global.ControllerOutput[button];
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaCommon.LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaCommon.LuaInt(controller) + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
 				}
 			}
 
@@ -28,9 +50,9 @@ namespace BizHawk.MultiClient
 				{
 					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaCommon.LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
 				{
-					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaCommon.LuaInt(controller) + " " + button.Substring(3));
+					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
 				}
 			}
 
@@ -45,7 +67,9 @@ namespace BizHawk.MultiClient
 		{
 			LuaTable buttons = _lua.NewTable();
 			foreach (string button in Global.ActiveController.Type.BoolButtons)
+			{
 				buttons[button] = Global.ActiveController[button];
+			}
 			return buttons;
 		}
 
