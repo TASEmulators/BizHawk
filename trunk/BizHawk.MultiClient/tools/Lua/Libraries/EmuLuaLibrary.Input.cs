@@ -4,8 +4,29 @@ using LuaInterface;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class InputLuaLibrary : LuaLibraryBase
 	{
+		public InputLuaLibrary(Lua lua)
+			: base()
+		{
+			_lua = lua;
+		}
+
+		public override string Name { get { return "input"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"get",
+					"getmouse"
+				};
+			}
+		}
+
+		private Lua _lua;
+
 		public LuaTable input_get()
 		{
 			LuaTable buttons = _lua.NewTable();

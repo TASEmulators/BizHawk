@@ -3,9 +3,39 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class EmuLuaLibrary
+	public class MovieLuaLibrary : LuaLibraryBase
 	{
-		public string movie_filename()
+		public MovieLuaLibrary(Lua lua)
+			: base()
+		{
+			_lua = lua;
+		}
+
+		public override string Name { get { return "movie"; } }
+		public override string[] Functions
+		{
+			get
+			{
+				return new[]
+				{
+					"filename",
+					"getinput",
+					"getreadonly",
+					"getrerecordcounting",
+					"isloaded",
+					"length",
+					"mode",
+					"rerecordcount",
+					"setreadonly",
+					"setrerecordcounting",
+					"stop",
+				};
+			}
+		}
+
+		private Lua _lua;
+
+		public static string movie_filename()
 		{
 			return Global.MovieSession.Movie.Filename;
 		}
@@ -27,29 +57,22 @@ namespace BizHawk.MultiClient
 			return input;
 		}
 
-		public bool movie_getreadonly()
+		public static bool movie_getreadonly()
 		{
 			return GlobalWinF.MainForm.ReadOnly;
 		}
 
-		public bool movie_getrerecordcounting()
+		public static bool movie_getrerecordcounting()
 		{
 			return Global.MovieSession.Movie.IsCountingRerecords;
 		}
 
-		public bool movie_isloaded()
+		public static bool movie_isloaded()
 		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return Global.MovieSession.Movie.IsActive;
 		}
 
-		public int movie_length()
+		public static int movie_length()
 		{
 			if (Global.MovieSession.Movie.Frames.HasValue)
 			{
@@ -61,7 +84,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string movie_mode()
+		public static string movie_mode()
 		{
 			if (Global.MovieSession.Movie.IsFinished)
 			{
@@ -81,28 +104,30 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string movie_rerecordcount()
+		public static string movie_rerecordcount()
 		{
 			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
 
-		public void movie_setreadonly(object lua_input)
+		public static void movie_setreadonly(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
+			{
 				GlobalWinF.MainForm.SetReadOnly(true);
+			}
 			else
+			{
 				GlobalWinF.MainForm.SetReadOnly(false);
+			}
 		}
 
-		public void movie_setrerecordcounting(object lua_input)
+		public static void movie_setrerecordcounting(object lua_input)
 		{
-			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-				Global.MovieSession.Movie.IsCountingRerecords = true;
-			else
-				Global.MovieSession.Movie.IsCountingRerecords = false;
+			Global.MovieSession.Movie.IsCountingRerecords
+				= (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1");
 		}
 
-		public void movie_stop()
+		public static void movie_stop()
 		{
 			Global.MovieSession.Movie.Stop();
 		}

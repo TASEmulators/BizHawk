@@ -107,20 +107,6 @@ namespace BizHawk.MultiClient
 			"textbox",
 		};
 
-		public static string[] InputFunctions = new[]
-		{
-			"get",
-			"getmouse"
-		};
-
-		public static string[] JoypadFunctions = new[]
-		{
-			"get",
-			"getimmediate",
-			"set",
-			"setanalog"
-		};
-
 		public static string[] MainMemoryFunctions = new[]
 		{
 			"getname",
@@ -202,21 +188,6 @@ namespace BizHawk.MultiClient
 			"write_u32_be",
 		};
 
-		public static string[] MovieFunctions = new[]
-		{
-			"filename",
-			"getinput",
-			"getreadonly",
-			"getrerecordcounting",
-			"isloaded",
-			"length",
-			"mode",
-			"rerecordcount",
-			"setreadonly",
-			"setrerecordcounting",
-			"stop",
-		};
-
 		public static string[] SaveStateFunctions = new[]
 		{
 			"load",
@@ -234,6 +205,9 @@ namespace BizHawk.MultiClient
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new NESLuaLibrary().LuaRegister(lua, Docs);
 			new SNESLuaLibrary().LuaRegister(lua, Docs);
 
@@ -272,27 +246,6 @@ namespace BizHawk.MultiClient
 				lua.RegisterFunction("savestate." + t, this,
 									 GetType().GetMethod("savestate_" + t));
 				Docs.Add("savestate", t, GetType().GetMethod("savestate_" + t));
-			}
-
-			lua.NewTable("movie");
-			foreach (string t in MovieFunctions)
-			{
-				lua.RegisterFunction("movie." + t, this, GetType().GetMethod("movie_" + t));
-				Docs.Add("movie", t, GetType().GetMethod("movie_" + t));
-			}
-
-			lua.NewTable("input");
-			foreach (string t in InputFunctions)
-			{
-				lua.RegisterFunction("input." + t, this, GetType().GetMethod("input_" + t));
-				Docs.Add("input", t, GetType().GetMethod("input_" + t));
-			}
-
-			lua.NewTable("joypad");
-			foreach (string t in JoypadFunctions)
-			{
-				lua.RegisterFunction("joypad." + t, this, GetType().GetMethod("joypad_" + t));
-				Docs.Add("joypad", t, GetType().GetMethod("joypad_" + t));
 			}
 
 			lua.NewTable("forms");
