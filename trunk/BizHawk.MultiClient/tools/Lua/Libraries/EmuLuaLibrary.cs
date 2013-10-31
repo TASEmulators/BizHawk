@@ -203,7 +203,6 @@ namespace BizHawk.MultiClient
 		public void print(string s)
 		{
 			_caller.AddText(s);
-			_caller.AddText("\n");
 		}
 
 		#endregion
