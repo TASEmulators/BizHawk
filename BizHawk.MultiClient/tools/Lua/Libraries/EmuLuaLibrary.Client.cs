@@ -21,7 +21,10 @@ namespace BizHawk.MultiClient
 				return new []
 				{
 					"closerom",
+					"enablerewind",
+					"frameskip",
 					"getwindowsize",
+					"ispaused",
 					"opencheats",
 					"openhexeditor",
 					"openramwatch",
@@ -30,6 +33,7 @@ namespace BizHawk.MultiClient
 					"opentasstudio",
 					"opentoolbox",
 					"opentracelogger",
+					"pause",
 					"pause_av",
 					"reboot_core",
 					"screenheight",
@@ -38,6 +42,9 @@ namespace BizHawk.MultiClient
 					"screenwidth",
 					"setscreenshotosd",
 					"setwindowsize",
+					"speedmode",
+					"togglepause",
+					"unpause",
 					"unpause_av",
 					"xpos",
 					"ypos",
@@ -50,6 +57,51 @@ namespace BizHawk.MultiClient
 		public static void client_closerom()
 		{
 			GlobalWinF.MainForm.CloseROM();
+		}
+
+		public static void client_enablerewind(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					GlobalWinF.MainForm.RewindActive = false;
+					GlobalWinF.OSD.AddMessage("Rewind suspended");
+				}
+				else
+				{
+					GlobalWinF.MainForm.RewindActive = true;
+					GlobalWinF.OSD.AddMessage("Rewind enabled");
+				}
+			}
+		}
+
+		public void client_frameskip(object num_frames)
+		{
+			try
+			{
+				string temp = num_frames.ToString();
+				int frames = Convert.ToInt32(temp);
+				if (frames > 0)
+				{
+					Global.Config.FrameSkip = frames;
+					GlobalWinF.MainForm.FrameSkipMessage();
+				}
+				else
+				{
+					ConsoleLuaLibrary.console_log("Invalid frame skip value");
+				}
+			}
+			catch
+			{
+				ConsoleLuaLibrary.console_log("Invalid frame skip value");
+			}
+		}
+
+		public static bool client_ispaused()
+		{
+			return GlobalWinF.MainForm.EmulatorPaused;
 		}
 
 		public static int client_getwindowsize()
@@ -95,6 +147,11 @@ namespace BizHawk.MultiClient
 		public static void client_opentracelogger()
 		{
 			GlobalWinF.MainForm.LoadTraceLogger();
+		}
+
+		public static void client_pause()
+		{
+			GlobalWinF.MainForm.PauseEmulator();
 		}
 
 		public static void client_pause_av()
@@ -163,7 +220,36 @@ namespace BizHawk.MultiClient
 			{
 				LogOutputCallback("Invalid window size");
 			}
+		}
 
+		public void client_speedmode(object percent)
+		{
+			try
+			{
+				int speed = Convert.ToInt32(percent.ToString());
+				if (speed > 0 && speed < 1600) //arbituarily capping it at 1600%
+				{
+					GlobalWinF.MainForm.ClickSpeedItem(speed);
+				}
+				else
+				{
+					ConsoleLuaLibrary.console_log("Invalid speed value");
+				}
+			}
+			catch
+			{
+				ConsoleLuaLibrary.console_log("Invalid speed value");
+			}
+		}
+
+		public static void client_togglepause()
+		{
+			GlobalWinF.MainForm.TogglePause();
+		}
+
+		public static void client_unpause()
+		{
+			GlobalWinF.MainForm.UnpauseEmulator();
 		}
 
 		public static void client_unpause_av()
