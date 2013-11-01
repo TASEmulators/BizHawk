@@ -195,7 +195,7 @@ while true do
   
   if finished then
     console.output("Movie finished")
-    emu.pause()
+    client.pause()
     return
   end
   
