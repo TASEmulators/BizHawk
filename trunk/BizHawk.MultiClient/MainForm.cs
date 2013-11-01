@@ -46,7 +46,7 @@ namespace BizHawk.MultiClient
 
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
-		private readonly SavestateManager StateSlots = new SavestateManager();
+		private readonly SaveSlotManager StateSlots = new SaveSlotManager();
 		private readonly Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
 
 		//avi/wav state

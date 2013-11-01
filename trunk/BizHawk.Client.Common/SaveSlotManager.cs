@@ -2,12 +2,12 @@
 
 namespace BizHawk.Client.Common
 {
-	public class SavestateManager
+	public class SaveSlotManager
 	{
 		private readonly bool[] slots = new bool[10];
 		private readonly bool[] redo = new bool[10];
 
-		public SavestateManager()
+		public SaveSlotManager()
 		{
 			Update();
 		}
@@ -16,17 +16,22 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Game == null || Global.Emulator == null)
 			{
-				for (int x = 0; x < 10; x++)
-					slots[x] = false;
+				for (int i = 0; i < 10; i++)
+				{
+					slots[i] = false;
+				}
 				return;
 			}
-			for (int x = 0; x < 10; x++)
+			for (int i = 0; i < 10; i++)
 			{
-				string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + x + ".State";
-				var file = new FileInfo(path);
+				var file = new FileInfo(
+					PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + i + ".State"
+				);
 				if (file.Directory != null && file.Directory.Exists == false)
+				{
 					file.Directory.Create();
-				slots[x] = file.Exists;
+				}
+				slots[i] = file.Exists;
 			}
 		}
 
@@ -35,9 +40,9 @@ namespace BizHawk.Client.Common
 			get
 			{
 				Update();
-				for (int x = 0; x < 10; x++)
+				for (int i = 0; i < 10; i++)
 				{
-					if (slots[x]) return true;
+					if (slots[i]) return true;
 				}
 				return false;
 			}
@@ -45,7 +50,10 @@ namespace BizHawk.Client.Common
 
 		public bool HasSlot(int slot)
 		{
-			if (slot < 0 || slot > 10) return false;
+			if (slot < 0 || slot > 10)
+			{
+				return false;
+			}
 
 			Update();
 			return slots[slot];
@@ -53,16 +61,18 @@ namespace BizHawk.Client.Common
 
 		public void ClearRedoList()
 		{
-			for (int x = 0; x < 10; x++)
+			for (int i = 0; i < 10; i++)
 			{
-				redo[x] = false;
+				redo[i] = false;
 			}
 		}
 
 		public void ToggleRedo(int slot)
 		{
 			if (slot < 0 || slot > 9)
+			{
 				return;
+			}
 
 			redo[slot] ^= true;
 		}
@@ -70,7 +80,9 @@ namespace BizHawk.Client.Common
 		public bool IsRedo(int slot)
 		{
 			if (slot < 0 || slot > 9)
+			{
 				return false;
+			}
 
 			return redo[slot];
 		}
