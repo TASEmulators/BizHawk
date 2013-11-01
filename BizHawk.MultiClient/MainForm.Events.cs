@@ -369,12 +369,12 @@ namespace BizHawk.MultiClient
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			RecordMovie();
+			LoadRecordMovieDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			PlayMovie();
+			LoadPlayMovieDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -384,7 +384,7 @@ namespace BizHawk.MultiClient
 
 		private void PlayFromBeginningMenuItem_Click(object sender, EventArgs e)
 		{
-			PlayMovieFromBeginning();
+			RestartMovie();
 		}
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
