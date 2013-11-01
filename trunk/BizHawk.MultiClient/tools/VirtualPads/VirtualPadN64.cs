@@ -167,8 +167,8 @@ namespace BizHawk.MultiClient
 		{
 			int? x = hasValue ? X : (int?)null;
 			int? y = hasValue ? Y : (int?)null;
-			GlobalWinF.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
-			GlobalWinF.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
 
 			AnalogControl1.X = X;
 			AnalogControl1.Y = Y;

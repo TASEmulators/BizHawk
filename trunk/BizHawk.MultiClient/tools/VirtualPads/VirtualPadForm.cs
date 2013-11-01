@@ -225,9 +225,8 @@ namespace BizHawk.MultiClient
 
 		protected override void OnClosed(EventArgs e)
 		{
-			//is this a good idea?
-			GlobalWinF.StickyXORAdapter.ClearStickies();
-			GlobalWinF.StickyXORAdapter.ClearStickyFloats();
+			Global.StickyXORAdapter.ClearStickies();
+			Global.StickyXORAdapter.ClearStickyFloats();
 		}
 
 		public void ClearVirtualPadHolds()

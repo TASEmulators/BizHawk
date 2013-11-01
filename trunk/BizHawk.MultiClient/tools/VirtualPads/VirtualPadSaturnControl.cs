@@ -79,11 +79,11 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B1)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
 			}
 			else if (sender == B2)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
 		}
 
@@ -91,8 +91,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SAT") return;
 
-			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Power", false);
-			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
 
 			B1.Checked = false;
 			B2.Checked = false;

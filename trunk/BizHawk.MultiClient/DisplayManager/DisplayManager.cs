@@ -591,7 +591,7 @@ namespace BizHawk.MultiClient
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 
-				foreach (string s in GlobalWinF.StickyXORAdapter.CurrentStickies)
+				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
 				{
 					disp.Append(s);
 					disp.Append(' ');

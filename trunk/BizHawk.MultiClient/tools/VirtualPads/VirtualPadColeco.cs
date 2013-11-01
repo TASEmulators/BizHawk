@@ -109,42 +109,42 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "Coleco") return;
 			if (sender == PU)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
 			else if (sender == PD)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
 			else if (sender == PL)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
 			else if (sender == PR)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
 			
 			else if (sender == KeyLeft)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " L", KeyLeft.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " L", KeyLeft.Checked);
 			else if (sender == KeyRight)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " R", KeyRight.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " R", KeyRight.Checked);
 			else if (sender == KP1)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key1", KP1.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key1", KP1.Checked);
 			else if (sender == KP2)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key2", KP2.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key2", KP2.Checked);
 			else if (sender == KP3)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key3", KP3.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key3", KP3.Checked);
 			else if (sender == KP4)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key4", KP4.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key4", KP4.Checked);
 			else if (sender == KP5)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key5", KP5.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key5", KP5.Checked);
 			else if (sender == KP6)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key6", KP6.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key6", KP6.Checked);
 			else if (sender == KP7)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key7", KP7.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key7", KP7.Checked);
 			else if (sender == KP8)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key8", KP8.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key8", KP8.Checked);
 			else if (sender == KP9)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key9", KP9.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key9", KP9.Checked);
 			else if (sender == KPStar)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Star", KPStar.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Star", KPStar.Checked);
 			else if (sender == KP0)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key0", KP0.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Key0", KP0.Checked);
 			else if (sender == KPPound)
-				GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Pound", KPPound.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Pound", KPPound.Checked);
 		}
 
 		public void Clear()
@@ -152,24 +152,24 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.SystemId != "Coleco") return;
 
 
-			if (PU.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			if (PD.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			if (PL.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			if (PR.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Right", false);
-			if (KeyLeft.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " L", false);
-			if (KeyRight.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " R", false);
-			if (KP1.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key0", false);
-			if (KP2.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key1", false);
-			if (KP3.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key2", false);
-			if (KP4.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key3", false);
-			if (KP5.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key4", false);
-			if (KP6.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key5", false);
-			if (KP7.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key6", false);
-			if (KP8.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key7", false);
-			if (KP9.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key8", false);
-			if (KPStar.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Key9", false);
-			if (KP0.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Star", false);
-			if (KPPound.Checked) GlobalWinF.StickyXORAdapter.SetSticky(Controller + " Pound", false);
+			if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			if (KeyLeft.Checked) Global.StickyXORAdapter.SetSticky(Controller + " L", false);
+			if (KeyRight.Checked) Global.StickyXORAdapter.SetSticky(Controller + " R", false);
+			if (KP1.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key0", false);
+			if (KP2.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key1", false);
+			if (KP3.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key2", false);
+			if (KP4.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key3", false);
+			if (KP5.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key4", false);
+			if (KP6.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key5", false);
+			if (KP7.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key6", false);
+			if (KP8.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key7", false);
+			if (KP9.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key8", false);
+			if (KPStar.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key9", false);
+			if (KP0.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Star", false);
+			if (KPPound.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Pound", false);
 
 			PU.Checked = false;
 			PD.Checked = false;

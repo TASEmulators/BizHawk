@@ -1,8 +1,7 @@
 ﻿using System;
 using LuaInterface;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class JoypadLuaLibrary : LuaLibraryBase
 	{
@@ -111,24 +110,24 @@ namespace BizHawk.MultiClient
 						{
 							if (controller == null) //Force On
 							{
-								GlobalWinF.ClickyVirtualPadController.Click(button.ToString());
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+								Global.ClickyVirtualPadController.Click(button.ToString());
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 							}
 							else
 							{
-								GlobalWinF.ClickyVirtualPadController.Click("P" + controller + " " + button);
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+								Global.ClickyVirtualPadController.Click("P" + controller + " " + button);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 						else if (theValue == false) //Force off
 						{
 							if (controller == null)
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), true);
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
 							}
 							else
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
 							}
 						}
 						else
@@ -136,11 +135,11 @@ namespace BizHawk.MultiClient
 							//Turn everything off
 							if (controller == null)
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 							}
 							else
 							{
-								GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 					}
@@ -148,13 +147,13 @@ namespace BizHawk.MultiClient
 					{
 						if (controller == null)
 						{
-							GlobalWinF.StickyXORAdapter.SetSticky(button.ToString(), true);
-							GlobalWinF.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							Global.StickyXORAdapter.SetSticky(button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
 						}
 						else
 						{
-							GlobalWinF.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
-							GlobalWinF.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
+							Global.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
+							Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 						}
 					}
 				}
@@ -177,11 +176,11 @@ namespace BizHawk.MultiClient
 							float theValue = float.Parse(theValueStr);
 							if (controller == null)
 							{
-								GlobalWinF.StickyXORAdapter.SetFloat(name.ToString(), theValue);
+								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
 							}
 							else
 							{
-								GlobalWinF.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 							}
 						}
 						catch { }
