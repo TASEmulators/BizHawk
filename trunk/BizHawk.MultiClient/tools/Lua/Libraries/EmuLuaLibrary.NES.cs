@@ -139,13 +139,13 @@ namespace BizHawk.MultiClient
 		public static void nes_setdispbackground(bool show)
 		{
 			Global.Config.NESDispBackground = show;
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		public static void nes_setdispsprites(bool show)
 		{
 			Global.Config.NESDispSprites = show;
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		public static void nes_setscanlines(object top, object bottom, bool pal = false)

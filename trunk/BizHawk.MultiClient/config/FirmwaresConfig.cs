@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient
 			DoScan();
 		}
 
-		FirmwareManager Manager { get { return GlobalWinF.MainForm.FirmwareManager; } }
+		FirmwareManager Manager { get { return Global.FirmwareManager; } }
 
 		private void DoScan()
 		{

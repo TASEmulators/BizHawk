@@ -1230,7 +1230,7 @@ namespace BizHawk.MultiClient
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new NESGraphicsConfig().ShowDialog();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
@@ -1275,7 +1275,7 @@ namespace BizHawk.MultiClient
 		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new PCEGraphicsConfig().ShowDialog();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		#endregion
@@ -1341,7 +1341,7 @@ namespace BizHawk.MultiClient
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new SMSGraphicsConfig().ShowDialog();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -1472,43 +1472,43 @@ namespace BizHawk.MultiClient
 		private void AtariShowBGMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowBG ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void AtariShowPlayfieldMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayfield ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void ShowPlayer1MenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayer1 ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void ShowPlayer2MenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayer2 ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void ShowMissle1MenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowMissle1 ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void ShowMissle2MenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowMissle2 ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void ShowBallMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowBall ^= true;
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		#endregion
@@ -1697,7 +1697,7 @@ namespace BizHawk.MultiClient
 				{
 					FlagNeedsReboot();
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 			}
 		}
 
