@@ -77,8 +77,6 @@ namespace BizHawk.MultiClient
 		private readonly Throttle throttle;
 		private bool unthrottled;
 
-		public FirmwareManager FirmwareManager = new FirmwareManager();
-
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused;
 		private bool didMenuPause;
@@ -181,6 +179,7 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			GlobalWinF.MainForm = this;
+			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
 				Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()),
@@ -213,9 +212,6 @@ namespace BizHawk.MultiClient
 				using (HawkFile NesCartFile = new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
-
-			//Global.CoreComm = new CoreComm();
-			//SyncCoreCommInputSignals();
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -251,7 +247,7 @@ namespace BizHawk.MultiClient
 			Input.Initialize();
 			InitControls();
 			Global.CoreComm = new CoreComm();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
@@ -517,7 +513,7 @@ namespace BizHawk.MultiClient
 		{
 			var cfp = new CoreFileProvider();
 			target.CoreFileProvider = cfp;
-			cfp.FirmwareManager = FirmwareManager;
+			cfp.FirmwareManager = Global.FirmwareManager;
 
 			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
 			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
@@ -562,11 +558,6 @@ namespace BizHawk.MultiClient
 			target.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
 			target.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
 			target.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
-		}
-
-		public void SyncCoreCommInputSignals()
-		{
-			SyncCoreCommInputSignals(Global.CoreComm);
 		}
 
 		void SyncPresentationMode()
@@ -1169,7 +1160,7 @@ namespace BizHawk.MultiClient
 						{
 							case "SAT":
 								{
-									string biosPath = this.FirmwareManager.Request("SAT", "J");
+									string biosPath = Global.FirmwareManager.Request("SAT", "J");
 									if (!File.Exists(biosPath))
 									{
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
@@ -1197,7 +1188,7 @@ namespace BizHawk.MultiClient
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = this.FirmwareManager.Request("PCECD", "Bios");
+									string biosPath = Global.FirmwareManager.Request("PCECD", "Bios");
 									if (File.Exists(biosPath) == false)
 									{
 										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
@@ -1397,7 +1388,7 @@ namespace BizHawk.MultiClient
 								}
 								else
 								{
-									string sgbromPath = this.FirmwareManager.Request("SNES", "Rom_SGB");
+									string sgbromPath = Global.FirmwareManager.Request("SNES", "Rom_SGB");
 									byte[] sgbrom = null;
 									try
 									{
@@ -1433,7 +1424,7 @@ namespace BizHawk.MultiClient
 								//}
 								break;
 							case "Coleco":
-								string colbiosPath = this.FirmwareManager.Request("Coleco", "Bios");
+								string colbiosPath = Global.FirmwareManager.Request("Coleco", "Bios");
 								FileInfo colfile = colbiosPath != null ? new FileInfo(colbiosPath) : null;
 								if (colfile == null || !colfile.Exists)
 								{
@@ -1449,11 +1440,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = this.FirmwareManager.Request("INTV", "EROM");
+									string eromPath = Global.FirmwareManager.Request("INTV", "EROM");
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = this.FirmwareManager.Request("INTV", "GROM");
+									string gromPath = Global.FirmwareManager.Request("INTV", "GROM");
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);
@@ -1461,9 +1452,9 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = this.FirmwareManager.Request("A78", "Bios_NTSC");
-								string pal_biospath = this.FirmwareManager.Request("A78", "Bios_PAL");
-								string hsbiospath = this.FirmwareManager.Request("A78", "Bios_HSC");
+								string ntsc_biospath = Global.FirmwareManager.Request("A78", "Bios_NTSC");
+								string pal_biospath = Global.FirmwareManager.Request("A78", "Bios_PAL");
+								string hsbiospath = Global.FirmwareManager.Request("A78", "Bios_HSC");
 
 								FileInfo ntscfile = ntsc_biospath != null ? new FileInfo(ntsc_biospath) : null;
 								FileInfo palfile = pal_biospath != null ? new FileInfo(pal_biospath) : null;
@@ -1522,7 +1513,7 @@ namespace BizHawk.MultiClient
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = FirmwareManager.Request("GBA", "Bios");
+									string gbabiospath = Global.FirmwareManager.Request("GBA", "Bios");
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))
@@ -1569,7 +1560,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator = nextEmulator;
 				Global.CoreComm = nextComm;
 				Global.Game = game;
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				SyncControls();
 
 				if (nextEmulator is LibsnesCore)
@@ -3201,7 +3192,7 @@ namespace BizHawk.MultiClient
 			StopAVI();
 			Global.Emulator.Dispose();
 			Global.CoreComm = new CoreComm();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
@@ -3214,7 +3205,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame(clearSRAM);
 			Global.CoreComm = new CoreComm();
-			SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
 			
@@ -4262,7 +4253,7 @@ namespace BizHawk.MultiClient
 					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
 				}
 
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG1_1)
 				{
 					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
@@ -4286,7 +4277,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG2_1)
 				{
 					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
@@ -4310,7 +4301,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG3_1)
 				{
 					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
@@ -4334,7 +4325,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG4_1)
 				{
 					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
@@ -4358,7 +4349,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowOBJ1 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ1)
 				{
 					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
@@ -4382,7 +4373,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowOBJ2 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ2)
 				{
 					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
@@ -4406,7 +4397,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowOBJ3 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ3)
 				{
 					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
@@ -4430,7 +4421,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.SNES_ShowOBJ4 ^= true;
 				}
-				SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ4)
 				{
 					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");

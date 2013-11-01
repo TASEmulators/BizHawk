@@ -1387,7 +1387,7 @@ namespace BizHawk.MultiClient
 				suppression = false;
 			}
 
-			GlobalWinF.MainForm.SyncCoreCommInputSignals();
+			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)

@@ -10,6 +10,7 @@ namespace BizHawk.Client.Common
 		public static Config Config;
 		public static GameInfo Game;
 		public static CheatList CheatList;
+		public static FirmwareManager FirmwareManager;
 
 		//Movie
 
