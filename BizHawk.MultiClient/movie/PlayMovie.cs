@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
+			Global.ReadOnly = ReadOnlyCheckBox.Checked;
 			Run();
 			Close();
 		}
@@ -356,7 +356,7 @@ namespace BizHawk.MultiClient
 
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolTip1.SetToolTip(DetailsView, "");
+			toolTip1.SetToolTip(DetailsView, String.Empty);
 			DetailsView.Items.Clear();
 			if (MovieView.SelectedIndices.Count < 1)
 			{
@@ -431,9 +431,9 @@ namespace BizHawk.MultiClient
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
 			if (indexes.Count == 0) return;
-			EditCommentsForm c = new EditCommentsForm {ReadOnly = true};
-			c.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
-			c.Show();
+			EditCommentsForm form = new EditCommentsForm();
+			form.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
+			form.Show();
 		}
 
 		private void button2_Click(object sender, EventArgs e)
@@ -462,7 +462,9 @@ namespace BizHawk.MultiClient
 			foreach (string path in filePaths)
 			{
 				if (Path.GetExtension(path) == "." + Global.Config.MovieExtension)
+				{
 					AddMovieToList(path, true);
+				}
 			}
 		}
 

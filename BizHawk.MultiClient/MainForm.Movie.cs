@@ -8,8 +8,6 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
-		public bool ReadOnly = true;	//Global Movie Read only setting
-
 		public void ClearFrame()
 		{
 			if (Global.MovieSession.Movie.IsPlaying)
@@ -48,7 +46,7 @@ namespace BizHawk.MultiClient
 			{
 				GlobalWinF.MainForm.ClearSaveRAM();
 				Global.MovieSession.Movie.StartRecording();
-				ReadOnly = false;
+				Global.ReadOnly = false;
 			}
 			else
 			{
@@ -124,7 +122,7 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
 				GlobalWinF.OSD.AddMessage("Replaying movie file in read-only mode");
-				GlobalWinF.MainForm.ReadOnly = true;
+				Global.ReadOnly = true;
 			}
 		}
 
@@ -150,7 +148,7 @@ namespace BizHawk.MultiClient
 					GlobalWinF.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
 				}
 				GlobalWinF.OSD.AddMessage(message);
-				GlobalWinF.MainForm.ReadOnly = true;
+				Global.ReadOnly = true;
 				SetMainformMovieInfo();
 			}
 		}
@@ -183,7 +181,7 @@ namespace BizHawk.MultiClient
 
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
-				if (ReadOnly)
+				if (Global.ReadOnly)
 				{
 					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: false, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result == Movie.LoadStateResult.Pass)
@@ -276,9 +274,9 @@ namespace BizHawk.MultiClient
 
 			else if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
-				if (ReadOnly)
+				if (Global.ReadOnly)
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result == Movie.LoadStateResult.Pass)
 					{
 						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
@@ -293,7 +291,7 @@ namespace BizHawk.MultiClient
 								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 							if (dresult == DialogResult.Yes)
 							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
 									return true;
@@ -318,7 +316,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result == Movie.LoadStateResult.Pass)
 					{
 						Global.MovieSession.Movie.SwitchToRecord();
@@ -337,7 +335,7 @@ namespace BizHawk.MultiClient
 								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 							if (dresult == DialogResult.Yes)
 							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
 									Global.MovieSession.Movie.SwitchToRecord();
@@ -368,9 +366,9 @@ namespace BizHawk.MultiClient
 			}
 			else if (Global.MovieSession.Movie.IsFinished)
 			{
-				if (ReadOnly)
+				if (Global.ReadOnly)
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result != Movie.LoadStateResult.Pass)
 					{
 						if (result == Movie.LoadStateResult.GuidMismatch)
@@ -380,7 +378,7 @@ namespace BizHawk.MultiClient
 								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 							if (dresult == DialogResult.Yes)
 							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
 									Global.MovieSession.Movie.SwitchToPlay();
@@ -416,7 +414,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
+					var result = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result == Movie.LoadStateResult.Pass)
 					{
 						GlobalWinF.MainForm.ClearSaveRAM();
@@ -436,7 +434,7 @@ namespace BizHawk.MultiClient
 								MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 							if (dresult == DialogResult.Yes)
 							{
-								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
+								var newresult = Global.MovieSession.Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
 									GlobalWinF.MainForm.ClearSaveRAM();

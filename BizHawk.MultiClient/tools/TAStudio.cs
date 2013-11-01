@@ -171,7 +171,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.StateCapturing = true;
-				ReadOnlyCheckBox.Checked = GlobalWinF.MainForm.ReadOnly;
+				ReadOnlyCheckBox.Checked = Global.ReadOnly;
 			}
 			else
 			{
