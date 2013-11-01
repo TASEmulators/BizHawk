@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using LuaInterface;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class EventLuaLibrary : LuaLibraryBase
 	{
+		public EventLuaLibrary(Action<string> logOutputCallback)
+			: base()
+		{
+			LogOutputCallback = logOutputCallback;
+		}
+
 		public override string Name { get { return "event"; } }
 		public override string[] Functions
 		{
@@ -27,6 +32,8 @@ namespace BizHawk.MultiClient
 				};
 			}
 		}
+
+		public Action<string> LogOutputCallback = null;
 
 		#region Events Library Helpers
 
@@ -48,9 +55,10 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-						"error running function attached by lua function savestate.registersave" +
-						"\nError message: " + e.Message);
+					LogOutputCallback(
+						"error running function attached by lua function event.onsavestate" +
+						"\nError message: " +
+						e.Message);
 				}
 			}
 		}
@@ -69,9 +77,10 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-						"error running function attached by lua function savestate.registerload" +
-						"\nError message: " + e.Message);
+					LogOutputCallback(
+						"error running function attached by lua function event.onloadstate" +
+						"\nError message: " +
+						e.Message);
 				}
 			}
 		}
@@ -90,9 +99,10 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-						"error running function attached by lua function emu.registerbefore" +
-						"\nError message: " + e.Message);
+					LogOutputCallback(
+						"error running function attached by lua function event.onframestart" +
+						"\nError message: " +
+						e.Message);
 				}
 			}
 		}
@@ -111,9 +121,10 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-						"error running function attached by lua function emu.registerafter" +
-						"\nError message: " + e.Message);
+					LogOutputCallback(
+						"error running function attached by lua function event.onframeend" +
+						"\nError message: " +
+						e.Message);
 				}
 			}
 		}
@@ -146,9 +157,10 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
-							"error running function attached by lua function emu.on_snoop" +
-							"\nError message: " + e.Message);
+						LogOutputCallback(
+							"error running function attached by lua function event.oninputpoll" +
+							"\nError message: "
+							+ e.Message);
 					}
 				};
 			}
@@ -189,12 +201,12 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+						LogOutputCallback(
 							"error running function attached by lua function event.onmemoryread" +
-							"\nError message: " + e.Message);
+							"\nError message: " +
+							e.Message);
 					}
 				});
-
 			}
 			else
 			{
@@ -226,9 +238,10 @@ namespace BizHawk.MultiClient
 					}
 					catch (SystemException e)
 					{
-						GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(
+						LogOutputCallback(
 							"error running function attached by lua function event.onmemoryread" +
-							"\nError message: " + e.Message);
+							"\nError message: " +
+							e.Message);
 					}
 				});
 			}
@@ -247,7 +260,6 @@ namespace BizHawk.MultiClient
 
 		public bool event_unregisterbyid(object guid)
 		{
-			//Iterating every possible event type is not very scalable
 			foreach (NamedLuaFunction nlf in lua_functions)
 			{
 				if (nlf.GUID.ToString() == guid.ToString())
@@ -262,7 +274,6 @@ namespace BizHawk.MultiClient
 
 		public bool event_unregisterbyname(object name)
 		{
-			//Horribly redundant to the function above!
 			foreach (NamedLuaFunction nlf in lua_functions)
 			{
 				if (nlf.Name == name.ToString())
