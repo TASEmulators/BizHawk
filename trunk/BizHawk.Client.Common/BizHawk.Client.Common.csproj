@@ -106,6 +106,7 @@
     <Compile Include="lua\EmuLuaLibrary.Events.cs" />
     <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
     <Compile Include="lua\EmuLuaLibrary.Memory.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Movie.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />

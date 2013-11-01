@@ -3471,19 +3471,6 @@ namespace BizHawk.MultiClient
 
 		}
 
-		public void SetReadOnly(bool read_only)
-		{
-			Global.ReadOnly = read_only;
-			if (Global.ReadOnly)
-			{
-				GlobalWinF.OSD.AddMessage("Movie read-only mode");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Movie read+write mode");
-			}
-		}
-
 		public void LoadTAStudio()
 		{
 			if (!TAStudio1.IsHandleCreated || TAStudio1.IsDisposed)
