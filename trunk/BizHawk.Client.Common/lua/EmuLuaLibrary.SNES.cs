@@ -1,6 +1,6 @@
-﻿using BizHawk.Client.Common;
+﻿using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class SNESLuaLibrary : LuaLibraryBase
 	{
@@ -73,42 +73,74 @@ namespace BizHawk.MultiClient
 
 		public static void snes_setlayer_bg_1(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG1(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_bg_2(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG2(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_bg_3(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG3(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_bg_4(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleBG4(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_obj_1(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ1(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ1 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_obj_2(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ2(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ2 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_obj_3(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ3(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ3 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 
 		public static void snes_setlayer_obj_4(bool value)
 		{
-			GlobalWinF.MainForm.SNES_ToggleOBJ4(value);
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ4 = value;
+				CoreFileProvider.SyncCoreCommInputSignals();
+			}
 		}
 	}
 }
