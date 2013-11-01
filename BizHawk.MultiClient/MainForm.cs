@@ -4565,5 +4565,10 @@ namespace BizHawk.MultiClient
 		{
 			LoadRom(CurrentlyOpenRom);
 		}
+
+		public void ForcePaint()
+		{
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
+		}
 	}
 }

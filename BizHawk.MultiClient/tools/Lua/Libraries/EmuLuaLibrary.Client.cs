@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 					"opentasstudio",
 					"opentoolbox",
 					"opentracelogger",
+					"paint",
 					"pause",
 					"pause_av",
 					"reboot_core",
@@ -147,6 +148,11 @@ namespace BizHawk.MultiClient
 		public static void client_opentracelogger()
 		{
 			GlobalWinF.MainForm.LoadTraceLogger();
+		}
+
+		public static void client_paint()
+		{
+			GlobalWinF.MainForm.ForcePaint();
 		}
 
 		public static void client_pause()
