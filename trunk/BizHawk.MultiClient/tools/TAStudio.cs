@@ -356,12 +356,12 @@ namespace BizHawk.MultiClient
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.RecordMovie();
+			GlobalWinF.MainForm.LoadRecordMovieDialog();
 		}
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.PlayMovie();
+			GlobalWinF.MainForm.LoadPlayMovieDialog();
 		}
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)

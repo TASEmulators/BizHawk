@@ -181,7 +181,13 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			GlobalWinF.MainForm = this;
-			Global.MovieSession = new MovieSession { Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()) };
+			Global.MovieSession = new MovieSession
+			{
+				Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()),
+				ClearSRAMCallback = ClearSaveRAM,
+				MessageCallback = GlobalWinF.OSD.AddMessage,
+				AskYesNoCallback = StateErrorAskUser
+			};
 			MainWait = new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
@@ -189,7 +195,6 @@ namespace BizHawk.MultiClient
 			if (Global.Config.ShowLogWindow)
 			{
 				ShowConsole();
-				//PsxApi.StdioFixes();
 				DisplayLogWindowMenuItem.Checked = true;
 			}
 
@@ -2042,10 +2047,10 @@ namespace BizHawk.MultiClient
 
 
 				case "Toggle read-only": ToggleReadOnly(); break;
-				case "Play Movie": PlayMovie(); break;
-				case "Record Movie": RecordMovie(); break;
+				case "Play Movie": LoadPlayMovieDialog(); break;
+				case "Record Movie": LoadRecordMovieDialog(); break;
 				case "Stop Movie": StopMovie(); break;
-				case "Play from beginning": PlayMovieFromBeginning(); break;
+				case "Play from beginning": RestartMovie(); break;
 				case "Save Movie": SaveMovie(); break;
 				case "Toggle MultiTrack":
 					if (Global.MovieSession.Movie.IsActive)
@@ -2289,7 +2294,7 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				HandleMovieOnFrameLoop();
+				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWinF.ClientControls["ClearFrame"]);
 
 				coreskipaudio = GlobalWinF.ClientControls["Turbo"] && CurrAviWriter == null;
 				//=======================================
@@ -2503,7 +2508,7 @@ namespace BizHawk.MultiClient
 				// text mode savestates
 				var writer = new StreamWriter(filename);
 				Global.Emulator.SaveStateText(writer);
-				HandleMovieSaveState(writer);
+				Global.MovieSession.HandleMovieSaveState(writer);
 				if (Global.Config.SaveScreenshotWithStates)
 				{
 					writer.Write("Framebuffer ");
@@ -2545,7 +2550,7 @@ namespace BizHawk.MultiClient
 								StreamWriter sw = new StreamWriter(s);
 								// this never should have been a core's responsibility
 								sw.WriteLine("Frame {0}", Global.Emulator.Frame);
-								HandleMovieSaveState(sw);
+								Global.MovieSession.HandleMovieSaveState(sw);
 								sw.Flush();
 							});
 					}
@@ -2597,7 +2602,8 @@ namespace BizHawk.MultiClient
 							delegate(Stream s)
 							{
 								StreamReader sr = new StreamReader(s);
-								succeed = HandleMovieLoadState(sr);
+								SetMainformMovieInfo();
+								succeed = Global.MovieSession.HandleMovieLoadState(sr);
 							});
 						if (!succeed)
 							goto cleanup;
@@ -3395,7 +3401,7 @@ namespace BizHawk.MultiClient
 			CloseForm(PCEBGViewer1);
 			CloseForm(_cheats);
 			CloseForm(TI83KeyPad1);
-			CloseForm(TAStudio1);
+			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;
 			CloseForm(TraceLogger1);
 			CloseForm(VirtualPadForm1);
 #if WINDOWS
@@ -3476,10 +3482,13 @@ namespace BizHawk.MultiClient
 			if (!TAStudio1.IsHandleCreated || TAStudio1.IsDisposed)
 			{
 				TAStudio1 = new TAStudio();
+				Global.MovieSession.EditorMode = true;
 				TAStudio1.Show();
 			}
 			else
+			{
 				TAStudio1.Focus();
+			}
 		}
 
 		public void LoadVirtualPads()
@@ -4569,6 +4578,17 @@ namespace BizHawk.MultiClient
 		public void ForcePaint()
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
+		}
+
+		public bool StateErrorAskUser(string title, string message)
+		{
+			var result = MessageBox.Show(message,
+				title,
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question
+			);
+
+			return result == DialogResult.Yes;
 		}
 	}
 }
