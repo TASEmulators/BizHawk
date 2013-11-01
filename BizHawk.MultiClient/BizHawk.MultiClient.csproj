@@ -444,7 +444,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Common.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Emu.cs" />

@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					_addr = LuaCommon.LuaInt(address);
+					_addr = LuaInt(address);
 				}
 
 				Global.Emulator.CoreComm.MemoryCallbackSystem.ReadAddr = _addr;
@@ -214,7 +214,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					_addr = LuaCommon.LuaInt(address);
+					_addr = LuaInt(address);
 				}
 
 				Global.Emulator.CoreComm.MemoryCallbackSystem.WriteAddr = _addr;

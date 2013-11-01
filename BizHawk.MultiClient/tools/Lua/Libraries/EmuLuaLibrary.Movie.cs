@@ -46,7 +46,7 @@ namespace BizHawk.MultiClient
 
 			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
-				Global.MovieSession.Movie.GetInput(LuaCommon.LuaInt(frame))
+				Global.MovieSession.Movie.GetInput(LuaInt(frame))
 			);
 
 			foreach (string button in m.Type.BoolButtons)
