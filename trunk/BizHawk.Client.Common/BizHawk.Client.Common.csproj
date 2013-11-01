@@ -102,6 +102,10 @@
     <Compile Include="helpers\InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Events.cs" />
+    <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Memory.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />

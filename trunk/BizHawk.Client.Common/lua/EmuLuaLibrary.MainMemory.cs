@@ -1,8 +1,8 @@
 ﻿using System;
-using LuaInterface;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+using LuaInterface;
+
+namespace BizHawk.Client.Common
 {
 	//TODO: this needs a major refactor, as well as MemoryLuaLibrary, and this shoudl inherit memorylua library and extend it
 	public class MainMemoryLuaLibrary : LuaLibraryBase

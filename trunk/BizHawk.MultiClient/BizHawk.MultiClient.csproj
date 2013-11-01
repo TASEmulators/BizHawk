@@ -446,14 +446,10 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Emu.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Events.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Forms.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Joypad.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.MainMemory.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Memory.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Movie.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.NES.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />

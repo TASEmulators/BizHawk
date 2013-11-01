@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 		private readonly LuaConsole _caller;
 		private Lua currThread;
 		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private EventLuaLibrary _eventLibrary = new EventLuaLibrary();
+		private EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
 		private GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
@@ -22,10 +22,7 @@ namespace BizHawk.MultiClient
 
 		public GuiLuaLibrary GuiLibrary
 		{
-			get
-			{
-				return _guiLibrary;
-			}
+			get { return _guiLibrary; }
 		}
 
 		public void WindowClosed(IntPtr handle)

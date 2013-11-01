@@ -1,9 +1,9 @@
 ﻿using System;
+
 using LuaInterface;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public partial class EmulatorLuaLibrary : LuaLibraryBase
 	{
@@ -75,7 +75,6 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.VSyncThrottle = true;
 				}
-				GlobalWinF.MainForm.VsyncMessage();
 			}
 		}
 
@@ -117,7 +116,6 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.ClockThrottle = true;
 				}
-				GlobalWinF.MainForm.LimitFrameRateMessage();
 			}
 		}
 
@@ -134,7 +132,6 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.AutoMinimizeSkipping = true;
 				}
-				GlobalWinF.MainForm.MinimizeFrameskipMessage();
 			}
 		}
 
