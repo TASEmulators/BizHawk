@@ -192,6 +192,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public bool HandleMovieLoadState(string path)
+		{
+			using (var sr = new StreamReader(path))
+			{
+				return Global.MovieSession.HandleMovieLoadState(sr);
+			}
+		}
+
 		//OMG this needs to be refactored!
 		public bool HandleMovieLoadState(StreamReader reader)
 		{
