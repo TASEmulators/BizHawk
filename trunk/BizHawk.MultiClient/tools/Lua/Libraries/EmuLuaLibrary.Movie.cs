@@ -59,7 +59,7 @@ namespace BizHawk.MultiClient
 
 		public static bool movie_getreadonly()
 		{
-			return GlobalWinF.MainForm.ReadOnly;
+			return Global.ReadOnly;
 		}
 
 		public static bool movie_getrerecordcounting()

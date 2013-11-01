@@ -230,7 +230,7 @@ namespace BizHawk.MultiClient
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
-			ReadonlyMenuItem.Checked = ReadOnly;
+			ReadonlyMenuItem.Checked = Global.ReadOnly;
 			BindSavestatesToMoviesMenuItem.Checked = Global.Config.BindSavestatesToMovies;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -1815,7 +1815,7 @@ namespace BizHawk.MultiClient
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
 
-			AddSubtitleContextMenuItem.Visible = !IsNullEmulator() && Global.MovieSession.Movie.IsActive && ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !IsNullEmulator() && Global.MovieSession.Movie.IsActive && Global.ReadOnly;
 
 			ConfigContextMenuItem.Visible = InFullscreen;
 			
@@ -1828,7 +1828,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				if (ReadOnly)
+				if (Global.ReadOnly)
 				{
 					ViewSubtitlesContextMenuItem.Text = "View Subtitles";
 					ViewCommentsContextMenuItem.Text = "View Comments";
@@ -1909,7 +1909,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditSubtitlesForm form = new EditSubtitlesForm { ReadOnly = ReadOnly };
+				EditSubtitlesForm form = new EditSubtitlesForm { ReadOnly = Global.ReadOnly };
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -1954,7 +1954,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditCommentsForm form = new EditCommentsForm { ReadOnly = ReadOnly };
+				EditCommentsForm form = new EditCommentsForm();
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}

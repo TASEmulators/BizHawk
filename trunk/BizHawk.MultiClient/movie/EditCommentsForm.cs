@@ -7,7 +7,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class EditCommentsForm : Form
 	{
-		public bool ReadOnly;
 		private Movie selectedMovie;
 
 		public EditCommentsForm()
@@ -17,7 +16,7 @@ namespace BizHawk.MultiClient
 
 		private void EditCommentsForm_Load(object sender, EventArgs e)
 		{
-			if (ReadOnly)
+			if (Global.ReadOnly)
 			{
 				CommentGrid.Columns[0].ReadOnly = true;
 				Text = "View Comments";
@@ -40,7 +39,7 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			if (!ReadOnly)
+			if (!Global.ReadOnly)
 			{
 				selectedMovie.Header.Comments.Clear();
 				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
