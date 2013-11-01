@@ -129,15 +129,6 @@ namespace BizHawk.MultiClient
 			SetMainformMovieInfo();
 		}
 
-		private bool HandleMovieLoadState(string path)
-		{
-			using (var sr = new StreamReader(path))
-			{
-				SetMainformMovieInfo();
-				return Global.MovieSession.HandleMovieLoadState(sr);
-			}
-		}
-
 		//On movie load, these need to be set based on the contents of the movie file
 		private void SetSyncDependentSettings()
 		{

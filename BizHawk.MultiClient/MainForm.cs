@@ -752,7 +752,7 @@ namespace BizHawk.MultiClient
 			{
 				PauseStatusButton.Image = Properties.Resources.Blank;
 				PauseStatusButton.Visible = false;
-				PauseStatusButton.ToolTipText = "";
+				PauseStatusButton.ToolTipText = String.Empty;
 			}
 		}
 
@@ -888,7 +888,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					NESSubMenu.Visible = true;
-					NESSpeicalMenuControls();
+					NESSpecialMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -953,7 +953,7 @@ namespace BizHawk.MultiClient
 			});
 		}
 
-		void NESSpeicalMenuControls()
+		void NESSpecialMenuControls()
 		{
 			// ugly and hacky
 			NESSpecialControlsMenuItem.Visible = false;
@@ -2502,66 +2502,14 @@ namespace BizHawk.MultiClient
 
 		public void SaveStateFile(string filename, string name, bool fromLua)
 		{
-			if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
-				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
-			{
-				// text mode savestates
-				var writer = new StreamWriter(filename);
-				Global.Emulator.SaveStateText(writer);
-				Global.MovieSession.HandleMovieSaveState(writer);
-				if (Global.Config.SaveScreenshotWithStates)
-				{
-					writer.Write("Framebuffer ");
-					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
-				}
-				writer.Close();
-				//DateTime end = DateTime.UtcNow;
-				//Console.WriteLine("n64 savestate BINARY time: {0}", (end - start).TotalMilliseconds);
-			}
-			else
-			{
-				// binary savestates
-				using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
-				using (BinaryStateSaver bs = new BinaryStateSaver(fs))
-				{
-					bs.PutCoreState(
-						delegate(Stream s)
-						{
-							BinaryWriter bw = new BinaryWriter(s);
-							Global.Emulator.SaveStateBinary(bw);
-							bw.Flush();
-						});
-					if (Global.Config.SaveScreenshotWithStates)
-					{
-						bs.PutFrameBuffer(
-							delegate(Stream s)
-							{
-								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-								BinaryWriter bw = new BinaryWriter(s);
-								bw.Write(buff);
-								bw.Flush();
-							});
-					}
-					if (Global.MovieSession.Movie.IsActive)
-					{
-						bs.PutInputLog(
-							delegate(Stream s)
-							{
-								StreamWriter sw = new StreamWriter(s);
-								// this never should have been a core's responsibility
-								sw.WriteLine("Frame {0}", Global.Emulator.Frame);
-								Global.MovieSession.HandleMovieSaveState(sw);
-								sw.Flush();
-							});
-					}
-				}
-				//DateTime end = DateTime.UtcNow;
-				//Console.WriteLine("n64 savestate TEXT time: {0}", (end - start).TotalMilliseconds);
-			}
+			SavestateManager.SaveStateFile(filename, name);
+
 			GlobalWinF.OSD.AddMessage("Saved state: " + name);
 
 			if (!fromLua)
+			{
 				UpdateStatusSlots();
+			}
 		}
 
 		private void SaveStateAs()
@@ -2588,97 +2536,21 @@ namespace BizHawk.MultiClient
 		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
-			// try to detect binary first
-			BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(path);
-			if (bw != null)
+
+			if (SavestateManager.LoadStateFile(path, name))
 			{
-				try
-				{
-					bool succeed = false;
-
-					if (Global.MovieSession.Movie.IsActive)
-					{
-						bw.GetInputLogRequired(
-							delegate(Stream s)
-							{
-								StreamReader sr = new StreamReader(s);
-								SetMainformMovieInfo();
-								succeed = Global.MovieSession.HandleMovieLoadState(sr);
-							});
-						if (!succeed)
-							goto cleanup;
-					}
-
-					bw.GetCoreState(
-						delegate(Stream s)
-						{
-							BinaryReader br = new BinaryReader(s);
-							Global.Emulator.LoadStateBinary(br);
-						});
-
-					bw.GetFrameBuffer(
-						delegate(Stream s)
-						{
-							BinaryReader br = new BinaryReader(s);
-							int i;
-							var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-							try
-							{
-								for (i = 0; i < buff.Length; i++)
-								{
-									int j = br.ReadInt32();
-									buff[i] = j;
-								}
-							}
-							catch (EndOfStreamException)
-							{
-							}
-
-						});
-
-
-				}
-				finally
-				{
-					bw.Dispose();
-				}
+				SetMainformMovieInfo();
+				GlobalWinF.OSD.ClearGUIText();
+				UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
+				UpdateToolsLoadstate();
+				GlobalWinF.OSD.AddMessage("Loaded state: " + name);
+				LuaConsole1.LuaImp.CallLoadStateEvent(name);
 			}
 			else
 			{
-				// text mode
-
-				if (HandleMovieLoadState(path))
-				{
-					using (var reader = new StreamReader(path))
-					{
-						Global.Emulator.LoadStateText(reader);
-
-						while (true)
-						{
-							string str = reader.ReadLine();
-							if (str == null) break;
-							if (str.Trim() == "") continue;
-
-							string[] args = str.Split(' ');
-							if (args[0] == "Framebuffer")
-							{
-								Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
-							}
-						}
-
-					}
-				}
-				else
-					GlobalWinF.OSD.AddMessage("Loadstate error!");
+				GlobalWinF.OSD.AddMessage("Loadstate error!");
 			}
-
-		cleanup:
-			GlobalWinF.OSD.ClearGUIText();
-			UpdateToolsBefore(fromLua);
-			UpdateToolsAfter(fromLua);
-			UpdateToolsLoadstate();
-			GlobalWinF.OSD.AddMessage("Loaded state: " + name);
-			LuaConsole1.LuaImp.CallLoadStateEvent(name);
 		}
 
 		public void LoadState(string name, bool fromLua = false)
