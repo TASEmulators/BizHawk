@@ -156,8 +156,8 @@ namespace BizHawk.MultiClient
 				if (background == null)
 					background = "black";
 			}
-			int dx = LuaCommon.LuaInt(luaX);
-			int dy = LuaCommon.LuaInt(luaY);
+			int dx = LuaInt(luaX);
+			int dy = LuaInt(luaY);
 			int a = 0;
 			if (anchor != null)
 			{
@@ -175,7 +175,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					a = LuaCommon.LuaInt(anchor);
+					a = LuaInt(anchor);
 				}
 			}
 			else
@@ -224,7 +224,7 @@ namespace BizHawk.MultiClient
 					int i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new Point(LuaCommon.LuaInt(point[1]), LuaCommon.LuaInt(point[2]));
+						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 						if (i >= 4)
 							break;
@@ -245,10 +245,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					int int_x = LuaCommon.LuaInt(X);
-					int int_y = LuaCommon.LuaInt(Y);
-					int int_width = LuaCommon.LuaInt(X2);
-					int int_height = LuaCommon.LuaInt(Y2);
+					int int_x = LuaInt(X);
+					int int_y = LuaInt(Y);
+					int int_width = LuaInt(X2);
+					int int_height = LuaInt(Y2);
 
 					if (int_x < int_width)
 					{
@@ -291,11 +291,11 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? "white"), LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y), LuaCommon.LuaInt(width), LuaCommon.LuaInt(height));
+					g.DrawEllipse(GetPen(line ?? "white"), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
 						var brush = GetBrush(background);
-						g.FillEllipse(brush, LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y), LuaCommon.LuaInt(width), LuaCommon.LuaInt(height));
+						g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
 				}
 				catch (Exception)
@@ -316,14 +316,14 @@ namespace BizHawk.MultiClient
 					Icon icon;
 					if (width != null && height != null)
 					{
-						icon = new Icon(Path.ToString(), LuaCommon.LuaInt(width), LuaCommon.LuaInt(height));
+						icon = new Icon(Path.ToString(), LuaInt(width), LuaInt(height));
 					}
 					else
 					{
 						icon = new Icon(Path.ToString());
 					}
 
-					g.DrawIcon(icon, LuaCommon.LuaInt(x), LuaCommon.LuaInt(y));
+					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
 				}
 				catch (Exception)
 				{
@@ -346,7 +346,7 @@ namespace BizHawk.MultiClient
 					if (height == null || height.GetType() != typeof(int))
 						height = img.Height.ToString();
 
-					g.DrawImage(img, LuaCommon.LuaInt(x), LuaCommon.LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
+					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
 				}
 				catch (Exception)
 				{
@@ -362,7 +362,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "white"), LuaCommon.LuaInt(x1), LuaCommon.LuaInt(y1), LuaCommon.LuaInt(x2), LuaCommon.LuaInt(y2));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
 				{
@@ -379,11 +379,11 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawPie(GetPen(line), LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y), LuaCommon.LuaInt(width), LuaCommon.LuaInt(height), LuaCommon.LuaInt(startangle), LuaCommon.LuaInt(sweepangle));
+					g.DrawPie(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 					if (background != null)
 					{
 						var brush = GetBrush(background);
-						g.FillPie(brush, LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y), LuaCommon.LuaInt(width), LuaCommon.LuaInt(height), LuaCommon.LuaInt(startangle), LuaCommon.LuaInt(sweepangle));
+						g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 					}
 				}
 				catch (Exception)
@@ -400,10 +400,10 @@ namespace BizHawk.MultiClient
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				float x = LuaCommon.LuaInt(X) + 0.1F;
+				float x = LuaInt(X) + 0.1F;
 				try
 				{
-					g.DrawLine(GetPen(color ?? "white"), LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y), x, LuaCommon.LuaInt(Y));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
 				{
@@ -424,7 +424,7 @@ namespace BizHawk.MultiClient
 					int i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new Point(LuaCommon.LuaInt(point[1]), LuaCommon.LuaInt(point[2]));
+						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 					}
 
@@ -448,10 +448,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					int int_x = LuaCommon.LuaInt(X);
-					int int_y = LuaCommon.LuaInt(Y);
-					int int_width = LuaCommon.LuaInt(width);
-					int int_height = LuaCommon.LuaInt(height);
+					int int_x = LuaInt(X);
+					int int_y = LuaInt(Y);
+					int int_width = LuaInt(width);
+					int int_height = LuaInt(height);
 					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
 					if (background != null)
 					{
@@ -481,7 +481,7 @@ namespace BizHawk.MultiClient
 					int fsize = 12;
 					if (fontsize != null)
 					{
-						fsize = LuaCommon.LuaInt(fontsize);
+						fsize = LuaInt(fontsize);
 					}
 
 					FontFamily family = FontFamily.GenericMonospace;
@@ -515,7 +515,7 @@ namespace BizHawk.MultiClient
 					}
 
 					Font font = new Font(family, fsize, fstyle, GraphicsUnit.Pixel);
-					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaCommon.LuaInt(X), LuaCommon.LuaInt(Y));
+					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
 				}
 				catch (Exception)
 				{

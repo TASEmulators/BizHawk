@@ -55,7 +55,7 @@ namespace BizHawk.MultiClient
 
 		private LuaWinform GetForm(object form_handle)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(form_handle));
+			IntPtr ptr = new IntPtr(LuaInt(form_handle));
 			return LuaForms.FirstOrDefault(form => form.Handle == ptr);
 		}
 
@@ -95,7 +95,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_addclick(object handle, LuaFunction lua_event)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -129,7 +129,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_clearclicks(object handle)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -148,7 +148,7 @@ namespace BizHawk.MultiClient
 
 		public bool forms_destroy(object handle)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)
@@ -174,7 +174,7 @@ namespace BizHawk.MultiClient
 		{
 			try
 			{
-				IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+				IntPtr ptr = new IntPtr(LuaInt(handle));
 				foreach (LuaWinform form in LuaForms)
 				{
 					if (form.Handle == ptr)
@@ -205,7 +205,7 @@ namespace BizHawk.MultiClient
 		{
 			try
 			{
-				IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+				IntPtr ptr = new IntPtr(LuaInt(handle));
 				foreach (LuaWinform form in LuaForms)
 				{
 					if (form.Handle == ptr)
@@ -256,7 +256,7 @@ namespace BizHawk.MultiClient
 			LuaForms.Add(theForm);
 			if (Width != null && Height != null)
 			{
-				theForm.Size = new Size(LuaCommon.LuaInt(Width), LuaCommon.LuaInt(Height));
+				theForm.Size = new Size(LuaInt(Width), LuaInt(Height));
 			}
 
 			theForm.Text = (string)title;
@@ -296,7 +296,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_setlocation(object handle, object X, object Y)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)
@@ -318,7 +318,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_setproperty(object handle, object property, object value)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)
@@ -340,7 +340,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_setsize(object handle, object Width, object Height)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)
@@ -362,7 +362,7 @@ namespace BizHawk.MultiClient
 
 		public void forms_settext(object handle, object caption)
 		{
-			IntPtr ptr = new IntPtr(LuaCommon.LuaInt(handle));
+			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)

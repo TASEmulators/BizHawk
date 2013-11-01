@@ -141,14 +141,14 @@ namespace BizHawk.MultiClient
 
 		public uint mainmemory_readbyte(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U8(addr);
 		}
 
 		public LuaTable mainmemory_readbyterange(object address, object length)
 		{
-			int l = LuaCommon.LuaInt(length);
-			int addr = LuaCommon.LuaInt(address);
+			int l = LuaInt(length);
+			int addr = LuaInt(address);
 			int last_addr = l + addr;
 			LuaTable table = _lua.NewTable();
 			for (int i = addr; i <= last_addr; i++)
@@ -163,7 +163,7 @@ namespace BizHawk.MultiClient
 
 		public float mainmemory_readfloat(object lua_addr, bool bigendian)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
 
 			byte[] bytes = BitConverter.GetBytes(val);
@@ -173,8 +173,8 @@ namespace BizHawk.MultiClient
 
 		public void mainmemory_writebyte(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U8(addr, v);
 		}
 
@@ -182,8 +182,8 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var address in memoryblock.Keys)
 			{
-				int a = LuaCommon.LuaInt(address);
-				int v = LuaCommon.LuaInt(memoryblock[address]);
+				int a = LuaInt(address);
+				int v = LuaInt(memoryblock[address]);
 
 				Global.Emulator.MainMemory.PokeByte(a, (byte)v);
 			}
@@ -191,7 +191,7 @@ namespace BizHawk.MultiClient
 
 		public void mainmemory_writefloat(object lua_addr, object lua_v, bool bigendian)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
@@ -201,183 +201,183 @@ namespace BizHawk.MultiClient
 
 		public int mainmemory_read_s8(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return (sbyte)MM_R_U8(addr);
 		}
 
 		public uint mainmemory_read_u8(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U8(addr);
 		}
 
 		public int mainmemory_read_s16_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_LE(addr, 2);
 		}
 
 		public int mainmemory_read_s24_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_LE(addr, 3);
 		}
 
 		public int mainmemory_read_s32_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_LE(addr, 4);
 		}
 
 		public uint mainmemory_read_u16_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_LE(addr, 2);
 		}
 
 		public uint mainmemory_read_u24_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_LE(addr, 3);
 		}
 
 		public uint mainmemory_read_u32_le(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_LE(addr, 4);
 		}
 
 		public int mainmemory_read_s16_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_BE(addr, 2);
 		}
 
 		public int mainmemory_read_s24_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_BE(addr, 3);
 		}
 
 		public int mainmemory_read_s32_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_S_BE(addr, 4);
 		}
 
 		public uint mainmemory_read_u16_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_BE(addr, 2);
 		}
 
 		public uint mainmemory_read_u24_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_BE(addr, 3);
 		}
 
 		public uint mainmemory_read_u32_be(object lua_addr)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
+			int addr = LuaInt(lua_addr);
 			return MM_R_U_BE(addr, 4);
 		}
 
 		public void mainmemory_write_s8(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_U8(addr, (uint)v);
 		}
 
 		public void mainmemory_write_u8(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U8(addr, v);
 		}
 
 		public void mainmemory_write_s16_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_LE(addr, v, 2);
 		}
 
 		public void mainmemory_write_s24_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_LE(addr, v, 3);
 		}
 
 		public void mainmemory_write_s32_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_LE(addr, v, 4);
 		}
 
 		public void mainmemory_write_u16_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_LE(addr, v, 2);
 		}
 
 		public void mainmemory_write_u24_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_LE(addr, v, 3);
 		}
 
 		public void mainmemory_write_u32_le(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_LE(addr, v, 4);
 		}
 
 		public void mainmemory_write_s16_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_BE(addr, v, 2);
 		}
 
 		public void mainmemory_write_s24_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_BE(addr, v, 3);
 		}
 
 		public void mainmemory_write_s32_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			int v = LuaCommon.LuaInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			int v = LuaInt(lua_v);
 			MM_W_S_BE(addr, v, 4);
 		}
 
 		public void mainmemory_write_u16_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_BE(addr, v, 2);
 		}
 
 		public void mainmemory_write_u24_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_BE(addr, v, 3);
 		}
 
 		public void mainmemory_write_u32_be(object lua_addr, object lua_v)
 		{
-			int addr = LuaCommon.LuaInt(lua_addr);
-			uint v = LuaCommon.LuaUInt(lua_v);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
 			MM_W_U_BE(addr, v, 4);
 		}
 	}
