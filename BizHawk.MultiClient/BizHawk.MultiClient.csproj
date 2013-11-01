@@ -451,7 +451,6 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.NES.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.SNES.cs" />
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
