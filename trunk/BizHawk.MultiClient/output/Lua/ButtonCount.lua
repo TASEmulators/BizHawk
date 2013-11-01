@@ -104,9 +104,9 @@ end
 reset()
 frames()
 
-if savestate.registerload then
-	savestate.registerload(load)
-	savestate.registersave(save)
+if event.onloadstate then
+	event.onloadstate(load)
+	event.onsavestate(save)
 end
 
 while true do
