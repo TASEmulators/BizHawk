@@ -8,7 +8,12 @@ namespace BizHawk.Client.Common
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			return AppDomain.CurrentDomain.BaseDirectory;
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			{
+				path = path.Remove(path.Length - 1, 1);
+			}
+			return path;
 		}
 
 		/// <summary>
