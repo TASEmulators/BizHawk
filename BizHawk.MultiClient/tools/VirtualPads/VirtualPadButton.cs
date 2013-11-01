@@ -7,11 +7,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.MultiClient
 {
 	public class VirtualPadButton : CheckBox
 	{
-		public string ControllerButton = "";
+		public string ControllerButton = String.Empty;
 		private bool _rightClicked = false;
 
 		public VirtualPadButton()
@@ -45,7 +47,7 @@ namespace BizHawk.MultiClient
 
 		protected void SetSticky()
 		{
-			GlobalWinF.StickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.StickyXORAdapter.SetSticky(ControllerButton, Checked);
 
 			if (Checked == false)
 			{
@@ -93,7 +95,7 @@ namespace BizHawk.MultiClient
 			ForeColor = Color.Black;
 			Checked = false;
 			GlobalWinF.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
-			GlobalWinF.StickyXORAdapter.SetSticky(ControllerButton, false);
+			Global.StickyXORAdapter.SetSticky(ControllerButton, false);
 		}
 	}
 }

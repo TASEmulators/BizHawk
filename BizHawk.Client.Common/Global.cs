@@ -55,5 +55,20 @@ namespace BizHawk.Client.Common
 		}
 
 		public static DiscHopper DiscHopper = new DiscHopper();
+
+		/// <summary>
+		/// provides an opportunity to mutate the player's input in an autohold style
+		/// </summary>
+		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
+
+		/// <summary>
+		/// Forces any controller button to Off, useful for things like Joypad.Set
+		/// </summary>
+		public static ForceOffAdaptor ForceOffAdaptor = new ForceOffAdaptor();
+
+		/// <summary>
+		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
+		/// </summary>
+		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
 	}
 }

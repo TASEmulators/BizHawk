@@ -104,6 +104,7 @@
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
     <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
     <Compile Include="lua\EmuLuaLibrary.Events.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Joypad.cs" />
     <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
     <Compile Include="lua\EmuLuaLibrary.Memory.cs" />
     <Compile Include="lua\EmuLuaLibrary.Movie.cs" />

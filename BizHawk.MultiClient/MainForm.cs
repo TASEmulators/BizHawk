@@ -677,12 +677,12 @@ namespace BizHawk.MultiClient
 				GlobalWinF.ClientControls.LatchFromPhysical(GlobalWinF.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
 
-				Global.ActiveController.OR_FromLogical(GlobalWinF.ClickyVirtualPadController);
+				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
 
 				if (GlobalWinF.ClientControls["Autohold"])
 				{
-					GlobalWinF.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
 				else if (GlobalWinF.ClientControls["Autofire"])
@@ -946,7 +946,7 @@ namespace BizHawk.MultiClient
 				{
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 					{
-						GlobalWinF.ClickyVirtualPadController.Click(button);
+						Global.ClickyVirtualPadController.Click(button);
 						GlobalWinF.OSD.AddMessage(msg);
 					}
 				}
@@ -1048,7 +1048,7 @@ namespace BizHawk.MultiClient
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
 			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
-			GlobalWinF.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
+			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
 			RewireInputChain();
 		}
 
@@ -1060,13 +1060,13 @@ namespace BizHawk.MultiClient
 			GlobalWinF.OrControllerAdapter.SourceOr = Global.AutoFireController;
 			GlobalWinF.UD_LR_ControllerAdapter.Source = GlobalWinF.OrControllerAdapter;
 
-			GlobalWinF.StickyXORAdapter.Source = GlobalWinF.UD_LR_ControllerAdapter;
-			GlobalWinF.AutofireStickyXORAdapter.Source = GlobalWinF.StickyXORAdapter;
+			Global.StickyXORAdapter.Source = GlobalWinF.UD_LR_ControllerAdapter;
+			GlobalWinF.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 
 			Global.MultitrackRewiringControllerAdapter.Source = GlobalWinF.AutofireStickyXORAdapter;
-			GlobalWinF.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
+			Global.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
 
-			Global.MovieInputSourceAdapter.Source = GlobalWinF.ForceOffAdaptor;
+			Global.MovieInputSourceAdapter.Source = Global.ForceOffAdaptor;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
 			Global.Emulator.Controller = Global.ControllerOutput;
@@ -1660,8 +1660,8 @@ namespace BizHawk.MultiClient
 
 				CaptureRewindState();
 
-				GlobalWinF.StickyXORAdapter.ClearStickies();
-				GlobalWinF.StickyXORAdapter.ClearStickyFloats();
+				Global.StickyXORAdapter.ClearStickies();
+				Global.StickyXORAdapter.ClearStickyFloats();
 				GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
@@ -1956,7 +1956,7 @@ namespace BizHawk.MultiClient
 
 		private void ClearAutohold()
 		{
-			GlobalWinF.StickyXORAdapter.ClearStickies();
+			Global.StickyXORAdapter.ClearStickies();
 			GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
 			VirtualPadForm1.ClearVirtualPadHolds();
 			GlobalWinF.OSD.AddMessage("Autohold keys cleared");
@@ -2260,7 +2260,7 @@ namespace BizHawk.MultiClient
 					UpdateToolsBefore();
 				}
 
-				GlobalWinF.ClickyVirtualPadController.FrameTick();
+				Global.ClickyVirtualPadController.FrameTick();
 
 				runloop_fps++;
 				//client input-related duties
@@ -3399,7 +3399,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
-					GlobalWinF.ClickyVirtualPadController.Click("Reset");
+					Global.ClickyVirtualPadController.Click("Reset");
 					GlobalWinF.OSD.AddMessage("Reset button pressed.");
 				}
 			}
@@ -3412,7 +3412,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
-					GlobalWinF.ClickyVirtualPadController.Click("Power");
+					Global.ClickyVirtualPadController.Click("Power");
 					GlobalWinF.OSD.AddMessage("Power button pressed.");
 				}
 			}

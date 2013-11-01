@@ -104,7 +104,7 @@ namespace BizHawk.MultiClient
 
 			else if (sender == B1)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Pause", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Pause", B1.Checked);
 				if (B1.Checked)
 					B1.BackColor = Color.Pink;
 				else
@@ -112,7 +112,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B2)
 			{
-				GlobalWinF.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 				if (B2.Checked)
 					B2.BackColor = Color.Pink;
 				else
@@ -124,8 +124,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SMS" && Global.Emulator.SystemId != "GG" && Global.Emulator.SystemId != "SG") return;
 
-			if (B1.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Pause", false);
-			if (B2.Checked) GlobalWinF.StickyXORAdapter.SetSticky("Reset", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
 
 			B1.Checked = false;
 			B2.Checked = false;
