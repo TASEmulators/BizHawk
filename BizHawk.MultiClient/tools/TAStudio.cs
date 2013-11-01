@@ -82,21 +82,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//public string GetMnemonic()
-		//{
-		//    StringBuilder str = new StringBuilder("|"); //TODO: Control Command virtual pad
-
-		//    //TODO: remove this hack with a nes controls pad 
-		//    if (Global.Emulator.SystemId == "NES")
-		//    {
-		//        str.Append("0|");
-		//    }
-
-		//    for (int x = 0; x < Pads.Count; x++)
-		//        str.Append(Pads[x].GetMnemonic());
-		//    return str.ToString();
-		//}
-
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
@@ -288,7 +273,7 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-				GlobalWinF.MainForm.SetReadOnly(true);
+				Global.ReadOnly = true;
 				ReadOnlyCheckBox.BackColor = SystemColors.Control;
 
 				if (Global.MovieSession.Movie.IsActive)
@@ -299,7 +284,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				GlobalWinF.MainForm.SetReadOnly(false);
+				Global.ReadOnly = false;
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				if (Global.MovieSession.Movie.IsActive)
 				{

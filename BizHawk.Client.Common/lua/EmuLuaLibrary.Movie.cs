@@ -1,7 +1,6 @@
 ﻿using LuaInterface;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
@@ -111,14 +110,8 @@ namespace BizHawk.MultiClient
 
 		public static void movie_setreadonly(object lua_input)
 		{
-			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-			{
-				GlobalWinF.MainForm.SetReadOnly(true);
-			}
-			else
-			{
-				GlobalWinF.MainForm.SetReadOnly(false);
-			}
+			Global.ReadOnly = (lua_input.ToString().ToUpper() == "TRUE"
+				|| lua_input.ToString() == "1");
 		}
 
 		public static void movie_setrerecordcounting(object lua_input)

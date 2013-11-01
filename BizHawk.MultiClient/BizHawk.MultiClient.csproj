@@ -450,7 +450,6 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Joypad.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Movie.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.NES.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.SNES.cs" />
