@@ -5,10 +5,11 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NESGameGenie : Form
+	public partial class NESGameGenie : Form, IToolForm
 	{
 		private int? _address;
 		private int? _value;
@@ -36,6 +37,23 @@ namespace BizHawk.MultiClient
 		public int? Address { get { return _address; } }
 		public int? Value { get { return _value; } }
 		public int? Compare { get { return _compare; } }
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
+		public void Restart()
+		{
+			if (!(Global.Emulator is NES))
+			{
+				Close();
+			}
+		}
+		public void UpdateValues()
+		{
+			if (!(Global.Emulator is NES))
+			{
+				Close();
+			}
+		}
 
 		public NESGameGenie()
 		{

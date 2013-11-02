@@ -92,10 +92,6 @@ namespace BizHawk.MultiClient
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
 		private TAStudio _tastudio;
-		private NESGameGenie _ngg;
-		private SNESGameGenie _sgg;
-		private GBGameGenie _gbgg;
-		private GenGameGenie _gengg;
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
@@ -106,10 +102,6 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
-		public NESGameGenie NESgg { get { if (_ngg == null) _ngg = new NESGameGenie(); return _ngg; } set { _ngg = value; } }
-		public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
-		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
-		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 
 		//TODO: clean me up
@@ -2649,46 +2641,21 @@ namespace BizHawk.MultiClient
 
 		public void LoadGameGenieEC()
 		{
-
 			if (Global.Emulator is NES)
 			{
-				if (!NESgg.IsHandleCreated || NESgg.IsDisposed)
-				{
-					NESgg = new NESGameGenie();
-					NESgg.Show();
-				}
-				else
-					NESgg.Focus();
+				GlobalWinF.Tools.Load<NESGameGenie>();
 			}
 			else if (Global.Emulator is LibsnesCore)
 			{
-				if (!SNESgg.IsHandleCreated || SNESgg.IsDisposed)
-				{
-					SNESgg = new SNESGameGenie();
-					SNESgg.Show();
-				}
-				else
-					SNESgg.Focus();
+				GlobalWinF.Tools.Load<SNESGameGenie>();
 			}
 			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
-				if (!GBgg.IsHandleCreated || GBgg.IsDisposed)
-				{
-					GBgg = new GBGameGenie();
-					GBgg.Show();
-				}
-				else
-					GBgg.Focus();
+				GlobalWinF.Tools.Load<GBGameGenie>();
 			}
 			else if (Global.Emulator is Genesis)
 			{
-				if (!Gengg.IsHandleCreated || Gengg.IsDisposed)
-				{
-					Gengg = new GenGameGenie();
-					Gengg.Show();
-				}
-				else
-					Gengg.Focus();
+				GlobalWinF.Tools.Load<GenGameGenie>();
 			}
 		}
 

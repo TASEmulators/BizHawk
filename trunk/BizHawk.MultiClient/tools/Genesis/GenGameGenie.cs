@@ -12,10 +12,27 @@ using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
-	public partial class GenGameGenie : Form
+	public partial class GenGameGenie : Form, IToolForm
 	{
 		bool Processing = false;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
+		public void Restart()
+		{
+			if (!(Global.Emulator is Genesis))
+			{
+				Close();
+			}
+		}
+		public void UpdateValues()
+		{
+			if (!(Global.Emulator is Genesis))
+			{
+				Close();
+			}
+		}
 
 		public GenGameGenie()
 		{
