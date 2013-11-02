@@ -23,16 +23,21 @@ namespace BizHawk.MultiClient
 			var existingTool = _tools.FirstOrDefault(x => x is T);
 			if (existingTool != null)
 			{
-				existingTool.Show();
-				existingTool.Focus();
-				return existingTool;
+				if (existingTool.IsDisposed)
+				{
+					_tools.Remove(existingTool);
+				}
+				else
+				{
+					existingTool.Show();
+					existingTool.Focus();
+					return existingTool;
+				}
 			}
-			else
-			{
-				var result = Get<T>();
-				result.Show();
-				return result;
-			}
+
+			var result = Get<T>();
+			result.Show();
+			return result;
 		}
 
 		/// <summary>
@@ -183,17 +188,44 @@ namespace BizHawk.MultiClient
 				var tool = _tools.FirstOrDefault(x => x is RamWatch);
 				if (tool != null)
 				{
-					return tool as RamWatch;
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as RamWatch;
+					}
 				}
-				else
-				{
-					var ramWatch = new RamWatch();
-					_tools.Add(ramWatch);
-					return ramWatch;
-				}
+				
+				var ramWatch = new RamWatch();
+				_tools.Add(ramWatch);
+				return ramWatch;
 			}
 		}
 
+		public RamSearch RamSearch
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is RamSearch);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as RamSearch;
+					}
+				}
+
+				var ramWatch = new RamSearch();
+				_tools.Add(ramWatch);
+				return ramWatch;
+			}
+		}
 
 		#endregion
 	}

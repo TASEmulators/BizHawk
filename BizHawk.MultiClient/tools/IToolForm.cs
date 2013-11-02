@@ -33,5 +33,6 @@
 		bool Focus();
 		void Show();
 		void Close();
+		bool IsDisposed { get; }
 	}
 }

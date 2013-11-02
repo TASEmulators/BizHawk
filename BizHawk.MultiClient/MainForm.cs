@@ -86,8 +86,6 @@ namespace BizHawk.MultiClient
 
 		//tool dialogs
 
-		private RamSearch _ramsearch;
-
 		private HexEditor _hexeditor;
 		private TraceLogger _tracelogger;
 		private SNESGraphicsDebugger _snesgraphicsdebugger;
@@ -109,7 +107,6 @@ namespace BizHawk.MultiClient
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
@@ -353,7 +350,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
-				LoadRamSearch();
+				GlobalWinF.Tools.Load<RamSearch>();
 			}
 			if (Global.Config.AutoLoadHexEditor)
 			{
@@ -1610,8 +1607,6 @@ namespace BizHawk.MultiClient
 
 				GlobalWinF.Tools.Restart();
 
-				if (_ramsearch != null) RamSearch1.Restart();
-				
 				if (_hexeditor != null) HexEditor1.Restart();
 				if (_nesppu != null) NESPPU1.Restart();
 				if (_nesnametableview != null) NESNameTableViewer1.Restart();
@@ -2102,7 +2097,7 @@ namespace BizHawk.MultiClient
 				case "Movie Poke": ToggleModePokeMode(); break;
 
 				case "Ram Watch": LoadRamWatch(true); break;
-				case "Ram Search": LoadRamSearch(); break;
+				case "Ram Search": GlobalWinF.Tools.Load<RamSearch>(); break;
 				case "Hex Editor": LoadHexEditor(); break;
 				case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
@@ -2111,12 +2106,12 @@ namespace BizHawk.MultiClient
 				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
 
-				case "Do Search": RamSearch_DoSearch(); break;
-				case "New Search": RamSearch_NewSearch(); break;
-				case "Previous Compare To": RamSearch_PreviousCompareTo(); break;
-				case "Next Compare To": RamSearch_NextCompareTo(); break;
-				case "Previous Operator": RamSearch_PreviousOperator(); break;
-				case "Next Operator": RamSearch_NextOperator(); break;
+				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
+				case "New Search": GlobalWinF.Tools.RamSearch.NewSearch(); break;
+				case "Previous Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(reverse: true); break;
+				case "Next Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(); break;
+				case "Previous Operator": GlobalWinF.Tools.RamSearch.NextOperator(reverse: true); break;
+				case "Next Operator": GlobalWinF.Tools.RamSearch.NextOperator(); break;
 
 				case "Toggle BG 1": SNES_ToggleBG1(); break;
 				case "Toggle BG 2": SNES_ToggleBG2(); break;
@@ -2359,9 +2354,6 @@ namespace BizHawk.MultiClient
 			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsLoadstate();
 		}
 
-		/// <summary>
-		/// Update all tools that are frame dependent like Ram Search after processing
-		/// </summary>
 		public void UpdateToolsAfter(bool fromLua = false)
 		{
 #if WINDOWS
@@ -2372,7 +2364,6 @@ namespace BizHawk.MultiClient
 
 #endif
 			GlobalWinF.Tools.UpdateAfter();
-			if (_ramsearch != null) RamSearch1.UpdateValues();
 			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
@@ -2586,19 +2577,7 @@ namespace BizHawk.MultiClient
 			GlobalWinF.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
 		}
 
-		public void LoadRamSearch()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				RamSearch1 = new RamSearch();
-				RamSearch1.Show();
-			}
-			else
-			{
-				RamSearch1.Focus();
-			}
-		}
-
+		/*TODO delete me
 		private void RamSearch_DoSearch()
 		{
 			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
@@ -2670,6 +2649,7 @@ namespace BizHawk.MultiClient
 				RamSearch1.NextOperator(reverse: true);
 			}
 		}
+		*/
 
 		public void LoadNesSoundConfig()
 		{
@@ -3210,7 +3190,6 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			RamSearch1.Restart();
 			HexEditor1.Restart();
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
@@ -3251,7 +3230,6 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(RamSearch1);
 			CloseForm(HexEditor1);
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);

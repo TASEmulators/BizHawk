@@ -1160,7 +1160,7 @@ namespace BizHawk.MultiClient
 
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRamSearch();
+			GlobalWinF.Tools.Load<RamSearch>();
 		}
 
 		private void HexEditorMenuItem_Click(object sender, EventArgs e)

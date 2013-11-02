@@ -895,9 +895,9 @@ namespace BizHawk.MultiClient
 
 		private void UpdateRelatedDialogs()
 		{
-			GlobalWinF.MainForm.UpdateCheatStatus();
-			GlobalWinF.MainForm.RamSearch1.UpdateValues();
 			GlobalWinF.Tools.UpdateValues<RamWatch>();
+			GlobalWinF.Tools.UpdateValues<RamSearch>();
+			GlobalWinF.MainForm.UpdateCheatStatus();
 			GlobalWinF.MainForm.Cheats_UpdateValues();
 			UpdateValues();
 		}
