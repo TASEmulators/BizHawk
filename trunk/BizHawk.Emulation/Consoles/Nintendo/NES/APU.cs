@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	sealed partial class NES
 	{
-		public class APU 
+		public sealed class APU 
 		{
 			public static bool CFG_DECLICK = true;
 
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			};
 
 
-			class PulseUnit
+			sealed class PulseUnit
 			{
 				public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
 				public int unit;
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			class NoiseUnit
+			sealed class NoiseUnit
 			{
 				APU apu;
 
@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			class TriangleUnit
+			sealed class TriangleUnit
 			{
 				//reg0
 				int linear_counter_reload, control_flag;
@@ -600,7 +600,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			} //class TriangleUnit
 
-			class DMCUnit
+			sealed class DMCUnit
 			{
 				APU apu;
 				int[] DMC_RATE;
