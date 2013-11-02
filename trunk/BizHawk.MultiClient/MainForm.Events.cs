@@ -504,7 +504,7 @@ namespace BizHawk.MultiClient
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RamWatch1.AskSave())
+			if (GlobalWinF.Tools.AskSave())
 			{
 				Close();
 			}
@@ -2179,7 +2179,7 @@ namespace BizHawk.MultiClient
 			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
-				RamWatch1.LoadWatchFile(new FileInfo(filePaths[0]), false);
+				(GlobalWinF.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))

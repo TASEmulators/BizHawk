@@ -8,6 +8,7 @@ namespace BizHawk.MultiClient
 	public static class GlobalWinF
 	{
 		public static MainForm MainForm;
+		public static ToolManager Tools;
 #if WINDOWS
 		public static DirectSound DSound;
 		public static Direct3D Direct3D;

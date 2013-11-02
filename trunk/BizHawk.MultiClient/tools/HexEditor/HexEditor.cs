@@ -712,11 +712,11 @@ namespace BizHawk.MultiClient
 
 			if (HighlightedAddress.HasValue)
 			{
-				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(HighlightedAddress.Value));
+				GlobalWinF.Tools.RamWatch.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				GlobalWinF.MainForm.RamWatch1.AddWatch(MakeWatch(i));
+				GlobalWinF.Tools.RamWatch.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -897,7 +897,7 @@ namespace BizHawk.MultiClient
 		{
 			GlobalWinF.MainForm.UpdateCheatStatus();
 			GlobalWinF.MainForm.RamSearch1.UpdateValues();
-			GlobalWinF.MainForm.RamWatch1.UpdateValues();
+			GlobalWinF.Tools.UpdateValues<RamWatch>();
 			GlobalWinF.MainForm.Cheats_UpdateValues();
 			UpdateValues();
 		}
