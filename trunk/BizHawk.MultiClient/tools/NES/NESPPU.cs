@@ -8,7 +8,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NESPPU : Form
+	public partial class NESPPU : Form, IToolForm
 	{
 		//TODO:
 		//If 8/16 sprite mode, mouse over should put 32x64 version of prite
@@ -24,6 +24,9 @@ namespace BizHawk.MultiClient
 		private readonly byte[] PALRAMprev = new byte[0x20];
 		private readonly NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
 		private bool ForceChange;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public NESPPU()
 		{
@@ -52,10 +55,15 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) Close();
-			if (!IsHandleCreated || IsDisposed) return;
-			_nes = Global.Emulator as NES;
-			Generate(true);
+			if (Global.Emulator is NES)
+			{
+				_nes = Global.Emulator as NES;
+				Generate(true);
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void LoadConfigSettings()
@@ -232,9 +240,14 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is NES)) return;
-			_nes.ppu.PPUViewCallback = Callback;
+			if (Global.Emulator is NES)
+			{
+				_nes.ppu.PPUViewCallback = Callback;
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void NESPPU_Load(object sender, EventArgs e)

@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NESDebugger : Form
+	public partial class NESDebugger : Form, IToolForm
 	{
 		private const int ADDR_MAX = 0xFFFF;
 		private const int DISASM_LINE_COUNT = 100;
@@ -25,7 +25,9 @@ namespace BizHawk.MultiClient
 			public readonly string mnemonic;
 			public DisasmOp(int s, string m) { size = s; mnemonic = m; }
 		}
-		
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public NESDebugger()
 		{
@@ -40,17 +42,27 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) Close();
-			if (!IsHandleCreated || IsDisposed) return;
-			_nes = Global.Emulator as NES;
+			if (Global.Emulator is NES)
+			{
+				_nes = Global.Emulator as NES;
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
-
-			addr = pc = _nes.cpu.PC;
-			UpdateDebugView();
+			if (Global.Emulator is NES)
+			{
+				addr = pc = _nes.cpu.PC;
+				UpdateDebugView();
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void UpdateDebugView()

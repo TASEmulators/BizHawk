@@ -53,7 +53,7 @@ namespace BizHawk.MultiClient
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
-			VirtualPadForm1.Restart();
+			GlobalWinF.Tools.Restart<VirtualPadForm>();
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 		}
 

@@ -141,7 +141,7 @@
 			this.TAStudioButton.Name = "TAStudioButton";
 			this.TAStudioButton.Size = new System.Drawing.Size(86, 20);
 			this.TAStudioButton.Text = "VirtualPads";
-			this.TAStudioButton.Click += new System.EventHandler(this.TAStudioButton_Click_1);
+			this.TAStudioButton.Click += new System.EventHandler(this.VirtualPadButton_Click);
 			// 
 			// NESDebugger
 			// 

@@ -8,11 +8,14 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class VirtualPadForm : Form
+	public partial class VirtualPadForm : Form, IToolForm
 	{
 		private int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		private int defaultHeight;
 		private readonly List<IVirtualPad> Pads = new List<IVirtualPad>();
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
 
 		public VirtualPadForm()
 		{
