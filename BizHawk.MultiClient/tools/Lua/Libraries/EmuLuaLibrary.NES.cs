@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 					"setclipleftandright",
 					"setdispbackground",
 					"setdispsprites",
-					"setscanlines",
+					"setscanlines"
 				};
 			}
 		}
@@ -34,26 +34,20 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				NESGameGenie gg = new NESGameGenie();
-				gg.DecodeGameGenieCode(code);
-				if (gg.Address.HasValue && gg.Value.HasValue)
-				{
-					Watch watch = Watch.GenerateWatch(
-						Global.Emulator.MemoryDomains[1],
-						gg.Address.Value,
-						Watch.WatchSize.Byte,
-						Watch.DisplayType.Hex,
-						code,
-						false
-					);
-
-					Global.CheatList.Add(new Cheat(
-						watch,
-						gg.Value.Value,
-						gg.Compare
-					));
-				}
-
+				var decoder = new NESGameGenieDecoder(code);
+				Watch watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains[1],
+					decoder.Address,
+					Watch.WatchSize.Byte,
+					Watch.DisplayType.Hex,
+					code,
+					false
+				);
+				Global.CheatList.Add(new Cheat(
+					watch,
+					decoder.Value,
+					decoder.Compare
+				));
 				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
@@ -106,14 +100,10 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is NES)
 			{
-				NESGameGenie gg = new NESGameGenie();
-				gg.DecodeGameGenieCode(code);
-				if (gg.Address.HasValue && gg.Value.HasValue)
-				{
-					var cheats = Global.CheatList.Where(x => x.Address == gg.Address);
-					Global.CheatList.RemoveRange(cheats);
-				}
-
+				var decoder = new NESGameGenieDecoder(code);
+				Global.CheatList.RemoveRange(
+					Global.CheatList.Where(x => x.Address == decoder.Address)
+				);
 				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
