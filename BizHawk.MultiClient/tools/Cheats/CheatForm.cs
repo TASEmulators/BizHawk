@@ -16,7 +16,7 @@ using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
-	public partial class Cheats : Form
+	public partial class Cheats : Form, IToolForm
 	{
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";
@@ -43,8 +43,10 @@ namespace BizHawk.MultiClient
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private string _sortedColumn = "";
+		private string _sortedColumn = String.Empty;
 		private bool _sortReverse = false;
+
+		public bool UpdateBefore { get { return false; } }
 
 		public Cheats()
 		{
@@ -54,7 +56,7 @@ namespace BizHawk.MultiClient
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
 
-			_sortedColumn = "";
+			_sortedColumn = String.Empty;
 			_sortReverse = false;
 			TopMost = Global.Config.CheatsAlwaysOnTop;
 		}
@@ -294,7 +296,7 @@ namespace BizHawk.MultiClient
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
-			text = "";
+			text = String.Empty;
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
 			{
 				return;
@@ -317,7 +319,7 @@ namespace BizHawk.MultiClient
 					text = Global.CheatList[index].CompareStr;
 					break;
 				case ON:
-					text = Global.CheatList[index].Enabled ? "*" : "";
+					text = Global.CheatList[index].Enabled ? "*" : String.Empty;
 					break;
 				case DOMAIN:
 					text = Global.CheatList[index].Domain.Name;
@@ -575,6 +577,24 @@ namespace BizHawk.MultiClient
 				UpdateMessageLabel();
 				ToolHelpers.UpdateCheatRelatedTools();
 			}
+		}
+
+		public string GenerateDefaultCheatFilename()
+		{
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+			}
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+			{
+				f.Directory.Create();
+			}
+
+			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
 		#region Events

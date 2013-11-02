@@ -112,7 +112,7 @@ namespace BizHawk.MultiClient
 
 		public static void client_opencheats()
 		{
-			GlobalWinF.MainForm.LoadCheatsWindow();
+			GlobalWinF.Tools.Load<Cheats>();
 		}
 
 		public static void client_openhexeditor()

@@ -93,7 +93,6 @@ namespace BizHawk.MultiClient
 		private GBtools.GBGPUView _gbgpuview;
 		private GBAtools.GBAGPUView _gbagpuview;
 		private PCEBGViewer _pcebgviewer;
-		private Cheats _cheats;
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
 		private TAStudio _tastudio;
@@ -123,13 +122,18 @@ namespace BizHawk.MultiClient
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 
-		//TODO: eventually start doing this, rather than tools attempting to talk to tools
-		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
+		//TODO: clean me up
 		public void Cheats_Restart()
 		{
-			if (_cheats != null) _cheats.Restart();
-			else Global.CheatList.NewList(GenerateDefaultCheatFilename());
-			ToolHelpers.UpdateCheatRelatedTools();
+			if (GlobalWinF.Tools.Has<Cheats>())
+			{
+				GlobalWinF.Tools.Restart<Cheats>();
+			}
+			else
+			{
+				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+				ToolHelpers.UpdateCheatRelatedTools();
+			}
 		}
 
 		public string GenerateDefaultCheatFilename()
@@ -355,7 +359,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.RecentCheats.AutoLoad)
 			{
-				LoadCheatsWindow();
+				GlobalWinF.Tools.Load<Cheats>();
 			}
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
@@ -1625,8 +1629,6 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				Cheats_UpdateValues();
-
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
 				StateSlots.Clear();
@@ -2096,7 +2098,7 @@ namespace BizHawk.MultiClient
 				case "Hex Editor": GlobalWinF.Tools.Load<HexEditor>(); break;
 				case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
-				case "Cheats": LoadCheatsWindow(); break;
+				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
 				case "TAStudio": LoadTAStudio(); break;
 				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
@@ -2820,24 +2822,6 @@ namespace BizHawk.MultiClient
 				TI83KeyPad1.Focus();
 		}
 
-		public void LoadCheatsWindow()
-		{
-			if (_cheats == null)
-			{
-				_cheats = new Cheats();
-			}
-
-			if (!_cheats.IsHandleCreated || _cheats.IsDisposed)
-			{
-				_cheats = new Cheats();
-				_cheats.Show();
-			}
-			else
-			{
-				_cheats.Focus();
-			}
-		}
-
 		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
 		{
 			string PluginToUse = "";
@@ -3218,7 +3202,6 @@ namespace BizHawk.MultiClient
 			CloseForm(GBGPUView1);
 			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
-			CloseForm(_cheats);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;
 			CloseForm(TraceLogger1);

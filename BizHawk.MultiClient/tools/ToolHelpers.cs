@@ -209,7 +209,7 @@ namespace BizHawk.MultiClient
 			GlobalWinF.Tools.UpdateValues<RamWatch>();
 			GlobalWinF.Tools.UpdateValues<RamSearch>();
 			GlobalWinF.Tools.UpdateValues<HexEditor>();
-			GlobalWinF.MainForm.Cheats_UpdateValues();
+			GlobalWinF.Tools.UpdateValues<Cheats>();
 			GlobalWinF.MainForm.UpdateCheatStatus();
 		}
 
