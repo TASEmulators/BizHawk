@@ -11,7 +11,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class RamWatch : Form
+	public partial class RamWatch : Form, IToolForm
 	{
 		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
 			{
@@ -29,6 +29,8 @@ namespace BizHawk.MultiClient
 		private readonly WatchList Watches = new WatchList(Global.Emulator.MainMemory);
 		private string _sortedColumn = "";
 		private bool _sortReverse = false;
+
+		public bool UpdateBefore { get { return true; } }
 
 		public RamWatch()
 		{

@@ -443,6 +443,7 @@
     <Compile Include="tools\HexEditor\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\IToolForm.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
@@ -605,6 +606,7 @@
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\ToolHelpers.cs" />
+    <Compile Include="tools\ToolManager.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
     </Compile>

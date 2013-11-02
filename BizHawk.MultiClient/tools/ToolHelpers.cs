@@ -206,7 +206,7 @@ namespace BizHawk.MultiClient
 
 		public static void UpdateCheatRelatedTools()
 		{
-			GlobalWinF.MainForm.RamWatch1.UpdateValues();
+			GlobalWinF.Tools.UpdateValues<RamWatch>();
 			GlobalWinF.MainForm.HexEditor1.UpdateValues();
 			GlobalWinF.MainForm.Cheats_UpdateValues();
 			GlobalWinF.MainForm.RamSearch1.UpdateValues();

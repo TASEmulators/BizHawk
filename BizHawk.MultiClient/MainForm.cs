@@ -86,36 +86,35 @@ namespace BizHawk.MultiClient
 
 		//tool dialogs
 
-		private RamSearch _ramsearch = null;
+		private RamSearch _ramsearch;
 
-		private HexEditor _hexeditor = null;
-		private TraceLogger _tracelogger = null;
-		private SNESGraphicsDebugger _snesgraphicsdebugger = null;
-		private NESNameTableViewer _nesnametableview = null;
-		private NESPPU _nesppu = null;
-		private NESDebugger _nesdebugger = null;
-		private GBtools.GBGPUView _gbgpuview = null;
-		private GBAtools.GBAGPUView _gbagpuview = null;
-		private PCEBGViewer _pcebgviewer = null;
-		private Cheats _cheats = null;
-		private ToolBox _toolbox = null;
-		private TI83KeyPad _ti83pad = null;
-		private TAStudio _tastudio = null;
-		private VirtualPadForm _vpad = null;
-		private NESGameGenie _ngg = null;
-		private SNESGameGenie _sgg = null;
-		private GBGameGenie _gbgg = null;
-		private GenGameGenie _gengg = null;
-		private NESSoundConfig _nessound = null;
-		private RamWatch _ramwatch = null;
+		private HexEditor _hexeditor;
+		private TraceLogger _tracelogger;
+		private SNESGraphicsDebugger _snesgraphicsdebugger;
+		private NESNameTableViewer _nesnametableview;
+		private NESPPU _nesppu;
+		private NESDebugger _nesdebugger;
+		private GBtools.GBGPUView _gbgpuview;
+		private GBAtools.GBAGPUView _gbagpuview;
+		private PCEBGViewer _pcebgviewer;
+		private Cheats _cheats;
+		private ToolBox _toolbox;
+		private TI83KeyPad _ti83pad;
+		private TAStudio _tastudio;
+		private VirtualPadForm _vpad;
+		private NESGameGenie _ngg;
+		private SNESGameGenie _sgg;
+		private GBGameGenie _gbgg;
+		private GenGameGenie _gengg;
+		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public RamSearch RamSearch1 { get { if (_ramsearch == null) _ramsearch = new RamSearch(); return _ramsearch; } set { _ramsearch = value; } }
 		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
-		public NESNameTableViewer NESNameTableViewer1 { get { if (_nesnametableview == null) _nesnametableview = new NESNameTableViewer(); return _nesnametableview; } set { _nesnametableview = value; } }
-		public NESPPU NESPPU1 { get { if (_nesppu == null) _nesppu = new NESPPU(); return _nesppu; } set { _nesppu = value; } }
+		public NESNameTableViewer NESNameTableViewer1 { get { return _nesnametableview ?? (_nesnametableview = new NESNameTableViewer()); } set { _nesnametableview = value; } }
+		public NESPPU NESPPU1 { get { return _nesppu ?? (_nesppu = new NESPPU()); } set { _nesppu = value; } }
 		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
 		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
 		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
@@ -129,8 +128,6 @@ namespace BizHawk.MultiClient
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
 		public GenGameGenie Gengg { get { if (_gengg == null) _gengg = new GenGameGenie(); return _gengg; } set { _gengg = value; } }
 		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
-
-		public RamWatch RamWatch1 { get { if (_ramwatch == null) _ramwatch = new RamWatch(); return _ramwatch; } set { _ramwatch = value; } }
 
 		//TODO: eventually start doing this, rather than tools attempting to talk to tools
 		public void Cheats_UpdateValues() { if (_cheats != null) { _cheats.UpdateValues(); } }
@@ -229,7 +226,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.SaveOnClose();
 				CloseGame();
 				Global.MovieSession.Movie.Stop();
-				CloseTools();
+				GlobalWinF.Tools.Close();
 				SaveConfig();
 			};
 
@@ -259,6 +256,7 @@ namespace BizHawk.MultiClient
 #endif
 			GlobalWinF.Sound.StartSound();
 			RewireInputChain();
+			GlobalWinF.Tools = new ToolManager();
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
@@ -351,14 +349,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentWatches.AutoLoad)
 			{
-				if (Global.Config.DisplayRamWatch)
-				{
-					LoadRamWatch(false);
-				}
-				else
-				{
-					LoadRamWatch(true);
-				}
+				LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
@@ -779,8 +770,8 @@ namespace BizHawk.MultiClient
 		private void InitControls()
 		{
 			var controls = new Controller(
-				new ControllerDefinition()
-				{
+				new ControllerDefinition
+					{
 					Name = "Emulator Frontend Controls",
 					BoolButtons = Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
 				});
@@ -984,7 +975,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> analogbinds)
+		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
 		{
 			var ret = new Controller(def);
 			Dictionary<string, string> binds;
@@ -1389,7 +1380,7 @@ namespace BizHawk.MultiClient
 								else
 								{
 									string sgbromPath = Global.FirmwareManager.Request("SNES", "Rom_SGB");
-									byte[] sgbrom = null;
+									byte[] sgbrom;
 									try
 									{
 										if (File.Exists(sgbromPath))
@@ -1514,7 +1505,7 @@ namespace BizHawk.MultiClient
 								if (INTERIM)
 								{
 									string gbabiospath = Global.FirmwareManager.Request("GBA", "Bios");
-									byte[] gbabios = null;
+									byte[] gbabios;
 
 									if (File.Exists(gbabiospath))
 									{
@@ -1616,8 +1607,11 @@ namespace BizHawk.MultiClient
 				//    throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 				//    SyncThrottle();
 				//}
+
+				GlobalWinF.Tools.Restart();
+
 				if (_ramsearch != null) RamSearch1.Restart();
-				if (_ramwatch != null) RamWatch1.Restart();
+				
 				if (_hexeditor != null) HexEditor1.Restart();
 				if (_nesppu != null) NESPPU1.Restart();
 				if (_nesnametableview != null) NESNameTableViewer1.Restart();
@@ -2350,6 +2344,9 @@ namespace BizHawk.MultiClient
 				LuaConsole1.LuaImp.CallFrameBeforeEvent();
 			}
 #endif
+
+			GlobalWinF.Tools.UpdateBefore();
+
 			if (_nesnametableview != null) NESNameTableViewer1.UpdateValues();
 			if (_nesppu != null) NESPPU1.UpdateValues();
 			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
@@ -2374,7 +2371,7 @@ namespace BizHawk.MultiClient
 			}
 
 #endif
-			if (_ramwatch != null) RamWatch1.UpdateValues();
+			GlobalWinF.Tools.UpdateAfter();
 			if (_ramsearch != null) RamSearch1.UpdateValues();
 			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
@@ -3208,11 +3205,12 @@ namespace BizHawk.MultiClient
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
-			
+
+			GlobalWinF.Tools.Restart();
+
 			RewireSound();
 			ResetRewindBuffer();
 			RamSearch1.Restart();
-			RamWatch1.Restart();
 			HexEditor1.Restart();
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
@@ -3253,7 +3251,6 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(RamWatch1);
 			CloseForm(RamSearch1);
 			CloseForm(HexEditor1);
 			CloseForm(NESNameTableViewer1);
@@ -4146,21 +4143,13 @@ namespace BizHawk.MultiClient
 
 		public void LoadRamWatch(bool load_dialog)
 		{
-			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				RamWatch1 = new RamWatch();
-				if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
-				{
-					RamWatch1.LoadFileFromRecent(Global.Config.RecentWatches[0]);
-				}
-				if (load_dialog)
-				{
-					RamWatch1.Show();
-				}
+				GlobalWinF.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 			}
-			else
+			if (load_dialog)
 			{
-				RamWatch1.Focus();
+				GlobalWinF.Tools.Load<RamWatch>();
 			}
 		}
 

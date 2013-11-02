@@ -816,7 +816,7 @@ namespace BizHawk.MultiClient
 				GlobalWinF.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < SelectedIndices.Count; x++)
 				{
-					GlobalWinF.MainForm.RamWatch1.AddWatch(Searches[SelectedIndices[x]]);
+					GlobalWinF.Tools.RamWatch.AddWatch(Searches[SelectedIndices[x]]);
 				}
 
 				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
@@ -854,9 +854,12 @@ namespace BizHawk.MultiClient
 
 		private void RemoveRamWatchesFromList()
 		{
-			Searches.RemoveRange(GlobalWinF.MainForm.RamWatch1.AddressList);
-			WatchListView.ItemCount = Searches.Count;
-			SetTotal();
+			if (GlobalWinF.Tools.Has<RamWatch>())
+			{
+				Searches.RemoveRange(GlobalWinF.Tools.RamWatch.AddressList);
+				WatchListView.ItemCount = Searches.Count;
+				SetTotal();
+			}
 		}
 
 		private void UpdateUndoToolBarButtons()
