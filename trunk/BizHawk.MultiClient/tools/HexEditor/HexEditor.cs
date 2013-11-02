@@ -900,8 +900,8 @@ namespace BizHawk.MultiClient
 		{
 			GlobalWinF.Tools.UpdateValues<RamWatch>();
 			GlobalWinF.Tools.UpdateValues<RamSearch>();
+			GlobalWinF.Tools.UpdateValues<Cheats>();
 			GlobalWinF.MainForm.UpdateCheatStatus();
-			GlobalWinF.MainForm.Cheats_UpdateValues();
 			UpdateValues();
 		}
 

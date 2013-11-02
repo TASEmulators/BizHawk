@@ -1185,7 +1185,7 @@ namespace BizHawk.MultiClient
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadCheatsWindow();
+			GlobalWinF.Tools.Load<Cheats>();
 		}
 
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
@@ -2046,7 +2046,7 @@ namespace BizHawk.MultiClient
 		{
 			if (CheatStatusButton.Visible)
 			{
-				LoadCheatsWindow();
+				GlobalWinF.Tools.Load<Cheats>();
 			}
 		}
 
@@ -2173,7 +2173,7 @@ namespace BizHawk.MultiClient
 			else if (ext.ToUpper() == ".CHT")
 			{
 				Global.CheatList.Load(filePaths[0], false);
-				LoadCheatsWindow();
+				GlobalWinF.Tools.Load<Cheats>();
 				ToolHelpers.UpdateCheatRelatedTools();
 			}
 			else if (ext.ToUpper() == ".WCH")
