@@ -9,12 +9,29 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class GBGameGenie : Form
+	public partial class GBGameGenie : Form, IToolForm
 	{
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 		private bool Processing = false;
 
-        public GBGameGenie()
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
+		public void Restart()
+		{
+			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
+			{
+				Close();
+			}
+		}
+		public void UpdateValues()
+		{
+			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
+			{
+				Close();
+			}
+		}
+
+		public GBGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();

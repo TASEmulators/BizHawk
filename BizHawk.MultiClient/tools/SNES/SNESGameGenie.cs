@@ -10,10 +10,27 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class SNESGameGenie : Form
+	public partial class SNESGameGenie : Form, IToolForm
 	{
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 		private bool Processing = false;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
+		public void Restart()
+		{
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				Close();
+			}
+		}
+		public void UpdateValues()
+		{
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				Close();
+			}
+		}
 
 		public SNESGameGenie()
 		{
