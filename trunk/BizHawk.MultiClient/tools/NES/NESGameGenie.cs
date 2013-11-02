@@ -5,15 +5,14 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
 	public partial class NESGameGenie : Form
 	{
-		private int? _address = null;
-		private int? _value = null;
-		private int? _compare = null;
+		private int? _address;
+		private int? _value;
+		private int? _compare;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>
 		{
 			{ 'A', 0 }, //0000
@@ -63,83 +62,12 @@ namespace BizHawk.MultiClient
 
 		public void DecodeGameGenieCode(string code)
 		{
-			//char 3 bit 3 denotes the code length.
-			if (code.Length == 6)
-			{
-				//Char # |   1   |   2   |   3   |   4   |   5   |   6   |
-				//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-				//maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|5|E|F|G|
-				_value = 0;
-				_address = 0x8000;
-				int x;
 
-				GameGenieTable.TryGetValue(code[0], out x);
-				_value |= (x & 0x07);
-				_value |= (x & 0x08) << 4;
-
-				GameGenieTable.TryGetValue(code[1], out x);
-				_value |= (x & 0x07) << 4;
-				_address |= (x & 0x08) << 4;
-
-				GameGenieTable.TryGetValue(code[2], out x);
-				_address |= (x & 0x07) << 4;
-
-				GameGenieTable.TryGetValue(code[3], out x);
-				_address |= (x & 0x07) << 12;
-				_address |= (x & 0x08);
-
-				GameGenieTable.TryGetValue(code[4], out x);
-				_address |= (x & 0x07);
-				_address |= (x & 0x08) << 8;
-
-				GameGenieTable.TryGetValue(code[5], out x);
-				_address |= (x & 0x07) << 8;
-				_value |= (x & 0x08);
-
-				SetProperties();
-			}
-			else if (code.Length == 8)
-			{
-				//Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
-				//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-				//maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|%|E|F|G|!|^|&|*|5|@|#|$|
-				_value = 0;
-				_address = 0x8000;
-				_compare = 0;
-				int x;
-
-				GameGenieTable.TryGetValue(code[0], out x);
-				_value |= (x & 0x07);
-				_value |= (x & 0x08) << 4;
-
-				GameGenieTable.TryGetValue(code[1], out x);
-				_value |= (x & 0x07) << 4;
-				_address |= (x & 0x08) << 4;
-
-				GameGenieTable.TryGetValue(code[2], out x);
-				_address |= (x & 0x07) << 4;
-
-				GameGenieTable.TryGetValue(code[3], out x);
-				_address |= (x & 0x07) << 12;
-				_address |= (x & 0x08);
-
-				GameGenieTable.TryGetValue(code[4], out x);
-				_address |= (x & 0x07);
-				_address |= (x & 0x08) << 8;
-
-				GameGenieTable.TryGetValue(code[5], out x);
-				_address |= (x & 0x07) << 8;
-				_compare |= (x & 0x08);
-
-				GameGenieTable.TryGetValue(code[6], out x);
-				_compare |= (x & 0x07);
-				_compare |= (x & 0x08) << 4;
-
-				GameGenieTable.TryGetValue(code[7], out x);
-				_compare |= (x & 0x07) << 4;
-				_value |= (x & 0x08);
-				SetProperties();
-			}
+			var decoder = new NESGameGenieDecoder(code);
+			_address = decoder.Address;
+			_value = decoder.Value;
+			_compare = decoder.Compare;
+			SetProperties();
 		}
 
 		private void SetProperties()
@@ -196,36 +124,7 @@ namespace BizHawk.MultiClient
 			_address = AddressBox.ToRawInt();
 			_value = ValueBox.ToRawInt();
 			_compare = CompareBox.ToRawInt();
-
-			char[] letters = { 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
-			if (_address >= 0x8000)
-				_address -= 0x8000;
-			GameGenieCode.Text = String.Empty;
-			byte[] num = { 0, 0, 0, 0, 0, 0, 0, 0 };
-			num[0] = (byte)((_value & 7) + ((_value >> 4) & 8));
-			num[1] = (byte)(((_value >> 4) & 7) + ((_address >> 4) & 8));
-			num[2] = (byte)(((_address >> 4) & 7));
-			num[3] = (byte)((_address >> 12) + (_address & 8));
-			num[4] = (byte)((_address & 7) + ((_address >> 8) & 8));
-			num[5] = (byte)(((_address >> 8) & 7));
-
-			if (_compare < 0 || CompareBox.Text.Length == 0)
-			{
-				num[5] += (byte)(_value & 8);
-				for (int x = 0; x < 6; x++)
-					GameGenieCode.Text += letters[num[x]];
-			}
-			else
-			{
-				num[2] += 8;
-				num[5] += (byte)(_compare & 8);
-				num[6] = (byte)((_compare & 7) + ((_compare >> 4) & 8));
-				num[7] = (byte)(((_compare >> 4) & 7) + (_value & 8));
-				for (int i = 0; i < 8; i++)
-				{
-					GameGenieCode.Text += letters[num[i]];
-				}
-			}
+			GameGenieCode.Text = new NESGameGenieEncoder(_address.Value, _value.Value, _compare).Encode();
 		}
 
 		private void AddCheatClick()
@@ -249,10 +148,10 @@ namespace BizHawk.MultiClient
 				Global.CheatList.Add(new Cheat(
 					watch,
 					ValueBox.ToRawInt(),
-					compare,
-					enabled: true));
+					compare
+				));
 
-				GlobalWinF.MainForm.Cheats_UpdateValues();
+				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -378,7 +277,6 @@ namespace BizHawk.MultiClient
 		{
 			if (Encoding.Checked && AddressBox.Text.Length > 0)
 			{
-				int _address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 				if (!String.IsNullOrEmpty(ValueBox.Text))
 				{
 					EncodeGameGenie();
