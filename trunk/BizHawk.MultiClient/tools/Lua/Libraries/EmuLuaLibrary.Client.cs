@@ -127,7 +127,7 @@ namespace BizHawk.MultiClient
 
 		public static void client_openramsearch()
 		{
-			GlobalWinF.MainForm.LoadRamSearch();
+			GlobalWinF.Tools.Load<RamSearch>();
 		}
 
 		public static void client_openrom(object lua_input)

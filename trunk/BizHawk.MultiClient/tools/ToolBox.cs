@@ -98,7 +98,7 @@ namespace BizHawk.MultiClient
 
 		private void toolStripButton3_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadRamSearch();
+			GlobalWinF.Tools.Load<RamSearch>();
 		}
 
 		private void HexEditor_Click(object sender, EventArgs e)
