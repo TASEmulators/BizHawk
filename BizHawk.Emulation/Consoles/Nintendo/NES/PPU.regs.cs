@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		sealed partial class PPU
 		{
-			public class Reg_2001
+			public sealed class Reg_2001
 			{
 				public Bit color_disable; //Color disable (0: normal color; 1: AND all palette entries with 110000, effectively producing a monochrome display)
 				public Bit show_bg_leftmost; //Show leftmost 8 pixels of background
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//uses the internal counters concept at http://nesdev.icequake.net/PPU%20addressing.txt
 			//TODO - this should be turned into a state machine
-			public class PPUREGS
+			public sealed class PPUREGS
 			{
 				PPU ppu;
 				public PPUREGS(PPU ppu)
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			};
 
-			public class Reg_2000
+			public sealed class Reg_2000
 			{
 				PPU ppu;
 				public Reg_2000(PPU ppu)
