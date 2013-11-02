@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBAtools
+﻿namespace BizHawk.MultiClient
 {
 	partial class MobileBmpView
 	{
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.bmpView1 = new BizHawk.MultiClient.GBtools.BmpView();
+			this.bmpView1 = new BmpView();
 			this.SuspendLayout();
 			// 
 			// bmpView1
@@ -56,6 +56,6 @@
 
 		#endregion
 
-		private GBtools.BmpView bmpView1;
+		private BmpView bmpView1;
 	}
 }

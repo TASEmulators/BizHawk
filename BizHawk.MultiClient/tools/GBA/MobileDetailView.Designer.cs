@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBAtools
+﻿namespace BizHawk.MultiClient
 {
 	partial class MobileDetailView
 	{
@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.bmpView1 = new BizHawk.MultiClient.GBtools.BmpView();
+			this.bmpView1 = new BmpView();
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -95,7 +95,7 @@
 		#endregion
 
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private GBtools.BmpView bmpView1;
+		private BmpView bmpView1;
 		private System.Windows.Forms.ListView listView1;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;

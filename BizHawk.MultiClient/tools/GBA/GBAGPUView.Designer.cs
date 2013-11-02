@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBAtools
+﻿namespace BizHawk.MultiClient
 {
 	partial class GBAGPUView
 	{

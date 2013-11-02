@@ -85,8 +85,6 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		private GBtools.GBGPUView _gbgpuview;
-		private GBAtools.GBAGPUView _gbagpuview;
 		private PCEBGViewer _pcebgviewer;
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
@@ -94,8 +92,6 @@ namespace BizHawk.MultiClient
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
-		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
 		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
@@ -359,7 +355,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
 			{
-				LoadGBGPUView();
+				GlobalWinF.Tools.Load<GBGPUView>();
 			}
 			if (Global.Config.AutoloadTAStudio)
 			{
@@ -1587,8 +1583,6 @@ namespace BizHawk.MultiClient
 				//}
 
 				GlobalWinF.Tools.Restart();
-				if (_gbgpuview != null) GBGPUView1.Restart();
-				if (_gbagpuview != null) GBAGPUView1.Restart();
 				if (_pcebgviewer != null) PCEBGViewer1.Restart();
 				if (_ti83pad != null) TI83KeyPad1.Restart();
 				if (_tastudio != null) TAStudio1.Restart();
@@ -2320,8 +2314,6 @@ namespace BizHawk.MultiClient
 			GlobalWinF.Tools.UpdateBefore();
 
 			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
-			if (_gbgpuview != null) GBGPUView1.UpdateValues();
-			if (_gbagpuview != null) GBAGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -2689,28 +2681,6 @@ namespace BizHawk.MultiClient
 				PCEBGViewer1.Focus();
 		}
 
-		public void LoadGBGPUView()
-		{
-			if (!GBGPUView1.IsHandleCreated || GBGPUView1.IsDisposed)
-			{
-				GBGPUView1 = new GBtools.GBGPUView();
-				GBGPUView1.Show();
-			}
-			else
-				GBGPUView1.Focus();
-		}
-
-		public void LoadGBAGPUView()
-		{
-			if (!GBAGPUView1.IsHandleCreated || GBAGPUView1.IsDisposed)
-			{
-				GBAGPUView1 = new GBAtools.GBAGPUView();
-				GBAGPUView1.Show();
-			}
-			else
-				GBAGPUView1.Focus();
-		}
-
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3057,8 +3027,6 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			GBGPUView1.Restart();
-			GBAGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats_Restart();
@@ -3093,8 +3061,6 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(GBGPUView1);
-			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;

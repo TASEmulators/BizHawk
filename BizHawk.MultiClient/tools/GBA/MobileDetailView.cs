@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.GBAtools
+namespace BizHawk.MultiClient
 {
 	public partial class MobileDetailView : Form
 	{
@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient.GBAtools
 			InitializeComponent();
 		}
 
-		public GBtools.BmpView bmpView { get { return bmpView1; } }
+		public BmpView bmpView { get { return bmpView1; } }
 
 		[Browsable(false)]
 		public bool ShouldDraw { get { return this.Visible; } }

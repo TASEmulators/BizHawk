@@ -6,9 +6,9 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.GBtools
+namespace BizHawk.MultiClient
 {
-	public partial class GBGPUView : Form
+	public partial class GBGPUView : Form, IToolForm
 	{
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
@@ -49,6 +49,9 @@ namespace BizHawk.MultiClient.GBtools
 				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
 			}
 		}
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public GBGPUView()
 		{
