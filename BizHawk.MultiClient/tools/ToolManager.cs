@@ -250,6 +250,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public VirtualPadForm VirtualPad
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is VirtualPadForm);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as VirtualPadForm;
+					}
+				}
+
+				var ramWatch = new VirtualPadForm();
+				_tools.Add(ramWatch);
+				return ramWatch;
+			}
+		}
+
 		#endregion
 	}
 }

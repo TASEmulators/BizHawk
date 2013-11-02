@@ -8,13 +8,16 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NESNameTableViewer : Form
+	public partial class NESNameTableViewer : Form, IToolForm
 	{
 		//TODO:
 		//Show Scroll Lines + UI Toggle
 
 		private NES _nes;
 		private readonly NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public NESNameTableViewer()
 		{
@@ -106,17 +109,28 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is NES)) return;
-			NES.PPU ppu = (Global.Emulator as NES).ppu;
-			ppu.NTViewCallback = Callback;
+			if (Global.Emulator is NES)
+			{
+				NES.PPU ppu = (Global.Emulator as NES).ppu;
+				ppu.NTViewCallback = Callback;
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) Close();
-			_nes = Global.Emulator as NES;
-			Generate(true);
+			if (Global.Emulator is NES)
+			{
+				_nes = Global.Emulator as NES;
+				Generate(true);
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)

@@ -85,18 +85,13 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		private TraceLogger _tracelogger;
 		private SNESGraphicsDebugger _snesgraphicsdebugger;
-		private NESNameTableViewer _nesnametableview;
-		private NESPPU _nesppu;
-		private NESDebugger _nesdebugger;
 		private GBtools.GBGPUView _gbgpuview;
 		private GBAtools.GBAGPUView _gbagpuview;
 		private PCEBGViewer _pcebgviewer;
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
 		private TAStudio _tastudio;
-		private VirtualPadForm _vpad;
 		private NESGameGenie _ngg;
 		private SNESGameGenie _sgg;
 		private GBGameGenie _gbgg;
@@ -104,18 +99,13 @@ namespace BizHawk.MultiClient
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
-		public NESNameTableViewer NESNameTableViewer1 { get { return _nesnametableview ?? (_nesnametableview = new NESNameTableViewer()); } set { _nesnametableview = value; } }
-		public NESPPU NESPPU1 { get { return _nesppu ?? (_nesppu = new NESPPU()); } set { _nesppu = value; } }
-		public NESDebugger NESDebug1 { get { if (_nesdebugger == null) _nesdebugger = new NESDebugger(); return _nesdebugger; } set { _nesdebugger = value; } }
 		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
 		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
 		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
-		public VirtualPadForm VirtualPadForm1 { get { if (_vpad == null) _vpad = new VirtualPadForm(); return _vpad; } set { _vpad = value; } }
 		public NESGameGenie NESgg { get { if (_ngg == null) _ngg = new NESGameGenie(); return _ngg; } set { _ngg = value; } }
 		public SNESGameGenie SNESgg { get { if (_sgg == null) _sgg = new SNESGameGenie(); return _sgg; } set { _sgg = value; } }
 		public GBGameGenie GBgg { get { if (_gbgg == null) _gbgg = new GBGameGenie(); return _gbgg; } set { _gbgg = value; } }
@@ -363,15 +353,15 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
-				LoadNESPPU();
+				GlobalWinF.Tools.Load<NESPPU>();
 			}
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
 			{
-				LoadNESNameTable();
+				GlobalWinF.Tools.Load<NESNameTableViewer>();
 			}
 			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
 			{
-				LoadNESDebugger();
+				GlobalWinF.Tools.Load<NESDebugger>();
 			}
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 			{
@@ -387,7 +377,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AutoloadVirtualPad)
 			{
-				LoadVirtualPads();
+				GlobalWinF.Tools.Load<VirtualPadForm>();
 			}
 			if (Global.Config.AutoLoadLuaConsole)
 			{
@@ -1607,18 +1597,13 @@ namespace BizHawk.MultiClient
 				//}
 
 				GlobalWinF.Tools.Restart();
-				if (_nesppu != null) NESPPU1.Restart();
-				if (_nesnametableview != null) NESNameTableViewer1.Restart();
-				if (_nesdebugger != null) NESDebug1.Restart();
 				if (_gbgpuview != null) GBGPUView1.Restart();
 				if (_gbagpuview != null) GBAGPUView1.Restart();
 				if (_pcebgviewer != null) PCEBGViewer1.Restart();
 				if (_ti83pad != null) TI83KeyPad1.Restart();
 				if (_tastudio != null) TAStudio1.Restart();
-				if (_vpad != null) VirtualPadForm1.Restart();
 				Cheats_Restart();
 				if (_toolbox != null) ToolBox1.Restart();
-				if (_tracelogger != null) TraceLogger1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -1935,7 +1920,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.StickyXORAdapter.ClearStickies();
 			GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
-			VirtualPadForm1.ClearVirtualPadHolds();
+
+			if (GlobalWinF.Tools.Has<VirtualPadForm>())
+			{
+				GlobalWinF.Tools.VirtualPad.ClearVirtualPadHolds();
+			}
+
 			GlobalWinF.OSD.AddMessage("Autohold keys cleared");
 		}
 
@@ -2101,7 +2091,7 @@ namespace BizHawk.MultiClient
 				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
 				case "TAStudio": LoadTAStudio(); break;
 				case "ToolBox": LoadToolBox(); break;
-				case "Virtual Pad": LoadVirtualPads(); break;
+				case "Virtual Pad": GlobalWinF.Tools.Load<VirtualPadForm>(); break;
 
 				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
 				case "New Search": GlobalWinF.Tools.RamSearch.NewSearch(); break;
@@ -2120,15 +2110,15 @@ namespace BizHawk.MultiClient
 				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
 
 
-				case "Y Up Small": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
-				case "Y Up Large": VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
-				case "Y Down Small": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
-				case "Y Down Large": VirtualPadForm1.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
+				case "Y Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
+				case "Y Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
+				case "Y Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
+				case "Y Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
 
-				case "X Up Small": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
-				case "X Up Large": VirtualPadForm1.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
-				case "X Down Small": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
-				case "X Down Large": VirtualPadForm1.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
+				case "X Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
+				case "X Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
+				case "X Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
+				case "X Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
 			}
 
 			return true;
@@ -2339,8 +2329,6 @@ namespace BizHawk.MultiClient
 
 			GlobalWinF.Tools.UpdateBefore();
 
-			if (_nesnametableview != null) NESNameTableViewer1.UpdateValues();
-			if (_nesppu != null) NESPPU1.UpdateValues();
 			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
 			if (_gbgpuview != null) GBGPUView1.UpdateValues();
 			if (_gbagpuview != null) GBAGPUView1.UpdateValues();
@@ -2365,9 +2353,7 @@ namespace BizHawk.MultiClient
 			//frame of execution in its list view.
 
 			if (_tastudio != null) TAStudio1.UpdateValues();
-			if (_vpad != null) VirtualPadForm1.UpdateValues();
 			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsAfter();
-			if (_tracelogger != null) TraceLogger1.UpdateValues();
 			HandleToggleLight();
 #if WINDOWS
 			if (_luaconsole != null)
@@ -2722,15 +2708,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.CoreComm.CpuTraceAvailable)
 			{
-				if (!TraceLogger1.IsHandleCreated || TraceLogger1.IsDisposed)
-				{
-					TraceLogger1 = new TraceLogger();
-					TraceLogger1.Show();
-				}
-				else
-				{
-					TraceLogger1.Focus();
-				}
+				GlobalWinF.Tools.Load<TraceLogger>();
 			}
 		}
 
@@ -2743,39 +2721,6 @@ namespace BizHawk.MultiClient
 			}
 			else
 				ToolBox1.Close();
-		}
-
-		public void LoadNESPPU()
-		{
-			if (!NESPPU1.IsHandleCreated || NESPPU1.IsDisposed)
-			{
-				NESPPU1 = new NESPPU();
-				NESPPU1.Show();
-			}
-			else
-				NESPPU1.Focus();
-		}
-
-		public void LoadNESNameTable()
-		{
-			if (!NESNameTableViewer1.IsHandleCreated || NESNameTableViewer1.IsDisposed)
-			{
-				NESNameTableViewer1 = new NESNameTableViewer();
-				NESNameTableViewer1.Show();
-			}
-			else
-				NESNameTableViewer1.Focus();
-		}
-
-		public void LoadNESDebugger()
-		{
-			if (!NESDebug1.IsHandleCreated || NESDebug1.IsDisposed)
-			{
-				NESDebug1 = new NESDebugger();
-				NESDebug1.Show();
-			}
-			else
-				NESDebug1.Focus();
 		}
 
 		public void LoadPCEBGViewer()
@@ -3157,9 +3102,6 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			NESPPU1.Restart();
-			NESNameTableViewer1.Restart();
-			NESDebug1.Restart();
 			GBGPUView1.Restart();
 			GBAGPUView1.Restart();
 			PCEBGViewer1.Restart();
@@ -3196,16 +3138,11 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(NESNameTableViewer1);
-			CloseForm(NESPPU1);
-			CloseForm(NESDebug1);
 			CloseForm(GBGPUView1);
 			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;
-			CloseForm(TraceLogger1);
-			CloseForm(VirtualPadForm1);
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3291,17 +3228,6 @@ namespace BizHawk.MultiClient
 			{
 				TAStudio1.Focus();
 			}
-		}
-
-		public void LoadVirtualPads()
-		{
-			if (!VirtualPadForm1.IsHandleCreated || VirtualPadForm1.IsDisposed)
-			{
-				VirtualPadForm1 = new VirtualPadForm();
-				VirtualPadForm1.Show();
-			}
-			else
-				VirtualPadForm1.Focus();
 		}
 
 		private void VolumeUp()

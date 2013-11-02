@@ -113,12 +113,12 @@ namespace BizHawk.MultiClient
 
 		private void NESPPU_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadNESPPU();
+			GlobalWinF.Tools.Load<NESPPU>();
 		}
 
 		private void NESDebugger_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadNESDebugger();
+			GlobalWinF.Tools.Load<NESDebugger>();
 		}
 
 		private void NESGameGenie_Click(object sender, EventArgs e)
@@ -128,7 +128,7 @@ namespace BizHawk.MultiClient
 
 		private void NESNameTable_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadNESNameTable();
+			GlobalWinF.Tools.Load<NESNameTableViewer>();
 		}
 
 		private void KeyPadTool_Click(object sender, EventArgs e)
@@ -152,9 +152,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void TAStudioButton_Click_1(object sender, EventArgs e)
+		private void VirtualPadButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadVirtualPads();
+			GlobalWinF.Tools.Load<VirtualPadForm>();
 		}
 
 		private void SNESGameGenie_Click(object sender, EventArgs e)

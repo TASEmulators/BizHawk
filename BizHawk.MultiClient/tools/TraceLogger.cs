@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class TraceLogger : Form
+	public partial class TraceLogger : Form, IToolForm
 	{
 		//Refresh rate slider
 		//Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
@@ -17,6 +17,9 @@ namespace BizHawk.MultiClient
 
 		private readonly List<string> Instructions = new List<string>();
 		private FileInfo LogFile;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
 
 		public TraceLogger()
 		{

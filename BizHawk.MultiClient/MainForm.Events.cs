@@ -1180,7 +1180,7 @@ namespace BizHawk.MultiClient
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadVirtualPads();
+			GlobalWinF.Tools.Load<VirtualPadForm>();
 		}
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
@@ -1209,17 +1209,17 @@ namespace BizHawk.MultiClient
 
 		private void NESDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNESDebugger();
+			GlobalWinF.Tools.Load<NESDebugger>();
 		}
 
 		private void NESPPUViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNESPPU();
+			GlobalWinF.Tools.Load<NESPPU>();
 		}
 
 		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNESNameTable();
+			GlobalWinF.Tools.Load<NESNameTableViewer>();
 		}
 
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
