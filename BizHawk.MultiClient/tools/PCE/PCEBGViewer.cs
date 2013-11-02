@@ -8,10 +8,13 @@ using BizHawk.Emulation.Consoles.TurboGrafx;
 
 namespace BizHawk.MultiClient
 {
-	public partial class PCEBGViewer : Form
+	public partial class PCEBGViewer : Form, IToolForm
 	{
 		private PCEngine pce;
 		private int VDCtype;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public PCEBGViewer()
 		{
@@ -66,20 +69,26 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is PCEngine))
+			if (Global.Emulator is PCEngine)
+			{
+				pce = Global.Emulator as PCEngine;
+			}
+			else
 			{
 				Close();
-				return;
 			}
-			pce = Global.Emulator as PCEngine;
 		}
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
-			if (!(Global.Emulator is PCEngine)) return;
-			Generate();
+			if (Global.Emulator is PCEngine)
+			{
+				Generate();
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void SaveConfigSettings()

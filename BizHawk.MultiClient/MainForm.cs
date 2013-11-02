@@ -85,14 +85,12 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		private PCEBGViewer _pcebgviewer;
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
 		private TAStudio _tastudio;
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
@@ -371,7 +369,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
-				LoadPCEBGViewer();
+				GlobalWinF.Tools.Load<PCEBGViewer>();
 			}
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
@@ -1583,7 +1581,6 @@ namespace BizHawk.MultiClient
 				//}
 
 				GlobalWinF.Tools.Restart();
-				if (_pcebgviewer != null) PCEBGViewer1.Restart();
 				if (_ti83pad != null) TI83KeyPad1.Restart();
 				if (_tastudio != null) TAStudio1.Restart();
 				Cheats_Restart();
@@ -2310,10 +2307,7 @@ namespace BizHawk.MultiClient
 				LuaConsole1.LuaImp.CallFrameBeforeEvent();
 			}
 #endif
-
 			GlobalWinF.Tools.UpdateBefore();
-
-			if (_pcebgviewer != null) PCEBGViewer1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -2670,17 +2664,6 @@ namespace BizHawk.MultiClient
 				ToolBox1.Close();
 		}
 
-		public void LoadPCEBGViewer()
-		{
-			if (!PCEBGViewer1.IsHandleCreated || PCEBGViewer1.IsDisposed)
-			{
-				PCEBGViewer1 = new PCEBGViewer();
-				PCEBGViewer1.Show();
-			}
-			else
-				PCEBGViewer1.Focus();
-		}
-
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3027,7 +3010,6 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats_Restart();
 			ToolBox1.Restart();
@@ -3061,7 +3043,6 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(PCEBGViewer1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;
 #if WINDOWS

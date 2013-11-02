@@ -38,6 +38,7 @@
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.canvas = new BizHawk.MultiClient.PCEBGCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
@@ -50,7 +51,6 @@
 			this.TileIDLabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.canvas = new BizHawk.MultiClient.PCEBGCanvas();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -60,6 +60,7 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem});
@@ -140,6 +141,15 @@
 			this.groupBox1.Size = new System.Drawing.Size(529, 536);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
+			// 
+			// canvas
+			// 
+			this.canvas.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.canvas.Location = new System.Drawing.Point(8, 15);
+			this.canvas.Name = "canvas";
+			this.canvas.Size = new System.Drawing.Size(512, 513);
+			this.canvas.TabIndex = 0;
+			this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
 			// 
 			// groupBox5
 			// 
@@ -263,15 +273,6 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Tile ID:";
 			// 
-			// canvas
-			// 
-			this.canvas.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.canvas.Location = new System.Drawing.Point(8, 15);
-			this.canvas.Name = "canvas";
-			this.canvas.Size = new System.Drawing.Size(512, 513);
-			this.canvas.TabIndex = 0;
-			this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
-			// 
 			// PCEBGViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,7 +285,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PCEBGViewer";
 			this.ShowIcon = false;
-			this.Text = "PCE BG Viewer";
+			this.Text = "Background Viewer";
 			this.Load += new System.EventHandler(this.PCEBGViewer_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
