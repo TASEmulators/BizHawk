@@ -15,7 +15,7 @@ namespace BizHawk
 
 	public class HexTextBox : TextBox, INumberBox
 	{
-		private string _addressFormatStr = "{0:X4}";
+		private string _addressFormatStr = String.Empty;
 		private int? _maxSize = null;
 		private bool _nullable = true;
 
@@ -75,7 +75,7 @@ namespace BizHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsValidHexNumber(Text))
+				if (InputValidate.IsValidHexNumber(Text) && !String.IsNullOrEmpty(_addressFormatStr))
 				{
 					uint val = (uint)ToRawInt();
 
@@ -93,7 +93,7 @@ namespace BizHawk
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsValidHexNumber(Text))
+				if (InputValidate.IsValidHexNumber(Text) && !String.IsNullOrEmpty(_addressFormatStr))
 				{
 					uint val = (uint)ToRawInt();
 					if (val == 0)
@@ -120,6 +120,8 @@ namespace BizHawk
 			{
 				ResetText();
 			}
+
+			base.OnTextChanged(e);
 		}
 
 		public int ToRawInt()
