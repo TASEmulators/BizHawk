@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBtools
+﻿namespace BizHawk.MultiClient
 {
 	partial class GBGPUView
 	{
@@ -35,10 +35,17 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.bmpViewBG = new BmpView();
+			this.bmpViewWin = new BmpView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.bmpViewTiles1 = new BmpView();
+			this.bmpViewTiles2 = new BmpView();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
+			this.bmpViewBGPal = new BmpView();
+			this.bmpViewSPPal = new BmpView();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.bmpViewOAM = new BmpView();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.hScrollBarScanline = new System.Windows.Forms.HScrollBar();
 			this.labelScanline = new System.Windows.Forms.Label();
@@ -48,7 +55,9 @@
 			this.radioButtonRefreshFrame = new System.Windows.Forms.RadioButton();
 			this.groupBoxDetails = new System.Windows.Forms.GroupBox();
 			this.labelDetails = new System.Windows.Forms.Label();
+			this.bmpViewDetails = new BmpView();
 			this.groupBoxMemory = new System.Windows.Forms.GroupBox();
+			this.bmpViewMemory = new BmpView();
 			this.labelMemory = new System.Windows.Forms.Label();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.labelClipboard = new System.Windows.Forms.Label();
@@ -59,15 +68,6 @@
 			this.labelSpriteBackColor = new System.Windows.Forms.Label();
 			this.buttonChangeColor = new System.Windows.Forms.Button();
 			this.panelSpriteBackColor = new System.Windows.Forms.Panel();
-			this.bmpViewMemory = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewDetails = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewOAM = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewBGPal = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewSPPal = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewTiles1 = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewTiles2 = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewBG = new BizHawk.MultiClient.GBtools.BmpView();
-			this.bmpViewWin = new BizHawk.MultiClient.GBtools.BmpView();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -147,6 +147,32 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Tilemaps";
 			// 
+			// bmpViewBG
+			// 
+			this.bmpViewBG.BackColor = System.Drawing.Color.Black;
+			this.bmpViewBG.Location = new System.Drawing.Point(6, 32);
+			this.bmpViewBG.Name = "bmpViewBG";
+			this.bmpViewBG.Size = new System.Drawing.Size(256, 256);
+			this.bmpViewBG.TabIndex = 4;
+			this.bmpViewBG.Text = "Background";
+			this.bmpViewBG.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewBG.MouseEnter += new System.EventHandler(this.bmpViewBG_MouseEnter);
+			this.bmpViewBG.MouseLeave += new System.EventHandler(this.bmpViewBG_MouseLeave);
+			this.bmpViewBG.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewBG_MouseMove);
+			// 
+			// bmpViewWin
+			// 
+			this.bmpViewWin.BackColor = System.Drawing.Color.Black;
+			this.bmpViewWin.Location = new System.Drawing.Point(268, 32);
+			this.bmpViewWin.Name = "bmpViewWin";
+			this.bmpViewWin.Size = new System.Drawing.Size(256, 256);
+			this.bmpViewWin.TabIndex = 5;
+			this.bmpViewWin.Text = "Window";
+			this.bmpViewWin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewWin.MouseEnter += new System.EventHandler(this.bmpViewWin_MouseEnter);
+			this.bmpViewWin.MouseLeave += new System.EventHandler(this.bmpViewWin_MouseLeave);
+			this.bmpViewWin.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewWin_MouseMove);
+			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.label3);
@@ -159,6 +185,32 @@
 			this.groupBox2.TabIndex = 17;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Tiles";
+			// 
+			// bmpViewTiles1
+			// 
+			this.bmpViewTiles1.BackColor = System.Drawing.Color.Black;
+			this.bmpViewTiles1.Location = new System.Drawing.Point(6, 32);
+			this.bmpViewTiles1.Name = "bmpViewTiles1";
+			this.bmpViewTiles1.Size = new System.Drawing.Size(128, 192);
+			this.bmpViewTiles1.TabIndex = 6;
+			this.bmpViewTiles1.Text = "Tiles 1";
+			this.bmpViewTiles1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewTiles1.MouseEnter += new System.EventHandler(this.bmpViewTiles1_MouseEnter);
+			this.bmpViewTiles1.MouseLeave += new System.EventHandler(this.bmpViewTiles1_MouseLeave);
+			this.bmpViewTiles1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewTiles1_MouseMove);
+			// 
+			// bmpViewTiles2
+			// 
+			this.bmpViewTiles2.BackColor = System.Drawing.Color.Black;
+			this.bmpViewTiles2.Location = new System.Drawing.Point(140, 32);
+			this.bmpViewTiles2.Name = "bmpViewTiles2";
+			this.bmpViewTiles2.Size = new System.Drawing.Size(128, 192);
+			this.bmpViewTiles2.TabIndex = 7;
+			this.bmpViewTiles2.Text = "Tiles 2";
+			this.bmpViewTiles2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewTiles2.MouseEnter += new System.EventHandler(this.bmpViewTiles2_MouseEnter);
+			this.bmpViewTiles2.MouseLeave += new System.EventHandler(this.bmpViewTiles2_MouseLeave);
+			this.bmpViewTiles2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewTiles2_MouseMove);
 			// 
 			// groupBox3
 			// 
@@ -183,6 +235,32 @@
 			this.label7.TabIndex = 14;
 			this.label7.Text = "Left-click a palette to use it for drawing the tiles display.";
 			// 
+			// bmpViewBGPal
+			// 
+			this.bmpViewBGPal.BackColor = System.Drawing.Color.Black;
+			this.bmpViewBGPal.Location = new System.Drawing.Point(6, 32);
+			this.bmpViewBGPal.Name = "bmpViewBGPal";
+			this.bmpViewBGPal.Size = new System.Drawing.Size(128, 64);
+			this.bmpViewBGPal.TabIndex = 10;
+			this.bmpViewBGPal.Text = "Background palettes";
+			this.bmpViewBGPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewBGPal.MouseEnter += new System.EventHandler(this.bmpViewBGPal_MouseEnter);
+			this.bmpViewBGPal.MouseLeave += new System.EventHandler(this.bmpViewBGPal_MouseLeave);
+			this.bmpViewBGPal.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewBGPal_MouseMove);
+			// 
+			// bmpViewSPPal
+			// 
+			this.bmpViewSPPal.BackColor = System.Drawing.Color.Black;
+			this.bmpViewSPPal.Location = new System.Drawing.Point(140, 32);
+			this.bmpViewSPPal.Name = "bmpViewSPPal";
+			this.bmpViewSPPal.Size = new System.Drawing.Size(128, 64);
+			this.bmpViewSPPal.TabIndex = 11;
+			this.bmpViewSPPal.Text = "Sprite palettes";
+			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewSPPal.MouseEnter += new System.EventHandler(this.bmpViewSPPal_MouseEnter);
+			this.bmpViewSPPal.MouseLeave += new System.EventHandler(this.bmpViewSPPal_MouseLeave);
+			this.bmpViewSPPal.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewSPPal_MouseMove);
+			// 
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.bmpViewOAM);
@@ -192,6 +270,19 @@
 			this.groupBox4.TabIndex = 19;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Sprites";
+			// 
+			// bmpViewOAM
+			// 
+			this.bmpViewOAM.BackColor = System.Drawing.Color.Black;
+			this.bmpViewOAM.Location = new System.Drawing.Point(6, 19);
+			this.bmpViewOAM.Name = "bmpViewOAM";
+			this.bmpViewOAM.Size = new System.Drawing.Size(320, 16);
+			this.bmpViewOAM.TabIndex = 14;
+			this.bmpViewOAM.Text = "Sprites";
+			this.bmpViewOAM.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			this.bmpViewOAM.MouseEnter += new System.EventHandler(this.bmpViewOAM_MouseEnter);
+			this.bmpViewOAM.MouseLeave += new System.EventHandler(this.bmpViewOAM_MouseLeave);
+			this.bmpViewOAM.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewOAM_MouseMove);
 			// 
 			// groupBox5
 			// 
@@ -294,6 +385,16 @@
 			this.labelDetails.TabIndex = 1;
 			this.labelDetails.Text = "Mouse over an item to see details about it.";
 			// 
+			// bmpViewDetails
+			// 
+			this.bmpViewDetails.BackColor = System.Drawing.Color.Black;
+			this.bmpViewDetails.Location = new System.Drawing.Point(6, 19);
+			this.bmpViewDetails.Name = "bmpViewDetails";
+			this.bmpViewDetails.Size = new System.Drawing.Size(64, 128);
+			this.bmpViewDetails.TabIndex = 0;
+			this.bmpViewDetails.Text = "Details (mouseover)";
+			this.bmpViewDetails.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
+			// 
 			// groupBoxMemory
 			// 
 			this.groupBoxMemory.Controls.Add(this.bmpViewMemory);
@@ -304,6 +405,15 @@
 			this.groupBoxMemory.TabIndex = 22;
 			this.groupBoxMemory.TabStop = false;
 			this.groupBoxMemory.Text = "Details - Memory";
+			// 
+			// bmpViewMemory
+			// 
+			this.bmpViewMemory.BackColor = System.Drawing.Color.Black;
+			this.bmpViewMemory.Location = new System.Drawing.Point(6, 19);
+			this.bmpViewMemory.Name = "bmpViewMemory";
+			this.bmpViewMemory.Size = new System.Drawing.Size(64, 128);
+			this.bmpViewMemory.TabIndex = 1;
+			this.bmpViewMemory.Text = "Details (memory)";
 			// 
 			// labelMemory
 			// 
@@ -406,116 +516,6 @@
 			this.panelSpriteBackColor.Size = new System.Drawing.Size(55, 23);
 			this.panelSpriteBackColor.TabIndex = 0;
 			// 
-			// bmpViewMemory
-			// 
-			this.bmpViewMemory.BackColor = System.Drawing.Color.Black;
-			this.bmpViewMemory.Location = new System.Drawing.Point(6, 19);
-			this.bmpViewMemory.Name = "bmpViewMemory";
-			this.bmpViewMemory.Size = new System.Drawing.Size(64, 128);
-			this.bmpViewMemory.TabIndex = 1;
-			this.bmpViewMemory.Text = "Details (memory)";
-			// 
-			// bmpViewDetails
-			// 
-			this.bmpViewDetails.BackColor = System.Drawing.Color.Black;
-			this.bmpViewDetails.Location = new System.Drawing.Point(6, 19);
-			this.bmpViewDetails.Name = "bmpViewDetails";
-			this.bmpViewDetails.Size = new System.Drawing.Size(64, 128);
-			this.bmpViewDetails.TabIndex = 0;
-			this.bmpViewDetails.Text = "Details (mouseover)";
-			this.bmpViewDetails.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			// 
-			// bmpViewOAM
-			// 
-			this.bmpViewOAM.BackColor = System.Drawing.Color.Black;
-			this.bmpViewOAM.Location = new System.Drawing.Point(6, 19);
-			this.bmpViewOAM.Name = "bmpViewOAM";
-			this.bmpViewOAM.Size = new System.Drawing.Size(320, 16);
-			this.bmpViewOAM.TabIndex = 14;
-			this.bmpViewOAM.Text = "Sprites";
-			this.bmpViewOAM.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewOAM.MouseEnter += new System.EventHandler(this.bmpViewOAM_MouseEnter);
-			this.bmpViewOAM.MouseLeave += new System.EventHandler(this.bmpViewOAM_MouseLeave);
-			this.bmpViewOAM.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewOAM_MouseMove);
-			// 
-			// bmpViewBGPal
-			// 
-			this.bmpViewBGPal.BackColor = System.Drawing.Color.Black;
-			this.bmpViewBGPal.Location = new System.Drawing.Point(6, 32);
-			this.bmpViewBGPal.Name = "bmpViewBGPal";
-			this.bmpViewBGPal.Size = new System.Drawing.Size(128, 64);
-			this.bmpViewBGPal.TabIndex = 10;
-			this.bmpViewBGPal.Text = "Background palettes";
-			this.bmpViewBGPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewBGPal.MouseEnter += new System.EventHandler(this.bmpViewBGPal_MouseEnter);
-			this.bmpViewBGPal.MouseLeave += new System.EventHandler(this.bmpViewBGPal_MouseLeave);
-			this.bmpViewBGPal.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewBGPal_MouseMove);
-			// 
-			// bmpViewSPPal
-			// 
-			this.bmpViewSPPal.BackColor = System.Drawing.Color.Black;
-			this.bmpViewSPPal.Location = new System.Drawing.Point(140, 32);
-			this.bmpViewSPPal.Name = "bmpViewSPPal";
-			this.bmpViewSPPal.Size = new System.Drawing.Size(128, 64);
-			this.bmpViewSPPal.TabIndex = 11;
-			this.bmpViewSPPal.Text = "Sprite palettes";
-			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewSPPal.MouseEnter += new System.EventHandler(this.bmpViewSPPal_MouseEnter);
-			this.bmpViewSPPal.MouseLeave += new System.EventHandler(this.bmpViewSPPal_MouseLeave);
-			this.bmpViewSPPal.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewSPPal_MouseMove);
-			// 
-			// bmpViewTiles1
-			// 
-			this.bmpViewTiles1.BackColor = System.Drawing.Color.Black;
-			this.bmpViewTiles1.Location = new System.Drawing.Point(6, 32);
-			this.bmpViewTiles1.Name = "bmpViewTiles1";
-			this.bmpViewTiles1.Size = new System.Drawing.Size(128, 192);
-			this.bmpViewTiles1.TabIndex = 6;
-			this.bmpViewTiles1.Text = "Tiles 1";
-			this.bmpViewTiles1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewTiles1.MouseEnter += new System.EventHandler(this.bmpViewTiles1_MouseEnter);
-			this.bmpViewTiles1.MouseLeave += new System.EventHandler(this.bmpViewTiles1_MouseLeave);
-			this.bmpViewTiles1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewTiles1_MouseMove);
-			// 
-			// bmpViewTiles2
-			// 
-			this.bmpViewTiles2.BackColor = System.Drawing.Color.Black;
-			this.bmpViewTiles2.Location = new System.Drawing.Point(140, 32);
-			this.bmpViewTiles2.Name = "bmpViewTiles2";
-			this.bmpViewTiles2.Size = new System.Drawing.Size(128, 192);
-			this.bmpViewTiles2.TabIndex = 7;
-			this.bmpViewTiles2.Text = "Tiles 2";
-			this.bmpViewTiles2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewTiles2.MouseEnter += new System.EventHandler(this.bmpViewTiles2_MouseEnter);
-			this.bmpViewTiles2.MouseLeave += new System.EventHandler(this.bmpViewTiles2_MouseLeave);
-			this.bmpViewTiles2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewTiles2_MouseMove);
-			// 
-			// bmpViewBG
-			// 
-			this.bmpViewBG.BackColor = System.Drawing.Color.Black;
-			this.bmpViewBG.Location = new System.Drawing.Point(6, 32);
-			this.bmpViewBG.Name = "bmpViewBG";
-			this.bmpViewBG.Size = new System.Drawing.Size(256, 256);
-			this.bmpViewBG.TabIndex = 4;
-			this.bmpViewBG.Text = "Background";
-			this.bmpViewBG.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewBG.MouseEnter += new System.EventHandler(this.bmpViewBG_MouseEnter);
-			this.bmpViewBG.MouseLeave += new System.EventHandler(this.bmpViewBG_MouseLeave);
-			this.bmpViewBG.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewBG_MouseMove);
-			// 
-			// bmpViewWin
-			// 
-			this.bmpViewWin.BackColor = System.Drawing.Color.Black;
-			this.bmpViewWin.Location = new System.Drawing.Point(268, 32);
-			this.bmpViewWin.Name = "bmpViewWin";
-			this.bmpViewWin.Size = new System.Drawing.Size(256, 256);
-			this.bmpViewWin.TabIndex = 5;
-			this.bmpViewWin.Text = "Window";
-			this.bmpViewWin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
-			this.bmpViewWin.MouseEnter += new System.EventHandler(this.bmpViewWin_MouseEnter);
-			this.bmpViewWin.MouseLeave += new System.EventHandler(this.bmpViewWin_MouseLeave);
-			this.bmpViewWin.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewWin_MouseMove);
-			// 
 			// GBGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -533,7 +533,8 @@
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "GBGPUView";
-			this.Text = "GameBoy GPU Viewer";
+			this.ShowIcon = false;
+			this.Text = "GPU Viewer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBGPUView_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBGPUView_FormClosed);
 			this.Load += new System.EventHandler(this.GBGPUView_Load);

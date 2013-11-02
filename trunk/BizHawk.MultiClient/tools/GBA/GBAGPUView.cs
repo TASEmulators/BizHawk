@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.MultiClient.GBtools;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.GBAtools
+namespace BizHawk.MultiClient
 {
-	public partial class GBAGPUView : Form
+	public partial class GBAGPUView : Form, IToolForm
 	{
 		Emulation.Consoles.Nintendo.GBA.GBA gba;
 
@@ -23,6 +22,9 @@ namespace BizHawk.MultiClient.GBAtools
 		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
 
 		MobileDetailView memory;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return true; } }
 
 		public GBAGPUView()
 		{

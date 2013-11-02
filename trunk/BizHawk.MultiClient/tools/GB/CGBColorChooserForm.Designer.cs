@@ -36,7 +36,7 @@
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.bmpView1 = new BizHawk.MultiClient.GBtools.BmpView();
+			this.bmpView1 = new BmpView();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();

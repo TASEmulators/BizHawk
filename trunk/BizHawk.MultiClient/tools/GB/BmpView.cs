@@ -7,7 +7,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.GBtools
+namespace BizHawk.MultiClient
 {
 	public partial class BmpView : Control
 	{

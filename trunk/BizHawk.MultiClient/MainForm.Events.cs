@@ -1567,7 +1567,7 @@ namespace BizHawk.MultiClient
 
 		private void GBGPUViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGBGPUView();
+			GlobalWinF.Tools.Load<GBGPUView>();
 		}
 
 		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -1581,7 +1581,7 @@ namespace BizHawk.MultiClient
 
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGBAGPUView();
+			GlobalWinF.Tools.Load<GBAGPUView>();
 		}
 
 		#endregion
