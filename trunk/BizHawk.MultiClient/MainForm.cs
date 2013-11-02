@@ -85,8 +85,6 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-
-		private HexEditor _hexeditor;
 		private TraceLogger _tracelogger;
 		private SNESGraphicsDebugger _snesgraphicsdebugger;
 		private NESNameTableViewer _nesnametableview;
@@ -107,7 +105,6 @@ namespace BizHawk.MultiClient
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public HexEditor HexEditor1 { get { if (_hexeditor == null) _hexeditor = new HexEditor(); return _hexeditor; } set { _hexeditor = value; } }
 		public TraceLogger TraceLogger1 { get { if (_tracelogger == null) _tracelogger = new TraceLogger(); return _tracelogger; } set { _tracelogger = value; } }
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
 		public NESNameTableViewer NESNameTableViewer1 { get { return _nesnametableview ?? (_nesnametableview = new NESNameTableViewer()); } set { _nesnametableview = value; } }
@@ -354,7 +351,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AutoLoadHexEditor)
 			{
-				LoadHexEditor();
+				GlobalWinF.Tools.Load<HexEditor>();
 			}
 			if (Global.Config.RecentCheats.AutoLoad)
 			{
@@ -1606,8 +1603,6 @@ namespace BizHawk.MultiClient
 				//}
 
 				GlobalWinF.Tools.Restart();
-
-				if (_hexeditor != null) HexEditor1.Restart();
 				if (_nesppu != null) NESPPU1.Restart();
 				if (_nesnametableview != null) NESNameTableViewer1.Restart();
 				if (_nesdebugger != null) NESDebug1.Restart();
@@ -2098,7 +2093,7 @@ namespace BizHawk.MultiClient
 
 				case "Ram Watch": LoadRamWatch(true); break;
 				case "Ram Search": GlobalWinF.Tools.Load<RamSearch>(); break;
-				case "Hex Editor": LoadHexEditor(); break;
+				case "Hex Editor": GlobalWinF.Tools.Load<HexEditor>(); break;
 				case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
@@ -2364,7 +2359,6 @@ namespace BizHawk.MultiClient
 
 #endif
 			GlobalWinF.Tools.UpdateAfter();
-			if (_hexeditor != null) HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 
@@ -2720,17 +2714,6 @@ namespace BizHawk.MultiClient
 			}
 			else
 				SNESGraphicsDebugger1.Focus();
-		}
-
-		public void LoadHexEditor()
-		{
-			if (!HexEditor1.IsHandleCreated || HexEditor1.IsDisposed)
-			{
-				HexEditor1 = new HexEditor();
-				HexEditor1.Show();
-			}
-			else
-				HexEditor1.Focus();
 		}
 
 		public void LoadTraceLogger()
@@ -3190,7 +3173,6 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			HexEditor1.Restart();
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
@@ -3230,7 +3212,6 @@ namespace BizHawk.MultiClient
 
 		public void CloseTools()
 		{
-			CloseForm(HexEditor1);
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);

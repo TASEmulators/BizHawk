@@ -1165,7 +1165,7 @@ namespace BizHawk.MultiClient
 
 		private void HexEditorMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadHexEditor();
+			GlobalWinF.Tools.Load<HexEditor>();
 		}
 
 		private void TraceLoggerMenuItem_Click(object sender, EventArgs e)

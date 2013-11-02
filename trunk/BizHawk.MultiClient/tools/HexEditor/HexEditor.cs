@@ -13,7 +13,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class HexEditor : Form
+	public partial class HexEditor : Form, IToolForm
 	{
 		//TODO:
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
@@ -53,7 +53,10 @@ namespace BizHawk.MultiClient
 		private bool BigEndian;
 		private int DataSize;
 
-		HexFind HexFind1 = new HexFind();
+		private HexFind HexFind1 = new HexFind();
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
 
 		public HexEditor()
 		{
