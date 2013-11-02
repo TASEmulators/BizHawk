@@ -208,7 +208,7 @@ namespace BizHawk.MultiClient
 		{
 			GlobalWinF.Tools.UpdateValues<RamWatch>();
 			GlobalWinF.Tools.UpdateValues<RamSearch>();
-			GlobalWinF.MainForm.HexEditor1.UpdateValues();
+			GlobalWinF.Tools.UpdateValues<HexEditor>();
 			GlobalWinF.MainForm.Cheats_UpdateValues();
 			GlobalWinF.MainForm.UpdateCheatStatus();
 		}
@@ -249,9 +249,9 @@ namespace BizHawk.MultiClient
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
 		{
-			GlobalWinF.MainForm.LoadHexEditor();
-			GlobalWinF.MainForm.HexEditor1.SetDomain(domain);
-			GlobalWinF.MainForm.HexEditor1.SetToAddresses(addresses.ToList());
+			GlobalWinF.Tools.Load<HexEditor>();
+			GlobalWinF.Tools.HexEditor.SetDomain(domain);
+			GlobalWinF.Tools.HexEditor.SetToAddresses(addresses.ToList());
 		}
 
 		public static MemoryDomain DomainByName(string name)

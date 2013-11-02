@@ -227,6 +227,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public HexEditor HexEditor
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is HexEditor);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as HexEditor;
+					}
+				}
+
+				var ramWatch = new HexEditor();
+				_tools.Add(ramWatch);
+				return ramWatch;
+			}
+		}
+
 		#endregion
 	}
 }

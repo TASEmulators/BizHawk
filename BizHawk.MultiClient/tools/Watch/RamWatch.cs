@@ -1154,7 +1154,7 @@ namespace BizHawk.MultiClient
 			var selected = SelectedWatches;
 			if (selected.Any())
 			{
-				GlobalWinF.MainForm.LoadHexEditor();
+				GlobalWinF.Tools.Load<HexEditor>();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{

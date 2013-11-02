@@ -60,12 +60,12 @@ namespace BizHawk.MultiClient
 
 		private void Find_Prev_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.HexEditor1.FindPrev(GetFindBoxChars(), false);
+			GlobalWinF.Tools.HexEditor.FindPrev(GetFindBoxChars(), false);
 		}
 
 		private void Find_Next_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.HexEditor1.FindNext(GetFindBoxChars(), false);
+			GlobalWinF.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
 		}
 
 		private void ChangeCasing()
@@ -94,7 +94,7 @@ namespace BizHawk.MultiClient
 		{
 			if (e.KeyData == Keys.Enter)
 			{
-				GlobalWinF.MainForm.HexEditor1.FindNext(GetFindBoxChars(), false);
+				GlobalWinF.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
 			}
 		}
 	}

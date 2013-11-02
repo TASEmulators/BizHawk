@@ -117,7 +117,7 @@ namespace BizHawk.MultiClient
 
 		public static void client_openhexeditor()
 		{
-			GlobalWinF.MainForm.LoadHexEditor();
+			GlobalWinF.Tools.Load<HexEditor>();
 		}
 
 		public static void client_openramwatch()

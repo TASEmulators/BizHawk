@@ -103,7 +103,7 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadHexEditor();
+			GlobalWinF.Tools.Load<HexEditor>();
 		}
 
 		private void toolStripButton5_Click(object sender, EventArgs e)
