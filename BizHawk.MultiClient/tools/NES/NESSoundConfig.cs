@@ -5,9 +5,27 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class NESSoundConfig : Form
+	public partial class NESSoundConfig : Form, IToolForm
 	{
-		int sq1, sq2, tr, no, dmc = 0;
+		private int sq1, sq2, tr, no, dmc = 0;
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
+		public void UpdateValues()
+		{
+			if (!(Global.Emulator is NESDebugger))
+			{
+				Close();
+			}
+		}
+		public void Restart()
+		{
+			if (!(Global.Emulator is NESDebugger))
+			{
+				Close();
+			}
+		}
+
 		public NESSoundConfig()
 		{
 			InitializeComponent();
@@ -49,28 +67,6 @@ namespace BizHawk.MultiClient
 			Global.Config.NESDMC = dmc;
 			GlobalWinF.MainForm.SetNESSoundChannels();
 			Close();
-		}
-
-		private void SelectAll_Click(object sender, EventArgs e)
-		{
-			/*
-			if (SelectAll.Checked)
-			{
-				Square1.Checked = true;
-				Square2.Checked = true;
-				Triangle.Checked = true;
-				Noise.Checked = true;
-				DMC.Checked = true;
-			}
-			else
-			{
-				Square1.Checked = false;
-				Square2.Checked = false;
-				Triangle.Checked = false;
-				Noise.Checked = false;
-				DMC.Checked = false;
-			}
-			*/
 		}
 
 		private void trackBar1_ValueChanged(object sender, EventArgs e)

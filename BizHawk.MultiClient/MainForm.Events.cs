@@ -1235,7 +1235,7 @@ namespace BizHawk.MultiClient
 
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNesSoundConfig();
+			GlobalWinF.Tools.Load<NESSoundConfig>();
 		}
 
 		#endregion

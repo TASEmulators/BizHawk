@@ -88,13 +88,11 @@ namespace BizHawk.MultiClient
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
 		private TAStudio _tastudio;
-		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
 		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
-		public NESSoundConfig NesSound { get { if (_nessound == null) _nessound = new NESSoundConfig(); return _nessound; } set { _nessound = value; } }
 
 		//TODO: clean me up
 		public void Cheats_Restart()
@@ -2537,94 +2535,6 @@ namespace BizHawk.MultiClient
 			GlobalWinF.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
 		}
 
-		/*TODO delete me
-		private void RamSearch_DoSearch()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.DoSearch();
-			}
-		}
-
-		private void RamSearch_NewSearch()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.NewSearch();
-			}
-		}
-
-		private void RamSearch_NextCompareTo()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.NextCompareTo();
-			}
-		}
-
-		private void RamSearch_PreviousCompareTo()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.NextCompareTo(reverse: true);
-			}
-		}
-
-		private void RamSearch_NextOperator()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.NextOperator();
-			}
-		}
-
-		private void RamSearch_PreviousOperator()
-		{
-			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				RamSearch1.NextOperator(reverse: true);
-			}
-		}
-		*/
-
-		public void LoadNesSoundConfig()
-		{
-			if (Global.Emulator is NES)
-			{
-				if (!NesSound.IsHandleCreated || NesSound.IsDisposed)
-				{
-					NesSound = new NESSoundConfig();
-					NesSound.Show();
-				}
-				else
-					NesSound.Focus();
-			}
-		}
-
 		public void LoadGameGenieEC()
 		{
 			if (Global.Emulator is NES)
@@ -3787,23 +3697,8 @@ namespace BizHawk.MultiClient
 
 		public void ClearSaveRAM()
 		{
-			//zero says: this is sort of sketchy... but this is no time for rearchitecting
-			/*
-			string saveRamPath = PathManager.SaveRamPath(Global.Game);
-			var file = new FileInfo(saveRamPath);
-			if (file.Exists) file.Delete();
-			*/
 			try
 			{
-				/*
-				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
-				if (Global.Emulator is LibsnesCore)
-					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
-				else if (Global.Emulator is Gameboy)
-					((Gameboy)Global.Emulator).ClearSaveRam();
-				else
-					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
-				 */
 				Global.Emulator.ClearSaveRam();
 			}
 			catch { }
