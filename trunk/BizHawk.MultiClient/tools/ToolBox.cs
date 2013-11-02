@@ -148,7 +148,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				GlobalWinF.MainForm.LoadSNESGraphicsDebugger();
+				GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
 			}
 		}
 

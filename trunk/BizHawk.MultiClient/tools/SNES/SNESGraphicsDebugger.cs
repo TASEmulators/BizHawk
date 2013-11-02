@@ -36,13 +36,28 @@ using BizHawk.Core;
 
 namespace BizHawk.MultiClient
 {
-	public unsafe partial class SNESGraphicsDebugger : Form
+	public unsafe partial class SNESGraphicsDebugger : Form, IToolForm
 	{
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 
 		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 		List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
+
+		public bool UpdateBefore { get { return false; } }
+		public bool AskSave() { return true; }
+
+		public void Restart()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				//TODO: shouldn't something be done here?
+			}
+			else
+			{
+				Close();
+			}
+		}
 
 		public SNESGraphicsDebugger()
 		{
@@ -114,13 +129,20 @@ namespace BizHawk.MultiClient
 			else return string.Format("@{0} ({1}K)", address.ToHexString(4), address / 1024);
 		}
 
-		public void UpdateToolsAfter()
+		public void UpdateValues()
 		{
-			SyncCore();
-			if (Visible && !checkScanlineControl.Checked)
+			if (Global.Emulator is LibsnesCore)
 			{
-				RegenerateData();
-				UpdateValues();
+				SyncCore();
+				if (Visible && !checkScanlineControl.Checked)
+				{
+					RegenerateData();
+					InternalUpdateValues();
+				}
+			}
+			else
+			{
+				Close();
 			}
 		}
 
@@ -130,7 +152,7 @@ namespace BizHawk.MultiClient
 			if (Visible)
 			{
 				RegenerateData();
-				UpdateValues();
+				InternalUpdateValues();
 			}
 		}
 
@@ -186,7 +208,7 @@ namespace BizHawk.MultiClient
 			if (target == line)
 			{
 				RegenerateData();
-				UpdateValues();
+				InternalUpdateValues();
 			}
 		}
 
@@ -208,9 +230,8 @@ namespace BizHawk.MultiClient
 			si = gd.ScanScreenInfo();
 		}
 
-		void UpdateValues()
+		private void InternalUpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
 			if (currentSnesCore == null) return;
 
 			txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
@@ -509,7 +530,7 @@ namespace BizHawk.MultiClient
 
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			UpdateValues();
+			InternalUpdateValues();
 
 			//change the bg props viewer to match
 			if (IsDisplayTypeBG(CurrDisplaySelection))
@@ -556,6 +577,8 @@ namespace BizHawk.MultiClient
 			{
 				SyncBackdropColor();
 			}
+
+			UpdateToolsLoadstate();
 		}
 
 		private void SaveConfigSettings()
@@ -575,7 +598,7 @@ namespace BizHawk.MultiClient
 			if (rbBG3.Checked) comboBGProps.SelectedIndex = 2;
 			if (rbBG4.Checked) comboBGProps.SelectedIndex = 3;
 			suppression = false;
-			UpdateValues();
+			InternalUpdateValues();
 		}
 
 		private void comboBGProps_SelectedIndexChanged(object sender, EventArgs e)
@@ -589,7 +612,7 @@ namespace BizHawk.MultiClient
 			if (comboBGProps.SelectedIndex == 2) rbBG3.Checked = true;
 			if (comboBGProps.SelectedIndex == 3) rbBG4.Checked = true;
 			suppression = false;
-			UpdateValues();
+			InternalUpdateValues();
 		}
 
 		const int paletteCellSize = 16;
@@ -839,7 +862,7 @@ namespace BizHawk.MultiClient
 			}
 
 			SyncColorSelection();
-			UpdateValues();
+			InternalUpdateValues();
 		}
 
 		void SyncColorSelection()
