@@ -198,9 +198,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 				
-				var ramWatch = new RamWatch();
-				_tools.Add(ramWatch);
-				return ramWatch;
+				var newTool = new RamWatch();
+				_tools.Add(newTool);
+				return newTool;
 			}
 		}
 
@@ -221,9 +221,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				var ramWatch = new RamSearch();
-				_tools.Add(ramWatch);
-				return ramWatch;
+				var newTool = new RamSearch();
+				_tools.Add(newTool);
+				return newTool;
 			}
 		}
 
@@ -244,9 +244,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				var ramWatch = new HexEditor();
-				_tools.Add(ramWatch);
-				return ramWatch;
+				var newTool = new HexEditor();
+				_tools.Add(newTool);
+				return newTool;
 			}
 		}
 
@@ -267,9 +267,32 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				var ramWatch = new VirtualPadForm();
-				_tools.Add(ramWatch);
-				return ramWatch;
+				var newTool = new VirtualPadForm();
+				_tools.Add(newTool);
+				return newTool;
+			}
+		}
+
+		public SNESGraphicsDebugger SNESGraphicsDebugger
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is SNESGraphicsDebugger);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as SNESGraphicsDebugger;
+					}
+				}
+
+				var newTool = new SNESGraphicsDebugger();
+				_tools.Add(newTool);
+				return newTool;
 			}
 		}
 

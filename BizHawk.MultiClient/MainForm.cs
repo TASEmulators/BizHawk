@@ -85,7 +85,6 @@ namespace BizHawk.MultiClient
 		private Point _windowed_location;
 
 		//tool dialogs
-		private SNESGraphicsDebugger _snesgraphicsdebugger;
 		private GBtools.GBGPUView _gbgpuview;
 		private GBAtools.GBAGPUView _gbagpuview;
 		private PCEBGViewer _pcebgviewer;
@@ -95,7 +94,6 @@ namespace BizHawk.MultiClient
 		private NESSoundConfig _nessound;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public SNESGraphicsDebugger SNESGraphicsDebugger1 { get { if (_snesgraphicsdebugger == null) _snesgraphicsdebugger = new SNESGraphicsDebugger(); return _snesgraphicsdebugger; } set { _snesgraphicsdebugger = value; } }
 		public GBtools.GBGPUView GBGPUView1 { get { if (_gbgpuview == null) _gbgpuview = new GBtools.GBGPUView(); return _gbgpuview; } set { _gbgpuview = value; } }
 		public GBAtools.GBAGPUView GBAGPUView1 { get { if (_gbagpuview == null) _gbagpuview = new GBAtools.GBAGPUView(); return _gbagpuview; } set { _gbagpuview = value; } }
 		public PCEBGViewer PCEBGViewer1 { get { if (_pcebgviewer == null) _pcebgviewer = new PCEBGViewer(); return _pcebgviewer; } set { _pcebgviewer = value; } }
@@ -381,7 +379,7 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
-				LoadSNESGraphicsDebugger();
+				GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
 			}
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
@@ -2328,7 +2326,10 @@ namespace BizHawk.MultiClient
 
 		public void UpdateToolsLoadstate()
 		{
-			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsLoadstate();
+			if (GlobalWinF.Tools.Has<SNESGraphicsDebugger>())
+			{
+				GlobalWinF.Tools.SNESGraphicsDebugger.UpdateToolsLoadstate();
+			}
 		}
 
 		public void UpdateToolsAfter(bool fromLua = false)
@@ -2345,7 +2346,6 @@ namespace BizHawk.MultiClient
 			//frame of execution in its list view.
 
 			if (_tastudio != null) TAStudio1.UpdateValues();
-			if (_snesgraphicsdebugger != null) SNESGraphicsDebugger1.UpdateToolsAfter();
 			HandleToggleLight();
 #if WINDOWS
 			if (_luaconsole != null)
@@ -2657,18 +2657,6 @@ namespace BizHawk.MultiClient
 			{
 				GlobalWinF.Tools.Load<GenGameGenie>();
 			}
-		}
-
-		public void LoadSNESGraphicsDebugger()
-		{
-			if (!SNESGraphicsDebugger1.IsHandleCreated || SNESGraphicsDebugger1.IsDisposed)
-			{
-				SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
-				SNESGraphicsDebugger1.UpdateToolsLoadstate();
-				SNESGraphicsDebugger1.Show();
-			}
-			else
-				SNESGraphicsDebugger1.Focus();
 		}
 
 		public void LoadTraceLogger()

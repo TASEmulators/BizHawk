@@ -1666,7 +1666,7 @@ namespace BizHawk.MultiClient
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadSNESGraphicsDebugger();
+			GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
 		}
 
 		private void SnesGBInSGBMenuItem_Click(object sender, EventArgs e)
