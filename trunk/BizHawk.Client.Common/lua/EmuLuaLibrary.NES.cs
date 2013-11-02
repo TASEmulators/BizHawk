@@ -1,11 +1,17 @@
-﻿using System.Linq;
-using BizHawk.Client.Common;
+﻿using System;
+using System.Linq;
 using BizHawk.Emulation.Consoles.Nintendo;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class NESLuaLibrary : LuaLibraryBase
 	{
+		public NESLuaLibrary(Action updateCallback = null)
+			: base()
+		{
+			UpdateCallback = updateCallback;
+		}
+
 		public override string Name { get { return "nes"; } }
 		public override string[] Functions
 		{
@@ -30,7 +36,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static void nes_addgamegenie(string code)
+		private Action UpdateCallback;
+
+		private void Update()
+		{
+			if (UpdateCallback != null)
+			{
+				UpdateCallback();
+			}
+		}
+
+		public void nes_addgamegenie(string code)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -48,7 +64,7 @@ namespace BizHawk.MultiClient
 					decoder.Value,
 					decoder.Compare
 				));
-				ToolHelpers.UpdateCheatRelatedTools();
+				Update();
 			}
 		}
 
@@ -96,7 +112,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static void nes_removegamegenie(string code)
+		public void nes_removegamegenie(string code)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -104,7 +120,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.RemoveRange(
 					Global.CheatList.Where(x => x.Address == decoder.Address)
 				);
-				ToolHelpers.UpdateCheatRelatedTools();
+				Update();
 			}
 		}
 
