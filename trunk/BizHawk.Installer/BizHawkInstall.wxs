@@ -8,12 +8,13 @@
       if they want to install DiscoHawk, Gameboy Palettes, or the Bundled LUA scripts during the install process.
       All features are installed by default. -->
         <Feature Id="DefaultFeature" Title="BizHawk Emulator" Level="1">
-            <ComponentRef Id="BIZHAWK.MULTICLIENT.EXE" />
+            <ComponentRef Id="EMUHAWK.EXE" />
             <ComponentRef Id="DEFCTRL.JSON" />
             <ComponentRef Id="_7Z.DLL" />
             <ComponentRef Id="AT3PLUSDECODER.DLL" />
             <ComponentRef Id="BIZHAWK.EMULATION.DLL" />
-            <ComponentRef Id="BIZHAWK.UTIL.DLL" />
+            <ComponentRef Id="BIZHAWK.CLIENT.COMMON.DLL" />
+			<ComponentRef Id="BIZHAWK.COMMON.DLL" />
             <ComponentRef Id="BLIP_BUF.DLL" />
             <ComponentRef Id="EMU7800.DLL" />
             <ComponentRef Id="FFMPEG.EXE" />
@@ -301,7 +302,7 @@
             <RegistrySearch Id="DirectX90Ccheck" Root="HKLM" Key="Software\Microsoft\DirectX" Name="Version" Type="raw" />
         </Property>
         <Condition Message="This application requires DirectX 9.0c or later">Installed OR DIRECTX90C="4.09.00.0904" OR DIRECTX90C="4.09.0000.0904"</Condition>
-        <Icon Id="BizHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\BizHawk.MultiClient.exe" />
-        <Icon Id="DiscoHawkIcon.exe" SourceFile="..\BizHawk.MultiClient\output\DiscoHawk.exe" />
+        <Icon Id="BizHawkIcon.exe" SourceFile="..\output\EmuHawk.exe" />
+        <Icon Id="DiscoHawkIcon.exe" SourceFile="..\output\DiscoHawk.exe" />
     </Product>
 </Wix>
