@@ -24,9 +24,12 @@ namespace BizHawk.Client.Common
 			return Path.Combine(Path.GetDirectoryName(SubfileDirectory) ?? String.Empty, fname);
 		}
 
-		public static void SyncCoreCommInputSignals()
+		public static void SyncCoreCommInputSignals(CoreComm target = null)
 		{
-			CoreComm target = Global.CoreComm;
+			if (target == null)
+			{
+				target = Global.CoreComm;
+			}
 
 			var cfp = new CoreFileProvider();
 			target.CoreFileProvider = cfp;

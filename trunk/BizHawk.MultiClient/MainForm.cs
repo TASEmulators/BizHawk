@@ -29,98 +29,19 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm : Form
 	{
-		public static bool INTERIM = true;
-		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "August 22, 2013";
-		public string CurrentlyOpenRom;
-		public bool PauseAVI = false;
-		public bool PressFrameAdvance = false;
-		public bool PressRewind = false;
-		public bool FastForward = false;
-		public bool TurboFastForward = false;
-		public bool RestoreReadWriteOnStop = false;
-		public bool UpdateFrame = false;
-		public bool NeedsReboot = false;
+		#region Constructors and Initialization, and Tear down
 
-		public bool RewindActive = true;
-
-		private Control renderTarget;
-		private RetainedViewportPanel retainedPanel;
-		private readonly SaveSlotManager StateSlots = new SaveSlotManager();
-		private readonly Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
-
-		//avi/wav state
-		IVideoWriter CurrAviWriter;
-		ISoundProvider AviSoundInput;
-		/// <summary>
-		/// an audio proxy used for dumping
-		/// </summary>
-		Emulation.Sound.MetaspuSoundProvider DumpProxy;
-		/// <summary>audio timekeeping for video dumping</summary>
-		private long SoundRemainder;
-		private int avwriter_resizew;
-		private int avwriter_resizeh;
-
-		//runloop control
-		public bool EmulatorPaused { get; private set; }
-		public EventWaitHandle MainWait;
-
-		private bool exit;
-		private bool runloop_frameProgress;
-		private DateTime FrameAdvanceTimestamp = DateTime.MinValue;
-		private int runloop_fps;
-		private int runloop_last_fps;
-		private bool runloop_frameadvance;
-		private DateTime runloop_second;
-		private bool runloop_last_ff;
-
-		private readonly Throttle throttle;
-		private bool unthrottled;
-
-		//For handling automatic pausing when entering the menu
-		private bool wasPaused;
-		private bool didMenuPause;
-
-		private bool InFullscreen;
-		private Point _windowed_location;
-
-		//TODO: clean me up
-		public void Cheats_Restart()
+		private void MainForm_Load(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Tools.Has<Cheats>())
-			{
-				GlobalWinF.Tools.Restart<Cheats>();
-			}
-			else
-			{
-				Global.CheatList.NewList(GenerateDefaultCheatFilename());
-				ToolHelpers.UpdateCheatRelatedTools();
-			}
+			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+
+			//Hide Status bar icons
+			PlayRecordStatusButton.Visible = false;
+			AVIStatusLabel.Visible = false;
+			SetPauseStatusbarIcon();
+			UpdateCheatStatus();
+			RebootStatusBarIcon.Visible = false;
 		}
-
-		public string GenerateDefaultCheatFilename()
-		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
-			if (pathEntry == null)
-			{
-				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
-			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
-			{
-				f.Directory.Create();
-			}
-
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
-		}
-
-		/// <summary>
-		/// number of frames to autodump
-		/// </summary>
-		int autoDumpLength;
-		bool autoCloseOnDump = false;
 
 		static MainForm()
 		{
@@ -135,7 +56,6 @@ namespace BizHawk.MultiClient
 			Global.MovieSession = new MovieSession
 			{
 				Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()),
-				ClearSRAMCallback = ClearSaveRAM,
 				MessageCallback = GlobalWinF.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -405,202 +325,6 @@ namespace BizHawk.MultiClient
 			};
 		}
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (GlobalWinF.DisplayManager != null) GlobalWinF.DisplayManager.Dispose();
-			GlobalWinF.DisplayManager = null;
-
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
-		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
-		string SNES_Prepare(string profile)
-		{
-			SNES_Check(profile);
-			if (SNES_prepared[profile] == null)
-			{
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-			}
-			return SNES_prepared[profile];
-		}
-		void SNES_Check(string profile)
-		{
-			if (SNES_prepared.ContainsKey(profile)) return;
-
-			const string bits = "32";
-
-			//disabled til it works
-			//if (Win32.Is64BitOperatingSystem)
-			//  bits = "64";
-
-			string exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
-
-			string thisDir = PathManager.GetExeDirectoryAbsolute();
-			string exePath = Path.Combine(thisDir, exename);
-			if (!File.Exists(exePath))
-				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
-
-			if (!File.Exists(exePath))
-				exePath = null;
-
-			SNES_prepared[profile] = exePath;
-		}
-
-
-		public void SyncCoreCommInputSignals(CoreComm target)
-		{
-			var cfp = new CoreFileProvider();
-			target.CoreFileProvider = cfp;
-			cfp.FirmwareManager = Global.FirmwareManager;
-
-			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
-			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
-			target.NES_ShowBG = Global.Config.NESDispBackground;
-			target.NES_ShowOBJ = Global.Config.NESDispSprites;
-			target.PCE_ShowBG1 = Global.Config.PCEDispBG1;
-			target.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
-			target.PCE_ShowBG2 = Global.Config.PCEDispBG2;
-			target.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
-			target.SMS_ShowBG = Global.Config.SMSDispBG;
-			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
-
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
-
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
-
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
-			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
-			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
-			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
-			target.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_1;
-			target.SNES_ShowBG3_0 = Global.Config.SNES_ShowBG3_0;
-			target.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_1;
-			target.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_0;
-			target.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_1;
-			target.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ1;
-			target.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
-			target.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
-			target.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
-
-			target.SNES_Profile = Global.Config.SNESProfile;
-			target.SNES_UseRingBuffer = Global.Config.SNESUseRingBuffer;
-			target.SNES_AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize;
-
-			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
-
-			target.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
-			target.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
-			target.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
-			target.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
-			target.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
-			target.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
-			target.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
-		}
-
-		void SyncPresentationMode()
-		{
-			GlobalWinF.DisplayManager.Suspend();
-
-#if WINDOWS
-			bool gdi = Global.Config.DisplayGDI || GlobalWinF.Direct3D == null;
-#endif
-			if (renderTarget != null)
-			{
-				renderTarget.Dispose();
-				Controls.Remove(renderTarget);
-			}
-
-			if (retainedPanel != null) retainedPanel.Dispose();
-			if (GlobalWinF.RenderPanel != null) GlobalWinF.RenderPanel.Dispose();
-
-#if WINDOWS
-			if (gdi)
-#endif
-				renderTarget = retainedPanel = new RetainedViewportPanel();
-#if WINDOWS
-			else renderTarget = new ViewportPanel();
-#endif
-			Controls.Add(renderTarget);
-			Controls.SetChildIndex(renderTarget, 0);
-
-			renderTarget.Dock = DockStyle.Fill;
-			renderTarget.BackColor = Color.Black;
-
-#if WINDOWS
-			if (gdi)
-			{
-#endif
-				GlobalWinF.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
-				retainedPanel.ActivateThreaded();
-#if WINDOWS
-			}
-			else
-			{
-				try
-				{
-					var d3dPanel = new Direct3DRenderPanel(GlobalWinF.Direct3D, renderTarget);
-					d3dPanel.CreateDevice();
-					GlobalWinF.RenderPanel = d3dPanel;
-				}
-				catch
-				{
-					Program.DisplayDirect3DError();
-					GlobalWinF.Direct3D.Dispose();
-					GlobalWinF.Direct3D = null;
-					SyncPresentationMode();
-				}
-			}
-#endif
-
-			GlobalWinF.DisplayManager.Resume();
-		}
-
-		void SyncThrottle()
-		{
-			bool fastforward = GlobalWinF.ClientControls["Fast Forward"] || FastForward;
-			bool superfastforward = GlobalWinF.ClientControls["Turbo"];
-			Global.ForceNoThrottle = unthrottled || fastforward;
-
-			// realtime throttle is never going to be so exact that using a double here is wrong
-			throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
-
-			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
-			throttle.signal_unthrottle = unthrottled || superfastforward;
-
-			if (fastforward)
-			{
-				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
-			}
-			else
-			{
-				throttle.SetSpeedPercent(Global.Config.SpeedPercent);
-			}
-			
-		}
-
-		void SetSpeedPercentAlternate(int value)
-		{
-			Global.Config.SpeedPercentAlternate = value;
-			SyncThrottle();
-			GlobalWinF.OSD.AddMessage("Alternate Speed: " + value + "%");
-		}
-
-		void SetSpeedPercent(int value)
-		{
-			Global.Config.SpeedPercent = value;
-			SyncThrottle();
-			GlobalWinF.OSD.AddMessage("Speed: " + value + "%");
-		}
-
 		public void ProgramRunLoop()
 		{
 			CheckMessages();
@@ -634,7 +358,6 @@ namespace BizHawk.MultiClient
 
 
 				StepRunLoop_Core();
-				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
 
 				if (GlobalWinF.DisplayManager.NeedsToPaint) { Render(); }
@@ -648,20 +371,184 @@ namespace BizHawk.MultiClient
 			Shutdown();
 		}
 
-		void Shutdown()
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
 		{
-			if (CurrAviWriter != null)
+			if (GlobalWinF.DisplayManager != null) GlobalWinF.DisplayManager.Dispose();
+			GlobalWinF.DisplayManager = null;
+
+			if (disposing && (components != null))
 			{
-				CurrAviWriter.CloseFile();
-				CurrAviWriter = null;
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		#endregion
+		
+		#region Properties
+
+		public static bool INTERIM = true;
+		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
+		public const string RELEASEDATE = "August 22, 2013";
+		public string CurrentlyOpenRom;
+		public bool PauseAVI = false;
+		public bool PressFrameAdvance = false;
+		public bool PressRewind = false;
+		public bool FastForward = false;
+		public bool TurboFastForward = false;
+		public bool RestoreReadWriteOnStop = false;
+		public bool UpdateFrame = false;
+		public bool RewindActive = true;
+		public bool EmulatorPaused { get; private set; }
+
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Controls whether the app generates input events. should be turned off for most modal dialogs
+		/// </summary>
+		public bool AllowInput
+		{
+			get
+			{
+				//the main form gets input
+				if (ActiveForm == this) return true;
+
+				//modals that need to capture input for binding purposes get input, of course
+				if (ActiveForm is HotkeyConfig) return true;
+				if (ActiveForm is ControllerConfig) return true;
+				if (ActiveForm is TAStudio) return true;
+				if (ActiveForm is VirtualPadForm) return true;
+				//if no form is active on this process, then the background input setting applies
+				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
+
+				return false;
 			}
 		}
 
-		void CheckMessages()
+		public void ProcessInput()
 		{
-			Application.DoEvents();
-			if (ActiveForm != null)
-				ScreenSaver.ResetTimerPeriodically();
+			for (; ; )
+			{
+				//loop through all available events
+				var ie = Input.Instance.DequeueEvent();
+				if (ie == null) { break; }
+
+				//useful debugging:
+				//Console.WriteLine(ie);
+
+				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
+
+				//look for hotkey bindings for this key
+				var triggers = GlobalWinF.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				if (triggers.Count == 0)
+				{
+					//bool sys_hotkey = false;
+
+					//maybe it is a system alt-key which hasnt been overridden
+					if (ie.EventType == Input.InputEventType.Press)
+					{
+						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
+						{
+							char c = ie.LogicalButton.Button.ToLower()[0];
+							if (c >= 'a' && c <= 'z' || c == ' ')
+							{
+								SendAltKeyChar(c);
+								//sys_hotkey = true;
+							}
+						}
+						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
+						{
+							SendPlainAltKey(32);
+							//sys_hotkey = true;
+						}
+					}
+					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
+
+					//????????????
+					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
+					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
+					//if (!sys_hotkey)
+					//{
+					//  var mutated_ie = new Input.InputEvent();
+					//  mutated_ie.EventType = ie.EventType;
+					//  mutated_ie.LogicalButton = ie.LogicalButton;
+					//  mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
+					//  Global.ControllerInputCoalescer.Receive(ie);
+					//}
+				}
+
+				//zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				//maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
+
+				//adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
+				bool handled;
+				switch (Global.Config.Input_Hotkey_OverrideOptions)
+				{
+					default:
+					case 0: //Both allowed
+						GlobalWinF.ControllerInputCoalescer.Receive(ie);
+
+						handled = false;
+						if (ie.EventType == Input.InputEventType.Press)
+						{
+							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+						}
+
+						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							GlobalWinF.HotkeyCoalescer.Receive(ie);
+						}
+						break;
+					case 1: //Input overrides Hokeys
+						GlobalWinF.ControllerInputCoalescer.Receive(ie);
+						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
+						if (!inputisbound)
+						{
+							handled = false;
+							if (ie.EventType == Input.InputEventType.Press)
+							{
+								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+							}
+
+							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+							if (!handled)
+							{
+								GlobalWinF.HotkeyCoalescer.Receive(ie);
+							}
+						}
+						break;
+					case 2: //Hotkeys override Input
+						handled = false;
+						if (ie.EventType == Input.InputEventType.Press)
+						{
+							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+						}
+
+						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							GlobalWinF.HotkeyCoalescer.Receive(ie);
+							GlobalWinF.ControllerInputCoalescer.Receive(ie);
+						}
+						break;
+				}
+
+			} //foreach event
+
+			// also handle floats
+			GlobalWinF.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
+		}
+
+		public void RebootCore()
+		{
+			LoadRom(CurrentlyOpenRom);
 		}
 
 		public void PauseEmulator()
@@ -676,123 +563,917 @@ namespace BizHawk.MultiClient
 			SetPauseStatusbarIcon();
 		}
 
-		private void SetPauseStatusbarIcon()
-		{
-			if (EmulatorPaused)
-			{
-				PauseStatusButton.Image = Properties.Resources.Pause;
-				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator Paused";
-			}
-			else
-			{
-				PauseStatusButton.Image = Properties.Resources.Blank;
-				PauseStatusButton.Visible = false;
-				PauseStatusButton.ToolTipText = String.Empty;
-			}
-		}
-
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
 			SetPauseStatusbarIcon();
 		}
 
-		private void LoadRomFromRecent(string rom)
+		public string GenerateDefaultCheatFilename()
 		{
-			if (!LoadRom(rom))
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			if (pathEntry == null)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentRoms, rom);
+				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+			}
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+			{
+				f.Directory.Create();
+			}
+
+			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+		}
+
+		public void TakeScreenshotToClipboard()
+		{
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			{
+				Clipboard.SetImage(img);
+			}
+			GlobalWinF.OSD.AddMessage("Screenshot saved to clipboard.");
+		}
+
+		public void TakeScreenshot()
+		{
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			TakeScreenshot(path);
+		}
+
+		public void TakeScreenshot(string path)
+		{
+			var fi = new FileInfo(path);
+			if (fi.Directory != null && fi.Directory.Exists == false)
+				fi.Directory.Create();
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			{
+				img.Save(fi.FullName, ImageFormat.Png);
+			}
+			GlobalWinF.OSD.AddMessage(fi.Name + " saved.");
+		}
+
+		public void LoadGameGenieEC()
+		{
+			if (Global.Emulator is NES)
+			{
+				GlobalWinF.Tools.Load<NESGameGenie>();
+			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				GlobalWinF.Tools.Load<SNESGameGenie>();
+			}
+			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			{
+				GlobalWinF.Tools.Load<GBGameGenie>();
+			}
+			else if (Global.Emulator is Genesis)
+			{
+				GlobalWinF.Tools.Load<GenGameGenie>();
 			}
 		}
 
-		private void LoadMoviesFromRecent(string path)
+		public void LoadTraceLogger()
 		{
-			Movie m = new Movie(path, GetEmuVersion());
-
-			if (!m.Loaded)
+			if (Global.Emulator.CoreComm.CpuTraceAvailable)
 			{
-				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+				GlobalWinF.Tools.Load<TraceLogger>();
+			}
+		}
+
+		public void FrameBufferResized()
+		{
+			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
+			for (int i = 0; i < 2; i++)
+			{
+				var video = Global.Emulator.VideoProvider;
+				int zoom = Global.Config.TargetZoomFactor;
+				var area = Screen.FromControl(this).WorkingArea;
+
+				int borderWidth = Size.Width - renderTarget.Size.Width;
+				int borderHeight = Size.Height - renderTarget.Size.Height;
+
+				// start at target zoom and work way down until we find acceptable zoom
+				for (; zoom >= 1; zoom--)
+				{
+					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+						break;
+				}
+
+				// Change size
+				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
+				PerformLayout();
+				GlobalWinF.RenderPanel.Resized = true;
+
+				// Is window off the screen at this size?
+				if (area.Contains(Bounds) == false)
+				{
+					if (Bounds.Right > area.Right) // Window is off the right edge
+						Location = new Point(area.Right - Size.Width, Location.Y);
+
+					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
+						Location = new Point(Location.X, area.Bottom - Size.Height);
+				}
+			}
+		}
+
+		public void ToggleFullscreen()
+		{
+			if (InFullscreen == false)
+			{
+				_windowed_location = Location;
+				FormBorderStyle = FormBorderStyle.None;
+				WindowState = FormWindowState.Maximized;
+				if (Global.Config.ShowMenuInFullscreen)
+					MainMenuStrip.Visible = true;
+				else
+					MainMenuStrip.Visible = false;
+				MainStatusBar.Visible = false;
+				PerformLayout();
+				GlobalWinF.RenderPanel.Resized = true;
+				InFullscreen = true;
 			}
 			else
 			{
-				Global.ReadOnly = true;
-				StartNewMovie(m, false);
+				FormBorderStyle = FormBorderStyle.Sizable;
+				WindowState = FormWindowState.Normal;
+				MainMenuStrip.Visible = true;
+				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
+				Location = _windowed_location;
+				PerformLayout();
+				FrameBufferResized();
+				InFullscreen = false;
 			}
 		}
 
-		private void InitControls()
+		public void LoadTAStudio()
 		{
-			var controls = new Controller(
-				new ControllerDefinition
+			Global.MovieSession.EditorMode = true;
+			GlobalWinF.Tools.Load<TAStudio>();
+		}
+
+		public void OpenLuaConsole()
+		{
+#if WINDOWS
+			GlobalWinF.Tools.Load<LuaConsole>();
+#else
+			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
+		}
+
+		public void NotifyLogWindowClosing()
+		{
+			DisplayLogWindowMenuItem.Checked = false;
+			LogWindowAsConsoleMenuItem.Enabled = true;
+		}
+
+		public void SetNESSoundChannels()
+		{
+			NES nes = Global.Emulator as NES;
+			nes.SetSquare1(Global.Config.NESSquare1);
+			nes.SetSquare2(Global.Config.NESSquare2);
+			nes.SetTriangle(Global.Config.NESTriangle);
+			nes.SetNoise(Global.Config.NESNoise);
+			nes.SetDMC(Global.Config.NESDMC);
+		}
+
+		public void LoadRamWatch(bool load_dialog)
+		{
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			{
+				GlobalWinF.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+			}
+			if (load_dialog)
+			{
+				GlobalWinF.Tools.Load<RamWatch>();
+			}
+		}
+
+		public void ClickSpeedItem(int num)
+		{
+			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
+			else SetSpeedPercent(num);
+		}
+
+		public void FrameSkipMessage()
+		{
+			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
+		}
+
+		public void UpdateCheatStatus()
+		{
+			if (Global.CheatList.ActiveCount > 0)
+			{
+				CheatStatusButton.ToolTipText = "Cheats are currently active";
+				CheatStatusButton.Image = Properties.Resources.Freeze;
+				CheatStatusButton.Visible = true;
+			}
+			else
+			{
+				CheatStatusButton.ToolTipText = String.Empty;
+				CheatStatusButton.Image = Properties.Resources.Blank;
+				CheatStatusButton.Visible = false;
+			}
+		}
+
+		public void SNES_ToggleBG1(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				}
+
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG1_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG2(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG2_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG3(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG3_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleBG4(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowBG4_1)
+				{
+					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ1(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ1 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ1 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ1)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ2(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ2 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ2 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ2)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ3(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ3 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ3 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ3)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
+				}
+			}
+		}
+
+		public void SNES_ToggleOBJ4(bool? setto = null)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ4 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ4 ^= true;
+				}
+				CoreFileProvider.SyncCoreCommInputSignals();
+				if (Global.Config.SNES_ShowOBJ4)
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
+				}
+			}
+		}
+
+		#endregion
+
+		#region Private variables
+
+		private int lastWidth = -1;
+		private int lastHeight = -1;
+		private Control renderTarget;
+		private RetainedViewportPanel retainedPanel;
+		private readonly SaveSlotManager StateSlots = new SaveSlotManager();
+		private readonly Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
+
+		//avi/wav state
+		private IVideoWriter CurrAviWriter;
+		private ISoundProvider AviSoundInput;
+		private Emulation.Sound.MetaspuSoundProvider DumpProxy; //an audio proxy used for dumping
+		private long SoundRemainder; //audio timekeeping for video dumping
+		private int avwriter_resizew;
+		private int avwriter_resizeh;
+		private EventWaitHandle MainWait;
+		private bool exit;
+		private bool runloop_frameProgress;
+		private DateTime FrameAdvanceTimestamp = DateTime.MinValue;
+		private int runloop_fps;
+		private int runloop_last_fps;
+		private bool runloop_frameadvance;
+		private DateTime runloop_second;
+		private bool runloop_last_ff;
+
+		private readonly Throttle throttle;
+		private bool unthrottled;
+
+		//For handling automatic pausing when entering the menu
+		private bool wasPaused;
+		private bool didMenuPause;
+
+		private bool InFullscreen;
+		private Point _windowed_location;
+
+		private int autoDumpLength;
+		private bool autoCloseOnDump = false;
+		private int LastOpenRomFilter;
+
+		// workaround for possible memory leak in SysdrawingRenderPanel
+		private RetainedViewportPanel captureosd_rvp;
+		private SysdrawingRenderPanel captureosd_srp;
+
+		#endregion
+
+		#region Private methods
+
+		private void UpdateToolsBefore(bool fromLua = false)
+		{
+			if (GlobalWinF.Tools.Has<LuaConsole>())
+			{
+				if (!fromLua)
+				{
+					GlobalWinF.Tools.LuaConsole.StartLuaDrawing();
+				}
+				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
+			}
+			GlobalWinF.Tools.UpdateBefore();
+		}
+
+		private void UpdateToolsLoadstate()
+		{
+			if (GlobalWinF.Tools.Has<SNESGraphicsDebugger>())
+			{
+				GlobalWinF.Tools.SNESGraphicsDebugger.UpdateToolsLoadstate();
+			}
+		}
+
+		private void UpdateToolsAfter(bool fromLua = false)
+		{
+			if (!fromLua && GlobalWinF.Tools.Has<LuaConsole>())
+			{
+				GlobalWinF.Tools.LuaConsole.ResumeScripts(true);
+			}
+
+			GlobalWinF.Tools.UpdateAfter();
+			HandleToggleLight();
+
+			if (GlobalWinF.Tools.Has<LuaConsole>())
+			{
+				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
+				if (!fromLua)
+				{
+					GlobalWinF.DisplayManager.PreFrameUpdateLuaSource();
+					GlobalWinF.Tools.LuaConsole.EndLuaDrawing();
+				}
+			}
+		}
+
+		private void ClearAutohold()
+		{
+			Global.StickyXORAdapter.ClearStickies();
+			GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
+
+			if (GlobalWinF.Tools.Has<VirtualPadForm>())
+			{
+				GlobalWinF.Tools.VirtualPad.ClearVirtualPadHolds();
+			}
+
+			GlobalWinF.OSD.AddMessage("Autohold keys cleared");
+		}
+
+		private bool CheckHotkey(string trigger)
+		{
+			//todo - could have these in a table somehow ?
+			switch (trigger)
+			{
+				default:
+					return false;
+				case "Pause": TogglePause(); break;
+				case "Toggle Throttle":
+					unthrottled ^= true;
+					GlobalWinF.OSD.AddMessage("Unthrottled: " + unthrottled);
+					break;
+				case "Soft Reset": SoftReset(); break;
+				case "Hard Reset": HardReset(); break;
+				case "Quick Load": LoadState("QuickSave" + Global.Config.SaveSlot); break;
+				case "Quick Save": SaveState("QuickSave" + Global.Config.SaveSlot); break;
+				case "Clear Autohold": ClearAutohold(); break;
+				case "Screenshot": TakeScreenshot(); break;
+				case "Full Screen": ToggleFullscreen(); break;
+				case "Open ROM": OpenROM(); break;
+				case "Close ROM": CloseROM(); break;
+				case "Display FPS": ToggleFPS(); break;
+				case "Frame Counter": ToggleFrameCounter(); break;
+				case "Lag Counter": ToggleLagCounter(); break;
+				case "Input Display": ToggleInputDisplay(); break;
+				case "Toggle BG Input": ToggleBackgroundInput(); break;
+				case "Toggle Menu": MainMenuStrip.Visible ^= true; break;
+				case "Volume Up": VolumeUp(); break;
+				case "Volume Down": VolumeDown(); break;
+				case "Record A/V": RecordAVI(); break;
+				case "Stop A/V": StopAVI(); break;
+				case "Larger Window": IncreaseWindowSize(); break;
+				case "Smaller Window": DecreaseWIndowSize(); break;
+				case "Increase Speed": IncreaseSpeed(); break;
+				case "Decrease Speed": DecreaseSpeed(); break;
+				case "Reboot Core":
+					bool autoSaveState = Global.Config.AutoSavestates;
+					Global.Config.AutoSavestates = false;
+					LoadRom(CurrentlyOpenRom);
+					Global.Config.AutoSavestates = autoSaveState;
+					break;
+
+				case "Save State 0": SaveState("QuickSave0"); break;
+				case "Save State 1": SaveState("QuickSave1"); break;
+				case "Save State 2": SaveState("QuickSave2"); break;
+				case "Save State 3": SaveState("QuickSave3"); break;
+				case "Save State 4": SaveState("QuickSave4"); break;
+				case "Save State 5": SaveState("QuickSave5"); break;
+				case "Save State 6": SaveState("QuickSave6"); break;
+				case "Save State 7": SaveState("QuickSave7"); break;
+				case "Save State 8": SaveState("QuickSave8"); break;
+				case "Save State 9": SaveState("QuickSave9"); break;
+				case "Load State 0": LoadState("QuickSave0"); break;
+				case "Load State 1": LoadState("QuickSave1"); break;
+				case "Load State 2": LoadState("QuickSave2"); break;
+				case "Load State 3": LoadState("QuickSave3"); break;
+				case "Load State 4": LoadState("QuickSave4"); break;
+				case "Load State 5": LoadState("QuickSave5"); break;
+				case "Load State 6": LoadState("QuickSave6"); break;
+				case "Load State 7": LoadState("QuickSave7"); break;
+				case "Load State 8": LoadState("QuickSave8"); break;
+				case "Load State 9": LoadState("QuickSave9"); break;
+				case "Select State 0": SelectSlot(0); break;
+				case "Select State 1": SelectSlot(1); break;
+				case "Select State 2": SelectSlot(2); break;
+				case "Select State 3": SelectSlot(3); break;
+				case "Select State 4": SelectSlot(4); break;
+				case "Select State 5": SelectSlot(5); break;
+				case "Select State 6": SelectSlot(6); break;
+				case "Select State 7": SelectSlot(7); break;
+				case "Select State 8": SelectSlot(8); break;
+				case "Select State 9": SelectSlot(9); break;
+				case "Save Named State": SaveStateAs(); break;
+				case "Load Named State": LoadStateAs(); break;
+				case "Previous Slot": PreviousSlot(); break;
+				case "Next Slot": NextSlot(); break;
+
+
+				case "Toggle read-only": ToggleReadOnly(); break;
+				case "Play Movie": LoadPlayMovieDialog(); break;
+				case "Record Movie": LoadRecordMovieDialog(); break;
+				case "Stop Movie": StopMovie(); break;
+				case "Play from beginning": RestartMovie(); break;
+				case "Save Movie": SaveMovie(); break;
+				case "Toggle MultiTrack":
+					if (Global.MovieSession.Movie.IsActive)
 					{
-					Name = "Emulator Frontend Controls",
-					BoolButtons = Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
-				});
 
-			foreach (var b in Global.Config.HotkeyBindings)
-			{
-				controls.BindMulti(b.DisplayName, b.Bindings);
+						if (Global.Config.VBAStyleMovieLoadState)
+						{
+							GlobalWinF.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
+						}
+						else
+						{
+							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+							if (Global.MovieSession.MultiTrack.IsActive)
+							{
+								GlobalWinF.OSD.AddMessage("MultiTrack Enabled");
+								GlobalWinF.OSD.MT = "Recording None";
+							}
+							else
+							{
+								GlobalWinF.OSD.AddMessage("MultiTrack Disabled");
+							}
+							Global.MovieSession.MultiTrack.RecordAll = false;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+						}
+					}
+					else
+					{
+						GlobalWinF.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
+					}
+					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					break;
+				case "MT Select All":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = true;
+					GlobalWinF.OSD.MT = "Recording All";
+					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					break;
+				case "MT Select None":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					GlobalWinF.OSD.MT = "Recording None";
+					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					break;
+				case "MT Increment Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer++;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
+					}
+					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					break;
+				case "MT Decrement Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer--;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
+					}
+					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					break;
+				case "Movie Poke": ToggleModePokeMode(); break;
+
+				case "Ram Watch": LoadRamWatch(true); break;
+				case "Ram Search": GlobalWinF.Tools.Load<RamSearch>(); break;
+				case "Hex Editor": GlobalWinF.Tools.Load<HexEditor>(); break;
+				case "Trace Logger": LoadTraceLogger(); break;
+				case "Lua Console": OpenLuaConsole(); break;
+				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
+				case "TAStudio": LoadTAStudio(); break;
+				case "ToolBox": GlobalWinF.Tools.Load<ToolBox>(); break;
+				case "Virtual Pad": GlobalWinF.Tools.Load<VirtualPadForm>(); break;
+
+				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
+				case "New Search": GlobalWinF.Tools.RamSearch.NewSearch(); break;
+				case "Previous Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(reverse: true); break;
+				case "Next Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(); break;
+				case "Previous Operator": GlobalWinF.Tools.RamSearch.NextOperator(reverse: true); break;
+				case "Next Operator": GlobalWinF.Tools.RamSearch.NextOperator(); break;
+
+				case "Toggle BG 1": SNES_ToggleBG1(); break;
+				case "Toggle BG 2": SNES_ToggleBG2(); break;
+				case "Toggle BG 3": SNES_ToggleBG3(); break;
+				case "Toggle BG 4": SNES_ToggleBG4(); break;
+				case "Toggle OBJ 1": SNES_ToggleOBJ1(); break;
+				case "Toggle OBJ 2": SNES_ToggleOBJ2(); break;
+				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
+				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
+
+
+				case "Y Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
+				case "Y Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
+				case "Y Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
+				case "Y Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
+
+				case "X Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
+				case "X Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
+				case "X Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
+				case "X Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
 			}
 
-			GlobalWinF.ClientControls = controls;
-			Global.NullControls = new Controller(NullEmulator.NullController);
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
-
+			return true;
 		}
 
-		private bool IsValidMovieExtension(string ext)
+		private void UpdateDumpIcon()
 		{
-			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
-				return true;
-			else if (ext.ToUpper() == ".TAS")
-				return true;
-			else if (ext.ToUpper() == ".BKM")
-				return true;
+			DumpStatusButton.Image = Properties.Resources.Blank;
+			DumpStatusButton.ToolTipText = "";
 
-			return false;
-		}
+			if (Global.Emulator == null) return;
+			if (Global.Game == null) return;
 
-		public bool IsNullEmulator()
-		{
-			return Global.Emulator is NullEmulator;
-		}
-
-		private string DisplayNameForSystem(string system)
-		{
-			string str = "";
-			switch (system)
+			var status = Global.Game.Status;
+			string annotation;
+			if (status == RomStatus.BadDump)
 			{
-				case "INTV": str += "Intellivision"; break;
-				case "SG": str += "SG-1000"; break;
-				case "SMS": str += "Sega Master System"; break;
-				case "GG": str += "Game Gear"; break;
-				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
-				case "PCE": str += "TurboGrafx-16"; break;
-				case "SGX": str += "SuperGrafx"; break;
-				case "GEN": str += "Genesis"; break;
-				case "TI83": str += "TI-83"; break;
-				case "NES": str += "NES"; break;
-				case "SNES": str += "SNES"; break;
-				case "GB": str += "Game Boy"; break;
-				case "GBC": str += "Game Boy Color"; break;
-				case "A26": str += "Atari 2600"; break;
-				case "A78": str += "Atari 7800"; break;
-				case "C64": str += "Commodore 64"; break;
-				case "Coleco": str += "ColecoVision"; break;
-				case "GBA": str += "Game Boy Advance"; break;
-				case "N64": str += "Nintendo 64"; break;
-				case "SAT": str += "Saturn"; break;
-				case "DGB": str += "Game Boy Link"; break;
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
+				annotation = "Warning: Bad ROM Dump";
+			}
+			else if (status == RomStatus.Overdump)
+			{
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
+				annotation = "Warning: Overdump";
+			}
+			else if (status == RomStatus.NotInDatabase)
+			{
+				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
+				annotation = "Warning: Unknown ROM";
+			}
+			else if (status == RomStatus.TranslatedRom)
+			{
+				DumpStatusButton.Image = Properties.Resources.Translation;
+				annotation = "Translated ROM";
+			}
+			else if (status == RomStatus.Homebrew)
+			{
+				DumpStatusButton.Image = Properties.Resources.HomeBrew;
+				annotation = "Homebrew ROM";
+			}
+			else if (Global.Game.Status == RomStatus.Hack)
+			{
+				DumpStatusButton.Image = Properties.Resources.Hack;
+				annotation = "Hacked ROM";
+			}
+			else if (Global.Game.Status == RomStatus.Unknown)
+			{
+				DumpStatusButton.Image = Properties.Resources.Hack;
+				annotation = "Warning: ROM of Unknown Character";
+			}
+			else
+			{
+				DumpStatusButton.Image = Properties.Resources.GreenCheck;
+				annotation = "Verified good dump";
+			}
+			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
+				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
+
+			DumpStatusButton.ToolTipText = annotation;
+		}
+
+		private void LoadSaveRam()
+		{
+			try //zero says: this is sort of sketchy... but this is no time for rearchitecting
+			{
+				byte[] sram;
+				// GBA core might not know how big the saveram ought to be, so just send it the whole file
+				if (Global.Emulator is GBA)
+				{
+					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
+				}
+				else
+				{
+					sram = new byte[Global.Emulator.ReadSaveRam().Length];
+					using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+						reader.Read(sram, 0, sram.Length);
+				}
+				Global.Emulator.StoreSaveRam(sram);
+			}
+			catch (IOException) { }
+		}
+
+		private static void SaveRam()
+		{
+			string path = PathManager.SaveRamPath(Global.Game);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+				f.Directory.Create();
+
+			//Make backup first
+			if (Global.Config.BackupSaveram && f.Exists)
+			{
+				string backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists)
+					backupFile.Delete();
+				f.CopyTo(backup);
 			}
 
-			if (INTERIM) str += " (interim)";
-			return str;
+
+			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+
+			var saveram = Global.Emulator.ReadSaveRam();
+
+			// this assumes that the default state of the core's sram is 0-filled, so don't do
+			// int len = Util.SaveRamBytesUsed(saveram);
+			int len = saveram.Length;
+			writer.Write(saveram, 0, len);
+			writer.Close();
+		}
+
+		private void SelectSlot(int num)
+		{
+			Global.Config.SaveSlot = num;
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
+		}
+
+		private void RewireSound()
+		{
+			if (DumpProxy != null)
+			{
+				// we're video dumping, so async mode only and use the DumpProxy.
+				// note that the avi dumper has already rewired the emulator itself in this case.
+				GlobalWinF.Sound.SetAsyncInputPin(DumpProxy);
+			}
+			else if (Global.Config.SoundThrottle)
+			{
+				// for sound throttle, use sync mode
+				Global.Emulator.EndAsyncSound();
+				GlobalWinF.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+			}
+			else
+			{
+				// for vsync\clock throttle modes, use async
+				if (!Global.Emulator.StartAsyncSound())
+				{
+					// if the core doesn't support async mode, use a standard vecna wrapper
+					GlobalWinF.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
+				}
+				else
+				{
+					GlobalWinF.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
+				}
+			}
+		}
+
+		private static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
+		{
+			var ret = new Controller(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			Dictionary<string, Config.AnalogBind> abinds;
+			if (analogbinds.TryGetValue(def.Name, out abinds))
+			{
+				foreach (string cbutton in def.FloatControls)
+				{
+					Config.AnalogBind bind;
+					if (abinds.TryGetValue(cbutton, out bind))
+					{
+						ret.BindFloat(cbutton, bind);
+					}
+				}
+			}
+			return ret;
+		}
+
+		private static AutofireController BindToDefinitionAF(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
+		{
+			var ret = new AutofireController(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			return ret;
+		}
+
+		private void SaturnSetPrefs(Emulation.Consoles.Sega.Saturn.Yabause e = null)
+		{
+			if (e == null)
+				e = Global.Emulator as Emulation.Consoles.Sega.Saturn.Yabause;
+
+			if (Global.Config.SaturnUseGL != e.GLMode)
+			{
+				// theoretically possible; not coded. meh.
+				FlagNeedsReboot();
+				return;
+			}
+			if (e.GLMode && Global.Config.SaturnUseGL)
+			{
+				if (Global.Config.SaturnDispFree)
+					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
+				else
+					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
+			}
 		}
 
 		private void HandlePlatformMenus()
 		{
-			string system = "";
+			string system = String.Empty;
 
 			if (Global.Game != null)
 			{
@@ -873,7 +1554,1424 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		void NESSpeicalMenuAdd(string name, string button, string msg)
+		private string DisplayNameForSystem(string system)
+		{
+			string str = String.Empty;
+			switch (system)
+			{
+				case "INTV": str = "Intellivision"; break;
+				case "SG": str = "SG-1000"; break;
+				case "SMS": str = "Sega Master System"; break;
+				case "GG": str = "Game Gear"; break;
+				case "PCECD": str = "TurboGrafx-16 (CD)"; break;
+				case "PCE": str = "TurboGrafx-16"; break;
+				case "SGX": str = "SuperGrafx"; break;
+				case "GEN": str = "Genesis"; break;
+				case "TI83": str = "TI-83"; break;
+				case "NES": str = "NES"; break;
+				case "SNES": str = "SNES"; break;
+				case "GB": str = "Game Boy"; break;
+				case "GBC": str = "Game Boy Color"; break;
+				case "A26": str = "Atari 2600"; break;
+				case "A78": str = "Atari 7800"; break;
+				case "C64": str = "Commodore 64"; break;
+				case "Coleco": str = "ColecoVision"; break;
+				case "GBA": str = "Game Boy Advance"; break;
+				case "N64": str = "Nintendo 64"; break;
+				case "SAT": str = "Saturn"; break;
+				case "DGB": str = "Game Boy Link"; break;
+			}
+
+			if (INTERIM) str += " (interim)";
+			return str;
+		}
+
+		private void InitControls()
+		{
+			var controls = new Controller(
+				new ControllerDefinition
+				{
+					Name = "Emulator Frontend Controls",
+					BoolButtons = Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
+				});
+
+			foreach (var b in Global.Config.HotkeyBindings)
+			{
+				controls.BindMulti(b.DisplayName, b.Bindings);
+			}
+
+			GlobalWinF.ClientControls = controls;
+			Global.NullControls = new Controller(NullEmulator.NullController);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
+
+		}
+
+		private bool IsValidMovieExtension(string ext)
+		{
+			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
+				return true;
+			else if (ext.ToUpper() == ".TAS")
+				return true;
+			else if (ext.ToUpper() == ".BKM")
+				return true;
+
+			return false;
+		}
+
+		private void LoadMoviesFromRecent(string path)
+		{
+			Movie m = new Movie(path, GetEmuVersion());
+
+			if (!m.Loaded)
+			{
+				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
+			}
+			else
+			{
+				Global.ReadOnly = true;
+				StartNewMovie(m, false);
+			}
+		}
+
+		private void LoadRomFromRecent(string rom)
+		{
+			if (!LoadRom(rom))
+			{
+				ToolHelpers.HandleLoadError(Global.Config.RecentRoms, rom);
+			}
+		}
+
+		private void SetPauseStatusbarIcon()
+		{
+			if (EmulatorPaused)
+			{
+				PauseStatusButton.Image = Properties.Resources.Pause;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator Paused";
+			}
+			else
+			{
+				PauseStatusButton.Image = Properties.Resources.Blank;
+				PauseStatusButton.Visible = false;
+				PauseStatusButton.ToolTipText = String.Empty;
+			}
+		}
+
+		private void Cheats_Restart()
+		{
+			if (GlobalWinF.Tools.Has<Cheats>())
+			{
+				GlobalWinF.Tools.Restart<Cheats>();
+			}
+			else
+			{
+				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+				ToolHelpers.UpdateCheatRelatedTools();
+			}
+		}
+
+		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
+		private string SNES_Prepare(string profile)
+		{
+			SNES_Check(profile);
+			if (SNES_prepared[profile] == null)
+			{
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+			}
+			return SNES_prepared[profile];
+		}
+
+		private void SNES_Check(string profile)
+		{
+			if (SNES_prepared.ContainsKey(profile)) return;
+
+			const string bits = "32";
+
+			//disabled til it works
+			//if (Win32.Is64BitOperatingSystem)
+			//  bits = "64";
+
+			string exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
+
+			string thisDir = PathManager.GetExeDirectoryAbsolute();
+			string exePath = Path.Combine(thisDir, exename);
+			if (!File.Exists(exePath))
+				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
+
+			if (!File.Exists(exePath))
+				exePath = null;
+
+			SNES_prepared[profile] = exePath;
+		}
+
+		private void SyncPresentationMode()
+		{
+			GlobalWinF.DisplayManager.Suspend();
+
+#if WINDOWS
+			bool gdi = Global.Config.DisplayGDI || GlobalWinF.Direct3D == null;
+#endif
+			if (renderTarget != null)
+			{
+				renderTarget.Dispose();
+				Controls.Remove(renderTarget);
+			}
+
+			if (retainedPanel != null) retainedPanel.Dispose();
+			if (GlobalWinF.RenderPanel != null) GlobalWinF.RenderPanel.Dispose();
+
+#if WINDOWS
+			if (gdi)
+#endif
+				renderTarget = retainedPanel = new RetainedViewportPanel();
+#if WINDOWS
+			else renderTarget = new ViewportPanel();
+#endif
+			Controls.Add(renderTarget);
+			Controls.SetChildIndex(renderTarget, 0);
+
+			renderTarget.Dock = DockStyle.Fill;
+			renderTarget.BackColor = Color.Black;
+
+#if WINDOWS
+			if (gdi)
+			{
+#endif
+				GlobalWinF.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
+				retainedPanel.ActivateThreaded();
+#if WINDOWS
+			}
+			else
+			{
+				try
+				{
+					var d3dPanel = new Direct3DRenderPanel(GlobalWinF.Direct3D, renderTarget);
+					d3dPanel.CreateDevice();
+					GlobalWinF.RenderPanel = d3dPanel;
+				}
+				catch
+				{
+					Program.DisplayDirect3DError();
+					GlobalWinF.Direct3D.Dispose();
+					GlobalWinF.Direct3D = null;
+					SyncPresentationMode();
+				}
+			}
+#endif
+
+			GlobalWinF.DisplayManager.Resume();
+		}
+
+		private void SyncThrottle()
+		{
+			bool fastforward = GlobalWinF.ClientControls["Fast Forward"] || FastForward;
+			bool superfastforward = GlobalWinF.ClientControls["Turbo"];
+			Global.ForceNoThrottle = unthrottled || fastforward;
+
+			// realtime throttle is never going to be so exact that using a double here is wrong
+			throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
+
+			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
+			throttle.signal_unthrottle = unthrottled || superfastforward;
+
+			if (fastforward)
+			{
+				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
+			}
+			else
+			{
+				throttle.SetSpeedPercent(Global.Config.SpeedPercent);
+			}
+
+		}
+
+		private void SetSpeedPercentAlternate(int value)
+		{
+			Global.Config.SpeedPercentAlternate = value;
+			SyncThrottle();
+			GlobalWinF.OSD.AddMessage("Alternate Speed: " + value + "%");
+		}
+
+		private void SetSpeedPercent(int value)
+		{
+			Global.Config.SpeedPercent = value;
+			SyncThrottle();
+			GlobalWinF.OSD.AddMessage("Speed: " + value + "%");
+		}
+
+		private void Shutdown()
+		{
+			if (CurrAviWriter != null)
+			{
+				CurrAviWriter.CloseFile();
+				CurrAviWriter = null;
+			}
+		}
+
+		private void CheckMessages()
+		{
+			Application.DoEvents();
+			if (ActiveForm != null)
+				ScreenSaver.ResetTimerPeriodically();
+		}
+
+		private unsafe Image MakeScreenshotImage()
+		{
+			var video = Global.Emulator.VideoProvider;
+			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
+
+			//TODO - replace with BitmapBuffer
+			var framebuf = video.GetVideoBuffer();
+			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			int* ptr = (int*)bmpdata.Scan0.ToPointer();
+			int stride = bmpdata.Stride / 4;
+			for (int y = 0; y < video.BufferHeight; y++)
+				for (int x = 0; x < video.BufferWidth; x++)
+				{
+					int col = framebuf[(y * video.BufferWidth) + x];
+
+					if (Global.Emulator is TI83)
+					{
+						if (col == 0)
+							col = Color.Black.ToArgb();
+						else
+							col = Color.White.ToArgb();
+					}
+
+					// make opaque
+					col |= unchecked((int)0xff000000);
+
+					ptr[y * stride + x] = col;
+				}
+			image.UnlockBits(bmpdata);
+			return image;
+		}
+
+		private void SaveStateAs()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				return;
+			}
+
+			var sfd = new SaveFileDialog();
+			string path = PathManager.GetSaveStatePath(Global.Game);
+			sfd.InitialDirectory = path;
+			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
+			var file = new FileInfo(path);
+			if (file.Directory != null && file.Directory.Exists == false)
+				file.Directory.Create();
+
+			GlobalWinF.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+
+			if (result != DialogResult.OK)
+				return;
+
+			SaveStateFile(sfd.FileName, sfd.FileName, false);
+		}
+
+		private void LoadStateAs()
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				return;
+			}
+
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
+				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				RestoreDirectory = true
+			};
+
+			GlobalWinF.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+
+			if (result != DialogResult.OK)
+				return;
+
+			if (File.Exists(ofd.FileName) == false)
+				return;
+
+			LoadStateFile(ofd.FileName, Path.GetFileName(ofd.FileName));
+		}
+
+		private void SaveSlotSelectedMessage()
+		{
+			GlobalWinF.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
+		}
+
+		private VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
+		{
+			string PluginToUse = String.Empty;
+
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			{
+				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
+			}
+
+			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64"))
+			{
+				PluginToUse = Global.Config.N64VidPlugin;
+			}
+
+			VideoPluginSettings video_settings = new VideoPluginSettings(PluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
+
+			if (PluginToUse == "Rice")
+			{
+				Global.Config.RicePlugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
+			}
+			else if (PluginToUse == "Glide64")
+			{
+				Global.Config.GlidePlugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
+			}
+			else if (PluginToUse == "Glide64mk2")
+			{
+				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
+			}
+
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			{
+				List<string> settings = new List<string>(video_settings.Parameters.Keys);
+				foreach (string setting in settings)
+				{
+					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
+					{
+						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
+						if (video_settings.Parameters[setting] is bool)
+						{
+							try
+							{
+								video_settings.Parameters[setting] = bool.Parse(Value);
+							}
+							catch { }
+							/*
+							if (Value == "True")
+							{
+								video_settings.Parameters[setting] = true;
+							}
+							else if (Value == "False")
+							{
+								video_settings.Parameters[setting] = false;
+							}*/
+						}
+						else if (video_settings.Parameters[setting] is int)
+						{
+							try
+							{
+								video_settings.Parameters[setting] = int.Parse(Value);
+							}
+							catch { }
+						}
+					}
+				}
+			}
+
+			return video_settings;
+		}
+
+		private void Render()
+		{
+			var video = Global.Emulator.VideoProvider;
+			if (video.BufferHeight != lastHeight || video.BufferWidth != lastWidth)
+			{
+				lastWidth = video.BufferWidth;
+				lastHeight = video.BufferHeight;
+				FrameBufferResized();
+			}
+
+			GlobalWinF.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
+		}
+
+		//sends a simulation of a plain alt key keystroke
+		private void SendPlainAltKey(int lparam)
+		{
+			Message m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
+			base.WndProc(ref m);
+		}
+
+		//sends an alt+mnemonic combination
+		private void SendAltKeyChar(char c)
+		{
+			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
+		}
+
+		private string FormatFilter(params string[] args)
+		{
+			var sb = new StringBuilder();
+			if (args.Length % 2 != 0) throw new ArgumentException();
+			int num = args.Length / 2;
+			for (int i = 0; i < num; i++)
+			{
+				sb.AppendFormat("{0} ({1})|{1}", args[i * 2], args[i * 2 + 1]);
+				if (i != num - 1) sb.Append('|');
+			}
+			string str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
+			str = str.Replace(";", "; ");
+			return str;
+		}
+
+		private void OpenROM()
+		{
+			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
+
+			//adelikat: ugly design for this, I know
+			if (INTERIM)
+			{
+				ofd.Filter = FormatFilter(
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
+					"Music Files", "*.psf;*.sid",
+					"Disc Images", "*.cue",
+					"NES", "*.nes;*.fds;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
+					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
+					"TI-83", "*.rom;%ARCH%",
+					"Archive Files", "%ARCH%",
+					"Savestate", "*.state",
+					"Atari 2600", "*.a26;*.bin;%ARCH%",
+					"Atari 7800", "*.a78;*.bin;%ARCH%",
+					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
+					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+					"Colecovision", "*.col;%ARCH%",
+					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+					"PSX Executables (very experimental)", "*.exe",
+					"PSF Playstation Sound File (very experimental)", "*.psf",
+					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+					"SID Commodore 64 Music File", "*.sid;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
+					"All Files", "*.*");
+			}
+			else
+			{
+				ofd.Filter = FormatFilter(
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.xml;%ARCH%",
+					"Disc Images", "*.cue",
+					"NES", "*.nes;*.fds;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
+					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
+					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
+					"Atari 2600", "*.a26;%ARCH%",
+					"Atari 7800", "*.a78;%ARCH%",
+					"Colecovision", "*.col;%ARCH%",
+					"TI-83", "*.rom;%ARCH%",
+					"Archive Files", "%ARCH%",
+					"Savestate", "*.state",
+					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
+
+					"All Files", "*.*");
+			}
+
+			ofd.RestoreDirectory = false;
+			ofd.FilterIndex = LastOpenRomFilter;
+
+			GlobalWinF.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			GlobalWinF.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return;
+			var file = new FileInfo(ofd.FileName);
+			Global.Config.LastRomPath = file.DirectoryName;
+			LastOpenRomFilter = ofd.FilterIndex;
+			LoadRom(file.FullName);
+		}
+
+		private void SaveConfig()
+		{
+			if (Global.Config.SaveWindowPosition)
+			{
+				Global.Config.MainWndx = Location.X;
+				Global.Config.MainWndy = Location.Y;
+			}
+			else
+			{
+				Global.Config.MainWndx = -1;
+				Global.Config.MainWndy = -1;
+			}
+
+			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
+			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+		}
+
+		private void PreviousSlot()
+		{
+			if (Global.Config.SaveSlot == 0)
+				Global.Config.SaveSlot = 9;		//Wrap to end of slot list
+			else if (Global.Config.SaveSlot > 9)
+				Global.Config.SaveSlot = 9;	//Meh, just in case
+			else Global.Config.SaveSlot--;
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
+		}
+
+		private void NextSlot()
+		{
+			if (Global.Config.SaveSlot >= 9)
+				Global.Config.SaveSlot = 0;	//Wrap to beginning of slot list
+			else if (Global.Config.SaveSlot < 0)
+				Global.Config.SaveSlot = 0;	//Meh, just in case
+			else Global.Config.SaveSlot++;
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
+		}
+
+		private void ToggleFPS()
+		{
+			Global.Config.DisplayFPS ^= true;
+		}
+
+		private void ToggleFrameCounter()
+		{
+			Global.Config.DisplayFrameCounter ^= true;
+		}
+
+		private void ToggleLagCounter()
+		{
+			Global.Config.DisplayLagCounter ^= true;
+		}
+
+		private void ToggleInputDisplay()
+		{
+			Global.Config.DisplayInput ^= true;
+		}
+
+		private void ToggleReadOnly()
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.ReadOnly ^= true;
+				if (Global.ReadOnly)
+				{
+					GlobalWinF.OSD.AddMessage("Movie read-only mode");
+				}
+				else
+				{
+					GlobalWinF.OSD.AddMessage("Movie read+write mode");
+				}
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("No movie active");
+			}
+		}
+
+		private void VolumeUp()
+		{
+			Global.Config.SoundVolume += 10;
+			if (Global.Config.SoundVolume > 100)
+				Global.Config.SoundVolume = 100;
+			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+		}
+
+		private void VolumeDown()
+		{
+			Global.Config.SoundVolume -= 10;
+			if (Global.Config.SoundVolume < 0)
+				Global.Config.SoundVolume = 0;
+			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+		}
+
+		private void SoftReset()
+		{
+			//is it enough to run this for one frame? maybe..
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+			{
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Reset");
+					GlobalWinF.OSD.AddMessage("Reset button pressed.");
+				}
+			}
+		}
+
+		private void HardReset()
+		{
+			//is it enough to run this for one frame? maybe..
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
+			{
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Power");
+					GlobalWinF.OSD.AddMessage("Power button pressed.");
+				}
+			}
+		}
+
+		private void UpdateStatusSlots()
+		{
+			StateSlots.Update();
+
+			Slot1StatusButton.ForeColor = StateSlots.HasSlot(1) ? Color.Black : Color.Black;
+			Slot2StatusButton.ForeColor = StateSlots.HasSlot(2) ? Color.Black : Color.Black;
+			Slot3StatusButton.ForeColor = StateSlots.HasSlot(3) ? Color.Black : Color.Black;
+			Slot4StatusButton.ForeColor = StateSlots.HasSlot(4) ? Color.Black : Color.Black;
+			Slot5StatusButton.ForeColor = StateSlots.HasSlot(5) ? Color.Black : Color.Black;
+			Slot6StatusButton.ForeColor = StateSlots.HasSlot(6) ? Color.Black : Color.Black;
+			Slot7StatusButton.ForeColor = StateSlots.HasSlot(7) ? Color.Black : Color.Black;
+			Slot8StatusButton.ForeColor = StateSlots.HasSlot(8) ? Color.Black : Color.Black;
+			Slot9StatusButton.ForeColor = StateSlots.HasSlot(9) ? Color.Black : Color.Black;
+			Slot0StatusButton.ForeColor = StateSlots.HasSlot(0) ? Color.Black : Color.Black;
+
+			Slot1StatusButton.BackColor = SystemColors.Control;
+			Slot2StatusButton.BackColor = SystemColors.Control;
+			Slot3StatusButton.BackColor = SystemColors.Control;
+			Slot4StatusButton.BackColor = SystemColors.Control;
+			Slot5StatusButton.BackColor = SystemColors.Control;
+			Slot6StatusButton.BackColor = SystemColors.Control;
+			Slot7StatusButton.BackColor = SystemColors.Control;
+			Slot8StatusButton.BackColor = SystemColors.Control;
+			Slot9StatusButton.BackColor = SystemColors.Control;
+			Slot0StatusButton.BackColor = SystemColors.Control;
+
+			if (Global.Config.SaveSlot == 0) Slot0StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 1) Slot1StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 2) Slot2StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 3) Slot3StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 4) Slot4StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 5) Slot5StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 6) Slot6StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 7) Slot7StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 8) Slot8StatusButton.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 9) Slot9StatusButton.BackColor = SystemColors.ControlDark;
+		}
+
+		private Bitmap CaptureOSD() //sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
+		{
+			// this code captures the emu display with OSD and lua composited onto it.
+			// it's slow and a bit hackish; a better solution is to create a new
+			// "dummy render" class that implements IRenderer, IBlitter, and possibly
+			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+
+			if (captureosd_rvp == null)
+			{
+				captureosd_rvp = new RetainedViewportPanel();
+				captureosd_srp = new SysdrawingRenderPanel(captureosd_rvp);
+			}
+
+			// this size can be different for showing off stretching or filters
+			captureosd_rvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
+
+
+			GlobalWinF.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
+			return (Bitmap)captureosd_rvp.GetBitmap().Clone();
+		}
+
+		private void ShowConsole()
+		{
+			LogConsole.ShowConsole();
+			LogWindowAsConsoleMenuItem.Enabled = false;
+		}
+
+		private void HideConsole()
+		{
+			LogConsole.HideConsole();
+			LogWindowAsConsoleMenuItem.Enabled = true;
+		}
+
+		private void IncreaseWindowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 2:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 5;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 10;
+					break;
+				case 10:
+					return;
+			}
+			FrameBufferResized();
+		}
+
+		private void DecreaseWIndowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					return;
+				case 2:
+					Global.Config.TargetZoomFactor = 1;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 10:
+					Global.Config.TargetZoomFactor = 5;
+					return;
+			}
+			FrameBufferResized();
+		}
+
+		private void IncreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp;
+			if (oldp < 3) newp = 3;
+			else if (oldp < 6) newp = 6;
+			else if (oldp < 12) newp = 12;
+			else if (oldp < 25) newp = 25;
+			else if (oldp < 50) newp = 50;
+			else if (oldp < 75) newp = 75;
+			else if (oldp < 100) newp = 100;
+			else if (oldp < 150) newp = 150;
+			else if (oldp < 200) newp = 200;
+			else if (oldp < 400) newp = 400;
+			else if (oldp < 800) newp = 800;
+			else newp = 1600;
+			SetSpeedPercent(newp);
+		}
+
+		private void DecreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp;
+			if (oldp > 800) newp = 800;
+			else if (oldp > 400) newp = 400;
+			else if (oldp > 200) newp = 200;
+			else if (oldp > 150) newp = 150;
+			else if (oldp > 100) newp = 100;
+			else if (oldp > 75) newp = 75;
+			else if (oldp > 50) newp = 50;
+			else if (oldp > 25) newp = 25;
+			else if (oldp > 12) newp = 12;
+			else if (oldp > 6) newp = 6;
+			else if (oldp > 3) newp = 3;
+			else newp = 1;
+			SetSpeedPercent(newp);
+		}
+
+		private void SaveMovie()
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.WriteMovie();
+				GlobalWinF.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
+			}
+		}
+
+		private void HandleToggleLight()
+		{
+			if (MainStatusBar.Visible)
+			{
+				if (Global.Emulator.CoreComm.UsesDriveLed)
+				{
+					if (!LedLightStatusLabel.Visible)
+					{
+						LedLightStatusLabel.Visible = true;
+					}
+					if (Global.Emulator.CoreComm.DriveLED)
+					{
+						LedLightStatusLabel.Image = Properties.Resources.LightOn;
+					}
+					else
+					{
+						LedLightStatusLabel.Image = Properties.Resources.LightOff;
+					}
+				}
+				else
+				{
+					if (LedLightStatusLabel.Visible)
+					{
+						LedLightStatusLabel.Visible = false;
+					}
+				}
+			}
+		}
+
+		private void UpdateKeyPriorityIcon()
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					KeyPriorityStatusLabel.Image = Properties.Resources.Both;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
+					break;
+				case 1:
+					KeyPriorityStatusLabel.Image = Properties.Resources.GameController;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
+					break;
+				case 2:
+					KeyPriorityStatusLabel.Image = Properties.Resources.HotKeys;
+					KeyPriorityStatusLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
+					break;
+			}
+		}
+
+		private void ToggleModePokeMode()
+		{
+			Global.Config.MoviePlaybackPokeMode ^= true;
+			if (Global.Config.MoviePlaybackPokeMode)
+			{
+				GlobalWinF.OSD.AddMessage("Movie Poke mode enabled");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Movie Poke mode disabled");
+			}
+		}
+
+		private void ToggleBackgroundInput()
+		{
+			Global.Config.AcceptBackgroundInput ^= true;
+			if (Global.Config.AcceptBackgroundInput)
+			{
+				GlobalWinF.OSD.AddMessage("Background Input enabled");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Background Input disabled");
+			}
+		}
+
+		private void LimitFrameRateMessage()
+		{
+			if (Global.Config.ClockThrottle)
+			{
+				GlobalWinF.OSD.AddMessage("Framerate limiting on");
+			}
+			else
+			{
+				GlobalWinF.OSD.AddMessage("Framerate limiting off");
+			}
+		}
+
+		private void VsyncMessage()
+		{
+			GlobalWinF.OSD.AddMessage(
+				"Display Vsync set to " + (Global.Config.VSyncThrottle ?  "on" : "off")
+			);
+		}
+
+		private void MinimizeFrameskipMessage()
+		{
+			GlobalWinF.OSD.AddMessage(
+				"Autominimizing set to " + (Global.Config.AutoMinimizeSkipping ? "on" : "off")
+			);
+		}
+
+		private bool StateErrorAskUser(string title, string message)
+		{
+			var result = MessageBox.Show(message,
+				title,
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question
+			);
+
+			return result == DialogResult.Yes;
+		}
+
+		//--alt key hacks
+		protected override void WndProc(ref Message m)
+		{
+			//this is necessary to trap plain alt keypresses so that only our hotkey system gets them
+			if (m.Msg == 0x0112) //WM_SYSCOMMAND
+				if (m.WParam.ToInt32() == 0xF100) //SC_KEYMENU
+					return;
+			base.WndProc(ref m);
+		}
+
+		protected override bool ProcessDialogChar(char charCode)
+		{
+			//this is necessary to trap alt+char combinations so that only our hotkey system gets them
+			if ((ModifierKeys & Keys.Alt) != 0)
+				return true;
+			else return base.ProcessDialogChar(charCode);
+		}
+
+		#endregion
+
+		#region Frame Loop
+
+		private void StepRunLoop_Throttle()
+		{
+			SyncThrottle();
+			throttle.signal_frameAdvance = runloop_frameadvance;
+			throttle.signal_continuousframeAdvancing = runloop_frameProgress;
+
+			throttle.Step(true, -1);
+		}
+
+		private void StepRunLoop_Core()
+		{
+			bool runFrame = false;
+			runloop_frameadvance = false;
+			DateTime now = DateTime.Now;
+			bool suppressCaptureRewind = false;
+
+			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
+			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
+
+			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
+			{
+				runFrame = true;
+			}
+
+			if (GlobalWinF.ClientControls["Frame Advance"] || PressFrameAdvance)
+			{
+				//handle the initial trigger of a frame advance
+				if (FrameAdvanceTimestamp == DateTime.MinValue)
+				{
+					PauseEmulator();
+					runFrame = true;
+					runloop_frameadvance = true;
+					FrameAdvanceTimestamp = now;
+				}
+				else
+				{
+					//handle the timed transition from countdown to FrameProgress
+					if (frameProgressTimeElapsed)
+					{
+						runFrame = true;
+						runloop_frameProgress = true;
+						UnpauseEmulator();
+					}
+				}
+			}
+			else
+			{
+				//handle release of frame advance: do we need to deactivate FrameProgress?
+				if (runloop_frameProgress)
+				{
+					runloop_frameProgress = false;
+					PauseEmulator();
+				}
+				FrameAdvanceTimestamp = DateTime.MinValue;
+			}
+
+			if (!EmulatorPaused)
+			{
+				runFrame = true;
+			}
+
+			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
+			if (RewindActive && (GlobalWinF.ClientControls["Rewind"] || PressRewind))
+			{
+				Rewind(1);
+				suppressCaptureRewind = true;
+				if (0 == RewindBuf.Count)
+				{
+					runFrame = false;
+				}
+				else
+				{
+					runFrame = true;
+				}
+				//we don't want to capture input when rewinding, even in record mode
+				if (Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.SwitchToPlay();
+				}
+			}
+			if (UpdateFrame)
+			{
+				runFrame = true;
+				if (Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.SwitchToPlay();
+				}
+			}
+
+			bool genSound = false;
+			bool coreskipaudio = false;
+			if (runFrame)
+			{
+				bool ff = GlobalWinF.ClientControls["Fast Forward"] || GlobalWinF.ClientControls["Turbo"];
+				bool fff = GlobalWinF.ClientControls["Turbo"];
+				bool updateFpsString = (runloop_last_ff != ff);
+				runloop_last_ff = ff;
+
+				if (!fff)
+				{
+					UpdateToolsBefore();
+				}
+
+				Global.ClickyVirtualPadController.FrameTick();
+
+				runloop_fps++;
+				//client input-related duties
+				GlobalWinF.OSD.ClearGUIText();
+
+				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
+				{
+					runloop_last_fps = runloop_fps;
+					runloop_second = DateTime.Now;
+					runloop_fps = 0;
+					updateFpsString = true;
+				}
+
+				if (updateFpsString)
+				{
+					string fps_string = runloop_last_fps + " fps";
+					if (fff)
+					{
+						fps_string += " >>>>";
+					}
+					else if (ff)
+					{
+						fps_string += " >>";
+					}
+					GlobalWinF.OSD.FPS = fps_string;
+				}
+
+				if (!suppressCaptureRewind && RewindActive) CaptureRewindState();
+
+				if (!runloop_frameadvance) genSound = true;
+				else if (!Global.Config.MuteFrameAdvance)
+					genSound = true;
+
+				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWinF.ClientControls["ClearFrame"]);
+
+				coreskipaudio = GlobalWinF.ClientControls["Turbo"] && CurrAviWriter == null;
+				//=======================================
+				Global.CheatList.Pulse();
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
+				GlobalWinF.DisplayManager.NeedsToPaint = true;
+				Global.CheatList.Pulse();
+				//=======================================
+
+				if (!PauseAVI)
+				{
+					AVIFrameAdvance();
+				}
+
+				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
+				{
+					Global.AutoFireController.IncrementStarts();
+				}
+
+				PressFrameAdvance = false;
+				if (!fff)
+				{
+					UpdateToolsAfter();
+				}
+			}
+
+			if (GlobalWinF.ClientControls["Rewind"] || PressRewind)
+			{
+				UpdateToolsAfter();
+				if (ReturnToRecording)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				PressRewind = false;
+			}
+			if (UpdateFrame)
+			{
+				if (ReturnToRecording)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				UpdateFrame = false;
+			}
+
+			if (genSound && !coreskipaudio)
+			{
+				GlobalWinF.Sound.UpdateSound();
+			}
+			else
+				GlobalWinF.Sound.UpdateSilence();
+		}
+
+		#endregion
+
+		#region AVI Stuff
+
+		/// <summary>
+		/// start avi recording, unattended
+		/// </summary>
+		/// <param name="videowritername">match the short name of an ivideowriter</param>
+		/// <param name="filename">filename to save to</param>
+		private void RecordAVI(string videowritername, string filename)
+		{
+			_RecordAVI(videowritername, filename, true);
+		}
+
+		/// <summary>
+		/// start avi recording, asking user for filename and options
+		/// </summary>
+		private void RecordAVI()
+		{
+			_RecordAVI(null, null, false);
+		}
+
+		/// <summary>
+		/// start avi recording
+		/// </summary>
+		/// <param name="videowritername"></param>
+		/// <param name="filename"></param>
+		/// <param name="unattended"></param>
+		private void _RecordAVI(string videowritername, string filename, bool unattended)
+		{
+			if (CurrAviWriter != null) return;
+
+			// select IVideoWriter to use
+			IVideoWriter aw = null;
+			var writers = VideoWriterInventory.GetAllVideoWriters();
+
+			var video_writers = writers as IVideoWriter[] ?? writers.ToArray();
+			if (unattended)
+			{
+				foreach (var w in video_writers)
+				{
+					if (w.ShortName() == videowritername)
+					{
+						aw = w;
+						break;
+					}
+				}
+			}
+			else
+			{
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWinF.MainForm, out avwriter_resizew, out avwriter_resizeh);
+			}
+
+			foreach (var w in video_writers)
+			{
+				if (w != aw)
+					w.Dispose();
+			}
+
+			if (aw == null)
+			{
+				if (unattended)
+					GlobalWinF.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
+				else
+					GlobalWinF.OSD.AddMessage("A/V capture canceled.");
+				return;
+			}
+
+			try
+			{
+				aw.SetMovieParameters(Global.Emulator.CoreComm.VsyncNum, Global.Emulator.CoreComm.VsyncDen);
+				if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					aw.SetVideoParameters(avwriter_resizew, avwriter_resizeh);
+				else
+					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+				aw.SetAudioParameters(44100, 2, 16);
+
+				// select codec token
+				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
+				if (unattended)
+				{
+					aw.SetDefaultVideoCodecToken();
+				}
+				else
+				{
+					var token = aw.AcquireVideoCodecToken(GlobalWinF.MainForm);
+					if (token == null)
+					{
+						GlobalWinF.OSD.AddMessage("A/V capture canceled.");
+						aw.Dispose();
+						return;
+					}
+					aw.SetVideoCodecToken(token);
+				}
+
+				// select file to save to
+				if (unattended)
+				{
+					aw.OpenFile(filename);
+				}
+				else
+				{
+					var sfd = new SaveFileDialog();
+					if (!(Global.Emulator is NullEmulator))
+					{
+						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
+					}
+					else
+					{
+						sfd.FileName = "NULL";
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
+					}
+					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
+
+					GlobalWinF.Sound.StopSound();
+					var result = sfd.ShowDialog();
+					GlobalWinF.Sound.StartSound();
+
+					if (result == DialogResult.Cancel)
+					{
+						aw.Dispose();
+						return;
+					}
+					aw.OpenFile(sfd.FileName);
+				}
+
+				//commit the avi writing last, in case there were any errors earlier
+				CurrAviWriter = aw;
+				GlobalWinF.OSD.AddMessage("A/V capture started");
+				AVIStatusLabel.Image = Properties.Resources.AVI;
+				AVIStatusLabel.ToolTipText = "A/V capture in progress";
+				AVIStatusLabel.Visible = true;
+
+			}
+			catch
+			{
+				GlobalWinF.OSD.AddMessage("A/V capture failed!");
+				aw.Dispose();
+				throw;
+			}
+
+			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
+			if (!Global.Emulator.StartAsyncSound())
+				AviSoundInput = new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			else
+				AviSoundInput = Global.Emulator.SoundProvider;
+			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			SoundRemainder = 0;
+			RewireSound();
+		}
+
+		private void AbortAVI()
+		{
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				RewireSound();
+				return;
+			}
+			CurrAviWriter.Dispose();
+			CurrAviWriter = null;
+			GlobalWinF.OSD.AddMessage("A/V capture aborted");
+			AVIStatusLabel.Image = Properties.Resources.Blank;
+			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
+			DumpProxy = null; // return to normal sound output
+			SoundRemainder = 0;
+			RewireSound();
+		}
+
+		private void StopAVI()
+		{
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				RewireSound();
+				return;
+			}
+			CurrAviWriter.CloseFile();
+			CurrAviWriter.Dispose();
+			CurrAviWriter = null;
+			GlobalWinF.OSD.AddMessage("A/V capture stopped");
+			AVIStatusLabel.Image = Properties.Resources.Blank;
+			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
+			DumpProxy = null; // return to normal sound output
+			SoundRemainder = 0;
+			RewireSound();
+		}
+
+		private void AVIFrameAdvance()
+		{
+			if (CurrAviWriter != null)
+			{
+				long nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + SoundRemainder;
+				long nsamp = nsampnum / Global.Emulator.CoreComm.VsyncNum;
+				// exactly remember fractional parts of an audio sample
+				SoundRemainder = nsampnum % Global.Emulator.CoreComm.VsyncNum;
+
+				short[] temp = new short[nsamp * 2];
+				AviSoundInput.GetSamples(temp);
+				DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
+
+				try
+				{
+					IVideoProvider output;
+					if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					{
+						Bitmap bmpin;
+						if (Global.Config.AVI_CaptureOSD)
+							bmpin = CaptureOSD();
+						else
+						{
+							bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
+							var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+							System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
+							bmpin.UnlockBits(lockdata);
+						}
+						Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
+						using (Graphics g = Graphics.FromImage(bmpout))
+							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+						bmpin.Dispose();
+						output = new AVOut.BmpVideoProvder(bmpout);
+					}
+					else
+					{
+						if (Global.Config.AVI_CaptureOSD)
+							output = new AVOut.BmpVideoProvder(CaptureOSD());
+						else
+							output = Global.Emulator.VideoProvider;
+					}
+
+					CurrAviWriter.AddFrame(output);
+					if (output is AVOut.BmpVideoProvder)
+						(output as AVOut.BmpVideoProvder).Dispose();
+
+					CurrAviWriter.AddSamples(temp);
+				}
+				catch (Exception e)
+				{
+					MessageBox.Show("Video dumping died:\n\n" + e);
+					AbortAVI();
+				}
+
+				if (autoDumpLength > 0)
+				{
+					autoDumpLength--;
+					if (autoDumpLength == 0) // finish
+					{
+						StopAVI();
+						if (autoCloseOnDump)
+						{
+							exit = true;
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Scheduled for refactor
+
+		public string GetEmuVersion() //This and EMUVERSION don't need to be on mainform
+		{
+			return INTERIM ? "SVN " + SubWCRev.SVN_REV : EMUVERSION;
+		}
+
+		private void NESSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
 		{
 			NESSpecialControlsMenuItem.Visible = true;
 			NESSpecialControlsMenuItem.DropDownItems.Add(name, null, delegate
@@ -889,7 +2987,7 @@ namespace BizHawk.MultiClient
 			});
 		}
 
-		void NESSpecialMenuControls()
+		private void NESSpecialMenuControls() //Ditto
 		{
 			// ugly and hacky
 			NESSpecialControlsMenuItem.Visible = false;
@@ -909,86 +3007,7 @@ namespace BizHawk.MultiClient
 				NESSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
 		}
 
-		void SaturnSetPrefs(Emulation.Consoles.Sega.Saturn.Yabause e = null)
-		{
-			if (e == null)
-				e = Global.Emulator as Emulation.Consoles.Sega.Saturn.Yabause;
-
-			if (Global.Config.SaturnUseGL != e.GLMode)
-			{
-				// theoretically possible; not coded. meh.
-				FlagNeedsReboot();
-				return;
-			}
-			if (e.GLMode && Global.Config.SaturnUseGL)
-			{
-				if (Global.Config.SaturnDispFree)
-					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
-				else
-					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
-			}
-		}
-
-		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
-		{
-			var ret = new Controller(def);
-			Dictionary<string, string> binds;
-			if (allbinds.TryGetValue(def.Name, out binds))
-			{
-				foreach (string cbutton in def.BoolButtons)
-				{
-					string bind;
-					if (binds.TryGetValue(cbutton, out bind))
-						ret.BindMulti(cbutton, bind);
-				}
-			}
-			Dictionary<string, Config.AnalogBind> abinds;
-			if (analogbinds.TryGetValue(def.Name, out abinds))
-			{
-				foreach (string cbutton in def.FloatControls)
-				{
-					Config.AnalogBind bind;
-					if (abinds.TryGetValue(cbutton, out bind))
-					{
-						ret.BindFloat(cbutton, bind);
-					}
-				}
-			}
-			return ret;
-		}
-
-		static AutofireController BindToDefinitionAF(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
-		{
-			var ret = new AutofireController(def);
-			Dictionary<string, string> binds;
-			if (allbinds.TryGetValue(def.Name, out binds))
-			{
-				foreach (string cbutton in def.BoolButtons)
-				{
-					string bind;
-					if (binds.TryGetValue(cbutton, out bind))
-						ret.BindMulti(cbutton, bind);
-				}
-			}
-			return ret;
-		}
-
-
-		void SyncControls()
-		{
-			var def = Global.Emulator.ControllerDefinition;
-
-			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
-			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
-
-			// allow propogating controls that are in the current controller definition but not in the prebaked one
-			// these two lines shouldn't be required anymore under the new system?
-			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
-			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
-			RewireInputChain();
-		}
-
-		void RewireInputChain()
+		private void RewireInputChain() //Move to Client.Common
 		{
 			GlobalWinF.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
 
@@ -1016,7 +3035,21 @@ namespace BizHawk.MultiClient
 				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
-		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
+		private void SyncControls() //Move to client.comon
+		{
+			var def = Global.Emulator.ControllerDefinition;
+
+			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
+			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
+
+			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			// these two lines shouldn't be required anymore under the new system?
+			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
+			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
+			RewireInputChain();
+		}
+
+		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false) //Move to client.common
 		{
 			if (path == null) return false;
 			using (var file = new HawkFile())
@@ -1049,7 +3082,7 @@ namespace BizHawk.MultiClient
 				RomGame rom = null;
 				GameInfo game = null;
 				CoreComm nextComm = new CoreComm();
-				SyncCoreCommInputSignals(nextComm);
+				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 				try
 				{
@@ -1086,19 +3119,6 @@ namespace BizHawk.MultiClient
 									game.System = "PCECD";
 									break;
 							}
-
-							/* probably dead code here
-							if (Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
-							{
-								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-								disc.Dispose();
-							}
-							*/
-							//else if (disc.DetectSegaSaturn())  // DetectSegaSaturn does not exist
-							//{
-							//    Console.WriteLine("Sega Saturn disc detected!");
-							//    game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-							//}
 						}
 
 						switch (game.System)
@@ -1198,7 +3218,7 @@ namespace BizHawk.MultiClient
 									return false;
 							}
 						}
-						catch(Exception ex)
+						catch (Exception ex)
 						{
 							System.Windows.Forms.MessageBox.Show(ex.ToString(), "XMLGame Load Error");
 						}
@@ -1289,12 +3309,12 @@ namespace BizHawk.MultiClient
 									}
 
 									NES nes = new NES(nextComm, game, rom.FileData, bios, Global.MovieSession.Movie.Header.BoardProperties)
-										{
-											SoundOn = Global.Config.SoundEnabled,
-											NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
-											NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
-											PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
-										};
+									{
+										SoundOn = Global.Config.SoundEnabled,
+										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
+										NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
+										PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
+									};
 									nes.NTSC_LastDrawLine = Global.Config.PAL_NESBottomLine;
 									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
 									nextEmulator = nes;
@@ -1589,799 +3609,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		void RewireSound()
+		public void SaveState(string name) //Move to client.common
 		{
-			if (DumpProxy != null)
-			{
-				// we're video dumping, so async mode only and use the DumpProxy.
-				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWinF.Sound.SetAsyncInputPin(DumpProxy);
-			}
-			else if (Global.Config.SoundThrottle)
-			{
-				// for sound throttle, use sync mode
-				Global.Emulator.EndAsyncSound();
-				GlobalWinF.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
-			}
-			else
-			{
-				// for vsync\clock throttle modes, use async
-				if (!Global.Emulator.StartAsyncSound())
-				{
-					// if the core doesn't support async mode, use a standard vecna wrapper
-					GlobalWinF.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
-				}
-				else
-				{
-					GlobalWinF.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
-				}
-			}
-		}
-
-		private void UpdateDumpIcon()
-		{
-			DumpStatusButton.Image = Properties.Resources.Blank;
-			DumpStatusButton.ToolTipText = "";
-
-			if (Global.Emulator == null) return;
-			if (Global.Game == null) return;
-
-			var status = Global.Game.Status;
-			string annotation;
-			if (status == RomStatus.BadDump)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				annotation = "Warning: Bad ROM Dump";
-			}
-			else if (status == RomStatus.Overdump)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				annotation = "Warning: Overdump";
-			}
-			else if (status == RomStatus.NotInDatabase)
-			{
-				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-				annotation = "Warning: Unknown ROM";
-			}
-			else if (status == RomStatus.TranslatedRom)
-			{
-				DumpStatusButton.Image = Properties.Resources.Translation;
-				annotation = "Translated ROM";
-			}
-			else if (status == RomStatus.Homebrew)
-			{
-				DumpStatusButton.Image = Properties.Resources.HomeBrew;
-				annotation = "Homebrew ROM";
-			}
-			else if (Global.Game.Status == RomStatus.Hack)
-			{
-				DumpStatusButton.Image = Properties.Resources.Hack;
-				annotation = "Hacked ROM";
-			}
-			else if (Global.Game.Status == RomStatus.Unknown)
-			{
-				DumpStatusButton.Image = Properties.Resources.Hack;
-				annotation = "Warning: ROM of Unknown Character";
-			}
-			else
-			{
-				DumpStatusButton.Image = Properties.Resources.GreenCheck;
-				annotation = "Verified good dump";
-			}
-			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
-				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
-
-			DumpStatusButton.ToolTipText = annotation;
-		}
-
-
-		private void LoadSaveRam()
-		{
-			//zero says: this is sort of sketchy... but this is no time for rearchitecting
-			try
-			{
-				byte[] sram;
-				// GBA core might not know how big the saveram ought to be, so just send it the whole file
-				if (Global.Emulator is GBA)
-				{
-					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
-				}
-				else
-				{
-					sram = new byte[Global.Emulator.ReadSaveRam().Length];
-					using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
-						reader.Read(sram, 0, sram.Length);
-				}
-				Global.Emulator.StoreSaveRam(sram);
-			}
-			catch (IOException) { }
-		}
-
-		private static void SaveRam()
-		{
-			string path = PathManager.SaveRamPath(Global.Game);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
-				f.Directory.Create();
-
-			//Make backup first
-			if (Global.Config.BackupSaveram && f.Exists)
-			{
-				string backup = path + ".bak";
-				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists)
-					backupFile.Delete();
-				f.CopyTo(backup);
-			}
-
-
-			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-
-			var saveram = Global.Emulator.ReadSaveRam();
-
-			// this assumes that the default state of the core's sram is 0-filled, so don't do
-			// int len = Util.SaveRamBytesUsed(saveram);
-			int len = saveram.Length;
-			writer.Write(saveram, 0, len);
-			writer.Close();
-		}
-
-		void SelectSlot(int num)
-		{
-			Global.Config.SaveSlot = num;
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
-		}
-
-		/// <summary>
-		/// Controls whether the app generates input events. should be turned off for most modal dialogs
-		/// </summary>
-		public bool AllowInput
-		{
-			get
-			{
-				//the main form gets input
-				if (ActiveForm == this) return true;
-
-				//modals that need to capture input for binding purposes get input, of course
-				//if (ActiveForm is HotkeyWindow) return true;
-				if (ActiveForm is HotkeyConfig) return true;
-				//if (ActiveForm is ControllerConfig) return true;
-				if (ActiveForm is ControllerConfig) return true;
-				if (ActiveForm is TAStudio) return true;
-				if (ActiveForm is VirtualPadForm) return true;
-				//if no form is active on this process, then the background input setting applies
-				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
-
-				return false;
-			}
-		}
-
-		public void ProcessInput()
-		{
-			for (; ; )
-			{
-				//loop through all available events
-				var ie = Input.Instance.DequeueEvent();
-				if (ie == null) { break; }
-
-				//useful debugging:
-				//Console.WriteLine(ie);
-
-				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
-
-				//look for hotkey bindings for this key
-				var triggers = GlobalWinF.ClientControls.SearchBindings(ie.LogicalButton.ToString());
-				if (triggers.Count == 0)
-				{
-					//bool sys_hotkey = false;
-
-					//maybe it is a system alt-key which hasnt been overridden
-					if (ie.EventType == Input.InputEventType.Press)
-					{
-						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
-						{
-							char c = ie.LogicalButton.Button.ToLower()[0];
-							if (c >= 'a' && c <= 'z' || c == ' ')
-							{
-								SendAltKeyChar(c);
-								//sys_hotkey = true;
-							}
-						}
-						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
-						{
-							SendPlainAltKey(32);
-							//sys_hotkey = true;
-						}
-					}
-					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
-
-					//????????????
-					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
-					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
-					//if (!sys_hotkey)
-					//{
-					//  var mutated_ie = new Input.InputEvent();
-					//  mutated_ie.EventType = ie.EventType;
-					//  mutated_ie.LogicalButton = ie.LogicalButton;
-					//  mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
-					//  Global.ControllerInputCoalescer.Receive(ie);
-					//}
-				}
-
-				//zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
-				//maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
-
-				//adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
-				bool handled;
-				switch (Global.Config.Input_Hotkey_OverrideOptions)
-				{
-					default:
-					case 0: //Both allowed
-						GlobalWinF.ControllerInputCoalescer.Receive(ie);
-
-						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
-						{
-							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
-						}
-
-						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
-						if (!handled)
-						{
-							GlobalWinF.HotkeyCoalescer.Receive(ie);
-						}
-						break;
-					case 1: //Input overrides Hokeys
-						GlobalWinF.ControllerInputCoalescer.Receive(ie);
-						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
-						if (!inputisbound)
-						{
-							handled = false;
-							if (ie.EventType == Input.InputEventType.Press)
-							{
-								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
-							}
-
-							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
-							if (!handled)
-							{
-								GlobalWinF.HotkeyCoalescer.Receive(ie);
-							}
-						}
-						break;
-					case 2: //Hotkeys override Input
-						handled = false;
-						if (ie.EventType == Input.InputEventType.Press)
-						{
-							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
-						}
-
-						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
-						if (!handled)
-						{
-							GlobalWinF.HotkeyCoalescer.Receive(ie);
-							GlobalWinF.ControllerInputCoalescer.Receive(ie);
-						}
-						break;
-				}
-
-			} //foreach event
-
-			// also handle floats
-			GlobalWinF.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
-		}
-
-		private void ClearAutohold()
-		{
-			Global.StickyXORAdapter.ClearStickies();
-			GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
-
-			if (GlobalWinF.Tools.Has<VirtualPadForm>())
-			{
-				GlobalWinF.Tools.VirtualPad.ClearVirtualPadHolds();
-			}
-
-			GlobalWinF.OSD.AddMessage("Autohold keys cleared");
-		}
-
-		bool CheckHotkey(string trigger)
-		{
-			//todo - could have these in a table somehow ?
-			switch (trigger)
-			{
-				default:
-					return false;
-				case "Pause": TogglePause(); break;
-				case "Toggle Throttle":
-					unthrottled ^= true;
-					GlobalWinF.OSD.AddMessage("Unthrottled: " + unthrottled);
-					break;
-				case "Soft Reset": SoftReset(); break;
-				case "Hard Reset": HardReset(); break;
-				case "Quick Load":
-					if (!IsNullEmulator())
-						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-				case "Quick Save":
-					if (!IsNullEmulator())
-						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-				case "Clear Autohold": ClearAutohold(); break;
-				case "Screenshot": TakeScreenshot(); break;
-				case "Full Screen": ToggleFullscreen(); break;
-				case "Open ROM": OpenROM(); break;
-				case "Close ROM": CloseROM(); break;
-				case "Display FPS": ToggleFPS(); break;
-				case "Frame Counter": ToggleFrameCounter(); break;
-				case "Lag Counter": ToggleLagCounter(); break;
-				case "Input Display": ToggleInputDisplay(); break;
-				case "Toggle BG Input": ToggleBackgroundInput(); break;
-				case "Toggle Menu": ShowHideMenu(); break;
-				case "Volume Up": VolumeUp(); break;
-				case "Volume Down": VolumeDown(); break;
-				case "Record A/V": RecordAVI(); break;
-				case "Stop A/V": StopAVI(); break;
-				case "Larger Window": IncreaseWindowSize(); break;
-				case "Smaller Window": DecreaseWIndowSize(); break;
-				case "Increase Speed": IncreaseSpeed(); break;
-				case "Decrease Speed": DecreaseSpeed(); break;
-				case "Reboot Core":
-					bool autoSaveState = Global.Config.AutoSavestates;
-					Global.Config.AutoSavestates = false;
-					LoadRom(CurrentlyOpenRom);
-					Global.Config.AutoSavestates = autoSaveState;
-					break;
-
-				case "Save State 0": SaveState("QuickSave0"); break;
-				case "Save State 1": SaveState("QuickSave1"); break;
-				case "Save State 2": SaveState("QuickSave2"); break;
-				case "Save State 3": SaveState("QuickSave3"); break;
-				case "Save State 4": SaveState("QuickSave4"); break;
-				case "Save State 5": SaveState("QuickSave5"); break;
-				case "Save State 6": SaveState("QuickSave6"); break;
-				case "Save State 7": SaveState("QuickSave7"); break;
-				case "Save State 8": SaveState("QuickSave8"); break;
-				case "Save State 9": SaveState("QuickSave9"); break;
-				case "Load State 0": LoadState("QuickSave0"); break;
-				case "Load State 1": LoadState("QuickSave1"); break;
-				case "Load State 2": LoadState("QuickSave2"); break;
-				case "Load State 3": LoadState("QuickSave3"); break;
-				case "Load State 4": LoadState("QuickSave4"); break;
-				case "Load State 5": LoadState("QuickSave5"); break;
-				case "Load State 6": LoadState("QuickSave6"); break;
-				case "Load State 7": LoadState("QuickSave7"); break;
-				case "Load State 8": LoadState("QuickSave8"); break;
-				case "Load State 9": LoadState("QuickSave9"); break;
-				case "Select State 0": SelectSlot(0); break;
-				case "Select State 1": SelectSlot(1); break;
-				case "Select State 2": SelectSlot(2); break;
-				case "Select State 3": SelectSlot(3); break;
-				case "Select State 4": SelectSlot(4); break;
-				case "Select State 5": SelectSlot(5); break;
-				case "Select State 6": SelectSlot(6); break;
-				case "Select State 7": SelectSlot(7); break;
-				case "Select State 8": SelectSlot(8); break;
-				case "Select State 9": SelectSlot(9); break;
-				case "Save Named State": SaveStateAs(); break;
-				case "Load Named State": LoadStateAs(); break;
-				case "Previous Slot": PreviousSlot(); break;
-				case "Next Slot": NextSlot(); break;
-
-
-				case "Toggle read-only": ToggleReadOnly(); break;
-				case "Play Movie": LoadPlayMovieDialog(); break;
-				case "Record Movie": LoadRecordMovieDialog(); break;
-				case "Stop Movie": StopMovie(); break;
-				case "Play from beginning": RestartMovie(); break;
-				case "Save Movie": SaveMovie(); break;
-				case "Toggle MultiTrack":
-					if (Global.MovieSession.Movie.IsActive)
-					{
-
-						if (Global.Config.VBAStyleMovieLoadState)
-						{
-							GlobalWinF.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
-						}
-						else
-						{
-							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-							if (Global.MovieSession.MultiTrack.IsActive)
-							{
-								GlobalWinF.OSD.AddMessage("MultiTrack Enabled");
-								GlobalWinF.OSD.MT = "Recording None";
-							}
-							else
-							{
-								GlobalWinF.OSD.AddMessage("MultiTrack Disabled");
-							}
-							Global.MovieSession.MultiTrack.RecordAll = false;
-							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						}
-					}
-					else
-					{
-						GlobalWinF.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
-					}
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Select All":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = true;
-					GlobalWinF.OSD.MT = "Recording All";
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Select None":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					GlobalWinF.OSD.MT = "Recording None";
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Increment Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer++;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
-					}
-					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Decrement Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer--;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
-					}
-					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
-					break;
-				case "Movie Poke": ToggleModePokeMode(); break;
-
-				case "Ram Watch": LoadRamWatch(true); break;
-				case "Ram Search": GlobalWinF.Tools.Load<RamSearch>(); break;
-				case "Hex Editor": GlobalWinF.Tools.Load<HexEditor>(); break;
-				case "Trace Logger": LoadTraceLogger(); break;
-				case "Lua Console": OpenLuaConsole(); break;
-				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
-				case "TAStudio": LoadTAStudio(); break;
-				case "ToolBox": GlobalWinF.Tools.Load<ToolBox>(); break;
-				case "Virtual Pad": GlobalWinF.Tools.Load<VirtualPadForm>(); break;
-
-				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
-				case "New Search": GlobalWinF.Tools.RamSearch.NewSearch(); break;
-				case "Previous Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(reverse: true); break;
-				case "Next Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(); break;
-				case "Previous Operator": GlobalWinF.Tools.RamSearch.NextOperator(reverse: true); break;
-				case "Next Operator": GlobalWinF.Tools.RamSearch.NextOperator(); break;
-
-				case "Toggle BG 1": SNES_ToggleBG1(); break;
-				case "Toggle BG 2": SNES_ToggleBG2(); break;
-				case "Toggle BG 3": SNES_ToggleBG3(); break;
-				case "Toggle BG 4": SNES_ToggleBG4(); break;
-				case "Toggle OBJ 1": SNES_ToggleOBJ1(); break;
-				case "Toggle OBJ 2": SNES_ToggleOBJ2(); break;
-				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
-				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
-
-
-				case "Y Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
-				case "Y Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
-				case "Y Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
-				case "Y Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
-
-				case "X Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
-				case "X Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
-				case "X Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
-				case "X Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
-			}
-
-			return true;
-		}
-
-		void StepRunLoop_Throttle()
-		{
-			SyncThrottle();
-			throttle.signal_frameAdvance = runloop_frameadvance;
-			throttle.signal_continuousframeAdvancing = runloop_frameProgress;
-
-			throttle.Step(true, -1);
-		}
-
-		void StepRunLoop_Core()
-		{
-			bool runFrame = false;
-			runloop_frameadvance = false;
-			DateTime now = DateTime.Now;
-			bool suppressCaptureRewind = false;
-
-			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
-			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
-
-			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
-			{
-				runFrame = true;
-			}
-
-			if (GlobalWinF.ClientControls["Frame Advance"] || PressFrameAdvance)
-			{
-				//handle the initial trigger of a frame advance
-				if (FrameAdvanceTimestamp == DateTime.MinValue)
-				{
-					PauseEmulator();
-					runFrame = true;
-					runloop_frameadvance = true;
-					FrameAdvanceTimestamp = now;
-				}
-				else
-				{
-					//handle the timed transition from countdown to FrameProgress
-					if (frameProgressTimeElapsed)
-					{
-						runFrame = true;
-						runloop_frameProgress = true;
-						UnpauseEmulator();
-					}
-				}
-			}
-			else
-			{
-				//handle release of frame advance: do we need to deactivate FrameProgress?
-				if (runloop_frameProgress)
-				{
-					runloop_frameProgress = false;
-					PauseEmulator();
-				}
-				FrameAdvanceTimestamp = DateTime.MinValue;
-			}
-
-			if (!EmulatorPaused)
-			{
-				runFrame = true;
-			}
-
-			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (RewindActive && (GlobalWinF.ClientControls["Rewind"] || PressRewind))
-			{
-				Rewind(1);
-				suppressCaptureRewind = true;
-				if (0 == RewindBuf.Count)
-				{
-					runFrame = false;
-				}
-				else
-				{
-					runFrame = true;
-				}
-				//we don't want to capture input when rewinding, even in record mode
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
-			}
-			if (UpdateFrame)
-			{
-				runFrame = true;
-				if (Global.MovieSession.Movie.IsRecording)
-				{
-					Global.MovieSession.Movie.SwitchToPlay();
-				}
-			}
-
-			bool genSound = false;
-			bool coreskipaudio = false;
-			if (runFrame)
-			{
-				bool ff = GlobalWinF.ClientControls["Fast Forward"] || GlobalWinF.ClientControls["Turbo"];
-				bool fff = GlobalWinF.ClientControls["Turbo"];
-				bool updateFpsString = (runloop_last_ff != ff);
-				runloop_last_ff = ff;
-
-				if (!fff)
-				{
-					UpdateToolsBefore();
-				}
-
-				Global.ClickyVirtualPadController.FrameTick();
-
-				runloop_fps++;
-				//client input-related duties
-				GlobalWinF.OSD.ClearGUIText();
-
-				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
-				{
-					runloop_last_fps = runloop_fps;
-					runloop_second = DateTime.Now;
-					runloop_fps = 0;
-					updateFpsString = true;
-				}
-
-				if (updateFpsString)
-				{
-					string fps_string = runloop_last_fps + " fps";
-					if (fff)
-					{
-						fps_string += " >>>>";
-					}
-					else if (ff)
-					{
-						fps_string += " >>";
-					}
-					GlobalWinF.OSD.FPS = fps_string;
-				}
-
-				if (!suppressCaptureRewind && RewindActive) CaptureRewindState();
-
-				if (!runloop_frameadvance) genSound = true;
-				else if (!Global.Config.MuteFrameAdvance)
-					genSound = true;
-
-				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWinF.ClientControls["ClearFrame"]);
-
-				coreskipaudio = GlobalWinF.ClientControls["Turbo"] && CurrAviWriter == null;
-				//=======================================
-				Global.CheatList.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
-				GlobalWinF.DisplayManager.NeedsToPaint = true;
-				Global.CheatList.Pulse();
-				//=======================================
-
-				if (!PauseAVI)
-				{
-					AVIFrameAdvance();
-				}
-
-				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
-				{
-					Global.AutoFireController.IncrementStarts();
-				}
-
-				PressFrameAdvance = false;
-				if (!fff)
-				{
-					UpdateToolsAfter();
-				}
-			}
-
-			if (GlobalWinF.ClientControls["Rewind"] || PressRewind)
-			{
-				UpdateToolsAfter();
-				if (ReturnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-				PressRewind = false;
-			}
-			if (UpdateFrame)
-			{
-				if (ReturnToRecording)
-				{
-					Global.MovieSession.Movie.SwitchToRecord();
-				}
-				UpdateFrame = false;
-			}
-
-			if (genSound && !coreskipaudio)
-			{
-				GlobalWinF.Sound.UpdateSound();
-			}
-			else
-				GlobalWinF.Sound.UpdateSilence();
-		}
-
-		public void UpdateToolsBefore(bool fromLua = false)
-		{
-			if (GlobalWinF.Tools.Has<LuaConsole>())
-			{
-				if (!fromLua)
-				{
-					GlobalWinF.Tools.LuaConsole.StartLuaDrawing();
-				}
-				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
-			}
-			GlobalWinF.Tools.UpdateBefore();
-		}
-
-		public void UpdateToolsLoadstate()
-		{
-			if (GlobalWinF.Tools.Has<SNESGraphicsDebugger>())
-			{
-				GlobalWinF.Tools.SNESGraphicsDebugger.UpdateToolsLoadstate();
-			}
-		}
-
-		public void UpdateToolsAfter(bool fromLua = false)
-		{
-			if (!fromLua && GlobalWinF.Tools.Has<LuaConsole>())
-			{
-				GlobalWinF.Tools.LuaConsole.ResumeScripts(true);
-			}
-
-			GlobalWinF.Tools.UpdateAfter();
-			HandleToggleLight();
-
-			if (GlobalWinF.Tools.Has<LuaConsole>())
-			{
-				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
-				if (!fromLua)
-				{
-					GlobalWinF.DisplayManager.PreFrameUpdateLuaSource();
-					GlobalWinF.Tools.LuaConsole.EndLuaDrawing();
-				}
-			}
-		}
-
-		private unsafe Image MakeScreenshotImage()
-		{
-			var video = Global.Emulator.VideoProvider;
-			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
-
-			//TODO - replace with BitmapBuffer
-			var framebuf = video.GetVideoBuffer();
-			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride / 4;
-			for (int y = 0; y < video.BufferHeight; y++)
-				for (int x = 0; x < video.BufferWidth; x++)
-				{
-					int col = framebuf[(y * video.BufferWidth) + x];
-
-					if (Global.Emulator is TI83)
-					{
-						if (col == 0)
-							col = Color.Black.ToArgb();
-						else
-							col = Color.White.ToArgb();
-					}
-
-					// make opaque
-					col |= unchecked((int)0xff000000);
-
-					ptr[y * stride + x] = col;
-				}
-			image.UnlockBits(bmpdata);
-			return image;
-		}
-
-		public void TakeScreenshotToClipboard()
-		{
-			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
-			{
-				Clipboard.SetImage(img);
-			}
-			GlobalWinF.OSD.AddMessage("Screenshot saved to clipboard.");
-		}
-
-		public void TakeScreenshot()
-		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
-			TakeScreenshot(path);
-			/*int frames = 120;
-			int skip = 1;
-			int speed = 1;
-			bool reversable = true;
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + frames + "Frames-Skip=" + skip + "-Speed=" + speed + "-reversable=" + reversable + ".gif");
-			makeAnimatedGif(frames, skip, speed, reversable, path);*/
-			//Was using this code to test the animated gif functions
-		}
-
-		public void TakeScreenshot(string path)
-		{
-			var fi = new FileInfo(path);
-			if (fi.Directory != null && fi.Directory.Exists == false)
-				fi.Directory.Create();
-			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
-			{
-				img.Save(fi.FullName, ImageFormat.Png);
-			}
-			GlobalWinF.OSD.AddMessage(fi.Name + " saved.");
-		}
-
-		public void SaveState(string name)
-		{
-			if (IsNullEmulator())
+			if (Global.Emulator is NullEmulator)
 			{
 				return;
 			}
@@ -2410,7 +3640,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void SaveStateFile(string filename, string name, bool fromLua)
+		public void SaveStateFile(string filename, string name, bool fromLua)  //Move to client.common
 		{
 			SavestateManager.SaveStateFile(filename, name);
 
@@ -2422,28 +3652,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SaveStateAs()
-		{
-			if (IsNullEmulator()) return;
-			var sfd = new SaveFileDialog();
-			string path = PathManager.GetSaveStatePath(Global.Game);
-			sfd.InitialDirectory = path;
-			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
-			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
-				file.Directory.Create();
-
-			GlobalWinF.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-
-			if (result != DialogResult.OK)
-				return;
-
-			SaveStateFile(sfd.FileName, sfd.FileName, false);
-		}
-
-		public void LoadStateFile(string path, string name, bool fromLua = false)
+		public void LoadStateFile(string path, string name, bool fromLua = false) //Move to client.commo
 		{
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 
@@ -2467,9 +3676,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadState(string name, bool fromLua = false)
+		public void LoadState(string name, bool fromLua = false) //Move to client.commo
 		{
-			if (IsNullEmulator())
+			if (Global.Emulator is NullEmulator)
 			{
 				return;
 			}
@@ -2484,352 +3693,8 @@ namespace BizHawk.MultiClient
 			LoadStateFile(path, name, fromLua);
 		}
 
-		private void LoadStateAs()
-		{
-			if (IsNullEmulator()) return;
-			var ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
-					Filter = "Save States (*.State)|*.State|All Files|*.*",
-					RestoreDirectory = true
-				};
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-
-			if (result != DialogResult.OK)
-				return;
-
-			if (File.Exists(ofd.FileName) == false)
-				return;
-
-			LoadStateFile(ofd.FileName, Path.GetFileName(ofd.FileName));
-		}
-
-		private void SaveSlotSelectedMessage()
-		{
-			GlobalWinF.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
-		}
-
-		public void LoadGameGenieEC()
-		{
-			if (Global.Emulator is NES)
-			{
-				GlobalWinF.Tools.Load<NESGameGenie>();
-			}
-			else if (Global.Emulator is LibsnesCore)
-			{
-				GlobalWinF.Tools.Load<SNESGameGenie>();
-			}
-			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
-			{
-				GlobalWinF.Tools.Load<GBGameGenie>();
-			}
-			else if (Global.Emulator is Genesis)
-			{
-				GlobalWinF.Tools.Load<GenGameGenie>();
-			}
-		}
-
-		public void LoadTraceLogger()
-		{
-			if (Global.Emulator.CoreComm.CpuTraceAvailable)
-			{
-				GlobalWinF.Tools.Load<TraceLogger>();
-			}
-		}
-
-		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
-		{
-			string PluginToUse = "";
-
-			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
-			{
-				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
-			}
-
-			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64"))
-			{
-				PluginToUse = Global.Config.N64VidPlugin;
-			}
-
-			VideoPluginSettings video_settings = new VideoPluginSettings(PluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
-
-			if (PluginToUse == "Rice")
-			{
-				Global.Config.RicePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
-			}
-			else if (PluginToUse == "Glide64")
-			{
-				Global.Config.GlidePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
-			}
-			else if (PluginToUse == "Glide64mk2")
-			{
-				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
-			}
-
-			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
-			{
-				List<string> settings = new List<string>(video_settings.Parameters.Keys);
-				foreach (string setting in settings)
-				{
-					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
-					{
-						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
-						if (video_settings.Parameters[setting] is bool)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = bool.Parse(Value);
-							}
-							catch { }
-							/*
-							if (Value == "True")
-							{
-								video_settings.Parameters[setting] = true;
-							}
-							else if (Value == "False")
-							{
-								video_settings.Parameters[setting] = false;
-							}*/
-						}
-						else if (video_settings.Parameters[setting] is int)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = int.Parse(Value);
-							}
-							catch { }
-						}
-					}
-				}
-			}
-
-			return video_settings;
-		}
-
-		public bool N64GetBoolFromDB(string parameter)
-		{
-			if (Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter) == "true")
-				return true;
-			else
-				return false;
-		}
-
-		public int N64GetIntFromDB(string parameter, int defaultVal)
-		{
-			if (Global.Game.OptionPresent(parameter) && InputValidate.IsValidUnsignedNumber(Global.Game.OptionValue(parameter)))
-				return int.Parse(Global.Game.OptionValue(parameter));
-			else
-				return defaultVal;
-		}
-
-
-		private int lastWidth = -1;
-		private int lastHeight = -1;
-
-		private void Render()
-		{
-			var video = Global.Emulator.VideoProvider;
-			if (video.BufferHeight != lastHeight || video.BufferWidth != lastWidth)
-			{
-				lastWidth = video.BufferWidth;
-				lastHeight = video.BufferHeight;
-				FrameBufferResized();
-			}
-
-			GlobalWinF.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
-		}
-
-		public void FrameBufferResized()
-		{
-			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
-			for (int i = 0; i < 2; i++)
-			{
-				var video = Global.Emulator.VideoProvider;
-				int zoom = Global.Config.TargetZoomFactor;
-				var area = Screen.FromControl(this).WorkingArea;
-
-				int borderWidth = Size.Width - renderTarget.Size.Width;
-				int borderHeight = Size.Height - renderTarget.Size.Height;
-
-				// start at target zoom and work way down until we find acceptable zoom
-				for (; zoom >= 1; zoom--)
-				{
-					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
-						break;
-				}
-
-				// Change size
-				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
-				PerformLayout();
-				GlobalWinF.RenderPanel.Resized = true;
-
-				// Is window off the screen at this size?
-				if (area.Contains(Bounds) == false)
-				{
-					if (Bounds.Right > area.Right) // Window is off the right edge
-						Location = new Point(area.Right - Size.Width, Location.Y);
-
-					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
-						Location = new Point(Location.X, area.Bottom - Size.Height);
-				}
-			}
-		}
-
-		public void ToggleFullscreen()
-		{
-			if (InFullscreen == false)
-			{
-				_windowed_location = Location;
-				FormBorderStyle = FormBorderStyle.None;
-				WindowState = FormWindowState.Maximized;
-				if (Global.Config.ShowMenuInFullscreen)
-					MainMenuStrip.Visible = true;
-				else
-					MainMenuStrip.Visible = false;
-				MainStatusBar.Visible = false;
-				PerformLayout();
-				GlobalWinF.RenderPanel.Resized = true;
-				InFullscreen = true;
-			}
-			else
-			{
-				FormBorderStyle = FormBorderStyle.Sizable;
-				WindowState = FormWindowState.Normal;
-				MainMenuStrip.Visible = true;
-				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
-				Location = _windowed_location;
-				PerformLayout();
-				FrameBufferResized();
-				InFullscreen = false;
-			}
-		}
-
-		//--alt key hacks
-
-		protected override void WndProc(ref Message m)
-		{
-			//this is necessary to trap plain alt keypresses so that only our hotkey system gets them
-			if (m.Msg == 0x0112) //WM_SYSCOMMAND
-				if (m.WParam.ToInt32() == 0xF100) //SC_KEYMENU
-					return;
-			base.WndProc(ref m);
-		}
-
-		protected override bool ProcessDialogChar(char charCode)
-		{
-			//this is necessary to trap alt+char combinations so that only our hotkey system gets them
-			if ((ModifierKeys & Keys.Alt) != 0)
-				return true;
-			else return base.ProcessDialogChar(charCode);
-		}
-
-		//sends a simulation of a plain alt key keystroke
-		void SendPlainAltKey(int lparam)
-		{
-			Message m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
-			base.WndProc(ref m);
-		}
-
-		//sends an alt+mnemonic combination
-		void SendAltKeyChar(char c)
-		{
-			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
-		}
-
-		string FormatFilter(params string[] args)
-		{
-			var sb = new StringBuilder();
-			if (args.Length % 2 != 0) throw new ArgumentException();
-			int num = args.Length / 2;
-			for (int i = 0; i < num; i++)
-			{
-				sb.AppendFormat("{0} ({1})|{1}", args[i * 2], args[i * 2 + 1]);
-				if (i != num - 1) sb.Append('|');
-			}
-			string str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
-			str = str.Replace(";", "; ");
-			return str;
-		}
-
-		int LastOpenRomFilter;
-		private void OpenROM()
-		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
-			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
-
-			//adelikat: ugly design for this, I know
-			if (INTERIM)
-			{
-				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
-					"Music Files", "*.psf;*.sid",
-					"Disc Images", "*.cue",
-					"NES", "*.nes;*.fds;%ARCH%",
-					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
-					"TI-83", "*.rom;%ARCH%",
-					"Archive Files", "%ARCH%",
-					"Savestate", "*.state",
-					"Atari 2600", "*.a26;*.bin;%ARCH%",
-					"Atari 7800", "*.a78;*.bin;%ARCH%",
-					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
-					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-					"Colecovision", "*.col;%ARCH%",
-					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
-					"PSX Executables (very experimental)", "*.exe",
-					"PSF Playstation Sound File (very experimental)", "*.psf",
-					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
-					"SID Commodore 64 Music File", "*.sid;%ARCH%",
-					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"All Files", "*.*");
-			}
-			else
-			{
-				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.xml;%ARCH%",
-					"Disc Images", "*.cue",
-					"NES", "*.nes;*.fds;%ARCH%",
-					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
-					"Atari 2600", "*.a26;%ARCH%",
-					"Atari 7800", "*.a78;%ARCH%",
-					"Colecovision", "*.col;%ARCH%",
-					"TI-83", "*.rom;%ARCH%",
-					"Archive Files", "%ARCH%",
-					"Savestate", "*.state",
-					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
-
-					"All Files", "*.*");
-			}
-
-			ofd.RestoreDirectory = false;
-			ofd.FilterIndex = LastOpenRomFilter;
-
-			GlobalWinF.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-			var file = new FileInfo(ofd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
-			LastOpenRomFilter = ofd.FilterIndex;
-			LoadRom(file.FullName);
-		}
-
-		//-------------------------------------------------------
 		//whats the difference between these two methods??
 		//its very tricky. rename to be more clear or combine them.
-
 		private void CloseGame(bool clearSRAM = false)
 		{
 			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
@@ -2859,8 +3724,7 @@ namespace BizHawk.MultiClient
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.MovieSession.Movie.Stop();
-			NeedsReboot = false;
-			SetRebootIconStatus();
+			RebootStatusBarIcon.Visible = false;
 		}
 
 		public void CloseROM(bool clearSRAM = false)
@@ -2882,524 +3746,7 @@ namespace BizHawk.MultiClient
 			UpdateDumpIcon();
 		}
 
-		private void SaveConfig()
-		{
-			if (Global.Config.SaveWindowPosition)
-			{
-				Global.Config.MainWndx = Location.X;
-				Global.Config.MainWndy = Location.Y;
-			}
-			else
-			{
-				Global.Config.MainWndx = -1;
-				Global.Config.MainWndy = -1;
-			}
-
-			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
-		}
-
-		private void PreviousSlot()
-		{
-			if (Global.Config.SaveSlot == 0)
-				Global.Config.SaveSlot = 9;		//Wrap to end of slot list
-			else if (Global.Config.SaveSlot > 9)
-				Global.Config.SaveSlot = 9;	//Meh, just in case
-			else Global.Config.SaveSlot--;
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
-		}
-
-		private void NextSlot()
-		{
-			if (Global.Config.SaveSlot >= 9)
-				Global.Config.SaveSlot = 0;	//Wrap to beginning of slot list
-			else if (Global.Config.SaveSlot < 0)
-				Global.Config.SaveSlot = 0;	//Meh, just in case
-			else Global.Config.SaveSlot++;
-			SaveSlotSelectedMessage();
-			UpdateStatusSlots();
-		}
-
-		private void ToggleFPS()
-		{
-			Global.Config.DisplayFPS ^= true;
-		}
-
-		private void ToggleFrameCounter()
-		{
-			Global.Config.DisplayFrameCounter ^= true;
-		}
-
-		private void ToggleLagCounter()
-		{
-			Global.Config.DisplayLagCounter ^= true;
-		}
-
-		private void ToggleInputDisplay()
-		{
-			Global.Config.DisplayInput ^= true;
-		}
-
-		public void ToggleReadOnly()
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				Global.ReadOnly ^= true;
-				if (Global.ReadOnly)
-				{
-					GlobalWinF.OSD.AddMessage("Movie read-only mode");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("Movie read+write mode");
-				}
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("No movie active");
-			}
-		}
-
-		public void LoadTAStudio()
-		{
-			Global.MovieSession.EditorMode = true;
-			GlobalWinF.Tools.Load<TAStudio>();
-		}
-
-		private void VolumeUp()
-		{
-			Global.Config.SoundVolume += 10;
-			if (Global.Config.SoundVolume > 100)
-				Global.Config.SoundVolume = 100;
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
-		}
-
-		private void VolumeDown()
-		{
-			Global.Config.SoundVolume -= 10;
-			if (Global.Config.SoundVolume < 0)
-				Global.Config.SoundVolume = 0;
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
-		}
-
-		private void SoftReset()
-		{
-			//is it enough to run this for one frame? maybe..
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
-			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
-				{
-					Global.ClickyVirtualPadController.Click("Reset");
-					GlobalWinF.OSD.AddMessage("Reset button pressed.");
-				}
-			}
-		}
-
-		private void HardReset()
-		{
-			//is it enough to run this for one frame? maybe..
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
-			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
-				{
-					Global.ClickyVirtualPadController.Click("Power");
-					GlobalWinF.OSD.AddMessage("Power button pressed.");
-				}
-			}
-		}
-
-		public void UpdateStatusSlots()
-		{
-			StateSlots.Update();
-
-			if (StateSlots.HasSlot(1))
-			{
-				Slot1StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot1StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(2))
-			{
-				Slot2StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot2StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(3))
-			{
-				Slot3StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot3StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(3))
-			{
-				Slot3StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot3StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(4))
-			{
-				Slot4StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot4StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(5))
-			{
-				Slot5StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot5StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(6))
-			{
-				Slot6StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot6StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(7))
-			{
-				Slot7StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot7StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(8))
-			{
-				Slot8StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot8StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(9))
-			{
-				Slot9StatusButton.ForeColor = Color.Black;
-			}
-			else
-			{
-				Slot9StatusButton.ForeColor = Color.Gray;
-			}
-
-			if (StateSlots.HasSlot(0))
-			{
-				MainStatusBar.ForeColor = Color.Black;
-			}
-			else
-			{
-				MainStatusBar.ForeColor = Color.Gray;
-			}
-
-			Slot1StatusButton.BackColor = SystemColors.Control;
-			Slot2StatusButton.BackColor = SystemColors.Control;
-			Slot3StatusButton.BackColor = SystemColors.Control;
-			Slot4StatusButton.BackColor = SystemColors.Control;
-			Slot5StatusButton.BackColor = SystemColors.Control;
-			Slot6StatusButton.BackColor = SystemColors.Control;
-			Slot7StatusButton.BackColor = SystemColors.Control;
-			Slot8StatusButton.BackColor = SystemColors.Control;
-			Slot9StatusButton.BackColor = SystemColors.Control;
-			Slot0StatusButton.BackColor = SystemColors.Control;
-
-			if (Global.Config.SaveSlot == 0) Slot0StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 1) Slot1StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 2) Slot2StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 3) Slot3StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 4) Slot4StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 5) Slot5StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 6) Slot6StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 7) Slot7StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 8) Slot8StatusButton.BackColor = SystemColors.ControlDark;
-			if (Global.Config.SaveSlot == 9) Slot9StatusButton.BackColor = SystemColors.ControlDark;
-		}
-
-		#region AVI Stuff
-
-		/// <summary>
-		/// start avi recording, unattended
-		/// </summary>
-		/// <param name="videowritername">match the short name of an ivideowriter</param>
-		/// <param name="filename">filename to save to</param>
-		public void RecordAVI(string videowritername, string filename)
-		{
-			_RecordAVI(videowritername, filename, true);
-		}
-
-		/// <summary>
-		/// start avi recording, asking user for filename and options
-		/// </summary>
-		public void RecordAVI()
-		{
-			_RecordAVI(null, null, false);
-		}
-
-		/// <summary>
-		/// start avi recording
-		/// </summary>
-		/// <param name="videowritername"></param>
-		/// <param name="filename"></param>
-		/// <param name="unattended"></param>
-		private void _RecordAVI(string videowritername, string filename, bool unattended)
-		{
-			if (CurrAviWriter != null) return;
-
-			// select IVideoWriter to use
-			IVideoWriter aw = null;
-			var writers = VideoWriterInventory.GetAllVideoWriters();
-
-			var video_writers = writers as IVideoWriter[] ?? writers.ToArray();
-			if (unattended)
-			{
-				foreach (var w in video_writers)
-				{
-					if (w.ShortName() == videowritername)
-					{
-						aw = w;
-						break;
-					}
-				}
-			}
-			else
-			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWinF.MainForm, out avwriter_resizew, out avwriter_resizeh);
-			}
-
-			foreach (var w in video_writers)
-			{
-				if (w != aw)
-					w.Dispose();
-			}
-
-			if (aw == null)
-			{
-				if (unattended)
-					GlobalWinF.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
-				else
-					GlobalWinF.OSD.AddMessage("A/V capture canceled.");
-				return;
-			}
-
-			try
-			{
-				aw.SetMovieParameters(Global.Emulator.CoreComm.VsyncNum, Global.Emulator.CoreComm.VsyncDen);
-				if (avwriter_resizew > 0 && avwriter_resizeh > 0)
-					aw.SetVideoParameters(avwriter_resizew, avwriter_resizeh);
-				else
-					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
-				aw.SetAudioParameters(44100, 2, 16);
-
-				// select codec token
-				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-				if (unattended)
-				{
-					aw.SetDefaultVideoCodecToken();
-				}
-				else
-				{
-					var token = aw.AcquireVideoCodecToken(GlobalWinF.MainForm);
-					if (token == null)
-					{
-						GlobalWinF.OSD.AddMessage("A/V capture canceled.");
-						aw.Dispose();
-						return;
-					}
-					aw.SetVideoCodecToken(token);
-				}
-
-				// select file to save to
-				if (unattended)
-				{
-					aw.OpenFile(filename);
-				}
-				else
-				{
-					var sfd = new SaveFileDialog();
-					if (!(Global.Emulator is NullEmulator))
-					{
-						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
-					}
-					else
-					{
-						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
-					}
-					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
-
-					GlobalWinF.Sound.StopSound();
-					var result = sfd.ShowDialog();
-					GlobalWinF.Sound.StartSound();
-
-					if (result == DialogResult.Cancel)
-					{
-						aw.Dispose();
-						return;
-					}
-					aw.OpenFile(sfd.FileName);
-				}
-
-				//commit the avi writing last, in case there were any errors earlier
-				CurrAviWriter = aw;
-				GlobalWinF.OSD.AddMessage("A/V capture started");
-				AVIStatusLabel.Image = Properties.Resources.AVI;
-				AVIStatusLabel.ToolTipText = "A/V capture in progress";
-				AVIStatusLabel.Visible = true;
-
-			}
-			catch
-			{
-				GlobalWinF.OSD.AddMessage("A/V capture failed!");
-				aw.Dispose();
-				throw;
-			}
-
-			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
-			if (!Global.Emulator.StartAsyncSound())
-				AviSoundInput = new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V);
-			else
-				AviSoundInput = Global.Emulator.SoundProvider;
-			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
-			SoundRemainder = 0;
-			RewireSound();
-		}
-
-		void AbortAVI()
-		{
-			if (CurrAviWriter == null)
-			{
-				DumpProxy = null;
-				RewireSound();
-				return;
-			}
-			CurrAviWriter.Dispose();
-			CurrAviWriter = null;
-			GlobalWinF.OSD.AddMessage("A/V capture aborted");
-			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
-			AVIStatusLabel.Visible = false;
-			AviSoundInput = null;
-			DumpProxy = null; // return to normal sound output
-			SoundRemainder = 0;
-			RewireSound();
-		}
-
-		public void StopAVI()
-		{
-			if (CurrAviWriter == null)
-			{
-				DumpProxy = null;
-				RewireSound();
-				return;
-			}
-			CurrAviWriter.CloseFile();
-			CurrAviWriter.Dispose();
-			CurrAviWriter = null;
-			GlobalWinF.OSD.AddMessage("A/V capture stopped");
-			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
-			AVIStatusLabel.Visible = false;
-			AviSoundInput = null;
-			DumpProxy = null; // return to normal sound output
-			SoundRemainder = 0;
-			RewireSound();
-		}
-
-		void AVIFrameAdvance()
-		{
-			if (CurrAviWriter != null)
-			{
-				long nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + SoundRemainder;
-				long nsamp = nsampnum / Global.Emulator.CoreComm.VsyncNum;
-				// exactly remember fractional parts of an audio sample
-				SoundRemainder = nsampnum % Global.Emulator.CoreComm.VsyncNum;
-
-				short[] temp = new short[nsamp * 2];
-				AviSoundInput.GetSamples(temp);
-				DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-
-				try
-				{
-					IVideoProvider output;
-					if (avwriter_resizew > 0 && avwriter_resizeh > 0)
-					{
-						Bitmap bmpin;
-						if (Global.Config.AVI_CaptureOSD)
-							bmpin = CaptureOSD();
-						else
-						{
-							bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
-							var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-							System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
-							bmpin.UnlockBits(lockdata);
-						}
-						Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
-						using (Graphics g = Graphics.FromImage(bmpout))
-							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
-						bmpin.Dispose();
-						output = new AVOut.BmpVideoProvder(bmpout);
-					}
-					else
-					{
-						if (Global.Config.AVI_CaptureOSD)
-							output = new AVOut.BmpVideoProvder(CaptureOSD());
-						else
-							output = Global.Emulator.VideoProvider;
-					}
-
-					CurrAviWriter.AddFrame(output);
-					if (output is AVOut.BmpVideoProvder)
-						(output as AVOut.BmpVideoProvder).Dispose();
-
-					CurrAviWriter.AddSamples(temp);
-				}
-				catch (Exception e)
-				{
-					MessageBox.Show("Video dumping died:\n\n" + e);
-					AbortAVI();
-				}
-
-				if (autoDumpLength > 0)
-				{
-					autoDumpLength--;
-					if (autoDumpLength == 0) // finish
-					{
-						StopAVI();
-						if (autoCloseOnDump)
-						{
-							exit = true;
-						}
-					}
-				}
-			}
-		}
-
-		#endregion
-
-		private void SwapBackupSavestate(string path)
+		private void SwapBackupSavestate(string path) //Move inside Saveslot Manager
 		{
 			//Takes the .state and .bak files and swaps them
 			var state = new FileInfo(path);
@@ -3420,21 +3767,7 @@ namespace BizHawk.MultiClient
 			StateSlots.ToggleRedo(Global.Config.SaveSlot);
 		}
 
-		private void ShowHideMenu()
-		{
-			MainMenuStrip.Visible ^= true;
-		}
-
-		public void OpenLuaConsole()
-		{
-#if WINDOWS
-			GlobalWinF.Tools.Load<LuaConsole>();
-#else
-			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
-		}
-
-		void ProcessMovieImport(string fn)
+		private void ProcessMovieImport(string fn) //Nothing Winform Specific here, move to Movie import
 		{
 			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
 			string errorMsg;
@@ -3450,581 +3783,16 @@ namespace BizHawk.MultiClient
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
 
-			string outPath = d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension;
+			string outPath = Path.Combine(d, (Path.GetFileName(fn) + "." + Global.Config.MovieExtension));
 			m.WriteMovie(outPath);
 		}
 
-		// workaround for possible memory leak in SysdrawingRenderPanel
-		RetainedViewportPanel captureosd_rvp;
-		SysdrawingRenderPanel captureosd_srp;
-
-		/// <summary>
-		/// sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
-		/// </summary>
-		Bitmap CaptureOSD()
+		public void FlagNeedsReboot() //Make private, config dialogs use it and it can be called after they close
 		{
-			// this code captures the emu display with OSD and lua composited onto it.
-			// it's slow and a bit hackish; a better solution is to create a new
-			// "dummy render" class that implements IRenderer, IBlitter, and possibly
-			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-
-			if (captureosd_rvp == null)
-			{
-				captureosd_rvp = new RetainedViewportPanel();
-				captureosd_srp = new SysdrawingRenderPanel(captureosd_rvp);
-			}
-
-			// this size can be different for showing off stretching or filters
-			captureosd_rvp.Width = Global.Emulator.VideoProvider.BufferWidth;
-			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
-
-
-			GlobalWinF.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
-
-			Bitmap ret = (Bitmap)captureosd_rvp.GetBitmap().Clone();
-
-			return ret;
-		}
-
-		private void ShowConsole()
-		{
-			LogConsole.ShowConsole();
-			LogWindowAsConsoleMenuItem.Enabled = false;
-		}
-
-		private void HideConsole()
-		{
-			LogConsole.HideConsole();
-			LogWindowAsConsoleMenuItem.Enabled = true;
-		}
-
-		public void notifyLogWindowClosing()
-		{
-			DisplayLogWindowMenuItem.Checked = false;
-			LogWindowAsConsoleMenuItem.Enabled = true;
-		}
-
-		private void MainForm_Load(object sender, EventArgs e)
-		{
-			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
-
-			//Hide Status bar icons
-			PlayRecordStatusButton.Visible = false;
-			AVIStatusLabel.Visible = false;
-			SetPauseStatusbarIcon();
-			UpdateCheatStatus();
-			SetRebootIconStatus();
-		}
-
-		private void IncreaseWindowSize()
-		{
-			switch (Global.Config.TargetZoomFactor)
-			{
-				case 1:
-					Global.Config.TargetZoomFactor = 2;
-					break;
-				case 2:
-					Global.Config.TargetZoomFactor = 3;
-					break;
-				case 3:
-					Global.Config.TargetZoomFactor = 4;
-					break;
-				case 4:
-					Global.Config.TargetZoomFactor = 5;
-					break;
-				case 5:
-					Global.Config.TargetZoomFactor = 10;
-					break;
-				case 10:
-					return;
-			}
-			FrameBufferResized();
-		}
-
-		private void DecreaseWIndowSize()
-		{
-			switch (Global.Config.TargetZoomFactor)
-			{
-				case 1:
-					return;
-				case 2:
-					Global.Config.TargetZoomFactor = 1;
-					break;
-				case 3:
-					Global.Config.TargetZoomFactor = 2;
-					break;
-				case 4:
-					Global.Config.TargetZoomFactor = 3;
-					break;
-				case 5:
-					Global.Config.TargetZoomFactor = 4;
-					break;
-				case 10:
-					Global.Config.TargetZoomFactor = 5;
-					return;
-			}
-			FrameBufferResized();
-		}
-
-		private void IncreaseSpeed()
-		{
-			int oldp = Global.Config.SpeedPercent;
-			int newp;
-			if (oldp < 3) newp = 3;
-			else if (oldp < 6) newp = 6;
-			else if (oldp < 12) newp = 12;
-			else if (oldp < 25) newp = 25;
-			else if (oldp < 50) newp = 50;
-			else if (oldp < 75) newp = 75;
-			else if (oldp < 100) newp = 100;
-			else if (oldp < 150) newp = 150;
-			else if (oldp < 200) newp = 200;
-			else if (oldp < 400) newp = 400;
-			else if (oldp < 800) newp = 800;
-			else newp = 1600;
-			SetSpeedPercent(newp);
-		}
-
-		private void DecreaseSpeed()
-		{
-			int oldp = Global.Config.SpeedPercent;
-			int newp;
-			if (oldp > 800) newp = 800;
-			else if (oldp > 400) newp = 400;
-			else if (oldp > 200) newp = 200;
-			else if (oldp > 150) newp = 150;
-			else if (oldp > 100) newp = 100;
-			else if (oldp > 75) newp = 75;
-			else if (oldp > 50) newp = 50;
-			else if (oldp > 25) newp = 25;
-			else if (oldp > 12) newp = 12;
-			else if (oldp > 6) newp = 6;
-			else if (oldp > 3) newp = 3;
-			else newp = 1;
-			SetSpeedPercent(newp);
-		}
-
-		public void SetNESSoundChannels()
-		{
-			NES nes = Global.Emulator as NES;
-			nes.SetSquare1(Global.Config.NESSquare1);
-			nes.SetSquare2(Global.Config.NESSquare2);
-			nes.SetTriangle(Global.Config.NESTriangle);
-			nes.SetNoise(Global.Config.NESNoise);
-			nes.SetDMC(Global.Config.NESDMC);
-		}
-
-		public void ClearSaveRAM()
-		{
-			try
-			{
-				Global.Emulator.ClearSaveRam();
-			}
-			catch { }
-		}
-
-		private void SetRebootIconStatus()
-		{
-			if (NeedsReboot)
-			{
-				RebootStatusBarIcon.Visible = true;
-			}
-			else
-			{
-				RebootStatusBarIcon.Visible = false;
-			}
-		}
-
-		public void FlagNeedsReboot()
-		{
-			NeedsReboot = true;
-			SetRebootIconStatus();
+			RebootStatusBarIcon.Visible = true;
 			GlobalWinF.OSD.AddMessage("Core reboot needed for this setting");
 		}
 
-		private void SaveMovie()
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				Global.MovieSession.Movie.WriteMovie();
-				GlobalWinF.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
-			}
-		}
-
-		private void HandleToggleLight()
-		{
-			if (MainStatusBar.Visible)
-			{
-				if (Global.Emulator.CoreComm.UsesDriveLed)
-				{
-					if (!LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = true;
-					}
-					if (Global.Emulator.CoreComm.DriveLED)
-					{
-						LedLightStatusLabel.Image = Properties.Resources.LightOn;
-					}
-					else
-					{
-						LedLightStatusLabel.Image = Properties.Resources.LightOff;
-					}
-				}
-				else
-				{
-					if (LedLightStatusLabel.Visible)
-					{
-						LedLightStatusLabel.Visible = false;
-					}
-				}
-			}
-		}
-
-		private void UpdateKeyPriorityIcon()
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
-			{
-				default:
-				case 0:
-					KeyPriorityStatusLabel.Image = Properties.Resources.Both;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
-					break;
-				case 1:
-					KeyPriorityStatusLabel.Image = Properties.Resources.GameController;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
-					break;
-				case 2:
-					KeyPriorityStatusLabel.Image = Properties.Resources.HotKeys;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
-					break;
-			}
-		}
-
-		private void ToggleModePokeMode()
-		{
-			Global.Config.MoviePlaybackPokeMode ^= true;
-			if (Global.Config.MoviePlaybackPokeMode)
-			{
-				GlobalWinF.OSD.AddMessage("Movie Poke mode enabled");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Movie Poke mode disabled");
-			}
-		}
-
-		public string GetEmuVersion()
-		{
-			if (INTERIM)
-			{
-				return "SVN " + SubWCRev.SVN_REV;
-			}
-			else
-			{
-				return EMUVERSION;
-			}
-		}
-
-		public void LoadRamWatch(bool load_dialog)
-		{
-			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
-			{
-				GlobalWinF.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
-			}
-			if (load_dialog)
-			{
-				GlobalWinF.Tools.Load<RamWatch>();
-			}
-		}
-
-		public void ToggleBackgroundInput()
-		{
-			Global.Config.AcceptBackgroundInput ^= true;
-			if (Global.Config.AcceptBackgroundInput)
-			{
-				GlobalWinF.OSD.AddMessage("Background Input enabled");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Background Input disabled");
-			}
-		}
-
-		public void LimitFrameRateMessage()
-		{
-			if (Global.Config.ClockThrottle)
-			{
-				GlobalWinF.OSD.AddMessage("Framerate limiting on");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Framerate limiting off");
-			}
-		}
-
-		public void ClickSpeedItem(int num)
-		{
-			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
-			else SetSpeedPercent(num);
-		}
-
-		public void VsyncMessage()
-		{
-			if (Global.Config.VSyncThrottle)
-			{
-				GlobalWinF.OSD.AddMessage("Display Vsync is set to on");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Display Vsync is set to off");
-			}
-		}
-
-		public void MinimizeFrameskipMessage()
-		{
-			if (Global.Config.AutoMinimizeSkipping)
-			{
-				GlobalWinF.OSD.AddMessage("Autominimizing set to on");
-			}
-			else
-			{
-				GlobalWinF.OSD.AddMessage("Autominimizing set to off");
-			}
-		}
-
-		public void FrameSkipMessage()
-		{
-			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
-		}
-
-		public void UpdateCheatStatus()
-		{
-			if (Global.CheatList.ActiveCount > 0)
-			{
-				CheatStatusButton.ToolTipText = "Cheats are currently active";
-				CheatStatusButton.Image = Properties.Resources.Freeze;
-				CheatStatusButton.Visible = true;
-			}
-			else
-			{
-				CheatStatusButton.ToolTipText = "";
-				CheatStatusButton.Image = Properties.Resources.Blank;
-				CheatStatusButton.Visible = false;
-			}
-		}
-
-		public void SNES_ToggleBG1(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
-				}
-
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG1_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG2(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG2_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG3(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG3_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleBG4(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowBG4_1)
-				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ1(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ1 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ1 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ1)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ2(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ2 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ2 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ2)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ3(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ3 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ3 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ3)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
-				}
-			}
-		}
-
-		public void SNES_ToggleOBJ4(bool? setto = null)
-		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				if (setto.HasValue)
-				{
-					Global.Config.SNES_ShowOBJ4 = setto.Value;
-				}
-				else
-				{
-					Global.Config.SNES_ShowOBJ4 ^= true;
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-				if (Global.Config.SNES_ShowOBJ4)
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
-				}
-				else
-				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
-				}
-			}
-		}
-
-		public void RebootCore()
-		{
-			LoadRom(CurrentlyOpenRom);
-		}
-
-		public void ForcePaint()
-		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
-		}
-
-		public bool StateErrorAskUser(string title, string message)
-		{
-			var result = MessageBox.Show(message,
-				title,
-				MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question
-			);
-
-			return result == DialogResult.Yes;
-		}
+		#endregion
 	}
 }

@@ -152,7 +152,7 @@ namespace BizHawk.MultiClient
 
 		public static void client_paint()
 		{
-			GlobalWinF.MainForm.ForcePaint();
+			GlobalWinF.DisplayManager.NeedsToPaint = true;
 		}
 
 		public static void client_pause()
