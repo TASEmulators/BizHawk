@@ -7,7 +7,7 @@ using System.Collections.Generic;
 //a decent little subcode reference
 //http://www.jbum.com/cdg_revealed.html
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	//this has been checked against mednafen's and seems to match
 	//there are a few dozen different ways to do CRC16-CCITT

@@ -28,7 +28,7 @@
 //Corlett's ECM uses our same fundamental approach as well.
 //I can't figure out what winUAE is doing.
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	static class ECM
 	{

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISOParser {
+namespace BizHawk.Emulation.DiscSystem
+{
     /// <summary>
     /// Helper class to convert big and little endian numbers from a byte
     /// array to a value.

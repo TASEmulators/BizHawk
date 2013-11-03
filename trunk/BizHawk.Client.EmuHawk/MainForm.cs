@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using BizHawk.DiscSystem;
+
+using BizHawk.Common;
+using BizHawk.Client.Common;
 using BizHawk.Emulation;
 using BizHawk.Emulation.Computers.Commodore64;
 using BizHawk.Emulation.Consoles.Calculator;
@@ -20,9 +22,7 @@ using BizHawk.Emulation.Consoles.Nintendo.N64;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
 {

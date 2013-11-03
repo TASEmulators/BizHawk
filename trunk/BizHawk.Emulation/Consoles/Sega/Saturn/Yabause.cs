@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Consoles.Sega.Saturn
 {
@@ -24,7 +25,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		static Yabause AttachedCore = null;
 		GCHandle VideoHandle;
-		DiscSystem.Disc CD;
+		Disc CD;
 		GCHandle SoundHandle;
 
 		bool Disposed = false;

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 
-using BizHawk.DiscSystem;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
 {
@@ -38,7 +38,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		public static CueBinPrefs GetCuePrefs()
 		{
-			var prefs = new DiscSystem.CueBinPrefs();
+			var prefs = new CueBinPrefs();
 			prefs.AnnotateCue = true; // TODO? checkCueProp_Annotations.Checked;
 			prefs.OneBlobPerTrack = false; //TODO? checkCueProp_OneBlobPerTrack.Checked;
 			prefs.ReallyDumpBin = false;

@@ -457,47 +457,6 @@
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
-    <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
-    <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\Blobs\RiffMaster.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\CCD_format.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\cdfs\EndianBitConverter.cs" />
-    <Compile Include="DiscSystem\cdfs\ISODirectoryNode.cs" />
-    <Compile Include="DiscSystem\cdfs\ISOFile.cs" />
-    <Compile Include="DiscSystem\cdfs\ISOFileNode.cs" />
-    <Compile Include="DiscSystem\cdfs\ISONode.cs" />
-    <Compile Include="DiscSystem\cdfs\ISONodeRecord.cs" />
-    <Compile Include="DiscSystem\cdfs\ISOVolumeDescriptor.cs" />
-    <Compile Include="DiscSystem\CUE_format.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\Decoding.cs" />
-    <Compile Include="DiscSystem\Disc.API.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\Disc.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\Disc.Id.cs" />
-    <Compile Include="DiscSystem\DiscTOC.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\ECM.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\GPL_ECM.cs" />
-    <Compile Include="DiscSystem\Subcode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\TOC_format.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Interfaces\Base Implementations\IPS.cs" />
     <Compile Include="Interfaces\Base Implementations\Movies.cs" />
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
@@ -560,7 +519,6 @@
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
-    <Content Include="DiscSystem\cdfs\notes.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +545,10 @@
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
       <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
       <Name>BizHawk.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
+      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

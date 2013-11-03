@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 //disc type identification logic
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	public enum DiscType
 	{
@@ -52,7 +52,7 @@ namespace BizHawk.DiscSystem
 			//we dont know how to detect TurboCD.
 			//an emulator frontend will likely just guess TurboCD if the disc is UnknownFormat
 
-			var iso = new ISOParser.ISOFile();
+			var iso = new ISOFile();
 			bool isIso = iso.Parse(DiscStream.Open_LBA_2048(this));
 
 			if (isIso)

@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.IO;
 using System.Linq;
 using System.Text;
-using BizHawk.DiscSystem;
-using System.IO;
-using System.Diagnostics;
+
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
 {

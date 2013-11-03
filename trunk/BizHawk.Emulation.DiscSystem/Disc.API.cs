@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 //main apis for emulator core routine use
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	public class DiscReferenceException : Exception
 	{
@@ -154,12 +154,12 @@ namespace BizHawk.DiscSystem
 			ReadABA_2048(lba + 150, buffer, offset);
 		}
 
-		internal void ReadABA_2352(int aba, byte[] buffer, int offset)
+		public void ReadABA_2352(int aba, byte[] buffer, int offset)
 		{
 			Sectors[aba].Sector.Read_2352(buffer, offset);
 		}
 
-		internal void ReadABA_2048(int aba, byte[] buffer, int offset)
+		public void ReadABA_2048(int aba, byte[] buffer, int offset)
 		{
 			Sectors[aba].Sector.Read_2048(buffer, offset);
 		}
@@ -188,7 +188,7 @@ namespace BizHawk.DiscSystem
 			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2048(a, b, c), secsize, lba_buf, ref sectorHint);
 		}
 
-		internal void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
+		public void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
 		{
 			//hint is the sector number which is already read. to avoid repeatedly reading the sector from the disc in case of several small reads, so that sectorBuf can be used as a sector cache
 			while (length > 0)

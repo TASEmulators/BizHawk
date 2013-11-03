@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	public class FFMpeg
 	{
