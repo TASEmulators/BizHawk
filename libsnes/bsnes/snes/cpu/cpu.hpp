@@ -135,6 +135,7 @@ privileged:
   static void Enter();
   void op_step();
 
+public:
   struct Debugger {
     hook<void (uint24)> op_exec;
     hook<void (uint24)> op_read;
