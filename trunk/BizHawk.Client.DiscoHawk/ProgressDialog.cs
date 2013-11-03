@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -37,7 +38,7 @@ namespace BizHawk.Client.DiscoHawk
 					nValue = 0;
 				progressBar1.Value = nValue;
 			}
-			lblMessage.Text = pr.Message + " - " + progressBar1.Value.ToString() + "%";
+			lblMessage.Text = pr.Message + " - " + progressBar1.Value.ToString(CultureInfo.CurrentCulture) + "%";
 		}
 
 		private void ProgressDialog_Load(object sender, EventArgs e)
