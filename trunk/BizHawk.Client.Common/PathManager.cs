@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 namespace BizHawk.Client.Common
 {
@@ -8,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			string path = AppDomain.CurrentDomain.BaseDirectory;
+			string path = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
 			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 			{
 				path = path.Remove(path.Length - 1, 1);
@@ -28,8 +29,7 @@ namespace BizHawk.Client.Common
 		{
 			get 
 			{
-				string blah = MakeProgramRelativePath("config.ini");
-				return blah;
+				return MakeProgramRelativePath("config.ini");
 			} 
 		}
 
