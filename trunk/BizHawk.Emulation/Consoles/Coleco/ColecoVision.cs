@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		}
 
 		public void Dispose() { }
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			_lagcount = 0;

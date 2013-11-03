@@ -60,7 +60,7 @@ namespace BizHawk
 
 		bool SaveRamModified { get; set; }
 
-		void ResetFrameCounter();
+		void ResetCounters();
 		void SaveStateText(TextWriter writer);
 		void LoadStateText(TextReader reader);
 		void SaveStateBinary(BinaryWriter writer);

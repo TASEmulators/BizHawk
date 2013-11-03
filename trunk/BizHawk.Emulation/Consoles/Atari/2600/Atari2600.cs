@@ -37,7 +37,7 @@ namespace BizHawk
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			_frame = 0;
 			_lagcount = 0;

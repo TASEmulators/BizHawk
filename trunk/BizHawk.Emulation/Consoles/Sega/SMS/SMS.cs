@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		bool islag = false;
 		public int Frame { get; set; }
 		
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			_lagcount = 0;

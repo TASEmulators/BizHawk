@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
-				Global.Emulator.ResetFrameCounter();
+				Global.Emulator.ResetCounters();
 			}
 			if (record)
 			{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
-					Global.Emulator.ResetFrameCounter();
+					Global.Emulator.ResetCounters();
 				}
 				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartPlayback();

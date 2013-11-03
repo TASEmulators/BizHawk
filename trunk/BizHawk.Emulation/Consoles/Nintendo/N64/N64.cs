@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int Frame { get; set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;

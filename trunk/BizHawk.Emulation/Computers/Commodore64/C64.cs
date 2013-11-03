@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int Frame { get { return _frame; } set { _frame = value; } }
 		public bool IsLagFrame { get { return _islag; } }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			_frame = 0;
 			_lagcount = 0;

@@ -27,7 +27,7 @@ namespace BizHawk
 			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0, (a, v) => { }));
 			memoryDomains = domains.AsReadOnly();
 		}
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			// no lag frames on this stub core

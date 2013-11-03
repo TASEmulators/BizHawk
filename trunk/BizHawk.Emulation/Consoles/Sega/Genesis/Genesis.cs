@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		private SoundMixer SoundMixer;
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			_lagcount = 0;

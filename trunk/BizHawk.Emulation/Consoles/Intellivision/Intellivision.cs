@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			set { }
 		}
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;

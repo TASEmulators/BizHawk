@@ -99,7 +99,7 @@ namespace BizHawk.Emulation
 		}
 
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			_frame = 0;
 			_lagcount = 0;

@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Consoles.PSX
 		}
 
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			// FIXME when all this stuff is implemented
 			Frame = 0;

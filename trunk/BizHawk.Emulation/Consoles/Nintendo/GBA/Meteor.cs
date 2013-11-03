@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		// todo: information about the saveram type would be useful here.
 		public string BoardName { get { return null; } }
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;
