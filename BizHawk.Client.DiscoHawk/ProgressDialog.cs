@@ -8,17 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.DiscSystem;
+
 namespace BizHawk.Client.DiscoHawk
 {
 	public partial class ProgressDialog : Form
 	{
-		public ProgressDialog(DiscSystem.ProgressReport pr)
+		public ProgressDialog(ProgressReport pr)
 		{
 			InitializeComponent();
 			this.pr = pr;
 		}
 
-		DiscSystem.ProgressReport pr;
+		ProgressReport pr;
 
 		private void btnCancel_Click(object sender, EventArgs e)
 		{

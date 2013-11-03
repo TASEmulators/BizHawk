@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	partial class Disc
 	{

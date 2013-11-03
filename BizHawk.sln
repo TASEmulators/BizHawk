@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.DiscoHawk", "BizHawk.Client.DiscoHawk\BizHawk.Client.DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation.DiscSystem", "BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj", "{F51946EA-827F-4D82-B841-1F2F6D060312}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Win32.ActiveCfg = Release|Any CPU
 		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|Win32.ActiveCfg = Release|Any CPU
+		{F51946EA-827F-4D82-B841-1F2F6D060312}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

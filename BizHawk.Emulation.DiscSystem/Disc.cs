@@ -63,7 +63,7 @@ using System.Collections.Generic;
 //cue sheets may use mode1_2048 (and the error coding needs to be regenerated to get accurate raw data) or mode1_2352 (the entire sector is present)
 //audio is a different mode, seems to be just 2352 bytes with no sync, header or error correction. i guess the CIRC error correction is still there
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	public partial class Disc : IDisposable
 	{

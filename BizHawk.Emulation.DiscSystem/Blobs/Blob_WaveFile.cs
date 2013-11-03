@@ -2,7 +2,7 @@
 using System.Linq;
 using System.IO;
 
-namespace BizHawk.DiscSystem
+namespace BizHawk.Emulation.DiscSystem
 {
 	partial class Disc
 	{

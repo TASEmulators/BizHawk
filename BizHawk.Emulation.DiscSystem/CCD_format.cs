@@ -1,4 +1,4 @@
-﻿namespace BizHawk.DiscSystem
+﻿namespace BizHawk.Emulation.DiscSystem
 {
 	//TBD CCD format
 	//check out ccd2iso linux program?
