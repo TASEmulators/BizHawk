@@ -394,19 +394,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddMessage(string message)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
 		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 
 			GUITextList.Clear();
 		}
@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!GlobalWinF.ClientControls["MaxTurbo"])
+			if (!GlobalWin.ClientControls["MaxTurbo"])
 			{
 				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 				int line = 1;
@@ -587,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (GlobalWinF.ClientControls["Autohold"] || GlobalWinF.ClientControls["Autofire"])
+			if (GlobalWin.ClientControls["Autohold"] || GlobalWin.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 
@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 					disp.Append(' ');
 				}
 
-				foreach (string s in GlobalWinF.AutofireStickyXORAdapter.CurrentStickies)
+				foreach (string s in GlobalWin.AutofireStickyXORAdapter.CurrentStickies)
 				{
 					disp.Append("Auto-");
 					disp.Append(s);
@@ -659,7 +659,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			UpdateSourceEx(videoProvider, GlobalWinF.RenderPanel);
+			UpdateSourceEx(videoProvider, GlobalWin.RenderPanel);
 		}
 
 		/// <summary>
@@ -772,10 +772,10 @@ namespace BizHawk.Client.EmuHawk
 
 		void RenderOSD(IBlitter renderPanel)
 		{
-			GlobalWinF.OSD.Begin(renderPanel);
+			GlobalWin.OSD.Begin(renderPanel);
 			renderPanel.Open();
-			GlobalWinF.OSD.DrawScreenInfo(renderPanel);
-			GlobalWinF.OSD.DrawMessages(renderPanel);
+			GlobalWin.OSD.DrawScreenInfo(renderPanel);
+			GlobalWin.OSD.DrawMessages(renderPanel);
 			renderPanel.Close();
 		}
 

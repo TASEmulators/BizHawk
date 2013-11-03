@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession = new MovieSession
 			{
 				Movie = m,
-				MessageCallback = GlobalWinF.OSD.AddMessage,
+				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
 
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				SetSyncDependentSettings();
 			}
 
-			LoadRom(GlobalWinF.MainForm.CurrentlyOpenRom, true, !record);
+			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -51,9 +51,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
-			GlobalWinF.Tools.Restart<TAStudio>();
-			GlobalWinF.Tools.Restart<VirtualPadForm>();
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.Tools.Restart<TAStudio>();
+			GlobalWin.Tools.Restart<VirtualPadForm>();
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void SetMainformMovieInfo()
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
-				GlobalWinF.OSD.AddMessage("Replaying movie file in read-only mode");
+				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
 				Global.ReadOnly = true;
 			}
 		}

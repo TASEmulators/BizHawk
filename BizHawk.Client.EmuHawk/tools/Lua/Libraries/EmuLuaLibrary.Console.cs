@@ -26,13 +26,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void console_clear()
 		{
-			GlobalWinF.Tools.LuaConsole.ClearOutputWindow();
+			GlobalWin.Tools.LuaConsole.ClearOutputWindow();
 		}
 
 		public static string console_getluafunctionslist()
 		{
 			StringBuilder list = new StringBuilder();
-			foreach (var function in GlobalWinF.Tools.LuaConsole.LuaImp.Docs.FunctionList)
+			foreach (var function in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
 			{
 				list.AppendLine(function.Name);
 			}
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (lua_input == null)
 			{
-				GlobalWinF.Tools.LuaConsole.WriteToOutputWindow("NULL");
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
 			}
 			else
 			{
@@ -81,11 +81,11 @@ namespace BizHawk.Client.EmuHawk
 							.AppendLine();
 					}
 
-					GlobalWinF.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
 				}
 				else
 				{
-					GlobalWinF.Tools.LuaConsole.WriteToOutputWindow(lua_input.ToString());
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(lua_input.ToString());
 				}
 			}
 		}

@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GenerateLibraryRegex()
 		{
 			StringBuilder list = new StringBuilder();
-			List<string> Libs = GlobalWinF.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
 			for (int i = 0; i < Libs.Count; i++)
 			{
 				list.Append(Libs[i]);
@@ -577,9 +577,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -659,7 +659,7 @@ namespace BizHawk.Client.EmuHawk
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWinF.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword);
+					List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword);
 
 					// Position autocomplete box near the cursor's current position
                     int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
@@ -783,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsLibraryWord(string word)
 		{
-			List<string> Libs = GlobalWinF.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
 			if (Libs.Contains(word))
 			{
 				return true;

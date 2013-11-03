@@ -33,14 +33,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Hotkey config aborted");
+			GlobalWin.OSD.AddMessage("Hotkey config aborted");
 			Close();
 		}
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
 			Save();
-			GlobalWinF.OSD.AddMessage("Hotkey settings saved");
+			GlobalWin.OSD.AddMessage("Hotkey settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}

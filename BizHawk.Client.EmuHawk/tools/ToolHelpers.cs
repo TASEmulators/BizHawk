@@ -22,9 +22,9 @@ namespace BizHawk.Client.EmuHawk
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -51,9 +51,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -71,9 +71,9 @@ namespace BizHawk.Client.EmuHawk
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -94,9 +94,9 @@ namespace BizHawk.Client.EmuHawk
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -145,14 +145,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void HandleLoadError(RecentFiles recent, string path)
 		{
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 			if (result == DialogResult.Yes)
 			{
 				recent.Remove(path);
 			}
 
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
@@ -206,11 +206,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void UpdateCheatRelatedTools()
 		{
-			GlobalWinF.Tools.UpdateValues<RamWatch>();
-			GlobalWinF.Tools.UpdateValues<RamSearch>();
-			GlobalWinF.Tools.UpdateValues<HexEditor>();
-			GlobalWinF.Tools.UpdateValues<Cheats>();
-			GlobalWinF.MainForm.UpdateCheatStatus();
+			GlobalWin.Tools.UpdateValues<RamWatch>();
+			GlobalWin.Tools.UpdateValues<RamSearch>();
+			GlobalWin.Tools.UpdateValues<HexEditor>();
+			GlobalWin.Tools.UpdateValues<Cheats>();
+			GlobalWin.MainForm.UpdateCheatStatus();
 		}
 
 		public static void UnfreezeAll()
@@ -249,9 +249,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
 		{
-			GlobalWinF.Tools.Load<HexEditor>();
-			GlobalWinF.Tools.HexEditor.SetDomain(domain);
-			GlobalWinF.Tools.HexEditor.SetToAddresses(addresses.ToList());
+			GlobalWin.Tools.Load<HexEditor>();
+			GlobalWin.Tools.HexEditor.SetDomain(domain);
+			GlobalWin.Tools.HexEditor.SetToAddresses(addresses.ToList());
 		}
 
 		public static MemoryDomain DomainByName(string name)

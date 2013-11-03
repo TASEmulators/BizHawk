@@ -60,12 +60,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Find_Prev_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.HexEditor.FindPrev(GetFindBoxChars(), false);
+			GlobalWin.Tools.HexEditor.FindPrev(GetFindBoxChars(), false);
 		}
 
 		private void Find_Next_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
+			GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
 		}
 
 		private void ChangeCasing()
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyData == Keys.Enter)
 			{
-				GlobalWinF.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
+				GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
 			}
 		}
 	}

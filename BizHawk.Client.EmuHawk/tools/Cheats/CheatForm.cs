@@ -144,9 +144,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.CheatList.Changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					Global.CheatList.Save();
@@ -572,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
-				Global.CheatList.NewList(GlobalWinF.MainForm.GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(GlobalWin.MainForm.GenerateDefaultCheatFilename());
 				UpdateListView();
 				UpdateMessageLabel();
 				ToolHelpers.UpdateCheatRelatedTools();
@@ -744,7 +744,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEC();
 		}
 
 		#endregion

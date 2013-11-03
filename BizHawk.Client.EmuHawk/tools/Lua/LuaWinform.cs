@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseThis()
 		{
-			GlobalWinF.Tools.LuaConsole.LuaImp.WindowClosed(Handle);
+			GlobalWin.Tools.LuaConsole.LuaImp.WindowClosed(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)

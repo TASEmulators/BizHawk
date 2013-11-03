@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToolBox_Load(object sender, EventArgs e)
 		{
-			int x = GlobalWinF.MainForm.Location.X + GlobalWinF.MainForm.Size.Width;
-			int y = GlobalWinF.MainForm.Location.Y;
+			int x = GlobalWin.MainForm.Location.X + GlobalWin.MainForm.Size.Width;
+			int y = GlobalWin.MainForm.Location.Y;
 			Location = new Point(x, y);
 			HideShowIcons();
 		}
@@ -91,88 +91,88 @@ namespace BizHawk.Client.EmuHawk
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<Cheats>();
+			GlobalWin.Tools.Load<Cheats>();
 		}
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadRamWatch(true);
+			GlobalWin.MainForm.LoadRamWatch(true);
 		}
 
 		private void toolStripButton3_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<RamSearch>();
+			GlobalWin.Tools.Load<RamSearch>();
 		}
 
 		private void HexEditor_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<HexEditor>();
+			GlobalWin.Tools.Load<HexEditor>();
 		}
 
 		private void toolStripButton5_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.OpenLuaConsole();
+			GlobalWin.MainForm.OpenLuaConsole();
 		}
 
 		private void NESPPU_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESPPU>();
+			GlobalWin.Tools.Load<NESPPU>();
 		}
 
 		private void NESDebugger_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESDebugger>();
+			GlobalWin.Tools.Load<NESDebugger>();
 		}
 
 		private void NESGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEC();
 		}
 
 		private void NESNameTable_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESNameTableViewer>();
+			GlobalWin.Tools.Load<NESNameTableViewer>();
 		}
 
 		private void KeyPadTool_Click(object sender, EventArgs e)
 		{
 			if (Global.Emulator is TI83)
 			{
-				GlobalWinF.Tools.Load<TI83KeyPad>();
+				GlobalWin.Tools.Load<TI83KeyPad>();
 			}
 		}
 
 		private void TAStudioButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadTAStudio();
+			GlobalWin.MainForm.LoadTAStudio();
 		}
 
 		private void SNESGraphicsDebuggerButton_Click(object sender, EventArgs e)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
+				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
 		}
 
 		private void VirtualPadButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualPadForm>();
 		}
 
 		private void SNESGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEC();
 		}
 
 		private void GGGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEC();
 		}
 
 		private void GBGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEC();
 		}
 
 

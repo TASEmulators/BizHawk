@@ -183,9 +183,9 @@ namespace BizHawk.Client.EmuHawk
 			if (!Directory.Exists(ofd.InitialDirectory))
 				Directory.CreateDirectory(ofd.InitialDirectory);
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(ofd.FileName);
@@ -713,9 +713,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			new LuaFunctionsForm().Show();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		public bool LoadLuaSession(string path)
@@ -922,9 +922,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1019,9 +1019,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					if (string.Compare(currentSessionFile, "") == 0)
@@ -1101,7 +1101,7 @@ namespace BizHawk.Client.EmuHawk
 			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
 
 
-			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWinF.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
+			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)

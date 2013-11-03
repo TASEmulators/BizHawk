@@ -401,12 +401,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RewindActive != enabled)
 			{
-				GlobalWinF.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+				GlobalWin.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
 			}
 
 			if (RewindFrequency != frequency && enabled)
 			{
-				GlobalWinF.OSD.AddMessage("Rewind frequency set to " + frequency);
+				GlobalWin.OSD.AddMessage("Rewind frequency set to " + frequency);
 			}
 
 			RewindActive = enabled;

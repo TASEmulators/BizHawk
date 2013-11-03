@@ -49,16 +49,16 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.Sound.UpdateSoundSettings();
-			GlobalWinF.Sound.StartSound();
-			GlobalWinF.OSD.AddMessage("Sound settings saved");
+			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.Sound.UpdateSoundSettings();
+			GlobalWin.Sound.StartSound();
+			GlobalWin.OSD.AddMessage("Sound settings saved");
 			this.Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Sound config aborted");
+			GlobalWin.OSD.AddMessage("Sound config aborted");
 			this.Close();
 		}
 

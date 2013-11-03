@@ -72,13 +72,13 @@ namespace BizHawk.Client.EmuHawk
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
 #if WINDOWS
-			try { GlobalWinF.DSound = SoundEnumeration.Create(); }
+			try { GlobalWin.DSound = SoundEnumeration.Create(); }
 			catch
 			{
 				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			try { GlobalWinF.Direct3D = new Direct3D(); }
+			try { GlobalWin.Direct3D = new Direct3D(); }
 			catch
 			{
 				//fallback to GDI rendering
@@ -127,10 +127,10 @@ namespace BizHawk.Client.EmuHawk
 #if WINDOWS
 			finally
 			{
-				if (GlobalWinF.DSound != null && GlobalWinF.DSound.Disposed == false)
-					GlobalWinF.DSound.Dispose();
-				if (GlobalWinF.Direct3D != null && GlobalWinF.Direct3D.Disposed == false)
-					GlobalWinF.Direct3D.Dispose();
+				if (GlobalWin.DSound != null && GlobalWin.DSound.Disposed == false)
+					GlobalWin.DSound.Dispose();
+				if (GlobalWin.Direct3D != null && GlobalWin.Direct3D.Disposed == false)
+					GlobalWin.Direct3D.Dispose();
 				GamePad.CloseAll();
 			}
 #endif

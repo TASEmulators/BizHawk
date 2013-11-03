@@ -518,9 +518,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InputPrompt i = new InputPrompt {Text = "Go to Address"};
 			i.SetMessage("Enter a hexadecimal value");
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			i.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 
 			if (i.UserOK)
 			{

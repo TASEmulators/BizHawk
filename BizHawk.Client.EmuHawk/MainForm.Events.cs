@@ -411,9 +411,9 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 			{
 				return;
@@ -483,9 +483,9 @@ namespace BizHawk.Client.EmuHawk
 				Filter = "PNG File (*.png)|*.png"
 			};
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				TakeScreenshot(sfd.FileName);
@@ -504,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.Tools.AskSave())
+			if (GlobalWin.Tools.AskSave())
 			{
 				Close();
 			}
@@ -643,37 +643,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayFPSMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleFPS();
 		}
 
 		private void DisplayFrameCounterMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleFrameCounter();
 		}
 
 		private void DisplayLagCounterMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleLagCounter();
 		}
 
 		private void DisplayInputMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleInputDisplay();
 		}
 
 		private void DisplayRerecordsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
 		private void DisplaySubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
 		}
 
@@ -868,11 +868,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.ShowContextMenu ^= true;
 			if (Global.Config.ShowContextMenu)
 			{
-				GlobalWinF.OSD.AddMessage("Context menu enabled");
+				GlobalWin.OSD.AddMessage("Context menu enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Context menu disabled");
+				GlobalWin.OSD.AddMessage("Context menu disabled");
 			}
 		}
 
@@ -881,11 +881,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.BackupSavestates ^= true;
 			if (Global.Config.BackupSavestates)
 			{
-				GlobalWinF.OSD.AddMessage("Backup savestates enabled");
+				GlobalWin.OSD.AddMessage("Backup savestates enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Backup savestates disabled");
+				GlobalWin.OSD.AddMessage("Backup savestates disabled");
 			}
 		}
 
@@ -894,11 +894,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.AutoSavestates ^= true;
 			if (Global.Config.AutoSavestates)
 			{
-				GlobalWinF.OSD.AddMessage("AutoSavestates enabled");
+				GlobalWin.OSD.AddMessage("AutoSavestates enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("AutoSavestates disabled");
+				GlobalWin.OSD.AddMessage("AutoSavestates disabled");
 			}
 		}
 
@@ -907,11 +907,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SaveScreenshotWithStates ^= true;
 			if (Global.Config.SaveScreenshotWithStates)
 			{
-				GlobalWinF.OSD.AddMessage("Screenshots will be saved in savestates");
+				GlobalWin.OSD.AddMessage("Screenshots will be saved in savestates");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Screenshots will not be saved in savestates");
+				GlobalWin.OSD.AddMessage("Screenshots will not be saved in savestates");
 			}
 		}
 
@@ -925,11 +925,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.BackupSaveram ^= true;
 			if (Global.Config.BackupSaveram)
 			{
-				GlobalWinF.OSD.AddMessage("Backup saveram enabled");
+				GlobalWin.OSD.AddMessage("Backup saveram enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Backup saveram disabled");
+				GlobalWin.OSD.AddMessage("Backup saveram disabled");
 			}
 		}
 
@@ -1010,7 +1010,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWinF.RenderPanel.Resized = true;
+					GlobalWin.RenderPanel.Resized = true;
 				}
 			}
 			LimitFrameRateMessage();
@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWinF.RenderPanel.Resized = true;
+					GlobalWin.RenderPanel.Resized = true;
 				}
 			}
 		}
@@ -1035,7 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.VSyncThrottle ^= true;
-			GlobalWinF.RenderPanel.Resized = true;
+			GlobalWin.RenderPanel.Resized = true;
 			if (Global.Config.VSyncThrottle)
 			{
 				Global.Config.ClockThrottle = false;
@@ -1054,7 +1054,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VSync ^= true;
 			if (!Global.Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
-				GlobalWinF.RenderPanel.Resized = true;
+				GlobalWin.RenderPanel.Resized = true;
 			}
 		}
 
@@ -1117,14 +1117,14 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveConfig();
-			GlobalWinF.OSD.AddMessage("Saved settings");
+			GlobalWin.OSD.AddMessage("Saved settings");
 		}
 
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load(PathManager.DefaultIniPath, Global.Config);
 			Global.Config.ResolveDefaults();
-			GlobalWinF.OSD.AddMessage("Config file loaded");
+			GlobalWin.OSD.AddMessage("Config file loaded");
 		}
 
 		#endregion
@@ -1148,7 +1148,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<ToolBox>();
+			GlobalWin.Tools.Load<ToolBox>();
 		}
 
 		private void RamWatchMenuItem_Click(object sender, EventArgs e)
@@ -1158,12 +1158,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<RamSearch>();
+			GlobalWin.Tools.Load<RamSearch>();
 		}
 
 		private void HexEditorMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<HexEditor>();
+			GlobalWin.Tools.Load<HexEditor>();
 		}
 
 		private void TraceLoggerMenuItem_Click(object sender, EventArgs e)
@@ -1178,12 +1178,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<VirtualPadForm>();
+			GlobalWin.Tools.Load<VirtualPadForm>();
 		}
 
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<Cheats>();
+			GlobalWin.Tools.Load<Cheats>();
 		}
 
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
@@ -1193,12 +1193,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CreateDualGbXmlMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			using (var dlg = new GBtools.DualGBXMLCreator())
 			{
 				dlg.ShowDialog(this);
 			}
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		#endregion
@@ -1207,17 +1207,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESDebugger>();
+			GlobalWin.Tools.Load<NESDebugger>();
 		}
 
 		private void NESPPUViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESPPU>();
+			GlobalWin.Tools.Load<NESPPU>();
 		}
 
 		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESNameTableViewer>();
+			GlobalWin.Tools.Load<NESNameTableViewer>();
 		}
 
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
@@ -1233,7 +1233,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<NESSoundConfig>();
+			GlobalWin.Tools.Load<NESSoundConfig>();
 		}
 
 		#endregion
@@ -1249,7 +1249,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<PCEBGViewer>();
+			GlobalWin.Tools.Load<PCEBGViewer>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -1360,7 +1360,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is TI83)
 			{
-				GlobalWinF.Tools.Load<TI83KeyPad>();
+				GlobalWin.Tools.Load<TI83KeyPad>();
 			}
 		}
 
@@ -1421,11 +1421,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.Atari2600_BW)
 			{
-				GlobalWinF.OSD.AddMessage("Setting the Black and White Switch to On");
+				GlobalWin.OSD.AddMessage("Setting the Black and White Switch to On");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Setting the Black and White Switch to Off");
+				GlobalWin.OSD.AddMessage("Setting the Black and White Switch to Off");
 			}
 		}
 
@@ -1440,11 +1440,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.Atari2600_LeftDifficulty)
 			{
-				GlobalWinF.OSD.AddMessage("Setting Left Difficulty to B");
+				GlobalWin.OSD.AddMessage("Setting Left Difficulty to B");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Setting Left Difficulty to A");
+				GlobalWin.OSD.AddMessage("Setting Left Difficulty to A");
 			}
 		}
 
@@ -1459,11 +1459,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.Atari2600_RightDifficulty)
 			{
-				GlobalWinF.OSD.AddMessage("Setting Right Difficulty to B");
+				GlobalWin.OSD.AddMessage("Setting Right Difficulty to B");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Setting Right Difficulty to A");
+				GlobalWin.OSD.AddMessage("Setting Right Difficulty to A");
 			}
 		}
 
@@ -1565,7 +1565,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<GBGPUView>();
+			GlobalWin.Tools.Load<GBGPUView>();
 		}
 
 		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -1579,7 +1579,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<GBAGPUView>();
+			GlobalWin.Tools.Load<GBAGPUView>();
 		}
 
 		#endregion
@@ -1664,7 +1664,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
+			GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 		}
 
 		private void SnesGBInSGBMenuItem_Click(object sender, EventArgs e)
@@ -1722,11 +1722,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
-				GlobalWinF.OSD.AddMessage("Plugin settings saved");
+				GlobalWin.OSD.AddMessage("Plugin settings saved");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Plugin settings aborted");
+				GlobalWin.OSD.AddMessage("Plugin settings aborted");
 			}
 		}
 
@@ -1899,7 +1899,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Backup movie saved.");
+			GlobalWin.OSD.AddMessage("Backup movie saved.");
 			Global.MovieSession.Movie.WriteBackup();
 		}
 
@@ -1967,7 +1967,7 @@ namespace BizHawk.Client.EmuHawk
 				".State"
 			);
 
-			GlobalWinF.OSD.AddMessage("Save slot " + Global.Config.SaveSlot + " restored.");
+			GlobalWin.OSD.AddMessage("Save slot " + Global.Config.SaveSlot + " restored.");
 		}
 
 		private void ClearSRAMContextMenuItem_Click(object sender, EventArgs e)
@@ -1989,9 +1989,9 @@ namespace BizHawk.Client.EmuHawk
 			string details = Global.Emulator.CoreComm.RomStatusDetails;
 			if (!String.IsNullOrEmpty(details))
 			{
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				LogWindow.ShowReport("Dump Status Report", details, this);
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 			}
 		}
 
@@ -2044,7 +2044,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (CheatStatusButton.Visible)
 			{
-				GlobalWinF.Tools.Load<Cheats>();
+				GlobalWin.Tools.Load<Cheats>();
 			}
 		}
 
@@ -2078,7 +2078,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
@@ -2093,7 +2093,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			GlobalWinF.RenderPanel.Resized = true;
+			GlobalWin.RenderPanel.Resized = true;
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)
@@ -2109,7 +2109,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainformMenu_Leave(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
 		private void MainformMenu_MenuActivate(object sender, EventArgs e)
@@ -2125,7 +2125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainformMenu_MenuDeactivate(object sender, EventArgs e)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (!wasPaused)
 			{
 				UnpauseEmulator();
@@ -2147,9 +2147,9 @@ namespace BizHawk.Client.EmuHawk
 				if (extension != null && extension.ToUpper() == ".LUA")
 				{
 					OpenLuaConsole();
-					if (GlobalWinF.Tools.Has<LuaConsole>())
+					if (GlobalWin.Tools.Has<LuaConsole>())
 					{
-						GlobalWinF.Tools.LuaConsole.LoadLuaFile(path);
+						GlobalWin.Tools.LuaConsole.LoadLuaFile(path);
 					}
 					isLua = true;
 				}
@@ -2163,14 +2163,14 @@ namespace BizHawk.Client.EmuHawk
 			if (ext.ToUpper() == ".LUASES")
 			{
 				OpenLuaConsole();
-				if (GlobalWinF.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
-					GlobalWinF.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
+					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
 				}
 			}
 			else if (IsValidMovieExtension(ext))
 			{
-				StartNewMovie(new Movie(filePaths[0], GlobalWinF.MainForm.GetEmuVersion()), false);
+				StartNewMovie(new Movie(filePaths[0], GlobalWin.MainForm.GetEmuVersion()), false);
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
@@ -2179,13 +2179,13 @@ namespace BizHawk.Client.EmuHawk
 			else if (ext.ToUpper() == ".CHT")
 			{
 				Global.CheatList.Load(filePaths[0], false);
-				GlobalWinF.Tools.Load<Cheats>();
+				GlobalWin.Tools.Load<Cheats>();
 				ToolHelpers.UpdateCheatRelatedTools();
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
-				(GlobalWinF.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
+				(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
@@ -2202,7 +2202,7 @@ namespace BizHawk.Client.EmuHawk
 
 				string errorMsg;
 				string warningMsg;
-				Movie movie = MovieImport.ImportFile(filePaths[0], GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
+				Movie movie = MovieImport.ImportFile(filePaths[0], GlobalWin.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2216,7 +2216,7 @@ namespace BizHawk.Client.EmuHawk
 					movie.WriteMovie();
 					StartNewMovie(movie, false);
 				}
-				GlobalWinF.OSD.AddMessage(warningMsg);
+				GlobalWin.OSD.AddMessage(warningMsg);
 			}
 			else
 			{

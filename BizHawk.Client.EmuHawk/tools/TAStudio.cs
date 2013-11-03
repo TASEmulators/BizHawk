@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Emulator.Frame < stopOnFrame)
 			{
-				GlobalWinF.MainForm.PressFrameAdvance = true;
+				GlobalWin.MainForm.PressFrameAdvance = true;
 			}
 		}
 
@@ -156,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//TODO: don't engage until new/open project
 			//
-			GlobalWinF.MainForm.PauseEmulator();
+			GlobalWin.MainForm.PauseEmulator();
 			Engaged = true;
-			GlobalWinF.OSD.AddMessage("TAStudio engaged");
+			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.StateCapturing = true;
@@ -238,13 +238,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.StopMovie();
+			GlobalWin.MainForm.StopMovie();
 			Restart();
 		}
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.PressFrameAdvance = true;
+			GlobalWin.MainForm.PressFrameAdvance = true;
 		}
 
 		private void RewindButton_Click(object sender, EventArgs e)
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			stopOnFrame = 0;
 			if (Global.MovieSession.Movie.IsFinished || !Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWinF.MainForm.Rewind(1);
+				GlobalWin.MainForm.Rewind(1);
 				if (Global.Emulator.Frame <= Global.MovieSession.Movie.Frames)
 				{
 					Global.MovieSession.Movie.SwitchToPlay();
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseButton_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.TogglePause();
+			GlobalWin.MainForm.TogglePause();
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.Rewind(Global.Emulator.Frame);
+			GlobalWin.MainForm.Rewind(Global.Emulator.Frame);
 			DisplayList();
 		}
 
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			//TODO: adelikat: I removed the stop on frame feature, so this will keep playing into movie finished mode, need to rebuild that functionality
 
 			FastFowardToEnd.Checked ^= true;
-			GlobalWinF.MainForm.FastForward = FastFowardToEnd.Checked;
+			GlobalWin.MainForm.FastForward = FastFowardToEnd.Checked;
 			if (FastFowardToEnd.Checked)
 			{
 				FastForward.Checked = false;
@@ -362,12 +362,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadRecordMovieDialog();
+			GlobalWin.MainForm.LoadRecordMovieDialog();
 		}
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.LoadPlayMovieDialog();
+			GlobalWin.MainForm.LoadPlayMovieDialog();
 		}
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -389,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FastForward_Click(object sender, EventArgs e)
 		{
 			FastForward.Checked ^= true;
-			GlobalWinF.MainForm.FastForward = FastForward.Checked;
+			GlobalWin.MainForm.FastForward = FastForward.Checked;
 			if (FastForward.Checked)
 			{
 				TurboFastForward.Checked = false;
@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TurboFastForward_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.MainForm.TurboFastForward ^= true;
+			GlobalWin.MainForm.TurboFastForward ^= true;
 			TurboFastForward.Checked ^= true;
 			if (TurboFastForward.Checked)
 			{
@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
 				stopOnFrame = TASView.selectedItem;
-				GlobalWinF.MainForm.PressFrameAdvance = true;
+				GlobalWin.MainForm.PressFrameAdvance = true;
 			}
 
 			UpdateValues();
@@ -451,9 +451,9 @@ namespace BizHawk.Client.EmuHawk
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				return sfd.FileName;
@@ -475,7 +475,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.Delta < 0) //Scroll down
 				{
-					GlobalWinF.MainForm.PressFrameAdvance = true;
+					GlobalWin.MainForm.PressFrameAdvance = true;
 				}
 
 				UpdateValues();
@@ -548,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.MovieSession.Movie.IsRecording)
 					{
 						Global.MovieSession.Movie.StartPlayback();
-						GlobalWinF.MainForm.RestoreReadWriteOnStop = true;
+						GlobalWin.MainForm.RestoreReadWriteOnStop = true;
 					}
 				}
 				else
@@ -561,18 +561,18 @@ namespace BizHawk.Client.EmuHawk
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-						GlobalWinF.MainForm.UpdateFrame = true;
+						GlobalWin.MainForm.UpdateFrame = true;
 					}
 				}
 			}
 			else if (frame <= Global.MovieSession.Movie.StateLastIndex)
 			{
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-				GlobalWinF.MainForm.UpdateFrame = true;
+				GlobalWin.MainForm.UpdateFrame = true;
 			}
 			else
 			{
-				GlobalWinF.MainForm.UnpauseEmulator();
+				GlobalWin.MainForm.UnpauseEmulator();
 			}
 		}
 
@@ -819,13 +819,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Middle)
 			{
-				GlobalWinF.MainForm.TogglePause();
+				GlobalWin.MainForm.TogglePause();
 			}
 		}
 
 		private void TAStudio_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			GlobalWinF.MainForm.ProcessInput();
+			GlobalWin.MainForm.ProcessInput();
 		}
 
 		private void button1_Click(object sender, EventArgs e)

@@ -50,12 +50,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(string[] args)
 		{
-			GlobalWinF.MainForm = this;
+			GlobalWin.MainForm = this;
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
-				Movie = new Movie(GlobalWinF.MainForm.GetEmuVersion()),
-				MessageCallback = GlobalWinF.OSD.AddMessage,
+				Movie = new Movie(GlobalWin.MainForm.GetEmuVersion()),
+				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
 			MainWait = new AutoResetEvent(false);
@@ -100,19 +100,19 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.SaveOnClose();
 				CloseGame();
 				Global.MovieSession.Movie.Stop();
-				GlobalWinF.Tools.Close();
+				GlobalWin.Tools.Close();
 				SaveConfig();
 			};
 
 			ResizeBegin += (o, e) =>
 			{
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StopSound();
+				if (GlobalWin.Sound != null) GlobalWin.Sound.StopSound();
 			};
 
 			ResizeEnd += (o, e) =>
 			{
-				if (GlobalWinF.RenderPanel != null) GlobalWinF.RenderPanel.Resized = true;
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StartSound();
+				if (GlobalWin.RenderPanel != null) GlobalWin.RenderPanel.Resized = true;
+				if (GlobalWin.Sound != null) GlobalWin.Sound.StartSound();
 			};
 
 			Input.Initialize();
@@ -122,15 +122,15 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			GlobalWinF.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+			GlobalWin.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 #if WINDOWS
-			GlobalWinF.Sound = new Sound(Handle, GlobalWinF.DSound);
+			GlobalWin.Sound = new Sound(Handle, GlobalWin.DSound);
 #else
 			Global.Sound = new Sound();
 #endif
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			RewireInputChain();
-			GlobalWinF.Tools = new ToolManager();
+			GlobalWin.Tools = new ToolManager();
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Movie m = new Movie(cmdMovie, GlobalWinF.MainForm.GetEmuVersion());
+					Movie m = new Movie(cmdMovie, GlobalWin.MainForm.GetEmuVersion());
 					Global.ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Movie m = new Movie(Global.Config.RecentMovies[0], GlobalWinF.MainForm.GetEmuVersion());
+					Movie m = new Movie(Global.Config.RecentMovies[0], GlobalWin.MainForm.GetEmuVersion());
 					StartNewMovie(m, false);
 				}
 			}
@@ -227,27 +227,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
-				GlobalWinF.Tools.Load<RamSearch>();
+				GlobalWin.Tools.Load<RamSearch>();
 			}
 			if (Global.Config.AutoLoadHexEditor)
 			{
-				GlobalWinF.Tools.Load<HexEditor>();
+				GlobalWin.Tools.Load<HexEditor>();
 			}
 			if (Global.Config.RecentCheats.AutoLoad)
 			{
-				GlobalWinF.Tools.Load<Cheats>();
+				GlobalWin.Tools.Load<Cheats>();
 			}
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
-				GlobalWinF.Tools.Load<NESPPU>();
+				GlobalWin.Tools.Load<NESPPU>();
 			}
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
 			{
-				GlobalWinF.Tools.Load<NESNameTableViewer>();
+				GlobalWin.Tools.Load<NESNameTableViewer>();
 			}
 			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
 			{
-				GlobalWinF.Tools.Load<NESDebugger>();
+				GlobalWin.Tools.Load<NESDebugger>();
 			}
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 			{
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
 			{
-				GlobalWinF.Tools.Load<GBGPUView>();
+				GlobalWin.Tools.Load<GBGPUView>();
 			}
 			if (Global.Config.AutoloadTAStudio)
 			{
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (Global.Config.AutoloadVirtualPad)
 			{
-				GlobalWinF.Tools.Load<VirtualPadForm>();
+				GlobalWin.Tools.Load<VirtualPadForm>();
 			}
 			if (Global.Config.AutoLoadLuaConsole)
 			{
@@ -271,11 +271,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
-				GlobalWinF.Tools.Load<PCEBGViewer>();
+				GlobalWin.Tools.Load<PCEBGViewer>();
 			}
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
-				GlobalWinF.Tools.Load<SNESGraphicsDebugger>();
+				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
@@ -320,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 
 			renderTarget.Paint += (o, e) =>
 			{
-				GlobalWinF.DisplayManager.NeedsToPaint = true;
+				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
 		}
 
@@ -334,32 +334,32 @@ namespace BizHawk.Client.EmuHawk
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
-				GlobalWinF.ClientControls.LatchFromPhysical(GlobalWinF.HotkeyCoalescer);
-				Global.ActiveController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
+				GlobalWin.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+				Global.ActiveController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(GlobalWinF.ControllerInputCoalescer);
+				Global.AutoFireController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
 
-				if (GlobalWinF.ClientControls["Autohold"])
+				if (GlobalWin.ClientControls["Autohold"])
 				{
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+					GlobalWin.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
-				else if (GlobalWinF.ClientControls["Autofire"])
+				else if (GlobalWin.ClientControls["Autofire"])
 				{
-					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					GlobalWin.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
 
-				if (GlobalWinF.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
-					GlobalWinF.Tools.LuaConsole.ResumeScripts(false);
+					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
 
 
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
-				if (GlobalWinF.DisplayManager.NeedsToPaint) { Render(); }
+				if (GlobalWin.DisplayManager.NeedsToPaint) { Render(); }
 
 				CheckMessages();
 				if (exit)
@@ -376,8 +376,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (GlobalWinF.DisplayManager != null) GlobalWinF.DisplayManager.Dispose();
-			GlobalWinF.DisplayManager = null;
+			if (GlobalWin.DisplayManager != null) GlobalWin.DisplayManager.Dispose();
+			GlobalWin.DisplayManager = null;
 
 			if (disposing && (components != null))
 			{
@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				//look for hotkey bindings for this key
-				var triggers = GlobalWinF.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				var triggers = GlobalWin.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
 					//bool sys_hotkey = false;
@@ -491,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case 0: //Both allowed
-						GlobalWinF.ControllerInputCoalescer.Receive(ie);
+						GlobalWin.ControllerInputCoalescer.Receive(ie);
 
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
@@ -502,11 +502,11 @@ namespace BizHawk.Client.EmuHawk
 						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWinF.HotkeyCoalescer.Receive(ie);
+							GlobalWin.HotkeyCoalescer.Receive(ie);
 						}
 						break;
 					case 1: //Input overrides Hokeys
-						GlobalWinF.ControllerInputCoalescer.Receive(ie);
+						GlobalWin.ControllerInputCoalescer.Receive(ie);
 						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
 						if (!inputisbound)
 						{
@@ -519,7 +519,7 @@ namespace BizHawk.Client.EmuHawk
 							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 							if (!handled)
 							{
-								GlobalWinF.HotkeyCoalescer.Receive(ie);
+								GlobalWin.HotkeyCoalescer.Receive(ie);
 							}
 						}
 						break;
@@ -533,8 +533,8 @@ namespace BizHawk.Client.EmuHawk
 						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWinF.HotkeyCoalescer.Receive(ie);
-							GlobalWinF.ControllerInputCoalescer.Receive(ie);
+							GlobalWin.HotkeyCoalescer.Receive(ie);
+							GlobalWin.ControllerInputCoalescer.Receive(ie);
 						}
 						break;
 				}
@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			} //foreach event
 
 			// also handle floats
-			GlobalWinF.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
+			GlobalWin.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
 		}
 
 		public void RebootCore()
@@ -592,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Clipboard.SetImage(img);
 			}
-			GlobalWinF.OSD.AddMessage("Screenshot saved to clipboard.");
+			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
@@ -610,26 +610,26 @@ namespace BizHawk.Client.EmuHawk
 			{
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
-			GlobalWinF.OSD.AddMessage(fi.Name + " saved.");
+			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
 		}
 
 		public void LoadGameGenieEC()
 		{
 			if (Global.Emulator is NES)
 			{
-				GlobalWinF.Tools.Load<NESGameGenie>();
+				GlobalWin.Tools.Load<NESGameGenie>();
 			}
 			else if (Global.Emulator is LibsnesCore)
 			{
-				GlobalWinF.Tools.Load<SNESGameGenie>();
+				GlobalWin.Tools.Load<SNESGameGenie>();
 			}
 			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
-				GlobalWinF.Tools.Load<GBGameGenie>();
+				GlobalWin.Tools.Load<GBGameGenie>();
 			}
 			else if (Global.Emulator is Genesis)
 			{
-				GlobalWinF.Tools.Load<GenGameGenie>();
+				GlobalWin.Tools.Load<GenGameGenie>();
 			}
 		}
 
@@ -637,7 +637,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.CoreComm.CpuTraceAvailable)
 			{
-				GlobalWinF.Tools.Load<TraceLogger>();
+				GlobalWin.Tools.Load<TraceLogger>();
 			}
 		}
 
@@ -663,7 +663,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
 				PerformLayout();
-				GlobalWinF.RenderPanel.Resized = true;
+				GlobalWin.RenderPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (area.Contains(Bounds) == false)
@@ -690,7 +690,7 @@ namespace BizHawk.Client.EmuHawk
 					MainMenuStrip.Visible = false;
 				MainStatusBar.Visible = false;
 				PerformLayout();
-				GlobalWinF.RenderPanel.Resized = true;
+				GlobalWin.RenderPanel.Resized = true;
 				InFullscreen = true;
 			}
 			else
@@ -709,13 +709,13 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadTAStudio()
 		{
 			Global.MovieSession.EditorMode = true;
-			GlobalWinF.Tools.Load<TAStudio>();
+			GlobalWin.Tools.Load<TAStudio>();
 		}
 
 		public void OpenLuaConsole()
 		{
 #if WINDOWS
-			GlobalWinF.Tools.Load<LuaConsole>();
+			GlobalWin.Tools.Load<LuaConsole>();
 #else
 			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #endif
@@ -741,11 +741,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
-				GlobalWinF.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 			}
 			if (load_dialog)
 			{
-				GlobalWinF.Tools.Load<RamWatch>();
+				GlobalWin.Tools.Load<RamWatch>();
 			}
 		}
 
@@ -757,7 +757,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FrameSkipMessage()
 		{
-			GlobalWinF.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
+			GlobalWin.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
 		}
 
 		public void UpdateCheatStatus()
@@ -792,11 +792,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG1_1)
 				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer On");
+					GlobalWin.OSD.AddMessage("BG 1 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("BG 1 Layer Off");
+					GlobalWin.OSD.AddMessage("BG 1 Layer Off");
 				}
 			}
 		}
@@ -816,11 +816,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG2_1)
 				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer On");
+					GlobalWin.OSD.AddMessage("BG 2 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("BG 2 Layer Off");
+					GlobalWin.OSD.AddMessage("BG 2 Layer Off");
 				}
 			}
 		}
@@ -840,11 +840,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG3_1)
 				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer On");
+					GlobalWin.OSD.AddMessage("BG 3 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("BG 3 Layer Off");
+					GlobalWin.OSD.AddMessage("BG 3 Layer Off");
 				}
 			}
 		}
@@ -864,11 +864,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG4_1)
 				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer On");
+					GlobalWin.OSD.AddMessage("BG 4 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("BG 4 Layer Off");
+					GlobalWin.OSD.AddMessage("BG 4 Layer Off");
 				}
 			}
 		}
@@ -888,11 +888,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ1)
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer On");
+					GlobalWin.OSD.AddMessage("OBJ 1 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 1 Layer Off");
+					GlobalWin.OSD.AddMessage("OBJ 1 Layer Off");
 				}
 			}
 		}
@@ -912,11 +912,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ2)
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer On");
+					GlobalWin.OSD.AddMessage("OBJ 2 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 2 Layer Off");
+					GlobalWin.OSD.AddMessage("OBJ 2 Layer Off");
 				}
 			}
 		}
@@ -936,11 +936,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ3)
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer On");
+					GlobalWin.OSD.AddMessage("OBJ 3 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 3 Layer Off");
+					GlobalWin.OSD.AddMessage("OBJ 3 Layer Off");
 				}
 			}
 		}
@@ -960,11 +960,11 @@ namespace BizHawk.Client.EmuHawk
 				CoreFileProvider.SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ4)
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer On");
+					GlobalWin.OSD.AddMessage("OBJ 4 Layer On");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("OBJ 4 Layer Off");
+					GlobalWin.OSD.AddMessage("OBJ 4 Layer Off");
 				}
 			}
 		}
@@ -1021,42 +1021,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateToolsBefore(bool fromLua = false)
 		{
-			if (GlobalWinF.Tools.Has<LuaConsole>())
+			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
 				if (!fromLua)
 				{
-					GlobalWinF.Tools.LuaConsole.StartLuaDrawing();
+					GlobalWin.Tools.LuaConsole.StartLuaDrawing();
 				}
-				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
+				GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
-			GlobalWinF.Tools.UpdateBefore();
+			GlobalWin.Tools.UpdateBefore();
 		}
 
 		private void UpdateToolsLoadstate()
 		{
-			if (GlobalWinF.Tools.Has<SNESGraphicsDebugger>())
+			if (GlobalWin.Tools.Has<SNESGraphicsDebugger>())
 			{
-				GlobalWinF.Tools.SNESGraphicsDebugger.UpdateToolsLoadstate();
+				GlobalWin.Tools.SNESGraphicsDebugger.UpdateToolsLoadstate();
 			}
 		}
 
 		private void UpdateToolsAfter(bool fromLua = false)
 		{
-			if (!fromLua && GlobalWinF.Tools.Has<LuaConsole>())
+			if (!fromLua && GlobalWin.Tools.Has<LuaConsole>())
 			{
-				GlobalWinF.Tools.LuaConsole.ResumeScripts(true);
+				GlobalWin.Tools.LuaConsole.ResumeScripts(true);
 			}
 
-			GlobalWinF.Tools.UpdateAfter();
+			GlobalWin.Tools.UpdateAfter();
 			HandleToggleLight();
 
-			if (GlobalWinF.Tools.Has<LuaConsole>())
+			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
-				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
+				GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
-					GlobalWinF.DisplayManager.PreFrameUpdateLuaSource();
-					GlobalWinF.Tools.LuaConsole.EndLuaDrawing();
+					GlobalWin.DisplayManager.PreFrameUpdateLuaSource();
+					GlobalWin.Tools.LuaConsole.EndLuaDrawing();
 				}
 			}
 		}
@@ -1064,14 +1064,14 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearAutohold()
 		{
 			Global.StickyXORAdapter.ClearStickies();
-			GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
+			GlobalWin.AutofireStickyXORAdapter.ClearStickies();
 
-			if (GlobalWinF.Tools.Has<VirtualPadForm>())
+			if (GlobalWin.Tools.Has<VirtualPadForm>())
 			{
-				GlobalWinF.Tools.VirtualPad.ClearVirtualPadHolds();
+				GlobalWin.Tools.VirtualPad.ClearVirtualPadHolds();
 			}
 
-			GlobalWinF.OSD.AddMessage("Autohold keys cleared");
+			GlobalWin.OSD.AddMessage("Autohold keys cleared");
 		}
 
 		private bool CheckHotkey(string trigger)
@@ -1084,7 +1084,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Pause": TogglePause(); break;
 				case "Toggle Throttle":
 					unthrottled ^= true;
-					GlobalWinF.OSD.AddMessage("Unthrottled: " + unthrottled);
+					GlobalWin.OSD.AddMessage("Unthrottled: " + unthrottled);
 					break;
 				case "Soft Reset": SoftReset(); break;
 				case "Hard Reset": HardReset(); break;
@@ -1164,19 +1164,19 @@ namespace BizHawk.Client.EmuHawk
 
 						if (Global.Config.VBAStyleMovieLoadState)
 						{
-							GlobalWinF.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
+							GlobalWin.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
 						}
 						else
 						{
 							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
 							if (Global.MovieSession.MultiTrack.IsActive)
 							{
-								GlobalWinF.OSD.AddMessage("MultiTrack Enabled");
-								GlobalWinF.OSD.MT = "Recording None";
+								GlobalWin.OSD.AddMessage("MultiTrack Enabled");
+								GlobalWin.OSD.MT = "Recording None";
 							}
 							else
 							{
-								GlobalWinF.OSD.AddMessage("MultiTrack Disabled");
+								GlobalWin.OSD.AddMessage("MultiTrack Disabled");
 							}
 							Global.MovieSession.MultiTrack.RecordAll = false;
 							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
@@ -1184,21 +1184,21 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						GlobalWinF.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
+						GlobalWin.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
 					}
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select All":
 					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 					Global.MovieSession.MultiTrack.RecordAll = true;
-					GlobalWinF.OSD.MT = "Recording All";
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					GlobalWin.OSD.MT = "Recording All";
+					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select None":
 					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 					Global.MovieSession.MultiTrack.RecordAll = false;
-					GlobalWinF.OSD.MT = "Recording None";
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					GlobalWin.OSD.MT = "Recording None";
+					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Increment Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer++;
@@ -1207,8 +1207,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 					}
-					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Decrement Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer--;
@@ -1217,27 +1217,27 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
 					}
-					GlobalWinF.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-					GlobalWinF.DisplayManager.NeedsToPaint = true;
+					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "Movie Poke": ToggleModePokeMode(); break;
 
 				case "Ram Watch": LoadRamWatch(true); break;
-				case "Ram Search": GlobalWinF.Tools.Load<RamSearch>(); break;
-				case "Hex Editor": GlobalWinF.Tools.Load<HexEditor>(); break;
+				case "Ram Search": GlobalWin.Tools.Load<RamSearch>(); break;
+				case "Hex Editor": GlobalWin.Tools.Load<HexEditor>(); break;
 				case "Trace Logger": LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
-				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
+				case "Cheats": GlobalWin.Tools.Load<Cheats>(); break;
 				case "TAStudio": LoadTAStudio(); break;
-				case "ToolBox": GlobalWinF.Tools.Load<ToolBox>(); break;
-				case "Virtual Pad": GlobalWinF.Tools.Load<VirtualPadForm>(); break;
+				case "ToolBox": GlobalWin.Tools.Load<ToolBox>(); break;
+				case "Virtual Pad": GlobalWin.Tools.Load<VirtualPadForm>(); break;
 
-				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
-				case "New Search": GlobalWinF.Tools.RamSearch.NewSearch(); break;
-				case "Previous Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(reverse: true); break;
-				case "Next Compare To": GlobalWinF.Tools.RamSearch.NextCompareTo(); break;
-				case "Previous Operator": GlobalWinF.Tools.RamSearch.NextOperator(reverse: true); break;
-				case "Next Operator": GlobalWinF.Tools.RamSearch.NextOperator(); break;
+				case "Do Search": GlobalWin.Tools.RamSearch.DoSearch(); break;
+				case "New Search": GlobalWin.Tools.RamSearch.NewSearch(); break;
+				case "Previous Compare To": GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true); break;
+				case "Next Compare To": GlobalWin.Tools.RamSearch.NextCompareTo(); break;
+				case "Previous Operator": GlobalWin.Tools.RamSearch.NextOperator(reverse: true); break;
+				case "Next Operator": GlobalWin.Tools.RamSearch.NextOperator(); break;
 
 				case "Toggle BG 1": SNES_ToggleBG1(); break;
 				case "Toggle BG 2": SNES_ToggleBG2(); break;
@@ -1249,15 +1249,15 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
 
 
-				case "Y Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
-				case "Y Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
-				case "Y Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
-				case "Y Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
+				case "Y Up Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
+				case "Y Up Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
+				case "Y Down Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
+				case "Y Down Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
 
-				case "X Up Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
-				case "X Up Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
-				case "X Down Small": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
-				case "X Down Large": GlobalWinF.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
+				case "X Up Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
+				case "X Up Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
+				case "X Down Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
+				case "X Down Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
 			}
 
 			return true;
@@ -1383,13 +1383,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWinF.Sound.SetAsyncInputPin(DumpProxy);
+				GlobalWin.Sound.SetAsyncInputPin(DumpProxy);
 			}
 			else if (Global.Config.SoundThrottle)
 			{
 				// for sound throttle, use sync mode
 				Global.Emulator.EndAsyncSound();
-				GlobalWinF.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
 			}
 			else
 			{
@@ -1397,11 +1397,11 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.Emulator.StartAsyncSound())
 				{
 					// if the core doesn't support async mode, use a standard vecna wrapper
-					GlobalWinF.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
+					GlobalWin.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
 				}
 				else
 				{
-					GlobalWinF.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
+					GlobalWin.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
 				}
 			}
 		}
@@ -1599,7 +1599,7 @@ namespace BizHawk.Client.EmuHawk
 				controls.BindMulti(b.DisplayName, b.Bindings);
 			}
 
-			GlobalWinF.ClientControls = controls;
+			GlobalWin.ClientControls = controls;
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
@@ -1658,9 +1658,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Restart()
 		{
-			if (GlobalWinF.Tools.Has<Cheats>())
+			if (GlobalWin.Tools.Has<Cheats>())
 			{
-				GlobalWinF.Tools.Restart<Cheats>();
+				GlobalWin.Tools.Restart<Cheats>();
 			}
 			else
 			{
@@ -1705,10 +1705,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncPresentationMode()
 		{
-			GlobalWinF.DisplayManager.Suspend();
+			GlobalWin.DisplayManager.Suspend();
 
 #if WINDOWS
-			bool gdi = Global.Config.DisplayGDI || GlobalWinF.Direct3D == null;
+			bool gdi = Global.Config.DisplayGDI || GlobalWin.Direct3D == null;
 #endif
 			if (renderTarget != null)
 			{
@@ -1717,7 +1717,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (retainedPanel != null) retainedPanel.Dispose();
-			if (GlobalWinF.RenderPanel != null) GlobalWinF.RenderPanel.Dispose();
+			if (GlobalWin.RenderPanel != null) GlobalWin.RenderPanel.Dispose();
 
 #if WINDOWS
 			if (gdi)
@@ -1736,7 +1736,7 @@ namespace BizHawk.Client.EmuHawk
 			if (gdi)
 			{
 #endif
-				GlobalWinF.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
+				GlobalWin.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
 				retainedPanel.ActivateThreaded();
 #if WINDOWS
 			}
@@ -1744,27 +1744,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var d3dPanel = new Direct3DRenderPanel(GlobalWinF.Direct3D, renderTarget);
+					var d3dPanel = new Direct3DRenderPanel(GlobalWin.Direct3D, renderTarget);
 					d3dPanel.CreateDevice();
-					GlobalWinF.RenderPanel = d3dPanel;
+					GlobalWin.RenderPanel = d3dPanel;
 				}
 				catch
 				{
 					Program.DisplayDirect3DError();
-					GlobalWinF.Direct3D.Dispose();
-					GlobalWinF.Direct3D = null;
+					GlobalWin.Direct3D.Dispose();
+					GlobalWin.Direct3D = null;
 					SyncPresentationMode();
 				}
 			}
 #endif
 
-			GlobalWinF.DisplayManager.Resume();
+			GlobalWin.DisplayManager.Resume();
 		}
 
 		private void SyncThrottle()
 		{
-			bool fastforward = GlobalWinF.ClientControls["Fast Forward"] || FastForward;
-			bool superfastforward = GlobalWinF.ClientControls["Turbo"];
+			bool fastforward = GlobalWin.ClientControls["Fast Forward"] || FastForward;
+			bool superfastforward = GlobalWin.ClientControls["Turbo"];
 			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -1788,14 +1788,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SpeedPercentAlternate = value;
 			SyncThrottle();
-			GlobalWinF.OSD.AddMessage("Alternate Speed: " + value + "%");
+			GlobalWin.OSD.AddMessage("Alternate Speed: " + value + "%");
 		}
 
 		private void SetSpeedPercent(int value)
 		{
 			Global.Config.SpeedPercent = value;
 			SyncThrottle();
-			GlobalWinF.OSD.AddMessage("Speed: " + value + "%");
+			GlobalWin.OSD.AddMessage("Speed: " + value + "%");
 		}
 
 		private void Shutdown()
@@ -1861,9 +1861,9 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Directory != null && file.Directory.Exists == false)
 				file.Directory.Create();
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 
 			if (result != DialogResult.OK)
 				return;
@@ -1885,9 +1885,9 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 
 			if (result != DialogResult.OK)
 				return;
@@ -1900,7 +1900,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSlotSelectedMessage()
 		{
-			GlobalWinF.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
+			GlobalWin.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
 		}
 
 		private VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
@@ -1985,7 +1985,7 @@ namespace BizHawk.Client.EmuHawk
 				FrameBufferResized();
 			}
 
-			GlobalWinF.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
+			GlobalWin.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
 		}
 
 		//sends a simulation of a plain alt key keystroke
@@ -2072,9 +2072,9 @@ namespace BizHawk.Client.EmuHawk
 			ofd.RestoreDirectory = false;
 			ofd.FilterIndex = LastOpenRomFilter;
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 			var file = new FileInfo(ofd.FileName);
@@ -2149,16 +2149,16 @@ namespace BizHawk.Client.EmuHawk
 				Global.ReadOnly ^= true;
 				if (Global.ReadOnly)
 				{
-					GlobalWinF.OSD.AddMessage("Movie read-only mode");
+					GlobalWin.OSD.AddMessage("Movie read-only mode");
 				}
 				else
 				{
-					GlobalWinF.OSD.AddMessage("Movie read+write mode");
+					GlobalWin.OSD.AddMessage("Movie read+write mode");
 				}
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("No movie active");
+				GlobalWin.OSD.AddMessage("No movie active");
 			}
 		}
 
@@ -2167,8 +2167,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundVolume += 10;
 			if (Global.Config.SoundVolume > 100)
 				Global.Config.SoundVolume = 100;
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
 
 		private void VolumeDown()
@@ -2176,8 +2176,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundVolume -= 10;
 			if (Global.Config.SoundVolume < 0)
 				Global.Config.SoundVolume = 0;
-			GlobalWinF.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWinF.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
+			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
 
 		private void SoftReset()
@@ -2188,7 +2188,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Reset");
-					GlobalWinF.OSD.AddMessage("Reset button pressed.");
+					GlobalWin.OSD.AddMessage("Reset button pressed.");
 				}
 			}
 		}
@@ -2201,7 +2201,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Power");
-					GlobalWinF.OSD.AddMessage("Power button pressed.");
+					GlobalWin.OSD.AddMessage("Power button pressed.");
 				}
 			}
 		}
@@ -2262,7 +2262,7 @@ namespace BizHawk.Client.EmuHawk
 			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
 
-			GlobalWinF.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
+			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
 			return (Bitmap)captureosd_rvp.GetBitmap().Clone();
 		}
 
@@ -2371,7 +2371,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.WriteMovie();
-				GlobalWinF.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
+				GlobalWin.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
 		}
 
@@ -2429,11 +2429,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MoviePlaybackPokeMode ^= true;
 			if (Global.Config.MoviePlaybackPokeMode)
 			{
-				GlobalWinF.OSD.AddMessage("Movie Poke mode enabled");
+				GlobalWin.OSD.AddMessage("Movie Poke mode enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Movie Poke mode disabled");
+				GlobalWin.OSD.AddMessage("Movie Poke mode disabled");
 			}
 		}
 
@@ -2442,11 +2442,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.AcceptBackgroundInput ^= true;
 			if (Global.Config.AcceptBackgroundInput)
 			{
-				GlobalWinF.OSD.AddMessage("Background Input enabled");
+				GlobalWin.OSD.AddMessage("Background Input enabled");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Background Input disabled");
+				GlobalWin.OSD.AddMessage("Background Input disabled");
 			}
 		}
 
@@ -2454,24 +2454,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.ClockThrottle)
 			{
-				GlobalWinF.OSD.AddMessage("Framerate limiting on");
+				GlobalWin.OSD.AddMessage("Framerate limiting on");
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Framerate limiting off");
+				GlobalWin.OSD.AddMessage("Framerate limiting off");
 			}
 		}
 
 		private void VsyncMessage()
 		{
-			GlobalWinF.OSD.AddMessage(
+			GlobalWin.OSD.AddMessage(
 				"Display Vsync set to " + (Global.Config.VSyncThrottle ?  "on" : "off")
 			);
 		}
 
 		private void MinimizeFrameskipMessage()
 		{
-			GlobalWinF.OSD.AddMessage(
+			GlobalWin.OSD.AddMessage(
 				"Autominimizing set to " + (Global.Config.AutoMinimizeSkipping ? "on" : "off")
 			);
 		}
@@ -2533,7 +2533,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			if (GlobalWinF.ClientControls["Frame Advance"] || PressFrameAdvance)
+			if (GlobalWin.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)
@@ -2571,7 +2571,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (RewindActive && (GlobalWinF.ClientControls["Rewind"] || PressRewind))
+			if (RewindActive && (GlobalWin.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
@@ -2602,8 +2602,8 @@ namespace BizHawk.Client.EmuHawk
 			bool coreskipaudio = false;
 			if (runFrame)
 			{
-				bool ff = GlobalWinF.ClientControls["Fast Forward"] || GlobalWinF.ClientControls["Turbo"];
-				bool fff = GlobalWinF.ClientControls["Turbo"];
+				bool ff = GlobalWin.ClientControls["Fast Forward"] || GlobalWin.ClientControls["Turbo"];
+				bool fff = GlobalWin.ClientControls["Turbo"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
@@ -2616,7 +2616,7 @@ namespace BizHawk.Client.EmuHawk
 
 				runloop_fps++;
 				//client input-related duties
-				GlobalWinF.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGUIText();
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
@@ -2637,7 +2637,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						fps_string += " >>";
 					}
-					GlobalWinF.OSD.FPS = fps_string;
+					GlobalWin.OSD.FPS = fps_string;
 				}
 
 				if (!suppressCaptureRewind && RewindActive) CaptureRewindState();
@@ -2646,13 +2646,13 @@ namespace BizHawk.Client.EmuHawk
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWinF.ClientControls["ClearFrame"]);
+				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWin.ClientControls["ClearFrame"]);
 
-				coreskipaudio = GlobalWinF.ClientControls["Turbo"] && CurrAviWriter == null;
+				coreskipaudio = GlobalWin.ClientControls["Turbo"] && CurrAviWriter == null;
 				//=======================================
 				Global.CheatList.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
-				GlobalWinF.DisplayManager.NeedsToPaint = true;
+				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
 				//=======================================
 
@@ -2673,7 +2673,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWinF.ClientControls["Rewind"] || PressRewind)
+			if (GlobalWin.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
 				if (ReturnToRecording)
@@ -2693,10 +2693,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (genSound && !coreskipaudio)
 			{
-				GlobalWinF.Sound.UpdateSound();
+				GlobalWin.Sound.UpdateSound();
 			}
 			else
-				GlobalWinF.Sound.UpdateSilence();
+				GlobalWin.Sound.UpdateSilence();
 		}
 
 		#endregion
@@ -2749,7 +2749,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWinF.MainForm, out avwriter_resizew, out avwriter_resizeh);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out avwriter_resizew, out avwriter_resizeh);
 			}
 
 			foreach (var w in video_writers)
@@ -2761,9 +2761,9 @@ namespace BizHawk.Client.EmuHawk
 			if (aw == null)
 			{
 				if (unattended)
-					GlobalWinF.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
+					GlobalWin.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
 				else
-					GlobalWinF.OSD.AddMessage("A/V capture canceled.");
+					GlobalWin.OSD.AddMessage("A/V capture canceled.");
 				return;
 			}
 
@@ -2784,10 +2784,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var token = aw.AcquireVideoCodecToken(GlobalWinF.MainForm);
+					var token = aw.AcquireVideoCodecToken(GlobalWin.MainForm);
 					if (token == null)
 					{
-						GlobalWinF.OSD.AddMessage("A/V capture canceled.");
+						GlobalWin.OSD.AddMessage("A/V capture canceled.");
 						aw.Dispose();
 						return;
 					}
@@ -2814,9 +2814,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-					GlobalWinF.Sound.StopSound();
+					GlobalWin.Sound.StopSound();
 					var result = sfd.ShowDialog();
-					GlobalWinF.Sound.StartSound();
+					GlobalWin.Sound.StartSound();
 
 					if (result == DialogResult.Cancel)
 					{
@@ -2828,7 +2828,7 @@ namespace BizHawk.Client.EmuHawk
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
-				GlobalWinF.OSD.AddMessage("A/V capture started");
+				GlobalWin.OSD.AddMessage("A/V capture started");
 				AVIStatusLabel.Image = Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
@@ -2836,7 +2836,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				GlobalWinF.OSD.AddMessage("A/V capture failed!");
+				GlobalWin.OSD.AddMessage("A/V capture failed!");
 				aw.Dispose();
 				throw;
 			}
@@ -2861,7 +2861,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			GlobalWinF.OSD.AddMessage("A/V capture aborted");
+			GlobalWin.OSD.AddMessage("A/V capture aborted");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -2882,7 +2882,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrAviWriter.CloseFile();
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			GlobalWinF.OSD.AddMessage("A/V capture stopped");
+			GlobalWin.OSD.AddMessage("A/V capture stopped");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -2980,7 +2980,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 					{
 						Global.ClickyVirtualPadController.Click(button);
-						GlobalWinF.OSD.AddMessage(msg);
+						GlobalWin.OSD.AddMessage(msg);
 					}
 				}
 			});
@@ -3008,16 +3008,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewireInputChain() //Move to Client.Common
 		{
-			GlobalWinF.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
+			GlobalWin.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
 
-			GlobalWinF.OrControllerAdapter.Source = Global.ActiveController;
-			GlobalWinF.OrControllerAdapter.SourceOr = Global.AutoFireController;
-			GlobalWinF.UD_LR_ControllerAdapter.Source = GlobalWinF.OrControllerAdapter;
+			GlobalWin.OrControllerAdapter.Source = Global.ActiveController;
+			GlobalWin.OrControllerAdapter.SourceOr = Global.AutoFireController;
+			GlobalWin.UD_LR_ControllerAdapter.Source = GlobalWin.OrControllerAdapter;
 
-			Global.StickyXORAdapter.Source = GlobalWinF.UD_LR_ControllerAdapter;
-			GlobalWinF.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
+			Global.StickyXORAdapter.Source = GlobalWin.UD_LR_ControllerAdapter;
+			GlobalWin.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 
-			Global.MultitrackRewiringControllerAdapter.Source = GlobalWinF.AutofireStickyXORAdapter;
+			Global.MultitrackRewiringControllerAdapter.Source = GlobalWin.AutofireStickyXORAdapter;
 			Global.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
 
 			Global.MovieInputSourceAdapter.Source = Global.ForceOffAdaptor;
@@ -3286,7 +3286,7 @@ namespace BizHawk.Client.EmuHawk
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								if (Global.Config.TI83autoloadKeyPad)
 								{
-									GlobalWinF.Tools.Load<TI83KeyPad>();
+									GlobalWin.Tools.Load<TI83KeyPad>();
 								}
 								break;
 							case "NES":
@@ -3565,7 +3565,7 @@ namespace BizHawk.Client.EmuHawk
 				//im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != file.CanonicalFullPath)
 				{
-					GlobalWinF.Tools.Restart<LuaConsole>();
+					GlobalWin.Tools.Restart<LuaConsole>();
 				}
 
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
@@ -3578,7 +3578,7 @@ namespace BizHawk.Client.EmuHawk
 					LoadState("Auto");
 				}
 
-				GlobalWinF.Tools.Restart();
+				GlobalWin.Tools.Restart();
 				Cheats_Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
@@ -3586,7 +3586,7 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.CheatList.AttemptToLoadCheatFile())
 					{
 						ToolHelpers.UpdateCheatRelatedTools();
-						GlobalWinF.OSD.AddMessage("Cheats file loaded");
+						GlobalWin.OSD.AddMessage("Cheats file loaded");
 					}
 				}
 
@@ -3600,7 +3600,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.StickyXORAdapter.ClearStickies();
 				Global.StickyXORAdapter.ClearStickyFloats();
-				GlobalWinF.AutofireStickyXORAdapter.ClearStickies();
+				GlobalWin.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
 
@@ -3633,9 +3633,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SaveStateFile(path, name, false);
 
-			if (GlobalWinF.Tools.Has<LuaConsole>())
+			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
-				GlobalWinF.Tools.LuaConsole.LuaImp.CallSaveStateEvent(name);
+				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(name);
 			}
 		}
 
@@ -3643,7 +3643,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SavestateManager.SaveStateFile(filename, name);
 
-			GlobalWinF.OSD.AddMessage("Saved state: " + name);
+			GlobalWin.OSD.AddMessage("Saved state: " + name);
 
 			if (!fromLua)
 			{
@@ -3653,25 +3653,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadStateFile(string path, string name, bool fromLua = false) //Move to client.commo
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 
 			if (SavestateManager.LoadStateFile(path, name))
 			{
 				SetMainformMovieInfo();
-				GlobalWinF.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGUIText();
 				UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
-				GlobalWinF.OSD.AddMessage("Loaded state: " + name);
+				GlobalWin.OSD.AddMessage("Loaded state: " + name);
 
-				if (GlobalWinF.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
-					GlobalWinF.Tools.LuaConsole.LuaImp.CallLoadStateEvent(name);
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(name);
 				}
 			}
 			else
 			{
-				GlobalWinF.OSD.AddMessage("Loadstate error!");
+				GlobalWin.OSD.AddMessage("Loadstate error!");
 			}
 		}
 
@@ -3685,7 +3685,7 @@ namespace BizHawk.Client.EmuHawk
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
 			{
-				GlobalWinF.OSD.AddMessage("Unable to load " + name + ".State");
+				GlobalWin.OSD.AddMessage("Unable to load " + name + ".State");
 				return;
 			}
 
@@ -3707,7 +3707,7 @@ namespace BizHawk.Client.EmuHawk
 				if (File.Exists(path))
 				{
 					File.Delete(path);
-					GlobalWinF.OSD.AddMessage("SRAM cleared.");
+					GlobalWin.OSD.AddMessage("SRAM cleared.");
 				}
 			}
 			else if (Global.Emulator.SaveRamModified)
@@ -3734,7 +3734,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
 
-			GlobalWinF.Tools.Restart();
+			GlobalWin.Tools.Restart();
 
 			RewireSound();
 			ResetRewindBuffer();
@@ -3771,13 +3771,13 @@ namespace BizHawk.Client.EmuHawk
 			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
 			string errorMsg;
 			string warningMsg;
-			Movie m = MovieImport.ImportFile(fn, GlobalWinF.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
+			Movie m = MovieImport.ImportFile(fn, GlobalWin.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
 			if (errorMsg.Length > 0)
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			if (warningMsg.Length > 0)
-				GlobalWinF.OSD.AddMessage(warningMsg);
+				GlobalWin.OSD.AddMessage(warningMsg);
 			else
-				GlobalWinF.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+				GlobalWin.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
 										Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
@@ -3789,7 +3789,7 @@ namespace BizHawk.Client.EmuHawk
 		public void FlagNeedsReboot() //Make private, config dialogs use it and it can be called after they close
 		{
 			RebootStatusBarIcon.Visible = true;
-			GlobalWinF.OSD.AddMessage("Core reboot needed for this setting");
+			GlobalWin.OSD.AddMessage("Core reboot needed for this setting");
 		}
 
 		#endregion

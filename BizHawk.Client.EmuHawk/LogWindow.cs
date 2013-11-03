@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) =>
 			{
 				Global.Config.ShowLogWindow = false;
-				GlobalWinF.MainForm.NotifyLogWindowClosing();
+				GlobalWin.MainForm.NotifyLogWindowClosing();
 				LogConsole.notifyLogWindowClosing();
 				SaveConfigSettings();
 			};

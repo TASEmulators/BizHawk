@@ -347,13 +347,13 @@ namespace BizHawk.Client.EmuHawk
 			d3d = direct3D;
 			backingControl = control;
 			control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
-			control.MouseClick += (o, e) => GlobalWinF.MainForm.MainForm_MouseClick(o, e);
+			control.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 		}
 
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
-				GlobalWinF.MainForm.ToggleFullscreen();
+				GlobalWin.MainForm.ToggleFullscreen();
 		}
 
 		private void DestroyDevice()
@@ -462,13 +462,13 @@ namespace BizHawk.Client.EmuHawk
 				// Wait until device is available or user gets annoyed and closes app
 				Result r;
 				// it can take a while for the device to be ready again, so avoid sound looping during the wait
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StopSound();
+				if (GlobalWin.Sound != null) GlobalWin.Sound.StopSound();
 				do
 				{
 					r = _device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
-				if (GlobalWinF.Sound != null) GlobalWinF.Sound.StartSound();
+				if (GlobalWin.Sound != null) GlobalWin.Sound.StartSound();
 
 				// lets try recovery!
 				DestroyDevice();

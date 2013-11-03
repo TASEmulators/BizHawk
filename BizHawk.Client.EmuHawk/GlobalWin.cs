@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public static class GlobalWinF
+	public static class GlobalWin
 	{
 		public static MainForm MainForm;
 		public static ToolManager Tools;
