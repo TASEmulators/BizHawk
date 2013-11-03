@@ -685,8 +685,6 @@ namespace BizHawk.MultiClient
 		private void tI83ToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
-
-			if (!MainForm.INTERIM) loadTIFileToolStripMenuItem.Visible = false;
 		}
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
