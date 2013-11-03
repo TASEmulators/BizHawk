@@ -21,5 +21,10 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			 System.Diagnostics.Process.Start(e.LinkText);
 		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
 	}
 }

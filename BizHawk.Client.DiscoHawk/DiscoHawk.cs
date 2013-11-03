@@ -19,8 +19,8 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		static Program()
 		{
-			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
+			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
 			SetDllDirectory(dllDir);
@@ -46,11 +46,11 @@ namespace BizHawk.Client.DiscoHawk
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
 		static void SubMain(string[] args)
 		{
-			#if WINDOWS
-				ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
-				ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
-				ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
-			#endif
+#if WINDOWS
+			ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+			ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+			ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+#endif
 
 			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
 			if (!File.Exists(ffmpegPath))
@@ -61,7 +61,7 @@ namespace BizHawk.Client.DiscoHawk
 		}
 
 
-	public static string GetExeDirectoryAbsolute()
+		public static string GetExeDirectoryAbsolute()
 		{
 			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
 			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
@@ -140,22 +140,22 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			Add = 1, Remove = 2
 		};
-    public enum MessageFilterInfo : uint
-    {
-        None=0, AlreadyAllowed=1, AlreadyDisAllowed=2, AllowedHigher=3
-    };
+		public enum MessageFilterInfo : uint
+		{
+			None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
+		};
 
-    public enum ChangeWindowMessageFilterExAction : uint
-    {
-        Reset = 0, Allow = 1, DisAllow = 2
-    };
+		public enum ChangeWindowMessageFilterExAction : uint
+		{
+			Reset = 0, Allow = 1, DisAllow = 2
+		};
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CHANGEFILTERSTRUCT
-    {
-        public uint size;
-        public MessageFilterInfo info;
-    }
+		[StructLayout(LayoutKind.Sequential)]
+		public struct CHANGEFILTERSTRUCT
+		{
+			public uint size;
+			public MessageFilterInfo info;
+		}
 	}
 
 	class DiscoHawk
