@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			CoreComm.RomStatusDetails = "Yeh";
 			this.CoreComm = CoreComm;
 			this.CD = CD;
-			ResetFrameCounter();
+			ResetCounters();
 			Init(bios, GL);
 		}
 
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		#endregion
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;

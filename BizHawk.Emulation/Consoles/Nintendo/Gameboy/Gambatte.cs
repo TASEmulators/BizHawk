@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#endregion
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;

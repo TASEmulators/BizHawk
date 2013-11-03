@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool islag = false;
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			_frame = 0;
 			_lagcount = 0;

@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 			// this should just be a public setter instead of a new method.
 			Frame = 0;

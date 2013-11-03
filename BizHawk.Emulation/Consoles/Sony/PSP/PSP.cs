@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			}
 		}
 
-		public void ResetFrameCounter()
+		public void ResetCounters()
 		{
 		}
 
