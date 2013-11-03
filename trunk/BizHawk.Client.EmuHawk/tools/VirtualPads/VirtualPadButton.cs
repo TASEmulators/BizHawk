@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void SetAutofireSticky()
 		{
-			GlobalWin.AutofireStickyXORAdapter.SetSticky(ControllerButton, Checked);
+			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, Checked);
 
 			if (Checked == false)
 			{
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			_rightClicked = false;
 			ForeColor = Color.Black;
 			Checked = false;
-			GlobalWin.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
+			Global.AutofireStickyXORAdapter.SetSticky(ControllerButton, false);
 			Global.StickyXORAdapter.SetSticky(ControllerButton, false);
 		}
 	}

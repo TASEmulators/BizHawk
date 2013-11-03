@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			GlobalWin.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 #if WINDOWS
 			GlobalWin.Sound = new Sound(Handle, GlobalWin.DSound);
 #else
@@ -334,20 +334,20 @@ namespace BizHawk.Client.EmuHawk
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
-				GlobalWin.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
 
-				if (GlobalWin.ClientControls["Autohold"])
+				if (Global.ClientControls["Autohold"])
 				{
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					GlobalWin.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
-				else if (GlobalWin.ClientControls["Autofire"])
+				else if (Global.ClientControls["Autofire"])
 				{
-					GlobalWin.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
@@ -444,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				//look for hotkey bindings for this key
-				var triggers = GlobalWin.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
 					//bool sys_hotkey = false;
@@ -1064,7 +1064,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearAutohold()
 		{
 			Global.StickyXORAdapter.ClearStickies();
-			GlobalWin.AutofireStickyXORAdapter.ClearStickies();
+			Global.AutofireStickyXORAdapter.ClearStickies();
 
 			if (GlobalWin.Tools.Has<VirtualPadForm>())
 			{
@@ -1599,7 +1599,7 @@ namespace BizHawk.Client.EmuHawk
 				controls.BindMulti(b.DisplayName, b.Bindings);
 			}
 
-			GlobalWin.ClientControls = controls;
+			Global.ClientControls = controls;
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
@@ -1763,8 +1763,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncThrottle()
 		{
-			bool fastforward = GlobalWin.ClientControls["Fast Forward"] || FastForward;
-			bool superfastforward = GlobalWin.ClientControls["Turbo"];
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
+			bool superfastforward = Global.ClientControls["Turbo"];
 			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -2533,7 +2533,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			if (GlobalWin.ClientControls["Frame Advance"] || PressFrameAdvance)
+			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)
@@ -2571,7 +2571,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (RewindActive && (GlobalWin.ClientControls["Rewind"] || PressRewind))
+			if (RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
@@ -2602,8 +2602,8 @@ namespace BizHawk.Client.EmuHawk
 			bool coreskipaudio = false;
 			if (runFrame)
 			{
-				bool ff = GlobalWin.ClientControls["Fast Forward"] || GlobalWin.ClientControls["Turbo"];
-				bool fff = GlobalWin.ClientControls["Turbo"];
+				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["Turbo"];
+				bool fff = Global.ClientControls["Turbo"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
@@ -2646,9 +2646,9 @@ namespace BizHawk.Client.EmuHawk
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				Global.MovieSession.HandleMovieOnFrameLoop(GlobalWin.ClientControls["ClearFrame"]);
+				Global.MovieSession.HandleMovieOnFrameLoop(Global.ClientControls["ClearFrame"]);
 
-				coreskipaudio = GlobalWin.ClientControls["Turbo"] && CurrAviWriter == null;
+				coreskipaudio = Global.ClientControls["Turbo"] && CurrAviWriter == null;
 				//=======================================
 				Global.CheatList.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
@@ -2673,7 +2673,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (GlobalWin.ClientControls["Rewind"] || PressRewind)
+			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
 				if (ReturnToRecording)
@@ -3010,14 +3010,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
 
-			GlobalWin.OrControllerAdapter.Source = Global.ActiveController;
-			GlobalWin.OrControllerAdapter.SourceOr = Global.AutoFireController;
-			GlobalWin.UD_LR_ControllerAdapter.Source = GlobalWin.OrControllerAdapter;
+			Global.OrControllerAdapter.Source = Global.ActiveController;
+			Global.OrControllerAdapter.SourceOr = Global.AutoFireController;
+			Global.UD_LR_ControllerAdapter.Source = Global.OrControllerAdapter;
 
-			Global.StickyXORAdapter.Source = GlobalWin.UD_LR_ControllerAdapter;
-			GlobalWin.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
+			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
+			Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 
-			Global.MultitrackRewiringControllerAdapter.Source = GlobalWin.AutofireStickyXORAdapter;
+			Global.MultitrackRewiringControllerAdapter.Source = Global.AutofireStickyXORAdapter;
 			Global.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
 
 			Global.MovieInputSourceAdapter.Source = Global.ForceOffAdaptor;
@@ -3600,7 +3600,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.StickyXORAdapter.ClearStickies();
 				Global.StickyXORAdapter.ClearStickyFloats();
-				GlobalWin.AutofireStickyXORAdapter.ClearStickies();
+				Global.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
 

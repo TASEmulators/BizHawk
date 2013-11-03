@@ -57,6 +57,15 @@ namespace BizHawk.Client.Common
 
 		public static DiscHopper DiscHopper = new DiscHopper();
 
+		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+
+		public static AutoFireStickyXORAdapter AutofireStickyXORAdapter = new AutoFireStickyXORAdapter();
+
+		/// <summary>
+		/// will OR together two IControllers
+		/// </summary>
+		public static ORAdapter OrControllerAdapter = new ORAdapter();
+
 		/// <summary>
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
@@ -71,5 +80,9 @@ namespace BizHawk.Client.Common
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
 		/// </summary>
 		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
+
+		public static SimpleController MovieOutputController = new SimpleController();
+
+		public static Controller ClientControls;
 	}
 }

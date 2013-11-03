@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
-
-using BizHawk.Client.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
-	class Throttle
+	public class Throttle
 	{
 		int lastskiprate;
 		int framestoskip;
@@ -25,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWin.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return 20;
 				}
@@ -39,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWin.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}
@@ -54,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWin.ClientControls["MaxTurbo"])
+				if (Global.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}
