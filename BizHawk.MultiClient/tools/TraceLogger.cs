@@ -7,7 +7,7 @@ using System.IO;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TraceLogger : Form, IToolForm
 	{

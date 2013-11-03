@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Media;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class AboutBox : Form
 	{

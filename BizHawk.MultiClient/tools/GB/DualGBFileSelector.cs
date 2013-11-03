@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.GBtools
+namespace BizHawk.Client.EmuHawk.GBtools
 {
 	public partial class DualGBFileSelector : UserControl
 	{

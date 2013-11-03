@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace BizHawk.MultiClient.AVOut
+namespace BizHawk.Client.EmuHawk
 {
 	// http://msdn.microsoft.com/en-us/library/ms229644%28v=vs.80%29.aspx
 	public class NumericTextBox : TextBox

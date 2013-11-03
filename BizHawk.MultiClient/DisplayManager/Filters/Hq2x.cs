@@ -10,7 +10,7 @@ using System.Drawing.Imaging;
 //what license is this?? who knows??
 //ref: http://vba-rerecording.googlecode.com/svn/trunk/src/2xsai.cpp
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 
 	class Hq2xBase_2xSai : Hq2xBase {}

@@ -14,7 +14,7 @@ using BizHawk.Client.Common;
 //also, collect log data independently of whether the log window is open
 //we also need to dice it into lines so that we can have a backlog policy
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	static class LogConsole
 	{

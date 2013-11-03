@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class TI83KeyPad
     {
@@ -1670,7 +1670,7 @@
 			this.LEFT.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.LEFT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.LEFT.ForeColor = System.Drawing.Color.White;
-			this.LEFT.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriLeft;
+			this.LEFT.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriLeft;
 			this.LEFT.Location = new System.Drawing.Point(224, 130);
 			this.LEFT.Name = "LEFT";
 			this.LEFT.Size = new System.Drawing.Size(27, 53);
@@ -1683,7 +1683,7 @@
 			this.RIGHT.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.RIGHT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.RIGHT.ForeColor = System.Drawing.Color.White;
-			this.RIGHT.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriRight;
+			this.RIGHT.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriRight;
 			this.RIGHT.Location = new System.Drawing.Point(307, 130);
 			this.RIGHT.Name = "RIGHT";
 			this.RIGHT.Size = new System.Drawing.Size(27, 53);
@@ -1697,7 +1697,7 @@
 			this.DOWN.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.DOWN.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.DOWN.ForeColor = System.Drawing.Color.White;
-			this.DOWN.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriDown;
+			this.DOWN.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriDown;
 			this.DOWN.Location = new System.Drawing.Point(250, 182);
 			this.DOWN.Name = "DOWN";
 			this.DOWN.Size = new System.Drawing.Size(58, 21);
@@ -1711,7 +1711,7 @@
 			this.UP.BackColor = System.Drawing.Color.CornflowerBlue;
 			this.UP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.UP.ForeColor = System.Drawing.Color.White;
-			this.UP.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriUp;
+			this.UP.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.whiteTriUp;
 			this.UP.Location = new System.Drawing.Point(250, 109);
 			this.UP.Name = "UP";
 			this.UP.Size = new System.Drawing.Size(58, 21);

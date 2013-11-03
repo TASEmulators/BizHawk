@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public class SmartTextBoxControl : TextBox
 	{

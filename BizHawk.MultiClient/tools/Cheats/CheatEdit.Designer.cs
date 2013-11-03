@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class CheatEdit
 	{
@@ -32,7 +32,7 @@
 			this.NameLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.AddressHexIndLabel = new System.Windows.Forms.Label();
-			this.AddressBox = new BizHawk.HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.ValueHexIndLabel = new System.Windows.Forms.Label();
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.CompareHexIndLabel = new System.Windows.Forms.Label();
@@ -46,8 +46,8 @@
 			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
 			this.AddButton = new System.Windows.Forms.Button();
 			this.EditButton = new System.Windows.Forms.Button();
-			this.CompareBox = new BizHawk.MultiClient.WatchValueBox();
-			this.ValueBox = new BizHawk.MultiClient.WatchValueBox();
+			this.CompareBox = new WatchValueBox();
+			this.ValueBox = new WatchValueBox();
 			this.SuspendLayout();
 			// 
 			// NameBox

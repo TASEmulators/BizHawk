@@ -8,7 +8,7 @@ using SlimDX.Multimedia;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 #if WINDOWS
 	public static class SoundEnumeration

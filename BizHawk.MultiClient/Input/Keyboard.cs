@@ -1,7 +1,7 @@
 ﻿using SlimDX;
 using SlimDX.DirectInput;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public static class KeyInput
 	{

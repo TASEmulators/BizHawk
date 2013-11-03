@@ -1,8 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.Core;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class SNESGraphicsViewer : RetainedViewportPanel
 	{

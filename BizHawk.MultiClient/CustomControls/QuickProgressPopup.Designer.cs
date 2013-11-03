@@ -1,4 +1,4 @@
-﻿namespace BizHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class QuickProgressPopup
 	{

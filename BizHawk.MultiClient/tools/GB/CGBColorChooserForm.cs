@@ -5,7 +5,7 @@ using BizHawk.Emulation.Consoles.GB;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.GBtools
+namespace BizHawk.Client.EmuHawk.GBtools
 {
 	public partial class CGBColorChooserForm : Form
 	{

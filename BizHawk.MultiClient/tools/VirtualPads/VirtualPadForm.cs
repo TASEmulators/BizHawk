@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo.N64;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadForm : Form, IToolForm
 	{

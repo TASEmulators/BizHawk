@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class PCEBGViewer : Form, IToolForm
 	{

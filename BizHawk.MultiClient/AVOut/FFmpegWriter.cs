@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// uses pipes to launch an external ffmpeg process and encode

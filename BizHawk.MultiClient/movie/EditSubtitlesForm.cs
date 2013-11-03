@@ -5,7 +5,7 @@ using System.Globalization;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditSubtitlesForm : Form
 	{

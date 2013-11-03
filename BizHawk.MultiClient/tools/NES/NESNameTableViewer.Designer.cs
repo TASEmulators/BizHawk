@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class NESNameTableViewer
 	{
@@ -68,7 +68,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
+			this.NameTableView = new NameTableViewer();
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();

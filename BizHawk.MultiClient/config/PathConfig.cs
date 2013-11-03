@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
@@ -149,8 +149,8 @@ namespace BizHawk.MultiClient
 
 					Button btn = new Button()
 					{
-						Text = "",
-						Image = BizHawk.MultiClient.Properties.Resources.OpenFile,
+						Text = String.Empty,
+						Image = BizHawk.Client.EmuHawk.Properties.Resources.OpenFile,
 						Location = new Point(widget_offset, _y - 1),
 						Width = button_width,
 						Name = path.Type,

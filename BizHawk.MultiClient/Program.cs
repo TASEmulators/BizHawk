@@ -15,7 +15,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	static class Program
 	{

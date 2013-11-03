@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SlimDX;
 using SlimDX.DirectInput;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class GamePad
 	{

@@ -32,9 +32,9 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
-using BizHawk.Core;
+using BizHawk.Client.EmuHawk; //TODO: What??
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public unsafe partial class SNESGraphicsDebugger : Form, IToolForm
 	{
@@ -1446,7 +1446,7 @@ namespace BizHawk.MultiClient
 		}
 
 	} //class SNESGraphicsDebugger 
-} //namespace BizHawk.MultiClient
+} //namespace BizHawk.Client.EmuHawk
 
 
 static class ControlExtensions

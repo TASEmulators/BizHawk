@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83KeyPad : Form, IToolForm
 	{

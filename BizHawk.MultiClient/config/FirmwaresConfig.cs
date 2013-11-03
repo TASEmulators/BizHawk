@@ -23,7 +23,7 @@ using BizHawk.Client.Common;
 
 //TODO - display some kind if [!] if you have a user-specified file which is known but defined as incompatible by the firmware DB
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form
 	{
@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 
 			//prep imagelist for listview with 3 item states for {idUnsure, idMissing, idOk}
-			imageList1.Images.AddRange(new[] { MultiClient.Properties.Resources.RetroQuestion, MultiClient.Properties.Resources.ExclamationRed, MultiClient.Properties.Resources.GreenCheck });
+			imageList1.Images.AddRange(new[] { EmuHawk.Properties.Resources.RetroQuestion, EmuHawk.Properties.Resources.ExclamationRed, EmuHawk.Properties.Resources.GreenCheck });
 
 			listviewSorter = new ListViewSorter(this, -1);
 

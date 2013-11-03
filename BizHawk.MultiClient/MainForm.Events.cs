@@ -9,7 +9,7 @@ using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{

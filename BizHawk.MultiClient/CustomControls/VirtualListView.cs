@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Drawing;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 
 	#region win32interop

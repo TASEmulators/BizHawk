@@ -6,7 +6,7 @@ using System.Globalization;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Consoles.Nintendo;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESPPU : Form, IToolForm
 	{

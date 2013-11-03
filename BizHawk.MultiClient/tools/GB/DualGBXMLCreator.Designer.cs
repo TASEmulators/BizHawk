@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBtools
+﻿namespace BizHawk.Client.EmuHawk.GBtools
 {
 	partial class DualGBXMLCreator
 	{
@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.dualGBFileSelector1 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
+			this.dualGBFileSelector1 = new DualGBFileSelector();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.dualGBFileSelector2 = new BizHawk.MultiClient.GBtools.DualGBFileSelector();
+			this.dualGBFileSelector2 = new DualGBFileSelector();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonOK = new System.Windows.Forms.Button();

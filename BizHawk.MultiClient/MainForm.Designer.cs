@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
@@ -405,7 +405,7 @@
 			// 
 			// OpenRomMenuItem
 			// 
-			this.OpenRomMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.OpenRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenRomMenuItem.Name = "OpenRomMenuItem";
 			this.OpenRomMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.OpenRomMenuItem.Text = "Open ROM";
@@ -415,7 +415,7 @@
 			// 
 			this.RecentRomSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentRomSubMenu.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.RecentRomSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentRomSubMenu.Name = "RecentRomSubMenu";
 			this.RecentRomSubMenu.Size = new System.Drawing.Size(140, 22);
 			this.RecentRomSubMenu.Text = "Recent ROM";
@@ -428,7 +428,7 @@
 			// 
 			// CloseRomMenuItem
 			// 
-			this.CloseRomMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
+			this.CloseRomMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.CloseRomMenuItem.Name = "CloseRomMenuItem";
 			this.CloseRomMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.CloseRomMenuItem.Text = "&Close ROM";
@@ -752,7 +752,7 @@
 			// 
 			// PreviousSlotMenuItem
 			// 
-			this.PreviousSlotMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveLeft;
+			this.PreviousSlotMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveLeft;
 			this.PreviousSlotMenuItem.Name = "PreviousSlotMenuItem";
 			this.PreviousSlotMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.PreviousSlotMenuItem.Text = "Previous Slot";
@@ -760,7 +760,7 @@
 			// 
 			// NextSlotMenuItem
 			// 
-			this.NextSlotMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveRight;
+			this.NextSlotMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveRight;
 			this.NextSlotMenuItem.Name = "NextSlotMenuItem";
 			this.NextSlotMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.NextSlotMenuItem.Text = "Next Slot";
@@ -814,7 +814,7 @@
 			// 
 			// ReadonlyMenuItem
 			// 
-			this.ReadonlyMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
+			this.ReadonlyMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ReadOnly;
 			this.ReadonlyMenuItem.Name = "ReadonlyMenuItem";
 			this.ReadonlyMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.ReadonlyMenuItem.Text = "Read-only";
@@ -829,7 +829,7 @@
 			// 
 			this.RecentMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator16});
-			this.RecentMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.RecentMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentMenuItem.Name = "RecentMenuItem";
 			this.RecentMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.RecentMenuItem.Text = "Recent";
@@ -842,7 +842,7 @@
 			// 
 			// RecordMovieMenuItem
 			// 
-			this.RecordMovieMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
+			this.RecordMovieMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RecordHS;
 			this.RecordMovieMenuItem.Name = "RecordMovieMenuItem";
 			this.RecordMovieMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.RecordMovieMenuItem.Text = "&Record Movie...";
@@ -850,7 +850,7 @@
 			// 
 			// PlayMovieMenuItem
 			// 
-			this.PlayMovieMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
+			this.PlayMovieMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
 			this.PlayMovieMenuItem.Name = "PlayMovieMenuItem";
 			this.PlayMovieMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.PlayMovieMenuItem.Text = "&Play Movie...";
@@ -858,7 +858,7 @@
 			// 
 			// StopMovieMenuItem
 			// 
-			this.StopMovieMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopMovieMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopMovieMenuItem.Name = "StopMovieMenuItem";
 			this.StopMovieMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.StopMovieMenuItem.Text = "Stop Movie";
@@ -866,7 +866,7 @@
 			// 
 			// PlayFromBeginningMenuItem
 			// 
-			this.PlayFromBeginningMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.PlayFromBeginningMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.PlayFromBeginningMenuItem.Name = "PlayFromBeginningMenuItem";
 			this.PlayFromBeginningMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.PlayFromBeginningMenuItem.Text = "Play from Beginning";
@@ -874,7 +874,7 @@
 			// 
 			// ImportMoviesMenuItem
 			// 
-			this.ImportMoviesMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Import;
+			this.ImportMoviesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Import;
 			this.ImportMoviesMenuItem.Name = "ImportMoviesMenuItem";
 			this.ImportMoviesMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.ImportMoviesMenuItem.Text = "Import Movies...";
@@ -882,7 +882,7 @@
 			// 
 			// SaveMovieMenuItem
 			// 
-			this.SaveMovieMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.SaveMovieMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMovieMenuItem.Name = "SaveMovieMenuItem";
 			this.SaveMovieMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.SaveMovieMenuItem.Text = "&Save Movie";
@@ -890,7 +890,7 @@
 			// 
 			// StopMovieWithoutSavingMenuItem
 			// 
-			this.StopMovieWithoutSavingMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopMovieWithoutSavingMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopMovieWithoutSavingMenuItem.Name = "StopMovieWithoutSavingMenuItem";
 			this.StopMovieWithoutSavingMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.StopMovieWithoutSavingMenuItem.Text = "Stop Movie without Saving";
@@ -936,7 +936,7 @@
 			// 
 			// RecordAVMenuItem
 			// 
-			this.RecordAVMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AVI;
+			this.RecordAVMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AVI;
 			this.RecordAVMenuItem.Name = "RecordAVMenuItem";
 			this.RecordAVMenuItem.Size = new System.Drawing.Size(163, 22);
 			this.RecordAVMenuItem.Text = "Record AVI/WAV";
@@ -944,7 +944,7 @@
 			// 
 			// StopAVIMenuItem
 			// 
-			this.StopAVIMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopAVIMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAVIMenuItem.Name = "StopAVIMenuItem";
 			this.StopAVIMenuItem.Size = new System.Drawing.Size(163, 22);
 			this.StopAVIMenuItem.Text = "Stop AVI/WAV";
@@ -977,7 +977,7 @@
 			// 
 			// ScreenshotMenuItem
 			// 
-			this.ScreenshotMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
+			this.ScreenshotMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.camera;
 			this.ScreenshotMenuItem.Name = "ScreenshotMenuItem";
 			this.ScreenshotMenuItem.Size = new System.Drawing.Size(245, 22);
 			this.ScreenshotMenuItem.Text = "Screenshot";
@@ -1038,7 +1038,7 @@
 			// 
 			// PauseMenuItem
 			// 
-			this.PauseMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.PauseMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.PauseMenuItem.Name = "PauseMenuItem";
 			this.PauseMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.PauseMenuItem.Text = "&Pause";
@@ -1046,7 +1046,7 @@
 			// 
 			// RebootCoreMenuItem
 			// 
-			this.RebootCoreMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.reboot;
+			this.RebootCoreMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.RebootCoreMenuItem.Name = "RebootCoreMenuItem";
 			this.RebootCoreMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.RebootCoreMenuItem.Text = "&Reboot Core";
@@ -1190,7 +1190,7 @@
 			// 
 			// SwitchToFullscreenMenuItem
 			// 
-			this.SwitchToFullscreenMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Fullscreen;
+			this.SwitchToFullscreenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Fullscreen;
 			this.SwitchToFullscreenMenuItem.Name = "SwitchToFullscreenMenuItem";
 			this.SwitchToFullscreenMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.SwitchToFullscreenMenuItem.Text = "Switch to Fullscreen";
@@ -1289,7 +1289,7 @@
 			// 
 			// ControllersMenuItem
 			// 
-			this.ControllersMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
+			this.ControllersMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.ControllersMenuItem.Name = "ControllersMenuItem";
 			this.ControllersMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ControllersMenuItem.Text = "&Controllers...";
@@ -1297,7 +1297,7 @@
 			// 
 			// HotkeysMenuItem
 			// 
-			this.HotkeysMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
+			this.HotkeysMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HotKeys;
 			this.HotkeysMenuItem.Name = "HotkeysMenuItem";
 			this.HotkeysMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.HotkeysMenuItem.Text = "&Hotkeys...";
@@ -1305,7 +1305,7 @@
 			// 
 			// MessagesMenuItem
 			// 
-			this.MessagesMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
+			this.MessagesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MessageConfig;
 			this.MessagesMenuItem.Name = "MessagesMenuItem";
 			this.MessagesMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.MessagesMenuItem.Text = "&Messages...";
@@ -1313,7 +1313,7 @@
 			// 
 			// PathsMenuItem
 			// 
-			this.PathsMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
+			this.PathsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CopyFolderHS;
 			this.PathsMenuItem.Name = "PathsMenuItem";
 			this.PathsMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.PathsMenuItem.Text = "Paths...";
@@ -1321,7 +1321,7 @@
 			// 
 			// SoundMenuItem
 			// 
-			this.SoundMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
+			this.SoundMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AudioHS;
 			this.SoundMenuItem.Name = "SoundMenuItem";
 			this.SoundMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.SoundMenuItem.Text = "&Sound...";
@@ -1329,7 +1329,7 @@
 			// 
 			// AutofireMenuItem
 			// 
-			this.AutofireMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
+			this.AutofireMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning;
 			this.AutofireMenuItem.Name = "AutofireMenuItem";
 			this.AutofireMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AutofireMenuItem.Text = "&Autofire...";
@@ -1337,7 +1337,7 @@
 			// 
 			// RewindOptionsMenuItem
 			// 
-			this.RewindOptionsMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
+			this.RewindOptionsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.RewindOptionsMenuItem.Name = "RewindOptionsMenuItem";
 			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.RewindOptionsMenuItem.Text = "&Rewind...";
@@ -1784,7 +1784,7 @@
 			// 
 			// SaveConfigMenuItem
 			// 
-			this.SaveConfigMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
+			this.SaveConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Save;
 			this.SaveConfigMenuItem.Name = "SaveConfigMenuItem";
 			this.SaveConfigMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.SaveConfigMenuItem.Text = "Save Config";
@@ -1792,7 +1792,7 @@
 			// 
 			// LoadConfigMenuItem
 			// 
-			this.LoadConfigMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
+			this.LoadConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
 			this.LoadConfigMenuItem.Name = "LoadConfigMenuItem";
 			this.LoadConfigMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LoadConfigMenuItem.Text = "Load Config";
@@ -1821,7 +1821,7 @@
 			// 
 			// ToolBoxMenuItem
 			// 
-			this.ToolBoxMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.ToolBox;
+			this.ToolBoxMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ToolBox;
 			this.ToolBoxMenuItem.Name = "ToolBoxMenuItem";
 			this.ToolBoxMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.ToolBoxMenuItem.Text = "&Tool Box";
@@ -1834,7 +1834,7 @@
 			// 
 			// RamWatchMenuItem
 			// 
-			this.RamWatchMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.watch;
+			this.RamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.watch;
 			this.RamWatchMenuItem.Name = "RamWatchMenuItem";
 			this.RamWatchMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.RamWatchMenuItem.Text = "RAM &Watch";
@@ -1842,7 +1842,7 @@
 			// 
 			// RamSearchMenuItem
 			// 
-			this.RamSearchMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.search;
+			this.RamSearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.RamSearchMenuItem.Name = "RamSearchMenuItem";
 			this.RamSearchMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.RamSearchMenuItem.Text = "RAM &Search";
@@ -1850,7 +1850,7 @@
 			// 
 			// HexEditorMenuItem
 			// 
-			this.HexEditorMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.HexEditorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.HexEditorMenuItem.Name = "HexEditorMenuItem";
 			this.HexEditorMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.HexEditorMenuItem.Text = "&Hex Editor";
@@ -1858,7 +1858,7 @@
 			// 
 			// TraceLoggerMenuItem
 			// 
-			this.TraceLoggerMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.pencil;
+			this.TraceLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.TraceLoggerMenuItem.Name = "TraceLoggerMenuItem";
 			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
@@ -1866,7 +1866,7 @@
 			// 
 			// TAStudioMenuItem
 			// 
-			this.TAStudioMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.TAStudioMenuItem.Name = "TAStudioMenuItem";
 			this.TAStudioMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.TAStudioMenuItem.Text = "&TAStudio";
@@ -1874,7 +1874,7 @@
 			// 
 			// VirtualPadMenuItem
 			// 
-			this.VirtualPadMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
+			this.VirtualPadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.VirtualPadMenuItem.Name = "VirtualPadMenuItem";
 			this.VirtualPadMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
@@ -1887,7 +1887,7 @@
 			// 
 			// CheatsMenuItem
 			// 
-			this.CheatsMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.CheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.CheatsMenuItem.Name = "CheatsMenuItem";
 			this.CheatsMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.CheatsMenuItem.Text = "Cheats";
@@ -1895,7 +1895,7 @@
 			// 
 			// LuaConsoleMenuItem
 			// 
-			this.LuaConsoleMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lua;
+			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
 			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
 			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.LuaConsoleMenuItem.Text = "Lua Console";
@@ -1930,7 +1930,7 @@
 			// 
 			// NESDebuggerMenuItem
 			// 
-			this.NESDebuggerMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
+			this.NESDebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.NESDebuggerMenuItem.Name = "NESDebuggerMenuItem";
 			this.NESDebuggerMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESDebuggerMenuItem.Text = "&Debugger";
@@ -2128,7 +2128,7 @@
 			// 
 			// KeypadMenuItem
 			// 
-			this.KeypadMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
+			this.KeypadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator;
 			this.KeypadMenuItem.Name = "KeypadMenuItem";
 			this.KeypadMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.KeypadMenuItem.Text = "Keypad";
@@ -2427,7 +2427,7 @@
 			// 
 			// SnesGfxDebuggerMenuItem
 			// 
-			this.SnesGfxDebuggerMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
+			this.SnesGfxDebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.SnesGfxDebuggerMenuItem.Name = "SnesGfxDebuggerMenuItem";
 			this.SnesGfxDebuggerMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SnesGfxDebuggerMenuItem.Text = "Graphics Debugger";
@@ -2513,7 +2513,7 @@
 			// 
 			// OnlineHelpMenuItem
 			// 
-			this.OnlineHelpMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
+			this.OnlineHelpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.OnlineHelpMenuItem.Name = "OnlineHelpMenuItem";
 			this.OnlineHelpMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.OnlineHelpMenuItem.Text = "&Online Help...";
@@ -2521,7 +2521,7 @@
 			// 
 			// ForumsMenuItem
 			// 
-			this.ForumsMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.ForumsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumsMenuItem.Name = "ForumsMenuItem";
 			this.ForumsMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.ForumsMenuItem.Text = "Forums...";
@@ -2529,7 +2529,7 @@
 			// 
 			// AboutMenuItem
 			// 
-			this.AboutMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CorpHawkSmall;
+			this.AboutMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
 			this.AboutMenuItem.Name = "AboutMenuItem";
 			this.AboutMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AboutMenuItem.Text = "&About";
@@ -2569,7 +2569,7 @@
 			// DumpStatusButton
 			// 
 			this.DumpStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DumpStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.DumpStatusButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Blank;
 			this.DumpStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DumpStatusButton.Name = "DumpStatusButton";
 			this.DumpStatusButton.ShowDropDownArrow = false;
@@ -2585,7 +2585,7 @@
 			// PlayRecordStatusButton
 			// 
 			this.PlayRecordStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PlayRecordStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.PlayRecordStatusButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Blank;
 			this.PlayRecordStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PlayRecordStatusButton.Name = "PlayRecordStatusButton";
 			this.PlayRecordStatusButton.ShowDropDownArrow = false;
@@ -2596,7 +2596,7 @@
 			// 
 			this.PauseStatusButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.PauseStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PauseStatusButton.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.PauseStatusButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Blank;
 			this.PauseStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseStatusButton.Name = "PauseStatusButton";
 			this.PauseStatusButton.ShowDropDownArrow = false;
@@ -2608,7 +2608,7 @@
 			// RebootStatusBarIcon
 			// 
 			this.RebootStatusBarIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RebootStatusBarIcon.Image = global::BizHawk.MultiClient.Properties.Resources.reboot;
+			this.RebootStatusBarIcon.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
 			this.RebootStatusBarIcon.Name = "RebootStatusBarIcon";
 			this.RebootStatusBarIcon.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.RebootStatusBarIcon.Size = new System.Drawing.Size(16, 17);
@@ -2619,14 +2619,14 @@
 			// AVIStatusLabel
 			// 
 			this.AVIStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.AVIStatusLabel.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.AVIStatusLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Blank;
 			this.AVIStatusLabel.Name = "AVIStatusLabel";
 			this.AVIStatusLabel.Size = new System.Drawing.Size(16, 17);
 			this.AVIStatusLabel.Text = "AVI Capture";
 			// 
 			// LedLightStatusLabel
 			// 
-			this.LedLightStatusLabel.Image = global::BizHawk.MultiClient.Properties.Resources.LightOff;
+			this.LedLightStatusLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LightOff;
 			this.LedLightStatusLabel.Name = "LedLightStatusLabel";
 			this.LedLightStatusLabel.Size = new System.Drawing.Size(16, 17);
 			this.LedLightStatusLabel.ToolTipText = "Disk Drive LED Light";
@@ -2717,7 +2717,7 @@
 			// KeyPriorityStatusLabel
 			// 
 			this.KeyPriorityStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.KeyPriorityStatusLabel.Image = global::BizHawk.MultiClient.Properties.Resources.Both;
+			this.KeyPriorityStatusLabel.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Both;
 			this.KeyPriorityStatusLabel.Name = "KeyPriorityStatusLabel";
 			this.KeyPriorityStatusLabel.Size = new System.Drawing.Size(16, 17);
 			this.KeyPriorityStatusLabel.Text = "KeyPriority";
@@ -2756,7 +2756,7 @@
 			// 
 			// OpenRomContextMenuItem
 			// 
-			this.OpenRomContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.OpenRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenRomContextMenuItem.Name = "OpenRomContextMenuItem";
 			this.OpenRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.OpenRomContextMenuItem.Text = "Open Rom";
@@ -2764,7 +2764,7 @@
 			// 
 			// LoadLastRomContextMenuItem
 			// 
-			this.LoadLastRomContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.LoadLastRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.LoadLastRomContextMenuItem.Name = "LoadLastRomContextMenuItem";
 			this.LoadLastRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.LoadLastRomContextMenuItem.Text = "Load Last ROM";
@@ -2777,7 +2777,7 @@
 			// 
 			// RecordMovieContextMenuItem
 			// 
-			this.RecordMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
+			this.RecordMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RecordHS;
 			this.RecordMovieContextMenuItem.Name = "RecordMovieContextMenuItem";
 			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.RecordMovieContextMenuItem.Text = "Record Movie";
@@ -2785,7 +2785,7 @@
 			// 
 			// PlayMovieContextMenuItem
 			// 
-			this.PlayMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
+			this.PlayMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
 			this.PlayMovieContextMenuItem.Name = "PlayMovieContextMenuItem";
 			this.PlayMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.PlayMovieContextMenuItem.Text = "Play Movie";
@@ -2793,7 +2793,7 @@
 			// 
 			// RestartMovieContextMenuItem
 			// 
-			this.RestartMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.RestartMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.RestartMovieContextMenuItem.Name = "RestartMovieContextMenuItem";
 			this.RestartMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.RestartMovieContextMenuItem.Text = "Restart Movie";
@@ -2801,7 +2801,7 @@
 			// 
 			// StopMovieContextMenuItem
 			// 
-			this.StopMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopMovieContextMenuItem.Name = "StopMovieContextMenuItem";
 			this.StopMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.StopMovieContextMenuItem.Text = "Stop Movie";
@@ -2809,7 +2809,7 @@
 			// 
 			// LoadLastMovieContextMenuItem
 			// 
-			this.LoadLastMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.LoadLastMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.LoadLastMovieContextMenuItem.Name = "LoadLastMovieContextMenuItem";
 			this.LoadLastMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.LoadLastMovieContextMenuItem.Text = "Load Last Movie";
@@ -2824,7 +2824,7 @@
 			// 
 			// StopNoSaveContextMenuItem
 			// 
-			this.StopNoSaveContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopNoSaveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopNoSaveContextMenuItem.Name = "StopNoSaveContextMenuItem";
 			this.StopNoSaveContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.StopNoSaveContextMenuItem.Text = "Stop Movie without Saving";
@@ -2853,7 +2853,7 @@
 			// 
 			// SaveMovieContextMenuItem
 			// 
-			this.SaveMovieContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.SaveMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMovieContextMenuItem.Name = "SaveMovieContextMenuItem";
 			this.SaveMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.SaveMovieContextMenuItem.Text = "Save Movie";
@@ -2866,7 +2866,7 @@
 			// 
 			// UndoSavestateContextMenuItem
 			// 
-			this.UndoSavestateContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+			this.UndoSavestateContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoSavestateContextMenuItem.Name = "UndoSavestateContextMenuItem";
 			this.UndoSavestateContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.UndoSavestateContextMenuItem.Text = "Undo Savestate";
@@ -2897,7 +2897,7 @@
 			// 
 			// controllersToolStripMenuItem1
 			// 
-			this.controllersToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
+			this.controllersToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem1.Name = "controllersToolStripMenuItem1";
 			this.controllersToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.controllersToolStripMenuItem1.Text = "&Controllers...";
@@ -2905,7 +2905,7 @@
 			// 
 			// hotkeysToolStripMenuItem1
 			// 
-			this.hotkeysToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
+			this.hotkeysToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem1.Name = "hotkeysToolStripMenuItem1";
 			this.hotkeysToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.hotkeysToolStripMenuItem1.Text = "&Hotkeys...";
@@ -2913,7 +2913,7 @@
 			// 
 			// messagesToolStripMenuItem1
 			// 
-			this.messagesToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
+			this.messagesToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem1.Name = "messagesToolStripMenuItem1";
 			this.messagesToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.messagesToolStripMenuItem1.Text = "&Messages...";
@@ -2921,7 +2921,7 @@
 			// 
 			// pathsToolStripMenuItem1
 			// 
-			this.pathsToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
+			this.pathsToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem1.Name = "pathsToolStripMenuItem1";
 			this.pathsToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.pathsToolStripMenuItem1.Text = "Paths...";
@@ -2929,7 +2929,7 @@
 			// 
 			// soundToolStripMenuItem1
 			// 
-			this.soundToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
+			this.soundToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem1.Name = "soundToolStripMenuItem1";
 			this.soundToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.soundToolStripMenuItem1.Text = "&Sound...";
@@ -2937,14 +2937,14 @@
 			// 
 			// autofireToolStripMenuItem1
 			// 
-			this.autofireToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
+			this.autofireToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem1.Name = "autofireToolStripMenuItem1";
 			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.autofireToolStripMenuItem1.Text = "&Autofire...";
 			// 
 			// rewindToolStripMenuItem
 			// 
-			this.rewindToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
+			this.rewindToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.rewindToolStripMenuItem.Name = "rewindToolStripMenuItem";
 			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.rewindToolStripMenuItem.Text = "&Rewind";
@@ -2964,7 +2964,7 @@
 			// 
 			// toolStripMenuItem6
 			// 
-			this.toolStripMenuItem6.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
+			this.toolStripMenuItem6.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Save;
 			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
 			this.toolStripMenuItem6.Size = new System.Drawing.Size(141, 22);
 			this.toolStripMenuItem6.Text = "Save Config";
@@ -2972,7 +2972,7 @@
 			// 
 			// toolStripMenuItem7
 			// 
-			this.toolStripMenuItem7.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
+			this.toolStripMenuItem7.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
 			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
 			this.toolStripMenuItem7.Size = new System.Drawing.Size(141, 22);
 			this.toolStripMenuItem7.Text = "Load Config";
@@ -2980,7 +2980,7 @@
 			// 
 			// ScreenshotContextMenuItem
 			// 
-			this.ScreenshotContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
+			this.ScreenshotContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.camera;
 			this.ScreenshotContextMenuItem.Name = "ScreenshotContextMenuItem";
 			this.ScreenshotContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ScreenshotContextMenuItem.Text = "Screenshot";
@@ -2988,7 +2988,7 @@
 			// 
 			// CloseRomContextMenuItem
 			// 
-			this.CloseRomContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
+			this.CloseRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.CloseRomContextMenuItem.Name = "CloseRomContextMenuItem";
 			this.CloseRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.CloseRomContextMenuItem.Text = "Close ROM";

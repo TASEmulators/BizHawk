@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.AVOut
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class GifWriterForm
 	{

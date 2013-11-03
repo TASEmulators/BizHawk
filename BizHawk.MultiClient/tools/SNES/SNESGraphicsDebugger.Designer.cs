@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class SNESGraphicsDebugger
 	{
@@ -112,26 +112,26 @@
 			this.label2193813 = new System.Windows.Forms.Label();
 			this.txtScreenCGADSUB_AddSub = new System.Windows.Forms.TextBox();
 			this.label36 = new System.Windows.Forms.Label();
-			this.checkTMOBJ = new BizHawk.Core.CustomCheckBox();
-			this.checkTSOBJ = new BizHawk.Core.CustomCheckBox();
-			this.checkMathBK = new BizHawk.Core.CustomCheckBox();
-			this.label35 = new BizHawk.Core.HorizontalLine();
-			this.checkMathBG4 = new BizHawk.Core.CustomCheckBox();
-			this.checkMathBG3 = new BizHawk.Core.CustomCheckBox();
-			this.checkMathBG2 = new BizHawk.Core.CustomCheckBox();
-			this.checkMathBG1 = new BizHawk.Core.CustomCheckBox();
+			this.checkTMOBJ = new CustomCheckBox();
+			this.checkTSOBJ = new CustomCheckBox();
+			this.checkMathBK = new CustomCheckBox();
+			this.label35 = new HorizontalLine();
+			this.checkMathBG4 = new CustomCheckBox();
+			this.checkMathBG3 = new CustomCheckBox();
+			this.checkMathBG2 = new CustomCheckBox();
+			this.checkMathBG1 = new CustomCheckBox();
 			this.label33 = new System.Windows.Forms.Label();
-			this.checkMathOBJ = new BizHawk.Core.CustomCheckBox();
+			this.checkMathOBJ = new CustomCheckBox();
 			this.lblTS = new System.Windows.Forms.Label();
-			this.checkTSBG4 = new BizHawk.Core.CustomCheckBox();
-			this.checkTSBG3 = new BizHawk.Core.CustomCheckBox();
-			this.checkTSBG2 = new BizHawk.Core.CustomCheckBox();
-			this.checkTSBG1 = new BizHawk.Core.CustomCheckBox();
+			this.checkTSBG4 = new CustomCheckBox();
+			this.checkTSBG3 = new CustomCheckBox();
+			this.checkTSBG2 = new CustomCheckBox();
+			this.checkTSBG1 = new CustomCheckBox();
 			this.lblTM = new System.Windows.Forms.Label();
-			this.checkTMBG4 = new BizHawk.Core.CustomCheckBox();
-			this.checkTMBG3 = new BizHawk.Core.CustomCheckBox();
-			this.checkTMBG2 = new BizHawk.Core.CustomCheckBox();
-			this.checkTMBG1 = new BizHawk.Core.CustomCheckBox();
+			this.checkTMBG4 = new CustomCheckBox();
+			this.checkTMBG3 = new CustomCheckBox();
+			this.checkTMBG2 = new CustomCheckBox();
+			this.checkTMBG1 = new CustomCheckBox();
 			this.label32 = new System.Windows.Forms.Label();
 			this.label31 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
@@ -189,7 +189,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.paletteViewer = new SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
 			this.label53 = new System.Windows.Forms.Label();
@@ -212,7 +212,7 @@
 			this.txtTileBpp = new System.Windows.Forms.TextBox();
 			this.label42 = new System.Windows.Forms.Label();
 			this.txtTileAddress = new System.Windows.Forms.TextBox();
-			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.viewerTile = new SNESGraphicsViewer();
 			this.tpMapEntry = new System.Windows.Forms.TabPage();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.checkMapEntryVFlip = new System.Windows.Forms.CheckBox();
@@ -227,7 +227,7 @@
 			this.txtMapEntryPrio = new System.Windows.Forms.TextBox();
 			this.txtMapEntryLocation = new System.Windows.Forms.TextBox();
 			this.txtMapEntryTileNum = new System.Windows.Forms.TextBox();
-			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.viewerMapEntryTile = new SNESGraphicsViewer();
 			this.tpOBJ = new System.Windows.Forms.TabPage();
 			this.txtObjPriority = new System.Windows.Forms.TextBox();
 			this.label50 = new System.Windows.Forms.Label();
@@ -246,9 +246,9 @@
 			this.label43 = new System.Windows.Forms.Label();
 			this.cbObjHFlip = new System.Windows.Forms.CheckBox();
 			this.label44 = new System.Windows.Forms.Label();
-			this.viewerObj = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.viewerObj = new SNESGraphicsViewer();
 			this.viewerPanel = new System.Windows.Forms.Panel();
-			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.viewer = new SNESGraphicsViewer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.menuStrip1.SuspendLayout();
@@ -2858,14 +2858,14 @@
 		private System.Windows.Forms.Label lblTM;
 		private System.Windows.Forms.Label label32;
 		private System.Windows.Forms.Label label31;
-		private Core.CustomCheckBox checkTSBG4;
-		private Core.CustomCheckBox checkTSBG3;
-		private Core.CustomCheckBox checkTSBG2;
-		private Core.CustomCheckBox checkTSBG1;
-		private Core.CustomCheckBox checkTMBG4;
-		private Core.CustomCheckBox checkTMBG3;
-		private Core.CustomCheckBox checkTMBG2;
-		private Core.CustomCheckBox checkTMBG1;
+		private CustomCheckBox checkTSBG4;
+		private CustomCheckBox checkTSBG3;
+		private CustomCheckBox checkTSBG2;
+		private CustomCheckBox checkTSBG1;
+		private CustomCheckBox checkTMBG4;
+		private CustomCheckBox checkTMBG3;
+		private CustomCheckBox checkTMBG2;
+		private CustomCheckBox checkTMBG1;
 		private System.Windows.Forms.TabPage tpMapEntry;
 		private System.Windows.Forms.TextBox txtMapEntryTileNum;
 		private SNESGraphicsViewer viewerMapEntryTile;
@@ -2880,16 +2880,16 @@
 		private System.Windows.Forms.TextBox txtMapEntryTileAddr;
 		private System.Windows.Forms.TextBox txtMapEntryPrio;
 		private System.Windows.Forms.TextBox txtMapEntryLocation;
-		private Core.HorizontalLine label35;
-		private Core.CustomCheckBox checkMathBG4;
-		private Core.CustomCheckBox checkMathBG3;
-		private Core.CustomCheckBox checkMathBG2;
-		private Core.CustomCheckBox checkMathBG1;
+		private HorizontalLine label35;
+		private CustomCheckBox checkMathBG4;
+		private CustomCheckBox checkMathBG3;
+		private CustomCheckBox checkMathBG2;
+		private CustomCheckBox checkMathBG1;
 		private System.Windows.Forms.Label label33;
-		private Core.CustomCheckBox checkMathOBJ;
-		private Core.CustomCheckBox checkTMOBJ;
-		private Core.CustomCheckBox checkTSOBJ;
-		private Core.CustomCheckBox checkMathBK;
+		private CustomCheckBox checkMathOBJ;
+		private CustomCheckBox checkTMOBJ;
+		private CustomCheckBox checkTSOBJ;
+		private CustomCheckBox checkMathBK;
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub;
 		private System.Windows.Forms.Label label36;
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub_Descr;

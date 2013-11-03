@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public class TextDebugView : Control
 	{

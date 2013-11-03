@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class VirtualPadC64Keyboard
 	{
@@ -772,7 +772,7 @@
 			this.KCommodore.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KCommodore.AutoSize = true;
 			this.KCommodore.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KCommodore.Image = global::BizHawk.MultiClient.Properties.Resources.C64Symbol;
+			this.KCommodore.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.C64Symbol;
 			this.KCommodore.Location = new System.Drawing.Point(7, 79);
 			this.KCommodore.Name = "KCommodore";
 			this.KCommodore.Size = new System.Drawing.Size(27, 24);
@@ -996,7 +996,7 @@
 			this.KUpArrow.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KUpArrow.AutoSize = true;
 			this.KUpArrow.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KUpArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.KUpArrow.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.KUpArrow.Location = new System.Drawing.Point(325, 33);
 			this.KUpArrow.Name = "KUpArrow";
 			this.KUpArrow.Size = new System.Drawing.Size(22, 22);
@@ -1010,7 +1010,7 @@
 			this.KLeftArrow.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KLeftArrow.AutoSize = true;
 			this.KLeftArrow.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KLeftArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveLeft;
+			this.KLeftArrow.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveLeft;
 			this.KLeftArrow.Location = new System.Drawing.Point(18, 10);
 			this.KLeftArrow.Name = "KLeftArrow";
 			this.KLeftArrow.Size = new System.Drawing.Size(22, 22);

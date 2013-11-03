@@ -1,6 +1,6 @@
 ﻿using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	partial class TAStudio
 	{
@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 			this.FastFowardToEnd = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.StopButton = new System.Windows.Forms.ToolStripButton();
-			this.TASView = new BizHawk.VirtualListView();
+			this.TASView = new VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.VisualizerBox = new System.Windows.Forms.GroupBox();
@@ -174,7 +174,7 @@ namespace BizHawk.MultiClient
             this.nToolStripMenuItem,
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
-			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.recentToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
@@ -399,7 +399,7 @@ namespace BizHawk.MultiClient
 			this.ReadOnlyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
-			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
+			this.ReadOnlyCheckBox.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ReadOnly;
 			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
 			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(12, 27);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
@@ -558,7 +558,7 @@ namespace BizHawk.MultiClient
 			// RewindToBeginning
 			// 
 			this.RewindToBeginning.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RewindToBeginning.Image = global::BizHawk.MultiClient.Properties.Resources.BackMore;
+			this.RewindToBeginning.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BackMore;
 			this.RewindToBeginning.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RewindToBeginning.Name = "RewindToBeginning";
 			this.RewindToBeginning.Size = new System.Drawing.Size(23, 22);
@@ -569,7 +569,7 @@ namespace BizHawk.MultiClient
 			// RewindButton
 			// 
 			this.RewindButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RewindButton.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
+			this.RewindButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
 			this.RewindButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RewindButton.Name = "RewindButton";
 			this.RewindButton.Size = new System.Drawing.Size(23, 22);
@@ -580,7 +580,7 @@ namespace BizHawk.MultiClient
 			// PauseButton
 			// 
 			this.PauseButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PauseButton.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.PauseButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.PauseButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseButton.Name = "PauseButton";
 			this.PauseButton.Size = new System.Drawing.Size(23, 22);
@@ -591,7 +591,7 @@ namespace BizHawk.MultiClient
 			// FrameAdvanceButton
 			// 
 			this.FrameAdvanceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FrameAdvanceButton.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
+			this.FrameAdvanceButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
 			this.FrameAdvanceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
 			this.FrameAdvanceButton.Size = new System.Drawing.Size(23, 22);
@@ -602,7 +602,7 @@ namespace BizHawk.MultiClient
 			// FastForward
 			// 
 			this.FastForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FastForward.Image = global::BizHawk.MultiClient.Properties.Resources.FastForward;
+			this.FastForward.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FastForward;
 			this.FastForward.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FastForward.Name = "FastForward";
 			this.FastForward.Size = new System.Drawing.Size(23, 22);
@@ -614,7 +614,7 @@ namespace BizHawk.MultiClient
 			// 
 			this.TurboFastForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.TurboFastForward.Enabled = false;
-			this.TurboFastForward.Image = global::BizHawk.MultiClient.Properties.Resources.TurboFastForward;
+			this.TurboFastForward.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TurboFastForward;
 			this.TurboFastForward.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.TurboFastForward.Name = "TurboFastForward";
 			this.TurboFastForward.Size = new System.Drawing.Size(23, 22);
@@ -625,7 +625,7 @@ namespace BizHawk.MultiClient
 			// FastFowardToEnd
 			// 
 			this.FastFowardToEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FastFowardToEnd.Image = global::BizHawk.MultiClient.Properties.Resources.ForwardMore;
+			this.FastFowardToEnd.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ForwardMore;
 			this.FastFowardToEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FastFowardToEnd.Name = "FastFowardToEnd";
 			this.FastFowardToEnd.Size = new System.Drawing.Size(23, 22);
@@ -641,7 +641,7 @@ namespace BizHawk.MultiClient
 			// StopButton
 			// 
 			this.StopButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.StopButton.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.StopButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.StopButton.Name = "StopButton";
 			this.StopButton.Size = new System.Drawing.Size(23, 22);

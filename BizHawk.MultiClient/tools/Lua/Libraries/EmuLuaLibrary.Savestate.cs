@@ -2,7 +2,7 @@
 using LuaInterface;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class SavestateLuaLibrary : LuaLibraryBase
 	{

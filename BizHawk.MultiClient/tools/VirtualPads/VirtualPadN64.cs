@@ -6,7 +6,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadN64 : UserControl, IVirtualPad
 	{

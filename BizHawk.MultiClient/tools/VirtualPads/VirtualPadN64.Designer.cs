@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class VirtualPadN64
 	{
@@ -46,7 +46,7 @@
 			this.ManualY = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.AnalogControl1 = new BizHawk.MultiClient.AnalogControlPanel();
+			this.AnalogControl1 = new AnalogControlPanel();
 			((System.ComponentModel.ISupportInitialize)(this.ManualX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.ManualY)).BeginInit();
 			this.SuspendLayout();
@@ -54,7 +54,7 @@
 			// PL
 			// 
 			this.PL.AutoSize = true;
-			this.PL.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
+			this.PL.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
 			this.PL.Location = new System.Drawing.Point(3, 207);
 			this.PL.Name = "PL";
 			this.PL.Size = new System.Drawing.Size(22, 22);
@@ -64,7 +64,7 @@
 			// PD
 			// 
 			this.PD.AutoSize = true;
-			this.PD.Image = global::BizHawk.MultiClient.Properties.Resources.BlueDown;
+			this.PD.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueDown;
 			this.PD.Location = new System.Drawing.Point(24, 216);
 			this.PD.Name = "PD";
 			this.PD.Size = new System.Drawing.Size(22, 22);
@@ -74,7 +74,7 @@
 			// PR
 			// 
 			this.PR.AutoSize = true;
-			this.PR.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
+			this.PR.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
 			this.PR.Location = new System.Drawing.Point(45, 207);
 			this.PR.Name = "PR";
 			this.PR.Size = new System.Drawing.Size(22, 22);
@@ -84,7 +84,7 @@
 			// PU
 			// 
 			this.PU.AutoSize = true;
-			this.PU.Image = global::BizHawk.MultiClient.Properties.Resources.BlueUp;
+			this.PU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueUp;
 			this.PU.Location = new System.Drawing.Point(24, 195);
 			this.PU.Name = "PU";
 			this.PU.Size = new System.Drawing.Size(22, 22);

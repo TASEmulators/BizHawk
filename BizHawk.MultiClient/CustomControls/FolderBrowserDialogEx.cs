@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Security.Permissions;
 
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 
 	/// <summary>

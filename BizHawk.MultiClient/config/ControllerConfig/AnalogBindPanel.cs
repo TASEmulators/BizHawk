@@ -7,7 +7,7 @@ using System.Drawing;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	class AnalogBindPanel : UserControl
 	{

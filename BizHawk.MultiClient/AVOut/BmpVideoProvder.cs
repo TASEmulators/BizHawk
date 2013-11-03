@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace BizHawk.MultiClient.AVOut
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// an IVideoProivder wrapping a Bitmap

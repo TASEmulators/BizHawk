@@ -11,7 +11,7 @@ using System.Windows.Forms;
 //todo - check(mark) the one thats selected
 //todo - turn top info into textboxes i guess, labels suck
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfigInfo : Form
 	{

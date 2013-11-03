@@ -9,7 +9,7 @@ using System.Drawing;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class VirtualPadButton : CheckBox
 	{

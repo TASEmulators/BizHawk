@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	class Throttle
 	{

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class VirtualPadSaturn
 	{
@@ -131,7 +131,7 @@
 			// 
 			this.PL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PL.AutoSize = true;
-			this.PL.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
+			this.PL.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
 			this.PL.Location = new System.Drawing.Point(6, 38);
 			this.PL.Name = "PL";
 			this.PL.Size = new System.Drawing.Size(22, 22);
@@ -143,7 +143,7 @@
 			// 
 			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PD.AutoSize = true;
-			this.PD.Image = global::BizHawk.MultiClient.Properties.Resources.BlueDown;
+			this.PD.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueDown;
 			this.PD.Location = new System.Drawing.Point(27, 47);
 			this.PD.Name = "PD";
 			this.PD.Size = new System.Drawing.Size(22, 22);
@@ -155,7 +155,7 @@
 			// 
 			this.PR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PR.AutoSize = true;
-			this.PR.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
+			this.PR.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
 			this.PR.Location = new System.Drawing.Point(48, 38);
 			this.PR.Name = "PR";
 			this.PR.Size = new System.Drawing.Size(22, 22);
@@ -167,7 +167,7 @@
 			// 
 			this.PU.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PU.AutoSize = true;
-			this.PU.Image = global::BizHawk.MultiClient.Properties.Resources.BlueUp;
+			this.PU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueUp;
 			this.PU.Location = new System.Drawing.Point(27, 26);
 			this.PU.Name = "PU";
 			this.PU.Size = new System.Drawing.Size(22, 22);

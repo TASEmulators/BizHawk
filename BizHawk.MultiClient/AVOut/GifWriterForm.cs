@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.AVOut
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GifWriterForm : Form
 	{

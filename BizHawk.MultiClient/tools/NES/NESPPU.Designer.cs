@@ -1,45 +1,45 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class NESPPU
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class NESPPU
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESPPU));
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
-			this.PatternView = new BizHawk.MultiClient.PatternViewer();
+			this.PatternView = new PatternViewer();
 			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
-			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
+			this.PaletteView = new PaletteViewer();
 			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +55,7 @@
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
-			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
+			this.SpriteView = new SpriteViewer();
 			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -789,21 +789,21 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.GroupBox PatternGroup;
-        private System.Windows.Forms.GroupBox PalettesGroup;
-        private PaletteViewer PaletteView;
-        private System.Windows.Forms.GroupBox DetailsBox;
-        private System.Windows.Forms.Label ValueLabel;
+		private System.Windows.Forms.GroupBox PatternGroup;
+		private System.Windows.Forms.GroupBox PalettesGroup;
+		private PaletteViewer PaletteView;
+		private System.Windows.Forms.GroupBox DetailsBox;
+		private System.Windows.Forms.Label ValueLabel;
 		private System.Windows.Forms.Label AddressLabel;
-		private BizHawk.MultiClient.PatternViewer PatternView;
-        private System.Windows.Forms.Label Table1PaletteLabel;
-        private System.Windows.Forms.Label Table0PaletteLabel;
+		private PatternViewer PatternView;
+		private System.Windows.Forms.Label Table1PaletteLabel;
+		private System.Windows.Forms.Label Table0PaletteLabel;
 		private System.Windows.Forms.Label Value2Label;
-        private System.Windows.Forms.GroupBox SpriteViewerBox;
+		private System.Windows.Forms.GroupBox SpriteViewerBox;
 		private SpriteViewer SpriteView;
 		private System.Windows.Forms.TextBox txtScanline;
 		private System.Windows.Forms.GroupBox groupBox1;
@@ -865,5 +865,5 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.Timer messagetimer;
-    }
+	}
 }

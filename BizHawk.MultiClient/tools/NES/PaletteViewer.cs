@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public sealed class PaletteViewer : Control
 	{

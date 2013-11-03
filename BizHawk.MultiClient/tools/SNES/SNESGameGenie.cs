@@ -8,7 +8,7 @@ using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESGameGenie : Form, IToolForm
 	{

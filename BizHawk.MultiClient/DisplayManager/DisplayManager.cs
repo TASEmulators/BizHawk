@@ -14,7 +14,7 @@ using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 

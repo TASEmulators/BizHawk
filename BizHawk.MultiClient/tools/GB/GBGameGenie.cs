@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBGameGenie : Form, IToolForm
 	{

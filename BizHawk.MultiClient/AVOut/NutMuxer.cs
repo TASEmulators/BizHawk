@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Numerics;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// implements a simple muxer for the NUT media format

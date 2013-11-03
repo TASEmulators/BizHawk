@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class HexEditor
     {
@@ -121,7 +121,7 @@
 			// 
 			// saveToolStripMenuItem
 			// 
-			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
@@ -173,7 +173,7 @@
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.copyToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
@@ -182,7 +182,7 @@
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Paste;
+			this.pasteToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
@@ -295,7 +295,7 @@
 			// 
 			// addToRamWatchToolStripMenuItem1
 			// 
-			this.addToRamWatchToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.addToRamWatchToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem1.Name = "addToRamWatchToolStripMenuItem1";
 			this.addToRamWatchToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+W";
 			this.addToRamWatchToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
@@ -304,7 +304,7 @@
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.ShortcutKeyDisplayString = "Space";
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -313,7 +313,7 @@
 			// 
 			// unfreezeAllToolStripMenuItem
 			// 
-			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
 			this.unfreezeAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
 			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -322,7 +322,7 @@
 			// 
 			// pokeAddressToolStripMenuItem
 			// 
-			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
 			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -426,24 +426,24 @@
 			// ViewerContextMenuStrip
 			// 
 			this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem1,
-            this.pasteToolStripMenuItem1,
-            this.freezeToolStripMenuItem,
-            this.addToRamWatchToolStripMenuItem,
-            this.unfreezeAllToolStripMenuItem1,
-            this.pokeAddressToolStripMenuItem1,
-            this.toolStripSeparator4,
-            this.incrementToolStripMenuItem,
-            this.decrementToolStripMenuItem,
-            this.toolStripSeparator5,
-            this.gotoAddressToolStripMenuItem1});
+			this.copyToolStripMenuItem1,
+			this.pasteToolStripMenuItem1,
+			this.freezeToolStripMenuItem,
+			this.addToRamWatchToolStripMenuItem,
+			this.unfreezeAllToolStripMenuItem1,
+			this.pokeAddressToolStripMenuItem1,
+			this.toolStripSeparator4,
+			this.incrementToolStripMenuItem,
+			this.decrementToolStripMenuItem,
+			this.toolStripSeparator5,
+			this.gotoAddressToolStripMenuItem1});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
 			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 236);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// copyToolStripMenuItem1
 			// 
-			this.copyToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.copyToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
 			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
@@ -452,7 +452,7 @@
 			// 
 			// pasteToolStripMenuItem1
 			// 
-			this.pasteToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Paste;
+			this.pasteToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
 			this.pasteToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+V";
 			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
@@ -461,7 +461,7 @@
 			// 
 			// freezeToolStripMenuItem
 			// 
-			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.freezeToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
 			this.freezeToolStripMenuItem.ShortcutKeyDisplayString = "Space";
 			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -470,7 +470,7 @@
 			// 
 			// addToRamWatchToolStripMenuItem
 			// 
-			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
 			this.addToRamWatchToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -479,7 +479,7 @@
 			// 
 			// unfreezeAllToolStripMenuItem1
 			// 
-			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.unfreezeAllToolStripMenuItem1.Name = "unfreezeAllToolStripMenuItem1";
 			this.unfreezeAllToolStripMenuItem1.ShortcutKeyDisplayString = "Shift+Del";
 			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
@@ -488,7 +488,7 @@
 			// 
 			// pokeAddressToolStripMenuItem1
 			// 
-			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
 			this.pokeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+P";
 			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);

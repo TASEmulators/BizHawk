@@ -1,33 +1,33 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class LuaConsole
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class LuaConsole
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -94,7 +94,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.LuaListView = new BizHawk.VirtualListView();
+			this.LuaListView = new VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1.SuspendLayout();
@@ -120,7 +120,7 @@
 			// 
 			// toggleScriptToolStripMenuItem
 			// 
-			this.toggleScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.toggleScriptToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.toggleScriptToolStripMenuItem.Name = "toggleScriptToolStripMenuItem";
 			this.toggleScriptToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.toggleScriptToolStripMenuItem.Text = "&Toggle";
@@ -128,7 +128,7 @@
 			// 
 			// resumePauseToolStripMenuItem
 			// 
-			this.resumePauseToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.resumePauseToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.resumePauseToolStripMenuItem.Name = "resumePauseToolStripMenuItem";
 			this.resumePauseToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.resumePauseToolStripMenuItem.Text = "Pause or Resume";
@@ -136,7 +136,7 @@
 			// 
 			// editScriptToolStripMenuItem
 			// 
-			this.editScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
+			this.editScriptToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editScriptToolStripMenuItem.Name = "editScriptToolStripMenuItem";
 			this.editScriptToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.editScriptToolStripMenuItem.Text = "&Edit";
@@ -144,7 +144,7 @@
 			// 
 			// removeScriptToolStripMenuItem
 			// 
-			this.removeScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
+			this.removeScriptToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.removeScriptToolStripMenuItem.Name = "removeScriptToolStripMenuItem";
 			this.removeScriptToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.removeScriptToolStripMenuItem.Text = "&Remove";
@@ -152,7 +152,7 @@
 			// 
 			// insertSeperatorToolStripMenuItem1
 			// 
-			this.insertSeperatorToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.insertSeperatorToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.insertSeperatorToolStripMenuItem1.Name = "insertSeperatorToolStripMenuItem1";
 			this.insertSeperatorToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.insertSeperatorToolStripMenuItem1.Text = "Insert Seperator";
@@ -165,7 +165,7 @@
 			// 
 			// stopAllScriptsToolStripMenuItem
 			// 
-			this.stopAllScriptsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.stopAllScriptsToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.stopAllScriptsToolStripMenuItem.Name = "stopAllScriptsToolStripMenuItem";
 			this.stopAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.stopAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
@@ -204,27 +204,27 @@
 			// 
 			// newToolStripMenuItem
 			// 
-			this.newToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.N)));
+			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+			| System.Windows.Forms.Keys.N)));
 			this.newToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.newToolStripMenuItem.Text = "&New Session";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
 			// openSessionToolStripMenuItem
 			// 
-			this.openSessionToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.openSessionToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
-			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.O)));
+			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+			| System.Windows.Forms.Keys.O)));
 			this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.openSessionToolStripMenuItem.Text = "&Open Session...";
 			this.openSessionToolStripMenuItem.Click += new System.EventHandler(this.openSessionToolStripMenuItem_Click);
 			// 
 			// saveToolStripMenuItem
 			// 
-			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
@@ -234,8 +234,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+			| System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.saveAsToolStripMenuItem.Text = "Save Session &As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -263,7 +263,7 @@
 			// 
 			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.recentToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.recentToolStripMenuItem.Text = "Recent Scripts";
@@ -311,7 +311,7 @@
 			// 
 			// newScriptToolStripMenuItem
 			// 
-			this.newScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newScriptToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.newScriptToolStripMenuItem.Name = "newScriptToolStripMenuItem";
 			this.newScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newScriptToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -320,7 +320,7 @@
 			// 
 			// openToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.openToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -329,7 +329,7 @@
 			// 
 			// toggleToolStripMenuItem
 			// 
-			this.toggleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.toggleToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
 			this.toggleToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
 			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -338,7 +338,7 @@
 			// 
 			// pauseResumeToolStripMenuItem
 			// 
-			this.pauseResumeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.pauseResumeToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.pauseResumeToolStripMenuItem.Name = "pauseResumeToolStripMenuItem";
 			this.pauseResumeToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
 			this.pauseResumeToolStripMenuItem.Text = "Pause or Resume";
@@ -346,7 +346,7 @@
 			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
+			this.editToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -355,7 +355,7 @@
 			// 
 			// removeScriptToolStripMenuItem1
 			// 
-			this.removeScriptToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.removeScriptToolStripMenuItem1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.removeScriptToolStripMenuItem1.Name = "removeScriptToolStripMenuItem1";
 			this.removeScriptToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
 			this.removeScriptToolStripMenuItem1.Size = new System.Drawing.Size(245, 22);
@@ -364,7 +364,7 @@
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 
-			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
 			this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -378,7 +378,7 @@
 			// 
 			// moveUpToolStripMenuItem
 			// 
-			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.moveUpToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
 			this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
 			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -387,7 +387,7 @@
 			// 
 			// moveDownToolStripMenuItem
 			// 
-			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.moveDownToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
 			this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
@@ -409,7 +409,7 @@
 			// 
 			// turnOffAllScriptsToolStripMenuItem
 			// 
-			this.turnOffAllScriptsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.turnOffAllScriptsToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.turnOffAllScriptsToolStripMenuItem.Name = "turnOffAllScriptsToolStripMenuItem";
 			this.turnOffAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
 			this.turnOffAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
@@ -502,9 +502,9 @@
 			// 
 			// OutputBox
 			// 
-			this.OutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.OutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.OutputBox.ContextMenuStrip = this.contextMenuStrip2;
 			this.OutputBox.Location = new System.Drawing.Point(6, 17);
 			this.OutputBox.Name = "OutputBox";
@@ -538,8 +538,8 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.OutputBox);
 			this.groupBox1.Location = new System.Drawing.Point(310, 71);
 			this.groupBox1.Name = "groupBox1";
@@ -590,7 +590,7 @@
 			// newStripButton1
 			// 
 			this.newStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.newStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.newStripButton1.Name = "newStripButton1";
 			this.newStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -610,7 +610,7 @@
 			// copyToolStripButton
 			// 
 			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.copyToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.copyToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripButton.Name = "copyToolStripButton";
 			this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -620,7 +620,7 @@
 			// resumePauseButton1
 			// 
 			this.resumePauseButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.resumePauseButton1.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.resumePauseButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Pause;
 			this.resumePauseButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.resumePauseButton1.Name = "resumePauseButton1";
 			this.resumePauseButton1.Size = new System.Drawing.Size(23, 22);
@@ -630,7 +630,7 @@
 			// EditToolstripButton
 			// 
 			this.EditToolstripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.EditToolstripButton.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
+			this.EditToolstripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.EditToolstripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EditToolstripButton.Name = "EditToolstripButton";
 			this.EditToolstripButton.Size = new System.Drawing.Size(23, 22);
@@ -640,7 +640,7 @@
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.cutToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -650,7 +650,7 @@
 			// toolStripButtonSeparator
 			// 
 			this.toolStripButtonSeparator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonSeparator.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.toolStripButtonSeparator.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.toolStripButtonSeparator.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
 			this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
@@ -665,7 +665,7 @@
 			// toolStripButtonMoveUp
 			// 
 			this.toolStripButtonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonMoveUp.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.toolStripButtonMoveUp.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
 			this.toolStripButtonMoveUp.Size = new System.Drawing.Size(23, 22);
@@ -675,7 +675,7 @@
 			// toolStripButtonMoveDown
 			// 
 			this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonMoveDown.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.toolStripButtonMoveDown.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
 			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
@@ -684,13 +684,13 @@
 			// 
 			// LuaListView
 			// 
-			this.LuaListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.LuaListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaListView.CheckBoxes = true;
 			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script,
-            this.PathName});
+			this.Script,
+			this.PathName});
 			this.LuaListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.LuaListView.FullRowSelect = true;
 			this.LuaListView.GridLines = true;
@@ -746,31 +746,31 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private VirtualListView LuaListView;
-        private System.Windows.Forms.ColumnHeader PathName;
+		private VirtualListView LuaListView;
+		private System.Windows.Forms.ColumnHeader PathName;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem scriptToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem scriptToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
-        public System.Windows.Forms.ColumnHeader Script;
-        private System.Windows.Forms.GroupBox groupBox1;
+		public System.Windows.Forms.ColumnHeader Script;
+		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
-        private System.Windows.Forms.Label NumberOfScripts;
-        private System.Windows.Forms.ToolStripMenuItem insertSeparatorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem turnOffAllScriptsToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
+		private System.Windows.Forms.Label NumberOfScripts;
+		private System.Windows.Forms.ToolStripMenuItem insertSeparatorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem turnOffAllScriptsToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem stopAllScriptsToolStripMenuItem;
@@ -806,16 +806,16 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem disableScriptsOnLoadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pauseResumeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton resumePauseButton1;
-        private System.Windows.Forms.ToolStripMenuItem resumePauseToolStripMenuItem;
-        public System.Windows.Forms.RichTextBox OutputBox;
-        private System.Windows.Forms.Label OutputMessages;
+		private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pauseResumeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton resumePauseButton1;
+		private System.Windows.Forms.ToolStripMenuItem resumePauseToolStripMenuItem;
+		public System.Windows.Forms.RichTextBox OutputBox;
+		private System.Windows.Forms.Label OutputMessages;
 		private System.Windows.Forms.ToolStripMenuItem onlineDocumentationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newScriptToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton newStripButton1;
 		private System.Windows.Forms.ToolStripMenuItem showRegisteredFunctionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem registeredFunctionsToolStripMenuItem;
-    }
+	}
 }

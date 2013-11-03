@@ -6,7 +6,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESGraphicsConfig : Form
 	{
