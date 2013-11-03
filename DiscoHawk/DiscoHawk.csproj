@@ -8,7 +8,7 @@
     <ProjectGuid>{C4366030-6D03-424B-AE53-F4F43BB217C3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DiscoHawk</RootNamespace>
+    <RootNamespace>BizHawk.Client.DiscoHawk</RootNamespace>
     <AssemblyName>DiscoHawk</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
