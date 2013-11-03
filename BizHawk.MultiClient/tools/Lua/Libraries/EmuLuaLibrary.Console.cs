@@ -26,13 +26,13 @@ namespace BizHawk.MultiClient
 
 		public static void console_clear()
 		{
-			GlobalWinF.MainForm.LuaConsole1.ClearOutputWindow();
+			GlobalWinF.Tools.LuaConsole.ClearOutputWindow();
 		}
 
 		public static string console_getluafunctionslist()
 		{
 			StringBuilder list = new StringBuilder();
-			foreach (var function in GlobalWinF.MainForm.LuaConsole1.LuaImp.Docs.FunctionList)
+			foreach (var function in GlobalWinF.Tools.LuaConsole.LuaImp.Docs.FunctionList)
 			{
 				list.AppendLine(function.Name);
 			}
@@ -48,7 +48,7 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input == null)
 			{
-				GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow("NULL");
+				GlobalWinF.Tools.LuaConsole.WriteToOutputWindow("NULL");
 			}
 			else
 			{
@@ -81,11 +81,11 @@ namespace BizHawk.MultiClient
 							.AppendLine();
 					}
 
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(sb.ToString());
+					GlobalWinF.Tools.LuaConsole.WriteToOutputWindow(sb.ToString());
 				}
 				else
 				{
-					GlobalWinF.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+					GlobalWinF.Tools.LuaConsole.WriteToOutputWindow(lua_input.ToString());
 				}
 			}
 		}

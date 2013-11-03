@@ -10,17 +10,17 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class LuaConsole : Form
+	public partial class LuaConsole : Form, IToolForm
 	{
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
-		string currentSessionFile = "";
+		string currentSessionFile = String.Empty;
 		List<LuaFile> luaList = new List<LuaFile>();
 		public EmuLuaLibrary LuaImp;
-		string lastLuaFile = ""; //TODO: this isn't getting used!
+		string lastLuaFile = String.Empty; //TODO: this isn't getting used!
 		bool changes = false;
 
 		private List<LuaFile> GetLuaFileList()
@@ -31,6 +31,9 @@ namespace BizHawk.MultiClient
 
 			return l;
 		}
+
+		public bool UpdateBefore { get { return true; } }
+		public void UpdateValues() { }
 
 		public LuaConsole get()
 		{
@@ -1098,7 +1101,7 @@ namespace BizHawk.MultiClient
 			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
 
 
-			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
+			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWinF.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -1244,7 +1247,7 @@ namespace BizHawk.MultiClient
 
 		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any())
+			if (LuaImp.RegisteredFunctions.Any())
 			{
 				LuaRegisteredFunctionsList dialog = new LuaRegisteredFunctionsList();
 				dialog.ShowDialog();
@@ -1253,7 +1256,7 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
 		{
-			registeredFunctionsToolStripMenuItem.Enabled = GlobalWinF.MainForm.LuaConsole1.LuaImp.RegisteredFunctions.Any();
+			registeredFunctionsToolStripMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
 		}
 	}
 }

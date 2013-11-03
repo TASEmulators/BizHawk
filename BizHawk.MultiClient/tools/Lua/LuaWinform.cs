@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 
 		public void CloseThis()
 		{
-			GlobalWinF.MainForm.LuaConsole1.LuaImp.WindowClosed(Handle);
+			GlobalWinF.Tools.LuaConsole.LuaImp.WindowClosed(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)
