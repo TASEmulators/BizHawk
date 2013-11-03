@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class BizBox
 	{
@@ -96,7 +96,7 @@
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Image = global::BizHawk.MultiClient.Properties.Resources.corphawk;
+			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.corphawk;
 			this.pictureBox1.Location = new System.Drawing.Point(12, 12);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(164, 164);

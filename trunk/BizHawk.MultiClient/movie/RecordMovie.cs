@@ -10,7 +10,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.Emulation.Consoles.Nintendo.N64;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
 	{

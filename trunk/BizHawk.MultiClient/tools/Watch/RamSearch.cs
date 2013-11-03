@@ -12,7 +12,7 @@ using System.Globalization;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// A winform designed to search through ram values

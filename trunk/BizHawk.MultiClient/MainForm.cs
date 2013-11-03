@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using BizHawk.Core;
 using BizHawk.DiscSystem;
 using BizHawk.Emulation;
 using BizHawk.Emulation.Computers.Commodore64;
@@ -25,7 +24,7 @@ using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : Form
 	{
@@ -2925,19 +2924,19 @@ namespace BizHawk.MultiClient
 						using (Graphics g = Graphics.FromImage(bmpout))
 							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
 						bmpin.Dispose();
-						output = new AVOut.BmpVideoProvder(bmpout);
+						output = new BmpVideoProvder(bmpout);
 					}
 					else
 					{
 						if (Global.Config.AVI_CaptureOSD)
-							output = new AVOut.BmpVideoProvder(CaptureOSD());
+							output = new BmpVideoProvder(CaptureOSD());
 						else
 							output = Global.Emulator.VideoProvider;
 					}
 
 					CurrAviWriter.AddFrame(output);
-					if (output is AVOut.BmpVideoProvder)
-						(output as AVOut.BmpVideoProvder).Dispose();
+					if (output is BmpVideoProvder)
+						(output as BmpVideoProvder).Dispose();
 
 					CurrAviWriter.AddSamples(temp);
 				}

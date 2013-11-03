@@ -8,7 +8,7 @@ using SlimDX.DirectInput;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	//coalesces events back into instantaneous states
 	public class InputCoalescer : SimpleController

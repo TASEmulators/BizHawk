@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class InputWidget : TextBox
 	{

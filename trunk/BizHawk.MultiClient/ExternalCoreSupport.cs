@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 using BizHawk;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 
 	/// <summary>

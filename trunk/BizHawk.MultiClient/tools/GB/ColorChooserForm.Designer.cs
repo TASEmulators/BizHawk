@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.GBtools
+﻿namespace BizHawk.Client.EmuHawk.GBtools
 {
 	partial class ColorChooserForm
 	{

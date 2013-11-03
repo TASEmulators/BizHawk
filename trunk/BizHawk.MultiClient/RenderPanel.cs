@@ -12,9 +12,8 @@ using d3d9font=SlimDX.Direct3D9.Font;
 #endif
 
 using BizHawk.Client.Common;
-using BizHawk.Core;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 #if WINDOWS
 	public class ImageTexture : IDisposable

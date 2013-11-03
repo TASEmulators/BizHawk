@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
     //Data structure for a watch item in the Ram Watch Dialog
     public enum atype { BYTE, WORD, DWORD, SEPARATOR };   //TODO: more custom types too like 12.4 and 24.12 fixed point

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using LuaInterface;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class FormsLuaLibrary : LuaLibraryBase
 	{

@@ -2,7 +2,7 @@
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	enum BoxType { ALL, SIGNED, UNSIGNED, HEX };
 	class LuaTextBox : TextBox

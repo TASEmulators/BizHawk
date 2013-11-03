@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class PCEBGCanvas : Control
 	{

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace BizHawk.Core
+namespace BizHawk.Client.EmuHawk
 {
 	public class HorizontalLine : Control
 	{

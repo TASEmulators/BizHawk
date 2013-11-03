@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	class VirtualPadA26 : VirtualPad
 	{

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class NESGameGenie
     {
@@ -33,9 +33,9 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CompareBox = new BizHawk.HexTextBox();
-			this.ValueBox = new BizHawk.HexTextBox();
-			this.AddressBox = new BizHawk.HexTextBox();
+			this.CompareBox = new HexTextBox();
+			this.ValueBox = new HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.AddCheat = new System.Windows.Forms.Button();
 			this.ButtonPanel = new System.Windows.Forms.Panel();
 			this.N = new System.Windows.Forms.Button();

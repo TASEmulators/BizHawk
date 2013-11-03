@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	class StateVisualizer
 	{

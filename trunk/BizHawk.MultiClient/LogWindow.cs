@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 //todo - perks - pause, copy to clipboard, backlog length limiting
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class LogWindow : Form
 	{

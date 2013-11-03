@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickProgressPopup : Form
 	{

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class LogWindow
 	{
@@ -32,7 +32,7 @@
 			this.btnClear = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.buttonCopy = new System.Windows.Forms.Button();
-			this.virtualListView1 = new BizHawk.VirtualListView();
+			this.virtualListView1 = new VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCopyAll = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -107,7 +107,7 @@
 			this.virtualListView1.UseCompatibleStateImageBehavior = false;
 			this.virtualListView1.View = System.Windows.Forms.View.Details;
 			this.virtualListView1.VirtualMode = true;
-			this.virtualListView1.QueryItemText += new BizHawk.QueryItemTextHandler(this.virtualListView1_QueryItemText);
+			this.virtualListView1.QueryItemText += new QueryItemTextHandler(this.virtualListView1_QueryItemText);
 			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.virtualListView1_ClientSizeChanged);
 			// 
 			// buttonCopyAll

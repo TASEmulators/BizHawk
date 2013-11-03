@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public static class Extensions
 	{

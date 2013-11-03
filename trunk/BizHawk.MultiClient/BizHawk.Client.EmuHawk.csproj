@@ -8,8 +8,8 @@
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.MultiClient</RootNamespace>
-    <AssemblyName>BizHawk.MultiClient</AssemblyName>
+    <RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
+    <AssemblyName>EmuHawk</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>

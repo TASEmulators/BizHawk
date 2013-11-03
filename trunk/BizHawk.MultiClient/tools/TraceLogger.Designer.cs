@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class TraceLogger
 	{
@@ -30,7 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.VirtualListView();
+			this.TraceView = new VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,7 +128,7 @@
 			// 
 			// saveLogToolStripMenuItem
 			// 
-			this.saveLogToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveLogToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.saveLogToolStripMenuItem.Name = "saveLogToolStripMenuItem";
 			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveLogToolStripMenuItem.Text = "&Save Log";

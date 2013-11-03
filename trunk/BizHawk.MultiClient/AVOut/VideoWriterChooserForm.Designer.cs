@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class VideoWriterChooserForm
 	{
@@ -36,8 +36,8 @@
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.labelDescription = new System.Windows.Forms.Label();
 			this.labelDescriptionBody = new System.Windows.Forms.Label();
-			this.numericTextBoxW = new BizHawk.MultiClient.AVOut.NumericTextBox();
-			this.numericTextBoxH = new BizHawk.MultiClient.AVOut.NumericTextBox();
+			this.numericTextBoxW = new NumericTextBox();
+			this.numericTextBoxH = new NumericTextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.buttonAuto = new System.Windows.Forms.Button();
@@ -224,12 +224,11 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
 		private System.Windows.Forms.Label labelDescription;
 		private System.Windows.Forms.Label labelDescriptionBody;
-		private AVOut.NumericTextBox numericTextBoxW;
-		private AVOut.NumericTextBox numericTextBoxH;
+		private NumericTextBox numericTextBoxW;
+		private NumericTextBox numericTextBoxH;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button buttonAuto;
 		private System.Windows.Forms.Panel panelSizeSelect;
-
 	}
 }

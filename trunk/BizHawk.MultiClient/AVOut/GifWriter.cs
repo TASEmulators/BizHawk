@@ -7,7 +7,7 @@ using System.Drawing;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient.AVOut
+namespace BizHawk.Client.EmuHawk
 {
 	public class GifWriter : IVideoWriter
 	{

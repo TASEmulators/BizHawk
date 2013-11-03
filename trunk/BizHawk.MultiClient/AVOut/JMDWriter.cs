@@ -9,7 +9,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// implements IVideoWriter, outputting to format "JMD"

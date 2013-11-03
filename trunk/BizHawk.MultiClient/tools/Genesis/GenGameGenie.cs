@@ -10,7 +10,7 @@ using BizHawk.Emulation.Consoles.Sega;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenGameGenie : Form, IToolForm
 	{

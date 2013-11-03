@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class WatchEditor
     {
@@ -30,7 +30,7 @@
         {
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.AddressBox = new BizHawk.HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.NotesBox = new System.Windows.Forms.TextBox();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();

@@ -5,11 +5,10 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public static class Win32
 	{
-
 		public static bool Is64BitProcess { get { return (IntPtr.Size == 8); } }
 		public static bool Is64BitOperatingSystem { get { return Is64BitProcess || InternalCheckIsWow64(); } }
 

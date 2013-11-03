@@ -5,7 +5,7 @@ using System.Text;
 using LuaInterface;
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public class ConsoleLuaLibrary : LuaLibraryBase
 	{

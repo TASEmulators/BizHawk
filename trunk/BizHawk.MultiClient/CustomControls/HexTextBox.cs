@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk
+namespace BizHawk.Client.EmuHawk
 {
 	public interface INumberBox
 	{

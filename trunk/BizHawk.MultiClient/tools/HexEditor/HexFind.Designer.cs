@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class HexFind
 	{
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.FindBox = new BizHawk.HexTextBox();
+			this.FindBox = new HexTextBox();
 			this.Find_Prev = new System.Windows.Forms.Button();
 			this.Find_Next = new System.Windows.Forms.Button();
 			this.HexRadio = new System.Windows.Forms.RadioButton();

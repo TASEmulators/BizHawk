@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class RamPoke
     {
@@ -34,12 +34,12 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.ValeLabel = new System.Windows.Forms.Label();
-			this.ValueBox = new BizHawk.MultiClient.WatchValueBox();
+			this.ValueBox = new WatchValueBox();
 			this.ValueHexLabel = new System.Windows.Forms.Label();
 			this.DisplayTypeLabel = new System.Windows.Forms.Label();
 			this.SizeLabel = new System.Windows.Forms.Label();
 			this.BigEndianLabel = new System.Windows.Forms.Label();
-			this.AddressBox = new BizHawk.HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();

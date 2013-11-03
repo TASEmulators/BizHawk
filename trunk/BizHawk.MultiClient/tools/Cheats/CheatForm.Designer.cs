@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class Cheats
 	{
@@ -30,7 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cheats));
-			this.CheatListView = new BizHawk.VirtualListView();
+			this.CheatListView = new VirtualListView();
 			this.CheatName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -101,7 +101,7 @@
 			this.TotalLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
-			this.CheatEditor = new BizHawk.MultiClient.CheatEdit();
+			this.CheatEditor = new CheatEdit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -112,9 +112,9 @@
 			// 
 			this.CheatListView.AllowColumnReorder = true;
 			this.CheatListView.AllowDrop = true;
-			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatListView.AutoArrange = false;
 			this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.CheatName,
@@ -186,7 +186,7 @@
 			// 
 			// ToggleContextMenuItem
 			// 
-			this.ToggleContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.ToggleContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.ToggleContextMenuItem.Name = "ToggleContextMenuItem";
 			this.ToggleContextMenuItem.ShortcutKeyDisplayString = "Enter";
 			this.ToggleContextMenuItem.Size = new System.Drawing.Size(157, 22);
@@ -195,7 +195,7 @@
 			// 
 			// RemoveContextMenuItem
 			// 
-			this.RemoveContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Delete";
 			this.RemoveContextMenuItem.Size = new System.Drawing.Size(157, 22);
@@ -204,7 +204,7 @@
 			// 
 			// DisableAllContextMenuItem
 			// 
-			this.DisableAllContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.DisableAllContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.DisableAllContextMenuItem.Name = "DisableAllContextMenuItem";
 			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.DisableAllContextMenuItem.Text = "&Disable All";
@@ -242,7 +242,7 @@
 			// 
 			// NewMenuItem
 			// 
-			this.NewMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -251,7 +251,7 @@
 			// 
 			// OpenMenuItem
 			// 
-			this.OpenMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -260,7 +260,7 @@
 			// 
 			// SaveMenuItem
 			// 
-			this.SaveMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -270,8 +270,8 @@
 			// SaveAsMenuItem
 			// 
 			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
-			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
+			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+			| System.Windows.Forms.Keys.S)));
 			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
 			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
@@ -285,8 +285,8 @@
 			// RecentSubMenu
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator4});
-			this.RecentSubMenu.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.toolStripSeparator4});
+			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -332,7 +332,7 @@
 			// 
 			// RemoveCheatMenuItem
 			// 
-			this.RemoveCheatMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveCheatMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveCheatMenuItem.Name = "RemoveCheatMenuItem";
 			this.RemoveCheatMenuItem.ShortcutKeyDisplayString = "Delete";
 			this.RemoveCheatMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -341,7 +341,7 @@
 			// 
 			// DuplicateMenuItem
 			// 
-			this.DuplicateMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.DuplicateMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.DuplicateMenuItem.Name = "DuplicateMenuItem";
 			this.DuplicateMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.DuplicateMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -350,7 +350,7 @@
 			// 
 			// InsertSeparatorMenuItem
 			// 
-			this.InsertSeparatorMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.InsertSeparatorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.InsertSeparatorMenuItem.Name = "InsertSeparatorMenuItem";
 			this.InsertSeparatorMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.InsertSeparatorMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -364,7 +364,7 @@
 			// 
 			// MoveUpMenuItem
 			// 
-			this.MoveUpMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.MoveUpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpMenuItem.Name = "MoveUpMenuItem";
 			this.MoveUpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
 			this.MoveUpMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -373,7 +373,7 @@
 			// 
 			// MoveDownMenuItem
 			// 
-			this.MoveDownMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.MoveDownMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownMenuItem.Name = "MoveDownMenuItem";
 			this.MoveDownMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.MoveDownMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -395,7 +395,7 @@
 			// 
 			// ToggleMenuItem
 			// 
-			this.ToggleMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
+			this.ToggleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.ToggleMenuItem.Name = "ToggleMenuItem";
 			this.ToggleMenuItem.ShortcutKeyDisplayString = "Enter";
 			this.ToggleMenuItem.Size = new System.Drawing.Size(233, 22);
@@ -404,7 +404,7 @@
 			// 
 			// DisableAllCheatsMenuItem
 			// 
-			this.DisableAllCheatsMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.DisableAllCheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.DisableAllCheatsMenuItem.Name = "DisableAllCheatsMenuItem";
 			this.DisableAllCheatsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.DisableAllCheatsMenuItem.Text = "Disable all";
@@ -638,7 +638,7 @@
 			// RemoveToolbarItem
 			// 
 			this.RemoveToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RemoveToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveToolbarItem.Name = "RemoveToolbarItem";
 			this.RemoveToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -658,7 +658,7 @@
 			// SeparatorToolbarItem
 			// 
 			this.SeparatorToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SeparatorToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.SeparatorToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.SeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SeparatorToolbarItem.Name = "SeparatorToolbarItem";
 			this.SeparatorToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -673,7 +673,7 @@
 			// MoveUpToolbarItem
 			// 
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveUpToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.MoveUpToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
 			this.MoveUpToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -683,7 +683,7 @@
 			// MoveDownToolbarItem
 			// 
 			this.MoveDownToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveDownToolbarItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.MoveDownToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveDownToolbarItem.Name = "MoveDownToolbarItem";
 			this.MoveDownToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -727,8 +727,8 @@
 			// 
 			// CheatGroupBox
 			// 
-			this.CheatGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatGroupBox.Controls.Add(this.CheatEditor);
 			this.CheatGroupBox.Location = new System.Drawing.Point(432, 66);
 			this.CheatGroupBox.Name = "CheatGroupBox";
@@ -739,9 +739,9 @@
 			// 
 			// CheatEditor
 			// 
-			this.CheatEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.CheatEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CheatEditor.Location = new System.Drawing.Point(6, 14);
 			this.CheatEditor.Name = "CheatEditor";
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);

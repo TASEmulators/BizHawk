@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using LuaInterface;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaWinform : Form
 	{

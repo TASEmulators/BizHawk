@@ -6,7 +6,7 @@ using System.IO;
 
 using BizHawk.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// writes MS standard riff files containing uncompressed PCM wav data

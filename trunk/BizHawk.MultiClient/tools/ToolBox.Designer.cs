@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class ToolBox
 	{
@@ -82,7 +82,7 @@
 			// 
 			// toolStripButton1
 			// 
-			this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.toolStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(63, 20);
@@ -91,7 +91,7 @@
 			// 
 			// toolStripButton2
 			// 
-			this.toolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.toolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton2.Name = "toolStripButton2";
 			this.toolStripButton2.Size = new System.Drawing.Size(88, 20);
@@ -100,7 +100,7 @@
 			// 
 			// toolStripButton3
 			// 
-			this.toolStripButton3.Image = global::BizHawk.MultiClient.Properties.Resources.search;
+			this.toolStripButton3.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton3.Name = "toolStripButton3";
 			this.toolStripButton3.Size = new System.Drawing.Size(89, 20);
@@ -109,7 +109,7 @@
 			// 
 			// HexEditor
 			// 
-			this.HexEditor.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.HexEditor.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.HexEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.HexEditor.Name = "HexEditor";
 			this.HexEditor.Size = new System.Drawing.Size(81, 20);
@@ -118,7 +118,7 @@
 			// 
 			// toolStripButton5
 			// 
-			this.toolStripButton5.Image = global::BizHawk.MultiClient.Properties.Resources.textdoc;
+			this.toolStripButton5.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc;
 			this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton5.Name = "toolStripButton5";
 			this.toolStripButton5.Size = new System.Drawing.Size(92, 20);
@@ -127,7 +127,7 @@
 			// 
 			// toolStripButton6
 			// 
-			this.toolStripButton6.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.toolStripButton6.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton6.Name = "toolStripButton6";
 			this.toolStripButton6.Size = new System.Drawing.Size(76, 20);
@@ -136,7 +136,7 @@
 			// 
 			// TAStudioButton
 			// 
-			this.TAStudioButton.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
+			this.TAStudioButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.TAStudioButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.TAStudioButton.Name = "TAStudioButton";
 			this.TAStudioButton.Size = new System.Drawing.Size(86, 20);
@@ -145,7 +145,7 @@
 			// 
 			// NESDebugger
 			// 
-			this.NESDebugger.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
+			this.NESDebugger.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
 			this.NESDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NESDebugger.Name = "NESDebugger";
 			this.NESDebugger.Size = new System.Drawing.Size(79, 20);
@@ -154,7 +154,7 @@
 			// 
 			// NESPPU
 			// 
-			this.NESPPU.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
+			this.NESPPU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
 			this.NESPPU.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NESPPU.Name = "NESPPU";
 			this.NESPPU.Size = new System.Drawing.Size(49, 20);
@@ -163,7 +163,7 @@
 			// 
 			// NESNameTable
 			// 
-			this.NESNameTable.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
+			this.NESNameTable.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
 			this.NESNameTable.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NESNameTable.Name = "NESNameTable";
 			this.NESNameTable.Size = new System.Drawing.Size(85, 20);
@@ -172,7 +172,7 @@
 			// 
 			// NESGameGenie
 			// 
-			this.NESGameGenie.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
+			this.NESGameGenie.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
 			this.NESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NESGameGenie.Name = "NESGameGenie";
 			this.NESGameGenie.Size = new System.Drawing.Size(91, 20);
@@ -181,7 +181,7 @@
 			// 
 			// KeypadTool
 			// 
-			this.KeypadTool.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
+			this.KeypadTool.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator;
 			this.KeypadTool.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.KeypadTool.Name = "KeypadTool";
 			this.KeypadTool.Size = new System.Drawing.Size(66, 20);
@@ -190,7 +190,7 @@
 			// 
 			// SNESGraphicsDebuggerButton
 			// 
-			this.SNESGraphicsDebuggerButton.Image = global::BizHawk.MultiClient.Properties.Resources.SNESControllerIcon;
+			this.SNESGraphicsDebuggerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
 			this.SNESGraphicsDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SNESGraphicsDebuggerButton.Name = "SNESGraphicsDebuggerButton";
 			this.SNESGraphicsDebuggerButton.Size = new System.Drawing.Size(99, 20);
@@ -199,7 +199,7 @@
 			// 
 			// SNESGameGenie
 			// 
-			this.SNESGameGenie.Image = global::BizHawk.MultiClient.Properties.Resources.SNESControllerIcon;
+			this.SNESGameGenie.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
 			this.SNESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SNESGameGenie.Name = "SNESGameGenie";
 			this.SNESGameGenie.Size = new System.Drawing.Size(91, 20);

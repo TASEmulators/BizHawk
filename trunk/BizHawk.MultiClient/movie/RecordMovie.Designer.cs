@@ -1,33 +1,33 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class RecordMovie
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class RecordMovie
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordMovie));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
@@ -69,7 +69,7 @@
 			// Browse
 			// 
 			this.Browse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Browse.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.Browse.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.Browse.Location = new System.Drawing.Point(423, 13);
 			this.Browse.Name = "Browse";
 			this.Browse.Size = new System.Drawing.Size(25, 23);
@@ -189,14 +189,14 @@
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.Button Cancel;
-        private System.Windows.Forms.Button OK;
-        private System.Windows.Forms.Button Browse;
-        private System.Windows.Forms.TextBox RecordBox;
+		private System.Windows.Forms.Button Cancel;
+		private System.Windows.Forms.Button OK;
+		private System.Windows.Forms.Button Browse;
+		private System.Windows.Forms.TextBox RecordBox;
 		private System.Windows.Forms.ComboBox StartFromCombo;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Label label3;
@@ -204,5 +204,5 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox AuthorBox;
 		private System.Windows.Forms.CheckBox DefaultAuthorCheckBox;
-    }
+	}
 }

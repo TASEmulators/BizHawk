@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class AboutBox
 	{
@@ -35,7 +35,7 @@
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.HR = new BizHawk.Core.HorizontalLine();
+			this.HR = new HorizontalLine();
 			this.label5 = new System.Windows.Forms.Label();
 			this.mom2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -43,7 +43,7 @@
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.pictureBox5 = new BizHawk.MultiClient.MyViewportPanel();
+			this.pictureBox5 = new MyViewportPanel();
 			this.CloseBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -243,7 +243,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Timer timer1;
 		private System.Windows.Forms.Label label3;
-		private BizHawk.Core.HorizontalLine HR;
+		private HorizontalLine HR;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.PictureBox mom2;
 		private System.Windows.Forms.Label label5;

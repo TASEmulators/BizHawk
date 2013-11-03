@@ -14,7 +14,7 @@ using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Sega;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class Cheats : Form, IToolForm
 	{

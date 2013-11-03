@@ -1,33 +1,33 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class MessageConfig
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class MessageConfig
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.OK = new System.Windows.Forms.Button();
 			this.MessageTypeBox = new System.Windows.Forms.GroupBox();
 			this.AutoholdLabel = new System.Windows.Forms.Label();
@@ -687,45 +687,45 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.Button OK;
-        private System.Windows.Forms.GroupBox MessageTypeBox;
-        private System.Windows.Forms.RadioButton MessagesRadio;
-        private System.Windows.Forms.RadioButton InputDisplayRadio;
-        private System.Windows.Forms.RadioButton LagCounterRadio;
-        private System.Windows.Forms.RadioButton FrameCounterRadio;
-        private System.Windows.Forms.RadioButton FPSRadio;
+		private System.Windows.Forms.Button OK;
+		private System.Windows.Forms.GroupBox MessageTypeBox;
+		private System.Windows.Forms.RadioButton MessagesRadio;
+		private System.Windows.Forms.RadioButton InputDisplayRadio;
+		private System.Windows.Forms.RadioButton LagCounterRadio;
+		private System.Windows.Forms.RadioButton FrameCounterRadio;
+		private System.Windows.Forms.RadioButton FPSRadio;
 		private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ColorDialog MessageColorDialog;
-        private System.Windows.Forms.Button Cancel;
-        private System.Windows.Forms.Label MessLabel;
-        private System.Windows.Forms.Label InpLabel;
-        private System.Windows.Forms.Label LagLabel;
-        private System.Windows.Forms.Label FCLabel;
-        private System.Windows.Forms.Label FpsPosLabel;
-        private System.Windows.Forms.Button ResetDefaultsButton;
+		private System.Windows.Forms.ColorDialog MessageColorDialog;
+		private System.Windows.Forms.Button Cancel;
+		private System.Windows.Forms.Label MessLabel;
+		private System.Windows.Forms.Label InpLabel;
+		private System.Windows.Forms.Label LagLabel;
+		private System.Windows.Forms.Label FCLabel;
+		private System.Windows.Forms.Label FpsPosLabel;
+		private System.Windows.Forms.Button ResetDefaultsButton;
 		private System.Windows.Forms.TextBox ColorText;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel PositionPanel;
-        private System.Windows.Forms.NumericUpDown XNumeric;
-        private System.Windows.Forms.NumericUpDown YNumeric;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox PositionGroupBox;
-        private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Panel PositionPanel;
+		private System.Windows.Forms.NumericUpDown XNumeric;
+		private System.Windows.Forms.NumericUpDown YNumeric;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.GroupBox PositionGroupBox;
+		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.TextBox AlertColorText;
-        private System.Windows.Forms.Panel AlertColorPanel;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Panel AlertColorPanel;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.TextBox LInputText;
-        private System.Windows.Forms.Panel LInputColorPanel;
-        private System.Windows.Forms.ColorDialog AlertColorDialog;
-        private System.Windows.Forms.ColorDialog LInputColorDialog;
+		private System.Windows.Forms.Panel LInputColorPanel;
+		private System.Windows.Forms.ColorDialog AlertColorDialog;
+		private System.Windows.Forms.ColorDialog LInputColorDialog;
 		private System.Windows.Forms.RadioButton BR;
 		private System.Windows.Forms.RadioButton BL;
 		private System.Windows.Forms.RadioButton TR;
@@ -743,5 +743,5 @@
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
 		private System.Windows.Forms.Label AutoholdLabel;
 		private System.Windows.Forms.RadioButton AutoholdRadio;
-    }
+	}
 }

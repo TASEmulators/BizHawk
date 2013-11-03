@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
     partial class GenGameGenie
     {
@@ -38,8 +38,8 @@
 			this.addcheatbt = new System.Windows.Forms.Button();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.ValueBox = new BizHawk.HexTextBox();
-			this.AddressBox = new BizHawk.HexTextBox();
+			this.ValueBox = new HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();

@@ -2,9 +2,8 @@
 using System.Globalization;
 
 using BizHawk.Common;
-using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.Common
 {
 	public class RomGame
 	{

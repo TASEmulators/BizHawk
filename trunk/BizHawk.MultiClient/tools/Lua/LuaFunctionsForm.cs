@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaFunctionsForm : Form
 	{

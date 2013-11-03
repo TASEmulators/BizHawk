@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	// Derived from http://www.codeproject.com/KB/cs/ScreenSaverControl.aspx
 	public static class ScreenSaver

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class RamWatch
 	{
@@ -108,7 +108,7 @@
 			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowDomainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.WatchListView = new BizHawk.VirtualListView();
+			this.WatchListView = new VirtualListView();
 			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PrevColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -175,7 +175,7 @@
 			// 
 			// EditContextMenuItem
 			// 
-			this.EditContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
+			this.EditContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.EditContextMenuItem.Name = "EditContextMenuItem";
 			this.EditContextMenuItem.ShortcutKeyDisplayString = "Ctrl+E";
 			this.EditContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -184,7 +184,7 @@
 			// 
 			// RemoveContextMenuItem
 			// 
-			this.RemoveContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.RemoveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
 			this.RemoveContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -193,7 +193,7 @@
 			// 
 			// DuplicateContextMenuItem
 			// 
-			this.DuplicateContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.DuplicateContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.DuplicateContextMenuItem.Name = "DuplicateContextMenuItem";
 			this.DuplicateContextMenuItem.ShortcutKeyDisplayString = "Ctrl+D";
 			this.DuplicateContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -202,7 +202,7 @@
 			// 
 			// PokeContextMenuItem
 			// 
-			this.PokeContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.PokeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeContextMenuItem.Name = "PokeContextMenuItem";
 			this.PokeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+P";
 			this.PokeContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -211,7 +211,7 @@
 			// 
 			// FreezeContextMenuItem
 			// 
-			this.FreezeContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.FreezeContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeContextMenuItem.Name = "FreezeContextMenuItem";
 			this.FreezeContextMenuItem.ShortcutKeyDisplayString = "Ctrl+F";
 			this.FreezeContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -220,7 +220,7 @@
 			// 
 			// UnfreezeAllContextMenuItem
 			// 
-			this.UnfreezeAllContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.UnfreezeAllContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllContextMenuItem.Name = "UnfreezeAllContextMenuItem";
 			this.UnfreezeAllContextMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.UnfreezeAllContextMenuItem.Text = "Unfreeze &All";
@@ -240,7 +240,7 @@
 			// 
 			// InsertSeperatorContextMenuItem
 			// 
-			this.InsertSeperatorContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.InsertSeperatorContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.InsertSeperatorContextMenuItem.Name = "InsertSeperatorContextMenuItem";
 			this.InsertSeperatorContextMenuItem.ShortcutKeyDisplayString = "Ctrl+I";
 			this.InsertSeperatorContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -249,7 +249,7 @@
 			// 
 			// MoveUpContextMenuItem
 			// 
-			this.MoveUpContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.MoveUpContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpContextMenuItem.Name = "MoveUpContextMenuItem";
 			this.MoveUpContextMenuItem.ShortcutKeyDisplayString = "Ctrl+Up";
 			this.MoveUpContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -258,7 +258,7 @@
 			// 
 			// MoveDownContextMenuItem
 			// 
-			this.MoveDownContextMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.MoveDownContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownContextMenuItem.Name = "MoveDownContextMenuItem";
 			this.MoveDownContextMenuItem.ShortcutKeyDisplayString = "Ctrl+Down";
 			this.MoveDownContextMenuItem.Size = new System.Drawing.Size(203, 22);
@@ -362,7 +362,7 @@
 			// NewWatchStripButton1
 			// 
 			this.NewWatchStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.NewWatchStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.addWatch;
+			this.NewWatchStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.addWatch;
 			this.NewWatchStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewWatchStripButton1.Name = "NewWatchStripButton1";
 			this.NewWatchStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -383,7 +383,7 @@
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.cutToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -415,7 +415,7 @@
 			// PoketoolStripButton2
 			// 
 			this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.PoketoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.PoketoolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PoketoolStripButton2.Name = "PoketoolStripButton2";
 			this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
@@ -426,7 +426,7 @@
 			// FreezetoolStripButton2
 			// 
 			this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.FreezetoolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
 			this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
@@ -436,7 +436,7 @@
 			// toolStripButton1
 			// 
 			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.toolStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -452,7 +452,7 @@
 			// MoveUpStripButton1
 			// 
 			this.MoveUpStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveUpStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.MoveUpStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpStripButton1.Name = "MoveUpStripButton1";
 			this.MoveUpStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -462,7 +462,7 @@
 			// MoveDownStripButton1
 			// 
 			this.MoveDownStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveDownStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.MoveDownStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveDownStripButton1.Name = "MoveDownStripButton1";
 			this.MoveDownStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -501,7 +501,7 @@
 			// 
 			// newListToolStripMenuItem
 			// 
-			this.newListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newListToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.newListToolStripMenuItem.Name = "newListToolStripMenuItem";
 			this.newListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newListToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -510,7 +510,7 @@
 			// 
 			// openToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.openToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -519,7 +519,7 @@
 			// 
 			// saveToolStripMenuItem
 			// 
-			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -546,7 +546,7 @@
 			// 
 			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem});
-			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.recentToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
@@ -574,20 +574,20 @@
 			// watchesToolStripMenuItem
 			// 
 			this.watchesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.memoryDomainsToolStripMenuItem,
-            this.toolStripSeparator8,
-            this.newWatchToolStripMenuItem,
-            this.editWatchToolStripMenuItem,
-            this.removeWatchToolStripMenuItem,
-            this.duplicateWatchToolStripMenuItem,
-            this.pokeAddressToolStripMenuItem,
-            this.freezeAddressToolStripMenuItem,
-            this.insertSeparatorToolStripMenuItem,
-            this.clearChangeCountsToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem,
-            this.selectAllToolStripMenuItem});
+			this.memoryDomainsToolStripMenuItem,
+			this.toolStripSeparator8,
+			this.newWatchToolStripMenuItem,
+			this.editWatchToolStripMenuItem,
+			this.removeWatchToolStripMenuItem,
+			this.duplicateWatchToolStripMenuItem,
+			this.pokeAddressToolStripMenuItem,
+			this.freezeAddressToolStripMenuItem,
+			this.insertSeparatorToolStripMenuItem,
+			this.clearChangeCountsToolStripMenuItem,
+			this.toolStripSeparator3,
+			this.moveUpToolStripMenuItem,
+			this.moveDownToolStripMenuItem,
+			this.selectAllToolStripMenuItem});
 			this.watchesToolStripMenuItem.Name = "watchesToolStripMenuItem";
 			this.watchesToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
 			this.watchesToolStripMenuItem.Text = "&Watches";
@@ -614,7 +614,7 @@
 			// 
 			// newWatchToolStripMenuItem
 			// 
-			this.newWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.newWatchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
 			this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -623,7 +623,7 @@
 			// 
 			// editWatchToolStripMenuItem
 			// 
-			this.editWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
+			this.editWatchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editWatchToolStripMenuItem.Name = "editWatchToolStripMenuItem";
 			this.editWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -632,7 +632,7 @@
 			// 
 			// removeWatchToolStripMenuItem
 			// 
-			this.removeWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
+			this.removeWatchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.removeWatchToolStripMenuItem.Name = "removeWatchToolStripMenuItem";
 			this.removeWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
 			this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -641,7 +641,7 @@
 			// 
 			// duplicateWatchToolStripMenuItem
 			// 
-			this.duplicateWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.duplicateWatchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.duplicateWatchToolStripMenuItem.Name = "duplicateWatchToolStripMenuItem";
 			this.duplicateWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -650,7 +650,7 @@
 			// 
 			// pokeAddressToolStripMenuItem
 			// 
-			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
 			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -659,7 +659,7 @@
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -668,7 +668,7 @@
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 
-			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
 			this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -690,7 +690,7 @@
 			// 
 			// moveUpToolStripMenuItem
 			// 
-			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.moveUpToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
 			this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
 			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
@@ -699,7 +699,7 @@
 			// 
 			// moveDownToolStripMenuItem
 			// 
-			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
+			this.moveDownToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
 			this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
 			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(224, 22);

@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.MultiClient
+namespace BizHawk.Client.EmuHawk
 {
 	class VirtualPadGen3Button : VirtualPad
 	{
