@@ -9,7 +9,6 @@ namespace BizHawk.Client.Common
 		public Movie Movie;
 		public MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
 		public bool EditorMode { get; set; }
-		public Action ClearSRAMCallback; //Required
 		public Action<string> MessageCallback; //Not Required
 		public Func<string, string, bool> AskYesNoCallback; //Not Required
 
@@ -428,7 +427,7 @@ namespace BizHawk.Client.Common
 					var result = Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: false, ErrorMessage: out ErrorMSG);
 					if (result == Movie.LoadStateResult.Pass)
 					{
-						ClearSRAMCallback();
+						Global.Emulator.ClearSaveRam();
 						Movie.StartRecording();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
@@ -444,7 +443,7 @@ namespace BizHawk.Client.Common
 								var newresult = Movie.CheckTimeLines(reader, OnlyGUID: !Global.ReadOnly, IgnoreGuidMismatch: true, ErrorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
-									ClearSRAMCallback();
+									Global.Emulator.ClearSaveRam();
 									Movie.StartRecording();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();

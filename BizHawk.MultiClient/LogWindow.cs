@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) =>
 			{
 				Global.Config.ShowLogWindow = false;
-				GlobalWinF.MainForm.notifyLogWindowClosing();
+				GlobalWinF.MainForm.NotifyLogWindowClosing();
 				LogConsole.notifyLogWindowClosing();
 				SaveConfigSettings();
 			};

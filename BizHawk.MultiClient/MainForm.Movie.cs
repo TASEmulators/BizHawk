@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
 			Global.MovieSession = new MovieSession
 			{
 				Movie = m,
-				ClearSRAMCallback = ClearSaveRAM,
 				MessageCallback = GlobalWinF.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -42,13 +41,13 @@ namespace BizHawk.MultiClient
 			}
 			if (record)
 			{
-				GlobalWinF.MainForm.ClearSaveRAM();
+				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartRecording();
 				Global.ReadOnly = false;
 			}
 			else
 			{
-				GlobalWinF.MainForm.ClearSaveRAM();
+				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
@@ -115,7 +114,7 @@ namespace BizHawk.MultiClient
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetFrameCounter();
 				}
-				GlobalWinF.MainForm.ClearSaveRAM();
+				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
 				GlobalWinF.OSD.AddMessage("Replaying movie file in read-only mode");

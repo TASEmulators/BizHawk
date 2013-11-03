@@ -50,6 +50,11 @@ namespace BizHawk.Client.Common
 
 		public bool HasSlot(int slot)
 		{
+			if (Global.Emulator is NullEmulator)
+			{
+				return false;
+			}
+
 			if (slot < 0 || slot > 10)
 			{
 				return false;
