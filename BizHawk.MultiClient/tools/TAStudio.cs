@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class TAStudio : Form
+	public partial class TAStudio : Form, IToolForm
 	{
 		//TODO:
 		//Slicer Section:
@@ -39,6 +39,13 @@ namespace BizHawk.MultiClient
 		//List<string> TimeLines - list of movie files
 		//List<string> Bookmarks - list of savestate files
 
+		public bool AskSave()
+		{
+			return true;
+			//TODO: eventually we want to do this
+		}
+		public bool UpdateBefore { get { return false; } }
+
 		public TAStudio()
 		{
 			InitializeComponent();
@@ -47,7 +54,6 @@ namespace BizHawk.MultiClient
 			TASView.QueryItemBkColor += TASView_QueryItemBkColor;
 			TASView.VirtualMode = true;
 		}
-
 
 		//TODO: move me
 		public class ClipboardEntry
