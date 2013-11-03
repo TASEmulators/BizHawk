@@ -52,7 +52,7 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
-			TAStudio1.Restart();
+			GlobalWinF.Tools.Restart<TAStudio>();
 			GlobalWinF.Tools.Restart<VirtualPadForm>();
 			GlobalWinF.DisplayManager.NeedsToPaint = true;
 		}

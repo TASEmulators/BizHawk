@@ -87,12 +87,10 @@ namespace BizHawk.MultiClient
 		//tool dialogs
 		private ToolBox _toolbox;
 		private TI83KeyPad _ti83pad;
-		private TAStudio _tastudio;
 
 		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
 		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
 		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
-		public TAStudio TAStudio1 { get { if (_tastudio == null) _tastudio = new TAStudio(); return _tastudio; } set { _tastudio = value; } }
 
 		//TODO: clean me up
 		public void Cheats_Restart()
@@ -1580,7 +1578,6 @@ namespace BizHawk.MultiClient
 
 				GlobalWinF.Tools.Restart();
 				if (_ti83pad != null) TI83KeyPad1.Restart();
-				if (_tastudio != null) TAStudio1.Restart();
 				Cheats_Restart();
 				if (_toolbox != null) ToolBox1.Restart();
 
@@ -2326,10 +2323,6 @@ namespace BizHawk.MultiClient
 
 #endif
 			GlobalWinF.Tools.UpdateAfter();
-			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
-			//frame of execution in its list view.
-
-			if (_tastudio != null) TAStudio1.UpdateValues();
 			HandleToggleLight();
 #if WINDOWS
 			if (_luaconsole != null)
@@ -2954,7 +2947,6 @@ namespace BizHawk.MultiClient
 		public void CloseTools()
 		{
 			CloseForm(TI83KeyPad1);
-			CloseForm(TAStudio1); Global.MovieSession.EditorMode = false;
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3030,16 +3022,8 @@ namespace BizHawk.MultiClient
 
 		public void LoadTAStudio()
 		{
-			if (!TAStudio1.IsHandleCreated || TAStudio1.IsDisposed)
-			{
-				TAStudio1 = new TAStudio();
-				Global.MovieSession.EditorMode = true;
-				TAStudio1.Show();
-			}
-			else
-			{
-				TAStudio1.Focus();
-			}
+			Global.MovieSession.EditorMode = true;
+			GlobalWinF.Tools.Load<TAStudio>();
 		}
 
 		private void VolumeUp()
