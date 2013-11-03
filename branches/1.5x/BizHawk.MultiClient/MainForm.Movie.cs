@@ -305,7 +305,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
-					if (Global.ClientControls["ClearFrame"])
+					if (Global.ClientControls["Scrub Input"])
 					{
 						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						ClearFrame();

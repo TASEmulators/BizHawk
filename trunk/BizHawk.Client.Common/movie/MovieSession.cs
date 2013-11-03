@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleMovieOnFrameLoop(bool clearFramePressed)
+		public void HandleMovieOnFrameLoop()
 		{
 			if (!Movie.IsActive)
 			{
@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 				{
 					Movie.CaptureState();
 					LatchInputFromLog();
-					if (clearFramePressed)
+					if (Global.ClientControls["Scrub Input"])
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						ClearFrame();

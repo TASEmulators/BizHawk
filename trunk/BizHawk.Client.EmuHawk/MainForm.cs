@@ -2646,7 +2646,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				Global.MovieSession.HandleMovieOnFrameLoop(Global.ClientControls["ClearFrame"]);
+				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				coreskipaudio = Global.ClientControls["Turbo"] && CurrAviWriter == null;
 				//=======================================
