@@ -10,7 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using BizHawk.DiscSystem;
 
-namespace BizHawk
+namespace BizHawk.Client.DiscoHawk
 {
 	public partial class DiscoHawkDialog : Form
 	{

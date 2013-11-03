@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation", "BizHawk.Emulation\BizHawk.Emulation.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "DiscoHawk\DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.Common", "BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Common", "BizHawk.Common\BizHawk.Common.csproj", "{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.DiscoHawk", "BizHawk.Client.DiscoHawk\BizHawk.Client.DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,20 +37,6 @@ Global
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|Win32.ActiveCfg = Release|Any CPU
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|Win32.Build.0 = Release|Any CPU
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|x86.ActiveCfg = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Win32.Build.0 = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Win32.ActiveCfg = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Win32.Build.0 = Release|Any CPU
-		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|x86.ActiveCfg = Release|Any CPU
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24A0AA3C-B25F-4197-B23D-476D6462DBA0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -87,6 +73,18 @@ Global
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|Win32.ActiveCfg = Release|Any CPU
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

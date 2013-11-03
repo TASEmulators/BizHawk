@@ -1,4 +1,4 @@
-﻿namespace BizHawk
+﻿namespace BizHawk.Client.DiscoHawk
 {
 	partial class ProgressDialog
 	{

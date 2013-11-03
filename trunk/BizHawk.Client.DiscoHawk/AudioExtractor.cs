@@ -7,28 +7,28 @@ using BizHawk.DiscSystem;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk
+namespace BizHawk.Client.DiscoHawk
 {
-    class AudioExtractor
-    {
-        public static string FFmpegPath;
+	class AudioExtractor
+	{
+		public static string FFmpegPath;
 
-        public static void Extract(Disc disc, string path, string filebase)
-        {
+		public static void Extract(Disc disc, string path, string filebase)
+		{
 			bool confirmed = false;
-            var tracks = disc.TOC.Sessions[0].Tracks;
-            foreach (var track in tracks)
-            {
-                if (track.TrackType != ETrackType.Audio)
-                    continue;
+			var tracks = disc.TOC.Sessions[0].Tracks;
+			foreach (var track in tracks)
+			{
+				if (track.TrackType != ETrackType.Audio)
+					continue;
 
-                var waveData = new byte[track.length_aba * 2352];
-                int startLba = track.Indexes[1].LBA;
-                for (int sector = 0; sector < track.length_aba; sector++)
-                    disc.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
+				var waveData = new byte[track.length_aba * 2352];
+				int startLba = track.Indexes[1].LBA;
+				for (int sector = 0; sector < track.length_aba; sector++)
+					disc.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 
 				string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.num);
-				if(File.Exists(mp3Path))
+				if (File.Exists(mp3Path))
 				{
 					if (!confirmed)
 					{
@@ -51,7 +51,7 @@ namespace BizHawk
 				{
 					File.Delete(tempfile);
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 }
