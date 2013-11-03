@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.Common", "Bi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Common", "BizHawk.Common\BizHawk.Common.csproj", "{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "BizHawk.MultiClient\BizHawk.Client.EmuHawk.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.EmuHawk", "BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +92,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = BizHawk.MultiClient\BizHawk.Client.EmuHawk.csproj
+		StartupItem = BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj
 	EndGlobalSection
 EndGlobal
