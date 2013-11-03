@@ -975,7 +975,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Properties\svnrev.cs" />
-    <Compile Include="Throttle.cs" />
     <Compile Include="tools\InputPrompt.cs">
       <SubType>Form</SubType>
     </Compile>

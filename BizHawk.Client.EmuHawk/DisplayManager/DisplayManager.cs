@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!GlobalWin.ClientControls["MaxTurbo"])
+			if (!Global.ClientControls["MaxTurbo"])
 			{
 				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 				int line = 1;
@@ -587,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (GlobalWin.ClientControls["Autohold"] || GlobalWin.ClientControls["Autofire"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
 
@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 					disp.Append(' ');
 				}
 
-				foreach (string s in GlobalWin.AutofireStickyXORAdapter.CurrentStickies)
+				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
 				{
 					disp.Append("Auto-");
 					disp.Append(s);
