@@ -389,7 +389,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			eMessage_SetBuffer,
 			eMessage_BeginBufferIO,
-			eMessage_EndBufferIO
+			eMessage_EndBufferIO,
+
+			eMessage_set_state_hook_exec,
+			eMessage_set_state_hook_read,
+			eMessage_set_state_hook_write,
+			eMessage_set_state_hook_nmi,
+			eMessage_set_state_hook_irq,
+			eMessage_snes_cb_hook_exec,
+			eMessage_snes_cb_hook_read,
+			eMessage_snes_cb_hook_write,
+			eMessage_snes_cb_hook_nmi,
+			eMessage_snes_cb_hook_irq,
 		};
 
 		static bool DryRun(string exePath)
@@ -634,6 +645,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 		public void snes_term() { WritePipeMessage(eMessage.eMessage_snes_term); }
 		public void snes_unload_cartridge() { WritePipeMessage(eMessage.eMessage_snes_unload_cartridge); }
+
+		public void snes_set_state_hook_exec(bool state)
+		{
+			WritePipeMessage(eMessage.eMessage_set_state_hook_exec);
+			bwPipe.Write(state);
+		}
 
 		public bool snes_load_cartridge_super_game_boy(string rom_xml, byte[] rom_data, uint rom_size, string dmg_xml, byte[] dmg_data, uint dmg_size)
 		{
@@ -932,6 +949,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							SharedMemoryBlocks.Remove(name);
 							break;
 						}
+
+					case eMessage.eMessage_snes_cb_hook_exec:
+						{
+							var addr = brPipe.ReadInt32();
+							//Console.WriteLine("received hook messages from libsnes\n");
+							//not sure how to shuttle these out of an emu core yet. do we have mechanisms for that?
+							break;
+						}
+					case eMessage.eMessage_snes_cb_hook_read:
+						{
+							var addr = brPipe.ReadInt32();
+							break;
+						}
+					case eMessage.eMessage_snes_cb_hook_write:
+						{
+							var addr = brPipe.ReadInt32();
+							var value = brPipe.ReadByte();
+							break;
+						}
+					case eMessage.eMessage_snes_cb_hook_nmi:
+						break;
+					case eMessage.eMessage_snes_cb_hook_irq:
+						break;
 				}
 			}
 		} //WaitForCompletion()

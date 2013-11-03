@@ -259,6 +259,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CoreComm.CpuTraceAvailable = true;
 
 			api.snes_power();
+			api.snes_set_state_hook_exec(true);
 
 			SetupMemoryDomains(romData,sgbRomData);
 
