@@ -1142,15 +1142,13 @@ namespace BizHawk.MultiClient
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
-			ToolBoxMenuItem.Enabled = !ToolBox1.IsHandleCreated || ToolBox1.IsDisposed;
 			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
-
 			CheatsMenuItem.Enabled = !(Global.Emulator is NullEmulator);
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadToolBox();
+			GlobalWinF.Tools.Load<ToolBox>();
 		}
 
 		private void RamWatchMenuItem_Click(object sender, EventArgs e)
@@ -1362,7 +1360,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is TI83)
 			{
-				LoadTI83KeyPad();
+				GlobalWinF.Tools.Load<TI83KeyPad>();
 			}
 		}
 

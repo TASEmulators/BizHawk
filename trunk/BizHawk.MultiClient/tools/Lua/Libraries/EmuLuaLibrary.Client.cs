@@ -142,7 +142,7 @@ namespace BizHawk.MultiClient
 
 		public static void client_opentoolbox()
 		{
-			GlobalWinF.MainForm.LoadToolBox();
+			GlobalWinF.Tools.Load<ToolBox>();
 		}
 
 		public static void client_opentracelogger()

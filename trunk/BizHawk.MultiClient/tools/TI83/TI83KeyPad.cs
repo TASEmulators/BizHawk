@@ -7,9 +7,12 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.MultiClient
 {
-	public partial class TI83KeyPad : Form
+	public partial class TI83KeyPad : Form, IToolForm
 	{
 		//TODO: if wndx/wndy are negative, load window on the right edge of emulator window
+
+		public bool AskSave() { return true; }
+		public bool UpdateBefore { get { return false; } }
 
 		public TI83KeyPad()
 		{
@@ -91,13 +94,18 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			if (!(Global.Emulator is TI83))
+			{
+				Close();
+			}
 		}
 
 		public void Restart()
 		{
 			if (!(Global.Emulator is TI83))
+			{
 				Close();
-			if (!IsHandleCreated || IsDisposed) return;
+			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

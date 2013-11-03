@@ -10,7 +10,7 @@ using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
-	public partial class ToolBox : Form
+	public partial class ToolBox : Form, IToolForm
 	{
 		public ToolBox()
 		{
@@ -25,6 +25,9 @@ namespace BizHawk.MultiClient
 			HideShowIcons();
 		}
 
+		public bool AskSave() { return true;  }
+		public bool UpdateBefore { get { return false; } }
+		public void UpdateValues() { }
 		public void Restart()
 		{
 			HideShowIcons();
@@ -135,7 +138,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is TI83)
 			{
-				GlobalWinF.MainForm.LoadTI83KeyPad();
+				GlobalWinF.Tools.Load<TI83KeyPad>();
 			}
 		}
 
