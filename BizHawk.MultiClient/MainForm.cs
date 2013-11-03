@@ -84,14 +84,6 @@ namespace BizHawk.MultiClient
 		private bool InFullscreen;
 		private Point _windowed_location;
 
-		//tool dialogs
-		private ToolBox _toolbox;
-		private TI83KeyPad _ti83pad;
-
-		//TODO: this is a lazy way to refactor things, but works for now.  The point is to not have these objects created until needed, without refactoring a lot of code
-		public ToolBox ToolBox1 { get { if (_toolbox == null) _toolbox = new ToolBox(); return _toolbox; } set { _toolbox = value; } }
-		public TI83KeyPad TI83KeyPad1 { get { if (_ti83pad == null) _ti83pad = new TI83KeyPad(); return _ti83pad; } set { _ti83pad = value; } }
-
 		//TODO: clean me up
 		public void Cheats_Restart()
 		{
@@ -195,6 +187,9 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.MovieSession.Movie.Stop();
 				GlobalWinF.Tools.Close();
+#if WINDOWS
+				CloseForm(LuaConsole1);
+#endif
 				SaveConfig();
 			};
 
@@ -1280,7 +1275,9 @@ namespace BizHawk.MultiClient
 							case "TI83":
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								if (Global.Config.TI83autoloadKeyPad)
-									LoadTI83KeyPad();
+								{
+									GlobalWinF.Tools.Load<TI83KeyPad>();
+								}
 								break;
 							case "NES":
 								{
@@ -1565,21 +1562,16 @@ namespace BizHawk.MultiClient
 
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
+				{
 					LoadSaveRam();
+				}
 				if (Global.Config.AutoSavestates)
+				{
 					LoadState("Auto");
-
-				////setup the throttle based on platform's specifications
-				////(one day later for some systems we will need to modify it at runtime as the display mode changes)
-				//{
-				//    throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
-				//    SyncThrottle();
-				//}
+				}
 
 				GlobalWinF.Tools.Restart();
-				if (_ti83pad != null) TI83KeyPad1.Restart();
 				Cheats_Restart();
-				if (_toolbox != null) ToolBox1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -2066,7 +2058,7 @@ namespace BizHawk.MultiClient
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": GlobalWinF.Tools.Load<Cheats>(); break;
 				case "TAStudio": LoadTAStudio(); break;
-				case "ToolBox": LoadToolBox(); break;
+				case "ToolBox": GlobalWinF.Tools.Load<ToolBox>(); break;
 				case "Virtual Pad": GlobalWinF.Tools.Load<VirtualPadForm>(); break;
 
 				case "Do Search": GlobalWinF.Tools.RamSearch.DoSearch(); break;
@@ -2556,28 +2548,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadToolBox()
-		{
-			if (!ToolBox1.IsHandleCreated || ToolBox1.IsDisposed)
-			{
-				ToolBox1 = new ToolBox();
-				ToolBox1.Show();
-			}
-			else
-				ToolBox1.Close();
-		}
-
-		public void LoadTI83KeyPad()
-		{
-			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
-			{
-				TI83KeyPad1 = new TI83KeyPad();
-				TI83KeyPad1.Show();
-			}
-			else
-				TI83KeyPad1.Focus();
-		}
-
 		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
 		{
 			string PluginToUse = "";
@@ -2913,9 +2883,7 @@ namespace BizHawk.MultiClient
 
 			RewireSound();
 			ResetRewindBuffer();
-			TI83KeyPad1.Restart();
 			Cheats_Restart();
-			ToolBox1.Restart();
 #if WINDOWS
 			LuaConsole1.Restart();
 #endif
@@ -2942,14 +2910,6 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
-		}
-
-		public void CloseTools()
-		{
-			CloseForm(TI83KeyPad1);
-#if WINDOWS
-			CloseForm(LuaConsole1);
-#endif
 		}
 
 		private void CloseForm(Form form)
@@ -3017,7 +2977,6 @@ namespace BizHawk.MultiClient
 			{
 				GlobalWinF.OSD.AddMessage("No movie active");
 			}
-
 		}
 
 		public void LoadTAStudio()
