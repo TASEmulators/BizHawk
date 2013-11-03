@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+			string dllDir = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
 
 			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!MainForm.INTERIM)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Util").GetName().Version;
+				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Client.Common").GetName().Version;
 				var emulversion = Assembly.LoadWithPartialName("Bizhawk.Emulation").GetName().Version;
 
 				if (thisversion != utilversion || thisversion != emulversion)
@@ -66,9 +66,9 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
+			string iniPath = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
+			Global.Config = ConfigService.Load<Config>(iniPath, new Config());
 			Global.Config.ResolveDefaults();
-
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
 #if WINDOWS
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 
 				//load missing assemblies by trying to find them in the dll directory
 				string dllname = new AssemblyName(args.Name).Name + ".dll";
-				string directory = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+				string directory = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				string fname = Path.Combine(directory, dllname);
 				if (!File.Exists(fname)) return null;
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
