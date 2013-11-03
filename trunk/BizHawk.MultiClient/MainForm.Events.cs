@@ -2147,18 +2147,26 @@ namespace BizHawk.MultiClient
 				if (extension != null && extension.ToUpper() == ".LUA")
 				{
 					OpenLuaConsole();
-					LuaConsole1.LoadLuaFile(path);
+					if (GlobalWinF.Tools.Has<LuaConsole>())
+					{
+						GlobalWinF.Tools.LuaConsole.LoadLuaFile(path);
+					}
 					isLua = true;
 				}
 			}
 			if (isLua)
+			{
 				return;
+			}
 
-			var ext = Path.GetExtension(filePaths[0]) ?? "";
+			var ext = Path.GetExtension(filePaths[0]) ?? String.Empty;
 			if (ext.ToUpper() == ".LUASES")
 			{
 				OpenLuaConsole();
-				LuaConsole1.LoadLuaSession(filePaths[0]);
+				if (GlobalWinF.Tools.Has<LuaConsole>())
+				{
+					GlobalWinF.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
+				}
 			}
 			else if (IsValidMovieExtension(ext))
 			{

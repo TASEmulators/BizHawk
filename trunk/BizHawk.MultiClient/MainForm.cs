@@ -116,11 +116,6 @@ namespace BizHawk.MultiClient
 			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
-#if WINDOWS
-		private LuaConsole _luaconsole = null;
-		public LuaConsole LuaConsole1 { get { if (_luaconsole == null) _luaconsole = new LuaConsole(); return _luaconsole; } set { _luaconsole = value; } }
-#endif
-
 		/// <summary>
 		/// number of frames to autodump
 		/// </summary>
@@ -187,9 +182,6 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.MovieSession.Movie.Stop();
 				GlobalWinF.Tools.Close();
-#if WINDOWS
-				CloseForm(LuaConsole1);
-#endif
 				SaveConfig();
 			};
 
@@ -635,12 +627,11 @@ namespace BizHawk.MultiClient
 					GlobalWinF.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
 
-				//if (!EmulatorPaused)
-				//Global.ClickyVirtualPadController.FrameTick();
+				if (GlobalWinF.Tools.Has<LuaConsole>())
+				{
+					GlobalWinF.Tools.LuaConsole.ResumeScripts(false);
+				}
 
-#if WINDOWS
-				LuaConsole1.ResumeScripts(false);
-#endif
 
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
@@ -1555,9 +1546,7 @@ namespace BizHawk.MultiClient
 				//im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != file.CanonicalFullPath)
 				{
-#if WINDOWS
-					LuaConsole1.Restart();
-#endif
+					GlobalWinF.Tools.Restart<LuaConsole>();
 				}
 
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
@@ -2282,18 +2271,16 @@ namespace BizHawk.MultiClient
 				GlobalWinF.Sound.UpdateSilence();
 		}
 
-		/// <summary>
-		/// Update all tools that are frame dependent like Ram Search before processing
-		/// </summary>
 		public void UpdateToolsBefore(bool fromLua = false)
 		{
-#if WINDOWS
-			if (_luaconsole != null)
+			if (GlobalWinF.Tools.Has<LuaConsole>())
 			{
-				if (!fromLua) LuaConsole1.StartLuaDrawing();
-				LuaConsole1.LuaImp.CallFrameBeforeEvent();
+				if (!fromLua)
+				{
+					GlobalWinF.Tools.LuaConsole.StartLuaDrawing();
+				}
+				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
-#endif
 			GlobalWinF.Tools.UpdateBefore();
 		}
 
@@ -2307,26 +2294,23 @@ namespace BizHawk.MultiClient
 
 		public void UpdateToolsAfter(bool fromLua = false)
 		{
-#if WINDOWS
-			if (_luaconsole != null && !fromLua)
+			if (!fromLua && GlobalWinF.Tools.Has<LuaConsole>())
 			{
-				LuaConsole1.ResumeScripts(true);
+				GlobalWinF.Tools.LuaConsole.ResumeScripts(true);
 			}
 
-#endif
 			GlobalWinF.Tools.UpdateAfter();
 			HandleToggleLight();
-#if WINDOWS
-			if (_luaconsole != null)
+
+			if (GlobalWinF.Tools.Has<LuaConsole>())
 			{
-				LuaConsole1.LuaImp.CallFrameAfterEvent();
+				GlobalWinF.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
 					GlobalWinF.DisplayManager.PreFrameUpdateLuaSource();
-					LuaConsole1.EndLuaDrawing();
+					GlobalWinF.Tools.LuaConsole.EndLuaDrawing();
 				}
 			}
-#endif
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2419,7 +2403,11 @@ namespace BizHawk.MultiClient
 			}
 
 			SaveStateFile(path, name, false);
-			LuaConsole1.LuaImp.CallSaveStateEvent(name);
+
+			if (GlobalWinF.Tools.Has<LuaConsole>())
+			{
+				GlobalWinF.Tools.LuaConsole.LuaImp.CallSaveStateEvent(name);
+			}
 		}
 
 		public void SaveStateFile(string filename, string name, bool fromLua)
@@ -2467,7 +2455,11 @@ namespace BizHawk.MultiClient
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				GlobalWinF.OSD.AddMessage("Loaded state: " + name);
-				LuaConsole1.LuaImp.CallLoadStateEvent(name);
+
+				if (GlobalWinF.Tools.Has<LuaConsole>())
+				{
+					GlobalWinF.Tools.LuaConsole.LuaImp.CallLoadStateEvent(name);
+				}
 			}
 			else
 			{
@@ -2884,16 +2876,11 @@ namespace BizHawk.MultiClient
 			RewireSound();
 			ResetRewindBuffer();
 			Cheats_Restart();
-#if WINDOWS
-			LuaConsole1.Restart();
-#endif
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 			HandlePlatformMenus();
 			StateSlots.Clear();
 			UpdateDumpIcon();
 		}
-
-		//-------------------------------------------------------
 
 		private void SaveConfig()
 		{
@@ -2910,11 +2897,6 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
-		}
-
-		private void CloseForm(Form form)
-		{
-			if (form != null && form.IsHandleCreated) form.Close();
 		}
 
 		private void PreviousSlot()
@@ -3446,13 +3428,7 @@ namespace BizHawk.MultiClient
 		public void OpenLuaConsole()
 		{
 #if WINDOWS
-			if (!LuaConsole1.IsHandleCreated || LuaConsole1.IsDisposed)
-			{
-				LuaConsole1 = new LuaConsole();
-				LuaConsole1.Show();
-			}
-			else
-				LuaConsole1.Focus();
+			GlobalWinF.Tools.Load<LuaConsole>();
 #else
 			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #endif

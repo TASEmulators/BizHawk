@@ -296,6 +296,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public LuaConsole LuaConsole
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is LuaConsole);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as LuaConsole;
+					}
+				}
+
+				var newTool = new LuaConsole();
+				_tools.Add(newTool);
+				return newTool;
+			}
+		}
+
 		#endregion
 	}
 }
