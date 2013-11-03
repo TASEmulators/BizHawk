@@ -8,8 +8,8 @@
     <ProjectGuid>{2D7F5A4A-C3C4-41CD-839C-C35F3DD58725}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.PCE_Debugger</RootNamespace>
-    <AssemblyName>BizHawk.PCE_Debugger</AssemblyName>
+    <RootNamespace>BizHawk.Client.PceDebugger</RootNamespace>
+    <AssemblyName>PceDebugger</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
