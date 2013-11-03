@@ -63,12 +63,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawNew()
 		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaSurfaceNative();
+			luaSurface = GlobalWin.DisplayManager.GetLuaSurfaceNative();
 		}
 
 		public void DrawNewEmu()
 		{
-			luaSurface = GlobalWinF.DisplayManager.GetLuaEmuSurfaceEmu();
+			luaSurface = GlobalWin.DisplayManager.GetLuaEmuSurfaceEmu();
 		}
 
 		/// <summary>
@@ -78,13 +78,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawFinish()
 		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			GlobalWin.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
 			luaSurface = null;
 		}
 
 		public void DrawFinishEmu()
 		{
-			GlobalWinF.DisplayManager.SetLuaSurfaceEmu(luaSurface);
+			GlobalWin.DisplayManager.SetLuaSurfaceEmu(luaSurface);
 			luaSurface = null;
 		}
 
@@ -187,14 +187,14 @@ namespace BizHawk.Client.EmuHawk
 			dx *= MultiClientLuaLibrary.client_getwindowsize();
 			dy *= MultiClientLuaLibrary.client_getwindowsize();
 
-			GlobalWinF.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
+			GlobalWin.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
 		}
 
 		#endregion
 
 		public void gui_addmessage(object luaStr)
 		{
-			GlobalWinF.OSD.AddMessage(luaStr.ToString());
+			GlobalWin.OSD.AddMessage(luaStr.ToString());
 		}
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
@@ -204,18 +204,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_clearGraphics()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			luaSurface.Clear();
 		}
 
 		public static void gui_cleartext()
 		{
-			GlobalWinF.OSD.ClearGUIText();
+			GlobalWin.OSD.ClearGUIText();
 		}
 
 		public void gui_drawBezier(LuaTable points, object color)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -357,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
 								object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -397,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawPixel(object X, object Y, object color = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawPolygon(LuaTable points, object line, object background = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			//this is a test
 			using (var g = GetGraphics())
 			{
@@ -473,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try

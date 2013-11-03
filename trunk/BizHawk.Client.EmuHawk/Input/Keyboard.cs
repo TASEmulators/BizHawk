@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (keyboard == null || keyboard.Disposed)
 				keyboard = new Keyboard(dinput);
-			keyboard.SetCooperativeLevel(GlobalWinF.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+			keyboard.SetCooperativeLevel(GlobalWin.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 		}
 
 		public static void Update()

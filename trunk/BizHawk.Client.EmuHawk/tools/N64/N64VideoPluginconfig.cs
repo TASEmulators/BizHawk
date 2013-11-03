@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.N64VideoSizeX = Int32.Parse(strArr[0].Trim());
 			Global.Config.N64VideoSizeY = Int32.Parse(strArr[1].Trim());
 			Global.Config.N64VidPlugin = PluginComboBox.Text;
-			GlobalWinF.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
+			GlobalWin.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
 			
 			//Rice
 			Global.Config.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;

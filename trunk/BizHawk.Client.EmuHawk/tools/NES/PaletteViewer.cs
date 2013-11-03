@@ -83,9 +83,9 @@ namespace BizHawk.Client.EmuHawk
 					RestoreDirectory = true
 				};
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
 

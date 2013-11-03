@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			GlobalWinF.OSD.AddMessage("Message settings saved");
+			GlobalWin.OSD.AddMessage("Message settings saved");
 			this.Close();
 		}
 
@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Message config aborted");
+			GlobalWin.OSD.AddMessage("Message config aborted");
 			this.Close();
 		}
 

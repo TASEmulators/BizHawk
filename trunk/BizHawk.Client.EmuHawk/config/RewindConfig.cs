@@ -19,10 +19,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (GlobalWinF.MainForm.RewindBuf != null)
+			if (GlobalWin.MainForm.RewindBuf != null)
 			{
-				FullnessLabel.Text = String.Format("{0:0.00}", GlobalWinF.MainForm.Rewind_FullnessRatio * 100) + "%";
-				RewindFramesUsedLabel.Text = GlobalWinF.MainForm.Rewind_Count.ToString();
+				FullnessLabel.Text = String.Format("{0:0.00}", GlobalWin.MainForm.Rewind_FullnessRatio * 100) + "%";
+				RewindFramesUsedLabel.Text = GlobalWin.MainForm.Rewind_Count.ToString();
 			}
 			else
 			{
@@ -111,13 +111,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Rewind config aborted");
+			GlobalWin.OSD.AddMessage("Rewind config aborted");
 			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Rewind settings saved");
+			GlobalWin.OSD.AddMessage("Rewind settings saved");
 
 			Global.Config.RewindFrequencySmall = (int)SmallSavestateNumeric.Value;
 			Global.Config.RewindFrequencyMedium = (int)MediumSavestateNumeric.Value;
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RewindEnabledMedium = MediumStateEnabledBox.Checked;
 			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
 
-			GlobalWinF.MainForm.DoRewindSettings();
+			GlobalWin.MainForm.DoRewindSettings();
 
 			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
 
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
 			if (Global.Config.Rewind_IsThreaded != RewindIsThreadedCheckbox.Checked)
 			{
-				GlobalWinF.MainForm.FlagNeedsReboot();
+				GlobalWin.MainForm.FlagNeedsReboot();
 				Global.Config.Rewind_IsThreaded = RewindIsThreadedCheckbox.Checked;
 			}
 
@@ -260,9 +260,9 @@ namespace BizHawk.Client.EmuHawk
             if (UseDeltaCompression.Checked || StateSize == 0)
             {
 
-                if (GlobalWinF.MainForm.Rewind_Count > 0)
+                if (GlobalWin.MainForm.Rewind_Count > 0)
                 {
-                    avg_state_size = (long)(GlobalWinF.MainForm.Rewind_Size / GlobalWinF.MainForm.Rewind_Count);
+                    avg_state_size = (long)(GlobalWin.MainForm.Rewind_Size / GlobalWin.MainForm.Rewind_Count);
                 }
                 else
                 {

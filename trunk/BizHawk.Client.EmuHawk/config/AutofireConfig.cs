@@ -42,15 +42,15 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
 			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
 			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
-			GlobalWinF.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+			GlobalWin.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
-			GlobalWinF.OSD.AddMessage("Autofire settings saved");
+			GlobalWin.OSD.AddMessage("Autofire settings saved");
 			this.Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Autofire config aborted");
+			GlobalWin.OSD.AddMessage("Autofire config aborted");
 			this.Close();
 		}
 	}

@@ -259,14 +259,14 @@ namespace BizHawk.Client.EmuHawk
 
 			Save();
 
-			GlobalWinF.OSD.AddMessage("Controller settings saved");
+			GlobalWin.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Controller config aborted");
+			GlobalWin.OSD.AddMessage("Controller config aborted");
 			Close();
 		}
 

@@ -390,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CurrentROMIsArchive()
 		{
-			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
+			string path = GlobalWin.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return false;
@@ -418,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private byte[] GetRomBytes()
 		{
-			string path = GlobalWinF.MainForm.CurrentlyOpenRom;
+			string path = GlobalWin.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return null;
@@ -540,9 +540,9 @@ namespace BizHawk.Client.EmuHawk
 			InputPrompt i = new InputPrompt { Text = "Go to Address" };
 			i._Location = GetPromptPoint();
 			i.SetMessage("Enter a hexadecimal value");
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			i.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 
 			if (i.UserOK)
 			{
@@ -710,16 +710,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Count > 0)
 			{
-				GlobalWinF.MainForm.LoadRamWatch(true);
+				GlobalWin.MainForm.LoadRamWatch(true);
 			}
 
 			if (HighlightedAddress.HasValue)
 			{
-				GlobalWinF.Tools.RamWatch.AddWatch(MakeWatch(HighlightedAddress.Value));
+				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(HighlightedAddress.Value));
 			}
 			foreach (int i in SecondaryHighlightedAddresses)
 			{
-				GlobalWinF.Tools.RamWatch.AddWatch(MakeWatch(i));
+				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(i));
 			}
 		}
 
@@ -757,10 +757,10 @@ namespace BizHawk.Client.EmuHawk
 
 				poke.SetWatch(Watches);
 
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				var result = poke.ShowDialog();
 				UpdateValues();
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 			}
 		}
 
@@ -898,10 +898,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateRelatedDialogs()
 		{
-			GlobalWinF.Tools.UpdateValues<RamWatch>();
-			GlobalWinF.Tools.UpdateValues<RamSearch>();
-			GlobalWinF.Tools.UpdateValues<Cheats>();
-			GlobalWinF.MainForm.UpdateCheatStatus();
+			GlobalWin.Tools.UpdateValues<RamWatch>();
+			GlobalWin.Tools.UpdateValues<RamSearch>();
+			GlobalWin.Tools.UpdateValues<Cheats>();
+			GlobalWin.MainForm.UpdateCheatStatus();
 			UpdateValues();
 		}
 
@@ -1014,9 +1014,9 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Domain.Name == "ROM File")
 			{
-				string extension = Path.GetExtension(GlobalWinF.MainForm.CurrentlyOpenRom);
+				string extension = Path.GetExtension(GlobalWin.MainForm.CurrentlyOpenRom);
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
@@ -1051,9 +1051,9 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return null;
 			var file = new FileInfo(sfd.FileName);
@@ -2066,9 +2066,9 @@ namespace BizHawk.Client.EmuHawk
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			h.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2128,7 +2128,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				FileInfo file = new FileInfo(GlobalWinF.MainForm.CurrentlyOpenRom);
+				FileInfo file = new FileInfo(GlobalWin.MainForm.CurrentlyOpenRom);
 				SaveFileBinary(file);
 			}
 		}

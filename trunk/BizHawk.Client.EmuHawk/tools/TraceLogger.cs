@@ -323,10 +323,10 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				DumpListToDisk(file);
-				GlobalWinF.OSD.AddMessage("Log dumped to " + file.FullName);
+				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
 			}
 		}
 

@@ -58,11 +58,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 
-				MovieToRecord = new Movie(path, GlobalWinF.MainForm.GetEmuVersion());
+				MovieToRecord = new Movie(path, GlobalWin.MainForm.GetEmuVersion());
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, GlobalWinF.MainForm.GetEmuVersion());
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, GlobalWin.MainForm.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				GlobalWinF.MainForm.StartNewMovie(MovieToRecord, true);
+				GlobalWin.MainForm.StartNewMovie(MovieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -196,9 +196,9 @@ namespace BizHawk.Client.EmuHawk
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 			if (result == DialogResult.OK)
 			{
 				filename = sfd.FileName;

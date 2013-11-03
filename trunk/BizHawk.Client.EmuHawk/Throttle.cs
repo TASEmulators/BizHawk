@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (GlobalWin.ClientControls["MaxTurbo"])
 				{
 					return 20;
 				}
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (GlobalWin.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (GlobalWinF.ClientControls["MaxTurbo"])
+				if (GlobalWin.ClientControls["MaxTurbo"])
 				{
 					return false;
 				}

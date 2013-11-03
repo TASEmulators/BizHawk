@@ -58,13 +58,13 @@ namespace BizHawk.Client.EmuHawk
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			GlobalWinF.OSD.AddMessage("Path settings saved");
+			GlobalWin.OSD.AddMessage("Path settings saved");
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWinF.OSD.AddMessage("Path config aborted");
+			GlobalWin.OSD.AddMessage("Path config aborted");
 			Close();
 		}
 

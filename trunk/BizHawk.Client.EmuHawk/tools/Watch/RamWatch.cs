@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int x = 0; x < Watches.Count; x++)
 					{
 						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
-						GlobalWinF.OSD.AddGUIText(
+						GlobalWin.OSD.AddGUIText(
 							Watches[x].ToString(),
 							Global.Config.DispRamWatchx,
 							(Global.Config.DispRamWatchy + (x * 14)),
@@ -160,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Watches.Changes)
 			{
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
 					Watches.Save();
@@ -514,9 +514,9 @@ namespace BizHawk.Client.EmuHawk
 				InitialLocation = GetPromptPoint()
 			};
 			we.SetWatch(Watches.Domain);
-			GlobalWinF.Sound.StopSound();
+			GlobalWin.Sound.StopSound();
 			we.ShowDialog();
-			GlobalWinF.Sound.StartSound();
+			GlobalWin.Sound.StartSound();
 
 			if (we.DialogResult == DialogResult.OK)
 			{
@@ -544,7 +544,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				we.SetWatch(Watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				var result = we.ShowDialog();
 				if (result == DialogResult.OK)
 				{
@@ -563,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 				UpdateValues();
 			}
 		}
@@ -582,13 +582,13 @@ namespace BizHawk.Client.EmuHawk
 					poke.SetWatch(SelectedWatches);
 				}
 
-				GlobalWinF.Sound.StopSound();
+				GlobalWin.Sound.StopSound();
 				var result = poke.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					UpdateValues();
 				}
-				GlobalWinF.Sound.StartSound();
+				GlobalWin.Sound.StartSound();
 			}
 		}
 
@@ -1037,7 +1037,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Global.Config.DisplayRamWatch)
 			{
-				GlobalWinF.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGUIText();
 			}
 			else
 			{
@@ -1154,7 +1154,7 @@ namespace BizHawk.Client.EmuHawk
 			var selected = SelectedWatches;
 			if (selected.Any())
 			{
-				GlobalWinF.Tools.Load<HexEditor>();
+				GlobalWin.Tools.Load<HexEditor>();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{

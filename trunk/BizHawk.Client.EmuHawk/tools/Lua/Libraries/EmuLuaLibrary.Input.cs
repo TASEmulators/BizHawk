@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable input_get()
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (var kvp in GlobalWinF.ControllerInputCoalescer.BoolButtons())
+			foreach (var kvp in GlobalWin.ControllerInputCoalescer.BoolButtons())
 				if (kvp.Value)
 					buttons[kvp.Key] = true;
 			return buttons;
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable input_getmouse()
 		{
 			LuaTable buttons = _lua.NewTable();
-			Point p = GlobalWinF.RenderPanel.ScreenToScreen(Control.MousePosition);
+			Point p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
 			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;

@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Global.Config.NESPaletteFile = palette.Name;
 						nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
-						GlobalWinF.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
 					}
 				}
 			}
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.NESPaletteFile = "";
 				nes.SetPalette(NES.Palettes.FCEUX_Standard);
-				GlobalWinF.OSD.AddMessage("Standard Palette set");
+				GlobalWin.OSD.AddMessage("Standard Palette set");
 			}
 
 			Global.Config.NTSC_NESTopLine = (int)NTSC_FirstLineNumeric.Value;

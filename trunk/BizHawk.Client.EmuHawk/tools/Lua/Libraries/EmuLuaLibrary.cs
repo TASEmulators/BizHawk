@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EmuYield()
 		{
-			GlobalWinF.DisplayManager.NeedsToPaint = true;
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			currThread.Yield(0);
 		}
 	}
