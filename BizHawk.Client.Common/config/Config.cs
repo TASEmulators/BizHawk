@@ -89,10 +89,10 @@ namespace BizHawk.Client.Common
 		//Rewind settings
 		public bool Rewind_UseDelta = true;
 		public bool RewindEnabledSmall = true;
-		public bool RewindEnabledMedium = true;
+		public bool RewindEnabledMedium = false;
 		public bool RewindEnabledLarge = false;
 		public int RewindFrequencySmall = 1;
-		public int RewindFrequencyMedium = 2;
+		public int RewindFrequencyMedium = 4;
 		public int RewindFrequencyLarge = 60;
 		public int Rewind_MediumStateSize = 262144; //256kb
 		public int Rewind_LargeStateSize = 1048576; //1mb
