@@ -11,7 +11,7 @@ using System.Threading;
 
 using BizHawk.DiscSystem;
 
-namespace BizHawk
+namespace BizHawk.Client.DiscoHawk
 {
 	public partial class MainDiscoForm : Form
 	{

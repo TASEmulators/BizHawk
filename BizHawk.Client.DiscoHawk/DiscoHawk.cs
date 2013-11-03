@@ -13,7 +13,7 @@ using System.IO;
 //it can handle binpercue
 //it seems not to be able to handle binpertrack, or maybe i am doing something wrong (still havent ruled it out)
 
-namespace BizHawk
+namespace BizHawk.Client.DiscoHawk
 {
 	static class Program
 	{
