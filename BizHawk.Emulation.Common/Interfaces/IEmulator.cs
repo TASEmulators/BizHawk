@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
 	public interface IEmulator : IDisposable
 	{

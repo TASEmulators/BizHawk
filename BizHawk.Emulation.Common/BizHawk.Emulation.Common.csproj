@@ -44,6 +44,15 @@
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
+    <Compile Include="Interfaces\Base Implementations\NullController.cs" />
+    <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
+    <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\IController.cs" />
+    <Compile Include="Interfaces\ICoreFileProvider.cs" />
+    <Compile Include="Interfaces\IEmulator.cs" />
+    <Compile Include="Interfaces\ISoundProvider.cs" />
+    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
+    <Compile Include="Interfaces\IVideoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

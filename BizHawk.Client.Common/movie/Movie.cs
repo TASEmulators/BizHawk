@@ -2,6 +2,8 @@
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class Movie

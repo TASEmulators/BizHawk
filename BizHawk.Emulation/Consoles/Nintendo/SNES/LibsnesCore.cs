@@ -490,9 +490,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			get
 			{
 				if (api.snes_get_region() == LibsnesApi.SNES_REGION.NTSC)
-					return BizHawk.DisplayType.NTSC;
+					return DisplayType.NTSC;
 				else
-					return BizHawk.DisplayType.PAL;
+					return DisplayType.PAL;
 			}
 		}
 

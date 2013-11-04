@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Sound
 {
     // ======================================================================

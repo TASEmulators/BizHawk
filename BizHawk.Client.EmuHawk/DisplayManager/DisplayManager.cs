@@ -13,6 +13,7 @@ using System.Drawing.Imaging;
 //using d3d=SlimDX.Direct3D9;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk

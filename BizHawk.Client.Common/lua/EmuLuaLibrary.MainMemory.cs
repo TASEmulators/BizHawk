@@ -1,6 +1,7 @@
 ﻿using System;
 
 using LuaInterface;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {

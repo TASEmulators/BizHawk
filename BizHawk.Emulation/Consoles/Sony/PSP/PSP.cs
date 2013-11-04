@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
 	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider

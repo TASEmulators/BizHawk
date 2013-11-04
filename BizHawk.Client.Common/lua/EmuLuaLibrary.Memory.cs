@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase

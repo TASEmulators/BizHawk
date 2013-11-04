@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
 	public interface ICoreFileProvider
 	{

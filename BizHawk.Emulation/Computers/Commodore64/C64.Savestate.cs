@@ -1,6 +1,7 @@
 ﻿using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Sound
 {
     // Generates SEMI-synchronous sound, or "buffered asynchronous" sound.
