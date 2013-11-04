@@ -4,192 +4,193 @@ using System.IO;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
-    public sealed class ADPCM : ISoundProvider
-    {
-        ScsiCDBus SCSI;
-        PCEngine pce;
-        MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+	public sealed class ADPCM : ISoundProvider
+	{
+		ScsiCDBus SCSI;
+		PCEngine pce;
+		MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 
-        // ***************************************************************************
+		// ***************************************************************************
 
-        public ushort IOAddress;
-        public ushort ReadAddress;
-        public ushort WriteAddress;
-        public ushort AdpcmLength;
+		public ushort IOAddress;
+		public ushort ReadAddress;
+		public ushort WriteAddress;
+		public ushort AdpcmLength;
 
-        public int  ReadTimer,   WriteTimer;
-        public byte ReadBuffer,  WriteBuffer;
-        public bool ReadPending, WritePending;
+		public int ReadTimer, WriteTimer;
+		public byte ReadBuffer, WriteBuffer;
+		public bool ReadPending, WritePending;
 
-        public byte[] RAM = new byte[0x10000];
-  
-        // ***************************************************************************
-        
-        public bool AdpcmIsPlaying      { get; private set; }
-        public bool HalfReached         { get; private set; }
-        public bool EndReached          { get; private set; }
-        public bool AdpcmBusyWriting    { get { return AdpcmCdDmaRequested; } }
-        public bool AdpcmBusyReading    { get { return ReadPending; } }
-        public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
+		public byte[] RAM = new byte[0x10000];
 
-        // ***************************************************************************
+		// ***************************************************************************
 
-        public byte Port180A
-        {
-            set { WritePending = true; WriteTimer = 24; WriteBuffer = value; }
-            get { ReadPending  = true; ReadTimer  = 24; return ReadBuffer; }
-        }
+		public bool AdpcmIsPlaying { get; private set; }
+		public bool HalfReached { get; private set; }
+		public bool EndReached { get; private set; }
+		public bool AdpcmBusyWriting { get { return AdpcmCdDmaRequested; } }
+		public bool AdpcmBusyReading { get { return ReadPending; } }
+		public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
 
-        public byte Port180B;
-        public byte Port180D;
+		// ***************************************************************************
 
-        byte port180E;
-        public byte Port180E
-        {
-            get { return port180E; }
-            set
-            {
-                port180E = value;
-                float khz = 32 / (16 - (Port180E & 0x0F));
-                destSamplesPerSourceSample = 44.1f / khz;
-            }
-        }
+		public byte Port180A
+		{
+			set { WritePending = true; WriteTimer = 24; WriteBuffer = value; }
+			get { ReadPending = true; ReadTimer = 24; return ReadBuffer; }
+		}
 
-        // ***************************************************************************
+		public byte Port180B;
+		public byte Port180D;
 
-        public ADPCM(PCEngine pcEngine, ScsiCDBus scsi)
-        {
-            pce = pcEngine;
-            SCSI = scsi;
-            MaxVolume = 24576;
-        }
+		byte port180E;
+		public byte Port180E
+		{
+			get { return port180E; }
+			set
+			{
+				port180E = value;
+				float khz = 32 / (16 - (Port180E & 0x0F));
+				destSamplesPerSourceSample = 44.1f / khz;
+			}
+		}
 
-        public void AdpcmControlWrite(byte value)
-        {
-            //Log.Error("CD","ADPCM CONTROL WRITE {0:X2}",value);
-            if ((Port180D & 0x80) != 0 && (value & 0x80) == 0)
-            {
-                ReadAddress = 0;
-                WriteAddress = 0;
-                IOAddress = 0;
-                nibble = false;
-                AdpcmIsPlaying = false;
-                HalfReached = false;
-                EndReached = false;
-                playingSample = 0;
-                Playback44khzTimer = 0;
-                magnitude = 0;
-            }
+		// ***************************************************************************
 
-            if ((value & 8) != 0)
-            {
-                ReadAddress = IOAddress;
-                if ((value & 4) == 0)
-                    ReadAddress--;
-            }
+		public ADPCM(PCEngine pcEngine, ScsiCDBus scsi)
+		{
+			pce = pcEngine;
+			SCSI = scsi;
+			MaxVolume = 24576;
+		}
 
-            if ((Port180D & 2) == 0 && (value & 2) != 0)
-            {
-                WriteAddress = IOAddress;
-                if ((value & 1) == 0)
-                    WriteAddress--;
-            }
+		public void AdpcmControlWrite(byte value)
+		{
+			//Log.Error("CD","ADPCM CONTROL WRITE {0:X2}",value);
+			if ((Port180D & 0x80) != 0 && (value & 0x80) == 0)
+			{
+				ReadAddress = 0;
+				WriteAddress = 0;
+				IOAddress = 0;
+				nibble = false;
+				AdpcmIsPlaying = false;
+				HalfReached = false;
+				EndReached = false;
+				playingSample = 0;
+				Playback44khzTimer = 0;
+				magnitude = 0;
+			}
 
-            if ((value & 0x10) != 0)
-            {
-                AdpcmLength = IOAddress;
-                EndReached = false;
-            }
+			if ((value & 8) != 0)
+			{
+				ReadAddress = IOAddress;
+				if ((value & 4) == 0)
+					ReadAddress--;
+			}
 
-            if (AdpcmIsPlaying && (value & 0x20) == 0)
-                AdpcmIsPlaying = false; // clearing this bit stops playback
+			if ((Port180D & 2) == 0 && (value & 2) != 0)
+			{
+				WriteAddress = IOAddress;
+				if ((value & 1) == 0)
+					WriteAddress--;
+			}
 
-            if (AdpcmIsPlaying == false && (value & 0x20) != 0)
-            {
-                if ((value & 0x40) == 0)
-                    Console.WriteLine("a thing thats normally set is not set");
+			if ((value & 0x10) != 0)
+			{
+				AdpcmLength = IOAddress;
+				EndReached = false;
+			}
 
-                AdpcmIsPlaying = true;
-                playingSample = 2048;
-                magnitude = 0;
-                Playback44khzTimer = 0;
-            }
+			if (AdpcmIsPlaying && (value & 0x20) == 0)
+				AdpcmIsPlaying = false; // clearing this bit stops playback
 
-            Port180D = value;
-        }
+			if (AdpcmIsPlaying == false && (value & 0x20) != 0)
+			{
+				if ((value & 0x40) == 0)
+					Console.WriteLine("a thing thats normally set is not set");
 
-        public void Think(int cycles)
-        {
-            Playback44khzTimer -= cycles;
-            if (Playback44khzTimer < 0)
-            {
-                Playback44khzTimer += 162.81f; // # of CPU cycles that translate to one 44100hz sample.
-                AdpcmEmitSample();
-            }
+				AdpcmIsPlaying = true;
+				playingSample = 2048;
+				magnitude = 0;
+				Playback44khzTimer = 0;
+			}
 
-            if (ReadTimer  > 0) ReadTimer  -= cycles;
-            if (WriteTimer > 0) WriteTimer -= cycles;
+			Port180D = value;
+		}
 
-            if (ReadPending && ReadTimer <= 0)
-            {
-                ReadBuffer = RAM[ReadAddress++];
-                ReadPending = false;
-                if (AdpcmLength > ushort.MinValue)
-                    AdpcmLength--;
-                else
-                {
-                    EndReached = true;
-                    HalfReached = false;
-                    //Port180D &= 0x9F;
-                }
-            }
+		public void Think(int cycles)
+		{
+			Playback44khzTimer -= cycles;
+			if (Playback44khzTimer < 0)
+			{
+				Playback44khzTimer += 162.81f; // # of CPU cycles that translate to one 44100hz sample.
+				AdpcmEmitSample();
+			}
 
-            if (WritePending && WriteTimer <= 0)
-            {
-                RAM[WriteAddress++] = WriteBuffer;
-                WritePending = false;
-                if (AdpcmLength < ushort.MaxValue) 
-                    AdpcmLength++;
-                HalfReached = AdpcmLength < 0x8000;
-            }
+			if (ReadTimer > 0) ReadTimer -= cycles;
+			if (WriteTimer > 0) WriteTimer -= cycles;
 
-            if (AdpcmCdDmaRequested)
-            {
-                if (SCSI.REQ && SCSI.IO && !SCSI.CD && !SCSI.ACK)
-                {
-                    byte dmaByte = SCSI.DataBits;
-                    RAM[WriteAddress++] = dmaByte;
-                    AdpcmLength++;
+			if (ReadPending && ReadTimer <= 0)
+			{
+				ReadBuffer = RAM[ReadAddress++];
+				ReadPending = false;
+				if (AdpcmLength > ushort.MinValue)
+					AdpcmLength--;
+				else
+				{
+					EndReached = true;
+					HalfReached = false;
+					//Port180D &= 0x9F;
+				}
+			}
 
-                    SCSI.ACK = false;
-                    SCSI.REQ = false;
-                    SCSI.Think();
-                }
+			if (WritePending && WriteTimer <= 0)
+			{
+				RAM[WriteAddress++] = WriteBuffer;
+				WritePending = false;
+				if (AdpcmLength < ushort.MaxValue)
+					AdpcmLength++;
+				HalfReached = AdpcmLength < 0x8000;
+			}
 
-                if (SCSI.DataTransferInProgress == false)
-                    Port180B = 0;
-            }
+			if (AdpcmCdDmaRequested)
+			{
+				if (SCSI.REQ && SCSI.IO && !SCSI.CD && !SCSI.ACK)
+				{
+					byte dmaByte = SCSI.DataBits;
+					RAM[WriteAddress++] = dmaByte;
+					AdpcmLength++;
 
-            pce.IntADPCM = HalfReached;
-            pce.IntStop = EndReached;
-            pce.RefreshIRQ2();
-        }
-        
-        // ***************************************************************************
-        //                              Playback Functions
-        // ***************************************************************************
+					SCSI.ACK = false;
+					SCSI.REQ = false;
+					SCSI.Think();
+				}
 
-        float Playback44khzTimer;
-        int playingSample;
-        float nextSampleTimer;
-        float destSamplesPerSourceSample;
-        bool nibble;
-        int magnitude;
+				if (SCSI.DataTransferInProgress == false)
+					Port180B = 0;
+			}
 
-        static readonly int[] StepSize = 
+			pce.IntADPCM = HalfReached;
+			pce.IntStop = EndReached;
+			pce.RefreshIRQ2();
+		}
+
+		// ***************************************************************************
+		//                              Playback Functions
+		// ***************************************************************************
+
+		float Playback44khzTimer;
+		int playingSample;
+		float nextSampleTimer;
+		float destSamplesPerSourceSample;
+		bool nibble;
+		int magnitude;
+
+		static readonly int[] StepSize = 
         {
             0x0002, 0x0006, 0x000A, 0x000E, 0x0012, 0x0016, 0x001A, 0x001E,
             0x0002, 0x0006, 0x000A, 0x000E, 0x0013, 0x0017, 0x001B, 0x001F,
@@ -242,241 +243,241 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             0x00C2, 0x0246, 0x03CA, 0x054E, 0x06D2, 0x0856, 0x09DA, 0x0B5E
         };
 
-        static readonly int[] StepFactor = { -1, -1, -1, -1, 2, 4, 6, 8 };
+		static readonly int[] StepFactor = { -1, -1, -1, -1, 2, 4, 6, 8 };
 
-        int AddClamped(int num1, int num2, int min, int max)
-        {
-            int result = num1 + num2;
-            if (result < min) return min;
-            if (result > max) return max;
-            return result;
-        }
+		int AddClamped(int num1, int num2, int min, int max)
+		{
+			int result = num1 + num2;
+			if (result < min) return min;
+			if (result > max) return max;
+			return result;
+		}
 
-        byte ReadNibble()
-        {
-            byte value;
-            if (nibble == false)
-                value = (byte)(RAM[ReadAddress] >> 4);
-            else
-            {
-                value = (byte)(RAM[ReadAddress] & 0xF);
-                AdpcmLength--;
-                ReadAddress++;
-            }
+		byte ReadNibble()
+		{
+			byte value;
+			if (nibble == false)
+				value = (byte)(RAM[ReadAddress] >> 4);
+			else
+			{
+				value = (byte)(RAM[ReadAddress] & 0xF);
+				AdpcmLength--;
+				ReadAddress++;
+			}
 
-            nibble ^= true;
-            return value;
-        }
+			nibble ^= true;
+			return value;
+		}
 
-        void DecodeAdpcmSample()
-        {
-            byte sample = ReadNibble();
-            bool positive = (sample & 8) == 0;
-            int mag = sample & 7;
-            int m = StepFactor[mag];
-            int adjustment = StepSize[(magnitude * 8) + mag];
-            magnitude = AddClamped(magnitude, m, 0, 48);
-            if (positive == false) adjustment *= -1;
-            playingSample = AddClamped(playingSample, adjustment, 0, 4095);
-        }
+		void DecodeAdpcmSample()
+		{
+			byte sample = ReadNibble();
+			bool positive = (sample & 8) == 0;
+			int mag = sample & 7;
+			int m = StepFactor[mag];
+			int adjustment = StepSize[(magnitude * 8) + mag];
+			magnitude = AddClamped(magnitude, m, 0, 48);
+			if (positive == false) adjustment *= -1;
+			playingSample = AddClamped(playingSample, adjustment, 0, 4095);
+		}
 
-        void AdpcmEmitSample()
-        {
-            if (AdpcmIsPlaying == false)
-                SoundProvider.buffer.enqueue_sample(0, 0);
-            else
-            {
-                if (nextSampleTimer <= 0)
-                {
-                    DecodeAdpcmSample();
-                    nextSampleTimer += destSamplesPerSourceSample;
-                }
-                nextSampleTimer--;
+		void AdpcmEmitSample()
+		{
+			if (AdpcmIsPlaying == false)
+				SoundProvider.buffer.enqueue_sample(0, 0);
+			else
+			{
+				if (nextSampleTimer <= 0)
+				{
+					DecodeAdpcmSample();
+					nextSampleTimer += destSamplesPerSourceSample;
+				}
+				nextSampleTimer--;
 
-                HalfReached = AdpcmLength < 0x8000;
+				HalfReached = AdpcmLength < 0x8000;
 
-                if (AdpcmLength == 0)
-                {
-                    AdpcmIsPlaying = false;
-                    EndReached = true;
-                    HalfReached = false;
-                }
+				if (AdpcmLength == 0)
+				{
+					AdpcmIsPlaying = false;
+					EndReached = true;
+					HalfReached = false;
+				}
 
-                short adjustedSample = (short)((playingSample - 2048) * MaxVolume / 2048);
-                SoundProvider.buffer.enqueue_sample(adjustedSample, adjustedSample);
-            }
-        }
+				short adjustedSample = (short)((playingSample - 2048) * MaxVolume / 2048);
+				SoundProvider.buffer.enqueue_sample(adjustedSample, adjustedSample);
+			}
+		}
 
-        public void GetSamples(short[] samples)
-        {
-            SoundProvider.GetSamples(samples);
-        }
+		public void GetSamples(short[] samples)
+		{
+			SoundProvider.GetSamples(samples);
+		}
 
-        public void DiscardSamples()
-        {
-            SoundProvider.DiscardSamples();
-        }
+		public void DiscardSamples()
+		{
+			SoundProvider.DiscardSamples();
+		}
 
-        public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; }
 
-        // ***************************************************************************
+		// ***************************************************************************
 
-        public void SaveStateBinary(BinaryWriter writer)
-        {
-            writer.Write(RAM);
-            writer.Write(IOAddress);
-            writer.Write(AdpcmLength);
-            writer.Write(ReadAddress);
-            writer.Write((byte)ReadTimer);
-            writer.Write(ReadBuffer);
-            writer.Write(ReadPending);
-            writer.Write(WriteAddress);
-            writer.Write((byte)WriteTimer);
-            writer.Write(WriteBuffer);
-            writer.Write(WritePending);
-            
-            writer.Write(Port180B);
-            writer.Write(Port180D);
-            writer.Write(Port180E);
-            
-            writer.Write(AdpcmIsPlaying);
-            writer.Write(HalfReached);
-            writer.Write(EndReached);
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			writer.Write(RAM);
+			writer.Write(IOAddress);
+			writer.Write(AdpcmLength);
+			writer.Write(ReadAddress);
+			writer.Write((byte)ReadTimer);
+			writer.Write(ReadBuffer);
+			writer.Write(ReadPending);
+			writer.Write(WriteAddress);
+			writer.Write((byte)WriteTimer);
+			writer.Write(WriteBuffer);
+			writer.Write(WritePending);
 
-            writer.Write(Playback44khzTimer);
-            writer.Write((ushort)playingSample);
-            writer.Write(nextSampleTimer);
-            writer.Write(nibble);
-            writer.Write((byte)magnitude);
-        }
+			writer.Write(Port180B);
+			writer.Write(Port180D);
+			writer.Write(Port180E);
 
-        public void LoadStateBinary(BinaryReader reader)
-        {
-            RAM          = reader.ReadBytes(0x10000);
-            IOAddress    = reader.ReadUInt16();
-            AdpcmLength  = reader.ReadUInt16();
-            ReadAddress  = reader.ReadUInt16();
-            ReadTimer    = reader.ReadByte();
-            ReadBuffer   = reader.ReadByte();
-            ReadPending  = reader.ReadBoolean();
-            WriteAddress = reader.ReadUInt16();
-            WriteTimer   = reader.ReadByte();
-            WriteBuffer  = reader.ReadByte();
-            WritePending = reader.ReadBoolean();
+			writer.Write(AdpcmIsPlaying);
+			writer.Write(HalfReached);
+			writer.Write(EndReached);
 
-            Port180B     = reader.ReadByte();
-            Port180D     = reader.ReadByte();
-            Port180E     = reader.ReadByte();
-            
-            AdpcmIsPlaying = reader.ReadBoolean();
-            HalfReached    = reader.ReadBoolean();
-            EndReached     = reader.ReadBoolean();
+			writer.Write(Playback44khzTimer);
+			writer.Write((ushort)playingSample);
+			writer.Write(nextSampleTimer);
+			writer.Write(nibble);
+			writer.Write((byte)magnitude);
+		}
 
-            Playback44khzTimer = reader.ReadSingle();
-            playingSample = reader.ReadUInt16();
-            nextSampleTimer = reader.ReadSingle();
-            nibble = reader.ReadBoolean();
-            magnitude = reader.ReadByte();
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			RAM = reader.ReadBytes(0x10000);
+			IOAddress = reader.ReadUInt16();
+			AdpcmLength = reader.ReadUInt16();
+			ReadAddress = reader.ReadUInt16();
+			ReadTimer = reader.ReadByte();
+			ReadBuffer = reader.ReadByte();
+			ReadPending = reader.ReadBoolean();
+			WriteAddress = reader.ReadUInt16();
+			WriteTimer = reader.ReadByte();
+			WriteBuffer = reader.ReadByte();
+			WritePending = reader.ReadBoolean();
 
-            pce.IntADPCM = HalfReached;
-            pce.IntStop = EndReached;
-            pce.RefreshIRQ2();
-        }
+			Port180B = reader.ReadByte();
+			Port180D = reader.ReadByte();
+			Port180E = reader.ReadByte();
 
-        public void SaveStateText(TextWriter writer)
-        {
-            writer.WriteLine("[ADPCM]");
-            writer.Write("RAM ");
-            RAM.SaveAsHex(writer);
-            writer.WriteLine("IOAddress {0:X4}", IOAddress);
-            writer.WriteLine("AdpcmLength {0:X4}", AdpcmLength);
-            writer.WriteLine("ReadAddress {0:X4}", ReadAddress);
-            writer.WriteLine("ReadTimer {0}", ReadTimer);
-            writer.WriteLine("ReadBuffer {0:X2}", ReadBuffer);
-            writer.WriteLine("ReadPending {0}", ReadPending);
-            writer.WriteLine("WriteAddress {0:X4}", WriteAddress);
-            writer.WriteLine("WriteTimer {0}", WriteTimer);
-            writer.WriteLine("WriteBuffer {0:X2}", WriteBuffer);
-            writer.WriteLine("WritePending {0}", WritePending);
+			AdpcmIsPlaying = reader.ReadBoolean();
+			HalfReached = reader.ReadBoolean();
+			EndReached = reader.ReadBoolean();
 
-            writer.WriteLine("Port180B {0:X2}", Port180B);
-            writer.WriteLine("Port180D {0:X2}", Port180D);
-            writer.WriteLine("Port180E {0:X2}", Port180E);
+			Playback44khzTimer = reader.ReadSingle();
+			playingSample = reader.ReadUInt16();
+			nextSampleTimer = reader.ReadSingle();
+			nibble = reader.ReadBoolean();
+			magnitude = reader.ReadByte();
 
-            writer.WriteLine("AdpcmIsPlaying {0}", AdpcmIsPlaying);
-            writer.WriteLine("HalfReached {0}", HalfReached);
-            writer.WriteLine("EndReached {0}", EndReached);
+			pce.IntADPCM = HalfReached;
+			pce.IntStop = EndReached;
+			pce.RefreshIRQ2();
+		}
 
-            writer.WriteLine("Playback44khzTimer {0}", Playback44khzTimer);
-            writer.WriteLine("PlayingSample {0:X4}", playingSample);
-            writer.WriteLine("NextSampleTimer {0}", nextSampleTimer);
-            writer.WriteLine("FirstNibble {0}", nibble);
-            writer.WriteLine("Magnitude {0}", magnitude);
-            writer.WriteLine("[/ADPCM]\n");
-        }
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[ADPCM]");
+			writer.Write("RAM ");
+			RAM.SaveAsHex(writer);
+			writer.WriteLine("IOAddress {0:X4}", IOAddress);
+			writer.WriteLine("AdpcmLength {0:X4}", AdpcmLength);
+			writer.WriteLine("ReadAddress {0:X4}", ReadAddress);
+			writer.WriteLine("ReadTimer {0}", ReadTimer);
+			writer.WriteLine("ReadBuffer {0:X2}", ReadBuffer);
+			writer.WriteLine("ReadPending {0}", ReadPending);
+			writer.WriteLine("WriteAddress {0:X4}", WriteAddress);
+			writer.WriteLine("WriteTimer {0}", WriteTimer);
+			writer.WriteLine("WriteBuffer {0:X2}", WriteBuffer);
+			writer.WriteLine("WritePending {0}", WritePending);
 
-        public void LoadStateText(TextReader reader)
-        {
-            while (true)
-            {
-                string[] args = reader.ReadLine().Split(' ');
-                if (args[0].Trim() == "") continue;
-                if (args[0] == "[/ADPCM]") break;
-                if (args[0] == "RAM")
-                    RAM.ReadFromHex(args[1]);
-                else if (args[0] == "IOAddress")
-                    IOAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "AdpcmLength")
-                    AdpcmLength = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "ReadAddress")
-                    ReadAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "ReadTimer")
-                    ReadTimer = int.Parse(args[1]);
-                else if (args[0] == "ReadBuffer")
-                    ReadBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "ReadPending")
-                    ReadPending = bool.Parse(args[1]);
-                else if (args[0] == "WriteAddress")
-                    WriteAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "WriteTimer")
-                    WriteTimer = int.Parse(args[1]);
-                else if (args[0] == "WriteBuffer")
-                    WriteBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "WritePending")
-                    WritePending = bool.Parse(args[1]);
+			writer.WriteLine("Port180B {0:X2}", Port180B);
+			writer.WriteLine("Port180D {0:X2}", Port180D);
+			writer.WriteLine("Port180E {0:X2}", Port180E);
 
-                else if (args[0] == "Port180B")
-                    Port180B = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Port180D")
-                    Port180D = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Port180E")
-                    Port180E = byte.Parse(args[1], NumberStyles.HexNumber);
+			writer.WriteLine("AdpcmIsPlaying {0}", AdpcmIsPlaying);
+			writer.WriteLine("HalfReached {0}", HalfReached);
+			writer.WriteLine("EndReached {0}", EndReached);
 
-                else if (args[0] == "AdpcmIsPlaying")
-                    AdpcmIsPlaying = bool.Parse(args[1]);
-                else if (args[0] == "HalfReached")
-                    HalfReached = bool.Parse(args[1]);
-                else if (args[0] == "EndReached")
-                    EndReached = bool.Parse(args[1]);
+			writer.WriteLine("Playback44khzTimer {0}", Playback44khzTimer);
+			writer.WriteLine("PlayingSample {0:X4}", playingSample);
+			writer.WriteLine("NextSampleTimer {0}", nextSampleTimer);
+			writer.WriteLine("FirstNibble {0}", nibble);
+			writer.WriteLine("Magnitude {0}", magnitude);
+			writer.WriteLine("[/ADPCM]\n");
+		}
 
-                else if (args[0] == "Playback44khzTimer")
-                    Playback44khzTimer = float.Parse(args[1]);
-                else if (args[0] == "PlayingSample")
-                    playingSample = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "NextSampleTimer")
-                    nextSampleTimer = float.Parse(args[1]);
-                else if (args[0] == "FirstNibble")
-                    nibble = bool.Parse(args[1]);
-                else if (args[0] == "Magnitude")
-                    magnitude = int.Parse(args[1]);
+		public void LoadStateText(TextReader reader)
+		{
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[/ADPCM]") break;
+				if (args[0] == "RAM")
+					RAM.ReadFromHex(args[1]);
+				else if (args[0] == "IOAddress")
+					IOAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "AdpcmLength")
+					AdpcmLength = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "ReadAddress")
+					ReadAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "ReadTimer")
+					ReadTimer = int.Parse(args[1]);
+				else if (args[0] == "ReadBuffer")
+					ReadBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "ReadPending")
+					ReadPending = bool.Parse(args[1]);
+				else if (args[0] == "WriteAddress")
+					WriteAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "WriteTimer")
+					WriteTimer = int.Parse(args[1]);
+				else if (args[0] == "WriteBuffer")
+					WriteBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "WritePending")
+					WritePending = bool.Parse(args[1]);
 
-                else
-                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-            }
+				else if (args[0] == "Port180B")
+					Port180B = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Port180D")
+					Port180D = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Port180E")
+					Port180E = byte.Parse(args[1], NumberStyles.HexNumber);
 
-            pce.IntADPCM = HalfReached;
-            pce.IntStop = EndReached;
-            pce.RefreshIRQ2();
-        }
-    }
+				else if (args[0] == "AdpcmIsPlaying")
+					AdpcmIsPlaying = bool.Parse(args[1]);
+				else if (args[0] == "HalfReached")
+					HalfReached = bool.Parse(args[1]);
+				else if (args[0] == "EndReached")
+					EndReached = bool.Parse(args[1]);
+
+				else if (args[0] == "Playback44khzTimer")
+					Playback44khzTimer = float.Parse(args[1]);
+				else if (args[0] == "PlayingSample")
+					playingSample = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "NextSampleTimer")
+					nextSampleTimer = float.Parse(args[1]);
+				else if (args[0] == "FirstNibble")
+					nibble = bool.Parse(args[1]);
+				else if (args[0] == "Magnitude")
+					magnitude = int.Parse(args[1]);
+
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
+
+			pce.IntADPCM = HalfReached;
+			pce.IntStop = EndReached;
+			pce.RefreshIRQ2();
+		}
+	}
 }

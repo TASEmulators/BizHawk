@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {

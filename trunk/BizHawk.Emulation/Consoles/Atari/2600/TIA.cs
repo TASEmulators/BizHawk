@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Consoles.Intellivision
 {

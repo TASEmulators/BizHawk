@@ -3,313 +3,317 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+
 // Emulates a Texas Instruments SN76489
 // TODO the freq->note translation should be moved to a separate utility class.
 
 namespace BizHawk.Emulation.Sound
 {
-    public sealed class SN76489 : ISoundProvider
-    {
-        public sealed class Channel
-        {
-            public ushort Frequency;
-            public byte Volume;
-            public short[] Wave;
-            public bool Noise;
-            public byte NoiseType;
-            public float WaveOffset;
-            public bool Left = true;
-            public bool Right = true;
+	public sealed class SN76489 : ISoundProvider
+	{
+		public sealed class Channel
+		{
+			public ushort Frequency;
+			public byte Volume;
+			public short[] Wave;
+			public bool Noise;
+			public byte NoiseType;
+			public float WaveOffset;
+			public bool Left = true;
+			public bool Right = true;
 
-            const int SampleRate = 44100;
-            static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
+			const int SampleRate = 44100;
+			static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
 
-            public void Mix(short[] samples, int start, int len, int maxVolume)
-            {
-                if (Volume == 0) return;
+			public void Mix(short[] samples, int start, int len, int maxVolume)
+			{
+				if (Volume == 0) return;
 
-                float adjustedWaveLengthInSamples = SampleRate / (Noise ? (Frequency / (float)Wave.Length) : Frequency);
-                float moveThroughWaveRate = Wave.Length / adjustedWaveLengthInSamples;
+				float adjustedWaveLengthInSamples = SampleRate / (Noise ? (Frequency / (float)Wave.Length) : Frequency);
+				float moveThroughWaveRate = Wave.Length / adjustedWaveLengthInSamples;
 
-                int end = start + len;
-                for (int i = start; i < end; )
-                {
-                    short value = Wave[(int)WaveOffset];
+				int end = start + len;
+				for (int i = start; i < end; )
+				{
+					short value = Wave[(int)WaveOffset];
 
-                    samples[i++] += (short)(Left ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
-                    samples[i++] += (short)(Right ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
-                    WaveOffset += moveThroughWaveRate;
-                    if (WaveOffset >= Wave.Length)
-                        WaveOffset %= Wave.Length;
-                }
-            }
-        }
-        
-        public Channel[] Channels = new Channel[4];
-        public byte PsgLatch;
+					samples[i++] += (short)(Left ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
+					samples[i++] += (short)(Right ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
+					WaveOffset += moveThroughWaveRate;
+					if (WaveOffset >= Wave.Length)
+						WaveOffset %= Wave.Length;
+				}
+			}
+		}
 
-        Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
-        int frameStartTime, frameStopTime;
+		public Channel[] Channels = new Channel[4];
+		public byte PsgLatch;
 
-        const int PsgBase = 111861;
+		Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+		int frameStartTime, frameStopTime;
 
-        public SN76489()
-        {
-            MaxVolume = short.MaxValue * 2 / 3;
-            Waves.InitWaves();
-            for (int i=0; i<4; i++)
-            {
-                Channels[i] = new Channel();
-                switch (i)
-                {
-                    case 0:
-                    case 1:
-                    case 2:
-                        Channels[i].Wave = Waves.ImperfectSquareWave;
-                        break;
-                    case 3:
-                        Channels[i].Wave = Waves.NoiseWave;
-                        Channels[i].Noise = true;
-                        break;
-                }
-            }
-        }
+		const int PsgBase = 111861;
 
-        public void Reset()
-        {
-            PsgLatch = 0;
-            foreach (var channel in Channels)
-            {
-                channel.Frequency = 0;
-                channel.Volume = 0;
-                channel.NoiseType = 0;
-                channel.WaveOffset = 0f;
-            }
-        }
+		public SN76489()
+		{
+			MaxVolume = short.MaxValue * 2 / 3;
+			Waves.InitWaves();
+			for (int i = 0; i < 4; i++)
+			{
+				Channels[i] = new Channel();
+				switch (i)
+				{
+					case 0:
+					case 1:
+					case 2:
+						Channels[i].Wave = Waves.ImperfectSquareWave;
+						break;
+					case 3:
+						Channels[i].Wave = Waves.NoiseWave;
+						Channels[i].Noise = true;
+						break;
+				}
+			}
+		}
 
-        public void BeginFrame(int cycles)
-        {
-            while (commands.Count > 0)
-            {
-                var cmd = commands.Dequeue();
-                WritePsgDataImmediate(cmd.Value);
-            }
-            frameStartTime = cycles;
-        }
+		public void Reset()
+		{
+			PsgLatch = 0;
+			foreach (var channel in Channels)
+			{
+				channel.Frequency = 0;
+				channel.Volume = 0;
+				channel.NoiseType = 0;
+				channel.WaveOffset = 0f;
+			}
+		}
 
-        public void EndFrame(int cycles)
-        {
-            frameStopTime = cycles;
-        }
+		public void BeginFrame(int cycles)
+		{
+			while (commands.Count > 0)
+			{
+				var cmd = commands.Dequeue();
+				WritePsgDataImmediate(cmd.Value);
+			}
+			frameStartTime = cycles;
+		}
 
-        public void WritePsgData(byte value, int cycles)
-        {
-            commands.Enqueue(new QueuedCommand {Value = value, Time = cycles-frameStartTime});
-        }
+		public void EndFrame(int cycles)
+		{
+			frameStopTime = cycles;
+		}
 
-        void UpdateNoiseType(int value)
-        {
-            Channels[3].NoiseType = (byte)(value & 0x07);
-            switch (Channels[3].NoiseType & 3)
-            {
-                case 0: Channels[3].Frequency = PsgBase / 16; break;
-                case 1: Channels[3].Frequency = PsgBase / 32; break;
-                case 2: Channels[3].Frequency = PsgBase / 64; break;
-                case 3: Channels[3].Frequency = Channels[2].Frequency; break;
-            }
-            var newWave = (value & 4) == 0 ? Waves.PeriodicWave16 : Waves.NoiseWave;
-            if (newWave != Channels[3].Wave)
-            {
-                Channels[3].Wave = newWave;
-                Channels[3].WaveOffset = 0f;
-            }
-        }
+		public void WritePsgData(byte value, int cycles)
+		{
+			commands.Enqueue(new QueuedCommand { Value = value, Time = cycles - frameStartTime });
+		}
 
-        void WritePsgDataImmediate(byte value)
-        {
-            switch (value & 0xF0)
-            {
-                case 0x80:
-                case 0xA0:
-                case 0xC0:
-                    PsgLatch = value;
-                    break;
-                case 0xE0:
-                    PsgLatch = value;
-                    UpdateNoiseType(value);
-                    break;
-                case 0x90:
-                    Channels[0].Volume = (byte)(~value & 15);
-                    PsgLatch = value;
-                    break;
-                case 0xB0:
-                    Channels[1].Volume = (byte)(~value & 15);
-                    PsgLatch = value;
-                    break;
-                case 0xD0:
-                    Channels[2].Volume = (byte)(~value & 15);
-                    PsgLatch = value;
-                    break;
-                case 0xF0:
-                    Channels[3].Volume = (byte)(~value & 15);
-                    PsgLatch = value;
-                    break;
-                default:
-                    byte channel = (byte) ((PsgLatch & 0x60) >> 5);
-                    if ((PsgLatch & 16) == 0) // Tone latched
-                    {
-                        int f = PsgBase/(((value & 0x03F)*16) + (PsgLatch & 0x0F) + 1);
-                        if (f > 15000)
-                            f = 0; // upper bound of playable frequency
-                        Channels[channel].Frequency = (ushort) f;
-                        if ((Channels[3].NoiseType & 3) == 3 && channel == 2)
-                            Channels[3].Frequency = (ushort) f;
-                    } else { // volume latched
-                        Channels[channel].Volume = (byte)(~value & 15);
-                    }
-                    break;
-            }
-        }
+		void UpdateNoiseType(int value)
+		{
+			Channels[3].NoiseType = (byte)(value & 0x07);
+			switch (Channels[3].NoiseType & 3)
+			{
+				case 0: Channels[3].Frequency = PsgBase / 16; break;
+				case 1: Channels[3].Frequency = PsgBase / 32; break;
+				case 2: Channels[3].Frequency = PsgBase / 64; break;
+				case 3: Channels[3].Frequency = Channels[2].Frequency; break;
+			}
+			var newWave = (value & 4) == 0 ? Waves.PeriodicWave16 : Waves.NoiseWave;
+			if (newWave != Channels[3].Wave)
+			{
+				Channels[3].Wave = newWave;
+				Channels[3].WaveOffset = 0f;
+			}
+		}
 
-        public byte StereoPanning
-        {
-            get
-            {
-                byte value = 0;
-                if (Channels[0].Left)  value |= 0x10;
-                if (Channels[0].Right) value |= 0x01;
-                if (Channels[1].Left)  value |= 0x20;
-                if (Channels[1].Right) value |= 0x02;
-                if (Channels[2].Left)  value |= 0x40;
-                if (Channels[2].Right) value |= 0x04;
-                if (Channels[3].Left)  value |= 0x80;
-                if (Channels[3].Right) value |= 0x08;
-                return value;
-            }
-            set
-            {
-                Channels[0].Left  = (value & 0x10) != 0;
-                Channels[0].Right = (value & 0x01) != 0;
-                Channels[1].Left  = (value & 0x20) != 0;
-                Channels[1].Right = (value & 0x02) != 0;
-                Channels[2].Left  = (value & 0x40) != 0;
-                Channels[2].Right = (value & 0x04) != 0;
-                Channels[3].Left  = (value & 0x80) != 0;
-                Channels[3].Right = (value & 0x08) != 0;    
-            }
-        }
+		void WritePsgDataImmediate(byte value)
+		{
+			switch (value & 0xF0)
+			{
+				case 0x80:
+				case 0xA0:
+				case 0xC0:
+					PsgLatch = value;
+					break;
+				case 0xE0:
+					PsgLatch = value;
+					UpdateNoiseType(value);
+					break;
+				case 0x90:
+					Channels[0].Volume = (byte)(~value & 15);
+					PsgLatch = value;
+					break;
+				case 0xB0:
+					Channels[1].Volume = (byte)(~value & 15);
+					PsgLatch = value;
+					break;
+				case 0xD0:
+					Channels[2].Volume = (byte)(~value & 15);
+					PsgLatch = value;
+					break;
+				case 0xF0:
+					Channels[3].Volume = (byte)(~value & 15);
+					PsgLatch = value;
+					break;
+				default:
+					byte channel = (byte)((PsgLatch & 0x60) >> 5);
+					if ((PsgLatch & 16) == 0) // Tone latched
+					{
+						int f = PsgBase / (((value & 0x03F) * 16) + (PsgLatch & 0x0F) + 1);
+						if (f > 15000)
+							f = 0; // upper bound of playable frequency
+						Channels[channel].Frequency = (ushort)f;
+						if ((Channels[3].NoiseType & 3) == 3 && channel == 2)
+							Channels[3].Frequency = (ushort)f;
+					}
+					else
+					{ // volume latched
+						Channels[channel].Volume = (byte)(~value & 15);
+					}
+					break;
+			}
+		}
 
-        public void SaveStateText(TextWriter writer)
-        {
-            writer.WriteLine("[PSG]");
-            writer.WriteLine("Volume0 {0:X2}", Channels[0].Volume);
-            writer.WriteLine("Volume1 {0:X2}", Channels[1].Volume);
-            writer.WriteLine("Volume2 {0:X2}", Channels[2].Volume);
-            writer.WriteLine("Volume3 {0:X2}", Channels[3].Volume);
-            writer.WriteLine("Freq0 {0:X4}", Channels[0].Frequency);
-            writer.WriteLine("Freq1 {0:X4}", Channels[1].Frequency);
-            writer.WriteLine("Freq2 {0:X4}", Channels[2].Frequency);
-            writer.WriteLine("Freq3 {0:X4}", Channels[3].Frequency);
-            writer.WriteLine("NoiseType {0:X}", Channels[3].NoiseType);
-            writer.WriteLine("PsgLatch {0:X2}", PsgLatch);
-            writer.WriteLine("Panning {0:X2}", StereoPanning);
-            writer.WriteLine("[/PSG]");
-            writer.WriteLine();
-        }
+		public byte StereoPanning
+		{
+			get
+			{
+				byte value = 0;
+				if (Channels[0].Left) value |= 0x10;
+				if (Channels[0].Right) value |= 0x01;
+				if (Channels[1].Left) value |= 0x20;
+				if (Channels[1].Right) value |= 0x02;
+				if (Channels[2].Left) value |= 0x40;
+				if (Channels[2].Right) value |= 0x04;
+				if (Channels[3].Left) value |= 0x80;
+				if (Channels[3].Right) value |= 0x08;
+				return value;
+			}
+			set
+			{
+				Channels[0].Left = (value & 0x10) != 0;
+				Channels[0].Right = (value & 0x01) != 0;
+				Channels[1].Left = (value & 0x20) != 0;
+				Channels[1].Right = (value & 0x02) != 0;
+				Channels[2].Left = (value & 0x40) != 0;
+				Channels[2].Right = (value & 0x04) != 0;
+				Channels[3].Left = (value & 0x80) != 0;
+				Channels[3].Right = (value & 0x08) != 0;
+			}
+		}
 
-        public void LoadStateText(TextReader reader)
-        {
-            while (true)
-            {
-                string[] args = reader.ReadLine().Split(' ');
-                if (args[0].Trim() == "") continue;
-                if (args[0] == "[/PSG]") break;
-                if (args[0] == "Volume0")
-                    Channels[0].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Volume1")
-                    Channels[1].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Volume2")
-                    Channels[2].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Volume3")
-                    Channels[3].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Freq0")
-                    Channels[0].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Freq1")
-                    Channels[1].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Freq2")
-                    Channels[2].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Freq3")
-                    Channels[3].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "NoiseType")
-                    Channels[3].NoiseType = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "PsgLatch")
-                    PsgLatch = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "Panning")
-                    StereoPanning = byte.Parse(args[1], NumberStyles.HexNumber);
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[PSG]");
+			writer.WriteLine("Volume0 {0:X2}", Channels[0].Volume);
+			writer.WriteLine("Volume1 {0:X2}", Channels[1].Volume);
+			writer.WriteLine("Volume2 {0:X2}", Channels[2].Volume);
+			writer.WriteLine("Volume3 {0:X2}", Channels[3].Volume);
+			writer.WriteLine("Freq0 {0:X4}", Channels[0].Frequency);
+			writer.WriteLine("Freq1 {0:X4}", Channels[1].Frequency);
+			writer.WriteLine("Freq2 {0:X4}", Channels[2].Frequency);
+			writer.WriteLine("Freq3 {0:X4}", Channels[3].Frequency);
+			writer.WriteLine("NoiseType {0:X}", Channels[3].NoiseType);
+			writer.WriteLine("PsgLatch {0:X2}", PsgLatch);
+			writer.WriteLine("Panning {0:X2}", StereoPanning);
+			writer.WriteLine("[/PSG]");
+			writer.WriteLine();
+		}
 
-                else
-                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-            }
-            UpdateNoiseType(Channels[3].NoiseType);
-        }
+		public void LoadStateText(TextReader reader)
+		{
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[/PSG]") break;
+				if (args[0] == "Volume0")
+					Channels[0].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Volume1")
+					Channels[1].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Volume2")
+					Channels[2].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Volume3")
+					Channels[3].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Freq0")
+					Channels[0].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Freq1")
+					Channels[1].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Freq2")
+					Channels[2].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Freq3")
+					Channels[3].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "NoiseType")
+					Channels[3].NoiseType = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "PsgLatch")
+					PsgLatch = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Panning")
+					StereoPanning = byte.Parse(args[1], NumberStyles.HexNumber);
 
-        public void SaveStateBinary(BinaryWriter writer)
-        {
-            writer.Write(Channels[0].Volume);
-            writer.Write(Channels[1].Volume);
-            writer.Write(Channels[2].Volume);
-            writer.Write(Channels[3].Volume);
-            writer.Write(Channels[0].Frequency);
-            writer.Write(Channels[1].Frequency);
-            writer.Write(Channels[2].Frequency);
-            writer.Write(Channels[3].Frequency);
-            writer.Write(Channels[3].NoiseType);
-            writer.Write(PsgLatch);
-            writer.Write(StereoPanning);
-        }
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
+			UpdateNoiseType(Channels[3].NoiseType);
+		}
 
-        public void LoadStateBinary(BinaryReader reader)
-        {
-            Channels[0].Volume = reader.ReadByte();
-            Channels[1].Volume = reader.ReadByte();
-            Channels[2].Volume = reader.ReadByte();
-            Channels[3].Volume = reader.ReadByte();
-            Channels[0].Frequency = reader.ReadUInt16();
-            Channels[1].Frequency = reader.ReadUInt16();
-            Channels[2].Frequency = reader.ReadUInt16();
-            Channels[3].Frequency = reader.ReadUInt16();
-            UpdateNoiseType(reader.ReadByte());
-            PsgLatch = reader.ReadByte();
-            StereoPanning = reader.ReadByte();
-        }
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			writer.Write(Channels[0].Volume);
+			writer.Write(Channels[1].Volume);
+			writer.Write(Channels[2].Volume);
+			writer.Write(Channels[3].Volume);
+			writer.Write(Channels[0].Frequency);
+			writer.Write(Channels[1].Frequency);
+			writer.Write(Channels[2].Frequency);
+			writer.Write(Channels[3].Frequency);
+			writer.Write(Channels[3].NoiseType);
+			writer.Write(PsgLatch);
+			writer.Write(StereoPanning);
+		}
 
-        #region Frequency -> Note Conversion (for interested humans)
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			Channels[0].Volume = reader.ReadByte();
+			Channels[1].Volume = reader.ReadByte();
+			Channels[2].Volume = reader.ReadByte();
+			Channels[3].Volume = reader.ReadByte();
+			Channels[0].Frequency = reader.ReadUInt16();
+			Channels[1].Frequency = reader.ReadUInt16();
+			Channels[2].Frequency = reader.ReadUInt16();
+			Channels[3].Frequency = reader.ReadUInt16();
+			UpdateNoiseType(reader.ReadByte());
+			PsgLatch = reader.ReadByte();
+			StereoPanning = reader.ReadByte();
+		}
 
-        public static string GetNote(int freq)
-        {
-            if (freq < 26) return "LOW";
-            if (freq > 4435) return "HIGH";
+		#region Frequency -> Note Conversion (for interested humans)
 
-            for (int i = 0; i < frequencies.Length - 1; i++)
-            {
-                if (freq >= frequencies[i + 1]) continue;
-                int nextNoteDistance = frequencies[i + 1] - frequencies[i];
-                int distance = freq - frequencies[i];
-                if (distance < nextNoteDistance / 2)
-                {
-                    // note identified
-                    return notes[i];
-                }
-            }
-            return "?";
-        }
+		public static string GetNote(int freq)
+		{
+			if (freq < 26) return "LOW";
+			if (freq > 4435) return "HIGH";
 
-        // For the curious, A4 = 440hz. Every octave is a doubling, so A5=880, A3=220
-        // Each next step is a factor of the 12-root of 2. So to go up a step you multiply by 1.0594630943592952645618252949463
-        // Next step from A4 is A#4. A#4 = (440.00 * 1.05946...) = 466.163...
-        // Note that because frequencies must be integers, SMS games will be slightly out of pitch to a normally tuned instrument, especially at the low end.
+			for (int i = 0; i < frequencies.Length - 1; i++)
+			{
+				if (freq >= frequencies[i + 1]) continue;
+				int nextNoteDistance = frequencies[i + 1] - frequencies[i];
+				int distance = freq - frequencies[i];
+				if (distance < nextNoteDistance / 2)
+				{
+					// note identified
+					return notes[i];
+				}
+			}
+			return "?";
+		}
 
-        static readonly int[] frequencies =
+		// For the curious, A4 = 440hz. Every octave is a doubling, so A5=880, A3=220
+		// Each next step is a factor of the 12-root of 2. So to go up a step you multiply by 1.0594630943592952645618252949463
+		// Next step from A4 is A#4. A#4 = (440.00 * 1.05946...) = 466.163...
+		// Note that because frequencies must be integers, SMS games will be slightly out of pitch to a normally tuned instrument, especially at the low end.
+
+		static readonly int[] frequencies =
             {
                 27,   // A0
                 29,   // A#0
@@ -402,7 +406,7 @@ namespace BizHawk.Emulation.Sound
                 4435  // C#8
             };
 
-        static readonly string[] notes =
+		static readonly string[] notes =
             {
                                                                  "A0","A#0","B0",
                 "C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1","A1","A#1","B1",
@@ -415,38 +419,38 @@ namespace BizHawk.Emulation.Sound
                 "C8","HIGH"
             };
 
-        #endregion
+		#endregion
 
-        public int MaxVolume { get; set; }
-        public void DiscardSamples() { commands.Clear(); }
-        public void GetSamples(short[] samples)
-        {
-            int elapsedCycles = frameStopTime - frameStartTime;
-            if (elapsedCycles == 0) 
-                elapsedCycles = 1; // hey it's better than diving by zero
+		public int MaxVolume { get; set; }
+		public void DiscardSamples() { commands.Clear(); }
+		public void GetSamples(short[] samples)
+		{
+			int elapsedCycles = frameStopTime - frameStartTime;
+			if (elapsedCycles == 0)
+				elapsedCycles = 1; // hey it's better than diving by zero
 
-            int start = 0;
-            while (commands.Count > 0)
-            {
-                var cmd = commands.Dequeue();
-                int pos = ((cmd.Time*samples.Length)/elapsedCycles) & ~1;
-                GetSamplesImmediate(samples, start, pos-start);
-                start = pos;
-                WritePsgDataImmediate(cmd.Value);
-            }
-            GetSamplesImmediate(samples, start, samples.Length - start);
-        }
+			int start = 0;
+			while (commands.Count > 0)
+			{
+				var cmd = commands.Dequeue();
+				int pos = ((cmd.Time * samples.Length) / elapsedCycles) & ~1;
+				GetSamplesImmediate(samples, start, pos - start);
+				start = pos;
+				WritePsgDataImmediate(cmd.Value);
+			}
+			GetSamplesImmediate(samples, start, samples.Length - start);
+		}
 
-        public void GetSamplesImmediate(short[] samples, int start, int len)
-        {
-            for (int i = 0; i < 4; i++)
-                Channels[i].Mix(samples, start, len, MaxVolume);
-        }
+		public void GetSamplesImmediate(short[] samples, int start, int len)
+		{
+			for (int i = 0; i < 4; i++)
+				Channels[i].Mix(samples, start, len, MaxVolume);
+		}
 
-        class QueuedCommand
-        {
-            public byte Value;
-            public int Time;
-        }
-    }
+		class QueuedCommand
+		{
+			public byte Value;
+			public int Time;
+		}
+	}
 }

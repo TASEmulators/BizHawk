@@ -452,11 +452,6 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
-    <Compile Include="Interfaces\Base Implementations\NullController.cs" />
-    <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
-    <Compile Include="Interfaces\CoreComms.cs" />
-    <Compile Include="Interfaces\ICoreFileProvider.cs" />
-    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
@@ -467,10 +462,6 @@
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
-    <Compile Include="Interfaces\IController.cs" />
-    <Compile Include="Interfaces\IEmulator.cs" />
-    <Compile Include="Interfaces\ISoundProvider.cs" />
-    <Compile Include="Interfaces\IVideoProvider.cs" />
     <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />

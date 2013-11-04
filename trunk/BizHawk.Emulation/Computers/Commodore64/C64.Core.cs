@@ -1,7 +1,10 @@
-﻿using BizHawk.Emulation.Computers.Commodore64.Cartridge;
+﻿using System.IO;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Computers.Commodore64.Disk;
 using BizHawk.Emulation.Computers.Commodore64.MOS;
-using System.IO;
+
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
@@ -16,15 +19,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Motherboard board;
 		private bool loadPrg;
 
-        private byte[] GetFirmware(string name, int length)
-        {
-            byte[] result = new byte[length];
-            using (Stream source = CoreComm.CoreFileProvider.OpenFirmware("C64", name))
-            {
-                source.Read(result, 0, length);
-            }
-            return result;
-        }
+		private byte[] GetFirmware(string name, int length)
+		{
+			byte[] result = new byte[length];
+			using (Stream source = CoreComm.CoreFileProvider.OpenFirmware("C64", name))
+			{
+				source.Read(result, 0, length);
+			}
+			return result;
+		}
 
 		private void Init(Region initRegion)
 		{
@@ -43,14 +46,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (inputFileInfo.Extension.ToUpper())
 			{
 				case @".CRT":
-                    Cart cart = Cart.Load(inputFileInfo.Data);
+					Cart cart = Cart.Load(inputFileInfo.Data);
 					if (cart != null)
 					{
 						board.cartPort.Connect(cart);
 					}
 					break;
 				case @".PRG":
-                    if (inputFileInfo.Data.Length > 2)
+					if (inputFileInfo.Data.Length > 2)
 						loadPrg = true;
 					break;
 			}
@@ -58,10 +61,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void InitRoms()
 		{
-            byte[] basicRom = GetFirmware("Basic", 0x2000);
-            byte[] charRom = GetFirmware("Chargen", 0x1000);
-            byte[] kernalRom = GetFirmware("Kernal", 0x2000);
-			
+			byte[] basicRom = GetFirmware("Basic", 0x2000);
+			byte[] charRom = GetFirmware("Chargen", 0x1000);
+			byte[] kernalRom = GetFirmware("Kernal", 0x2000);
+
 			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
 			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
 			board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
@@ -74,7 +77,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			get
 			{
 				//return (disk.PeekVia1(0x00) & 0x08) != 0;
-                return false;
+				return false;
 			}
 		}
 

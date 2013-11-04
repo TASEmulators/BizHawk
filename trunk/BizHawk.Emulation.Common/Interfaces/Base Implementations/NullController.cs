@@ -1,4 +1,4 @@
-﻿namespace BizHawk
+﻿namespace BizHawk.Emulation.Common
 {
 	public class NullController : IController
 	{

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class MovieSession

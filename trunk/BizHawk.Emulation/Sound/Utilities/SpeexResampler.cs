@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Sound.Utilities
 {
 	/// <summary>

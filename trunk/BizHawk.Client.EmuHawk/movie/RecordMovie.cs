@@ -2,13 +2,14 @@
 using System.Windows.Forms;
 using System.IO;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.Emulation.Consoles.Nintendo.N64;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

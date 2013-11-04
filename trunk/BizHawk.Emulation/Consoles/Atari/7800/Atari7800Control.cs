@@ -1,5 +1,7 @@
 ﻿using System;
+
 using EMU7800.Core;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation
 {

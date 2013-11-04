@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Consoles.Sega.Saturn

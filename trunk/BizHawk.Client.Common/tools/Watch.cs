@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public abstract class Watch

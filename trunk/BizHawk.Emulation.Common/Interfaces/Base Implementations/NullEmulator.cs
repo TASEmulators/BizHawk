@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
 	public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider
 	{

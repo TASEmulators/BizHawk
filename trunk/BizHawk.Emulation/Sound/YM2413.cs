@@ -8,6 +8,7 @@
 // TODO This should eventually be replaced, due to 1) uncertain licensing terms 2) This is not a native C# implementation, but a naive port.
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Sound
 {

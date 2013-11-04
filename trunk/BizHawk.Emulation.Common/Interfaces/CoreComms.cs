@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-namespace BizHawk
+
+namespace BizHawk.Emulation.Common
 {
 	public class CoreComm
 	{
