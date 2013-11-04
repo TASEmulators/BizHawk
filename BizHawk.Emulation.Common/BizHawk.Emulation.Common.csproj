@@ -53,6 +53,7 @@
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />
+    <Compile Include="MemoryDomain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

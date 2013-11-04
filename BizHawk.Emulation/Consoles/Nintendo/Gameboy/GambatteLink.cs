@@ -315,9 +315,9 @@ namespace BizHawk.Emulation.Consoles.GB
 			var mm = new List<MemoryDomain>();
 
 			foreach (var md in L.MemoryDomains)
-				mm.Add(new MemoryDomain("L " + md.Name, md.Size, md.Endian, md.PeekByte, md.PokeByte));
+				mm.Add(new MemoryDomain("L " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
 			foreach (var md in R.MemoryDomains)
-				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.Endian, md.PeekByte, md.PokeByte));
+				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
 
 			MemoryDomains = mm.AsReadOnly();
 		}

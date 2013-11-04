@@ -618,7 +618,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>();
-			var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little,
+			var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, MemoryDomain.Endian.Little,
 				addr => ram[addr & RamSizeMask],
 				(addr, value) => ram[addr & RamSizeMask] = value);
 			domains.Add(MainMemoryDomain);

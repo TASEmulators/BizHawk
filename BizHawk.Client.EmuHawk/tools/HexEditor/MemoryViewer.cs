@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool BlazingFast = false;
 
 		private string info = "";
-		private MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => 0, (a, v) => { v = 0; });
+		private MemoryDomain Domain = new MemoryDomain("NULL", 1024, MemoryDomain.Endian.Little, addr => 0, (a, v) => { v = 0; });
 		private readonly Font font = new Font("Courier New", 8);
 		private int _rows_visible;
 		private int _data_size = 1;

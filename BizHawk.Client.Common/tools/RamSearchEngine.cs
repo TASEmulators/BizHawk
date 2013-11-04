@@ -725,7 +725,7 @@ namespace BizHawk.Client.Common
 						return theByte;
 					}
 				case Watch.WatchSize.Word:
-					var theWord = _settings.Domain.PeekWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					var theWord = _settings.Domain.PeekWord(addr, _settings.BigEndian);
 					if (_settings.Type == Watch.DisplayType.Signed)
 					{
 						return (short)theWord;
@@ -735,7 +735,7 @@ namespace BizHawk.Client.Common
 						return theWord;
 					}
 				case Watch.WatchSize.DWord:
-					var theDWord = _settings.Domain.PeekDWord(addr, _settings.BigEndian ? Endian.Big : Endian.Little);
+					var theDWord = _settings.Domain.PeekDWord(addr, _settings.BigEndian);
 					if (_settings.Type == Watch.DisplayType.Signed)
 					{
 						return (int)theDWord;
@@ -808,7 +808,7 @@ namespace BizHawk.Client.Common
 			public MiniWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				_previous = domain.PeekWord(Address, bigEndian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekWord(Address, bigEndian);
 			}
 
 			public int Previous
@@ -818,7 +818,7 @@ namespace BizHawk.Client.Common
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
-				_previous = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekWord(Address, bigendian);
 			}
 		}
 
@@ -830,7 +830,7 @@ namespace BizHawk.Client.Common
 			public MiniDWordWatch(MemoryDomain domain, int addr, bool bigEndian)
 			{
 				Address = addr;
-				_previous = domain.PeekDWord(Address, bigEndian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekDWord(Address, bigEndian);
 			}
 
 			public int Previous
@@ -840,7 +840,7 @@ namespace BizHawk.Client.Common
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
-				_previous = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekDWord(Address, bigendian);
 			}
 		}
 
@@ -910,7 +910,7 @@ namespace BizHawk.Client.Common
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
-				_previous = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekWord(Address, bigendian);
 			}
 
 			public int Previous
@@ -925,7 +925,7 @@ namespace BizHawk.Client.Common
 
 			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				ushort value = domain.PeekWord(Address, bigendian ? Endian.Big : Endian.Little);
+				ushort value = domain.PeekWord(Address, bigendian);
 				if (value != Previous)
 				{
 					_changecount++;
@@ -961,7 +961,7 @@ namespace BizHawk.Client.Common
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
-				_previous = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
+				_previous = domain.PeekDWord(Address, bigendian);
 			}
 
 			public int Previous
@@ -976,7 +976,7 @@ namespace BizHawk.Client.Common
 
 			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				uint value = domain.PeekDWord(Address, bigendian ? Endian.Big : Endian.Little);
+				uint value = domain.PeekDWord(Address, bigendian);
 				if (value != Previous)
 				{
 					_changecount++;

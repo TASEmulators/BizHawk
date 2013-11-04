@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		{
 			CoreComm = comm;
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0, (a, v) => { }));
+			domains.Add(new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { }));
 			memoryDomains = domains.AsReadOnly();
 		}
 		public void ResetCounters()

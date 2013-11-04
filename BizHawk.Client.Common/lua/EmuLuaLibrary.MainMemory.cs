@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 		public float mainmemory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MainMemory.PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+			Global.Emulator.MainMemory.PokeDWord(addr, v, bigendian);
 		}
 
 

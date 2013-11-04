@@ -176,12 +176,12 @@ namespace BizHawk.Client.Common
 
 		protected ushort GetWord()
 		{
-			return _domain.PeekWord(_address, _bigEndian ? Endian.Big : Endian.Little);
+			return _domain.PeekWord(_address, _bigEndian);
 		}
 
 		protected uint GetDWord()
 		{
-			return _domain.PeekDWord(_address, _bigEndian ? Endian.Big : Endian.Little);
+			return _domain.PeekDWord(_address, _bigEndian);
 		}
 
 		protected void PokeByte(byte val)
@@ -191,12 +191,12 @@ namespace BizHawk.Client.Common
 
 		protected void PokeWord(ushort val)
 		{
-			_domain.PokeWord(_address, val, _bigEndian ? Endian.Big : Endian.Little);
+			_domain.PokeWord(_address, val, _bigEndian);
 		}
 
 		protected void PokeDWord(uint val)
 		{
-			_domain.PokeDWord(_address, val, _bigEndian ? Endian.Big : Endian.Little);
+			_domain.PokeDWord(_address, val, _bigEndian);
 		}
 
 		public void ClearChangeCount() { _changecount = 0; }

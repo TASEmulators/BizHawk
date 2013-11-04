@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
 			             Global.Emulator.MainMemory;
-			BigEndianCheckBox.Checked = domain.Endian == Endian.Big;
+			BigEndianCheckBox.Checked = domain.EndianType == MemoryDomain.Endian.Big;
 		}
 
 		#region Events

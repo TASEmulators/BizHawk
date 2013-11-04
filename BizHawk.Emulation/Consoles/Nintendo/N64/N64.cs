@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		#region memorydomains
 
-		MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, Endian endian)
+		private MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian)
 		{
 			int size = api.get_memory_size(id);
 
@@ -292,18 +292,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		void InitMemoryDomains()
 		{
 			MemoryDomains = new List<MemoryDomain>();
-			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, Endian.Little);
-			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, Endian.Little);
-			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, Endian.Little);
-			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, Endian.Little);
-			MakeMemoryDomain("RI Register", mupen64plusApi.N64_MEMORY.RI_REG, Endian.Little);
-			MakeMemoryDomain("AI Register", mupen64plusApi.N64_MEMORY.AI_REG, Endian.Little);
+			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("RI Register", mupen64plusApi.N64_MEMORY.RI_REG, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("AI Register", mupen64plusApi.N64_MEMORY.AI_REG, MemoryDomain.Endian.Little);
 
-			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, Endian.Little);
-			MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, Endian.Little);
-			MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, Endian.Little);
-			MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, Endian.Little);
-			MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, Endian.Little);
+			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
 		}
 
 		public IList<MemoryDomain> MemoryDomains { get; private set; }

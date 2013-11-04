@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			if (data == IntPtr.Zero)
 				throw new Exception("libmeteor_getmemoryarea() returned NULL??");
 
-			MemoryDomain md = new MemoryDomain(name, size, Endian.Little,
+			MemoryDomain md = new MemoryDomain(name, size, MemoryDomain.Endian.Little,
 				delegate(int addr)
 				{
 					unsafe
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
 			// special domain for system bus
 			{
-				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, Endian.Little,
+				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
 						return LibMeteor.libmeteor_peekbus((uint)addr);
@@ -273,7 +273,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			{
 				var ew = _MemoryDomains[1];
 				var iw = _MemoryDomains[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, Endian.Little,
+				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
 						if (addr >= 256 * 1024)

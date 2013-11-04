@@ -545,19 +545,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(10);
-			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, Endian.Little,
+			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, MemoryDomain.Endian.Little,
 				addr => Ram[addr & 0x1FFF],
 				(addr, value) => Ram[addr & 0x1FFF] = value);
 			domains.Add(MainMemoryDomain);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
 				addr => Cpu.ReadMemory21(addr),
 				(addr, value) => Cpu.WriteMemory21(addr, value));
 			domains.Add(SystemBusDomain);
 
 			if (BRAM != null)
 			{
-				var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, Endian.Little,
+				var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, MemoryDomain.Endian.Little,
 					addr => BRAM[addr & 0x7FF],
 					(addr, value) => BRAM[addr & 0x7FF] = value);
 				domains.Add(BRAMMemoryDomain);
@@ -565,19 +565,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 			if (TurboCD)
 			{
-				var CDRamMemoryDomain = new MemoryDomain("TurboCD RAM", CDRam.Length, Endian.Little,
+				var CDRamMemoryDomain = new MemoryDomain("TurboCD RAM", CDRam.Length, MemoryDomain.Endian.Little,
 					addr => CDRam[addr & 0xFFFF],
 					(addr, value) => CDRam[addr & 0xFFFF] = value);
 				domains.Add(CDRamMemoryDomain);
 
-				var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM.RAM.Length, Endian.Little,
+				var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM.RAM.Length, MemoryDomain.Endian.Little,
 					addr => ADPCM.RAM[addr & 0xFFFF],
 					(addr, value) => ADPCM.RAM[addr & 0xFFFF] = value);
 				domains.Add(AdpcmMemoryDomain);
 
 				if (SuperRam != null)
 				{
-					var SuperRamMemoryDomain = new MemoryDomain("Super System Card RAM", SuperRam.Length, Endian.Little,
+					var SuperRamMemoryDomain = new MemoryDomain("Super System Card RAM", SuperRam.Length, MemoryDomain.Endian.Little,
 						addr => SuperRam[addr & 0x3FFFF],
 						(addr, value) => SuperRam[addr & 0x3FFFF] = value);
 					domains.Add(SuperRamMemoryDomain);
@@ -586,7 +586,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 			if (ArcadeCard)
 			{
-				var ArcadeRamMemoryDomain = new MemoryDomain("Arcade Card RAM", ArcadeRam.Length, Endian.Little,
+				var ArcadeRamMemoryDomain = new MemoryDomain("Arcade Card RAM", ArcadeRam.Length, MemoryDomain.Endian.Little,
 						addr => ArcadeRam[addr & 0x1FFFFF],
 						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
 				domains.Add(ArcadeRamMemoryDomain);

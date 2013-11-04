@@ -398,16 +398,16 @@ namespace BizHawk.Emulation.Consoles.Sega
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, Endian.Little,
+			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
 				addr => SystemRam[addr & RamSizeMask],
 				(addr, value) => SystemRam[addr & RamSizeMask] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, Endian.Little,
+			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
 				addr => Vdp.VRAM[addr & 0x3FFF],
 				(addr, value) => Vdp.VRAM[addr & 0x3FFF] = value);
-			var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, Endian.Little,
+			var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
 				addr => SaveRAM[addr % SaveRAM.Length],
 				(addr, value) => { SaveRAM[addr % SaveRAM.Length] = value; SaveRamModified = true; });
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr => Cpu.ReadMemory((ushort)addr),
 				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
 
