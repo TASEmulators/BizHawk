@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
+using BizHawk.Common;
 using BizHawk.Emulation.CPUs.M6502;
 
 #pragma warning disable 162

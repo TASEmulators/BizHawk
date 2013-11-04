@@ -1,3 +1,5 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public sealed class NES_QJ : MMC3Board_Base

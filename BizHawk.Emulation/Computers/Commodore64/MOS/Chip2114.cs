@@ -1,10 +1,12 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// used as Color RAM in C64
 
 	sealed public class Chip2114
 	{
-        byte[] ram;
+		byte[] ram;
 
 		public Chip2114()
 		{
@@ -31,15 +33,15 @@
 			return ram[addr & 0x3FF];
 		}
 
-        public int ReadInt(int addr)
-        {
-            return ram[addr & 0x3FF];
-        }
+		public int ReadInt(int addr)
+		{
+			return ram[addr & 0x3FF];
+		}
 
 		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
-        }
+			SaveState.SyncObject(ser, this);
+		}
 
 		public void Write(int addr, byte val)
 		{

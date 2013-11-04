@@ -4,6 +4,7 @@
 //but mostly http://wiki.nesdev.com/w/index.php/INES_Mapper_206
 
 using System;
+using BizHawk.Common;
 
 //TODO - prg is 4 bits, chr is 6 bits
 

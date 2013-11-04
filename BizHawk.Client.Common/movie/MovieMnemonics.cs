@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public static class MnemonicConstants

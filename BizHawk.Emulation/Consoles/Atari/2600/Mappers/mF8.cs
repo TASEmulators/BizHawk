@@ -1,4 +1,6 @@
-﻿namespace BizHawk
+﻿using BizHawk.Common;
+
+namespace BizHawk
 {
 	partial class Atari2600
 	{

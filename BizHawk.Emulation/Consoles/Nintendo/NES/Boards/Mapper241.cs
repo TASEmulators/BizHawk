@@ -1,9 +1,11 @@
-﻿//163 is for nanjing games
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public sealed class Mapper241 : NES.NESBoardBase
 	{
+		//163 is for nanjing games
+
 		//configuration
 		int prg_bank_mask_32k;
 

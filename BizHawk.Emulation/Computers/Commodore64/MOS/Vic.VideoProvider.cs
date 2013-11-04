@@ -1,17 +1,18 @@
 ﻿using System.Drawing;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-    sealed public partial class Vic : IVideoProvider
+	sealed public partial class Vic : IVideoProvider
 	{
 		int[] buf;
 		int bufHeight;
 		int bufLength;
 		int bufOffset;
 		int bufWidth;
-        int pixBufferSize = 12;
-        int[] pixBuffer;
-        int pixBufferIndex;
+		int pixBufferSize = 12;
+		int[] pixBuffer;
+		int pixBufferIndex;
 
 		// palette
 		int[] palette =
@@ -56,7 +57,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int VirtualWidth
 		{
-            get { return bufWidth; }
+			get { return bufWidth; }
 		}
 	}
 }

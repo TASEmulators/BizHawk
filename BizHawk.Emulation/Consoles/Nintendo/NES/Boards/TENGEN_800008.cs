@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// tetris (unl)
 	// behaves identically to CNROM for the one board it is on, but supports more (64K prg, 64K chr)

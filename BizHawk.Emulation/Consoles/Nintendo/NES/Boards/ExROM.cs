@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 //simplifications/approximations:
 //* "Note that no commercial games rely on this mirroring -- therefore you can take the easy way out and simply give all MMC5 games 64k PRG-RAM."
@@ -12,7 +13,6 @@
 //TODO - tweak nametable / chr viewer to be more useful
 
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	[NES.INESBoardImplPriority]

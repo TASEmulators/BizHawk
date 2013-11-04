@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 //main apis for emulator core routine use
 
 namespace BizHawk.Emulation.DiscSystem

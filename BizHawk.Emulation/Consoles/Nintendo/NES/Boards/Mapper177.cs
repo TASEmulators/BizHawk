@@ -1,10 +1,12 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// china
 	// behavior from fceux
 	public sealed class Mapper177 : NES.NESBoardBase
 	{
-		int prg;
+		private int prg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

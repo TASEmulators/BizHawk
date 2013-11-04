@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
+using BizHawk.Common;
+
 namespace BizHawk
 {
 	internal class CompactGameInfo

@@ -6,6 +6,7 @@ using System.Threading;
 using SlimDX.DirectInput;
 #endif
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk

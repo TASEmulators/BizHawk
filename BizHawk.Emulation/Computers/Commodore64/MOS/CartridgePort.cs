@@ -1,15 +1,17 @@
 ﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	sealed public class CartridgePort
 	{
-        public Func<bool> ReadIRQ;
-        public Func<bool> ReadNMI;
+		public Func<bool> ReadIRQ;
+		public Func<bool> ReadNMI;
 
 		Cart cart;
-        bool connected;
+		bool connected;
 
 		public CartridgePort()
 		{
@@ -29,9 +31,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void PokeLoExp(int addr, byte val) { if (connected) { cart.PokeDE00(addr & 0x00FF, val); } }
 		public void PokeLoRom(int addr, byte val) { if (connected) { cart.Poke8000(addr & 0x1FFF, val); } }
 
-        public bool ReadExRom() { if (connected) { return cart.ExRom; } else { return true; } }
-        public bool ReadGame() { if (connected) { return cart.Game; } else { return true; } }
-        public byte ReadHiExp(int addr) { if (connected) { return cart.ReadDF00((addr & 0x00FF)); } else { return 0xFF; } }
+		public bool ReadExRom() { if (connected) { return cart.ExRom; } else { return true; } }
+		public bool ReadGame() { if (connected) { return cart.Game; } else { return true; } }
+		public byte ReadHiExp(int addr) { if (connected) { return cart.ReadDF00((addr & 0x00FF)); } else { return 0xFF; } }
 		public byte ReadHiRom(int addr) { if (connected) { return cart.ReadA000((addr & 0x1FFF)); } else { return 0xFF; } }
 		public byte ReadLoExp(int addr) { if (connected) { return cart.ReadDE00((addr & 0x00FF)); } else { return 0xFF; } }
 		public byte ReadLoRom(int addr) { if (connected) { return cart.Read8000((addr & 0x1FFF)); } else { return 0xFF; } }
@@ -68,19 +70,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-        public bool ReadIRQBuffer()
-        {
-            return true;
-        }
-
-        public bool ReadNMIBuffer()
-        {
-            return true;
-        }
-
-        public void SyncState(Serializer ser)
+		public bool ReadIRQBuffer()
 		{
-            SaveState.SyncObject(ser, this);
+			return true;
+		}
+
+		public bool ReadNMIBuffer()
+		{
+			return true;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			SaveState.SyncObject(ser, this);
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// RacerMate II
 	// 64KB PRGROM, 64KB CHRRAM(!), CHRRAM is battry backed (!!)

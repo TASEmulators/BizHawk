@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.CPUs.M6502
 {
 	public static class MOS6502X_DLL

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//Urusei Yatsura - Lum no Wedding Bell (J)
 	public sealed class Mapper101 : NES.NESBoardBase

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
