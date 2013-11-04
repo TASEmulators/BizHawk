@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 //TODO - redo all timekeeping in terms of master clock
 
 namespace BizHawk.Emulation.Consoles.Nintendo

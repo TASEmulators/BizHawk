@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
 

@@ -5,9 +5,9 @@ using System.Threading;
 
 using BizHawk.Common;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
-	internal class CompactGameInfo
+	public class CompactGameInfo
 	{
 		public string Name;
 		public string System;

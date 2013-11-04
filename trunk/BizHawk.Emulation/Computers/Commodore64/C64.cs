@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
@@ -11,8 +12,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool _islag = true;
 		private int _lagcount = 0;
 		private int _frame = 0;
-        private int cyclesPerFrame;
-        private InputFileInfo inputFileInfo;
+		private int cyclesPerFrame;
+		private InputFileInfo inputFileInfo;
 
 		// bizhawk I/O
 		public CoreComm CoreComm { get; private set; }

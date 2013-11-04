@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.M68000;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
@@ -67,13 +68,13 @@ namespace BizHawk.Emulation.Consoles.Sega
 		// A total of 3420 mclks per line, but 2560 mclks are active display and 860 mclks are blanking.
 
 #if MUSASHI
-        VdpCallback _vdp;
-        ReadCallback read8;
-        ReadCallback read16;
-        ReadCallback read32;
-        WriteCallback write8;
-        WriteCallback write16;
-        WriteCallback write32;
+		VdpCallback _vdp;
+		ReadCallback read8;
+		ReadCallback read16;
+		ReadCallback read32;
+		WriteCallback write8;
+		WriteCallback write16;
+		WriteCallback write32;
 #endif
 
 		public Genesis(CoreComm comm, GameInfo game, byte[] rom)
@@ -81,8 +82,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 			CoreComm = comm;
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
-            YM2612 = new YM2612() { MaxVolume = 23405 };
-            PSG = new SN76489() { MaxVolume = 4681 };
+			YM2612 = new YM2612() { MaxVolume = 23405 };
+			PSG = new SN76489() { MaxVolume = 4681 };
 			VDP = new GenVDP();
 			VDP.DmaReadFrom68000 = ReadWord;
 			SoundMixer = new SoundMixer(YM2612, PSG);
@@ -93,27 +94,27 @@ namespace BizHawk.Emulation.Consoles.Sega
 			MainCPU.WriteByte = WriteByte;
 			MainCPU.WriteWord = WriteWord;
 			MainCPU.WriteLong = WriteLong;
-            MainCPU.IrqCallback = InterruptCallback;
+			MainCPU.IrqCallback = InterruptCallback;
 
-            // ---------------------- musashi -----------------------
+			// ---------------------- musashi -----------------------
 #if MUSASHI
-            _vdp = vdpcallback;
-            read8 = Read8;
-            read16 = Read16;
-            read32 = Read32;
-            write8 = Write8;
-            write16 = Write16;
-            write32 = Write32;
+			_vdp = vdpcallback;
+			read8 = Read8;
+			read16 = Read16;
+			read32 = Read32;
+			write8 = Write8;
+			write16 = Write16;
+			write32 = Write32;
 
-            Musashi.RegisterVdpCallback(Marshal.GetFunctionPointerForDelegate(_vdp));
-            Musashi.RegisterRead8(Marshal.GetFunctionPointerForDelegate(read8));
-            Musashi.RegisterRead16(Marshal.GetFunctionPointerForDelegate(read16));
-            Musashi.RegisterRead32(Marshal.GetFunctionPointerForDelegate(read32));
-            Musashi.RegisterWrite8(Marshal.GetFunctionPointerForDelegate(write8));
-            Musashi.RegisterWrite16(Marshal.GetFunctionPointerForDelegate(write16));
-            Musashi.RegisterWrite32(Marshal.GetFunctionPointerForDelegate(write32));
+			Musashi.RegisterVdpCallback(Marshal.GetFunctionPointerForDelegate(_vdp));
+			Musashi.RegisterRead8(Marshal.GetFunctionPointerForDelegate(read8));
+			Musashi.RegisterRead16(Marshal.GetFunctionPointerForDelegate(read16));
+			Musashi.RegisterRead32(Marshal.GetFunctionPointerForDelegate(read32));
+			Musashi.RegisterWrite8(Marshal.GetFunctionPointerForDelegate(write8));
+			Musashi.RegisterWrite16(Marshal.GetFunctionPointerForDelegate(write16));
+			Musashi.RegisterWrite32(Marshal.GetFunctionPointerForDelegate(write32));
 #endif
-            // ---------------------- musashi -----------------------
+			// ---------------------- musashi -----------------------
 
 			SoundCPU.ReadMemory = ReadMemoryZ80;
 			SoundCPU.WriteMemory = WriteMemoryZ80;
@@ -127,35 +128,35 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			SetupMemoryDomains();
 #if MUSASHI
-            Musashi.Init();
-            Musashi.Reset();
-            VDP.GetPC = () => Musashi.PC;
+			Musashi.Init();
+			Musashi.Reset();
+			VDP.GetPC = () => Musashi.PC;
 #else
             MainCPU.Reset();
             VDP.GetPC = () => MainCPU.PC;
 #endif
-            InitializeCartHardware(game);
-        }
+			InitializeCartHardware(game);
+		}
 
-        void InitializeCartHardware(GameInfo game)
-        {
-            LogCartInfo();
-            InitializeEeprom(game);
-            InitializeSaveRam(game);
-        }
+		void InitializeCartHardware(GameInfo game)
+		{
+			LogCartInfo();
+			InitializeEeprom(game);
+			InitializeSaveRam(game);
+		}
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
 
-            Controller.UpdateControls(Frame++);
+			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
-            YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
+			YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
 
-            // Do start-of-frame events
-            VDP.HIntLineCounter = VDP.Registers[10];
-            //VDP.VdpStatusWord &= 
-            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
+			// Do start-of-frame events
+			VDP.HIntLineCounter = VDP.Registers[10];
+			//VDP.VdpStatusWord &= 
+			unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
 
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
@@ -164,45 +165,45 @@ namespace BizHawk.Emulation.Consoles.Sega
 				if (VDP.ScanLine < VDP.FrameHeight)
 					VDP.RenderLine();
 
-                Exec68k(365);
-                RunZ80(171);
+				Exec68k(365);
+				RunZ80(171);
 
-                // H-Int now?
+				// H-Int now?
 
-                VDP.HIntLineCounter--;
-                if (VDP.HIntLineCounter < 0 && VDP.ScanLine < 224) // FIXME
-                {
-                    VDP.HIntLineCounter = VDP.Registers[10];
-                    VDP.VdpStatusWord |= GenVDP.StatusHorizBlanking;
-
-                    if (VDP.HInterruptsEnabled)
-                    {
-                        Set68kIrq(4);
-                        //Console.WriteLine("Fire hint!");
-                    }
-
-                }
-
-                Exec68k(488 - 365);
-                RunZ80(228 - 171);
-
-                if (VDP.ScanLine == 224)
+				VDP.HIntLineCounter--;
+				if (VDP.HIntLineCounter < 0 && VDP.ScanLine < 224) // FIXME
 				{
-                    VDP.VdpStatusWord |= GenVDP.StatusVerticalInterruptPending;
-                    VDP.VdpStatusWord |= GenVDP.StatusVerticalBlanking;
-                    Exec68k(16); // this is stupidly wrong.
+					VDP.HIntLineCounter = VDP.Registers[10];
+					VDP.VdpStatusWord |= GenVDP.StatusHorizBlanking;
+
+					if (VDP.HInterruptsEnabled)
+					{
+						Set68kIrq(4);
+						//Console.WriteLine("Fire hint!");
+					}
+
+				}
+
+				Exec68k(488 - 365);
+				RunZ80(228 - 171);
+
+				if (VDP.ScanLine == 224)
+				{
+					VDP.VdpStatusWord |= GenVDP.StatusVerticalInterruptPending;
+					VDP.VdpStatusWord |= GenVDP.StatusVerticalBlanking;
+					Exec68k(16); // this is stupidly wrong.
 					// End-frame stuff
-                    if (VDP.VInterruptEnabled)
-                        Set68kIrq(6);
+					if (VDP.VInterruptEnabled)
+						Set68kIrq(6);
 
 					SoundCPU.Interrupt = true;
-                    //The INT output is asserted every frame for exactly one scanline, and it can't be disabled. A very short Z80 interrupt routine would be triggered multiple times if it finishes within 228 Z80 clock cycles. I think (but cannot recall the specifics) that some games have delay loops in the interrupt handler for this very reason. 
+					//The INT output is asserted every frame for exactly one scanline, and it can't be disabled. A very short Z80 interrupt routine would be triggered multiple times if it finishes within 228 Z80 clock cycles. I think (but cannot recall the specifics) that some games have delay loops in the interrupt handler for this very reason. 
 				}
 			}
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
-            YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
+			YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
 
-            
+
 
 			if (lagged)
 			{
@@ -213,45 +214,45 @@ namespace BizHawk.Emulation.Consoles.Sega
 				islag = false;
 		}
 
-        void Exec68k(int cycles)
-        {
+		void Exec68k(int cycles)
+		{
 #if MUSASHI
-            Musashi.Execute(cycles);
+			Musashi.Execute(cycles);
 #else
             MainCPU.ExecuteCycles(cycles);
 #endif
-        }
+		}
 
-        void RunZ80(int cycles)
-        {
-            // I emulate the YM2612 synced to Z80 clock, for better or worse.
-            // So we still need to keep the Z80 cycle count accurate even if the Z80 isn't running.
+		void RunZ80(int cycles)
+		{
+			// I emulate the YM2612 synced to Z80 clock, for better or worse.
+			// So we still need to keep the Z80 cycle count accurate even if the Z80 isn't running.
 
-            if (Z80Runnable)
-                SoundCPU.ExecuteCycles(cycles);
-            else
-                SoundCPU.TotalExecutedCycles += cycles; 
-        }
+			if (Z80Runnable)
+				SoundCPU.ExecuteCycles(cycles);
+			else
+				SoundCPU.TotalExecutedCycles += cycles;
+		}
 
-        void Set68kIrq(int irq)
-        {
+		void Set68kIrq(int irq)
+		{
 #if MUSASHI
-            Musashi.SetIRQ(irq);
+			Musashi.SetIRQ(irq);
 #else
             MainCPU.Interrupt = irq;
 #endif
-        }
+		}
 
-        int vdpcallback(int level) // Musashi handler
-        {
-            InterruptCallback(level);
-            return -1;
-        }
+		int vdpcallback(int level) // Musashi handler
+		{
+			InterruptCallback(level);
+			return -1;
+		}
 
-        void InterruptCallback(int level)
-        {
-            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalInterruptPending; }
-        }
+		void InterruptCallback(int level)
+		{
+			unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalInterruptPending; }
+		}
 
 		public CoreComm CoreComm { get; private set; }
 
@@ -276,139 +277,139 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public string BoardName { get { return null; } }
 
-        public void SaveStateText(TextWriter writer)
-        {
-            var buf = new byte[141501 + SaveRAM.Length];
-            var stream = new MemoryStream(buf);
-            var bwriter = new BinaryWriter(stream);
-            SaveStateBinary(bwriter);
-            
-            writer.WriteLine("Version 1");
-            writer.Write("BigFatBlob ");
-            buf.SaveAsHex(writer);
+		public void SaveStateText(TextWriter writer)
+		{
+			var buf = new byte[141501 + SaveRAM.Length];
+			var stream = new MemoryStream(buf);
+			var bwriter = new BinaryWriter(stream);
+			SaveStateBinary(bwriter);
 
-            /*writer.WriteLine("[MegaDrive]");
-            MainCPU.SaveStateText(writer, "Main68K");
-            SoundCPU.SaveStateText(writer);
-            PSG.SaveStateText(writer);
-            VDP.SaveStateText(writer);
+			writer.WriteLine("Version 1");
+			writer.Write("BigFatBlob ");
+			buf.SaveAsHex(writer);
+
+			/*writer.WriteLine("[MegaDrive]");
+			MainCPU.SaveStateText(writer, "Main68K");
+			SoundCPU.SaveStateText(writer);
+			PSG.SaveStateText(writer);
+			VDP.SaveStateText(writer);
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
 			writer.WriteLine("IsLag {0}", islag);
-            writer.Write("MainRAM ");
-            Ram.SaveAsHex(writer);
-            writer.Write("Z80RAM ");
-            Z80Ram.SaveAsHex(writer);
-            writer.WriteLine("[/MegaDrive]");*/
-        }
+			writer.Write("MainRAM ");
+			Ram.SaveAsHex(writer);
+			writer.Write("Z80RAM ");
+			Z80Ram.SaveAsHex(writer);
+			writer.WriteLine("[/MegaDrive]");*/
+		}
 
-        public void LoadStateText(TextReader reader)
-        {
-            var buf = new byte[141501 + SaveRAM.Length];
-            var version = reader.ReadLine();
-            if (version != "Version 1")
-                throw new Exception("Not a valid state vesrion! sorry! your state is bad! Robust states will be added later!");
-            var omgstate = reader.ReadLine().Split(' ')[1];
-            buf.ReadFromHex(omgstate);
-            LoadStateBinary(new BinaryReader(new MemoryStream(buf)));
+		public void LoadStateText(TextReader reader)
+		{
+			var buf = new byte[141501 + SaveRAM.Length];
+			var version = reader.ReadLine();
+			if (version != "Version 1")
+				throw new Exception("Not a valid state vesrion! sorry! your state is bad! Robust states will be added later!");
+			var omgstate = reader.ReadLine().Split(' ')[1];
+			buf.ReadFromHex(omgstate);
+			LoadStateBinary(new BinaryReader(new MemoryStream(buf)));
 
-            /*while (true)
-            {
-                string[] args = reader.ReadLine().Split(' ');
-                if (args[0].Trim() == "") continue;
-                if (args[0] == "[MegaDrive]") continue;
-                if (args[0] == "[/MegaDrive]") break;
-                if (args[0] == "MainRAM")
-                    Ram.ReadFromHex(args[1]);
-                else if (args[0] == "Z80RAM")
-                    Z80Ram.ReadFromHex(args[1]);
-                else if (args[0] == "[Main68K]")
-                    MainCPU.LoadStateText(reader, "Main68K");
-                else if (args[0] == "[Z80]")
-                    SoundCPU.LoadStateText(reader);
+			/*while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[MegaDrive]") continue;
+				if (args[0] == "[/MegaDrive]") break;
+				if (args[0] == "MainRAM")
+					Ram.ReadFromHex(args[1]);
+				else if (args[0] == "Z80RAM")
+					Z80Ram.ReadFromHex(args[1]);
+				else if (args[0] == "[Main68K]")
+					MainCPU.LoadStateText(reader, "Main68K");
+				else if (args[0] == "[Z80]")
+					SoundCPU.LoadStateText(reader);
 				else if (args[0] == "Frame")
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
 				else if (args[0] == "IsLag")
 					islag = bool.Parse(args[1]);
-                else if (args[0] == "[PSG]")
-                    PSG.LoadStateText(reader);
-                else if (args[0] == "[VDP]")
-                    VDP.LoadStateText(reader);
-                else
-                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-            }*/
-        }
+				else if (args[0] == "[PSG]")
+					PSG.LoadStateText(reader);
+				else if (args[0] == "[VDP]")
+					VDP.LoadStateText(reader);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}*/
+		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-            Musashi.SaveStateBinary(writer);    // 124  
-            SoundCPU.SaveStateBinary(writer);   // 46
-            PSG.SaveStateBinary(writer);        // 15
-            VDP.SaveStateBinary(writer);        // 65781
-            YM2612.SaveStateBinary(writer);     // 1785
-            
-            writer.Write(Ram);                  // 65535
-            writer.Write(Z80Ram);               // 8192
+			Musashi.SaveStateBinary(writer);    // 124  
+			SoundCPU.SaveStateBinary(writer);   // 46
+			PSG.SaveStateBinary(writer);        // 15
+			VDP.SaveStateBinary(writer);        // 65781
+			YM2612.SaveStateBinary(writer);     // 1785
 
-            writer.Write(Frame);                // 4
-            writer.Write(M68000HasZ80Bus);      // 1
-            writer.Write(Z80Reset);             // 1
-            writer.Write(BankRegion);           // 4
+			writer.Write(Ram);                  // 65535
+			writer.Write(Z80Ram);               // 8192
 
-            for (int i = 0; i < 3; i++)
-            {
-                writer.Write(IOPorts[i].Data);
-                writer.Write(IOPorts[i].TxData);
-                writer.Write(IOPorts[i].RxData);
-                writer.Write(IOPorts[i].SCtrl);
-            }
+			writer.Write(Frame);                // 4
+			writer.Write(M68000HasZ80Bus);      // 1
+			writer.Write(Z80Reset);             // 1
+			writer.Write(BankRegion);           // 4
 
-            if (SaveRAM.Length > 0)
-                writer.Write(SaveRAM);
+			for (int i = 0; i < 3; i++)
+			{
+				writer.Write(IOPorts[i].Data);
+				writer.Write(IOPorts[i].TxData);
+				writer.Write(IOPorts[i].RxData);
+				writer.Write(IOPorts[i].SCtrl);
+			}
 
-            // TODO: EEPROM/cart HW state
-            // TODO: lag counter crap
+			if (SaveRAM.Length > 0)
+				writer.Write(SaveRAM);
+
+			// TODO: EEPROM/cart HW state
+			// TODO: lag counter crap
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-            Musashi.LoadStateBinary(reader);
-            SoundCPU.LoadStateBinary(reader);
-            PSG.LoadStateBinary(reader);
-            VDP.LoadStateBinary(reader);
-            YM2612.LoadStateBinary(reader);
+			Musashi.LoadStateBinary(reader);
+			SoundCPU.LoadStateBinary(reader);
+			PSG.LoadStateBinary(reader);
+			VDP.LoadStateBinary(reader);
+			YM2612.LoadStateBinary(reader);
 
-            Ram = reader.ReadBytes(Ram.Length);
-            Z80Ram = reader.ReadBytes(Z80Ram.Length);
+			Ram = reader.ReadBytes(Ram.Length);
+			Z80Ram = reader.ReadBytes(Z80Ram.Length);
 
-            Frame = reader.ReadInt32();
-            M68000HasZ80Bus = reader.ReadBoolean();
-            Z80Reset = reader.ReadBoolean();
-            BankRegion = reader.ReadInt32();
+			Frame = reader.ReadInt32();
+			M68000HasZ80Bus = reader.ReadBoolean();
+			Z80Reset = reader.ReadBoolean();
+			BankRegion = reader.ReadInt32();
 
-            for (int i = 0; i < 3; i++)
-            {
-                IOPorts[i].Data   = reader.ReadByte();
-                IOPorts[i].TxData = reader.ReadByte();
-                IOPorts[i].RxData = reader.ReadByte();
-                IOPorts[i].SCtrl  = reader.ReadByte();
-            }
+			for (int i = 0; i < 3; i++)
+			{
+				IOPorts[i].Data = reader.ReadByte();
+				IOPorts[i].TxData = reader.ReadByte();
+				IOPorts[i].RxData = reader.ReadByte();
+				IOPorts[i].SCtrl = reader.ReadByte();
+			}
 
-            if (SaveRAM.Length > 0)
-                SaveRAM = reader.ReadBytes(SaveRAM.Length);
+			if (SaveRAM.Length > 0)
+				SaveRAM = reader.ReadBytes(SaveRAM.Length);
 		}
 
 		public byte[] SaveStateBinary()
 		{
-            var buf = new byte[141501+SaveRAM.Length];
-            var stream = new MemoryStream(buf);
-            var writer = new BinaryWriter(stream);
-            SaveStateBinary(writer);
-            //Console.WriteLine("buf len = {0}", stream.Position);
-            writer.Close();
-            return buf;
+			var buf = new byte[141501 + SaveRAM.Length];
+			var stream = new MemoryStream(buf);
+			var writer = new BinaryWriter(stream);
+			SaveStateBinary(writer);
+			//Console.WriteLine("buf len = {0}", stream.Position);
+			writer.Close();
+			return buf;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return false; } }

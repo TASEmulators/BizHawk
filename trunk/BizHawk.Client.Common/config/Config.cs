@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Collections;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class Config

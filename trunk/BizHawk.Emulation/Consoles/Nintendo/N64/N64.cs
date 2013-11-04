@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.N64
 {

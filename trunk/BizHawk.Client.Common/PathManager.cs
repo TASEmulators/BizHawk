@@ -3,6 +3,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public static class PathManager

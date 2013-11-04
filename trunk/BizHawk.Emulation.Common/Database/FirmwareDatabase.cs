@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
 	public static class FirmwareDatabase
 	{
