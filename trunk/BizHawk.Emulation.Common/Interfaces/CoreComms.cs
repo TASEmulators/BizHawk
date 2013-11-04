@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 namespace BizHawk.Emulation.Common
@@ -39,7 +38,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// for emu.on_snoop()
 		/// </summary>
-		public System.Action InputCallback;
+		public Action InputCallback;
 
 		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
 
@@ -115,15 +114,15 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private StringBuilder buffer;
-		private bool logging = false;
+		private readonly StringBuilder buffer;
+		private bool logging;
 	}
 
 	public class MemoryCallbackSystem
 	{
 		public int? ReadAddr = null;
-		private System.Action<uint> ReadCallback = null;
-		public void SetReadCallback(System.Action<uint> func)
+		private Action<uint> ReadCallback;
+		public void SetReadCallback(Action<uint> func)
 		{
 			ReadCallback = func;
 		}
@@ -155,8 +154,8 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public int? WriteAddr = null;
-		private System.Action<uint> WriteCallback = null;
-		public void SetWriteCallback(System.Action<uint> func)
+		private Action<uint> WriteCallback;
+		public void SetWriteCallback(Action<uint> func)
 		{
 			WriteCallback = func;
 		}

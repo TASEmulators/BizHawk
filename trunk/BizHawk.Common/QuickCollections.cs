@@ -113,7 +113,7 @@ namespace BizHawk.Common
 	// .net has no built-in read only dictionary
 	public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
-		IDictionary<TKey, TValue> dict;
+		private readonly IDictionary<TKey, TValue> dict;
 
 		public ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary)
 		{

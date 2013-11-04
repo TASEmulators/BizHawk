@@ -21,7 +21,7 @@ namespace BizHawk.Common
 
 		// ============== Logging Domain Configuration ==============
 
-		private static List<string> EnabledLogDomains = new List<string>();
+		private static readonly List<string> EnabledLogDomains = new List<string>();
 
 		public static void EnableDomain(string domain)
 		{
@@ -57,10 +57,10 @@ namespace BizHawk.Common
 
 		public static Stream HACK_LOG_STREAM;
 
-		private static bool LogToConsole = false;
+		private static readonly bool LogToConsole = false;
 		private static bool LogToFile = false;
 
-		private static string LogFilename = "bizhawk.txt";
+		private const string LogFilename = "bizhawk.txt";
 		private static StreamWriter writer;
 
 		private static void DefaultLogger(string message)

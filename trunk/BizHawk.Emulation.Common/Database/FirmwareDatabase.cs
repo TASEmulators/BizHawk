@@ -84,21 +84,25 @@ namespace BizHawk.Emulation.Common
 		//adds a defined firmware ID to the database
 		static void Firmware(string systemId, string id, string descr)
 		{
-			var fr = new FirmwareRecord();
-			fr.systemId = systemId;
-			fr.firmwareId = id;
+			var fr = new FirmwareRecord
+				{
+					systemId = systemId,
+					firmwareId = id,
+					descr = descr
+				};
 
-			fr.descr = descr;
 			FirmwareRecords.Add(fr);
 		}
 
 		//adds an acceptable option for a firmware ID to the database
 		static void Option(string hash, string systemId, string id)
 		{
-			var fo = new FirmwareOption();
-			fo.systemId = systemId;
-			fo.firmwareId = id;
-			fo.hash = hash;
+			var fo = new FirmwareOption
+				{
+					systemId = systemId,
+					firmwareId = id,
+					hash = hash
+				};
 
 			FirmwareOptions.Add(fo);
 		}
@@ -112,10 +116,12 @@ namespace BizHawk.Emulation.Common
 		//defines a firmware file
 		static FirmwareFile File(string hash, string recommendedName, string descr)
 		{
-			var ff = new FirmwareFile();
-			ff.hash = hash;
-			ff.recommendedName = recommendedName;
-			ff.descr = descr;
+			var ff = new FirmwareFile
+				{
+					hash = hash,
+					recommendedName = recommendedName,
+					descr = descr
+				};
 			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hash] = ff;
 			return ff;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,7 +26,7 @@ namespace BizHawk.Common
 		}
 	}
 
-	public unsafe static partial class Util
+	public unsafe static class Util
 	{
 		static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		static System.Runtime.InteropServices.GCHandle HexConvHandle;
@@ -236,7 +234,7 @@ namespace BizHawk.Common
 
 		public static unsafe int memcmp(void* a, string b, int len)
 		{
-			fixed (byte* bp = System.Text.Encoding.ASCII.GetBytes(b))
+			fixed (byte* bp = Encoding.ASCII.GetBytes(b))
 				return memcmp(a, bp, len);
 		}
 
@@ -350,11 +348,11 @@ namespace BizHawk.Common
 		public static Serializer CreateBinaryReader(BinaryReader _br) { return new Serializer(_br); }
 		public static Serializer CreateTextWriter(TextWriter _tw) { return new Serializer(_tw); }
 		public static Serializer CreateTextReader(TextReader _tr) { return new Serializer(_tr); }
-		public void StartWrite(BinaryWriter _bw) { this.bw = _bw; isReader = false; }
-		public void StartRead(BinaryReader _br) { this.br = _br; isReader = true; }
-		public void StartWrite(TextWriter _tw) { this.tw = _tw; isReader = false; isText = true; }
+		public void StartWrite(BinaryWriter _bw) { bw = _bw; isReader = false; }
+		public void StartRead(BinaryReader _br) { br = _br; isReader = true; }
+		public void StartWrite(TextWriter _tw) { tw = _tw; isReader = false; isText = true; }
 		public void StartRead(TextReader _tr) {
-			this.tr = _tr;
+			tr = _tr;
 			isReader = true; 
 			isText = true;
 			BeginTextBlock();
@@ -366,12 +364,12 @@ namespace BizHawk.Common
 		bool isText;
 		bool isReader;
 
-		Stack<string> sections = new Stack<string>();
+		readonly Stack<string> sections = new Stack<string>();
 
 		class Section : Dictionary<string, Section>
 		{
 			public string Name;
-			public Dictionary<string, string> Items = new Dictionary<string, string>();
+			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
 		}
 
 		Section ReaderSection, CurrSection;

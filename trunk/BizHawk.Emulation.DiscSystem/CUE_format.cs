@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		//cue files can get their data from other sources using this
-		Dictionary<string, string> CueFileResolver = new Dictionary<string, string>();
+		readonly Dictionary<string, string> CueFileResolver = new Dictionary<string, string>();
 
 		void FromCueInternal(Cue cue, string cueDir, CueBinPrefs prefs)
 		{
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.DiscSystem
 				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
 				int blob_length_aba;
 				long blob_length_bytes;
-				IBlob cue_blob = null;
+				IBlob cue_blob;
 
 				//try any way we can to acquire a file
 				if (!File.Exists(blobPath) && prefs.ExtensionAware)
@@ -95,8 +95,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (cue_file.FileType == Cue.CueFileType.Binary || cue_file.FileType == Cue.CueFileType.Unspecified)
 				{
 					//make a blob for the file
-					Blob_RawFile blob = new Blob_RawFile();
-					blob.PhysicalPath = blobPath;
+					Blob_RawFile blob = new Blob_RawFile {PhysicalPath = blobPath};
 					Blobs.Add(blob);
 
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
@@ -286,9 +285,11 @@ namespace BizHawk.Emulation.DiscSystem
 										//these cases are all 2352 bytes
 										//in all these cases, either no ECM is present or ECM is provided.
 										//so we just emit a Sector_Raw
-										Sector_RawBlob sector_rawblob = new Sector_RawBlob();
-										sector_rawblob.Blob = cue_blob;
-										sector_rawblob.Offset = blob_cursor;
+										Sector_RawBlob sector_rawblob = new Sector_RawBlob
+											{
+												Blob = cue_blob,
+												Offset = blob_cursor
+											};
 										blob_cursor += 2352;
 										Sector_Mode1_or_Mode2_2352 sector_raw;
 										if(cue_track.TrackType == ETrackType.Mode1_2352)
@@ -613,7 +614,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public bool EOF;
 			public CueLineParser(string line)
 			{
-				this.str = line;
+				str = line;
 			}
 
 			public string ReadPath() { return ReadToken(true); }

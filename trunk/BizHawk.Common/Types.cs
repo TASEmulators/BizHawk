@@ -3,7 +3,6 @@ using System.Diagnostics;
 
 namespace BizHawk.Common
 {
-
 	//I think this is a little faster with uint than with byte
 	public struct Bit
 	{

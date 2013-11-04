@@ -33,13 +33,13 @@ namespace BizHawk.Emulation.Common
 		public bool NotInDatabase = true;
 		public string FirmwareHash;
 
-		Dictionary<string, string> Options = new Dictionary<string, string>();
+		readonly Dictionary<string, string> Options = new Dictionary<string, string>();
 
 		public GameInfo() { }
 
 		public static GameInfo GetNullGame()
 		{
-			return new GameInfo()
+			return new GameInfo
 			{
 				Name = "Null",
 				System = "NULL",
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 
 		public void AddOption(string option)
 		{
-			Options[option] = "";
+			Options[option] = string.Empty;
 		}
 
 		public void AddOption(string option, string param)

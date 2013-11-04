@@ -35,11 +35,11 @@ namespace BizHawk.Emulation.DiscSystem
 	static class ECM
 	{
 		//EDC (crc) acceleration table
-		static uint[] edc_table = new uint[256];
+		static readonly uint[] edc_table = new uint[256];
 
 		//math acceleration tables over GF(2^8) with yellowbook specified primitive polynomial 0x11D
-		static byte[] mul2tab = new byte[256];
-		static byte[] div3tab = new byte[256];
+		static readonly byte[] mul2tab = new byte[256];
+		static readonly byte[] div3tab = new byte[256];
 
 		static ECM()
 		{

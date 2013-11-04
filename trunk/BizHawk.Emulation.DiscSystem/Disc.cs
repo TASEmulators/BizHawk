@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.DiscSystem
 		//this is a physical 2352 byte sector.
 		public class SectorEntry
 		{
-			public SectorEntry(ISector sec) { this.Sector = sec; }
+			public SectorEntry(ISector sec) { Sector = sec; }
 			public ISector Sector;
 
 			//todo - add some PARAMETER fields to this, so that the ISector can use them (so that each ISector doesnt have to be constructed also)
@@ -947,7 +947,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 			progress.Message = "Writing bin(s)";
 			progress.TaskCurrent = 1;
-			progress.ProgressEstimate = bins.Sum((bfd) => bfd.abas.Count);
+			progress.ProgressEstimate = bins.Sum(bfd => bfd.abas.Count);
 			progress.ProgressCurrent = 0;
 			if(!prefs.ReallyDumpBin) return;
 
