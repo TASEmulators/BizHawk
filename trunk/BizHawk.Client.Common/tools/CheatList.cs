@@ -21,7 +21,10 @@ namespace BizHawk.Client.Common
 			set
 			{
 				_changes = value;
-				CheatChanged(Cheat.Separator); //Pass a dummy, no cheat invoked this change
+				if (value)
+				{
+					CheatChanged(Cheat.Separator); //Pass a dummy, no cheat invoked this change
+				}
 			}
 		}
 

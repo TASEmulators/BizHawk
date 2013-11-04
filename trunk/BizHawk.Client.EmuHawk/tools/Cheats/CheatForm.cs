@@ -205,16 +205,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		protected override void OnClosing(CancelEventArgs e)
-		{
-			if (!Global.Config.CheatsAutoSaveOnClose)
-			{
-				if (!AskSave())
-					e.Cancel = true;
-			}
-			base.OnClosing(e);
-		}
-
 		private void ToggleGameGenieButton()
 		{
 			GameGenieToolbarSeparator.Visible =
