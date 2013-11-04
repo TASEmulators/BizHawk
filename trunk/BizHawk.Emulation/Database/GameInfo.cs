@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Globalization;
 
+using BizHawk.Common;
+
 namespace BizHawk
 {
 	public enum RomStatus
