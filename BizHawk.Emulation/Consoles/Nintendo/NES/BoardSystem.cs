@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 //TODO - consider bytebuffer for mirroring
 //TODO - could stringpool the bootgod DB for a pedantic optimization
@@ -404,7 +405,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public class CartInfo
 		{
 			public NESGameInfo game;
-			public BizHawk.GameInfo DB_GameInfo;
+			public GameInfo DB_GameInfo;
 
 			public short chr_size;
 			public short prg_size;

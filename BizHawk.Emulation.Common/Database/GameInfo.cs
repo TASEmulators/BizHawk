@@ -4,7 +4,7 @@ using System.Globalization;
 
 using BizHawk.Common;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Common
 {
 	public enum RomStatus
 	{

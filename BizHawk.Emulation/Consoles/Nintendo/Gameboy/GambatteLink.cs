@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Consoles.GB
 {

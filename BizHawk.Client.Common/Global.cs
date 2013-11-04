@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.DiscSystem;
+﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.Common
 {

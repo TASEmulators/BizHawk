@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Consoles.Sega
 {
 	partial class Genesis

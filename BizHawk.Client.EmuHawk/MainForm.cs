@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Computers.Commodore64;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Coleco;

@@ -2,6 +2,7 @@
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
