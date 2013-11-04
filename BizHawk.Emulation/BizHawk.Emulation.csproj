@@ -477,7 +477,6 @@
     <Compile Include="Interfaces\IEmulator.cs" />
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />

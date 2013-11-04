@@ -35,19 +35,19 @@ namespace BizHawk
 
 		Dictionary<string, string> Options = new Dictionary<string, string>();
 
-        public GameInfo() { }
+		public GameInfo() { }
 
-        public static GameInfo GetNullGame()
-        {
-            return new GameInfo() 
-            {
-                Name = "Null",
-                System = "NULL",
-                Hash = "",
-                Status = RomStatus.GoodDump,
-                NotInDatabase = false
-            };
-        }
+		public static GameInfo GetNullGame()
+		{
+			return new GameInfo()
+			{
+				Name = "Null",
+				System = "NULL",
+				Hash = "",
+				Status = RomStatus.GoodDump,
+				NotInDatabase = false
+			};
+		}
 
 		internal GameInfo(CompactGameInfo cgi)
 		{
@@ -91,15 +91,15 @@ namespace BizHawk
 			return null;
 		}
 
-        public int GetIntValue(string option)
-        {
-            return int.Parse(Options[option]);
-        }
+		public int GetIntValue(string option)
+		{
+			return int.Parse(Options[option]);
+		}
 
-        public int GetHexValue(string option)
-        {
-            return int.Parse(Options[option], NumberStyles.HexNumber);
-        }
+		public int GetHexValue(string option)
+		{
+			return int.Parse(Options[option], NumberStyles.HexNumber);
+		}
 
 		/// <param name="parameter">The option to look up</param>
 		/// <param name="defaultVal">The value to return if the option is invalid or doesn't exist</param>

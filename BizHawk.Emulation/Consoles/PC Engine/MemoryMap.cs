@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.TurboGrafx
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
 	public partial class PCEngine
 	{
