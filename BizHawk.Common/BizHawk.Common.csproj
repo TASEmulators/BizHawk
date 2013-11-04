@@ -49,6 +49,7 @@
     <Compile Include="HawkFile.cs" />
     <Compile Include="MruStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickCollections.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
