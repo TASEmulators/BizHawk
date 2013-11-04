@@ -155,7 +155,7 @@ namespace BizHawk.Client.Common
 		public float memory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = Global.Emulator.MemoryDomains[_current_memory_domain].PeekDWord(addr, bigendian ? Endian.Big : Endian.Little);
+			uint val = Global.Emulator.MemoryDomains[_current_memory_domain].PeekDWord(addr, bigendian);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MemoryDomains[_current_memory_domain].PokeDWord(addr, v, bigendian ? Endian.Big : Endian.Little);
+			Global.Emulator.MemoryDomains[_current_memory_domain].PokeDWord(addr, v, bigendian);
 		}
 
 		public bool memory_usememorydomain(object lua_input)

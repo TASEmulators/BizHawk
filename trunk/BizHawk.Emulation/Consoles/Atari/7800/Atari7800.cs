@@ -250,7 +250,7 @@ namespace BizHawk.Emulation
 				if (theMachine is Machine7800)
 				{
 					_MemoryDomains.Add(new MemoryDomain(
-						"RAM1", 0x800, Endian.Unknown,
+						"RAM1", 0x800, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
 							return ((Machine7800)theMachine).RAM1[(ushort)addr];
@@ -260,7 +260,7 @@ namespace BizHawk.Emulation
 							((Machine7800)theMachine).RAM1[(ushort)addr] = val;
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
-						"RAM2", 0x800, Endian.Unknown,
+						"RAM2", 0x800, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
 							return ((Machine7800)theMachine).RAM2[(ushort)addr];
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation
 							((Machine7800)theMachine).RAM2[(ushort)addr] = val;
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
-						"BIOS ROM", bios.Length, Endian.Unknown,
+						"BIOS ROM", bios.Length, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
 							return bios[addr];
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation
 					if (hsc7800 != null)
 					{
 						_MemoryDomains.Add(new MemoryDomain(
-							"HSC ROM", hsbios.Length, Endian.Unknown,
+							"HSC ROM", hsbios.Length, MemoryDomain.Endian.Unknown,
 							delegate(int addr)
 							{
 								return hsbios[addr];
@@ -290,7 +290,7 @@ namespace BizHawk.Emulation
 							{
 							}));
 						_MemoryDomains.Add(new MemoryDomain(
-							"HSC RAM", hsram.Length, Endian.Unknown,
+							"HSC RAM", hsram.Length, MemoryDomain.Endian.Unknown,
 							delegate(int addr)
 							{
 								return hsram[addr];
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation
 							}));
 					}
 					_MemoryDomains.Add(new MemoryDomain(
-						"System Bus", 65536, Endian.Unknown,
+						"System Bus", 65536, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
 							return theMachine.Mem[(ushort)addr];

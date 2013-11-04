@@ -442,7 +442,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 				ret.Add(new MemoryDomain(
 					nmd.name,
 					nmd.length,
-					Endian.Little,
+					MemoryDomain.Endian.Little,
 					delegate(int addr)
 					{
 						if (addr < 0 || addr >= l)

@@ -469,15 +469,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>();
-			var RAM = new MemoryDomain("RAM", 0x800, Endian.Little,
+			var RAM = new MemoryDomain("RAM", 0x800, MemoryDomain.Endian.Little,
 				addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
-			var SystemBus = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+			var SystemBus = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr => ReadMemory((ushort)addr), (addr, value) => ApplySystemBusPoke(addr, value)); //WriteMemory((ushort)addr, value));
-			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
+			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
 				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
-			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
+			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, MemoryDomain.Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
-			var OAMdoman = new MemoryDomain("OAM", 64 * 4, Endian.Unknown,
+			var OAMdoman = new MemoryDomain("OAM", 64 * 4, MemoryDomain.Endian.Unknown,
 				addr => ppu.OAM[addr & (64 * 4 - 1)], (addr, value) => ppu.OAM[addr & (64 * 4 - 1)] = value);
 
 			domains.Add(RAM);
@@ -488,32 +488,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			if (!(board is FDS) && board.SaveRam != null)
 			{
-				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
+				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, MemoryDomain.Endian.Little,
 					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
 				domains.Add(BatteryRam);
 			}
 
-			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, Endian.Little,
+			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
 				addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
 			domains.Add(PRGROM);
 
 			if (board.VROM != null)
 			{
-				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, Endian.Little,
+				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, MemoryDomain.Endian.Little,
 					addr => board.VROM[addr], (addr, value) => board.VROM[addr] = value);
 				domains.Add(CHRROM);
 			}
 
 			if (board.VRAM != null)
 			{
-				var VRAM = new MemoryDomain("VRAM", board.VRAM.Length, Endian.Little,
+				var VRAM = new MemoryDomain("VRAM", board.VRAM.Length, MemoryDomain.Endian.Little,
 					addr => board.VRAM[addr], (addr, value) => board.VRAM[addr] = value);
 				domains.Add(VRAM);
 			}
 
 			if (board.WRAM != null)
 			{
-				var WRAM = new MemoryDomain("WRAM", board.WRAM.Length, Endian.Little,
+				var WRAM = new MemoryDomain("WRAM", board.WRAM.Length, MemoryDomain.Endian.Little,
 					addr => board.WRAM[addr], (addr, value) => board.WRAM[addr] = value);
 				domains.Add(WRAM);
 			}

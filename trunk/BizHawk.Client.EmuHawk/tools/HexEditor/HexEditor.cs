@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<int> SecondaryHighlightedAddresses = new List<int>();
 		private int addressOver = -1;
 		private int maxRow = 0;
-		private MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => 0, (a, v) => { v = 0; });
+		private MemoryDomain Domain = new MemoryDomain("NULL", 1024, MemoryDomain.Endian.Little, addr => 0, (a, v) => { v = 0; });
 		private string info = "";
 		private int row;
 		private int addr;
@@ -376,10 +376,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SetMemoryDomain(MemoryDomain d)
 		{
 			Domain = d;
-			if (d.Endian == Endian.Big)
-				BigEndian = true;
-			else
-				BigEndian = false;
+			BigEndian = d.EndianType == MemoryDomain.Endian.Big;
 			maxRow = Domain.Size / 2;
 			SetUpScrollBar();
 			if (0 >= vScrollBar1.Minimum && 0 <= vScrollBar1.Maximum)
@@ -455,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 				ROM = GetRomBytes() ?? new byte[] { 0xFF };
 
 				//<zeromus> THIS IS HORRIBLE.
-				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little,
+				ROMDomain = new MemoryDomain("ROM File", ROM.Length, MemoryDomain.Endian.Little,
 					i => ROM[i],
 					(i, value) => ROM[i] = value);
 
@@ -1705,7 +1702,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Endian endian = BigEndian ? Endian.Big : Endian.Little;
 				switch (DataSize)
 				{
 					default:
@@ -1719,15 +1715,15 @@ namespace BizHawk.Client.EmuHawk
 					case 2:
 						Domain.PokeWord(
 							address,
-							(ushort)(Domain.PeekWord(address, endian) + 1),
-							endian
+							(ushort)(Domain.PeekWord(address, BigEndian) + 1),
+							BigEndian
 						);
 						break;
 					case 4:
 						Domain.PokeDWord(
 							address,
-							Domain.PeekDWord(address, endian) + 1,
-							endian
+							Domain.PeekDWord(address, BigEndian) + 1,
+							BigEndian
 						);
 						break;
 				}
@@ -1743,7 +1739,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Endian endian = BigEndian ? Endian.Big : Endian.Little;
 				switch (DataSize)
 				{
 					default:
@@ -1757,15 +1752,15 @@ namespace BizHawk.Client.EmuHawk
 					case 2:
 						Domain.PokeWord(
 							address,
-							(ushort)(Domain.PeekWord(address, endian) - 1),
-							endian
+							(ushort)(Domain.PeekWord(address, BigEndian) - 1),
+							BigEndian
 						);
 						break;
 					case 4:
 						Domain.PokeDWord(
 							address,
-							Domain.PeekDWord(address, endian) - 1,
-							endian
+							Domain.PeekDWord(address, BigEndian) - 1,
+							BigEndian
 						);
 						break;
 				}

@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public MemoryDomain GetDiskPeeker()
 		{
-			return new MemoryDomain("FDS SIDE", diskdrive.NumBytes, Endian.Little, diskdrive.PeekData, null);
+			return new MemoryDomain("FDS SIDE", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null);
 		}
 
 		void SetIRQ()

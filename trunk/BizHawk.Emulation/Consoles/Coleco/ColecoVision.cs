@@ -53,13 +53,13 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, Endian.Little,
+			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, MemoryDomain.Endian.Little,
 				addr => Ram[addr & RamSizeMask],
 				(addr, value) => Ram[addr & RamSizeMask] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Little,
+			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, MemoryDomain.Endian.Little,
 				addr => VDP.VRAM[addr & 0x3FFF],
 				(addr, value) => VDP.VRAM[addr & 0x3FFF] = value);
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr => Cpu.ReadMemory((ushort)addr),
 				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
 

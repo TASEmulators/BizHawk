@@ -419,22 +419,22 @@ namespace BizHawk.Emulation.Consoles.Sega
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, Endian.Big,
+			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, MemoryDomain.Endian.Big,
 				addr => Ram[addr & 0xFFFF],
 				(addr, value) => Ram[addr & 0xFFFF] = value);
-			var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, Endian.Little,
+			var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, MemoryDomain.Endian.Little,
 				addr => Z80Ram[addr & 0x1FFF],
 				(addr, value) => { Z80Ram[addr & 0x1FFF] = value; });
 
-			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Big,
+			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, MemoryDomain.Endian.Big,
 				addr => VDP.VRAM[addr & 0xFFFF],
 				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
-			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, Endian.Big,
+			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, MemoryDomain.Endian.Big,
 				addr => RomData[addr], //adelikat: For speed considerations, I didn't mask this, every tool that uses memory domains is smart enough not to overflow, if I'm wrong let me know!
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, Endian.Big,
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Big,
 				addr => (byte)ReadByte(addr),
 				(addr, value) => Write8((uint)addr, (uint)value));
 

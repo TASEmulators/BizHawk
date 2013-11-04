@@ -608,7 +608,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			MemoryRefreshers.Add(refresher);
 
-			MemoryDomains.Add(new MemoryDomain(name, length, Endian.Little, refresher.Peek, refresher.Poke));
+			MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little, refresher.Peek, refresher.Poke));
 		}
 
 		void InitMemoryDomains()
@@ -625,7 +625,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 
-			MemoryDomains.Add(new MemoryDomain("System Bus", 65536, Endian.Little,
+			MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
 				delegate(int addr)
 				{
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
