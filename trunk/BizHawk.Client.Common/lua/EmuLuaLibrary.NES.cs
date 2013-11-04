@@ -6,12 +6,6 @@ namespace BizHawk.Client.Common
 {
 	public class NESLuaLibrary : LuaLibraryBase
 	{
-		public NESLuaLibrary(Action updateCallback = null)
-			: base()
-		{
-			UpdateCallback = updateCallback;
-		}
-
 		public override string Name { get { return "nes"; } }
 		public override string[] Functions
 		{
@@ -36,16 +30,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private Action UpdateCallback;
-
-		private void Update()
-		{
-			if (UpdateCallback != null)
-			{
-				UpdateCallback();
-			}
-		}
-
 		public void nes_addgamegenie(string code)
 		{
 			if (Global.Emulator is NES)
@@ -64,7 +48,6 @@ namespace BizHawk.Client.Common
 					decoder.Value,
 					decoder.Compare
 				));
-				Update();
 			}
 		}
 
@@ -120,7 +103,6 @@ namespace BizHawk.Client.Common
 				Global.CheatList.RemoveRange(
 					Global.CheatList.Where(x => x.Address == decoder.Address)
 				);
-				Update();
 			}
 		}
 

@@ -74,6 +74,8 @@ namespace BizHawk.Client.EmuHawk
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatList();
+			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
 
@@ -1666,7 +1668,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Global.CheatList.NewList(GenerateDefaultCheatFilename());
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -3586,7 +3587,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Global.CheatList.AttemptToLoadCheatFile())
 					{
-						ToolHelpers.UpdateCheatRelatedTools();
 						GlobalWin.OSD.AddMessage("Cheats file loaded");
 					}
 				}

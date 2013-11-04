@@ -168,8 +168,6 @@ namespace BizHawk.Client.EmuHawk
 					ValueBox.ToRawInt(),
 					compare
 				));
-
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			new MemoryLuaLibrary().LuaRegister(lua, Docs);
 			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new NESLuaLibrary(ToolHelpers.UpdateCheatRelatedTools).LuaRegister(lua, Docs);
+			new NESLuaLibrary().LuaRegister(lua, Docs);
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
 			new SNESLuaLibrary().LuaRegister(lua, Docs);
 
