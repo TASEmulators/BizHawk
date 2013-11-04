@@ -2,15 +2,14 @@
 using System.IO;
 using System.Collections.Generic;
 
-/// <summary>
-/// Parses a RIFF file into a live data structure. 
-/// References to large blobs remain mostly on disk in the file which RiffMaster keeps a reference too. Dispose it to close the file.
-/// You can modify blobs however you want and write the file back out to a new path, if youre careful (that was the original point of this)
-/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if youre careful.
-/// </summary>
-
 namespace BizHawk.Emulation.DiscSystem
 {
+	/// <summary>
+	/// Parses a RIFF file into a live data structure. 
+	/// References to large blobs remain mostly on disk in the file which RiffMaster keeps a reference too. Dispose it to close the file.
+	/// You can modify blobs however you want and write the file back out to a new path, if youre careful (that was the original point of this)
+	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if youre careful.
+	/// </summary>
 	class RiffMaster : IDisposable
 	{
 		public RiffMaster() { }
@@ -18,14 +17,18 @@ namespace BizHawk.Emulation.DiscSystem
 		public void WriteFile(string fname)
 		{
 			using (FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.Read))
+			{
 				WriteStream(fs);
+			}
 		}
 
 		public Stream BaseStream;
+
 		public void LoadFile(string fname)
 		{
-			var fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
-			LoadStream(fs);
+			LoadStream(
+				new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read)
+			);
 		}
 
 		public void Dispose()
@@ -265,10 +268,12 @@ namespace BizHawk.Emulation.DiscSystem
 				subchunks.Clear();
 				foreach (KeyValuePair<string, string> kvp in dictionary)
 				{
-					RiffSubchunk rs = new RiffSubchunk();
-					rs.tag = kvp.Key;
-					rs.Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(kvp.Value));
-					rs.Position = 0;
+					RiffSubchunk rs = new RiffSubchunk
+						{
+							tag = kvp.Key,
+							Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(kvp.Value)),
+							Position = 0
+						};
 					rs.Length = (uint)rs.Source.Length;
 					subchunks.Add(rs);
 				}
@@ -299,9 +304,13 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new FormatException("chunk too big");
 			if (tag == "RIFF" || tag == "LIST")
 			{
-				RiffContainer rc = new RiffContainer();
-				rc.tag = tag;
-				rc.type = ReadTag(br); readCounter += 4;
+				RiffContainer rc = new RiffContainer
+					{
+						tag = tag,
+						type = ReadTag(br)
+					};
+
+				readCounter += 4;
 				long readEnd = readCounter - 4 + size;
 				while (readEnd > readCounter)
 					rc.subchunks.Add(ReadChunk(br));
@@ -309,11 +318,13 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			else
 			{
-				RiffSubchunk rsc = new RiffSubchunk();
-				rsc.tag = tag;
-				rsc.Source = br.BaseStream;
-				rsc.Position = br.BaseStream.Position;
-				rsc.Length = size;
+				RiffSubchunk rsc = new RiffSubchunk
+					{
+						tag = tag,
+						Source = br.BaseStream,
+						Position = br.BaseStream.Position,
+						Length = size
+					};
 				readCounter += size;
 				ret = rsc.Morph();
 			}

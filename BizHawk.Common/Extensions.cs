@@ -1,8 +1,5 @@
 using System;
-using System.Linq;
 using System.Reflection;
-using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -133,7 +130,7 @@ namespace BizHawk.Common
 					pos += src.Read(dest.GetBuffer(), pos, length - pos);
 			}
 			else
-				src.CopyTo((Stream)dest);
+				src.CopyTo(dest);
 		}
 
 
@@ -196,7 +193,7 @@ namespace BizHawk.Common
 		{
 			foreach (T opt in options)
 			{
-				if (eval(opt, str) == true)
+				if (eval(opt, str))
 					return true;
 			}
 			return false;

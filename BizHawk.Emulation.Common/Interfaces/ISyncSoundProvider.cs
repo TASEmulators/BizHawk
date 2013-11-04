@@ -19,8 +19,8 @@
 	/// </summary>
 	public class FakeSyncSound : ISyncSoundProvider
 	{
-		ISoundProvider source;
-		int spf;
+		private readonly ISoundProvider source;
+		private readonly int spf;
 		/// <summary>
 		/// 
 		/// </summary>

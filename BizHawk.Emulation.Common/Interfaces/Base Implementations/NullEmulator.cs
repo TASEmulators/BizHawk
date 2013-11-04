@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Common
 
 		public string BoardName { get { return null; } }
 
-		private int[] frameBuffer = new int[256 * 192];
-		private Random rand = new Random();
+		private readonly int[] frameBuffer = new int[256 * 192];
+		private readonly Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
@@ -24,8 +24,10 @@ namespace BizHawk.Emulation.Common
 		public NullEmulator(CoreComm comm)
 		{
 			CoreComm = comm;
-			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { }));
+			var domains = new List<MemoryDomain>(1)
+				{
+					new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { })
+				};
 			memoryDomains = domains.AsReadOnly();
 		}
 		public void ResetCounters()
@@ -37,8 +39,10 @@ namespace BizHawk.Emulation.Common
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			if (render == false) return;
-			for (int i = 0; i < 256 * 192; i++)
-				frameBuffer[i] = Colors.Luminosity((byte)rand.Next());
+			for (int i = 0; i < 256*192; i++)
+			{
+				frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
+			}
 		}
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
 		public IController Controller { get; set; }
@@ -66,7 +70,7 @@ namespace BizHawk.Emulation.Common
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
-		private IList<MemoryDomain> memoryDomains;
+		private readonly IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 		public void Dispose() { }

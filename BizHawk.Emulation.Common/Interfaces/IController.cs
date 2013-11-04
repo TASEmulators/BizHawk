@@ -50,11 +50,11 @@ namespace BizHawk.Emulation.Common
 		/// <param name="source"></param>
 		public ControllerDefinition(ControllerDefinition source)
 		{
-			this.Name = source.Name;
+			Name = source.Name;
 			foreach (var s in source.BoolButtons)
-				this.BoolButtons.Add(s);
+				BoolButtons.Add(s);
 			foreach (var s in source.FloatControls)
-				this.FloatControls.Add(s);
+				FloatControls.Add(s);
 		}
 		public ControllerDefinition() { }
 	}

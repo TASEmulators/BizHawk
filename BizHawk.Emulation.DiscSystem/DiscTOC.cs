@@ -81,12 +81,14 @@ namespace BizHawk.Emulation.DiscSystem
 				foreach (var track in ses.Tracks)
 					foreach (var index in track.Indexes)
 					{
-						var tp = new TOCPoint();
-						tp.Num = num++;
-						tp.ABA = index.aba;
-						tp.TrackNum = track.num;
-						tp.IndexNum = index.num;
-						tp.Track = track;
+						var tp = new TOCPoint
+							{
+								Num = num++,
+								ABA = index.aba,
+								TrackNum = track.num,
+								IndexNum = index.num,
+								Track = track
+							};
 						Points.Add(tp);
 					}
 

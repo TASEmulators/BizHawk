@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 //disc type identification logic
 

@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Common
 
 	public static class Database
 	{
-		private static Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
 
 		static string RemoveHashType(string hash)
 		{
@@ -73,9 +73,11 @@ namespace BizHawk.Emulation.Common
 						if (line.Trim().Length == 0) continue;
 						string[] items = line.Split('\t');
 
-						var Game = new CompactGameInfo();
+						var Game = new CompactGameInfo
+							{
+								Hash = RemoveHashType(items[0].ToUpper())
+							};
 						//remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
-						Game.Hash = RemoveHashType(items[0].ToUpper());
 						switch (items[1].Trim())
 						{
 							case "B": Game.Status = RomStatus.BadDump; break;

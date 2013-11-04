@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// an index of blocks within the ECM file, for random-access.
 			/// itll be sorted by logical ordering, so you can binary search for the address you want
 			/// </summary>
-			List<IndexEntry> Index = new List<IndexEntry>();
+			private readonly List<IndexEntry> Index = new List<IndexEntry>();
 
 			/// <summary>
 			/// the ECMfile-provided EDC integrity checksum. not being used right now
@@ -102,11 +102,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 					uint todo = (uint)N + 1;
 
-					IndexEntry ie = new IndexEntry();
-					ie.Number = todo;
-					ie.ECMOffset = stream.Position;
-					ie.LogicalOffset = logOffset;
-					ie.Type = T;
+					IndexEntry ie = new IndexEntry
+					{
+						Number = todo,
+						ECMOffset = stream.Position,
+						LogicalOffset = logOffset,
+						Type = T
+					};
+					
 					Index.Add(ie);
 
 					if (T == 0)
@@ -246,7 +249,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//we dont want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
-			byte[] Read_SectorBuf = new byte[2352];
+			readonly byte[] Read_SectorBuf = new byte[2352];
 			int Read_LastIndex = 0;
 
 			public int Read(long byte_pos, byte[] buffer, int offset, int _count)

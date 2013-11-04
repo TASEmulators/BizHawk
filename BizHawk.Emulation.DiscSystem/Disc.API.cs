@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.DiscSystem
 		void _Open_LBA_2048(Disc disc)
 		{
 			SectorSize = 2048;
-			this.Disc = disc;
+			Disc = disc;
 			NumSectors = disc.LBACount;
 
 			currPosition = 0;
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public void ReadLBA_2352_Flat(long disc_offset, byte[] buffer, int offset, int length)
 		{
-			int secsize = 2352;
+			const int secsize = 2352;
 			byte[] lba_buf = new byte[secsize];
 			int sectorHint = -1;
 			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2352(a, b, c), secsize, lba_buf, ref sectorHint);
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public void ReadLBA_2048_Flat(long disc_offset, byte[] buffer, int offset, int length)
 		{
-			int secsize = 2048;
+			const int secsize = 2048;
 			byte[] lba_buf = new byte[secsize];
 			int sectorHint = -1;
 			READLBA_Flat_Implementation(disc_offset, buffer, offset, length, (a, b, c) => ReadLBA_2048(a, b, c), secsize, lba_buf, ref sectorHint);

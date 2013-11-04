@@ -1,10 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Collections.Generic;
-
-//a decent little subcode reference
+﻿//a decent little subcode reference
 //http://www.jbum.com/cdg_revealed.html
 
 namespace BizHawk.Emulation.DiscSystem
@@ -14,16 +8,14 @@ namespace BizHawk.Emulation.DiscSystem
 	//this table is backwards or something. at any rate its tailored to the needs of the Q subchannel
 	internal static class CRC16_CCITT
 	{
-		private static ushort[] table = new ushort[256];
+		private static readonly ushort[] table = new ushort[256];
 
 		static CRC16_CCITT()
 		{
-			ushort value;
-			ushort temp;
 			for (ushort i = 0; i < 256; ++i)
 			{
-				value = 0;
-				temp = (ushort)(i << 8);
+				ushort value = 0;
+				ushort temp = (ushort)(i << 8);
 				for (byte j = 0; j < 8; ++j)
 				{
 					if (((value ^ temp) & 0x8000) != 0)
@@ -47,9 +39,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			return Result;
 		}
-
 	}
-
 
 	public class SubcodeDataDecoder
 	{
@@ -68,7 +58,4 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 	}
-
-
-
 }

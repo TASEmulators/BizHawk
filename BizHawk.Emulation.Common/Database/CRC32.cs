@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common
 	public static class CRC32
 	{
 		// Lookup table for speed.
-		private static uint[] CRC32Table;
+		private static readonly uint[] CRC32Table;
 
 		static CRC32()
 		{

@@ -46,13 +46,13 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new Blob_WaveFile_Exception("Not a RIFF WAVE file");
 					}
 
-					var fmt = rm.riff.subchunks.FirstOrDefault((chunk) => chunk.tag == "fmt ") as RiffMaster.RiffSubchunk_fmt;
+					var fmt = rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "fmt ") as RiffMaster.RiffSubchunk_fmt;
 					if (fmt == null)
 					{
 						throw new Blob_WaveFile_Exception("Not a valid RIFF WAVE file (missing fmt chunk");
 					}
 
-					if (1 != rm.riff.subchunks.Count((chunk) => chunk.tag == "data"))
+					if (1 != rm.riff.subchunks.Count(chunk => chunk.tag == "data"))
 					{
 						//later, we could make a Stream which would make an index of data chunks and walk around them
 						throw new Blob_WaveFile_Exception("Multi-data-chunk WAVE files not supported");
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					//acquire the start of the data chunk
-					var dataChunk = rm.riff.subchunks.FirstOrDefault((chunk) => chunk.tag == "data") as RiffMaster.RiffSubchunk;
+					var dataChunk = rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "data") as RiffMaster.RiffSubchunk;
 					waveDataStreamPos = dataChunk.Position;
 					mDataLength = dataChunk.Length;
 				}

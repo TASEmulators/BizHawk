@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -63,7 +62,7 @@ namespace BizHawk.Emulation.DiscSystem
 			oInfo.RedirectStandardOutput = true;
 			oInfo.RedirectStandardError = true;
 
-			Process proc = System.Diagnostics.Process.Start(oInfo);
+			Process proc = Process.Start(oInfo);
 			string result = proc.StandardError.ReadToEnd();
 			proc.WaitForExit();
 
