@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
@@ -53,7 +54,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
+			SaveState.SyncObject(ser, this);
         }
 	}
 }

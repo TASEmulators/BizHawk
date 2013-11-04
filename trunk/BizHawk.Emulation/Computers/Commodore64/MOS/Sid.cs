@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 #pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete

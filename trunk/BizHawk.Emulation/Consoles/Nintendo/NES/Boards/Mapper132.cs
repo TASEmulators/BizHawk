@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// Creatom
 	// specs pulled from Nintendulator sources

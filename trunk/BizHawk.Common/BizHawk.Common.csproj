@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buffer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="MruStack.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Types.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Util.String.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

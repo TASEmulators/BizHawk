@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-//TODO: quick fix, this is the same file as BizHawk.Emulation, move it to BizHawk.Common
-namespace BizHawk.Emulation.DiscSystem
+namespace BizHawk.Common
 {
 	/// <summary>
 	/// Implements a data simple data buffer with proper life cycle and no bounds checking

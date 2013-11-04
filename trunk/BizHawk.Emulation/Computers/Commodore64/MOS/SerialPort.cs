@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
@@ -7,9 +8,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	sealed public class SerialPort
 	{
-        public Func<bool> ReadAtnOut;
-        public Func<bool> ReadClockOut;
-        public Func<bool> ReadDataOut;
+		public Func<bool> ReadAtnOut;
+		public Func<bool> ReadClockOut;
+		public Func<bool> ReadDataOut;
 
 		public SerialPort()
 		{
@@ -19,19 +20,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 		}
 
-        public void SyncState(Serializer ser)
-        {
-            SaveState.SyncObject(ser, this);
-        }
+		public void SyncState(Serializer ser)
+		{
+			SaveState.SyncObject(ser, this);
+		}
 
-        public bool WriteClockIn()
-        {
-            return true;
-        }
+		public bool WriteClockIn()
+		{
+			return true;
+		}
 
-        public bool WriteDataIn()
-        {
-            return true;
-        }
+		public bool WriteDataIn()
+		{
+			return true;
+		}
 	}
 }

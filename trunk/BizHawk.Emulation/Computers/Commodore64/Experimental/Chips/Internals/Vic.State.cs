@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    sealed public partial class Vic
-    {
-        public void SyncState(Serializer ser)
-        {
-        }
-    }
+	sealed public partial class Vic
+	{
+		public void SyncState(Serializer ser)
+		{
+		}
+	}
 }

@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Computers.Commodore64
 {
 	sealed public partial class C64 : IEmulator
@@ -51,9 +53,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		void SyncState(Serializer ser)
 		{
-            ser.BeginSection("core");
-            board.SyncState(ser);
-            ser.EndSection();
-        }
+			ser.BeginSection("core");
+			board.SyncState(ser);
+			ser.EndSection();
+		}
 	}
 }

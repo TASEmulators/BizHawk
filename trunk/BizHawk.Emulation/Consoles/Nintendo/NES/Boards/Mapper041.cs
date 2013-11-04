@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// caltron 6 in 1
 	public sealed class Mapper041 : NES.NESBoardBase

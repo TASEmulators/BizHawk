@@ -3,6 +3,8 @@ using System.Xml;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 //TODO - consider bytebuffer for mirroring
 //TODO - could stringpool the bootgod DB for a pedantic optimization
 

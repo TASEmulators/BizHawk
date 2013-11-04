@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
 	public sealed class AVE_NINA_001 : NES.NESBoardBase

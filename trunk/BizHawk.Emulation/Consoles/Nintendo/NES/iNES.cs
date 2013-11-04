@@ -1,4 +1,5 @@
 using System.IO;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// This is a mapper used commonly by System 3. It is

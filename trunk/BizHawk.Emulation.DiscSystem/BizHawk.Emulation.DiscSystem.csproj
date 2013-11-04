@@ -45,7 +45,6 @@
     <Compile Include="Blobs\Blob_ECM.cs" />
     <Compile Include="Blobs\Blob_WaveFile.cs" />
     <Compile Include="Blobs\RiffMaster.cs" />
-    <Compile Include="Buffer.cs" />
     <Compile Include="CCD_format.cs" />
     <Compile Include="cdfs\EndianBitConverter.cs" />
     <Compile Include="cdfs\ISODirectoryNode.cs" />

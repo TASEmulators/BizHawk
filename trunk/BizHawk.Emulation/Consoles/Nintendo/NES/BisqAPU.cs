@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Sound;
 
 //http://wiki.nesdev.com/w/index.php/APU_Mixer_Emulation

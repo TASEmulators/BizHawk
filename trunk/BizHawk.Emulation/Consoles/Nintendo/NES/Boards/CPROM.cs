@@ -1,6 +1,7 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-
 	public sealed class CPROM : NES.NESBoardBase
 	{
 		//generally mapper 13
@@ -61,7 +62,5 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 			ser.Sync("chr",ref chr);
 		}
-
-
 	}
 }

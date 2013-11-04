@@ -82,7 +82,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
@@ -507,7 +506,6 @@
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Sound\YM2413.cs" />
-    <Compile Include="Util.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>

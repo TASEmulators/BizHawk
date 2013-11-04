@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
 namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
 {
-    sealed public partial class Vic : IVideoProvider
-    {
-        int screenHeight;
-        int screenWidth;
-        int[] videoBuffer;
+	sealed public partial class Vic : IVideoProvider
+	{
+		int screenHeight;
+		int screenWidth;
+		int[] videoBuffer;
 
-        // palette
-        static private int[] palette =
+		// palette
+		static private int[] palette =
         {
                 Colors.ARGB(0x00, 0x00, 0x00),
                 Colors.ARGB(0xFF, 0xFF, 0xFF),
@@ -34,29 +36,29 @@ namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
                 Colors.ARGB(0x95, 0x95, 0x95)
         };
 
-        public int[] GetVideoBuffer()
-        {
-            return videoBuffer;
-        }
+		public int[] GetVideoBuffer()
+		{
+			return videoBuffer;
+		}
 
-        public int VirtualWidth
-        {
-            get { return screenWidth; }
-        }
+		public int VirtualWidth
+		{
+			get { return screenWidth; }
+		}
 
-        public int BufferWidth
-        {
-            get { return screenWidth; }
-        }
+		public int BufferWidth
+		{
+			get { return screenWidth; }
+		}
 
-        public int BufferHeight
-        {
-            get { return screenHeight; }
-        }
+		public int BufferHeight
+		{
+			get { return screenHeight; }
+		}
 
-        public int BackgroundColor
-        {
-            get { return palette[0]; }
-        }
-    }
+		public int BackgroundColor
+		{
+			get { return palette[0]; }
+		}
+	}
 }

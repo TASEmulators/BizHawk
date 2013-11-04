@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// this is the base cartridge class
@@ -236,7 +238,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 
 		public virtual void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
+			SaveState.SyncObject(ser, this);
 		}
 
 		public bool Valid

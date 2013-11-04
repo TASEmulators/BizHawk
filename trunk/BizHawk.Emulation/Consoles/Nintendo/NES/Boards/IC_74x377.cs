@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {

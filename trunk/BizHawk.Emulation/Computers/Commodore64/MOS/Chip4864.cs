@@ -1,19 +1,21 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// DRAM for the c64
 	// 4164 = 64 kbit
 	// 4464 = 256 kbit
 	// 4864 = 512 kbit
-	
+
 	// for purposes of simplification we'll just
 	// use one 4864, the C64 can use sets of 4164 or
 	// 4464 typically
 
 	// memory is striped 00/FF at intervals of 0x40
 
-    sealed public class Chip4864
+	sealed public class Chip4864
 	{
-        byte[] ram;
+		byte[] ram;
 
 		public Chip4864()
 		{
@@ -35,22 +37,22 @@
 
 		public void Poke(int addr, byte val)
 		{
-            ram[addr] = val;
+			ram[addr] = val;
 		}
 
 		public byte Read(int addr)
 		{
-            return ram[addr];
+			return ram[addr];
 		}
 
 		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
-        }
+			SaveState.SyncObject(ser, this);
+		}
 
 		public void Write(int addr, byte val)
 		{
-            ram[addr] = val;
+			ram[addr] = val;
 		}
 	}
 }

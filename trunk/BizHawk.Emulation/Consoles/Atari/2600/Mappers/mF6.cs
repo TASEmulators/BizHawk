@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	F6 (Atari style 16K)

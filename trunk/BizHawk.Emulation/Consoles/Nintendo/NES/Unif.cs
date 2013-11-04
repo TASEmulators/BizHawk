@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	/// <summary>

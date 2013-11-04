@@ -9,11 +9,11 @@ using System.IO;
 using System.Text;
 
 using BizHawk.Common;
-
+/*
 namespace BizHawk.Emulation.DiscSystem
 {
 	//TODO: QUICK FIX, this is the same file as BizHawk.Emulation, move to BizHawk.Common and get rid of this
-	public static class Colors
+	internal static class Colors
 	{
 		public static int ARGB(byte red, byte green, byte blue)
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	public unsafe static class Util
+	internal unsafe static class Util
 	{
 		static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		static System.Runtime.InteropServices.GCHandle HexConvHandle;
@@ -920,3 +920,4 @@ namespace BizHawk.Emulation.DiscSystem
     {
     }
 }
+*/

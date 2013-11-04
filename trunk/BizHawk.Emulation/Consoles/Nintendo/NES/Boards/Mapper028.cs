@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/User:Tepples/Multi-discrete_mapper
 	public sealed class Mapper028 : NES.NESBoardBase

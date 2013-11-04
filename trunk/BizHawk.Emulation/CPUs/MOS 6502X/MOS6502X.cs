@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.CPUs.M6502
 {
 	public sealed partial class MOS6502X
