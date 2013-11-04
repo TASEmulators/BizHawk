@@ -364,8 +364,6 @@ namespace BizHawk.Client.EmuHawk
 					compare: null,
 					enabled: true
 				));
-
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 

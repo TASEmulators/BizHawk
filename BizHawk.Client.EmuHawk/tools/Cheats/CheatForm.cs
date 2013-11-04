@@ -114,7 +114,6 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.RecentWatches.Add(path);
 					UpdateListView();
 					UpdateMessageLabel();
-					ToolHelpers.UpdateCheatRelatedTools();
 				}
 			}
 		}
@@ -180,7 +179,6 @@ namespace BizHawk.Client.EmuHawk
 					UpdateListView();
 					UpdateMessageLabel();
 					Global.Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
-					ToolHelpers.UpdateCheatRelatedTools();
 				}
 			}
 		}
@@ -233,7 +231,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.CheatList.Add(CheatEditor.Cheat);
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void EditCheat()
@@ -422,7 +419,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateListView();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveDown()
@@ -459,7 +455,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateListView();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void Remove()
@@ -479,8 +474,6 @@ namespace BizHawk.Client.EmuHawk
 		private void Toggle()
 		{
 			SelectedCheats.ForEach(x => x.Toggle());
-			ToolHelpers.UpdateCheatRelatedTools();
-			Global.CheatList.FlagChanges();
 		}
 
 		private void SaveColumnInfo()
@@ -575,7 +568,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.NewList(GlobalWin.MainForm.GenerateDefaultCheatFilename());
 				UpdateListView();
 				UpdateMessageLabel();
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 		}
 
@@ -694,7 +686,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -710,7 +701,6 @@ namespace BizHawk.Client.EmuHawk
 			
 			UpdateListView();
 			UpdateMessageLabel();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
@@ -739,7 +729,6 @@ namespace BizHawk.Client.EmuHawk
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.CheatList.DisableAll();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)

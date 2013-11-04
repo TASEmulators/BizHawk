@@ -2181,7 +2181,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.CheatList.Load(filePaths[0], false);
 				GlobalWin.Tools.Load<Cheats>();
-				ToolHelpers.UpdateCheatRelatedTools();
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{

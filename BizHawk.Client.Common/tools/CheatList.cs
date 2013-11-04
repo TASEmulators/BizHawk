@@ -11,9 +11,22 @@ namespace BizHawk.Client.Common
 {
 	public class CheatList : IEnumerable<Cheat>
 	{
+		private bool _changes;
+		public bool Changes
+		{
+			get
+			{
+				return _changes;
+			}
+			set
+			{
+				_changes = value;
+				CheatChanged(Cheat.Separator); //Pass a dummy, no cheat invoked this change
+			}
+		}
+
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _currentFileName = String.Empty;
-		private bool _changes;
 		private string _defaultFileName = String.Empty;
 
 		public IEnumerator<Cheat> GetEnumerator()
@@ -57,11 +70,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void FlagChanges()
-		{
-			_changes = true;
-		}
-
 		public int Count
 		{
 			get { return _cheatList.Count; }
@@ -82,7 +90,7 @@ namespace BizHawk.Client.Common
 			_defaultFileName = defaultFileName;
 			_cheatList.Clear();
 			_currentFileName = String.Empty;
-			_changes = false;
+			Changes = false;
 		}
 
 		public void Update()
@@ -92,6 +100,7 @@ namespace BizHawk.Client.Common
 
 		public void Add(Cheat c)
 		{
+			c.Changed += CheatChanged; 
 			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
 			{
 				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
@@ -101,11 +110,12 @@ namespace BizHawk.Client.Common
 				_cheatList.Add(c);
 			}
 
-			_changes = true;
+			Changes = true;
 		}
 
 		public void Insert(int index, Cheat c)
 		{
+			c.Changed += CheatChanged;
 			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
 			{
 				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
@@ -115,13 +125,13 @@ namespace BizHawk.Client.Common
 				_cheatList.Insert(index, c);
 			}
 
-			_changes = true;
+			Changes = true;
 		}
 
 		public void Remove(Cheat c)
 		{
-			_changes = true;
 			_cheatList.Remove(c);
+			Changes = true;
 		}
 
 		public void Remove(Watch w)
@@ -130,40 +140,33 @@ namespace BizHawk.Client.Common
 			var cheat = _cheatList.FirstOrDefault(x => x.Domain == w.Domain && x.Address == w.Address);
 			if (cheat != null)
 			{
-				_changes = true;
 				_cheatList.Remove(cheat);
+				Changes = true;
 			}
 		}
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
-			_changes = true;
 			foreach (var cheat in cheats)
 			{
 				_cheatList.Remove(cheat);
 			}
-		}
-
-		public bool Changes
-		{
-			get { return _changes; }
+			Changes = true;
 		}
 
 		public void Clear()
 		{
-			_changes = true;
 			_cheatList.Clear();
+			Changes = true;
 		}
 
 		public void DisableAll()
 		{
-			_changes = true;
 			_cheatList.ForEach(x => x.Disable());
 		}
 
 		public void EnableAll()
 		{
-			_changes = true;
 			_cheatList.ForEach(x => x.Enable());
 		}
 
@@ -188,7 +191,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Config.CheatsAutoSaveOnClose)
 			{
-				if (_changes && _cheatList.Any())
+				if (Changes && _cheatList.Any())
 				{
 					if (String.IsNullOrWhiteSpace(_currentFileName))
 					{
@@ -256,9 +259,9 @@ namespace BizHawk.Client.Common
 					sw.WriteLine(sb.ToString());
 				}
 
-				_changes = false;
 				_currentFileName = path;
 				Global.Config.RecentCheats.Add(_currentFileName);
+				Changes = false;
 				return true;
 			}
 			catch
@@ -282,14 +285,9 @@ namespace BizHawk.Client.Common
 
 			using (StreamReader sr = file.OpenText())
 			{
-				if (append)
-				{
-					_changes = true; 
-				}
-				else
+				if (!append)
 				{
 					Clear();
-					_changes = false;
 				}
 
 				string s;
@@ -310,7 +308,6 @@ namespace BizHawk.Client.Common
 
 
 							if (s.Length < 6) continue;
-							//NewCheat c = new NewCheat(
 							string[] vals = s.Split('\t');
 							int ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
 							int value = Int32.Parse(vals[1], NumberStyles.HexNumber);
@@ -355,6 +352,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			Changes = true;
 			return true;
 		}
 
@@ -528,8 +526,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public class CheatListEventArgs
+		{
+			public CheatListEventArgs(Cheat c)
+			{
+				Cheat = c;
+			}
+
+			public Cheat Cheat { get; private set; }
+		}
+
+		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
+		public event CheatListEventHandler Changed;
+
 		#region Privates
 
+		//TODO: remove this and make MemoryDomains in IEmulator support this
 		private static MemoryDomain DomainByName(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
@@ -542,6 +554,15 @@ namespace BizHawk.Client.Common
 			}
 
 			return Global.Emulator.MainMemory;
+		}
+
+		private void CheatChanged(object sender)
+		{
+			if (Changed != null)
+			{
+				Changed(this, new CheatListEventArgs(sender as Cheat));
+			}
+			_changes = true;
 		}
 
 		#endregion

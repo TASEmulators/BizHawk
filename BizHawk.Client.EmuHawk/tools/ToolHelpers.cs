@@ -205,19 +205,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void UpdateCheatRelatedTools()
+		public static void UpdateCheatRelatedTools(object sender, CheatList.CheatListEventArgs e)
 		{
 			GlobalWin.Tools.UpdateValues<RamWatch>();
 			GlobalWin.Tools.UpdateValues<RamSearch>();
 			GlobalWin.Tools.UpdateValues<HexEditor>();
 			GlobalWin.Tools.UpdateValues<Cheats>();
 			GlobalWin.MainForm.UpdateCheatStatus();
-		}
-
-		public static void UnfreezeAll()
-		{
-			Global.CheatList.DisableAll();
-			UpdateCheatRelatedTools();
 		}
 
 		public static void FreezeAddress(List<Watch> watches)
@@ -231,8 +225,6 @@ namespace BizHawk.Client.EmuHawk
 					);
 				}
 			}
-
-			UpdateCheatRelatedTools();
 		}
 
 		public static void UnfreezeAddress(List<Watch> watches)
@@ -244,8 +236,6 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Remove(watch);
 				}
 			}
-
-			UpdateCheatRelatedTools();
 		}
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)

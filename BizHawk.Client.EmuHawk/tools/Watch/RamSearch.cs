@@ -1413,7 +1413,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
 		{
-			ToolHelpers.UnfreezeAll();
+			Global.CheatList.DisableAll();
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

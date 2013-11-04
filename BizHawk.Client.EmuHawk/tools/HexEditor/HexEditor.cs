@@ -866,7 +866,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateRelatedDialogs();
 		}
 
-		private void UnFreezeAddress(int address) //TODO: refactor to int?
+		private void UnFreezeAddress(int address)
 		{
 			if (address >= 0)
 			{
@@ -874,7 +874,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.RemoveRange(cheats);
 			}
 			MemoryViewerBox.Refresh();
-			ToolHelpers.UpdateCheatRelatedTools();
 		}
 
 		private Watch.WatchSize WatchSize
@@ -1463,7 +1462,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
 					{
-						ToolHelpers.UnfreezeAll();
+						Global.CheatList.DisableAll();
 					}
 					else
 					{
@@ -1667,12 +1666,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ToolHelpers.UnfreezeAll();
+			Global.CheatList.DisableAll();
 		}
 
 		private void unfreezeAllToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			ToolHelpers.UnfreezeAll();
+			Global.CheatList.DisableAll();
 		}
 
 		private void HexEditor_MouseWheel(object sender, MouseEventArgs e)
@@ -1698,7 +1697,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.CheatList.IsActive(Domain, address))
 			{
 				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Increment();
-				Global.CheatList.FlagChanges();
+				//Refactor TODO : this won't be necessary, the cheats themselves will raise change events: Global.CheatList.FlagChanges();
 			}
 			else
 			{
@@ -1735,7 +1734,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.CheatList.IsActive(Domain, address))
 			{
 				Global.CheatList.FirstOrDefault(x => x.Domain == Domain && x.Address == address).Decrement();
-				Global.CheatList.FlagChanges();
+				//Refactor TODO : this won't be necessary, the cheats themselves will raise change events:Global.CheatList.FlagChanges();
 			}
 			else
 			{
