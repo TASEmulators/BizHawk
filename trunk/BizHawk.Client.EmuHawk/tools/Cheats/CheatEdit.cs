@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(Watch.DisplayType.Hex);
 
 			CheckFormState();
+			CompareBox.Text = String.Empty; //TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
