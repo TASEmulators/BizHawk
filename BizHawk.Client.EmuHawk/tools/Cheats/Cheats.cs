@@ -222,9 +222,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat()
 		{
-			Global.CheatList.Add(CheatEditor.Cheat);
-			UpdateListView();
-			UpdateMessageLabel();
+			if (Global.CheatList.HasCheat(CheatEditor.Cheat))
+			{
+				EditCheat();
+			}
+			else
+			{
+				Global.CheatList.Add(CheatEditor.Cheat);
+				UpdateListView();
+				UpdateMessageLabel();
+			}
 		}
 
 		private void EditCheat()
