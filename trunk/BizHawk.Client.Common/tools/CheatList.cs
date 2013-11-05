@@ -103,7 +103,11 @@ namespace BizHawk.Client.Common
 
 		public void Add(Cheat cheat)
 		{
-			if (!cheat.IsSeparator)
+			if (cheat.IsSeparator)
+			{
+				_cheatList.Add(cheat);
+			}
+			else
 			{
 				cheat.Changed += CheatChanged;
 				if (_cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address))
@@ -116,7 +120,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			_cheatList.Add(cheat);
 			Changes = true;
 		}
 
