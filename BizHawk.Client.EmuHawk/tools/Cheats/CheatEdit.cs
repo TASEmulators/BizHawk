@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				Watch w = Watch.GenerateWatch(
+				Watch watch = Watch.GenerateWatch(
 					ToolHelpers.DomainByName(DomainDropDown.SelectedItem.ToString()),
 					AddressBox.ToRawInt(),
 					GetCurrentSize(),
@@ -274,7 +274,11 @@ namespace BizHawk.Client.EmuHawk
 					NameBox.Text,
 					BigEndianCheckBox.Checked);
 
-				return new Cheat(w, CompareBox.ToRawInt(), enabled: true);
+				return new Cheat(
+					watch,
+					ValueBox.ToRawInt(),
+					!String.IsNullOrWhiteSpace(CompareBox.Text) ? CompareBox.ToRawInt() : (int?)null
+				);
 			}
 		}
 
