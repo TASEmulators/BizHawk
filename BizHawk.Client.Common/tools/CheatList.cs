@@ -101,18 +101,22 @@ namespace BizHawk.Client.Common
 			_cheatList.ForEach(x => x.Pulse());
 		}
 
-		public void Add(Cheat c)
+		public void Add(Cheat cheat)
 		{
-			c.Changed += CheatChanged; 
-			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			if (!cheat.IsSeparator)
 			{
-				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
-			}
-			else
-			{
-				_cheatList.Add(c);
+				cheat.Changed += CheatChanged;
+				if (_cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address))
+				{
+					_cheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address).Enable();
+				}
+				else
+				{
+					_cheatList.Add(cheat);
+				}
 			}
 
+			_cheatList.Add(cheat);
 			Changes = true;
 		}
 
