@@ -121,7 +121,21 @@ namespace BizHawk.Client.Common
 
 		public string ValueStr
 		{
-			get { return _watch.ValueString; }
+			get
+			{
+				switch (_watch.Size)
+				{
+					default:
+					case Watch.WatchSize.Separator:
+						return String.Empty;
+					case Watch.WatchSize.Byte:
+						return (_watch as ByteWatch).FormatValue((byte)_val);
+					case Watch.WatchSize.Word:
+						return (_watch as WordWatch).FormatValue((ushort)_val);
+					case Watch.WatchSize.DWord:
+						return (_watch as DWordWatch).FormatValue((uint)_val);
+				}
+			}
 		}
 
 		public string CompareStr

@@ -229,7 +229,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditCheat()
 		{
-			MessageBox.Show("Edit clicked");
+			var cheat = CheatEditor.Cheat;
+			Global.CheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
+			Global.CheatList.Add(cheat);
+			UpdateListView();
+			UpdateMessageLabel();
 		}
 
 		public void SaveConfigSettings()

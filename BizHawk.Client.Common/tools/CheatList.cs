@@ -106,6 +106,7 @@ namespace BizHawk.Client.Common
 			if (cheat.IsSeparator)
 			{
 				_cheatList.Add(cheat);
+				Changes = true;
 			}
 			else
 			{
@@ -117,10 +118,11 @@ namespace BizHawk.Client.Common
 				else
 				{
 					_cheatList.Add(cheat);
+					Changes = true;
 				}
 			}
 
-			Changes = true;
+			
 		}
 
 		public void Insert(int index, Cheat c)
