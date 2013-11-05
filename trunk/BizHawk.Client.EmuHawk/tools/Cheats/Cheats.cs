@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
-			CheatEditor.SetEditEvent(EditCheat);
+			CheatEditor.SetEditEvent(AddCheat); //CheatList.Add is already an upsert, so there is nothing different to handle here
 			UpdateValues();
 		}
 
@@ -222,23 +222,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat()
 		{
-			if (Global.CheatList.HasCheat(CheatEditor.Cheat))
-			{
-				EditCheat();
-			}
-			else
-			{
-				Global.CheatList.Add(CheatEditor.Cheat);
-				UpdateListView();
-				UpdateMessageLabel();
-			}
-		}
-
-		private void EditCheat()
-		{
-			var cheat = CheatEditor.Cheat;
-			Global.CheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
-			Global.CheatList.Add(cheat);
+			Global.CheatList.Add(CheatEditor.Cheat);
 			UpdateListView();
 			UpdateMessageLabel();
 		}
