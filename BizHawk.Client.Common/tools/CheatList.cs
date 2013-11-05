@@ -106,23 +106,19 @@ namespace BizHawk.Client.Common
 			if (cheat.IsSeparator)
 			{
 				_cheatList.Add(cheat);
-				Changes = true;
+				
 			}
 			else
 			{
 				cheat.Changed += CheatChanged;
-				if (_cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address))
+				if (HasCheat(cheat))
 				{
-					_cheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address).Enable();
+					_cheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
 				}
-				else
-				{
-					_cheatList.Add(cheat);
-					Changes = true;
-				}
+				_cheatList.Add(cheat);
 			}
 
-			
+			Changes = true;
 		}
 
 		public void Insert(int index, Cheat c)
@@ -201,7 +197,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasCheat(Cheat cheat)
 		{
-			return _cheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address) != null;
+			return _cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address);
 		}
 
 		public void SaveOnClose()

@@ -71,6 +71,10 @@ namespace BizHawk.Client.EmuHawk
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
 
 			CheckFormState();
+			if (!_cheat.Compare.HasValue)
+			{
+				CompareBox.Text = String.Empty; //Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+			}
 			_loading = false;
 		}
 
