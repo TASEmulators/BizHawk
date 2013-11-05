@@ -1661,14 +1661,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Restart()
 		{
-			if (GlobalWin.Tools.Has<Cheats>())
-			{
-				GlobalWin.Tools.Restart<Cheats>();
-			}
-			else
+			if (!GlobalWin.Tools.Has<Cheats>())
 			{
 				Global.CheatList.NewList(GenerateDefaultCheatFilename());
 			}
+			//If Cheat tool is loaded, restarting will restart the list too anyway
 		}
 
 		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
