@@ -51,7 +51,18 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
-			Closing += (o, e) => SaveConfigSettings();
+			Closing += (o, e) =>
+			{
+				if (AskSave())
+				{
+					SaveConfigSettings();
+				}
+				else
+				{
+					e.Cancel = true;
+				}
+			};
+
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
@@ -75,15 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				NewList();
-				ToggleGameGenieButton();
-			}
+			StartNewList();
 		}
 
 		private void UpdateListView()
@@ -152,6 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
+					Global.CheatList.Changes = false;
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
@@ -545,6 +549,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void StartNewList()
+		{
+			Global.CheatList.NewList(GlobalWin.MainForm.GenerateDefaultCheatFilename());
+			UpdateListView();
+			UpdateMessageLabel();
+			ToggleGameGenieButton();
+		}
+
 		private void NewList()
 		{
 			bool result = true;
@@ -555,9 +567,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
-				Global.CheatList.NewList(GlobalWin.MainForm.GenerateDefaultCheatFilename());
-				UpdateListView();
-				UpdateMessageLabel();
+				StartNewList();
 			}
 		}
 

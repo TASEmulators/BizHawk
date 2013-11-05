@@ -100,11 +100,18 @@ namespace BizHawk.Client.EmuHawk
 
 			Closing += (o, e) =>
 			{
-				Global.CheatList.SaveOnClose();
-				CloseGame();
-				Global.MovieSession.Movie.Stop();
-				GlobalWin.Tools.Close();
-				SaveConfig();
+				if (GlobalWin.Tools.AskSave())
+				{
+					Global.CheatList.SaveOnClose();
+					CloseGame();
+					Global.MovieSession.Movie.Stop();
+					GlobalWin.Tools.Close();
+					SaveConfig();
+				}
+				else
+				{
+					e.Cancel = true;
+				}
 			};
 
 			ResizeBegin += (o, e) =>
@@ -3726,21 +3733,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseROM(bool clearSRAM = false)
 		{
-			CloseGame(clearSRAM);
-			Global.CoreComm = new CoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm);
-			Global.Game = GameInfo.GetNullGame();
+			if (GlobalWin.Tools.AskSave())
+			{
+				CloseGame(clearSRAM);
+				Global.CoreComm = new CoreComm();
+				CoreFileProvider.SyncCoreCommInputSignals();
+				Global.Emulator = new NullEmulator(Global.CoreComm);
+				Global.Game = GameInfo.GetNullGame();
 
-			GlobalWin.Tools.Restart();
+				GlobalWin.Tools.Restart();
 
-			RewireSound();
-			ResetRewindBuffer();
-			Cheats_Restart();
-			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
-			HandlePlatformMenus();
-			StateSlots.Clear();
-			UpdateDumpIcon();
+				RewireSound();
+				ResetRewindBuffer();
+				Cheats_Restart();
+				Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+				HandlePlatformMenus();
+				StateSlots.Clear();
+				UpdateDumpIcon();
+			}
 		}
 
 		private void SwapBackupSavestate(string path) //Move inside Saveslot Manager
