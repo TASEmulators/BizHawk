@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			Changes = true;
+			Changes = false;
 			return true;
 		}
 
