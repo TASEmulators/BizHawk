@@ -38,8 +38,18 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
-			Closing += (o, e) => SaveConfigSettings();
-			_sortedColumn = "";
+			Closing += (o, e) =>
+			{
+				if (AskSave())
+				{
+					SaveConfigSettings();
+				}
+				else
+				{
+					e.Cancel = true;
+				}
+			};
+			_sortedColumn = String.Empty;
 			_sortReverse = false;
 
 			TopMost = Global.Config.RamWatchAlwaysOnTop;
@@ -169,6 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.No)
 				{
+					Watches.Changes = false;
 					return true;
 				}
 				else if (result == DialogResult.Cancel)
@@ -232,13 +243,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Index;
 				Global.Config.RamWatchColumnWidths[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].Width;
 			}
-		}
-
-		protected override void OnClosing(CancelEventArgs e)
-		{
-			if (!AskSave())
-				e.Cancel = true;
-			base.OnClosing(e);
 		}
 
 		private int GetColumnWidth(string columnName)
