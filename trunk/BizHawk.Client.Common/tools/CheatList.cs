@@ -199,6 +199,11 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		public bool HasCheat(Cheat cheat)
+		{
+			return _cheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address) != null;
+		}
+
 		public void SaveOnClose()
 		{
 			if (Global.Config.CheatsAutoSaveOnClose)
