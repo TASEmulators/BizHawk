@@ -32,7 +32,7 @@
 			this.NameLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.AddressHexIndLabel = new System.Windows.Forms.Label();
-			this.AddressBox = new HexTextBox();
+			this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.ValueHexIndLabel = new System.Windows.Forms.Label();
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.CompareHexIndLabel = new System.Windows.Forms.Label();
@@ -46,8 +46,8 @@
 			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
 			this.AddButton = new System.Windows.Forms.Button();
 			this.EditButton = new System.Windows.Forms.Button();
-			this.CompareBox = new WatchValueBox();
-			this.ValueBox = new WatchValueBox();
+			this.CompareBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.ValueBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.SuspendLayout();
 			// 
 			// NameBox
@@ -239,7 +239,6 @@
 			this.CompareBox.Nullable = true;
 			this.CompareBox.Size = new System.Drawing.Size(65, 20);
 			this.CompareBox.TabIndex = 15;
-			this.CompareBox.Text = "00";
 			this.CompareBox.Type = BizHawk.Client.Common.Watch.DisplayType.Hex;
 			// 
 			// ValueBox
