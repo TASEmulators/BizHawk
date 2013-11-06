@@ -2118,7 +2118,7 @@ namespace BizHawk.Client.EmuHawk
 			HandlePlatformMenus();
 			if (Global.Config.PauseWhenMenuActivated)
 			{
-				EmulatorPaused = wasPaused;
+				wasPaused = EmulatorPaused;
 				didMenuPause = true;
 				PauseEmulator();
 			}
