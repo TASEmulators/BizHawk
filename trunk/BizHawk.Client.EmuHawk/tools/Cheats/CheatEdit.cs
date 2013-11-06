@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator != null)
 			{
-				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MainMemory);
+				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MemoryDomains.MainMemory);
 			}
 			SetFormToDefault();
 		}
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Emulator != null)
 			{
-				AddressBox.SetHexProperties(Global.Emulator.MainMemory.Size);
+				AddressBox.SetHexProperties(Global.Emulator.MemoryDomains.MainMemory.Size);
 			}
 
 			ValueBox.ByteSize = 
@@ -199,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = ToolHelpers.DomainByName(DomainDropDown.SelectedItem.ToString());
+				var domain = Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				AddressBox.SetHexProperties(domain.Size);
 			}
 		}
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				Watch watch = Watch.GenerateWatch(
-					ToolHelpers.DomainByName(DomainDropDown.SelectedItem.ToString()),
+					Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
 					AddressBox.ToRawInt(),
 					GetCurrentSize(),
 					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),

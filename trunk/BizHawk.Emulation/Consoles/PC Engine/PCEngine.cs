@@ -592,12 +592,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				domains.Add(ArcadeRamMemoryDomain);
 			}
 
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		MemoryDomainList memoryDomains;
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose()
 		{

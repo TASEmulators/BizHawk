@@ -566,7 +566,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			return Global.Emulator.MainMemory;
+			return Global.Emulator.MemoryDomains.MainMemory;
 		}
 
 		private void CheatChanged(object sender)

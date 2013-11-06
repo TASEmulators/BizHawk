@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				_watchList.AddRange(watches);
 			}
 			_mode = mode;
-			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? Global.Emulator.MainMemory);
+			ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, domain ?? Global.Emulator.MemoryDomains.MainMemory);
 			SetTitle();
 		}
 
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
-			             Global.Emulator.MainMemory;
+						 Global.Emulator.MemoryDomains.MainMemory;
 			BigEndianCheckBox.Checked = domain.EndianType == MemoryDomain.Endian.Big;
 		}
 

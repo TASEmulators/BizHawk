@@ -284,14 +284,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 					Marshal.WriteByte(memPtr + addr, val);
 				});
 
-			MemoryDomains.Add(md);
+			memoryDomains.Add(md);
 
 			return md;
 		}
 
 		void InitMemoryDomains()
 		{
-			MemoryDomains = new List<MemoryDomain>();
 			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, MemoryDomain.Endian.Little);
@@ -304,10 +303,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, MemoryDomain.Endian.Little);
 			MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, MemoryDomain.Endian.Little);
+
+			MemoryDomains = new MemoryDomainList(memoryDomains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 

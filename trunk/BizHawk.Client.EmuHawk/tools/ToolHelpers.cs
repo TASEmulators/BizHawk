@@ -245,20 +245,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.HexEditor.SetToAddresses(addresses.ToList());
 		}
 
-		public static MemoryDomain DomainByName(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
-			{
-				if (domain.Name == name)
-				{
-					return domain;
-				}
-			}
-
-			return Global.Emulator.MainMemory;
-		}
-
 		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)
 		{
 			if (enabled)

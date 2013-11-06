@@ -24,11 +24,11 @@ namespace BizHawk.Emulation.Common
 		public NullEmulator(CoreComm comm)
 		{
 			CoreComm = comm;
-			var domains = new List<MemoryDomain>(1)
+			var domains = new MemoryDomainList(
+				new List<MemoryDomain>
 				{
 					new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { })
-				};
-			memoryDomains = domains.AsReadOnly();
+				});
 		}
 		public void ResetCounters()
 		{
@@ -63,16 +63,15 @@ namespace BizHawk.Emulation.Common
 		public byte[] SaveStateBinary() { return new byte[1]; }
 		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
-        public int VirtualWidth { get { return 256; } }
-        public int BufferWidth { get { return 256; } }
+		public int VirtualWidth { get { return 256; } }
+		public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
-		private readonly IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		private readonly MemoryDomainList memoryDomains;
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
 	}
 

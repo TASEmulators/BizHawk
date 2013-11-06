@@ -469,11 +469,10 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			var tmp = ret[2];
 			ret[2] = ret[0];
 			ret[0] = tmp;
-			MemoryDomains = ret.AsReadOnly();
+			MemoryDomains = new MemoryDomainList(ret);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 

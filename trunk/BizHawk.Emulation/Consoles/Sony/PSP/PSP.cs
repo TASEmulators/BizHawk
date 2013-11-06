@@ -183,17 +183,10 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			return new byte[0];
 		}
 
-		public IList<MemoryDomain> MemoryDomains
+		public MemoryDomainList MemoryDomains
 		{
 			get { throw new NotImplementedException(); }
 		}
-
-		public MemoryDomain MainMemory
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-
 
 		const int screenwidth = 480;
 		const int screenheight = 272;

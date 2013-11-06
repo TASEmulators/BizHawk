@@ -612,21 +612,26 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public string BoardName { get { return null; } }
 
-		private IList<MemoryDomain> memoryDomains;
+		private MemoryDomainList _memoryDomains;
 		private const ushort RamSizeMask = 0x7FFF;
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>();
-			var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, MemoryDomain.Endian.Little,
-				addr => ram[addr & RamSizeMask],
-				(addr, value) => ram[addr & RamSizeMask] = value);
-			domains.Add(MainMemoryDomain);
-			memoryDomains = domains.AsReadOnly();
+			var domains = new List<MemoryDomain>
+			{
+				new MemoryDomain(
+					"Main RAM",
+					ram.Length,
+					MemoryDomain.Endian.Little,
+					addr => ram[addr & RamSizeMask],
+					(addr, value) => ram[addr & RamSizeMask] = value
+				)
+			};
+
+			_memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get { return _memoryDomains; } }
 
 		public void Dispose() { }
 

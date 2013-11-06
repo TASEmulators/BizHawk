@@ -55,8 +55,7 @@ namespace BizHawk.Emulation
 		public CoreComm CoreComm { get; private set; }
 		public bool DeterministicEmulation { get; set; }
 		private List<MemoryDomain> _MemoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
@@ -314,7 +313,7 @@ namespace BizHawk.Emulation
 				else // todo 2600?
 				{
 				}
-				MemoryDomains = _MemoryDomains.AsReadOnly();
+				MemoryDomains = new MemoryDomainList(_MemoryDomains);
 			}
 
 		}

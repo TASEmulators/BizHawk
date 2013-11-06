@@ -864,14 +864,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						(addr) => blockptr[addr & mask],
 						(addr, value) => blockptr[addr & mask] = value);
 
-			MemoryDomains.Add(md);
+			_memoryDomains.Add(md);
 
 			return md;
 		}
 
 		void SetupMemoryDomains(byte[] romData, byte[] sgbRomData)
 		{
-			MemoryDomains = new List<MemoryDomain>();
 			// remember, MainMemory must always be the same as MemoryDomains[0], else GIANT DRAGONS
 			//<zeromus> - this is stupid.
 
@@ -886,7 +885,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				var romDomain = new MemoryDomain("SGB CARTROM", romData.Length, MemoryDomain.Endian.Little,
 					(addr) => romData[addr],
 					(addr, value) => romData[addr] = value);
-				MemoryDomains.Add(romDomain);
+				_memoryDomains.Add(romDomain);
 		
 
 				//the last 1 byte of this is special.. its an interrupt enable register, instead of ram. weird. maybe its actually ram and just getting specially used?
@@ -899,7 +898,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				var sgbromDomain = new MemoryDomain("SGB.SFC ROM", sgbRomData.Length, MemoryDomain.Endian.Little,
 					(addr) => sgbRomData[addr],
 					(addr, value) => sgbRomData[addr] = value);
-				MemoryDomains.Add(sgbromDomain);
+				_memoryDomains.Add(sgbromDomain);
 			}
 			else
 			{
@@ -908,7 +907,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				var romDomain = new MemoryDomain("CARTROM", romData.Length, MemoryDomain.Endian.Little,
 					(addr) => romData[addr],
 					(addr, value) => romData[addr] = value);
-				MemoryDomains.Add(romDomain);
+				_memoryDomains.Add(romDomain);
 
 				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little);
 				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little);
@@ -917,15 +916,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little);
 
 				if (!DeterministicEmulation)
-					MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+					_memoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
 						(addr, val) => api.poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
 
 			}
+
+			MemoryDomains = new MemoryDomainList(_memoryDomains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get; private set; }
+		private MemoryDomain MainMemory;
+		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#region audio stuff
 

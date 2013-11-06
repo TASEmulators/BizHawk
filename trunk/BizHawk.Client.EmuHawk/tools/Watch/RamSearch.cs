@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.Type = Settings.Type;
 
 			MessageLabel.Text = String.Empty;
-			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MainMemory.Size);
+			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Global.Emulator.MemoryDomains.MainMemory.Size);
 			HardSetSizeDropDown(Settings.Size);
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(Settings.Type);
@@ -235,8 +235,8 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
-			
-			Settings.Domain = Global.Emulator.MainMemory;
+
+			Settings.Domain = Global.Emulator.MemoryDomains.MainMemory;
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
