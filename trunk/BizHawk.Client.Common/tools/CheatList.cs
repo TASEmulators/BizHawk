@@ -333,7 +333,7 @@ namespace BizHawk.Client.Common
 							{
 								compare = Int32.Parse(vals[2], NumberStyles.HexNumber);
 							}
-							MemoryDomain domain = DomainByName(vals[3]);
+							MemoryDomain domain = Global.Emulator.MemoryDomains[vals[3]];
 							bool ENABLED = vals[4] == "1";
 							string name = vals[5];
 
@@ -553,21 +553,6 @@ namespace BizHawk.Client.Common
 		public event CheatListEventHandler Changed;
 
 		#region Privates
-
-		//TODO: remove this and make MemoryDomains in IEmulator support this
-		private static MemoryDomain DomainByName(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			foreach (MemoryDomain domain in Global.Emulator.MemoryDomains)
-			{
-				if (domain.Name == name)
-				{
-					return domain;
-				}
-			}
-
-			return Global.Emulator.MemoryDomains.MainMemory;
-		}
 
 		private void CheatChanged(object sender)
 		{

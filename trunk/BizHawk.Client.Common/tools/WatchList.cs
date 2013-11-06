@@ -481,7 +481,7 @@ namespace BizHawk.Client.Common
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
+						memDomain = Global.Emulator.MemoryDomains[temp];
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
@@ -495,7 +495,7 @@ namespace BizHawk.Client.Common
 							type,
 							notes,
 							bigEndian));
-					_domain = Global.Emulator.MemoryDomains[GetDomainPos(domain)];
+					_domain = Global.Emulator.MemoryDomains[domain];
 				}
 			}
 
@@ -509,17 +509,6 @@ namespace BizHawk.Client.Common
 				Changes = true;
 			}
 			return true;
-		}
-
-		private static int GetDomainPos(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
-					return x;
-			}
-			return 0;
 		}
 
 		#endregion
