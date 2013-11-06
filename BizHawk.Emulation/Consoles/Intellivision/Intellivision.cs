@@ -187,12 +187,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IList<MemoryDomain> MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public MemoryDomain MainMemory
+		public MemoryDomainList MemoryDomains
 		{
 			get { throw new NotImplementedException(); }
 		}

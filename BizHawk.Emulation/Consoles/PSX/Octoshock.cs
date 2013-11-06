@@ -59,6 +59,8 @@ namespace BizHawk.Emulation.Consoles.PSX
 			CoreComm = comm;
 			VirtualWidth = BufferWidth = 256;
 			BufferHeight = 192;
+
+			MemoryDomains = new MemoryDomainList(memoryDomains);
 		}
 
 		void Attach()
@@ -267,9 +269,8 @@ namespace BizHawk.Emulation.Consoles.PSX
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
-		private IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
+		public MemoryDomainList MemoryDomains { get; private set; }
 	}
 
 }

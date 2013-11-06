@@ -608,12 +608,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			MemoryRefreshers.Add(refresher);
 
-			MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little, refresher.Peek, refresher.Poke));
+			_MemoryDomains.Add(new MemoryDomain(name, length, MemoryDomain.Endian.Little, refresher.Peek, refresher.Poke));
 		}
 
 		void InitMemoryDomains()
 		{
-			MemoryDomains = new List<MemoryDomain>();
 			MemoryRefreshers = new List<MemoryRefresher>();
 
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
@@ -625,7 +624,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 
-			MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
+			_MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
 				delegate(int addr)
 				{
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
@@ -635,13 +634,12 @@ namespace BizHawk.Emulation.Consoles.GB
 					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
 				}));
 
-			// this is the wram area and matches the bizhawk convention for what MainMemory means
-			MainMemory = MemoryDomains[0];
+			MemoryDomains = new MemoryDomainList(_MemoryDomains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		private List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
+		public MemoryDomainList MemoryDomains { get; private set; }
 
-		public MemoryDomain MainMemory { get; private set; }
 
 		List<MemoryRefresher> MemoryRefreshers;
 

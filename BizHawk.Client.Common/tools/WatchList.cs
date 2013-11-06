@@ -436,7 +436,7 @@ namespace BizHawk.Client.Common
 					//Temporary, rename if kept
 					int addr;
 					bool bigEndian;
-					MemoryDomain memDomain = Global.Emulator.MainMemory;
+					MemoryDomain memDomain = Global.Emulator.MemoryDomains.MainMemory;
 
 					string temp = line.Substring(0, line.IndexOf('\t'));
 					try

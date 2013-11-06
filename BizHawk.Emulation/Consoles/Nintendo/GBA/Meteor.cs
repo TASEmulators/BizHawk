@@ -206,12 +206,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		#region memorydomains
 
 		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public IList<MemoryDomain> MemoryDomains { get { return _MemoryDomains; } }
-		public MemoryDomain MainMemory
-		{
-			// some core tools assume MainMemory == MemoryDomains[0], so do that anyway
-			get { return MemoryDomains[0]; }
-		}
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
 		{
@@ -290,6 +285,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 					});
 				_MemoryDomains.Add(cr);
 			}
+
+			MemoryDomains = new MemoryDomainList(_MemoryDomains);
 		}
 
 		public void GetGPUMemoryAreas(out IntPtr vram, out IntPtr palram, out IntPtr oam, out IntPtr mmio)

@@ -414,7 +414,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		IList<MemoryDomain> memoryDomains;
+		MemoryDomainList memoryDomains;
 
 		void SetupMemoryDomains()
 		{
@@ -443,11 +443,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 			domains.Add(VRamDomain);
 			domains.Add(RomDomain);
 			domains.Add(SystemBusDomain);
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}

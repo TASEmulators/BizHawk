@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// bizhawk I/O
 		public CoreComm CoreComm { get; private set; }
-		
+
 		// game/rom specific
 		public GameInfo game;
 		public string SystemId { get { return "C64"; } }
@@ -25,9 +25,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public string BoardName { get { return null; } }
 
 		// memory domains
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-		private IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		private MemoryDomainList memoryDomains;
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		// running state
 		public bool DeterministicEmulation { get { return true; } set { ; } }
@@ -71,19 +70,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		};
 
 		// framework
-        public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
-        {
-            inputFileInfo = new InputFileInfo();
-            inputFileInfo.Data = rom;
-            inputFileInfo.Extension = romextension;
-            CoreComm = comm;
-            Init(Region.PAL);
-            cyclesPerFrame = board.vic.CyclesPerFrame;
-            CoreComm.UsesDriveLed = true;
-            SetupMemoryDomains();
-        }
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
+		{
+			inputFileInfo = new InputFileInfo();
+			inputFileInfo.Data = rom;
+			inputFileInfo.Extension = romextension;
+			CoreComm = comm;
+			Init(Region.PAL);
+			cyclesPerFrame = board.vic.CyclesPerFrame;
+			CoreComm.UsesDriveLed = true;
+			SetupMemoryDomains();
+		}
 
-        public void Dispose()
+		public void Dispose()
 		{
 			if (board.sid != null)
 			{
@@ -95,37 +94,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-            board.inputRead = false;
+			board.inputRead = false;
 			board.PollInput();
 
-            for (int count = 0; count < cyclesPerFrame; count++)
+			for (int count = 0; count < cyclesPerFrame; count++)
 			{
 				//disk.Execute();
 				board.Execute();
 
-                // load PRG file if needed
-                if (loadPrg)
-                {
-                    // check to see if cpu PC is at the BASIC warm start vector
-                    if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
-                    {
-                        //board.ram.Poke(0x0302, 0xAE);
-                        //board.ram.Poke(0x0303, 0xA7);
-                        ////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
-                        ////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
+				// load PRG file if needed
+				if (loadPrg)
+				{
+					// check to see if cpu PC is at the BASIC warm start vector
+					if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
+					{
+						//board.ram.Poke(0x0302, 0xAE);
+						//board.ram.Poke(0x0303, 0xA7);
+						////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
+						////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
 
-                        //if (inputFileInfo.Data.Length >= 6)
-                        //{
-                        //    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
-                        //    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
-                        //}
-                        Media.PRG.Load(board.pla, inputFileInfo.Data);
-                        loadPrg = false;
-                    }
-                }
-            }
+						//if (inputFileInfo.Data.Length >= 6)
+						//{
+						//    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
+						//    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
+						//}
+						Media.PRG.Load(board.pla, inputFileInfo.Data);
+						loadPrg = false;
+					}
+				}
+			}
 
-            board.Flush();
+			board.Flush();
 			_islag = !board.inputRead;
 
 			if (_islag)
@@ -168,7 +167,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			//domains.Add(new MemoryDomain("1541 VIA0", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia0), new Action<int, byte>(disk.PokeVia0)));
 			//domains.Add(new MemoryDomain("1541 VIA1", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia1), new Action<int, byte>(disk.PokeVia1)));
 			//domains.Add(new MemoryDomain("1541 RAM", 0x1000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 	}
 }

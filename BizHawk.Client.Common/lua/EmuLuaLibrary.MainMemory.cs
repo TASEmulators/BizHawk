@@ -123,21 +123,19 @@ namespace BizHawk.Client.Common
 
 		private uint MM_R_U8(int addr)
 		{
-			return Global.Emulator.MainMemory.PeekByte(addr);
+			return Global.Emulator.MemoryDomains.MainMemory.PeekByte(addr);
 		}
 
 		private void MM_W_U8(int addr, uint v)
 		{
-			Global.Emulator.MainMemory.PokeByte(addr, (byte)v);
+			Global.Emulator.MemoryDomains.MainMemory.PokeByte(addr, (byte)v);
 		}
-
-		
 
 		#endregion
 
 		public string mainmemory_getname()
 		{
-			return Global.Emulator.MainMemory.Name;
+			return Global.Emulator.MemoryDomains.MainMemory.Name;
 		}
 
 		public uint mainmemory_readbyte(object lua_addr)
@@ -155,7 +153,7 @@ namespace BizHawk.Client.Common
 			for (int i = addr; i <= last_addr; i++)
 			{
 				string a = String.Format("{0:X2}", i);
-				byte v = Global.Emulator.MainMemory.PeekByte(i);
+				byte v = Global.Emulator.MemoryDomains.MainMemory.PeekByte(i);
 				string vs = String.Format("{0:X2}", (int)v);
 				table[a] = vs;
 			}
@@ -165,7 +163,7 @@ namespace BizHawk.Client.Common
 		public float mainmemory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = Global.Emulator.MainMemory.PeekDWord(addr, bigendian);
+			uint val = Global.Emulator.MemoryDomains.MainMemory.PeekDWord(addr, bigendian);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -186,7 +184,7 @@ namespace BizHawk.Client.Common
 				int a = LuaInt(address);
 				int v = LuaInt(memoryblock[address]);
 
-				Global.Emulator.MainMemory.PokeByte(a, (byte)v);
+				Global.Emulator.MemoryDomains.MainMemory.PokeByte(a, (byte)v);
 			}
 		}
 
@@ -196,7 +194,7 @@ namespace BizHawk.Client.Common
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MainMemory.PokeDWord(addr, v, bigendian);
+			Global.Emulator.MemoryDomains.MainMemory.PokeDWord(addr, v, bigendian);
 		}
 
 

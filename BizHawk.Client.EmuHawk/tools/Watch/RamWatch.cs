@@ -26,8 +26,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int defaultWidth;
 		private int defaultHeight;
-		private readonly WatchList Watches = new WatchList(Global.Emulator.MainMemory);
-		private string _sortedColumn = "";
+		private readonly WatchList Watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+		private string _sortedColumn = String.Empty;
 		private bool _sortReverse = false;
 
 		public bool UpdateBefore { get { return true; } }

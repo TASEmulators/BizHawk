@@ -46,9 +46,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			SetupMemoryDomains();
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-		IList<MemoryDomain> memoryDomains;
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+		MemoryDomainList memoryDomains;
 		const ushort RamSizeMask = 0x03FF;
 		void SetupMemoryDomains()
 		{
@@ -66,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
 			domains.Add(SystemBusDomain);
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 
 		public void FrameAdvance(bool render, bool renderSound)

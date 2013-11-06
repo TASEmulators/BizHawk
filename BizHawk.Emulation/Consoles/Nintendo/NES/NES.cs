@@ -464,7 +464,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			set { }
 		}
 
-		private IList<MemoryDomain> memoryDomains;
+		private MemoryDomainList memoryDomains;
 
 		private void SetupMemoryDomains()
 		{
@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			var RAM = new MemoryDomain("RAM", 0x800, MemoryDomain.Endian.Little,
 				addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
 			var SystemBus = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => ReadMemory((ushort)addr), (addr, value) => ApplySystemBusPoke(addr, value)); //WriteMemory((ushort)addr, value));
+				addr => ReadMemory((ushort)addr), (addr, value) => ApplySystemBusPoke(addr, value));
 			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
 				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
 			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, MemoryDomain.Endian.Little,
@@ -524,12 +524,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (board is ExROM)
 				domains.Add((board as ExROM).GetExRAM());
 
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 
 		public string SystemId { get { return "NES"; } }
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public string GameName { get { return game_name; } }
 

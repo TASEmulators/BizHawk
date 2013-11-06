@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				Domain = Global.Emulator.MainMemory;
+				Domain = Global.Emulator.MemoryDomains.MainMemory;
 				CheckMisAligned = false;
 				PreviousType = Watch.PreviousType.LastSearch;
 			}

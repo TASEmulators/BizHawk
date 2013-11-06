@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BizHawk.Emulation.Common
 {
@@ -100,4 +103,35 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
+	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>
+	{
+		private int _mainMemoryIndex = 0;
+
+		public MemoryDomainList(IList<MemoryDomain> domains) 
+			: base(domains)
+		{
+		}
+
+		public MemoryDomainList(IList<MemoryDomain> domains, int mainMemoryIndex)
+			: this(domains)
+		{
+			_mainMemoryIndex = mainMemoryIndex;
+		}
+
+		public MemoryDomain this[string name]
+		{
+			get
+			{
+				return this.FirstOrDefault(x => x.Name == name);
+			}
+		}
+
+		public MemoryDomain MainMemory
+		{
+			get
+			{
+				return this[_mainMemoryIndex];
+			}
+		}
+	}
 }

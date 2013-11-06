@@ -33,7 +33,7 @@ namespace BizHawk
 					                 (addr, value) => m6532.WriteMemory((ushort) addr, value)),
 					new MemoryDomain("System Bus", 8192, MemoryDomain.Endian.Little, addr => mapper.PeekMemory((ushort) addr), (addr, value) => { })
 				};
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 			CoreComm.CpuTraceAvailable = true;
 			this.rom = rom;
 			this.game = game;
@@ -106,9 +106,8 @@ namespace BizHawk
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		private readonly IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		private readonly MemoryDomainList memoryDomains;
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
 	}
 

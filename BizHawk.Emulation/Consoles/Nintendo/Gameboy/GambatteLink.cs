@@ -307,8 +307,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		void SetMemoryDomains()
 		{
@@ -319,7 +318,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			foreach (var md in R.MemoryDomains)
 				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
 
-			MemoryDomains = mm.AsReadOnly();
+			MemoryDomains = new MemoryDomainList(mm);
 		}
 
 		public void Dispose()

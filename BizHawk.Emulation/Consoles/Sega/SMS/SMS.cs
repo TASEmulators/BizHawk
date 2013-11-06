@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		readonly string[] validRegions = { "Export", "Japan" };
 
-		IList<MemoryDomain> memoryDomains;
+		MemoryDomainList memoryDomains;
 
 		void SetupMemoryDomains()
 		{
@@ -415,11 +415,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 			domains.Add(VRamDomain);
 			domains.Add(SaveRamDomain);
 			domains.Add(SystemBusDomain);
-			memoryDomains = domains.AsReadOnly();
+			memoryDomains = new MemoryDomainList(domains);
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}
