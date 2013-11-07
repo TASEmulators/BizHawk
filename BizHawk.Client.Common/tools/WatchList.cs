@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -236,7 +237,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return "";
+					return String.Empty;
 				}
 			}
 		}
@@ -245,7 +246,7 @@ namespace BizHawk.Client.Common
 		{
 			_watchList.Clear();
 			Changes = false;
-			_currentFilename = "";
+			_currentFilename = String.Empty;
 		}
 
 		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
