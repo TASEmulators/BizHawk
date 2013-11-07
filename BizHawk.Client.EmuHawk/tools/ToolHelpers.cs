@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static ToolStripMenuItem GenerateAutoLoadItem(RecentFiles recent)
 		{
-			var auto = new ToolStripMenuItem { Text = "&Auto-Load", Checked = recent.AutoLoad };
+			var auto = new ToolStripMenuItem { Text = "&Autoload", Checked = recent.AutoLoad };
 			auto.Click += (o, ev) => recent.ToggleAutoLoad();
 			return auto;
 		}
