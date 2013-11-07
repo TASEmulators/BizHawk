@@ -1808,21 +1808,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
-			copyToolStripMenuItem1.Visible = HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Any();
+			var iData = Clipboard.GetDataObject();
 
-			IDataObject iData = Clipboard.GetDataObject();
+			CopyContextItem.Visible = 
+				FreezeContextItem.Visible =
+				AddToRamWatchContextItem.Visible =
+				PokeContextItem.Visible = 
+				IncrementContextItem.Visible =
+				DecrementContextItem.Visible =
+				ContextSeparator2.Visible =
+				HighlightedAddress.HasValue || SecondaryHighlightedAddresses.Any();
 
-			pasteToolStripMenuItem1.Visible = iData != null && iData.GetDataPresent(DataFormats.Text);
+			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
+			PasteContextItem.Visible = (iData != null && iData.GetDataPresent(DataFormats.Text));
+
+			ContextSeparator1.Visible =
+				HighlightedAddress.HasValue ||
+				SecondaryHighlightedAddresses.Any() ||
+				(iData != null && iData.GetDataPresent(DataFormats.Text));
 
 			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
 			{
-				freezeToolStripMenuItem.Text = "Un&freeze";
-				freezeToolStripMenuItem.Image = Properties.Resources.Unfreeze;
+				FreezeContextItem.Text = "Un&freeze";
+				FreezeContextItem.Image = Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				freezeToolStripMenuItem.Text = "&Freeze";
-				freezeToolStripMenuItem.Image = Properties.Resources.Freeze;
+				FreezeContextItem.Text = "&Freeze";
+				FreezeContextItem.Image = Properties.Resources.Freeze;
 			}
 		}
 
