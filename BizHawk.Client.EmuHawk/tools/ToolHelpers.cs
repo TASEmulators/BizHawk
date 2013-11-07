@@ -210,7 +210,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.UpdateValues<RamWatch>();
 			GlobalWin.Tools.UpdateValues<RamSearch>();
 			GlobalWin.Tools.UpdateValues<HexEditor>();
-			GlobalWin.Tools.UpdateValues<Cheats>();
+
+			if (GlobalWin.Tools.Has<Cheats>())
+			{
+				GlobalWin.Tools.Cheats.UpdateDialog();
+			}
+
 			GlobalWin.MainForm.UpdateCheatStatus();
 		}
 

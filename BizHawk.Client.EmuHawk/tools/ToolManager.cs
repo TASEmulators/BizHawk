@@ -60,17 +60,20 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.FirstOrDefault(x => x is T);
 			if (existingTool != null)
 			{
-				return existingTool;
+				if (existingTool.IsDisposed)
+				{
+					Close<T>();
+					return CreateInstance<T>();
+				}
+				else
+				{
+					return existingTool;
+				}
 			}
 			else
 			{
-				var tool = Activator.CreateInstance(typeof(T));
-
-				//Add to the list and extract it, so it will be strongly typed as T
-				_tools.Add(tool as IToolForm);
-				return _tools.FirstOrDefault(x => x is T);
+				return CreateInstance<T>();
 			}
-			
 		}
 
 		public void UpdateBefore()
@@ -78,7 +81,10 @@ namespace BizHawk.Client.EmuHawk
 			var beforeList = _tools.Where(x => x.UpdateBefore);
 			foreach (var tool in beforeList)
 			{
-				tool.UpdateValues();
+				if (!tool.IsDisposed)
+				{
+					tool.UpdateValues();
+				}
 			}
 		}
 
@@ -87,7 +93,10 @@ namespace BizHawk.Client.EmuHawk
 			var afterList = _tools.Where(x => !x.UpdateBefore);
 			foreach (var tool in afterList)
 			{
-				tool.UpdateValues();
+				if (!tool.IsDisposed)
+				{
+					tool.UpdateValues();
+				}
 			}
 		}
 
@@ -96,9 +105,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateValues<T>() where T : IToolForm
 		{
+			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
+				
 				tool.UpdateValues();
 			}
 		}
@@ -114,6 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T"></typeparam>
 		public void Restart<T>() where T : IToolForm
 		{
+			CloseIfDisposed<T>();
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
@@ -178,6 +190,24 @@ namespace BizHawk.Client.EmuHawk
 			_tools.Clear();
 		}
 
+		private IToolForm CreateInstance<T>()
+		{
+			var tool = Activator.CreateInstance(typeof(T));
+
+			//Add to the list and extract it, so it will be strongly typed as T
+			_tools.Add(tool as IToolForm);
+			return _tools.FirstOrDefault(x => x is T);
+		}
+
+		private void CloseIfDisposed<T>() where T : IToolForm
+		{
+			var existingTool = _tools.FirstOrDefault(x => x is T);
+			if (existingTool != null && existingTool.IsDisposed)
+			{
+				Close<T>();
+			}
+		}
+
 		//Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
@@ -222,6 +252,29 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var newTool = new RamSearch();
+				_tools.Add(newTool);
+				return newTool;
+			}
+		}
+
+		public Cheats Cheats
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is Cheats);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as Cheats;
+					}
+				}
+
+				var newTool = new Cheats();
 				_tools.Add(newTool);
 				return newTool;
 			}
