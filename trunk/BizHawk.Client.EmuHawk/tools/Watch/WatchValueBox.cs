@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -35,8 +36,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = "0";
 						break;
 					case Watch.DisplayType.Hex:
-						string formatstr = "{0:X" + MaxLength.ToString() + "}";
-						Text = String.Format(formatstr, 0);
+						Text = ((int)0).ToHexString(MaxLength);
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
 					case Watch.DisplayType.FixedPoint_20_12:
@@ -279,8 +279,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							hexVal++;
 						}
-						string formatstr = "{0:X" + MaxLength.ToString() + "}";
-						Text = String.Format(formatstr, hexVal);
+						Text = hexVal.ToHexString(MaxLength);
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
 						double f12val = double.Parse(Text);
@@ -372,8 +371,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							hexVal--;
 						}
-						string formatstr = "{0:X" + MaxLength.ToString() + "}";
-						Text = String.Format(formatstr, hexVal);
+						Text = hexVal.ToHexString(MaxLength);
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
 						double f12val = double.Parse(Text);
@@ -529,9 +527,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
 					break;
 				case Watch.DisplayType.Hex:
-					uint hexVal = (uint)val;
-					string formatstr = "{0:X" + MaxLength.ToString() + "}";
-					Text = String.Format(formatstr, hexVal);
+					Text = val.ToHexString(MaxLength);
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 					Text = String.Format("{0:F5}", (val / 16.0));

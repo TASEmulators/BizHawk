@@ -35,12 +35,12 @@ namespace BizHawk.Client.EmuHawk
 		private RamSearchEngine Searches;
 		private RamSearchEngine.Settings Settings;
 
-		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
-		private int defaultHeight;
-		private string _sortedColumn = "";
+		private int _defaultWidth; //For saving the default size of the dialog, so the user can restore if desired
+		private int _defaultHeight;
+		private string _sortedColumn = String.Empty;
 		private bool _sortReverse = false;
-		private bool forcePreviewClear = false;
-		private bool autoSearch = false;
+		private bool _forcePreviewClear = false;
+		private bool _autoSearch = false;
 
 		private bool dropdown_dontfire = false; //Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
 
-			_sortedColumn = "";
+			_sortedColumn = String.Empty;
 			_sortReverse = false;
 
 			Settings = new RamSearchEngine.Settings();
@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 				Color nextColor = Color.White;
 
 				bool isCheat = Global.CheatList.IsActive(Settings.Domain, Searches[index].Address.Value);
-				bool isWeeded = Global.Config.RamSearchPreviewMode && !forcePreviewClear && Searches.Preview(Searches[index].Address.Value);
+				bool isWeeded = Global.Config.RamSearchPreviewMode && !_forcePreviewClear && Searches.Preview(Searches[index].Address.Value);
 
 				if (isCheat)
 				{
@@ -194,8 +194,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigSettings()
 		{
 			//Size and Positioning
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
+			_defaultWidth = Size.Width; //Save these first so that the user can restore to its original size
+			_defaultHeight = Size.Height;
 
 			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
 			{
@@ -222,12 +222,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Searches.Update();
 
-				if (autoSearch)
+				if (_autoSearch)
 				{
 					DoSearch();
 				}
 
-				forcePreviewClear = false;
+				_forcePreviewClear = false;
 				WatchListView.Refresh();
 			}
 		}
@@ -450,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.ItemCount = Searches.Count;
 			SetRemovedMessage(removed);
 			ToggleSearchDependentToolBarItems();
-			forcePreviewClear = true;
+			_forcePreviewClear = true;
 		}
 
 		private List<int> SelectedIndices
@@ -892,11 +892,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleAutoSearch()
 		{
-			autoSearch ^= true;
-			AutoSearchCheckBox.Checked = autoSearch;
+			_autoSearch ^= true;
+			AutoSearchCheckBox.Checked = _autoSearch;
 			DoSearchToolButton.Enabled =
 				SearchButton.Enabled =
-				!autoSearch;
+				!_autoSearch;
 		}
 
 		private void GoToSpecifiedAddress()
@@ -1169,7 +1169,7 @@ namespace BizHawk.Client.EmuHawk
 				SetTotal();
 				WatchListView.ItemCount = Searches.Count;
 				ToggleSearchDependentToolBarItems();
-				forcePreviewClear = true;
+				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
@@ -1182,7 +1182,7 @@ namespace BizHawk.Client.EmuHawk
 				SetTotal();
 				WatchListView.ItemCount = Searches.Count;
 				ToggleSearchDependentToolBarItems();
-				forcePreviewClear = true;
+				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
@@ -1261,7 +1261,7 @@ namespace BizHawk.Client.EmuHawk
 			UseUndoHistoryMenuItem.Checked = Searches.UndoEnabled;
 			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchAlwaysOnTop;
-			AutoSearchMenuItem.Checked = autoSearch;
+			AutoSearchMenuItem.Checked = _autoSearch;
 		}
 
 		private void PreviewModeMenuItem_Click(object sender, EventArgs e)
@@ -1306,7 +1306,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
 		{
-			Size = new Size(defaultWidth, defaultHeight);
+			Size = new Size(_defaultWidth, _defaultHeight);
 
 			Global.Config.RamSearchColumnIndexes = new Dictionary<string, int>
 				{
@@ -1426,7 +1426,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearPreviewContextMenuItem_Click(object sender, EventArgs e)
 		{
-			forcePreviewClear = true;
+			_forcePreviewClear = true;
 			WatchListView.Refresh();
 		}
 
