@@ -164,9 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					addrStr.Append("  ");
 				}
-				addrStr.Append(String.Format("{0:X" + NumDigits + "}", addr));
-				addrStr.Append('\n');
-
+				addrStr.AppendLine(addr.ToHexString(NumDigits));
 			}
 
 			return addrStr.ToString();

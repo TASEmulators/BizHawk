@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -429,7 +430,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((sbyte)val).ToString();
 				case DisplayType.Hex:
-					return String.Format("{0:X2}", val);
+					return val.ToHexString(2);
 				case DisplayType.Binary:
 					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
 			}
@@ -624,7 +625,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((short)val).ToString();
 				case DisplayType.Hex:
-					return String.Format("{0:X4}", val);
+					return val.ToHexString(4);
 				case DisplayType.FixedPoint_12_4:
 					return String.Format("{0:F4}", (val / 16.0));
 				case DisplayType.Binary:
@@ -820,7 +821,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((int)val).ToString();
 				case DisplayType.Hex:
-					return String.Format("{0:X8}", val);
+					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
 					return String.Format("{0:0.######}", (val / 4096.0));
 				case DisplayType.Float:

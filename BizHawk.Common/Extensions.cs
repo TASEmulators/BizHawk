@@ -68,6 +68,21 @@ namespace BizHawk.Common
 			return string.Format("{0:X" + numdigits + "}", n);
 		}
 
+		public static string ToHexString(this uint n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
+		public static string ToHexString(this byte n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
+		public static string ToHexString(this ushort n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
 		//http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 		where TKey : IComparable<TKey>
