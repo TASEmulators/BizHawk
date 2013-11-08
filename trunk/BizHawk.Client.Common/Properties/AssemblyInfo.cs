@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("BizHawk.Client.Common")]
 [assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("BizHawk")]
 [assembly: AssemblyProduct("BizHawk.Client.Common")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
