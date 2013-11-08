@@ -143,7 +143,7 @@
             this.label1.TabIndex = 107;
             this.label1.Text = "Find:";
             // 
-            // NewHotkeyWindow
+            // HotkeyConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -158,7 +158,8 @@
             this.Controls.Add(this.AutoTabCheckBox);
             this.Controls.Add(this.label38);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "NewHotkeyWindow";
+            this.Name = "HotkeyConfig";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Hotkeys";
             this.Load += new System.EventHandler(this.NewHotkeyWindow_Load);
             this.HotkeyTabControl.ResumeLayout(false);

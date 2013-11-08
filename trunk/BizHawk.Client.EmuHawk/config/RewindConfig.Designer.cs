@@ -69,14 +69,14 @@
             this.label6 = new System.Windows.Forms.Label();
             this.FullnessLabel = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.EstTimeLabel = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.AverageStoredStateSizeLabel = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.ApproxFramesLabel = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.RewindFramesUsedLabel = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.ApproxFramesLabel = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.AverageStoredStateSizeLabel = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.EstTimeLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -605,6 +605,60 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Current Statistics";
             // 
+            // EstTimeLabel
+            // 
+            this.EstTimeLabel.AutoSize = true;
+            this.EstTimeLabel.Location = new System.Drawing.Point(261, 48);
+            this.EstTimeLabel.Name = "EstTimeLabel";
+            this.EstTimeLabel.Size = new System.Drawing.Size(32, 13);
+            this.EstTimeLabel.TabIndex = 19;
+            this.EstTimeLabel.Text = "0 min";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(209, 48);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(54, 13);
+            this.label11.TabIndex = 18;
+            this.label11.Text = "Est. Time:";
+            // 
+            // AverageStoredStateSizeLabel
+            // 
+            this.AverageStoredStateSizeLabel.AutoSize = true;
+            this.AverageStoredStateSizeLabel.Location = new System.Drawing.Point(261, 16);
+            this.AverageStoredStateSizeLabel.Name = "AverageStoredStateSizeLabel";
+            this.AverageStoredStateSizeLabel.Size = new System.Drawing.Size(41, 13);
+            this.AverageStoredStateSizeLabel.TabIndex = 17;
+            this.AverageStoredStateSizeLabel.Text = "0 bytes";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(149, 16);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(114, 13);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Avg Stored State Size:";
+            // 
+            // ApproxFramesLabel
+            // 
+            this.ApproxFramesLabel.AutoSize = true;
+            this.ApproxFramesLabel.Location = new System.Drawing.Point(261, 32);
+            this.ApproxFramesLabel.Name = "ApproxFramesLabel";
+            this.ApproxFramesLabel.Size = new System.Drawing.Size(47, 13);
+            this.ApproxFramesLabel.TabIndex = 15;
+            this.ApproxFramesLabel.Text = "0 frames";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(197, 32);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(66, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Est. storage:";
+            // 
             // RewindFramesUsedLabel
             // 
             this.RewindFramesUsedLabel.AutoSize = true;
@@ -623,60 +677,6 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "Frames Stored:";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(197, 32);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(66, 13);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "Est. storage:";
-            // 
-            // ApproxFramesLabel
-            // 
-            this.ApproxFramesLabel.AutoSize = true;
-            this.ApproxFramesLabel.Location = new System.Drawing.Point(261, 32);
-            this.ApproxFramesLabel.Name = "ApproxFramesLabel";
-            this.ApproxFramesLabel.Size = new System.Drawing.Size(47, 13);
-            this.ApproxFramesLabel.TabIndex = 15;
-            this.ApproxFramesLabel.Text = "0 frames";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(149, 16);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(114, 13);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Avg Stored State Size:";
-            // 
-            // AverageStoredStateSizeLabel
-            // 
-            this.AverageStoredStateSizeLabel.AutoSize = true;
-            this.AverageStoredStateSizeLabel.Location = new System.Drawing.Point(261, 16);
-            this.AverageStoredStateSizeLabel.Name = "AverageStoredStateSizeLabel";
-            this.AverageStoredStateSizeLabel.Size = new System.Drawing.Size(41, 13);
-            this.AverageStoredStateSizeLabel.TabIndex = 17;
-            this.AverageStoredStateSizeLabel.Text = "0 bytes";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(209, 48);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(54, 13);
-            this.label11.TabIndex = 18;
-            this.label11.Text = "Est. Time:";
-            // 
-            // EstTimeLabel
-            // 
-            this.EstTimeLabel.AutoSize = true;
-            this.EstTimeLabel.Location = new System.Drawing.Point(261, 48);
-            this.EstTimeLabel.Name = "EstTimeLabel";
-            this.EstTimeLabel.Size = new System.Drawing.Size(32, 13);
-            this.EstTimeLabel.TabIndex = 19;
-            this.EstTimeLabel.Text = "0 min";
-            // 
             // RewindConfig
             // 
             this.AcceptButton = this.OK;
@@ -692,6 +692,7 @@
             this.Controls.Add(this.OK);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RewindConfig";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Rewind Settings";
             this.Load += new System.EventHandler(this.RewindConfig_Load);
             this.groupBox1.ResumeLayout(false);

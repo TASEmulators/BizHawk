@@ -534,6 +534,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "GBGPUView";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GPU Viewer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBGPUView_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBGPUView_FormClosed);

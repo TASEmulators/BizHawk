@@ -763,6 +763,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(580, 370);
             this.Name = "NESPPU";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NES PPU Viewer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESPPU_FormClosed);
             this.Load += new System.EventHandler(this.NESPPU_Load);

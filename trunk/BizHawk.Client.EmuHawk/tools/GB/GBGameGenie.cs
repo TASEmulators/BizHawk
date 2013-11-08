@@ -454,6 +454,11 @@ namespace BizHawk.Client.EmuHawk
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.GBGGSaveWindowPosition;
 		}
 
+        private void GBGameGenie_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
 
 	}
 }

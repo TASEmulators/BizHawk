@@ -285,6 +285,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PCEBGViewer";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Background Viewer";
             this.Load += new System.EventHandler(this.PCEBGViewer_Load);
             this.menuStrip1.ResumeLayout(false);

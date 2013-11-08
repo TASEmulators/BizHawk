@@ -469,6 +469,7 @@
             this.MinimumSize = new System.Drawing.Size(687, 588);
             this.Name = "NESNameTableViewer";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NES Nametable Viewer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
             this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
