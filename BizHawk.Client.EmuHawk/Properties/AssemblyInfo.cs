@@ -5,9 +5,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BizHawk.MultiClient")]
+[assembly: AssemblyTitle("BizHawk.EmuHawk")]
 [assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
-[assembly: AssemblyCompany("BizHawk")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("BizHawk.EmuHawk")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

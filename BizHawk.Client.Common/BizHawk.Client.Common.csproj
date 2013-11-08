@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
     <Compile Include="7z\ArchiveExtractCallback.cs" />
     <Compile Include="7z\ArchiveOpenCallback.cs" />
@@ -129,6 +132,7 @@
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\svnrev.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="RomGame.cs" />
@@ -161,6 +165,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
