@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BizHawk.EmuHawk")]
+[assembly: AssemblyTitle("BizHawk.Client.EmuHawk")]
 [assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BizHawk.EmuHawk")]
+[assembly: AssemblyCompany("BizHawk")]
+[assembly: AssemblyProduct("BizHawk.Client.EmuHawk")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

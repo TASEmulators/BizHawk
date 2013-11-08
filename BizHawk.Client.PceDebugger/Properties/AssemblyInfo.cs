@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BizHawk.PCE_Debugger")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("BizHawk.Client.PceDebugger")]
+[assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Measurement Incorporated")]
-[assembly: AssemblyProduct("BizHawk.PCE_Debugger")]
-[assembly: AssemblyCopyright("Copyright © Measurement Incorporated 2013")]
+[assembly: AssemblyCompany("BizHawk")]
+[assembly: AssemblyProduct("BizHawk.Client.PceDebugger")]
+[assembly: AssemblyCopyright("Copyright © 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
