@@ -8,8 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public interface INumberBox
 	{
-		int ToRawInt();
-		void SetFromRawInt(int rawint);
+		int? ToRawInt();
+		void SetFromRawInt(int? rawint);
 		bool Nullable { get; }
 	}
 
@@ -124,11 +124,18 @@ namespace BizHawk.Client.EmuHawk
 			base.OnTextChanged(e);
 		}
 
-		public int ToRawInt()
+		public int? ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				return 0;
+				if (Nullable)
+				{
+					return null;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			else
 			{
@@ -136,9 +143,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetFromRawInt(int val)
+		public void SetFromRawInt(int? val)
 		{
-			Text = String.Format(_addressFormatStr, val);
+			if (val.HasValue)
+			{
+				Text = String.Empty;
+			}
+			else
+			{
+				Text = String.Format(_addressFormatStr, val);
+			}
 		}
 	}
 
@@ -227,11 +241,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int ToRawInt()
+		public int? ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				return 0;
+				if (Nullable)
+				{
+					return null;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			else
 			{
@@ -239,9 +260,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetFromRawInt(int val)
+		public void SetFromRawInt(int? val)
 		{
-			Text = val.ToString();
+			Text = val.HasValue ? val.ToString() : String.Empty;
 		}
 	}
 }

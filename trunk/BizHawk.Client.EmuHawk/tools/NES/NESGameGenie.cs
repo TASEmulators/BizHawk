@@ -151,22 +151,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Watch watch = Watch.GenerateWatch(
 					Global.Emulator.MemoryDomains[1], /*System Bus*/
-					AddressBox.ToRawInt(),
+					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
 					GameGenieCode.Text,
 					false);
 
-				int? compare = null;
-				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
-				{
-					compare = CompareBox.ToRawInt();
-				}
-
 				Global.CheatList.Add(new Cheat(
 					watch,
-					ValueBox.ToRawInt(),
-					compare
+					ValueBox.ToRawInt().Value,
+					CompareBox.ToRawInt()
 				));
 			}
 		}

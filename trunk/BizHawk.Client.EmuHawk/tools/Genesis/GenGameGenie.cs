@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!String.IsNullOrWhiteSpace(ValueBox.Text))
 				{
-					VALUE = ValueBox.ToRawInt();
+					VALUE = ValueBox.ToRawInt().Value;
 				}
 
 				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
