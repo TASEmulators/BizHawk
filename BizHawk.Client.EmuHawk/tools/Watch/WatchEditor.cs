@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case Mode.New:
 					var domain = Global.Emulator.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = AddressBox.ToRawInt();
+					var address = AddressBox.ToRawInt().Value;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigendian = BigEndianCheckBox.Checked;
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 					string tempNotes = _watchList[i].Notes;
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
-						_watchList.Count == 1 ? AddressBox.ToRawInt() : _watchList[i].Address.Value,
+						_watchList.Count == 1 ? AddressBox.ToRawInt().Value : _watchList[i].Address.Value,
 						size,
 						_watchList[i].Type,
 						_watchList[i].Notes,

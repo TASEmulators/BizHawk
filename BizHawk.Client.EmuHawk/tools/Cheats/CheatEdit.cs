@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Watch watch = Watch.GenerateWatch(
 					Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
-					AddressBox.ToRawInt(),
+					AddressBox.ToRawInt().Value,
 					GetCurrentSize(),
 					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
 					NameBox.Text,
@@ -281,8 +281,8 @@ namespace BizHawk.Client.EmuHawk
 
 				return new Cheat(
 					watch,
-					ValueBox.ToRawInt(),
-					!String.IsNullOrWhiteSpace(CompareBox.Text) ? CompareBox.ToRawInt() : (int?)null
+					ValueBox.ToRawInt().Value,
+					 CompareBox.ToRawInt()
 				);
 			}
 		}

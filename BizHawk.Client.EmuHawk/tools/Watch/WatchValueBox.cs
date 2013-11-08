@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return _type; }
 			set
 			{
-				int val = ToRawInt();
+				int? val = ToRawInt();
 				_type = value;
 				SetMaxLength();
 				SetFromRawInt(val);
@@ -227,14 +227,19 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			string text = String.IsNullOrWhiteSpace(Text) ? "0" : Text;
 			if (e.KeyCode == Keys.Up)
 			{
 				switch (_type)
 				{
 					default:
 					case Watch.DisplayType.Signed:
-						int val = ToRawInt();
-						if (val == MaxSignedInt)
+						int? val = ToRawInt() ?? 0;
+						if (!val.HasValue)
+						{
+							Text = String.Empty;
+						}
+						else if (val == MaxSignedInt)
 						{
 							val = 0;
 						}
@@ -245,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = val.ToString();
 						break;
 					case Watch.DisplayType.Unsigned:
-						uint uval = (uint)ToRawInt();
+						uint uval = (uint)(ToRawInt() ?? 0);
 						if (uval == MaxUnsignedInt)
 						{
 							uval = 0;
@@ -257,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = uval.ToString();
 						break;
 					case Watch.DisplayType.Binary:
-						uint bval = (uint)ToRawInt();
+						uint bval = (uint)(ToRawInt() ?? 0);
 						if (bval == MaxUnsignedInt)
 						{
 							bval = 0;
@@ -270,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
 						break;
 					case Watch.DisplayType.Hex:
-						uint hexVal = (uint)ToRawInt();
+						uint hexVal = (uint)(ToRawInt() ?? 0);
 						if (hexVal == MaxUnsignedInt)
 						{
 							hexVal = 0;
@@ -282,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = hexVal.ToHexString(MaxLength);
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
-						double f12val = double.Parse(Text);
+						double f12val = double.Parse(text);
 						if (f12val > Max12_4 - _12_4_Unit)
 						{
 							f12val = 0;
@@ -294,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = f12val.ToString();
 						break;
 					case Watch.DisplayType.FixedPoint_20_12:
-						double f24val = double.Parse(Text);
+						double f24val = double.Parse(text);
 						if (f24val >= Max20_12 - _20_12_Unit)
 						{
 							f24val = 0;
@@ -306,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = f24val.ToString();
 						break;
 					case Watch.DisplayType.Float:
-						double dval = double.Parse(Text);
+						double dval = double.Parse(text);
 						if (dval > double.MaxValue - 1)
 						{
 							dval = 0;
@@ -325,8 +330,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case Watch.DisplayType.Signed:
-						int val = ToRawInt();
-						if (val == 0)
+						int? val = ToRawInt();
+						if (!val.HasValue)
+						{
+							Text = String.Empty;
+						}
+						else if (val == 0)
 						{
 							val = MaxSignedInt;
 						}
@@ -362,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
 						break;
 					case Watch.DisplayType.Hex:
-						uint hexVal = (uint)ToRawInt();
+						uint hexVal = (uint)(ToRawInt() ?? 0);
 						if (hexVal == 0)
 						{
 							hexVal = MaxUnsignedInt;
@@ -374,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = hexVal.ToHexString(MaxLength);
 						break;
 					case Watch.DisplayType.FixedPoint_12_4:
-						double f12val = double.Parse(Text);
+						double f12val = double.Parse(text);
 						if (f12val < 0 + _12_4_Unit)
 						{
 							f12val = Max12_4;
@@ -386,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = f12val.ToString();
 						break;
 					case Watch.DisplayType.FixedPoint_20_12:
-						double f24val = double.Parse(Text);
+						double f24val = double.Parse(text);
 						if (f24val < 0 + _20_12_Unit)
 						{
 							f24val = Max20_12;
@@ -398,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = f24val.ToString();
 						break;
 					case Watch.DisplayType.Float:
-						double dval = double.Parse(Text);
+						double dval = double.Parse(text);
 						if (dval > double.MaxValue - 1)
 						{
 							dval = 0;
@@ -478,11 +487,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int ToRawInt()
+		public int? ToRawInt()
 		{
 			if (String.IsNullOrWhiteSpace(Text))
 			{
-				return 0;
+				if (Nullable)
+				{
+					return null;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			else
 			{
@@ -509,37 +525,44 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetFromRawInt(int val)
+		public void SetFromRawInt(int? val)
 		{
-			switch (_type)
+			if (val.HasValue)
 			{
-				default:
-				case Watch.DisplayType.Signed:
-					Text = val.ToString();
-					break;
-				case Watch.DisplayType.Unsigned:
-					uint uval = (uint)val;
-					Text = uval.ToString();
-					break;
-				case Watch.DisplayType.Binary:
-					uint bval = (uint)val;
-					int numBits = ((int)ByteSize) * 8;
-					Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
-					break;
-				case Watch.DisplayType.Hex:
-					Text = val.ToHexString(MaxLength);
-					break;
-				case Watch.DisplayType.FixedPoint_12_4:
-					Text = String.Format("{0:F5}", (val / 16.0));
-					break;
-				case Watch.DisplayType.FixedPoint_20_12:
-					Text = String.Format("{0:F5}", (val / 4096.0));
-					break;
-				case Watch.DisplayType.Float:
-					byte[] bytes = BitConverter.GetBytes(val);
-					float _float = BitConverter.ToSingle(bytes, 0);
-					Text = String.Format("{0:F6}", _float);
-					break;
+				switch (_type)
+				{
+					default:
+					case Watch.DisplayType.Signed:
+						Text = val.ToString();
+						break;
+					case Watch.DisplayType.Unsigned:
+						uint uval = (uint)val.Value;
+						Text = uval.ToString();
+						break;
+					case Watch.DisplayType.Binary:
+						uint bval = (uint)val.Value;
+						int numBits = ((int)ByteSize) * 8;
+						Text = Convert.ToString(bval, 2).PadLeft(numBits, '0');
+						break;
+					case Watch.DisplayType.Hex:
+						Text = val.Value.ToHexString(MaxLength);
+						break;
+					case Watch.DisplayType.FixedPoint_12_4:
+						Text = String.Format("{0:F5}", (val.Value / 16.0));
+						break;
+					case Watch.DisplayType.FixedPoint_20_12:
+						Text = String.Format("{0:F5}", (val.Value / 4096.0));
+						break;
+					case Watch.DisplayType.Float:
+						byte[] bytes = BitConverter.GetBytes(val.Value);
+						float _float = BitConverter.ToSingle(bytes, 0);
+						Text = String.Format("{0:F6}", _float);
+						break;
+				}
+			}
+			else
+			{
+				Text = String.Empty;
 			}
 		}
 	}
