@@ -495,6 +495,7 @@
             this.MinimumSize = new System.Drawing.Size(312, 295);
             this.Name = "NESGameGenie";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NES Game Genie Encoder / Decoder";
             this.Load += new System.EventHandler(this.NESGameGenie_Load);
             this.GameGenieCodeBox.ResumeLayout(false);

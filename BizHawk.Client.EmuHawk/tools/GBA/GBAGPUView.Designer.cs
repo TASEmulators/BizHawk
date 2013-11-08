@@ -181,6 +181,7 @@
             this.Name = "GBAGPUView";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GBA GPU Viewer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBAGPUView_FormClosed);
             this.Load += new System.EventHandler(this.GBAGPUView_Load);
