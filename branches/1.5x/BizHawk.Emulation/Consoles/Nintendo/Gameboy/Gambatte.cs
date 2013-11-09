@@ -194,9 +194,14 @@ namespace BizHawk.Emulation.Consoles.GB
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			if (rendersound)
+			{
 				soundbuffcontains = (int)nsamp;
+				ProcessSound();
+			}
 			else
+			{
 				soundbuffcontains = 0;
+			}
 
 			FrameAdvancePost();
 		}
@@ -777,7 +782,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		#region ISoundProvider
 
 		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return dcfilter; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 
@@ -790,21 +795,58 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		int soundbuffcontains = 0;
 
-		Sound.Utilities.SpeexResampler resampler;
-		Sound.Utilities.DCFilter dcfilter;
+		int soundoutbuffcontains = 0;
+
+		short[] soundoutbuff = new short[2048];
+
+		int latchaudio = 0;
+
+		//Sound.Utilities.SpeexResampler resampler;
+		//Sound.Utilities.DCFilter dcfilter;
+
+		Sound.Utilities.BlipBuffer blip;
+
+		void ProcessSound()
+		{
+			for (uint i = 0; i < soundbuffcontains; i++)
+			{
+				int curr = soundbuff[i * 2];
+
+				if (curr != latchaudio)
+				{
+					int diff = latchaudio - curr;
+					latchaudio = curr;
+					blip.AddDelta(i, diff);
+				}
+			}
+			blip.EndFrame((uint)soundbuffcontains);
+
+			soundoutbuffcontains = blip.SamplesAvailable();
+
+			blip.ReadSamples(soundoutbuff, soundoutbuffcontains, true);
+			for (int i = 0; i < soundoutbuffcontains * 2; i += 2)
+				soundoutbuff[i + 1] = soundoutbuff[i];
+
+			soundbuffcontains = 0;
+
+		}
 
 		void InitSound()
 		{
-			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
+			//resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
 			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
 			// lowpass filtering on an actual GB was probably pretty aggressive?
-			dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
+			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
+			blip = new Sound.Utilities.BlipBuffer(1024);
+			blip.SetRates(2097152, 44100);
 		}
 
 		void DisposeSound()
 		{
-			resampler.Dispose();
-			resampler = null;
+			blip.Dispose();
+			blip = null;
+			//resampler.Dispose();
+			//resampler = null;
 		}
 
 		public void DiscardSamples()
@@ -814,8 +856,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			samples = soundbuff;
-			nsamp = soundbuffcontains;
+			samples = soundoutbuff;
+			nsamp = soundoutbuffcontains;
 		}
 		#endregion
 
