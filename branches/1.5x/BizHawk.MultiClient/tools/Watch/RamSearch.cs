@@ -1121,6 +1121,10 @@ namespace BizHawk.MultiClient
 			if (Searches.CanUndo)
 			{
 				Searches.Undo();
+				SetTotal();
+				WatchListView.ItemCount = Searches.Count;
+				ToggleSearchDependentToolBarItems();
+				forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
@@ -1130,6 +1134,10 @@ namespace BizHawk.MultiClient
 			if (Searches.CanRedo)
 			{
 				Searches.Redo();
+				SetTotal();
+				WatchListView.ItemCount = Searches.Count;
+				ToggleSearchDependentToolBarItems();
+				forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
 			}
 		}
