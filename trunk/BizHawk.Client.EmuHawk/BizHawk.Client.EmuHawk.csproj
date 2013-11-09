@@ -197,6 +197,23 @@
     <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
       <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GB\BmpView.cs" />
+    <Compile Include="config\GB\CGBColorChooserForm.cs" />
+    <Compile Include="config\GB\CGBColorChooserForm.Designer.cs">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\ColorChooserForm.cs" />
+    <Compile Include="config\GB\ColorChooserForm.Designer.cs">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\DualGBFileSelector.cs" />
+    <Compile Include="config\GB\DualGBFileSelector.Designer.cs">
+      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\DualGBXMLCreator.cs" />
+    <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +235,18 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\N64\N64VideoPluginconfig.cs" />
+    <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NES\NESGraphicsConfig.cs" />
+    <Compile Include="config\NES\NESGraphicsConfig.Designer.cs">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NES\NESSoundConfig.cs" />
+    <Compile Include="config\NES\NESSoundConfig.Designer.cs">
+      <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,11 +259,27 @@
     <Compile Include="config\PathInfo.Designer.cs">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PCE\PCEGraphicsConfig.cs" />
+    <Compile Include="config\PCE\PCEGraphicsConfig.Designer.cs">
+      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\RewindConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="config\RewindConfig.Designer.cs">
       <DependentUpon>RewindConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\Saturn\SaturnPrefs.cs" />
+    <Compile Include="config\Saturn\SaturnPrefs.Designer.cs">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\SMS\SMSGraphicsConfig.cs" />
+    <Compile Include="config\SMS\SMSGraphicsConfig.Designer.cs">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\SNES\SNESOptions.cs" />
+    <Compile Include="config\SNES\SNESOptions.Designer.cs">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
@@ -378,33 +423,6 @@
     <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\GB\BmpView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\GB\CGBColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\CGBColorChooserForm.Designer.cs">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\ColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\ColorChooserForm.Designer.cs">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\DualGBFileSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\GB\DualGBFileSelector.Designer.cs">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.Designer.cs">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\GB\GBGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -497,12 +515,6 @@
     <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\N64\N64VideoPluginconfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\N64\N64VideoPluginconfig.Designer.cs">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -518,12 +530,6 @@
     <Compile Include="tools\NES\NESGameGenie.Designer.cs">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\NES\NESGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESGraphicsConfig.Designer.cs">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\NES\NESNameTableViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -535,12 +541,6 @@
     </Compile>
     <Compile Include="tools\NES\NESPPU.Designer.cs">
       <DependentUpon>NESPPU.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\NESSoundConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESSoundConfig.Designer.cs">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\NES\PaletteViewer.cs">
       <SubType>Component</SubType>
@@ -560,24 +560,6 @@
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\PCE\PCEGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCEGraphicsConfig.Designer.cs">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Saturn\SaturnPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Saturn\SaturnPrefs.Designer.cs">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\SMS\SMSGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\SMS\SMSGraphicsConfig.Designer.cs">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\SNES\SNESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -592,12 +574,6 @@
     </Compile>
     <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\SNES\SNESOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\SNES\SNESOptions.Designer.cs">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\StateVisualizer.cs" />
     <Compile Include="tools\TI83\TI83KeyPad.cs">
@@ -768,11 +744,32 @@
     <EmbeddedResource Include="config\FirmwaresConfigInfo.resx">
       <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\CGBColorChooserForm.resx">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\ColorChooserForm.resx">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
+      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\DualGBXMLCreator.resx">
+      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NESGraphicsConfig.resx">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NESSoundConfig.resx">
+      <DependentUpon>NESSoundConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathConfig.resx">
       <DependentUpon>PathConfig.cs</DependentUpon>
@@ -780,8 +777,20 @@
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\PCE\PCEGraphicsConfig.resx">
+      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\RewindConfig.resx">
       <DependentUpon>RewindConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\Saturn\SaturnPrefs.resx">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\SMS\SMSGraphicsConfig.resx">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\SNES\SNESOptions.resx">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
@@ -828,18 +837,6 @@
     <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\CGBColorChooserForm.resx">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\ColorChooserForm.resx">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\DualGBFileSelector.resx">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\DualGBXMLCreator.resx">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
       <DependentUpon>GBGameGenie.cs</DependentUpon>
     </EmbeddedResource>
@@ -879,17 +876,11 @@
     <EmbeddedResource Include="tools\Lua\LuaWriterColorConfig.resx">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\N64\N64VideoPluginconfig.resx">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESGraphicsConfig.resx">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESNameTableViewer.resx">
       <DependentUpon>NESNameTableViewer.cs</DependentUpon>
@@ -897,32 +888,17 @@
     <EmbeddedResource Include="tools\NES\NESPPU.resx">
       <DependentUpon>NESPPU.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESSoundConfig.resx">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\PatternViewer.resx">
       <DependentUpon>PatternViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCEGraphicsConfig.resx">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Saturn\SaturnPrefs.resx">
-      <DependentUpon>SaturnPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\SMS\SMSGraphicsConfig.resx">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGameGenie.resx">
       <DependentUpon>SNESGameGenie.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\SNES\SNESOptions.resx">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
