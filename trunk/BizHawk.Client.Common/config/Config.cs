@@ -10,9 +10,26 @@ namespace BizHawk.Client.Common
 {
 	public class Config
 	{
+		public static string ControlDefaultPath
+		{
+			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
+		}
+
+		public void ConfigCheckAllControlDefaults()
+		{
+			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
+			{
+				ControlDefaults cd = new ControlDefaults();
+				cd = ConfigService.Load(ControlDefaultPath, cd);
+				AllTrollers = cd.AllTrollers;
+				AllTrollersAutoFire = cd.AllTrollersAutoFire;
+				AllTrollersAnalog = cd.AllTrollersAnalog;
+			}
+		}
+
 		public Config()
 		{
-			/*ControllerConfig.ConfigCheckAllControlDefaults(this); TODO*/
+			ConfigCheckAllControlDefaults();
 		}
 
 		public void ResolveDefaults()
@@ -650,6 +667,13 @@ namespace BizHawk.Client.Common
 	}
 
 	#region Sub-classes TODO - it is about time to port these to separate files
+
+	public class ControlDefaults
+	{
+		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>>();
+	}
 
 	public class PathEntryCollection : IEnumerable<PathEntry>
 	{
