@@ -30,13 +30,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToolTips()
 		{
-			int x = 0;
-			x++;
-			int y = x;
-			y++;
-
-			var mappings = Global.Config.AllTrollers["TI83 Controller"];
 			//Set button hotkey mapping into tooltips
+			var mappings = Global.Config.AllTrollers["TI83 Controller"];
 			toolTip1.SetToolTip(ZERO, mappings["0"]);
 			toolTip1.SetToolTip(ONE, mappings["1"]);
 			toolTip1.SetToolTip(TWO, mappings["2"]);
