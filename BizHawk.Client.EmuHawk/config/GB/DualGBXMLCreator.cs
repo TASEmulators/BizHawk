@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace BizHawk.Client.EmuHawk.GBtools
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class DualGBXMLCreator : Form
 	{
