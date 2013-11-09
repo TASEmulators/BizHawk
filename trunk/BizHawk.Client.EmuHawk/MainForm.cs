@@ -3350,7 +3350,7 @@ namespace BizHawk.Client.EmuHawk
 										{
 											using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
 											{
-												int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+												int[] colors = ColorChooserForm.LoadPalFile(f);
 												if (colors != null)
 													gb.ChangeDMGColors(colors);
 											}

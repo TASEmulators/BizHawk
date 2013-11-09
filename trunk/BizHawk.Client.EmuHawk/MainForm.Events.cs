@@ -1195,7 +1195,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CreateDualGbXmlMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Sound.StopSound();
-			using (var dlg = new GBtools.DualGBXMLCreator())
+			using (var dlg = new DualGBXMLCreator())
 			{
 				dlg.ShowDialog(this);
 			}
@@ -1547,14 +1547,14 @@ namespace BizHawk.Client.EmuHawk
 				var gb = Global.Emulator as Gameboy;
 				if (gb.IsCGBMode())
 				{
-					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
+					if (CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
 					{
 						gb.SetCGBColors(Global.Config.CGBColors);
 					}
 				}
 				else
 				{
-					GBtools.ColorChooserForm.DoColorChooserFormDialog(gb.ChangeDMGColors, this);
+					ColorChooserForm.DoColorChooserFormDialog(gb.ChangeDMGColors, this);
 				}
 			}
 		}

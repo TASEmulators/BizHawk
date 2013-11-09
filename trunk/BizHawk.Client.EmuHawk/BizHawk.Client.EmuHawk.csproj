@@ -197,20 +197,30 @@
     <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
       <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\BmpView.cs" />
-    <Compile Include="config\GB\CGBColorChooserForm.cs" />
+    <Compile Include="config\GB\BmpView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\GB\CGBColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\GB\CGBColorChooserForm.Designer.cs">
       <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\ColorChooserForm.cs" />
+    <Compile Include="config\GB\ColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\GB\ColorChooserForm.Designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\DualGBFileSelector.cs" />
+    <Compile Include="config\GB\DualGBFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="config\GB\DualGBFileSelector.Designer.cs">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\DualGBXMLCreator.cs" />
+    <Compile Include="config\GB\DualGBXMLCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </Compile>
@@ -235,15 +245,21 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\N64\N64VideoPluginconfig.cs" />
+    <Compile Include="config\N64\N64VideoPluginconfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\NES\NESGraphicsConfig.cs" />
+    <Compile Include="config\NES\NESGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\NES\NESGraphicsConfig.Designer.cs">
       <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\NES\NESSoundConfig.cs" />
+    <Compile Include="config\NES\NESSoundConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\NES\NESSoundConfig.Designer.cs">
       <DependentUpon>NESSoundConfig.cs</DependentUpon>
     </Compile>
@@ -259,7 +275,9 @@
     <Compile Include="config\PathInfo.Designer.cs">
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PCE\PCEGraphicsConfig.cs" />
+    <Compile Include="config\PCE\PCEGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\PCE\PCEGraphicsConfig.Designer.cs">
       <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
     </Compile>
@@ -269,15 +287,21 @@
     <Compile Include="config\RewindConfig.Designer.cs">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\Saturn\SaturnPrefs.cs" />
+    <Compile Include="config\Saturn\SaturnPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\Saturn\SaturnPrefs.Designer.cs">
       <DependentUpon>SaturnPrefs.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\SMS\SMSGraphicsConfig.cs" />
+    <Compile Include="config\SMS\SMSGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\SMS\SMSGraphicsConfig.Designer.cs">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\SNES\SNESOptions.cs" />
+    <Compile Include="config\SNES\SNESOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\SNES\SNESOptions.Designer.cs">
       <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.GBtools
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class DualGBFileSelector
 	{

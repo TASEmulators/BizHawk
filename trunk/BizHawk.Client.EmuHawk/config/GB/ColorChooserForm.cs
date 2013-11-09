@@ -6,7 +6,7 @@ using System.IO;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk.GBtools
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class ColorChooserForm : Form
 	{
