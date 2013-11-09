@@ -30,61 +30,63 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetToolTips()
 		{
+			int x = 0;
+			x++;
+			int y = x;
+			y++;
+
+			var mappings = Global.Config.AllTrollers["TI83 Controller"];
 			//Set button hotkey mapping into tooltips
-			// TODO: REFIX this to work with the new controller system
-			// it isn't horribly difficult, but has to be done.
-			/*
-			toolTip1.SetToolTip(ZERO, Global.Config.TI83Controller[0]._0);
-			toolTip1.SetToolTip(ONE, Global.Config.TI83Controller[0]._1);
-			toolTip1.SetToolTip(TWO, Global.Config.TI83Controller[0]._2);
-			toolTip1.SetToolTip(THREE, Global.Config.TI83Controller[0]._3);
-			toolTip1.SetToolTip(FOUR, Global.Config.TI83Controller[0]._4);
-			toolTip1.SetToolTip(FIVE, Global.Config.TI83Controller[0]._5);
-			toolTip1.SetToolTip(SIX, Global.Config.TI83Controller[0]._6);
-			toolTip1.SetToolTip(SEVEN, Global.Config.TI83Controller[0]._7);
-			toolTip1.SetToolTip(EIGHT, Global.Config.TI83Controller[0]._8);
-			toolTip1.SetToolTip(NINE, Global.Config.TI83Controller[0]._9);
-			toolTip1.SetToolTip(PERIOD, Global.Config.TI83Controller[0].DOT);
-			toolTip1.SetToolTip(ON, Global.Config.TI83Controller[0].ON);
-			toolTip1.SetToolTip(ENTER, Global.Config.TI83Controller[0].ENTER);
-			toolTip1.SetToolTip(UP, Global.Config.TI83Controller[0].UP);
-			toolTip1.SetToolTip(DOWN, Global.Config.TI83Controller[0].DOWN);
-			toolTip1.SetToolTip(LEFT, Global.Config.TI83Controller[0].LEFT);
-			toolTip1.SetToolTip(RIGHT, Global.Config.TI83Controller[0].RIGHT);
-			toolTip1.SetToolTip(PLUS, Global.Config.TI83Controller[0].PLUS);
-			toolTip1.SetToolTip(MINUS, Global.Config.TI83Controller[0].MINUS);
-			toolTip1.SetToolTip(MULTIPLY, Global.Config.TI83Controller[0].MULTIPLY);
-			toolTip1.SetToolTip(DIVIDE, Global.Config.TI83Controller[0].DIVIDE);
-			toolTip1.SetToolTip(CLEAR, Global.Config.TI83Controller[0].CLEAR);
-			toolTip1.SetToolTip(EXP, Global.Config.TI83Controller[0].EXP);
-			toolTip1.SetToolTip(DASH, Global.Config.TI83Controller[0].DASH);
-			toolTip1.SetToolTip(PARACLOSE, Global.Config.TI83Controller[0].PARACLOSE);
-			toolTip1.SetToolTip(PARAOPEN, Global.Config.TI83Controller[0].PARAOPEN);
-			toolTip1.SetToolTip(TAN, Global.Config.TI83Controller[0].TAN);
-			toolTip1.SetToolTip(VARS, Global.Config.TI83Controller[0].VARS);
-			toolTip1.SetToolTip(COS, Global.Config.TI83Controller[0].COS);
-			toolTip1.SetToolTip(PRGM, Global.Config.TI83Controller[0].PRGM);
-			toolTip1.SetToolTip(STAT, Global.Config.TI83Controller[0].STAT);
-			toolTip1.SetToolTip(MATRIX, Global.Config.TI83Controller[0].MATRIX);
-			toolTip1.SetToolTip(XT, Global.Config.TI83Controller[0].X);
-			toolTip1.SetToolTip(STO, Global.Config.TI83Controller[0].STO);
-			toolTip1.SetToolTip(LN, Global.Config.TI83Controller[0].LN);
-			toolTip1.SetToolTip(LOG, Global.Config.TI83Controller[0].LOG);
-			toolTip1.SetToolTip(SQUARED, Global.Config.TI83Controller[0].SQUARED);
-			toolTip1.SetToolTip(NEG1, Global.Config.TI83Controller[0].NEG1);
-			toolTip1.SetToolTip(MATH, Global.Config.TI83Controller[0].MATH);
-			toolTip1.SetToolTip(ALPHA, Global.Config.TI83Controller[0].ALPHA);
-			toolTip1.SetToolTip(GRAPH, Global.Config.TI83Controller[0].GRAPH);
-			toolTip1.SetToolTip(TRACE, Global.Config.TI83Controller[0].TRACE);
-			toolTip1.SetToolTip(ZOOM, Global.Config.TI83Controller[0].ZOOM);
-			toolTip1.SetToolTip(WINDOW, Global.Config.TI83Controller[0].WINDOW);
-			toolTip1.SetToolTip(YEQUAL, Global.Config.TI83Controller[0].Y);
-			toolTip1.SetToolTip(SECOND, Global.Config.TI83Controller[0].SECOND);
-			toolTip1.SetToolTip(MODE, Global.Config.TI83Controller[0].MODE);
-			toolTip1.SetToolTip(DEL, Global.Config.TI83Controller[0].DEL);
-			toolTip1.SetToolTip(COMMA, Global.Config.TI83Controller[0].COMMA);
-			toolTip1.SetToolTip(SIN, Global.Config.TI83Controller[0].SIN);
-			*/
+			toolTip1.SetToolTip(ZERO, mappings["0"]);
+			toolTip1.SetToolTip(ONE, mappings["1"]);
+			toolTip1.SetToolTip(TWO, mappings["2"]);
+			toolTip1.SetToolTip(THREE, mappings["3"]);
+			toolTip1.SetToolTip(FOUR, mappings["4"]);
+			toolTip1.SetToolTip(FIVE, mappings["5"]);
+			toolTip1.SetToolTip(SIX, mappings["6"]);
+			toolTip1.SetToolTip(SEVEN, mappings["7"]);
+			toolTip1.SetToolTip(EIGHT, mappings["8"]);
+			toolTip1.SetToolTip(NINE, mappings["9"]);
+			toolTip1.SetToolTip(PERIOD, mappings["DOT"]);
+			toolTip1.SetToolTip(ON, mappings["ON"]);
+			toolTip1.SetToolTip(ENTER, mappings["ENTER"]);
+			toolTip1.SetToolTip(UP, mappings["UP"]);
+			toolTip1.SetToolTip(DOWN, mappings["DOWN"]);
+			toolTip1.SetToolTip(LEFT, mappings["LEFT"]);
+			toolTip1.SetToolTip(RIGHT, mappings["RIGHT"]);
+			toolTip1.SetToolTip(PLUS, mappings["PLUS"]);
+			toolTip1.SetToolTip(MINUS, mappings["MINUS"]);
+			toolTip1.SetToolTip(MULTIPLY, mappings["MULTIPLY"]);
+			toolTip1.SetToolTip(DIVIDE, mappings["DIVIDE"]);
+			toolTip1.SetToolTip(CLEAR, mappings["CLEAR"]);
+			toolTip1.SetToolTip(EXP, mappings["EXP"]);
+			toolTip1.SetToolTip(DASH, mappings["DASH"]);
+			toolTip1.SetToolTip(PARACLOSE, mappings["PARACLOSE"]);
+			toolTip1.SetToolTip(PARAOPEN, mappings["PARAOPEN"]);
+			toolTip1.SetToolTip(TAN, mappings["TAN"]);
+			toolTip1.SetToolTip(VARS, mappings["VARS"]);
+			toolTip1.SetToolTip(COS, mappings["COS"]);
+			toolTip1.SetToolTip(PRGM, mappings["PRGM"]);
+			toolTip1.SetToolTip(STAT, mappings["STAT"]);
+			toolTip1.SetToolTip(MATRIX, mappings["MATRIX"]);
+			toolTip1.SetToolTip(XT, mappings["X"]);
+			toolTip1.SetToolTip(STO, mappings["STO"]);
+			toolTip1.SetToolTip(LN, mappings["LN"]);
+			toolTip1.SetToolTip(LOG, mappings["LOG"]);
+			toolTip1.SetToolTip(SQUARED, mappings["SQUARED"]);
+			toolTip1.SetToolTip(NEG1, mappings["NEG1"]);
+			toolTip1.SetToolTip(MATH, mappings["MATH"]);
+			toolTip1.SetToolTip(ALPHA, mappings["ALPHA"]);
+			toolTip1.SetToolTip(GRAPH, mappings["GRAPH"]);
+			toolTip1.SetToolTip(TRACE, mappings["TRACE"]);
+			toolTip1.SetToolTip(ZOOM, mappings["ZOOM"]);
+			toolTip1.SetToolTip(WINDOW, mappings["WINDOW"]);
+			toolTip1.SetToolTip(YEQUAL, mappings["Y"]);
+			toolTip1.SetToolTip(SECOND, mappings["SECOND"]);
+			toolTip1.SetToolTip(MODE, mappings["MODE"]);
+			toolTip1.SetToolTip(DEL, mappings["DEL"]);
+			toolTip1.SetToolTip(COMMA, mappings["COMMA"]);
+			toolTip1.SetToolTip(SIN, mappings["SIN"]);
 		}
 
 		public void StopToolTips()
