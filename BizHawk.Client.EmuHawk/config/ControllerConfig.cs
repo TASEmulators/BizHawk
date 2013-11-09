@@ -276,11 +276,6 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		private static string ControlDefaultPath
-		{
-			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
-		}
-
 		private TabControl GetTabControl(System.Windows.Forms.Control.ControlCollection controls)
 		{
 			if (controls != null)
@@ -320,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
 			// still have to hit OK at the end.
 			ControlDefaults cd = new ControlDefaults();
-			cd = ConfigService.Load(ControlDefaultPath, cd);
+			cd = ConfigService.Load(Config.ControlDefaultPath, cd);
 			LoadPanels(cd);
 
 			tabControl1.SelectTab(wasTabbedMain);
@@ -355,39 +350,20 @@ namespace BizHawk.Client.EmuHawk
 			tabControl1.ResumeLayout();
 		}
 
-		class ControlDefaults
-		{
-			public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
-			public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
-			public Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>>();
-		}
-
-		public static void ConfigCheckAllControlDefaults(BizHawk.Client.Common.Config c)
-		{
-			if (c.AllTrollers.Count == 0 && c.AllTrollersAutoFire.Count == 0 && c.AllTrollersAnalog.Count == 0)
-			{
-				ControlDefaults cd = new ControlDefaults();
-				cd = ConfigService.Load(ControlDefaultPath, cd);
-				c.AllTrollers = cd.AllTrollers;
-				c.AllTrollersAutoFire = cd.AllTrollersAutoFire;
-				c.AllTrollersAnalog = cd.AllTrollersAnalog;
-			}
-		}
-
 		private void buttonSaveDefaults_Click(object sender, EventArgs e)
 		{
 			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
 				ControlDefaults cd = new ControlDefaults();
-				cd = ConfigService.Load(ControlDefaultPath, cd);
+				cd = ConfigService.Load(Config.ControlDefaultPath, cd);
 				cd.AllTrollers[the_definition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[the_definition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>();
 
 				SaveToDefaults(cd);
 
-				ConfigService.Save(ControlDefaultPath, cd);
+				ConfigService.Save(Config.ControlDefaultPath, cd);
 			}
 		}
 	}
