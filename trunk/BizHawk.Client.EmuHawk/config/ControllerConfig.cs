@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -38,7 +39,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		const int MAXPLAYERS = 8;
-		string ControllerType;
 
 		private ControllerConfig()
 		{
@@ -47,14 +47,14 @@ namespace BizHawk.Client.EmuHawk
 
 		delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
 
-		Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
+		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
 			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill };
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}
 
-		Control CreateAnalogPanel(Dictionary<string, BizHawk.Client.Common.Config.AnalogBind> settings, List<string> buttons, Size size)
+		private Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
 			var acp = new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
 			return acp;
@@ -127,18 +127,16 @@ namespace BizHawk.Client.EmuHawk
 						tt.TabPages.Add("Console");
 					}
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
-					pageidx++;
 				}
 			}
 		}
 
-		private ControllerDefinition the_definition;
+		private readonly ControllerDefinition the_definition;
 
 		public ControllerConfig(ControllerDefinition def)
 			: this()
 		{
 			the_definition = def;
-			ControllerType = def.Name;
 			SuspendLayout();
 			LoadPanels(Global.Config);
 
@@ -156,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadPanels(Dictionary<string, Dictionary<string, string>> normal,
 			Dictionary<string, Dictionary<string, string>> autofire,
-			Dictionary<string, Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>> analog)
+			Dictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
 			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, normal, "", CreateNormalPanel);
 			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, autofire, "", CreateNormalPanel);
@@ -173,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
 		}
 
-		private void LoadPanels(BizHawk.Client.Common.Config c)
+		private void LoadPanels(Config c)
 		{
 			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog);
 		}
@@ -191,9 +189,11 @@ namespace BizHawk.Client.EmuHawk
 			//Uberhack
 			if (ControlName == "Commodore 64 Controller")
 			{
-				PictureBox pictureBox2 = new PictureBox();
-				pictureBox2.Image = Properties.Resources.C64Keyboard;
-				pictureBox2.Size = Properties.Resources.C64Keyboard.Size;
+				PictureBox pictureBox2 = new PictureBox
+					{
+						Image = Properties.Resources.C64Keyboard,
+						Size = Properties.Resources.C64Keyboard.Size
+					};
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
 				pictureBox1.Height /= 2;
 				pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -223,15 +223,15 @@ namespace BizHawk.Client.EmuHawk
 
 		void Save()
 		{
-			ActOnControlCollection<ControllerConfigPanel>(tabPage1, (c) => c.Save(Global.Config.AllTrollers[the_definition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(tabPage2, (c) => c.Save(Global.Config.AllTrollersAutoFire[the_definition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(tabPage3, (c) => c.Save(Global.Config.AllTrollersAnalog[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage1, c => c.Save(Global.Config.AllTrollers[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage2, c => c.Save(Global.Config.AllTrollersAutoFire[the_definition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(tabPage3, c => c.Save(Global.Config.AllTrollersAnalog[the_definition.Name]));
 		}
 		void SaveToDefaults(ControlDefaults cd)
 		{
-			ActOnControlCollection<ControllerConfigPanel>(tabPage1, (c) => c.Save(cd.AllTrollers[the_definition.Name]));
-			ActOnControlCollection<ControllerConfigPanel>(tabPage2, (c) => c.Save(cd.AllTrollersAutoFire[the_definition.Name]));
-			ActOnControlCollection<AnalogBindPanel>(tabPage3, (c) => c.Save(cd.AllTrollersAnalog[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage1, c => c.Save(cd.AllTrollers[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage2, c => c.Save(cd.AllTrollersAutoFire[the_definition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(tabPage3, c => c.Save(cd.AllTrollersAnalog[the_definition.Name]));
 		}
 
 		static void ActOnControlCollection<T>(Control c, Action<T> proc)
@@ -276,17 +276,14 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		private TabControl GetTabControl(System.Windows.Forms.Control.ControlCollection controls)
+		private TabControl GetTabControl(IEnumerable controls)
 		{
 			if (controls != null)
 			{
-				foreach (Control c in controls)
-				{
-					if (c is TabControl)
-					{
-						return (c as TabControl);
-					}
-				}
+				return controls
+					.OfType<TabControl>()
+					.Select(c => c)
+					.FirstOrDefault();
 			}
 			return null;
 		}
@@ -296,16 +293,16 @@ namespace BizHawk.Client.EmuHawk
 			tabControl1.SuspendLayout();
 
 			string wasTabbedMain = tabControl1.SelectedTab.Name;
-			TabControl tb1 = GetTabControl(tabPage1.Controls ?? null);
-			TabControl tb2 = GetTabControl(tabPage2.Controls ?? null);
-			TabControl tb3 = GetTabControl(tabPage3.Controls ?? null);
+			TabControl tb1 = GetTabControl(tabPage1.Controls);
+			TabControl tb2 = GetTabControl(tabPage2.Controls);
+			TabControl tb3 = GetTabControl(tabPage3.Controls);
 			int? wasTabbedPage1 = null;
 			int? wasTabbedPage2 = null;
 			int? wasTabbedPage3 = null;
 
 			if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
 			if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
-			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage2 = tb3.SelectedIndex; }
+			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
 
 			tabPage1.Controls.Clear();
 			tabPage2.Controls.Clear();
@@ -322,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage1.HasValue)
 			{
-				TabControl newTb1 = GetTabControl(tabPage1.Controls ?? null);
+				TabControl newTb1 = GetTabControl(tabPage1.Controls);
 				if (newTb1 != null)
 				{
 					newTb1.SelectTab(wasTabbedPage1.Value);
@@ -331,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage2.HasValue)
 			{
-				TabControl newTb2 = GetTabControl(tabPage2.Controls ?? null);
+				TabControl newTb2 = GetTabControl(tabPage2.Controls);
 				if (newTb2 != null)
 				{
 					newTb2.SelectTab(wasTabbedPage2.Value);
@@ -340,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (wasTabbedPage3.HasValue)
 			{
-				TabControl newTb3 = GetTabControl(tabPage3.Controls ?? null);
+				TabControl newTb3 = GetTabControl(tabPage3.Controls);
 				if (newTb3 != null)
 				{
 					newTb3.SelectTab(wasTabbedPage3.Value);
@@ -359,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 				cd = ConfigService.Load(Config.ControlDefaultPath, cd);
 				cd.AllTrollers[the_definition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[the_definition.Name] = new Dictionary<string, string>();
-				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, BizHawk.Client.Common.Config.AnalogBind>();
+				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, Config.AnalogBind>();
 
 				SaveToDefaults(cd);
 
