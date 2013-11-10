@@ -12,5 +12,11 @@ namespace BizHawk.Client.Common
 				return this.FirstOrDefault(x => x.GUID.ToString() == guid) ?? null;
 			}
 		}
+
+		public void RemoveFunction(NamedLuaFunction function)
+		{
+			Global.Emulator.CoreComm.InputCallback.Remove(function.Callback);
+			Remove(function);
+		}
 	}
 }

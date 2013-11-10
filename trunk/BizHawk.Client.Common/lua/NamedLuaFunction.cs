@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -8,13 +9,31 @@ namespace BizHawk.Client.Common
 		private readonly LuaFunction _function;
 		private readonly string _name;
 		private readonly string _event;
-
-		public NamedLuaFunction(LuaFunction function, string theevent, string name = null)
+		private readonly Action _action;
+		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, string name = null)
 		{
 			_function = function;
 			_name = name ?? "Anonymous";
 			_event = theevent;
 			GUID = Guid.NewGuid();
+
+			_action = new Action(delegate
+			{
+				try
+				{
+					_function.Call();
+				}
+				catch (SystemException ex)
+				{
+					logCallback(
+						"error running function attached by the event " +
+						_event +
+						"\nError message: " +
+						ex.Message
+					);
+				}
+
+			});
 		}
 
 		public Guid GUID { get; private set; }
@@ -32,6 +51,11 @@ namespace BizHawk.Client.Common
 		public string Event
 		{
 			get { return _event; }
+		}
+
+		public Action Callback
+		{
+			get { return _action; }
 		}
 	}
 }

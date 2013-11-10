@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Common
 
 		public void Remove(Action action)
 		{
-			throw new NotImplementedException();
+			_list.Remove(action);
 		}
 
 		public void Clear()

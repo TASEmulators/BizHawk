@@ -37,13 +37,13 @@ namespace BizHawk.Client.Common
 
 		#region Events Library Helpers
 
-		private readonly LuaFunctionList lua_functions = new LuaFunctionList();
+		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
-		public LuaFunctionList RegisteredFunctions { get { return lua_functions; } }
+		public LuaFunctionList RegisteredFunctions { get { return _luaFunctions; } }
 
 		public void CallSaveStateEvent(string name)
 		{
-			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateSave").ToList();
+			List<NamedLuaFunction> lfs = _luaFunctions.Where(x => x.Event == "OnSavestateSave").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		public void CallLoadStateEvent(string name)
 		{
-			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnSavestateLoad").ToList();
+			List<NamedLuaFunction> lfs = _luaFunctions.Where(x => x.Event == "OnSavestateLoad").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameBeforeEvent()
 		{
-			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameStart").ToList();
+			List<NamedLuaFunction> lfs = _luaFunctions.Where(x => x.Event == "OnFrameStart").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameAfterEvent()
 		{
-			List<NamedLuaFunction> lfs = lua_functions.Where(x => x.Event == "OnFrameEnd").ToList();
+			List<NamedLuaFunction> lfs = _luaFunctions.Where(x => x.Event == "OnFrameEnd").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -133,47 +133,29 @@ namespace BizHawk.Client.Common
 
 		public string event_onframeend(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameEnd", name);
-			lua_functions.Add(nlf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
 			return nlf.GUID.ToString();
 		}
 
 		public string event_onframestart(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameStart", name);
-			lua_functions.Add(nlf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
 			return nlf.GUID.ToString();
 		}
 
-		public void event_oninputpoll(LuaFunction luaf)
+		public void event_oninputpoll(LuaFunction luaf, string name = null)
 		{
-			if (luaf != null)
-			{
-				Global.Emulator.CoreComm.InputCallback.Add(delegate
-				{
-					try
-					{
-						luaf.Call();
-					}
-					catch (SystemException e)
-					{
-						LogOutputCallback(
-							"error running function attached by lua function event.oninputpoll" +
-							"\nError message: "
-							+ e.Message);
-					}
-				});
-			}
-			else
-			{
-				Global.Emulator.CoreComm.InputCallback = null;
-			}
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
+			Global.Emulator.CoreComm.InputCallback.Add(nlf.Callback);
 		}
 
-		public string event_onloadstate(LuaFunction luaf, object name = null)
+		public string event_onloadstate(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", name != null ? name.ToString() : null);
-			lua_functions.Add(nlf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
 			return nlf.GUID.ToString();
 		}
 
@@ -251,20 +233,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string event_onsavestate(LuaFunction luaf, object name = null)
+		public string event_onsavestate(LuaFunction luaf, string name = null)
 		{
-			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateSave", name != null ? name.ToString() : null);
-			lua_functions.Add(nlf);
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
 			return nlf.GUID.ToString();
 		}
 
 		public bool event_unregisterbyid(object guid)
 		{
-			foreach (NamedLuaFunction nlf in lua_functions)
+			foreach (NamedLuaFunction nlf in _luaFunctions)
 			{
 				if (nlf.GUID.ToString() == guid.ToString())
 				{
-					lua_functions.Remove(nlf);
+					_luaFunctions.RemoveFunction(nlf);
 					return true;
 				}
 			}
@@ -274,11 +256,11 @@ namespace BizHawk.Client.Common
 
 		public bool event_unregisterbyname(object name)
 		{
-			foreach (NamedLuaFunction nlf in lua_functions)
+			foreach (NamedLuaFunction nlf in _luaFunctions)
 			{
 				if (nlf.Name == name.ToString())
 				{
-					lua_functions.Remove(nlf);
+					_luaFunctions.RemoveFunction(nlf);
 					return true;
 				}
 			}

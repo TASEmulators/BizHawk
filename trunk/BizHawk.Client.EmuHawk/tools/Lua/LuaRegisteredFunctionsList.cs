@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			if (indexes.Count > 0)
 			{
 				NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[indexes[0]];
-				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Remove(nlf);
+				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
 				PopulateListView();
 			}
 		}
