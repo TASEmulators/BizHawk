@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		byte read_joyport(int addr)
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			return handle_read_joyport(addr, false);
 		}
 

@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		LibGambatte.Buttons ControllerCallback()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			IsLagFrame = false;
 			return CurrentButtons;
 		}

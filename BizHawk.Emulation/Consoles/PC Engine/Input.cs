@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 		byte ReadInput()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			byte value = 0x3F;
 
 			int player = SelectedController + 1;
