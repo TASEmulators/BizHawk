@@ -40,6 +40,8 @@ namespace BizHawk.Client.EmuHawk
 				item.SubItems.Add(nlf.GUID.ToString());
 				FunctionView.Items.Add(item);
 			}
+
+			DoButtonsStatus();
 		}
 
 		private void CallButton_Click(object sender, EventArgs e)
@@ -74,14 +76,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
-			CallButton.Enabled = indexes.Count > 0;
-			RemoveButton.Enabled = indexes.Count > 0;
+			DoButtonsStatus();
 		}
 
 		private void FunctionView_DoubleClick(object sender, EventArgs e)
 		{
 			CallFunction();
+		}
+
+		private void RemoveAllBtn_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.ClearAll();
+			PopulateListView();
+		}
+
+		private void DoButtonsStatus()
+		{
+			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+			CallButton.Enabled = indexes.Count > 0;
+			RemoveButton.Enabled = indexes.Count > 0;
+			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 	}
 }

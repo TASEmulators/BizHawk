@@ -16,7 +16,15 @@ namespace BizHawk.Client.Common
 		public void RemoveFunction(NamedLuaFunction function)
 		{
 			Global.Emulator.CoreComm.InputCallback.Remove(function.Callback);
+			Global.Emulator.CoreComm.MemoryCallbackSystem.Remove(function.Callback);
 			Remove(function);
+		}
+
+		public void ClearAll()
+		{
+			Global.Emulator.CoreComm.InputCallback.RemoveAll(this.Select(x => x.Callback));
+			Global.Emulator.CoreComm.MemoryCallbackSystem.RemoveAll(this.Select(x => x.Callback));
+			Clear();
 		}
 	}
 }
