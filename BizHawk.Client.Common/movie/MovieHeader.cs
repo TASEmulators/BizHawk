@@ -53,10 +53,10 @@ namespace BizHawk.Client.Common
 			return System.Guid.NewGuid().ToString();
 		}
 
-		public MovieHeader(string version) //All required fields will be set to default values
+		public MovieHeader() //All required fields will be set to default values
 		{
 			
-			HeaderParams.Add(EMULATIONVERSION, version);
+			HeaderParams.Add(EMULATIONVERSION, VersionInfo.GetEmuVersion());
 			HeaderParams.Add(MOVIEVERSION, MovieVersion);
 			HeaderParams.Add(PLATFORM, "");
 			HeaderParams.Add(GAMENAME, "");

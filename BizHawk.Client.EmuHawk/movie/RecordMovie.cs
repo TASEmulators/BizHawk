@@ -59,11 +59,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 
-				MovieToRecord = new Movie(path, GlobalWin.MainForm.GetEmuVersion());
+				MovieToRecord = new Movie(path);
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, GlobalWin.MainForm.GetEmuVersion());
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, VersionInfo.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);

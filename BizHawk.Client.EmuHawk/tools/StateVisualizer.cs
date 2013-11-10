@@ -21,9 +21,9 @@ namespace BizHawk.Client.EmuHawk
 				string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 				if (File.Exists(path))
 				{
-					Movie m = new Movie(GlobalWin.MainForm.GetEmuVersion());
-					LoadLogFromSavestateText(m, path);
-					AddLog(m.LogDump, i);
+					Movie movie = new Movie();
+					LoadLogFromSavestateText(movie, path);
+					AddLog(movie.LogDump, i);
 				}
 			}
 		}
