@@ -112,10 +112,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			newStripButton1.Visible = MainForm.INTERIM;
-			newScriptToolStripMenuItem.Visible = MainForm.INTERIM;
-			newStripButton1.Enabled = MainForm.INTERIM;
-			newScriptToolStripMenuItem.Enabled = MainForm.INTERIM;
+			newStripButton1.Visible = VersionInfo.INTERIM;
+			newScriptToolStripMenuItem.Visible = VersionInfo.INTERIM;
 		}
 
 		private void StopScript(int x)
@@ -668,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditToolstripButton_Click(object sender, EventArgs e)
 		{
-			if (MainForm.INTERIM)
+			if (VersionInfo.INTERIM)
 			{
 				DoLuaWriter();
 			}

@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LockDownCores()
 		{
-			if (!MainForm.INTERIM)
+			if (!VersionInfo.INTERIM)
 			{
 				string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
 

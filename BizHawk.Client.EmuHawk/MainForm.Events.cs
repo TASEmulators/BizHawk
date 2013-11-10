@@ -1763,7 +1763,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (INTERIM)
+			if (VersionInfo.INTERIM)
 			{
 				new AboutBox().ShowDialog();
 			}

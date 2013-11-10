@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
-			if (!MainForm.INTERIM)
+			if (!VersionInfo.INTERIM)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Client.Common").GetName().Version;

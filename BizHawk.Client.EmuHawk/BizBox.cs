@@ -23,15 +23,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
-			if (MainForm.INTERIM)
+			if (VersionInfo.INTERIM)
 			{
 				Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
 			}
 			else
 			{
-				Text = MainForm.EMUVERSION;
+				Text = "Version " + VersionInfo.MAINVERSION;
 			}
-			VersionLabel.Text = MainForm.EMUVERSION + "  Released " + MainForm.RELEASEDATE;
+			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + "  Released " + VersionInfo.RELEASEDATE;
 		}
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
-			if (!MainForm.INTERIM)
+			if (!VersionInfo.INTERIM)
 			{
 				newProjectToolStripMenuItem.Enabled = false;
 				openProjectToolStripMenuItem.Enabled = false;

@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : "");
 
 			//Hide Status bar icons
 			PlayRecordStatusButton.Visible = false;
@@ -314,10 +314,9 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator();
 			}
 
-			if (!INTERIM)
+			if (!VersionInfo.INTERIM)
 			{
 				NESDebuggerMenuItem.Enabled = false;
-				//luaConsoleToolStripMenuItem.Enabled = false;
 			}
 
 			// start dumping, if appropriate
@@ -400,9 +399,6 @@ namespace BizHawk.Client.EmuHawk
 		
 		#region Properties
 
-		public static bool INTERIM = true;
-		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "August 22, 2013";
 		public string CurrentlyOpenRom;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
@@ -1591,7 +1587,7 @@ namespace BizHawk.Client.EmuHawk
 				case "DGB": str = "Game Boy Link"; break;
 			}
 
-			if (INTERIM) str += " (interim)";
+			if (VersionInfo.INTERIM) str += " (interim)";
 			return str;
 		}
 
@@ -2027,7 +2023,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
 
 			//adelikat: ugly design for this, I know
-			if (INTERIM)
+			if (VersionInfo.INTERIM)
 			{
 				ofd.Filter = FormatFilter(
 					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
@@ -2971,9 +2967,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
-		public string GetEmuVersion() //This and EMUVERSION don't need to be on mainform
+		public string GetEmuVersion() //This doesn't need to be on mainform
 		{
-			return INTERIM ? "SVN " + SubWCRev.SVN_REV : EMUVERSION;
+			return VersionInfo.INTERIM ? "SVN " + SubWCRev.SVN_REV : ("Version " + VersionInfo.MAINVERSION);
 		}
 
 		private void NESSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
@@ -3483,7 +3479,7 @@ namespace BizHawk.Client.EmuHawk
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (INTERIM)
+								if (VersionInfo.INTERIM)
 								{
 									string gbabiospath = Global.FirmwareManager.Request("GBA", "Bios");
 									byte[] gbabios;
@@ -3746,7 +3742,7 @@ namespace BizHawk.Client.EmuHawk
 				RewireSound();
 				ResetRewindBuffer();
 				Cheats_Restart();
-				Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
 				HandlePlatformMenus();
 				StateSlots.Clear();
 				UpdateDumpIcon();
