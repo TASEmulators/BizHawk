@@ -63,6 +63,7 @@
 			this.FunctionView.View = System.Windows.Forms.View.Details;
 			this.FunctionView.SelectedIndexChanged += new System.EventHandler(this.FunctionView_SelectedIndexChanged);
 			this.FunctionView.DoubleClick += new System.EventHandler(this.FunctionView_DoubleClick);
+			this.FunctionView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FunctionView_KeyDown);
 			// 
 			// FunctionsEvent
 			// 
@@ -150,7 +151,6 @@
 			// 
 			// LuaRegisteredFunctionsList
 			// 
-			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;

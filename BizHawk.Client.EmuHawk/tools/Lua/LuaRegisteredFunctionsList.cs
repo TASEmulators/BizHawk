@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
+		public Point StartLocation = new Point(0, 0);
 		public LuaRegisteredFunctionsList()
 		{
 			InitializeComponent();
@@ -20,6 +21,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaRegisteredFunctionsList_Load(object sender, EventArgs e)
 		{
+			if (StartLocation.X > 0 && StartLocation.Y > 0)
+			{
+				Location = StartLocation;
+			}
 			PopulateListView();
 		}
 
@@ -56,20 +61,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CallFunction()
 		{
-			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
-			if (indexes.Count > 0)
+			ListView.SelectedIndexCollection indices = FunctionView.SelectedIndices;
+			if (indices.Count > 0)
 			{
-				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[indexes[0]].Call();
+				foreach (int index in indices)
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[index].Call();
+				}
 			}
 		}
 
 		private void RemoveFunctionButton()
 		{
-			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
-			if (indexes.Count > 0)
+			ListView.SelectedIndexCollection indices = FunctionView.SelectedIndices;
+			if (indices.Count > 0)
 			{
-				NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[indexes[0]];
-				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
+				foreach (int index in indices)
+				{
+					NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[index];
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
+				}
 				PopulateListView();
 			}
 		}
@@ -96,6 +107,22 @@ namespace BizHawk.Client.EmuHawk
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
 			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
+		}
+
+		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift) //Delete
+			{
+				RemoveFunctionButton();
+			}
+			else if (e.KeyCode == Keys.Space && !e.Control && !e.Alt && !e.Shift) //Space
+			{
+				CallFunction();
+			}
+			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) //Enter
+			{
+				CallFunction();
+			}
 		}
 	}
 }

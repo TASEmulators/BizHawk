@@ -1248,6 +1248,12 @@ namespace BizHawk.Client.EmuHawk
 			NewScript();
 		}
 
+		private Point GetPromptPoint()
+		{
+			Point p = new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30);
+			return PointToScreen(p);
+		}
+
 		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (LuaImp.RegisteredFunctions.Any())
@@ -1264,7 +1270,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					new LuaRegisteredFunctionsList().Show();
+					var form = new LuaRegisteredFunctionsList();
+					form.StartLocation = GetPromptPoint();
+					form.Show();
 				}
 			}
 		}
