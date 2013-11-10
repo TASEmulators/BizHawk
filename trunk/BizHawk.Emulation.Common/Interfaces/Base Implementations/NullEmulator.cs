@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Common
 				{
 					new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { })
 				});
+			memoryDomains = new MemoryDomainList(domains);
 		}
 		public void ResetCounters()
 		{
