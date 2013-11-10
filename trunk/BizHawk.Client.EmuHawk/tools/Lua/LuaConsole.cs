@@ -597,6 +597,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SelectAll();
 			}
+			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
+			{
+				showRegisteredFunctionsToolStripMenuItem_Click(null, null);
+			}
 		}
 
 		private void editScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1248,8 +1252,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp.RegisteredFunctions.Any())
 			{
-				LuaRegisteredFunctionsList dialog = new LuaRegisteredFunctionsList();
-				dialog.ShowDialog();
+				bool alreadyOpen = false;
+				foreach (Form form in Application.OpenForms)
+				{
+					if (form is LuaRegisteredFunctionsList)
+					{
+						alreadyOpen = true;
+						form.Focus();
+					}
+				}
+
+				if (!alreadyOpen)
+				{
+					new LuaRegisteredFunctionsList().Show();
+				}
 			}
 		}
 
