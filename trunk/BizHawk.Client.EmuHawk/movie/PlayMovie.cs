@@ -97,9 +97,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (file.Extension.ToUpper() == "STATE")
 					{
-						Movie m = new Movie(file.FullName, GlobalWin.MainForm.GetEmuVersion());
-						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Frames == 0)
+						Movie movie = new Movie(file.FullName);
+						movie.LoadMovie(); //State files will have to load everything unfortunately
+						if (movie.Frames == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							return;
@@ -126,13 +126,13 @@ namespace BizHawk.Client.EmuHawk
 					int x = IsDuplicate(filename);
 					if (x == 0)
 					{
-						Movie m = new Movie(file.CanonicalFullPath, GlobalWin.MainForm.GetEmuVersion());
-						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Frames > 0)
+						Movie movie = new Movie(file.CanonicalFullPath);
+						movie.LoadMovie(); //State files will have to load everything unfortunately
+						if (movie.Frames > 0)
 						{
-							MovieList.Add(m);
+							MovieList.Add(movie);
 							sortReverse = false;
-							sortedCol = "";
+							sortedCol = String.Empty;
 						}
 					}
 				}
@@ -178,21 +178,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PreLoadMovieFile(HawkFile path, bool force)
 		{
-			Movie m = new Movie(path.CanonicalFullPath, GlobalWin.MainForm.GetEmuVersion());
-			m.PreLoadText();
+			Movie movie = new Movie(path.CanonicalFullPath);
+			movie.PreLoadText();
 			if (path.Extension == ".FM2")
 			{
-				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			}
 			else if (path.Extension == ".MC2")
 			{
-				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
+				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
 			}
 			//Don't do this from browse
-			if (m.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
+			if (movie.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
 				Global.Config.PlayMovie_MatchGameName == false || force)
 			{
-				MovieList.Add(m);
+				MovieList.Add(movie);
 			}
 		}
 
@@ -391,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case MovieHeader.EMULATIONVERSION:
-						if (kvp.Value != GlobalWin.MainForm.GetEmuVersion())
+						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}

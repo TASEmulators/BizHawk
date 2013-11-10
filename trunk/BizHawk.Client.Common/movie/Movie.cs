@@ -10,17 +10,17 @@ namespace BizHawk.Client.Common
 	{
 		#region Constructors
 
-		public Movie(string filename, string version)
-			: this(version)
+		public Movie(string filename)
+			: this()
 		{
 			Rerecords = 0;
 			Filename = filename;
-			Loaded = filename.Length > 0;
+			Loaded = !String.IsNullOrWhiteSpace(filename);
 		}
 
-		public Movie(string version)
+		public Movie()
 		{
-			Header = new MovieHeader(version);
+			Header = new MovieHeader();
 			Filename = String.Empty;
 			_preload_framecount = 0;
 			StartsFromSavestate = false;

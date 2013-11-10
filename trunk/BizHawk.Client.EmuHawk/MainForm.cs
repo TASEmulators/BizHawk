@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
-				Movie = new Movie(GlobalWin.MainForm.GetEmuVersion()),
+				Movie = new Movie(),
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -198,14 +198,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Movie m = new Movie(cmdMovie, GlobalWin.MainForm.GetEmuVersion());
+					Movie movie = new Movie(cmdMovie);
 					Global.ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
 					{
-						autoDumpLength = m.RawFrames;
+						autoDumpLength = movie.RawFrames;
 					}
-					StartNewMovie(m, false);
+					StartNewMovie(movie, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
@@ -217,8 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Movie m = new Movie(Global.Config.RecentMovies[0], GlobalWin.MainForm.GetEmuVersion());
-					StartNewMovie(m, false);
+					StartNewMovie(new Movie(Global.Config.RecentMovies[0]), false);
 				}
 			}
 
@@ -1625,16 +1624,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
-			Movie m = new Movie(path, GetEmuVersion());
+			Movie movie = new Movie(path);
 
-			if (!m.Loaded)
+			if (!movie.Loaded)
 			{
 				ToolHelpers.HandleLoadError(Global.Config.RecentMovies, path);
 			}
 			else
 			{
 				Global.ReadOnly = true;
-				StartNewMovie(m, false);
+				StartNewMovie(movie, false);
 			}
 		}
 
@@ -2967,11 +2966,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
-		public string GetEmuVersion() //This doesn't need to be on mainform
-		{
-			return VersionInfo.INTERIM ? "SVN " + SubWCRev.SVN_REV : ("Version " + VersionInfo.MAINVERSION);
-		}
-
 		private void NESSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
 		{
 			NESSpecialControlsMenuItem.Visible = true;
@@ -3775,7 +3769,7 @@ namespace BizHawk.Client.EmuHawk
 			string d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
 			string errorMsg;
 			string warningMsg;
-			Movie m = MovieImport.ImportFile(fn, GlobalWin.MainForm.GetEmuVersion(), out errorMsg, out warningMsg);
+			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
 			if (errorMsg.Length > 0)
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			if (warningMsg.Length > 0)
