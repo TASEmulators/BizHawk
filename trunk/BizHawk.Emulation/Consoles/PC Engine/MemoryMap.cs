@@ -35,10 +35,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				return 0xFF;
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasRead)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallRead((uint)addr);
 
 			Log.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
 			return 0xFF;
@@ -76,10 +73,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			else
 				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
 
-			if (CoreComm.MemoryCallbackSystem.HasWrite)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
 		}
 	}
 }

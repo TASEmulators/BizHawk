@@ -113,10 +113,7 @@ namespace BizHawk
 		{
 			byte temp = mapper.ReadMemory((ushort)(addr&0x1FFF));
 
-			if (CoreComm.MemoryCallbackSystem.HasRead)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallRead(addr);
 
 			return temp;
 		}
@@ -132,10 +129,7 @@ namespace BizHawk
 		{
 			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			if (CoreComm.MemoryCallbackSystem.HasWrite)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
 		}
 
 		public void HardReset()

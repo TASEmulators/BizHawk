@@ -159,78 +159,21 @@ namespace BizHawk.Client.Common
 			return nlf.GUID.ToString();
 		}
 
-		public void event_onmemoryread(LuaFunction luaf, object address = null)
+		public string event_onmemoryread(LuaFunction luaf, object address = null, string name = null)
 		{
-			//TODO: allow a list of addresses
-			if (luaf != null)
-			{
-				int? _addr;
-				if (address == null)
-				{
-					_addr = null;
-				}
-				else
-				{
-					_addr = LuaInt(address);
-				}
-
-				Global.Emulator.CoreComm.MemoryCallbackSystem.ReadAddr = _addr;
-				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
-				{
-					try
-					{
-						luaf.Call(addr);
-					}
-					catch (SystemException e)
-					{
-						LogOutputCallback(
-							"error running function attached by lua function event.onmemoryread" +
-							"\nError message: " +
-							e.Message);
-					}
-				});
-			}
-			else
-			{
-				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(null);
-			}
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
+			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, (address != null ? LuaUInt(address) : (uint?)null));
+			return nlf.GUID.ToString();
+			
 		}
 
-		public void event_onmemorywrite(LuaFunction luaf, object address = null)
+		public string event_onmemorywrite(LuaFunction luaf, object address = null, string name = null)
 		{
-			//TODO: allow a list of addresses
-			if (luaf != null)
-			{
-				int? _addr;
-				if (address == null)
-				{
-					_addr = null;
-				}
-				else
-				{
-					_addr = LuaInt(address);
-				}
-
-				Global.Emulator.CoreComm.MemoryCallbackSystem.WriteAddr = _addr;
-				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
-				{
-					try
-					{
-						luaf.Call(addr);
-					}
-					catch (SystemException e)
-					{
-						LogOutputCallback(
-							"error running function attached by lua function event.onmemoryread" +
-							"\nError message: " +
-							e.Message);
-					}
-				});
-			}
-			else
-			{
-				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
-			}
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
+			Global.CoreComm.MemoryCallbackSystem.AddWrite(nlf.Callback, (address != null ? LuaUInt(address) : (uint?)null));
+			return nlf.GUID.ToString();
 		}
 
 		public string event_onsavestate(LuaFunction luaf, string name = null)

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace BizHawk.Emulation.Common
@@ -149,70 +151,76 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallbackSystem
 	{
-		public int? ReadAddr = null;
-		private Action<uint> ReadCallback;
-		public void SetReadCallback(Action<uint> func)
+		private List<Action> _reads = new List<Action>();
+		private List<uint?> _readAddrs = new List<uint?>();
+		
+		private List<Action> _writes = new List<Action>();
+		private List<uint?> _writeAddrs = new List<uint?>();
+
+		public void AddRead(Action function, uint? addr)
 		{
-			ReadCallback = func;
+			_reads.Add(function);
+			_readAddrs.Add(addr);
 		}
 
-		public bool HasRead
+		public void AddWrite(Action function, uint? addr)
 		{
-			get
-			{
-				return ReadCallback != null;
-			}
+			_writes.Add(function);
+			_writeAddrs.Add(addr);
 		}
 
-		public void TriggerRead(int addr)
+		public void CallRead(uint addr)
 		{
-			if (ReadCallback != null)
+			for (int i = 0; i < _reads.Count; i++)
 			{
-				if (ReadAddr != null)
+				if (!_readAddrs[i].HasValue || _readAddrs[i].Value == addr)
 				{
-					if (ReadAddr == addr)
-					{
-						ReadCallback((uint)addr);
-					}
-				}
-				else
-				{
-					ReadCallback((uint)addr);
+					_reads[i]();
 				}
 			}
 		}
 
-		public int? WriteAddr = null;
-		private Action<uint> WriteCallback;
-		public void SetWriteCallback(Action<uint> func)
+		public void CallWrite(uint addr)
 		{
-			WriteCallback = func;
-		}
-
-		public bool HasWrite
-		{
-			get
+			for (int i = 0; i < _writes.Count; i++)
 			{
-				return WriteCallback != null;
+				if (_writeAddrs[i] == addr)
+				{
+					_writes[i]();
+				}
 			}
 		}
 
-		public void TriggerWrite(int addr)
+		public bool HasReads { get { return _reads.Any(); } }
+		public bool HasWrites { get { return _writes.Any(); } }
+
+		public void Remove(Action action)
 		{
-			if (WriteCallback != null)
+			for (int i = 0; i < _reads.Count; i++)
 			{
-				if (WriteAddr != null)
+				if (_reads[i] == action)
 				{
-					if (WriteAddr == addr)
-					{
-						WriteCallback((uint)addr);
-					}
-				}
-				else
-				{
-					WriteCallback((uint)addr);
+					_reads.Remove(_reads[i]);
+					_readAddrs.Remove(_readAddrs[i]);
 				}
 			}
+
+			for (int i = 0; i < _writes.Count; i++)
+			{
+				if (_writes[i] == action)
+				{
+					_writes.Remove(_writes[i]);
+					_writeAddrs.Remove(_writeAddrs[i]);
+				}
+			}
+		}
+
+		public void Clear()
+		{
+			_reads.Clear();
+			_readAddrs.Clear();
+			_writes.Clear();
+			_writes.Clear();
 		}
 	}
 }

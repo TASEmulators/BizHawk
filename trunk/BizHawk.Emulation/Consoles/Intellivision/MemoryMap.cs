@@ -164,10 +164,7 @@
 					}
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasRead)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallRead(addr);
 
 			if (cart != null)
 			{
@@ -359,10 +356,7 @@
 					}
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasWrite)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallWrite(addr);
 
 			return (cart || stic || psg);
 		}
