@@ -477,12 +477,12 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 
-			if (mcs.HasRead)
-				readcb = delegate(uint addr) { mcs.TriggerRead((int)addr); RefreshMemoryCallbacks(); };
+			if (mcs.HasReads)
+				readcb = delegate(uint addr) { mcs.CallRead(addr); RefreshMemoryCallbacks(); };
 			else
 				readcb = null;
-			if (mcs.HasWrite)
-				writecb = delegate(uint addr) { mcs.TriggerWrite((int)addr); RefreshMemoryCallbacks(); };
+			if (mcs.HasWrites)
+				writecb = delegate(uint addr) { mcs.CallWrite(addr); RefreshMemoryCallbacks(); };
 			else
 				writecb = null;
 

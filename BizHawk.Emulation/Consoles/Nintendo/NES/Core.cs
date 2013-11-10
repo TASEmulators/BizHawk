@@ -554,10 +554,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasRead)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallRead(addr);
 
 			DB = ret;
 
@@ -611,10 +608,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				board.WritePRG(addr - 0x8000, value);
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasWrite)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
-			}
+			CoreComm.MemoryCallbackSystem.CallWrite(addr);
 		}
 
 	}

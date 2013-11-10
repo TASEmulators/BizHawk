@@ -43,10 +43,7 @@
 				ret = SystemRam[address & RamSizeMask];
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasRead)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerRead(address);
-			}
+			CoreComm.MemoryCallbackSystem.CallRead(address);
 
 			return ret;
 		}
@@ -81,10 +78,7 @@
 				return;
 			}
 
-			if (CoreComm.MemoryCallbackSystem.HasWrite)
-			{
-				CoreComm.MemoryCallbackSystem.TriggerWrite(address);
-			}
+			CoreComm.MemoryCallbackSystem.CallWrite((uint)address);
 		}
 
 		void InitSegaMapper()
