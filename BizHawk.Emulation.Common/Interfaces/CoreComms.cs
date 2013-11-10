@@ -143,6 +143,14 @@ namespace BizHawk.Emulation.Common
 			_list.Remove(action);
 		}
 
+		public void RemoveAll(IEnumerable<Action> actions)
+		{
+			foreach (var action in actions)
+			{
+				_list.Remove(action);
+			}
+		}
+
 		public void Clear()
 		{
 			_list.Clear();
@@ -212,6 +220,14 @@ namespace BizHawk.Emulation.Common
 					_writes.Remove(_writes[i]);
 					_writeAddrs.Remove(_writeAddrs[i]);
 				}
+			}
+		}
+
+		public void RemoveAll(IEnumerable<Action> actions)
+		{
+			foreach (var action in actions)
+			{
+				Remove(action);
 			}
 		}
 
