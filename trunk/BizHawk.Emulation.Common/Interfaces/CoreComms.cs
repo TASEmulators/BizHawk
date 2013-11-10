@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Emulation.Common
@@ -38,7 +39,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// for emu.on_snoop()
 		/// </summary>
-		public Action InputCallback;
+		public InputCallbackSystem InputCallback = new InputCallbackSystem();
 
 		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
 
@@ -116,6 +117,34 @@ namespace BizHawk.Emulation.Common
 
 		private readonly StringBuilder buffer;
 		private bool logging;
+	}
+
+	public class InputCallbackSystem
+	{
+		private List<Action> _list = new List<Action>();
+		
+		public void Add(Action action)
+		{
+			_list.Add(action);
+		}
+
+		public void Call()
+		{
+			foreach (var action in _list)
+			{
+				action();
+			}
+		}
+
+		public void Remove(Action action)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Clear()
+		{
+			_list.Clear();
+		}
 	}
 
 	public class MemoryCallbackSystem

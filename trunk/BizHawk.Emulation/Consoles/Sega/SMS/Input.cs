@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		byte ReadControls1()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			lagged = false;
 			byte value = 0xFF;
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		byte ReadControls2()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			lagged = false;
 			byte value = 0xFF;
 

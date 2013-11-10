@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void setControllers()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			IsLagFrame = false;
 
 			// Analog stick right = +X

@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 		{
 			if (luaf != null)
 			{
-				Global.Emulator.CoreComm.InputCallback = delegate
+				Global.Emulator.CoreComm.InputCallback.Add(delegate
 				{
 					try
 					{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 							"\nError message: "
 							+ e.Message);
 					}
-				};
+				});
 			}
 			else
 			{

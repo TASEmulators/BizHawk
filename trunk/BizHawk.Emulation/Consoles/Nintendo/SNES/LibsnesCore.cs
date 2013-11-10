@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			// as this is implemented right now, only P1 and P2 normal controllers work
 
-			if (!nocallbacks && CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";

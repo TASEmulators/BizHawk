@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		byte ReadKeyboard()
 		{
-			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			CoreComm.InputCallback.Call();
 			//ref TI-9X
 
 			int ret = 0xFF;
