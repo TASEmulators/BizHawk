@@ -97,6 +97,11 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public IController Controller { get; set; }
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool GLMode { get; private set; }
 
 		public void SetGLRes(int factor, int width, int height)

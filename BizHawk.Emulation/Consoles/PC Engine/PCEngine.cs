@@ -598,6 +598,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Dispose()
 		{
 			if (disc != null)

@@ -118,17 +118,17 @@ namespace BizHawk.Emulation.CPUs.M6502
 		// ==== End State ====
 
 		/// <summary>Carry Flag</summary>
-		private bool FlagC
+		public bool FlagC
 		{
 			get { return (P & 0x01) != 0; }
-			set { P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00)); }
+			private set { P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00)); }
 		}
 
 		/// <summary>Zero Flag</summary>
-		private bool FlagZ
+		public bool FlagZ
 		{
 			get { return (P & 0x02) != 0; }
-			set { P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00)); }
+			private set { P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00)); }
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
@@ -139,38 +139,38 @@ namespace BizHawk.Emulation.CPUs.M6502
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
-		private bool FlagD
+		public bool FlagD
 		{
 			get { return (P & 0x08) != 0; }
-			set { P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00)); }
+			private set { P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00)); }
 		}
 
 		/// <summary>Break Flag</summary>
-		private bool FlagB
+		public bool FlagB
 		{
 			get { return (P & 0x10) != 0; }
-			set { P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00)); }
+			private set { P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00)); }
 		}
 
 		/// <summary>T... Flag</summary>
-		private bool FlagT
+		public bool FlagT
 		{
 			get { return (P & 0x20) != 0; }
-			set { P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00)); }
+			private set { P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00)); }
 		}
 
 		/// <summary>Overflow Flag</summary>
-		private bool FlagV
+		public bool FlagV
 		{
 			get { return (P & 0x40) != 0; }
-			set { P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00)); }
+			private set { P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00)); }
 		}
 
 		/// <summary>Negative Flag</summary>
-		private bool FlagN
+		public bool FlagN
 		{
 			get { return (P & 0x80) != 0; }
-			set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
+			private set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
 		}
 
 		public int TotalExecutedCycles;

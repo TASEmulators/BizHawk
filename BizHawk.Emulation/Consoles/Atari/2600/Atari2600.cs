@@ -40,6 +40,12 @@ namespace BizHawk
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public void ResetCounters()
 		{
 			_frame = 0;

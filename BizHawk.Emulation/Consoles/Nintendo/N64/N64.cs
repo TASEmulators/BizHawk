@@ -10,7 +10,12 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Consoles.Nintendo.N64
 {
 	public class N64 : IEmulator, IVideoProvider
-	{	
+	{
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public string SystemId { get { return "N64"; } }
 
 		public string BoardName { get { return null; } }

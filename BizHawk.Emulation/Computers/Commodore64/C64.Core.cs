@@ -1,5 +1,6 @@
-﻿using System.IO;
-
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Computers.Commodore64.Disk;
@@ -85,6 +86,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			board.HardReset();
 			//disk.HardReset();
+		}
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
 		}
 	}
 

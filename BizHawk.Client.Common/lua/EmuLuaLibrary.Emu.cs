@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using LuaInterface;
 using BizHawk.Emulation.Consoles.Nintendo;
@@ -7,9 +8,10 @@ namespace BizHawk.Client.Common
 {
 	public partial class EmulatorLuaLibrary : LuaLibraryBase
 	{
-		public EmulatorLuaLibrary(Action frameAdvanceCallback, Action yieldCallback)
+		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
 			: base()
 		{
+			_lua = lua;
 			_frameAdvanceCallback = frameAdvanceCallback;
 			_yieldCallback = yieldCallback;
 		}
@@ -24,6 +26,8 @@ namespace BizHawk.Client.Common
 					"displayvsync",
 					"frameadvance",
 					"framecount",
+					"getregister",
+					"getregisters",
 					"getsystemid",
 					"islagged",
 					"lagcount",
@@ -35,6 +39,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private Lua _lua;
 		private Action _frameAdvanceCallback;
 		private Action _yieldCallback;
 
@@ -86,6 +91,21 @@ namespace BizHawk.Client.Common
 		public static int emu_framecount()
 		{
 			return Global.Emulator.Frame;
+		}
+
+		public static int emu_getregister(string name)
+		{
+			return Global.Emulator.GetCpuFlagsAndRegisters().FirstOrDefault(x => x.Key == name).Value;
+		}
+
+		public LuaTable emu_getregisters()
+		{
+			LuaTable table = _lua.NewTable();
+			foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
+			{
+				table[kvp.Key] = kvp.Value;
+			}
+			return table;
 		}
 
 		public static string emu_getsystemid()

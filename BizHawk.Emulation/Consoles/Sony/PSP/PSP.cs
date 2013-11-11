@@ -56,6 +56,10 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			}
 		}
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
 
 		bool disposed = false;
 		static PSP attachedcore = null;

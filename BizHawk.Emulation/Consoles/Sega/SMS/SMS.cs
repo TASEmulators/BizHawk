@@ -77,6 +77,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 			_lagcount = 0;
 			islag = false;
 		}
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
 		
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }

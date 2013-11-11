@@ -11,6 +11,11 @@ namespace BizHawk.Emulation.Consoles.GB
 	{
 		bool disposed = false;
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		Gameboy L;
 		Gameboy R;
 		// counter to ensure we do 35112 samples per frame

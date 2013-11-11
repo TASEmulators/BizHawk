@@ -124,6 +124,11 @@ namespace BizHawk.Emulation.Consoles.GB
 			return CurrentButtons;
 		}
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// true if the emulator is currently emulating CGB
 		/// </summary>

@@ -25,6 +25,11 @@ namespace BizHawk.Emulation.Consoles.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public static bool CheckIsPSX(DiscSystem.Disc disc)
 		{
 			bool ret = false;

@@ -80,6 +80,11 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				LagCount++;
 		}
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
         void LoadRom(byte[] rom, bool skipbios)
         {
             RomData = new byte[0x8000];

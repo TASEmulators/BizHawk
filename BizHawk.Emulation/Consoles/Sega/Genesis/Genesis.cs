@@ -243,6 +243,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 #endif
 		}
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		int vdpcallback(int level) // Musashi handler
 		{
 			InterruptCallback(level);

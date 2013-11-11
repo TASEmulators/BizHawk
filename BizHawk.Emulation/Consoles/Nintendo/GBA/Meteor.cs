@@ -10,6 +10,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 {
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public static readonly ControllerDefinition GBAController =
 		new ControllerDefinition
 		{
