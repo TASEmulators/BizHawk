@@ -26,6 +26,13 @@ namespace BizHawk.Emulation
 				new KeyValuePair<string, int>("S", theMachine.CPU.S),
 				new KeyValuePair<string, int>("X", theMachine.CPU.X),
 				new KeyValuePair<string, int>("Y", theMachine.CPU.Y),
+				new KeyValuePair<string, int>("B", theMachine.CPU.fB ? 1 : 0),
+				new KeyValuePair<string, int>("C", theMachine.CPU.fC ? 1 : 0),
+				new KeyValuePair<string, int>("D", theMachine.CPU.fD ? 1 : 0),
+				new KeyValuePair<string, int>("I", theMachine.CPU.fI ? 1 : 0),
+				new KeyValuePair<string, int>("N", theMachine.CPU.fN ? 1 : 0),
+				new KeyValuePair<string, int>("V", theMachine.CPU.fV ? 1 : 0),
+				new KeyValuePair<string, int>("Z", theMachine.CPU.fZ ? 1 : 0),
 			};
 		}
 	}
