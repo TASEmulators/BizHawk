@@ -67,6 +67,8 @@ extern "C"
 
 	__declspec(dllexport) int gambatte_linkstatus(void *core, int which);
 
+	__declspec(dllexport) void gambatte_getregs(void *core, int *dest);
+
 }
 
 

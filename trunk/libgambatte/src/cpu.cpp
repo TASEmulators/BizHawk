@@ -2833,4 +2833,18 @@ void CPU::process(const unsigned long cycles) {
 	cycleCounter_ = cycleCounter;
 }
 
+void CPU::GetRegs(int *dest)
+{
+	dest[0] = PC_;
+	dest[1] = SP;
+	dest[2] = A_;
+	dest[3] = B;
+	dest[4] = C;
+	dest[5] = D;
+	dest[6] = E;
+	dest[7] = F();
+	dest[8] = H;
+	dest[9] = L;
+}
+
 }

@@ -127,6 +127,8 @@ public:
 	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write(addr, val, cycleCounter_); }
 
 	int LinkStatus(int which) { return memory.LinkStatus(which); }
+
+	void GetRegs(int *dest);
 };
 
 }

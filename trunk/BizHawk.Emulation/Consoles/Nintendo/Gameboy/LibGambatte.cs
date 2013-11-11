@@ -402,5 +402,18 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <returns>todo</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_linkstatus(IntPtr core, int which);
+
+		/// <summary>
+		/// get reg and flag values
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="dest">length of at least 10, please</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_getregs(IntPtr core, int[] dest);
+
+		public enum RegIndicies : int
+		{
+			PC, SP, A, B, C, D, E, F, H, L
+		}
 	}
 }

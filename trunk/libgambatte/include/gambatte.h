@@ -162,6 +162,8 @@ public:
 
 	int LinkStatus(int which);
 
+	void GetRegs(int *dest);
+
 private:
 	struct Priv;
 	Priv *const p_;
