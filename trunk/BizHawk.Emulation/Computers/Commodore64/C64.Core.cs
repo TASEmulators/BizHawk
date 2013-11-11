@@ -90,7 +90,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", board.cpu.A),
+				new KeyValuePair<string, int>("X", board.cpu.X),
+				new KeyValuePair<string, int>("Y", board.cpu.Y),
+				new KeyValuePair<string, int>("S", board.cpu.S),
+				new KeyValuePair<string, int>("PC", board.cpu.PC),
+				new KeyValuePair<string, int>("Flag C", board.cpu.FlagC ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", board.cpu.FlagZ ? 1 : 0),
+				new KeyValuePair<string, int>("Flag I", board.cpu.FlagI ? 1 : 0),
+				new KeyValuePair<string, int>("Flag D", board.cpu.FlagD ? 1 : 0),
+				new KeyValuePair<string, int>("Flag B", board.cpu.FlagB ? 1 : 0),
+				new KeyValuePair<string, int>("Flag V", board.cpu.FlagV ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", board.cpu.FlagN ? 1 : 0),
+				new KeyValuePair<string, int>("Flag T", board.cpu.FlagT ? 1 : 0)
+
+			};
 		}
 	}
 
