@@ -17,6 +17,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		STIC Stic;
 		PSG Psg;
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Connect()
 		{
 			Cpu.SetIntRM(Stic.GetSr1());

@@ -78,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			
 			new EmulatorLuaLibrary(
+				_lua,
 				new Action(Frameadvance),
 				new Action(EmuYield)
 			).LuaRegister(lua, Docs);

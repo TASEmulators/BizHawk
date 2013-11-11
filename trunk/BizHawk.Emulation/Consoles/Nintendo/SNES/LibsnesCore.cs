@@ -78,6 +78,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			api.Dispose();
 		}
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
 			public MyScanlineHookManager(LibsnesCore core)

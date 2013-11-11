@@ -74,6 +74,11 @@ namespace BizHawk.Emulation.Common
 		private readonly MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			return new List<KeyValuePair<string, int>>();
+		}
 	}
 
 	public class NullSound : ISoundProvider

@@ -41,6 +41,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		//-------
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
+
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;

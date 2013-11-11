@@ -1,4 +1,6 @@
-﻿using EMU7800.Core;
+﻿using System;
+using System.Collections.Generic;
+using EMU7800.Core;
 
 namespace BizHawk.Emulation
 {
@@ -13,5 +15,10 @@ namespace BizHawk.Emulation
 		MachineBase theMachine;
 		EMU7800.Win.GameProgram GameInfo;
 		public byte[] hsram = new byte[2048];
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

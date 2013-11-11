@@ -136,6 +136,14 @@ namespace BizHawk.Emulation.Common
 		/// Subdomains of another domain are also welcome.
 		/// The MainMemory identifier will be 0 if not set
 		MemoryDomainList MemoryDomains { get; }
+
+		//Debugging
+
+		/// <summary>
+		/// Returns a list of Cpu registers and their current state
+		/// </summary>
+		/// <returns></returns>
+		List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters();
 	}
 
 	public enum DisplayType { NTSC, PAL, DENDY }
