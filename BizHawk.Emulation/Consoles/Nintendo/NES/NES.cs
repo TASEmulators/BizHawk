@@ -890,6 +890,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				new KeyValuePair<string, int>("X", cpu.X),
 				new KeyValuePair<string, int>("Y", cpu.Y),
 				new KeyValuePair<string, int>("S", cpu.S),
+				new KeyValuePair<string, int>("PC", cpu.PC),
 				new KeyValuePair<string, int>("Flag C", cpu.FlagC ? 1 : 0),
 				new KeyValuePair<string, int>("Flag Z", cpu.FlagZ ? 1 : 0),
 				new KeyValuePair<string, int>("Flag I", cpu.FlagI ? 1 : 0),

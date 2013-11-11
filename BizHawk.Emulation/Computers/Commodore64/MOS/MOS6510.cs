@@ -99,6 +99,35 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
+		public byte A
+		{
+			get { return cpu.A; } set { cpu.A = value; }
+		}
+
+		public byte X
+		{
+			get { return cpu.X; } set { cpu.X = value; }
+		}
+
+		public byte Y
+		{
+			get { return cpu.Y; } set { cpu.Y = value; }
+		}
+
+		public byte S
+		{
+			get { return cpu.S; } set { cpu.S = value; }
+		}
+
+		public bool FlagC { get { return cpu.FlagC; } }
+		public bool FlagZ { get { return cpu.FlagZ; } }
+		public bool FlagI { get { return cpu.FlagI; } }
+		public bool FlagD { get { return cpu.FlagD; } }
+		public bool FlagB { get { return cpu.FlagB; } }
+		public bool FlagV { get { return cpu.FlagV; } }
+		public bool FlagN { get { return cpu.FlagN; } }
+		public bool FlagT { get { return cpu.FlagT; } }
+
 		public byte Peek(int addr)
 		{
 			if (addr == 0x0000)

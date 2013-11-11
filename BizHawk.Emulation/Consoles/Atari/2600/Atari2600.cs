@@ -43,7 +43,23 @@ namespace BizHawk
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", cpu.A),
+				new KeyValuePair<string, int>("X", cpu.X),
+				new KeyValuePair<string, int>("Y", cpu.Y),
+				new KeyValuePair<string, int>("S", cpu.S),
+				new KeyValuePair<string, int>("PC", cpu.PC),
+				new KeyValuePair<string, int>("Flag C", cpu.FlagC ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", cpu.FlagZ ? 1 : 0),
+				new KeyValuePair<string, int>("Flag I", cpu.FlagI ? 1 : 0),
+				new KeyValuePair<string, int>("Flag D", cpu.FlagD ? 1 : 0),
+				new KeyValuePair<string, int>("Flag B", cpu.FlagB ? 1 : 0),
+				new KeyValuePair<string, int>("Flag V", cpu.FlagV ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", cpu.FlagN ? 1 : 0),
+				new KeyValuePair<string, int>("Flag T", cpu.FlagT ? 1 : 0)
+
+			};
 		}
 
 		public void ResetCounters()
