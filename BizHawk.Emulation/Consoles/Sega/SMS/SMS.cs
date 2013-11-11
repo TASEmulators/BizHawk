@@ -80,7 +80,39 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", Cpu.RegisterA),
+				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
+				new KeyValuePair<string, int>("B", Cpu.RegisterB),
+				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
+				new KeyValuePair<string, int>("C", Cpu.RegisterC),
+				new KeyValuePair<string, int>("D", Cpu.RegisterD),
+				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
+				new KeyValuePair<string, int>("E", Cpu.RegisterE),
+				new KeyValuePair<string, int>("F", Cpu.RegisterF),
+				new KeyValuePair<string, int>("H", Cpu.RegisterH),
+				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
+				new KeyValuePair<string, int>("I", Cpu.RegisterI),
+				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
+				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
+				new KeyValuePair<string, int>("L", Cpu.RegisterL),
+				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
+				new KeyValuePair<string, int>("R", Cpu.RegisterR),
+				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
+				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
+				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
+				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
+				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
+				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
+			};
 		}
 		
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }

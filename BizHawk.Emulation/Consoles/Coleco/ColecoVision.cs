@@ -82,14 +82,46 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", Cpu.RegisterA),
+				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
+				new KeyValuePair<string, int>("B", Cpu.RegisterB),
+				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
+				new KeyValuePair<string, int>("C", Cpu.RegisterC),
+				new KeyValuePair<string, int>("D", Cpu.RegisterD),
+				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
+				new KeyValuePair<string, int>("E", Cpu.RegisterE),
+				new KeyValuePair<string, int>("F", Cpu.RegisterF),
+				new KeyValuePair<string, int>("H", Cpu.RegisterH),
+				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
+				new KeyValuePair<string, int>("I", Cpu.RegisterI),
+				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
+				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
+				new KeyValuePair<string, int>("L", Cpu.RegisterL),
+				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
+				new KeyValuePair<string, int>("R", Cpu.RegisterR),
+				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
+				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
+				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
+				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
+				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
+				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
+			};
 		}
 
-        void LoadRom(byte[] rom, bool skipbios)
-        {
-            RomData = new byte[0x8000];
-            for (int i = 0; i < 0x8000; i++)
-                RomData[i] = rom[i % rom.Length];
+		void LoadRom(byte[] rom, bool skipbios)
+		{
+			RomData = new byte[0x8000];
+			for (int i = 0; i < 0x8000; i++)
+				RomData[i] = rom[i % rom.Length];
 
 			// hack to skip colecovision title screen
 			if (skipbios)
@@ -97,7 +129,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				RomData[0] = 0x55;
 				RomData[1] = 0xAA;
 			}
-        }
+		}
 
 		byte ReadPort(ushort port)
 		{
@@ -110,12 +142,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				return VDP.ReadVdpStatus();
 			}
 
-            if (port >= 0xE0)
-            {
-                if ((port & 1) == 0)
-                    return ReadController1();
-                return ReadController2();
-            }
+			if (port >= 0xE0)
+			{
+				if ((port & 1) == 0)
+					return ReadController1();
+				return ReadController2();
+			}
 
 			return 0xFF;
 		}
@@ -124,7 +156,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		{
 			port &= 0xFF;
 
-			if (port >= 0xA0 && port <= 0xBF)  
+			if (port >= 0xA0 && port <= 0xBF)
 			{
 				if ((port & 1) == 0)
 					VDP.WriteVdpData(value);
@@ -133,23 +165,23 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				return;
 			}
 
-            if (port >= 0x80 && port <= 0x9F)
-            {
-                InputPortSelection = InputPortMode.Right;
-                return;
-            }
+			if (port >= 0x80 && port <= 0x9F)
+			{
+				InputPortSelection = InputPortMode.Right;
+				return;
+			}
 
-            if (port >= 0xC0 && port <= 0xDF)
-            {
-                InputPortSelection = InputPortMode.Left;
-                return;
-            }
+			if (port >= 0xC0 && port <= 0xDF)
+			{
+				InputPortSelection = InputPortMode.Left;
+				return;
+			}
 
-            if (port >= 0xE0)
-            {
-                PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
-                return;
-            }
+			if (port >= 0xE0)
+			{
+				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+				return;
+			}
 		}
 
 		public byte[] ReadSaveRam() { return null; }
@@ -158,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public bool SaveRamModified { get; set; }
 
 		public bool DeterministicEmulation { get { return true; } }
-		
+
 		public void SaveStateText(TextWriter writer)
 		{
 			writer.WriteLine("[Coleco]\n");
@@ -173,7 +205,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			Ram.SaveAsHex(writer);
 			writer.WriteLine("[/Coleco]");
 		}
-		
+
 		public void LoadStateText(TextReader reader)
 		{
 			while (true)
