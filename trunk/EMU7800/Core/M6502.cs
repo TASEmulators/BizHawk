@@ -151,55 +151,55 @@ namespace EMU7800.Core
 
         // Carry: set if the add produced a carry, if the subtraction
         //      produced a borrow.  Also used in shift instructions.
-        bool fC
+        public bool fC
         {
             get { return fget(1 << 0); }
-            set { fset(1 << 0, value); }
+			private set { fset(1 << 0, value); }
         }
     
         // Zero: set if the result of the last operation was zero
-        bool fZ
+        public bool fZ
         {
             get { return fget(1 << 1); }
-            set { fset(1 << 1, value); }
+			private set { fset(1 << 1, value); }
         }
 
         // Irq Disable: set if maskable interrupts are disabled
-        bool fI
+        public bool fI
         {
             get { return fget(1 << 2); }
-            set { fset(1 << 2, value); }
+			private set { fset(1 << 2, value); }
         }
 
         // Decimal Mode: set if decimal mode active
-        bool fD
+        public bool fD
         {
             get { return fget(1 << 3); }
-            set { fset(1 << 3, value); }
+			private set { fset(1 << 3, value); }
         }
 
         // Brk: set if an interrupt caused by a BRK instruction,
         //      reset if caused by an internal interrupt
-        bool fB
+        public bool fB
         {
             get { return fget(1 << 4); }
-            set { fset(1 << 4, value); }
+			private set { fset(1 << 4, value); }
         }
 
         // Overflow: set if the addition of two-like-signed numbers
         //      or the subtraction of two unlike-signed numbers
         //      produces a result greater than +127 or less than -128.
-        bool fV
+        public bool fV
         {
             get { return fget(1 << 6); }
-            set { fset(1 << 6, value); }
+			private set { fset(1 << 6, value); }
         }
 
         // Negative: set if bit 7 of the accumulator is set
-        bool fN
+        public bool fN
         {
             get { return fget(1 << 7); }
-            set { fset(1 << 7, value); }
+			private set { fset(1 << 7, value); }
         }
 
         void set_fNZ(byte u8)
