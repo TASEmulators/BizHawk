@@ -126,7 +126,20 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			List<KeyValuePair<string, int>> ret = new List<KeyValuePair<string, int>>();
+			int[] data = new int[10];
+			LibGambatte.gambatte_getregs(GambatteState, data);
+			ret.Add(new KeyValuePair<string, int>("PC", data[(int)LibGambatte.RegIndicies.PC] & 0xffff));
+			ret.Add(new KeyValuePair<string, int>("SP", data[(int)LibGambatte.RegIndicies.SP] & 0xffff));
+			ret.Add(new KeyValuePair<string, int>("A", data[(int)LibGambatte.RegIndicies.A] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("B", data[(int)LibGambatte.RegIndicies.B] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("C", data[(int)LibGambatte.RegIndicies.C] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("D", data[(int)LibGambatte.RegIndicies.D] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("E", data[(int)LibGambatte.RegIndicies.E] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("F", data[(int)LibGambatte.RegIndicies.F] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("H", data[(int)LibGambatte.RegIndicies.H] & 0xff));
+			ret.Add(new KeyValuePair<string, int>("L", data[(int)LibGambatte.RegIndicies.L] & 0xff));
+			return ret;
 		}
 
 		/// <summary>

@@ -268,4 +268,8 @@ int GB::LinkStatus(int which) {
 	return p_->cpu.LinkStatus(which);
 }
 
+void GB::GetRegs(int *dest) {
+	p_->cpu.GetRegs(dest);
+}
+
 }

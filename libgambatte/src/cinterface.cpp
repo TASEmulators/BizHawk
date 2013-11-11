@@ -246,3 +246,9 @@ __declspec(dllexport) int gambatte_linkstatus(void *core, int which)
 	GB *g = (GB *) core;
 	return g->LinkStatus(which);
 }
+
+__declspec(dllexport) void gambatte_getregs(void *core, int *dest)
+{
+	GB *g = (GB *) core;
+	g->GetRegs(dest);
+}
