@@ -18,7 +18,15 @@ namespace BizHawk.Emulation
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", theMachine.CPU.A),
+				new KeyValuePair<string, int>("P", theMachine.CPU.P),
+				new KeyValuePair<string, int>("PC", theMachine.CPU.PC),
+				new KeyValuePair<string, int>("S", theMachine.CPU.S),
+				new KeyValuePair<string, int>("X", theMachine.CPU.X),
+				new KeyValuePair<string, int>("Y", theMachine.CPU.Y),
+			};
 		}
 	}
 }
