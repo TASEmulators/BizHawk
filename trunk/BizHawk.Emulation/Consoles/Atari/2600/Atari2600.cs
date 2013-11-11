@@ -58,7 +58,6 @@ namespace BizHawk
 				new KeyValuePair<string, int>("Flag V", cpu.FlagV ? 1 : 0),
 				new KeyValuePair<string, int>("Flag N", cpu.FlagN ? 1 : 0),
 				new KeyValuePair<string, int>("Flag T", cpu.FlagT ? 1 : 0)
-
 			};
 		}
 
