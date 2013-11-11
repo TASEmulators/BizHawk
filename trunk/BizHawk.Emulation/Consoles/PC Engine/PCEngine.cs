@@ -600,7 +600,22 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", Cpu.A),
+				new KeyValuePair<string, int>("X", Cpu.X),
+				new KeyValuePair<string, int>("Y", Cpu.Y),
+				new KeyValuePair<string, int>("PC", Cpu.PC),
+				new KeyValuePair<string, int>("S", Cpu.S),
+				new KeyValuePair<string, int>("MPR-0", Cpu.MPR[0]),
+				new KeyValuePair<string, int>("MPR-1", Cpu.MPR[1]),
+				new KeyValuePair<string, int>("MPR-2", Cpu.MPR[2]),
+				new KeyValuePair<string, int>("MPR-3", Cpu.MPR[3]),
+				new KeyValuePair<string, int>("MPR-4", Cpu.MPR[4]),
+				new KeyValuePair<string, int>("MPR-5", Cpu.MPR[5]),
+				new KeyValuePair<string, int>("MPR-6", Cpu.MPR[6]),
+				new KeyValuePair<string, int>("MPR-7", Cpu.MPR[7]),
+			};
 		}
 
 		public void Dispose()
