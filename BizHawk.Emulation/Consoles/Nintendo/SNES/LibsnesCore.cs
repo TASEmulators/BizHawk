@@ -80,7 +80,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			var vals = new List<KeyValuePair<string, int>>();
+			foreach (var blah in Enum.GetValues(typeof(LibsnesApi.SNES_REG)).Cast<LibsnesApi.SNES_REG>())
+			{
+				vals.Add(new KeyValuePair<string, int>(blah.ToString(), api.snes_peek_logical_register(blah)));
+			}
+			return vals;
 		}
 
 		public class MyScanlineHookManager : ScanlineHookManager
