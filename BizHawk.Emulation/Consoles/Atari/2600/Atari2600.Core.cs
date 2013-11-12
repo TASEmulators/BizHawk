@@ -132,6 +132,11 @@ namespace BizHawk
 			CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
 		}
 
+		public void ExecFetch(ushort addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+		}
+
 		public void HardReset()
 		{
 			//regenerate mapper here to make sure its state is entirely clean
@@ -174,7 +179,7 @@ namespace BizHawk
 			cpu.WriteMemory = WriteMemory;
 			cpu.PeekMemory = PeekMemory;
 			cpu.DummyReadMemory = ReadMemory;
-
+			cpu.OnExecFetch = ExecFetch;
 			// Setup TIA
 			//tia = new TIA(this, frameBuffer);
 			tia = new TIA(this);
