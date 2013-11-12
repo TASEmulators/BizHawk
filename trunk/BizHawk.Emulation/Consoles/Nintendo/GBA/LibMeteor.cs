@@ -266,6 +266,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// get current cpu regs
 		/// </summary>
 		/// <param name="dest">length 18 please</param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_getregs(int[] dest);
 
 		public static readonly string[] regnames = new string[]
