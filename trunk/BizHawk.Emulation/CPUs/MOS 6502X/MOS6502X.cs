@@ -180,6 +180,9 @@ namespace BizHawk.Emulation.CPUs.M6502
 		public Func<ushort, byte> PeekMemory;
 		public Action<ushort, byte> WriteMemory;
 
+		//this only calls when the first byte of an instruction is fetched.
+		public Action<ushort> OnExecFetch;
+
 		public void SetCallbacks
 		(
 			Func<ushort, byte> ReadMemory,

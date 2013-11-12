@@ -590,6 +590,7 @@ namespace BizHawk.Emulation.CPUs.M6502
             {
                 if (debug) Console.WriteLine(State());
                 branch_irq_hack = false;
+								if (OnExecFetch != null) OnExecFetch(PC);
                 opcode = ReadMemory(PC++);
                 mi = -1;
             }
