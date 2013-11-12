@@ -181,6 +181,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CoreComm = comm;
 			api = new LibsnesApi(CoreComm.SNES_ExePath);
 			api.snes_init();
+			api.ReadHook = ReadHook;
+			api.ExecHook = ExecHook;
+			api.WriteHook = WriteHook;
+		}
+
+		void ReadHook(uint addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+			RefreshMemoryCallbacks();
+		}
+		void ExecHook(uint addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+			RefreshMemoryCallbacks();
+		}
+		void WriteHook(uint addr, byte val)
+		{
+			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
+			RefreshMemoryCallbacks();
 		}
 
 		LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
@@ -265,7 +287,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CoreComm.CpuTraceAvailable = true;
 
 			api.snes_power();
-			api.snes_set_state_hook_exec(true);
 
 			SetupMemoryDomains(romData,sgbRomData);
 
@@ -474,6 +495,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			api.snes_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
 			api.snes_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
 
+			RefreshMemoryCallbacks();
+
 			//apparently this is one frame?
 			timeFrameCounter++;
 			api.snes_run();
@@ -488,6 +511,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//Console.WriteLine(api.MessageCounter);
 
 			api.EndBufferIO();
+		}
+
+		void RefreshMemoryCallbacks()
+		{
+			var mcs = CoreComm.MemoryCallbackSystem;
+			api.snes_set_state_hook_exec(mcs.HasExecutes);
+			api.snes_set_state_hook_read(mcs.HasReads);
+			api.snes_set_state_hook_write(mcs.HasWrites);
 		}
 
 		public DisplayType DisplayType
