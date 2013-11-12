@@ -3,7 +3,7 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class C64 : IEmulator
 	{

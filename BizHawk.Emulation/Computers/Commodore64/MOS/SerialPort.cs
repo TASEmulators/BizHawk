@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// the functions on this port are at the point of
 	// view of an external device.

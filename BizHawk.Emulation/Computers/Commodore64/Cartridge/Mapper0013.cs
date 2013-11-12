@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// Mapper for a few Domark and HES Australia games.
 	// It seems a lot of people dumping these have remapped

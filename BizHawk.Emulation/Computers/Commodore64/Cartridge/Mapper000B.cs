@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// Westermann Learning mapper.
 	// Starts up with both banks enabled, any read to DFxx

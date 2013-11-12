@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Disk
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public class VIC1541PLA
 	{

@@ -5,7 +5,7 @@ using BizHawk.Common;
 #pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete
 #pragma warning disable 219 //adelikat: Disable dumb warnings until this file is complete
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class Sid
 	{

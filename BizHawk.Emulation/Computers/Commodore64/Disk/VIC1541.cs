@@ -1,10 +1,9 @@
-﻿using BizHawk.Emulation.CPUs.M6502;
-using BizHawk.Emulation.Computers.Commodore64.MOS;
-using System;
+﻿using System;
+using BizHawk.Emulation.CPUs.M6502;
 
 #if false
 
-namespace BizHawk.Emulation.Computers.Commodore64.Disk
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public class VIC1541
 	{

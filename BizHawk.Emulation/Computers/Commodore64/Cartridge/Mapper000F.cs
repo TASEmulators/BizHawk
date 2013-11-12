@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// This is a mapper used commonly by System 3. It is
 	// also utilized by the short-lived C64 Game System.

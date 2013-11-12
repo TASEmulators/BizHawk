@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// emulates the PLA
 	// which handles all bank switching

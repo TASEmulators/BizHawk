@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// This mapper comes from Dinamic. It is in fact identical
 	// to the System 3 mapper (000F) except that bank switching is

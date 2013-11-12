@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class Vic
 	{

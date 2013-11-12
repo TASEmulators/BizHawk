@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
-namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Experimental
 {
 	sealed public partial class Vic : IVideoProvider
 	{

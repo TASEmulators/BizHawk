@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// MOS technology 6526 "CIA"
 	//
@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
 
-    sealed public class MOS6526
+	sealed public class MOS6526
 	{
 		// ------------------------------------
 
-        enum InMode
+		enum InMode
 		{
 			Phase2,
 			CNT,
@@ -21,36 +21,36 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			TimerAUnderflowCNT
 		}
 
-        enum OutMode
+		enum OutMode
 		{
 			Pulse,
 			Toggle
 		}
 
-        enum RunMode
+		enum RunMode
 		{
 			Continuous,
 			Oneshot
 		}
 
-        enum SPMode
+		enum SPMode
 		{
 			Input,
 			Output
 		}
 
-        static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
-        static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
+		static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
+		static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
 
 		// ------------------------------------
 
-        public Func<bool> ReadCNT;
-        public Func<bool> ReadFlag;
-        public Func<bool> ReadSP;
+		public Func<bool> ReadCNT;
+		public Func<bool> ReadFlag;
+		public Func<bool> ReadSP;
 
-        // ------------------------------------
+		// ------------------------------------
 
-        bool alarmSelect;
+		bool alarmSelect;
 		Region chipRegion;
 		bool cntPos;
 		bool enableIntAlarm;
@@ -62,9 +62,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		bool intSP;
 		bool[] intTimer;
 		bool pinCnt;
-        bool pinCntLast;
-        bool pinPC;
-        bool pinSP;
+		bool pinCntLast;
+		bool pinPC;
+		bool pinSP;
 		byte sr;
 		int[] timerDelay;
 		InMode[] timerInMode;
@@ -98,47 +98,47 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			todAlarm = new byte[4];
 			SetTodIn(chipRegion);
 
-            portA = new LatchedPort();
-            portB = new LatchedPort();
-            timer = new int[2];
-            timerLatch = new int[2];
-            timerOn = new bool[2];
-            underflow = new bool[2];
+			portA = new LatchedPort();
+			portB = new LatchedPort();
+			timer = new int[2];
+			timerLatch = new int[2];
+			timerOn = new bool[2];
+			underflow = new bool[2];
 
-            pinSP = true;
-        }
+			pinSP = true;
+		}
 
 		// ------------------------------------
 
 		public void ExecutePhase1()
 		{
 			// unsure if the timer actually operates in ph1
-            pinIRQ = !(
-                (intTimer[0] && enableIntTimer[0]) ||
-                (intTimer[1] && enableIntTimer[1]) ||
-                (intAlarm && enableIntAlarm) ||
-                (intSP && enableIntSP) ||
-                (intFlag && enableIntFlag)
-                );
-        }
+			pinIRQ = !(
+				(intTimer[0] && enableIntTimer[0]) ||
+				(intTimer[1] && enableIntTimer[1]) ||
+				(intAlarm && enableIntAlarm) ||
+				(intSP && enableIntSP) ||
+				(intFlag && enableIntFlag)
+				);
+		}
 
 		public void ExecutePhase2()
 		{
 			{
-                bool sumCnt = ReadCNT();
-                cntPos |= (!pinCntLast && sumCnt);
-                pinCntLast = sumCnt;
+				bool sumCnt = ReadCNT();
+				cntPos |= (!pinCntLast && sumCnt);
+				pinCntLast = sumCnt;
 
-                pinPC = true;
-                TODRun();
+				pinPC = true;
+				TODRun();
 
 				if (timerPulse[0])
 				{
-                    portA.Latch &= PBOnMask[0];
+					portA.Latch &= PBOnMask[0];
 				}
 				if (timerPulse[1])
 				{
-                    portB.Latch &= PBOnMask[1];
+					portB.Latch &= PBOnMask[1];
 				}
 
 				if (timerDelay[0] == 0)
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			pinCnt = false;
 			pinPC = true;
-	}
+		}
 
 		private void SetTodIn(Region region)
 		{
@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private byte BCDAdd(byte i, byte j, out bool overflow)
 		{
-			
+
 			{
 				int lo;
 				int hi;
@@ -255,13 +255,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void TimerRun(int index)
 		{
-			
+
 			{
 				if (timerOn[index])
 				{
 					int t = timer[index];
 					bool u = false;
-					
+
 					{
 						switch (timerInMode[index])
 						{
@@ -270,8 +270,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 								if (cntPos)
 								{
 									t--;
-                                    u = (t == 0);
-                                    intTimer[index] |= (t == 0);
+									u = (t == 0);
+									intTimer[index] |= (t == 0);
 								}
 								break;
 							case InMode.Phase2:
@@ -285,8 +285,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 								if (underflow[0])
 								{
 									t--;
-                                    u = (t == 0);
-                                    intTimer[index] |= (t == 0);
+									u = (t == 0);
+									intTimer[index] |= (t == 0);
 								}
 								break;
 							case InMode.TimerAUnderflowCNT:
@@ -294,8 +294,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 								if (underflow[0] && pinCnt)
 								{
 									t--;
-                                    u = (t == 0);
-                                    intTimer[index] |= (t == 0);
+									u = (t == 0);
+									intTimer[index] |= (t == 0);
 								}
 								break;
 						}
@@ -303,23 +303,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						// underflow?
 						if (u)
 						{
-                            timerDelay[index] = 1;
-                            t = timerLatch[index];
+							timerDelay[index] = 1;
+							t = timerLatch[index];
 							if (timerRunMode[index] == RunMode.Oneshot)
 								timerOn[index] = false;
 
 							if (timerPortEnable[index])
 							{
 								// force port B bit to output
-                                portB.Direction |= PBOnBit[index];
+								portB.Direction |= PBOnBit[index];
 								switch (timerOutMode[index])
 								{
 									case OutMode.Pulse:
 										timerPulse[index] = true;
-                                        portB.Latch |= PBOnBit[index];
+										portB.Latch |= PBOnBit[index];
 										break;
 									case OutMode.Toggle:
-                                        portB.Latch ^= PBOnBit[index];
+										portB.Latch ^= PBOnBit[index];
 										break;
 								}
 							}
@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void TODRun()
 		{
-			
+
 			{
 				bool todV;
 
@@ -416,15 +416,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return val;
 		}
 
-        public bool ReadCNTBuffer()
-        {
-            return pinCnt;
-        }
+		public bool ReadCNTBuffer()
+		{
+			return pinCnt;
+		}
 
-        public bool ReadPCBuffer()
-        {
-            return pinPC;
-        }
+		public bool ReadPCBuffer()
+		{
+			return pinPC;
+		}
 
 		private byte ReadRegister(int addr)
 		{
@@ -440,10 +440,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					val = (byte)(portB.ReadInput(ReadPortB()) & PortBMask);
 					break;
 				case 0x2:
-                    val = portA.Direction;
+					val = portA.Direction;
 					break;
 				case 0x3:
-                    val = portB.Direction;
+					val = portB.Direction;
 					break;
 				case 0x4:
 					timerVal = ReadTimerValue(0);
@@ -527,10 +527,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return val;
 		}
 
-        public bool ReadSPBuffer()
-        {
-            return pinSP;
-        }
+		public bool ReadSPBuffer()
+		{
+			return pinSP;
+		}
 
 		private int ReadTimerValue(int index)
 		{
@@ -549,7 +549,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
+			SaveState.SyncObject(ser, this);
 		}
 
 		public void Write(int addr, byte val)
@@ -602,16 +602,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
-                    portA.Latch = val;
+					portA.Latch = val;
 					break;
 				case 0x1:
-                    portB.Latch = val;
+					portB.Latch = val;
 					break;
 				case 0x2:
-                    portA.Direction = val;
+					portA.Direction = val;
 					break;
 				case 0x3:
-                    portB.Direction = val;
+					portB.Direction = val;
 					break;
 				case 0x4:
 					timerLatch[0] &= 0xFF00;
@@ -707,13 +707,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-        public byte PortAMask = 0xFF;
-        public byte PortBMask = 0xFF;
+		public byte PortAMask = 0xFF;
+		public byte PortBMask = 0xFF;
 
 		bool pinIRQ;
-        LatchedPort portA;
-        LatchedPort portB;
-        int[] timer;
+		LatchedPort portA;
+		LatchedPort portB;
+		int[] timer;
 		int[] timerLatch;
 		bool[] timerOn;
 		bool[] underflow;
@@ -730,54 +730,54 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pinIRQ = true;
 		}
 
-        public byte PortAData
-        {
-            get
-            {
-                return portA.ReadOutput();
-            }
-        }
+		public byte PortAData
+		{
+			get
+			{
+				return portA.ReadOutput();
+			}
+		}
 
-        public byte PortADirection
-        {
-            get
-            {
-                return portA.Direction;
-            }
-        }
+		public byte PortADirection
+		{
+			get
+			{
+				return portA.Direction;
+			}
+		}
 
-        public byte PortALatch
-        {
-            get
-            {
-                return portA.Latch;
-            }
-        }
+		public byte PortALatch
+		{
+			get
+			{
+				return portA.Latch;
+			}
+		}
 
-        public byte PortBData
-        {
-            get
-            {
-                return portB.ReadOutput();
-            }
-        }
+		public byte PortBData
+		{
+			get
+			{
+				return portB.ReadOutput();
+			}
+		}
 
-        public byte PortBDirection
-        {
-            get
-            {
-                return portB.Direction;
-            }
-        }
+		public byte PortBDirection
+		{
+			get
+			{
+				return portB.Direction;
+			}
+		}
 
-        public byte PortBLatch
-        {
-            get
-            {
-                return portB.Latch;
-            }
-        }
+		public byte PortBLatch
+		{
+			get
+			{
+				return portB.Latch;
+			}
+		}
 
-        public bool ReadIRQBuffer() { return pinIRQ; }
-    }
+		public bool ReadIRQBuffer() { return pinIRQ; }
+	}
 }

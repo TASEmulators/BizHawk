@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Computers.Commodore64.Cartridge;
-using BizHawk.Emulation.Computers.Commodore64.Disk;
-using BizHawk.Emulation.Computers.Commodore64.MOS;
 
-
-namespace BizHawk.Emulation.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public enum Region
 	{

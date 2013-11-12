@@ -1,24 +1,24 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// ROM chips
 	// 2332: 32 kbit (4kbyte)
 	// 2364: 64 kbit (8kbyte)
 	// 23128: 128 kbit (16kbyte)
 
-    public enum Chip23XXmodel
+	public enum Chip23XXmodel
 	{
 		Chip2332,
 		Chip2364,
 		Chip23128
 	}
 
-    sealed public class Chip23XX
+	sealed public class Chip23XX
 	{
-        int addrMask;
-        byte[] rom;
+		int addrMask;
+		byte[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{
@@ -55,6 +55,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
-        }
+		}
 	}
 }

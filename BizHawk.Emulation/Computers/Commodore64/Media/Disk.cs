@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Media
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public class Track
 	{

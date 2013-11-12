@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// this is the base cartridge class
 

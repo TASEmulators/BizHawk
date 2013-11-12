@@ -1,6 +1,4 @@
-﻿using BizHawk.Emulation.Computers.Commodore64.MOS;
-
-namespace BizHawk.Emulation.Computers.Commodore64
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class Motherboard
 	{
@@ -28,48 +26,48 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-        byte cia0InputLatchA;
-        byte cia0InputLatchB;
-        int pollIndex;
+		byte cia0InputLatchA;
+		byte cia0InputLatchB;
+		int pollIndex;
 
 		public void PollInput()
 		{
 			// scan joysticks
-            pollIndex = 0;
-            for (int j = 0; j < 5; j++)
+			pollIndex = 0;
+			for (int j = 0; j < 5; j++)
 			{
-                for (int i = 0; i < 2; i++)
-                {
-                    joystickPressed[pollIndex++] = controller[joystickMatrix[i, j]] ? -1 : 0;
+				for (int i = 0; i < 2; i++)
+				{
+					joystickPressed[pollIndex++] = controller[joystickMatrix[i, j]] ? -1 : 0;
 				}
 			}
 
 			// scan keyboard
-            pollIndex = 0;
-            for (int i = 0; i < 8; i++)
+			pollIndex = 0;
+			for (int i = 0; i < 8; i++)
 			{
-                for (int j = 0; j < 8; j++)
+				for (int j = 0; j < 8; j++)
 				{
-                    keyboardPressed[pollIndex++] = controller[keyboardMatrix[i, j]] ? -1 : 0;
+					keyboardPressed[pollIndex++] = controller[keyboardMatrix[i, j]] ? -1 : 0;
 				}
 			}
 		}
 
 		private void WriteInputPort()
 		{
-            byte portA = cia0.PortAData;
-            byte portB = cia0.PortBData;
+			byte portA = cia0.PortAData;
+			byte portB = cia0.PortBData;
 			byte resultA = 0xFF;
 			byte resultB = 0xFF;
 			byte joyA = 0xFF;
 			byte joyB = 0xFF;
 
-            pollIndex = 0;
+			pollIndex = 0;
 			for (int i = 0; i < 8; i++)
 			{
 				for (int j = 0; j < 8; j++)
 				{
-                    if (keyboardPressed[pollIndex++] != 0)
+					if (keyboardPressed[pollIndex++] != 0)
 					{
 						if (((portA & inputBitSelect[i]) == 0) || ((portB & inputBitSelect[j]) == 0))
 						{
@@ -80,23 +78,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
-            pollIndex = 0;
+			pollIndex = 0;
 			for (int i = 0; i < 5; i++)
 			{
-                if (joystickPressed[pollIndex++] != 0)
-                    joyB &= inputBitMask[i];
-                if (joystickPressed[pollIndex++] != 0)
+				if (joystickPressed[pollIndex++] != 0)
+					joyB &= inputBitMask[i];
+				if (joystickPressed[pollIndex++] != 0)
 					joyA &= inputBitMask[i];
 			}
 
 			resultA &= joyA;
 			resultB &= joyB;
 
-            cia0InputLatchA = resultA;
+			cia0InputLatchA = resultA;
 			cia0InputLatchB = resultB;
 
-            // this joystick has special rules.
-            cia0.PortAMask = joyA;
+			// this joystick has special rules.
+			cia0.PortAMask = joyA;
 		}
 	}
 }

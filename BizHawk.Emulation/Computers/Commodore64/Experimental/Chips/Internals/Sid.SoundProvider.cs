@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Experimental
 {
 	sealed public partial class Sid
 	{

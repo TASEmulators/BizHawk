@@ -1,157 +1,157 @@
 ﻿using System;
 using System.Drawing;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class Vic
 	{
-        public Func<int, byte> ReadColorRam;
-        public Func<int, byte> ReadMemory;
+		public Func<int, byte> ReadColorRam;
+		public Func<int, byte> ReadMemory;
 
-        public bool ReadAECBuffer() { return pinAEC; }
-        public bool ReadBABuffer() { return pinBA; }
-        public bool ReadIRQBuffer() { return pinIRQ; }
+		public bool ReadAECBuffer() { return pinAEC; }
+		public bool ReadBABuffer() { return pinBA; }
+		public bool ReadIRQBuffer() { return pinIRQ; }
 
-        int cyclesPerSec;
-        int irqShift;
+		int cyclesPerSec;
+		int irqShift;
 		int[][] pipeline;
 		int totalCycles;
 		int totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
-            {
-                this.hblankStart = hblankStart;
-                this.hblankEnd = hblankEnd;
-                this.vblankStart = vblankStart;
-                this.vblankEnd = vblankEnd;
+			{
+				this.hblankStart = hblankStart;
+				this.hblankEnd = hblankEnd;
+				this.vblankStart = vblankStart;
+				this.vblankEnd = vblankEnd;
 
-                totalCycles = newCycles;
+				totalCycles = newCycles;
 				totalLines = newLines;
 				pipeline = newPipeline;
 				cyclesPerSec = newCyclesPerSec;
 
-                bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
-                bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
+				bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
+				bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
 
-                buf = new int[bufWidth * bufHeight];
+				buf = new int[bufWidth * bufHeight];
 				bufLength = buf.Length;
 
-                sprites = new SpriteGenerator[8];
+				sprites = new SpriteGenerator[8];
 				for (int i = 0; i < 8; i++)
-                    sprites[i] = new SpriteGenerator();
+					sprites[i] = new SpriteGenerator();
 
 				bufferC = new int[40];
 				bufferG = new int[40];
 			}
 		}
 
-        public int CyclesPerFrame
-        {
-            get
-            {
-                return (totalCycles * totalLines);
-            }
-        }
+		public int CyclesPerFrame
+		{
+			get
+			{
+				return (totalCycles * totalLines);
+			}
+		}
 
-        public int CyclesPerSecond
-        {
-            get
-            {
-                return cyclesPerSec;
-            }
-        }
+		public int CyclesPerSecond
+		{
+			get
+			{
+				return cyclesPerSec;
+			}
+		}
 
-        public void ExecutePhase1()
-        {
-            //xScroll = 1;
-            {
-                // raster IRQ compare
-                if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
-                {
-                    if (rasterLine != lastRasterLine)
-                        if (rasterLine == rasterInterruptLine)
-                            intRaster = true;
-                    lastRasterLine = rasterLine;
-                }
+		public void ExecutePhase1()
+		{
+			//xScroll = 1;
+			{
+				// raster IRQ compare
+				if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
+				{
+					if (rasterLine != lastRasterLine)
+						if (rasterLine == rasterInterruptLine)
+							intRaster = true;
+					lastRasterLine = rasterLine;
+				}
 
-                // display enable compare
-                if (rasterLine == 0x030)
-                    badlineEnable |= displayEnable;
+				// display enable compare
+				if (rasterLine == 0x030)
+					badlineEnable |= displayEnable;
 
-                // badline compare
-                if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
-                {
-                    badline = true;
-                }
-                else
-                {
-                    badline = false;
-                }
+				// badline compare
+				if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
+				{
+					badline = true;
+				}
+				else
+				{
+					badline = false;
+				}
 
-                // go into display state on a badline
-                if (badline)
-                    idle = false;
+				// go into display state on a badline
+				if (badline)
+					idle = false;
 
-                // process some sprite crunch vars
-                foreach (SpriteGenerator spr in sprites)
-                    if (!spr.yExpand) spr.yCrunch = true;
+				// process some sprite crunch vars
+				foreach (SpriteGenerator spr in sprites)
+					if (!spr.yExpand) spr.yCrunch = true;
 
-                ParseCycle();
+				ParseCycle();
 
-                //xOffset = 0;
-                Render();
+				//xOffset = 0;
+				Render();
 
-                // if the BA counter is nonzero, allow CPU bus access
-                UpdateBA();
-                pinAEC = false;
+				// if the BA counter is nonzero, allow CPU bus access
+				UpdateBA();
+				pinAEC = false;
 
-                // must always come last
-                //UpdatePins();
-            }
-        }
+				// must always come last
+				//UpdatePins();
+			}
+		}
 
-        public void ExecutePhase2()
-        {
+		public void ExecutePhase2()
+		{
 
-            {
-                ParseCycle();
+			{
+				ParseCycle();
 
-                // advance cycle and optionally raster line
-                cycle++;
-                if (cycle == totalCycles)
-                {
-                    if (rasterLine == borderB)
-                        borderOnVertical = true;
-                    if (rasterLine == borderT && displayEnable)
-                        borderOnVertical = false;
+				// advance cycle and optionally raster line
+				cycle++;
+				if (cycle == totalCycles)
+				{
+					if (rasterLine == borderB)
+						borderOnVertical = true;
+					if (rasterLine == borderT && displayEnable)
+						borderOnVertical = false;
 
-                    if (rasterLine == vblankStart)
-                        vblank = true;
-                    if (rasterLine == vblankEnd)
-                        vblank = false;
+					if (rasterLine == vblankStart)
+						vblank = true;
+					if (rasterLine == vblankEnd)
+						vblank = false;
 
-                    cycleIndex = 0;
-                    cycle = 0;
-                    rasterLine++;
-                    if (rasterLine == totalLines)
-                    {
-                        rasterLine = 0;
-                        vcbase = 0;
-                        vc = 0;
-                    }
-                }
+					cycleIndex = 0;
+					cycle = 0;
+					rasterLine++;
+					if (rasterLine == totalLines)
+					{
+						rasterLine = 0;
+						vcbase = 0;
+						vc = 0;
+					}
+				}
 
-                Render();
-                UpdateBA();
-                pinAEC = (baCount > 0);
+				Render();
+				UpdateBA();
+				pinAEC = (baCount > 0);
 
-                // must always come last
-                UpdatePins();
-            }
-        }
+				// must always come last
+				UpdatePins();
+			}
+		}
 
-        private void UpdateBA()
+		private void UpdateBA()
 		{
 			if (pinBA)
 				baCount = baResetCounter;
@@ -163,8 +163,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			borderL = columnSelect ? 0x018 : 0x01F;
 			borderR = columnSelect ? 0x158 : 0x14F;
-            //borderL = columnSelect ? 28 : 35;
-            //borderR = columnSelect ? 348 : 339;
+			//borderL = columnSelect ? 28 : 35;
+			//borderR = columnSelect ? 348 : 339;
 			borderT = rowSelect ? 0x033 : 0x037;
 			borderB = rowSelect ? 0x0FB : 0x0F7;
 		}
@@ -177,39 +177,39 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				(enableIntSpriteCollision & intSpriteCollision) |
 				(enableIntLightPen & intLightPen));
 
-            irqShift <<= 1;
-            irqShift |= (irqTemp ? 0x1 : 0x0);
-            pinIRQ = (irqShift & 0x1) != 0;
+			irqShift <<= 1;
+			irqShift |= (irqTemp ? 0x1 : 0x0);
+			pinIRQ = (irqShift & 0x1) != 0;
 		}
 
-        private void UpdateVideoMode()
-        {
-            if (!extraColorMode && !bitmapMode && !multicolorMode)
-            {
-                videoMode = VicVideoMode.Mode000;
-                return;
-            }
-            else if (!extraColorMode && !bitmapMode && multicolorMode)
-            {
-                videoMode = VicVideoMode.Mode001;
-                return;
-            }
-            else if (!extraColorMode && bitmapMode && !multicolorMode)
-            {
-                videoMode = VicVideoMode.Mode010;
-                return;
-            }
-            else if (!extraColorMode && bitmapMode && multicolorMode)
-            {
-                videoMode = VicVideoMode.Mode011;
-                return;
-            }
-            else if (extraColorMode && !bitmapMode && !multicolorMode)
-            {
-                videoMode = VicVideoMode.Mode100;
-                return;
-            }
-            videoMode = VicVideoMode.ModeBad;
-        }
+		private void UpdateVideoMode()
+		{
+			if (!extraColorMode && !bitmapMode && !multicolorMode)
+			{
+				videoMode = VicVideoMode.Mode000;
+				return;
+			}
+			else if (!extraColorMode && !bitmapMode && multicolorMode)
+			{
+				videoMode = VicVideoMode.Mode001;
+				return;
+			}
+			else if (!extraColorMode && bitmapMode && !multicolorMode)
+			{
+				videoMode = VicVideoMode.Mode010;
+				return;
+			}
+			else if (!extraColorMode && bitmapMode && multicolorMode)
+			{
+				videoMode = VicVideoMode.Mode011;
+				return;
+			}
+			else if (extraColorMode && !bitmapMode && !multicolorMode)
+			{
+				videoMode = VicVideoMode.Mode100;
+				return;
+			}
+			videoMode = VicVideoMode.ModeBad;
+		}
 	}
 }

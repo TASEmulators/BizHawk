@@ -1,9 +1,7 @@
 ﻿using System;
-
 using BizHawk.Common;
-using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public class CartridgePort
 	{

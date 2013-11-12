@@ -1,9 +1,9 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// sid
 	static public class MOS6581
 	{
-        static int[][] waveTable = new int[][]
+		static int[][] waveTable = new int[][]
 		{
 			new int[] {
 				0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 

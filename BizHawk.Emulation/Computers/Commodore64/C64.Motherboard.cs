@@ -1,10 +1,9 @@
-﻿using BizHawk.Emulation.Computers.Commodore64.MOS;
-using System.Reflection;
+﻿using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	/// <summary>
 	/// Contains the onboard chipset and glue.
