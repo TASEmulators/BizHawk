@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -13,7 +14,13 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			var left = L.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
+
+			var right = R.GetCpuFlagsAndRegisters()
+				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
+
+			return left.Union(right).ToList();
 		}
 
 		Gameboy L;
