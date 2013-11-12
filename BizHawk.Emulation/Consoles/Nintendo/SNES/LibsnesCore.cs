@@ -195,19 +195,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			CoreComm.MemoryCallbackSystem.CallRead(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			RefreshMemoryCallbacks();
+			//EDIT: for now, theres some IPC re-entrancy problem
+			//RefreshMemoryCallbacks();
 		}
 		void ExecHook(uint addr)
 		{
 			CoreComm.MemoryCallbackSystem.CallExecute(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			RefreshMemoryCallbacks();
+			//EDIT: for now, theres some IPC re-entrancy problem
+			//RefreshMemoryCallbacks();
 		}
 		void WriteHook(uint addr, byte val)
 		{
 			CoreComm.MemoryCallbackSystem.CallWrite(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
-			RefreshMemoryCallbacks();
+			//EDIT: for now, theres some IPC re-entrancy problem
+			//RefreshMemoryCallbacks();
 		}
 
 		LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
