@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Computers.Commodore64.Tape
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	// common tape drive that works with the C64.
 

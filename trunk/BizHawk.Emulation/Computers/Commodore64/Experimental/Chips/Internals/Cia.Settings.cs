@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Experimental.Chips.Internals
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Experimental
 {
-    public class CiaSettings
-    {
-    }
+	public class CiaSettings
+	{
+	}
 }

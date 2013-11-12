@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Media
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public static class D64
 	{

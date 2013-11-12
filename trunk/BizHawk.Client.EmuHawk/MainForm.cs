@@ -12,7 +12,7 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Calculator;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.Emulation.Consoles.GB;

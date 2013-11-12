@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	sealed public partial class C64 : IEmulator
 	{
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						//    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
 						//    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
 						//}
-						Media.PRG.Load(board.pla, inputFileInfo.Data);
+						PRG.Load(board.pla, inputFileInfo.Data);
 						loadPrg = false;
 					}
 				}
