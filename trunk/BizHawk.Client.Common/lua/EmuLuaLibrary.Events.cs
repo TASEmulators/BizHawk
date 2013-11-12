@@ -24,6 +24,7 @@ namespace BizHawk.Client.Common
 					"onframestart",
 					"oninputpoll",
 					"onloadstate",
+					"onmemoryexecute",
 					"onmemoryread",
 					"onmemorywrite",
 					"onsavestate",
@@ -159,13 +160,20 @@ namespace BizHawk.Client.Common
 			return nlf.GUID.ToString();
 		}
 
+		public string event_onmemoryexecute(LuaFunction luaf, object address, string name = null)
+		{
+			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, name);
+			_luaFunctions.Add(nlf);
+			Global.CoreComm.MemoryCallbackSystem.AddExecute(nlf.Callback, LuaUInt(address));
+			return nlf.GUID.ToString();
+		}
+
 		public string event_onmemoryread(LuaFunction luaf, object address = null, string name = null)
 		{
 			NamedLuaFunction nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, name);
 			_luaFunctions.Add(nlf);
 			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, (address != null ? LuaUInt(address) : (uint?)null));
 			return nlf.GUID.ToString();
-			
 		}
 
 		public string event_onmemorywrite(LuaFunction luaf, object address = null, string name = null)
