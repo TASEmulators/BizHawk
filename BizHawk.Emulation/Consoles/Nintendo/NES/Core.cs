@@ -160,6 +160,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 				};
 			cpu.BCD_Enabled = false;
+			cpu.OnExecFetch = ExecFetch;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
@@ -511,6 +512,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//old data bus values from previous reads
 		public byte DB;
+
+		public void ExecFetch(ushort addr)
+		{
+			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+		}
 
 		public byte ReadMemory(ushort addr)
 		{

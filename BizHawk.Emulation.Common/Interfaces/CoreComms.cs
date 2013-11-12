@@ -199,6 +199,17 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public void CallExecute(uint addr)
+		{
+			for (int i = 0; i < _writes.Count; i++)
+			{
+				if (_writeAddrs[i] == addr)
+				{
+					_writes[i]();
+				}
+			}
+		}
+
 		public bool HasReads { get { return _reads.Any(); } }
 		public bool HasWrites { get { return _writes.Any(); } }
 
