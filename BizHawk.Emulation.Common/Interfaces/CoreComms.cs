@@ -165,6 +165,9 @@ namespace BizHawk.Emulation.Common
 		private List<Action> _writes = new List<Action>();
 		private List<uint?> _writeAddrs = new List<uint?>();
 
+		private List<Action> _executes = new List<Action>();
+		private List<uint> _execAddrs = new List<uint>();
+
 		public void AddRead(Action function, uint? addr)
 		{
 			_reads.Add(function);
@@ -175,6 +178,12 @@ namespace BizHawk.Emulation.Common
 		{
 			_writes.Add(function);
 			_writeAddrs.Add(addr);
+		}
+
+		public void AddExecute(Action function, uint addr)
+		{
+			_executes.Add(function);
+			_execAddrs.Add(addr);
 		}
 
 		public void CallRead(uint addr)
@@ -201,17 +210,18 @@ namespace BizHawk.Emulation.Common
 
 		public void CallExecute(uint addr)
 		{
-			for (int i = 0; i < _writes.Count; i++)
+			for (int i = 0; i < _executes.Count; i++)
 			{
-				if (_writeAddrs[i] == addr)
+				if (_execAddrs[i] == addr)
 				{
-					_writes[i]();
+					_executes[i]();
 				}
 			}
 		}
 
 		public bool HasReads { get { return _reads.Any(); } }
 		public bool HasWrites { get { return _writes.Any(); } }
+		public bool HasExecutes { get { return _executes.Any(); } }
 
 		public void Remove(Action action)
 		{
@@ -232,6 +242,15 @@ namespace BizHawk.Emulation.Common
 					_writeAddrs.Remove(_writeAddrs[i]);
 				}
 			}
+
+			for (int i = 0; i < _executes.Count; i++)
+			{
+				if (_executes[i] == action)
+				{
+					_executes.Remove(_executes[i]);
+					_execAddrs.Remove(_execAddrs[i]);
+				}
+			}
 		}
 
 		public void RemoveAll(IEnumerable<Action> actions)
@@ -248,6 +267,8 @@ namespace BizHawk.Emulation.Common
 			_readAddrs.Clear();
 			_writes.Clear();
 			_writes.Clear();
+			_executes.Clear();
+			_execAddrs.Clear();
 		}
 	}
 }
