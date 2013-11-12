@@ -9,7 +9,7 @@ using BizHawk.Emulation.CPUs.Z80;
 
 //http://www.ticalc.org/pub/text/calcinfo/
 
-namespace BizHawk.Emulation.Consoles.Calculator
+namespace BizHawk.Emulation.Calculator
 {
 	public class TI83 : IEmulator
 	{

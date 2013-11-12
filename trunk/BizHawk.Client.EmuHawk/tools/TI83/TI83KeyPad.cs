@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Calculator;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
