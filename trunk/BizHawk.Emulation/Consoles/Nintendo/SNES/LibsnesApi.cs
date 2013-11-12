@@ -965,6 +965,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					case eMessage.eMessage_snes_cb_hook_exec:
 						{
 							var addr = brPipe.ReadInt32();
+							ExecHook((uint)addr);
 							break;
 						}
 					case eMessage.eMessage_snes_cb_hook_read:
