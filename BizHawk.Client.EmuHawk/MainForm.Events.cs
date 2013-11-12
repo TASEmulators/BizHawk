@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Calculator;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
