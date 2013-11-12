@@ -12,7 +12,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 	{
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			var ret = new List<KeyValuePair<string, int>>();
+			int[] data = new int[LibMeteor.regnames.Length];
+			LibMeteor.libmeteor_getregs(data);
+			for (int i = 0; i < data.Length; i++)
+				ret.Add(new KeyValuePair<string, int>(LibMeteor.regnames[i], data[i]));
+			return ret;
 		}
 
 		public static readonly ControllerDefinition GBAController =

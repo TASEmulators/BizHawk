@@ -261,5 +261,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <param name="scanline">0-227, 160 occurring first in a frame</param>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_setscanlinecallback(ScanlineCallback callback, int scanline);
+
+		/// <summary>
+		/// get current cpu regs
+		/// </summary>
+		/// <param name="dest">length 18 please</param>
+		public static extern void libmeteor_getregs(int[] dest);
+
+		public static readonly string[] regnames = new string[]
+		{
+			"r0",
+			"r1",
+			"r2",
+			"r3",
+			"r4",
+			"r5",
+			"r6",
+			"r7",
+			"r8",
+			"r9",
+			"r10",
+			"r11",
+			"r12",
+			"r13",
+			"r14",
+			"r15",
+			"cpsr",
+			"spsr"
+		};
 	}
 }
