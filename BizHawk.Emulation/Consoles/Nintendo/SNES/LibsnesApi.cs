@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO.MemoryMappedFiles;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 
 	/// <summary>

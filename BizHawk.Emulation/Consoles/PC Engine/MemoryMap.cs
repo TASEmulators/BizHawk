@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.TurboGrafx
+namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public partial class PCEngine
 	{

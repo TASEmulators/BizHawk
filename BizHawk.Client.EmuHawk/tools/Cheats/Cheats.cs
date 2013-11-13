@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Nintendo;
-using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Sega.Genesis;
 
 namespace BizHawk.Client.EmuHawk
 {

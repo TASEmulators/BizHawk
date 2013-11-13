@@ -5,7 +5,7 @@ using System.Globalization;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sega
+namespace BizHawk.Emulation.Cores.Sega.Genesis
 {
 	public sealed partial class GenVDP : IVideoProvider
 	{

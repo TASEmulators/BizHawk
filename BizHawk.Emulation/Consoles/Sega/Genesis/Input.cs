@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sega
+namespace BizHawk.Emulation.Cores.Sega.Genesis
 {
 	partial class Genesis
 	{

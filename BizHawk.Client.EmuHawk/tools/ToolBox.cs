@@ -3,10 +3,9 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Cores.Calculators;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
-using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {

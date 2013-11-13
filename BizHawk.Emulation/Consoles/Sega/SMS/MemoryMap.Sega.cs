@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Sega
+﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{

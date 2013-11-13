@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.Z80;
 
 
-namespace BizHawk.Emulation.Consoles.Sega
+namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public enum VdpMode { SMS, GameGear }
 

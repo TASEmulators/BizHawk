@@ -21,7 +21,7 @@ using BizHawk.Emulation.Sound;
  
 **********************************************************/
 
-namespace BizHawk.Emulation.Consoles.Sega
+namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public sealed partial class SMS : IEmulator
 	{

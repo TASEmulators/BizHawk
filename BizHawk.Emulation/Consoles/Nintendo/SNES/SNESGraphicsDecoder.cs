@@ -7,7 +7,7 @@
 
 using System;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 
 	public unsafe class SNESGraphicsDecoder : IDisposable

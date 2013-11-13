@@ -13,7 +13,7 @@ using BizHawk.Emulation.Sound;
 using Native68000;
 
 
-namespace BizHawk.Emulation.Consoles.Sega
+namespace BizHawk.Emulation.Cores.Sega.Genesis
 {
 	public sealed partial class Genesis : IEmulator
 	{

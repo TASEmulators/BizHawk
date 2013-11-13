@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -36,9 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-            //including transposition
-            //Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-            //Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
+			//including transposition
+			//Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
+			//Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 
 			GameGenieTable.Add('D', 0);  	//0000
 			GameGenieTable.Add('F', 1);	//0001

@@ -12,20 +12,28 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
+
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Intellivision;
+using BizHawk.Emulation.Cores.PCEngine;
+
 using BizHawk.Emulation.Consoles.Nintendo;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
-using BizHawk.Emulation.Consoles.Sega;
-using BizHawk.Emulation.Consoles.TurboGrafx;
-using BizHawk.Emulation.DiscSystem;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
+
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Sega.Genesis;
+using BizHawk.Emulation.Cores.Sega.Saturn;
+
+using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Cores.Sony.PSP;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1457,10 +1465,10 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		private void SaturnSetPrefs(Emulation.Consoles.Sega.Saturn.Yabause e = null)
+		private void SaturnSetPrefs(Yabause e = null)
 		{
 			if (e == null)
-				e = Global.Emulator as Emulation.Consoles.Sega.Saturn.Yabause;
+				e = Global.Emulator as Yabause;
 
 			if (Global.Config.SaturnUseGL != e.GLMode)
 			{
@@ -3128,20 +3136,20 @@ namespace BizHawk.Client.EmuHawk
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
 										return false;
 									}
-									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+									var saturn = new Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
 									nextEmulator = saturn;
 									SaturnSetPrefs(saturn);
 								}
 								break;
 							case "PSP":
 								{
-									var psp = new Emulation.Consoles.Sony.PSP.PSP(nextComm, file.Name);
+									var psp = new PSP(nextComm, file.Name);
 									nextEmulator = psp;
 								}
 								break;
 							case "PSX":
 								{
-									var psx = new Emulation.Consoles.PSX.Octoshock(nextComm);
+									var psx = new Octoshock(nextComm);
 									nextEmulator = psx;
 									psx.LoadCuePath(file.CanonicalFullPath);
 									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";

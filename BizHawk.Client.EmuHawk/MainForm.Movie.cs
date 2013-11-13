@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Consoles.Sega;
-using BizHawk.Emulation.Consoles.Sega.Saturn;
-using BizHawk.Emulation.Consoles.Sony.PSP;
+using BizHawk.Emulation.Cores.Sega.Genesis;
+using BizHawk.Emulation.Cores.Sega.Saturn;
+using BizHawk.Emulation.Cores.Sony.PSP;
 
 namespace BizHawk.Client.EmuHawk
 {

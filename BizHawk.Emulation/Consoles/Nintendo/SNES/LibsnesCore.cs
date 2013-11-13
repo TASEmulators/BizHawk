@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.SNES
+namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 
 	public class ScanlineHookManager

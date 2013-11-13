@@ -9,7 +9,7 @@ using BizHawk.Emulation.CPUs.H6280;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Sound;
 
-namespace BizHawk.Emulation.Consoles.TurboGrafx
+namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
