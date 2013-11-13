@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public delegate void MemoryCallback(uint address);
 
 		/// <summary>
-		/// set a callback to occur immediately BEFORE EVERY cpu read
+		/// set a callback to occur immediately BEFORE EVERY cpu read, except for opcode first byte fetches
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="callback">null to clear</param>
@@ -160,6 +160,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="callback">null to clear</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setwritecallback(IntPtr core, MemoryCallback callback);
+
+		/// <summary>
+		/// set a callback to occur immediately BEFORE EVERY cpu opcode (first byte) fetch
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setexeccallback(IntPtr core, MemoryCallback callback);
 
 		/// <summary>
 		/// type of the cpu trace callback

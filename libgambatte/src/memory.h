@@ -35,6 +35,7 @@ class Memory {
 	
 	void (*readCallback)(unsigned);
 	void (*writeCallback)(unsigned);
+	void (*execCallback)(unsigned);
 
 	InputGetter *getInput;
 	unsigned long divLastUpdate;
@@ -125,10 +126,23 @@ public:
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
 
+	unsigned read_excb(const unsigned P, const unsigned long cycleCounter) {
+		if (execCallback)
+			execCallback(P);
+		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
+	}
+
 	unsigned peek(const unsigned P) {
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_peek(P);
 	}
 
+	void write_nocb(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
+		if (cart.wmem(P >> 12)) {
+			cart.wmem(P >> 12)[P] = data;
+		} else
+			nontrivial_write(P, data, cycleCounter);
+	}
+	
 	void write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
 		if (cart.wmem(P >> 12)) {
 			cart.wmem(P >> 12)[P] = data;
@@ -160,6 +174,9 @@ public:
 	}
 	void setWriteCallback(void (*callback)(unsigned)) {
 		this->writeCallback = callback;
+	}
+	void setExecCallback(void (*callback)(unsigned)) {
+		this->execCallback = callback;
 	}
 
 	void setScanlineCallback(void (*callback)(), int sl) {

@@ -488,6 +488,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		LibGambatte.MemoryCallback readcb;
 		LibGambatte.MemoryCallback writecb;
+		LibGambatte.MemoryCallback execcb;
 
 		void RefreshMemoryCallbacks()
 		{
@@ -503,9 +504,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				writecb = delegate(uint addr) { mcs.CallWrite(addr); RefreshMemoryCallbacks(); };
 			else
 				writecb = null;
+			if (mcs.HasExecutes)
+				execcb = delegate(uint addr) { mcs.CallExecute(addr); RefreshMemoryCallbacks(); };
+			else
+				execcb = null;
 
 			LibGambatte.gambatte_setreadcallback(GambatteState, readcb);
 			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
+			LibGambatte.gambatte_setexeccallback(GambatteState, execcb);
 		}
 
 
