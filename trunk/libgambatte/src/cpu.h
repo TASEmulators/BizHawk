@@ -75,6 +75,10 @@ public:
 		memory.setWriteCallback(callback);
 	}
 
+	void setExecCallback(void (*callback)(unsigned)) {
+		memory.setExecCallback(callback);
+	}
+
 	void setTraceCallback(void (*callback)(void *)) {
 		tracecallback = callback;
 	}
@@ -124,7 +128,7 @@ public:
 
 	//unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
 	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
-	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write(addr, val, cycleCounter_); }
+	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write_nocb(addr, val, cycleCounter_); }
 
 	int LinkStatus(int which) { return memory.LinkStatus(which); }
 

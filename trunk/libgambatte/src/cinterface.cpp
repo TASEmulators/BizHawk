@@ -83,6 +83,12 @@ __declspec(dllexport) void gambatte_setwritecallback(void *core, void (*callback
 	g->setWriteCallback(callback);
 }
 
+__declspec(dllexport) void gambatte_setexeccallback(void *core, void (*callback)(unsigned))
+{
+	GB *g = (GB *) core;
+	g->setExecCallback(callback);
+}
+
 __declspec(dllexport) void gambatte_settracecallback(void *core, void (*callback)(void *))
 {
 	GB *g = (GB *) core;

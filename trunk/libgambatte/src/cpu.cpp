@@ -131,7 +131,7 @@ void CPU::loadState(const SaveState &state) {
 
 #define READ(dest, addr) do { (dest) = memory.read(addr, cycleCounter); cycleCounter += 4; } while (0)
 // #define PC_READ(dest, addr) do { (dest) = memory.pc_read(addr, cycleCounter); cycleCounter += 4; } while (0)
-#define PC_READ(dest) do { (dest) = memory.read(PC, cycleCounter); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
+#define PC_READ(dest) do { (dest) = memory.read_excb(PC, cycleCounter); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define FF_READ(dest, addr) do { (dest) = memory.ff_read(addr, cycleCounter); cycleCounter += 4; } while (0)
 
 #define WRITE(addr, data) do { memory.write(addr, data, cycleCounter); cycleCounter += 4; } while (0)

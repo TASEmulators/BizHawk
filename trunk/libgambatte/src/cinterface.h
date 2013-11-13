@@ -24,6 +24,8 @@ extern "C"
 
 	__declspec(dllexport) void gambatte_setwritecallback(void *core, void (*callback)(unsigned));
 
+	__declspec(dllexport) void gambatte_setexeccallback(void *core, void (*callback)(unsigned));
+
 	__declspec(dllexport) void gambatte_settracecallback(void *core, void (*callback)(void *));
 
 	__declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl);

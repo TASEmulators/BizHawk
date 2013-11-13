@@ -88,6 +88,7 @@ public:
 	
 	void setReadCallback(void (*callback)(unsigned));
 	void setWriteCallback(void (*callback)(unsigned));
+	void setExecCallback(void (*callback)(unsigned));
 	void setTraceCallback(void (*callback)(void *));
 	void setScanlineCallback(void (*callback)(), int sl);
 	void setRTCCallback(std::time_t (*callback)());
