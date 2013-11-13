@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.CP1610;
 
-namespace BizHawk.Emulation.Consoles.Intellivision
+namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed partial class Intellivision : IEmulator
 	{

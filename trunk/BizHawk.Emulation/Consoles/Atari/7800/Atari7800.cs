@@ -6,7 +6,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using EMU7800.Core;
 
-namespace BizHawk.Emulation
+namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public partial class Atari7800 : IEmulator
 	{

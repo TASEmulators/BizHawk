@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Atari._2600
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	3F (Tigervision)

@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Atari._2600
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	This was used by Commavid.  It allowed for both ROM and RAM on the cartridge,

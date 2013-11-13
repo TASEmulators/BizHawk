@@ -7,7 +7,7 @@ using System.Threading;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.N64
+namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class N64 : IEmulator, IVideoProvider
 	{

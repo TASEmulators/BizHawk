@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
@@ -618,7 +619,7 @@ namespace BizHawk.Client.Common
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
-		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
+		public GBColors.ColorType CGBColors = GBColors.ColorType.gambatte;
 
 		//Dual Gb
 

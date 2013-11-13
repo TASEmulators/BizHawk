@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.Consoles.GB
+namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public class GBColors
 	{

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using EMU7800.Core;
 
-namespace BizHawk.Emulation
+namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	partial class Atari7800
 	{

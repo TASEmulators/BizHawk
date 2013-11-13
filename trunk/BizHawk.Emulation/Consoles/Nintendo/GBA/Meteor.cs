@@ -6,7 +6,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.GBA
+namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider
 	{

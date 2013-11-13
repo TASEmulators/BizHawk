@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Coleco
+namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision
 	{

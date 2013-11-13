@@ -6,7 +6,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.Z80;
 
-namespace BizHawk.Emulation.Consoles.Coleco
+namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public sealed class TMS9918A : IVideoProvider
 	{

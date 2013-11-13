@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.N64
+namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class mupen64plusApi : IDisposable
 	{

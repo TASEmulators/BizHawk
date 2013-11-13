@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Atari
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	// Emulates the M6532 RIOT Chip
 	public class M6532

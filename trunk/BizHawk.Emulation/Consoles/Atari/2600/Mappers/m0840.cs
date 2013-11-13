@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	This is another 8K bankswitching method with two 4K banks.  The rationale is that it's

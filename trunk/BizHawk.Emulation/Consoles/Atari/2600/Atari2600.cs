@@ -5,7 +5,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600 : IEmulator
 	{

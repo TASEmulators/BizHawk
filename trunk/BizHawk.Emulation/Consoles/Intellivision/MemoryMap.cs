@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Intellivision
+﻿namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed partial class Intellivision
 	{

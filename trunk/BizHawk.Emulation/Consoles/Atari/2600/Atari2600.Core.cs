@@ -1,11 +1,10 @@
 ﻿using System;
 
-using BizHawk.Emulation.CPUs.M6502;
-using BizHawk.Emulation.Consoles.Atari;
-using BizHawk.Emulation.Consoles.Atari._2600;
 using BizHawk.Common;
+using BizHawk.Emulation.CPUs.M6502;
 
-namespace BizHawk
+
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	partial class Atari2600
 	{

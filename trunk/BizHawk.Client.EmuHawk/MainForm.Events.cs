@@ -6,8 +6,9 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Calculator;
-using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk

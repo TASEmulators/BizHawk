@@ -4,12 +4,14 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBAGPUView : Form, IToolForm
 	{
-		Emulation.Consoles.Nintendo.GBA.GBA gba;
+		GBA gba;
 
 		// emulator memory areas
 		private IntPtr vram;
@@ -31,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			// TODO: hook up something
 			// we do this twice to avoid having to & 0x7fff with every color
-			int[] tmp = Emulation.Consoles.GB.GBColors.GetLut(Emulation.Consoles.GB.GBColors.ColorType.vivid);
+			int[] tmp = GBColors.GetLut(GBColors.ColorType.vivid);
 			ColorConversion = new int[65536];
 			Buffer.BlockCopy(tmp, 0, ColorConversion, 0, sizeof(int) * tmp.Length);
 			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
@@ -678,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			gba = Global.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
+			gba = Global.Emulator as GBA;
 			if (gba != null)
 			{
 				gba.GetGPUMemoryAreas(out vram, out palram, out oam, out mmio);

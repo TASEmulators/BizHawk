@@ -6,7 +6,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.GB
+namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		const int SampPerFrame = 35112;
 
-		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController LCont = new Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
-		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController RCont = new Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
+		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController LCont = new BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
+		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController RCont = new BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
 
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom)
 		{
