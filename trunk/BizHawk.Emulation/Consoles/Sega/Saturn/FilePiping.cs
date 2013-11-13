@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 
-namespace BizHawk.Emulation.Consoles.Sega.Saturn
+namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	/// <summary>
 	/// helpers for moving files across named pipes

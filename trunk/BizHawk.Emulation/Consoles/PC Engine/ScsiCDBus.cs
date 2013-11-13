@@ -6,7 +6,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Sound;
 
-namespace BizHawk.Emulation.Consoles.TurboGrafx
+namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// TODO we can adjust this to have Think take the number of cycles and not require
 	// a reference to Cpu.TotalExecutedCycles

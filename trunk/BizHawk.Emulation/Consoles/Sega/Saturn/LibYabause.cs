@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Consoles.Sega.Saturn
+namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	public static class LibYabause
 	{

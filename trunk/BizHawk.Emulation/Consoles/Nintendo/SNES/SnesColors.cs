@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo.SNES
+﻿namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public static class SnesColors
 	{

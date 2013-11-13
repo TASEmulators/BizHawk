@@ -9,7 +9,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Consoles.Sega.Saturn
+namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	public class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider
 	{

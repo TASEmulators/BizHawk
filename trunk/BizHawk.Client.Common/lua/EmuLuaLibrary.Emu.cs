@@ -3,6 +3,8 @@ using System.Linq;
 
 using LuaInterface;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common
 {
@@ -50,7 +52,7 @@ namespace BizHawk.Client.Common
 				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
 				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
-			else if (Global.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
+			else if (Global.Emulator is PCEngine)
 			{
 				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
 				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
@@ -60,7 +62,7 @@ namespace BizHawk.Client.Common
 					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
-			else if (Global.Emulator is Emulation.Consoles.Sega.SMS)
+			else if (Global.Emulator is SMS)
 			{
 				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];

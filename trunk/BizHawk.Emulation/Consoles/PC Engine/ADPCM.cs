@@ -6,7 +6,7 @@ using System.Globalization;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.TurboGrafx
+namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed class ADPCM : ISoundProvider
 	{

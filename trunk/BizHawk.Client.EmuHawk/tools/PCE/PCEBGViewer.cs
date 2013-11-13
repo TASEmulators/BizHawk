@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.TurboGrafx;
+using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {

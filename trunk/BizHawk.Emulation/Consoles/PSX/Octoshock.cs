@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
-namespace BizHawk.Emulation.Consoles.PSX
+namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISoundProvider
 	{

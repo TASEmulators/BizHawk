@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Cores.Sega.Genesis;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
 

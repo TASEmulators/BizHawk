@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.EmuHawk; //TODO: What??
 
 namespace BizHawk.Client.EmuHawk
