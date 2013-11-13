@@ -330,6 +330,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		LibMeteor.Buttons GetInput()
 		{
+			CoreComm.InputCallback.Call();
 			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;
