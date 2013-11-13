@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Intellivision
+namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class STIC : IVideoProvider
 	{

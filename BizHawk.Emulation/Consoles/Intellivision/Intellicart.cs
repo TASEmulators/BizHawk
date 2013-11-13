@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.Consoles.Intellivision
+namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Intellicart : ICart
 	{

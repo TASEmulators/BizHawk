@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		// g' = 8.25g
 	    // b' = 8.25b
 
-		Emulation.Consoles.GB.Gameboy gb;
+		Gameboy gb;
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
 		IntPtr vram;
@@ -84,9 +85,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
+			if (Global.Emulator is Gameboy)
 			{
-				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
+				gb = Global.Emulator as Gameboy;
 				cgb = gb.IsCGBMode();
 				_lcdc = 0;
 				if (!gb.GetGPUMemoryAreas(out vram, out bgpal, out sppal, out oam))

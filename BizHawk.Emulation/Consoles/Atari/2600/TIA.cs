@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Atari
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	// Emulates the TIA
 	public class TIA : IVideoProvider, ISoundProvider

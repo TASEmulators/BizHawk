@@ -5,7 +5,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.GB
+namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte

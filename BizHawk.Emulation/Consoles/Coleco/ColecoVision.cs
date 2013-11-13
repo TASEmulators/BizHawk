@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
 
-namespace BizHawk.Emulation.Consoles.Coleco
+namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public sealed partial class ColecoVision : IEmulator
 	{

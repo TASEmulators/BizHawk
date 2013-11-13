@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Consoles.Nintendo.N64;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64;
+
 
 namespace BizHawk.Client.EmuHawk
 {

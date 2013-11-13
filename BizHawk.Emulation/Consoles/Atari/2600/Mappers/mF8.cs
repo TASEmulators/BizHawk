@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	partial class Atari2600
 	{

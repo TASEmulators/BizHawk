@@ -3,7 +3,7 @@
 using EMU7800.Core;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation
+namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public class Atari7800Control
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Consoles.GB
+namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	/// <summary>
 	/// static bindings into libgambatte.dll

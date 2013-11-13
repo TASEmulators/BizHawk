@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	class m3Fe : MapperBase
 	{

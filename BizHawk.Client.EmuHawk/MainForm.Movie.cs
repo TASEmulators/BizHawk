@@ -3,6 +3,10 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Consoles.Sega.Saturn;
+using BizHawk.Emulation.Consoles.Sony.PSP;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -89,10 +93,10 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadRecordMovieDialog()
 		{
 			// put any BEETA quality cores here
-			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
-				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
-				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause ||
-				Global.Emulator is Emulation.Consoles.Sony.PSP.PSP)
+			if (Global.Emulator is GBA ||
+				Global.Emulator is Genesis ||
+				Global.Emulator is Yabause ||
+				Global.Emulator is PSP)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
