@@ -1,9 +1,9 @@
-namespace BizHawk.Emulation.CPUs.Z80 
+namespace BizHawk.Emulation.Common.Components.Z80
 {
-	public partial class Z80A 
-    {
-		private void InitialiseTables() 
-        {
+	public partial class Z80A
+	{
+		private void InitialiseTables()
+		{
 			InitTableInc();
 			InitTableDec();
 			InitTableParity();
@@ -16,30 +16,30 @@ namespace BizHawk.Emulation.CPUs.Z80
 		}
 
 		private byte[] TableInc;
-		private void InitTableInc() 
-        {
+		private void InitTableInc()
+		{
 			TableInc = new byte[256];
 			for (int i = 0; i < 256; ++i)
 				TableInc[i] = FlagByte(false, false, i == 0x80, UndocumentedX(i), (i & 0xF) == 0x0, UndocumentedY(i), i == 0, i > 127);
 		}
 
 		private byte[] TableDec;
-		private void InitTableDec() 
-        {
+		private void InitTableDec()
+		{
 			TableDec = new byte[256];
 			for (int i = 0; i < 256; ++i)
 				TableDec[i] = FlagByte(false, true, i == 0x7F, UndocumentedX(i), (i & 0xF) == 0xF, UndocumentedY(i), i == 0, i > 127);
 		}
 
 		private bool[] TableParity;
-		private void InitTableParity() 
-        {
+		private void InitTableParity()
+		{
 			TableParity = new bool[256];
-			for (int i = 0; i < 256; ++i) 
-            {
+			for (int i = 0; i < 256; ++i)
+			{
 				int Bits = 0;
-				for (int j = 0; j < 8; ++j) 
-                {
+				for (int j = 0; j < 8; ++j)
+				{
 					Bits += (i >> j) & 1;
 				}
 				TableParity[i] = (Bits & 1) == 0;
@@ -47,18 +47,18 @@ namespace BizHawk.Emulation.CPUs.Z80
 		}
 
 		private ushort[, , ,] TableALU;
-		private void InitTableALU() 
-        {
+		private void InitTableALU()
+		{
 			TableALU = new ushort[8, 256, 256, 2]; // Class, OP1, OP2, Carry
 
-			for (int i = 0; i < 8; ++i) 
-            {
-				for (int op1 = 0; op1 < 256; ++op1) 
-                {
-					for (int op2 = 0; op2 < 256; ++op2) 
-                    {
-						for (int c = 0; c < 2; ++c) 
-                        {
+			for (int i = 0; i < 8; ++i)
+			{
+				for (int op1 = 0; op1 < 256; ++op1)
+				{
+					for (int op2 = 0; op2 < 256; ++op2)
+					{
+						for (int c = 0; c < 2; ++c)
+						{
 
 							int ac = (i == 1 || i == 3) ? c : 0;
 
@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							int result_ui = 0;
 
 							// Fetch result
-							switch (i) 
-                            {
+							switch (i)
+							{
 								case 0:
 								case 1:
 									result_si = (sbyte)op1 + (sbyte)op2 + ac;
@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 
 							// Parity/Carry
 
-							switch (i) 
-                            {
+							switch (i)
+							{
 								case 0:
 								case 1:
 								case 2:
@@ -124,8 +124,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							N = i == 2 || i == 3 || i == 7;
 
 							// Half carry
-							switch (i) 
-                            {
+							switch (i)
+							{
 								case 0:
 								case 1:
 									H = ((op1 & 0xF) + (op2 & 0xF) + (ac & 0xF)) > 0xF;
@@ -161,72 +161,80 @@ namespace BizHawk.Emulation.CPUs.Z80
 						}
 					}
 				}
-			}	
+			}
 		}
 
 		private bool[,] TableHalfBorrow;
-		private void InitTableHalfBorrow() 
-        {
+		private void InitTableHalfBorrow()
+		{
 			TableHalfBorrow = new bool[256, 256];
-			for (int i = 0; i < 256; i++) 
-            {
-				for (int j = 0; j < 256; j++) 
-                {
+			for (int i = 0; i < 256; i++)
+			{
+				for (int j = 0; j < 256; j++)
+				{
 					TableHalfBorrow[i, j] = ((i & 0xF) - (j & 0xF)) < 0;
 				}
 			}
 		}
 
 		private bool[,] TableHalfCarry;
-		private void InitTableHalfCarry() 
-        {
+		private void InitTableHalfCarry()
+		{
 			TableHalfCarry = new bool[256, 256];
-			for (int i = 0; i < 256; i++) 
-            {
-				for (int j = 0; j < 256; j++) 
-                {
+			for (int i = 0; i < 256; i++)
+			{
+				for (int j = 0; j < 256; j++)
+				{
 					TableHalfCarry[i, j] = ((i & 0xF) + (j & 0xF)) > 0xF;
 				}
 			}
 		}
 
 		private ushort[, ,] TableRotShift;
-		private void InitTableRotShift() 
-        {
+		private void InitTableRotShift()
+		{
 			TableRotShift = new ushort[2, 8, 65536]; // All, operation, AF
-			for (int all = 0; all < 2; all++) 
-            {
-				for (int y = 0; y < 8; ++y) 
-                {
-					for (int af = 0; af < 65536; af++) 
-                    {
+			for (int all = 0; all < 2; all++)
+			{
+				for (int y = 0; y < 8; ++y)
+				{
+					for (int af = 0; af < 65536; af++)
+					{
 						byte Old = (byte)(af >> 8);
 						bool OldCarry = (af & 0x01) != 0;
 
 						ushort newAf = (ushort)(af & ~(0x13)); // Clear HALF-CARRY, SUBTRACT and CARRY flags
 
 						byte New = Old;
-						if ((y & 1) == 0) 
-                        {
+						if ((y & 1) == 0)
+						{
 							if ((Old & 0x80) != 0) ++newAf;
 
 							New <<= 1;
 
-							if ((y & 0x04) == 0) {
+							if ((y & 0x04) == 0)
+							{
 								if (((y & 0x02) == 0) ? ((newAf & 0x01) != 0) : OldCarry) New |= 0x01;
-							} else {
+							}
+							else
+							{
 								if ((y & 0x02) != 0) New |= 0x01;
 							}
 
-						} else {
+						}
+						else
+						{
 
 							if ((Old & 0x01) != 0) ++newAf;
 
 							New >>= 1;
 
-							if ((y & 0x04) == 0) {
+							if ((y & 0x04) == 0)
+							{
 								if (((y & 0x02) == 0) ? ((newAf & 0x01) != 0) : OldCarry) New |= 0x80;
-							} else {
+							}
+							else
+							{
 								if ((y & 0x02) == 0) New |= (byte)(Old & 0x80);
 							}
 						}
@@ -234,8 +242,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 						newAf &= 0xFF;
 						newAf |= (ushort)(New * 256);
 
-						if (all == 1) 
-                        {
+						if (all == 1)
+						{
 							newAf &= unchecked((ushort)~0xC4); // Clear S, Z, P
 							if (New > 127) newAf |= 0x80;
 							if (New == 0) newAf |= 0x40;
@@ -249,11 +257,11 @@ namespace BizHawk.Emulation.CPUs.Z80
 		}
 
 		private ushort[] TableNeg;
-		private void InitTableNeg() 
-        {
+		private void InitTableNeg()
+		{
 			TableNeg = new ushort[65536];
-			for (int af = 0; af < 65536; af++) 
-            {
+			for (int af = 0; af < 65536; af++)
+			{
 				ushort raf = 0;
 				byte b = (byte)(af >> 8);
 				byte a = (byte)-b;
@@ -264,19 +272,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 		}
 
 		private ushort[] TableDaa;
-		private void InitTableDaa() 
-        {
+		private void InitTableDaa()
+		{
 			TableDaa = new ushort[65536];
-			for (int af = 0; af < 65536; ++af) 
-            {
+			for (int af = 0; af < 65536; ++af)
+			{
 				byte a = (byte)(af >> 8);
 				byte tmp = a;
 
-				if (IsN(af)) 
-                {
+				if (IsN(af))
+				{
 					if (IsH(af) || ((a & 0x0F) > 0x09)) tmp -= 0x06;
 					if (IsC(af) || a > 0x99) tmp -= 0x60;
-				} else {
+				}
+				else
+				{
 					if (IsH(af) || ((a & 0x0F) > 0x09)) tmp += 0x06;
 					if (IsC(af) || a > 0x99) tmp += 0x60;
 				}
@@ -285,8 +295,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 			}
 		}
 
-		private byte FlagByte(bool C, bool N, bool P, bool X, bool H, bool Y, bool Z, bool S) 
-        {
+		private byte FlagByte(bool C, bool N, bool P, bool X, bool H, bool Y, bool Z, bool S)
+		{
 			return (byte)(
 				(C ? 0x01 : 0) +
 				(N ? 0x02 : 0) +
@@ -299,13 +309,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 			 );
 		}
 
-		private bool UndocumentedX(int value) 
-        {
+		private bool UndocumentedX(int value)
+		{
 			return (value & 0x08) != 0;
 		}
 
-		private bool UndocumentedY(int value) 
-        {
+		private bool UndocumentedY(int value)
+		{
 			return (value & 0x20) != 0;
 		}
 

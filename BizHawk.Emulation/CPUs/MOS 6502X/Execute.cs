@@ -1,10 +1,9 @@
 //http://nesdev.parodius.com/6502_cpu.txt
 
 using System;
-
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.CPUs.M6502
+namespace BizHawk.Emulation.Common.Components.M6502
 {
 	public partial class MOS6502X
 	{

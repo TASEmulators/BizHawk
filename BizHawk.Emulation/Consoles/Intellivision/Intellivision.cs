@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.CPUs.CP1610;
+using BizHawk.Emulation.Common.Components.CP1610;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {

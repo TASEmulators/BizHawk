@@ -1,7 +1,7 @@
 ﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.Common.Components.M6502;
 
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600

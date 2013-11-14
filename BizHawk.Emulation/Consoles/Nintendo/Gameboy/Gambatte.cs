@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				s[10] & 0xff,
 				s[11] != 0 ? "skip" : "",
 				s[12] & 0xff,
-				CPUs.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
+				Common.Components.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
 			));
 		}
 

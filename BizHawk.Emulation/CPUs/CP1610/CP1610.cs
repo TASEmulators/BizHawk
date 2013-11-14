@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace BizHawk.Emulation.CPUs.CP1610
+namespace BizHawk.Emulation.Common.Components.CP1610
 {
 	public sealed partial class CP1610
 	{

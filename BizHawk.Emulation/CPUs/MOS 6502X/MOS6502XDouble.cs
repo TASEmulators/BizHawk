@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.CPUs.M6502
+namespace BizHawk.Emulation.Common.Components.M6502
 {
 	/// <summary>
 	/// maintains a managed 6502X and an unmanaged 6502X, running them alongside and ensuring consistency

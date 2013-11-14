@@ -12,7 +12,7 @@
 
 using System;
 
-namespace BizHawk.Emulation.CPUs.Z80 
+namespace BizHawk.Emulation.Common.Components.Z80 
 {
 	public class Disassembler
 	{
