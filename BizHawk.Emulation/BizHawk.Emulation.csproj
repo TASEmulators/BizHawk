@@ -416,7 +416,6 @@
     <Compile Include="Consoles\Sony\PSX\LibMednahawkDll.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
     <Compile Include="Properties\svnrev.cs" />
-    <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
     <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />

@@ -49,6 +49,7 @@
     <Compile Include="Blobs\Blob_WaveFile.cs" />
     <Compile Include="Blobs\RiffMaster.cs" />
     <Compile Include="CCD_format.cs" />
+    <Compile Include="CDAudio.cs" />
     <Compile Include="cdfs\EndianBitConverter.cs" />
     <Compile Include="cdfs\ISODirectoryNode.cs" />
     <Compile Include="cdfs\ISOFile.cs" />
@@ -73,6 +74,10 @@
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
       <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
       <Name>BizHawk.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
+      <Project>{E1A23168-B571-411C-B360-2229E7225E0E}</Project>
+      <Name>BizHawk.Emulation.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
