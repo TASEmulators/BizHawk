@@ -1,5 +1,7 @@
 ﻿using System;
+
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -116,15 +118,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("ch", ref ch);
 		}
 
-		Sound.Utilities.SpeexResampler resampler; 
-		Sound.Utilities.DCFilter dc;
-		Sound.MetaspuAsync metaspu;
+		SpeexResampler resampler; 
+		DCFilter dc;
+		MetaspuAsync metaspu;
 
 		public Namco163Audio()
 		{
-			resampler = new Sound.Utilities.SpeexResampler(2, 119318, 44100, 119318, 44100, null, null);
-			dc = Sound.Utilities.DCFilter.DetatchedMode(4096);
-			metaspu = new Sound.MetaspuAsync(resampler, Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new SpeexResampler(2, 119318, 44100, 119318, 44100, null, null);
+			dc = DCFilter.DetatchedMode(4096);
+			metaspu = new MetaspuAsync(resampler, ESynchMethod.ESynchMethod_V);
 		}
 
 		public void ApplyCustomAudio(short[] samples)

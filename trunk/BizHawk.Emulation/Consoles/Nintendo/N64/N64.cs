@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public int BackgroundColor { get { return 0; } }
 		
 
-		public Sound.Utilities.SpeexResampler resampler;
+		public SpeexResampler resampler;
 
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }

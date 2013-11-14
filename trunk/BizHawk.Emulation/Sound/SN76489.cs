@@ -5,11 +5,13 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 
-// Emulates a Texas Instruments SN76489
 // TODO the freq->note translation should be moved to a separate utility class.
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common.Components
 {
+	/// <summary>
+	/// Emulates a Texas Instruments SN76489
+	/// </summary>
 	public sealed class SN76489 : ISoundProvider
 	{
 		public sealed class Channel

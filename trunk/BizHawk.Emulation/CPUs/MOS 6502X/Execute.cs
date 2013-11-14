@@ -12,20 +12,20 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		//static ShortBuffer MicrocodeIndex;
 		static MOS6502X()
 		{
-		//  int index = 0;
-		//  MicrocodeIndex = new ShortBuffer(VOP_NUM);
-		//  List<Uop> temp = new List<Uop>();
-		//  for (int i = 0; i < VOP_NUM; i++)
-		//  {
-		//    MicrocodeIndex[i] = (short)index;
-		//    int numUops = Microcode[i].Length;
-		//    for (int j = 0; j < numUops; j++)
-		//      temp.Add(Microcode[i][j]);
-		//    index += numUops;
-		//  }
-		//  CompiledMicrocode = new ShortBuffer(temp.Count);
-		//  for (int i = 0; i < temp.Count; i++)
-		//    CompiledMicrocode[i] = (short)temp[i];
+			//  int index = 0;
+			//  MicrocodeIndex = new ShortBuffer(VOP_NUM);
+			//  List<Uop> temp = new List<Uop>();
+			//  for (int i = 0; i < VOP_NUM; i++)
+			//  {
+			//    MicrocodeIndex[i] = (short)index;
+			//    int numUops = Microcode[i].Length;
+			//    for (int j = 0; j < numUops; j++)
+			//      temp.Add(Microcode[i][j]);
+			//    index += numUops;
+			//  }
+			//  CompiledMicrocode = new ShortBuffer(temp.Count);
+			//  for (int i = 0; i < temp.Count; i++)
+			//    CompiledMicrocode[i] = (short)temp[i];
 		}
 
 		static Uop[][] Microcode = new Uop[][]
@@ -513,7 +513,7 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		int ea, alu_temp; //cpu internal temp variables
 		int mi; //microcode index
 		bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
-        bool rdy_freeze; //true if the CPU must be frozen
+		bool rdy_freeze; //true if the CPU must be frozen
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
@@ -584,31 +584,31 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void Fetch1_Real()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                if (debug) Console.WriteLine(State());
-                branch_irq_hack = false;
-								if (OnExecFetch != null) OnExecFetch(PC);
-                opcode = ReadMemory(PC++);
-                mi = -1;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				if (debug) Console.WriteLine(State());
+				branch_irq_hack = false;
+				if (OnExecFetch != null) OnExecFetch(PC);
+				opcode = ReadMemory(PC++);
+				mi = -1;
+			}
 		}
 		void Fetch2()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                opcode2 = ReadMemory(PC++);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				opcode2 = ReadMemory(PC++);
+			}
 		}
 		void Fetch3()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                opcode3 = ReadMemory(PC++);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				opcode3 = ReadMemory(PC++);
+			}
 		}
 		void PushPCH()
 		{
@@ -656,64 +656,64 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void FetchPCLVector()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                if (ea == BRKVector && FlagB && NMI)
-                {
-                    NMI = false;
-                    ea = NMIVector;
-                }
-                if (ea == IRQVector && !FlagB && NMI)
-                {
-                    NMI = false;
-                    ea = NMIVector;
-                }
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				if (ea == BRKVector && FlagB && NMI)
+				{
+					NMI = false;
+					ea = NMIVector;
+				}
+				if (ea == IRQVector && !FlagB && NMI)
+				{
+					NMI = false;
+					ea = NMIVector;
+				}
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void FetchPCHVector()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp += ReadMemory((ushort)(ea + 1)) << 8;
-                PC = (ushort)alu_temp;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp += ReadMemory((ushort)(ea + 1)) << 8;
+				PC = (ushort)alu_temp;
+			}
 
 		}
 		void Imp_INY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); Y++; NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); Y++; NZ_Y();
+			}
 		}
 		void Imp_DEY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); Y--; NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); Y--; NZ_Y();
+			}
 		}
 		void Imp_INX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); X++; NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); X++; NZ_X();
+			}
 		}
 		void Imp_DEX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); X--; NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); X--; NZ_X();
+			}
 		}
 		void NZ_A()
 		{
@@ -730,108 +730,108 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void Imp_TSX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); X = S; NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); X = S; NZ_X();
+			}
 		}
 		void Imp_TXS()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); S = X;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); S = X;
+			}
 		}
 		void Imp_TAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); X = A; NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); X = A; NZ_X();
+			}
 		}
 		void Imp_TAY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); Y = A; NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); Y = A; NZ_Y();
+			}
 		}
 		void Imp_TYA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); A = Y; NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); A = Y; NZ_A();
+			}
 		}
 		void Imp_TXA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); A = X; NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); A = X; NZ_A();
+			}
 
 		}
 		void Imp_SEI()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); iflag_pending = true;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); iflag_pending = true;
+			}
 		}
 		void Imp_CLI()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); iflag_pending = false;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); iflag_pending = false;
+			}
 		}
 		void Imp_SEC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); FlagC = true;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); FlagC = true;
+			}
 		}
 		void Imp_CLC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); FlagC = false;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); FlagC = false;
+			}
 		}
 		void Imp_SED()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); FlagD = true;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); FlagD = true;
+			}
 		}
 		void Imp_CLD()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); FlagD = false;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); FlagD = false;
+			}
 		}
 		void Imp_CLV()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                FetchDummy(); FlagV = false;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy(); FlagV = false;
+			}
 
 		}
 		void Abs_WRITE_STA()
@@ -870,61 +870,61 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void IndIdx_Stage3()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ea = ReadMemory(opcode2);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = ReadMemory(opcode2);
+			}
 
 		}
 		void IndIdx_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ea + Y;
-                ea = (ReadMemory((byte)(opcode2 + 1)) << 8)
-                    | ((alu_temp & 0xFF));
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ea + Y;
+				ea = (ReadMemory((byte)(opcode2 + 1)) << 8)
+					| ((alu_temp & 0xFF));
+			}
 
 		}
 		void IndIdx_WRITE_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory((ushort)ea);
-                ea += (alu_temp >> 8) << 8;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory((ushort)ea);
+				ea += (alu_temp >> 8) << 8;
+			}
 
 		}
 		void IndIdx_READ_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                if (!alu_temp.Bit(8))
-                {
-                    mi++;
-                    ExecuteOneRetry();
-                    return;
-                }
-                else
-                {
-                    ReadMemory((ushort)ea);
-                    ea = (ushort)(ea + 0x100);
-                }
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				if (!alu_temp.Bit(8))
+				{
+					mi++;
+					ExecuteOneRetry();
+					return;
+				}
+				else
+				{
+					ReadMemory((ushort)ea);
+					ea = (ushort)(ea + 0x100);
+				}
+			}
 		}
 		void IndIdx_RMW_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                if (alu_temp.Bit(8))
-                    ea = (ushort)(ea + 0x100);
-                ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				if (alu_temp.Bit(8))
+					ea = (ushort)(ea + 0x100);
+				ReadMemory((ushort)ea);
+			}
 
 		}
 		void IndIdx_WRITE_Stage6_STA()
@@ -939,83 +939,83 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void IndIdx_READ_Stage6_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory((ushort)ea);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory((ushort)ea);
+				NZ_A();
+			}
 		}
 		void IndIdx_READ_Stage6_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Cmp();
+			}
 		}
 		void IndIdx_READ_Stage6_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_And();
+			}
 		}
 		void IndIdx_READ_Stage6_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Eor();
+			}
 		}
 		void IndIdx_READ_Stage6_LAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = X = ReadMemory((ushort)ea);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = X = ReadMemory((ushort)ea);
+				NZ_A();
+			}
 		}
 		void IndIdx_READ_Stage6_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Adc();
+			}
 		}
 		void IndIdx_READ_Stage6_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Sbc();
+			}
 		}
 		void IndIdx_READ_Stage6_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Ora();
+			}
 		}
 		void IndIdx_RMW_Stage6()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void IndIdx_RMW_Stage7_SLO()
@@ -1117,18 +1117,18 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void RelBranch_Stage2()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                opcode2 = ReadMemory(PC++);
-                if (branch_taken)
-                {
-                    branch_taken = false;
-                    //if the branch is taken, we enter a different bit of microcode to calculate the PC and complete the branch
-                    opcode = VOP_RelativeStuff;
-                    mi = -1;
-                }
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				opcode2 = ReadMemory(PC++);
+				if (branch_taken)
+				{
+					branch_taken = false;
+					//if the branch is taken, we enter a different bit of microcode to calculate the PC and complete the branch
+					opcode = VOP_RelativeStuff;
+					mi = -1;
+				}
+			}
 
 		}
 		void RelBranch_Stage3()
@@ -1174,198 +1174,198 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void JSR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                PC = (ushort)((ReadMemory((ushort)(PC)) << 8) + opcode2);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				PC = (ushort)((ReadMemory((ushort)(PC)) << 8) + opcode2);
+			}
 		}
 		void PullP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                P = ReadMemory((ushort)(S++ + 0x100));
-                FlagT = true; //force T always to remain true
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				P = ReadMemory((ushort)(S++ + 0x100));
+				FlagT = true; //force T always to remain true
+			}
 
 		}
 		void PullPCL()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                PC &= 0xFF00;
-                PC |= ReadMemory((ushort)(S++ + 0x100));
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				PC &= 0xFF00;
+				PC |= ReadMemory((ushort)(S++ + 0x100));
+			}
 
 		}
 		void PullPCH_NoInc()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                PC &= 0xFF;
-                PC |= (ushort)(ReadMemory((ushort)(S + 0x100)) << 8);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				PC &= 0xFF;
+				PC |= (ushort)(ReadMemory((ushort)(S + 0x100)) << 8);
+			}
 
 		}
 		void Abs_READ_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				NZ_A();
+			}
 		}
 		void Abs_READ_LDY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                Y = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				Y = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				NZ_Y();
+			}
 		}
 		void Abs_READ_LDX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                X = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				X = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				NZ_X();
+			}
 		}
 		void Abs_READ_BIT()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Bit();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Bit();
+			}
 		}
 		void Abs_READ_LAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                X = A;
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				X = A;
+				NZ_A();
+			}
 		}
 		void Abs_READ_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_And();
+			}
 		}
 		void Abs_READ_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Eor();
+			}
 		}
 		void Abs_READ_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Ora();
+			}
 		}
 		void Abs_READ_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Adc();
+			}
 		}
 		void Abs_READ_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Cmp();
+			}
 		}
 		void Abs_READ_CPY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Cpy();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Cpy();
+			}
 		}
 		void Abs_READ_NOP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+			}
 
 		}
 		void Abs_READ_CPX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Cpx();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Cpx();
+			}
 		}
 		void Abs_READ_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+				_Sbc();
+			}
 
 		}
 		void ZpIdx_Stage3_X()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory(opcode2);
-                opcode2 = (byte)(opcode2 + X); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(opcode2);
+				opcode2 = (byte)(opcode2 + X); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+			}
 
 		}
 		void ZpIdx_Stage3_Y()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory(opcode2);
-                opcode2 = (byte)(opcode2 + Y); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(opcode2);
+				opcode2 = (byte)(opcode2 + Y); //a bit sneaky to shove this into opcode2... but we can reuse all the zero page uops if we do that
+			}
 
 		}
 		void ZpIdx_RMW_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+			}
 
 		}
 		void ZpIdx_RMW_Stage6()
@@ -1376,131 +1376,131 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void ZP_READ_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Eor();
+			}
 		}
 		void ZP_READ_BIT()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Bit();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Bit();
+			}
 		}
 		void ZP_READ_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory(opcode2);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory(opcode2);
+				NZ_A();
+			}
 		}
 		void ZP_READ_LDY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                Y = ReadMemory(opcode2);
-                NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				Y = ReadMemory(opcode2);
+				NZ_Y();
+			}
 		}
 		void ZP_READ_LDX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                X = ReadMemory(opcode2);
-                NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				X = ReadMemory(opcode2);
+				NZ_X();
+			}
 		}
 		void ZP_READ_LAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                //?? is this right??
-                X = ReadMemory(opcode2);
-                A = X;
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				//?? is this right??
+				X = ReadMemory(opcode2);
+				A = X;
+				NZ_A();
+			}
 		}
 		void ZP_READ_CPY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Cpy();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Cpy();
+			}
 		}
 		void ZP_READ_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Cmp();
+			}
 		}
 		void ZP_READ_CPX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Cpx();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Cpx();
+			}
 		}
 		void ZP_READ_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Ora();
+			}
 		}
 		void ZP_READ_NOP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory(opcode2); //just a dummy
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(opcode2); //just a dummy
+			}
 
 		}
 		void ZP_READ_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Sbc();
+			}
 		}
 		void ZP_READ_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_Adc();
+			}
 		}
 		void ZP_READ_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+				_And();
+			}
 
 		}
 		void _Cpx()
@@ -1657,257 +1657,257 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void Imm_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Eor();
+			}
 		}
 		void Imm_ANC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Anc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Anc();
+			}
 		}
 		void Imm_ASR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Asr();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Asr();
+			}
 		}
 		void Imm_AXS()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Axs();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Axs();
+			}
 		}
 		void Imm_ARR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Arr();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Arr();
+			}
 		}
 		void Imm_LXA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Lxa();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Lxa();
+			}
 		}
 		void Imm_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Ora();
+			}
 		}
 		void Imm_CPY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Cpy();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Cpy();
+			}
 		}
 		void Imm_CPX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Cpx();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Cpx();
+			}
 		}
 		void Imm_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Cmp();
+			}
 		}
 		void Imm_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Sbc();
+			}
 		}
 		void Imm_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_And();
+			}
 		}
 		void Imm_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(PC++);
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(PC++);
+				_Adc();
+			}
 		}
 		void Imm_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory(PC++);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory(PC++);
+				NZ_A();
+			}
 		}
 		void Imm_LDX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                X = ReadMemory(PC++);
-                NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				X = ReadMemory(PC++);
+				NZ_X();
+			}
 		}
 		void Imm_LDY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                Y = ReadMemory(PC++);
-                NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				Y = ReadMemory(PC++);
+				NZ_Y();
+			}
 		}
 		void Imm_Unsupported()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory(PC++);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(PC++);
+			}
 
 		}
 		void IdxInd_Stage3()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ReadMemory(opcode2); //dummy?
-                alu_temp = (opcode2 + X) & 0xFF;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(opcode2); //dummy?
+				alu_temp = (opcode2 + X) & 0xFF;
+			}
 
 		}
 		void IdxInd_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ea = ReadMemory((ushort)alu_temp);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = ReadMemory((ushort)alu_temp);
+			}
 
 		}
 		void IdxInd_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ea += (ReadMemory((byte)(alu_temp + 1)) << 8);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea += (ReadMemory((byte)(alu_temp + 1)) << 8);
+			}
 
 		}
 		void IdxInd_Stage6_READ_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                //TODO make uniform with others
-                A = ReadMemory((ushort)ea);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				//TODO make uniform with others
+				A = ReadMemory((ushort)ea);
+				NZ_A();
+			}
 		}
 		void IdxInd_Stage6_READ_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Ora();
+			}
 		}
 		void IdxInd_Stage6_READ_LAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = X = ReadMemory((ushort)ea);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = X = ReadMemory((ushort)ea);
+				NZ_A();
+			}
 		}
 		void IdxInd_Stage6_READ_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Cmp();
+			}
 		}
 		void IdxInd_Stage6_READ_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Adc();
+			}
 		}
 		void IdxInd_Stage6_READ_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_And();
+			}
 		}
 		void IdxInd_Stage6_READ_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Eor();
+			}
 		}
 		void IdxInd_Stage6_READ_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Sbc();
+			}
 		}
 		void IdxInd_Stage6_WRITE_STA()
 		{
@@ -1923,11 +1923,11 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void IdxInd_Stage6_RMW()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void IdxInd_Stage7_RMW_SLO()
@@ -1999,17 +1999,17 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void PullA_NoInc()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory((ushort)(S + 0x100));
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory((ushort)(S + 0x100));
+				NZ_A();
+			}
 		}
 		void PullP_NoInc()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
+			rdy_freeze = !RDY;
+			if (RDY)
 			{
 				my_iflag = FlagI;
 				P = ReadMemory((ushort)(S + 0x100));
@@ -2053,11 +2053,11 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void JMP_abs()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                PC = (ushort)((ReadMemory(PC) << 8) + opcode2);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				PC = (ushort)((ReadMemory(PC) << 8) + opcode2);
+			}
 
 		}
 		void IncPC()
@@ -2068,11 +2068,11 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void ZP_RMW_Stage3()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory(opcode2);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory(opcode2);
+			}
 
 		}
 		void ZP_RMW_Stage5()
@@ -2183,59 +2183,59 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void AbsIdx_Stage3_Y()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                opcode3 = ReadMemory(PC++);
-                alu_temp = opcode2 + Y;
-                ea = (opcode3 << 8) + (alu_temp & 0xFF);
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				opcode3 = ReadMemory(PC++);
+				alu_temp = opcode2 + Y;
+				ea = (opcode3 << 8) + (alu_temp & 0xFF);
 
-                //new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
-            }
+				//new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
+			}
 		}
 		void AbsIdx_Stage3_X()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                opcode3 = ReadMemory(PC++);
-                alu_temp = opcode2 + X;
-                ea = (opcode3 << 8) + (alu_temp & 0xFF);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				opcode3 = ReadMemory(PC++);
+				alu_temp = opcode2 + X;
+				ea = (opcode3 << 8) + (alu_temp & 0xFF);
+			}
 
 		}
 		void AbsIdx_READ_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                if (!alu_temp.Bit(8))
-                {
-                    mi++;
-                    ExecuteOneRetry();
-                    return;
-                }
-                else
-                {
-                    alu_temp = ReadMemory((ushort)ea);
-                    ea = (ushort)(ea + 0x100);
-                }
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				if (!alu_temp.Bit(8))
+				{
+					mi++;
+					ExecuteOneRetry();
+					return;
+				}
+				else
+				{
+					alu_temp = ReadMemory((ushort)ea);
+					ea = (ushort)(ea + 0x100);
+				}
+			}
 
 		}
 		void AbsIdx_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                //bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
-                if (alu_temp.Bit(8))
-                {
-                    alu_temp = ReadMemory((ushort)ea);
-                    ea = (ushort)(ea + 0x100);
-                }
-                else alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				//bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
+				if (alu_temp.Bit(8))
+				{
+					alu_temp = ReadMemory((ushort)ea);
+					ea = (ushort)(ea + 0x100);
+				}
+				else alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void AbsIdx_WRITE_Stage5_STA()
@@ -2259,21 +2259,21 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void AbsIdx_WRITE_Stage5_ERROR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
+			}
 
 		}
 		void AbsIdx_RMW_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void AbsIdx_RMW_Stage7()
@@ -2381,142 +2381,142 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		}
 		void AbsIdx_READ_Stage5_LDA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory((ushort)ea);
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory((ushort)ea);
+				NZ_A();
+			}
 		}
 		void AbsIdx_READ_Stage5_LDX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                X = ReadMemory((ushort)ea);
-                NZ_X();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				X = ReadMemory((ushort)ea);
+				NZ_X();
+			}
 		}
 		void AbsIdx_READ_Stage5_LAX()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                A = ReadMemory((ushort)ea);
-                X = A;
-                NZ_A();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				A = ReadMemory((ushort)ea);
+				X = A;
+				NZ_A();
+			}
 		}
 		void AbsIdx_READ_Stage5_LDY()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                Y = ReadMemory((ushort)ea);
-                NZ_Y();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				Y = ReadMemory((ushort)ea);
+				NZ_Y();
+			}
 		}
 		void AbsIdx_READ_Stage5_ORA()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Ora();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Ora();
+			}
 		}
 		void AbsIdx_READ_Stage5_NOP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void AbsIdx_READ_Stage5_CMP()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Cmp();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Cmp();
+			}
 		}
 		void AbsIdx_READ_Stage5_SBC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Sbc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Sbc();
+			}
 		}
 		void AbsIdx_READ_Stage5_ADC()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Adc();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Adc();
+			}
 		}
 		void AbsIdx_READ_Stage5_EOR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _Eor();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_Eor();
+			}
 		}
 		void AbsIdx_READ_Stage5_AND()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                _And();
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				_And();
+			}
 		}
 		void AbsIdx_READ_Stage5_ERROR()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                alu_temp = ReadMemory((ushort)ea);
-                //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				alu_temp = ReadMemory((ushort)ea);
+				//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
+			}
 
 		}
 		void AbsInd_JMP_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-			    ea = (opcode3 << 8) + opcode2;
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = (opcode3 << 8) + opcode2;
+				alu_temp = ReadMemory((ushort)ea);
+			}
 		}
 		void AbsInd_JMP_Stage5()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ea = (opcode3 << 8) + (byte)(opcode2 + 1);
-                alu_temp += ReadMemory((ushort)ea) << 8;
-                PC = (ushort)alu_temp;
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = (opcode3 << 8) + (byte)(opcode2 + 1);
+				alu_temp += ReadMemory((ushort)ea) << 8;
+				PC = (ushort)alu_temp;
+			}
 
 		}
 		void Abs_RMW_Stage4()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                ea = (opcode3 << 8) + opcode2;
-                alu_temp = ReadMemory((ushort)ea);
-            }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = (opcode3 << 8) + opcode2;
+				alu_temp = ReadMemory((ushort)ea);
+			}
 
 		}
 		void Abs_RMW_Stage5_INC()
@@ -2914,19 +2914,19 @@ namespace BizHawk.Emulation.Common.Components.M6502
 
 		public void ExecuteOne()
 		{
-            if (!rdy_freeze)
-            {
-                TotalExecutedCycles++;
+			if (!rdy_freeze)
+			{
+				TotalExecutedCycles++;
 
-                interrupt_pending |= Interrupted;
-            }
-            rdy_freeze = false;
-            
-            //i tried making ExecuteOneRetry not re-entrant by having it set a flag instead, then exit from the call below, check the flag, and GOTO if it was flagged, but it wasnt faster
+				interrupt_pending |= Interrupted;
+			}
+			rdy_freeze = false;
+
+			//i tried making ExecuteOneRetry not re-entrant by having it set a flag instead, then exit from the call below, check the flag, and GOTO if it was flagged, but it wasnt faster
 			ExecuteOneRetry();
 
-            if (!rdy_freeze)
-			    mi++;
+			if (!rdy_freeze)
+				mi++;
 		} //ExecuteOne
 	}
 }

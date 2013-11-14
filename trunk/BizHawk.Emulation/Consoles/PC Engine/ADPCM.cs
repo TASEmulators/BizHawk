@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Sound;
 using System.IO;
 using System.Globalization;
 

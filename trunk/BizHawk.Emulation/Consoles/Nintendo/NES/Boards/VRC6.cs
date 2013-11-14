@@ -1,5 +1,7 @@
 ﻿using System;
+
 using BizHawk.Common;
+using BizHawk.Emulation.Common.Components;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -12,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool newer_variant;
 
 		//Sound.VRC6 VRC6Sound = new Sound.VRC6();
-		Sound.VRC6Alt VRC6Sound;
+		VRC6Alt VRC6Sound;
 
 		//state
 		int prg_bank_16k, prg_bank_8k;
@@ -96,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 
 			if (NES.apu != null) // don't start up sound when in configurator
-				VRC6Sound = new Sound.VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
+				VRC6Sound = new VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
 
 			return true;
 		}

@@ -2,6 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components;
 
 //simplifications/approximations:
 //* "Note that no commercial games rely on this mirroring -- therefore you can take the easy way out and simply give all MMC5 games 64k PRG-RAM."
@@ -38,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int wram_bank;
 		byte[] EXRAM = new byte[1024];
 		byte multiplicand, multiplier;
-		Sound.MMC5Audio audio;
+		MMC5Audio audio;
 		//regeneratable state
 		IntBuffer a_banks_1k = new IntBuffer(8);
 		IntBuffer b_banks_1k = new IntBuffer(8);
@@ -119,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PoweronState();
 
 			if (NES.apu != null)
-				audio = new Sound.MMC5Audio(NES.apu.ExternalQueue, (e) => { irq_audio = e; SyncIRQ(); });
+				audio = new MMC5Audio(NES.apu.ExternalQueue, (e) => { irq_audio = e; SyncIRQ(); });
 
 			return true;
 		}

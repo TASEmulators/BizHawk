@@ -1,13 +1,13 @@
 ﻿using System;
-using BizHawk.Emulation.Sound;
 using System.Collections.Generic;
+
 #if WINDOWS
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 #endif
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

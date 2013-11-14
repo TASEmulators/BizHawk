@@ -998,7 +998,7 @@ namespace BizHawk.Client.EmuHawk
 		//avi/wav state
 		private IVideoWriter CurrAviWriter;
 		private ISoundProvider AviSoundInput;
-		private Emulation.Sound.MetaspuSoundProvider DumpProxy; //an audio proxy used for dumping
+		private MetaspuSoundProvider DumpProxy; //an audio proxy used for dumping
 		private long SoundRemainder; //audio timekeeping for video dumping
 		private int avwriter_resizew;
 		private int avwriter_resizeh;
@@ -1412,7 +1412,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.Emulator.StartAsyncSound())
 				{
 					// if the core doesn't support async mode, use a standard vecna wrapper
-					GlobalWin.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
+					GlobalWin.Sound.SetAsyncInputPin(new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V));
 				}
 				else
 				{
@@ -2854,10 +2854,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
 			if (!Global.Emulator.StartAsyncSound())
-				AviSoundInput = new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V);
+				AviSoundInput = new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V);
 			else
 				AviSoundInput = Global.Emulator.SoundProvider;
-			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			DumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 			SoundRemainder = 0;
 			RewireSound();
 		}

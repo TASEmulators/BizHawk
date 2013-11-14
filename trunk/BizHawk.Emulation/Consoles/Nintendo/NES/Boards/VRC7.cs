@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common.Components;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -14,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		Func<int, int> remap;
 
 		//state
-		BizHawk.Emulation.Sound.YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+		YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
 		ByteBuffer chr_banks_1k = new ByteBuffer(8);
@@ -94,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// presumably the only reason a homebrew would use mapper085 is for the sound?
 					// so initialize like lagrange point
 					remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
-					fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+					fm = new YM2413(YM2413.ChipType.VRC7);
 					break;
 				case "KONAMI-VRC-7":
 					AssertPrg(128, 512); AssertChr(0, 128); AssertVram(0, 8); AssertWram(0, 8);
@@ -109,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						//lagrange point
 						remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
-						fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+						fm = new YM2413(YM2413.ChipType.VRC7);
 					}
 					else
 						throw new Exception("Unknown PCB type for VRC7");

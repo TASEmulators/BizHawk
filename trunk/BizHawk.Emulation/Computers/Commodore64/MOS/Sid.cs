@@ -1,5 +1,7 @@
 ﻿using System;
+
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 #pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete
@@ -14,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		// ------------------------------------
 
-		public Sound.Utilities.SpeexResampler resampler;
+		public SpeexResampler resampler;
 
 		static int[] syncNextTable = new int[] { 1, 2, 0 };
 		static int[] syncPrevTable = new int[] { 2, 0, 1 };
 
-        int cachedCycles;
+		int cachedCycles;
 		bool disableVoice3;
 		int[] envelopeOutput;
 		Envelope[] envelopes;
@@ -29,12 +31,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		bool filterSelectBandPass;
 		bool filterSelectLoPass;
 		bool filterSelectHiPass;
-        int mixer;
-        int potCounter;
+		int mixer;
+		int potCounter;
 		int potX;
-        int potY;
-        short sample;
-        int[] voiceOutput;
+		int potY;
+		short sample;
+		int[] voiceOutput;
 		Voice[] voices;
 		int volume;
 		int[][] waveformTable;
@@ -45,15 +47,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public Sid(int[][] newWaveformTable, int newSampleRate, Region newRegion)
 		{
 			uint cyclesPerSec = 0;
-            uint cyclesNum;
-            uint cyclesDen;
-            uint sampleRate = 44100;
+			uint cyclesNum;
+			uint cyclesDen;
+			uint sampleRate = 44100;
 
 			switch (newRegion)
 			{
-                case Region.NTSC: cyclesNum = 14318181; cyclesDen = 14; break;
+				case Region.NTSC: cyclesNum = 14318181; cyclesDen = 14; break;
 				case Region.PAL: cyclesNum = 17734472; cyclesDen = 18; break;
-                default: return;
+				default: return;
 			}
 
 			waveformTable = newWaveformTable;
@@ -72,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			for (int i = 0; i < 3; i++)
 				filterEnable[i] = false;
 
-            resampler = new Sound.Utilities.SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
+			resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
 		}
 
 		public void Dispose()
@@ -100,55 +102,55 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		// ------------------------------------
 
-        public void ExecutePhase2()
+		public void ExecutePhase2()
 		{
-            cachedCycles++;
+			cachedCycles++;
 
-            // potentiometer values refresh every 512 cycles
-            if (potCounter == 0)
-            {
-                potCounter = 512;
-                potX = ReadPotX();
-                potY = ReadPotY();
-                Flush(); //this is here unrelated to the pots, just to keep the buffer somewhat loaded
-            }
-            potCounter--;
-        }
+			// potentiometer values refresh every 512 cycles
+			if (potCounter == 0)
+			{
+				potCounter = 512;
+				potX = ReadPotX();
+				potY = ReadPotY();
+				Flush(); //this is here unrelated to the pots, just to keep the buffer somewhat loaded
+			}
+			potCounter--;
+		}
 
-        public void Flush()
-        {
-            while (cachedCycles > 0)
-            {
-                // process voices and envelopes
-                voices[0].ExecutePhase2();
-                voices[1].ExecutePhase2();
-                voices[2].ExecutePhase2();
-                envelopes[0].ExecutePhase2();
-                envelopes[1].ExecutePhase2();
-                envelopes[2].ExecutePhase2();
+		public void Flush()
+		{
+			while (cachedCycles > 0)
+			{
+				// process voices and envelopes
+				voices[0].ExecutePhase2();
+				voices[1].ExecutePhase2();
+				voices[2].ExecutePhase2();
+				envelopes[0].ExecutePhase2();
+				envelopes[1].ExecutePhase2();
+				envelopes[2].ExecutePhase2();
 
-                // process sync
-                for (int i = 0; i < 3; i++)
-                    voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
+				// process sync
+				for (int i = 0; i < 3; i++)
+					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
 
-                // get output
-                voiceOutput[0] = voices[0].Output(voices[2]);
-                voiceOutput[1] = voices[1].Output(voices[0]);
-                voiceOutput[2] = voices[2].Output(voices[1]);
-                envelopeOutput[0] = envelopes[0].Level;
-                envelopeOutput[1] = envelopes[1].Level;
-                envelopeOutput[2] = envelopes[2].Level;
+				// get output
+				voiceOutput[0] = voices[0].Output(voices[2]);
+				voiceOutput[1] = voices[1].Output(voices[0]);
+				voiceOutput[2] = voices[2].Output(voices[1]);
+				envelopeOutput[0] = envelopes[0].Level;
+				envelopeOutput[1] = envelopes[1].Level;
+				envelopeOutput[2] = envelopes[2].Level;
 
-                mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
-                mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
-                mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
-                mixer = (mixer * volume) >> 4;
+				mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
+				mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
+				mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
+				mixer = (mixer * volume) >> 4;
 
-                sample = (short)mixer;
-                resampler.EnqueueSample(sample, sample);
-                cachedCycles--;
-            }
-        }
+				sample = (short)mixer;
+				resampler.EnqueueSample(sample, sample);
+				cachedCycles--;
+			}
+		}
 
 		// ------------------------------------
 
@@ -172,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				case 0x1A:
 				case 0x1B:
 				case 0x1C:
-                    Flush();
+					Flush();
 					result = ReadRegister(addr);
 					break;
 			}
@@ -204,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 						(envelopes[0].Decay)
 						);
 					break;
-				case 0x06: 
+				case 0x06:
 					result = (byte)(
 						(envelopes[0].Sustain << 4) |
 						(envelopes[0].Release)
@@ -280,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 						);
 					break;
 				case 0x19: result = (byte)potX; break;
-				case 0x1A: result = (byte)potY;	break;
+				case 0x1A: result = (byte)potY; break;
 				case 0x1B: result = (byte)(voiceOutput[2] >> 4); break;
 				case 0x1C: result = (byte)(envelopeOutput[2]); break;
 			}
@@ -303,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					// can't write to these
 					break;
 				default:
-                    Flush();
+					Flush();
 					WriteRegister(addr, val);
 					break;
 			}
@@ -360,10 +362,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		// ----------------------------------
 
-        public void SyncState(Serializer ser)
+		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
-            ser.BeginSection("env0");
+			SaveState.SyncObject(ser, this);
+			ser.BeginSection("env0");
 			envelopes[0].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("wav0");

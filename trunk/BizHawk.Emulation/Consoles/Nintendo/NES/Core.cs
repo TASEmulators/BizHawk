@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		class MagicSoundProvider : ISoundProvider, ISyncSoundProvider, IDisposable
 		{
-			Sound.Utilities.BlipBuffer blip;
+			BlipBuffer blip;
 			NES nes;
 
 			const int blipbuffsize = 4096;
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				this.nes = nes;
 
-				blip = new Sound.Utilities.BlipBuffer(blipbuffsize);
+				blip = new BlipBuffer(blipbuffsize);
 				blip.SetRates(infreq, 44100);
 
 				//var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
