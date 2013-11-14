@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 85
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.

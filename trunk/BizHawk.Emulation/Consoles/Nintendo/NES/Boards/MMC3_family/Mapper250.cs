@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Time Diver Avenger (Unl)
 	// MMC3 with slightly different write scheme

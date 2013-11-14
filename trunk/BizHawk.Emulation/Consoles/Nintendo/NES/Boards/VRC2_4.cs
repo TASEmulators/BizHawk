@@ -1,10 +1,9 @@
 ﻿//TODO - for chr, refactor to use 8 registers of 8 bits instead of 16 registers of 4 bits. more realistic, less weird code.
 
 using System;
-
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.

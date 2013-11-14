@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// one of the VS unisystem mappers
 	// a lot of dumps are labelled incorrectly

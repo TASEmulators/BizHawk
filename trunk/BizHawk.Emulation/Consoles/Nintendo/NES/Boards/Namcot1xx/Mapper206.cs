@@ -1,6 +1,6 @@
 using System;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//various japanese Namcot108 boards plus DEROM
 	public sealed class Mapper206 : Namcot108Board_Base

@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4

@@ -1,4 +1,4 @@
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//pretty much just one game. 
 	//wires the mapper outputs to control the nametables. check out the companion board TLSROM

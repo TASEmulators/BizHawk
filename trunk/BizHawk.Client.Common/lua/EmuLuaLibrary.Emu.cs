@@ -2,9 +2,9 @@
 using System.Linq;
 
 using LuaInterface;
-using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {

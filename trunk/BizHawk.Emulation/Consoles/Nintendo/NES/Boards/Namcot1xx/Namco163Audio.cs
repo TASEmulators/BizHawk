@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/Namco_163_audio
 	public sealed class Namco163Audio : IDisposable

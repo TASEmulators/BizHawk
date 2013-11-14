@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//this class also handles mapper 248
 	//FCEUX uses 115 to implement 248 as well (as of 09-apr-2012 it does it buggily in the case of Bao Qing Tian (As))

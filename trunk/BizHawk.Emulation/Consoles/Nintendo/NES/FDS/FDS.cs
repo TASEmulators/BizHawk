@@ -6,7 +6,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*
 	 * http://sourceforge.net/p/fceultra/code/2696/tree/fceu/src/fds.cpp - only used for timer info

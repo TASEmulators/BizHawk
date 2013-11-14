@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// rewires pins to use internal CIRAM as both nametable and pattern data, so
 	// the entire cart is just a single PRGROM chip (plus CIC)

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*
 	Example Games:

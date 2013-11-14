@@ -15,7 +15,7 @@ using BizHawk.Emulation.Common;
 //TODO - tweak nametable / chr viewer to be more useful
 
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplPriority]
 	public sealed class ExROM : NES.NESBoardBase
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
 
-			if (exram_mode == 1 && NES.ppu.ppuphase == Nintendo.NES.PPU.PPUPHASE.BG)
+			if (exram_mode == 1 && NES.ppu.ppuphase == NES.PPU.PPUPHASE.BG)
 			{
 				int exram_addr = last_nt_read;
 				int bank_4k = EXRAM[exram_addr] & 0x3F;

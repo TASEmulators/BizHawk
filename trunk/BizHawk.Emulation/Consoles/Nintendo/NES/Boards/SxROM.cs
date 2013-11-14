@@ -1,7 +1,7 @@
 using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA MMC1
 	//http://wiki.nesdev.com/w/index.php/SxROM

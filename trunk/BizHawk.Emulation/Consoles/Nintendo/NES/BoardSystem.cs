@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 //TODO - consider bytebuffer for mirroring
 //TODO - could stringpool the bootgod DB for a pedantic optimization
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{

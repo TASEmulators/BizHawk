@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt

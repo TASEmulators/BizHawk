@@ -3,12 +3,12 @@
 //for some info on NAMCOT 108
 //but mostly http://wiki.nesdev.com/w/index.php/INES_Mapper_206
 
+//TODO - prg is 4 bits, chr is 6 bits
+
 using System;
 using BizHawk.Common;
 
-//TODO - prg is 4 bits, chr is 6 bits
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
 	public class Namcot108Chip : IDisposable

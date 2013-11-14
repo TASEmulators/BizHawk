@@ -1,4 +1,4 @@
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka mapper 119
 	//just high speed and pinbot with an MMC3 and some custom logic to select between chr rom and chr ram
