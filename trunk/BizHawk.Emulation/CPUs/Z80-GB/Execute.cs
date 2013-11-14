@@ -30,7 +30,7 @@ using System;
 	SRL
 */
 
-namespace BizHawk.Emulation.CPUs.Z80GB
+namespace BizHawk.Emulation.Common.Components.Z80GB
 {
 	public partial class Z80
 	{

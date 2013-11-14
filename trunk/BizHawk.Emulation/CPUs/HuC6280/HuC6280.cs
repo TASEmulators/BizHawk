@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.CPUs.H6280
+namespace BizHawk.Emulation.Common.Components.H6280
 {
     public sealed partial class HuC6280
     {

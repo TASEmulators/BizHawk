@@ -5,7 +5,7 @@ using System.IO;
 // This Z80-Gameboy emulator is a modified version of Ben Ryves 'Brazil' emulator.
 // It is MIT licensed (not public domain). (See Licenses)
 
-namespace BizHawk.Emulation.CPUs.Z80GB
+namespace BizHawk.Emulation.Common.Components.Z80GB
 {
 	public sealed partial class Z80
 	{

@@ -1,9 +1,9 @@
 using System;
 
-namespace BizHawk.Emulation.CPUs.Z80GB
+namespace BizHawk.Emulation.Common.Components.Z80GB
 {
-	public partial class Z80 
-    {
+	public partial class Z80
+	{
 		private bool iff1;
 		public bool IFF1 { get { return iff1; } set { iff1 = value; } }
 
@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 		public bool Interrupt { get { return interrupt; } set { interrupt = value; } }
 
 		private bool nonMaskableInterrupt;
-		public bool NonMaskableInterrupt 
-        {
+		public bool NonMaskableInterrupt
+		{
 			get { return nonMaskableInterrupt; }
 			set { if (value && !nonMaskableInterrupt) NonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
 		}
@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 		public bool NonMaskableInterruptPending { get { return nonMaskableInterruptPending; } set { nonMaskableInterruptPending = value; } }
 
 		private int interruptMode;
-		public int InterruptMode 
-        {
+		public int InterruptMode
+		{
 			get { return interruptMode; }
 			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
 		}
@@ -33,8 +33,8 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 		private bool halted;
 		public bool Halted { get { return halted; } set { halted = value; } }
 
-		private void ResetInterrupts() 
-        {
+		private void ResetInterrupts()
+		{
 			IFF1 = false;
 			IFF2 = false;
 			Interrupt = false;
@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 			Halted = false;
 		}
 
-		private void Halt() 
-        {
+		private void Halt()
+		{
 			Halted = true;
 		}
 	}

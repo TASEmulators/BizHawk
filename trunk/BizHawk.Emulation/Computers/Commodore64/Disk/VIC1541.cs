@@ -1,5 +1,5 @@
 ﻿using System;
-using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.Common.Components.M6502;
 
 #if false
 

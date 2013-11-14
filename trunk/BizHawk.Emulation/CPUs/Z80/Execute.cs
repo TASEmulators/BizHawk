@@ -1,9 +1,9 @@
 using System;
 
-namespace BizHawk.Emulation.CPUs.Z80 
+namespace BizHawk.Emulation.Common.Components.Z80
 {
-	public partial class Z80A 
-    {
+	public partial class Z80A
+	{
 		private int totalExecutedCycles;
 		public int TotalExecutedCycles { get { return totalExecutedCycles; } set { totalExecutedCycles = value; } }
 
@@ -13,42 +13,44 @@ namespace BizHawk.Emulation.CPUs.Z80
 		private int pendingCycles;
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
 
-        public bool Debug;
-        public Action<string> Logger;
+		public bool Debug;
+		public Action<string> Logger;
 
 		/// <summary>
 		/// Runs the CPU for a particular number of clock cycles.
 		/// </summary>
 		/// <param name="cycles">The number of cycles to run the CPU emulator for. Specify -1 to run for a single instruction.</param>
-		public void ExecuteCycles(int cycles) 
-        {
-            expectedExecutedCycles += cycles;
+		public void ExecuteCycles(int cycles)
+		{
+			expectedExecutedCycles += cycles;
 			pendingCycles += cycles;
-			
+
 			sbyte Displacement;
-			
+
 			byte TB; byte TBH; byte TBL; byte TB1; byte TB2; sbyte TSB; ushort TUS; int TI1; int TI2; int TIR;
 
 			bool Interruptable;
 
-			while (pendingCycles > 0) 
-            {
-                Interruptable = true;
+			while (pendingCycles > 0)
+			{
+				Interruptable = true;
 
 				if (halted)
-                {
+				{
 
-                    ++RegR;
+					++RegR;
 					totalExecutedCycles += 4; pendingCycles -= 4;
 
-				} else {
+				}
+				else
+				{
 
-                    if (Debug)
-                        Logger(State());
-                    
-                    ++RegR;
-					switch (ReadMemory(RegPC.Word++)) 
-                    {
+					if (Debug)
+						Logger(State());
+
+					++RegR;
+					switch (ReadMemory(RegPC.Word++))
+					{
 						case 0x00: // NOP
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
@@ -121,10 +123,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0x10: // DJNZ d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
-							if (--RegBC.High != 0) {
+							if (--RegBC.High != 0)
+							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
 								totalExecutedCycles += 13; pendingCycles -= 13;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 8; pendingCycles -= 8;
 							}
 							break;
@@ -159,7 +164,7 @@ namespace BizHawk.Emulation.CPUs.Z80
 						case 0x18: // JR d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
 							RegPC.Word = (ushort)(RegPC.Word + TSB);
-								totalExecutedCycles += 12; pendingCycles -= 12;
+							totalExecutedCycles += 12; pendingCycles -= 12;
 							break;
 						case 0x19: // ADD HL, DE
 							TI1 = (short)RegHL.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
@@ -198,10 +203,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0x20: // JR NZ, d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
-							if (!RegFlagZ) {
+							if (!RegFlagZ)
+							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
 								totalExecutedCycles += 12; pendingCycles -= 12;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 7; pendingCycles -= 7;
 							}
 							break;
@@ -237,10 +245,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0x28: // JR Z, d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
-							if (RegFlagZ) {
+							if (RegFlagZ)
+							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
 								totalExecutedCycles += 12; pendingCycles -= 12;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 7; pendingCycles -= 7;
 							}
 							break;
@@ -282,10 +293,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0x30: // JR NC, d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
-							if (!RegFlagC) {
+							if (!RegFlagC)
+							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
 								totalExecutedCycles += 12; pendingCycles -= 12;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 7; pendingCycles -= 7;
 							}
 							break;
@@ -319,10 +333,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0x38: // JR C, d
 							TSB = (sbyte)ReadMemory(RegPC.Word++);
-							if (RegFlagC) {
+							if (RegFlagC)
+							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
 								totalExecutedCycles += 12; pendingCycles -= 12;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 7; pendingCycles -= 7;
 							}
 							break;
@@ -867,10 +884,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
 						case 0xC0: // RET NZ
-							if (!RegFlagZ) {
+							if (!RegFlagZ)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -880,7 +900,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xC2: // JP NZ, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagZ) {
+							if (!RegFlagZ)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -891,11 +912,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xC4: // CALL NZ, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagZ) {
+							if (!RegFlagZ)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
@@ -913,10 +937,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xC8: // RET Z
-							if (RegFlagZ) {
+							if (RegFlagZ)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -926,14 +953,16 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xCA: // JP Z, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagZ) {
+							if (RegFlagZ)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0xCB: // (Prefix)
 							++RegR;
-							switch (ReadMemory(RegPC.Word++)) {
+							switch (ReadMemory(RegPC.Word++))
+							{
 								case 0x00: // RLC B
 									TUS = TableRotShift[1, 0, RegAF.Low + 256 * RegBC.High];
 									RegBC.High = (byte)(TUS >> 8);
@@ -2474,11 +2503,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xCC: // CALL Z, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagZ) {
+							if (RegFlagZ)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
@@ -2498,10 +2530,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xD0: // RET NC
-							if (!RegFlagC) {
+							if (!RegFlagC)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -2511,7 +2546,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xD2: // JP NC, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagC) {
+							if (!RegFlagC)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -2522,11 +2558,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xD4: // CALL NC, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagC) {
+							if (!RegFlagC)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
@@ -2544,10 +2583,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xD8: // RET C
-							if (RegFlagC) {
+							if (RegFlagC)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -2559,7 +2601,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xDA: // JP C, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagC) {
+							if (RegFlagC)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -2570,17 +2613,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xDC: // CALL C, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagC) {
+							if (RegFlagC)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
 						case 0xDD: // (Prefix)
 							++RegR;
-							switch (ReadMemory(RegPC.Word++)) {
+							switch (ReadMemory(RegPC.Word++))
+							{
 								case 0x00: // NOP
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -2653,10 +2700,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x10: // DJNZ d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (--RegBC.High != 0) {
+									if (--RegBC.High != 0)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 13; pendingCycles -= 13;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 8; pendingCycles -= 8;
 									}
 									break;
@@ -2691,7 +2741,7 @@ namespace BizHawk.Emulation.CPUs.Z80
 								case 0x18: // JR d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
 									RegPC.Word = (ushort)(RegPC.Word + TSB);
-										totalExecutedCycles += 12; pendingCycles -= 12;
+									totalExecutedCycles += 12; pendingCycles -= 12;
 									break;
 								case 0x19: // ADD IX, DE
 									TI1 = (short)RegIX.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
@@ -2730,10 +2780,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x20: // JR NZ, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -2769,10 +2822,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x28: // JR Z, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -2814,10 +2870,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x30: // JR NC, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -2854,10 +2913,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x38: // JR C, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -3424,10 +3486,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
 								case 0xC0: // RET NZ
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -3437,7 +3502,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xC2: // JP NZ, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -3448,11 +3514,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xC4: // CALL NZ, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -3470,10 +3539,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xC8: // RET Z
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -3483,7 +3555,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xCA: // JP Z, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -3491,7 +3564,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 								case 0xCB: // (Prefix)
 									Displacement = (sbyte)ReadMemory(RegPC.Word++);
 									++RegR;
-									switch (ReadMemory(RegPC.Word++)) {
+									switch (ReadMemory(RegPC.Word++))
+									{
 										case 0x00: // RLC (IX+d)→B
 											TUS = TableRotShift[1, 0, RegAF.Low + 256 * ReadMemory((ushort)(RegIX.Word + Displacement))];
 											WriteMemory((ushort)(RegIX.Word + Displacement), (byte)(TUS >> 8));
@@ -5072,11 +5146,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xCC: // CALL Z, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -5096,10 +5173,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xD0: // RET NC
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -5109,7 +5189,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xD2: // JP NC, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -5120,11 +5201,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xD4: // CALL NC, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -5142,10 +5226,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xD8: // RET C
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -5157,7 +5244,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xDA: // JP C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -5168,11 +5256,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xDC: // CALL C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -5190,10 +5281,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xE0: // RET PO
-									if (!RegFlagP) {
+									if (!RegFlagP)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -5203,7 +5297,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xE2: // JP PO, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagP) {
+									if (!RegFlagP)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -5216,11 +5311,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xE4: // CALL C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -5238,10 +5336,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xE8: // RET PE
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -5251,7 +5352,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xEA: // JP PE, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -5262,17 +5364,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xEC: // CALL PE, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
 								case 0xED: // (Prefix)
 									++RegR;
-									switch (ReadMemory(RegPC.Word++)) {
+									switch (ReadMemory(RegPC.Word++))
+									{
 										case 0x00: // NOP
 											totalExecutedCycles += 4; pendingCycles -= 4;
 											break;
@@ -6086,10 +6192,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											RegFlagP = RegBC.Word != 0;
 											RegFlagH = false;
 											RegFlagN = false;
-											if (RegBC.Word != 0) {
+											if (RegBC.Word != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6102,10 +6211,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 											--RegBC.Word;
 											RegFlagP = RegBC.Word != 0;
-											if (RegBC.Word != 0 && !RegFlagZ) {
+											if (RegBC.Word != 0 && !RegFlagZ)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6114,10 +6226,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6126,10 +6241,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6152,10 +6270,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											RegFlagP = RegBC.Word != 0;
 											RegFlagH = false;
 											RegFlagN = false;
-											if (RegBC.Word != 0) {
+											if (RegBC.Word != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6168,10 +6289,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 											--RegBC.Word;
 											RegFlagP = RegBC.Word != 0;
-											if (RegBC.Word != 0 && !RegFlagZ) {
+											if (RegBC.Word != 0 && !RegFlagZ)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6180,10 +6304,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6192,10 +6319,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -6415,10 +6545,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xF0: // RET P
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -6428,7 +6561,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xF2: // JP P, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -6439,11 +6573,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xF4: // CALL P, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -6461,10 +6598,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xF8: // RET M
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -6474,7 +6614,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xFA: // JP M, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -6486,11 +6627,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xFC: // CALL M, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -6519,10 +6663,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xE0: // RET PO
-							if (!RegFlagP) {
+							if (!RegFlagP)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -6532,7 +6679,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xE2: // JP PO, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagP) {
+							if (!RegFlagP)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -6545,11 +6693,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xE4: // CALL C, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagC) {
+							if (RegFlagC)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
@@ -6567,10 +6718,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xE8: // RET PE
-							if (RegFlagP) {
+							if (RegFlagP)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -6580,7 +6734,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xEA: // JP PE, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagP) {
+							if (RegFlagP)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -6591,17 +6746,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xEC: // CALL PE, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagP) {
+							if (RegFlagP)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
 						case 0xED: // (Prefix)
 							++RegR;
-							switch (ReadMemory(RegPC.Word++)) {
+							switch (ReadMemory(RegPC.Word++))
+							{
 								case 0x00: // NOP
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -7415,10 +7574,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									RegFlagP = RegBC.Word != 0;
 									RegFlagH = false;
 									RegFlagN = false;
-									if (RegBC.Word != 0) {
+									if (RegBC.Word != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7431,10 +7593,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 									--RegBC.Word;
 									RegFlagP = RegBC.Word != 0;
-									if (RegBC.Word != 0 && !RegFlagZ) {
+									if (RegBC.Word != 0 && !RegFlagZ)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7443,10 +7608,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
 									RegFlagN = true;
-									if (RegBC.High != 0) {
+									if (RegBC.High != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7455,10 +7623,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
 									RegFlagN = true;
-									if (RegBC.High != 0) {
+									if (RegBC.High != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7481,10 +7652,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									RegFlagP = RegBC.Word != 0;
 									RegFlagH = false;
 									RegFlagN = false;
-									if (RegBC.Word != 0) {
+									if (RegBC.Word != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7497,10 +7671,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 									--RegBC.Word;
 									RegFlagP = RegBC.Word != 0;
-									if (RegBC.Word != 0 && !RegFlagZ) {
+									if (RegBC.Word != 0 && !RegFlagZ)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7509,10 +7686,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
 									RegFlagN = true;
-									if (RegBC.High != 0) {
+									if (RegBC.High != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7521,10 +7701,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
 									RegFlagN = true;
-									if (RegBC.High != 0) {
+									if (RegBC.High != 0)
+									{
 										RegPC.Word -= 2;
 										totalExecutedCycles += 21; pendingCycles -= 21;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 16; pendingCycles -= 16;
 									}
 									break;
@@ -7744,10 +7927,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xF0: // RET P
-							if (!RegFlagS) {
+							if (!RegFlagS)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -7757,7 +7943,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xF2: // JP P, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagS) {
+							if (!RegFlagS)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -7768,11 +7955,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xF4: // CALL P, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (!RegFlagS) {
+							if (!RegFlagS)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
@@ -7790,10 +7980,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0xF8: // RET M
-							if (RegFlagS) {
+							if (RegFlagS)
+							{
 								RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 								totalExecutedCycles += 11; pendingCycles -= 11;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 5; pendingCycles -= 5;
 							}
 							break;
@@ -7803,7 +7996,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xFA: // JP M, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagS) {
+							if (RegFlagS)
+							{
 								RegPC.Word = TUS;
 							}
 							totalExecutedCycles += 10; pendingCycles -= 10;
@@ -7815,17 +8009,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 							break;
 						case 0xFC: // CALL M, nn
 							TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-							if (RegFlagS) {
+							if (RegFlagS)
+							{
 								WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
 								totalExecutedCycles += 17; pendingCycles -= 17;
-							} else {
+							}
+							else
+							{
 								totalExecutedCycles += 10; pendingCycles -= 10;
 							}
 							break;
 						case 0xFD: // (Prefix)
 							++RegR;
-							switch (ReadMemory(RegPC.Word++)) {
+							switch (ReadMemory(RegPC.Word++))
+							{
 								case 0x00: // NOP
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -7898,10 +8096,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x10: // DJNZ d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (--RegBC.High != 0) {
+									if (--RegBC.High != 0)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 13; pendingCycles -= 13;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 8; pendingCycles -= 8;
 									}
 									break;
@@ -7936,7 +8137,7 @@ namespace BizHawk.Emulation.CPUs.Z80
 								case 0x18: // JR d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
 									RegPC.Word = (ushort)(RegPC.Word + TSB);
-										totalExecutedCycles += 12; pendingCycles -= 12;
+									totalExecutedCycles += 12; pendingCycles -= 12;
 									break;
 								case 0x19: // ADD IY, DE
 									TI1 = (short)RegIY.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
@@ -7975,10 +8176,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x20: // JR NZ, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -8014,10 +8218,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x28: // JR Z, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -8059,10 +8266,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x30: // JR NC, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -8099,10 +8309,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0x38: // JR C, d
 									TSB = (sbyte)ReadMemory(RegPC.Word++);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
 										totalExecutedCycles += 12; pendingCycles -= 12;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 7; pendingCycles -= 7;
 									}
 									break;
@@ -8669,10 +8882,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
 								case 0xC0: // RET NZ
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -8682,7 +8898,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xC2: // JP NZ, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -8693,11 +8910,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xC4: // CALL NZ, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagZ) {
+									if (!RegFlagZ)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -8715,10 +8935,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xC8: // RET Z
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -8728,7 +8951,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xCA: // JP Z, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -8736,7 +8960,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 								case 0xCB: // (Prefix)
 									Displacement = (sbyte)ReadMemory(RegPC.Word++);
 									++RegR;
-									switch (ReadMemory(RegPC.Word++)) {
+									switch (ReadMemory(RegPC.Word++))
+									{
 										case 0x00: // RLC (IY+d)
 											TUS = TableRotShift[1, 0, RegAF.Low + 256 * ReadMemory((ushort)(RegIY.Word + Displacement))];
 											WriteMemory((ushort)(RegIY.Word + Displacement), (byte)(TUS >> 8));
@@ -10149,11 +10374,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xCC: // CALL Z, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagZ) {
+									if (RegFlagZ)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -10173,10 +10401,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xD0: // RET NC
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -10186,7 +10417,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xD2: // JP NC, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -10197,11 +10429,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xD4: // CALL NC, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagC) {
+									if (!RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -10219,10 +10454,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xD8: // RET C
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -10234,7 +10472,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xDA: // JP C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -10245,11 +10484,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xDC: // CALL C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -10267,10 +10509,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xE0: // RET PO
-									if (!RegFlagP) {
+									if (!RegFlagP)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -10280,7 +10525,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xE2: // JP PO, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagP) {
+									if (!RegFlagP)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -10293,11 +10539,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xE4: // CALL C, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagC) {
+									if (RegFlagC)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -10315,10 +10564,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xE8: // RET PE
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -10328,7 +10580,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xEA: // JP PE, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -10339,17 +10592,21 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xEC: // CALL PE, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagP) {
+									if (RegFlagP)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
 								case 0xED: // (Prefix)
 									++RegR;
-									switch (ReadMemory(RegPC.Word++)) {
+									switch (ReadMemory(RegPC.Word++))
+									{
 										case 0x00: // NOP
 											totalExecutedCycles += 4; pendingCycles -= 4;
 											break;
@@ -11163,10 +11420,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											RegFlagP = RegBC.Word != 0;
 											RegFlagH = false;
 											RegFlagN = false;
-											if (RegBC.Word != 0) {
+											if (RegBC.Word != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11179,10 +11439,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 											--RegBC.Word;
 											RegFlagP = RegBC.Word != 0;
-											if (RegBC.Word != 0 && !RegFlagZ) {
+											if (RegBC.Word != 0 && !RegFlagZ)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11191,10 +11454,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11203,10 +11469,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11229,10 +11498,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											RegFlagP = RegBC.Word != 0;
 											RegFlagH = false;
 											RegFlagN = false;
-											if (RegBC.Word != 0) {
+											if (RegBC.Word != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11245,10 +11517,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											TB1 = (byte)(RegAF.High - TB1 - (RegFlagH ? 1 : 0)); RegFlag5 = (TB1 & 0x02) != 0; RegFlag3 = (TB1 & 0x08) != 0;
 											--RegBC.Word;
 											RegFlagP = RegBC.Word != 0;
-											if (RegBC.Word != 0 && !RegFlagZ) {
+											if (RegBC.Word != 0 && !RegFlagZ)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11257,10 +11532,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11269,10 +11547,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
 											RegFlagN = true;
-											if (RegBC.High != 0) {
+											if (RegBC.High != 0)
+											{
 												RegPC.Word -= 2;
 												totalExecutedCycles += 21; pendingCycles -= 21;
-											} else {
+											}
+											else
+											{
 												totalExecutedCycles += 16; pendingCycles -= 16;
 											}
 											break;
@@ -11492,10 +11773,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xF0: // RET P
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -11505,7 +11789,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xF2: // JP P, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -11516,11 +11801,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xF4: // CALL P, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (!RegFlagS) {
+									if (!RegFlagS)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -11538,10 +11826,13 @@ namespace BizHawk.Emulation.CPUs.Z80
 									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0xF8: // RET M
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										RegPC.Low = ReadMemory(RegSP.Word++); RegPC.High = ReadMemory(RegSP.Word++);
 										totalExecutedCycles += 11; pendingCycles -= 11;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 5; pendingCycles -= 5;
 									}
 									break;
@@ -11551,7 +11842,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xFA: // JP M, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										RegPC.Word = TUS;
 									}
 									totalExecutedCycles += 10; pendingCycles -= 10;
@@ -11563,11 +11855,14 @@ namespace BizHawk.Emulation.CPUs.Z80
 									break;
 								case 0xFC: // CALL M, nn
 									TUS = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
-									if (RegFlagS) {
+									if (RegFlagS)
+									{
 										WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 										RegPC.Word = TUS;
 										totalExecutedCycles += 17; pendingCycles -= 17;
-									} else {
+									}
+									else
+									{
 										totalExecutedCycles += 10; pendingCycles -= 10;
 									}
 									break;
@@ -11600,8 +11895,8 @@ namespace BizHawk.Emulation.CPUs.Z80
 				}
 
 				// Process interrupt requests.
-				if (nonMaskableInterruptPending) 
-                {
+				if (nonMaskableInterruptPending)
+				{
 					halted = false;
 
 					totalExecutedCycles += 11; pendingCycles -= 11;
@@ -11612,16 +11907,18 @@ namespace BizHawk.Emulation.CPUs.Z80
 
 					WriteMemory(--RegSP.Word, RegPC.High); WriteMemory(--RegSP.Word, RegPC.Low);
 					RegPC.Word = 0x66;
-                    NMICallback();
-				
-				} else if (iff1 && interrupt && Interruptable) {
-				
+					NMICallback();
+
+				}
+				else if (iff1 && interrupt && Interruptable)
+				{
+
 					Halted = false;
 
 					iff1 = iff2 = false;
 
-					switch (interruptMode) 
-                    {
+					switch (interruptMode)
+					{
 						case 0:
 							totalExecutedCycles += 13; pendingCycles -= 13;
 							break;
@@ -11637,30 +11934,30 @@ namespace BizHawk.Emulation.CPUs.Z80
 							totalExecutedCycles += 19; pendingCycles -= 19;
 							break;
 					}
-				    IRQCallback();
+					IRQCallback();
 				}
 			}
 		}
-        
-        // TODO, not super thrilled with the existing Z80 disassembler, lets see if we can find something decent to replace it with
-        Disassembler Disassembler = new Disassembler();
 
-        public string State()
-        {
-            ushort tempPC = RegPC.Word;
-            string a = string.Format("{0:X4}  {1:X2} {2} ", RegPC.Word, ReadMemory(RegPC.Word), Disassembler.Disassemble(() => ReadMemory(tempPC++)).PadRight(41));
-            string b = string.Format("AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7}", RegAF.Word, RegBC.Word, RegDE.Word, RegHL.Word, RegIX.Word, RegIY.Word, RegSP.Word, TotalExecutedCycles);
-            string val = a + b + "   ";
-            
-            if (RegFlagC) val = val + "C";
-            if (RegFlagN) val = val + "N";
-            if (RegFlagP) val = val + "P";
-            if (RegFlag3) val = val + "3";
-            if (RegFlagH) val = val + "H";
-            if (RegFlag5) val = val + "5";
-            if (RegFlagZ) val = val + "Z";
-            if (RegFlagS) val = val + "S";
-            return val;
-        }
+		// TODO, not super thrilled with the existing Z80 disassembler, lets see if we can find something decent to replace it with
+		Disassembler Disassembler = new Disassembler();
+
+		public string State()
+		{
+			ushort tempPC = RegPC.Word;
+			string a = string.Format("{0:X4}  {1:X2} {2} ", RegPC.Word, ReadMemory(RegPC.Word), Disassembler.Disassemble(() => ReadMemory(tempPC++)).PadRight(41));
+			string b = string.Format("AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7}", RegAF.Word, RegBC.Word, RegDE.Word, RegHL.Word, RegIX.Word, RegIY.Word, RegSP.Word, TotalExecutedCycles);
+			string val = a + b + "   ";
+
+			if (RegFlagC) val = val + "C";
+			if (RegFlagN) val = val + "N";
+			if (RegFlagP) val = val + "P";
+			if (RegFlag3) val = val + "3";
+			if (RegFlagH) val = val + "H";
+			if (RegFlag5) val = val + "5";
+			if (RegFlagZ) val = val + "Z";
+			if (RegFlagS) val = val + "S";
+			return val;
+		}
 	}
 }

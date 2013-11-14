@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.CPUs.Z80;
+using BizHawk.Emulation.Common.Components.Z80;
 
 //http://www.ticalc.org/pub/text/calcinfo/
 

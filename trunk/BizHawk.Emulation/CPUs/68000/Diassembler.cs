@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BizHawk.Emulation.CPUs.M68000
+namespace BizHawk.Emulation.Common.Components.M68000
 {
     public sealed class DisassemblyInfo
     {

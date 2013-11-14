@@ -1,14 +1,14 @@
 using System.Runtime.InteropServices;
 using System;
 
-namespace BizHawk.Emulation.CPUs.Z80GB
+namespace BizHawk.Emulation.Common.Components.Z80GB
 {
-	public partial class Z80 
-    {
+	public partial class Z80
+	{
 		[StructLayout(LayoutKind.Explicit)]
 		[Serializable]
-		public struct RegisterPair 
-        {
+		public struct RegisterPair
+		{
 			[FieldOffset(0)]
 			public ushort Word;
 
@@ -18,44 +18,44 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 			[FieldOffset(1)]
 			public byte High;
 
-			public RegisterPair(ushort value) 
-            {
+			public RegisterPair(ushort value)
+			{
 				Word = value;
 				Low = (byte)(Word);
 				High = (byte)(Word >> 8);
 			}
 
-			public static implicit operator ushort(RegisterPair rp) 
-            {
+			public static implicit operator ushort(RegisterPair rp)
+			{
 				return rp.Word;
 			}
 
-			public static implicit operator RegisterPair(ushort value) 
-            {
+			public static implicit operator RegisterPair(ushort value)
+			{
 				return new RegisterPair(value);
 			}
 		}
 
-		public bool FlagC 
-        {
+		public bool FlagC
+		{
 			get { return (RegAF.Low & 0x10) != 0; }
 			set { RegAF.Low = (byte)((RegAF.Low & ~0x10) | (value ? 0x10 : 0x00)); }
 		}
 
-		public bool FlagH 
-        {
+		public bool FlagH
+		{
 			get { return (RegAF.Low & 0x20) != 0; }
 			set { RegAF.Low = (byte)((RegAF.Low & ~0x20) | (value ? 0x20 : 0x00)); }
 		}
 
-		public bool FlagN 
-        {
+		public bool FlagN
+		{
 			get { return (RegAF.Low & 0x40) != 0; }
 			set { RegAF.Low = (byte)((RegAF.Low & ~0x40) | (value ? 0x40 : 0x00)); }
 		}
 
-		public bool FlagZ 
-        {
+		public bool FlagZ
+		{
 			get { return (RegAF.Low & 0x80) != 0; }
 			set { RegAF.Low = (byte)((RegAF.Low & ~0x80) | (value ? 0x80 : 0x00)); }
 		}
@@ -64,101 +64,101 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 		private RegisterPair RegBC;
 		private RegisterPair RegDE;
 		private RegisterPair RegHL;
-		
+
 		private byte RegI; // I (interrupt vector)
 
 		private RegisterPair RegSP; // SP (stack pointer)
 		private RegisterPair RegPC; // PC (program counter)
 
-		private void ResetRegisters() 
-        {
+		private void ResetRegisters()
+		{
 			RegAF = 0; RegBC = 0; RegDE = 0; RegHL = 0;
 			RegI = 0;
 			RegSP.Word = 0; RegPC.Word = 0;
 		}
 
-		public byte RegisterA 
-        {
+		public byte RegisterA
+		{
 			get { return RegAF.High; }
 			set { RegAF.High = value; }
 		}
 
-		public byte RegisterF 
-        {
+		public byte RegisterF
+		{
 			get { return RegAF.Low; }
-			set { RegAF.Low = (byte)(value&0xF0); }
+			set { RegAF.Low = (byte)(value & 0xF0); }
 		}
 
-		public ushort RegisterAF 
-        {
+		public ushort RegisterAF
+		{
 			get { return RegAF.Word; }
-			set { RegAF.Word = (byte)(value&0xFFF0); }
+			set { RegAF.Word = (byte)(value & 0xFFF0); }
 		}
 
-		public byte RegisterB 
-        {
+		public byte RegisterB
+		{
 			get { return RegBC.High; }
 			set { RegBC.High = value; }
 		}
 
-		public byte RegisterC 
-        {
+		public byte RegisterC
+		{
 			get { return RegBC.Low; }
 			set { RegBC.Low = value; }
 		}
 
-		public ushort RegisterBC 
-        {
+		public ushort RegisterBC
+		{
 			get { return RegBC.Word; }
 			set { RegBC.Word = value; }
 		}
 
-		public byte RegisterD 
-        {
+		public byte RegisterD
+		{
 			get { return RegDE.High; }
 			set { RegDE.High = value; }
 		}
 
-		public byte RegisterE 
-        {
+		public byte RegisterE
+		{
 			get { return RegDE.Low; }
 			set { RegDE.Low = value; }
 		}
-		public ushort RegisterDE 
-        {
+		public ushort RegisterDE
+		{
 			get { return RegDE.Word; }
 			set { RegDE.Word = value; }
 		}
 
-		public byte RegisterH 
-        {
+		public byte RegisterH
+		{
 			get { return RegHL.High; }
 			set { RegHL.High = value; }
 		}
 
-		public byte RegisterL 
-        {
+		public byte RegisterL
+		{
 			get { return RegHL.Low; }
 			set { RegHL.Low = value; }
 		}
-		public ushort RegisterHL 
-        {
+		public ushort RegisterHL
+		{
 			get { return RegHL.Word; }
 			set { RegHL.Word = value; }
 		}
 
-		public ushort RegisterPC 
-        {
+		public ushort RegisterPC
+		{
 			get { return RegPC.Word; }
 			set { RegPC.Word = value; }
 		}
-		public ushort RegisterSP 
-        {
+		public ushort RegisterSP
+		{
 			get { return RegSP.Word; }
 			set { RegSP.Word = value; }
 		}
-		public byte RegisterI 
-        {
+		public byte RegisterI
+		{
 			get { return RegI; }
 			set { RegI = value; }
 		}
