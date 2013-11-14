@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Common.Components.M6502
 		string oldright = "";
 		void PreCrash()
 		{
-			System.Windows.Forms.MessageBox.Show(string.Format("about to crash! cached:\n==managed==\n{0}\n==native==\n{1}\n", oldleft, oldright));
+			Console.WriteLine(String.Format("about to crash! cached:\n==managed==\n{0}\n==native==\n{1}\n", oldleft, oldright));
 		}
 		void TestQueue()
 		{
