@@ -1,16 +1,15 @@
-﻿using System;
-
-// Credits: 
+﻿// Credits: 
 // Original emulator written by Mitsutaka Okazaki 2001.
 // Original conversion to C# by Ben Ryves.
 
 // TODO The savestate support here is very simplistic and incomplete. However, this does not result in desyncs as the YM2413 is write-only.
 // TODO This should eventually be replaced, due to 1) uncertain licensing terms 2) This is not a native C# implementation, but a naive port.
+using System;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common.Components
 {
 	public sealed class YM2413 : ISoundProvider
 	{

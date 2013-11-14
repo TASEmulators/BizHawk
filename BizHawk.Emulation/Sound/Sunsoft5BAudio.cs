@@ -5,11 +5,13 @@ using System.Text;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common.Components
 {
-	// YM2149F variant
-	// this implementation is quite incomplete
-	// http://wiki.nesdev.com/w/index.php/Sunsoft_5B_audio
+	/// <summary>
+	/// YM2149F variant
+	/// this implementation is quite incomplete
+	/// http://wiki.nesdev.com/w/index.php/Sunsoft_5B_audio
+	/// </summary>
 	public class Sunsoft5BAudio
 	{
 		class Pulse

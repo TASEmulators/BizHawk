@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Sound.Utilities
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// wrapper around blargg's unmanaged blip_buf

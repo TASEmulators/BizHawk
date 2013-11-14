@@ -2,18 +2,18 @@
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common
 {
-    // Generates SEMI-synchronous sound, or "buffered asynchronous" sound.
+	// Generates SEMI-synchronous sound, or "buffered asynchronous" sound.
 
-    // This class will try as hard as it can to request the correct number of samples on each frame and then 
-    // send them out to the sound card as it needs them.
+	// This class will try as hard as it can to request the correct number of samples on each frame and then 
+	// send them out to the sound card as it needs them.
 
-    // However, it has minimum/maximum buffer targets and will request smaller or larger frames if it has to.
-    // The ultimate goal of this strategy is to make MOST frames 100% correct, and if errors must occur, 
-    // concentrate it on a single frame, rather than distribute small errors across most frames, as
-    // distributing error to most frames tends to result in persistently distorted audio, especially when
-    // sample playback is involved.
+	// However, it has minimum/maximum buffer targets and will request smaller or larger frames if it has to.
+	// The ultimate goal of this strategy is to make MOST frames 100% correct, and if errors must occur, 
+	// concentrate it on a single frame, rather than distribute small errors across most frames, as
+	// distributing error to most frames tends to result in persistently distorted audio, especially when
+	// sample playback is involved.
 
 
 	/*
@@ -30,15 +30,15 @@ namespace BizHawk.Emulation.Sound
 	 *       that and then bypass the BufferedAsync.
 	 */
 
-    public sealed class BufferedAsync : ISoundProvider
-    {
-        public ISoundProvider BaseSoundProvider;
+	public sealed class BufferedAsync : ISoundProvider
+	{
+		public ISoundProvider BaseSoundProvider;
 
-        Queue<short> buffer = new Queue<short>(4096);
+		Queue<short> buffer = new Queue<short>(4096);
 
-        int SamplesInOneFrame = 1470;
-        int TargetExtraSamples = 882;
-        const int MaxExcessSamples = 4096;
+		int SamplesInOneFrame = 1470;
+		int TargetExtraSamples = 882;
+		const int MaxExcessSamples = 4096;
 
 		/// <summary>
 		/// recalculates some internal parameters based on the IEmulator's framerate
@@ -52,31 +52,31 @@ namespace BizHawk.Emulation.Sound
 
 		public void DiscardSamples()
 		{
-			if(BaseSoundProvider != null)
+			if (BaseSoundProvider != null)
 				BaseSoundProvider.DiscardSamples();
 		}
 
-        public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; }
 
-        public void GetSamples(short[] samples)
-        {
-            int samplesToGenerate = SamplesInOneFrame;
-            if (buffer.Count > samples.Length + MaxExcessSamples)
-                samplesToGenerate = 0;
-            if (buffer.Count - samples.Length < TargetExtraSamples)
-                samplesToGenerate += SamplesInOneFrame;
-            if (samplesToGenerate + buffer.Count < samples.Length)
-                samplesToGenerate = samples.Length - buffer.Count;
+		public void GetSamples(short[] samples)
+		{
+			int samplesToGenerate = SamplesInOneFrame;
+			if (buffer.Count > samples.Length + MaxExcessSamples)
+				samplesToGenerate = 0;
+			if (buffer.Count - samples.Length < TargetExtraSamples)
+				samplesToGenerate += SamplesInOneFrame;
+			if (samplesToGenerate + buffer.Count < samples.Length)
+				samplesToGenerate = samples.Length - buffer.Count;
 
-            var mySamples = new short[samplesToGenerate];
+			var mySamples = new short[samplesToGenerate];
 
-            BaseSoundProvider.GetSamples(mySamples);
+			BaseSoundProvider.GetSamples(mySamples);
 
-            for (int i = 0; i < mySamples.Length; i++)
-                buffer.Enqueue(mySamples[i]);
+			for (int i = 0; i < mySamples.Length; i++)
+				buffer.Enqueue(mySamples[i]);
 
-            for (int i = 0; i < samples.Length; i++)
-                samples[i] = buffer.Dequeue();
-        }
-    }
+			for (int i = 0; i < samples.Length; i++)
+				samples[i] = buffer.Dequeue();
+		}
+	}
 }

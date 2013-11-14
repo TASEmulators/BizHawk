@@ -5,9 +5,9 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Common.Components.H6280;
 using BizHawk.Emulation.DiscSystem;
-using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {

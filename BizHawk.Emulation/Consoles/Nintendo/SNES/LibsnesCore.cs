@@ -975,11 +975,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		#region audio stuff
 
-		Sound.Utilities.SpeexResampler resampler;
+		SpeexResampler resampler;
 
 		void InitAudio()
 		{
-			resampler = new Sound.Utilities.SpeexResampler(6, 64081, 88200, 32041, 44100);
+			resampler = new SpeexResampler(6, 64081, 88200, 32041, 44100);
 		}
 
 		void snes_audio_sample(ushort left, ushort right)

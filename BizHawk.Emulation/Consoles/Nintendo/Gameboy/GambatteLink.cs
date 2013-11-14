@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LagCount = 0;
 			IsLagFrame = false;
 
-			blip_left = new Sound.Utilities.BlipBuffer(1024);
-			blip_right = new Sound.Utilities.BlipBuffer(1024);
+			blip_left = new BlipBuffer(1024);
+			blip_right = new BlipBuffer(1024);
 			blip_left.SetRates(2097152 * 2, 44100);
 			blip_right.SetRates(2097152 * 2, 44100);
 
@@ -357,9 +357,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		// i tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
 
-		Sound.Utilities.BlipBuffer blip_left;
-		Sound.Utilities.BlipBuffer blip_right;
-
+		BlipBuffer blip_left;
+		BlipBuffer blip_right;
 
 		short[] LeftBuffer = new short[(35112 + 2064) * 2];
 		short[] RightBuffer = new short[(35112 + 2064) * 2];

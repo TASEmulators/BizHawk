@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common
 {
 	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
 

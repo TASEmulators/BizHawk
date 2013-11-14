@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common.Components
 {
 	public class VRC6Alt
 	{

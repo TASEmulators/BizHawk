@@ -5,94 +5,94 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common
 {
-    public sealed class Equalizer
-    {
-        double lowFilter;
-        double lowFilterPole0;
-        double lowFilterPole1;
-        double lowFilterPole2;
-        double lowFilterPole3;
+	public sealed class Equalizer
+	{
+		double lowFilter;
+		double lowFilterPole0;
+		double lowFilterPole1;
+		double lowFilterPole2;
+		double lowFilterPole3;
 
-        double highFilter;
-        double highFilterPole0;
-        double highFilterPole1;
-        double highFilterPole2;
-        double highFilterPole3;
+		double highFilter;
+		double highFilterPole0;
+		double highFilterPole1;
+		double highFilterPole2;
+		double highFilterPole3;
 
-        double sampleDataMinus1;
-        double sampleDataMinus2;
-        double sampleDataMinus3;
+		double sampleDataMinus1;
+		double sampleDataMinus2;
+		double sampleDataMinus3;
 
-        double lowGain;
-        double midGain;
-        double highGain;
-        
-        const double sampleRate = 44100.0;
-        const double verySmallAmount = (1.0 / 4294967295.0);
+		double lowGain;
+		double midGain;
+		double highGain;
 
-        double lowfreq;
-        public double LowFreqCutoff 
-        {
-            get { return lowfreq; }
-            set
-            {
-                lowfreq = value;
-                lowFilter = 2 * Math.Sin(Math.PI * (lowfreq / sampleRate));
-            }
-        }
+		const double sampleRate = 44100.0;
+		const double verySmallAmount = (1.0 / 4294967295.0);
 
-        double highfreq;
-        public double HighFreqCutoff
-        {
-            get { return highfreq; }
-            set
-            {
-                highfreq = value;
-                highFilter = 2 * Math.Sin(Math.PI * (highfreq / sampleRate));
-            }
-        }
+		double lowfreq;
+		public double LowFreqCutoff
+		{
+			get { return lowfreq; }
+			set
+			{
+				lowfreq = value;
+				lowFilter = 2 * Math.Sin(Math.PI * (lowfreq / sampleRate));
+			}
+		}
 
-        public Equalizer(double lowFreq=880, double highFreq=5000)
-        {
-            lowGain = 1.3;
-            midGain = 0.9;
-            highGain = 1.3;
-            LowFreqCutoff = lowFreq;
-            HighFreqCutoff = highFreq;
-        }
+		double highfreq;
+		public double HighFreqCutoff
+		{
+			get { return highfreq; }
+			set
+			{
+				highfreq = value;
+				highFilter = 2 * Math.Sin(Math.PI * (highfreq / sampleRate));
+			}
+		}
 
-        public short EqualizeSample(short sample)
-        {
-            lowFilterPole0 += (lowFilter * (sample - lowFilterPole0)) + verySmallAmount;
-            lowFilterPole1 += lowFilter * (lowFilterPole0 - lowFilterPole1);
-            lowFilterPole2 += lowFilter * (lowFilterPole1 - lowFilterPole2);
-            lowFilterPole3 += lowFilter * (lowFilterPole2 - lowFilterPole3);
-            double l = lowFilterPole3;
+		public Equalizer(double lowFreq = 880, double highFreq = 5000)
+		{
+			lowGain = 1.3;
+			midGain = 0.9;
+			highGain = 1.3;
+			LowFreqCutoff = lowFreq;
+			HighFreqCutoff = highFreq;
+		}
 
-            highFilterPole0 += (highFilter * (sample - highFilterPole0)) + verySmallAmount;
-            highFilterPole1 += highFilter * (highFilterPole0 - highFilterPole1);
-            highFilterPole2 += highFilter * (highFilterPole1 - highFilterPole2);
-            highFilterPole3 += highFilter * (highFilterPole2 - highFilterPole3);
-            double h = sampleDataMinus3 - highFilterPole3;
+		public short EqualizeSample(short sample)
+		{
+			lowFilterPole0 += (lowFilter * (sample - lowFilterPole0)) + verySmallAmount;
+			lowFilterPole1 += lowFilter * (lowFilterPole0 - lowFilterPole1);
+			lowFilterPole2 += lowFilter * (lowFilterPole1 - lowFilterPole2);
+			lowFilterPole3 += lowFilter * (lowFilterPole2 - lowFilterPole3);
+			double l = lowFilterPole3;
 
-            double m = sample - (h + l);
-            l *= lowGain;
-            m *= midGain;
-            h *= highGain;
+			highFilterPole0 += (highFilter * (sample - highFilterPole0)) + verySmallAmount;
+			highFilterPole1 += highFilter * (highFilterPole0 - highFilterPole1);
+			highFilterPole2 += highFilter * (highFilterPole1 - highFilterPole2);
+			highFilterPole3 += highFilter * (highFilterPole2 - highFilterPole3);
+			double h = sampleDataMinus3 - highFilterPole3;
 
-            sampleDataMinus3 = sampleDataMinus2;
-            sampleDataMinus2 = sampleDataMinus1;
-            sampleDataMinus1 = sample;
+			double m = sample - (h + l);
+			l *= lowGain;
+			m *= midGain;
+			h *= highGain;
 
-            return (short) (l + m + h);
-        }
+			sampleDataMinus3 = sampleDataMinus2;
+			sampleDataMinus2 = sampleDataMinus1;
+			sampleDataMinus1 = sample;
 
-        public void Equalize(short[] samples)
-        {
-            for (int i = 0; i < samples.Length; i++)
-                samples[i] = EqualizeSample(samples[i]);
-        }
-    }
+			return (short)(l + m + h);
+		}
+
+		public void Equalize(short[] samples)
+		{
+			for (int i = 0; i < samples.Length; i++)
+				samples[i] = EqualizeSample(samples[i]);
+		}
+	}
 }

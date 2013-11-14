@@ -6,7 +6,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound
+namespace BizHawk.Emulation.Common.Components
 {
 	// Emulates PSG audio unit of a PC Engine / Turbografx-16 / SuperGrafx.
 	// It is embedded on the CPU and doesn't have its own part number. None the less, it is emulated separately from the 6280 CPU.

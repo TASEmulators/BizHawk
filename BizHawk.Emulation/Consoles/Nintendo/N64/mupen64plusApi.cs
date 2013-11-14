@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class mupen64plusApi : IDisposable
@@ -515,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			// Set up the resampler
 			m64pSamplingRate = (uint)AudGetAudioRate();
-			bizhawkCore.resampler = new Sound.Utilities.SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
+			bizhawkCore.resampler = new SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
 
 			AttachedCore = this;
 		}

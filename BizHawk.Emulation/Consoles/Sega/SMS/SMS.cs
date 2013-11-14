@@ -5,8 +5,8 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Common.Components.Z80;
-using BizHawk.Emulation.Sound;
 
 /*****************************************************
 

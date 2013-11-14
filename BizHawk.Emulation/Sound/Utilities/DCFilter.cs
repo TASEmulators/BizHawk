@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound.Utilities
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// implements a DC block filter on top of an ISoundProvider.  rather simple.
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 		}
 
 		int depth;
-		
+
 		public static DCFilter AsISoundProvider(ISoundProvider input, int filterwidth)
 		{
 			if (input == null)
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 			return new DCFilter(null, null, filterwidth);
 		}
 
-		DCFilter(ISoundProvider input, ISyncSoundProvider syncinput, int filterwidth)	
+		DCFilter(ISoundProvider input, ISyncSoundProvider syncinput, int filterwidth)
 		{
 			if (filterwidth < 8 || filterwidth > 65536)
 				throw new ArgumentOutOfRangeException();
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 			this.syncinput = syncinput;
 			depth = DepthFromFilterwidth(filterwidth);
 		}
-		
+
 		/// <summary>
 		/// pass a set of samples through the filter.  should only be used in detached mode
 		/// </summary>

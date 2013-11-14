@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Emulation.Common.Components;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -7,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public sealed class Sunsoft_5 : Sunsoft_FME7
 	{
-		Sound.Sunsoft5BAudio audio;
+		Sunsoft5BAudio audio;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -23,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			BaseConfigure();
 			if (NES.apu != null)
-				audio = new Sound.Sunsoft5BAudio(NES.apu.ExternalQueue);
+				audio = new Sunsoft5BAudio(NES.apu.ExternalQueue);
 
 			return true;
 		}

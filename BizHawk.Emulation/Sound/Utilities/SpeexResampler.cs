@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Sound.Utilities
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// junk wrapper around LibSpeexDSP.  quite inefficient.  will be replaced

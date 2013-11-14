@@ -344,16 +344,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					// really shouldn't happen (after init), but if it does, we're ready
 					if (resampler != null)
 						resampler.Dispose();
-					resampler = new Emulation.Sound.Utilities.SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
+					resampler = new SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
 					samplerate = newsamplerate;
-					dcfilter = Emulation.Sound.Utilities.DCFilter.DetatchedMode(256);
+					dcfilter = DCFilter.DetatchedMode(256);
 				}				
 			}
 
 			uint samplerate;
 			int[] vidbuffer;
-			Emulation.Sound.Utilities.SpeexResampler resampler;
-			Emulation.Sound.Utilities.DCFilter dcfilter;
+			SpeexResampler resampler;
+			DCFilter dcfilter;
 
 			public void FillFrameBuffer()
 			{

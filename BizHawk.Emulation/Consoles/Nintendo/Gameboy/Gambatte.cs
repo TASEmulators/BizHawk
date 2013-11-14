@@ -826,10 +826,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		int latchaudio = 0;
 
-		//Sound.Utilities.SpeexResampler resampler;
-		//Sound.Utilities.DCFilter dcfilter;
+		//SpeexResampler resampler;
+		//DCFilter dcfilter;
 
-		Sound.Utilities.BlipBuffer blip;
+		BlipBuffer blip;
 
 		void ProcessSound()
 		{
@@ -862,7 +862,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
 			// lowpass filtering on an actual GB was probably pretty aggressive?
 			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
-			blip = new Sound.Utilities.BlipBuffer(1024);
+			blip = new BlipBuffer(1024);
 			blip.SetRates(2097152, 44100);
 		}
 

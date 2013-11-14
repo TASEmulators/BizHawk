@@ -1,6 +1,7 @@
 ﻿using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.M6502;
 
 
@@ -12,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public MOS6502X cpu;
 		public M6532 m6532;
 		public TIA tia;
-		public Emulation.Sound.Utilities.DCFilter dcfilter;
+		public DCFilter dcfilter;
 		public byte[] ram = new byte[128];
 		public MapperBase mapper;
 
@@ -183,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			//tia = new TIA(this, frameBuffer);
 			tia = new TIA(this);
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			dcfilter = Emulation.Sound.Utilities.DCFilter.AsISoundProvider(tia, 256);
+			dcfilter = DCFilter.AsISoundProvider(tia, 256);
 			// Setup 6532
 			m6532 = new M6532(this);
 

@@ -3,8 +3,8 @@ using System.IO;
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
-using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
