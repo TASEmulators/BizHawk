@@ -103,20 +103,6 @@
       <Name>BizHawk.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\Execute.cpp" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\ints.h" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502X.cpp" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502X.h" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.sln" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj.user" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\UopEnum.h" />
-    <Content Include="CPUs\MOS 6502X\MOS6502XNative\UopTable.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj" />
-    <None Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj.filters" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
