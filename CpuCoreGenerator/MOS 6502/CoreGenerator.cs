@@ -357,7 +357,7 @@ namespace M6502
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");
             w.WriteLine();
-            w.WriteLine("namespace BizHawk.Emulation.CPUs.M6502");
+            w.WriteLine("namespace BizHawk.Emulation.Common.Components.M6502");
             w.WriteLine("{");
             w.WriteLine("    public partial class MOS6502");
             w.WriteLine("    {");
@@ -603,7 +603,7 @@ namespace M6502
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");
             w.WriteLine();
-            w.WriteLine("namespace BizHawk.Emulation.CPUs.M6502");
+            w.WriteLine("namespace BizHawk.Emulation.Common.Components.M6502");
             w.WriteLine("{");
             w.WriteLine("    public partial class MOS6502");
             w.WriteLine("    {");
