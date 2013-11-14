@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 using BizHawk.Client.Common;
 

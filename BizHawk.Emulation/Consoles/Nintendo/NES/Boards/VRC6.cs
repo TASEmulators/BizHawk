@@ -1,8 +1,7 @@
 ﻿using System;
-
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 24 + 26
 	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/7 as well.

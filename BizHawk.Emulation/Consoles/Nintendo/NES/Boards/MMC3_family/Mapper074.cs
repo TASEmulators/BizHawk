@@ -2,7 +2,7 @@
 
 //TODO - could merge functionality with 192 somehow
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper074 : MMC3Board_Base
 	{

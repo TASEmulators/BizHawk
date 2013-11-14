@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 64
 	public sealed class TENGEN_800032 : NES.NESBoardBase

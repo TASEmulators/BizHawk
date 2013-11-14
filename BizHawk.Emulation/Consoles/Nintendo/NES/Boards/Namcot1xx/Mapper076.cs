@@ -1,4 +1,4 @@
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka NAMCOT-3446
 	public sealed class Mapper076 : Namcot108Board_Base

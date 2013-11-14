@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//AKA mapper 105
 	public sealed class NES_EVENT : NES.NESBoardBase

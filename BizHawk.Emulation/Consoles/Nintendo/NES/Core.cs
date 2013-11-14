@@ -8,7 +8,7 @@ using BizHawk.Emulation.CPUs.M6502;
 
 #pragma warning disable 162
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : IEmulator
 	{

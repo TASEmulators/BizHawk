@@ -4,9 +4,6 @@
 //(mix higher integer precision with the non-linear mixer and then highpass filter befoure outputting s16s)
 //TODO - DMC cpu suspending - http://forums.nesdev.com/viewtopic.php?p=62690#p62690
 
-using System;
-using System.Collections.Generic;
-
 //http://wiki.nesdev.com/w/index.php/APU_Mixer_Emulation
 //http://wiki.nesdev.com/w/index.php/APU
 //http://wiki.nesdev.com/w/index.php/APU_Pulse
@@ -14,9 +11,12 @@ using System.Collections.Generic;
 
 //TODO - refactor length counter to be separate component
 
+using System;
+using System.Collections.Generic;
+
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 
 	sealed partial class NES

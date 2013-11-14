@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// mmc3 multi, PAL, "Super Mario Bros. / Tetris / Nintendo World Cup"
 	public sealed class Mapper037 : MMC3Board_Base

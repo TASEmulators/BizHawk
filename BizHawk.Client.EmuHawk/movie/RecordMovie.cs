@@ -5,7 +5,7 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;

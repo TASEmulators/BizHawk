@@ -1,4 +1,4 @@
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka mapper 118
 	//wires the mapper outputs to control the nametables

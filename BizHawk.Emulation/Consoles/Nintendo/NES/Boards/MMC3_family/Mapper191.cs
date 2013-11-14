@@ -2,7 +2,7 @@
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper191 : MMC3Board_Base
 	{

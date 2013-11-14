@@ -1,10 +1,9 @@
 ﻿//TODO - emulation of mirroring is all bolloxed.
 
 using System;
-
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper116 : NES.NESBoardBase
 	{

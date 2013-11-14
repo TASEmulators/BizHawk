@@ -12,7 +12,7 @@ using BizHawk.Emulation.Sound;
 
 //TODO - refactor length counter to be separate component
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{

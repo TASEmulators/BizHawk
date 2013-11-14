@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {

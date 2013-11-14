@@ -3,7 +3,7 @@
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplPriority]
 	public sealed class TxROM : MMC3Board_Base

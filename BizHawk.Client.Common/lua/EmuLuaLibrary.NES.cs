@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {

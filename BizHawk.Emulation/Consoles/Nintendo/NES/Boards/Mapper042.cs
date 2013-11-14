@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// pirate FDS conversion
 	// this is probably two different boards, but they seem to work well enough the same

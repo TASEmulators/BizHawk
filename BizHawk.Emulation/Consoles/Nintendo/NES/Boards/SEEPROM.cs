@@ -1,8 +1,7 @@
 ﻿using System;
-
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/// <summary>
 	/// describes a 24C01 or 24C02 as connected to a BANDAI-FCG

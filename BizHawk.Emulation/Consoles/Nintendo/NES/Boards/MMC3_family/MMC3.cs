@@ -6,7 +6,7 @@
 using System;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Consoles.Nintendo
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public class MMC3 : IDisposable
 	{
