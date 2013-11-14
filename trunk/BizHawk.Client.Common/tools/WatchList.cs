@@ -482,7 +482,7 @@ namespace BizHawk.Client.Common
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
-						memDomain = Global.Emulator.MemoryDomains[temp];
+						memDomain = Global.Emulator.MemoryDomains[temp] ?? Global.Emulator.MemoryDomains.MainMemory;
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
