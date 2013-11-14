@@ -43,6 +43,43 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="CPUs\68000\Diassembler.cs" />
+    <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
+    <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
+    <Compile Include="CPUs\68000\Instructions\IntegerMath.cs" />
+    <Compile Include="CPUs\68000\Instructions\ProgramFlow.cs" />
+    <Compile Include="CPUs\68000\Instructions\Supervisor.cs" />
+    <Compile Include="CPUs\68000\MC68000.cs" />
+    <Compile Include="CPUs\68000\Memory.cs" />
+    <Compile Include="CPUs\68000\OpcodeTable.cs" />
+    <Compile Include="CPUs\68000\Tables.cs" />
+    <Compile Include="CPUs\CP1610\CP1610.cs" />
+    <Compile Include="CPUs\CP1610\Disassembler.cs" />
+    <Compile Include="CPUs\CP1610\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\Disassembler.cs" />
+    <Compile Include="CPUs\HuC6280\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\HuC6280.cs" />
+    <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
+    <Compile Include="CPUs\MOS 6502X\Execute.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XDouble.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XNative.cs" />
+    <Compile Include="CPUs\x86\Disassembler.cs" />
+    <Compile Include="CPUs\x86\Execute.cs" />
+    <Compile Include="CPUs\x86\Timing.cs" />
+    <Compile Include="CPUs\x86\x86.cs" />
+    <Compile Include="CPUs\Z80-GB\Execute.cs" />
+    <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
+    <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
+    <Compile Include="CPUs\Z80-GB\Registers.cs" />
+    <Compile Include="CPUs\Z80-GB\Tables.cs" />
+    <Compile Include="CPUs\Z80-GB\Z80.cs" />
+    <Compile Include="CPUs\Z80\Disassembler.cs" />
+    <Compile Include="CPUs\Z80\Execute.cs" />
+    <Compile Include="CPUs\Z80\Interrupts.cs" />
+    <Compile Include="CPUs\Z80\Registers.cs" />
+    <Compile Include="CPUs\Z80\Tables.cs" />
+    <Compile Include="CPUs\Z80\Z80A.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\FirmwareDatabase.cs" />
@@ -65,6 +102,20 @@
       <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
       <Name>BizHawk.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\Execute.cpp" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\ints.h" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502X.cpp" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502X.h" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.sln" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj.user" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\UopEnum.h" />
+    <Content Include="CPUs\MOS 6502X\MOS6502XNative\UopTable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj" />
+    <None Include="CPUs\MOS 6502X\MOS6502XNative\MOS6502XNative.vcxproj.filters" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
