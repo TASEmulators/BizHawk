@@ -398,8 +398,6 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
-    <Compile Include="Consoles\PSX\LibMednahawkDll.cs" />
-    <Compile Include="Consoles\PSX\Octoshock.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
@@ -415,6 +413,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
+    <Compile Include="Consoles\Sony\PSX\LibMednahawkDll.cs" />
+    <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
