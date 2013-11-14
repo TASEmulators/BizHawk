@@ -9,7 +9,7 @@ using BizHawk.Emulation.DiscSystem;
 // I decided not to let the perfect be the enemy of the good.
 // It can always be refactored. It's at least deterministic.
 
-namespace BizHawk.Emulation.Common
+namespace BizHawk.Emulation.DiscSystem
 {
 	public sealed class CDAudio : ISoundProvider
 	{
