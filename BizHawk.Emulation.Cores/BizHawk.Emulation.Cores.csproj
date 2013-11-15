@@ -8,8 +8,8 @@
     <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Emulation</RootNamespace>
-    <AssemblyName>BizHawk.Emulation</AssemblyName>
+    <RootNamespace>BizHawk.Emulation.Cores</RootNamespace>
+    <AssemblyName>BizHawk.Emulation.Cores</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
