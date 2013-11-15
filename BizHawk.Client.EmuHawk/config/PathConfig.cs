@@ -75,7 +75,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
 			BasePathBox.Text = Global.Config.PathEntries.GlobalBase;
-			DoTabs(Global.Config.PathEntries.Paths);
+			
+			StartTabPages();
+			//DoTabs(Global.Config.PathEntries.Paths);
+			
 			SetDefaultFocusedTab();
 			DoRomToggle();
 		}
@@ -99,6 +102,111 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void StartTabPages()
+		{
+			PathTabControl.TabPages.Clear();
+			//Separate by system
+			List<string> systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
+			systems.Sort();
+			foreach (string systemDisplayName in systems)
+			{
+				PathTabControl.TabPages.Add(new TabPage
+				{
+					Text = systemDisplayName,
+					Name = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System
+				});
+			}
+		}
+
+		private void DoTabPage(TabPage tabPage)
+		{
+			const int xpos = 6;
+			int textboxWidth = tabPage.Width - 150;
+			const int padding = 5;
+			const int buttonWidth = 26;
+			int widgetOffset = textboxWidth + 15;
+			const int rowHeight = 30;
+			List<PathEntry> paths = Global.Config.PathEntries.Where(x => x.System == tabPage.Name).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+
+			int ypos = 14;
+
+			foreach (var path in paths)
+			{
+				TextBox box = new TextBox
+				{
+					Text = path.Path,
+					Location = new Point(xpos, ypos),
+					Width = textboxWidth,
+					Name = path.Type,
+					Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+					MinimumSize = new Size(26, 23),
+					AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+					AutoCompleteCustomSource = AutoCompleteOptions,
+					AutoCompleteSource = AutoCompleteSource.CustomSource,
+				};
+
+				Button btn = new Button
+				{
+					Text = String.Empty,
+					Image = Properties.Resources.OpenFile,
+					Location = new Point(widgetOffset, ypos - 1),
+					Width = buttonWidth,
+					Name = path.Type,
+					Anchor = AnchorStyles.Top | AnchorStyles.Right,
+				};
+
+				TextBox tempBox = box;
+				string tempPath = path.Type;
+				string tempSystem = path.System;
+				btn.Click += delegate
+				{
+					BrowseFolder(tempBox, tempPath, tempSystem);
+				};
+
+				Label label = new Label
+				{
+					Text = path.Type,
+					Location = new Point(widgetOffset + buttonWidth + padding, ypos + 4),
+					Width = 100,
+					Name = path.Type,
+					Anchor = AnchorStyles.Top | AnchorStyles.Right,
+				};
+
+				tabPage.Controls.Add(label);
+				tabPage.Controls.Add(btn);
+				tabPage.Controls.Add(box);
+
+				ypos += rowHeight;
+			}
+
+			string sys = tabPage.Name;
+			if (tabPage.Name == "PCE") //Hack
+			{
+				sys = "PCECD";
+			}
+
+			bool hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
+
+			if (hasFirmwares)
+			{
+				Button firmwareButton = new Button
+				{
+					Name = sys,
+					Text = "&Firmware",
+					Location = new Point(xpos, ypos),
+					Width = 75,
+				};
+				firmwareButton.Click += delegate
+				{
+					FirmwaresConfig f = new FirmwaresConfig { TargetSystem = sys };
+					f.ShowDialog();
+				};
+
+				tabPage.Controls.Add(firmwareButton);
+			}
+		}
+
+		//TODO: this is only used by the defaults button, refactor since it is now redundant code (will have to force the rebuilding of all tabpages, currently they only build as necessar
 		private void DoTabs(List<PathEntry> pathCollection)
 		{
 			PathTabControl.SuspendLayout();
@@ -318,6 +426,15 @@ namespace BizHawk.Client.EmuHawk
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
 			DoTabs(PathEntryCollection.DefaultValues);
+		}
+
+		private void PathTabControl_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			var tabPage = (sender as TabControl).SelectedTab;
+			if (tabPage.Controls.Count == 0)
+			{
+				DoTabPage((sender as TabControl).SelectedTab);
+			}
 		}
 	}
 }
