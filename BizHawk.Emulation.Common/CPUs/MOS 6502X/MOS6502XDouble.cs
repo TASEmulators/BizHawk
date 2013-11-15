@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Common.Components.M6502
 	/// </summary>
 	public class MOS6502XDouble
 	{
-		MOS6502X m;
-		MOS6502X_CPP n;
+		readonly MOS6502X m;
+		readonly MOS6502X_CPP n;
 
 		public MOS6502XDouble(Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder)
 		{

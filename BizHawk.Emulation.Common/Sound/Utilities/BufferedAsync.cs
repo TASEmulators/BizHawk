@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	// Generates SEMI-synchronous sound, or "buffered asynchronous" sound.
@@ -34,10 +32,10 @@ namespace BizHawk.Emulation.Common
 	{
 		public ISoundProvider BaseSoundProvider;
 
-		Queue<short> buffer = new Queue<short>(4096);
+		readonly Queue<short> buffer = new Queue<short>(4096);
 
-		int SamplesInOneFrame = 1470;
-		int TargetExtraSamples = 882;
+		private int SamplesInOneFrame = 1470;
+		private int TargetExtraSamples = 882;
 		const int MaxExcessSamples = 4096;
 
 		/// <summary>
@@ -72,11 +70,15 @@ namespace BizHawk.Emulation.Common
 
 			BaseSoundProvider.GetSamples(mySamples);
 
-			for (int i = 0; i < mySamples.Length; i++)
-				buffer.Enqueue(mySamples[i]);
+			foreach (short s in mySamples)
+			{
+				buffer.Enqueue(s);
+			}
 
 			for (int i = 0; i < samples.Length; i++)
+			{
 				samples[i] = buffer.Dequeue();
+			}
 		}
 	}
 }

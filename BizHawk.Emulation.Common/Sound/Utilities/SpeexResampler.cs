@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -259,29 +254,29 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// opaque pointer to state
 		/// </summary>
-		IntPtr st = IntPtr.Zero;
+		private IntPtr st = IntPtr.Zero;
 
 		/// <summary>
 		/// function to call to dispatch output
 		/// </summary>
-		Action<short[], int> drainer;
+		private readonly Action<short[], int> drainer;
 
 		// TODO: this size is roughly based on how big you can make the buffer before the snes resampling (32040.5 -> 44100) gets screwed up
-		short[] inbuf = new short[512]; //[8192]; // [512];
+		private short[] inbuf = new short[512]; //[8192]; // [512];
 
-		short[] outbuf;
+		private short[] outbuf;
 
 		// for ISyncSoundProvider
-		short[] outbuf2 = new short[16];
-		int outbuf2pos = 0;
+		private short[] outbuf2 = new short[16];
+		private int outbuf2pos = 0;
 
 		// to accept an ISyncSoundProvder input
-		ISyncSoundProvider input;
+		private readonly ISyncSoundProvider input;
 
 		/// <summary>
 		/// in buffer position in samples (not sample pairs)
 		/// </summary>
-		int inbufpos = 0;
+		private int inbufpos = 0;
 
 		/// <summary>
 		/// throw an exception based on error state
@@ -327,10 +322,7 @@ namespace BizHawk.Emulation.Common
 			if (drainer != null && input != null)
 				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
 
-			if (drainer != null)
-				this.drainer = drainer;
-			else
-				this.drainer = InternalDrain;
+			this.drainer = drainer ?? InternalDrain;
 			this.input = input;
 
 			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];

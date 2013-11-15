@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -10,8 +8,8 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class MetaspuAsync : ISoundProvider
 	{
-		ISynchronizingAudioBuffer buffer;
-		ISyncSoundProvider input;
+		private readonly ISynchronizingAudioBuffer buffer;
+		private readonly ISyncSoundProvider input;
 		public MetaspuAsync(ISyncSoundProvider input, ESynchMethod method)
 		{
 			buffer = Metaspu.metaspu_construct(method);
@@ -49,7 +47,7 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 
-		short[] pullBuffer = new short[1470];
+		private readonly short[] pullBuffer = new short[1470];
 		public void PullSamples(ISoundProvider source)
 		{
 			Array.Clear(pullBuffer, 0, 1470);
@@ -124,7 +122,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		//adjustobuf(200,1000)
-		bool mixqueue_go = false;
+		bool mixqueue_go;
 
 		public void clear()
 		{
@@ -177,7 +175,7 @@ namespace BizHawk.Emulation.Common
 			return done;
 		}
 
-		Adjustobuf adjustobuf;
+		private readonly Adjustobuf adjustobuf;
 		class Adjustobuf
 		{
 			public Adjustobuf(int _minLatency, int _maxLatency)

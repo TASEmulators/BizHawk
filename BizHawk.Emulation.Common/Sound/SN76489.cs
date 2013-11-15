@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-using BizHawk.Emulation.Common;
-
 // TODO the freq->note translation should be moved to a separate utility class.
 
 namespace BizHawk.Emulation.Common.Components
@@ -26,7 +24,7 @@ namespace BizHawk.Emulation.Common.Components
 			public bool Right = true;
 
 			const int SampleRate = 44100;
-			static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
+			private static readonly byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
 
 			public void Mix(short[] samples, int start, int len, int maxVolume)
 			{
@@ -52,7 +50,7 @@ namespace BizHawk.Emulation.Common.Components
 		public Channel[] Channels = new Channel[4];
 		public byte PsgLatch;
 
-		Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+		private readonly Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
 		int frameStartTime, frameStopTime;
 
 		const int PsgBase = 111861;

@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// implements a DC block filter on top of an ISoundProvider.  rather simple.
 	/// </summary>
-	public class DCFilter : ISoundProvider, ISyncSoundProvider
+	sealed public class DCFilter : ISoundProvider, ISyncSoundProvider
 	{
 		/*
 		 * A note about accuracy:
@@ -78,7 +73,7 @@ namespace BizHawk.Emulation.Common
 			PushThroughSamples(samples, samples, length);
 		}
 
-		void PushThroughSamples(short[] samplesin, short[] samplesout, int length)
+		private void PushThroughSamples(short[] samplesin, short[] samplesout, int length)
 		{
 			for (int i = 0; i < length; i += 2)
 			{

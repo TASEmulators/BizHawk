@@ -7,7 +7,6 @@
 using System;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Common.Components
 {

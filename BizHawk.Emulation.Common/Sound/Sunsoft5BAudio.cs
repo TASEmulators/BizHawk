@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.Components
@@ -16,15 +12,15 @@ namespace BizHawk.Emulation.Common.Components
 	{
 		class Pulse
 		{
-			Action<int> SendDiff;
+			private readonly Action<int> SendDiff;
 			// regs
-			int Period;
-			bool Disable;
-			int Volume;
+			private int Period;
+			private bool Disable;
+			private int Volume;
 			// state
-			int clock;
-			int sequence;
-			int output;
+			private int clock;
+			private int sequence;
+			private int output;
 
 			public void SyncState(Serializer ser)
 			{
@@ -45,7 +41,10 @@ namespace BizHawk.Emulation.Common.Components
 			{
 				int newout = 1;
 				if (!Disable)
+				{
 					newout = sequence;
+				}
+
 				newout *= Volume;
 				if (newout != output)
 				{
@@ -87,7 +86,7 @@ namespace BizHawk.Emulation.Common.Components
 		}
 
 		int RegNum;
-		Pulse[] pulse = new Pulse[3];
+		readonly Pulse[] pulse = new Pulse[3];
 
 		public void RegSelect(byte val)
 		{
@@ -132,8 +131,8 @@ namespace BizHawk.Emulation.Common.Components
 			ser.EndSection();
 		}
 
-		Action<int> enqueuer;
-		void PulseAddDiff(int val)
+		private readonly Action<int> enqueuer;
+		private void PulseAddDiff(int val)
 		{
 			enqueuer(val * 250);
 		}
@@ -142,13 +141,17 @@ namespace BizHawk.Emulation.Common.Components
 		{
 			this.enqueuer = enqueuer;
 			for (int i = 0; i < pulse.Length; i++)
+			{
 				pulse[i] = new Pulse(PulseAddDiff);
+			}
 		}
 
 		public void Clock()
 		{
-			for (int i = 0; i < pulse.Length; i++)
-				pulse[i].Clock();
+			foreach (Pulse p in pulse)
+			{
+				p.Clock();
+			}
 		}
 	}
 }

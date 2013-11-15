@@ -7,27 +7,27 @@ namespace BizHawk.Emulation.Common.Components.M6502
 {
 	public static class MOS6502X_DLL
 	{
-		[UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate byte ReadMemoryD(ushort addr);
-		[UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void WriteMemoryD(ushort addr, byte value);
 
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr Create();
+		internal static extern IntPtr Create();
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void Destroy(IntPtr ptr);
+		internal static extern void Destroy(IntPtr ptr);
 
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.ThisCall, EntryPoint = "?Reset@MOS6502X@@QAEXXZ")]
-		public static extern void Reset(IntPtr ptr);
+		internal static extern void Reset(IntPtr ptr);
 
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.ThisCall, EntryPoint = "?NESSoftReset@MOS6502X@@QAEXXZ")]
-		public static extern void NESSoftReset(IntPtr ptr);
+		internal static extern void NESSoftReset(IntPtr ptr);
 
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.ThisCall, EntryPoint = "?ExecuteOne@MOS6502X@@QAEXXZ")]
-		public static extern void ExecuteOne(IntPtr ptr);
+		internal static extern void ExecuteOne(IntPtr ptr);
 
 		[DllImport("MOS6502XNative.dll", CallingConvention = CallingConvention.ThisCall, EntryPoint = "?SetTrampolines@MOS6502X@@QAEXP6AEG@Z0P6AXGE@Z@Z")]
-		public static extern void SetTrampolines(IntPtr ptr, ReadMemoryD Read, ReadMemoryD DummyRead, WriteMemoryD Write);
+		internal static extern void SetTrampolines(IntPtr ptr, ReadMemoryD Read, ReadMemoryD DummyRead, WriteMemoryD Write);
 	}
 
 	/// <summary>
@@ -213,8 +213,6 @@ namespace BizHawk.Emulation.Common.Components.M6502
 			DisposeBuilder(h2);
 			DisposeBuilder(h3);
 		}
-
-
 	}
 
 }

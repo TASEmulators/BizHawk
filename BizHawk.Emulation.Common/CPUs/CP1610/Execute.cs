@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Common.Components.CP1610
 							// Unknown opcode.
 							throw new ArgumentException();
 					}
-					RegisterPC = (ushort)addr;
+					RegisterPC = addr;
 					cycles = 12;
 					Interruptible = true;
 					break;
