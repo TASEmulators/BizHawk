@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common.Components.CP1610
 
 		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, Interruptible, Interrupted;
 		//private bool MSync;
-		private ushort[] Register = new ushort[8];
+		private readonly ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
 
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Common.Components.CP1610
 		public Func<ushort, ushort, bool> WriteMemory;
 
 		private static bool Logging = true;
-		private static StreamWriter Log;
+		private static readonly StreamWriter Log;
 
 		static CP1610()
 		{

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.Components
@@ -12,19 +8,19 @@ namespace BizHawk.Emulation.Common.Components
 		class Pulse
 		{
 			// regs
-			int V;
-			int T;
-			int L;
-			int D;
-			bool LenCntDisable;
-			bool ConstantVolume;
-			bool Enable;
+			private int V;
+			private int T;
+			private int L;
+			private int D;
+			private bool LenCntDisable;
+			private bool ConstantVolume;
+			private bool Enable;
 			// envelope
-			bool estart;
-			int etime;
-			int ecount;
+			private bool estart;
+			private int etime;
+			private int ecount;
 			// length
-			static int[] lenlookup =
+			private static readonly int[] lenlookup =
 			{
 				10,254, 20,  2, 40,  4, 80,  6, 160,  8, 60, 10, 14, 12, 26, 14,
 				12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30
@@ -32,18 +28,18 @@ namespace BizHawk.Emulation.Common.Components
 			int length;
 
 			// pulse
-			int sequence;
-			static int[,] sequencelookup =
+			private int sequence;
+			private static readonly int[,] sequencelookup =
 			{
 				{0,0,0,0,0,0,0,1},
 				{0,0,0,0,0,0,1,1},
 				{0,0,0,0,1,1,1,1},
 				{1,1,1,1,1,1,0,0}
 			};
-			int clock;
-			int output;
+			private int clock;
+			private int output;
 
-			public Action<int> SendDiff;
+			private readonly Action<int> SendDiff;
 
 			public Pulse(Action<int> SendDiff)
 			{
@@ -165,7 +161,7 @@ namespace BizHawk.Emulation.Common.Components
 			}
 		}
 
-		Pulse[] pulse = new Pulse[2];
+		private readonly Pulse[] pulse = new Pulse[2];
 		
 		/// <summary>
 		/// 
@@ -245,15 +241,15 @@ namespace BizHawk.Emulation.Common.Components
 			RaiseIRQ(PCMEnableIRQ && PCMIRQTriggered);
 		}
 
-		Action<bool> RaiseIRQ;
+		private readonly Action<bool> RaiseIRQ;
 
 		const int framereload = 7458; // ???
-		int frame = 0;
-		bool PCMRead;
-		bool PCMEnableIRQ;
-		bool PCMIRQTriggered;
-		byte PCMVal;
-		byte PCMNextVal;
+		private int frame;
+		private bool PCMRead;
+		private bool PCMEnableIRQ;
+		private bool PCMIRQTriggered;
+		private byte PCMVal;
+		private byte PCMNextVal;
 
 		public void SyncState(Serializer ser)
 		{
@@ -288,14 +284,14 @@ namespace BizHawk.Emulation.Common.Components
 			}
 			if (PCMNextVal != PCMVal)
 			{
-				enqueuer(20 * (int)(PCMVal - PCMNextVal));
+				enqueuer(20 * (PCMVal - PCMNextVal));
 				PCMVal = PCMNextVal;
 			}
 		}
 
-		Action<int> enqueuer;
+		private readonly Action<int> enqueuer;
 
-		void PulseAddDiff(int value)
+		private void PulseAddDiff(int value)
 		{
 			enqueuer(value * 370);
 			//Console.WriteLine(value);

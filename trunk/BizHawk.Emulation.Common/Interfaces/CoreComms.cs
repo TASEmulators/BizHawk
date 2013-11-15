@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace BizHawk.Emulation.Common
@@ -123,7 +122,7 @@ namespace BizHawk.Emulation.Common
 
 	public class InputCallbackSystem
 	{
-		private List<Action> _list = new List<Action>();
+		private readonly List<Action> _list = new List<Action>();
 		
 		public void Add(Action action)
 		{
@@ -159,14 +158,14 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallbackSystem
 	{
-		private List<Action> _reads = new List<Action>();
-		private List<uint?> _readAddrs = new List<uint?>();
+		private readonly List<Action> _reads = new List<Action>();
+		private readonly List<uint?> _readAddrs = new List<uint?>();
 		
-		private List<Action> _writes = new List<Action>();
-		private List<uint?> _writeAddrs = new List<uint?>();
+		private readonly List<Action> _writes = new List<Action>();
+		private readonly List<uint?> _writeAddrs = new List<uint?>();
 
-		private List<Action> _executes = new List<Action>();
-		private List<uint> _execAddrs = new List<uint>();
+		private readonly List<Action> _executes = new List<Action>();
+		private readonly List<uint> _execAddrs = new List<uint>();
 
 		public void AddRead(Action function, uint? addr)
 		{

@@ -1,9 +1,6 @@
 ﻿// C# port of C-based 3-band equalizer (C) Neil C / Etanza Systems / 2006
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Common
 {

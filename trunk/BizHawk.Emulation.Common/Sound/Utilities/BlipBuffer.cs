@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Common
@@ -9,7 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// wrapper around blargg's unmanaged blip_buf
 	/// </summary>
-	public class BlipBuffer : IDisposable
+	public sealed class BlipBuffer : IDisposable
 	{
 		// this is transitional only.  if the band-limited synthesis idea works out, i'll
 		// make a managed MIT implementation

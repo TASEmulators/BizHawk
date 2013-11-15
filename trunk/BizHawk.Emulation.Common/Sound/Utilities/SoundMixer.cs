@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -7,7 +6,7 @@ namespace BizHawk.Emulation.Common
 
 	public sealed class SoundMixer : ISoundProvider
 	{
-		List<ISoundProvider> SoundProviders;
+		private readonly List<ISoundProvider> SoundProviders;
 
 		public SoundMixer(params ISoundProvider[] soundProviders)
 		{
@@ -41,7 +40,9 @@ namespace BizHawk.Emulation.Common
 		{
 			int eachVolume = short.MaxValue / SoundProviders.Count;
 			foreach (var source in SoundProviders)
+			{
 				source.MaxVolume = eachVolume;
+			}
 		}
 
 		// Not actually supported on mixer.
