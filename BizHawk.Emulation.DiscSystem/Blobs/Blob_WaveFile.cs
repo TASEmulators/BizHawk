@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		class Blob_WaveFile : IBlob
 		{
+			[Serializable]
 			public class Blob_WaveFile_Exception : Exception
 			{
 				public Blob_WaveFile_Exception(string message)

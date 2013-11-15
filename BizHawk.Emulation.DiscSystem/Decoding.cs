@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -16,12 +17,12 @@ namespace BizHawk.Emulation.DiscSystem
 			public bool IsAudio;
 		}
 
-		static string[] Escape(string[] args)
+		private static string[] Escape(IEnumerable<string> args)
 		{
 			return args.Select(s => s.Contains(" ") ? string.Format("\"{0}\"", s) : s).ToArray();
 		}
 
-		static Regex rxHasAudio = new Regex(@"Stream \#(\d*\.\d*)\: Audio", RegexOptions.Compiled);
+		static readonly Regex rxHasAudio = new Regex(@"Stream \#(\d*\.\d*)\: Audio", RegexOptions.Compiled);
 		public AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
@@ -56,11 +57,13 @@ namespace BizHawk.Emulation.DiscSystem
 				if (i != args.Length - 1) sbCmdline.Append(' ');
 			}
 
-			ProcessStartInfo oInfo = new ProcessStartInfo(FFMpegPath, sbCmdline.ToString());
-			oInfo.UseShellExecute = false;
-			oInfo.CreateNoWindow = true;
-			oInfo.RedirectStandardOutput = true;
-			oInfo.RedirectStandardError = true;
+			ProcessStartInfo oInfo = new ProcessStartInfo(FFMpegPath, sbCmdline.ToString())
+				{
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true
+				};
 
 			Process proc = Process.Start(oInfo);
 			string result = proc.StandardError.ReadToEnd();
@@ -89,6 +92,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 	class AudioDecoder
 	{
+		[Serializable]
 		public class AudioDecoder_Exception : Exception
 		{
 			public AudioDecoder_Exception(string message)
@@ -130,7 +134,9 @@ namespace BizHawk.Emulation.DiscSystem
 				if (Path.GetFileNameWithoutExtension(fi.FullName).ToUpper() == basePath.ToUpper())
 				{
 					if (CheckForAudio(fi.FullName))
+					{
 						return fi.FullName;
+					}
 				}
 			}
 			return null;
@@ -143,8 +149,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				throw new AudioDecoder_Exception("Could not find source audio for: " + Path.GetFileName(audioPath));
 			}
-			FFMpeg ffmpeg = new FFMpeg();
-			return ffmpeg.DecodeAudio(path);
+			return new FFMpeg().DecodeAudio(path);
 		}
 
 	}

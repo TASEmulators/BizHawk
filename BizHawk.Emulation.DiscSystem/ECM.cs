@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//    Px ^= (long)bit << (i + j);
 			//  }
 			//uint edc_poly = (uint)Px;
-			uint edc_poly = (uint)0x8001801B;
+			const uint edc_poly = 0x8001801B;
 
 			//generate the CRC table 
 			uint reverse_edc_poly = Bitrev.reverse_32(edc_poly);

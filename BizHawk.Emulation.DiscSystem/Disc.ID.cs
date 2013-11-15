@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem
 		TurboCD
 	}
 
-	public partial class Disc
+	sealed public partial class Disc
 	{
 		/// <summary>
 		/// Attempts to determine the type of the disc.

@@ -53,8 +53,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//TODO - add cue directory to CueBinPrefs???? could make things cleaner...
 
-			var session = new DiscTOC.Session();
-			session.num = 1;
+			var session = new DiscTOC.Session {num = 1};
 			TOC.Sessions.Add(session);
 			var pregap_sector = new Sector_Zero();
 
@@ -254,8 +253,7 @@ namespace BizHawk.Emulation.DiscSystem
 						bool is_last_index = index == num_indexes - 1;
 
 						//install index into hierarchy
-						var toc_index = new DiscTOC.Index();
-						toc_index.num = index;
+						var toc_index = new DiscTOC.Index {num = index};
 						toc_track.Indexes.Add(toc_index);
 						if (index == 0)
 						{
@@ -310,9 +308,11 @@ namespace BizHawk.Emulation.DiscSystem
 									{
 										//ECM needs to know the sector number so we have to record that here
 										int curr_disc_aba = Sectors.Count;
-										var sector_2048 = new Sector_Mode1_2048(curr_disc_aba + 150);
-										sector_2048.Blob = new ECMCacheBlob(cue_blob);
-										sector_2048.Offset = blob_cursor;
+										var sector_2048 = new Sector_Mode1_2048(curr_disc_aba + 150)
+											{
+												Blob = new ECMCacheBlob(cue_blob),
+												Offset = blob_cursor
+											};
 										blob_cursor += 2048;
 										Sectors.Add(new SectorEntry(sector_2048));
 										break;
@@ -472,6 +472,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public Timestamp Timestamp;
 		}
 
+		[Serializable]
 		public class CueBrokenException : Exception
 		{
 			public CueBrokenException(string why)
@@ -576,9 +577,10 @@ namespace BizHawk.Emulation.DiscSystem
 							if (indexnum < 0 || indexnum > 99) throw new CueBrokenException("`All index numbers must be between 0 and 99 inclusive.`");
 							if (indexnum != 1 && indexnum != last_index_num + 1) throw new CueBrokenException("`The first index must be 0 or 1 with all other indexes being sequential to the first one.`");
 							last_index_num = indexnum;
-							CueTrackIndex cti = new CueTrackIndex(indexnum);
-							cti.Timestamp = new Timestamp(str_timestamp);
-							cti.IndexNum = indexnum;
+							CueTrackIndex cti = new CueTrackIndex(indexnum)
+								{
+									Timestamp = new Timestamp(str_timestamp), IndexNum = indexnum
+								};
 							currTrack.Indexes[indexnum] = cti;
 							break;
 						}
