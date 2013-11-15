@@ -2,7 +2,6 @@
 using System.IO;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.DiscSystem;
 
 // The state of the cd player is quantized to the frame level.
 // This isn't ideal. But life's too short. 
@@ -42,7 +41,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public int CurrentSector, SectorOffset; // Offset is in SAMPLES, not bytes. Sector is 588 samples long.
 		int CachedSector;
-		byte[] SectorCache = new byte[2352];
+		readonly byte[] SectorCache = new byte[2352];
 
 		public int FadeOutOverFrames = 0;
 		public int FadeOutFramesRemaining = 0;

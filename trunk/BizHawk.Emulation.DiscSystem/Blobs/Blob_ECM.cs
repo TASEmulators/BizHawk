@@ -31,9 +31,9 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class Disc
+	sealed partial class Disc
 	{
-		class Blob_ECM : IBlob
+		private class Blob_ECM : IBlob
 		{
 			FileStream stream;
 			
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 				stream = null;
 			}
 
-			class IndexEntry
+			private class IndexEntry
 			{
 				public int Type;
 				public uint Number;

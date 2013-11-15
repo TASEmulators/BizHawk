@@ -7,6 +7,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+	[Serializable]
 	public class DiscReferenceException : Exception
 	{
 		public DiscReferenceException(string fname, Exception inner)
@@ -136,7 +137,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public override void Write(byte[] buffer, int offset, int count) { throw new NotImplementedException(); }
 	}
 
-	public partial class Disc
+	sealed public partial class Disc
 	{
 		/// <summary>
 		/// Main API to read a 2352-byte sector from a disc.

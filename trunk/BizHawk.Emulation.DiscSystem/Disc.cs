@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
@@ -97,7 +96,7 @@ namespace BizHawk.Emulation.DiscSystem
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
 		}
 
-		public class Blob_ZeroPadAdapter : IBlob
+		public sealed class Blob_ZeroPadAdapter : IBlob
 		{
 			public Blob_ZeroPadAdapter(IBlob baseBlob, long padFrom, long padLen)
 			{
@@ -152,15 +151,18 @@ namespace BizHawk.Emulation.DiscSystem
 				baseBlob.Dispose();
 			}
 
-			IBlob baseBlob;
-			long padFrom;
-			long padLen;
+			private readonly IBlob baseBlob;
+			private long padFrom;
+			private long padLen;
 		}
 
-		class Blob_RawFile : IBlob
+		private class Blob_RawFile : IBlob
 		{
 			public string PhysicalPath { 
-				get { return physicalPath; }
+				get
+				{
+					return physicalPath;
+				}
 				set
 				{
 					physicalPath = value;
@@ -319,7 +321,7 @@ namespace BizHawk.Emulation.DiscSystem
 			static byte[] TempSector = new byte[2352];
 		}
 
-		protected static byte BCD_Byte(byte val)
+		private static byte BCD_Byte(byte val)
 		{
 			byte ret = (byte)(val % 10);
 			ret += (byte)(16 * (val / 10));
@@ -481,13 +483,13 @@ namespace BizHawk.Emulation.DiscSystem
 		void FromIsoPathInternal(string isoPath)
 		{
 			//make a fake cue file to represent this iso file
-			string isoCueWrapper = @"
+			const string isoCueWrapper = @"
 FILE ""xarp.barp.marp.farp"" BINARY
   TRACK 01 MODE1/2048
     INDEX 01 00:00:00
 ";
 
-			string cueDir = "";
+			string cueDir = String.Empty;
 			var cue = new Cue();
 			CueFileResolver["xarp.barp.marp.farp"] = isoPath;
 			cue.LoadFromString(isoCueWrapper);
@@ -542,8 +544,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			{
 				//this is the preferred mode of dumping things. we will always write full sectors.
 				string cue = TOC.GenerateCUE_OneBin(prefs);
-				var bfd = new CueBin.BinFileDescriptor();
-				bfd.name = baseName + ".bin";
+				var bfd = new CueBin.BinFileDescriptor {name = baseName + ".bin"};
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
 				ret.bins.Add(bfd);
 				bfd.SectorSize = 2352;
@@ -563,9 +564,11 @@ FILE ""xarp.barp.marp.farp"" BINARY
 				for (int i = 0; i < TOC.Sessions[0].Tracks.Count; i++)
 				{
 					var track = TOC.Sessions[0].Tracks[i];
-					var bfd = new CueBin.BinFileDescriptor();
-					bfd.name = baseName + string.Format(" (Track {0:D2}).bin", track.num);
-					bfd.SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType);
+					var bfd = new CueBin.BinFileDescriptor
+						{
+							name = baseName + string.Format(" (Track {0:D2}).bin", track.num),
+							SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType)
+						};
 					ret.bins.Add(bfd);
 					int aba = 0;
 
@@ -740,9 +743,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		/// </summary>
 		public static BCD2 FromDecimal(int d)
 		{
-			BCD2 ret = new BCD2();
-			ret.DecimalValue = d;
-			return ret;
+			return new BCD2 {DecimalValue = d};
 		}
 
 
@@ -769,7 +770,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		/// </summary>
 		public Timestamp(string value)
 		{
-			this.Value = value;
+			Value = value;
 			MIN = int.Parse(value.Substring(0, 2));
 			SEC = int.Parse(value.Substring(3, 2));
 			FRAC = int.Parse(value.Substring(6, 2));
