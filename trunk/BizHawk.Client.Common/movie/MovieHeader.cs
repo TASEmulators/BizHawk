@@ -78,6 +78,15 @@ namespace BizHawk.Client.Common
 				HeaderParams.Add(key, value);
 		}
 
+		public void AddBoardProperty(string key, string value)
+		{
+			string temp;
+			if (!BoardProperties.TryGetValue(key, out temp))
+			{
+				BoardProperties.Add(key, value);
+			}
+		}
+
 		public void UpdateRerecordCount(int count)
 		{
 			HeaderParams[RERECORDS] = count.ToString();
@@ -232,7 +241,7 @@ namespace BizHawk.Client.Common
 			{
 				line = ParseHeader(line, BOARDPROPERTIES);
 				string[] vals = line.Split(' ');
-				BoardProperties.Add(vals[0], vals[1]);
+				AddBoardProperty(vals[0], vals[1]);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
