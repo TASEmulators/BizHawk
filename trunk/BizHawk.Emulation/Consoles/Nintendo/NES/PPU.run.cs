@@ -411,8 +411,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							//hflip
 							if ((oam->oam[2] & 0x40) == 0)
 							{
-								oam->patterns[0] = BITREV.byte_8[oam->patterns[0]];
-								oam->patterns[1] = BITREV.byte_8[oam->patterns[1]];
+								oam->patterns[0] = Bitrev.byte_8[oam->patterns[0]];
+								oam->patterns[1] = Bitrev.byte_8[oam->patterns[1]];
 							}
 						}
 					} //sprite pattern fetch loop

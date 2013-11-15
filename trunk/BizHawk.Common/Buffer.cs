@@ -59,15 +59,26 @@ namespace BizHawk.Common
 
 		public void Dispose()
 		{
-			if (arr != null)
-				hnd.Free();
-			arr = null;
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		~CBuffer() { Dispose(); }
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (arr != null)
+				{
+					hnd.Free();
+				}
+				arr = null;
+			}
+		}
+
+		~CBuffer() { Dispose(true); }
 	}
 
-	public class ByteBuffer : CBuffer<byte>
+	public sealed class ByteBuffer : CBuffer<byte>
 	{
 		public ByteBuffer(int amt) : base(amt,1) { }
 		public ByteBuffer(byte[] arr) : base(arr,1) { }
@@ -83,7 +94,7 @@ namespace BizHawk.Common
 		}
 	}
 
-	public class IntBuffer : CBuffer<int>
+	public sealed class IntBuffer : CBuffer<int>
 	{
 		public IntBuffer(int amt) : base(amt, 4) { }
 		public IntBuffer(int[] arr) : base(arr,4) { }
@@ -99,7 +110,7 @@ namespace BizHawk.Common
 		}
 	}
 
-	public class ShortBuffer : CBuffer<short>
+	public sealed class ShortBuffer : CBuffer<short>
 	{
 		public ShortBuffer(int amt) : base(amt, 2) { }
 		public ShortBuffer(short[] arr) : base(arr, 2) { }

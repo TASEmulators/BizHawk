@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,7 +22,7 @@ namespace BizHawk.Common
 		{
 			int min = 0;
 			int max = list.Count;
-			int mid = 0;
+			int mid;
 			TKey midKey;
 			while (min < max)
 			{
@@ -65,22 +66,22 @@ namespace BizHawk.Common
 
 		public static string ToHexString(this int n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
 		public static string ToHexString(this uint n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
 		public static string ToHexString(this byte n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
 		public static string ToHexString(this ushort n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
 		//http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
@@ -151,14 +152,7 @@ namespace BizHawk.Common
 
 		public static bool IsBinary(this string str)
 		{
-			for (int i = 0; i < str.Length; i++)
-			{
-				char c = str[i];
-				if (c == '0' || c == '1')
-					continue;
-				return false;
-			}
-			return true;
+			return str.All(c => c == '0' || c == '1');
 		}
 
 		public static bool Bit(this byte b, int index)
@@ -179,84 +173,59 @@ namespace BizHawk.Common
 		public static string GetPrecedingString(this string str, string value)
 		{
 			int index = str.IndexOf(value);
+
 			if (index < 0)
+			{
 				return null;
-			if (index == 0)
-				return "";
-			return str.Substring(0, index);
+			}
+			else if (index == 0)
+			{
+				return String.Empty;
+			}
+			else
+			{
+				return str.Substring(0, index);
+			}
 		}
 
 		public static bool In(this string str, params string[] options)
 		{
-			foreach (string opt in options)
-			{
-				if (opt.Equals(str, StringComparison.CurrentCultureIgnoreCase)) return true;
-			}
-			return false;
+			return options.Any(opt => opt.Equals(str, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public static bool In(this string str, IEnumerable<string> options)
 		{
-			foreach (string opt in options)
-			{
-				if (opt.Equals(str, StringComparison.CurrentCultureIgnoreCase)) return true;
-			}
-			return false;
+			return options.Any(opt => opt.Equals(str, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public static bool In<T>(this string str, IEnumerable<T> options, Func<T, string, bool> eval)
 		{
-			foreach (T opt in options)
-			{
-				if (eval(opt, str))
-					return true;
-			}
-			return false;
+			return options.Any(opt => eval(opt, str));
 		}
 
 		public static bool NotIn(this string str, params string[] options)
 		{
-			foreach (string opt in options)
-			{
-				if (opt.ToLower() == str.ToLower()) return false;
-			}
-			return true;
+			return options.All(opt => opt.ToLower() != str.ToLower());
 		}
 
 		public static bool NotIn(this string str, IEnumerable<string> options)
 		{
-			foreach (string opt in options)
-			{
-				if (opt.ToLower() == str.ToLower()) return false;
-			}
-			return true;
+			return options.All(opt => opt.ToLower() != str.ToLower());
 		}
 
 		public static bool In(this int i, params int[] options)
 		{
-			foreach (int j in options)
-			{
-				if (i == j) return true;
-			}
-			return false;
+			return options.Any(j => i == j);
 		}
 
 		public static bool In(this int i, IEnumerable<int> options)
 		{
-			foreach (int j in options)
-			{
-				if (i == j) return true;
-			}
-			return false;
+			return options.Any(j => i == j);
 		}
 
 		public static bool ContainsStartsWith(this IEnumerable<string> options, string str)
 		{
-			foreach (string opt in options)
-			{
-				if (opt.StartsWith(str)) return true;
-			}
-			return false;
+			return options.Any(opt => opt.StartsWith(str));
 		}
 
 		public static string GetOptionValue(this IEnumerable<string> options, string str)
@@ -278,11 +247,7 @@ namespace BizHawk.Common
 		public static bool IsValidRomExtentsion(this string str, params string[] romExtensions)
 		{
 			string strUpper = str.ToUpper();
-			foreach (string ext in romExtensions)
-			{
-				if (strUpper.EndsWith(ext.ToUpper())) return true;
-			}
-			return false;
+			return romExtensions.Any(ext => strUpper.EndsWith(ext.ToUpper()));
 		}
 
 		public static string ToCommaSeparated(this List<string> list)
@@ -298,9 +263,9 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			foreach (byte b in buffer)
 			{
-				writer.Write("{0:X2}", buffer[i]);
+				writer.Write("{0:X2}", b);
 			}
 			writer.WriteLine();
 		}
@@ -332,69 +297,79 @@ namespace BizHawk.Common
 
 		public static void SaveAsHex(this short[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			foreach (short b in buffer)
 			{
-				writer.Write("{0:X4}", buffer[i]);
+				writer.Write("{0:X4}", b);
 			}
 			writer.WriteLine();
 		}
 
 		public static void SaveAsHex(this ushort[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			foreach (ushort b in buffer)
 			{
-				writer.Write("{0:X4}", buffer[i]);
+				writer.Write("{0:X4}", b);
 			}
 			writer.WriteLine();
 		}
 
 		public static void SaveAsHex(this int[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			foreach (int b in buffer)
 			{
-				writer.Write("{0:X8}", buffer[i]);
+				writer.Write("{0:X8}", b);
 			}
 			writer.WriteLine();
 		}
 
 		public static void SaveAsHex(this uint[] buffer, TextWriter writer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
+			foreach (uint b in buffer)
 			{
-				writer.Write("{0:X8}", buffer[i]);
+				writer.Write("{0:X8}", b);
 			}
 			writer.WriteLine();
 		}
 
 		public static void Write(this BinaryWriter bw, int[] buffer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
+			foreach (int b in buffer)
+			{
+				bw.Write(b);
+			}
 		}
 
 		public static void Write(this BinaryWriter bw, uint[] buffer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
+			foreach (uint b in buffer)
+			{
+				bw.Write(b);
+			}
 		}
 
 		public static void Write(this BinaryWriter bw, short[] buffer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
+			foreach (short b in buffer)
+			{
+				bw.Write(b);
+			}
 		}
 
 		public static void Write(this BinaryWriter bw, ushort[] buffer)
 		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
+			foreach (ushort t in buffer)
+			{
+				bw.Write(t);
+			}
 		}
 
 		public static int[] ReadInt32s(this BinaryReader br, int num)
 		{
 			int[] ret = new int[num];
 			for (int i = 0; i < num; i++)
+			{
 				ret[i] = br.ReadInt32();
+			}
 			return ret;
 		}
 
@@ -402,7 +377,9 @@ namespace BizHawk.Common
 		{
 			short[] ret = new short[num];
 			for (int i = 0; i < num; i++)
+			{
 				ret[i] = br.ReadInt16();
+			}
 			return ret;
 		}
 
@@ -410,14 +387,19 @@ namespace BizHawk.Common
 		{
 			ushort[] ret = new ushort[num];
 			for (int i = 0; i < num; i++)
+			{
 				ret[i] = br.ReadUInt16();
+			}
 			return ret;
 		}
 
 		public static void ReadFromHex(this byte[] buffer, string hex)
 		{
-			if (hex.Length % 2 != 0)
+			if (hex.Length%2 != 0)
+			{
 				throw new Exception("Hex value string does not appear to be properly formatted.");
+			}
+
 			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
 			{
 				string bytehex = "" + hex[i * 2] + hex[i * 2 + 1];
@@ -428,29 +410,25 @@ namespace BizHawk.Common
 		private static int Hex2Int(char c)
 		{
 			if (c <= '9')
+			{
 				return c - '0';
+			}
 			else if (c <= 'F')
+			{
 				return c - '7';
+			}
 			else
+			{
 				return c - 'W';
+			}
 		}
 
 		public static void ReadFromHexFast(this byte[] buffer, string hex)
 		{
-			//if (hex.Length % 2 != 0)
-			//	throw new Exception("Hex value string does not appear to be properly formatted.");
 			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
 			{
 				buffer[i] = (byte)(Hex2Int(hex[i * 2]) * 16 + Hex2Int(hex[i * 2 + 1]));
 			}
-			/*
-			var b = new byte[buffer.Length];
-			b.ReadFromHex(hex);
-			for (int i = 0; i < buffer.Length; i++)
-			{
-				if (b[i] != buffer[i])
-					throw new Exception();
-			}*/
 		}
 
 		public static void ReadFromHex(this short[] buffer, string hex)
@@ -486,12 +464,6 @@ namespace BizHawk.Common
 				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
 		}
-
-		//public static void SaveAsHex(this uint[] buffer, BinaryWriter bw)
-		//{
-		//    for (int i = 0; i < buffer.Length; i++)
-		//        bw.Write(buffer[i]);
-		//}
 
 		//these don't work??? they dont get chosen by compiler
 		public static void WriteBit(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
