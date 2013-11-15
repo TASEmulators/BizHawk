@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -24,8 +21,9 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (string core in coresToHide)
 				{
-					TabPage tp = AllTabPages.FirstOrDefault(x => x.Name == core);
-					PathTabControl.TabPages.Remove(tp);
+					PathTabControl.TabPages.Remove(
+						AllTabPages.FirstOrDefault(x => x.Name == core) ?? new TabPage()
+					);
 				}
 			}
 		}
@@ -34,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return new AutoCompleteStringCollection()
+				return new AutoCompleteStringCollection
 				{
 					"%recent%",
 					"%exe%",
@@ -79,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			BasePathBox.Text = Global.Config.PathEntries.GlobalBase;
 			DoTabs(Global.Config.PathEntries.Paths);
 			SetDefaultFocusedTab();
-			DoROMToggle();
+			DoRomToggle();
 		}
 
 		private void SetDefaultFocusedTab()
@@ -101,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DoTabs(List<PathEntry> PathCollection)
+		private void DoTabs(List<PathEntry> pathCollection)
 		{
 			PathTabControl.SuspendLayout();
 			PathTabControl.TabPages.Clear();
@@ -115,30 +113,33 @@ namespace BizHawk.Client.EmuHawk
 			systems.Remove(global);
 			systems.Insert(0, global);
 
+			List<TabPage> tabPages = new List<TabPage>(systems.Count);
+
+			const int _x = 6;
+			const int textboxWidth = 70;
+			const int padding = 5;
+			const int buttonWidth = 26;
+			const int widgetOffset = 85;
+			const int rowHeight = 30;
+
 			foreach (string systemDisplayName in systems)
 			{
 				string systemId = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System;
-				TabPage t = new TabPage()
+				TabPage t = new TabPage
 				{
 					Text = systemDisplayName,
 					Name = systemId,
 				};
-				List<PathEntry> paths = PathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+				List<PathEntry> paths = pathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
-				int _x = 6;
 				int _y = 14;
-				int textbox_width = 70;
-				int padding = 5;
-				int button_width = 26;
-				int widget_offset = 85;
-				int row_height = 30;
 				foreach (var path in paths)
 				{
-					TextBox box = new TextBox()
+					TextBox box = new TextBox
 					{
 						Text = path.Path,
 						Location = new Point(_x, _y),
-						Width = textbox_width,
+						Width = textboxWidth,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 						MinimumSize = new Size(26, 23),
@@ -147,12 +148,12 @@ namespace BizHawk.Client.EmuHawk
 						AutoCompleteSource = AutoCompleteSource.CustomSource,
 					};
 
-					Button btn = new Button()
+					Button btn = new Button
 					{
 						Text = String.Empty,
-						Image = BizHawk.Client.EmuHawk.Properties.Resources.OpenFile,
-						Location = new Point(widget_offset, _y - 1),
-						Width = button_width,
+						Image = Properties.Resources.OpenFile,
+						Location = new Point(widgetOffset, _y - 1),
+						Width = buttonWidth,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
@@ -160,15 +161,15 @@ namespace BizHawk.Client.EmuHawk
 					TextBox tempBox = box;
 					string tempPath = path.Type;
 					string tempSystem = path.System;
-					btn.Click += new System.EventHandler(delegate
+					btn.Click += delegate
 					{
 						BrowseFolder(tempBox, tempPath, tempSystem);
-					});
+					};
 
-					Label label = new Label()
-					{
+					Label label = new Label
+						{
 						Text = path.Type,
-						Location = new Point(widget_offset + button_width + padding, _y + 4),
+						Location = new Point(widgetOffset + buttonWidth + padding, _y + 4),
 						Width = 100,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
@@ -178,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 					t.Controls.Add(btn);
 					t.Controls.Add(box);
 
-					_y += row_height;
+					_y += rowHeight;
 				}
 
 				string sys = systemDisplayName;
@@ -191,46 +192,45 @@ namespace BizHawk.Client.EmuHawk
 
 				if (hasFirmwares)
 				{
-					Button firmwareButton = new Button()
+					Button firmwareButton = new Button
 					{
 						Name = sys,
 						Text = "&Firmware",
 						Location = new Point(_x, _y),
 						Width = 75,
 					};
-					firmwareButton.Click += new System.EventHandler(delegate
+					firmwareButton.Click += delegate
 					{
-						FirmwaresConfig f = new FirmwaresConfig();
-						f.TargetSystem = sys;
+						FirmwaresConfig f = new FirmwaresConfig {TargetSystem = sys};
 						f.ShowDialog();
-					});
+					};
 
 					t.Controls.Add(firmwareButton);
 				}
-
-				PathTabControl.TabPages.Add(t);
+				tabPages.Add(t);
+				
 			}
-
+			PathTabControl.TabPages.AddRange(tabPages.ToArray());
 			PathTabControl.ResumeLayout();
 		}
 
-		private void BrowseFolder(TextBox box, string _Name, string System)
+		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			//Ugly hack, we don't want to pass in the system in for system base and global paths
-			if (_Name == "Base" || System == "Global")
+			if (name == "Base" || system == "Global")
 			{
-				System = null;
+				system = null;
 			}
 
 			var f = new FolderBrowserDialog
 			{
-				Description = "Set the directory for " + _Name,
-				SelectedPath = PathManager.MakeAbsolutePath(box.Text, System)
+				Description = "Set the directory for " + name,
+				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
 			};
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				box.Text = PathManager.TryMakeRelative(f.SelectedPath, System);
+				box.Text = PathManager.TryMakeRelative(f.SelectedPath, system);
 			}
 		}
 
@@ -267,10 +267,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
-			DoROMToggle();
+			DoRomToggle();
 		}
 
-		private void DoROMToggle()
+		private void DoRomToggle()
 		{
 			List<Control> pcontrols = AllPathControls.Where(x => x.Name == "ROM").ToList();
 			foreach (Control c in pcontrols)
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<TextBox> AllPathBoxes
+		private IEnumerable<TextBox> AllPathBoxes
 		{
 			get
 			{
@@ -293,35 +293,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<Label> AllPathLabels
-		{
-			get
-			{
-				List<Label> _AllPathLabels = new List<Label>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					IEnumerable<Label> control = from c in tp.Controls.OfType<Label>() select c;
-					_AllPathLabels.AddRange(control);
-				}
-				return _AllPathLabels;
-			}
-		}
-
-		private List<Button> AllPathButtons
-		{
-			get
-			{
-				List<Button> _AllPathButtons = new List<Button>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					IEnumerable<Button> control = from c in tp.Controls.OfType<Button>() select c;
-					_AllPathButtons.AddRange(control);
-				}
-				return _AllPathButtons;
-			}
-		}
-
-		private List<Control> AllPathControls
+		private IEnumerable<Control> AllPathControls
 		{
 			get
 			{
@@ -335,16 +307,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<TabPage> AllTabPages
+		private IEnumerable<TabPage> AllTabPages
 		{
 			get
 			{
-				List<TabPage> _AllTabPages = new List<TabPage>();
-				foreach (TabPage tp in PathTabControl.TabPages)
-				{
-					_AllTabPages.Add(tp);
-				}
-				return _AllTabPages;
+				return PathTabControl.TabPages.Cast<TabPage>().ToList();
 			}
 		}
 
