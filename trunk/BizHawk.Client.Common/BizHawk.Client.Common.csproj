@@ -155,13 +155,13 @@
       <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
       <Name>BizHawk.Emulation.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
+      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
+      <Name>BizHawk.Emulation.Cores</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
       <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
-      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
-      <Name>BizHawk.Emulation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
