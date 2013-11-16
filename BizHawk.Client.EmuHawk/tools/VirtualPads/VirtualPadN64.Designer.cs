@@ -28,168 +28,28 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.PL = new VirtualPadButton();
-			this.PD = new VirtualPadButton();
-			this.PR = new VirtualPadButton();
-			this.PU = new VirtualPadButton();
-			this.BL = new VirtualPadButton();
-			this.BR = new VirtualPadButton();
-			this.BS = new VirtualPadButton();
-			this.BZ = new VirtualPadButton();
-			this.BB = new VirtualPadButton();
-			this.BA = new VirtualPadButton();
-			this.CU = new VirtualPadButton();
-			this.CL = new VirtualPadButton();
-			this.CR = new VirtualPadButton();
-			this.CD = new VirtualPadButton();
 			this.ManualX = new System.Windows.Forms.NumericUpDown();
 			this.ManualY = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.AnalogControl1 = new AnalogControlPanel();
+			this.CD = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.CR = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.CL = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.CU = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BA = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BB = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BZ = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BS = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BR = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.BL = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.PL = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.PD = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.PR = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.PU = new BizHawk.Client.EmuHawk.VirtualPadButton();
+			this.AnalogControl1 = new BizHawk.Client.EmuHawk.AnalogControlPanel();
 			((System.ComponentModel.ISupportInitialize)(this.ManualX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.ManualY)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// PL
-			// 
-			this.PL.AutoSize = true;
-			this.PL.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
-			this.PL.Location = new System.Drawing.Point(3, 207);
-			this.PL.Name = "PL";
-			this.PL.Size = new System.Drawing.Size(22, 22);
-			this.PL.TabIndex = 7;
-			this.PL.UseVisualStyleBackColor = true;
-			// 
-			// PD
-			// 
-			this.PD.AutoSize = true;
-			this.PD.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueDown;
-			this.PD.Location = new System.Drawing.Point(24, 216);
-			this.PD.Name = "PD";
-			this.PD.Size = new System.Drawing.Size(22, 22);
-			this.PD.TabIndex = 6;
-			this.PD.UseVisualStyleBackColor = true;
-			// 
-			// PR
-			// 
-			this.PR.AutoSize = true;
-			this.PR.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
-			this.PR.Location = new System.Drawing.Point(45, 207);
-			this.PR.Name = "PR";
-			this.PR.Size = new System.Drawing.Size(22, 22);
-			this.PR.TabIndex = 5;
-			this.PR.UseVisualStyleBackColor = true;
-			// 
-			// PU
-			// 
-			this.PU.AutoSize = true;
-			this.PU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueUp;
-			this.PU.Location = new System.Drawing.Point(24, 195);
-			this.PU.Name = "PU";
-			this.PU.Size = new System.Drawing.Size(22, 22);
-			this.PU.TabIndex = 4;
-			this.PU.UseVisualStyleBackColor = true;
-			// 
-			// BL
-			// 
-			this.BL.AutoSize = true;
-			this.BL.Location = new System.Drawing.Point(3, 148);
-			this.BL.Name = "BL";
-			this.BL.Size = new System.Drawing.Size(23, 23);
-			this.BL.TabIndex = 8;
-			this.BL.Text = "L";
-			this.BL.UseVisualStyleBackColor = true;
-			// 
-			// BR
-			// 
-			this.BR.AutoSize = true;
-			this.BR.Location = new System.Drawing.Point(172, 148);
-			this.BR.Name = "BR";
-			this.BR.Size = new System.Drawing.Size(25, 23);
-			this.BR.TabIndex = 9;
-			this.BR.Text = "R";
-			this.BR.UseVisualStyleBackColor = true;
-			// 
-			// BS
-			// 
-			this.BS.AutoSize = true;
-			this.BS.Location = new System.Drawing.Point(87, 157);
-			this.BS.Name = "BS";
-			this.BS.Size = new System.Drawing.Size(24, 23);
-			this.BS.TabIndex = 10;
-			this.BS.Text = "S";
-			this.BS.UseVisualStyleBackColor = true;
-			// 
-			// BZ
-			// 
-			this.BZ.AutoSize = true;
-			this.BZ.Location = new System.Drawing.Point(74, 245);
-			this.BZ.Name = "BZ";
-			this.BZ.Size = new System.Drawing.Size(24, 23);
-			this.BZ.TabIndex = 11;
-			this.BZ.Text = "Z";
-			this.BZ.UseVisualStyleBackColor = true;
-			// 
-			// BB
-			// 
-			this.BB.AutoSize = true;
-			this.BB.Location = new System.Drawing.Point(83, 195);
-			this.BB.Name = "BB";
-			this.BB.Size = new System.Drawing.Size(24, 23);
-			this.BB.TabIndex = 12;
-			this.BB.Text = "B";
-			this.BB.UseVisualStyleBackColor = true;
-			// 
-			// BA
-			// 
-			this.BA.AutoSize = true;
-			this.BA.Location = new System.Drawing.Point(113, 206);
-			this.BA.Name = "BA";
-			this.BA.Size = new System.Drawing.Size(24, 23);
-			this.BA.TabIndex = 13;
-			this.BA.Text = "A";
-			this.BA.UseVisualStyleBackColor = true;
-			// 
-			// CU
-			// 
-			this.CU.AutoSize = true;
-			this.CU.Location = new System.Drawing.Point(147, 235);
-			this.CU.Name = "CU";
-			this.CU.Size = new System.Drawing.Size(31, 23);
-			this.CU.TabIndex = 14;
-			this.CU.Text = "cU";
-			this.CU.UseVisualStyleBackColor = true;
-			// 
-			// CL
-			// 
-			this.CL.AutoSize = true;
-			this.CL.Location = new System.Drawing.Point(129, 258);
-			this.CL.Name = "CL";
-			this.CL.Size = new System.Drawing.Size(29, 23);
-			this.CL.TabIndex = 15;
-			this.CL.Text = "cL";
-			this.CL.UseVisualStyleBackColor = true;
-			// 
-			// CR
-			// 
-			this.CR.AutoSize = true;
-			this.CR.Location = new System.Drawing.Point(164, 258);
-			this.CR.Name = "CR";
-			this.CR.Size = new System.Drawing.Size(31, 23);
-			this.CR.TabIndex = 16;
-			this.CR.Text = "cR";
-			this.CR.UseVisualStyleBackColor = true;
-			// 
-			// CD
-			// 
-			this.CD.AutoSize = true;
-			this.CD.Location = new System.Drawing.Point(147, 281);
-			this.CD.Name = "CD";
-			this.CD.Size = new System.Drawing.Size(31, 23);
-			this.CD.TabIndex = 17;
-			this.CD.Text = "cD";
-			this.CD.UseVisualStyleBackColor = true;
 			// 
 			// ManualX
 			// 
@@ -208,6 +68,7 @@
 			this.ManualX.Size = new System.Drawing.Size(47, 20);
 			this.ManualX.TabIndex = 20;
 			this.ManualX.ValueChanged += new System.EventHandler(this.ManualX_ValueChanged);
+			this.ManualX.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ManualX_KeyUp);
 			// 
 			// ManualY
 			// 
@@ -227,6 +88,7 @@
 			this.ManualY.Size = new System.Drawing.Size(47, 20);
 			this.ManualY.TabIndex = 21;
 			this.ManualY.ValueChanged += new System.EventHandler(this.ManualY_ValueChanged);
+			this.ManualY.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ManualY_KeyUp);
 			// 
 			// label1
 			// 
@@ -245,6 +107,174 @@
 			this.label2.Size = new System.Drawing.Size(14, 13);
 			this.label2.TabIndex = 23;
 			this.label2.Text = "Y";
+			// 
+			// CD
+			// 
+			this.CD.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CD.AutoSize = true;
+			this.CD.ForeColor = System.Drawing.Color.Black;
+			this.CD.Location = new System.Drawing.Point(147, 281);
+			this.CD.Name = "CD";
+			this.CD.Size = new System.Drawing.Size(31, 23);
+			this.CD.TabIndex = 17;
+			this.CD.Text = "cD";
+			this.CD.UseVisualStyleBackColor = true;
+			// 
+			// CR
+			// 
+			this.CR.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CR.AutoSize = true;
+			this.CR.ForeColor = System.Drawing.Color.Black;
+			this.CR.Location = new System.Drawing.Point(164, 258);
+			this.CR.Name = "CR";
+			this.CR.Size = new System.Drawing.Size(31, 23);
+			this.CR.TabIndex = 16;
+			this.CR.Text = "cR";
+			this.CR.UseVisualStyleBackColor = true;
+			// 
+			// CL
+			// 
+			this.CL.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CL.AutoSize = true;
+			this.CL.ForeColor = System.Drawing.Color.Black;
+			this.CL.Location = new System.Drawing.Point(129, 258);
+			this.CL.Name = "CL";
+			this.CL.Size = new System.Drawing.Size(29, 23);
+			this.CL.TabIndex = 15;
+			this.CL.Text = "cL";
+			this.CL.UseVisualStyleBackColor = true;
+			// 
+			// CU
+			// 
+			this.CU.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CU.AutoSize = true;
+			this.CU.ForeColor = System.Drawing.Color.Black;
+			this.CU.Location = new System.Drawing.Point(147, 235);
+			this.CU.Name = "CU";
+			this.CU.Size = new System.Drawing.Size(31, 23);
+			this.CU.TabIndex = 14;
+			this.CU.Text = "cU";
+			this.CU.UseVisualStyleBackColor = true;
+			// 
+			// BA
+			// 
+			this.BA.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BA.AutoSize = true;
+			this.BA.ForeColor = System.Drawing.Color.Black;
+			this.BA.Location = new System.Drawing.Point(113, 206);
+			this.BA.Name = "BA";
+			this.BA.Size = new System.Drawing.Size(24, 23);
+			this.BA.TabIndex = 13;
+			this.BA.Text = "A";
+			this.BA.UseVisualStyleBackColor = true;
+			// 
+			// BB
+			// 
+			this.BB.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BB.AutoSize = true;
+			this.BB.ForeColor = System.Drawing.Color.Black;
+			this.BB.Location = new System.Drawing.Point(83, 195);
+			this.BB.Name = "BB";
+			this.BB.Size = new System.Drawing.Size(24, 23);
+			this.BB.TabIndex = 12;
+			this.BB.Text = "B";
+			this.BB.UseVisualStyleBackColor = true;
+			// 
+			// BZ
+			// 
+			this.BZ.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BZ.AutoSize = true;
+			this.BZ.ForeColor = System.Drawing.Color.Black;
+			this.BZ.Location = new System.Drawing.Point(74, 245);
+			this.BZ.Name = "BZ";
+			this.BZ.Size = new System.Drawing.Size(24, 23);
+			this.BZ.TabIndex = 11;
+			this.BZ.Text = "Z";
+			this.BZ.UseVisualStyleBackColor = true;
+			// 
+			// BS
+			// 
+			this.BS.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BS.AutoSize = true;
+			this.BS.ForeColor = System.Drawing.Color.Black;
+			this.BS.Location = new System.Drawing.Point(87, 157);
+			this.BS.Name = "BS";
+			this.BS.Size = new System.Drawing.Size(24, 23);
+			this.BS.TabIndex = 10;
+			this.BS.Text = "S";
+			this.BS.UseVisualStyleBackColor = true;
+			// 
+			// BR
+			// 
+			this.BR.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BR.AutoSize = true;
+			this.BR.ForeColor = System.Drawing.Color.Black;
+			this.BR.Location = new System.Drawing.Point(172, 148);
+			this.BR.Name = "BR";
+			this.BR.Size = new System.Drawing.Size(25, 23);
+			this.BR.TabIndex = 9;
+			this.BR.Text = "R";
+			this.BR.UseVisualStyleBackColor = true;
+			// 
+			// BL
+			// 
+			this.BL.Appearance = System.Windows.Forms.Appearance.Button;
+			this.BL.AutoSize = true;
+			this.BL.ForeColor = System.Drawing.Color.Black;
+			this.BL.Location = new System.Drawing.Point(3, 148);
+			this.BL.Name = "BL";
+			this.BL.Size = new System.Drawing.Size(23, 23);
+			this.BL.TabIndex = 8;
+			this.BL.Text = "L";
+			this.BL.UseVisualStyleBackColor = true;
+			// 
+			// PL
+			// 
+			this.PL.Appearance = System.Windows.Forms.Appearance.Button;
+			this.PL.AutoSize = true;
+			this.PL.ForeColor = System.Drawing.Color.Black;
+			this.PL.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Back;
+			this.PL.Location = new System.Drawing.Point(3, 207);
+			this.PL.Name = "PL";
+			this.PL.Size = new System.Drawing.Size(22, 22);
+			this.PL.TabIndex = 7;
+			this.PL.UseVisualStyleBackColor = true;
+			// 
+			// PD
+			// 
+			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
+			this.PD.AutoSize = true;
+			this.PD.ForeColor = System.Drawing.Color.Black;
+			this.PD.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueDown;
+			this.PD.Location = new System.Drawing.Point(24, 216);
+			this.PD.Name = "PD";
+			this.PD.Size = new System.Drawing.Size(22, 22);
+			this.PD.TabIndex = 6;
+			this.PD.UseVisualStyleBackColor = true;
+			// 
+			// PR
+			// 
+			this.PR.Appearance = System.Windows.Forms.Appearance.Button;
+			this.PR.AutoSize = true;
+			this.PR.ForeColor = System.Drawing.Color.Black;
+			this.PR.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Forward;
+			this.PR.Location = new System.Drawing.Point(45, 207);
+			this.PR.Name = "PR";
+			this.PR.Size = new System.Drawing.Size(22, 22);
+			this.PR.TabIndex = 5;
+			this.PR.UseVisualStyleBackColor = true;
+			// 
+			// PU
+			// 
+			this.PU.Appearance = System.Windows.Forms.Appearance.Button;
+			this.PU.AutoSize = true;
+			this.PU.ForeColor = System.Drawing.Color.Black;
+			this.PU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.BlueUp;
+			this.PU.Location = new System.Drawing.Point(24, 195);
+			this.PU.Name = "PU";
+			this.PU.Size = new System.Drawing.Size(22, 22);
+			this.PU.TabIndex = 4;
+			this.PU.UseVisualStyleBackColor = true;
 			// 
 			// AnalogControl1
 			// 
