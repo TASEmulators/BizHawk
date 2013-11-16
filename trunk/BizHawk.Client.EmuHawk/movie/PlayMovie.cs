@@ -13,9 +13,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		private List<Movie> MovieList = new List<Movie>();
-		private bool sortReverse;
-		private string sortedCol;
+		private List<Movie> _movieList = new List<Movie>();
+		private bool _sortReverse;
+		private string _sortedCol;
 
 		public PlayMovie()
 		{
@@ -23,28 +23,28 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.QueryItemText += MovieView_QueryItemText;
 			MovieView.QueryItemBkColor += MovieView_QueryItemBkColor;
 			MovieView.VirtualMode = true;
-			sortReverse = false;
-			sortedCol = "";
+			_sortReverse = false;
+			_sortedCol = String.Empty;
 		}
 
 		void MovieView_QueryItemText(int index, int column, out string text)
 		{
-			text = "";
+			text = String.Empty;
 			if (column == 0) //File
 			{
-				text = Path.GetFileName(MovieList[index].Filename);
+				text = Path.GetFileName(_movieList[index].Filename);
 			}
 			if (column == 1) //System
 			{
-				text = MovieList[index].SysID;
+				text = _movieList[index].SysID;
 			}
 			if (column == 2) //Game
 			{
-				text = MovieList[index].GameName;
+				text = _movieList[index].GameName;
 			}
 			if (column == 3) //Time
 			{
-				text = MovieList[index].GetTime(true);
+				text = _movieList[index].GetTime(true);
 			}
 		}
 
@@ -61,14 +61,10 @@ namespace BizHawk.Client.EmuHawk
 		private void Run()
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
-			if (indexes.Count == 0)
+			if (indexes.Count > 0) //Import file if necessary
 			{
-				return;
+				GlobalWin.MainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
 			}
-
-			//Import file if necessary
-
-			GlobalWin.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -129,9 +125,9 @@ namespace BizHawk.Client.EmuHawk
 						movie.LoadMovie(); //State files will have to load everything unfortunately
 						if (movie.Frames > 0)
 						{
-							MovieList.Add(movie);
-							sortReverse = false;
-							sortedCol = String.Empty;
+							_movieList.Add(movie);
+							_sortReverse = false;
+							_sortedCol = String.Empty;
 						}
 					}
 				}
@@ -150,12 +146,12 @@ namespace BizHawk.Client.EmuHawk
 					if (x == 0)
 					{
 						PreLoadMovieFile(file, force);
-						MovieView.ItemCount = MovieList.Count;
+						MovieView.ItemCount = _movieList.Count;
 						UpdateList();
 
-						sortReverse = false;
-						sortedCol = "";
-						x = MovieList.Count - 1;
+						_sortReverse = false;
+						_sortedCol = String.Empty;
+						x = _movieList.Count - 1;
 					}
 					return x;
 				}
@@ -164,9 +160,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int IsDuplicate(string filename)
 		{
-			for (int x = 0; x < MovieList.Count; x++)
+			for (int x = 0; x < _movieList.Count; x++)
 			{
-				if (MovieList[x].Filename == filename)
+				if (_movieList[x].Filename == filename)
 				{
 					return x;
 				}
@@ -191,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			if (movie.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
 				Global.Config.PlayMovie_MatchGameName == false || force)
 			{
-				MovieList.Add(movie);
+				_movieList.Add(movie);
 			}
 		}
 
@@ -203,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMovieCount()
 		{
-			int x = MovieList.Count;
+			int x = _movieList.Count;
 			if (x == 1)
 			{
 				MovieCount.Text = x.ToString() + " movie";
@@ -220,9 +216,9 @@ namespace BizHawk.Client.EmuHawk
 			List<int> Indexes = new List<int>();
 			
 			//Pull out matching names
-			for (int x = 0; x < MovieList.Count; x++)
+			for (int x = 0; x < _movieList.Count; x++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GameName)
+				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[x].GameName)
 					Indexes.Add(x);
 			}
 			if (Indexes.Count == 0) return;
@@ -236,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			List<int> TAS = new List<int>();
 			for (int x = 0; x < Indexes.Count; x++)
 			{
-				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
+				if (Path.GetExtension(_movieList[Indexes[x]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
 				{
 					TAS.Add(x);
 				}
@@ -253,12 +249,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//Final tie breaker - Last used file
-			FileInfo f = new FileInfo(MovieList[Indexes[0]].Filename);
+			FileInfo f = new FileInfo(_movieList[Indexes[0]].Filename);
 			DateTime t = f.LastAccessTime;
 			int mostRecent = Indexes[0];
 			for (int x = 1; x < Indexes.Count; x++)
 			{
-				f = new FileInfo(MovieList[Indexes[0]].Filename);
+				f = new FileInfo(_movieList[Indexes[0]].Filename);
 				if (f.LastAccessTime > t)
 				{
 					t = f.LastAccessTime;
@@ -280,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearList()
 		{
-			MovieList.Clear();
+			_movieList.Clear();
 			MovieView.ItemCount = 0;
 			MovieView.Update();
 		}
@@ -363,11 +359,13 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			else
+			{
 				OK.Enabled = true;
+			}
 
 			int x = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(x);
-			Dictionary<string, string> h = MovieList[x].Header.HeaderParams;
+			Dictionary<string, string> h = _movieList[x].Header.HeaderParams;
 
 			foreach (var kvp in h)
 			{
@@ -402,46 +400,42 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 				}
-				
 
 				DetailsView.Items.Add(item);
 			}
 
-			if (MovieList[x].Header.Comments.Count > 0)
-			{
-				button1.Enabled = true;
-			}
-			else
-			{
-				button1.Enabled = false;
-			}
+			var FpsItem = new ListViewItem("Fps");
+			FpsItem.SubItems.Add(String.Format("{0:0.#######}", _movieList[x].Fps));
+			DetailsView.Items.Add(FpsItem);
 
-			if (MovieList[x].Subtitles.Count > 0)
-			{
-				button2.Enabled = true;
-			}
-			else
-			{
-				button2.Enabled = false;
-			}
+			var FramesItem = new ListViewItem("Frames");
+			FramesItem.SubItems.Add(_movieList[x].RawFrames.ToString());
+			DetailsView.Items.Add(FramesItem);
+
+			CommentsBtn.Enabled = _movieList[x].Header.Comments.Count > 0;
+			SubtitlesBtn.Enabled = _movieList[x].Subtitles.Count > 0;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
-			if (indexes.Count == 0) return;
-			EditCommentsForm form = new EditCommentsForm();
-			form.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
-			form.Show();
+			if (indexes.Count > 0)
+			{
+				EditCommentsForm form = new EditCommentsForm();
+				form.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
+				form.Show();
+			}
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
-			if (indexes.Count == 0) return;
-			EditSubtitlesForm s = new EditSubtitlesForm {ReadOnly = true};
-			s.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
-			s.Show();
+			if (indexes.Count > 0)
+			{
+				EditSubtitlesForm s = new EditSubtitlesForm { ReadOnly = true };
+				s.GetMovie(_movieList[MovieView.SelectedIndices[0]]);
+				s.Show();
+			}
 		}
 
 		private void MovieView_DoubleClick(object sender, EventArgs e)
@@ -475,17 +469,17 @@ namespace BizHawk.Client.EmuHawk
 		private void OrderColumn(int columnToOrder)
 		{
 			string columnName = MovieView.Columns[columnToOrder].Text;
-			if (sortedCol != columnName)
+			if (_sortedCol != columnName)
 			{
-				sortReverse = false;
+				_sortReverse = false;
 			}
 
 			switch (columnName)
 			{
 				case "File":
-					if (sortReverse)
+					if (_sortReverse)
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
@@ -494,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
@@ -503,9 +497,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "SysID":
-					if (sortReverse)
+					if (_sortReverse)
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderByDescending(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
@@ -514,7 +508,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderBy(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
@@ -523,9 +517,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "Game":
-					if (sortReverse)
+					if (_sortReverse)
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderByDescending(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
@@ -534,7 +528,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderBy(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
@@ -543,9 +537,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "Length (est.)":
-					if (sortReverse)
+					if (_sortReverse)
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderByDescending(x => x.RawFrames)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
@@ -554,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						MovieList = MovieList
+						_movieList = _movieList
 							.OrderBy(x => x.RawFrames)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
@@ -564,8 +558,8 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			sortedCol = columnName;
-			sortReverse = !sortReverse;
+			_sortedCol = columnName;
+			_sortReverse = !_sortReverse;
 			MovieView.Refresh();
 		}
 
@@ -606,14 +600,11 @@ namespace BizHawk.Client.EmuHawk
 					StringBuilder copyStr = new StringBuilder();
 					foreach (int index in indexes)
 					{
-						copyStr.Append(MovieList[index].Filename);
-						copyStr.Append('\t');
-						copyStr.Append(MovieList[index].SysID);
-						copyStr.Append('\t');
-						copyStr.Append(MovieList[index].GameName);
-						copyStr.Append('\t');
-						copyStr.Append(MovieList[index].GetTime(true));
-						copyStr.Append('\n');
+						copyStr
+							.Append(_movieList[index].Filename).Append('\t')
+							.Append(_movieList[index].SysID).Append('\t')
+							.Append(_movieList[index].GameName).Append('\t')
+							.Append(_movieList[index].GetTime(true)).AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());
 					}
