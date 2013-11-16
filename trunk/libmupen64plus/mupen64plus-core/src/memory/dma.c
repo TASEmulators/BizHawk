@@ -44,19 +44,19 @@
 #include "main/rom.h"
 #include "main/util.h"
 
-static unsigned char sram[0x8000];
+unsigned char sram[0x8000];
 
-static char *get_sram_path(void)
+/*static char *get_sram_path(void)
 {
     return formatstr("%s%s.sra", get_savesrampath(), ROM_SETTINGS.goodname);
-}
+}*/
 
-static void sram_format(void)
+void sram_format(void)
 {
     memset(sram, 0, sizeof(sram));
 }
 
-static void sram_read_file(void)
+/*static void sram_read_file(void)
 {
     char *filename = get_sram_path();
 
@@ -75,11 +75,11 @@ static void sram_read_file(void)
     }
 
     free(filename);
-}
+}*/
 
 static void sram_write_file(void)
 {
-    char *filename = get_sram_path();
+    /*char *filename = get_sram_path();
 
     switch (write_to_file(filename, sram, sizeof(sram)))
     {
@@ -92,7 +92,7 @@ static void sram_write_file(void)
         default: break;
     }
 
-    free(filename);
+    free(filename);*/
 }
 
 void dma_pi_read(void)
@@ -104,8 +104,6 @@ void dma_pi_read(void)
     {
         if (flashram_info.use_flashram != 1)
         {
-            sram_read_file();
-
             for (i=0; i < (pi_register.pi_rd_len_reg & 0xFFFFFF)+1; i++)
             {
                 sram[((pi_register.pi_cart_addr_reg-0x08000000)+i)^S8] =
@@ -144,8 +142,6 @@ void dma_pi_write(void)
             if (flashram_info.use_flashram != 1)
             {
                 int i;
-
-                sram_read_file();
 
                 for (i=0; i<(int)(pi_register.pi_wr_len_reg & 0xFFFFFF)+1; i++)
                 {
