@@ -127,14 +127,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ManualX_ValueChanged(object sender, EventArgs e)
 		{
-			if (ManualX.Value != old_X)
-				set_analog(AnalogControl1.HasValue, (int)ManualX.Value, old_Y);
+			SetAnalogControlFromNumerics();
 		}
 
 		private void ManualY_ValueChanged(object sender, EventArgs e)
 		{
-			if (ManualY.Value != old_Y)
-				set_analog(AnalogControl1.HasValue, old_X, (int)ManualY.Value);
+			SetAnalogControlFromNumerics();
 		}
 
 		public void set_analog(bool hasValue, int X, int Y)
@@ -195,6 +193,31 @@ namespace BizHawk.Client.EmuHawk
 				}
 				return _list;
 			}
+		}
+
+		private void ManualX_KeyUp(object sender, KeyEventArgs e)
+		{
+			SetAnalogControlFromNumerics();
+		}
+
+		private void ManualY_KeyUp(object sender, KeyEventArgs e)
+		{
+			SetAnalogControlFromNumerics();
+		}
+
+		public void SetAnalogControlFromNumerics()
+		{
+			int x = (int)ManualX.Value;
+			int y = (int)ManualY.Value;
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", x);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", y);
+
+			old_X = x;
+			old_Y = y;
+			AnalogControl1.HasValue = true;
+			AnalogControl1.X = x;
+			AnalogControl1.Y = y;
+			AnalogControl1.Refresh();
 		}
 	}
 }

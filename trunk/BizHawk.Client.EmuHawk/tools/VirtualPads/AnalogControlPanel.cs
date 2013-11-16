@@ -7,8 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public int X = 0;
 		public int Y = 0;
-
-		public bool HasValue { get; private set; }
+		public bool HasValue = false;
 
 		private readonly Brush _white_brush = Brushes.White;
 		private readonly Brush _black_brush = Brushes.Black;
