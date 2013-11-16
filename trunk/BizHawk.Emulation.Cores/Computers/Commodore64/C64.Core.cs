@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void Init(Region initRegion)
 		{
-			board = new Motherboard(initRegion);
+			board = new Motherboard(this, initRegion);
 			InitRoms();
 			board.Init();
 			InitMedia();
