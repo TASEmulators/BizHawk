@@ -757,12 +757,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				else
 				{
 					// This shouldn't happen!!
-					return new byte[0x800 + 4 * 0x8000 + 0x20000];
+					return new byte[0x800 + 4 * 0x8000 + 0x20000 + 0x8000];
 				}
 			}
 			else
 			{
-				byte[] dest = new byte[0x800 + 4 * 0x8000 + 0x20000];
+				byte[] dest = new byte[0x800 + 4 * 0x8000 + 0x20000 + 0x8000];
 				m64psave_saveram(dest);
 				return dest;
 			}

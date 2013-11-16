@@ -27,6 +27,7 @@
 #include "memory.h"
 #include "pif.h"
 #include "flashram.h"
+#include "dma.h"
 #include "n64_cic_nus_6105.h"
 
 #include "r4300/r4300.h"
@@ -605,6 +606,8 @@ EXPORT void CALL init_saveram(void)
 	saveramModified = 0;
 
 	flashram_format();
+
+	sram_format();
 }
 
 EXPORT void CALL save_saveram(unsigned char * dest)
@@ -612,6 +615,7 @@ EXPORT void CALL save_saveram(unsigned char * dest)
 	memcpy(dest, eeprom, 0x800);
 	memcpy(dest + 0x800, mempack, 4 * 0x8000);
 	memcpy(dest + (0x800 + 4 * 0x8000), flashram, 0x20000);
+	memcpy(dest + (0x800 + 4 * 0x8000 + 0x20000), sram, 0x8000);
 }
 
 EXPORT void CALL load_saveram(unsigned char * src)
@@ -619,4 +623,5 @@ EXPORT void CALL load_saveram(unsigned char * src)
 	memcpy(eeprom, src, 0x800);
 	memcpy(mempack, src + 0x800, 4 * 0x8000);
 	memcpy(flashram, src + (0x800 + 4 * 0x8000), 0x20000);
+	memcpy(sram, src + (0x800 + 4 * 0x8000 + 0x20000), 0x8000);
 }

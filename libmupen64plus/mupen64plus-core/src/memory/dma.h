@@ -29,5 +29,7 @@ void dma_si_read(void);
 void dma_sp_write(void);
 void dma_sp_read(void);
 
+void sram_format(void);
+
 #endif
 
