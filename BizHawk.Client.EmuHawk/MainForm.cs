@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
-			Global.CheatList = new CheatList();
+			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 			
 			UpdateStatusSlots();
