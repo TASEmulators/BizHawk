@@ -930,6 +930,18 @@ namespace BizHawk.Client.Common
 			return line.Substring(x + 1, line.Length - x - 1);
 		}
 
+		public double Fps
+		{
+			get
+			{
+				string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
+				bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
+					Header.HeaderParams[MovieHeader.PAL] == "1";
+
+				return _PlatformFrameRates[system, pal];
+			}
+		}
+
 		#endregion
 
 		private PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
