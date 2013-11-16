@@ -565,10 +565,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < Columns.Count; i++)
 			{
-				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
-				{
-					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
-				}
+				WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
 			}
 		}
 
@@ -1338,7 +1335,22 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamSearchSaveWindowPosition = true;
 			Global.Config.RamSearchAlwaysOnTop = TopMost = false;
 
+			Global.Config.RamSearchColumnWidths = new Dictionary<string, int>
+				{
+					{ "AddressColumn", -1 },
+					{ "ValueColumn", -1 },
+					{ "PrevColumn", -1 },
+					{ "ChangesColumn", -1 },
+					{ "DiffColumn", -1 },
+				};
+
 			LoadColumnInfo();
+
+			Settings = new RamSearchEngine.Settings();
+			if (Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			{
+				SetToFastMode();
+			}
 		}
 
 		#endregion
