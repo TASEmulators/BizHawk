@@ -70,7 +70,6 @@ namespace BizHawk.Client.EmuHawk
 			Searches = new RamSearchEngine(Settings);
 
 			TopMost = Global.Config.RamSearchAlwaysOnTop;
-			
 		}
 
 		private void HardSetDisplayTypeDropDown(Watch.DisplayType type)
@@ -122,6 +121,11 @@ namespace BizHawk.Client.EmuHawk
 			DifferentByBox.ResetText();
 
 			dropdown_dontfire = false;
+
+			if (Settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
+			{
+				SetToFastMode();
+			}
 
 			NewSearch();
 		}
