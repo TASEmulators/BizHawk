@@ -251,7 +251,7 @@ namespace BizHawk.Client.Common
 		public bool RamSearchAlwaysOnTop = false;
 
 		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
-			{
+		{
 			{ "AddressColumn", -1 },
 			{ "ValueColumn", -1 },
 			{ "PrevColumn", -1 },
