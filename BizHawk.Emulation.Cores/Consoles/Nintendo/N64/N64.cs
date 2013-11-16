@@ -32,6 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public int BufferHeight { get; set; }
 		public int BackgroundColor { get { return 0; } }
 		
+		private DisplayType _display_type = DisplayType.NTSC;
+		public DisplayType DisplayType { get { return _display_type; } }
 
 		public SpeexResampler resampler;
 
@@ -329,6 +331,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
+
+			byte country_code = rom[0x3E];
+			switch (country_code)
+			{
+				// PAL codes
+				case 0x44:
+				case 0x46:
+				case 0x49:
+				case 0x50:
+				case 0x53:
+				case 0x55:
+				case 0x58:
+				case 0x59:
+					_display_type = DisplayType.PAL;
+					break;
+
+				// NTSC codes
+				case 0x37:
+				case 0x41:
+				case 0x45:
+				case 0x4a:
+				default: // Fallback for unknown codes
+					_display_type = DisplayType.NTSC;
+					break;
+			}
 
 			api = new mupen64plusApi(this, rom, video_settings, SaveType);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));

@@ -137,6 +137,11 @@ namespace BizHawk.Client.EmuHawk
 							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
 						}
 					}
+
+					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
 				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
