@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class CheatList : ICollection<Cheat>, IEnumerable<Cheat>
+	public class CheatCollection : ICollection<Cheat>
 	{
 		private bool _changes;
 		public bool Changes

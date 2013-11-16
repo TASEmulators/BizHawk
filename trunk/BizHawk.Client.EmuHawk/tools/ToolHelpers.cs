@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void UpdateCheatRelatedTools(object sender, CheatList.CheatListEventArgs e)
+		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
 		{
 			GlobalWin.Tools.UpdateValues<RamWatch>();
 			GlobalWin.Tools.UpdateValues<RamSearch>();
