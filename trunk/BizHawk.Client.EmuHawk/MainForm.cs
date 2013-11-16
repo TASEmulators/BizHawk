@@ -2816,12 +2816,12 @@ namespace BizHawk.Client.EmuHawk
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AVPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
