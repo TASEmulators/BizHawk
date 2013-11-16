@@ -5,12 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class WatchList : IEnumerable<Watch>
+	public class WatchList : IList<Watch>
 	{
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
@@ -48,30 +47,18 @@ namespace BizHawk.Client.Common
 
 		public Watch this[int index]
 		{
-			get
-			{
-				return _watchList[index];
-			}
-			set
-			{
-				_watchList[index] = value;
-			}
+			get { return _watchList[index]; }
+			set { _watchList[index] = value; }
 		}
 
 		public int WatchCount
 		{
-			get
-			{
-				return _watchList.Count(w => !w.IsSeparator);
-			}
+			get { return _watchList.Count(w => !w.IsSeparator); }
 		}
 
 		public int ItemCount
 		{
-			get
-			{
-				return _watchList.Count;
-			}
+			get { return _watchList.Count; }
 		}
 
 		public void OrderWatches(string column, bool reverse)
@@ -271,10 +258,14 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void Remove(Watch watch)
+		public bool Remove(Watch watch)
 		{
-			_watchList.Remove(watch);
-			Changes = true;
+			bool result = _watchList.Remove(watch);
+			if (result)
+			{
+				Changes = true;
+			}
+			return result;
 		}
 
 		public void Insert(int index, Watch watch)
@@ -288,6 +279,35 @@ namespace BizHawk.Client.Common
 			{
 				watch.ClearChangeCount();
 			}
+		}
+
+		public bool IsReadOnly { get { return false; } }
+
+		public bool Contains(Watch watch)
+		{
+			return _watchList.Any(w =>
+				w.Size == watch.Size &&
+				w.Type == watch.Type &&
+				w.Domain == watch.Domain &&
+				w.Address == watch.Address &&
+				w.BigEndian == watch.BigEndian
+			);
+		}
+
+		public void CopyTo(Watch[] array, int arrayIndex)
+		{
+			_watchList.CopyTo(array, arrayIndex);
+		}
+
+		public int IndexOf(Watch watch)
+		{
+			return _watchList.IndexOf(watch);
+		}
+
+		public void RemoveAt(int index)
+		{
+			_watchList.RemoveAt(index);
+			Changes = true;
 		}
 
 		#region File handling logic - probably needs to be its own class
