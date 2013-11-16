@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class CheatList : IEnumerable<Cheat>
+	public class CheatList : ICollection<Cheat>, IEnumerable<Cheat>
 	{
 		private bool _changes;
 		public bool Changes
@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				cheat.Changed += CheatChanged;
-				if (HasCheat(cheat))
+				if (Contains(cheat))
 				{
 					_cheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
 				}
@@ -136,13 +136,21 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void Remove(Cheat c)
+		public bool Remove(Cheat c)
 		{
-			_cheatList.Remove(c);
-			Changes = true;
+			bool result = _cheatList.Remove(c);
+			if (result)
+			{
+				Changes = true;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
-		public void Remove(Watch w)
+		public bool Remove(Watch w)
 		{
 			
 			var cheat = _cheatList.FirstOrDefault(x => x.Domain == w.Domain && x.Address == w.Address);
@@ -150,8 +158,25 @@ namespace BizHawk.Client.Common
 			{
 				_cheatList.Remove(cheat);
 				Changes = true;
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
+
+		public bool Contains(Cheat cheat)
+		{
+			return _cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address);
+		}
+
+		public void CopyTo(Cheat[] array, int arrayIndex)
+		{
+			_cheatList.CopyTo(array, arrayIndex);
+		}
+
+		public bool IsReadOnly { get { return false; } }
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
@@ -193,11 +218,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
-		}
-
-		public bool HasCheat(Cheat cheat)
-		{
-			return _cheatList.Any(x => x.Domain == cheat.Domain && x.Address == cheat.Address);
 		}
 
 		public void SaveOnClose()
