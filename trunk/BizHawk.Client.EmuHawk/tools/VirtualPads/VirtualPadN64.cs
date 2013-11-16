@@ -46,32 +46,6 @@ namespace BizHawk.Client.EmuHawk
 			CR.ControllerButton = Controller + " C Right";
 		}
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			if (keyData == Keys.Up)
-			{
-				//TODO: move to next logical key
-				Refresh();
-			}
-			else if (keyData == Keys.Down)
-			{
-				Refresh();
-			}
-			else if (keyData == Keys.Left)
-			{
-				Refresh();
-			}
-			else if (keyData == Keys.Right)
-			{
-				Refresh();
-			}
-			else if (keyData == Keys.Tab)
-			{
-				Refresh();
-			}
-			return true;
-		}
-
 		public void Clear()
 		{
 			if (Global.Emulator.SystemId != "N64") return;
