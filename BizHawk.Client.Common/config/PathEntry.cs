@@ -17,7 +17,14 @@ namespace BizHawk.Client.Common
 
 		public bool HasSystem(string systemID)
 		{
-			return System.Split('_').Contains(systemID);
+			if (systemID == System)
+			{
+				return true;
+			}
+			else
+			{
+				return System.Split('_').Contains(systemID);
+			}
 		}
 	}
 

@@ -77,8 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			BasePathBox.Text = Global.Config.PathEntries.GlobalBase;
 			
 			StartTabPages();
-			//DoTabs(Global.Config.PathEntries.Paths);
-			
 			SetDefaultFocusedTab();
 			DoRomToggle();
 		}
@@ -325,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseFolder(TextBox box, string name, string system)
 		{
 			//Ugly hack, we don't want to pass in the system in for system base and global paths
-			if (name == "Base" || system == "Global")
+			if (name == "Base" || system == "Global" || system == "Global_NULL")
 			{
 				system = null;
 			}
