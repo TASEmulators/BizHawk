@@ -37,9 +37,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public bool irq;
 		public bool nmi;
 
-		public Motherboard(Region initRegion)
+		private C64 _c64;
+
+		public Motherboard(C64 c64, Region initRegion)
 		{
 			// note: roms need to be added on their own externally
+			_c64 = c64;
 
 			cartPort = new CartridgePort();
 			cassPort = new CassettePort();
