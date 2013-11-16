@@ -983,13 +983,13 @@ namespace BizHawk.Client.Common
 					case "N64":
 						Mode = SearchMode.Fast;
 						Size = Watch.WatchSize.DWord;
-						Type = Watch.DisplayType.Float;
+						Type = Watch.DisplayType.Unsigned;
 						BigEndian = true;
 						break;
 					case "GBA":
 						Mode = SearchMode.Detailed;
 						Size = Watch.WatchSize.DWord;
-						Type = Watch.DisplayType.Float;
+						Type = Watch.DisplayType.Unsigned;
 						BigEndian = false;
 						break;
 					case "GEN":
