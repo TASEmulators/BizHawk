@@ -25,5 +25,7 @@
 void update_pif_write(void);
 void update_pif_read(void);
 
+extern unsigned char flashram[];
+
 #endif
 
