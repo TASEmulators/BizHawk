@@ -86,7 +86,7 @@ xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\BizHawk.M
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\..\mupen64plus-ui-console\projects\msvc8\$(Configuration)"
-xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
+xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\output\dll\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
