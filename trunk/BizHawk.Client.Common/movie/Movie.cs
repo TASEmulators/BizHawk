@@ -3,6 +3,7 @@ using System.IO;
 using System.Globalization;
 
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -22,10 +23,10 @@ namespace BizHawk.Client.Common
 		{
 			Header = new MovieHeader();
 			Filename = String.Empty;
-			_preload_framecount = 0;
+			_preloadFramecount = 0;
 			StartsFromSavestate = false;
 			IsCountingRerecords = true;
-			_mode = MOVIEMODE.INACTIVE;
+			_mode = Moviemode.Inactive;
 			IsText = true;
 			MakeBackup = true;
 		}
@@ -58,7 +59,7 @@ namespace BizHawk.Client.Common
 			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
 		}
 
-		public string GUID
+		public string Guid
 		{
 			get { return Header.GetHeaderLine(MovieHeader.GUID); }
 		}
@@ -70,7 +71,7 @@ namespace BizHawk.Client.Common
 
 		public int RawFrames
 		{
-			get { return Loaded ? _log.Length : _preload_framecount; }
+			get { return Loaded ? _log.Length : _preloadFramecount; }
 		}
 
 		public int? Frames
@@ -90,7 +91,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return _preload_framecount;
+					return _preloadFramecount;
 				}
 			}
 		}
@@ -152,22 +153,22 @@ namespace BizHawk.Client.Common
 
 		public bool IsPlaying
 		{
-			get { return _mode == MOVIEMODE.PLAY || _mode == MOVIEMODE.FINISHED; }
+			get { return _mode == Moviemode.Play || _mode == Moviemode.Finished; }
 		}
 
 		public bool IsRecording
 		{
-			get { return _mode == MOVIEMODE.RECORD; }
+			get { return _mode == Moviemode.Record; }
 		}
 
 		public bool IsActive
 		{
-			get { return _mode != MOVIEMODE.INACTIVE; }
+			get { return _mode != Moviemode.Inactive; }
 		}
 
 		public bool IsFinished
 		{
-			get { return _mode == MOVIEMODE.FINISHED; }
+			get { return _mode == Moviemode.Finished; }
 		}
 
 		public bool HasChanges
@@ -181,7 +182,7 @@ namespace BizHawk.Client.Common
 		/// <param name="truncate"></param>
 		public void StartRecording(bool truncate = true)
 		{
-			_mode = MOVIEMODE.RECORD;
+			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 			{
 				WriteBackup();
@@ -195,7 +196,7 @@ namespace BizHawk.Client.Common
 
 		public void StartPlayback()
 		{
-			_mode = MOVIEMODE.PLAY;
+			_mode = Moviemode.Play;
 		}
 
 		/// <summary>
@@ -203,7 +204,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void SwitchToRecord()
 		{
-			_mode = MOVIEMODE.RECORD;
+			_mode = Moviemode.Record;
 		}
 
 		/// <summary>
@@ -211,7 +212,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void SwitchToPlay()
 		{
-			_mode = MOVIEMODE.PLAY;
+			_mode = Moviemode.Play;
 			WriteMovie();
 		}
 
@@ -219,13 +220,13 @@ namespace BizHawk.Client.Common
 		{
 			if (!abortchanges)
 			{
-				if (_mode == MOVIEMODE.RECORD || _changes)
+				if (_mode == Moviemode.Record || _changes)
 				{
 					WriteMovie();
 				}
 			}
 			_changes = false;
-			_mode = MOVIEMODE.INACTIVE;
+			_mode = Moviemode.Inactive;
 		}
 
 		/// <summary>
@@ -233,9 +234,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void Finish()
 		{
-			if (_mode == MOVIEMODE.PLAY)
+			if (_mode == Moviemode.Play)
 			{
-				_mode = MOVIEMODE.FINISHED;
+				_mode = Moviemode.Finished;
 			}
 		}
 		
@@ -340,7 +341,7 @@ namespace BizHawk.Client.Common
 
 						length++;
 						// Count the remaining frames and the current one.
-						_preload_framecount = (frames.Length/length) + 1;
+						_preloadFramecount = (frames.Length/length) + 1;
 						break;
 					}
 					else
@@ -600,7 +601,7 @@ namespace BizHawk.Client.Common
 					_log.TruncateStates(_log.Length);
 					_log.TruncateMovie(_log.Length);
 				}
-				_mode = MOVIEMODE.FINISHED;
+				_mode = Moviemode.Finished;
 			}
 			if (IsCountingRerecords)
 				Rerecords++;
@@ -613,7 +614,7 @@ namespace BizHawk.Client.Common
 			double seconds;
 			if (preLoad)
 			{
-				seconds = GetSeconds(_preload_framecount);
+				seconds = GetSeconds(_preloadFramecount);
 			}
 			else
 			{
@@ -642,10 +643,10 @@ namespace BizHawk.Client.Common
 
 		public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
 
-		public LoadStateResult CheckTimeLines(TextReader reader, bool OnlyGUID, bool IgnoreGuidMismatch, out string ErrorMessage)
+		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
-			ErrorMessage = String.Empty;
+			errorMessage = String.Empty;
 			var log = new MovieLog();
 			int stateFrame = 0;
 			while (true)
@@ -664,7 +665,7 @@ namespace BizHawk.Client.Common
 					string guid = ParseHeader(line, MovieHeader.GUID);
 					if (Header.GetHeaderLine(MovieHeader.GUID) != guid)
 					{
-						if (!IgnoreGuidMismatch)
+						if (!ignoreGuidMismatch)
 						{
 							return LoadStateResult.GuidMismatch;
 						}
@@ -679,7 +680,7 @@ namespace BizHawk.Client.Common
 					}
 					catch
 					{
-						ErrorMessage = "Savestate Frame number failed to parse";
+						errorMessage = "Savestate Frame number failed to parse";
 						return LoadStateResult.MissingFrameNumber;
 					}
 				}
@@ -692,7 +693,7 @@ namespace BizHawk.Client.Common
 					}
 					catch
 					{
-						ErrorMessage = "Savestate Frame number failed to parse";
+						errorMessage = "Savestate Frame number failed to parse";
 						return LoadStateResult.MissingFrameNumber;
 					}
 				}
@@ -704,7 +705,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (OnlyGUID)
+			if (onlyGuid)
 			{
 				return LoadStateResult.Pass;
 			}
@@ -715,7 +716,7 @@ namespace BizHawk.Client.Common
 			}
 			if (_log.Length < stateFrame)
 			{
-				ErrorMessage = "The savestate is from frame "
+				errorMessage = "The savestate is from frame "
 					+ log.Length.ToString()
 					+ " which is greater than the current movie length of "
 					+ _log.Length.ToString();
@@ -725,7 +726,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_log[i] != log[i])
 				{
-					ErrorMessage = "The savestate input does not match the movie input at frame "
+					errorMessage = "The savestate input does not match the movie input at frame "
 						+ (i + 1).ToString()
 						+ ".";
 					return LoadStateResult.TimeLineError;
@@ -734,9 +735,9 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > log.Length) //stateFrame is greater than state input log, so movie finished mode
 			{
-				if (_mode == MOVIEMODE.PLAY || _mode == MOVIEMODE.FINISHED)
+				if (_mode == Moviemode.Play || _mode == Moviemode.Finished)
 				{
-					_mode = MOVIEMODE.FINISHED;
+					_mode = Moviemode.Finished;
 					return LoadStateResult.Pass;
 				}
 				else
@@ -744,9 +745,9 @@ namespace BizHawk.Client.Common
 					return LoadStateResult.NotInRecording; //TODO: For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
 				}
 			}
-			else if (_mode == MOVIEMODE.FINISHED)
+			else if (_mode == Moviemode.Finished)
 			{
-				_mode = MOVIEMODE.PLAY;
+				_mode = Moviemode.Play;
 			}
 
 			return LoadStateResult.Pass;
@@ -757,14 +758,14 @@ namespace BizHawk.Client.Common
 		#region Private Vars
 
 		private readonly MovieLog _log = new MovieLog();
-		private enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
-		private MOVIEMODE _mode = MOVIEMODE.INACTIVE;
+		private enum Moviemode { Inactive, Play, Record, Finished };
+		private Moviemode _mode = Moviemode.Inactive;
 		private bool _statecapturing;
 		private bool _startsfromsavestate;
-		private int _preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
+		private int _preloadFramecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private int _rerecords;
 		private bool _changes;
-		private int? _loopOffset = null;
+		private int? _loopOffset;
 
 		#endregion
 
@@ -909,20 +910,6 @@ namespace BizHawk.Client.Common
 
 		private double GetSeconds(int frameCount)
 		{
-			const double NES_PAL = 50.006977968268290849;
-			const double NES_NTSC = 60.098813897440515532;
-			const double SNES_NTSC = (double)21477272 / (4 * 341 * 262);
-			const double SNES_PAL = (double)21281370 / (4 * 341 * 312);
-			const double PCE = (7159090.90909090 / 455 / 263); //~59.826
-			const double SMS_NTSC = (3579545 / 262.0 / 228.0);
-			const double SMS_PAL = (3546893 / 313.0 / 228.0);
-			const double NGP = (6144000.0 / (515 * 198));
-			const double VBOY = (20000000 / (259 * 384 * 4));  //~50.273
-			const double LYNX = 59.8;
-			const double WSWAN = (3072000.0 / (159 * 256));
-			const double GB = 262144.0 / 4389.0;
-			const double A26 = 59.9227510135505;
-
 			double frames = frameCount;
 			
 			if (frames < 1)
@@ -930,62 +917,11 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			bool pal = false;
-			if (Header.HeaderParams.ContainsKey(MovieHeader.PAL))
-				if (Header.HeaderParams[MovieHeader.PAL] == "1")
-					pal = true;
+			string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
+			bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
+				Header.HeaderParams[MovieHeader.PAL] == "1";
 
-			switch (Header.GetHeaderLine(MovieHeader.PLATFORM))
-			{
-				case "GG":
-				case "SG":
-				case "SMS":
-					if (pal)
-						return frames / SMS_PAL;
-					else
-						return frames / SMS_NTSC;
-				case "FDS":
-				case "NES":
-					if (pal)
-						return frames / NES_PAL;
-					else
-						return frames / NES_NTSC;
-				case "SNES":
-				case "SGB":
-					if (pal)
-						return frames / SNES_PAL;
-					else
-						return frames / SNES_NTSC;
-				case "PCE":
-				case "PCECD":
-					return frames / PCE;
-				case "GB":
-				case "GBC":
-				case "GBA":
-					return frames / GB;
-				case "A26":
-				case "A78":
-				case "Coleco":
-					return frames / A26;
-
-				//One Day!
-				case "VBOY":
-					return frames / VBOY;
-				case "NGP":
-					return frames / NGP;
-				case "LYNX":
-					return frames / LYNX;
-				case "WSWAN":
-					return frames / WSWAN;
-				//********
-
-				case "":
-				default:
-					if (pal)
-						return frames / 50.0;
-					else
-						return frames / 60.0;
-			}
+			return frames / _PlatformFrameRates[system, pal];
 		}
 
 		private static string ParseHeader(string line, string headerName)
@@ -995,5 +931,60 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
+
+		private PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
+		public PlatformFrameRates _PlatformFrameRates
+		{
+			get { return _platformFrameRates; }
+		}
+
+		public class PlatformFrameRates
+		{
+			public double this[string systemId, bool pal]
+			{
+				get
+				{
+					string key = systemId + (pal ? "_PAL" : String.Empty);
+					if (rates.ContainsKey(key))
+					{
+						return rates[key];
+					}
+					else
+					{
+						return 60.0;
+					}
+				}
+			}
+
+			private Dictionary<string, double> rates = new Dictionary<string, double>
+			{
+				{ "NES", 60.098813897440515532 },
+				{ "NES_PAL", 50.006977968268290849 },
+				{ "FDS", 60.098813897440515532 },
+				{ "FDS_PAL", 50.006977968268290849 },
+				{ "SNES", (double)21477272 / (4 * 341 * 262) },
+				{ "SNES_PAL", (double)21281370 / (4 * 341 * 312) },
+				{ "SGB", (double)21477272 / (4 * 341 * 262) },
+				{ "SGB_PAL", (double)21281370 / (4 * 341 * 312) },
+				{ "PCE", (7159090.90909090 / 455 / 263) }, //~59.826
+				{ "PCECD", (7159090.90909090 / 455 / 263) }, //~59.826
+				{ "SMS", (3579545 / 262.0 / 228.0) },
+				{ "SMS_PAL", (3546893 / 313.0 / 228.0) },
+				{ "GG", (3579545 / 262.0 / 228.0) },
+				{ "GG_PAL", (3546893 / 313.0 / 228.0) },
+				{ "SG", (3579545 / 262.0 / 228.0) },
+				{ "SG_PAL", (3546893 / 313.0 / 228.0) },
+				{ "NGP", (6144000.0 / (515 * 198)) },
+				{ "VBOY", (20000000 / (259 * 384 * 4)) },  //~50.273
+				{ "LYNX", 59.8 },
+				{ "WSWAN", (3072000.0 / (159 * 256)) },
+				{ "GB", 262144.0 / 4389.0 },
+				{ "GBC", 262144.0 / 4389.0 },
+				{ "GBA", 262144.0 / 4389.0 },
+				{ "A26", 59.9227510135505 },
+				{ "A78", 59.9227510135505 },
+				{ "Coleco", 59.9227510135505 }
+			};
+		}
 	}
 }

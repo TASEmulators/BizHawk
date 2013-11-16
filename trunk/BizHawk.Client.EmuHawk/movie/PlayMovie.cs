@@ -68,7 +68,6 @@ namespace BizHawk.Client.EmuHawk
 
 			//Import file if necessary
 
-			
 			GlobalWin.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
