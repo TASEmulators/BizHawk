@@ -654,6 +654,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				fromindex -= bizhawkCore.BufferWidth * 4;
 				toindex += bizhawkCore.BufferWidth * 4;
 			}
+			
+			// opaque
+			unsafe
+			{
+				fixed (int* ptr = &bizhawkCore.frameBuffer[0])
+				{
+					int l = bizhawkCore.frameBuffer.Length;
+					for (int i = 0; i < l; i++)
+					{
+						ptr[i] |= unchecked((int)0xff000000);
+					}
+				}
+			}
 		}
 
 		/// <summary>
