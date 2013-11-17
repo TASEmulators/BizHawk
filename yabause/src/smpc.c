@@ -32,6 +32,8 @@
 #include "yabause.h"
 #include "movie.h"
 
+#include "yui.h"
+
 #ifdef _arch_dreamcast
 # include "dreamcast/localtime.h"
 #endif
@@ -362,6 +364,10 @@ static void SmpcINTBACKPeripheral(void) {
 
   if (SmpcInternalVars->port1.size == 0 && SmpcInternalVars->port2.size == 0)
   {
+	  /////
+	  if (inputcallback)
+		  inputcallback();
+
      // Request data from the Peripheral Interface
      port1 = &PORTDATA1;
      port2 = &PORTDATA2;
