@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Common
 		{
 			for (int i = 0; i < _writes.Count; i++)
 			{
-				if (_writeAddrs[i] == addr)
+				if (!_writeAddrs[i].HasValue || _writeAddrs[i] == addr)
 				{
 					_writes[i]();
 				}
