@@ -512,6 +512,7 @@
 			this.OutputBox.Size = new System.Drawing.Size(246, 283);
 			this.OutputBox.TabIndex = 2;
 			this.OutputBox.Text = "";
+			this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
 			// 
 			// contextMenuStrip2
 			// 
