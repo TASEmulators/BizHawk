@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		LibYabause.CDInterface.ReadSectorFAD ReadSectorFADH;
 		LibYabause.CDInterface.ReadAheadFAD ReadAheadFADH;
 
+		LibYabause.InputCallback InputCallbackH;
+
 		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios, bool GL = false)
 		{
 			CoreComm.RomStatusDetails = "Yeh";
@@ -46,6 +48,9 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			this.CD = CD;
 			ResetCounters();
 			Init(bios, GL);
+
+			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
+			LibYabause.libyabause_setinputcallback(InputCallbackH);
 		}
 
 		void Init(byte[] bios, bool GL = false)

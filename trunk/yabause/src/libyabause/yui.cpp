@@ -14,6 +14,13 @@ extern "C" {
 #include "../vidogl.h"
 }
 
+void (*inputcallback)(void) = NULL;
+
+extern "C" __declspec(dllexport) void libyabause_setinputcallback(void (*cb)(void))
+{
+	inputcallback = cb;
+}
+
 CDInterface FECD =
 {
 	2,

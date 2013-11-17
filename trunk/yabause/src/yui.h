@@ -52,6 +52,14 @@ int YuiSetVideoMode(int width, int height, int bpp, int fullscreen);
    up being moved to the Video Core. */
 void YuiSwapBuffers(void);
 
+
+
+extern void (*inputcallback)(void);
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Helper functions(you can use these in your own port)
 //////////////////////////////////////////////////////////////////////////////
