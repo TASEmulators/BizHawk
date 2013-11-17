@@ -24,6 +24,12 @@
 
 #include "osal/preproc.h"
 
+#define READCB() if (readCB) readCB(address)
+#define WRITECB() if (writeCB) writeCB(address)
+
+#define READCBADDR(addr) if (readCB) readCB(addr)
+#define WRITECBADDR(addr) if (writeCB) writeCB(addr)
+
 int init_memory(int DoByteSwap);
 void free_memory(void);
 #define read_word_in_memory() readmem[address>>16]()

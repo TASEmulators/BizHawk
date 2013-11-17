@@ -31,5 +31,8 @@ void dma_sp_read(void);
 
 void sram_format(void);
 
+extern void (*readCB)(unsigned int);
+extern void (*writeCB)(unsigned int);
+
 #endif
 

@@ -401,6 +401,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void StartupCallback();
 
+		/// <summary>
+		/// Type of the read/write memory callbacks
+		/// </summary>
+		/// <param name="address">The address which the cpu is read/writing</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void MemoryCallback(uint address);
+
+		/// <summary>
+		/// Sets the memory read callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SetReadCallback(MemoryCallback callback);
+		SetReadCallback m64pSetReadCallback;
+
+		/// <summary>
+		/// Sets the memory write callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SetWriteCallback(MemoryCallback callback);
+		SetWriteCallback m64pSetWriteCallback;
+
 		// DLL handles
 		IntPtr CoreDll;
 		IntPtr GfxDll;
@@ -556,6 +577,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			m64pinit_saveram = (init_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "init_saveram"), typeof(init_saveram));
 			m64psave_saveram = (save_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "save_saveram"), typeof(save_saveram));
 			m64pload_saveram = (load_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "load_saveram"), typeof(load_saveram));
+
+			m64pSetReadCallback = (SetReadCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetReadCallback"), typeof(SetReadCallback));
+			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -784,6 +808,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void LoadSaveram(byte[] src)
 		{
 			m64pload_saveram(src);
+		}
+
+		public void setReadCallback(MemoryCallback callback)
+		{
+			m64pSetReadCallback(callback);
+		}
+		
+		public void setWriteCallback(MemoryCallback callback)
+		{
+			m64pSetWriteCallback(callback);
 		}
 
 		public void Dispose()
