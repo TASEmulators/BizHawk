@@ -1265,5 +1265,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			registeredFunctionsToolStripMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
 		}
+
+		private void OutputBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
+			{
+				showRegisteredFunctionsToolStripMenuItem_Click(null, null);
+			}
+		}
 	}
 }
