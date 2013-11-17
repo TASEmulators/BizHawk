@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			_caller = passed.get();
+			_caller = passed.Get();
 			LuaRegister(_lua);
 		}
 

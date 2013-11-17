@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaFunctionsForm : Form
 	{
-		private readonly Sorting ColumnSort = new Sorting();
+		private readonly Sorting _columnSort = new Sorting();
 		
 		public LuaFunctionsForm()
 		{
@@ -36,8 +36,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OrderColumn(int column)
 		{
-			ColumnSort.Column = column;
-			if (ColumnSort.Descending)
+			_columnSort.Column = column;
+			if (_columnSort.Descending)
 			{
 				switch (column)
 				{
@@ -88,22 +88,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public class Sorting
 		{
-			private bool desc;
-			private int column = 1;
+			private bool _desc;
+			private int _column = 1;
 
 			public int Column
 			{
 				get
 				{
-					return column;
+					return _column;
 				}
 				set
 				{
-					if (column == value)
+					if (_column == value)
 					{
-						desc ^= true;
+						_desc ^= true;
 					}
-					column = value;
+					_column = value;
 				}
 			}
 
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				get
 				{
-					return desc;
+					return _desc;
 				}
 			}
 		}
