@@ -4,15 +4,15 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	enum BoxType { ALL, SIGNED, UNSIGNED, HEX };
+	enum BoxType { All, Signed, Unsigned, Hex };
 	class LuaTextBox : TextBox
 	{
-		private BoxType boxType = BoxType.ALL;
+		private BoxType _boxType = BoxType.All;
 
 		public void SetType(BoxType type)
 		{
-			boxType = type;
-			if (type != BoxType.ALL)
+			_boxType = type;
+			if (type != BoxType.All)
 			{
 				CharacterCasing = CharacterCasing.Upper;
 			}
@@ -32,17 +32,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyChar == '\b') return;
 
-			switch (boxType)
+			switch (_boxType)
 			{
-				case BoxType.UNSIGNED:
+				case BoxType.Unsigned:
 					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
 						e.Handled = true;
 					break;
-				case BoxType.SIGNED:
+				case BoxType.Signed:
 					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
 						e.Handled = true;
 					break;
-				case BoxType.HEX:
+				case BoxType.Hex:
 					if (!InputValidate.IsValidHexNumber(e.KeyChar))
 						e.Handled = true;
 					break;

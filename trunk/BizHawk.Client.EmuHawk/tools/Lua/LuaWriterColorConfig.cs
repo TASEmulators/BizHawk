@@ -9,12 +9,12 @@ namespace BizHawk.Client.EmuHawk
 	public partial class LuaWriterColorConfig : Form
 	{
 		//Get existing global Lua color settings
-		int TextColor = Global.Config.LuaDefaultTextColor;
-		int KeyWordColor = Global.Config.LuaKeyWordColor;
-		int CommentColor = Global.Config.LuaCommentColor;
-		int StringColor = Global.Config.LuaStringColor;
-		int SymbolColor = Global.Config.LuaSymbolColor;
-		int LibraryColor = Global.Config.LuaLibraryColor;
+		int _textColor = Global.Config.LuaDefaultTextColor;
+		int _keyWordColor = Global.Config.LuaKeyWordColor;
+		int _commentColor = Global.Config.LuaCommentColor;
+		int _stringColor = Global.Config.LuaStringColor;
+		int _symbolColor = Global.Config.LuaSymbolColor;
+		int _libraryColor = Global.Config.LuaLibraryColor;
 
 		public LuaWriterColorConfig()
 		{
@@ -24,12 +24,12 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaWriterColorConfig_Load(object sender, EventArgs e)
 		{
 			//Set the initial colors into the panels
-			SetTextColor(TextColor);
-			SetKeyWordColor(KeyWordColor);
-			SetCommentColor(CommentColor);
-			SetStringColor(StringColor);
-			SetSymbolColor(SymbolColor);
-			SetLibraryColor(LibraryColor);
+			SetTextColor(_textColor);
+			SetKeyWordColor(_keyWordColor);
+			SetCommentColor(_commentColor);
+			SetStringColor(_stringColor);
+			SetSymbolColor(_symbolColor);
+			SetLibraryColor(_libraryColor);
 
 			BoldText.Checked = Global.Config.LuaDefaultTextBold;
 			BoldKeyWords.Checked = Global.Config.LuaKeyWordBold;
@@ -41,37 +41,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTextColor(int color)
 		{
-			TextColor = color;   //Set new color
+			_textColor = color;   //Set new color
 			panelText.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
 		private void SetKeyWordColor(int color)
 		{
-			KeyWordColor = color;   //Set new color
+			_keyWordColor = color;   //Set new color
 			panelKeyWord.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
 		private void SetCommentColor(int color)
 		{
-			CommentColor = color;   //Set new color
+			_commentColor = color;   //Set new color
 			panelComment.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
 		private void SetStringColor(int color)
 		{
-			StringColor = color;   //Set new color
+			_stringColor = color;   //Set new color
 			panelString.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
 		private void SetSymbolColor(int color)
 		{
-			SymbolColor = color;   //Set new color
+			_symbolColor = color;   //Set new color
 			panelSymbol.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
 		private void SetLibraryColor(int color)
 		{
-			LibraryColor = color;   //Set new color
+			_libraryColor = color;   //Set new color
 			panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
 		}
 
@@ -140,12 +140,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveData()
 		{
 			//Colors
-			Global.Config.LuaDefaultTextColor = TextColor;
-			Global.Config.LuaKeyWordColor = KeyWordColor;
-			Global.Config.LuaCommentColor = CommentColor;
-			Global.Config.LuaStringColor = StringColor;
-			Global.Config.LuaSymbolColor = SymbolColor;
-			Global.Config.LuaLibraryColor = LibraryColor;
+			Global.Config.LuaDefaultTextColor = _textColor;
+			Global.Config.LuaKeyWordColor = _keyWordColor;
+			Global.Config.LuaCommentColor = _commentColor;
+			Global.Config.LuaStringColor = _stringColor;
+			Global.Config.LuaSymbolColor = _symbolColor;
+			Global.Config.LuaLibraryColor = _libraryColor;
 
 			//Bold
 			Global.Config.LuaDefaultTextBold = BoldText.Checked;

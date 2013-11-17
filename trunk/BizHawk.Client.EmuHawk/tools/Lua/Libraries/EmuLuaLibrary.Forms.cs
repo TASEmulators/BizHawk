@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class FormsLuaLibrary : LuaLibraryBase
+	public class FormsLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "forms"; } }
 		public override string[] Functions
@@ -32,31 +32,31 @@ namespace BizHawk.Client.EmuHawk
 					"setproperty",
 					"setsize",
 					"settext",
-					"textbox",
+					"textbox"
 				};
 			}
 		}
 
 		#region Forms Library Helpers
 
-		private readonly List<LuaWinform> LuaForms = new List<LuaWinform>();
+		private readonly List<LuaWinform> _luaForms = new List<LuaWinform>();
 
 		public void WindowClosed(IntPtr handle)
 		{
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == handle)
 				{
-					LuaForms.Remove(form);
+					_luaForms.Remove(form);
 					return;
 				}
 			}
 		}
 
-		private LuaWinform GetForm(object form_handle)
+		private LuaWinform GetForm(object formHandle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(form_handle));
-			return LuaForms.FirstOrDefault(form => form.Handle == ptr);
+			IntPtr ptr = new IntPtr(LuaInt(formHandle));
+			return _luaForms.FirstOrDefault(form => form.Handle == ptr);
 		}
 
 		private void SetLocation(Control control, object X, object Y)
@@ -96,13 +96,13 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_addclick(object handle, LuaFunction lua_event)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
 				{
 					if (control.Handle == ptr)
 					{
-						form.Control_Events.Add(new LuaWinform.Lua_Event(control.Handle, lua_event));
+						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, lua_event));
 					}
 				}
 			}
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaButton button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
-			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
+			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, lua_event));
 
 			SetLocation(button, X, Y);
 			SetSize(button, width, height);
@@ -130,16 +130,16 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_clearclicks(object handle)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
 				{
 					if (control.Handle == ptr)
 					{
-						List<LuaWinform.Lua_Event> lua_events = form.Control_Events.Where(x => x.Control == ptr).ToList();
-						foreach (LuaWinform.Lua_Event levent in lua_events)
+						List<LuaWinform.LuaEvent> lua_events = form.ControlEvents.Where(x => x.Control == ptr).ToList();
+						foreach (LuaWinform.LuaEvent levent in lua_events)
 						{
-							form.Control_Events.Remove(levent);
+							form.ControlEvents.Remove(levent);
 						}
 					}
 				}
@@ -149,12 +149,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool forms_destroy(object handle)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
 					form.Close();
-					LuaForms.Remove(form);
+					_luaForms.Remove(form);
 					return true;
 				}
 			}
@@ -163,10 +163,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void forms_destroyall()
 		{
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				form.Close();
-				LuaForms.Remove(form);
+				_luaForms.Remove(form);
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				IntPtr ptr = new IntPtr(LuaInt(handle));
-				foreach (LuaWinform form in LuaForms)
+				foreach (LuaWinform form in _luaForms)
 				{
 					if (form.Handle == ptr)
 					{
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				IntPtr ptr = new IntPtr(LuaInt(handle));
-				foreach (LuaWinform form in LuaForms)
+				foreach (LuaWinform form in _luaForms)
 				{
 					if (form.Handle == ptr)
 					{
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 			LuaWinform theForm = new LuaWinform();
-			LuaForms.Add(theForm);
+			_luaForms.Add(theForm);
 			if (Width != null && Height != null)
 			{
 				theForm.Size = new Size(LuaInt(Width), LuaInt(Height));
@@ -297,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_setlocation(object handle, object X, object Y)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_setproperty(object handle, object property, object value)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_setsize(object handle, object Width, object Height)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -363,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		public void forms_settext(object handle, object caption)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			foreach (LuaWinform form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -401,17 +401,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					case "HEX":
 					case "HEXADECIMAL":
-						textbox.SetType(BoxType.HEX);
+						textbox.SetType(BoxType.Hex);
 						break;
 					case "UNSIGNED":
 					case "UINT":
-						textbox.SetType(BoxType.UNSIGNED);
+						textbox.SetType(BoxType.Unsigned);
 						break;
 					case "NUMBER":
 					case "NUM":
 					case "SIGNED":
 					case "INT":
-						textbox.SetType(BoxType.SIGNED);
+						textbox.SetType(BoxType.Signed);
 						break;
 				}
 			}

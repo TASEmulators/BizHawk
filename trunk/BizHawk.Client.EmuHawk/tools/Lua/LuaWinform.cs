@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaWinform : Form
 	{
-		public List<Lua_Event> Control_Events = new List<Lua_Event>();
+		public List<LuaEvent> ControlEvents = new List<LuaEvent>();
 
 		public LuaWinform()
 		{
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			foreach (Lua_Event l_event in Control_Events)
+			foreach (LuaEvent l_event in ControlEvents)
 			{
 				if (l_event.Control == handle)
 				{
@@ -36,13 +36,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public class Lua_Event
+		public class LuaEvent
 		{
 			public LuaFunction Event;
 			public IntPtr Control;
 
-			public Lua_Event() { }
-			public Lua_Event(IntPtr handle, LuaFunction lfunction)
+			public LuaEvent() { }
+			public LuaEvent(IntPtr handle, LuaFunction lfunction)
 			{
 				Event = lfunction;
 				Control = handle;
