@@ -93,10 +93,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public int Column
 			{
-				get
-				{
-					return _column;
-				}
+				get { return _column; }
 				set
 				{
 					if (_column == value)
@@ -109,10 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public bool Descending
 			{
-				get
-				{
-					return _desc;
-				}
+				get { return _desc; }
 			}
 		}
 

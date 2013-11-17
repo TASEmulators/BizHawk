@@ -63,7 +63,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (int index in indices)
 				{
-					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[index].Call();
+					string guid = FunctionView.Items[index].SubItems[2].Text;
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid].Call();
 				}
 			}
 		}
@@ -75,7 +76,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (int index in indices)
 				{
-					NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[index];
+					string guid = FunctionView.Items[index].SubItems[2].Text;
+					NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
 					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
 				}
 				PopulateListView();
