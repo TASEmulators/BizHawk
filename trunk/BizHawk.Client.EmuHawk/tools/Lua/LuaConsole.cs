@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 				StopAllScripts();
 				_luaList.Clear();
 				DisplayLuaList();
-				_currentSessionFile = "";
+				_currentSessionFile = String.Empty;
 				Changes(false);
 			}
 		}
@@ -896,7 +896,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearOutput()
 		{
-			OutputBox.Text = "";
+			OutputBox.Text = String.Empty;
 		}
 
 		private FileInfo GetSaveFileFromUser()
@@ -911,7 +911,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.GetLuaPath();
-
 			}
 			else
 			{
@@ -1010,7 +1009,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			if (Global.Config.SupressAskSave)
 			{
 				return true;
 			}
@@ -1022,18 +1021,25 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					if (string.Compare(_currentSessionFile, "") == 0)
+					if (String.IsNullOrWhiteSpace(_currentSessionFile))
 					{
 						SaveAs();
 					}
 					else
+					{
 						SaveSession(_currentSessionFile);
+					}
+
 					return true;
 				}
 				else if (result == DialogResult.No)
+				{
 					return true;
+				}
 				else if (result == DialogResult.Cancel)
+				{
 					return false;
+				}
 			}
 			return true;
 		}
