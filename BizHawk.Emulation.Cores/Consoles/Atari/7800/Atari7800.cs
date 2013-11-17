@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS, string GameDBfn)
 		{
 			CoreComm = comm;
-
+			
 			if (EMU7800.Win.GameProgramLibrary.EMU7800DB == null)
 			{
 				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));
@@ -202,10 +202,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			this.game = game;
 			this.hsbios = highscoreBIOS;
 			this.bios = GameInfo.MachineType == MachineType.A7800PAL ? pal_bios : ntsc_bios;
-            if (bios == null)
-            {
-                throw new InvalidDataException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
-            }
+			if (bios == null)
+			{
+				throw new InvalidDataException("The BIOS corresponding to the region of the game you loaded is required to run Atari 7800 games.");
+			}
+
 			HardReset();
 		}
 
@@ -231,6 +232,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				logger);
 
 			theMachine.Reset();
+			theMachine.InputState.InputPollCallback = CoreComm.InputCallback.Call;
 
 			ControlAdapter = new Atari7800Control(theMachine);
 			if (ControlAdapter.ControlType.Name != "Atari 7800 ProLine Joystick Controller")

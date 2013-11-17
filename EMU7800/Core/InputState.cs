@@ -97,9 +97,15 @@ namespace EMU7800.Core
 			get { return _lagged; }
 		}
 
+		public Action InputPollCallback { get; set; }
+
         public void RaiseInput(int playerNo, MachineInput input, bool down)
         {
-            switch (input)
+			if (InputPollCallback != null)
+			{
+				InputPollCallback();
+			}
+			switch (input)
             {
                 case MachineInput.Fire:
                     SetControllerActionState(playerNo, ControllerAction.Trigger, down);
