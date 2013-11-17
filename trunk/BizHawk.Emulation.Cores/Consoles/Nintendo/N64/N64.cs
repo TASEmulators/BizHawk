@@ -86,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
+			RefreshMemoryCallbacks();
+
 			if (Controller["Reset"])
 			{
 				api.soft_reset();
@@ -261,6 +263,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
+
+		#region memorycallback
+
+		mupen64plusApi.MemoryCallback readcb;
+		mupen64plusApi.MemoryCallback writecb;
+
+		void RefreshMemoryCallbacks()
+		{
+			var mcs = CoreComm.MemoryCallbackSystem;
+
+			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
+
+			if (mcs.HasReads)
+				readcb = delegate(uint addr) { mcs.CallRead(addr); RefreshMemoryCallbacks(); };
+			else
+				readcb = null;
+			if (mcs.HasWrites)
+				writecb = delegate(uint addr) { mcs.CallWrite(addr); RefreshMemoryCallbacks(); };
+			else
+				writecb = null;
+
+			api.setReadCallback(readcb);
+			api.setWriteCallback(writecb);
+		}
+
+		#endregion
 
 		#region memorydomains
 
