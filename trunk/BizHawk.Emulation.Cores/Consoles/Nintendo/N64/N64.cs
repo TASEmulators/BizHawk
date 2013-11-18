@@ -13,7 +13,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			throw new NotImplementedException();
+			List<KeyValuePair<string, int>> ret = new List<KeyValuePair<string, int>>();
+			byte[] data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
+			api.getRegisters(data);
+
+			Int64[] reg = new Int64[32];
+			for (int i = 0; i < 32; i++)
+			{
+				reg[i] = BitConverter.ToInt64(data, i * 8);
+				ret.Add(new KeyValuePair<string, int>("REG" + i, (int)reg[i]));
+			}
+
+			UInt32 PC = BitConverter.ToUInt32(data, 32 * 8);
+			ret.Add(new KeyValuePair<string, int>("PC", (int)PC));
+
+			ret.Add(new KeyValuePair<string, int>("LL", BitConverter.ToInt32(data, 32 * 8 + 4)));
+
+			Int64 Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
+			ret.Add(new KeyValuePair<string, int>("LO", (int)Lo));
+
+			Int64 Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
+			ret.Add(new KeyValuePair<string, int>("HI", (int)Hi));
+
+			ret.Add(new KeyValuePair<string, int>("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8)));
+			ret.Add(new KeyValuePair<string, int>("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4)));
+
+			UInt32[] reg_cop0 = new UInt32[32];
+			for (int i = 0; i < 32; i++)
+			{
+				reg_cop0[i] = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
+				ret.Add(new KeyValuePair<string, int>("CP0 REG" + i, (int)reg_cop0[i]));
+			}
+
+			Int64[] reg_cop1_fgr_64 = new Int64[32];
+			for (int i = 0; i < 32; i++)
+			{
+				reg_cop1_fgr_64[i] = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
+				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i, (int)reg_cop1_fgr_64[i]));
+			}
+
+			return ret;
 		}
 
 		public string SystemId { get { return "N64"; } }
