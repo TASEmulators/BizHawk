@@ -235,3 +235,12 @@ void scanlinecallback_bizhawk()
 	if (slcallback)
 		slcallback();
 }
+
+EXPORT void libmeteor_getregs(int *dest)
+{
+	AMeteor::_cpu.UpdateCpsr();	
+	for (int i = 0; i < 16; i++)
+		dest[i] = AMeteor::_cpu.Reg(i);
+	dest[16] = AMeteor::_cpu.Cpsr().dw;
+	dest[17] = AMeteor::_cpu.Spsr().dw;
+}

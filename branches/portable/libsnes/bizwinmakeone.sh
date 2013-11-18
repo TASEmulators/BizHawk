@@ -15,10 +15,10 @@ if [ "$1" == "32" ]; then
 fi
 
 #debug:
-#export BIZWINCFLAGS="-I. -O0 -g -masm=intel -DLIBCO_IMPORT -DLIBCO_MSVC -static-libgcc -static-libstdc++"
+#export BIZWINCFLAGS="-I. -O0 -g -masm=intel -DHOOKS -DLIBCO_IMPORT -DLIBCO_MSVC -static-libgcc -static-libstdc++"
 
 #not debug
-export BIZWINCFLAGS="-I. -O3 -masm=intel -static-libgcc -static-libstdc++ ${cflags64}"
+export BIZWINCFLAGS="-I. -O3 -masm=intel -DHOOKS -static-libgcc -static-libstdc++ ${cflags64}"
 
 export TARGET_LIBSNES_LIBDEPS="-L ../libco_msvc_win32/release/ -static  -static-libgcc -static-libstdc++ ${cflags64} ${cflags32} -mwindows"
 export profile=$2
@@ -28,7 +28,7 @@ platform=win target=libsnes make -e -j 4
 cd ..
 
 filename=libsneshawk-${bits}-${profile}.exe
-targetdir=../BizHawk.MultiClient/output/dll
+targetdir=../output/dll
 targetpath=${targetdir}/${filename}
 cp bsnes/out/${filename} ${targetdir}
 if [ "$3" == "compress" ]; then

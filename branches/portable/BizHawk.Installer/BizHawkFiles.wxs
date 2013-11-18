@@ -4,8 +4,8 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder" Name="PFiles">
         <Directory Id="BIZHAWK" Name="BizHawk">
-          <Component Id="BIZHAWK.MULTICLIENT.EXE" DiskId="1" Guid="E79C65FA-36FC-4D00-80F2-45AA1118E25B">
-            <File Id="BIZHAWK.MULTICLIENT.EXE" Name="BizHawk.MultiClient.exe" Source="..\BizHawk.MultiClient\output\BizHawk.MultiClient.exe">
+          <Component Id="EMUHAWK.EXE" DiskId="1" Guid="E79C65FA-36FC-4D00-80F2-45AA1118E25B">
+            <File Id="EMUHAWK.EXE" Name="EmuHawk.exe" Source="..\output\EmuHawk.exe">
               <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="BizHawk" WorkingDirectory="INSTALLDIR" Advertise="yes" Icon="BizHawkIcon.exe" IconIndex="0" />
               <netfx:NativeImage Id="ngen_BizHawk.exe" Platform="32bit" Priority="0" AppBaseDirectory="BIZHAWK" />
               <Shortcut Id="BizhawkStartShortcut" Directory="ProgramMenuDir" Name="BizHawk" Advertise="yes" Icon="BizHawkIcon.exe" IconIndex="0" />
@@ -15,7 +15,7 @@
             <File Id="DEFCTRL.JSON" Name="defctrl.json" Source="..\BizHawk.MultiClient\output\defctrl.json" />
           </Component>
           <Component Id="DISCOHAWK.EXE" DiskId="1" Guid="479DBA0A-777D-454A-A2FC-769067A8CAD5">
-            <File Id="DISCOHAWK.EXE" Name="DiscoHawk.exe" Source="..\BizHawk.MultiClient\output\DiscoHawk.exe">
+            <File Id="DISCOHAWK.EXE" Name="DiscoHawk.exe" Source="..\output\DiscoHawk.exe">
               <Shortcut Id="DiscoStartShortcut" Directory="ProgramMenuDir" Name="DiscoHawk" Advertise="yes" Icon="DiscoHawkIcon.exe" IconIndex="0" />
               <netfx:NativeImage Id="ngen_DiscoHawk.exe" Platform="32bit" Priority="0" AppBaseDirectory="BIZHAWK" />
             </File>
@@ -30,8 +30,11 @@
             <Component Id="BIZHAWK.EMULATION.DLL" DiskId="1" Guid="5226EA11-7AC9-44CA-B2D4-2FCF9637C62E">
               <File Id="BIZHAWK.EMULATION.DLL" Name="BizHawk.Emulation.dll" Source="..\BizHawk.MultiClient\output\dll\BizHawk.Emulation.dll" />
             </Component>
-            <Component Id="BIZHAWK.UTIL.DLL" DiskId="1" Guid="4C40953E-8A1A-42A9-B337-795A72A6B0EE">
-              <File Id="BIZHAWK.UTIL.DLL" Name="BizHawk.Util.dll" Source="..\BizHawk.MultiClient\output\dll\BizHawk.Util.dll" />
+            <Component Id="BIZHAWK.CLIENT.COMMON.DLL" DiskId="1" Guid="4C40953E-8A1A-42A9-B337-795A72A6B0EE">
+              <File Id="BIZHAWK.UTIL.DLL" Name="BizHawk.Client.Common.dll" Source="..\output\dll\BizHawk.Client.Common.dll" />
+            </Component>
+			<Component Id="BIZHAWK.COMMON.DLL" DiskId="1" Guid="4C40953E-8A1A-42A9-B337-795A72A6B0EE">
+              <File Id="BIZHAWK.UTIL.DLL" Name="BizHawk.Common.dll" Source="..\output\dll\BizHawk.Common.dll" />
             </Component>
             <Component Id="BLIP_BUF.DLL" DiskId="1" Guid="E6822154-601C-4819-9CBA-8F2F8CA2415A">
               <File Id="BLIP_BUF.DLL" Name="blip_buf.dll" Source="..\BizHawk.MultiClient\output\dll\blip_buf.dll" />

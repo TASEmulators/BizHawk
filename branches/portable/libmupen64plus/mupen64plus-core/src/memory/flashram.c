@@ -45,19 +45,19 @@ typedef enum flashram_mode
     STATUS_MODE
 } Flashram_mode;
 
-static unsigned char flashram[0x20000];
+unsigned char flashram[0x20000];
 
-static char *get_flashram_path(void)
+/*static char *get_flashram_path(void)
 {
     return formatstr("%s%s.fla", get_savesrampath(), ROM_SETTINGS.goodname);
-}
+}*/
 
-static void flashram_format(void)
+void flashram_format(void)
 {
     memset(flashram, 0xff, sizeof(flashram));
 }
 
-static void flashram_read_file(void)
+/*static void flashram_read_file(void)
 {
     char *filename = get_flashram_path();
 
@@ -75,11 +75,11 @@ static void flashram_read_file(void)
     }
 
     free(filename);
-}
+}*/
 
 static void flashram_write_file(void)
 {
-    char *filename = get_flashram_path();
+    /*char *filename = get_flashram_path();
 
     switch (write_to_file(filename, flashram, sizeof(flashram)))
     {
@@ -92,7 +92,7 @@ static void flashram_write_file(void)
         default: break;
     }
 
-    free(filename);
+    free(filename);*/
 }
 
 void init_flashram(void)
@@ -132,7 +132,6 @@ void flashram_command(unsigned int command)
         case ERASE_MODE:
         {
             unsigned int i;
-            flashram_read_file();
             for (i=flashram_info.erase_offset; i<(flashram_info.erase_offset+128); i++)
             {
                 flashram[i^S8] = 0xff;
@@ -143,7 +142,6 @@ void flashram_command(unsigned int command)
         case WRITE_MODE:
         {
             int i;
-            flashram_read_file();
             for (i=0; i<128; i++)
             {
                 flashram[(flashram_info.erase_offset+i)^S8]=
@@ -182,13 +180,17 @@ void dma_read_flashram(void)
     switch (flashram_info.mode)
     {
     case STATUS_MODE:
+		WRITECBADDR(0x80000000 | (pi_register.pi_dram_addr_reg/4));
+		WRITECBADDR(0x80000000 | (pi_register.pi_dram_addr_reg/4+1));
+
         rdram[pi_register.pi_dram_addr_reg/4] = (unsigned int)(flashram_info.status >> 32);
         rdram[pi_register.pi_dram_addr_reg/4+1] = (unsigned int)(flashram_info.status);
         break;
     case READ_MODE:
-        flashram_read_file();
         for (i=0; i<(pi_register.pi_wr_len_reg & 0x0FFFFFF)+1; i++)
         {
+			READCBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
+
             ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
                 flashram[(((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8];
         }

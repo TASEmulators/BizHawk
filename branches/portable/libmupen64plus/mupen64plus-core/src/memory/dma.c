@@ -44,19 +44,19 @@
 #include "main/rom.h"
 #include "main/util.h"
 
-static unsigned char sram[0x8000];
+unsigned char sram[0x8000];
 
-static char *get_sram_path(void)
+/*static char *get_sram_path(void)
 {
     return formatstr("%s%s.sra", get_savesrampath(), ROM_SETTINGS.goodname);
-}
+}*/
 
-static void sram_format(void)
+void sram_format(void)
 {
     memset(sram, 0, sizeof(sram));
 }
 
-static void sram_read_file(void)
+/*static void sram_read_file(void)
 {
     char *filename = get_sram_path();
 
@@ -75,11 +75,11 @@ static void sram_read_file(void)
     }
 
     free(filename);
-}
+}*/
 
 static void sram_write_file(void)
 {
-    char *filename = get_sram_path();
+    /*char *filename = get_sram_path();
 
     switch (write_to_file(filename, sram, sizeof(sram)))
     {
@@ -92,7 +92,7 @@ static void sram_write_file(void)
         default: break;
     }
 
-    free(filename);
+    free(filename);*/
 }
 
 void dma_pi_read(void)
@@ -104,10 +104,10 @@ void dma_pi_read(void)
     {
         if (flashram_info.use_flashram != 1)
         {
-            sram_read_file();
-
             for (i=0; i < (pi_register.pi_rd_len_reg & 0xFFFFFF)+1; i++)
             {
+				READCBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
+
                 sram[((pi_register.pi_cart_addr_reg-0x08000000)+i)^S8] =
                     ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8];
             }
@@ -145,10 +145,10 @@ void dma_pi_write(void)
             {
                 int i;
 
-                sram_read_file();
-
                 for (i=0; i<(int)(pi_register.pi_wr_len_reg & 0xFFFFFF)+1; i++)
                 {
+					WRITECBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
+
                     ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
                         sram[(((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)+i)^S8];
                 }
@@ -207,6 +207,9 @@ void dma_pi_write(void)
         {
             unsigned long rdram_address1 = pi_register.pi_dram_addr_reg+i+0x80000000;
             unsigned long rdram_address2 = pi_register.pi_dram_addr_reg+i+0xa0000000;
+
+			WRITECBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
+
             ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
                 rom[(((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8];
 
@@ -237,6 +240,8 @@ void dma_pi_write(void)
     {
         for (i=0; i<(int)longueur; i++)
         {
+			WRITECBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
+
             ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
                 rom[(((pi_register.pi_cart_addr_reg-0x10000000)&0x3FFFFFF)+i)^S8];
         }
@@ -253,6 +258,8 @@ void dma_pi_write(void)
         case 3:
         case 6:
         {
+			WRITECBADDR(0x80000000 | (0x318/4));
+
             if (ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"))
             {
                 rdram[0x318/4] = 0x400000;
@@ -265,6 +272,8 @@ void dma_pi_write(void)
         }
         case 5:
         {
+			WRITECBADDR(0x80000000 | (0x3F0/4));
+
             if (ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"))
             {
                 rdram[0x3F0/4] = 0x400000;
@@ -303,6 +312,8 @@ void dma_sp_write(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
+			READCBADDR(0x80000000 | (dramaddr^S8));
+
             spmem[memaddr^S8] = dram[dramaddr^S8];
             memaddr++;
             dramaddr++;
@@ -329,6 +340,8 @@ void dma_sp_read(void)
 
     for(j=0; j<count; j++) {
         for(i=0; i<length; i++) {
+			WRITECBADDR(0x80000000 | (dramaddr^S8));
+
             dram[dramaddr^S8] = spmem[memaddr^S8];
             memaddr++;
             dramaddr++;
@@ -349,6 +362,8 @@ void dma_si_write(void)
 
     for (i=0; i<(64/4); i++)
     {
+		READCBADDR(0x80000000 | (si_register.si_dram_addr/4+i));
+
         PIF_RAM[i] = sl(rdram[si_register.si_dram_addr/4+i]);
     }
 
@@ -371,6 +386,8 @@ void dma_si_read(void)
 
     for (i=0; i<(64/4); i++)
     {
+		WRITECBADDR(0x80000000 | (si_register.si_dram_addr/4+i));
+
         rdram[si_register.si_dram_addr/4+i] = sl(PIF_RAM[i]);
     }
 

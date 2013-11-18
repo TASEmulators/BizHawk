@@ -103,6 +103,10 @@ void GB::setWriteCallback(void (*callback)(unsigned)) {
 	p_->cpu.setWriteCallback(callback);
 }
 
+void GB::setExecCallback(void (*callback)(unsigned)) {
+	p_->cpu.setExecCallback(callback);
+}
+
 void GB::setTraceCallback(void (*callback)(void *)) {
 	p_->cpu.setTraceCallback(callback);
 }
@@ -266,6 +270,10 @@ void GB::setGameShark(const std::string &codes) {
 
 int GB::LinkStatus(int which) {
 	return p_->cpu.LinkStatus(which);
+}
+
+void GB::GetRegs(int *dest) {
+	p_->cpu.GetRegs(dest);
 }
 
 }

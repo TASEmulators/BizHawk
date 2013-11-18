@@ -434,15 +434,17 @@ namespace HuC6280
         {
             var w = new StreamWriter(file, false);
             w.WriteLine("using System;");
-            w.WriteLine("using BizHawk.Emulation.Consoles.TurboGrafx;");
             w.WriteLine();
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");
             w.WriteLine();
-            w.WriteLine("namespace BizHawk.Emulation.CPUs.H6280");
+            w.WriteLine("namespace BizHawk.Emulation.Common.Components.H6280");
             w.WriteLine("{");
             w.WriteLine("    public partial class HuC6280");
             w.WriteLine("    {");
+            w.WriteLine("        public bool Debug;");
+            w.WriteLine("        public Action<string> Logger;");
+            w.WriteLine();
             w.WriteLine("        public void Execute(int cycles)");
             w.WriteLine("        {");
             w.WriteLine("            sbyte rel8;");
@@ -491,7 +493,8 @@ namespace HuC6280
             w.WriteLine("                IRQControlByte = IRQNextControlByte;");
             w.WriteLine("                LagIFlag = FlagI;");
             w.WriteLine();
-
+            w.WriteLine("                if (Debug) Logger(State());");
+            w.WriteLine();
             w.WriteLine("                byte opcode = ReadMemory(PC++);");
             w.WriteLine("                switch (opcode)");
             w.WriteLine("                {");
@@ -749,7 +752,7 @@ namespace HuC6280
         public void GenerateDisassembler(string file)
         {
             var w = new StreamWriter(file, false);
-            w.WriteLine("namespace BizHawk.Emulation.CPUs.H6280");
+            w.WriteLine("namespace BizHawk.Emulation.Common.Components.H6280");
             w.WriteLine();
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");

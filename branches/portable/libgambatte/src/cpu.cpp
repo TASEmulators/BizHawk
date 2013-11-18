@@ -131,7 +131,7 @@ void CPU::loadState(const SaveState &state) {
 
 #define READ(dest, addr) do { (dest) = memory.read(addr, cycleCounter); cycleCounter += 4; } while (0)
 // #define PC_READ(dest, addr) do { (dest) = memory.pc_read(addr, cycleCounter); cycleCounter += 4; } while (0)
-#define PC_READ(dest) do { (dest) = memory.read(PC, cycleCounter); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
+#define PC_READ(dest) do { (dest) = memory.read_excb(PC, cycleCounter); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define FF_READ(dest, addr) do { (dest) = memory.ff_read(addr, cycleCounter); cycleCounter += 4; } while (0)
 
 #define WRITE(addr, data) do { memory.write(addr, data, cycleCounter); cycleCounter += 4; } while (0)
@@ -2831,6 +2831,20 @@ void CPU::process(const unsigned long cycles) {
 	
 	A_ = A;
 	cycleCounter_ = cycleCounter;
+}
+
+void CPU::GetRegs(int *dest)
+{
+	dest[0] = PC_;
+	dest[1] = SP;
+	dest[2] = A_;
+	dest[3] = B;
+	dest[4] = C;
+	dest[5] = D;
+	dest[6] = E;
+	dest[7] = F();
+	dest[8] = H;
+	dest[9] = L;
 }
 
 }

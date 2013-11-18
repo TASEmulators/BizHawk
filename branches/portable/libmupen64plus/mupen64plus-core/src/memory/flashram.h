@@ -34,3 +34,7 @@ void flashram_command(unsigned int command);
 unsigned int flashram_status(void);
 void dma_read_flashram(void);
 void dma_write_flashram(void);
+void flashram_format(void);
+
+extern void (*readCB)(unsigned int);
+extern void (*writeCB)(unsigned int);

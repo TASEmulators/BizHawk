@@ -169,7 +169,7 @@ HANDLE hPipe, hMapFile;
 void* hMapFilePtr;
 static bool running = false;
 
-enum eMessage : int
+enum eMessage : int32
 {
 	eMessage_Complete,
 
@@ -228,7 +228,18 @@ enum eMessage : int
 
 	eMessage_SetBuffer,
 	eMessage_BeginBufferIO,
-	eMessage_EndBufferIO
+	eMessage_EndBufferIO,
+
+	eMessage_set_state_hook_exec,
+	eMessage_set_state_hook_read,
+	eMessage_set_state_hook_write,
+	eMessage_set_state_hook_nmi,
+	eMessage_set_state_hook_irq,
+	eMessage_snes_cb_hook_exec,
+	eMessage_snes_cb_hook_read,
+	eMessage_snes_cb_hook_write,
+	eMessage_snes_cb_hook_nmi,
+	eMessage_snes_cb_hook_irq,
 };
 
 void ReadPipeBuffer(void* buf, int len)
@@ -474,6 +485,36 @@ void InitBsnes()
 	snes_set_freeSharedMemory(snes_freeSharedMemory);
 }
 
+
+static void debug_op_exec(uint24 addr)
+{
+	WritePipe(eMessage_snes_cb_hook_exec);
+	WritePipe((uint32)addr);
+}
+
+static void debug_op_read(uint24 addr)
+{
+	WritePipe(eMessage_snes_cb_hook_read);
+	WritePipe((uint32)addr);
+}
+
+static void debug_op_write(uint24 addr, uint8 value)
+{
+	WritePipe(eMessage_snes_cb_hook_write);
+	WritePipe((uint32)addr);
+	WritePipe(value);
+}
+
+static void debug_op_nmi()
+{
+	WritePipe(eMessage_snes_cb_hook_nmi);
+}
+
+static void debug_op_irq()
+{
+	WritePipe(eMessage_snes_cb_hook_irq);
+}
+
 void RunMessageLoop()
 {
 	for(;;)
@@ -689,6 +730,26 @@ void RunMessageLoop()
 			bufio = false;
 			break;
 
+		case eMessage_set_state_hook_exec:
+			SNES::cpu.debugger.op_exec = ReadPipe<bool>() ? debug_op_exec : hook<void (uint24)>(); 
+			break;
+
+		case eMessage_set_state_hook_read:
+			SNES::cpu.debugger.op_read = ReadPipe<bool>() ? debug_op_read : hook<void (uint24)>(); 
+			break;
+
+		case eMessage_set_state_hook_write:
+			SNES::cpu.debugger.op_write = ReadPipe<bool>() ? debug_op_write : hook<void (uint24, uint8)>(); 
+			break;
+
+		case eMessage_set_state_hook_nmi:
+			SNES::cpu.debugger.op_nmi = ReadPipe<bool>() ? debug_op_nmi : hook<void ()>(); 
+			break;
+
+		case eMessage_set_state_hook_irq:
+			SNES::cpu.debugger.op_irq = ReadPipe<bool>() ? debug_op_irq : hook<void ()>(); 
+			break;
+
 		} //switch(msg)
 	}
 }
@@ -764,5 +825,6 @@ int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 void pwrap_init()
 {
+	//bsnes's interface initialization calls into this after initializing itself, so we can get a chance to mod it for pwrap functionalities
 	InitBsnes();
 }

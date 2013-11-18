@@ -32,7 +32,7 @@ template<typename R, typename... P> struct hook<R (P...)> {
   function<R (P...)> callback;
 
   R operator()(P... p) const {
-    #if defined(DEBUGGER)
+    #if defined(DEBUGGER) || defined(HOOKS)
     if(callback) return callback(std::forward<P>(p)...);
     #endif
     return R();
