@@ -422,6 +422,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public delegate void SetWriteCallback(MemoryCallback callback);
 		SetWriteCallback m64pSetWriteCallback;
 
+		/// <summary>
+		/// Gets the CPU registers
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void GetRegisters(byte[] dest);
+		GetRegisters m64pGetRegisters;
+
 		// DLL handles
 		IntPtr CoreDll;
 		IntPtr GfxDll;
@@ -580,6 +587,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			m64pSetReadCallback = (SetReadCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetReadCallback"), typeof(SetReadCallback));
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
+
+			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -818,6 +827,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void setWriteCallback(MemoryCallback callback)
 		{
 			m64pSetWriteCallback(callback);
+		}
+
+		public void getRegisters(byte[] dest)
+		{
+			m64pGetRegisters(dest);
 		}
 
 		public void Dispose()

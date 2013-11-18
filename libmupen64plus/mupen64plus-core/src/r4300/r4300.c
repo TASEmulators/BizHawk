@@ -1106,3 +1106,28 @@ void r4300_execute(void (*startcb)(void))
     }
 #endif
 }
+
+EXPORT void CALL GetRegisters(unsigned char * dest)
+{
+	memcpy(dest, reg, 8 * 32);
+	dest += 8 * 32;
+	memcpy(dest, &(PC->addr), 4);
+	dest += 4;
+	memcpy(dest, &llbit, 4);
+	dest += 4;
+	memcpy(dest, &lo, 8);
+	dest += 8;
+	memcpy(dest, &hi, 8);
+	dest += 8;
+	memcpy(dest, &FCR0, 4);
+	dest += 4;
+	memcpy(dest, &FCR31, 4);
+	dest += 4;
+
+	memcpy(dest, reg_cop0, 4 * 32);
+	dest += 4 * 32;
+	
+	memcpy(dest, reg_cop1_fgr_64, 8 * 32);
+	dest += 8 * 32;
+	
+}
