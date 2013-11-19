@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(AddCheat); //CheatList.Add is already an upsert, so there is nothing different to handle here
-			UpdateValues();
+			UpdateDialog();
 		}
 
 		private void ToggleGameGenieButton()
