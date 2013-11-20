@@ -228,6 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				Changes();
 				UpdateWatchCount();
 				WatchListView.ItemCount = Watches.ItemCount;
+				UpdateValues();
 			}
 		}
 
