@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenGameGenie : Form, IToolForm
 	{
-		bool Processing = false;
+		bool _processing;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 
 		public bool AskSave() { return true; }
@@ -82,10 +82,10 @@ namespace BizHawk.Client.EmuHawk
 			int y = 0;
 
 			//convert code to a long binary string
-			for (int x = 0; x < code.Length; x++)
+			foreach (char t in code)
 			{
 				hexcode <<= 5;
-				GameGenieTable.TryGetValue(code[x], out y);
+				GameGenieTable.TryGetValue(t, out y);
 				hexcode |= y;
 			}
 
@@ -139,9 +139,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GGCodeMaskBox_TextChanged(object sender, EventArgs e)
 		{
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				//remove Invalid I O Q P if pasted
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("I", string.Empty);
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("O", string.Empty);
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 					ValueBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 		}
 
@@ -179,9 +179,9 @@ namespace BizHawk.Client.EmuHawk
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
 			//remove invalid character when pasted
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				if (Regex.IsMatch(AddressBox.Text, @"[^a-fA-F0-9]"))
 				{
 					string temp = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
@@ -203,15 +203,15 @@ namespace BizHawk.Client.EmuHawk
 					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 		}
 
 		private void ValueBox_TextChanged(object sender, EventArgs e)
 		{
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				//remove invalid character when pasted
 				if (Regex.IsMatch(ValueBox.Text, @"[^a-fA-F0-9]"))
 				{
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 		}
 
@@ -255,11 +255,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Processing = true;
+					_processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
 					NAME = GGCodeMaskBox.Text;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-					Processing = false;
+					_processing = false;
 				}
 
 				if (!String.IsNullOrWhiteSpace(AddressBox.Text))
@@ -285,15 +285,12 @@ namespace BizHawk.Client.EmuHawk
 					ADDRESS,
 					Watch.WatchSize.Word,
 					Watch.DisplayType.Hex,
-					NAME,
-					bigEndian: true
+					NAME, true
 				);
 
 				Global.CheatList.Add(new Cheat(
 					watch,
-					VALUE,
-					compare: null,
-					enabled: true
+					VALUE
 				));
 			}
 

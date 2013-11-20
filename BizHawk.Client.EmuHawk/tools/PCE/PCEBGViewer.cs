@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PCEBGViewer : Form, IToolForm
 	{
-		private PCEngine pce;
+		private PCEngine _pce;
 		private int VDCtype;
 
 		public bool AskSave() { return true; }
@@ -27,11 +27,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
 
-			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
+			VDC vdc = VDCtype == 0 ? _pce.VDC1 : _pce.VDC2;
 
 			int width = 8 * vdc.BatWidth;
 			int height = 8 * vdc.BatHeight;
-			BitmapData buf = canvas.bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.bat.PixelFormat);
+			BitmapData buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
 			int pitch = buf.Stride / 4;
 			int* begin = (int*)buf.Scan0.ToPointer();
 
@@ -54,16 +54,16 @@ namespace BizHawk.Client.EmuHawk
 
 					byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 					if (c == 0)
-						*p = pce.VCE.Palette[0];
+						*p = _pce.VCE.Palette[0];
 					else
 					{
-						*p = pce.VCE.Palette[paletteBase + c];
+						*p = _pce.VCE.Palette[paletteBase + c];
 					}
 				}
 				p += pitch - width;
 			}
 
-			canvas.bat.UnlockBits(buf);
+			canvas.Bat.UnlockBits(buf);
 			canvas.Refresh();
 		}
 
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator is PCEngine)
 			{
-				pce = Global.Emulator as PCEngine;
+				_pce = Global.Emulator as PCEngine;
 			}
 			else
 			{
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
-			pce = Global.Emulator as PCEngine;
+			_pce = Global.Emulator as PCEngine;
 			LoadConfigSettings();
 			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
 			{
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (pce.SystemId == "SGX")
+			if (_pce.SystemId == "SGX")
 				vCD2ToolStripMenuItem.Enabled = true;
 			else
 				vCD2ToolStripMenuItem.Enabled = false;
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
+			VDC vdc = VDCtype == 0 ? _pce.VDC1 : _pce.VDC2;
 			int xTile = e.X / 8;
 			int yTile = e.Y / 8;
 			int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;

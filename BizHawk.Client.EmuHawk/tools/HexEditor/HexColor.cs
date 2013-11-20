@@ -5,9 +5,9 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class HexColors_Form : Form
+	public partial class HexColorsForm : Form
 	{
-		public HexColors_Form()
+		public HexColorsForm()
 		{
 			InitializeComponent();
 		}
