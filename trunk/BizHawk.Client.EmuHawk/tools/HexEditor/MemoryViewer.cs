@@ -17,23 +17,26 @@ namespace BizHawk.Client.EmuHawk
 		//Multi-highlight
 		//different back color for frozen addresses
 
-		public VScrollBar vScrollBar1;
-		public Brush highlightBrush = Brushes.LightBlue;
+		public VScrollBar VScrollBar1;
+		public Brush HighlightBrush = Brushes.LightBlue;
 		public bool BigEndian = false;
 		public bool BlazingFast = false;
 
-		private string info = "";
-		private MemoryDomain Domain = new MemoryDomain("NULL", 1024, MemoryDomain.Endian.Little, addr => 0, (a, v) => { v = 0; });
-		private readonly Font font = new Font("Courier New", 8);
-		private int _rows_visible;
-		private int _data_size = 1;
-		private string _header = "";
-		private int _num_digits = 4;
-		private readonly char[] nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
-		private int addressHighlighted = -1;
-		private int addressOver = -1;
-		private int addrOffset;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
-		private int maxRow;
+		private string _info = String.Empty;
+		private MemoryDomain _domain = new MemoryDomain("NULL", 1024, MemoryDomain.Endian.Little, addr => 0,
+		                                                delegate(int a, byte v) { v = 0; });
+		private readonly Font _font = new Font("Courier New", 8);
+		private int _rowsVisible;
+		private int _dataSize = 1;
+		private string _header = String.Empty;
+		private int _numDigits = 4;
+		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
+		private int _addressHighlighted = -1;
+		private int _addressOver = -1;
+		private int _addrOffset;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
+		private int _maxRow;
+		private int _row;
+		private int _addr;
 
 		private const int ROWX = 1;
 		private const int ROWY = 4;
@@ -46,19 +49,19 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 			MouseMove += MemoryViewer_MouseMove;
 			MouseClick += MemoryViewer_MouseClick;
-			vScrollBar1 = new VScrollBar();
+			VScrollBar1 = new VScrollBar();
 			Point n = new Point(Size);
-			vScrollBar1.Location = new Point(n.X - 16, n.Y - Height + 7);
-			vScrollBar1.Height = Height - 8;
-			vScrollBar1.Width = 16;
-			vScrollBar1.Visible = true;
-			vScrollBar1.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom)
+			VScrollBar1.Location = new Point(n.X - 16, n.Y - Height + 7);
+			VScrollBar1.Height = Height - 8;
+			VScrollBar1.Width = 16;
+			VScrollBar1.Visible = true;
+			VScrollBar1.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom)
 			                     | AnchorStyles.Right;
-			vScrollBar1.LargeChange = 16;
-			vScrollBar1.Name = "vScrollBar1";
-			vScrollBar1.TabIndex = 0;
-			vScrollBar1.Scroll += vScrollBar1_Scroll;
-			Controls.Add(vScrollBar1);
+			VScrollBar1.LargeChange = 16;
+			VScrollBar1.Name = "vScrollBar1";
+			VScrollBar1.TabIndex = 0;
+			VScrollBar1.Scroll += vScrollBar1_Scroll;
+			Controls.Add(VScrollBar1);
 			
 			SetHeader();
 		}
@@ -67,38 +70,38 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == Keys.Up)
 			{
-				GoToAddress(addressHighlighted - 16);
+				GoToAddress(_addressHighlighted - 16);
 			}
 
 			else if (keyData == Keys.Down)
 			{
-				GoToAddress(addressHighlighted + 16);
+				GoToAddress(_addressHighlighted + 16);
 			}
 
 			else if (keyData == Keys.Left)
 			{
-				GoToAddress(addressHighlighted - 1);
+				GoToAddress(_addressHighlighted - 1);
 			}
 
 			else if (keyData == Keys.Right)
 			{
-				GoToAddress(addressHighlighted + 1);
+				GoToAddress(_addressHighlighted + 1);
 			}
 
 			else if (keyData == Keys.Tab)
 			{
-				addressHighlighted += 8;
+				_addressHighlighted += 8;
 				Refresh();
 			}
 
 			else if (keyData == Keys.PageDown)
 			{
-				GoToAddress(addressHighlighted + (_rows_visible * 16));
+				GoToAddress(_addressHighlighted + (_rowsVisible * 16));
 			}
 
 			else if (keyData == Keys.PageUp)
 			{
-				GoToAddress(addressHighlighted - (_rows_visible * 16));
+				GoToAddress(_addressHighlighted - (_rowsVisible * 16));
 			}
 
 			else if (keyData == Keys.Home)
@@ -117,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearNibbles()
 		{
 			for (int x = 0; x < 4; x++)
-				nibbles[x] = 'G';
+				_nibbles[x] = 'G';
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
@@ -131,18 +134,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//TODO: 2 byte & 4 byte
-			if (nibbles[0] == 'G')
+			if (_nibbles[0] == 'G')
 			{
-				nibbles[0] = (char)e.KeyCode;
-				info = nibbles[0].ToString();
+				_nibbles[0] = (char)e.KeyCode;
+				_info = _nibbles[0].ToString();
 			}
 			else
 			{
-				string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+				string temp = _nibbles[0].ToString() + ((char)e.KeyCode).ToString();
 				int x = int.Parse(temp, NumberStyles.HexNumber);
-				Domain.PokeByte(addressHighlighted, (byte)x);
+				_domain.PokeByte(_addressHighlighted, (byte)x);
 				ClearNibbles();
-				SetHighlighted(addressHighlighted + 1);
+				SetHighlighted(_addressHighlighted + 1);
 				Refresh();
 			}
 
@@ -153,103 +156,100 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (address < 0)
 				address = 0;
-			if (address >= Domain.Size)
-				address = Domain.Size - 1;
+			if (address >= _domain.Size)
+				address = _domain.Size - 1;
 			
 			if (!IsVisible(address))
 			{
-				int v = (address / 16) - _rows_visible + 1;
+				int v = (address / 16) - _rowsVisible + 1;
 				if (v < 0)
 					v = 0;
-				vScrollBar1.Value = v;
+				VScrollBar1.Value = v;
 			}
-			addressHighlighted = address;
-			addressOver = address;
-			info = String.Format("{0:X4}", addressOver);
+			_addressHighlighted = address;
+			_addressOver = address;
+			_info = String.Format("{0:X4}", _addressOver);
 			Refresh();
 		}
-
-		int row;
-		int addr;
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			unchecked
 			{
-				row = 0;
-				addr = 0;
+				_row = 0;
+				_addr = 0;
 
 				StringBuilder rowStr = new StringBuilder("");
-				addrOffset = (_num_digits % 4) * 9;
+				_addrOffset = (_numDigits % 4) * 9;
 
-				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
+				if (_addressHighlighted >= 0 && IsVisible(_addressHighlighted))
 				{
-					int left = ((addressHighlighted % 16) * 20) + 52 + addrOffset - (addressHighlighted % 4);
-					int top = (((addressHighlighted / 16) - vScrollBar1.Value) * (font.Height - 1)) + 36;
+					int left = ((_addressHighlighted % 16) * 20) + 52 + _addrOffset - (_addressHighlighted % 4);
+					int top = (((_addressHighlighted / 16) - VScrollBar1.Value) * (_font.Height - 1)) + 36;
 					Rectangle rect = new Rectangle(left, top, 16, 14);
-					e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
-					e.Graphics.FillRectangle(highlightBrush, rect);
+					e.Graphics.DrawRectangle(new Pen(HighlightBrush), rect);
+					e.Graphics.FillRectangle(HighlightBrush, rect);
 				}
 
-				rowStr.Append(Domain.Name + "    " + info + '\n');
+				rowStr.Append(_domain.Name + "    " + _info + '\n');
 				rowStr.Append(_header + '\n');
 				
-				for (int i = 0; i < _rows_visible; i++)
+				for (int i = 0; i < _rowsVisible; i++)
 				{
-					row = i + vScrollBar1.Value;
-					if (row * 16 >= Domain.Size)
+					_row = i + VScrollBar1.Value;
+					if (_row * 16 >= _domain.Size)
 						break;
-					rowStr.AppendFormat("{0:X" + _num_digits + "}  ", row * 16);
-					switch (_data_size)
+					rowStr.AppendFormat("{0:X" + _numDigits + "}  ", _row * 16);
+					switch (_dataSize)
 					{
 						default:
 						case 1:
-							addr = (row * 16);
+							_addr = (_row * 16);
 							for (int j = 0; j < 16; j++)
 							{
-								if (addr + j < Domain.Size)
-									rowStr.AppendFormat("{0:X2} ", Domain.PeekByte(addr + j));
+								if (_addr + j < _domain.Size)
+									rowStr.AppendFormat("{0:X2} ", _domain.PeekByte(_addr + j));
 							}
 							rowStr.Append("  | ");
 							for (int k = 0; k < 16; k++)
 							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
 							rowStr.AppendLine();
 							break;
 						case 2:
-							addr = (row * 16);
+							_addr = (_row * 16);
 							for (int j = 0; j < 16; j += 2)
 							{
-								if (addr + j < Domain.Size)
-									rowStr.AppendFormat("{0:X4} ", MakeValue(addr + j, _data_size, BigEndian));
+								if (_addr + j < _domain.Size)
+									rowStr.AppendFormat("{0:X4} ", MakeValue(_addr + j, _dataSize, BigEndian));
 							}
 							rowStr.AppendLine();
 							rowStr.Append("  | ");
 							for (int k = 0; k < 16; k++)
 							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
 							break;
 						case 4:
-							addr = (row * 16);
+							_addr = (_row * 16);
 							for (int j = 0; j < 16; j += 4)
 							{
-								if (addr < Domain.Size)
-									rowStr.AppendFormat("{0:X8} ", MakeValue(addr + j, _data_size, BigEndian));
+								if (_addr < _domain.Size)
+									rowStr.AppendFormat("{0:X8} ", MakeValue(_addr + j, _dataSize, BigEndian));
 							}
 							rowStr.AppendLine();
 							rowStr.Append("  | ");
 							for (int k = 0; k < 16; k++)
 							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
 							break;
 
 					}
 					
 				}
-				e.Graphics.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(ROWX, ROWY));
+				e.Graphics.DrawString(rowStr.ToString(), _font, Brushes.Black, new Point(ROWX, ROWY));
 			}
 		}
 
@@ -263,85 +263,72 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int MakeValue(int address, int size, bool Bigendian)
+		private int MakeValue(int address, int size, bool bigendian)
 		{
-			unchecked
+			int x = 0;
+			if (size == 1 || size == 2 || size == 4)
 			{
-				int x = 0;
-				if (size == 1 || size == 2 || size == 4)
+				switch (size)
 				{
-					switch (size)
-					{
-						case 1:
-							x = Domain.PeekByte(address);
-							break;
-						case 2:
-							x = MakeWord(address, Bigendian);
-							break;
-						case 4:
-							x = (MakeWord(address, Bigendian) * 65536) +
-								MakeWord(address + 2, Bigendian);
-							break;
-					}
-					return x;
+					case 1:
+						x = _domain.PeekByte(address);
+						break;
+					case 2:
+						x = _domain.PeekWord(address, bigendian);
+						break;
+					case 4:
+						x = (int) _domain.PeekDWord(address, bigendian);
+						break;
 				}
-				else
-					return 0; //fail
+				return x;
 			}
-		}
-
-		private int MakeWord(int address, bool endian)
-		{
-			unchecked
+			else
 			{
-				if (endian)
-				{
-					return Domain.PeekByte(address) + (Domain.PeekByte(address + 1)*255);
-				}
-				else
-				{
-					return (Domain.PeekByte(address)*255) + Domain.PeekByte(address + 1);
-				}
+				return 0; //fail
 			}
 		}
 
 		public void ResetScrollBar()
 		{
-			vScrollBar1.Value = 0;
+			VScrollBar1.Value = 0;
 			SetUpScrollBar();
 			Refresh();
 		}
 
 		public void SetUpScrollBar()
 		{
-			_rows_visible = ((Height - 8) / 13) - 1;
-			int totalRows = Domain.Size / 16;
-			int MaxRows = (totalRows - _rows_visible) + 16;
+			_rowsVisible = ((Height - 8) / 13) - 1;
+			int totalRows = _domain.Size / 16;
+			int MaxRows = (totalRows - _rowsVisible) + 16;
 
 			if (MaxRows > 0)
 			{
-				vScrollBar1.Visible = true;
-				if (vScrollBar1.Value > MaxRows)
-					vScrollBar1.Value = MaxRows;
-				vScrollBar1.Maximum = MaxRows;
+				VScrollBar1.Visible = true;
+				if (VScrollBar1.Value > MaxRows)
+				{
+					VScrollBar1.Value = MaxRows;
+				}
+				VScrollBar1.Maximum = MaxRows;
 			}
 			else
-				vScrollBar1.Visible = false;
+			{
+				VScrollBar1.Visible = false;
+			}
 
 		}
 
 		public void SetMemoryDomain(MemoryDomain d)
 		{
-			Domain = d;
-			maxRow = Domain.Size / 2;
+			_domain = d;
+			_maxRow = _domain.Size / 2;
 			SetUpScrollBar();
-			vScrollBar1.Value = 0;
+			VScrollBar1.Value = 0;
 			Refresh();
 		}
 
-		public string GetMemoryDomainStr()
+		public string DomainName()
 		{
-			return Domain.ToString();
+			return _domain.ToString();
 		}
 
 		private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -353,14 +340,14 @@ namespace BizHawk.Client.EmuHawk
 		public void SetDataSize(int size)
 		{
 			if (size == 1 || size == 2 || size == 4)
-				_data_size = size;
+				_dataSize = size;
 
 			SetHeader();
 		}
 
 		private void SetHeader()
 		{
-			switch (_data_size)
+			switch (_dataSize)
 			{
 				case 1:
 					_header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
@@ -372,12 +359,12 @@ namespace BizHawk.Client.EmuHawk
 					_header = "             0        4        8        C";
 					break;
 			}
-			_num_digits = GetNumDigits(Domain.Size);
+			_numDigits = GetNumDigits(_domain.Size);
 		}
 
 		public int GetDataSize()
 		{
-			return _data_size;
+			return _dataSize;
 		}
 
 		private int GetNumDigits(Int32 i)
@@ -393,21 +380,21 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAddressOver(int x, int y)
 		{
 			//Scroll value determines the first row
-			int i = vScrollBar1.Value;
-			i += (y - 36) / (font.Height - 1);
-			int column = (x - (49 + addrOffset)) / 20;
+			int i = VScrollBar1.Value;
+			i += (y - 36) / (_font.Height - 1);
+			int column = (x - (49 + _addrOffset)) / 20;
 			
 			//TODO: 2 & 4 byte views
 
-			if (i >= 0 && i <= maxRow && column >= 0 && column < 16)
+			if (i >= 0 && i <= _maxRow && column >= 0 && column < 16)
 			{
-				addressOver = i * 16 + column;
-				info = String.Format("{0:X4}", addressOver);
+				_addressOver = i * 16 + column;
+				_info = String.Format("{0:X4}", _addressOver);
 			}
 			else
 			{
-				addressOver = -1;
-				info = "";
+				_addressOver = -1;
+				_info = String.Empty;
 			}
 		}
 
@@ -418,12 +405,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void HighlightPointed()
 		{
-			if (addressOver >= 0)
+			if (_addressOver >= 0)
 			{
-				addressHighlighted = addressOver;
+				_addressHighlighted = _addressOver;
 			}
 			else
-				addressHighlighted = -1;
+				_addressHighlighted = -1;
 			ClearNibbles();
 			Focus();
 			Refresh();
@@ -432,9 +419,9 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
 		{
 			SetAddressOver(e.X, e.Y);
-			if (addressOver == addressHighlighted && addressOver >= 0)
+			if (_addressOver == _addressHighlighted && _addressOver >= 0)
 			{
-				addressHighlighted = -1;
+				_addressHighlighted = -1;
 				Refresh();
 			}
 			else
@@ -445,17 +432,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public int GetPointedAddress()
 		{
-			if (addressOver >= 0)
-				return addressOver;
+			if (_addressOver >= 0)
+			{
+				return _addressOver;
+			}
 			else
+			{
 				return -1;  //Negative = no address pointed
+			}
 		}
 
 		public int GetHighlightedAddress()
 		{
-			if (addressHighlighted >= 0)
+			if (_addressHighlighted >= 0)
 			{
-				return addressHighlighted;
+				return _addressHighlighted;
 			}
 			else
 			{
@@ -469,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int i = address >> 4;
 
-				if (i >= vScrollBar1.Value && i < (_rows_visible + vScrollBar1.Value))
+				if (i >= VScrollBar1.Value && i < (_rowsVisible + VScrollBar1.Value))
 				{
 					return true;
 				}
@@ -483,23 +474,23 @@ namespace BizHawk.Client.EmuHawk
 		public void PokeHighlighted(int value)
 		{
 			//TODO: 2 byte & 4 byte
-			if (addressHighlighted >= 0)
-				Domain.PokeByte(addressHighlighted, (byte)value);
+			if (_addressHighlighted >= 0)
+				_domain.PokeByte(_addressHighlighted, (byte)value);
 		}
 
 		public int GetSize()
 		{
-			return Domain.Size;
+			return _domain.Size;
 		}
 
 		public byte GetPointedValue()
 		{
-			return Domain.PeekByte(addressOver);
+			return _domain.PeekByte(_addressOver);
 		}
 
 		public MemoryDomain GetDomain()
 		{
-			return Domain;
+			return _domain;
 		}
 
 		public void GoToAddress(int address)

@@ -2065,13 +2065,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void setColorsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			HexColors_Form h = new HexColors_Form();
+			HexColorsForm h = new HexColorsForm();
 			h.Show();
 		}
 
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			HexColors_Form h = new HexColors_Form();
+			HexColorsForm h = new HexColorsForm();
 			GlobalWin.Sound.StopSound();
 			h.ShowDialog();
 			GlobalWin.Sound.StartSound();

@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexFind : Form
 	{
-		private Point location;
+		private Point _location;
 		public HexFind()
 		{
 			InitializeComponent();
@@ -22,15 +22,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetLocation(Point p)
 		{
-			location = p;
+			_location = p;
 			
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
 		{
-			if (location.X > 0 && location.Y > 0)
+			if (_location.X > 0 && _location.Y > 0)
 			{
-				Location = location;
+				Location = _location;
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (String.IsNullOrWhiteSpace(FindBox.Text))
 			{
-				return "";
+				return String.Empty;
 			}
 			else if (HexRadio.Checked)
 			{
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				List<byte> bytes = FindBox.Text.Select(c => Convert.ToByte(c)).ToList();
+				List<byte> bytes = FindBox.Text.Select(Convert.ToByte).ToList();
 
 				StringBuilder bytestring = new StringBuilder();
 				foreach (byte b in bytes)

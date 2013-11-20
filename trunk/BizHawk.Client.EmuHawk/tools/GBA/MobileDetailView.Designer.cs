@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.bmpView1 = new BizHawk.Client.EmuHawk.BmpView();
+            this.BmpView = new BizHawk.Client.EmuHawk.BmpView();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,7 +40,7 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.bmpView1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.BmpView, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.listView1, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -53,12 +53,12 @@
             // 
             // bmpView1
             // 
-            this.bmpView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bmpView1.Location = new System.Drawing.Point(3, 3);
-            this.bmpView1.Name = "bmpView1";
-            this.bmpView1.Size = new System.Drawing.Size(136, 134);
-            this.bmpView1.TabIndex = 0;
-            this.bmpView1.Text = "bmpView1";
+            this.BmpView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BmpView.Location = new System.Drawing.Point(3, 3);
+            this.BmpView.Name = "bmpView";
+            this.BmpView.Size = new System.Drawing.Size(136, 134);
+            this.BmpView.TabIndex = 0;
+            this.BmpView.Text = "bmpView1";
             // 
             // listView1
             // 
@@ -96,7 +96,6 @@
 		#endregion
 
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private BmpView bmpView1;
 		private System.Windows.Forms.ListView listView1;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class HexColors_Form
+    partial class HexColorsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -182,7 +182,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "HexColors_Form";
+            this.Name = "HexColorsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Colors";
             this.Load += new System.EventHandler(this.HexColors_Form_Load);
