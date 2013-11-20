@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			string path = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
+			string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 			{
 				path = path.Remove(path.Length - 1, 1);
