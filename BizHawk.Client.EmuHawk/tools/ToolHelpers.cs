@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -156,37 +155,22 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 		}
 
-		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
+		public static IEnumerable<ToolStripMenuItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
 
-			if (Global.Emulator.MemoryDomains.Any())
+			foreach (var domain in Global.Emulator.MemoryDomains)
 			{
-				int counter = 0;
-				foreach (var domain in Global.Emulator.MemoryDomains)
-				{
-					string temp = domain.ToString();
-					var item = new ToolStripMenuItem { Text = temp };
+				string name = domain.Name;
 
-					int index = counter;
-					item.Click += (o, ev) => SetCallback(index);
-
-					if (temp == SelectedDomain)
-					{
-						item.Checked = true;
-					}
-
-					if (maxSize.HasValue && domain.Size > maxSize.Value)
-					{
-						item.Enabled = false;
-					}
-
-					items.Add(item);
-					counter++;
-				}
+				var item = new ToolStripMenuItem { Text = name };
+				item.Click += (o, ev) => setCallback(name);
+				item.Checked = name == selectedDomain;
+				item.Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value);
+				items.Add(item);
 			}
 
-			return items.ToArray();
+			return items;
 		}
 
 		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
@@ -226,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!watch.IsSeparator)
 				{
 					Global.CheatList.Add(
-						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
+						new Cheat(watch, watch.Value ?? 0)
 					);
 				}
 			}
