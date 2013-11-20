@@ -521,16 +521,13 @@ namespace BizHawk.Client.EmuHawk
 			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Searches.Domain.Name;
 		}
 
-		private void SetMemoryDomain(int pos)
+		private void SetMemoryDomain(string name)
 		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
-			{
-				Settings.Domain = Global.Emulator.MemoryDomains[pos];
-				SetDomainLabel();
-				SetReboot(true);
-				SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Settings.Domain.Size);
-				DoDomainSizeCheck();
-			}
+			Settings.Domain = Global.Emulator.MemoryDomains[name];
+			SetDomainLabel();
+			SetReboot(true);
+			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(Settings.Domain.Size);
+			DoDomainSizeCheck();
 		}
 
 		private void DoDomainSizeCheck()
@@ -1021,7 +1018,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.Domain.Name, MaxSupportedSize));
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Searches.Domain.Name, MaxSupportedSize).ToArray());
 		}
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
