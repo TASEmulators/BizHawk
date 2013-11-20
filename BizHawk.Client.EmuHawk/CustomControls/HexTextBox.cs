@@ -147,11 +147,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (val.HasValue)
 			{
-				Text = String.Empty;
+				Text = String.Format(_addressFormatStr, val);
 			}
 			else
 			{
-				Text = String.Format(_addressFormatStr, val);
+				Text = String.Empty;
 			}
 		}
 	}
