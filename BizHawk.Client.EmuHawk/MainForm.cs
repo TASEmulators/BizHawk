@@ -2618,6 +2618,9 @@ namespace BizHawk.Client.EmuHawk
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
+				//client input-related duties
+				GlobalWin.OSD.ClearGUIText();
+
 				if (!fff)
 				{
 					UpdateToolsBefore();
@@ -2626,8 +2629,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.FrameTick();
 
 				runloop_fps++;
-				//client input-related duties
-				GlobalWin.OSD.ClearGUIText();
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{

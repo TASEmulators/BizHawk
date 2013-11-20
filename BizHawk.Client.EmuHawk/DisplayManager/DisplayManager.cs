@@ -409,7 +409,6 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearGUIText()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-
 			GUITextList.Clear();
 		}
 
