@@ -38,10 +38,6 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.24551, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -53,6 +49,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="LuaInterface">
+      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs">
@@ -153,7 +152,7 @@
       <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
+      <Project>{E1A23168-B571-411C-B360-2229E7225E0E}</Project>
       <Name>BizHawk.Emulation.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
@@ -161,13 +160,18 @@
       <Name>BizHawk.Emulation.Cores</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <CustomCommands>
+      <CustomCommands>
+        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

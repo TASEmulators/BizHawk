@@ -1,5 +1,7 @@
-﻿using SlimDX.Direct3D9;
+﻿#if WINDOWS
+using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
+#endif
 
 using BizHawk.Client.Common;
 

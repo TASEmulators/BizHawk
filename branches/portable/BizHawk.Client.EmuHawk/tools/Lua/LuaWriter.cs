@@ -49,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 
 		void LuaText_MouseWheel(object sender, MouseEventArgs e)
 		{
+			//Todo: Non-DInput specific keys
+			#if WINDOWS
 			if (KeyInput.IsPressed(SlimDX.DirectInput.Key.LeftControl))
 			{
 				Double Zoom;
@@ -63,6 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
 			}
+			#endif
 		}
 
 		private void timer_Tick(object sender, EventArgs e)

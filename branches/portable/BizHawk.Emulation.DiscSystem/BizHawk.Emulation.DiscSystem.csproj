@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
-      <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
+      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
       <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
@@ -82,7 +84,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <CustomCommands>
+      <CustomCommands>
+        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

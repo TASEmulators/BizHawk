@@ -304,6 +304,15 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
+		public void UpdateSilence()
+		{
+
+		}
+
+		public void UpdateSound()
+		{
+		}
+
 		public void UpdateSound(ISoundProvider soundProvider)
 		{
 			soundProvider.DiscardSamples();
@@ -319,19 +328,22 @@ namespace BizHawk.Client.EmuHawk
 			UpdateSoundSettings();
 		}
 
+		public void SetSyncInputPin(ISyncSoundProvider source)
+		{
+
+		}
+
+		public void SetAsyncInputPin(ISoundProvider source)
+		{
+
+		}
+
 		/// <summary>
 		/// Uses Global.Config.SoundEnabled, this just notifies the object to read it
 		/// </summary>
 		public void UpdateSoundSettings()
 		{
-			if (Global.Emulator is NES)
-			{
-				NES n = Global.Emulator as NES;
-				if (Global.Config.SoundEnabled == false)
-					n.SoundOn = false;
-				else
-					n.SoundOn = true;
-			}
+
 		}
 	}
 #endif

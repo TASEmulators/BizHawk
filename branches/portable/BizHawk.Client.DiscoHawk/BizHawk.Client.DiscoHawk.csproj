@@ -60,9 +60,6 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>discohawk.ico</ApplicationIcon>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -109,7 +106,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -153,12 +150,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
+    <CustomCommands>
+      <CustomCommands>
+        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
 </Project>

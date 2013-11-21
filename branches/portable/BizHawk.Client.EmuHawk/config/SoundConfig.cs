@@ -30,16 +30,17 @@ namespace BizHawk.Client.EmuHawk
 			// vestigal
 			ThrottlecheckBox.Visible = false;
 
-
-			var dd = SoundEnumeration.DeviceNames();
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
+			#if WINDOWS
+			var dd = SoundEnumeration.DeviceNames();
 			foreach (var d in dd)
 			{
 				listBoxSoundDevices.Items.Add(d);
 				if (d == Global.Config.SoundDevice)
 					listBoxSoundDevices.SelectedItem = d;
 			}
+			#endif
 		}
 
 		private void OK_Click(object sender, EventArgs e)

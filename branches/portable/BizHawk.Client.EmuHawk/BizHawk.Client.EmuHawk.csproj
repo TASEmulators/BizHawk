@@ -12,8 +12,6 @@
     <AssemblyName>EmuHawk</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>images\logo.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -49,6 +47,11 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,7 +63,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>WINDOWS</DefineConstants>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -69,34 +76,30 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.24551, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="SlimDX, Version=2.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9" Condition=" '$(OS)' == 'Windows_NT' ">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="LuaInterface">
+      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT' ">
       <HintPath>..\SlimDX.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -350,7 +353,7 @@
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="Input\GamePad360.cs" />
+    <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -1008,7 +1011,7 @@
       <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
+      <Project>{E1A23168-B571-411C-B360-2229E7225E0E}</Project>
       <Name>BizHawk.Emulation.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
@@ -1016,7 +1019,7 @@
       <Name>BizHawk.Emulation.Cores</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
   </ItemGroup>
@@ -1256,6 +1259,10 @@
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
+    <CustomCommands>
+      <CustomCommands>
+        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${SolutionDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
 </Project>

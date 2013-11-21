@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 #if WINDOWS
 			GlobalWin.Sound = new Sound(Handle, GlobalWin.DSound);
 #else
-			Global.Sound = new Sound();
+			GlobalWin.Sound = new Sound();
 #endif
 			GlobalWin.Sound.StartSound();
 			RewireInputChain();
