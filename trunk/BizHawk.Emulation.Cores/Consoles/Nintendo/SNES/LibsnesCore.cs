@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (disposed) return;
 			disposed = true;
 
-			api.snes_unload_cartridge();
-			api.snes_term();
+			api.CMD_unload_cartridge();
+			api.CMD_term();
 
 			resampler.Dispose();
 			api.Dispose();
@@ -80,12 +80,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
-			var vals = new List<KeyValuePair<string, int>>();
-			foreach (var blah in Enum.GetValues(typeof(LibsnesApi.SNES_REG)).Cast<LibsnesApi.SNES_REG>())
+			var ret = new List<KeyValuePair<string, int>>();
+
+			LibsnesApi.CpuRegs regs;
+			api.QUERY_peek_cpu_regs(out regs);
+
+			bool fn = (regs.p & 0x80)!=0;
+			bool fv = (regs.p & 0x40)!=0;
+			bool fm = (regs.p & 0x20)!=0;
+			bool fx = (regs.p & 0x10)!=0;
+			bool fd = (regs.p & 0x08)!=0;
+			bool fi = (regs.p & 0x04)!=0;
+			bool fz = (regs.p & 0x02)!=0;
+			bool fc = (regs.p & 0x01)!=0;
+			
+			return new List<KeyValuePair<string, int>>
 			{
-				vals.Add(new KeyValuePair<string, int>(blah.ToString(), api.snes_peek_logical_register(blah)));
-			}
-			return vals;
+				new KeyValuePair<string, int>("PC", (int)regs.pc),
+				new KeyValuePair<string, int>("A", (int)regs.a),
+				new KeyValuePair<string, int>("X", (int)regs.x),
+				new KeyValuePair<string, int>("Y", (int)regs.y),
+				new KeyValuePair<string, int>("Z", (int)regs.z),
+				new KeyValuePair<string, int>("S", (int)regs.s),
+				new KeyValuePair<string, int>("D", (int)regs.d),
+				new KeyValuePair<string, int>("Vector", (int)regs.vector),
+				new KeyValuePair<string, int>("P", (int)regs.p),
+				new KeyValuePair<string, int>("AA", (int)regs.aa),
+				new KeyValuePair<string, int>("RD", (int)regs.rd),
+				new KeyValuePair<string, int>("SP", (int)regs.sp),
+				new KeyValuePair<string, int>("DP", (int)regs.dp),
+				new KeyValuePair<string, int>("DB", (int)regs.db),
+				new KeyValuePair<string, int>("MDR", (int)regs.mdr),
+				new KeyValuePair<string, int>("Flag N", fn?1:0),
+				new KeyValuePair<string, int>("Flag V", fv?1:0),
+				new KeyValuePair<string, int>("Flag M", fm?1:0),
+				new KeyValuePair<string, int>("Flag X", fx?1:0),
+				new KeyValuePair<string, int>("Flag D", fd?1:0),
+				new KeyValuePair<string, int>("Flag I", fi?1:0),
+				new KeyValuePair<string, int>("Flag Z", fz?1:0),
+				new KeyValuePair<string, int>("Flag C", fc?1:0),
+			};
 		}
 
 		public class MyScanlineHookManager : ScanlineHookManager
@@ -105,8 +139,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		void OnScanlineHooksChanged()
 		{
 			if (disposed) return;
-			if (ScanlineHookManager.HookCount == 0) api.snes_set_scanlineStart(null);
-			else api.snes_set_scanlineStart(scanlineStart_cb);
+			if (ScanlineHookManager.HookCount == 0) api.QUERY_set_scanlineStart(null);
+			else api.QUERY_set_scanlineStart(scanlineStart_cb);
 		}
 
 		void snes_scanlineStart(int line)
@@ -175,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CurrPalette = pal;
 			int[] tmp = SnesColors.GetLUT(pal);
 			fixed (int* p = &tmp[0])
-				api.snes_set_color_lut((IntPtr)p);
+				api.QUERY_set_color_lut((IntPtr)p);
 		}
 
 		public LibsnesApi api;
@@ -185,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			CoreComm = comm;
 			api = new LibsnesApi(CoreComm.SNES_ExePath);
-			api.snes_init();
+			api.CMD_init();
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
 			api.WriteHook = WriteHook;
@@ -197,6 +231,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
+			api.SPECIAL_Resume();
 		}
 		void ExecHook(uint addr)
 		{
@@ -204,6 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
+			api.SPECIAL_Resume();
 		}
 		void WriteHook(uint addr, byte val)
 		{
@@ -211,6 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
+			api.SPECIAL_Resume();
 		}
 
 		LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
@@ -221,19 +258,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
-			api.snes_init();
+			api.CMD_init();
 
-			api.snes_set_video_refresh(snes_video_refresh);
-			api.snes_set_input_poll(snes_input_poll);
-			api.snes_set_input_state(snes_input_state);
-			api.snes_set_input_notify(snes_input_notify);
-			api.snes_set_path_request(snes_path_request);
+			api.QUERY_set_video_refresh(snes_video_refresh);
+			api.QUERY_set_input_poll(snes_input_poll);
+			api.QUERY_set_input_state(snes_input_state);
+			api.QUERY_set_input_notify(snes_input_notify);
+			api.QUERY_set_path_request(snes_path_request);
 			
 			scanlineStart_cb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
 			tracecb = new LibsnesApi.snes_trace_t(snes_trace);
 
 			soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
-			api.snes_set_audio_sample(soundcb);
+			api.QUERY_set_audio_sample(soundcb);
 
 			// set default palette. Should be overridden by frontend probably
 			SetPalette(SnesColors.ColorType.BizHawk);
@@ -255,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				IsSGB = true;
 				SystemId = "SNES";
-				if (!api.snes_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
+				if (!api.CMD_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
 					throw new Exception("snes_load_cartridge_super_game_boy() failed");
 			}
 			else
@@ -275,11 +312,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				SystemId = "SNES";
-				if (!api.snes_load_cartridge_normal(xmlData, romData))
+				if (!api.CMD_load_cartridge_normal(xmlData, romData))
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 
-			if (api.snes_get_region() == LibsnesApi.SNES_REGION.NTSC)
+			if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
 			{
 				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
 				CoreComm.VsyncNum = 21477272;
@@ -294,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			CoreComm.CpuTraceAvailable = true;
 
-			api.snes_power();
+			api.CMD_power();
 
 			SetupMemoryDomains(romData,sgbRomData);
 
@@ -473,44 +510,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			if (!nocallbacks && CoreComm.Tracer.Enabled)
-				api.snes_set_trace_callback(tracecb);
+				api.QUERY_set_trace_callback(tracecb);
 			else
-				api.snes_set_trace_callback(null);
+				api.QUERY_set_trace_callback(null);
 
 			// speedup when sound rendering is not needed
 			if (!rendersound)
-				api.snes_set_audio_sample(null);
+				api.QUERY_set_audio_sample(null);
 			else
-				api.snes_set_audio_sample(soundcb);
+				api.QUERY_set_audio_sample(soundcb);
 
 			bool resetSignal = Controller["Reset"];
-			if (resetSignal) api.snes_reset();
+			if (resetSignal) api.CMD_reset();
 
 			bool powerSignal = Controller["Power"];
-			if (powerSignal) api.snes_power();
+			if (powerSignal) api.CMD_power();
 
 			//too many messages
-			api.snes_set_layer_enable(0, 0, CoreComm.SNES_ShowBG1_0);
-			api.snes_set_layer_enable(0, 1, CoreComm.SNES_ShowBG1_1);
-			api.snes_set_layer_enable(1, 0, CoreComm.SNES_ShowBG2_0);
-			api.snes_set_layer_enable(1, 1, CoreComm.SNES_ShowBG2_1);
-			api.snes_set_layer_enable(2, 0, CoreComm.SNES_ShowBG3_0);
-			api.snes_set_layer_enable(2, 1, CoreComm.SNES_ShowBG3_1);
-			api.snes_set_layer_enable(3, 0, CoreComm.SNES_ShowBG4_0);
-			api.snes_set_layer_enable(3, 1, CoreComm.SNES_ShowBG4_1);
-			api.snes_set_layer_enable(4, 0, CoreComm.SNES_ShowOBJ_0);
-			api.snes_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
-			api.snes_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
-			api.snes_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
+			api.QUERY_set_layer_enable(0, 0, CoreComm.SNES_ShowBG1_0);
+			api.QUERY_set_layer_enable(0, 1, CoreComm.SNES_ShowBG1_1);
+			api.QUERY_set_layer_enable(1, 0, CoreComm.SNES_ShowBG2_0);
+			api.QUERY_set_layer_enable(1, 1, CoreComm.SNES_ShowBG2_1);
+			api.QUERY_set_layer_enable(2, 0, CoreComm.SNES_ShowBG3_0);
+			api.QUERY_set_layer_enable(2, 1, CoreComm.SNES_ShowBG3_1);
+			api.QUERY_set_layer_enable(3, 0, CoreComm.SNES_ShowBG4_0);
+			api.QUERY_set_layer_enable(3, 1, CoreComm.SNES_ShowBG4_1);
+			api.QUERY_set_layer_enable(4, 0, CoreComm.SNES_ShowOBJ_0);
+			api.QUERY_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
+			api.QUERY_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
+			api.QUERY_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
 
 			RefreshMemoryCallbacks();
 
 			//apparently this is one frame?
 			timeFrameCounter++;
-			api.snes_run();
+			api.CMD_run();
 
-			while (api.HasMessage)
-				Console.WriteLine(api.DequeueMessage());
+			while (api.QUERY_HasMessage)
+				Console.WriteLine(api.QUERY_DequeueMessage());
 
 			if (IsLagFrame)
 				LagCount++;
@@ -524,16 +561,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		void RefreshMemoryCallbacks()
 		{
 			var mcs = CoreComm.MemoryCallbackSystem;
-			api.snes_set_state_hook_exec(mcs.HasExecutes);
-			api.snes_set_state_hook_read(mcs.HasReads);
-			api.snes_set_state_hook_write(mcs.HasWrites);
+			api.QUERY_set_state_hook_exec(mcs.HasExecutes);
+			api.QUERY_set_state_hook_read(mcs.HasReads);
+			api.QUERY_set_state_hook_write(mcs.HasWrites);
 		}
 
 		public DisplayType DisplayType
 		{
 			get
 			{
-				if (api.snes_get_region() == LibsnesApi.SNES_REGION.NTSC)
+				if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
 					return DisplayType.NTSC;
 				else
 					return DisplayType.PAL;
@@ -593,14 +630,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			set { }
 			get
 			{
-				return api.snes_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0;
+				return api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0;
 			}
 		}
 
 		public byte[] ReadSaveRam()
 		{
-			byte* buf = api.snes_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			var size = api.snes_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			var ret = new byte[size];
 			Marshal.Copy((IntPtr)buf, ret, 0, size);
 			return ret;
@@ -616,16 +653,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void StoreSaveRam(byte[] data)
 		{
-			var size = api.snes_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			if (size == 0) return;
 			if (size != data.Length) throw new InvalidOperationException("Somehow, we got a mismatch between saveram size and what bsnes says the saveram size is");
-			byte* buf = api.snes_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			Marshal.Copy(data, 0, (IntPtr)buf, size);
 		}
 
 		public void ClearSaveRam()
 		{
-			byte[] cleardata = new byte[(int)api.snes_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM)];
+			byte[] cleardata = new byte[(int)api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM)];
 			StoreSaveRam(cleardata);
 		}
 
@@ -786,7 +823,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			int size = api.snes_serialize_size();
+			int size = api.QUERY_serialize_size();
 			byte[] buf = reader.ReadBytes(size);
 			CoreLoadState(buf);
 
@@ -850,22 +887,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		void CoreLoadState(byte[] data)
 		{
-			int size = api.snes_serialize_size();
+			int size = api.QUERY_serialize_size();
 			if (data.Length != size)
 				throw new Exception("Libsnes internal savestate size mismatch!");
-			api.snes_init();
+			api.CMD_init();
 			fixed (byte* pbuf = &data[0])
-				api.snes_unserialize(new IntPtr(pbuf), size);
+				api.CMD_unserialize(new IntPtr(pbuf), size);
 		}
 		/// <summary>
 		/// handle the unmanaged part of savestating
 		/// </summary>
 		byte[] CoreSaveState()
 		{
-			int size = api.snes_serialize_size();
+			int size = api.QUERY_serialize_size();
 			byte[] buf = new byte[size];
 			fixed (byte* pbuf = &buf[0])
-				api.snes_serialize(new IntPtr(pbuf), size);
+				api.CMD_serialize(new IntPtr(pbuf), size);
 			return buf;
 		}
 
@@ -881,14 +918,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)
 		{
-			int size = api.snes_get_memory_size(id);
+			int size = api.QUERY_get_memory_size(id);
 			int mask = size - 1;
 
 			//if this type of memory isnt available, dont make the memory domain (most commonly save ram)
 			if (size == 0)
 				return null;
 
-			byte* blockptr = api.snes_get_memory_data(id);
+			byte* blockptr = api.QUERY_get_memory_data(id);
 
 			MemoryDomain md;
 
@@ -961,8 +998,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				if (!DeterministicEmulation)
 					_memoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
-						(addr) => api.peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-						(addr, val) => api.poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
+						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
 
 			}
 
