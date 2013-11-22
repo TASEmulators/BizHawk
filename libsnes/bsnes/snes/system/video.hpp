@@ -7,11 +7,12 @@ struct Video {
   Video();
   ~Video();
 
+	void update();
+
 private:
   bool hires;
   unsigned line_width[240];
 
-  void update();
   void scanline();
   void init();
 

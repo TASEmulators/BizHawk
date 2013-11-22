@@ -953,4 +953,24 @@ namespace BizHawk.Common
 	public class NotTestedException : Exception
 	{
 	}
+
+	class SuperGloballyUniqueID
+	{
+		public static string Next()
+		{
+			int myctr;
+			lock (typeof(SuperGloballyUniqueID))
+				myctr = ctr++;
+			return staticPart + "-" + myctr;
+		}
+
+		static SuperGloballyUniqueID()
+		{
+			staticPart = "bizhawk-" + System.Diagnostics.Process.GetCurrentProcess().Id.ToString() + "-" + Guid.NewGuid().ToString();
+		}
+
+		static int ctr;
+		static string staticPart;
+	}
+
 }

@@ -389,6 +389,11 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_Enums.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_QUERY.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_SIG.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
