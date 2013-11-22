@@ -252,6 +252,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			byte[] saveram = api.SaveSaveram();
 			writer.Write(saveram);
+			if (saveram.Length != mupen64plusApi.kSaveramSize)
+				throw new InvalidOperationException("Unexpected N64 SaveRam size");
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -267,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			api.LoadState(data);
 
-			reader.Read(SaveStatePrivateBuff,0,0x800 + 0x8000 * 4);
+			reader.Read(SaveStatePrivateBuff, 0, mupen64plusApi.kSaveramSize);
 			api.LoadSaveram(SaveStatePrivateBuff);
 
 			// other variables
