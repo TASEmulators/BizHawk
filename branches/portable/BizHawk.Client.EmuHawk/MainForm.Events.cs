@@ -2095,7 +2095,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			GlobalWin.RenderPanel.Resized = true;
+			if (GlobalWin.RenderPanel != null) 
+			{
+				GlobalWin.RenderPanel.Resized = true;
+			}
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)
