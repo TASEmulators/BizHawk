@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 					s.Message = c.Value.ToString();
 					selectedMovie.Subtitles.Add(s);
 				}
-				selectedMovie.WriteMovie();
+				selectedMovie.Save();
 			}
 			Close();
 		}

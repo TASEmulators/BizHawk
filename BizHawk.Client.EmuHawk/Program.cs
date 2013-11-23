@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 									);
 								if (result == DialogResult.Yes)
 								{
-									Global.MovieSession.Movie.WriteMovie();
+									Global.MovieSession.Movie.Save();
 								}
 							}
 #endif

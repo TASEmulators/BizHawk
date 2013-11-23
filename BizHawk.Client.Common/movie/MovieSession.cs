@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 			);
 		}
 
-		public void StopMovie(bool abortchanges = false)
+		public void StopMovie(bool saveChanges = true)
 		{
 			string message = "Movie ";
 			if (Movie.IsRecording)
@@ -86,8 +86,8 @@ namespace BizHawk.Client.Common
 
 			if (Movie.IsActive)
 			{
-				Movie.Stop(abortchanges);
-				if (!abortchanges)
+				Movie.Stop(saveChanges);
+				if (saveChanges)
 				{
 					Output(Path.GetFileName(Movie.Filename) + " written to disk.");
 				}
@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
-						Movie.WriteMovie();
+						Movie.Save();
 						Movie.SwitchToPlay();
 						
 						return true;
@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 								var newresult = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
 								if (newresult == LoadStateResult.Pass)
 								{
-									Movie.WriteMovie();
+									Movie.Save();
 									Movie.SwitchToPlay();
 									return true;
 								}

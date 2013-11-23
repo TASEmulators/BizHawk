@@ -11,16 +11,20 @@ namespace BizHawk.Client.Common
 		string Filename { get; set; }
 
 		bool IsCountingRerecords { get; set; }
-		
 		bool IsActive { get; }
 		bool IsPlaying { get; }
 		bool IsRecording { get; }
 		bool IsFinished { get; }
+		bool Changes { get; }
+		bool Loaded { get; }
 
-		bool LoadMovie();
-		void WriteBackup();
+		bool Load();
+		void Save();
+		void SaveAs();
+		void Stop(bool saveChanges = true);
 
 		#region Editing API
+
 		void ClearFrame(int frame);
 		void ModifyFrame(string record, int frame);
 		void AppendFrame(string record);
@@ -28,12 +32,10 @@ namespace BizHawk.Client.Common
 		void InsertBlankFrame(int frame);
 		void DeleteFrame(int frame);
 		void TruncateMovie(int frame);
+
 		#endregion
 
 		#region Dubious, should reconsider
-		bool Loaded { get; } //Who needs to know it is loaded or not? The movie should decide what to do based on being loaded or not
-		bool IsText { get; } //remove until needed Make a get set, consider an Enum of FileTypeMode or something, 
-		bool HasChanges { get; } //Rename to changes
 		void CommitFrame(int frameNum, IController source); //why pass in frameNum? Calling api 
 		void PokeFrame(int frameNum, string input); //Why does this exist as something different than Commit Frame?
 		void CaptureState(); //Movie code should manage wheter it needs to capture a state
@@ -46,13 +48,10 @@ namespace BizHawk.Client.Common
 
 		void Finish(); //Why isn't the movie in charge of this?
 		void StartRecording(bool truncate = true); //Why do we need to truncate or not truncate? Why isn't the object in charge of this decision?
-		void Stop(bool abortchanges = false); //Refactor to have a bool saveChanges instead
 
 		void StartPlayback(); //Poorly named for what it does, SetToPlay() perhaps? Also, this seems like too much power to give the calling code
 		void SwitchToRecord(); //Ditto
 		void SwitchToPlay(); //Dubious that it is needed
-
-		void WriteMovie(); //Rename to Write()
 
 		bool FrameLagged(int frame); //SHould be a property of a Record object
 		byte[] GetState(int frame); //Should be a property of a Record object
@@ -65,7 +64,7 @@ namespace BizHawk.Client.Common
 		MovieLog LogDump { get; } //Don't expose this!!!
 		SubtitleList Subtitles { get; } //Don't expose this!!!
 
-		int StateFirstIndex { get; }
+		int StateFirstIndex { get; } //What do these do?
 		int StateLastIndex { get; }
 		#endregion
 	}

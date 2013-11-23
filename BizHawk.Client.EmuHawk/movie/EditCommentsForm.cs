@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
 					selectedMovie.Header.Comments.Add("comment " + c.Value);
 				}
-				selectedMovie.WriteMovie();
+				selectedMovie.Save();
 			}
 			Close();
 		}

@@ -2381,7 +2381,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Save();
 				GlobalWin.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
 		}
@@ -3794,7 +3794,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(d);
 
 			string outPath = Path.Combine(d, (Path.GetFileName(fn) + "." + Global.Config.MovieExtension));
-			m.WriteMovie(outPath);
+			m.SaveAs(outPath);
 		}
 
 		public void FlagNeedsReboot() //Make private, config dialogs use it and it can be called after they close
