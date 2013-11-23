@@ -120,6 +120,7 @@
     <Compile Include="lua\LuaFunctionList.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
+    <Compile Include="movie\IMovie.cs" />
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="movie\Movie.cs" />
     <Compile Include="movie\MovieHeader.cs" />

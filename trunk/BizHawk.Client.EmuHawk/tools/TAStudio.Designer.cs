@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 				components.Dispose();
 			}
 
-			Global.MovieSession.Movie.StateCapturing = false; //TODO: This doesn't go here, extend this method in the .cs file
+			//Global.MovieSession.Movie.StateCapturing = false; //TODO: This doesn't go here, extend this method in the .cs file
 
 			base.Dispose(disposing);
 		}

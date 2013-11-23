@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.StateCapturing = true;
+				//Global.MovieSession.Movie.StateCapturing = true;
 				ReadOnlyCheckBox.Checked = Global.ReadOnly;
 			}
 			else

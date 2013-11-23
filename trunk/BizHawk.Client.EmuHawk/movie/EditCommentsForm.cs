@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditCommentsForm : Form
 	{
-		private Movie selectedMovie;
+		private IMovie selectedMovie;
 
 		public EditCommentsForm()
 		{
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public void GetMovie(Movie m)
+		public void GetMovie(IMovie m)
 		{
 			selectedMovie = m;
 			if (m.Header.Comments.Count == 0) return;
