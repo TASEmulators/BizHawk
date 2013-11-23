@@ -109,7 +109,29 @@ namespace BizHawk.Client.EmuHawk
 						var title = mf.Text;
 						mf.Show();
 						mf.Text = title;
-						mf.ProgramRunLoop();
+						try
+						{
+							mf.ProgramRunLoop();
+						}
+						catch (Exception e)
+						{
+#if WINDOWS
+							if (!VersionInfo.INTERIM && Global.MovieSession.Movie.IsActive)
+							{
+								var result = MessageBox.Show(
+									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
+									"Fatal error: " + e.GetType().Name,
+									MessageBoxButtons.YesNo,
+									MessageBoxIcon.Exclamation
+									);
+								if (result == DialogResult.Yes)
+								{
+									Global.MovieSession.Movie.WriteMovie();
+								}
+							}
+#endif
+							throw e;
+						}
 					}
 #if WINDOWS
 				}
