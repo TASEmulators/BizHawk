@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int i = 0; i < frames; i++)
 			{
-				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
+				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && Global.MovieSession.Movie.Frames == 0))
 					return;
 
 				if (LastState.Length < 0x10000)

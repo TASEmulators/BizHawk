@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FullMovieLoadstatesMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
-			StopMovieWithoutSavingMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			StopMovieWithoutSavingMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
@@ -436,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
-			StopMovie(true);
+			StopMovie(saveChanges: false);
 		}
 
 		private void BindSavestatesToMoviesMenuItem_Click(object sender, EventArgs e)
@@ -1813,7 +1813,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
-			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges;
+			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
 			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && Global.ReadOnly;
 
@@ -1902,7 +1902,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("Backup movie saved.");
-			Global.MovieSession.Movie.WriteBackup();
+			Global.MovieSession.Movie.SaveAs();
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
@@ -2214,7 +2214,7 @@ namespace BizHawk.Client.EmuHawk
 					//for instance, something which doesnt clobber movies you already may have had.
 					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 					movie.Filename += ".autoimported." + Global.Config.MovieExtension;
-					movie.WriteMovie();
+					movie.Save();
 					StartNewMovie(movie, false);
 				}
 				GlobalWin.OSD.AddMessage(warningMsg);

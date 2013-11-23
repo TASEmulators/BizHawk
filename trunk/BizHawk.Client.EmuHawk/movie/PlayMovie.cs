@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 					if (file.Extension.ToUpper() == "STATE")
 					{
 						Movie movie = new Movie(file.FullName);
-						movie.LoadMovie(); //State files will have to load everything unfortunately
+						movie.Load(); //State files will have to load everything unfortunately
 						if (movie.Frames == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 					if (x == 0)
 					{
 						Movie movie = new Movie(file.CanonicalFullPath);
-						movie.LoadMovie(); //State files will have to load everything unfortunately
+						movie.Load(); //State files will have to load everything unfortunately
 						if (movie.Frames > 0)
 						{
 							_movieList.Add(movie);

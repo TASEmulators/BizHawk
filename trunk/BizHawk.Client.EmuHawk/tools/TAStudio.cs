@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.WriteMovie();
+			Global.MovieSession.Movie.Save();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			if ("" != fileName)
 			{
 				Global.MovieSession.Movie.Filename = fileName;
-				Global.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Save();
 			}
 		}
 
