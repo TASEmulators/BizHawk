@@ -4,6 +4,9 @@ using System.Collections.Generic;
 #if WINDOWS
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
+#else
+using OpenTK.Audio;
+using OpenTK.Audio.OpenAL;
 #endif
 
 using BizHawk.Emulation.Common;
@@ -275,47 +278,128 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 #else
-	// Dummy implementation for non-Windows platforms for now.
+	//OpenAL implementation for other platforms
 	public class Sound
 	{
 		public bool Muted = false;
 		public bool needDiscard;
+		private AudioContext _audContext;
+		private int _audSource;
+		private const int BUFFER_SIZE = 735 * 2 * 2; // 1/60th of a second, 2 bytes per sample, 2 channels;
+		private ISoundProvider asyncsoundProvider;
+		private ISyncSoundProvider syncsoundProvider;
+		private BufferedAsync semisync = new BufferedAsync();
 
 		public Sound()
 		{
+			try
+			{
+				_audContext = new AudioContext();
+				_audSource = AL.GenSource();
+				//Buffer 6 frames worth of sound
+				//How large of a buffer we need seems to depend on the console
+				//For GameGear, 3 or 4 is usually fine. For NES I need 6 frames or it can get choppy.
+				for(int i=0; i<6; i++)
+				{
+					int buffer = AL.GenBuffer();
+					short[] samples = new short[BUFFER_SIZE>>1]; //Initialize with empty sound
+					AL.BufferData(buffer, ALFormat.Stereo16, samples, BUFFER_SIZE, 44100);
+					AL.SourceQueueBuffer(_audSource, buffer);
+				}
+			} 
+			catch(AudioException e)
+			{ 
+				System.Windows.Forms.MessageBox.Show("Unable to initalize sound. That's too bad.");
+			}
 		}
 
 		public void StartSound()
 		{
+			AL.SourcePlay(_audSource);
 		}
 
 		public bool IsPlaying = false;
 
 		public void StopSound()
 		{
+			AL.SourceStop(_audSource);
 		}
 
 		public void Dispose()
 		{
+			//Todo: Should I delete the buffers?
+			AL.DeleteSource(_audSource);
 		}
 
 		int SNDDXGetAudioSpace()
 		{
-			return 0;
+			return BUFFER_SIZE>>2;
 		}
 
 		public void UpdateSilence()
 		{
-
+			Muted = true;
+			UpdateSound();
+			Muted = false;
 		}
 
 		public void UpdateSound()
 		{
-		}
+			if (Global.Config.SoundEnabled == false)
+			{
+				if (asyncsoundProvider != null) asyncsoundProvider.DiscardSamples();
+				if (syncsoundProvider != null) syncsoundProvider.DiscardSamples();
+				return;
+			}
+			int amtToFill = 0;
+			AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
+			for(int i=0; i<amtToFill; i++)
+			{
+				int samplesNeeded = SNDDXGetAudioSpace() * 2;
+				int samplesProvided = 0;
+				short[] samples;
 
-		public void UpdateSound(ISoundProvider soundProvider)
-		{
-			soundProvider.DiscardSamples();
+				if (Muted)
+				{
+					if (samplesNeeded == 0)
+						return;
+					samples = new short[samplesNeeded];
+					samplesProvided = samplesNeeded;
+				}
+				else if (syncsoundProvider != null)
+				{
+					int nsampgot;
+					syncsoundProvider.GetSamples(out samples, out nsampgot);
+					samplesProvided = 2 * nsampgot;
+
+					if (!Global.ForceNoThrottle)
+						while (samplesNeeded < samplesProvided)
+						{
+							System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
+							samplesNeeded = SNDDXGetAudioSpace() * 2;
+						}
+				}
+				else if (asyncsoundProvider != null)
+				{
+					if (samplesNeeded == 0)
+						return;
+					samples = new short[samplesNeeded];
+					semisync.BaseSoundProvider = asyncsoundProvider;
+					semisync.GetSamples(samples);
+					samplesProvided = samplesNeeded;
+				}
+				else
+					return;
+
+				AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
+				int buffer = AL.SourceUnqueueBuffer(_audSource);
+				AL.BufferData(buffer, ALFormat.Stereo16, samples, samplesProvided*2, 44100);    
+				AL.SourceQueueBuffer(_audSource, buffer);
+			}
+			if(AL.GetSourceState(_audSource) != ALSourceState.Playing)
+			{
+				AL.SourcePlay(_audSource);
+			}
 		}
 
 		/// <summary>
@@ -328,22 +412,33 @@ namespace BizHawk.Client.EmuHawk
 			UpdateSoundSettings();
 		}
 
-		public void SetSyncInputPin(ISyncSoundProvider source)
-		{
-
-		}
-
-		public void SetAsyncInputPin(ISoundProvider source)
-		{
-
-		}
-
 		/// <summary>
 		/// Uses Global.Config.SoundEnabled, this just notifies the object to read it
 		/// </summary>
 		public void UpdateSoundSettings()
 		{
+			if (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.NES.NES)
+			{
+				BizHawk.Emulation.Cores.Nintendo.NES.NES n = Global.Emulator as BizHawk.Emulation.Cores.Nintendo.NES.NES;
+				if (Global.Config.SoundEnabled == false)
+					n.SoundOn = false;
+				else
+					n.SoundOn = true;
+			}
+		}
 
+		public void SetSyncInputPin(ISyncSoundProvider source)
+		{
+			syncsoundProvider = source;
+			asyncsoundProvider = null;
+			semisync.DiscardSamples();
+		}
+
+		public void SetAsyncInputPin(ISoundProvider source)
+		{
+			syncsoundProvider = null;
+			asyncsoundProvider = source;
+			semisync.BaseSoundProvider = source;
 		}
 	}
 #endif
