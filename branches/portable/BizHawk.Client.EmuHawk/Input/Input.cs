@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 #if WINDOWS
 using SlimDX.DirectInput;
+#else
+using OpenTK.Input;
 #endif
 
 using BizHawk.Common;
@@ -91,10 +93,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
-#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc) {IsBackground = true};
 			UpdateThread.Start();
-#endif
 		}
 
 		public static void Initialize()
@@ -103,6 +103,8 @@ namespace BizHawk.Client.EmuHawk
 			KeyInput.Initialize();
 			GamePad.Initialize();
 			GamePad360.Initialize();
+#else
+			OTK_Keyboard.Initialize();
 #endif
 			Instance = new Input();
 		}
@@ -165,7 +167,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
+		#if WINDOWS
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
+		#else
+		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight" });
+		#endif
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
@@ -187,12 +193,21 @@ namespace BizHawk.Client.EmuHawk
 
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
+			#if WINDOWS
 			if (button == "LeftShift") mods &= ~ModifierKey.Shift;
 			if (button == "RightShift") mods &= ~ModifierKey.Shift;
 			if (button == "LeftControl") mods &= ~ModifierKey.Control;
 			if (button == "RightControl") mods &= ~ModifierKey.Control;
 			if (button == "LeftAlt") mods &= ~ModifierKey.Alt;
 			if (button == "RightAlt") mods &= ~ModifierKey.Alt;
+			#else
+			if (button == "ShiftLeft") mods &= ~ModifierKey.Shift;
+			if (button == "ShiftRight") mods &= ~ModifierKey.Shift;
+			if (button == "ControlLeft") mods &= ~ModifierKey.Control;
+			if (button == "ControlRight") mods &= ~ModifierKey.Control;
+			if (button == "AltLeft") mods &= ~ModifierKey.Alt;
+			if (button == "AltRight") mods &= ~ModifierKey.Alt;
+			#endif
 
 			var ie = new InputEvent
 				{
@@ -270,23 +285,31 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return FloatValuesCopy;
 		}
-
-#if WINDOWS
+		
 		void UpdateThreadProc()
 		{
 			for (; ; )
 			{
+				#if WINDOWS
 				KeyInput.Update();
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
+				#else
+				OTK_Keyboard.Update();
+				#endif
 
+				#if WINDOWS
 				_Modifiers = KeyInput.GetModifierKeysAsKeys();
+				#else
+				_Modifiers = OTK_Keyboard.GetModifierKeysAsKeys();
+				#endif
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
 				{
 					_NewEvents.Clear();
 
+					#if WINDOWS
 					//analyze keys
 					var bleh = new HashSet<Key>();
 					foreach (var k in KeyInput.State.PressedKeys)
@@ -296,7 +319,14 @@ namespace BizHawk.Client.EmuHawk
 							HandleButton(k.ToString(), true);
 						else
 							HandleButton(k.ToString(), false);
+					#else
+					foreach(Key kb in Enum.GetValues(typeof(Key)))
+					{
+						HandleButton(kb.ToString(), OTK_Keyboard.IsPressed(kb));
+					}
+					#endif
 
+					#if WINDOWS
 					lock (FloatValues)
 					{
 						//FloatValues.Clear();
@@ -337,8 +367,8 @@ namespace BizHawk.Client.EmuHawk
 								FloatValues[n] = f;
 							}
 						}
-
 					}
+					#endif
 
 					bool swallow = !GlobalWin.MainForm.AllowInput;
 
@@ -356,7 +386,6 @@ namespace BizHawk.Client.EmuHawk
 				Thread.Sleep(10);
 			}
 		}
-#endif
 
 		public void StartListeningForFloatEvents()
 		{

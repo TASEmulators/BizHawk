@@ -22,8 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool AutoTab = true;
 		public string WidgetName;
 
+		#if WINDOWS
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
+		#else
+		private static bool HideCaret(IntPtr hWnd) { return true; }
+		#endif
 
 		public InputWidget()
 		{

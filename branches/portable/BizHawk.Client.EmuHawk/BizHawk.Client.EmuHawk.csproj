@@ -1003,6 +1003,7 @@
     <Compile Include="tools\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Input\OTK_Keyboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">

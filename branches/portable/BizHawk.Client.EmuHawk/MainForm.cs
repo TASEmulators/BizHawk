@@ -377,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
-				if (GlobalWin.DisplayManager.NeedsToPaint) { Render(); }
+				if (GlobalWin.DisplayManager != null && GlobalWin.DisplayManager.NeedsToPaint) { Render(); }
 
 				CheckMessages();
 				if (exit)
