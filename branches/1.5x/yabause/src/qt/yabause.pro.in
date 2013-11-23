@@ -1,0 +1,149 @@
+###########################################################################################
+##		Created using Monkey Studio v1.8.1.0
+##
+##	Author    : Filipe AZEVEDO aka Nox P@sNox <pasnox@yabause.org>
+##	Project   : yabause
+##	FileName  : yabause.pro
+##	Date      : 2008-01-28T23:22:47
+##	License   : GPL
+##	Comment   : Creating using Monkey Studio RAD
+##	Home Page   : http://www.monkeystudio.org
+##
+##	This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+##	WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+##
+###########################################################################################
+
+VPATH   = @srcdir@
+TEMPLATE	= app
+LANGUAGE	= Qt4/C++
+TARGET	= yabause
+mac:TARGET	= Yabause
+CONFIG	+= debug_and_release x86 ppc
+QT	+= opengl
+INCLUDEPATH	+= @srcdir@ @srcdir@/ui
+LIBS	+= -L../ -lyabause @LIBS@ @LDFLAGS@
+AC_DEFS = @DEFS@
+CPPFLAGS = @CPPFLAGS@
+QMAKE_CXXFLAGS	+= $$replace( AC_DEFS, "\", "\\\"" ) $$replace( CPPFLAGS, "\", "\\\"" ) $(YTSDEF)
+QMAKE_CFLAGS	+= $$replace( AC_DEFS, "\", "\\\"" ) $$replace( CPPFLAGS, "\", "\\\"" ) $(YTSDEF)
+mac:QMAKE_CXXFLAGS	+= -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_MAX_ALLOWED
+mac:QMAKE_CFLAGS	+= -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_MAX_ALLOWED
+RESOURCES	+= resources/resources.qrc
+mac:ICON	+= resources/icons/yabause.icns
+win32:RC_FILE	+= $$PWD/resources/icons/yabause.rc
+
+BUILD_PATH	= ./build
+BUILDER	= GNUMake
+COMPILER	= G++
+EXECUTE_RELEASE	= yabause
+EXECUTE_DEBUG	= yabause_debug
+
+CONFIG(debug, debug|release) {
+	#Debug
+	CONFIG	+= console
+	unix:TARGET	= $$join(TARGET,,,_debug)
+	else:TARGET	= $$join(TARGET,,,d)
+	unix:OBJECTS_DIR	= $${BUILD_PATH}/debug/.obj/unix
+	win32:OBJECTS_DIR	= $${BUILD_PATH}/debug/.obj/win32
+	mac:OBJECTS_DIR	= $${BUILD_PATH}/debug/.obj/mac
+	UI_DIR	= $${BUILD_PATH}/debug/.ui
+	MOC_DIR	= $${BUILD_PATH}/debug/.moc
+	RCC_DIR	= $${BUILD_PATH}/debug/.rcc
+} else {
+	#Release
+	unix:OBJECTS_DIR	= $${BUILD_PATH}/release/.obj/unix
+	win32:OBJECTS_DIR	= $${BUILD_PATH}/release/.obj/win32
+	mac:OBJECTS_DIR	= $${BUILD_PATH}/release/.obj/mac
+	UI_DIR	= $${BUILD_PATH}/release/.ui
+	MOC_DIR	= $${BUILD_PATH}/release/.moc
+	RCC_DIR	= $${BUILD_PATH}/release/.rcc
+}
+
+prefix = @prefix@
+exec_prefix = $@exec_prefix@
+target.path = $@bindir@
+INSTALLS += target
+
+FORMS	+= ui/UIYabause.ui \
+	ui/UISettings.ui \
+	ui/UIAbout.ui \
+	ui/UICheats.ui \
+	ui/UICheatAR.ui \
+	ui/UICheatRaw.ui \
+	ui/UIWaitInput.ui \
+	ui/UIBackupRam.ui \
+	ui/UIPortManager.ui \
+	ui/UIPadSetting.ui \
+	ui/UICheatRaw.ui \
+	ui/UICheatSearch.ui \
+	ui/UIDebugCPU.ui \
+	ui/UIDebugSCSP.ui \
+	ui/UIDebugVDP1.ui \
+	ui/UIDebugVDP2.ui \
+	ui/UIDebugVDP2Viewer.ui \
+	ui/UIHexInput.ui \
+	ui/UIMemoryTransfer.ui
+
+HEADERS	+= ui/UIYabause.h \
+	YabauseGL.h \
+	ui/UISettings.h \
+	Settings.h \
+	YabauseThread.h \
+	QtYabause.h \
+	ui/UIAbout.h \
+	ui/UICheats.h \
+	ui/UICheatAR.h \
+	ui/UICheatRaw.h \
+	CommonDialogs.h \
+	PerQt.h \
+	ui/UIWaitInput.h \
+	ui/UIBackupRam.h \
+	ui/UIPortManager.h \
+	ui/UIPadSetting.h \
+	VolatileSettings.h \
+	Arguments.h \
+	ui/UICheatSearch.h \
+	ui/UIDebugCPU.h \
+	ui/UIDebugM68K.h \
+	ui/UIDebugVDP1.h \
+	ui/UIDebugVDP2.h \
+	ui/UIDebugVDP2Viewer.h \
+	ui/UIDebugSCSP.h \
+	ui/UIDebugSCUDSP.h \
+	ui/UIDebugSH2.h \
+	ui/UIDisasm.h \
+	ui/UIHexInput.h \
+	ui/UIMemoryTransfer.h
+
+SOURCES	+= main.cpp \
+	ui/UIYabause.cpp \
+	YabauseGL.cpp \
+	ui/UISettings.cpp \
+	Settings.cpp \
+	YabauseThread.cpp \
+	QtYabause.cpp \
+	ui/UIAbout.cpp \
+	ui/UICheats.cpp \
+	ui/UICheatAR.cpp \
+	ui/UICheatRaw.cpp \
+	CommonDialogs.cpp \
+	PerQt.c \
+	ui/UIWaitInput.cpp \
+	ui/UIBackupRam.cpp \
+	ui/UIPortManager.cpp \
+	ui/UIPadSetting.cpp \
+	VolatileSettings.cpp \
+	Arguments.cpp \
+	ui/UICheatSearch.cpp \
+	ui/UIDebugCPU.cpp \
+	ui/UIDebugM68K.cpp \
+	ui/UIDebugSCSP.cpp \
+	ui/UIDebugSCUDSP.cpp \
+	ui/UIDebugSH2.cpp \
+	ui/UIDebugVDP1.cpp \
+	ui/UIDebugVDP2.cpp \
+	ui/UIDebugVDP2Viewer.cpp \
+	ui/UIDisasm.cpp \
+	ui/UIHexInput.cpp \
+	ui/UIMemoryTransfer.cpp

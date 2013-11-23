@@ -1,0 +1,195 @@
+%1/%2 blocks free|%1/%2 blokų laisvų
+%1 Images (*.%2)|%1 Images (*.%2)
+503/512 blocks free|503/512 blokų laisvų
+510/512 blocks free|510/512 blokų laisvų
+About...|Apie...
+&About...|&Apie...
+About|Apie
+&Action Replay|&Veiksmo pakartojimas
+Action Replay Code :|Veiksmo pakartojimo kodas:
+Add Action Replay Code|Pridėti veiksmo pakartojimo kodą:
+Add Codes...|Pridėti kodų...
+Add Raw Memory Code|Pridėti "Raw" atminties kodą
+Address :|Adresas&#160;:
+Advanced|Papildoma
+<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>|<a href="<a href="http://www.monkeystudio.org" class="external free" rel="nofollow">http://www.monkeystudio.org</a>"><img src=":/icons/icons/made.png"></a>
+Are you sure you want to delete '%1' ?|Ar tu įsitikinęs,kad nori ištrinti '%1'&#160;?
+Are you sure you want to format '%1' ?|Ar tu įsitikinęs,kad nori suformatuoti '%1'&#160;?
+Backup Manager|Atsarginių failų tvarkyklė
+Backup Manager...|Atsarginių failų tvarkyklė...
+&Backup Ram Manager|&Atsarginės darbinės atminties tvarkyklė
+Backup Ram Manager|Atsarginės darbinės atminties tvarkyklė
+Bios|Bios'as
+Block Size :|Bloko dydis:
+&Browse|&Naršyti
+Browse|Browse
+Byte Write|Byte Write
+Cancel|Atšaukti
+Cannot initialize|Negalima pradėti
+&Capture Screen|&Nufotografuoti ekraną
+Cart/Memory|Darbinė atmintis
+Cartridge|Disketė
+CD Images (*.iso *.cue *.bin)|CD atvaizdai (*.iso *.cue *.bin)
+Cd-Rom|CD-ROM
+&Cheats|&Kodai
+Cheats|Kodai
+Cheats File|Kodų failas
+&Cheat List|&Kodų sąrašas
+Cheats List|Kodų sąrašas
+Cheats List...|Kodų sąrašas...
+Cheat Type|Kodų tipas
+Choose a cdrom drive/mount point|Pasirink CD-ROM prijungimo tašką
+Choose a cheat file to open|Pasirink kodų failą
+Choose a cheat file to save to|Pasirink kodų failą išsaugojimui į
+Choose a file to save your state|Pasirink failą išsaugoti žaidimui
+Choose a location for your screenshot|Pasirink vietą žaidimo ekranvaizdžiui
+&Clear|&Išvalyti
+Close|Uždaryti
+Code|Kodas
+Comment :|Komentaras:
+Data Size :|Duomenų dydis:
+_Debug|_Taisyti klaidas
+&Debug|&Klaidų taisymas
+&Delete|&Trinti
+Delete|Trinti
+Description|Aprašymas
+Description :|Aprašymas&#160;:
+Device List|Įrenginių sąrašas
+Disabled|Neįgalinta
+Down|Žemyn
+Download|Atsisiųsti
+Emu-Compatibility|Emuliatoriaus suderinamumas
+Emulation|Emuliacija
+End Address:|End Adress:
+Enable|Įgalinti
+Enabled|Įgalinta
+English|Anglų
+&File|&Failas
+File|Failas
+File :|Failas
+File Name :|Failo pavadinimas:
+File transfer|Failo perkėlimas
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>
+Format|Formatuoti
+FPS|KPS
+Frame Skip/Limiter|Kadrų praleidimas
+French|Prancūzų
+From|Iš
+From File|Iš failo
+From File...|Iš failo...
+&Fullscreen|&Pilnas ekranas
+Fullscreen|Pilnas ekranas
+General|Pagrindiniai
+German|Vokiečių
+Hard Reset|"Gilus" perkrovimas
+Height|Aukštis
+_Help|_Pagalba
+&Help|&Pagalba
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|<a href="http://www.emu-compatibility.com/yabause/index.php?lang=uk" class="external free" rel="nofollow">http://www.emu-compatibility.com/yabause/index.php?lang=uk</a>
+http://www.monkeystudio.org|<a href="http://www.monkeystudio.org" class="external free" rel="nofollow">http://www.monkeystudio.org</a>
+Input|Įvedimas
+Invalid Address|Neteisingas adresas
+Invalid Value|Neteisinga vertė
+Italian|Italų
+Japanese|Japonų
+Language :|Kalba&#160;:
+&Layer|&Sluoksniai
+Layer|Sluoksniai
+Left|Kairė
+Left trigger|Kairysis mygtukas
+Load as executable|Įkrauti kaip paleidžiamąjį failą
+Load|Įkrauti
+&Load From File|&Įkelti iš failo
+Load State|Įkelti išsaugotą žaidimą
+Load State As|Išsaugoti žaidimą kaip
+Log|Log'as
+Long Write|Long Write
+M68K|M68K
+Memory dump|Atminties "išmetimas"
+Memory Dump|Atminties "išmetimas"
+Memory Editor|Atminties tvarkymas
+&Memory Transfer|&Atminties pervedimas
+Memory Transfer|Atminties pervedimas
+Memory|Atmintis
+Mpeg ROM|Mpeg ROM'as
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Ok|Gerai
+&OK|&Gerai
+Open CD Rom|Atverti CD-ROM'ą
+Open CD Rom...|Atverti CD-ROM'ą...
+Open ISO|Atverti ISO
+Open ISO...|Atverti ISO...
+&Pause|&Pauzė
+Pause|Pauzė
+&Quit|&Išeiti
+Quit|Išeiti
+&Raw Memory Address|&Priėjimas prie Raw atminties
+RBG0|RBG0
+Region|Regionas
+&Reset|&Perkrauti
+Reset|Perkrauti
+Resolution|Raiška
+Right|Dešinė
+Right trigger|Dešinysis mygtukas
+R&un|&Leisti
+Run|Leisti
+Save Information|Išsaugoti informaciją
+Save List|Išsaugojimų sąrašas
+Save|Išsaugoti
+Save State|Išsaugoti žaidimą
+Save State As|Išsaugoti žaidimą kaip
+Save States|Žaidimų išsaugojimo failai
+&Save To File|&Išsaugoti į failą
+Screenshot|Ekrano nuotrauka
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+Select a file to load your state|Pasirink žaidimo išsaugojimo failą įkėlimui
+Select your iso/cue/bin file|Pasirink iso/cue/bin failą
+&Settings...|&Nuostatos
+Settings|Nuostatos
+SH2 Interpreter|SH2 Interpretatorius
+Sound Core|Garso įranga
+Sound|Garsas
+Spanish|Ispanų
+SSH2|SSH2
+Start|Pradėti
+Start Address:|Pradžios adresas:
+Status|Statusas
+Store|Saugoti
+To File|Į failą
+To File...|Į failą...
+toolBar|Įrankų juosta
+Tools|Įrankiai
+To|Į
+Transfer|Pervedimas
+Translation|Vertimas
+Unable to add code|Neįmanoma pridėti kodo
+Unable to change description|Neįmanoma keisti aprašymo
+Unable to open file for loading|Neįmanoma atverti failo įkrovimui
+Unable to open file for saving|Neįmanoma atverti failo saugojimui
+Unable to remove code|Neįmanoma pašalinti kodo
+Unknow (%1)|Nežinoma (%1)
+Up|Aukštyn
+Upload|Įkrauti
+Value :|Vertė:
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Video įranga
+Video Driver|Video tvarkyklė
+Video Format|Video formatas
+Video|Video
+_View|_Žiūrėti
+&View|&Žiūrėti
+Waiting Input...|Laukiama įvedimo
+Width|Plotis
+Word Write|Žodžių rašymas
+Yabause Cheat Files (*.yct);;All Files (*)|Yabause kodų failai (*.yct);;Visi failai (*)
+Yabause Qt Gui<br />Based on Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Yabause Qt Gui<br />Paremtas pagal Yabause 0.9.5<br /><a href="<a href="http://yabause.org" class="external free" rel="nofollow">http://yabause.org</a>"><a href="http://yabause.org" class="external free" rel="nofollow">http://yabause.org</a></a><br />Yabause komanda<br /><a href="<a href="mailto:pasnox@gmail.com" class="external free" rel="nofollow">mailto:pasnox@gmail.com</a>">Filipe AZEVEDO</a>
+Yabause Qt GUI|Yabause Qt grafinė sąsaja
+Yabause Save State (*.yss)|Yabause žaidimo išsaugojimo failas (*.yss)

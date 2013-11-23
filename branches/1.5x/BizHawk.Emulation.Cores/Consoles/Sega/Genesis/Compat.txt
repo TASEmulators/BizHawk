@@ -1,0 +1,156 @@
+﻿68000:
+
+Timings:
+
+ - MULU/MULS/DIVU/DIVS have funky timings.
+ - How many cycles does TRAP take to execute?
+ - How many cycles does it take to accept an interrupt?
+ - AND has some funky timings when it comes to immediates?
+
+GAMES:
+
+Ahhh! Real monsters - no sound
+Adventures of Mighty Max - crashes memory mapper
+Air Diver - suffer from lack of 2cell vscroll
+Alien Storm.... gfx glitches. control glitches?
+Altered Beast: start with 0 health, 0 lives???
+Another World .. broken.. (E) tho
+Arcus Odyssey does UNHANDLED Z80 READs... is this a problem?
+Awesome Possum - controls are wrong
+Batman - flicker and music is messed
+Batman Forever - significant gfx issues
+Battle Squadron - crashes memory mapper woo!
+Blood Shot - FPS game - some texture corruption
+Bonkers - substantial gfx corruption
+Buck Rogers crashes in a fun way
+Burning Force - some gfx issues. works way better than it has in the past though!
+Cheese Cat-astrophe - crashes renderer!!
+Chester Cheetah - freezes when starting new game
+Chuck Rock - Music messed up
+Contra Hard Corps: Scrolling is messed up in level 1... used to work.
+Dashin' Desperados .. bottom screen messed up
+Death Duel crashes my renderer... (!)
+Decap Attack - Item select screen messed up
+Double Dragon doesn't boot
+Devilish/Bad Omen - intro messed up.... interesting debug target
+Dune... freezes in intro
+Exile - Immediate gfx issues... Debug target.
+F1 World Championship... Gfx issue at bottom of screen... quite cool working game though!
+Fatal Rewind - appears to do a read.w on FFFFFF... that would be an address error. read.l messes up too. Ergo: basically doesnt work.
+Final Blow - Music messed up
+Fire Shark - Messed up sound
+Flavio's Raster FX Test.. doesnt work
+Foreman for Real doent boot
+Galaxy Force II - gfx issue in level select screen, and in level-end "shoot the core" part
+Gargoyles... gameplay is nonfunctional
+Gauntlet 4 .. title screen messed. gfx corruption. immediately - debug target.
+Golden Axe - controls are jacked up
+Golden Axe 3 intro.... weirder than before for sure
+Grind Stormer
+Herzog Zwei .. doesnt boot fully
+Insector X .. title screen gfx issue
+James Pond 3 crash in intro
+Jim Power - gfx glitches
+Jurassic Park 2 - crashes in intro
+Lemmings: Sound is royally effed... gfx glitches.
+Marvel Land .. holy shit thats psychadelic
+Mega Turrican some gfx glitches
+Mortal Kombat...
+MUSHA: Intro music starts too soon. Suffers from lack of 2-cell-vertical-scroll mode.
+Out of This World... pretty substantially broken
+Outrun 2019, much more significant gfx issues. 
+Outrun, minor gfx issue. maybe related to h-int timing?
+Outrunners, some gfx issues... but not as bad as you might think!!! apparently doesnt use interlace mode?
+Panorama Cotton still not working right
+Power Monger messed up
+RamboIII - intro gfx corrupted - MAYBE GOOD DEBUGGING TARGET
+Shining in the Darkness: Check out sprites in the tavern... very odd
+Sonic 2: Aside from lack of interlace mode, the shadows in the special stage are white....?
+Sonic 2: Something still amiss with title screen sprite masking
+Sonic 3 serious gfx glitches
+Star Control - Shit gets crazy
+Steel Empire - controls messed up. probably gfx issues also.
+Sub-Terrania some gfx issues in intro
+Super Hang-On - Sprite priority/masking isnt happening the way its supposed to on the tracks.
+Super Fantasy Zone: Sound totally boned, missing graphics
+TaleSpin - gfx glitches
+The Humans
+The Immortal
+Truxton - Sound is jaaaacked.
+Verytex - gfx issues
+Zero Tolerance - gfx bugs that didnt used to happen :(
+Zombies At My Neighbors: doesnt boot really
+Zoop doesnt boot
+
+
+======================================================
+Fixed Issues: (listed for regression testing purposes)
+======================================================
+
+(Sprites X/Y are 10-bit, but must be masked to 9-bit)
+- Dragon's Revenge.... ball sprite seems missing? of all the sprites to not show up...
+- Fire Shark - Sprites dont render... VERY similar to Truxton. Same engine?
+- Truxton - Sprites do not appear to be rendering. 
+- Zero Wing - Sprites arent rendering.......
+
+Flavio's DMA test... DMAs when it shouldnt!! - Masking off too much of the VDP command code
+
+Fun-n-Games fails its fadeouts.  -- Fixed CRAM reads. I failed math.
+
+Sonic Spinball executes a VSRAM read -- Implemented VSRAM reads.
+
+Bugs related to longword read/write VRAM. Multiple bugs were present including sign-extension and endians and crap.  
+ - Crusader of Centy- Text boxes messed up
+ - Eternal Champions - immediate gfx corruption
+ - Garfield... immediate gfx corruption. debug target.
+ - Kid Chameleon - gfx corruption on bounce bricks and level-end effect
+
+Games to test window calculation on:
+ - Road Blasters (doesnt use window, but Window & Nametable A are at same location)
+ - Out of this World - Same as Road Blasters
+ - Musha,Gaiares - Window at top
+ - Eliminate Down - Window at bottom
+ - Monster World 4, Wonder Boy in Monster World - Window at top - needs window scroll plane size adjustment
+ - D&D Warriors of the Eternal Sun - Window at bottom and at sides
+ - Truxton, Fire Shark - Window on Right
+
+======================================================
+
+TODO: non-instant DMA emulation
+TODO: Add 68000/VDP interrupt enable delay (one instruction, similar to After Burner/PCE)
+TODO: H-Ints timing possibly not correct... Some game raster effects work, others don't work as expected. (could be HVC tho)
+TODO: Test DMA/ VDP command words.... I'm not at all convinced that VRAM is always correct
+
+
+==============
+Notable games:
+==============
+
+Ghouls n Ghosts sets up the graphics planes backwards from normal, by setting the plane A to be low priority and Plane B to be high priority.
+If you have a bug in your priority code this may find it.
+
+Revenge of Shinobi will not play DAC sounds if YM2612 registers are not initialized to L/R channels enabled.
+
+Ballz doesnt really initialize hardly any VDP registers, relies on VDP registers powered-on to the correct values
+
+Contra appears to use VDP A0 set = byte-swap. Not sure if its important in anyway in that game, but the byte swap happens.
+
+Games that use VRAM->VRAM Copy: D&D Warriors of the Eternal Sun, MUSHA, Devilish, Viewpoint
+
+Games that require accurate VRAM fill emulation include Thunder Force IV,
+ Contra Hard Corps, Revenge of Shinobi, Taiga Drama, and Sword of Vermillion.
+
+Sonic Spinball reads from VSRAM
+
+Games to test for sprite masking/overflow:
+ - Sonic 1 title screen (uses overflow to mask)
+ - Sonic 2 title screen (uses sprite mask modes)
+ - Galaxy Force 2 level select (uses sprite mask)
+ - Landstalker sprite masking (chests and such)
+ - Nemesis test rom
+
+Games known to use 2-cell vertical scroll mode:
+ - Air Diver
+ - Exo Squad
+ - Contra Hard Corps (giant robot boss on stage 1)
+ - MUSHA (stage 3)

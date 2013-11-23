@@ -1,0 +1,65 @@
+To play games on some of the platform, you will need BIOS/Firmare files
+
+It is expected by default that they be in this folder and named correctly.
+
+To configure the location and names of these files, use the Config -> Path Config dialog
+
+
+Famicom Disk System
+filename	 hash
+disksys.rom	 sha1:E4E41472C454F928E53EB10E0509BF7D1146ECC1
+Note: Its filesize is 8k (not 40k)
+
+Super Nintendo Entertainnment System
+filename	 hash	 									 games
+cx4.rom	 	 sha256:ae8d4d1961b93421ff00b3caa1d0f0ce7783e749772a3369c36b3dbf0d37ef18	 Mega Men X2, X3
+dsp1b.rom	 sha256:d789cb3c36b05c0b23b6c6f23be7aa37c6e78b6ee9ceac8d2d2aa9d8c4d35fa9	 Example, Example
+dsp2.rom	 sha256:03ef4ef26c9f701346708cb5d07847b5203cf1b0818bf2930acd34510ffdd717	 Dungeon Master
+dsp3.rom	 sha256:0971b08f396c32e61989d1067dddf8e4b14649d548b2188f7c541b03d7c69e4e	 SD Gundam GX
+dsp4.rom	 sha256:752d03b2d74441e430b7f713001fa241f8bbcfc1a0d890ed4143f174dbe031da	 Top Gear 3000
+st010.rom	 sha256:fa9bced838fedea11c6f6ace33d1878024bdd0d02cc9485899d0bdd4015ec24c	 F1 ROC II: Race of Champions
+st011.rom	 sha256:8b2b3f3f3e6e29f4d21d8bc736b400bc988b7d2214ebee15643f01c1fee2f364	 Hayazashi Nidan Morita Shogi
+st018.rom	 sha256:6df209ab5d2524d1839c038be400ae5eb20dafc14a3771a3239cd9e8acd53806	 Hayazashi Nidan Morita Shogi 2
+sgb.sfc	 	 sha1:973E10840DB683CF3FAF61BD443090786B3A9F04	 			         Super Gameboy Games
+
+
+PC Engine CD
+filename	 hash	 					 games
+PCECDBios.pce	 sha1:79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C	 All CD games
+
+
+Commodore 64
+filename	hash
+basic	 	sha1:89878cea0a268734696de11c4bae593eaaa506465d2029d619c0e0cbccdfa62d
+chargen	 	sha1:fd0d53b8480e86163ac98998976c72cc58d5dd8eb824ed7b829774e74213b420
+dos1541	 	sha1:d1d45afb46fd4e2b48d93ca367b889d75654a3b7acf73044e51f6d880c09369e
+kernal	 	sha1:83c60d47047d7beab8e5b7bf6f67f80daa088b7a6a27de0d7e016f6484042721
+
+
+Atari 7800
+filename	        hash
+7800highscore.bin	sha1:A3AF676991391A6DD716C79022D4947206B78164	 
+7800NTSCBIOS.bin        sha1:D9D134BB6B36907C615A594CC7688F7BFCEF5B43	 
+7800PALBIOS.bin         sha1:5A140136A16D1D83E4FF32A19409CA376A8DF874	 
+
+Sega Saturn
+Sega Saturn BIOS v1.00 (US).bin	sha1:2b8cb4f87580683eb4d760e4ed210813d667f0a2
+Sega Saturn BIOS v1.00 (JAP).bin	sha1:2b8cb4f87580683eb4d760e4ed210813d667f0a2
+Sega Saturn BIOS v1.01 (JAP).bin	sha1:df94c5b4d47eb3cc404d88b33a8fda237eaf4720
+Sega Saturn BIOS (EUR).bin	sha1:faa8ea183a6d7bbe5d4e03bb1332519800d3fbc3
+Note: The 1.01 JAP bios is used by default.
+
+
+Colecovision
+filename	 hash
+ColecoBios.bin	 45BEDC4CBDEAC66C7DF59E9E599195C778D86A92
+
+
+GBA
+filename	 hash
+gbabios.rom	 sha1:300C20DF6731A33952DED8C436F7F186D25D3492
+
+Intellivision
+filename	 hash
+Executive ROM, The (1978) (Mattel).int			 5A65B922B562CB1F57DAB51B73151283F0E20C7A
+GROM, The (1978) (General Instruments) [!].int	 F9608BB4AD1CFE3640D02844C7AD8E0BCD974917	
