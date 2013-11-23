@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -239,6 +240,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ResetText();
 			}
+
+			base.OnTextChanged(e);
 		}
 
 		public int? ToRawInt()

@@ -114,6 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			DoDomainSizeCheck();
 			SetReboot(false);
 
+			SpecificAddressBox.SetHexProperties(Settings.Domain.Size);
 			SpecificValueBox.ResetText();
 			SpecificAddressBox.ResetText();
 			NumberOfChangesBox.ResetText();
@@ -126,6 +127,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetToFastMode();
 			}
+
+
+			
 
 			NewSearch();
 		}
@@ -699,16 +703,19 @@ namespace BizHawk.Client.EmuHawk
 		private void SetComparisonOperator(RamSearchEngine.ComparisonOperator op)
 		{
 			Searches.Operator = op;
+			WatchListView.Refresh();
 		}
 
 		private void SetCompareTo(RamSearchEngine.Compare comp)
 		{
 			Searches.CompareTo = comp;
+			WatchListView.Refresh();
 		}
 
 		private void SetCompareValue(int? value)
 		{
 			Searches.CompareValue = value;
+			WatchListView.Refresh();
 		}
 
 		private void SetReboot(bool rebootNeeded)
@@ -1615,7 +1622,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DifferentByRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = true;
-			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
+			
 			if (String.IsNullOrWhiteSpace(DifferentByBox.Text))
 			{
 				DifferentByBox.ResetText();
@@ -1626,6 +1633,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DifferentByBox.Focus();
 			}
+
+			SetComparisonOperator(RamSearchEngine.ComparisonOperator.DifferentBy);
 		}
 
 		private void DifferentByBox_TextChanged(object sender, EventArgs e)
@@ -1638,6 +1647,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Searches.DifferentBy = null;
 			}
+
+			WatchListView.Refresh();
 		}
 
 		#endregion
