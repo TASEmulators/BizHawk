@@ -2906,6 +2906,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVIFrameAdvance()
 		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (CurrAviWriter != null)
 			{
 				long nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + SoundRemainder;
@@ -2970,6 +2971,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
+				GlobalWin.DisplayManager.NeedsToPaint = true;
 			}
 		}
 
