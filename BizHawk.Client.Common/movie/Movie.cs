@@ -716,11 +716,18 @@ namespace BizHawk.Client.Common
 			}
 			if (_log.Length < stateFrame)
 			{
-				errorMessage = "The savestate is from frame "
-					+ log.Length.ToString()
-					+ " which is greater than the current movie length of "
-					+ _log.Length.ToString();
-				return LoadStateResult.FutureEventError;
+				if (IsFinished)
+				{
+					return LoadStateResult.Pass;
+				}
+				else
+				{
+					errorMessage = "The savestate is from frame "
+						+ log.Length.ToString()
+						+ " which is greater than the current movie length of "
+						+ _log.Length.ToString();
+					return LoadStateResult.FutureEventError;
+				}
 			}
 			for (int i = 0; i < stateFrame; i++)
 			{

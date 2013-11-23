@@ -385,14 +385,14 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.ReadOnly)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
 					if (result != Movie.LoadStateResult.Pass)
 					{
 						if (result == Movie.LoadStateResult.GuidMismatch)
 						{
 							if (HandleGuidError())
 							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
+								var newresult = Movie.CheckTimeLines(reader, onlyGuid: true, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
 								if (newresult == Movie.LoadStateResult.Pass)
 								{
 									Movie.SwitchToPlay();
