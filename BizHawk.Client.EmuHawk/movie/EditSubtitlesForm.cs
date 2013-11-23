@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class EditSubtitlesForm : Form
 	{
 		public bool ReadOnly;
-		private Movie selectedMovie;
+		private IMovie selectedMovie;
 
 		public EditSubtitlesForm()
 		{
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public void GetMovie(Movie m)
+		public void GetMovie(IMovie m)
 		{
 			selectedMovie = m;
 			SubtitleList subs = new SubtitleList();

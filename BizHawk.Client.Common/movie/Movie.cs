@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public class Movie
+	public class Movie : IMovie
 	{
 		#region Constructors
 
@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 		public Movie()
 		{
 			Header = new MovieHeader();
+			Subtitles = new SubtitleList();
 			Filename = String.Empty;
 			_preloadFramecount = 0;
 			StartsFromSavestate = false;
@@ -34,8 +35,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Properties
-		public MovieHeader Header;
-		public SubtitleList Subtitles = new SubtitleList();
+		public MovieHeader Header { get; private set; }
+		public SubtitleList Subtitles { get; private set; }
 		
 		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
@@ -640,8 +641,6 @@ namespace BizHawk.Client.Common
 			
 			return time;
 		}
-
-		public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
 
 		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
 		{
