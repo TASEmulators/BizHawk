@@ -68,7 +68,7 @@ long GB::runFor(gambatte::uint_least32_t *const videoBuf, const int pitch,
 	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
 }
 
-void GB::reset(const std::time_t now) {
+void GB::reset(const std::uint32_t now) {
 	if (p_->cpu.loaded()) {
 		
 		int length = p_->cpu.saveSavedataLength();
@@ -115,7 +115,7 @@ void GB::setScanlineCallback(void (*callback)(), int sl) {
 	p_->cpu.setScanlineCallback(callback, sl);
 }
 
-void GB::setRTCCallback(long long (*callback)()) {
+void GB::setRTCCallback(std::uint32_t (*callback)()) {
 	p_->cpu.setRTCCallback(callback);
 }
 
@@ -123,7 +123,7 @@ void GB::setSaveDir(const std::string &sdir) {
 	p_->cpu.setSaveDir(sdir);
 }
 
-int GB::load(const char *romfiledata, unsigned romfilelength, const std::time_t now, const unsigned flags) {
+int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
 	

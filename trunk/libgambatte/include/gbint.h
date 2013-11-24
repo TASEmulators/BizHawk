@@ -19,6 +19,9 @@
 #ifndef GAMBATTE_INT_H
 #define GAMBATTE_INT_H
 
+// note that this is a hack to overcome the fact that libgambatte's original defines are not propagated.
+#define HAVE_CSTDINT
+
 #ifdef HAVE_CSTDINT
 
 #include <cstdint>

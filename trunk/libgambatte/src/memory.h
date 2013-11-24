@@ -183,7 +183,7 @@ public:
 		display.setScanlineCallback(callback, sl);
 	}
 
-	void setRTCCallback(std::time_t (*callback)()) {
+	void setRTCCallback(std::uint32_t (*callback)()) {
 		cart.setRTCCallback(callback);
 	}
 
