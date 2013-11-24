@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
@@ -81,7 +83,8 @@ namespace BizHawk.Client.EmuHawk
 			var beforeList = _tools.Where(x => x.UpdateBefore);
 			foreach (var tool in beforeList)
 			{
-				if (!tool.IsDisposed)
+				if (!tool.IsDisposed ||
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) //Ram Watch hack, on screen display should run even if Ram Watch is closed
 				{
 					tool.UpdateValues();
 				}
