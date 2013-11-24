@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <returns>what time is it, unixy</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate long RTCCallback();
+		public delegate uint RTCCallback();
 
 		/// <summary>
 		/// sets RTC callback.  probably mandatory.

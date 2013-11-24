@@ -28,7 +28,7 @@ __declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, 
 {
 	GB *g = (GB *) core;
 	unsigned sampv = *samples;
-	long ret = g->runFor(videobuf, pitch, (unsigned long *) soundbuf, sampv);
+	long ret = g->runFor((unsigned int*)videobuf, pitch, (unsigned int *) soundbuf, sampv);
 	*samples = sampv;
 	return ret;
 }
@@ -101,7 +101,7 @@ __declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callb
 	g->setScanlineCallback(callback, sl);
 }
 
-__declspec(dllexport) void gambatte_setrtccallback(void *core, long long (*callback)())
+__declspec(dllexport) void gambatte_setrtccallback(void *core, unsigned int (*callback)())
 {
 	GB *g = (GB *) core;
 	g->setRTCCallback(callback);
@@ -170,7 +170,7 @@ __declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *vi
 	GB *g = (GB *) core;
 
 	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
-	if (!g->saveState(videobuf, pitch, os))
+	if (!g->saveState((const unsigned int*)videobuf, pitch, os))
 		return 0;
 
 	os.flush();
