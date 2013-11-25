@@ -85,14 +85,14 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateDialog()
 		{
 			CheatListView.ItemCount = Global.CheatList.Count;
-			TotalLabel.Text = Global.CheatList.CheatCount.ToString()
+			TotalLabel.Text = Global.CheatList.CheatCount
 				+ (Global.CheatList.CheatCount == 1 ? " cheat " : " cheats ")
-				+ Global.CheatList.ActiveCount.ToString() + " active";
+				+ Global.CheatList.ActiveCount + " active";
 		}
 
 		public void LoadFileFromRecent(string path)
 		{
-			bool ask_result = true;
+			var ask_result = true;
 			if (Global.CheatList.Changes)
 			{
 				ask_result = AskSave();
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ask_result)
 			{
-				bool load_result = Global.CheatList.Load(path, append: false);
+				var load_result = Global.CheatList.Load(path, append: false);
 				if (!load_result)
 				{
 					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.CheatList.Changes)
 			{
 				GlobalWin.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				var result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
@@ -160,11 +160,11 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void LoadFile(FileInfo file, bool append)
+		private void LoadFile(FileSystemInfo file, bool append)
 		{
 			if (file != null)
 			{
-				bool result = true;
+				var result = true;
 				if (Global.CheatList.Changes)
 				{
 					result = AskSave();
@@ -180,17 +180,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool SaveAs()
+		private static bool SaveAs()
 		{
 			var file = ToolHelpers.GetCheatSaveFileFromUser(Global.CheatList.CurrentFileName);
-			if (file != null)
-			{
-				return Global.CheatList.SaveFile(file.FullName);
-			}
-			else
-			{
-				return false;
-			}
+			return file != null && Global.CheatList.SaveFile(file.FullName);
 		}
 
 		private void NewCheatForm_Load(object sender, EventArgs e)
@@ -281,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string columnName = CheatListView.Columns[column].Name;
+			var columnName = CheatListView.Columns[column].Name;
 
 			switch (columnName)
 			{
@@ -332,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices
 		{
-			get { return CheatListView.SelectedIndices.Cast<int>().ToList(); }
+			get { return CheatListView.SelectedIndices.Cast<int>(); }
 		}
 
 		private IEnumerable<Cheat> SelectedItems
@@ -342,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<Cheat> SelectedCheats
 		{
-			get { return SelectedItems.Where(x => !x.IsSeparator).ToList(); }
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
 		private void MoveUp()
@@ -363,13 +356,13 @@ namespace BizHawk.Client.EmuHawk
 			UpdateMessageLabel();
 
 			var newindices = new List<int>();
-			for (int i = 0; i < indices.Count; i++)
+			for (var i = 0; i < indices.Count; i++)
 			{
 				newindices.Add(indices[i] - 1);
 			}
 
 			CheatListView.SelectedIndices.Clear();
-			foreach (int newi in newindices)
+			foreach (var newi in newindices)
 			{
 				CheatListView.SelectItem(newi, true);
 			}
@@ -399,13 +392,13 @@ namespace BizHawk.Client.EmuHawk
 			UpdateMessageLabel();
 
 			var newindices = new List<int>();
-			for (int i = 0; i < indices.Count; i++)
+			for (var i = 0; i < indices.Count; i++)
 			{
 				newindices.Add(indices[i] + 1);
 			}
 
 			CheatListView.SelectedIndices.Clear();
-			foreach (int newi in newindices)
+			foreach (var newi in newindices)
 			{
 				CheatListView.SelectItem(newi, true);
 			}
@@ -521,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			bool result = true;
+			var result = true;
 			if (Global.CheatList.Changes)
 			{
 				result = AskSave();
@@ -535,9 +528,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"] ??
+			var pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"] ??
 			                      Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -572,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			bool append = sender == AppendMenuItem;
+			var append = sender == AppendMenuItem;
 			LoadFile(ToolHelpers.GetCheatFileFromUser(Global.CheatList.CurrentFileName), append);
 		}
 
@@ -674,7 +667,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (int i = 0; i < Global.CheatList.Count; i++)
+			for (var i = 0; i < Global.CheatList.Count; i++)
 			{
 				CheatListView.SelectItem(i, true);
 			}
@@ -913,7 +906,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == (".cht"))
 			{
 				LoadFile(new FileInfo(filePaths[0]), append: false);

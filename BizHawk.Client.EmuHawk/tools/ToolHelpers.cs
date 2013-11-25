@@ -125,9 +125,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				foreach (string filename in recent)
+				foreach (var filename in recent)
 				{
-					string temp = filename;
+					var temp = filename;
 					var item = new ToolStripMenuItem { Text = temp };
 					item.Click += (o, ev) => loadFileCallback(temp);
 					items.Add(item);
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void HandleLoadError(RecentFiles recent, string path)
 		{
 			GlobalWin.Sound.StopSound();
-			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+			var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 			if (result == DialogResult.Yes)
 			{
 				recent.Remove(path);
@@ -161,8 +161,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var domain in Global.Emulator.MemoryDomains)
 			{
-				string name = domain.Name;
-
+				var name = domain.Name;
 				var item = new ToolStripMenuItem { Text = name };
 				item.Click += (o, ev) => setCallback(name);
 				item.Checked = name == selectedDomain;
@@ -203,27 +202,21 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.UpdateCheatStatus();
 		}
 
-		public static void FreezeAddress(List<Watch> watches)
+		public static void FreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach(var watch in watches)
+			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
 			{
-				if (!watch.IsSeparator)
-				{
-					Global.CheatList.Add(
-						new Cheat(watch, watch.Value ?? 0)
+				Global.CheatList.Add(
+					new Cheat(watch, watch.Value ?? 0)
 					);
-				}
 			}
 		}
 
-		public static void UnfreezeAddress(List<Watch> watches)
+		public static void UnfreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach (var watch in watches)
+			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
 			{
-				if (!watch.IsSeparator)
-				{
-					Global.CheatList.Remove(watch);
-				}
+				Global.CheatList.Remove(watch);
 			}
 		}
 
@@ -240,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (listView.Columns[columnName] == null)
 				{
-					ColumnHeader column = new ColumnHeader
+					var column = new ColumnHeader
 					{
 						Name = columnName,
 						Text = columnName.Replace("Column", ""),

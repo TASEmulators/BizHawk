@@ -115,9 +115,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopAllScripts()
 		{
-			foreach (LuaFile t in _luaList)
+			foreach (var file in _luaList)
 			{
-				t.Enabled = false;
+				file.Enabled = false;
 			}
 			Changes(true);
 		}
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
-				LuaFile luaFile = new LuaFile(String.Empty, path);
+				var luaFile = new LuaFile(String.Empty, path);
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				LuaListView.Refresh();
@@ -205,11 +205,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				foreach (LuaFile t in _luaList)
+				foreach (var file in _luaList)
 				{
-					if (path == t.Path && t.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
+					if (path == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
 					{
-						t.Toggle();
+						file.Toggle();
 						RunLuaScripts();
 						LuaListView.Refresh();
 						Changes(true);
@@ -226,19 +226,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RunLuaScripts()
 		{
-			for (int x = 0; x < _luaList.Count; x++)
+			for (var i = 0; i < _luaList.Count; i++)
 			{
-				if (_luaList[x].Enabled && _luaList[x].Thread == null)
+				if (_luaList[i].Enabled && _luaList[i].Thread == null)
 				{
 					try
 					{
-						_luaList[x].Thread = LuaImp.SpawnCoroutine(_luaList[x].Path);
+						_luaList[i].Thread = LuaImp.SpawnCoroutine(_luaList[i].Path);
 					}
 					catch (Exception e)
 					{
 						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
 						{
-							_luaList[x].Enabled = false;
+							_luaList[i].Enabled = false;
 							AddText(e.Message);
 						}
 						else MessageBox.Show(e.ToString());
@@ -246,24 +246,26 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					StopScript(x);
+					StopScript(i);
 				}
 			}
 		}
 
 		private void UpdateNumberOfScripts()
 		{
-			string message = "";
+			var message = String.Empty;
 			int active = 0, paused = 0, separators = 0;
-			foreach (LuaFile t in _luaList)
+			foreach (var file in _luaList)
 			{
-				if (!t.IsSeparator)
+				if (!file.IsSeparator)
 				{
-					if (t.Enabled)
+					if (file.Enabled)
 					{
 						active++;
-						if (t.Paused)
+						if (file.Paused)
+						{
 							paused++;
+						}
 					}
 				}
 				else
@@ -272,19 +274,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			int L = _luaList.Count - separators;
+			var L = _luaList.Count - separators;
 
 			if (L == 1)
 			{
-				message += L.ToString() + " script (" + active.ToString() + " active, " + paused.ToString() + " paused)";
+				message += L + " script (" + active + " active, " + paused + " paused)";
 			}
 			else if (L == 0)
 			{
-				message += L.ToString() + " script";
+				message += L + " script";
 			}
 			else
 			{
-				message += L.ToString() + " scripts (" + active.ToString() + " active, " + paused.ToString() + " paused)";
+				message += L + " scripts (" + active + " active, " + paused + " paused)";
 			}
 
 			NumberOfScripts.Text = message;
@@ -334,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAllScripts();
 			_luaList = new List<LuaFile>();
 
-			using (StreamReader sr = file.OpenText())
+			using (var sr = file.OpenText())
 			{
 				string s;
 
@@ -349,19 +351,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						string temp = s.Substring(0, 1);
+						var temp = s.Substring(0, 1);
 
 						bool enabled;
 						try
 						{
-							if (int.Parse(temp) == 0)
-							{
-								enabled = false;
-							}
-							else
-							{
-								enabled = true;
-							}
+							enabled = int.Parse(temp) != 0;
 						}
 						catch
 						{
@@ -370,12 +365,7 @@ namespace BizHawk.Client.EmuHawk
 
 						s = s.Substring(2, s.Length - 2); //Get path
 
-						l = new LuaFile(s);
-
-						if (!Global.Config.DisableLuaScriptsOnLoad)
-							l.Enabled = enabled;
-						else
-							l.Enabled = false;
+						l = new LuaFile(s) {Enabled = !Global.Config.DisableLuaScriptsOnLoad && enabled};
 					}
 					_luaList.Add(l);
 				}
@@ -401,14 +391,14 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var lf in _luaList)
 				{
 					//save old current directory before this lua thread clobbers it for the .net thread
-					string oldcd = Environment.CurrentDirectory;
+					var oldcd = Environment.CurrentDirectory;
 
 					try
 					{
 						//LuaImp.gui_clearGraphics();
 						if (lf.Enabled && lf.Thread != null && !(lf.Paused))
 						{
-							bool prohibit = lf.FrameWaiting && !includeFrameWaiters;
+							var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 							if (!prohibit)
 							{
 								//restore this lua thread's preferred current directory
@@ -521,10 +511,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSession(string path)
 		{
-			using (StreamWriter sw = new StreamWriter(path))
+			using (var sw = new StreamWriter(path))
 			{
-				string str = "";
-				foreach (LuaFile t in _luaList)
+				var str = String.Empty;
+				foreach (var t in _luaList)
 				{
 					if (!t.IsSeparator)
 					{
@@ -552,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadSessionFromRecent(string path)
 		{
-			bool doload = true;
+			var doload = true;
 			if (_changes) doload = AskSave();
 
 			if (doload)
@@ -582,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_changes)
 			{
 				GlobalWin.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				var result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
@@ -609,32 +599,17 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void DoLuaWriter()
+		private static void OpenLuaWriter(string path)
 		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count == 0)
-				return;
-
-			if (indexes.Count > 0)
-			{
-				var item = _luaList[indexes[0]];
-				if (!item.IsSeparator)
-				{
-					OpenLuaWriter(_luaList[indexes[0]].Path);
-				}
-			}
-		}
-
-		private void OpenLuaWriter(string path)
-		{
-			LuaWriter writer = new LuaWriter {CurrentFile = path};
+			var writer = new LuaWriter {CurrentFile = path};
 			writer.Show();
 		}
 
 		private Point GetPromptPoint()
 		{
-			Point p = new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30);
-			return PointToScreen(p);
+			return PointToScreen(
+				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30)
+			);
 		}
 
 		private IEnumerable<int> SelectedIndices
@@ -679,7 +654,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			bool result = !_changes || AskSave();
+			var result = !_changes || AskSave();
 
 			if (result)
 			{
@@ -771,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach(int index in SelectedIndices)
+			foreach(var index in SelectedIndices)
 			{
 				var item = _luaList[index];
 				if (!item.IsSeparator)
@@ -859,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (int index in indices)
+			foreach (var index in indices)
 			{
 				var file = _luaList[index];
 				_luaList.Remove(file);
@@ -870,7 +845,7 @@ namespace BizHawk.Client.EmuHawk
 			var newindices = indices.Select(t => t - 1).ToList();
 
 			LuaListView.SelectedIndices.Clear();
-			foreach (int newi in newindices)
+			foreach (var newi in newindices)
 			{
 				LuaListView.SelectItem(newi, true);
 			}
@@ -886,7 +861,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (int index in indices)
+			foreach (var index in indices)
 			{
 				var file = _luaList[index];
 				_luaList.Remove(file);
@@ -896,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 			var newindices = indices.Select(t => t + 1).ToList();
 
 			LuaListView.SelectedIndices.Clear();
-			foreach (int newi in newindices)
+			foreach (var newi in newindices)
 			{
 				LuaListView.SelectItem(newi, true);
 			}
@@ -906,9 +881,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (int x = 0; x < _luaList.Count; x++)
+			for (var i = 0; i < _luaList.Count; i++)
 			{
-				LuaListView.SelectItem(x, true);
+				LuaListView.SelectItem(i, true);
 			}
 		}
 
@@ -921,7 +896,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp.RegisteredFunctions.Any())
 			{
-				bool alreadyOpen = false;
+				var alreadyOpen = false;
 				foreach (Form form in Application.OpenForms)
 				{
 					if (form is LuaRegisteredFunctionsList)
@@ -1000,7 +975,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VersionInfo.INTERIM)
 			{
-				DoLuaWriter();
+				SelectedFiles.ToList().ForEach(x => OpenLuaWriter(x.Path));
 			}
 			else
 			{
@@ -1036,10 +1011,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			try
 			{
-				foreach (string path in filePaths)
+				foreach (var path in filePaths)
 				{
 					if (Path.GetExtension(path) == (".lua") || Path.GetExtension(path) == (".txt"))
 					{
