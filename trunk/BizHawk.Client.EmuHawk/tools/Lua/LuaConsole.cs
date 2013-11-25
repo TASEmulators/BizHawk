@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_luaList.StopAllScripts();
+			UpdateDialog();
 		}
 
 		public void LoadLuaFile(string path)
