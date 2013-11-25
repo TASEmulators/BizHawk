@@ -40,6 +40,7 @@ typedef uint16 u16;
 
 enum eMessage : int32
 {
+	eMessage_NotSet,
 	eMessage_Complete,
 
 	eMessage_SetBuffer,
@@ -72,6 +73,7 @@ enum eMessage : int32
 	eMessage_QUERY_peek_logical_register,
 	eMessage_QUERY_peek_cpu_regs,
 	
+	eMessage_CMD_FIRST,
 	eMessage_CMD_init,
 	eMessage_CMD_power,
 	eMessage_CMD_reset,
@@ -82,6 +84,7 @@ enum eMessage : int32
 	eMessage_CMD_load_cartridge_super_game_boy,
 	eMessage_CMD_term,
 	eMessage_CMD_unload_cartridge,
+	eMessage_CMD_LAST,
 
 	eMessage_SIG_video_refresh,
 	eMessage_SIG_input_poll,
@@ -108,7 +111,7 @@ enum eEmulationExitReason
 	eEmulationExitReason_NotSet,
 	eEmulationExitReason_BRK,
 	eEmulationExitReason_SIG,
-	eEmulationExitReason_Complete,
+	eEmulationExitReason_Complete, //TODO rename CMD_Complete
 };
 
 enum eEmulationCallback
@@ -126,21 +129,13 @@ enum eEmulationCallback
 	eEmulationCallback_snes_trace
 };
 
-enum eEmulationCommand
-{
-	eEmulationCommand_NotSet,
-	eEmulationCommand_Init,
-	eEmulationCommand_Power,
-	eEmulationCommand_Reset,
-	eEmulationCommand_FrameAdvance,
-	eEmulationCommand_LoadCartridgeNormal,
-	eEmulationCommand_Step
-};
-
 struct EmulationControl
 {
-	volatile eEmulationCommand command;
+	volatile eMessage command;
 	volatile eEmulationExitReason exitReason;
+	
+	//the result code for a CMD
+	s32 cmd_result;
 
 	union
 	{
@@ -149,13 +144,6 @@ struct EmulationControl
 			volatile eMessage hookExitType;
 			uint32 hookAddr;
 			uint8 hookValue;
-		};
-
-		union
-		{
-			struct {
-				bool result;
-			} cmd_loadCartridgeNormal_params;
 		};
 
 		struct
@@ -731,7 +719,7 @@ bool Handle_QUERY(eMessage msg)
 		break;
 
 	case eMessage_QUERY_get_memory_size:
-		WritePipe(snes_get_memory_size(ReadPipe<u32>()));
+		WritePipe((u32)snes_get_memory_size(ReadPipe<u32>()));
 		break;
 
 	case eMessage_QUERY_get_memory_data:
@@ -746,7 +734,6 @@ bool Handle_QUERY(eMessage msg)
 
 	case eMessage_QUERY_peek:
 		{
-			printf("harry");
 			int id = ReadPipe<s32>();
 			unsigned int addr = ReadPipe<u32>();
 			uint8_t ret;
@@ -759,7 +746,6 @@ bool Handle_QUERY(eMessage msg)
 
 	case eMessage_QUERY_poke:
 		{
-			printf("susan");
 			int id = ReadPipe<s32>();
 			unsigned int addr = ReadPipe<u32>();
 			uint8_t val = ReadPipe<uint8_t>();
@@ -771,7 +757,7 @@ bool Handle_QUERY(eMessage msg)
 		break;
 
 	case eMessage_QUERY_serialize_size:
-		WritePipe(snes_serialize_size());
+		WritePipe((u32)snes_serialize_size());
 		break;
 	case eMessage_QUERY_poll_message:
 		//TBD
@@ -889,96 +875,11 @@ bool Handle_QUERY(eMessage msg)
 
 bool Handle_CMD(eMessage msg)
 {
-	switch(msg)
-	{
-	default:
-		return false;
+	if(msg<=eMessage_CMD_FIRST || msg>=eMessage_CMD_LAST) return false;
 
-	case eMessage_CMD_init: 
-		s_EmulationControl.command = eEmulationCommand_Init;
-		s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-		co_switch(co_emu);
-		break;
-	case eMessage_CMD_power: 
-		s_EmulationControl.command = eEmulationCommand_Power;
-		s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-		co_switch(co_emu);
-		break;
-	case eMessage_CMD_reset:
-		s_EmulationControl.command = eEmulationCommand_Reset;
-		s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-		co_switch(co_emu);
-		break;
-
-	case eMessage_CMD_run:
-		s_EmulationControl.command = eEmulationCommand_FrameAdvance;
-		s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-		co_switch(co_emu);
-		break;
-
-	case eMessage_CMD_serialize:
-		{
-			int size = ReadPipe<s32>();
-			int destOfs = ReadPipe<s32>();
-			char* buf = (char*)hMapFilePtr + destOfs;
-			bool ret = snes_serialize((uint8_t*)buf,size);
-			WritePipe(eMessage_Complete);
-			WritePipe((char)(ret?1:0));
-			break;
-		}
-	case eMessage_CMD_unserialize:
-		{
-			//auto blob = ReadPipeBlob();
-			int size = ReadPipe<s32>();
-			int destOfs = ReadPipe<s32>();
-			char* buf = (char*)hMapFilePtr + destOfs;
-			bool ret = snes_unserialize((uint8_t*)buf	,size);
-			WritePipe(eMessage_Complete);
-			WritePipe((char)(ret?1:0));
-			break;
-		}
-
-	case eMessage_CMD_load_cartridge_normal:
-		s_EmulationControl.command = eEmulationCommand_LoadCartridgeNormal;
-		s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-		co_switch(co_emu);
-		break;
-
-	case eMessage_CMD_load_cartridge_super_game_boy:
-		{
-			printf("skunjk");
-			std::string rom_xml = ReadPipeString();
-			const char* rom_xmlptr = NULL;
-			if(rom_xml != "") rom_xmlptr = rom_xml.c_str();
-			Blob rom_data = ReadPipeBlob();
-			uint32 rom_length = rom_data.size();
-
-			std::string dmg_xml = ReadPipeString();
-			const char* dmg_xmlptr = NULL;
-			if(dmg_xml != "") dmg_xmlptr = dmg_xml.c_str();
-			Blob dmg_data = ReadPipeBlob();
-			uint32 dmg_length = dmg_data.size();
-
-			bool ret = snes_load_cartridge_super_game_boy(rom_xmlptr,(uint8*)&rom_data[0],rom_length, dmg_xmlptr,(uint8*)&dmg_data[0], dmg_length);
-
-			printf("WRITING COMPLETE\n");
-			WritePipe(eMessage_Complete);
-			WritePipe((char)(ret?1:0));
-
-			break;
-		}
-	
-	case eMessage_CMD_term: 
-		snes_term(); 
-		WritePipe(eMessage_BRK_Complete);
-		break;
-
-	case eMessage_CMD_unload_cartridge: 
-		snes_unload_cartridge();
-		WritePipe(eMessage_BRK_Complete);
-		break;
-	}
-
+	s_EmulationControl.command = msg;
+	s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
+	co_switch(co_emu);
 	return true;
 }
 
@@ -1019,13 +920,16 @@ TOP:
 			//special post-completion messages (return values)
 			switch(s_EmulationControl.command)
 			{
-			case eEmulationCommand_LoadCartridgeNormal:
-				WritePipe((char)(s_EmulationControl.cmd_loadCartridgeNormal_params.result?1:0));
+			case eMessage_CMD_load_cartridge_normal:
+			case eMessage_CMD_load_cartridge_super_game_boy:
+			case eMessage_CMD_serialize:
+			case eMessage_CMD_unserialize:
+				WritePipe(s_EmulationControl.cmd_result);
 				break;
 			}
 			
 			s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
-			s_EmulationControl.command = eEmulationCommand_NotSet;
+			s_EmulationControl.command = eMessage_NotSet;
 			goto TOP;
 		
 		case eEmulationExitReason_SIG:
@@ -1157,7 +1061,7 @@ void OpenConsole()
 	freopen("CONIN$", "r", stdin);
 }
 
-void handleCommand_LoadCartridgeNormal()
+void EMUTHREAD_handleCommand_LoadCartridgeNormal()
 {
 	Blob xml = ReadPipeBlob();
 	xml.push_back(0); //make sure the xml is null terminated
@@ -1168,7 +1072,44 @@ void handleCommand_LoadCartridgeNormal()
 	const unsigned char* rom_ptr = NULL;
 	if(rom_data.size() != 0) rom_ptr = (unsigned char*)&rom_data[0];
 
-	s_EmulationControl.cmd_loadCartridgeNormal_params.result = snes_load_cartridge_normal(xmlptr,rom_ptr,rom_data.size());
+	bool ret = snes_load_cartridge_normal(xmlptr,rom_ptr,rom_data.size());
+	s_EmulationControl.cmd_result = ret?1:0;
+}
+
+void EMUTHREAD_handleCommand_LoadCartridgeSuperGameBoy()
+{
+	std::string rom_xml = ReadPipeString();
+	const char* rom_xmlptr = NULL;
+	if(rom_xml != "") rom_xmlptr = rom_xml.c_str();
+	Blob rom_data = ReadPipeBlob();
+	uint32 rom_length = rom_data.size();
+
+	std::string dmg_xml = ReadPipeString();
+	const char* dmg_xmlptr = NULL;
+	if(dmg_xml != "") dmg_xmlptr = dmg_xml.c_str();
+	Blob dmg_data = ReadPipeBlob();
+	uint32 dmg_length = dmg_data.size();
+
+	bool ret = snes_load_cartridge_super_game_boy(rom_xmlptr,(uint8*)&rom_data[0],rom_length, dmg_xmlptr,(uint8*)&dmg_data[0], dmg_length);
+	s_EmulationControl.cmd_result = ret?1:0;
+}
+
+void EMUTHREAD_handle_CMD_serialize()
+{
+	int size = ReadPipe<s32>();
+	int destOfs = ReadPipe<s32>();
+	char* buf = (char*)hMapFilePtr + destOfs;
+	bool ret = snes_serialize((uint8_t*)buf,size);
+	s_EmulationControl.cmd_result = ret?1:0;
+}
+
+void EMUTHREAD_handle_CMD_unserialize()
+{
+	int size = ReadPipe<s32>();
+	int destOfs = ReadPipe<s32>();
+	char* buf = (char*)hMapFilePtr + destOfs;
+	bool ret = snes_unserialize((uint8_t*)buf	,size);
+	s_EmulationControl.cmd_result = ret?1:0;
 }
 
 void emuthread()
@@ -1177,16 +1118,36 @@ void emuthread()
 	{
 		switch(s_EmulationControl.command)
 		{
-		case eEmulationCommand_Init:
+		case eMessage_CMD_init:
 			snes_init();
 			break;
-		case eEmulationCommand_Power:
+		case eMessage_CMD_power:
 			snes_power();
 			break;
-		case eEmulationCommand_Reset:
+		case eMessage_CMD_reset:
 			snes_reset();
 			break;
-		case eEmulationCommand_FrameAdvance:
+		case eMessage_CMD_term:
+			snes_term();
+			break;
+		case eMessage_CMD_unload_cartridge:
+			snes_unload_cartridge();
+			break;
+		case eMessage_CMD_load_cartridge_normal:
+			EMUTHREAD_handleCommand_LoadCartridgeNormal();
+			break;
+		case eMessage_CMD_load_cartridge_super_game_boy:
+			EMUTHREAD_handleCommand_LoadCartridgeSuperGameBoy();
+			break;
+
+		case eMessage_CMD_serialize:
+			EMUTHREAD_handle_CMD_serialize();
+			break;
+		case eMessage_CMD_unserialize:
+			EMUTHREAD_handle_CMD_unserialize();
+			break;
+
+		case eMessage_CMD_run:
 			SIG_FlushAudio();
 
 			//we could avoid this if we saved the current thread before jumping back to co_control, instead of always jumping back to co_emu
@@ -1209,11 +1170,8 @@ void emuthread()
 
 			SIG_FlushAudio();
 			break;
-		case eEmulationCommand_LoadCartridgeNormal:
-			handleCommand_LoadCartridgeNormal();
-			break;
 		}
-		
+
 		s_EmulationControl.exitReason = eEmulationExitReason_Complete;
 		SETCONTROL;
 	}

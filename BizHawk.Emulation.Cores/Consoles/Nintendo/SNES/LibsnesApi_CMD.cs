@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bwPipe.Write(0); //mapped memory location to serialize to
 			bwPipe.Flush();
 			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
-			bool ret = brPipe.ReadBoolean();
+			bool ret = brPipe.ReadInt32() != 0;
 			if (ret)
 			{
 				CopyMemory(data.ToPointer(), mmvaPtr, (ulong)size);
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bwPipe.Write(0); //mapped memory location to serialize from
 			bwPipe.Flush();
 			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
-			bool ret = brPipe.ReadBoolean();
+			bool ret = brPipe.ReadInt32() != 0;
 			return ret;
 		}
 
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			WritePipeBlob(dmg_data);
 			//not a very obvious order.. because we do tons of work immediately after the last param goes down and need to answer messages
 			WaitForCompletion();
-			bool ret = brPipe.ReadBoolean();
+			bool ret = brPipe.ReadInt32() != 0;
 			return ret;
 		}
 
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			WritePipeBlob(rom_data ?? new byte[0]);
 			//not a very obvious order.. because we do tons of work immediately after the last param goes down and need to answer messages
 			WaitForCompletion();
-			bool ret = brPipe.ReadBoolean();
+			bool ret = brPipe.ReadInt32() != 0;
 			return ret;
 		}
 
