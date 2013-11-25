@@ -450,9 +450,9 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedIndices.Select(index => _searches[index]); }
 		}
 
-		private List<Watch> SelectedWatches
+		private IEnumerable<Watch> SelectedWatches
 		{
-			get { return SelectedItems.Where(x => !x.IsSeparator).ToList(); }
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
 		private void SetRemovedMessage(int val)
