@@ -21,9 +21,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void SetWatch(List<Watch> watches)
+		public void SetWatch(IEnumerable<Watch> watches)
 		{
-			_watchList = watches;
+			_watchList = watches.ToList();
 		}
 
 		private void UnSupportedConfiguration()
@@ -49,9 +49,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watchList.Count > 1)
 			{
-				bool hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
-				bool hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
-				bool hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
+				var hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
+				var hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
+				var hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
 
 				if (hasMixedSizes || hasMixedTypes || hasMixedEndian)
 				{
@@ -85,23 +85,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			bool success = true;
-			foreach (var watch in _watchList)
+			var success = true;
+			foreach (var watch in _watchList.Where(watch => !watch.Poke(ValueBox.Text)))
 			{
-				if (!watch.Poke(ValueBox.Text))
-				{
-					success = false;
-				}
+				success = false;
 			}
 
-			if (success)
-			{
-				OutputLabel.Text = "Value successfully written.";
-			}
-			else
-			{
-				OutputLabel.Text = "An error occured when writing Value.";
-			}
+			OutputLabel.Text = success ? "Value successfully written." 
+				: "An error occured when writing Value.";
 		}
 	}
 }
