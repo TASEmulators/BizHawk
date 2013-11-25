@@ -83,8 +83,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			InstanceName = "libsneshawk_" + Guid.NewGuid().ToString();
 
+#if DEBUG
 			//use this to get a debug console with libsnes output
-			//InstanceName = "console-" + InstanceName;
+			InstanceName = "console-" + InstanceName;
+#endif
 
 			var pipeName = InstanceName;
 
