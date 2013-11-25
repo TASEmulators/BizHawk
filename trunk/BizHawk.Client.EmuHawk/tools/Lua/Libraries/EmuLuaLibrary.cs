@@ -100,11 +100,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public Lua SpawnCoroutine(string File)
 		{
-			var t = _lua.NewThread();
-			//LuaRegister(t); //adelikat: Not sure why this was here but it was causing the entire luaimplmeentaiton to be duplicated each time, eventually resulting in crashes
-			var main = t.LoadFile(File);
-			t.Push(main); //push main function on to stack for subsequent resuming
-			return t;
+			Lua lua = _lua.NewThread();
+			var main = lua.LoadFile(File);
+			lua.Push(main); //push main function on to stack for subsequent resuming
+			return lua;
 		}
 
 		public class ResumeResult

@@ -103,8 +103,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			newStripButton1.Visible = VersionInfo.INTERIM;
-			newScriptToolStripMenuItem.Visible = VersionInfo.INTERIM;
+			NewScriptToolbarItem.Visible = VersionInfo.INTERIM;
+			NewScriptMenuItem.Visible = VersionInfo.INTERIM;
 		}
 
 		private void StopScript(int x)
@@ -150,16 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-		}
-
 		private FileInfo GetFileFromUser(string filter)
 		{
 			var ofd = new OpenFileDialog();
@@ -186,8 +176,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
-				LuaFile l = new LuaFile("", path);
-				_luaList.Add(l);
+				LuaFile luaFile = new LuaFile(String.Empty, path);
+				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				LuaListView.Refresh();
 				Global.Config.RecentLua.Add(path);
@@ -196,21 +186,21 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						l.Thread = LuaImp.SpawnCoroutine(path);
-						l.Enabled = true;
+						luaFile.Thread = LuaImp.SpawnCoroutine(path);
+						luaFile.Enabled = true;
 					}
 					catch (Exception e)
 					{
 						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
 						{
-							l.Enabled = false;
+							luaFile.Enabled = false;
 							AddText(e.Message);
 						}
 						else MessageBox.Show(e.ToString());
 					}
 				}
-				else l.Enabled = false;
-				l.Paused = false;
+				else luaFile.Enabled = false;
+				luaFile.Paused = false;
 				Changes(true);
 			}
 			else
@@ -229,66 +219,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OpenLuaFile()
-		{
-			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*");
-			if (file != null)
-			{
-				LoadLuaFile(file.FullName);
-				DisplayLuaList();
-			}
-		}
-
-		public void DisplayLuaList()
+		public void UpdateDialog()
 		{
 			LuaListView.ItemCount = _luaList.Count;
-		}
-
-		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
-			autoloadConsoleToolStripMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
-			autoloadSessionToolStripMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
-			disableScriptsOnLoadToolStripMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
-		}
-
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaConsoleSaveWindowPosition ^= true;
-		}
-
-		private void Toggle()
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				for (int x = 0; x < indexes.Count; x++)
-				{
-					var item = _luaList[indexes[x]];
-					if (!item.IsSeparator)
-					{
-						item.Toggle();
-					}
-					if (item.Enabled && item.Thread == null)
-						try
-						{
-							item.Thread = LuaImp.SpawnCoroutine(item.Path);
-						}
-						catch (Exception e)
-						{
-							if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
-							{
-								item.Enabled = false;
-								AddText(e.Message);
-							}
-							else MessageBox.Show(e.ToString());
-						}
-					else if (!item.Enabled && item.Thread != null)
-						item.Stop();
-				}
-			}
-			LuaListView.Refresh();
-			Changes(true);
 		}
 
 		public void RunLuaScripts()
@@ -340,200 +273,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int L = _luaList.Count - separators;
+
 			if (L == 1)
+			{
 				message += L.ToString() + " script (" + active.ToString() + " active, " + paused.ToString() + " paused)";
+			}
 			else if (L == 0)
+			{
 				message += L.ToString() + " script";
+			}
 			else
+			{
 				message += L.ToString() + " scripts (" + active.ToString() + " active, " + paused.ToString() + " paused)";
+			}
 
 			NumberOfScripts.Text = message;
-		}
-
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (_changes)
-			{
-				if (string.Compare(_currentSessionFile, "") == 0)
-					SaveAs();
-				else SaveSession(_currentSessionFile);
-				Changes(false);
-				OutputMessages.Text = Path.GetFileName(_currentSessionFile) + " saved.";
-			}
-		}
-
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAs();
-		}
-
-		private void newToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			NewLuaSession(false);
-		}
-
-		private void NewLuaSession(bool suppressAsk)
-		{
-			bool result = true;
-			if (_changes) result = AskSave();
-
-			if (result || suppressAsk)
-			{
-				ClearOutput();
-				StopAllScripts();
-				_luaList.Clear();
-				DisplayLuaList();
-				_currentSessionFile = String.Empty;
-				Changes(false);
-			}
-		}
-
-		private void turnOffAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopAllScripts();
-		}
-
-		private void stopAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopAllScripts();
-		}
-
-		private void autoloadConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadLuaConsole ^= true;
-		}
-
-		private void RemoveScript()
-		{
-			if (_luaList.Count == 0) return;
-			
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				Changes(true);
-
-				foreach (int index in indexes)
-				{
-					_luaList.Remove(_luaList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
-				}
-
-				indexes.Clear();
-				DisplayLuaList();
-				UpdateNumberOfScripts();
-			}
-		}
-
-		private void removeScriptToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RemoveScript();
-		}
-
-		private void insertSeperatorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			InsertSeparator();
-		}
-
-		private void InsertSeparator()
-		{
-			LuaFile f = new LuaFile(true) {IsSeparator = true};
-
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				if (indexes[0] > 0)
-				{
-					_luaList.Insert(indexes[0], f);
-				}
-			}
-			else
-			{
-				_luaList.Add(f);
-			}
-			DisplayLuaList();
-			LuaListView.Refresh();
-			Changes(true);
-		}
-
-		private void insertSeperatorToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			InsertSeparator();
-		}
-
-		private void MoveUp()
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes[0] == 0)
-				return;
-
-			if (indexes.Count == 0) return;
-			foreach (int index in indexes)
-			{
-				LuaFile temp = _luaList[index];
-				_luaList.Remove(_luaList[index]);
-				_luaList.Insert(index - 1, temp);
-
-				//Note: here it will get flagged many times redundantly potentially, 
-				//but this avoids it being flagged falsely when the user did not select an index
-				Changes(true);
-			}
-			List<int> i = new List<int>();
-			for (int z = 0; z < indexes.Count; z++)
-				i.Add(indexes[z] - 1);
-
-			LuaListView.SelectedIndices.Clear();
-			foreach (int t in i)
-			{
-				LuaListView.SelectItem(t, true);
-			}
-
-			DisplayLuaList();
-		}
-
-		private void MoveDown()
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count == 0) return;
-			foreach (int index in indexes)
-			{
-				LuaFile temp = _luaList[index];
-
-				if (index < _luaList.Count - 1)
-				{
-
-					_luaList.Remove(_luaList[index]);
-					_luaList.Insert(index + 1, temp);
-
-				}
-
-				//Note: here it will get flagged many times redundantly potnetially, 
-				//but this avoids it being flagged falsely when the user did not select an index
-				Changes(true);
-			}
-
-			List<int> i = new List<int>();
-			for (int z = 0; z < indexes.Count; z++)
-				i.Add(indexes[z] + 1);
-
-			LuaListView.SelectedIndices.Clear();
-			foreach (int t in i)
-			{
-				LuaListView.SelectItem(t, true);
-			}
-
-			DisplayLuaList();
-		}
-
-		private void toggleToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Toggle();
-		}
-
-		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent)
-			);
 		}
 
 		private void LoadLuaFromRecent(string path)
@@ -544,139 +298,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool LuaAlreadyInSession(string path)
 		{
 			return _luaList.Any(t => path == t.Path);
-		}
-
-		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
-		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			try
-			{
-				foreach (string path in filePaths)
-				{
-					if (Path.GetExtension(path) == (".lua") || Path.GetExtension(path) == (".txt"))
-					{
-						LoadLuaFile(path);
-						DisplayLuaList();
-					}
-					else if (Path.GetExtension(path) == (".luases"))
-					{
-						LoadLuaSession(path);
-						RunLuaScripts();
-						return;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
-				{
-					AddText(ex.Message);
-				}
-				else MessageBox.Show(ex.Message);
-			}
-		}
-
-		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
-		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
-			{
-				RemoveScript();
-			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
-			{
-				SelectAll();
-			}
-			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
-			{
-				showRegisteredFunctionsToolStripMenuItem_Click(null, null);
-			}
-		}
-
-		private void editScriptToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			EditScript();
-		}
-
-		private void editToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			EditScript();
-		}
-
-		private void EditScript()
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count == 0)
-				return;
-
-			if (indexes.Count > 0)
-			{
-				for (int x = 0; x < indexes.Count; x++)
-				{
-					var item = _luaList[indexes[x]];
-					if (!item.IsSeparator)
-						System.Diagnostics.Process.Start(_luaList[indexes[x]].Path);
-				}
-			}
-		}
-
-		private void toggleScriptToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Toggle();
-		}
-
-		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SelectAll();
-		}
-
-		private void SelectAll()
-		{
-			for (int x = 0; x < _luaList.Count; x++)
-			{
-				LuaListView.SelectItem(x, true);
-			}
-		}
-
-		private void toolStripButtonMoveDown_Click(object sender, EventArgs e)
-		{
-			MoveDown();
-		}
-
-		private void toolStripButtonMoveUp_Click(object sender, EventArgs e)
-		{
-			MoveUp();
-		}
-
-		private void toolStripButtonSeparator_Click(object sender, EventArgs e)
-		{
-			InsertSeparator();
-		}
-
-		private void copyToolStripButton_Click(object sender, EventArgs e)
-		{
-			Toggle();
-		}
-
-		private void EditToolstripButton_Click(object sender, EventArgs e)
-		{
-			if (VersionInfo.INTERIM)
-			{
-				DoLuaWriter();
-			}
-			else
-			{
-				EditScript();
-			}
-		}
-
-		private void cutToolStripButton_Click(object sender, EventArgs e)
-		{
-			RemoveScript();
 		}
 
 		public void WriteToOutputWindow(string message)
@@ -702,18 +323,6 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.Text = String.Empty;
 				OutputBox.Refresh();
 			});
-		}
-
-		private void openToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			OpenLuaFile();
-		}
-
-		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Sound.StopSound();
-			new LuaFunctionsForm().Show();
-			GlobalWin.Sound.StartSound();
 		}
 
 		public bool LoadLuaSession(string path)
@@ -775,22 +384,6 @@ namespace BizHawk.Client.EmuHawk
 			_currentSessionFile = path;
 			Changes(false);
 			return true;
-		}
-
-		private void OpenLuaSession()
-		{
-			var file = GetFileFromUser("Lua Session Files (*.luases)|*.luases|All Files|*.*");
-			if (file != null)
-			{
-				LoadLuaSession(file.FullName);
-				RunLuaScripts();
-				DisplayLuaList();
-			}
-		}
-
-		private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenLuaSession();
 		}
 
 		/// <summary>
@@ -879,21 +472,6 @@ namespace BizHawk.Client.EmuHawk
 			return LuaImp.LuaWait.WaitOne(timeout);
 		}
 
-		private void openToolStripButton_Click(object sender, EventArgs e)
-		{
-			OpenLuaFile();
-		}
-
-		private void LuaListView_ItemActivate(object sender, EventArgs e)
-		{
-			Toggle();
-		}
-
-		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
-		{
-			ClearOutput();
-		}
-
 		public void ClearOutput()
 		{
 			OutputBox.Text = String.Empty;
@@ -928,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 			return file;
 		}
 
-		private void SaveAs()
+		private void SaveSessionAs()
 		{
 			var file = GetSaveFileFromUser();
 			if (file != null)
@@ -972,19 +550,6 @@ namespace BizHawk.Client.EmuHawk
 			Changes(false);
 		}
 
-		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			saveToolStripMenuItem.Enabled = _changes;
-		}
-
-		private void recentSessionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentSessionsToolStripMenuItem.DropDownItems.Clear();
-			recentSessionsToolStripMenuItem.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent)
-			);
-		}
-
 		public void LoadSessionFromRecent(string path)
 		{
 			bool doload = true;
@@ -999,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					RunLuaScripts();
-					DisplayLuaList();
+					UpdateDialog();
 					LuaListView.Refresh();
 					_currentSessionFile = path;
 					Changes(false);
@@ -1023,7 +588,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (String.IsNullOrWhiteSpace(_currentSessionFile))
 					{
-						SaveAs();
+						SaveSessionAs();
 					}
 					else
 					{
@@ -1042,163 +607,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			return true;
-		}
-
-		private void moveUpToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			MoveUp();
-		}
-
-		private void moveDownToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			MoveDown();
-		}
-
-		private void scriptToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			bool luaRunning = false;
-			foreach (LuaFile t in _luaList)
-			{
-				if (t.Enabled)
-				{
-					luaRunning = true;
-				}
-			}
-
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				scriptToolStripMenuItem.DropDownItems[1].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[2].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[3].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[4].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[7].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[8].Enabled = true;
-
-				bool allSeparators = true;
-				for (int i = 0; i < indexes.Count; i++)
-				{
-					if (!_luaList[indexes[i]].IsSeparator)
-						allSeparators = false;
-				}
-				if (allSeparators)
-					scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
-				else
-					scriptToolStripMenuItem.DropDownItems[3].Enabled = true;
-			}
-			else
-			{
-				scriptToolStripMenuItem.DropDownItems[1].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[4].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[7].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
-			}
-
-			if (_luaList.Any())
-				scriptToolStripMenuItem.DropDownItems[9].Enabled = true;
-			else
-				scriptToolStripMenuItem.DropDownItems[9].Enabled = false;
-
-
-			turnOffAllScriptsToolStripMenuItem.Enabled = luaRunning;
-
-
-			showRegisteredFunctionsToolStripMenuItem.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
-		}
-
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			bool luaRunning = false;
-			foreach (LuaFile t in _luaList)
-			{
-				if (t.Enabled)
-					luaRunning = true;
-			}
-
-			if (indexes.Count > 0)
-			{
-				contextMenuStrip1.Items[0].Enabled = true;
-				contextMenuStrip1.Items[1].Enabled = true;
-				contextMenuStrip1.Items[2].Enabled = true;
-				contextMenuStrip1.Items[3].Enabled = true;
-
-				bool allSeparators = true;
-				for (int i = 0; i < indexes.Count; i++)
-				{
-					if (!_luaList[indexes[i]].IsSeparator)
-						allSeparators = false;
-				}
-				if (allSeparators)
-					contextMenuStrip1.Items[2].Enabled = false;
-				else
-					contextMenuStrip1.Items[2].Enabled = true;
-			}
-			else
-			{
-				contextMenuStrip1.Items[0].Enabled = false;
-				contextMenuStrip1.Items[1].Enabled = false;
-				contextMenuStrip1.Items[2].Enabled = false;
-				contextMenuStrip1.Items[3].Enabled = true;
-			}
-
-			if (luaRunning)
-			{
-				contextMenuStrip1.Items[5].Visible = true;
-				contextMenuStrip1.Items[6].Visible = true;
-			}
-			else
-			{
-				contextMenuStrip1.Items[5].Visible = false;
-				contextMenuStrip1.Items[6].Visible = false;
-			}
-		}
-
-		private void disableScriptsOnLoadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DisableLuaScriptsOnLoad ^= true;
-		}
-
-		private void autoloadSessionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RecentLuaSession.AutoLoad ^= true;
-		}
-
-		private void TogglePause()
-		{
-			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				for (int x = 0; x < indexes.Count; x++)
-				{
-					var item = _luaList[indexes[x]];
-					if (!item.IsSeparator)
-						item.TogglePause();
-				}
-			}
-			LuaListView.Refresh();
-		}
-
-		private void pauseResumeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TogglePause();
-		}
-
-		private void toolStripButton1_Click_1(object sender, EventArgs e)
-		{
-			TogglePause();
-		}
-
-		private void resumePauseToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TogglePause();
-		}
-
-		private void onlineDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
 		}
 
 		private void DoLuaWriter()
@@ -1223,28 +631,293 @@ namespace BizHawk.Client.EmuHawk
 			writer.Show();
 		}
 
-		private void newScriptToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			NewScript();
-		}
-
-		private void NewScript()
-		{
-			OpenLuaWriter(null);
-		}
-
-		private void newStripButton1_Click(object sender, EventArgs e)
-		{
-			NewScript();
-		}
-
 		private Point GetPromptPoint()
 		{
 			Point p = new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30);
 			return PointToScreen(p);
 		}
 
-		private void showRegisteredFunctionsToolStripMenuItem_Click(object sender, EventArgs e)
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return LuaListView.SelectedIndices.Cast<int>().ToList(); }
+		}
+
+		private IEnumerable<LuaFile> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => _luaList[index]).ToList(); }
+		}
+
+		private IEnumerable<LuaFile> SelectedFiles
+		{
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
+		}
+
+		#region Events
+
+		#region File Menu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveSessionMenuItem.Enabled = _changes;
+		}
+
+		private void RecentSessionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSessionsSubMenu.DropDownItems.Clear();
+			RecentSessionsSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent)
+			);
+		}
+
+		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentScriptsSubMenu.DropDownItems.Clear();
+			RecentScriptsSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent)
+			);
+		}
+
+		private void NewSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			bool result = !_changes || AskSave();
+
+			if (result)
+			{
+				ClearOutput();
+				StopAllScripts();
+				_luaList.Clear();
+				UpdateDialog();
+				_currentSessionFile = String.Empty;
+				Changes(false);
+			}
+		}
+
+		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser("Lua Session Files (*.luases)|*.luases|All Files|*.*");
+			if (file != null)
+			{
+				LoadLuaSession(file.FullName);
+				RunLuaScripts();
+				UpdateDialog();
+			}
+		}
+
+		private void SaveSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_changes)
+			{
+				if (String.IsNullOrWhiteSpace(_currentSessionFile))
+				{
+					SaveSessionAs();
+				}
+				else
+				{
+					SaveSession(_currentSessionFile);
+				}
+
+				Changes(false);
+				OutputMessages.Text = Path.GetFileName(_currentSessionFile) + " saved.";
+			}
+		}
+
+		private void SaveSessionAsMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveSessionAs();
+		}
+
+		private void ExitMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		#endregion
+
+		#region Script
+
+		private void ScriptSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ToggleScriptMenuItem.Enabled =
+				PauseScriptMenuItem.Enabled =
+				EditScriptMenuItem.Enabled =
+				SelectedFiles.Any();
+
+			RemoveScriptMenuItem.Enabled =
+				MoveUpMenuItem.Enabled =
+				MoveDownMenuItem.Enabled =
+				SelectedIndices.Any();
+
+			SelectAllMenuItem.Enabled = _luaList.Any();
+			StopAllScriptsMenuItem.Enabled = _luaList.Any(script => script.Enabled);
+			RegisteredFunctionsMenuItem.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
+
+			NewScriptMenuItem.Visible = VersionInfo.INTERIM;
+		}
+
+		private void NewScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenLuaWriter(null);
+		}
+
+		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*");
+			if (file != null)
+			{
+				LoadLuaFile(file.FullName);
+				UpdateDialog();
+			}
+		}
+
+		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach(int index in SelectedIndices)
+			{
+				var item = _luaList[index];
+				if (!item.IsSeparator)
+				{
+					item.Toggle();
+				}
+				if (item.Enabled && item.Thread == null)
+				{
+					try
+					{
+						item.Thread = LuaImp.SpawnCoroutine(item.Path);
+					}
+					catch (Exception ex)
+					{
+						if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+						{
+							item.Enabled = false;
+							AddText(ex.Message);
+						}
+						else
+						{
+							MessageBox.Show(ex.ToString());
+						}
+					}
+				}
+				else if (!item.Enabled && item.Thread != null)
+				{
+					item.Stop();
+				}
+			}
+
+			LuaListView.Refresh();
+			Changes(true);
+		}
+
+		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectedFiles.ToList().ForEach(x => x.TogglePause());
+			LuaListView.Refresh();
+		}
+
+		private void EditScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectedFiles.ToList().ForEach(file => System.Diagnostics.Process.Start(file.Path));
+		}
+
+		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedItems.Any())
+			{
+				Changes(true);
+
+				foreach (var item in SelectedItems)
+				{
+					_luaList.Remove(item);
+				}
+				
+				UpdateDialog();
+				UpdateNumberOfScripts();
+			}
+		}
+
+		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Any() && indices.Last() < _luaList.Count)
+			{
+				_luaList.Insert(indices.Last(), LuaFile.SeparatorInstance);
+			}
+			else
+			{
+				_luaList.Add(LuaFile.SeparatorInstance);
+			}
+
+			UpdateDialog();
+			LuaListView.Refresh();
+			Changes(true);
+		}
+
+		private void MoveUpMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices[0] == 0)
+			{
+				return;
+			}
+
+			foreach (int index in indices)
+			{
+				var file = _luaList[index];
+				_luaList.Remove(file);
+				_luaList.Insert(index - 1, file);
+			}
+			Changes(true);
+
+			var newindices = indices.Select(t => t - 1).ToList();
+
+			LuaListView.SelectedIndices.Clear();
+			foreach (int newi in newindices)
+			{
+				LuaListView.SelectItem(newi, true);
+			}
+
+			UpdateDialog();
+		}
+
+		private void MoveDownMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == _luaList.Count - 1)
+			{
+				return;
+			}
+
+			foreach (int index in indices)
+			{
+				var file = _luaList[index];
+				_luaList.Remove(file);
+				_luaList.Insert(index + 1, file);
+			}
+
+			var newindices = indices.Select(t => t + 1).ToList();
+
+			LuaListView.SelectedIndices.Clear();
+			foreach (int newi in newindices)
+			{
+				LuaListView.SelectItem(newi, true);
+			}
+
+			UpdateDialog();
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int x = 0; x < _luaList.Count; x++)
+			{
+				LuaListView.SelectItem(x, true);
+			}
+		}
+
+		private void StopAllScriptsMenuItem_Click(object sender, EventArgs e)
+		{
+			StopAllScripts();
+		}
+
+		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (LuaImp.RegisteredFunctions.Any())
 			{
@@ -1260,24 +933,176 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					var form = new LuaRegisteredFunctionsList();
-					form.StartLocation = GetPromptPoint();
+					var form = new LuaRegisteredFunctionsList {StartLocation = GetPromptPoint()};
 					form.Show();
 				}
 			}
 		}
 
-		private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+		#endregion
+
+		#region Options
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			registeredFunctionsToolStripMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
+			SaveWindowPositionMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
+			AutoloadConsoleMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
+			AutoloadSessionMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
+			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaConsoleSaveWindowPosition ^= true;
+		}
+
+		private void AutoloadConsoleMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLuaConsole ^= true;
+		}
+
+		private void AutoloadSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RecentLuaSession.AutoLoad ^= true;
+		}
+
+		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisableLuaScriptsOnLoad ^= true;
+		}
+
+		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(_defaultWidth, _defaultHeight);
+		}
+
+		#endregion
+
+		#region Help
+
+		private void FunctionsListMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Sound.StopSound();
+			new LuaFunctionsForm().Show();
+			GlobalWin.Sound.StartSound();
+		}
+
+		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
+		}
+
+		#endregion
+
+		#region Toolbar and Context Menu
+
+		private void EditToolbarItem_Click(object sender, EventArgs e)
+		{
+			if (VersionInfo.INTERIM)
+			{
+				DoLuaWriter();
+			}
+			else
+			{
+				EditScriptMenuItem_Click(sender, e);
+			}
+		}
+
+		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
+		{
+			ToggleScriptContextItem.Enabled =
+				PauseScriptContextItem.Enabled =
+				EditScriptContextItem.Enabled =
+				SelectedFiles.Any();
+
+			StopAllScriptsContextItem.Visible =
+				ScriptContextSeparator.Visible =
+				_luaList.Any(file => file.Enabled);
+		}
+
+		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
+		{
+			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
+		}
+
+		private void ClearConsoleContextItem_Click(object sender, EventArgs e)
+		{
+			ClearOutput();
+		}
+
+		#endregion
+
+		#region Dialog, Listview, OutputBox
+
+		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			try
+			{
+				foreach (string path in filePaths)
+				{
+					if (Path.GetExtension(path) == (".lua") || Path.GetExtension(path) == (".txt"))
+					{
+						LoadLuaFile(path);
+						UpdateDialog();
+					}
+					else if (Path.GetExtension(path) == (".luases"))
+					{
+						LoadLuaSession(path);
+						RunLuaScripts();
+						return;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
+				{
+					AddText(ex.Message);
+				}
+				else
+				{
+					MessageBox.Show(ex.Message);
+				}
+			}
+		}
+
+		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveScriptMenuItem_Click(null, null);
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				SelectAllMenuItem_Click(null, null);
+			}
+			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
+			{
+				RegisteredFunctionsMenuItem_Click(null, null);
+			}
+		}
+
+		private void LuaListView_ItemActivate(object sender, EventArgs e)
+		{
+			ToggleScriptMenuItem_Click(sender, e);
 		}
 
 		private void OutputBox_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
 			{
-				showRegisteredFunctionsToolStripMenuItem_Click(null, null);
+				RegisteredFunctionsMenuItem_Click(null, null);
 			}
 		}
+
+		#endregion
+
+		#endregion
 	}
 }
