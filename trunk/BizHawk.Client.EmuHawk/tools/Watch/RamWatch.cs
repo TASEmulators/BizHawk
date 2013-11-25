@@ -519,9 +519,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveWatch()
 		{
-			if (SelectedItems.Any())
+			var items = SelectedItems.ToList();
+			if (items.Any())
 			{
-				foreach (var item in SelectedItems)
+				foreach (var item in items)
 				{
 					_watches.Remove(item);
 				}
