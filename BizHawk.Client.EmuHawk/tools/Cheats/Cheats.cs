@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -28,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public const string ENDIAN = "EndianColumn";
 		public const string TYPE = "DisplayTypeColumn";
 
-		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
+		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
 		{
 			{ NAME, 128 },
 			{ ADDRESS, 60 },
@@ -41,10 +38,10 @@ namespace BizHawk.Client.EmuHawk
 			{ TYPE, 55 },
 		};
 
-		private int defaultWidth;
-		private int defaultHeight;
+		private int _defaultWidth;
+		private int _defaultHeight;
 		private string _sortedColumn = String.Empty;
-		private bool _sortReverse = false;
+		private bool _sortReverse;
 
 		public bool UpdateBefore { get { return false; } }
 
@@ -119,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMessageLabel(bool saved = false)
 		{
-			string message = String.Empty;
+			string message;
 			
 			if (saved)
 			{
@@ -235,8 +232,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigSettings()
 		{
 			//Size and Positioning
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
+			_defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			_defaultHeight = Size.Height;
 
 			if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
 			{
@@ -270,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 			var width = Global.Config.CheatsColumnWidths[columnName];
 			if (width == -1)
 			{
-				width = DefaultColumnWidths[columnName];
+				width = _defaultColumnWidths[columnName];
 			}
 
 			return width;
@@ -310,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Global.CheatList[index].Size.ToString();
 					break;
 				case ENDIAN:
-					text = Global.CheatList[index].BigEndian.Value ? "Big" : "Little";
+					text = (Global.CheatList[index].BigEndian ?? false) ? "Big" : "Little";
 					break;
 				case TYPE:
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
@@ -333,45 +330,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<int> SelectedIndices
+		private IEnumerable<int> SelectedIndices
 		{
-			get
-			{
-				var selected = new List<int>();
-				ListView.SelectedIndexCollection indices = CheatListView.SelectedIndices;
-				foreach (int index in indices)
-				{
-					selected.Add(index);
-				}
-				return selected;
-			}
+			get { return CheatListView.SelectedIndices.Cast<int>().ToList(); }
 		}
 
-		private List<Cheat> SelectedItems
+		private IEnumerable<Cheat> SelectedItems
 		{
-			get
-			{
-				var selected = new List<Cheat>();
-				if (SelectedIndices.Any())
-				{
-					foreach (int index in SelectedIndices)
-					{
-						if (!Global.CheatList[index].IsSeparator)
-						{
-							selected.Add(Global.CheatList[index]);
-						}
-					}
-				}
-				return selected;
-			}
+			get { return SelectedIndices.Select(index => Global.CheatList[index]); }
 		}
 
-		private List<Cheat> SelectedCheats
+		private IEnumerable<Cheat> SelectedCheats
 		{
-			get
-			{
-				return SelectedItems.Where(x => !x.IsSeparator).ToList();
-			}
+			get { return SelectedItems.Where(x => !x.IsSeparator).ToList(); }
 		}
 
 		private void MoveUp()
@@ -444,21 +415,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Remove()
 		{
-			if (SelectedIndices.Any())
+			if (SelectedItems.Any())
 			{
-				foreach (int index in SelectedIndices)
+				foreach (var item in SelectedItems)
 				{
-					Global.CheatList.Remove(Global.CheatList[SelectedIndices[0]]); //SelectedIndices[0] used since each iteration will make this the correct list index
+					Global.CheatList.Remove(item);
 				}
-				CheatListView.SelectedIndices.Clear();
-			}
 
-			UpdateDialog();
+				CheatListView.SelectedIndices.Clear();
+				UpdateDialog();
+			}
 		}
 
 		private void Toggle()
 		{
-			SelectedCheats.ForEach(x => x.Toggle());
+			SelectedCheats.ToList().ForEach(x => x.Toggle());
 		}
 
 		private void SaveColumnInfo()
@@ -529,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedCheats.Any())
 			{
-				var cheat = SelectedCheats[0];
+				var cheat = SelectedCheats.First();
 				CheatEditor.SetCheat(cheat);
 				CheatGroupBox.Text = "Editing Cheat " + cheat.Name + " - " + cheat.AddressStr;
 			}
@@ -564,11 +535,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
-			if (pathEntry == null)
-			{
-				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
-			}
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"] ??
+			                      Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
 			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
 
 			var f = new FileInfo(path);
@@ -772,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			Size = new Size(defaultWidth, defaultHeight);
+			Size = new Size(_defaultWidth, _defaultHeight);
 			Global.Config.CheatsSaveWindowPosition = true;
 			Global.Config.CheatsAlwaysOnTop = TopMost = false;
 			Global.Config.DisableCheatsOnLoad = false;
@@ -805,8 +773,8 @@ namespace BizHawk.Client.EmuHawk
 				{ "DisplayTypeColumn", 8 },
 			};
 
-			Global.Config.CheatsColumnShow = new Dictionary<string, bool>()
-			{
+			Global.Config.CheatsColumnShow = new Dictionary<string, bool>
+				{
 				{ "NamesColumn", true },
 				{ "AddressColumn", true },
 				{ "ValueColumn", true },
