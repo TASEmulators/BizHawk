@@ -1,5 +1,7 @@
 ﻿using System;
-using ICSharpCode.SharpZipLib.Zip;
+using SharpCompress.Archive;
+using SharpCompress.Writer;
+using BizHawk.Client.Common;
 using System.IO;
 
 namespace BizHawk.Client.Common
@@ -30,12 +32,12 @@ namespace BizHawk.Client.Common
 
 				if (disposing)
 				{
-					zip.Close();
+					zip.Dispose();
 				}
 			}
 		}
 
-		ZipFile zip;
+		IArchive zip;
 
 		private BinaryStateLoader()
 		{
@@ -46,16 +48,16 @@ namespace BizHawk.Client.Common
 			BinaryStateLoader ret = new BinaryStateLoader();
 			try
 			{
-				ret.zip = new ZipFile(Filename);
+				ret.zip = SharpCompress.Archive.ArchiveFactory.Open(new FileStream(Filename, FileMode.Open), SharpCompress.Common.Options.None);
 				var e = ret.zip.GetEntry(BinaryStateFileNames.Versiontag);
 				if (e == null)
 				{
-					ret.zip.Close();
+					ret.zip.Dispose();
 					return null;
 				}
 				return ret;
 			}
-			catch (ZipException)
+			catch (Exception)
 			{
 				return null;
 			}
@@ -66,7 +68,7 @@ namespace BizHawk.Client.Common
 			var e = zip.GetEntry(Name);
 			if (e != null)
 			{
-				using (Stream zs = zip.GetInputStream(e))
+				using (Stream zs = e.OpenEntryStream())
 				{
 					callback(zs);
 				}
@@ -100,7 +102,7 @@ namespace BizHawk.Client.Common
 
 	public class BinaryStateSaver : IDisposable
 	{
-		private readonly ZipOutputStream zip;
+		private readonly IWriter zip;
 
 		/// <summary>
 		/// 
@@ -108,22 +110,17 @@ namespace BizHawk.Client.Common
 		/// <param name="s">not closed when finished!</param>
 		public BinaryStateSaver(Stream s)
 		{
-			zip = new ZipOutputStream(s)
-				{
-					IsStreamOwner = false,
-					UseZip64 = UseZip64.Off
-				};
-			zip.SetLevel(0);
+			zip = WriterFactory.Open (s, SharpCompress.Common.ArchiveType.Zip, SharpCompress.Common.CompressionType.Deflate);
 
 			PutFileByName(BinaryStateFileNames.Versiontag, ss => { });	
 		}
 
 		void PutFileByName(string Name, Action<Stream> callback)
 		{
-			var e = new ZipEntry(Name) {CompressionMethod = CompressionMethod.Stored};
-			zip.PutNextEntry(e);
-			callback(zip);
-			zip.CloseEntry();
+			MemoryStream ms = new MemoryStream ();
+			callback (ms);
+			ms.Position = 0; //Reset
+			zip.Write (Name, ms);
 		}
 
 		public void PutCoreState(Action<Stream> callback)
@@ -156,7 +153,7 @@ namespace BizHawk.Client.Common
 
 				if (disposing)
 				{
-					zip.Close();
+					zip.Dispose();
 				}
 			}
 		}
