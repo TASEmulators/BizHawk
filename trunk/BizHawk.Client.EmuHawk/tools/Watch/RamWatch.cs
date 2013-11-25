@@ -406,33 +406,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveDown()
 		{
-			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any())
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
 			{
 				return;
 			}
 
-			foreach (var index in indexes)
+			for (var i = indices.Count - 1; i >= 0; i--)
 			{
-				var watch = _watches[index];
-
-				if (index < _watches.Count - 1)
-				{
-					_watches.Remove(_watches[index]);
-					_watches.Insert(index + 1, watch);
-				}
+				var watch = _watches[indices[i]];
+				_watches.Remove(watch);
+				_watches.Insert(indices[i] + 1, watch);
 			}
 
-			Changes();
-
-			var indices = indexes.Select(t => t + 1).ToList();
+			var newindices = indices.Select(t => t + 1).ToList();
 
 			WatchListView.SelectedIndices.Clear();
-			foreach (var t in indices)
+			foreach (var t in newindices)
 			{
 				WatchListView.SelectItem(t, true);
 			}
 
+			Changes();
 			WatchListView.ItemCount = _watches.ItemCount;
 		}
 
@@ -447,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var index in indexes)
 			{
 				var watch = _watches[index];
-				_watches.Remove(_watches[index]);
+				_watches.Remove(watch);
 				_watches.Insert(index - 1, watch);
 			}
 
