@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -22,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private LuaFileList _luaList;
+		private readonly LuaFileList _luaList;
 
 		public bool UpdateBefore { get { return true; } }
 		public void UpdateValues() { }
@@ -38,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaConsole()
 		{
-			_luaList = new LuaFileList()
+			_luaList = new LuaFileList
 			{
 				ChangedCallback = SessionChangedCallback,
 				LoadCallback = ClearOutputWindow
@@ -126,19 +127,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RunLuaScripts()
 		{
-			for (var i = 0; i < _luaList.Count; i++)
+			foreach (var t in _luaList)
 			{
-				if (_luaList[i].Enabled && _luaList[i].Thread == null)
+				if (t.Enabled && t.Thread == null)
 				{
 					try
 					{
-						_luaList[i].Thread = LuaImp.SpawnCoroutine(_luaList[i].Path);
+						t.Thread = LuaImp.SpawnCoroutine(t.Path);
 					}
 					catch (Exception e)
 					{
 						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
 						{
-							_luaList[i].Enabled = false;
+							t.Enabled = false;
 							ConsoleLog(e.Message);
 						}
 						else MessageBox.Show(e.ToString());
@@ -146,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_luaList[i].Stop();
+					t.Stop();
 					_luaList.Changes = true;
 				}
 			}
@@ -217,24 +218,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private FileInfo GetFileFromUser(string filter)
+		private static FileInfo GetFileFromUser(string filter)
 		{
-			var ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetLuaPath();
-			ofd.Filter = filter;
-			ofd.RestoreDirectory = true;
+			var ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.GetLuaPath(), 
+					Filter = filter, RestoreDirectory = true
+				};
 
 
 			if (!Directory.Exists(ofd.InitialDirectory))
+			{
 				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
 
 			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			GlobalWin.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
+			
+			return result == DialogResult.OK ? new FileInfo(ofd.FileName) : null;
 		}
 
 		private void UpdateNumberOfScripts()
@@ -750,11 +752,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (var index in indices)
+			for (var i = indices.Count - 1; i >= 0; i--)
 			{
-				var file = _luaList[index];
+				var file = _luaList[indices[i]];
 				_luaList.Remove(file);
-				_luaList.Insert(index + 1, file);
+				_luaList.Insert(indices[i] + 1, file);
 			}
 
 			var newindices = indices.Select(t => t + 1).ToList();

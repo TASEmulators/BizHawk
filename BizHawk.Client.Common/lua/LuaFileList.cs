@@ -90,12 +90,14 @@ namespace BizHawk.Client.Common
 						{
 							Add(LuaFile.SeparatorInstance);
 						}
-
-						Add(new LuaFile(line.Substring(2, line.Length - 2))
+						else
 						{
-							Enabled = !Global.Config.DisableLuaScriptsOnLoad &&
-							line.Substring(0, 1) == "1",
-						});
+							Add(new LuaFile(line.Substring(2, line.Length - 2))
+							{
+								Enabled = !Global.Config.DisableLuaScriptsOnLoad &&
+								line.Substring(0, 1) == "1",
+							});
+						}
 					}
 				}
 

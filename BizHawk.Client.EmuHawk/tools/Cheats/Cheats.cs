@@ -340,26 +340,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUp()
 		{
-			var indices = CheatListView.SelectedIndices;
+			var indices = SelectedIndices.ToList();
 			if (indices.Count == 0 || indices[0] == 0)
 			{
 				return;
 			}
 
-			foreach (int index in indices)
+			foreach (var index in indices)
 			{
 				var cheat = Global.CheatList[index];
-				Global.CheatList.Remove(Global.CheatList[index]);
+				Global.CheatList.Remove(cheat);
 				Global.CheatList.Insert(index - 1, cheat);
 			}
 
-			UpdateMessageLabel();
-
-			var newindices = new List<int>();
-			for (var i = 0; i < indices.Count; i++)
-			{
-				newindices.Add(indices[i] - 1);
-			}
+			var newindices = indices.Select(t => t - 1).ToList();
 
 			CheatListView.SelectedIndices.Clear();
 			foreach (var newi in newindices)
@@ -367,35 +361,28 @@ namespace BizHawk.Client.EmuHawk
 				CheatListView.SelectItem(newi, true);
 			}
 
+			UpdateMessageLabel();
 			UpdateDialog();
 		}
 
 		private void MoveDown()
 		{
-			var indices = CheatListView.SelectedIndices;
-			if (indices.Count == 0)
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == Global.CheatList.Count - 1)
 			{
 				return;
 			}
 
-			foreach (int index in indices)
+			for (var i = indices.Count - 1; i >= 0; i--)
 			{
-				var cheat = Global.CheatList[index];
-
-				if (index < Global.CheatList.Count - 1)
-				{
-					Global.CheatList.Remove(Global.CheatList[index]);
-					Global.CheatList.Insert(index + 1, cheat);
-				}
+				var cheat = Global.CheatList[indices[i]];
+				Global.CheatList.Remove(cheat);
+				Global.CheatList.Insert(indices[i] + 1, cheat);
 			}
 
 			UpdateMessageLabel();
 
-			var newindices = new List<int>();
-			for (var i = 0; i < indices.Count; i++)
-			{
-				newindices.Add(indices[i] + 1);
-			}
+			var newindices = indices.Select(t => t + 1).ToList();
 
 			CheatListView.SelectedIndices.Clear();
 			foreach (var newi in newindices)
