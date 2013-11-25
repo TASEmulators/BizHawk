@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		public LuaFileList() : base() { }
 		
 		private string _filename = String.Empty;
-		private bool _changes = false;
+		private bool _changes;
 
 		public Action ChangedCallback;
 		public Action LoadCallback;

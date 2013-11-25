@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			if (Global.Config.SupressAskSave)
 			{
 				return true;
 			}
