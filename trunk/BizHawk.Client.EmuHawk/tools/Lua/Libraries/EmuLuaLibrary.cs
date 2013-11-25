@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LuaRegister(Lua lua)
 		{
-			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
+			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Print(string s)
 		{
-			_caller.AddText(s);
+			_caller.ConsoleLog(s);
 		}
 
 		private void Frameadvance()
