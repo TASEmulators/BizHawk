@@ -6,14 +6,14 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class EmuLuaLibrary
+	public class EmuLuaLibrary
 	{
 		private Lua _lua = new Lua();
 		private readonly LuaConsole _caller;
-		private Lua currThread;
-		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
-		private GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
+		private Lua _currThread;
+		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
+		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
+		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
 		public bool IsRunning;
@@ -79,8 +79,8 @@ namespace BizHawk.Client.EmuHawk
 			
 			new EmulatorLuaLibrary(
 				_lua,
-				new Action(Frameadvance),
-				new Action(EmuYield)
+				Frameadvance,
+				EmuYield
 			).LuaRegister(lua, Docs);
 
 			_eventLibrary.LuaRegister(lua, Docs);
@@ -98,10 +98,10 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Sort();
 		}
 
-		public Lua SpawnCoroutine(string File)
+		public Lua SpawnCoroutine(string file)
 		{
 			Lua lua = _lua.NewThread();
-			var main = lua.LoadFile(File);
+			var main = lua.LoadFile(file);
 			lua.Push(main); //push main function on to stack for subsequent resuming
 			return lua;
 		}
@@ -114,9 +114,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public ResumeResult ResumeScript(Lua script)
 		{
-			currThread = script;
+			_currThread = script;
 			int execResult = script.Resume(0);
-			currThread = null;
+			_currThread = null;
 			var result = new ResumeResult();
 			if (execResult == 0)
 			{
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
-		public void print(string s)
+		public void Print(string s)
 		{
 			_caller.AddText(s);
 		}
@@ -140,13 +140,13 @@ namespace BizHawk.Client.EmuHawk
 		private void Frameadvance()
 		{
 			FrameAdvanceRequested = true;
-			currThread.Yield(0);
+			_currThread.Yield(0);
 		}
 
 		private void EmuYield()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			currThread.Yield(0);
+			_currThread.Yield(0);
 		}
 	}
 }

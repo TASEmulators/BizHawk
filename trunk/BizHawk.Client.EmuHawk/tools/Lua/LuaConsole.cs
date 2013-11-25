@@ -639,12 +639,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices
 		{
-			get { return LuaListView.SelectedIndices.Cast<int>().ToList(); }
+			get { return LuaListView.SelectedIndices.Cast<int>(); }
 		}
 
 		private IEnumerable<LuaFile> SelectedItems
 		{
-			get { return SelectedIndices.Select(index => _luaList[index]).ToList(); }
+			get { return SelectedIndices.Select(index => _luaList[index]); }
 		}
 
 		private IEnumerable<LuaFile> SelectedFiles
