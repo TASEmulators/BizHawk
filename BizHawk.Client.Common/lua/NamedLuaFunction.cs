@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -10,14 +9,15 @@ namespace BizHawk.Client.Common
 		private readonly string _name;
 		private readonly string _event;
 		private readonly Action _action;
-		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, Lua lua, string name = null)
 		{
 			_function = function;
 			_name = name ?? "Anonymous";
 			_event = theevent;
-			GUID = Guid.NewGuid();
+			Lua = lua;
+			Guid = Guid.NewGuid();
 
-			_action = new Action(delegate
+			_action = delegate
 			{
 				try
 				{
@@ -33,10 +33,10 @@ namespace BizHawk.Client.Common
 					);
 				}
 
-			});
+			};
 		}
 
-		public Guid GUID { get; private set; }
+		public Guid Guid { get; private set; }
 
 		public void Call(string name = null)
 		{
@@ -47,6 +47,8 @@ namespace BizHawk.Client.Common
 		{
 			get { return _name; }
 		}
+
+		public Lua Lua { get; private set; }
 
 		public string Event
 		{

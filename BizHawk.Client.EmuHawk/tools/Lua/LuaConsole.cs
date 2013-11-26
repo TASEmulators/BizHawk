@@ -115,13 +115,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				foreach (var file in _luaList)
+				foreach (var file in _luaList.Where(file => path == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad))
 				{
-					if (path == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
-					{
-						file.Toggle();
-						break;
-					}
+					file.Toggle();
+					break;
 				}
 
 				RunLuaScripts();
@@ -132,24 +129,25 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateDialog()
 		{
 			LuaListView.ItemCount = _luaList.Count;
+			LuaListView.Refresh();
 			UpdateNumberOfScripts();
 		}
 
 		public void RunLuaScripts()
 		{
-			foreach (var t in _luaList)
+			foreach (var file in _luaList)
 			{
-				if (t.Enabled && t.Thread == null)
+				if (file.Enabled && file.Thread == null)
 				{
 					try
 					{
-						t.Thread = LuaImp.SpawnCoroutine(t.Path);
+						file.Thread = LuaImp.SpawnCoroutine(file.Path);
 					}
 					catch (Exception e)
 					{
 						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
 						{
-							t.Enabled = false;
+							file.Enabled = false;
 							ConsoleLog(e.Message);
 						}
 						else MessageBox.Show(e.ToString());
@@ -157,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					t.Stop();
+					file.Stop();
 					_luaList.Changes = true;
 				}
 			}
@@ -361,7 +359,10 @@ namespace BizHawk.Client.EmuHawk
 									Environment.CurrentDirectory = lf.CurrentDirectory;
 								}
 								var result = LuaImp.ResumeScript(lf.Thread);
-								if (result.Terminated) lf.Stop();
+								if (result.Terminated)
+								{
+									lf.Stop();
+								}
 								lf.FrameWaiting = result.WaitForFrame;
 
 								//if the lua thread changed its current directory, capture that here
@@ -524,6 +525,14 @@ namespace BizHawk.Client.EmuHawk
 			return PointToScreen(
 				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30)
 			);
+		}
+
+		private static void UpdateRegisteredFunctionsDialog()
+		{
+			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
+			{
+				form.UpdateValues();
+			}
 		}
 
 		private IEnumerable<int> SelectedIndices
@@ -708,9 +717,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var item in items)
 				{
+					var temp = item;
+					var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == temp.Thread).ToList();
+					foreach (var function in functions)
+					{
+						LuaImp.RegisteredFunctions.Remove(function);
+					}
+
 					_luaList.Remove(item);
 				}
-				
+
+				UpdateRegisteredFunctionsDialog();
 				UpdateDialog();
 			}
 		}

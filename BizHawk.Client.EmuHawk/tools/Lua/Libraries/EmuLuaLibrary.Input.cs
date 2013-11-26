@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System.Linq;
 using System.Windows.Forms;
 
 using LuaInterface;
@@ -9,7 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	public class InputLuaLibrary : LuaLibraryBase
 	{
 		public InputLuaLibrary(Lua lua)
-			: base()
 		{
 			_lua = lua;
 		}
@@ -27,21 +26,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Lua _lua;
+		private readonly Lua _lua;
 
 		public LuaTable input_get()
 		{
-			LuaTable buttons = _lua.NewTable();
-			foreach (var kvp in GlobalWin.ControllerInputCoalescer.BoolButtons())
-				if (kvp.Value)
-					buttons[kvp.Key] = true;
+			var buttons = _lua.NewTable();
+			foreach (var kvp in GlobalWin.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
+			{
+				buttons[kvp.Key] = true;
+			}
 			return buttons;
 		}
 
 		public LuaTable input_getmouse()
 		{
-			LuaTable buttons = _lua.NewTable();
-			Point p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);
+			var buttons = _lua.NewTable();
+			var p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
 			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;
