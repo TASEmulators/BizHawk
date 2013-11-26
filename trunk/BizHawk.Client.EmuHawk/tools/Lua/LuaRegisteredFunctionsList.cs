@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,6 +11,18 @@ namespace BizHawk.Client.EmuHawk
 		public LuaRegisteredFunctionsList()
 		{
 			InitializeComponent();
+		}
+
+		public void UpdateValues()
+		{
+			if (GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any())
+			{
+				PopulateListView();
+			}
+			else
+			{
+				Close();
+			}
 		}
 
 		private void LuaRegisteredFunctionsList_Load(object sender, EventArgs e)
@@ -34,12 +43,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FunctionView.Items.Clear();
 			
-			List<NamedLuaFunction> nlfs = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
-			foreach (NamedLuaFunction nlf in nlfs)
+			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
+			foreach (var nlf in nlfs)
 			{
-				ListViewItem item = new ListViewItem { Text = nlf.Event };
+				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
-				item.SubItems.Add(nlf.GUID.ToString());
+				item.SubItems.Add(nlf.Guid.ToString());
 				FunctionView.Items.Add(item);
 			}
 
@@ -58,12 +67,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CallFunction()
 		{
-			ListView.SelectedIndexCollection indices = FunctionView.SelectedIndices;
+			var indices = FunctionView.SelectedIndices;
 			if (indices.Count > 0)
 			{
 				foreach (int index in indices)
 				{
-					string guid = FunctionView.Items[index].SubItems[2].Text;
+					var guid = FunctionView.Items[index].SubItems[2].Text;
 					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid].Call();
 				}
 			}
@@ -71,13 +80,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveFunctionButton()
 		{
-			ListView.SelectedIndexCollection indices = FunctionView.SelectedIndices;
+			var indices = FunctionView.SelectedIndices;
 			if (indices.Count > 0)
 			{
 				foreach (int index in indices)
 				{
-					string guid = FunctionView.Items[index].SubItems[2].Text;
-					NamedLuaFunction nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
+					var guid = FunctionView.Items[index].SubItems[2].Text;
+					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
 					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
 				}
 				PopulateListView();
@@ -102,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoButtonsStatus()
 		{
-			ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
 			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();

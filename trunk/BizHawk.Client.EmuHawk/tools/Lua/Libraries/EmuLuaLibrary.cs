@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Lua SpawnCoroutine(string file)
 		{
-			Lua lua = _lua.NewThread();
+			var lua = _lua.NewThread();
 			var main = lua.LoadFile(file);
 			lua.Push(main); //push main function on to stack for subsequent resuming
 			return lua;
@@ -114,8 +114,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public ResumeResult ResumeScript(Lua script)
 		{
+			_eventLibrary.CurrentThread = script;
 			_currThread = script;
-			int execResult = script.Resume(0);
+			var execResult = script.Resume(0);
 			_currThread = null;
 			var result = new ResumeResult();
 			if (execResult == 0)
