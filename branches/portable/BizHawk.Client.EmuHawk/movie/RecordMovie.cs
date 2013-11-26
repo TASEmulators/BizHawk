@@ -30,10 +30,10 @@ namespace BizHawk.Client.EmuHawk
 			if (RecordBox.Text.Length == 0)
 				return "";
 			string path = RecordBox.Text;
-			if (path.LastIndexOf('\\') == -1)
+			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 			{
-				if (path[0] != '\\')
-					path = path.Insert(0, "\\");
+				if (path[0] != Path.DirectorySeparatorChar)
+					path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
 				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null) + path;
 
 				if (path[path.Length - 4] != '.') //If no file extension, add movie extension

@@ -171,15 +171,15 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		private void PreLoadMovieFile(HawkFile path, bool force)
+		private void PreLoadMovieFile(HawkFile hf, bool force)
 		{
-			Movie movie = new Movie(path.CanonicalFullPath);
-			movie.PreLoadText();
-			if (path.Extension == ".FM2")
+			Movie movie = new Movie(hf.CanonicalFullPath);
+			movie.PreLoadText(hf);
+			if (hf.Extension == ".FM2")
 			{
 				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			}
-			else if (path.Extension == ".MC2")
+			else if (hf.Extension == ".MC2")
 			{
 				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
 			}

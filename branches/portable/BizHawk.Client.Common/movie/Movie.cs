@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Globalization;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.Collections.Generic;
 
@@ -302,10 +302,10 @@ namespace BizHawk.Client.Common
 		/// Load Header information only for displaying file information in dialogs such as play movie
 		/// </summary>
 		/// <returns></returns>
-		public bool PreLoadText()
+		public bool PreLoadText(HawkFile hawkFile)
 		{
 			Loaded = false;
-			var file = new FileInfo(Filename);
+			var file = new FileInfo(hawkFile.CanonicalFullPath);
 
 			if (file.Exists == false)
 				return false;
@@ -315,7 +315,10 @@ namespace BizHawk.Client.Common
 				_log.Clear();
 			}
 
-			using (StreamReader sr = file.OpenText())
+			long origStreamPosn = hawkFile.GetStream().Position; 
+			hawkFile.GetStream().Position = 0; //Reset to start
+			StreamReader sr = new StreamReader(hawkFile.GetStream()); //No using block because we're sharing the stream and need to give it back undisposed.
+			if(!sr.EndOfStream)
 			{
 				string str;
 				while ((str = sr.ReadLine()) != null)
@@ -350,6 +353,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+			hawkFile.GetStream().Position = origStreamPosn;
 
 			return true;
 		}
