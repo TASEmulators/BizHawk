@@ -7,7 +7,6 @@ using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
-
 	#region win32interop
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -23,18 +22,18 @@ namespace BizHawk.Client.EmuHawk
 		public int code;
 	}
 
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct NMITEMACTIVATE {
-			NMHDR  hdr;
-			int    iItem;
-			int    iSubItem;
-			uint uNewState;
-			uint   uOldState;
-			uint   uChanged;
-			POINT  ptAction;
-			uint lParam;
-			uint   uKeyFlags;
-		}
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct NMITEMACTIVATE {
+		NMHDR  hdr;
+		int    iItem;
+		int    iSubItem;
+		uint uNewState;
+		uint   uOldState;
+		uint   uChanged;
+		POINT  ptAction;
+		uint lParam;
+		uint   uKeyFlags;
+	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct RECT {
@@ -396,6 +395,7 @@ namespace BizHawk.Client.EmuHawk
 			// virtual listviews must be Details or List view with no sorting
 			View = View.Details;
 			Sorting = SortOrder.None;
+			RetrieveVirtualItem += (sender, e) => { e.Item = GetItem(e.ItemIndex); };
 
 			ptrlvhti = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LVHITTESTINFO)));
 
@@ -417,49 +417,54 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="index">Listview item's index.</param>
 		/// <param name="selected">Select the passed item?</param>
 		public void SelectItem(int index, bool selected) {
+			#if Windows
 			IntPtr ptrItem = IntPtr.Zero;
 
 			try {
-				// Determine whether selecting or unselecting.
-				uint select = selected ? (uint)ListViewCallBackMask.LVIS_SELECTED : 0;
+			// Determine whether selecting or unselecting.
+			uint select = selected ? (uint)ListViewCallBackMask.LVIS_SELECTED : 0;
 
-				// Fill in the LVITEM structure with state fields.
-				LVITEM stateItem = new LVITEM();
-				stateItem.mask = (uint)ListViewItemMask.LVIF_STATE;
-				stateItem.iItem = index;
-				stateItem.iSubItem = 0;
-				stateItem.state = select;
-				stateItem.stateMask = (uint)ListViewCallBackMask.LVIS_SELECTED;
+			// Fill in the LVITEM structure with state fields.
+			LVITEM stateItem = new LVITEM();
+			stateItem.mask = (uint)ListViewItemMask.LVIF_STATE;
+			stateItem.iItem = index;
+			stateItem.iSubItem = 0;
+			stateItem.state = select;
+			stateItem.stateMask = (uint)ListViewCallBackMask.LVIS_SELECTED;
 
-				// Copy the structure to unmanaged memory.
-				ptrItem = Marshal.AllocHGlobal(Marshal.SizeOf(stateItem.GetType()));
-				Marshal.StructureToPtr(stateItem, ptrItem, true);
+			// Copy the structure to unmanaged memory.
+			ptrItem = Marshal.AllocHGlobal(Marshal.SizeOf(stateItem.GetType()));
+			Marshal.StructureToPtr(stateItem, ptrItem, true);
 
-				// Send the message to the control window.
-				int result = Win32.SendMessage(
-					this.Handle,
-					(int)ListViewMessages.LVM_SETITEMSTATE,
-					index,
-					ptrItem.ToInt32());
+			// Send the message to the control window.
+			int result = Win32.SendMessage(
+			this.Handle,
+			(int)ListViewMessages.LVM_SETITEMSTATE,
+			index,
+			ptrItem.ToInt32());
 			} catch(Exception ex) {
-				System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
-				// TODO: should this eat any exceptions?
-				throw ex;
+			System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
+			// TODO: should this eat any exceptions?
+			throw ex;
 			} finally {
-				// Always release the unmanaged memory.
-				if(ptrItem != IntPtr.Zero) {
-					Marshal.FreeHGlobal(ptrItem);
-				}
+			// Always release the unmanaged memory.
+			if(ptrItem != IntPtr.Zero) {
+			Marshal.FreeHGlobal(ptrItem);
 			}
+			}
+			#endif
 		}
 
 		private void SetVirtualItemCount() {
+			#if WINDOWS
 			int result;
 			result = Win32.SendMessage(
-				this.Handle,
-				(int)ListViewMessages.LVM_SETITEMCOUNT,
-				itemCount,
-				0);
+			this.Handle,
+			(int)ListViewMessages.LVM_SETITEMCOUNT,
+			itemCount,
+			0);
+			#endif
+			this.VirtualListSize = itemCount;
 		}
 
 		protected void OnDispInfoNotice(ref Message m, bool useAnsi) {
@@ -505,25 +510,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		protected void OnCustomDrawNotice(ref System.Windows.Forms.Message m) {
+			#if WINDOWS
 			NMLVCUSTOMDRAW cd = (NMLVCUSTOMDRAW)m.GetLParam(typeof(NMLVCUSTOMDRAW));
 			switch(cd.nmcd.dwDrawStage) {
-				case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_ITEMPREPAINT:
-				case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_PREPAINT:
-					m.Result = new IntPtr((int)CUSTOMDRAWRETURNFLAGS.CDRF_NOTIFYSUBITEMDRAW);
-					break;
-				case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_SUBITEMPREPAINT:
-					Color color;
-					if(QueryItemBkColor != null) {
-						color = Color.FromArgb(cd.clrTextBk & 0xFF, (cd.clrTextBk >> 8) & 0xFF, (cd.clrTextBk >> 16) & 0xFF);
-						QueryItemBkColor(cd.nmcd.dwItemSpec, cd.iSubItem, ref color);
-						cd.clrTextBk = (color.B << 16) | (color.G << 8) | (color.R);
-						System.Runtime.InteropServices.Marshal.StructureToPtr(cd, m.LParam, false);
-					}
-					m.Result = new IntPtr((int)CUSTOMDRAWRETURNFLAGS.CDRF_DODEFAULT);
-					break;
+			case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_ITEMPREPAINT:
+			case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_PREPAINT:
+			m.Result = new IntPtr((int)CUSTOMDRAWRETURNFLAGS.CDRF_NOTIFYSUBITEMDRAW);
+			break;
+			case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_SUBITEMPREPAINT:
+			Color color;
+			if(QueryItemBkColor != null) {
+			color = Color.FromArgb(cd.clrTextBk & 0xFF, (cd.clrTextBk >> 8) & 0xFF, (cd.clrTextBk >> 16) & 0xFF);
+			QueryItemBkColor(cd.nmcd.dwItemSpec, cd.iSubItem, ref color);
+			cd.clrTextBk = (color.B << 16) | (color.G << 8) | (color.R);
+			System.Runtime.InteropServices.Marshal.StructureToPtr(cd, m.LParam, false);
 			}
+			m.Result = new IntPtr((int)CUSTOMDRAWRETURNFLAGS.CDRF_DODEFAULT);
+			break;
+			}
+			#endif
 		}
-		
+
 		/// <summary>
 		/// Event to be fired whenever the control scrolls
 		/// </summary>
@@ -533,100 +540,116 @@ namespace BizHawk.Client.EmuHawk
 			ScrollEventHandler handler = this.Scroll;
 			if (handler != null) handler(this, e);
 		}
-
+		#if WINDOWS
 		protected override void WndProc(ref System.Windows.Forms.Message m) {
-			NMHDR nm1;
-			bool messageProcessed = false;
-			switch(m.Msg) {
-				case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
-					nm1 = (NMHDR)m.GetLParam(typeof(NMHDR));
-					switch(nm1.code) {
-						case (int)Notices.NM_CUSTOMDRAW:
-							OnCustomDrawNotice(ref m);
-							messageProcessed = true;
-							break;
-						case (int)ListViewNotices.LVN_GETDISPINFOW:
-							OnDispInfoNotice(ref m, false);
-							messageProcessed = true;
-							break;
-						case (int)ListViewNotices.LVN_BEGINDRAG:
-							OnBeginItemDrag(MouseButtons.Left, ref m);
-							messageProcessed = true;
-							break;
-						case (int)ListViewNotices.LVN_BEGINRDRAG:
-							OnBeginItemDrag(MouseButtons.Right, ref m);
-							messageProcessed = true;
-							break;
-						//case (int)Notices.NM_CLICK:
-						//case (int)Notices.NM_DBLCLICK:
-						//  {
-						//    NMITEMACTIVATE test = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-						//    messageProcessed = true;
-						//    break;
-						//  }
+		NMHDR nm1;
+		bool messageProcessed = false;
+		switch(m.Msg) {
+		case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
+		nm1 = (NMHDR)m.GetLParam(typeof(NMHDR));
+		switch(nm1.code) {
+		case (int)Notices.NM_CUSTOMDRAW:
+		OnCustomDrawNotice(ref m);
+		messageProcessed = true;
+		break;
+		case (int)ListViewNotices.LVN_GETDISPINFOW:
+		OnDispInfoNotice(ref m, false);
+		messageProcessed = true;
+		break;
+		case (int)ListViewNotices.LVN_BEGINDRAG:
+		OnBeginItemDrag(MouseButtons.Left, ref m);
+		messageProcessed = true;
+		break;
+		case (int)ListViewNotices.LVN_BEGINRDRAG:
+		OnBeginItemDrag(MouseButtons.Right, ref m);
+		messageProcessed = true;
+		break;
+		//case (int)Notices.NM_CLICK:
+		//case (int)Notices.NM_DBLCLICK:
+		//  {
+		//    NMITEMACTIVATE test = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+		//    messageProcessed = true;
+		//    break;
+		//  }
 
-						default:
-							break;
-					}
-					break;
-
-				case (int)WindowsMessage.WM_SCROLL:
-					//http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
-					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
-					break;
-
-				//obscure message loop flakiness when exceptions are thrown from the message loop...
-				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
-				//next time we run into this, debug it better.
-				//case (int)WindowsMessage.WM_SETFOCUS:
-				//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
-				//        messageProcessed = true;
-				//    break;
-				//TRY THIS HACK INSTEAD TO FIX THE EXCEPTION
-					// (( NOPE, THEY ALL BREAK ONE THING OR ANOTHER. WINFORMS LISTVIEW JUST THROWS EXCEPTIONS, WHAT CAN WE DO? ))
-				//case 0x100C:
-				//  {
-				//    base.WndProc(ref m);
-				//    int num = m.Result.ToInt32();
-				//    messageProcessed = true;
-				//    m.Result = new IntPtr(-1);
-				//    break;
-				//  }
-				//case 0x1012:
-				//  {
-				//    base.WndProc(ref m);
-				//    int num = m.Result.ToInt32();
-				//    messageProcessed = true;
-				//    m.Result = new IntPtr(-1);
-				//    break;
-				//  }
-
-				case (int)WindowsMessage.WM_ERASEBKGND:
-					if (BlazingFast)
-					{
-						messageProcessed = true;
-						m.Result = new IntPtr(1);
-					}
-					break;
-
-				default:
-					break;
-			}
-			if(!messageProcessed) {
-				try {
-					base.WndProc(ref m);
-				} catch(Exception ex) {
-					Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
-				}
-			}
+		default:
+		break;
 		}
+		break;
+
+		case (int)WindowsMessage.WM_SCROLL:
+		//http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
+		OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
+		break;
+
+		//obscure message loop flakiness when exceptions are thrown from the message loop...
+		//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
+		//next time we run into this, debug it better.
+		//case (int)WindowsMessage.WM_SETFOCUS:
+		//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
+		//        messageProcessed = true;
+		//    break;
+		//TRY THIS HACK INSTEAD TO FIX THE EXCEPTION
+		// (( NOPE, THEY ALL BREAK ONE THING OR ANOTHER. WINFORMS LISTVIEW JUST THROWS EXCEPTIONS, WHAT CAN WE DO? ))
+		//case 0x100C:
+		//  {
+		//    base.WndProc(ref m);
+		//    int num = m.Result.ToInt32();
+		//    messageProcessed = true;
+		//    m.Result = new IntPtr(-1);
+		//    break;
+		//  }
+		//case 0x1012:
+		//  {
+		//    base.WndProc(ref m);
+		//    int num = m.Result.ToInt32();
+		//    messageProcessed = true;
+		//    m.Result = new IntPtr(-1);
+		//    break;
+		//  }
+
+		case (int)WindowsMessage.WM_ERASEBKGND:
+		if (BlazingFast)
+		{
+		messageProcessed = true;
+		m.Result = new IntPtr(1);
+		}
+		break;
+
+		default:
+		break;
+		}
+		if(!messageProcessed) {
+		try {
+		base.WndProc(ref m);
+		} catch(Exception ex) {
+		Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
+		}
+		}
+		}
+		#endif
 
 		public bool BlazingFast = false;
+
+		protected override void OnRetrieveVirtualItem (RetrieveVirtualItemEventArgs e)
+		{
+			e.Item = GetItem(e.ItemIndex);
+		}
 
 		protected ListViewItem GetItem(int idx) {
 			ListViewItem item = null;
 			if(QueryItem != null) {
 				QueryItem(idx, out item);
+			}
+			else if(QueryItemText != null){
+				item = new ListViewItem();
+				for(int i=0; i<this.Columns.Count; i++)
+				{
+					string cheese = string.Empty;
+					QueryItemText(idx, i, out cheese);
+					if(i==0) item.Text = cheese;
+					else item.SubItems.Add(cheese);
+				}
 			}
 			if(item == null) {
 				throw new ArgumentException("cannot find item " + idx.ToString() + " via QueryItem event");
@@ -671,7 +694,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void ensureVisible(int index) {
+			#if WINDOWS
 			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
+			#endif
 		}
 
 		public void ensureVisible() {

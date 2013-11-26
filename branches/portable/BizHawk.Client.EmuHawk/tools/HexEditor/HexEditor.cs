@@ -1057,7 +1057,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ResetScrollBar()
 		{
-			vScrollBar1.Value = 0;
+			vScrollBar1.Value = vScrollBar1.Minimum;
 			SetUpScrollBar();
 			Refresh();
 		}
