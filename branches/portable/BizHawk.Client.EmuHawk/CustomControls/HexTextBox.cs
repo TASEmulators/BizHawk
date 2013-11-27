@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -147,11 +148,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (val.HasValue)
 			{
-				Text = String.Empty;
+				Text = String.Format(_addressFormatStr, val);
 			}
 			else
 			{
-				Text = String.Format(_addressFormatStr, val);
+				Text = String.Empty;
 			}
 		}
 	}
@@ -239,6 +240,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ResetText();
 			}
+
+			base.OnTextChanged(e);
 		}
 
 		public int? ToRawInt()

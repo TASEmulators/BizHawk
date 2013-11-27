@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditCommentsForm : Form
 	{
-		private Movie selectedMovie;
+		private IMovie selectedMovie;
 
 		public EditCommentsForm()
 		{
@@ -47,12 +47,12 @@ namespace BizHawk.Client.EmuHawk
 					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
 					selectedMovie.Header.Comments.Add("comment " + c.Value);
 				}
-				selectedMovie.WriteMovie();
+				selectedMovie.Save();
 			}
 			Close();
 		}
 
-		public void GetMovie(Movie m)
+		public void GetMovie(IMovie m)
 		{
 			selectedMovie = m;
 			if (m.Header.Comments.Count == 0) return;

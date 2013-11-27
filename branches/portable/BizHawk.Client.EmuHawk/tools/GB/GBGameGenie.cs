@@ -11,11 +11,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBGameGenie : Form, IToolForm
 	{
-		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
-		private bool Processing = false;
+		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
+		private bool _processing;
 
 		public bool AskSave() { return true; }
+
 		public bool UpdateBefore { get { return false; } }
+		
 		public void Restart()
 		{
 			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
@@ -23,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 			}
 		}
+		
 		public void UpdateValues()
 		{
 			if ((Global.Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
@@ -36,22 +39,22 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 
-			GameGenieTable.Add('0', 0);     //0000
-			GameGenieTable.Add('1', 1);     //0001
-			GameGenieTable.Add('2', 2);     //0010
-			GameGenieTable.Add('3', 3);     //0011
-			GameGenieTable.Add('4', 4);     //0100
-			GameGenieTable.Add('5', 5);     //0101
-			GameGenieTable.Add('6', 6);     //0110
-			GameGenieTable.Add('7', 7);     //0111
-			GameGenieTable.Add('8', 8);     //1000
-			GameGenieTable.Add('9', 9);     //1001
-			GameGenieTable.Add('A', 10);    //1010
-			GameGenieTable.Add('B', 11);    //1011
-			GameGenieTable.Add('C', 12);    //1100
-			GameGenieTable.Add('D', 13);    //1101
-			GameGenieTable.Add('E', 14);    //1110
-			GameGenieTable.Add('F', 15);    //1111
+			_gameGenieTable.Add('0', 0);     //0000
+			_gameGenieTable.Add('1', 1);     //0001
+			_gameGenieTable.Add('2', 2);     //0010
+			_gameGenieTable.Add('3', 3);     //0011
+			_gameGenieTable.Add('4', 4);     //0100
+			_gameGenieTable.Add('5', 5);     //0101
+			_gameGenieTable.Add('6', 6);     //0110
+			_gameGenieTable.Add('7', 7);     //0111
+			_gameGenieTable.Add('8', 8);     //1000
+			_gameGenieTable.Add('9', 9);     //1001
+			_gameGenieTable.Add('A', 10);    //1010
+			_gameGenieTable.Add('B', 11);    //1011
+			_gameGenieTable.Add('C', 12);    //1100
+			_gameGenieTable.Add('D', 13);    //1101
+			_gameGenieTable.Add('E', 14);    //1110
+			_gameGenieTable.Add('F', 15);    //1111
 		}
 
 		public void GBGGDecode(string code, ref int val, ref int add, ref int cmp)
@@ -67,19 +70,19 @@ namespace BizHawk.Client.EmuHawk
 			// Getting Value
 			if (code.Length > 0)
 			{
-				GameGenieTable.TryGetValue(code[0], out x);
+				_gameGenieTable.TryGetValue(code[0], out x);
 				val = x << 4;
 			}
 
 			if (code.Length > 1)
 			{
-				GameGenieTable.TryGetValue(code[1], out x);
+				_gameGenieTable.TryGetValue(code[1], out x);
 				val |= x;
 			}
 			//Address
 			if (code.Length > 2)
 			{
-				GameGenieTable.TryGetValue(code[2], out x);
+				_gameGenieTable.TryGetValue(code[2], out x);
 				add = (x << 8);
 			}
 			else
@@ -87,29 +90,29 @@ namespace BizHawk.Client.EmuHawk
 
 			if (code.Length > 3)
 			{
-				GameGenieTable.TryGetValue(code[3], out x);
+				_gameGenieTable.TryGetValue(code[3], out x);
 				add |= (x << 4);
 			}
 
 			if (code.Length > 4)
 			{
-				GameGenieTable.TryGetValue(code[4], out x);
+				_gameGenieTable.TryGetValue(code[4], out x);
 				add |= x;
 			}
 
 			if (code.Length > 5)
 			{
-				GameGenieTable.TryGetValue(code[5], out x);
+				_gameGenieTable.TryGetValue(code[5], out x);
 				add |= ((x ^ 0xF) << 12);
 			}
 			// compare need to be full
 			if (code.Length > 8)
 			{
 				int comp = 0;
-				GameGenieTable.TryGetValue(code[6], out x);
+				_gameGenieTable.TryGetValue(code[6], out x);
 				comp = (x << 2);
 				// 8th character ignored
-				GameGenieTable.TryGetValue(code[8], out x);
+				_gameGenieTable.TryGetValue(code[8], out x);
 				comp |= ((x & 0xC) >> 2);
 				comp |= ((x & 0x3) << 6);
 				cmp = comp ^ 0xBA;
@@ -176,9 +179,9 @@ namespace BizHawk.Client.EmuHawk
 		private void GGCodeMaskBox_TextChanged(object sender, EventArgs e)
 		{
 
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				//insert REGEX Remove non HEXA char
 				if (Regex.IsMatch(GGCodeMaskBox.Text, @"[^a-fA-F0-9]"))
 				{
@@ -210,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 					CompareBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 		}
 
@@ -246,9 +249,9 @@ namespace BizHawk.Client.EmuHawk
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
 			//remove invalid character when pasted
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				if (Regex.IsMatch(AddressBox.Text, @"[^a-fA-F0-9]"))
 				{
 					string temp = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
@@ -274,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 			
 		}
@@ -282,9 +285,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ValueBox_TextChanged(object sender, EventArgs e)
 		{
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				//remove invalid character when pasted
 				if (Regex.IsMatch(ValueBox.Text, @"[^a-fA-F0-9]"))
 				{
@@ -311,16 +314,16 @@ namespace BizHawk.Client.EmuHawk
 					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
-				Processing = false;
+				_processing = false;
 			}
 			
 		}
 
 		private void CompareBox_TextChanged(object sender, EventArgs e)
 		{
-			if (Processing == false)
+			if (_processing == false)
 			{
-				Processing = true;
+				_processing = true;
 				//remove invalid character when pasted
 				if (Regex.IsMatch(CompareBox.Text, @"[^a-fA-F0-9]"))
 				{
@@ -350,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 						addcheatbt.Enabled = false;
 					}
 				}
-				Processing = false;
+				_processing = false;
 			}
 		}
 
@@ -367,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
 			{
-				string NAME = String.Empty;
+				string NAME;
 				int ADDRESS = 0;
 				int VALUE = 0;
 				int? COMPARE = null;
@@ -379,11 +382,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Processing = true;
+					_processing = true;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
 					NAME = GGCodeMaskBox.Text;
 					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-					Processing = false;
+					_processing = false;
 				}
 
 				if (!String.IsNullOrWhiteSpace(AddressBox.Text))
@@ -428,8 +431,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Add(new Cheat(
 					watch,
 					VALUE,
-					COMPARE,
-					enabled: true));
+					COMPARE));
 			}
 		}
 

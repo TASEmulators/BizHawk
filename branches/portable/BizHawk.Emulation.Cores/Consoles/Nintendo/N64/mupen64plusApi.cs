@@ -792,6 +792,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			m64pinit_saveram();
 		}
 
+		public const int kSaveramSize = 0x800 + 4 * 0x8000 + 0x20000 + 0x8000;
+
 		public byte[] SaveSaveram()
 		{
 			if (disposed)
@@ -803,12 +805,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				else
 				{
 					// This shouldn't happen!!
-					return new byte[0x800 + 4 * 0x8000 + 0x20000 + 0x8000];
+					return new byte[kSaveramSize];
 				}
 			}
 			else
 			{
-				byte[] dest = new byte[0x800 + 4 * 0x8000 + 0x20000 + 0x8000];
+				byte[] dest = new byte[kSaveramSize];
 				m64psave_saveram(dest);
 				return dest;
 			}

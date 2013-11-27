@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetWatch(MemoryDomain domain, List<Watch> watches = null, Mode mode = Mode.New)
+		public void SetWatch(MemoryDomain domain, IEnumerable<Watch> watches = null, Mode mode = Mode.New)
 		{
 			if (watches != null)
 			{

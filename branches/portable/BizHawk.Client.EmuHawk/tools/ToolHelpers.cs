@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -126,9 +125,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				foreach (string filename in recent)
+				foreach (var filename in recent)
 				{
-					string temp = filename;
+					var temp = filename;
 					var item = new ToolStripMenuItem { Text = temp };
 					item.Click += (o, ev) => loadFileCallback(temp);
 					items.Add(item);
@@ -147,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void HandleLoadError(RecentFiles recent, string path)
 		{
 			GlobalWin.Sound.StopSound();
-			DialogResult result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+			var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 			if (result == DialogResult.Yes)
 			{
 				recent.Remove(path);
@@ -156,37 +155,21 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 		}
 
-		public static ToolStripMenuItem[] GenerateMemoryDomainMenuItems(Action<int> SetCallback, string SelectedDomain = "", int? maxSize = null)
+		public static IEnumerable<ToolStripMenuItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
 
-			if (Global.Emulator.MemoryDomains.Any())
+			foreach (var domain in Global.Emulator.MemoryDomains)
 			{
-				int counter = 0;
-				foreach (var domain in Global.Emulator.MemoryDomains)
-				{
-					string temp = domain.ToString();
-					var item = new ToolStripMenuItem { Text = temp };
-
-					int index = counter;
-					item.Click += (o, ev) => SetCallback(index);
-
-					if (temp == SelectedDomain)
-					{
-						item.Checked = true;
-					}
-
-					if (maxSize.HasValue && domain.Size > maxSize.Value)
-					{
-						item.Enabled = false;
-					}
-
-					items.Add(item);
-					counter++;
-				}
+				var name = domain.Name;
+				var item = new ToolStripMenuItem { Text = name };
+				item.Click += (o, ev) => setCallback(name);
+				item.Checked = name == selectedDomain;
+				item.Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value);
+				items.Add(item);
 			}
 
-			return items.ToArray();
+			return items;
 		}
 
 		public static void PopulateMemoryDomainDropdown(ref ComboBox dropdown, MemoryDomain startDomain)
@@ -219,27 +202,21 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.UpdateCheatStatus();
 		}
 
-		public static void FreezeAddress(List<Watch> watches)
+		public static void FreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach(var watch in watches)
+			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
 			{
-				if (!watch.IsSeparator)
-				{
-					Global.CheatList.Add(
-						new Cheat(watch, watch.Value.Value, compare: null, enabled: true)
+				Global.CheatList.Add(
+					new Cheat(watch, watch.Value ?? 0)
 					);
-				}
 			}
 		}
 
-		public static void UnfreezeAddress(List<Watch> watches)
+		public static void UnfreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach (var watch in watches)
+			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
 			{
-				if (!watch.IsSeparator)
-				{
-					Global.CheatList.Remove(watch);
-				}
+				Global.CheatList.Remove(watch);
 			}
 		}
 
@@ -256,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (listView.Columns[columnName] == null)
 				{
-					ColumnHeader column = new ColumnHeader
+					var column = new ColumnHeader
 					{
 						Name = columnName,
 						Text = columnName.Replace("Column", ""),

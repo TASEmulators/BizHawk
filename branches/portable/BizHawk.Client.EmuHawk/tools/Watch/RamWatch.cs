@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RamWatch : Form, IToolForm
 	{
-		private readonly Dictionary<string, int> DefaultColumnWidths = new Dictionary<string, int>
+		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
 			{
 			{ WatchList.ADDRESS, 60 },
 			{ WatchList.VALUE, 59 },
@@ -24,13 +24,109 @@ namespace BizHawk.Client.EmuHawk
 			{ WatchList.NOTES, 128 },
 		};
 
-		private int defaultWidth;
-		private int defaultHeight;
-		private readonly WatchList Watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+		private int _defaultWidth;
+		private int _defaultHeight;
 		private string _sortedColumn = String.Empty;
-		private bool _sortReverse = false;
+		private bool _sortReverse;
 
-		public bool UpdateBefore { get { return true; } }
+		private readonly WatchList _watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+
+		#region API
+
+		public void AddWatch(Watch watch)
+		{
+			_watches.Add(watch);
+			WatchListView.ItemCount = _watches.ItemCount;
+			UpdateValues();
+			UpdateWatchCount();
+			Changes();
+		}
+
+		public bool AskSave()
+		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
+			if (_watches.Changes)
+			{
+				GlobalWin.Sound.StopSound();
+				var result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				GlobalWin.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					_watches.Save();
+				}
+				else if (result == DialogResult.No)
+				{
+					_watches.Changes = false;
+					return true;
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public IEnumerable<int> AddressList
+		{
+			get
+			{
+				return _watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0).ToList();
+			}
+		}
+
+		public void LoadFileFromRecent(string path)
+		{
+			var ask_result = true;
+			if (_watches.Changes)
+			{
+				ask_result = AskSave();
+			}
+
+			if (ask_result)
+			{
+				var load_result = _watches.Load(path, append: false);
+				if (!load_result)
+				{
+					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
+				}
+				else
+				{
+					Global.Config.RecentWatches.Add(path);
+					WatchListView.ItemCount = _watches.ItemCount;
+					UpdateWatchCount();
+					UpdateMessageLabel();
+					_watches.Changes = false;
+				}
+			}
+		}
+
+		public void LoadWatchFile(FileInfo file, bool append)
+		{
+			if (file != null)
+			{
+				var result = true;
+				if (_watches.Changes)
+				{
+					result = AskSave();
+				}
+
+				if (result)
+				{
+					_watches.Load(file.FullName, append);
+					WatchListView.ItemCount = _watches.ItemCount;
+					UpdateMessageLabel();
+					UpdateWatchCount();
+					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
+					SetMemoryDomain(_watches.Domain.ToString());
+				}
+			}
+		}
 
 		public RamWatch()
 		{
@@ -55,6 +151,25 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Global.Config.RamWatchAlwaysOnTop;
 		}
 
+		public void Restart()
+		{
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
+			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			{
+				_watches.Reload();
+			}
+			else
+			{
+				NewWatchList(true);
+			}
+		}
+
+		public bool UpdateBefore { get { return true; } }
+
 		public void UpdateValues()
 		{
 			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
@@ -62,17 +177,17 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Watches.Any())
+			if (_watches.Any())
 			{
-				Watches.UpdateValues();
+				_watches.UpdateValues();
 
 				if (Global.Config.DisplayRamWatch)
 				{
-					for (int x = 0; x < Watches.Count; x++)
+					for (var x = 0; x < _watches.Count; x++)
 					{
-						bool alert = Watches[x].IsSeparator ? false : Global.CheatList.IsActive(Watches[x].Domain, Watches[x].Address.Value);
+						var alert = !_watches[x].IsSeparator && Global.CheatList.IsActive(_watches[x].Domain, (_watches[x].Address ?? 0));
 						GlobalWin.OSD.AddGUIText(
-							Watches[x].ToString(),
+							_watches[x].ToString(),
 							Global.Config.DispRamWatchx,
 							(Global.Config.DispRamWatchy + (x * 14)),
 							alert,
@@ -92,112 +207,340 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart()
+		#endregion
+
+		#region Private Methods
+
+		private void AddNewWatch()
 		{
-			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
+			var we = new WatchEditor
+			{
+				InitialLocation = GetPromptPoint()
+			};
+			we.SetWatch(_watches.Domain);
+			GlobalWin.Sound.StopSound();
+			we.ShowDialog();
+			GlobalWin.Sound.StartSound();
+
+			if (we.DialogResult == DialogResult.OK)
+			{
+				_watches.Add(we.Watches[0]);
+				Changes();
+				UpdateWatchCount();
+				WatchListView.ItemCount = _watches.ItemCount;
+				UpdateValues();
+			}
+		}
+
+		private void Changes()
+		{
+			_watches.Changes = true;
+			UpdateMessageLabel();
+		}
+
+		private void ColumnPositions()
+		{
+			var Columns = Global.Config.RamWatchColumnIndexes
+					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
+					.OrderBy(x => x.Value).ToList();
+
+			for (var i = 0; i < Columns.Count; i++)
+			{
+				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
+				{
+					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
+				}
+			}
+		}
+
+		private void CopyWatchesToClipBoard()
+		{
+			var indexes = SelectedIndices.ToList();
+
+			if (indexes.Any())
+			{
+				var sb = new StringBuilder();
+				foreach (var index in indexes)
+				{
+					foreach (ColumnHeader column in WatchListView.Columns)
+					{
+						sb.Append(GetColumnValue(column.Name, index)).Append('\t');
+					}
+					sb.Remove(sb.Length - 1, 1);
+					sb.AppendLine();
+				}
+
+				if (sb.Length > 0)
+				{
+					Clipboard.SetDataObject(sb.ToString());
+				}
+			}
+		}
+
+		private void EditWatch(bool duplicate = false)
+		{
+			var indexes = SelectedIndices.ToList();
+
+			if (SelectedWatches.Any())
+			{
+				var we = new WatchEditor
+				{
+					InitialLocation = GetPromptPoint(),
+				};
+
+				we.SetWatch(_watches.Domain, 
+					SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit
+				);
+				
+				GlobalWin.Sound.StopSound();
+				var result = we.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					Changes();
+					if (duplicate)
+					{
+						_watches.AddRange(we.Watches);
+						WatchListView.ItemCount = _watches.ItemCount;
+					}
+					else
+					{
+						for (var i = 0; i < we.Watches.Count; i++)
+						{
+							_watches[indexes[i]] = we.Watches[i];
+						}
+					}
+				}
+
+				GlobalWin.Sound.StartSound();
+				UpdateValues();
+			}
+		}
+
+		private string GetColumnValue(string name, int index)
+		{
+			switch (name)
+			{
+				default:
+					return String.Empty;
+				case WatchList.ADDRESS:
+					return _watches[index].AddressString;
+				case WatchList.VALUE:
+					return _watches[index].ValueString;
+				case WatchList.PREV:
+					return _watches[index].PreviousStr;
+				case WatchList.CHANGES:
+					return _watches[index].ChangeCount.ToString();
+				case WatchList.DIFF:
+					return _watches[index].Diff;
+				case WatchList.DOMAIN:
+					return _watches[index].Domain.Name;
+				case WatchList.NOTES:
+					return _watches[index].Notes;
+			}
+		}
+
+		private int GetColumnWidth(string columnName)
+		{
+			var width = Global.Config.RamWatchColumnWidths[columnName];
+			if (width == -1)
+			{
+				width = _defaultColumnWidths[columnName];
+			}
+
+			return width;
+		}
+
+		private Point GetPromptPoint()
+		{
+			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
+		}
+
+		private void InsertSeparator()
+		{
+			var indexes = SelectedIndices.ToList();
+			if (indexes.Any())
+			{
+				_watches.Insert(indexes[0], SeparatorWatch.Instance);
+			}
+			else
+			{
+				_watches.Add(SeparatorWatch.Instance);
+			}
+			WatchListView.ItemCount = _watches.ItemCount;
+			Changes();
+			UpdateWatchCount();
+		}
+
+		private void LoadColumnInfo()
+		{
+			WatchListView.Columns.Clear();
+			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
+			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
+			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
+			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
+			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
+			ToolHelpers.AddColumn(WatchListView, WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
+			ToolHelpers.AddColumn(WatchListView, WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
+
+			ColumnPositions();
+		}
+
+		private void LoadConfigSettings()
+		{
+			//Size and Positioning
+			_defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			_defaultHeight = Size.Height;
+
+			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+			{
+				Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+			}
+
+			if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
+			{
+				Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+			}
+
+			LoadColumnInfo();
+		}
+
+		private void MoveDown()
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
 			{
 				return;
 			}
 
-			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
+			for (var i = indices.Count - 1; i >= 0; i--)
 			{
-				Watches.Reload();
+				var watch = _watches[indices[i]];
+				_watches.Remove(watch);
+				_watches.Insert(indices[i] + 1, watch);
 			}
-			else
-			{
-				NewWatchList(true);
-			}
-		}
 
-		public void AddWatch(Watch watch)
-		{
-			Watches.Add(watch);
-			DisplayWatches();
-			UpdateValues();
-			UpdateWatchCount();
+			var newindices = indices.Select(t => t + 1).ToList();
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in newindices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
 			Changes();
+			WatchListView.ItemCount = _watches.ItemCount;
 		}
 
-		public void LoadWatchFile(FileInfo file, bool append)
+		private void MoveUp()
 		{
-			if (file != null)
+			var indexes = SelectedIndices.ToList();
+			if (!indexes.Any() || indexes[0] == 0)
 			{
-				bool result = true;
-				if (Watches.Changes)
+				return;
+			}
+
+			foreach (var index in indexes)
+			{
+				var watch = _watches[index];
+				_watches.Remove(watch);
+				_watches.Insert(index - 1, watch);
+			}
+
+			Changes();
+			
+			var indices = indexes.Select(t => t - 1).ToList();
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in indices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
+			WatchListView.ItemCount = _watches.ItemCount;
+		}
+
+		private void NewWatchList(bool suppressAsk)
+		{
+			var result = true;
+			if (_watches.Changes)
+			{
+				result = AskSave();
+			}
+
+			if (result || suppressAsk)
+			{
+				_watches.Clear();
+				WatchListView.ItemCount = _watches.ItemCount;
+				UpdateWatchCount();
+				UpdateMessageLabel();
+				_sortReverse = false;
+				_sortedColumn = String.Empty;
+			}
+		}
+
+		private void OrderColumn(int index)
+		{
+			var column = WatchListView.Columns[index];
+			if (column.Name != _sortedColumn)
+			{
+				_sortReverse = false;
+			}
+
+			_watches.OrderWatches(column.Name, _sortReverse);
+
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			WatchListView.Refresh();
+		}
+
+		private void PokeAddress()
+		{
+			if (SelectedWatches.Any())
+			{
+				var poke = new RamPoke
 				{
-					result = AskSave();
+					InitialLocation = GetPromptPoint()
+				};
+
+				if (SelectedWatches.Any())
+				{
+					poke.SetWatch(SelectedWatches);
 				}
 
-				if (result)
-				{
-					Watches.Load(file.FullName, append);
-					DisplayWatches();
-					UpdateMessageLabel();
-					UpdateWatchCount();
-					Global.Config.RecentWatches.Add(Watches.CurrentFileName);
-					SetMemoryDomain(GetDomainPos(Watches.Domain.ToString()));
-				}
-			}
-		}
-
-		private int GetDomainPos(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
-			{
-				if (Global.Emulator.MemoryDomains[i].Name == name)
-				{
-					return i;
-				}
-			}
-			return 0;
-		}
-
-		public List<int> AddressList
-		{
-			get
-			{
-				return Watches.Where(x => !x.IsSeparator).Select(x => x.Address.Value).ToList();
-			}
-		}
-
-		public bool AskSave()
-		{
-			if (Global.Config.SupressAskSave) //User has elected to not be nagged
-			{
-				return true;
-			}
-
-			if (Watches.Changes)
-			{
 				GlobalWin.Sound.StopSound();
-				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				var result = poke.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					UpdateValues();
+				}
 				GlobalWin.Sound.StartSound();
-				if (result == DialogResult.Yes)
-				{
-					Watches.Save();
-				}
-				else if (result == DialogResult.No)
-				{
-					Watches.Changes = false;
-					return true;
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					return false;
-				}
 			}
-
-			return true;
 		}
 
-		public void SaveConfigSettings()
+		private void RemoveWatch()
 		{
-			SaveColumnInfo();
-			Global.Config.RamWatchWndx = Location.X;
-			Global.Config.RamWatchWndy = Location.Y;
-			Global.Config.RamWatchWidth = Right - Left;
-			Global.Config.RamWatchHeight = Bottom - Top;
+			var items = SelectedItems.ToList();
+			if (items.Any())
+			{
+				foreach (var item in items)
+				{
+					_watches.Remove(item);
+				}
+
+				WatchListView.ItemCount = _watches.ItemCount;
+				UpdateValues();
+				UpdateWatchCount();
+			}
+		}
+
+		private void SaveAs()
+		{
+			var result = _watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(_watches.CurrentFileName));
+			if (result)
+			{
+				UpdateMessageLabel(saved: true);
+				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
+			}
 		}
 
 		private void SaveColumnInfo()
@@ -245,31 +588,87 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int GetColumnWidth(string columnName)
+		private void SaveConfigSettings()
 		{
-			var width = Global.Config.RamWatchColumnWidths[columnName];
-			if (width == -1)
+			SaveColumnInfo();
+			Global.Config.RamWatchWndx = Location.X;
+			Global.Config.RamWatchWndy = Location.Y;
+			Global.Config.RamWatchWidth = Right - Left;
+			Global.Config.RamWatchHeight = Bottom - Top;
+		}
+
+		private void SelectAll()
+		{
+			for (var i = 0; i < _watches.Count; i++)
 			{
-				width = DefaultColumnWidths[columnName];
+				WatchListView.SelectItem(i, true);
+			}
+		}
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return WatchListView.SelectedIndices.Cast<int>(); }
+		}
+
+		private IEnumerable<Watch> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => _watches[index]); }
+		}
+
+		private IEnumerable<Watch> SelectedWatches
+		{
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
+		}
+
+		private void SetMemoryDomain(string name)
+		{
+			_watches.Domain = Global.Emulator.MemoryDomains[name];
+			SetPlatformAndMemoryDomainLabel();
+			Update();
+		}
+
+		private void SetPlatformAndMemoryDomainLabel()
+		{
+			MemDomainLabel.Text = Global.Emulator.SystemId + " " + _watches.Domain.Name;
+		}
+
+		private void UpdateMessageLabel(bool saved = false)
+		{
+			var message = String.Empty;
+			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			{
+				if (saved)
+				{
+					message = Path.GetFileName(_watches.CurrentFileName) + " saved.";
+				}
+				else
+				{
+					message = Path.GetFileName(_watches.CurrentFileName) + (_watches.Changes ? " *" : String.Empty);
+				}
 			}
 
-			return width;
+			MessageLabel.Text = message;
+		}
+
+		private void UpdateWatchCount()
+		{
+			WatchCountLabel.Text = _watches.WatchCount + (_watches.WatchCount == 1 ? " watch" : " watches");
 		}
 
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index >= Watches.ItemCount)
+			if (index >= _watches.ItemCount)
 			{
 				return;
 			}
 
 			if (column == 0)
 			{
-				if (Watches[index].IsSeparator)
+				if (_watches[index].IsSeparator)
 				{
 					color = BackColor;
 				}
-				else if (Global.CheatList.IsActive(Watches.Domain, Watches[index].Address.Value))
+				else if (Global.CheatList.IsActive(_watches.Domain, _watches[index].Address ?? 0))
 				{
 					color = Color.LightCyan;
 				}
@@ -278,480 +677,44 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_QueryItemText(int index, int column, out string text)
 		{
-			text = "";
+			text = String.Empty;
 
-			if (index >= Watches.ItemCount || Watches[index].IsSeparator)
+			if (index >= _watches.ItemCount || _watches[index].IsSeparator)
 			{
 				return;
 			}
-			string columnName = WatchListView.Columns[column].Name;
+			var columnName = WatchListView.Columns[column].Name;
 
 			switch (columnName)
 			{
 				case WatchList.ADDRESS:
-					text = Watches[index].AddressString;
+					text = _watches[index].AddressString;
 					break;
 				case WatchList.VALUE:
-					text = Watches[index].ValueString;
+					text = _watches[index].ValueString;
 					break;
 				case WatchList.PREV:
-					text = Watches[index].PreviousStr;
+					text = _watches[index].PreviousStr;
 					break;
 				case WatchList.CHANGES:
-					if (!Watches[index].IsSeparator)
+					if (!_watches[index].IsSeparator)
 					{
-						text = Watches[index].ChangeCount.ToString();
+						text = _watches[index].ChangeCount.ToString();
 					}
 					break;
 				case WatchList.DIFF:
-					text = Watches[index].Diff;
+					text = _watches[index].Diff;
 					break;
 				case WatchList.DOMAIN:
-					text = Watches[index].Domain.Name;
+					text = _watches[index].Domain.Name;
 					break;
 				case WatchList.NOTES:
-					text = Watches[index].Notes;
+					text = _watches[index].Notes;
 					break;
 			}
 		}
 
-		private void DisplayWatches()
-		{
-			WatchListView.ItemCount = Watches.ItemCount;
-		}
-
-		private void UpdateWatchCount()
-		{
-			WatchCountLabel.Text = Watches.WatchCount.ToString() + (Watches.WatchCount == 1 ? " watch" : " watches");
-		}
-
-		private void SetPlatformAndMemoryDomainLabel()
-		{
-			MemDomainLabel.Text = Global.Emulator.SystemId + " " + Watches.Domain.Name;
-		}
-
-		private void NewWatchList(bool suppressAsk)
-		{
-			bool result = true;
-			if (Watches.Changes)
-			{
-				result = AskSave();
-			}
-
-			if (result || suppressAsk)
-			{
-				Watches.Clear();
-				DisplayWatches();
-				UpdateWatchCount();
-				UpdateMessageLabel();
-				_sortReverse = false;
-				_sortedColumn = String.Empty;
-			}
-		}
-
-		public void LoadFileFromRecent(string path)
-		{
-			bool ask_result = true;
-			if (Watches.Changes)
-			{
-				ask_result = AskSave();
-			}
-
-			if (ask_result)
-			{
-				bool load_result = Watches.Load(path, append: false);
-				if (!load_result)
-				{
-					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
-				}
-				else
-				{
-					Global.Config.RecentWatches.Add(path);
-					DisplayWatches();
-					UpdateWatchCount();
-					UpdateMessageLabel();
-					Watches.Changes = false;
-				}
-			}
-		}
-
-		private void UpdateMessageLabel(bool saved = false)
-		{
-			string message = String.Empty;
-			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
-			{
-				if (saved)
-				{
-					message = Path.GetFileName(Watches.CurrentFileName) + " saved.";
-				}
-				else
-				{
-					message = Path.GetFileName(Watches.CurrentFileName) + (Watches.Changes ? " *" : String.Empty);
-				}
-			}
-
-			MessageLabel.Text = message;
-		}
-
-		private void SetMemoryDomain(int pos)
-		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
-			{
-				Watches.Domain = Global.Emulator.MemoryDomains[pos];
-			}
-
-			SetPlatformAndMemoryDomainLabel();
-			Update();
-		}
-
-		private void SelectAll()
-		{
-			for (int i = 0; i < Watches.Count; i++)
-			{
-				WatchListView.SelectItem(i, true);
-			}
-		}
-
-		private void Changes()
-		{
-			Watches.Changes = true;
-			UpdateMessageLabel();
-		}
-
-		private void MoveUp()
-		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			if (indexes.Count == 0 || indexes[0] == 0)
-			{
-				return;
-			}
-
-			foreach (int index in indexes)
-			{
-				var watch = Watches[index];
-				Watches.Remove(Watches[index]);
-				Watches.Insert(index - 1, watch);
-
-				//Note: here it will get flagged many times redundantly potentially, 
-				//but this avoids it being flagged falsely when the user did not select an index
-				Changes();
-			}
-
-			var indices = new List<int>();
-			for (int i = 0; i < indexes.Count; i++)
-			{
-				indices.Add(indexes[i] - 1);
-			}
-
-			WatchListView.SelectedIndices.Clear();
-			foreach (int t in indices)
-			{
-				WatchListView.SelectItem(t, true);
-			}
-
-			DisplayWatches();
-		}
-
-		private void MoveDown()
-		{
-			var indexes = WatchListView.SelectedIndices;
-			if (indexes.Count == 0)
-			{
-				return;
-			}
-
-			foreach (int index in indexes)
-			{
-				var watch = Watches[index];
-
-				if (index < Watches.Count - 1)
-				{
-					Watches.Remove(Watches[index]);
-					Watches.Insert(index + 1, watch);
-				}
-
-				//Note: here it will get flagged many times redundantly potentially, 
-				//but this avoids it being flagged falsely when the user did not select an index
-				Changes();
-			}
-
-			var indices = new List<int>();
-			for (int i = 0; i < indexes.Count; i++)
-			{
-				indices.Add(indexes[i] + 1);
-			}
-
-			WatchListView.SelectedIndices.Clear();
-			foreach (int t in indices)
-			{
-				WatchListView.SelectItem(t, true);
-			}
-
-			DisplayWatches();
-		}
-
-		private void InsertSeparator()
-		{
-			var indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				Watches.Insert(indexes[0], SeparatorWatch.Instance);
-			}
-			else
-			{
-				Watches.Add(SeparatorWatch.Instance);
-			}
-			DisplayWatches();
-			Changes();
-			UpdateWatchCount();
-		}
-
-		private Point GetPromptPoint()
-		{
-			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
-		}
-
-		private void AddNewWatch()
-		{
-			WatchEditor we = new WatchEditor
-			{
-				InitialLocation = GetPromptPoint()
-			};
-			we.SetWatch(Watches.Domain);
-			GlobalWin.Sound.StopSound();
-			we.ShowDialog();
-			GlobalWin.Sound.StartSound();
-
-			if (we.DialogResult == DialogResult.OK)
-			{
-				Watches.Add(we.Watches[0]);
-				Changes();
-				UpdateWatchCount();
-				DisplayWatches();
-			}
-		}
-
-		private void EditWatch(bool duplicate = false)
-		{
-			var indexes = WatchListView.SelectedIndices;
-
-			if (indexes.Count > 0)
-			{
-				WatchEditor we = new WatchEditor
-				{
-					InitialLocation = GetPromptPoint(),
-				};
-
-				if (!SelectedWatches.Any())
-				{
-					return;
-				}
-
-				we.SetWatch(Watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				GlobalWin.Sound.StopSound();
-				var result = we.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					Changes();
-					if (duplicate)
-					{
-						Watches.AddRange(we.Watches);
-						DisplayWatches();
-					}
-					else
-					{
-						for (int i = 0; i < we.Watches.Count; i++)
-						{
-							Watches[indexes[i]] = we.Watches[i];
-						}
-					}
-				}
-
-				GlobalWin.Sound.StartSound();
-				UpdateValues();
-			}
-		}
-
-		private void PokeAddress()
-		{
-			if (SelectedWatches.Any())
-			{
-				RamPoke poke = new RamPoke
-					{
-						InitialLocation = GetPromptPoint()
-					};
-
-				if (SelectedWatches.Any())
-				{
-					poke.SetWatch(SelectedWatches);
-				}
-
-				GlobalWin.Sound.StopSound();
-				var result = poke.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					UpdateValues();
-				}
-				GlobalWin.Sound.StartSound();
-			}
-		}
-
-		private List<Watch> SelectedWatches
-		{
-			get
-			{
-				var selected = new List<Watch>();
-				ListView.SelectedIndexCollection indices = WatchListView.SelectedIndices;
-				if (indices.Count > 0)
-				{
-					foreach (int index in indices)
-					{
-						if (!Watches[index].IsSeparator)
-						{
-							selected.Add(Watches[index]);
-						}
-					}
-				}
-				return selected;
-			}
-		}
-
-		private void ColumnPositions()
-		{
-			List<KeyValuePair<string, int>> Columns = 
-				Global.Config.RamWatchColumnIndexes
-					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
-					.OrderBy(x => x.Value).ToList();
-
-			for (int i = 0; i < Columns.Count; i++)
-			{
-				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
-				{
-					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
-				}
-			}
-		}
-
-		private void LoadConfigSettings()
-		{
-			//Size and Positioning
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
-
-			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
-			{
-				Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
-			}
-
-			if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
-			{
-				Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
-			}
-
-			LoadColumnInfo();
-		}
-
-		private void LoadColumnInfo()
-		{
-			WatchListView.Columns.Clear();
-			ToolHelpers.AddColumn(WatchListView, WatchList.ADDRESS, true, GetColumnWidth(WatchList.ADDRESS));
-			ToolHelpers.AddColumn(WatchListView, WatchList.VALUE, true, GetColumnWidth(WatchList.VALUE));
-			ToolHelpers.AddColumn(WatchListView, WatchList.PREV, Global.Config.RamWatchShowPrevColumn, GetColumnWidth(WatchList.PREV));
-			ToolHelpers.AddColumn(WatchListView, WatchList.CHANGES, Global.Config.RamWatchShowChangeColumn, GetColumnWidth(WatchList.CHANGES));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DIFF, Global.Config.RamWatchShowDiffColumn, GetColumnWidth(WatchList.DIFF));
-			ToolHelpers.AddColumn(WatchListView, WatchList.DOMAIN, Global.Config.RamWatchShowDomainColumn, GetColumnWidth(WatchList.DOMAIN));
-			ToolHelpers.AddColumn(WatchListView, WatchList.NOTES, true, GetColumnWidth(WatchList.NOTES));
-
-			ColumnPositions();
-		}
-
-		private void RemoveWatch()
-		{
-			var indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				foreach (int index in indexes)
-				{
-					Watches.Remove(Watches[indexes[0]]); //index[0] used since each iteration will make this the correct list index
-				}
-				indexes.Clear();
-				DisplayWatches();
-			}
-			UpdateValues();
-			UpdateWatchCount();
-		}
-
-		private string GetColumnValue(string name, int index)
-		{
-			switch (name)
-			{
-				default:
-					return String.Empty;
-				case WatchList.ADDRESS:
-					return Watches[index].AddressString;
-				case WatchList.VALUE:
-					return Watches[index].ValueString;
-				case WatchList.PREV:
-					return Watches[index].PreviousStr;
-				case WatchList.CHANGES:
-					return Watches[index].ChangeCount.ToString();
-				case WatchList.DIFF:
-					return Watches[index].Diff;
-				case WatchList.DOMAIN:
-					return Watches[index].Domain.Name;
-				case WatchList.NOTES:
-					return Watches[index].Notes;
-			}
-		}
-
-		private void CopyWatchesToClipBoard()
-		{
-			var indexes = WatchListView.SelectedIndices;
-
-			if (indexes.Count > 0)
-			{
-				StringBuilder sb = new StringBuilder();
-				foreach (int index in indexes)
-				{
-					foreach (ColumnHeader column in WatchListView.Columns)
-					{
-						sb.Append(GetColumnValue(column.Name, index)).Append('\t');
-					}
-					sb.Remove(sb.Length - 1, 1);
-					sb.AppendLine();
-				}
-
-				if (sb.Length > 0)
-				{
-					Clipboard.SetDataObject(sb.ToString());
-				}
-			}
-		}
-
-		private void OrderColumn(int index)
-		{
-			var column = WatchListView.Columns[index];
-			if (column.Name != _sortedColumn)
-			{
-				_sortReverse = false;
-			}
-
-			Watches.OrderWatches(column.Name, _sortReverse);
-
-			_sortedColumn = column.Name;
-			_sortReverse ^= true;
-			WatchListView.Refresh();
-		}
-
-		private void SaveAs()
-		{
-			bool result = Watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(Watches.CurrentFileName));
-			if (result)
-			{
-				UpdateMessageLabel(saved: true);
-				Global.Config.RecentWatches.Add(Watches.CurrentFileName);
-			}
-		}
+		#endregion
 
 		#region Winform Events
 
@@ -772,11 +735,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == (".wch"))
 			{
-				Watches.Load(filePaths[0], append:false);
-				DisplayWatches();
+				_watches.Load(filePaths[0], append:false);
+				WatchListView.ItemCount = _watches.ItemCount;
 			}
 		}
 
@@ -788,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 		/*************File***********************/
 		private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			saveToolStripMenuItem.Enabled = Watches.Changes;
+			saveToolStripMenuItem.Enabled = _watches.Changes;
 		}
 
 		private void newListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -798,15 +761,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bool append = sender == appendFileToolStripMenuItem;
-			LoadWatchFile(ToolHelpers.GetWatchFileFromUser(Watches.CurrentFileName), append);
+			var append = sender == appendFileToolStripMenuItem;
+			LoadWatchFile(ToolHelpers.GetWatchFileFromUser(_watches.CurrentFileName), append);
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!String.IsNullOrWhiteSpace(Watches.CurrentFileName))
+			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				if (Watches.Save())
+				if (_watches.Save())
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -848,33 +811,20 @@ namespace BizHawk.Client.EmuHawk
 		/*************Watches***********************/
 		private void watchesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				editWatchToolStripMenuItem.Enabled = true;
-				duplicateWatchToolStripMenuItem.Enabled = true;
-				removeWatchToolStripMenuItem.Enabled = true;
-				moveUpToolStripMenuItem.Enabled = true;
-				moveDownToolStripMenuItem.Enabled = true;
-				pokeAddressToolStripMenuItem.Enabled = true;
-				freezeAddressToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				editWatchToolStripMenuItem.Enabled = false;
-				duplicateWatchToolStripMenuItem.Enabled = false;
-				removeWatchToolStripMenuItem.Enabled = false;
-				moveUpToolStripMenuItem.Enabled = false;
-				moveDownToolStripMenuItem.Enabled = false;
-				pokeAddressToolStripMenuItem.Enabled = false;
-				freezeAddressToolStripMenuItem.Enabled = false;
-			}
+			editWatchToolStripMenuItem.Enabled =
+				duplicateWatchToolStripMenuItem.Enabled =
+				removeWatchToolStripMenuItem.Enabled =
+				moveUpToolStripMenuItem.Enabled =
+				moveDownToolStripMenuItem.Enabled =
+				pokeAddressToolStripMenuItem.Enabled =
+				freezeAddressToolStripMenuItem.Enabled =
+				SelectedIndices.Any();
 		}
 
 		private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			memoryDomainsToolStripMenuItem.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, Watches.Domain.Name));
+			memoryDomainsToolStripMenuItem.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _watches.Domain.Name).ToArray());
 		}
 
 		private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -904,18 +854,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bool allCheats = true;
-			foreach (var watch in SelectedWatches)
-			{
-				if (!watch.IsSeparator)
-				{
-					if (!Global.CheatList.IsActive(watch.Domain, watch.Address.Value))
-					{
-						allCheats = false;
-					}
-				}
-			}
-
+			var allCheats = SelectedWatches.All(watch => !Global.CheatList.IsActive(watch.Domain, watch.Address ?? 0));
 			if (allCheats)
 			{
 				ToolHelpers.UnfreezeAddress(SelectedWatches);
@@ -933,7 +872,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Watches.ClearChangeCounts();
+			_watches.ClearChangeCounts();
 		}
 
 		private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1062,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Size = new Size(defaultWidth, defaultHeight);
+			Size = new Size(_defaultWidth, _defaultHeight);
 
 			Global.Config.RamWatchColumnIndexes = new Dictionary<string, int>
 				{
@@ -1082,13 +1021,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamWatchShowPrevColumn = false;
 			Global.Config.RamWatchShowDiffColumn = false;
 
-			WatchListView.Columns[WatchList.ADDRESS].Width = DefaultColumnWidths[WatchList.ADDRESS];
-			WatchListView.Columns[WatchList.VALUE].Width = DefaultColumnWidths[WatchList.VALUE];
+			WatchListView.Columns[WatchList.ADDRESS].Width = _defaultColumnWidths[WatchList.ADDRESS];
+			WatchListView.Columns[WatchList.VALUE].Width = _defaultColumnWidths[WatchList.VALUE];
 			//WatchListView.Columns[WatchList.PREV].Width = DefaultColumnWidths[WatchList.PREV];
-			WatchListView.Columns[WatchList.CHANGES].Width = DefaultColumnWidths[WatchList.CHANGES];
+			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
 			//WatchListView.Columns[WatchList.DIFF].Width = DefaultColumnWidths[WatchList.DIFF];
-			WatchListView.Columns[WatchList.DOMAIN].Width = DefaultColumnWidths[WatchList.DOMAIN];
-			WatchListView.Columns[WatchList.NOTES].Width = DefaultColumnWidths[WatchList.NOTES];
+			WatchListView.Columns[WatchList.DOMAIN].Width = _defaultColumnWidths[WatchList.DOMAIN];
+			WatchListView.Columns[WatchList.NOTES].Width = _defaultColumnWidths[WatchList.NOTES];
 
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = true;
@@ -1100,7 +1039,8 @@ namespace BizHawk.Client.EmuHawk
 		/*************Context Menu***********************/
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			var indexes = WatchListView.SelectedIndices;
+
 			EditContextMenuItem.Visible =
 				RemoveContextMenuItem.Visible =
 				DuplicateContextMenuItem.Visible =
@@ -1115,17 +1055,7 @@ namespace BizHawk.Client.EmuHawk
 				indexes.Count > 0;
 
 
-			bool allCheats = true;
-			foreach (int i in indexes)
-			{
-				if (!Watches[i].IsSeparator)
-				{
-					if (!Global.CheatList.IsActive(Watches[i].Domain, Watches[i].Address.Value))
-					{
-						allCheats = false;
-					}
-				}
-			}
+			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 
 			if (allCheats)
 			{
@@ -1145,7 +1075,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
-			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count == 1;
+			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count() == 1;
 		}
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
@@ -1155,18 +1085,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
-			var selected = SelectedWatches;
+			var selected = SelectedWatches.ToList();
 			if (selected.Any())
 			{
 				GlobalWin.Tools.Load<HexEditor>();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address.Value });
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 });
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address.Value));
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address ?? 0));
 				}
 			}
 		}
@@ -1181,7 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
 			{
-				for (int x = 0; x < Watches.Count; x++)
+				for (var x = 0; x < _watches.Count; x++)
 				{
 					WatchListView.SelectItem(x, true);
 				}

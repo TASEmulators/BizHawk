@@ -1212,7 +1212,6 @@
     <None Include="images\Refresh.bmp" />
     <None Include="images\TruncateFromRW.png" />
     <None Include="images\TruncateFromFile.png" />
-    <None Include="output\config.ini" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

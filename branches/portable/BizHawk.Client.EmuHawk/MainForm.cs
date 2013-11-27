@@ -2381,7 +2381,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Save();
 				GlobalWin.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
 		}
@@ -2618,6 +2618,9 @@ namespace BizHawk.Client.EmuHawk
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
+				//client input-related duties
+				GlobalWin.OSD.ClearGUIText();
+
 				if (!fff)
 				{
 					UpdateToolsBefore();
@@ -2626,8 +2629,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.FrameTick();
 
 				runloop_fps++;
-				//client input-related duties
-				GlobalWin.OSD.ClearGUIText();
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
@@ -2905,6 +2906,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVIFrameAdvance()
 		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (CurrAviWriter != null)
 			{
 				long nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + SoundRemainder;
@@ -2969,6 +2971,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
+				GlobalWin.DisplayManager.NeedsToPaint = true;
 			}
 		}
 
@@ -3791,7 +3794,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(d);
 
 			string outPath = Path.Combine(d, (Path.GetFileName(fn) + "." + Global.Config.MovieExtension));
-			m.WriteMovie(outPath);
+			m.SaveAs(outPath);
 		}
 
 		public void FlagNeedsReboot() //Make private, config dialogs use it and it can be called after they close

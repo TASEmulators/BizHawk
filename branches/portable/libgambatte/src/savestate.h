@@ -19,7 +19,7 @@
 #ifndef SAVESTATE_H
 #define SAVESTATE_H
 
-#include <ctime>
+#include <cstdint>
 
 namespace gambatte {
 
@@ -38,7 +38,7 @@ struct SaveState {
 		void set(T *ptr, const unsigned long sz) { this->ptr = ptr; this->sz = sz; }
 		
 		friend class SaverList;
-		friend void setInitState(SaveState &, bool, bool, std::time_t);
+		friend void setInitState(SaveState &, bool, bool, std::uint32_t);
 	};
 
 	struct CPU {

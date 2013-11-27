@@ -409,7 +409,6 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearGUIText()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-
 			GUITextList.Clear();
 		}
 
@@ -650,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 
 		readonly SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 
-		public bool NeedsToPaint { get { return true; } set { } }
+		public bool NeedsToPaint { get; set; }
 
 		DisplaySurface luaEmuSurface = null;
 		public void PreFrameUpdateLuaSource()

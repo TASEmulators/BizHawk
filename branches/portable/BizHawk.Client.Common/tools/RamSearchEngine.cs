@@ -314,7 +314,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void RemoveRange(List<int> addresses)
+		public void RemoveRange(IEnumerable<int> addresses)
 		{
 			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
 		}

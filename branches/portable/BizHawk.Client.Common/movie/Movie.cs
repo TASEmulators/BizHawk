@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public class Movie
+	public class Movie : IMovie
 	{
 		#region Constructors
 
@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 		public Movie()
 		{
 			Header = new MovieHeader();
+			Subtitles = new SubtitleList();
 			Filename = String.Empty;
 			_preloadFramecount = 0;
 			StartsFromSavestate = false;
@@ -34,8 +35,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Properties
-		public MovieHeader Header;
-		public SubtitleList Subtitles = new SubtitleList();
+		public MovieHeader Header { get; private set; }
+		public SubtitleList Subtitles { get; private set; }
 		
 		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
@@ -57,11 +58,6 @@ namespace BizHawk.Client.Common
 		public string SysID
 		{
 			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
-		}
-
-		public string Guid
-		{
-			get { return Header.GetHeaderLine(MovieHeader.GUID); }
 		}
 
 		public string GameName
@@ -171,7 +167,7 @@ namespace BizHawk.Client.Common
 			get { return _mode == Moviemode.Finished; }
 		}
 
-		public bool HasChanges
+		public bool Changes
 		{
 			get { return _changes; }
 		}
@@ -185,7 +181,7 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 			{
-				WriteBackup();
+				SaveAs();
 				MakeBackup = false;
 			}
 			if (truncate)
@@ -213,16 +209,16 @@ namespace BizHawk.Client.Common
 		public void SwitchToPlay()
 		{
 			_mode = Moviemode.Play;
-			WriteMovie();
+			Save();
 		}
 
-		public void Stop(bool abortchanges = false)
+		public void Stop(bool saveChanges = true)
 		{
-			if (!abortchanges)
+			if (saveChanges)
 			{
 				if (_mode == Moviemode.Record || _changes)
 				{
-					WriteMovie();
+					Save();
 				}
 			}
 			_changes = false;
@@ -244,7 +240,7 @@ namespace BizHawk.Client.Common
 
 		#region Public File Handling
 
-		public void WriteMovie(string path)
+		public void SaveAs(string path)
 		{
 			if (!Loaded)
 			{
@@ -263,18 +259,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void WriteMovie()
+		public void Save()
 		{
 			if (!Loaded || String.IsNullOrWhiteSpace(Filename))
 			{
 				return;
 			}
 
-			WriteMovie(Filename);
+			SaveAs(Filename);
 			_changes = false;
 		}
 
-		public void WriteBackup()
+		public void SaveAs()
 		{
 			if (!Loaded || String.IsNullOrWhiteSpace(Filename))
 			{
@@ -358,7 +354,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public bool LoadMovie()
+		public bool Load()
 		{
 			var file = new FileInfo(Filename);
 			if (file.Exists == false)
@@ -516,7 +512,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 				{
-					WriteBackup();
+					SaveAs();
 					MakeBackup = false;
 				}
 				_log.Clear();
@@ -645,8 +641,6 @@ namespace BizHawk.Client.Common
 			return time;
 		}
 
-		public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
-
 		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
@@ -720,11 +714,18 @@ namespace BizHawk.Client.Common
 			}
 			if (_log.Length < stateFrame)
 			{
-				errorMessage = "The savestate is from frame "
-					+ log.Length.ToString()
-					+ " which is greater than the current movie length of "
-					+ _log.Length.ToString();
-				return LoadStateResult.FutureEventError;
+				if (IsFinished)
+				{
+					return LoadStateResult.Pass;
+				}
+				else
+				{
+					errorMessage = "The savestate is from frame "
+						+ log.Length.ToString()
+						+ " which is greater than the current movie length of "
+						+ _log.Length.ToString();
+					return LoadStateResult.FutureEventError;
+				}
 			}
 			for (int i = 0; i < stateFrame; i++)
 			{

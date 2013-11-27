@@ -87,7 +87,7 @@ public:
 		memory.setScanlineCallback(callback, sl);
 	}
 
-	void setRTCCallback(std::time_t (*callback)()) {
+	void setRTCCallback(std::uint32_t (*callback)()) {
 		memory.setRTCCallback(callback);
 	}
 	

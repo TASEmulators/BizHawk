@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			//If a movie is already loaded, save it before starting a new movie
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Save();
 			}
 
 			Global.MovieSession = new MovieSession
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!record)
 			{
-				Global.MovieSession.Movie.LoadMovie();
+				Global.MovieSession.Movie.Load();
 				SetSyncDependentSettings();
 			}
 
@@ -126,9 +126,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void StopMovie(bool abortchanges = false)
+		public void StopMovie(bool saveChanges = true)
 		{
-			Global.MovieSession.StopMovie();
+			Global.MovieSession.StopMovie(saveChanges);
 			SetMainformMovieInfo();
 		}
 

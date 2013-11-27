@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.StateCapturing = true;
+				//Global.MovieSession.Movie.StateCapturing = true;
 				ReadOnlyCheckBox.Checked = Global.ReadOnly;
 			}
 			else
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.WriteMovie();
+			Global.MovieSession.Movie.Save();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			if ("" != fileName)
 			{
 				Global.MovieSession.Movie.Filename = fileName;
-				Global.MovieSession.Movie.WriteMovie();
+				Global.MovieSession.Movie.Save();
 			}
 		}
 

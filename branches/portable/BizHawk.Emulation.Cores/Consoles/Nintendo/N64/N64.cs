@@ -13,15 +13,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
+			//note: the approach this code takes is highly bug-prone
+
 			List<KeyValuePair<string, int>> ret = new List<KeyValuePair<string, int>>();
 			byte[] data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
 
-			Int64[] reg = new Int64[32];
 			for (int i = 0; i < 32; i++)
 			{
-				reg[i] = BitConverter.ToInt64(data, i * 8);
-				ret.Add(new KeyValuePair<string, int>("REG" + i, (int)reg[i]));
+				long reg = BitConverter.ToInt64(data, i * 8);
+				ret.Add(new KeyValuePair<string, int>("REG" + i + "_lo", (int)(reg)));
+				ret.Add(new KeyValuePair<string, int>("REG" + i + "_hi", (int)(reg>>32)));
 			}
 
 			UInt32 PC = BitConverter.ToUInt32(data, 32 * 8);
@@ -29,27 +31,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			ret.Add(new KeyValuePair<string, int>("LL", BitConverter.ToInt32(data, 32 * 8 + 4)));
 
-			Int64 Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
-			ret.Add(new KeyValuePair<string, int>("LO", (int)Lo));
+			long Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
+			ret.Add(new KeyValuePair<string, int>("LO_lo", (int)Lo));
+			ret.Add(new KeyValuePair<string, int>("LO_hi", (int)(Lo>>32)));
 
-			Int64 Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
-			ret.Add(new KeyValuePair<string, int>("HI", (int)Hi));
+			long Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
+			ret.Add(new KeyValuePair<string, int>("HI_lo", (int)Hi));
+			ret.Add(new KeyValuePair<string, int>("HI_hi", (int)(Hi>>32)));
 
 			ret.Add(new KeyValuePair<string, int>("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8)));
 			ret.Add(new KeyValuePair<string, int>("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4)));
 
-			UInt32[] reg_cop0 = new UInt32[32];
 			for (int i = 0; i < 32; i++)
 			{
-				reg_cop0[i] = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
-				ret.Add(new KeyValuePair<string, int>("CP0 REG" + i, (int)reg_cop0[i]));
+				uint reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
+				ret.Add(new KeyValuePair<string, int>("CP0 REG" + i, (int)reg_cop0));
 			}
 
-			Int64[] reg_cop1_fgr_64 = new Int64[32];
 			for (int i = 0; i < 32; i++)
 			{
-				reg_cop1_fgr_64[i] = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
-				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i, (int)reg_cop1_fgr_64[i]));
+				long reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
+				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64));
+				ret.Add(new KeyValuePair<string, int>("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64>>32)));
 			}
 
 			return ret;
@@ -252,6 +255,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			byte[] saveram = api.SaveSaveram();
 			writer.Write(saveram);
+			if (saveram.Length != mupen64plusApi.kSaveramSize)
+				throw new InvalidOperationException("Unexpected N64 SaveRam size");
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -267,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			api.LoadState(data);
 
-			reader.Read(SaveStatePrivateBuff,0,0x800 + 0x8000 * 4);
+			reader.Read(SaveStatePrivateBuff, 0, mupen64plusApi.kSaveramSize);
 			api.LoadSaveram(SaveStatePrivateBuff);
 
 			// other variables
