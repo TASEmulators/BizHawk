@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void client_closerom()
 		{
-			GlobalWin.MainForm.CloseROM();
+			GlobalWin.MainForm.CloseRom();
 		}
 
 		public static void client_enablerewind(object boolean)

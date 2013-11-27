@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -208,6 +206,39 @@ namespace BizHawk.Client.EmuHawk
 			if (existingTool != null && existingTool.IsDisposed)
 			{
 				Close<T>();
+			}
+		}
+
+		public void UpdateToolsBefore(bool fromLua = false)
+		{
+			if (Has<LuaConsole>())
+			{
+				if (!fromLua)
+				{
+					LuaConsole.StartLuaDrawing();
+				}
+				LuaConsole.LuaImp.CallFrameBeforeEvent();
+			}
+			UpdateBefore();
+		}
+
+		public void UpdateToolsAfter(bool fromLua = false)
+		{
+			if (!fromLua && Has<LuaConsole>())
+			{
+				LuaConsole.ResumeScripts(true);
+			}
+
+			GlobalWin.Tools.UpdateAfter();
+
+			if (Has<LuaConsole>())
+			{
+				LuaConsole.LuaImp.CallFrameAfterEvent();
+				if (!fromLua)
+				{
+					GlobalWin.DisplayManager.PreFrameUpdateLuaSource();
+					LuaConsole.EndLuaDrawing();
+				}
 			}
 		}
 
