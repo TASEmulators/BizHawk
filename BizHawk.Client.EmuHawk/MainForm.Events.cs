@@ -1792,7 +1792,9 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadLastRomContextMenuItem.Visible =
 				(Global.Emulator is NullEmulator);
-			
+
+			StopAVContextMenuItem.Visible = CurrAviWriter != null;
+
 			ContextSeparator_AfterMovie.Visible =
 				ContextSeparator_AfterUndo.Visible =
 				ScreenshotContextMenuItem.Visible =
