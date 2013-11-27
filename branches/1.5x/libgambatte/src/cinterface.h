@@ -30,7 +30,7 @@ extern "C"
 
 	__declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl);
 
-	__declspec(dllexport) void gambatte_setrtccallback(void *core, long long (*callback)());
+	__declspec(dllexport) void gambatte_setrtccallback(void *core, unsigned int (*callback)());
 
 	__declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir);
 

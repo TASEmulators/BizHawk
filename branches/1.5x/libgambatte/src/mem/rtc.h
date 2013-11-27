@@ -19,7 +19,7 @@
 #ifndef RTC_H
 #define RTC_H
 
-#include <ctime>
+#include <cstdint>
 
 namespace gambatte {
 
@@ -29,8 +29,8 @@ class Rtc {
 private:
 	unsigned char *activeData;
 	void (Rtc::*activeSet)(unsigned);
-	std::time_t baseTime;
-	std::time_t haltTime;
+	std::uint32_t baseTime;
+	std::uint32_t haltTime;
 	unsigned char index;
 	unsigned char dataDh;
 	unsigned char dataDl;
@@ -39,7 +39,7 @@ private:
 	unsigned char dataS;
 	bool enabled;
 	bool lastLatchData;
-	std::time_t (*timeCB)();
+	std::uint32_t (*timeCB)();
 	
 	void doLatch();
 	void doSwapActive();
@@ -53,9 +53,9 @@ public:
 	Rtc();
 	
 	const unsigned char* getActive() const { return activeData; }
-	std::time_t getBaseTime() const { return baseTime; }
+	std::uint32_t getBaseTime() const { return baseTime; }
 	
-	void setBaseTime(const std::time_t baseTime) {
+	void setBaseTime(const std::uint32_t baseTime) {
 		this->baseTime = baseTime;
 // 		doLatch();
 	}
@@ -86,7 +86,7 @@ public:
 		*activeData = data;
 	}
 
-	void setRTCCallback(std::time_t (*callback)()) {
+	void setRTCCallback(std::uint32_t (*callback)()) {
 		timeCB = callback;
 	}
 };

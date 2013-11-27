@@ -6,14 +6,14 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class EmuLuaLibrary
+	public class EmuLuaLibrary
 	{
 		private Lua _lua = new Lua();
 		private readonly LuaConsole _caller;
-		private Lua currThread;
-		private FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
-		private GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
+		private Lua _currThread;
+		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
+		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
+		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 
 		public LuaDocumentation Docs = new LuaDocumentation();
 		public bool IsRunning;
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LuaRegister(Lua lua)
 		{
-			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
+			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
 			new BitLuaLibrary().LuaRegister(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
@@ -79,8 +79,8 @@ namespace BizHawk.Client.EmuHawk
 			
 			new EmulatorLuaLibrary(
 				_lua,
-				new Action(Frameadvance),
-				new Action(EmuYield)
+				Frameadvance,
+				EmuYield
 			).LuaRegister(lua, Docs);
 
 			_eventLibrary.LuaRegister(lua, Docs);
@@ -98,13 +98,12 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Sort();
 		}
 
-		public Lua SpawnCoroutine(string File)
+		public Lua SpawnCoroutine(string file)
 		{
-			var t = _lua.NewThread();
-			//LuaRegister(t); //adelikat: Not sure why this was here but it was causing the entire luaimplmeentaiton to be duplicated each time, eventually resulting in crashes
-			var main = t.LoadFile(File);
-			t.Push(main); //push main function on to stack for subsequent resuming
-			return t;
+			var lua = _lua.NewThread();
+			var main = lua.LoadFile(file);
+			lua.Push(main); //push main function on to stack for subsequent resuming
+			return lua;
 		}
 
 		public class ResumeResult
@@ -115,9 +114,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public ResumeResult ResumeScript(Lua script)
 		{
-			currThread = script;
-			int execResult = script.Resume(0);
-			currThread = null;
+			_eventLibrary.CurrentThread = script;
+			_currThread = script;
+			var execResult = script.Resume(0);
+			_currThread = null;
 			var result = new ResumeResult();
 			if (execResult == 0)
 			{
@@ -133,21 +133,21 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
-		public void print(string s)
+		public void Print(string s)
 		{
-			_caller.AddText(s);
+			_caller.ConsoleLog(s);
 		}
 
 		private void Frameadvance()
 		{
 			FrameAdvanceRequested = true;
-			currThread.Yield(0);
+			_currThread.Yield(0);
 		}
 
 		private void EmuYield()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			currThread.Yield(0);
+			_currThread.Yield(0);
 		}
 	}
 }

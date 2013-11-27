@@ -30,13 +30,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// RTC time when emulation begins.
 		/// </summary>
-		long zerotime = 0;
+		uint zerotime = 0;
 
 		LibGambatte.RTCCallback TimeCallback;
 
-		long GetCurrentTime()
+		uint GetCurrentTime()
 		{
-			long fn = Frame;
+			uint fn = (uint)Frame;
 			fn /= 60; // exactly 60 fps.  in case you feel bad about it, remember that we're not exactly tracking cpu cycles either.
 			fn += zerotime;
 			return fn;

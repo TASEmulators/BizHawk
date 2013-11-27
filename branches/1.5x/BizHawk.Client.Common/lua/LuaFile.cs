@@ -52,6 +52,11 @@ namespace BizHawk.Client.Common
 			CurrentDirectory = file.CurrentDirectory;
 		}
 
+		public static LuaFile SeparatorInstance
+		{
+			get { return new LuaFile(true); }
+		}
+
 		public void Stop()
 		{
 			Enabled = false;

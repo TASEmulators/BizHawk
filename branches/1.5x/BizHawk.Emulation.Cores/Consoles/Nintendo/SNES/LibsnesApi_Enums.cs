@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public enum eMessage : int
 		{
+			eMessage_NotSet,
 			eMessage_Complete,
 			eMessage_SetBuffer,
 			eMessage_BeginBufferIO,
@@ -39,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_QUERY_peek_logical_register,
 			eMessage_QUERY_peek_cpu_regs,
 
+			eMessage_CMD_FIRST,
 			eMessage_CMD_init,
 			eMessage_CMD_power,
 			eMessage_CMD_reset,
@@ -49,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_CMD_load_cartridge_super_game_boy,
 			eMessage_CMD_term,
 			eMessage_CMD_unload_cartridge,
+			eMessage_CMD_LAST,
 
 			eMessage_SIG_video_refresh,
 			eMessage_SIG_input_poll,
