@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -35,13 +29,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			//Global
-			string video_settings = VideoResolutionComboBox.SelectedItem.ToString();
-			string[] strArr = video_settings.Split('x');
+			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
+			var strArr = video_settings.Split('x');
 			Global.Config.N64VideoSizeX = Int32.Parse(strArr[0].Trim());
 			Global.Config.N64VideoSizeY = Int32.Parse(strArr[1].Trim());
 			Global.Config.N64VidPlugin = PluginComboBox.Text;
-			GlobalWin.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
-			
+
 			//Rice
 			Global.Config.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
 			Global.Config.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
@@ -144,25 +137,21 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.GlidePlugin.disable_auxbuf = Glide_disable_auxbuf.Checked;
 			Global.Config.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
 
-			if (InputValidate.IsValidSignedNumber(Glide_offset_x.Text))
-				Global.Config.GlidePlugin.offset_x = int.Parse(Glide_offset_x.Text);
-			else
-				Global.Config.GlidePlugin.offset_x = 0;
+			Global.Config.GlidePlugin.offset_x =
+				InputValidate.IsValidSignedNumber(Glide_offset_x.Text) ? 
+				int.Parse(Glide_offset_x.Text) : 0;
 
-			if (InputValidate.IsValidSignedNumber(Glide_offset_y.Text))
-				Global.Config.GlidePlugin.offset_y = int.Parse(Glide_offset_y.Text);
-			else
-				Global.Config.GlidePlugin.offset_y = 0;
+			Global.Config.GlidePlugin.offset_y =
+				InputValidate.IsValidSignedNumber(Glide_offset_y.Text) ? 
+				int.Parse(Glide_offset_y.Text) : 0;
 
-			if (InputValidate.IsValidSignedNumber(Glide_scale_x.Text))
-				Global.Config.GlidePlugin.scale_x = int.Parse(Glide_scale_x.Text);
-			else
-				Global.Config.GlidePlugin.scale_x = 100000;
+			Global.Config.GlidePlugin.scale_x =
+				InputValidate.IsValidSignedNumber(Glide_scale_x.Text) ? 
+				int.Parse(Glide_scale_x.Text) : 100000;
 
-			if (InputValidate.IsValidSignedNumber(Glide_scale_y.Text))
-				Global.Config.GlidePlugin.scale_y = int.Parse(Glide_scale_y.Text);
-			else
-				Global.Config.GlidePlugin.scale_y = 100000;
+			Global.Config.GlidePlugin.scale_y =
+				InputValidate.IsValidSignedNumber(Glide_scale_y.Text) ?
+				int.Parse(Glide_scale_y.Text) : 100000;
 
 			Global.Config.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
 			Global.Config.GlidePlugin.alt_tex_size = Glide_alt_tex_size.Checked;
@@ -189,29 +178,24 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.GlidePlugin.use_sts1_only = Glide_use_sts1_only.Checked;
 			Global.Config.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
 
-			if (InputValidate.IsValidSignedNumber(Glide_depth_bias.Text))
-				Global.Config.GlidePlugin.depth_bias = int.Parse(Glide_depth_bias.Text);
-			else
-				Global.Config.GlidePlugin.depth_bias = 20;
+			Global.Config.GlidePlugin.depth_bias =
+				InputValidate.IsValidSignedNumber(Glide_depth_bias.Text) ?
+				int.Parse(Glide_depth_bias.Text) : 20;
 
 			Global.Config.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
 
-			if (InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text))
-				Global.Config.GlidePlugin.fix_tex_coord = int.Parse(Glide_fix_tex_coord.Text);
-			else
-				Global.Config.GlidePlugin.fix_tex_coord = 0;
+			Global.Config.GlidePlugin.fix_tex_coord = InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text) ?
+				int.Parse(Glide_fix_tex_coord.Text) : 0;
 
 			Global.Config.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
 
-			if (InputValidate.IsValidSignedNumber(Glide_stipple_mode.Text))
-				Global.Config.GlidePlugin.stipple_mode = int.Parse(Glide_stipple_mode.Text);
-			else
-				Global.Config.GlidePlugin.stipple_mode = 2;
+			Global.Config.GlidePlugin.stipple_mode =
+				InputValidate.IsValidSignedNumber(Glide_stipple_mode.Text) ?
+				int.Parse(Glide_stipple_mode.Text) : 2;
 
-			if (InputValidate.IsValidSignedNumber(Glide_stipple_pattern.Text))
-				Global.Config.GlidePlugin.stipple_pattern = int.Parse(Glide_stipple_pattern.Text);
-			else
-				Global.Config.GlidePlugin.stipple_pattern = 1041204192;
+			Global.Config.GlidePlugin.stipple_pattern =
+				InputValidate.IsValidSignedNumber(Glide_stipple_pattern.Text) ?
+				int.Parse(Glide_stipple_pattern.Text) : 1041204192;
 
 			Global.Config.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
 			Global.Config.GlidePlugin.enable_hacks_for_game = Glide_enable_hacks_for_game.SelectedIndex;
@@ -240,15 +224,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.Glide64mk2Plugin.alt_tex_size = Glide64mk2_alt_tex_size.Checked;
 			Global.Config.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
 
-			if (InputValidate.IsValidSignedNumber(Glide64mk2_stipple_pattern.Text))
-				Global.Config.Glide64mk2Plugin.stipple_pattern = int.Parse(Glide64mk2_stipple_pattern.Text);
-			else
-				Global.Config.Glide64mk2Plugin.stipple_pattern = 1041204192;
+			Global.Config.Glide64mk2Plugin.stipple_pattern =
+				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_pattern.Text) ?
+				int.Parse(Glide64mk2_stipple_pattern.Text) : 1041204192;
 
-			if (InputValidate.IsValidSignedNumber(Glide64mk2_stipple_mode.Text))
-				Global.Config.Glide64mk2Plugin.stipple_mode = int.Parse(Glide64mk2_stipple_mode.Text);
-			else
-				Global.Config.Glide64mk2Plugin.stipple_mode = 2;
+			Global.Config.Glide64mk2Plugin.stipple_mode =
+				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_mode.Text) ?
+				int.Parse(Glide64mk2_stipple_mode.Text) : 2;
 
 			Global.Config.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
 			Global.Config.Glide64mk2Plugin.filtering = Glide64mk2_filtering.SelectedIndex;
@@ -276,11 +258,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//Load Variables
 			//Global
-			string video_setting = Global.Config.N64VideoSizeX.ToString()
+			var video_setting = Global.Config.N64VideoSizeX
 						+ " x "
-						+ Global.Config.N64VideoSizeY.ToString();
+						+ Global.Config.N64VideoSizeY;
 
-			int index = VideoResolutionComboBox.Items.IndexOf(video_setting);
+			var index = VideoResolutionComboBox.Items.IndexOf(video_setting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
@@ -331,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			RiceColorQuality_Combo.SelectedIndex = Global.Config.RicePlugin.ColorQuality;
 			RiceOpenGLRenderSetting_Combo.SelectedIndex = Global.Config.RicePlugin.OpenGLRenderSetting;
 			RiceAnisotropicFiltering_TB.Value = Global.Config.RicePlugin.AnisotropicFiltering;
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value.ToString();
+			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
 
 			RiceUseDefaultHacks_CB.Checked = Global.Config.RicePlugin.UseDefaultHacks;
 
@@ -487,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void RiceAnisotropicFiltering_TB_Scroll_1(object sender, EventArgs e)
 		{
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value.ToString();
+			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
 		}
 
 		private void RiceUseDefaultHacks_CB_CheckedChanged(object sender, EventArgs e)
@@ -633,18 +615,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool GetBoolFromDB(string parameter)
 		{
-			if (Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter) == "true")
-				return true;
-			else
-				return false;
+			return Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter) == "true";
 		}
 
 		public int GetIntFromDB(string parameter, int defaultVal)
 		{
 			if (Global.Game.OptionPresent(parameter) && InputValidate.IsValidUnsignedNumber(Global.Game.OptionValue(parameter)))
+			{
 				return int.Parse(Global.Game.OptionValue(parameter));
+			}
 			else
+			{
 				return defaultVal;
+			}
 		}
 
 		public void ToggleRiceHackCheckboxEnable (bool val)

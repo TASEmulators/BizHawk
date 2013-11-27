@@ -45,61 +45,61 @@ namespace BizHawk.Client.EmuHawk
 			SaveState0MenuItem.Font = new Font(
 				SaveState0MenuItem.Font.FontFamily,
 				SaveState0MenuItem.Font.Size,
-				 StateSlots.HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				 _stateSlots.HasSlot(0) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState1MenuItem.Font = new Font(
 				SaveState1MenuItem.Font.FontFamily,
 				SaveState1MenuItem.Font.Size,
-				StateSlots.HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(1) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState2MenuItem.Font = new Font(
 				SaveState2MenuItem.Font.FontFamily,
 				SaveState2MenuItem.Font.Size,
-				StateSlots.HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(2) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState3MenuItem.Font = new Font(
 				SaveState3MenuItem.Font.FontFamily,
 				SaveState3MenuItem.Font.Size,
-				StateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 			
 			SaveState4MenuItem.Font = new Font(
 				SaveState4MenuItem.Font.FontFamily,
 				SaveState4MenuItem.Font.Size,
-				StateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 			
 			SaveState5MenuItem.Font = new Font(
 				SaveState5MenuItem.Font.FontFamily,
 				SaveState5MenuItem.Font.Size,
-				StateSlots.HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(5) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState6MenuItem.Font = new Font(
 				SaveState6MenuItem.Font.FontFamily,
 				SaveState6MenuItem.Font.Size,
-				StateSlots.HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(6) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState7MenuItem.Font = new Font(
 				SaveState7MenuItem.Font.FontFamily,
 				SaveState7MenuItem.Font.Size,
-				StateSlots.HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(7) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState8MenuItem.Font = new Font(
 				SaveState8MenuItem.Font.FontFamily,
 				SaveState8MenuItem.Font.Size,
-				StateSlots.HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(8) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState9MenuItem.Font = new Font(
 				SaveState9MenuItem.Font.FontFamily,
 				SaveState9MenuItem.Font.Size,
-				StateSlots.HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
+				_stateSlots.HasSlot(9) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
 
 			SaveState1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save State 1"].Bindings;
@@ -145,16 +145,16 @@ namespace BizHawk.Client.EmuHawk
 			AutoloadLastSlotMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
 
 			LoadNamedStateMenuItem.Enabled = !(Global.Emulator is NullEmulator);
-			LoadState1MenuItem.Enabled = StateSlots.HasSlot(1);
-			LoadState2MenuItem.Enabled = StateSlots.HasSlot(2);
-			LoadState3MenuItem.Enabled = StateSlots.HasSlot(3);
-			LoadState4MenuItem.Enabled = StateSlots.HasSlot(4);
-			LoadState5MenuItem.Enabled = StateSlots.HasSlot(5);
-			LoadState6MenuItem.Enabled = StateSlots.HasSlot(6);
-			LoadState7MenuItem.Enabled = StateSlots.HasSlot(7);
-			LoadState8MenuItem.Enabled = StateSlots.HasSlot(8);
-			LoadState9MenuItem.Enabled = StateSlots.HasSlot(9);
-			LoadState0MenuItem.Enabled = StateSlots.HasSlot(0);
+			LoadState1MenuItem.Enabled = _stateSlots.HasSlot(1);
+			LoadState2MenuItem.Enabled = _stateSlots.HasSlot(2);
+			LoadState3MenuItem.Enabled = _stateSlots.HasSlot(3);
+			LoadState4MenuItem.Enabled = _stateSlots.HasSlot(4);
+			LoadState5MenuItem.Enabled = _stateSlots.HasSlot(5);
+			LoadState6MenuItem.Enabled = _stateSlots.HasSlot(6);
+			LoadState7MenuItem.Enabled = _stateSlots.HasSlot(7);
+			LoadState8MenuItem.Enabled = _stateSlots.HasSlot(8);
+			LoadState9MenuItem.Enabled = _stateSlots.HasSlot(9);
+			LoadState0MenuItem.Enabled = _stateSlots.HasSlot(0);
 		}
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAVIMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
-			if (CurrAviWriter == null)
+			if (_currAviWriter == null)
 			{
 				RecordAVMenuItem.Enabled = true;
 				StopAVIMenuItem.Enabled = false;
@@ -282,12 +282,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenROM();
+			OpenRom();
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
-			CloseROM();
+			CloseRom();
 		}
 
 		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
@@ -356,12 +356,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveToCurrentSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+			SaveState("QuickSave" + Global.Config.SaveSlot);
 		}
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
+			LoadState("QuickSave" + Global.Config.SaveSlot);
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
@@ -416,13 +416,9 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			GlobalWin.Sound.StartSound();
-			if (result != DialogResult.OK)
+			if (result == DialogResult.OK)
 			{
-				return;
-			}
-			else
-			{
-				foreach (string fn in ofd.FileNames)
+				foreach (var fn in ofd.FileNames)
 				{
 					ProcessMovieImport(fn);
 				}
@@ -476,9 +472,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			var path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 
-			SaveFileDialog sfd = new SaveFileDialog
+			var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -520,14 +516,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RebootCoreMenuItem.Enabled = !(Global.Emulator is NullEmulator);
 
-			if (didMenuPause)
-			{
-				PauseMenuItem.Checked = wasPaused;
-			}
-			else
-			{
-				PauseMenuItem.Checked = EmulatorPaused;
-			}
+			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
 			SoftResetMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
 					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
@@ -683,7 +672,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.DisplayStatusBar ^= true;
 			
-			if (!InFullscreen)
+			if (!_inFullscreen)
 			{
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				PerformLayout();
@@ -813,7 +802,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
-			ControllerConfig controller = new ControllerConfig(Global.Emulator.ControllerDefinition);
+			var controller = new ControllerConfig(Global.Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -823,7 +812,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			HotkeyConfig hotkeys = new HotkeyConfig();
+			var hotkeys = new HotkeyConfig();
 			if (hotkeys.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -843,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			SoundConfig sound = new SoundConfig();
+			var sound = new SoundConfig();
 			if (sound.ShowDialog() == DialogResult.OK)
 			{
 				RewireSound();
@@ -868,53 +857,27 @@ namespace BizHawk.Client.EmuHawk
 		private void EnableContextMenuMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ShowContextMenu ^= true;
-			if (Global.Config.ShowContextMenu)
-			{
-				GlobalWin.OSD.AddMessage("Context menu enabled");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Context menu disabled");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.ShowContextMenu ? "Context menu enabled" : "Context menu disabled");
 		}
 
 		private void BackupSavestatesMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.BackupSavestates ^= true;
-			if (Global.Config.BackupSavestates)
-			{
-				GlobalWin.OSD.AddMessage("Backup savestates enabled");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Backup savestates disabled");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.BackupSavestates ? "Backup savestates enabled" : "Backup savestates disabled");
 		}
 
 		private void AutoSavestatesMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoSavestates ^= true;
-			if (Global.Config.AutoSavestates)
-			{
-				GlobalWin.OSD.AddMessage("AutoSavestates enabled");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("AutoSavestates disabled");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.AutoSavestates ? "AutoSavestates enabled" : "AutoSavestates disabled");
 		}
 
 		private void ScreenshotWithSavestatesMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveScreenshotWithStates ^= true;
-			if (Global.Config.SaveScreenshotWithStates)
-			{
-				GlobalWin.OSD.AddMessage("Screenshots will be saved in savestates");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Screenshots will not be saved in savestates");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.SaveScreenshotWithStates
+				                         ? "Screenshots will be saved in savestates"
+				                         : "Screenshots will not be saved in savestates");
 		}
 
 		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -925,14 +888,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BackupSaveramMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.BackupSaveram ^= true;
-			if (Global.Config.BackupSaveram)
-			{
-				GlobalWin.OSD.AddMessage("Backup saveram enabled");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Backup saveram disabled");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.BackupSaveram ? "Backup saveram enabled" : "Backup saveram disabled");
 		}
 
 		private void PauseWhenMenuActivatedMenuItem_Click(object sender, EventArgs e)
@@ -1002,7 +958,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.ClockThrottle ^= true;
 			if (Global.Config.ClockThrottle)
 			{
-				bool old = Global.Config.SoundThrottle;
+				var old = Global.Config.SoundThrottle;
 				Global.Config.SoundThrottle = false;
 				if (old)
 				{
@@ -1025,7 +981,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.SoundThrottle)
 			{
 				Global.Config.ClockThrottle = false;
-				bool old = Global.Config.VSyncThrottle;
+				var old = Global.Config.VSyncThrottle;
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
@@ -1041,7 +997,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.VSyncThrottle)
 			{
 				Global.Config.ClockThrottle = false;
-				bool old = Global.Config.SoundThrottle;
+				var old = Global.Config.SoundThrottle;
 				Global.Config.SoundThrottle = false;
 				if (old)
 				{
@@ -1224,7 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			LoadGameGenieEc();
 		}
 
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1294,7 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSEnableFMChipMenuItem.Visible =
 				SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
-				!(Global.Game.System == "GG");
+				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
 				HighlightActiveDisplayRegionMenuItem.Visible =
@@ -1346,7 +1302,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			LoadGameGenieEc();
 		}
 
 		#endregion
@@ -1373,9 +1329,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog OFD = new OpenFileDialog();
+			var OFD = new OpenFileDialog();
 
-			if (OFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (OFD.ShowDialog() == DialogResult.OK)
 			{
 				try
 				{
@@ -1383,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (IOException ex)
 				{
-					string Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
+					var Message = String.Format("Invalid file format. Reason: {0} \nForce transfer? This may cause the calculator to crash.", ex.Message);
 
 					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
 					{
@@ -1421,14 +1377,9 @@ namespace BizHawk.Client.EmuHawk
 				(Global.Emulator as Atari2600).SetBw(Global.Config.Atari2600_BW);
 			}
 
-			if (Global.Config.Atari2600_BW)
-			{
-				GlobalWin.OSD.AddMessage("Setting the Black and White Switch to On");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Setting the Black and White Switch to Off");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.Atari2600_BW
+				                         ? "Setting the Black and White Switch to On"
+				                         : "Setting the Black and White Switch to Off");
 		}
 
 		private void AtariLeftDifficultyMenuItem_Click(object sender, EventArgs e)
@@ -1440,14 +1391,9 @@ namespace BizHawk.Client.EmuHawk
 				(Global.Emulator as Atari2600).SetP0Diff(Global.Config.Atari2600_BW);
 			}
 
-			if (Global.Config.Atari2600_LeftDifficulty)
-			{
-				GlobalWin.OSD.AddMessage("Setting Left Difficulty to B");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Setting Left Difficulty to A");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.Atari2600_LeftDifficulty
+				                         ? "Setting Left Difficulty to B"
+				                         : "Setting Left Difficulty to A");
 		}
 
 		private void AtariRightDifficultyMenuItem_Click(object sender, EventArgs e)
@@ -1459,14 +1405,9 @@ namespace BizHawk.Client.EmuHawk
 				(Global.Emulator as Atari2600).SetP1Diff(Global.Config.Atari2600_BW);
 			}
 
-			if (Global.Config.Atari2600_RightDifficulty)
-			{
-				GlobalWin.OSD.AddMessage("Setting Right Difficulty to B");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Setting Right Difficulty to A");
-			}
+			GlobalWin.OSD.AddMessage(Global.Config.Atari2600_RightDifficulty
+				                         ? "Setting Right Difficulty to B"
+				                         : "Setting Right Difficulty to A");
 		}
 
 		private void AtariShowBGMenuItem_Click(object sender, EventArgs e)
@@ -1572,7 +1513,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			LoadGameGenieEc();
 		}
 
 		#endregion
@@ -1677,7 +1618,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEC();
+			LoadGameGenieEc();
 		}
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
@@ -1724,6 +1665,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
 			{
+				GlobalWin.MainForm.FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Plugin settings saved");
 			}
 			else
@@ -1780,20 +1722,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainFormContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			wasPaused = EmulatorPaused;
-			didMenuPause = true;
+			_wasPaused = EmulatorPaused;
+			_didMenuPause = true;
 			PauseEmulator();
 
-			OpenRomContextMenuItem.Visible = (Global.Emulator is NullEmulator) || InFullscreen;
+			OpenRomContextMenuItem.Visible = (Global.Emulator is NullEmulator) || _inFullscreen;
 
 			ShowMenuContextMenuItem.Visible =
 				ShowMenuContextMenuSeparator.Visible =
-				InFullscreen;
+				_inFullscreen;
 
 			LoadLastRomContextMenuItem.Visible =
 				(Global.Emulator is NullEmulator);
 
-			StopAVContextMenuItem.Visible = CurrAviWriter != null;
+			StopAVContextMenuItem.Visible = _currAviWriter != null;
 
 			ContextSeparator_AfterMovie.Visible =
 				ContextSeparator_AfterUndo.Visible =
@@ -1819,7 +1761,7 @@ namespace BizHawk.Client.EmuHawk
 
 			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && Global.ReadOnly;
 
-			ConfigContextMenuItem.Visible = InFullscreen;
+			ConfigContextMenuItem.Visible = _inFullscreen;
 			
 			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Global.Game));
 
@@ -1852,14 +1794,14 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Exists)
 			{
 				UndoSavestateContextMenuItem.Enabled = true;
-				if (StateSlots.IsRedo(Global.Config.SaveSlot))
+				if (_stateSlots.IsRedo(Global.Config.SaveSlot))
 				{
-					UndoSavestateContextMenuItem.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
+					UndoSavestateContextMenuItem.Text = "Redo Save to slot " + Global.Config.SaveSlot;
 					UndoSavestateContextMenuItem.Image = Properties.Resources.redo;
 				}
 				else
 				{
-					UndoSavestateContextMenuItem.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
+					UndoSavestateContextMenuItem.Text = "Undo Save to slot " + Global.Config.SaveSlot;
 					UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
 				}
 			}
@@ -1870,22 +1812,15 @@ namespace BizHawk.Client.EmuHawk
 				UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
 			}
 
-			if (InFullscreen)
+			if (_inFullscreen)
 			{
-				if (MainMenuStrip.Visible)
-				{
-					ShowMenuContextMenuItem.Text = "Hide Menu";
-				}
-				else
-				{
-					ShowMenuContextMenuItem.Text = "Show Menu";
-				}
+				ShowMenuContextMenuItem.Text = MainMenuStrip.Visible ? "Hide Menu" : "Show Menu";
 			}
 		}
 
 		private void MainFormContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
-			if (!wasPaused)
+			if (!_wasPaused)
 			{
 				UnpauseEmulator();
 			}
@@ -1911,7 +1846,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditSubtitlesForm form = new EditSubtitlesForm { ReadOnly = Global.ReadOnly };
+				var form = new EditSubtitlesForm { ReadOnly = Global.ReadOnly };
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -1919,11 +1854,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddSubtitleContextMenuItem_Click(object sender, EventArgs e)
 		{
-			SubtitleMaker subForm = new SubtitleMaker();
+			var subForm = new SubtitleMaker();
 			subForm.DisableFrame();
 
 			int index = -1;
-			Subtitle sub = new Subtitle();
+			var sub = new Subtitle();
 			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
 			{
 				sub = Global.MovieSession.Movie.Subtitles[x];
@@ -1956,7 +1891,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				EditCommentsForm form = new EditCommentsForm();
+				var form = new EditCommentsForm();
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -1976,7 +1911,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearSRAMContextMenuItem_Click(object sender, EventArgs e)
 		{
-			CloseROM(clearSRAM: true);
+			CloseRom(clearSram: true);
 		}
 
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
@@ -2015,7 +1950,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (StateSlots.HasSlot(slot))
+				if (_stateSlots.HasSlot(slot))
 				{
 					LoadState("QuickSave" + slot);
 				}
@@ -2060,11 +1995,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.RunInBackground)
 			{
-				if (!wasPaused)
+				if (!_wasPaused)
 				{
 					UnpauseEmulator();
 				}
-				wasPaused = false;
+				_wasPaused = false;
 			}
 		}
 
@@ -2074,7 +2009,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (EmulatorPaused)
 				{
-					wasPaused = true;
+					_wasPaused = true;
 				}
 				PauseEmulator();
 			}
@@ -2107,7 +2042,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnClosed(EventArgs e)
 		{
-			exit = true;
+			_exit = true;
 			base.OnClosed(e);
 		}
 
@@ -2121,8 +2056,8 @@ namespace BizHawk.Client.EmuHawk
 			HandlePlatformMenus();
 			if (Global.Config.PauseWhenMenuActivated)
 			{
-				wasPaused = EmulatorPaused;
-				didMenuPause = true;
+				_wasPaused = EmulatorPaused;
+				_didMenuPause = true;
 				PauseEmulator();
 			}
 		}
@@ -2130,7 +2065,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MainformMenu_MenuDeactivate(object sender, EventArgs e)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			if (!wasPaused)
+			if (!_wasPaused)
 			{
 				UnpauseEmulator();
 			}
@@ -2143,9 +2078,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			bool isLua = false;
-			foreach (string path in filePaths)
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			var isLua = false;
+			foreach (var path in filePaths)
 			{
 				var extension = Path.GetExtension(path);
 				if (extension != null && extension.ToUpper() == ".LUA")
@@ -2196,7 +2131,7 @@ namespace BizHawk.Client.EmuHawk
 				//tries to open a legacy movie format as if it were a BKM, by importing it
 				if (CurrentlyOpenRom == null)
 				{
-					OpenROM();
+					OpenRom();
 				}
 				else
 				{
