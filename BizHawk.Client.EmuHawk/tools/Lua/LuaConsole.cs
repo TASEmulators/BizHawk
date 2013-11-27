@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (_luaList != null && _luaList.Count > 0)
+			if (_luaList.Any())
 			{
 				if (LuaImp.GuiLibrary.SurfaceIsNull)
 				{
@@ -342,12 +342,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				foreach (var lf in _luaList)
 				{
-					//save old current directory before this lua thread clobbers it for the .net thread
-					var oldcd = Environment.CurrentDirectory;
+					var oldcd = Environment.CurrentDirectory; //save old current directory before this lua thread clobbers it for the .net thread
 
 					try
 					{
-						//LuaImp.gui_clearGraphics();
 						if (lf.Enabled && lf.Thread != null && !(lf.Paused))
 						{
 							var prohibit = lf.FrameWaiting && !includeFrameWaiters;
