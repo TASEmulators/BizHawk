@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadRamWatch(true);
+			GlobalWin.Tools.LoadRamWatch(true);
 		}
 
 		private void toolStripButton3_Click(object sender, EventArgs e)

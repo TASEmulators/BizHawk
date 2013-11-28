@@ -407,5 +407,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		//TODO: this shouldn't be necessary
+		public void LoadRamWatch(bool loadDialog)
+		{
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			{
+				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+			}
+			if (loadDialog)
+			{
+				GlobalWin.Tools.Load<RamWatch>();
+			}
+		}
 	}
 }

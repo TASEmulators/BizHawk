@@ -127,9 +127,6 @@ namespace BizHawk.Client.EmuHawk
 				SetToFastMode();
 			}
 
-
-			
-
 			NewSearch();
 		}
 
@@ -775,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				GlobalWin.MainForm.LoadRamWatch(true);
+				GlobalWin.Tools.LoadRamWatch(true);
 				foreach(var watch in SelectedWatches)
 				{
 					GlobalWin.Tools.RamWatch.AddWatch(watch);

@@ -1111,7 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRamWatch(true);
+			GlobalWin.Tools.LoadRamWatch(true);
 		}
 
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
@@ -2122,7 +2122,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (ext.ToUpper() == ".WCH")
 			{
-				LoadRamWatch(true);
+				GlobalWin.Tools.LoadRamWatch(true);
 				(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
 			}
 

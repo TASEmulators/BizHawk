@@ -271,12 +271,14 @@ namespace BizHawk.Client.Common
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
 		public bool HexEditorSaveWindowPosition = true;
+		public bool HexEditorAlwaysOnTop = false;
 		public int HexEditorWndx = -1;  //Negative numbers will be ignored even with save window position set
 		public int HexEditorWndy = -1;
 		public int HexEditorWidth = -1;
 		public int HexEditorHeight = -1;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
+
 		//Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
 		public Color HexForegrndColor = Color.FromName("ControlText");
