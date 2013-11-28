@@ -477,9 +477,6 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\HexEditor\MemoryViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\IToolForm.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
@@ -869,9 +866,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\MemoryViewer.resx">
-      <DependentUpon>MemoryViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
