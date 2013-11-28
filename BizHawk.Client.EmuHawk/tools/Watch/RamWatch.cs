@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 using BizHawk.Client.Common;
 
@@ -24,12 +24,67 @@ namespace BizHawk.Client.EmuHawk
 			{ WatchList.NOTES, 128 },
 		};
 
+		private readonly WatchList _watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private string _sortedColumn = String.Empty;
 		private bool _sortReverse;
 
-		private readonly WatchList _watches = new WatchList(Global.Emulator.MemoryDomains.MainMemory);
+		public RamWatch()
+		{
+			InitializeComponent();
+			WatchListView.QueryItemText += WatchListView_QueryItemText;
+			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
+			WatchListView.VirtualMode = true;
+			Closing += (o, e) =>
+			{
+				if (AskSave())
+				{
+					SaveConfigSettings();
+				}
+				else
+				{
+					e.Cancel = true;
+				}
+			};
+			_sortedColumn = String.Empty;
+			_sortReverse = false;
+
+			TopMost = Global.Config.RamWatchAlwaysOnTop;
+		}
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return WatchListView.SelectedIndices.Cast<int>(); }
+		}
+
+		private IEnumerable<Watch> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => _watches[index]); }
+		}
+
+		private IEnumerable<Watch> SelectedWatches
+		{
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
+		}
+
+		#region Properties
+
+		public IEnumerable<int> AddressList
+		{
+			get
+			{
+				return _watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0);
+			}
+		}
+
+		public bool UpdateBefore
+		{
+			get { return true; }
+		}
+
+		#endregion
 
 		#region API
 
@@ -44,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			if (Global.Config.SupressAskSave) // User has elected to not be nagged
 			{
 				return true;
 			}
@@ -70,14 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		public IEnumerable<int> AddressList
-		{
-			get
-			{
-				return _watches.Where(x => !x.IsSeparator).Select(x => x.Address ?? 0).ToList();
-			}
 		}
 
 		public void LoadFileFromRecent(string path)
@@ -128,29 +175,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public RamWatch()
-		{
-			InitializeComponent();
-			WatchListView.QueryItemText += WatchListView_QueryItemText;
-			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
-			WatchListView.VirtualMode = true;
-			Closing += (o, e) =>
-			{
-				if (AskSave())
-				{
-					SaveConfigSettings();
-				}
-				else
-				{
-					e.Cancel = true;
-				}
-			};
-			_sortedColumn = String.Empty;
-			_sortReverse = false;
-
-			TopMost = Global.Config.RamWatchAlwaysOnTop;
-		}
-
 		public void Restart()
 		{
 			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
@@ -168,8 +192,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool UpdateBefore { get { return true; } }
-
 		public void UpdateValues()
 		{
 			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
@@ -185,11 +207,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var x = 0; x < _watches.Count; x++)
 					{
-						var alert = !_watches[x].IsSeparator && Global.CheatList.IsActive(_watches[x].Domain, (_watches[x].Address ?? 0));
+						var alert = !_watches[x].IsSeparator && Global.CheatList.IsActive(_watches[x].Domain, _watches[x].Address ?? 0);
 						GlobalWin.OSD.AddGUIText(
 							_watches[x].ToString(),
 							Global.Config.DispRamWatchx,
-							(Global.Config.DispRamWatchy + (x * 14)),
+							Global.Config.DispRamWatchy + (x * 14),
 							alert,
 							Color.Black,
 							Color.White,
@@ -198,8 +220,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-
-				if (!IsHandleCreated || IsDisposed) return;
+				if (!IsHandleCreated || IsDisposed)
+				{
+					return;
+				}
 
 				WatchListView.BlazingFast = true;
 				WatchListView.Refresh();
@@ -211,27 +235,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private Methods
 
-		private void AddNewWatch()
-		{
-			var we = new WatchEditor
-			{
-				InitialLocation = GetPromptPoint()
-			};
-			we.SetWatch(_watches.Domain);
-			GlobalWin.Sound.StopSound();
-			we.ShowDialog();
-			GlobalWin.Sound.StartSound();
-
-			if (we.DialogResult == DialogResult.OK)
-			{
-				_watches.Add(we.Watches[0]);
-				Changes();
-				UpdateWatchCount();
-				WatchListView.ItemCount = _watches.ItemCount;
-				UpdateValues();
-			}
-		}
-
 		private void Changes()
 		{
 			_watches.Changes = true;
@@ -240,15 +243,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnPositions()
 		{
-			var Columns = Global.Config.RamWatchColumnIndexes
+			var columns = Global.Config.RamWatchColumnIndexes
 					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
-					.OrderBy(x => x.Value).ToList();
+					.OrderBy(x => x.Value)
+					.ToList();
 
-			for (var i = 0; i < Columns.Count; i++)
+			for (var i = 0; i < columns.Count; i++)
 			{
-				if (WatchListView.Columns.ContainsKey(Columns[i].Key))
+				if (WatchListView.Columns.ContainsKey(columns[i].Key))
 				{
-					WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
+					WatchListView.Columns[columns[i].Key].DisplayIndex = i;
 				}
 			}
 		}
@@ -266,6 +270,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						sb.Append(GetColumnValue(column.Name, index)).Append('\t');
 					}
+
 					sb.Remove(sb.Length - 1, 1);
 					sb.AppendLine();
 				}
@@ -288,9 +293,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = GetPromptPoint(),
 				};
 
-				we.SetWatch(_watches.Domain, 
-					SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit
-				);
+				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 				
 				GlobalWin.Sound.StopSound();
 				var result = we.ShowDialog();
@@ -355,22 +358,6 @@ namespace BizHawk.Client.EmuHawk
 			return PointToScreen(new Point(WatchListView.Location.X, WatchListView.Location.Y));
 		}
 
-		private void InsertSeparator()
-		{
-			var indexes = SelectedIndices.ToList();
-			if (indexes.Any())
-			{
-				_watches.Insert(indexes[0], SeparatorWatch.Instance);
-			}
-			else
-			{
-				_watches.Add(SeparatorWatch.Instance);
-			}
-			WatchListView.ItemCount = _watches.ItemCount;
-			Changes();
-			UpdateWatchCount();
-		}
-
 		private void LoadColumnInfo()
 		{
 			WatchListView.Columns.Clear();
@@ -387,8 +374,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			//Size and Positioning
-			_defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			// Size and Positioning
+			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
 
 			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
@@ -402,61 +389,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LoadColumnInfo();
-		}
-
-		private void MoveDown()
-		{
-			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
-			{
-				return;
-			}
-
-			for (var i = indices.Count - 1; i >= 0; i--)
-			{
-				var watch = _watches[indices[i]];
-				_watches.Remove(watch);
-				_watches.Insert(indices[i] + 1, watch);
-			}
-
-			var newindices = indices.Select(t => t + 1).ToList();
-
-			WatchListView.SelectedIndices.Clear();
-			foreach (var t in newindices)
-			{
-				WatchListView.SelectItem(t, true);
-			}
-
-			Changes();
-			WatchListView.ItemCount = _watches.ItemCount;
-		}
-
-		private void MoveUp()
-		{
-			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any() || indexes[0] == 0)
-			{
-				return;
-			}
-
-			foreach (var index in indexes)
-			{
-				var watch = _watches[index];
-				_watches.Remove(watch);
-				_watches.Insert(index - 1, watch);
-			}
-
-			Changes();
-			
-			var indices = indexes.Select(t => t - 1).ToList();
-
-			WatchListView.SelectedIndices.Clear();
-			foreach (var t in indices)
-			{
-				WatchListView.SelectItem(t, true);
-			}
-
-			WatchListView.ItemCount = _watches.ItemCount;
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -491,46 +423,6 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = column.Name;
 			_sortReverse ^= true;
 			WatchListView.Refresh();
-		}
-
-		private void PokeAddress()
-		{
-			if (SelectedWatches.Any())
-			{
-				var poke = new RamPoke
-				{
-					InitialLocation = GetPromptPoint()
-				};
-
-				if (SelectedWatches.Any())
-				{
-					poke.SetWatch(SelectedWatches);
-				}
-
-				GlobalWin.Sound.StopSound();
-				var result = poke.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					UpdateValues();
-				}
-				GlobalWin.Sound.StartSound();
-			}
-		}
-
-		private void RemoveWatch()
-		{
-			var items = SelectedItems.ToList();
-			if (items.Any())
-			{
-				foreach (var item in items)
-				{
-					_watches.Remove(item);
-				}
-
-				WatchListView.ItemCount = _watches.ItemCount;
-				UpdateValues();
-				UpdateWatchCount();
-			}
 		}
 
 		private void SaveAs()
@@ -597,29 +489,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamWatchHeight = Bottom - Top;
 		}
 
-		private void SelectAll()
-		{
-			for (var i = 0; i < _watches.Count; i++)
-			{
-				WatchListView.SelectItem(i, true);
-			}
-		}
-
-		private IEnumerable<int> SelectedIndices
-		{
-			get { return WatchListView.SelectedIndices.Cast<int>(); }
-		}
-
-		private IEnumerable<Watch> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _watches[index]); }
-		}
-
-		private IEnumerable<Watch> SelectedWatches
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
-
 		private void SetMemoryDomain(string name)
 		{
 			_watches.Domain = Global.Emulator.MemoryDomains[name];
@@ -683,6 +552,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
 			var columnName = WatchListView.Columns[column].Name;
 
 			switch (columnName)
@@ -701,6 +571,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						text = _watches[index].ChangeCount.ToString();
 					}
+
 					break;
 				case WatchList.DIFF:
 					text = _watches[index].Diff;
@@ -718,54 +589,25 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Winform Events
 
-		private void NewRamWatch_Load(object sender, EventArgs e)
+		#region File Menu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
+			SaveMenuItem.Enabled = _watches.Changes;
 		}
 
-		private void NewRamWatch_Activated(object sender, EventArgs e)
-		{
-			WatchListView.Refresh();
-		}
-
-		private void NewRamWatch_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
-		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
-		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == (".wch"))
-			{
-				_watches.Load(filePaths[0], append:false);
-				WatchListView.ItemCount = _watches.ItemCount;
-			}
-		}
-
-		private void NewRamWatch_Enter(object sender, EventArgs e)
-		{
-			WatchListView.Focus();
-		}
-
-		/*************File***********************/
-		private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			saveToolStripMenuItem.Enabled = _watches.Changes;
-		}
-
-		private void newListToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NewListMenuItem_Click(object sender, EventArgs e)
 		{
 			NewWatchList(false);
 		}
 
-		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var append = sender == appendFileToolStripMenuItem;
+			var append = sender == AppendMenuItem;
 			LoadWatchFile(ToolHelpers.GetWatchFileFromUser(_watches.CurrentFileName), append);
 		}
 
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
@@ -780,79 +622,121 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveAs();
 		}
 
-		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			recentToolStripMenuItem.DropDownItems.Clear();
-			recentToolStripMenuItem.DropDownItems.AddRange(
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(
 				ToolHelpers.GenerateRecentMenu(Global.Config.RecentWatches, LoadFileFromRecent)
 			);
-			recentToolStripMenuItem.DropDownItems.Add(
+			RecentSubMenu.DropDownItems.Add(
 				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentWatches)
 			);
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!AskSave())
-			{
-				return;
-			}
-			else
-			{
-				Close();
-			}
+			Close();
 		}
 
-		/*************Watches***********************/
-		private void watchesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		#endregion
+
+		#region Watch
+
+		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			editWatchToolStripMenuItem.Enabled =
-				duplicateWatchToolStripMenuItem.Enabled =
-				removeWatchToolStripMenuItem.Enabled =
-				moveUpToolStripMenuItem.Enabled =
-				moveDownToolStripMenuItem.Enabled =
-				pokeAddressToolStripMenuItem.Enabled =
-				freezeAddressToolStripMenuItem.Enabled =
+			EditWatchMenuItem.Enabled =
+				DuplicateWatchMenuItem.Enabled =
+				RemoveWatchMenuItem.Enabled =
+				MoveUpMenuItem.Enabled =
+				MoveDownMenuItem.Enabled =
+				PokeAddressMenuItem.Enabled =
+				FreezeAddressMenuItem.Enabled =
 				SelectedIndices.Any();
 		}
 
-		private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			memoryDomainsToolStripMenuItem.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _watches.Domain.Name).ToArray());
+			MemoryDomainsSubMenu.DropDownItems.Clear();
+			MemoryDomainsSubMenu.DropDownItems.AddRange(ToolHelpers.GenerateMemoryDomainMenuItems(SetMemoryDomain, _watches.Domain.Name).ToArray());
 		}
 
-		private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NewWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			AddNewWatch();
+			var we = new WatchEditor
+			{
+				InitialLocation = GetPromptPoint()
+			};
+			we.SetWatch(_watches.Domain);
+			GlobalWin.Sound.StopSound();
+			we.ShowDialog();
+			GlobalWin.Sound.StartSound();
+
+			if (we.DialogResult == DialogResult.OK)
+			{
+				_watches.Add(we.Watches[0]);
+				Changes();
+				UpdateWatchCount();
+				WatchListView.ItemCount = _watches.ItemCount;
+				UpdateValues();
+			}
 		}
 
-		private void editWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void EditWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			EditWatch();
 		}
 
-		private void removeWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void RemoveWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			RemoveWatch();
+			var items = SelectedItems.ToList();
+			if (items.Any())
+			{
+				foreach (var item in items)
+				{
+					_watches.Remove(item);
+				}
+
+				WatchListView.ItemCount = _watches.ItemCount;
+				UpdateValues();
+				UpdateWatchCount();
+			}
 		}
 
-		private void duplicateWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void DuplicateWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			EditWatch(duplicate: true);
 		}
 
-		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			PokeAddress();
+			if (SelectedWatches.Any())
+			{
+				var poke = new RamPoke
+				{
+					InitialLocation = GetPromptPoint()
+				};
+
+				if (SelectedWatches.Any())
+				{
+					poke.SetWatch(SelectedWatches);
+				}
+
+				GlobalWin.Sound.StopSound();
+				if (poke.ShowDialog() == DialogResult.OK)
+				{
+					UpdateValues();
+				}
+
+				GlobalWin.Sound.StartSound();
+			}
 		}
 
-		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
 			var allCheats = SelectedWatches.All(watch => !Global.CheatList.IsActive(watch.Domain, watch.Address ?? 0));
 			if (allCheats)
@@ -865,116 +749,125 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)
+		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			InsertSeparator();
+			var indexes = SelectedIndices.ToList();
+			if (indexes.Any())
+			{
+				_watches.Insert(indexes[0], SeparatorWatch.Instance);
+			}
+			else
+			{
+				_watches.Add(SeparatorWatch.Instance);
+			}
+
+			WatchListView.ItemCount = _watches.ItemCount;
+			Changes();
+			UpdateWatchCount();
 		}
 
-		private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ClearChangeCountsMenuItem_Click(object sender, EventArgs e)
 		{
 			_watches.ClearChangeCounts();
 		}
 
-		private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			MoveUp();
-		}
-
-		private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			MoveDown();
-		}
-
-		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SelectAll();
-		}
-
-		/*************Columns***********************/
-		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ShowPreviousMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
-			ShowChangesMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
-			ShowDiffMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
-			ShowDomainMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
-		}
-
-		private void showPreviousValueToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamWatchShowPrevColumn ^= true;
-			SaveColumnInfo();
-			LoadColumnInfo();
-		}
-
-		private void showChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamWatchShowChangeColumn ^= true;
-
-			SaveColumnInfo();
-			LoadColumnInfo();
-		}
-
-		private void diffToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamWatchShowDiffColumn ^= true;
-
-			SaveColumnInfo();
-			LoadColumnInfo();
-		}
-
-		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamWatchShowDomainColumn ^= true;
-
-			SaveColumnInfo();
-			LoadColumnInfo();
-		}
-
-		/*************Options***********************/
-		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			displayWatchesOnScreenToolStripMenuItem.Checked = Global.Config.DisplayRamWatch;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.RamWatchAlwaysOnTop;
-		}
-
-		private void definePreviousValueAsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			lastChangeToolStripMenuItem.Checked = false;
-			previousFrameToolStripMenuItem.Checked = false;
-			originalToolStripMenuItem.Checked = false;
-
-			switch (Global.Config.RamWatchDefinePrevious)
+			var indexes = SelectedIndices.ToList();
+			if (!indexes.Any() || indexes[0] == 0)
 			{
-				default:
-				case Watch.PreviousType.LastFrame:
-					previousFrameToolStripMenuItem.Checked = true;
-					break;
-				case Watch.PreviousType.LastChange:
-					lastChangeToolStripMenuItem.Checked = true;
-					break;
-				case Watch.PreviousType.Original:
-					originalToolStripMenuItem.Checked = true;
-					break;
+				return;
+			}
+
+			foreach (var index in indexes)
+			{
+				var watch = _watches[index];
+				_watches.Remove(watch);
+				_watches.Insert(index - 1, watch);
+			}
+
+			Changes();
+
+			var indices = indexes.Select(t => t - 1).ToList();
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in indices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
+			WatchListView.ItemCount = _watches.ItemCount;
+		}
+
+		private void MoveDownMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
+			{
+				return;
+			}
+
+			for (var i = indices.Count - 1; i >= 0; i--)
+			{
+				var watch = _watches[indices[i]];
+				_watches.Remove(watch);
+				_watches.Insert(indices[i] + 1, watch);
+			}
+
+			var newindices = indices.Select(t => t + 1).ToList();
+
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in newindices)
+			{
+				WatchListView.SelectItem(t, true);
+			}
+
+			Changes();
+			WatchListView.ItemCount = _watches.ItemCount;
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+		{
+			for (var i = 0; i < _watches.Count; i++)
+			{
+				WatchListView.SelectItem(i, true);
 			}
 		}
 
-		private void previousFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		#endregion
+
+		#region Options
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			WatchesOnScreenMenuItem.Checked = Global.Config.DisplayRamWatch;
+			SaveWindowPositionMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamWatchAlwaysOnTop;
+		}
+
+		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			PreviousFrameMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.LastFrame;
+			LastChangeMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.LastChange;
+			OriginalMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.Original;
+		}
+
+		private void PreviousFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 		}
 
-		private void lastChangeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void LastChangeMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastChange;
 		}
 
-		private void originalToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OriginalMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.Original;
 		}
 
-		private void displayWatchesOnScreenToolStripMenuItem_Click(object sender, EventArgs e)
+		private void WatchesOnScreenMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayRamWatch ^= true;
 
@@ -988,7 +881,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchSaveWindowPosition ^= true;
 		}
@@ -999,7 +892,7 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Global.Config.RamWatchAlwaysOnTop;
 		}
 
-		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
 
@@ -1023,9 +916,9 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.Columns[WatchList.ADDRESS].Width = _defaultColumnWidths[WatchList.ADDRESS];
 			WatchListView.Columns[WatchList.VALUE].Width = _defaultColumnWidths[WatchList.VALUE];
-			//WatchListView.Columns[WatchList.PREV].Width = DefaultColumnWidths[WatchList.PREV];
+			// WatchListView.Columns[WatchList.PREV].Width = DefaultColumnWidths[WatchList.PREV];
 			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
-			//WatchListView.Columns[WatchList.DIFF].Width = DefaultColumnWidths[WatchList.DIFF];
+			// WatchListView.Columns[WatchList.DIFF].Width = DefaultColumnWidths[WatchList.DIFF];
 			WatchListView.Columns[WatchList.DOMAIN].Width = _defaultColumnWidths[WatchList.DOMAIN];
 			WatchListView.Columns[WatchList.NOTES].Width = _defaultColumnWidths[WatchList.NOTES];
 
@@ -1036,8 +929,84 @@ namespace BizHawk.Client.EmuHawk
 			LoadColumnInfo();
 		}
 
-		/*************Context Menu***********************/
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		#endregion
+
+		#region Columns
+
+		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ShowPreviousMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
+			ShowChangesMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
+			ShowDiffMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
+			ShowDomainMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
+		}
+
+		private void ShowPreviousMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowPrevColumn ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		private void ShowChangesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowChangeColumn ^= true;
+
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		private void ShowDiffMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowDiffColumn ^= true;
+
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		private void ShowDomainMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowDomainColumn ^= true;
+
+			SaveColumnInfo();
+			LoadColumnInfo();
+		}
+
+		#endregion
+
+		#region Dialog, Context Menu, and ListView Events
+
+		private void NewRamWatch_Load(object sender, EventArgs e)
+		{
+			LoadConfigSettings();
+		}
+
+		private void NewRamWatch_Activated(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
+
+		private void NewRamWatch_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
+		{
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == ".wch")
+			{
+				_watches.Load(filePaths[0], append: false);
+				WatchListView.ItemCount = _watches.ItemCount;
+			}
+		}
+
+		private void NewRamWatch_Enter(object sender, EventArgs e)
+		{
+			WatchListView.Focus();
+		}
+
+		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			var indexes = WatchListView.SelectedIndices;
 
@@ -1053,7 +1022,6 @@ namespace BizHawk.Client.EmuHawk
 				Separator6.Visible = 
 				toolStripSeparator4.Visible = 
 				indexes.Count > 0;
-
 
 			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 
@@ -1101,26 +1069,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/*************ListView Events***********************/
-
 		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
 			{
-				RemoveWatch();
+				RemoveWatchMenuItem_Click(sender, e);
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
 			{
 				for (var x = 0; x < _watches.Count; x++)
 				{
 					WatchListView.SelectItem(x, true);
 				}
 			}
-			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
 				CopyWatchesToClipBoard();
 			}
-			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) //Enter
+			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) // Enter
 			{
 				EditWatch();
 			}
@@ -1147,6 +1113,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].DisplayIndex;
 		}
 
+		#endregion
+		
 		#endregion
 	}
 }

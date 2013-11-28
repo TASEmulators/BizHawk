@@ -32,7 +32,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HexEditor));
-			this.menuStrip1 = new MenuStripEx();
+			this.HexMenuStrip = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveAsBinaryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,24 +88,24 @@
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.menuStrip1.SuspendLayout();
+			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
 			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.HexMenuStrip.ClickThrough = true;
+			this.HexMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditMenuItem,
             this.OptionsSubMenu,
             this.SettingsSubMenu});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(584, 24);
-			this.menuStrip1.TabIndex = 1;
-			this.menuStrip1.Text = "menuStrip1";
+			this.HexMenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.HexMenuStrip.Name = "HexMenuStrip";
+			this.HexMenuStrip.Size = new System.Drawing.Size(584, 24);
+			this.HexMenuStrip.TabIndex = 1;
+			this.HexMenuStrip.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 
@@ -594,9 +594,9 @@
 			this.ClientSize = new System.Drawing.Size(584, 301);
 			this.Controls.Add(this.Header);
 			this.Controls.Add(this.MemoryViewerBox);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.HexMenuStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MainMenuStrip = this.menuStrip1;
+			this.MainMenuStrip = this.HexMenuStrip;
 			this.MinimumSize = new System.Drawing.Size(360, 180);
 			this.Name = "HexEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -607,8 +607,8 @@
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
 			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.HexMenuStrip.ResumeLayout(false);
+			this.HexMenuStrip.PerformLayout();
 			this.ViewerContextMenuStrip.ResumeLayout(false);
 			this.MemoryViewerBox.ResumeLayout(false);
 			this.MemoryViewerBox.PerformLayout();
@@ -619,7 +619,7 @@
 
 		#endregion
 
-		public MenuStripEx menuStrip1;
+		public MenuStripEx HexMenuStrip;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SaveAsTextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

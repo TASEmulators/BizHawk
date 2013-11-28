@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			protected void ApplyMemoryMapMask(int mask, ByteBuffer map)
 			{
 				byte bmask = (byte)mask;
-				for (int i = 0; i < map.len; i++)
+				for (int i = 0; i < map.Len; i++)
 					map[i] &= bmask;
 			}
 

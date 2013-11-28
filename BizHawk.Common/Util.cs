@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace BizHawk.Common
 {
@@ -98,9 +98,12 @@ namespace BizHawk.Common
 		/// </summary>
 		public static string BytesToHexString(byte[] bytes)
 		{
-			StringBuilder sb = new StringBuilder();
-			foreach (byte b in bytes)
+			var sb = new StringBuilder();
+			foreach (var b in bytes)
+			{
 				sb.AppendFormat("{0:X2}", b);
+			}
+
 			return sb.ToString();
 		}
 
@@ -524,12 +527,12 @@ namespace BizHawk.Common
 
 		public void Sync(string name, ref ByteBuffer byteBuf)
 		{
-			SyncBuffer(name, 1, byteBuf.len, byteBuf.ptr);
+			SyncBuffer(name, 1, byteBuf.Len, byteBuf.Ptr);
 		}
 
 		public void Sync(string name, ref IntBuffer byteBuf)
 		{
-			SyncBuffer(name, 4, byteBuf.len, byteBuf.ptr);
+			SyncBuffer(name, 4, byteBuf.Len, byteBuf.Ptr);
 		}
 
 		public void Sync(string name, ref byte[] val, bool use_null)

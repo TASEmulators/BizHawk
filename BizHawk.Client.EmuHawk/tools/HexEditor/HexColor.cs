@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
 				Global.Config.HexMenubarColor = colorDialog1.Color;
-				GlobalWin.Tools.HexEditor.menuStrip1.BackColor = Global.Config.HexMenubarColor;
+				GlobalWin.Tools.HexEditor.HexMenuStrip.BackColor = Global.Config.HexMenubarColor;
 				HexMenubar.BackColor = colorDialog1.Color;
 			}
 		}

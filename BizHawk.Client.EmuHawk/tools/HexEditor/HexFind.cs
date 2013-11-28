@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -24,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 		public void SetLocation(Point p)
 		{
 			_location = p;
-			
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)

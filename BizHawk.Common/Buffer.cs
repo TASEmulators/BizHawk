@@ -8,53 +8,53 @@ namespace BizHawk.Common
 	/// </summary>
 	public unsafe class CBuffer<T> : IDisposable
 	{
-		public GCHandle hnd;
-		public T[] arr;
-		public void* ptr;
-		public byte* byteptr;
-		public int len;
-		public int itemsize;
+		public GCHandle Hnd;
+		public T[] Arr;
+		public void* Ptr;
+		public byte* Byteptr;
+		public int Len;
+		public int Itemsize;
 
 		public static CBuffer<T> malloc(int amt, int itemsize)
 		{
 			return new CBuffer<T>(amt, itemsize);
 		}
 
-		public void Write08(uint addr, byte val) { byteptr[addr] = val; }
-		public void Write16(uint addr, ushort val) { *(ushort*)(byteptr + addr) = val; }
-		public void Write32(uint addr, uint val) { *(uint*)(byteptr + addr) = val; }
-		public void Write64(uint addr, ulong val) { *(ulong*)(byteptr + addr) = val; }
-		public byte Read08(uint addr) { return byteptr[addr]; }
-		public ushort Read16(uint addr) { return *(ushort*)(byteptr + addr); }
-		public uint Read32(uint addr) { return *(uint*)(byteptr + addr); }
-		public ulong Read64(uint addr) { return *(ulong*)(byteptr + addr); }
-		public void Write08(int addr, byte val) { byteptr[addr] = val; }
-		public void Write16(int addr, ushort val) { *(ushort*)(byteptr + addr) = val; }
-		public void Write32(int addr, uint val) { *(uint*)(byteptr + addr) = val; }
-		public void Write64(int addr, ulong val) { *(ulong*)(byteptr + addr) = val; }
-		public byte Read08(int addr) { return byteptr[addr]; }
-		public ushort Read16(int addr) { return *(ushort*)(byteptr + addr); }
-		public uint Read32(int addr) { return *(uint*)(byteptr + addr); }
-		public ulong Read64(int addr) { return *(ulong*)(byteptr + addr); }
+		public void Write08(uint addr, byte val) { this.Byteptr[addr] = val; }
+		public void Write16(uint addr, ushort val) { *(ushort*)(this.Byteptr + addr) = val; }
+		public void Write32(uint addr, uint val) { *(uint*)(this.Byteptr + addr) = val; }
+		public void Write64(uint addr, ulong val) { *(ulong*)(this.Byteptr + addr) = val; }
+		public byte Read08(uint addr) { return this.Byteptr[addr]; }
+		public ushort Read16(uint addr) { return *(ushort*)(this.Byteptr + addr); }
+		public uint Read32(uint addr) { return *(uint*)(this.Byteptr + addr); }
+		public ulong Read64(uint addr) { return *(ulong*)(this.Byteptr + addr); }
+		public void Write08(int addr, byte val) { this.Byteptr[addr] = val; }
+		public void Write16(int addr, ushort val) { *(ushort*)(this.Byteptr + addr) = val; }
+		public void Write32(int addr, uint val) { *(uint*)(this.Byteptr + addr) = val; }
+		public void Write64(int addr, ulong val) { *(ulong*)(this.Byteptr + addr) = val; }
+		public byte Read08(int addr) { return this.Byteptr[addr]; }
+		public ushort Read16(int addr) { return *(ushort*)(this.Byteptr + addr); }
+		public uint Read32(int addr) { return *(uint*)(this.Byteptr + addr); }
+		public ulong Read64(int addr) { return *(ulong*)(this.Byteptr + addr); }
 
 		public CBuffer(T[] arr, int itemsize)
 		{
-			this.itemsize = itemsize;
-			len = arr.Length;
-			this.arr = arr;
-			hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
-			ptr = hnd.AddrOfPinnedObject().ToPointer();
-			byteptr = (byte*)ptr;
+			this.Itemsize = itemsize;
+			this.Len = arr.Length;
+			this.Arr = arr;
+			this.Hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
+			this.Ptr = this.Hnd.AddrOfPinnedObject().ToPointer();
+			this.Byteptr = (byte*)this.Ptr;
 		}
 		public CBuffer(int amt, int itemsize)
 		{
-			this.itemsize = itemsize;
-			len = amt;
-			arr = new T[amt];
-			hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
-			ptr = hnd.AddrOfPinnedObject().ToPointer();
-			byteptr = (byte*)ptr;
-			Util.memset(byteptr, 0, len * itemsize);
+			this.Itemsize = itemsize;
+			this.Len = amt;
+			this.Arr = new T[amt];
+			this.Hnd = GCHandle.Alloc(this.Arr, GCHandleType.Pinned);
+			this.Ptr = this.Hnd.AddrOfPinnedObject().ToPointer();
+			this.Byteptr = (byte*)this.Ptr;
+			Util.memset(this.Byteptr, 0, this.Len * itemsize);
 		}
 
 		public void Dispose()
@@ -67,11 +67,11 @@ namespace BizHawk.Common
 		{
 			if (disposing)
 			{
-				if (arr != null)
+				if (this.Arr != null)
 				{
-					hnd.Free();
+					this.Hnd.Free();
 				}
-				arr = null;
+				this.Arr = null;
 			}
 		}
 
@@ -85,8 +85,8 @@ namespace BizHawk.Common
 		public byte this[int index]
 		{
 			#if DEBUG
-				get { return arr[index]; }
-				set { arr[index] = value; }
+				get { return this.Arr[index]; }
+				set { this.Arr[index] = value; }
 			#else
 				set { Write08(index, value); } 
 				get { return Read08(index);}
@@ -101,8 +101,8 @@ namespace BizHawk.Common
 		public int this[int index]
 		{
 			#if DEBUG
-				get { return arr[index]; }
-				set { arr[index] = value; }
+				get { return this.Arr[index]; }
+				set { this.Arr[index] = value; }
 			#else
 				set { Write32(index<<2, (uint) value); }
 				get { return (int)Read32(index<<2);}
@@ -117,8 +117,8 @@ namespace BizHawk.Common
 		public short this[int index]
 		{
 #if DEBUG
-				get { return arr[index]; }
-				set { arr[index] = value; }
+				get { return this.Arr[index]; }
+				set { this.Arr[index] = value; }
 #else
 			set { Write32(index << 1, (uint)value); }
 			get { return (short)Read16(index << 1); }
