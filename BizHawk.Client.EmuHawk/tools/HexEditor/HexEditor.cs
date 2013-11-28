@@ -383,9 +383,7 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : String.Empty;
 		}
@@ -862,9 +860,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : String.Empty;
 		}
@@ -1397,9 +1393,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var inputPrompt = new InputPrompt { Text = "Go to Address", _Location = GetPromptPoint() };
 			inputPrompt.SetMessage("Enter a hexadecimal value");
-			GlobalWin.Sound.StopSound();
-			inputPrompt.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			inputPrompt.ShowHawkDialog();
 
 			if (inputPrompt.UserOK && InputValidate.IsValidHexNumber(inputPrompt.UserText))
 			{
@@ -1491,11 +1485,9 @@ namespace BizHawk.Client.EmuHawk
 				));
 
 				poke.SetWatch(watches);
-
-				GlobalWin.Sound.StopSound();
-				poke.ShowDialog();
+				poke.ShowHawkDialog();
 				UpdateValues();
-				GlobalWin.Sound.StartSound();
+
 			}
 		}
 
@@ -1512,9 +1504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Sound.StopSound();
-			new HexColorsForm().ShowDialog();
-			GlobalWin.Sound.StartSound();
+			new HexColorsForm().ShowHawkDialog();
 		}
 
 		private void ResetColorsToDefaultMenuItem_Click(object sender, EventArgs e)

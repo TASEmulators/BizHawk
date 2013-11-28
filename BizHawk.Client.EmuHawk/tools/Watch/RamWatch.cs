@@ -295,8 +295,7 @@ namespace BizHawk.Client.EmuHawk
 
 				we.SetWatch(_watches.Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 				
-				GlobalWin.Sound.StopSound();
-				var result = we.ShowDialog();
+				var result = we.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
 					Changes();
@@ -314,7 +313,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				GlobalWin.Sound.StartSound();
 				UpdateValues();
 			}
 		}
@@ -672,10 +670,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialLocation = GetPromptPoint()
 			};
 			we.SetWatch(_watches.Domain);
-			GlobalWin.Sound.StopSound();
-			we.ShowDialog();
-			GlobalWin.Sound.StartSound();
-
+			we.ShowHawkDialog();
 			if (we.DialogResult == DialogResult.OK)
 			{
 				_watches.Add(we.Watches[0]);
@@ -726,13 +721,10 @@ namespace BizHawk.Client.EmuHawk
 					poke.SetWatch(SelectedWatches);
 				}
 
-				GlobalWin.Sound.StopSound();
-				if (poke.ShowDialog() == DialogResult.OK)
+				if (poke.ShowHawkDialog() == DialogResult.OK)
 				{
 					UpdateValues();
 				}
-
-				GlobalWin.Sound.StartSound();
 			}
 		}
 
