@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.RecentWatches.AutoLoad)
 			{
-				LoadRamWatch(!Global.Config.DisplayRamWatch);
+				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
@@ -760,18 +760,6 @@ namespace BizHawk.Client.EmuHawk
 			nes.SetDMC(Global.Config.NESDMC);
 		}
 
-		public void LoadRamWatch(bool load_dialog)
-		{
-			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
-			{
-				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
-			}
-			if (load_dialog)
-			{
-				GlobalWin.Tools.Load<RamWatch>();
-			}
-		}
-
 		public void ClickSpeedItem(int num)
 		{
 			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
@@ -1143,7 +1131,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Movie Poke": ToggleModePokeMode(); break;
 
-				case "Ram Watch": LoadRamWatch(true); break;
+				case "Ram Watch": GlobalWin.Tools.LoadRamWatch(true); break;
 				case "Ram Search": GlobalWin.Tools.Load<RamSearch>(); break;
 				case "Hex Editor": GlobalWin.Tools.Load<HexEditor>(); break;
 				case "Trace Logger": LoadTraceLogger(); break;

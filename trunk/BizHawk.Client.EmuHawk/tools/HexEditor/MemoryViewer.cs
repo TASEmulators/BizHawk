@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			MouseMove += MemoryViewer_MouseMove;
 			MouseClick += MemoryViewer_MouseClick;
 			VScrollBar1 = new VScrollBar();
-			Point n = new Point(Size);
+			var n = new Point(Size);
 			VScrollBar1.Location = new Point(n.X - 16, n.Y - Height + 7);
 			VScrollBar1.Height = Height - 8;
 			VScrollBar1.Width = 16;
@@ -119,8 +119,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearNibbles()
 		{
-			for (int x = 0; x < 4; x++)
-				_nibbles[x] = 'G';
+			for (var i = 0; i < 4; i++)
+			{
+				_nibbles[i] = 'G';
+			}
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
@@ -141,8 +143,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				string temp = _nibbles[0].ToString() + ((char)e.KeyCode).ToString();
-				int x = int.Parse(temp, NumberStyles.HexNumber);
+				var temp = _nibbles[0].ToString() + ((char)e.KeyCode);
+				var x = int.Parse(temp, NumberStyles.HexNumber);
 				_domain.PokeByte(_addressHighlighted, (byte)x);
 				ClearNibbles();
 				SetHighlighted(_addressHighlighted + 1);
@@ -161,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (!IsVisible(address))
 			{
-				int v = (address / 16) - _rowsVisible + 1;
+				var v = (address / 16) - _rowsVisible + 1;
 				if (v < 0)
 					v = 0;
 				VScrollBar1.Value = v;
@@ -179,14 +181,14 @@ namespace BizHawk.Client.EmuHawk
 				_row = 0;
 				_addr = 0;
 
-				StringBuilder rowStr = new StringBuilder("");
+				var rowStr = new StringBuilder();
 				_addrOffset = (_numDigits % 4) * 9;
 
 				if (_addressHighlighted >= 0 && IsVisible(_addressHighlighted))
 				{
-					int left = ((_addressHighlighted % 16) * 20) + 52 + _addrOffset - (_addressHighlighted % 4);
-					int top = (((_addressHighlighted / 16) - VScrollBar1.Value) * (_font.Height - 1)) + 36;
-					Rectangle rect = new Rectangle(left, top, 16, 14);
+					var left = ((_addressHighlighted % 16) * 20) + 52 + _addrOffset - (_addressHighlighted % 4);
+					var top = (((_addressHighlighted / 16) - VScrollBar1.Value) * (_font.Height - 1)) + 36;
+					var rect = new Rectangle(left, top, 16, 14);
 					e.Graphics.DrawRectangle(new Pen(HighlightBrush), rect);
 					e.Graphics.FillRectangle(HighlightBrush, rect);
 				}
@@ -194,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 				rowStr.Append(_domain.Name + "    " + _info + '\n');
 				rowStr.Append(_header + '\n');
 				
-				for (int i = 0; i < _rowsVisible; i++)
+				for (var i = 0; i < _rowsVisible; i++)
 				{
 					_row = i + VScrollBar1.Value;
 					if (_row * 16 >= _domain.Size)
@@ -205,13 +207,13 @@ namespace BizHawk.Client.EmuHawk
 						default:
 						case 1:
 							_addr = (_row * 16);
-							for (int j = 0; j < 16; j++)
+							for (var j = 0; j < 16; j++)
 							{
 								if (_addr + j < _domain.Size)
 									rowStr.AppendFormat("{0:X2} ", _domain.PeekByte(_addr + j));
 							}
 							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
+							for (var k = 0; k < 16; k++)
 							{
 								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
@@ -219,28 +221,28 @@ namespace BizHawk.Client.EmuHawk
 							break;
 						case 2:
 							_addr = (_row * 16);
-							for (int j = 0; j < 16; j += 2)
+							for (var j = 0; j < 16; j += 2)
 							{
 								if (_addr + j < _domain.Size)
 									rowStr.AppendFormat("{0:X4} ", MakeValue(_addr + j, _dataSize, BigEndian));
 							}
 							rowStr.AppendLine();
 							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
+							for (var k = 0; k < 16; k++)
 							{
 								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
 							break;
 						case 4:
 							_addr = (_row * 16);
-							for (int j = 0; j < 16; j += 4)
+							for (var j = 0; j < 16; j += 4)
 							{
 								if (_addr < _domain.Size)
 									rowStr.AppendFormat("{0:X8} ", MakeValue(_addr + j, _dataSize, BigEndian));
 							}
 							rowStr.AppendLine();
 							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
+							for (var k = 0; k < 16; k++)
 							{
 								rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
 							}
@@ -255,17 +257,23 @@ namespace BizHawk.Client.EmuHawk
 
 		static char Remap(byte val)
 		{
-			unchecked
+			if (val < ' ')
 			{
-				if (val < ' ') return '.';
-				else if (val >= 0x80) return '.';
-				else return (char)val;
+				return '.';
+			}
+			else if (val >= 0x80)
+			{
+				return '.';
+			}
+			else 
+			{
+				return (char)val;
 			}
 		}
 
 		private int MakeValue(int address, int size, bool bigendian)
 		{
-			int x = 0;
+			var x = 0;
 			if (size == 1 || size == 2 || size == 4)
 			{
 				switch (size)
@@ -298,8 +306,8 @@ namespace BizHawk.Client.EmuHawk
 		public void SetUpScrollBar()
 		{
 			_rowsVisible = ((Height - 8) / 13) - 1;
-			int totalRows = _domain.Size / 16;
-			int MaxRows = (totalRows - _rowsVisible) + 16;
+			var totalRows = _domain.Size / 16;
+			var MaxRows = (totalRows - _rowsVisible) + 16;
 
 			if (MaxRows > 0)
 			{
@@ -367,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			return _dataSize;
 		}
 
-		private int GetNumDigits(Int32 i)
+		private static int GetNumDigits(Int32 i)
 		{
 			unchecked
 			{
@@ -380,9 +388,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAddressOver(int x, int y)
 		{
 			//Scroll value determines the first row
-			int i = VScrollBar1.Value;
+			var i = VScrollBar1.Value;
 			i += (y - 36) / (_font.Height - 1);
-			int column = (x - (49 + _addrOffset)) / 20;
+			var column = (x - (49 + _addrOffset)) / 20;
 			
 			//TODO: 2 & 4 byte views
 
@@ -458,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			unchecked
 			{
-				int i = address >> 4;
+				var i = address >> 4;
 
 				if (i >= VScrollBar1.Value && i < (_rowsVisible + VScrollBar1.Value))
 				{
@@ -508,18 +516,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GoToSpecifiedAddress()
 		{
-			InputPrompt i = new InputPrompt {Text = "Go to Address"};
+			var i = new InputPrompt {Text = "Go to Address"};
 			i.SetMessage("Enter a hexadecimal value");
 			GlobalWin.Sound.StopSound();
 			i.ShowDialog();
 			GlobalWin.Sound.StartSound();
 
-			if (i.UserOK)
+			if (i.UserOK && InputValidate.IsValidHexNumber(i.UserText))
 			{
-				if (InputValidate.IsValidHexNumber(i.UserText))
-				{
-					GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
-				}
+				GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
 			}
 		}
 

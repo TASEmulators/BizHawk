@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class HexFind : Form
 	{
 		private Point _location;
+
 		public HexFind()
 		{
 			InitializeComponent();
@@ -46,10 +47,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				List<byte> bytes = FindBox.Text.Select(Convert.ToByte).ToList();
-
-				StringBuilder bytestring = new StringBuilder();
-				foreach (byte b in bytes)
+				var bytestring = new StringBuilder();
+				foreach (var b in FindBox.Text.Select(Convert.ToByte))
 				{
 					bytestring.Append(String.Format("{0:X2}", b));
 				}
@@ -70,14 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ChangeCasing()
 		{
-			if (HexRadio.Checked)
-			{
-				FindBox.CharacterCasing = CharacterCasing.Upper;
-			}
-			else
-			{
-				FindBox.CharacterCasing = CharacterCasing.Normal;
-			}
+			FindBox.CharacterCasing = HexRadio.Checked ? CharacterCasing.Upper : CharacterCasing.Normal;
 		}
 
 		private void HexRadio_CheckedChanged(object sender, EventArgs e)

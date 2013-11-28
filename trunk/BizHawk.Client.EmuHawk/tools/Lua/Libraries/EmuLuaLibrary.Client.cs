@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void client_openramwatch()
 		{
-			GlobalWin.MainForm.LoadRamWatch(true);
+			GlobalWin.Tools.LoadRamWatch(true);
 		}
 
 		public static void client_openramsearch()

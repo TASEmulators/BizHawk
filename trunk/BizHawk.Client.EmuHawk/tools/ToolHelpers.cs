@@ -223,8 +223,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
 		{
 			GlobalWin.Tools.Load<HexEditor>();
-			GlobalWin.Tools.HexEditor.SetDomain(domain);
-			GlobalWin.Tools.HexEditor.SetToAddresses(addresses.ToList());
+			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain);
 		}
 
 		public static void AddColumn(ListView listView, string columnName, bool enabled, int columnWidth)
