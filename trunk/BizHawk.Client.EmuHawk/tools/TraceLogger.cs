@@ -323,19 +323,13 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				return null;
 			}
-			else
-			{
-				return new FileInfo(sfd.FileName);
-				
-			}
+			
+			return new FileInfo(sfd.FileName);
 		}
 
 		private void saveLogToolStripMenuItem_Click(object sender, EventArgs e)

@@ -74,9 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);

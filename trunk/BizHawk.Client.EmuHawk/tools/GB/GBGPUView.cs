@@ -963,9 +963,7 @@ namespace BizHawk.Client.EmuHawk
 				dlg.FullOpen = true;
 				dlg.Color = spriteback;
 
-				GlobalWin.Sound.StopSound();
-				var result = dlg.ShowDialog();
-				GlobalWin.Sound.StartSound();
+				var result = dlg.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
 					// force full opaque

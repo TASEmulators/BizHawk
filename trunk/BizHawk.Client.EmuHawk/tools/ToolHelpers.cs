@@ -23,9 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -55,9 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -78,9 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				return null;
@@ -104,9 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				return null;

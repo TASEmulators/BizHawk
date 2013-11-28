@@ -413,9 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
 				foreach (var fn in ofd.FileNames)
@@ -481,9 +479,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = "PNG File (*.png)|*.png"
 			};
 
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
 				TakeScreenshot(sfd.FileName);

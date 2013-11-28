@@ -451,14 +451,12 @@ namespace BizHawk.Client.EmuHawk
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
 				return sfd.FileName;
 			}
-			return "";
+			return String.Empty;
 		}
 
 		private void TASView_MouseWheel(object sender, MouseEventArgs e)

@@ -1787,10 +1787,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
-
+			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
 				SaveStateFile(sfd.FileName, sfd.FileName, false);
@@ -1811,10 +1808,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
-
+			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 				return;
 
@@ -1991,11 +1985,12 @@ namespace BizHawk.Client.EmuHawk
 			ofd.RestoreDirectory = false;
 			ofd.FilterIndex = _lastOpenRomFilter;
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return;
+			}
+
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
@@ -2725,10 +2720,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-					GlobalWin.Sound.StopSound();
-					var result = sfd.ShowDialog();
-					GlobalWin.Sound.StartSound();
-
+					var result = sfd.ShowHawkDialog();
 					if (result == DialogResult.Cancel)
 					{
 						aw.Dispose();

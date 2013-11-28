@@ -83,11 +83,11 @@ namespace BizHawk.Client.EmuHawk
 					RestoreDirectory = true
 				};
 
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return;
+			}
 
 			var file = new FileInfo(sfd.FileName);
 			Bitmap b = new Bitmap(Width, Height);

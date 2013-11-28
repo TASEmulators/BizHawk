@@ -240,10 +240,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(ofd.InitialDirectory);
 			}
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
-			
+			var result = ofd.ShowHawkDialog();
 			return result == DialogResult.OK ? new FileInfo(ofd.FileName) : null;
 		}
 
@@ -435,13 +432,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
+			}
+
+			return new FileInfo(sfd.FileName);
 		}
 
 		private void SaveSessionAs()
@@ -875,9 +872,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionsListMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Sound.StopSound();
 			new LuaFunctionsForm().Show();
-			GlobalWin.Sound.StartSound();
 		}
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)

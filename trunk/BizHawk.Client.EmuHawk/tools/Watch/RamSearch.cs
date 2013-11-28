@@ -794,14 +794,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedIndices.Count > 0)
 			{
-				GlobalWin.Sound.StopSound();
 				var poke = new RamPoke();
 				var watches = SelectedIndices.Select(t => _searches[t]).ToList();
 				poke.SetWatch(watches);
 				poke.InitialLocation = GetPromptPoint();
-				poke.ShowDialog();
+				poke.ShowHawkDialog();
 				UpdateValues();
-				GlobalWin.Sound.StartSound();
 			}
 		}
 
@@ -854,9 +852,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.SelectedIndices.Clear();
 			var prompt = new InputPrompt {Text = "Go to Address", _Location = GetPromptPoint()};
 			prompt.SetMessage("Enter a hexadecimal value");
-			GlobalWin.Sound.StopSound();
-			prompt.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			prompt.ShowHawkDialog();
 
 			if (prompt.UserOK)
 			{
