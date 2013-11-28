@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -21,20 +15,32 @@ namespace BizHawk.Client.EmuHawk
 		private void AutofireConfig_Load(object sender, EventArgs e)
 		{
 			if (Global.Config.AutofireOn < OnNumeric.Minimum)
+			{
 				OnNumeric.Value = OnNumeric.Minimum;
+			}
 			else if (Global.Config.AutofireOn > OnNumeric.Maximum)
+			{
 				OnNumeric.Value = OnNumeric.Maximum;
+			}
 			else
+			{
 				OnNumeric.Value = Global.Config.AutofireOn;
+			}
 
 			if (Global.Config.AutofireOff < OffNumeric.Minimum)
+			{
 				OffNumeric.Value = OffNumeric.Minimum;
+			}
 			else if (Global.Config.AutofireOff > OffNumeric.Maximum)
+			{
 				OffNumeric.Value = OffNumeric.Maximum;
+			}
 			else
+			{
 				OffNumeric.Value = Global.Config.AutofireOff;
+			}
 
-			 LagFrameCheck.Checked = Global.Config.AutofireLagFrames;
+			LagFrameCheck.Checked = Global.Config.AutofireLagFrames;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -45,13 +51,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
 			GlobalWin.OSD.AddMessage("Autofire settings saved");
-			this.Close();
+			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("Autofire config aborted");
-			this.Close();
+			Close();
 		}
 	}
 }
