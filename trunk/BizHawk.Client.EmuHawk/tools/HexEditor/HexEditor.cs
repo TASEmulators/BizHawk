@@ -1571,6 +1571,21 @@ namespace BizHawk.Client.EmuHawk
 			MemoryViewerBox.Refresh();
 		}
 
+		//TODO: obsolete me
+		private void PokeWord(int address, byte _1, byte _2)
+		{
+			if (_bigEndian)
+			{
+				_domain.PokeByte(address, _2);
+				_domain.PokeByte(address + 1, _1);
+			}
+			else
+			{
+				_domain.PokeByte(address, _1);
+				_domain.PokeByte(address + 1, _2);
+			}
+		}
+
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.CheatList.DisableAll();
@@ -1956,11 +1971,6 @@ namespace BizHawk.Client.EmuHawk
 			OpenFindBox();
 		}
 
-		private void saveAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsBinary();
-		}
-
 		private void setColorsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new HexColorsForm().Show();
@@ -2011,27 +2021,6 @@ namespace BizHawk.Client.EmuHawk
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			findNextToolStripMenuItem.Enabled = !String.IsNullOrWhiteSpace(_findStr);
-		}
-
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!CurrentRomIsArchive())
-			{
-				SaveFileBinary(GlobalWin.MainForm.CurrentlyOpenRom);
-			}
-		}
-
-		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if (_domain.Name == "ROM File")
-			{
-				saveToolStripMenuItem.Visible = !CurrentRomIsArchive();
-				saveAsBinaryToolStripMenuItem.Text = "Save as ROM...";
-			}
-			else
-			{
-				saveAsBinaryToolStripMenuItem.Text = "Save as binary...";
-			}
 		}
 
 		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2099,5 +2088,39 @@ namespace BizHawk.Client.EmuHawk
 			alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
 			TopMost = alwaysOnTopToolStripMenuItem.Checked;
 		}
+
+		#region Events
+
+		#region File Menu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (_domain.Name == "ROM File")
+			{
+				SaveMenuItem.Visible = !CurrentRomIsArchive();
+				SaveAsBinaryMenuItem.Text = "Save as ROM...";
+			}
+			else
+			{
+				SaveAsBinaryMenuItem.Text = "Save as binary...";
+			}
+		}
+		
+		private void SaveMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!CurrentRomIsArchive())
+			{
+				SaveFileBinary(GlobalWin.MainForm.CurrentlyOpenRom);
+			}
+		}
+
+		private void SaveAsBinaryMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveAsBinary();
+		}
+
+		#endregion
+		
+		#endregion
 	}
 } 
