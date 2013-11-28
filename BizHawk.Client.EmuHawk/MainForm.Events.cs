@@ -1874,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 				sub = new Subtitle { Frame = Global.Emulator.Frame };
 			}
 
-			subForm.sub = sub;
+			subForm.Sub = sub;
 
 			if (subForm.ShowDialog() == DialogResult.OK)
 			{
@@ -1883,7 +1883,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Subtitles.Add(subForm.sub);
+				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
 			}
 		}
 
