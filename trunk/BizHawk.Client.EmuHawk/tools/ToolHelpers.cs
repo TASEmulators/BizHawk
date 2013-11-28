@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class ToolHelpers
+	public static class ToolHelpers
 	{
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
+
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
@@ -26,9 +27,11 @@ namespace BizHawk.Client.EmuHawk
 			var result = ofd.ShowDialog();
 			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
+			{
 				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
+			}
+
+			return new FileInfo(ofd.FileName);
 		}
 
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
@@ -49,15 +52,18 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = "NULL";
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
 			}
+
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			GlobalWin.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
+			{
 				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
+			}
+
+			return new FileInfo(sfd.FileName);
 		}
 
 		public static FileInfo GetCheatFileFromUser(string currentFile)
@@ -67,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
+
 			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
@@ -75,9 +82,11 @@ namespace BizHawk.Client.EmuHawk
 			var result = ofd.ShowDialog();
 			GlobalWin.Sound.StartSound();
 			if (result != DialogResult.OK)
+			{
 				return null;
-			var file = new FileInfo(ofd.FileName);
-			return file;
+			}
+
+			return new FileInfo(ofd.FileName);
 		}
 
 		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
@@ -91,6 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
+
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
@@ -155,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 		}
 
-		public static IEnumerable<ToolStripMenuItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
+		public static IEnumerable<ToolStripItem> GenerateMemoryDomainMenuItems(Action<string> setCallback, string selectedDomain = "", int? maxSize = null)
 		{
 			var items = new List<ToolStripMenuItem>();
 
@@ -206,9 +216,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
 			{
-				Global.CheatList.Add(
-					new Cheat(watch, watch.Value ?? 0)
-					);
+				Global.CheatList.Add(new Cheat(watch, watch.Value ?? 0));
 			}
 		}
 
@@ -235,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 					var column = new ColumnHeader
 					{
 						Name = columnName,
-						Text = columnName.Replace("Column", ""),
+						Text = columnName.Replace("Column", String.Empty),
 						Width = columnWidth,
 					};
 

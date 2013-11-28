@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using BizHawk.Common;
 
@@ -79,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							case "Byte[]":
 								refByteBuffer = new ByteBuffer((byte[])currentValue);
 								ser.Sync(member.Name, ref refByteBuffer);
-								currentValue = refByteBuffer.arr;
+								currentValue = refByteBuffer.Arr;
 								break;
 							case "ByteBuffer":
 								refByteBuffer = (ByteBuffer)currentValue;
@@ -99,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							case "Int32[]":
 								refIntBuffer = new IntBuffer((int[])currentValue);
 								ser.Sync(member.Name, ref refIntBuffer);
-								currentValue = refIntBuffer.arr;
+								currentValue = refIntBuffer.Arr;
 								break;
 							case "IntBuffer":
 								refIntBuffer = (IntBuffer)currentValue;
