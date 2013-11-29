@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 using BizHawk.Client.Common;
 
@@ -11,49 +12,43 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TraceLogger : Form, IToolForm
 	{
-		//Refresh rate slider
-		//Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
-		//Remember window size
-
-		private readonly List<string> Instructions = new List<string>();
-		private FileInfo LogFile;
-
-		public bool AskSave() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		// Refresh rate slider
+		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
+		// Remember window size
+		private readonly List<string> _instructions = new List<string>();
+		private FileInfo _logFile;
 
 		public TraceLogger()
 		{
 			InitializeComponent();
-			
+
 			TraceView.QueryItemText += TraceView_QueryItemText;
-			TraceView.QueryItemBkColor += TraceView_QueryItemBkColor;
 			TraceView.VirtualMode = true;
 
+			TopMost = Global.Config.TraceLoggerOnTop;
 			Closing += (o, e) => SaveConfigSettings();
 		}
 
-		public void SaveConfigSettings()
+		public bool UpdateBefore
+		{
+			get { return false; }
+		}
+
+		public bool AskSave()
+		{
+			return true;
+		}
+
+		private void SaveConfigSettings()
 		{
 			Global.CoreComm.Tracer.Enabled = false;
 			Global.Config.TraceLoggerWndx = Location.X;
 			Global.Config.TraceLoggerWndy = Location.Y;
 		}
 
-		private void TraceView_QueryItemBkColor(int index, int column, ref Color color)
-		{
-			//TODO
-		}
-
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			if (index < Instructions.Count)
-			{
-				text = Instructions[index];
-			}
-			else
-			{
-				text = "";
-			}
+			text = index < _instructions.Count ? _instructions[index] : String.Empty;
 		}
 
 		private void TraceLogger_Load(object sender, EventArgs e)
@@ -72,7 +67,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			DoInstructions();
+			TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
+			if (ToWindowRadio.Checked)
+			{
+				LogToWindow();
+			}
+			else
+			{
+				LogToFile();
+			}
 		}
 
 		public void Restart()
@@ -97,15 +100,209 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearList()
 		{
-			Instructions.Clear();
+			_instructions.Clear();
 			TraceView.ItemCount = 0;
 			SetTracerBoxTitle();
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void LogToFile()
+		{
+			using (var sw = new StreamWriter(_logFile.FullName, true))
+			{
+				sw.Write(Global.CoreComm.Tracer.TakeContents());
+			}
+		}
+
+		private void LogToWindow()
+		{
+			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
+			if (!String.IsNullOrWhiteSpace(instructions[0]))
+			{
+				_instructions.AddRange(instructions);
+			}
+
+			if (_instructions.Count >= Global.Config.TraceLoggerMaxLines)
+			{
+				var x = _instructions.Count - Global.Config.TraceLoggerMaxLines;
+				_instructions.RemoveRange(0, x);
+			}
+
+			TraceView.ItemCount = _instructions.Count;
+		}
+
+		private Point GetPromptPoint()
+		{
+			return PointToScreen(
+				new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30)
+			);
+		}
+
+		private void SetTracerBoxTitle()
+		{
+			if (Global.CoreComm.Tracer.Enabled)
+			{
+				if (ToFileRadio.Checked)
+				{
+					TracerBox.Text = "Trace log - logging to file...";
+				}
+				else if (_instructions.Any())
+				{
+					TracerBox.Text = "Trace log - logging - " + _instructions.Count + " instructions";
+				}
+				else
+				{
+					TracerBox.Text = "Trace log - logging...";
+				}
+			}
+			else
+			{
+				if (_instructions.Any())
+				{
+					TracerBox.Text = "Trace log - " + _instructions.Count + " instructions";
+				}
+				else
+				{
+					TracerBox.Text = "Trace log";
+				}
+			}
+		}
+
+		private void CloseFile()
+		{
+			// TODO: save the remaining instructions in CoreComm
+		}
+
+		private FileInfo GetFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			if (_logFile == null)
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".txt";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
+			}
+			else if (!String.IsNullOrWhiteSpace(_logFile.FullName))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = Path.GetDirectoryName(_logFile.FullName);
+			}
+			else
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(_logFile.FullName);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
+			}
+
+			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				return new FileInfo(sfd.FileName);
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		private void DumpListToDisk(FileSystemInfo file)
+		{
+			using (var sw = new StreamWriter(file.FullName))
+			{
+				foreach (var instruction in _instructions)
+				{
+					sw.WriteLine(instruction);
+				}
+			}
+		}
+
+		#region Events
+
+		#region Menu Items
+
+		private void SaveLogMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser();
+			if (file != null)
+			{
+				DumpListToDisk(file);
+				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
+			}
+		}
+
+		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
+
+		private void CopyMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = TraceView.SelectedIndices;
+
+			if (indices.Count > 0)
+			{
+				var blob = new StringBuilder();
+				foreach (int index in indices)
+				{
+					blob.AppendLine(_instructions[index]);
+				}
+
+				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
+				Clipboard.SetDataObject(blob.ToString());
+			}
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+		{
+			for (var i = 0; i < _instructions.Count; i++)
+			{
+				TraceView.SelectItem(i, true);
+			}
+		}
+
+		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
+		{
+			var prompt = new InputPrompt();
+			prompt.SetMessage("Max lines to display in the window");
+			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
+			prompt.TextInputType = InputPrompt.InputType.UNSIGNED;
+			prompt._Location = GetPromptPoint();
+			prompt.ShowDialog();
+			if (prompt.UserOK)
+			{
+				var max = int.Parse(prompt.UserText);
+				if (max > 0)
+				{
+					Global.Config.TraceLoggerMaxLines = max;
+				}
+			}
+		}
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadMenuItem.Checked = Global.Config.TraceLoggerAutoLoad;
+			SaveWindowPositionMenuItem.Checked = Global.Config.TraceLoggerSaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.TraceLoggerOnTop;
+		}
+
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TraceLoggerAutoLoad ^= true;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TraceLoggerSaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TraceLoggerOnTop ^= true;
+			TopMost = Global.Config.TraceLoggerOnTop;
+		}
+
+		#endregion
+
+		#region Dialog and ListView Events
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
@@ -118,115 +315,13 @@ namespace BizHawk.Client.EmuHawk
 			ClearList();
 		}
 
-		private void DoInstructions()
+		private void BrowseBox_Click(object sender, EventArgs e)
 		{
-			if (ToWindowRadio.Checked)
+			var file = GetFileFromUser();
+			if (file != null)
 			{
-				LogToWindow();
-				SetTracerBoxTitle();
-			}
-			else
-			{
-				LogToFile();
-			}
-		}
-
-		private void LogToFile()
-		{
-			using (StreamWriter sw = new StreamWriter(LogFile.FullName, true))
-			{
-				sw.Write(Global.CoreComm.Tracer.TakeContents());
-			}
-		}
-
-		private void LogToWindow()
-		{
-			string[] instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
-			if (!String.IsNullOrWhiteSpace(instructions[0]))
-			{
-				foreach (string s in instructions)
-				{
-					Instructions.Add(s);
-				}
-
-				
-			}
-			if (Instructions.Count >= Global.Config.TraceLoggerMaxLines)
-			{
-				int x = Instructions.Count - Global.Config.TraceLoggerMaxLines;
-				Instructions.RemoveRange(0, x);
-			}
-
-			TraceView.ItemCount = Instructions.Count;
-		}
-
-		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerAutoLoad ^= true;
-		}
-
-		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			autoloadToolStripMenuItem.Checked = Global.Config.TraceLoggerAutoLoad;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.TraceLoggerSaveWindowPosition;
-		}
-
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerSaveWindowPosition ^= true;
-		}
-
-		private Point GetPromptPoint()
-		{
-			Point p = new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30);
-			return PointToScreen(p);
-		}
-
-		private void setMaxWindowLinesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			InputPrompt p = new InputPrompt();
-			p.SetMessage("Max lines to display in the window");
-			p.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
-			p.TextInputType = InputPrompt.InputType.UNSIGNED;
-			p._Location = GetPromptPoint();
-			p.ShowDialog();
-			if (p.UserOK)
-			{
-				int x = int.Parse(p.UserText);
-				if (x > 0)
-				{
-					Global.Config.TraceLoggerMaxLines = x;
-				}
-			}
-		}
-
-		private void SetTracerBoxTitle()
-		{
-			if (Global.CoreComm.Tracer.Enabled)
-			{
-				if (ToFileRadio.Checked)
-				{
-					TracerBox.Text = "Trace log - logging to file...";
-				}
-				else if (Instructions.Count > 0)
-				{
-					TracerBox.Text = "Trace log - logging - " + Instructions.Count.ToString() + " instructions";
-				}
-				else
-				{
-					TracerBox.Text = "Trace log - logging...";
-				}
-			}
-			else
-			{
-				if (Instructions.Count > 0)
-				{
-					TracerBox.Text = "Trace log - " + Instructions.Count.ToString() + " instructions";
-				}
-				else
-				{
-					TracerBox.Text = "Trace log";
-				}
+				_logFile = file;
+				FileBox.Text = _logFile.FullName;
 			}
 		}
 
@@ -236,142 +331,38 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
-				string name = PathManager.FilesystemSafeName(Global.Game);
-				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null), name) + ".txt";
-				LogFile = new FileInfo(filename);
-				if (LogFile.Directory != null && !LogFile.Directory.Exists)
+				var name = PathManager.FilesystemSafeName(Global.Game);
+				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null), name) + ".txt";
+				_logFile = new FileInfo(filename);
+				if (_logFile.Directory != null && !_logFile.Directory.Exists)
 				{
-					LogFile.Directory.Create();
+					_logFile.Directory.Create();
 				}
-				if (LogFile.Exists)
+
+				if (_logFile.Exists)
 				{
-					LogFile.Delete();
-					LogFile.Create();
+					_logFile.Delete();
+					_logFile.Create();
 				}
 				else
 				{
-					LogFile.Create();
+					_logFile.Create();
 				}
 
-				FileBox.Text = LogFile.FullName;
+				FileBox.Text = _logFile.FullName;
 			}
 			else
 			{
 				CloseFile();
 				FileBox.Visible = false;
 				BrowseBox.Visible = false;
-
 			}
 
 			SetTracerBoxTitle();
 		}
 
-		private void CloseFile()
-		{
-			//TODO: save the remaining instructions in CoreComm
-		}
+		#endregion
 
-		private void TraceView_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.C)
-			{
-				ListView.SelectedIndexCollection indexes = TraceView.SelectedIndices;
-
-				if (indexes.Count > 0)
-				{
-					StringBuilder blob = new StringBuilder();
-					foreach (int x in indexes)
-					{
-						blob.Append(Instructions[x]);
-						blob.Append("\r\n");
-					}
-					blob.Remove(blob.Length - 2, 2); //Lazy way to not have a line break at the end
-					Clipboard.SetDataObject(blob.ToString());
-				}
-			}
-		}
-
-		private void BrowseBox_Click(object sender, EventArgs e)
-		{
-			var file = GetFileFromUser();
-			if (file != null)
-			{
-				LogFile = file;
-				FileBox.Text = LogFile.FullName;
-			}
-		}
-
-		private FileInfo GetFileFromUser()
-		{
-			var sfd = new SaveFileDialog();
-			if (LogFile == null)
-			{
-				string name = PathManager.FilesystemSafeName(Global.Game);
-				sfd.FileName = name + ".txt";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
-			}
-			else if (!String.IsNullOrWhiteSpace(LogFile.FullName))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
-			}
-			else
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
-			}
-
-			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-			
-			return new FileInfo(sfd.FileName);
-		}
-
-		private void saveLogToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var file = GetFileFromUser();
-			if (file != null)
-			{
-				DumpListToDisk(file);
-				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
-			}
-		}
-
-		private void DumpListToDisk(FileInfo file)
-		{
-			using (StreamWriter sw = new StreamWriter(file.FullName))
-			{
-				foreach (string s in Instructions)
-				{
-					sw.WriteLine(s);
-				}
-			}
-		}
-
-		void CopyAllToClipboard()
-		{
-			StringBuilder sb = new StringBuilder();
-			foreach (string s in Instructions)
-				sb.AppendLine(s);
-			string ss = sb.ToString();
-			if (!string.IsNullOrEmpty(ss))
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
-		}
-
-		private void TraceLogger_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
-				CopyAllToClipboard();
-		}
-
-		private void copyAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			CopyAllToClipboard();
-		}
+		#endregion
 	}
 }

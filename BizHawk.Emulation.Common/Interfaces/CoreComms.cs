@@ -93,8 +93,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (logging)
 			{
-				buffer.Append(content);
-				buffer.Append('\n');
+				buffer.AppendLine(content);
 			}
 		}
 

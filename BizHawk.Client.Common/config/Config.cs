@@ -290,6 +290,7 @@ namespace BizHawk.Client.Common
 		//Trace Logger Settings
 		public bool TraceLoggerAutoLoad = false;
 		public bool TraceLoggerSaveWindowPosition = true;
+		public bool TraceLoggerOnTop = false;
 		public int TraceLoggerMaxLines = 100000;
 		public int TraceLoggerWndx = -1;
 		public int TraceLoggerWndy = -1;
