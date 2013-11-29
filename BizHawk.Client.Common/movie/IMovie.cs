@@ -3,12 +3,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	// TODO: message callback / event handler
+	// TODO: consider other event handlers, switching modes?
 	public interface IMovie
 	{
-		
-		int Rerecords { get; set; }
-		
-		string Filename { get; set; }
+		#region Status
 
 		bool IsCountingRerecords { get; set; }
 		bool IsActive { get; }
@@ -17,11 +16,56 @@ namespace BizHawk.Client.Common
 		bool IsFinished { get; }
 		bool Changes { get; }
 		bool Loaded { get; }
+		bool StartsFromSavestate { get; }
 
+		int Rerecords { get; set; }
+
+		#endregion
+
+		#region File Handling API
+
+		string Filename { get; set; }
 		bool Load();
 		void Save();
 		void SaveAs();
+
+		#endregion
+
+		#region Mode Handling API
+
+		/// <summary>
+		/// Tells the movie to start recording from the beginning.
+		/// This will clear sram, and the movie log
+		/// </summary>
+		/// <param name="truncate"></param>
+		void StartNewRecording();
+
+		/// <summary>
+		/// Tells the movie to start playback from the beginning
+		/// This will clear sram
+		/// </summary>
+		void StartNewPlayback();
+
+		/// <summary>
+		/// Sets the movie to inactive (note that it will still be in memory)
+		/// The saveChanges flag will tell the movie to save its contents to disk
+		/// </summary>
+		/// <param name="saveChanges"></param>
 		void Stop(bool saveChanges = true);
+
+		/// <summary>
+		/// Switches to record mode
+		/// Does not change the movie log or clear sram
+		/// </summary>
+		void SwitchToRecord();
+
+		/// <summary>
+		/// Switches to playback mode
+		/// Does not change the movie log or clear sram
+		/// </summary>
+		void SwitchToPlay();
+
+		#endregion
 
 		#region Editing API
 
@@ -36,39 +80,24 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Dubious, should reconsider
-		void CommitFrame(int frameNum, IController source); //why pass in frameNum? Calling api 
-		void PokeFrame(int frameNum, string input); //Why does this exist as something different than Commit Frame?
-		void CaptureState(); //Movie code should manage wheter it needs to capture a state
-		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); //No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		string GetTime(bool preLoad); //Rename to simply: Time, and make it a DateTime
-		void DumpLogIntoSavestateText(TextWriter writer); //Why pass a Textwriter, just make a string property that is the inputlog as text
-		void LoadLogFromSavestateText(TextReader reader, bool isMultitracking); //Pass in the text? do we need to care if it is multitracking, and can't hte movie already know that?
-		int? Frames { get; } //Nullable is a hack, also why does calling code need to know the number of frames, can that be minimized?
-		int RawFrames { get; } //Hacky to need two different frame properties
+		void CommitFrame(int frameNum, IController source); // Why pass in frameNum? Calling api 
+		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
+		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
+		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
+		void DumpLogIntoSavestateText(TextWriter writer); // Why pass a Textwriter, just make a string property that is the inputlog as text
+		void LoadLogFromSavestateText(TextReader reader, bool isMultitracking); // Pass in the text? do we need to care if it is multitracking, and can't hte movie already know that?
+		int? Frames { get; } // Nullable is a hack, also why does calling code need to know the number of frames, can that be minimized?
+		int RawFrames { get; } // Hacky to need two different frame properties
 
-		void Finish(); //Why isn't the movie in charge of this?
-		void StartRecording(bool truncate = true); //Why do we need to truncate or not truncate? Why isn't the object in charge of this decision?
+		string GetInput(int frame); // Should be a property of a Record object
 
-		void StartPlayback(); //Poorly named for what it does, SetToPlay() perhaps? Also, this seems like too much power to give the calling code
-		void SwitchToRecord(); //Ditto
-		void SwitchToPlay(); //Dubious that it is needed
+		MovieHeader Header { get; } // Don't expose this!!!
+		MovieLog LogDump { get; } // Don't expose this!!!
+		SubtitleList Subtitles { get; } // Don't expose this!!!
 
-		bool FrameLagged(int frame); //SHould be a property of a Record object
-		byte[] GetState(int frame); //Should be a property of a Record object
-		string GetInput(int frame); //Should be a property of a Record object
-		byte[] InitState { get; } //Should be a record object?
-		
-		bool StartsFromSavestate { get; set; } //Why is this settable!!!
-
-		MovieHeader Header { get; } //Don't expose this!!!
-		MovieLog LogDump { get; } //Don't expose this!!!
-		SubtitleList Subtitles { get; } //Don't expose this!!!
-
-		int StateFirstIndex { get; } //What do these do?
-		int StateLastIndex { get; }
 		#endregion
 	}
 }
 
-//TODO: delete this and refactor code that uses it!
+// TODO: delete this and refactor code that uses it!
 public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }

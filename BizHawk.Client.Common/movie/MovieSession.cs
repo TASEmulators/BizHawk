@@ -10,7 +10,6 @@ namespace BizHawk.Client.Common
 		public MultitrackRecording MultiTrack = new MultitrackRecording();
 		public IMovie Movie;
 		public MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
-		public bool EditorMode { get; set; }
 		public Action<string> MessageCallback; //Not Required
 		public Func<string, string, bool> AskYesNoCallback; //Not Required
 
@@ -65,9 +64,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			MovieControllerAdapter.SetControllersAsMnemonic(
-				Movie.GetInput(Global.Emulator.Frame)
-			);
+			var input = Movie.GetInput(Global.Emulator.Frame);
+
+			// Attempting to get a frame past the end of a movie changes the mode to finished
+			if (!Movie.IsFinished)
+			{
+				MovieControllerAdapter.SetControllersAsMnemonic(
+					Movie.GetInput(Global.Emulator.Frame)
+				);
+			}
 		}
 
 		public void StopMovie(bool saveChanges = true)
@@ -136,29 +141,18 @@ namespace BizHawk.Client.Common
 
 			else if (Movie.IsPlaying)
 			{
-				if (Global.Emulator.Frame >= Movie.Frames)
+				
+				LatchInputFromLog();
+
+				//Movie may go into finished mode as a result from latching
+				if (!Movie.IsFinished)
 				{
-					if (EditorMode)
-					{
-						Movie.CaptureState();
-						LatchInputFromLog();
-						Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
-					}
-					else
-					{
-						Movie.Finish();
-					}
-				}
-				else
-				{
-					Movie.CaptureState();
-					LatchInputFromLog();
 					if (Global.ClientControls["Scrub Input"])
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						ClearFrame();
 					}
-					else if (EditorMode || Global.Config.MoviePlaybackPokeMode)
+					else if (Global.Config.MoviePlaybackPokeMode)
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						var mg = new MnemonicsGenerator();
@@ -178,7 +172,6 @@ namespace BizHawk.Client.Common
 
 			else if (Movie.IsRecording)
 			{
-				Movie.CaptureState();
 				if (MultiTrack.IsActive)
 				{
 					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
@@ -430,7 +423,7 @@ namespace BizHawk.Client.Common
 					if (result == LoadStateResult.Pass)
 					{
 						Global.Emulator.ClearSaveRam();
-						Movie.StartRecording();
+						Movie.StartNewRecording();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
 						Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
@@ -446,7 +439,7 @@ namespace BizHawk.Client.Common
 								if (newresult == LoadStateResult.Pass)
 								{
 									Global.Emulator.ClearSaveRam();
-									Movie.StartRecording();
+									Movie.StartNewRecording();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
 									Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);

@@ -731,7 +731,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadTAStudio()
 		{
-			Global.MovieSession.EditorMode = true;
+			//Global.MovieSession.EditorMode = true;
 			GlobalWin.Tools.Load<TAStudio>();
 		}
 

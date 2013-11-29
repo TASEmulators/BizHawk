@@ -34,12 +34,12 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder("subtitle ");
+			var sb = new StringBuilder("subtitle ");
 			sb
-				.Append(Frame.ToString()).Append(" ")
-				.Append(X.ToString()).Append(" ")
-				.Append(Y.ToString()).Append(" ")
-				.Append(Duration.ToString()).Append(" ")
+				.Append(Frame).Append(" ")
+				.Append(X).Append(" ")
+				.Append(Y).Append(" ")
+				.Append(Duration).Append(" ")
 				.Append(String.Format("{0:X8}", Color)).Append(" ")
 				.Append(Message);
 

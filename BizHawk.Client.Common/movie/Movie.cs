@@ -11,21 +11,21 @@ namespace BizHawk.Client.Common
 	{
 		#region Constructors
 
-		public Movie(string filename)
-			: this()
+		public Movie(string filename, bool startsFromSavestate = false)
+			: this(startsFromSavestate)
 		{
 			Rerecords = 0;
 			Filename = filename;
 			Loaded = !String.IsNullOrWhiteSpace(filename);
 		}
 
-		public Movie()
+		public Movie(bool startsFromSavestate = false)
 		{
 			Header = new MovieHeader();
 			Subtitles = new SubtitleList();
 			Filename = String.Empty;
 			_preloadFramecount = 0;
-			StartsFromSavestate = false;
+			StartsFromSavestate = startsFromSavestate;
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
 			IsText = true;
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 		public bool StartsFromSavestate
 		{
 			get { return _startsfromsavestate; }
-			set
+			private set
 			{
 				_startsfromsavestate = value;
 				if (value)
@@ -109,17 +109,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//TODO: these are getting too lengthy perhaps the log should just be exposed?
-		public int StateFirstIndex
-		{
-			get { return _log.StateFirstIndex; }
-		}
-
-		public int StateLastIndex
-		{
-			get { return _log.StateLastIndex; }
-		}
-
 		public bool StateCapturing
 		{
 			get { return _statecapturing; }
@@ -131,16 +120,6 @@ namespace BizHawk.Client.Common
 					_log.ClearStates();
 				}
 			}
-		}
-
-		public byte[] GetState(int frame)
-		{
-			return _log.GetState(frame);
-		}
-
-		public byte[] InitState
-		{
-			get { return _log.InitState; }
 		}
 
 		#endregion
@@ -172,11 +151,7 @@ namespace BizHawk.Client.Common
 			get { return _changes; }
 		}
 
-		/// <summary>
-		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
-		/// </summary>
-		/// <param name="truncate"></param>
-		public void StartRecording(bool truncate = true)
+		public void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
@@ -184,28 +159,20 @@ namespace BizHawk.Client.Common
 				SaveAs();
 				MakeBackup = false;
 			}
-			if (truncate)
-			{
-				_log.Clear();
-			}
+			_log.Clear();
 		}
 
-		public void StartPlayback()
+		public void StartNewPlayback()
 		{
 			_mode = Moviemode.Play;
+			Global.Emulator.ClearSaveRam();
 		}
 
-		/// <summary>
-		/// Tells the movie to recording mode
-		/// </summary>
 		public void SwitchToRecord()
 		{
 			_mode = Moviemode.Record;
 		}
 
-		/// <summary>
-		/// Tells the movie to go into playback mode
-		/// </summary>
 		public void SwitchToPlay()
 		{
 			_mode = Moviemode.Play;
@@ -228,7 +195,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// If a movie is in playback mode, this will set it to movie finished
 		/// </summary>
-		public void Finish()
+		private void Finish()
 		{
 			if (_mode == Moviemode.Play)
 			{
@@ -372,30 +339,38 @@ namespace BizHawk.Client.Common
 
 		public string GetInput(int frame)
 		{
-			if (frame >= 0)
+			if (frame < _log.Length)
 			{
-				int getframe;
-
-				if (_loopOffset.HasValue)
+				if (frame >= 0)
 				{
-					if (frame < _log.Length)
+					int getframe;
+
+					if (_loopOffset.HasValue)
 					{
-						getframe = frame;
+						if (frame < _log.Length)
+						{
+							getframe = frame;
+						}
+						else
+						{
+							getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						}
 					}
 					else
 					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						getframe = frame;
 					}
+
+					return _log[getframe];
 				}
 				else
 				{
-					getframe = frame;
+					return String.Empty;
 				}
-
-				return _log[getframe];
 			}
 			else
 			{
+				Finish();
 				return String.Empty;
 			}
 		}
@@ -450,20 +425,6 @@ namespace BizHawk.Client.Common
 		public MovieLog LogDump
 		{
 			get { return _log; }
-		}
-
-		public bool FrameLagged(int frame)
-		{
-			return _log.FrameLagged(frame);
-		}
-
-		public void CaptureState()
-		{
-			if (StateCapturing)
-			{
-				_log.AddState(Global.Emulator.SaveStateBinary());
-				GC.Collect();
-			}
 		}
 
 		public void PokeFrame(int frameNum, string input)

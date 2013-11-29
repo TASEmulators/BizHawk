@@ -65,7 +65,7 @@
             this.OK.TabIndex = 35;
             this.OK.Text = "&Poke";
             this.OK.UseVisualStyleBackColor = true;
-            this.OK.Click += new System.EventHandler(this.OK_Click);
+            this.OK.Click += new System.EventHandler(this.Ok_Click);
             // 
             // Cancel
             // 
