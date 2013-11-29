@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		string GetInput(int frame); // Should be a property of a Record object
 
-		MovieHeader Header { get; } // Expose IMovieHEader instead
+		IMovieHeader Header { get; } // Expose IMovieHEader instead
 		MovieLog LogDump { get; } // Don't expose this!!!
 		//SubtitleList Subtitles { get; } // Don't expose this!!!
 

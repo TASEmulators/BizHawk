@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Properties
-		public MovieHeader Header { get; private set; }
+		public IMovieHeader Header { get; private set; }
 
 		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
@@ -49,18 +49,18 @@ namespace BizHawk.Client.Common
 			set
 			{
 				_rerecords = value;
-				Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
+				Header.Parameters[HeaderKeys.RERECORDS] = Rerecords.ToString();
 			}
 		}
 
 		public string SysID
 		{
-			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
+			get { return Header.Parameters[HeaderKeys.PLATFORM]; }
 		}
 
 		public string GameName
 		{
-			get { return Header.GetHeaderLine(MovieHeader.GAMENAME); }
+			get { return Header.Parameters[HeaderKeys.GAMENAME]; }
 		}
 
 		public int RawFrames
@@ -98,11 +98,11 @@ namespace BizHawk.Client.Common
 				_startsfromsavestate = value;
 				if (value)
 				{
-					Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
+					Header.AddHeaderLine(HeaderKeys.STARTSFROMSAVESTATE, "1");
 				}
 				else
 				{
-					Header.RemoveHeaderLine(MovieHeader.STARTSFROMSAVESTATE);
+					Header.Parameters.Remove(HeaderKeys.STARTSFROMSAVESTATE);
 				}
 			}
 		}
@@ -453,7 +453,7 @@ namespace BizHawk.Client.Common
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-			writer.WriteLine(MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID));
+			writer.WriteLine(HeaderKeys.GUID + " " + Header.Parameters[HeaderKeys.GUID]);
 
 			for (int x = 0; x < _log.Length; x++)
 			{
@@ -619,8 +619,8 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.Contains("GUID"))
 				{
-					string guid = ParseHeader(line, MovieHeader.GUID);
-					if (Header.GetHeaderLine(MovieHeader.GUID) != guid)
+					string guid = ParseHeader(line, HeaderKeys.GUID);
+					if (Header.Parameters[HeaderKeys.GUID] != guid)
 					{
 						if (!ignoreGuidMismatch)
 						{
@@ -798,9 +798,9 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					if (str.Contains(MovieHeader.RERECORDS))
+					if (str.Contains(HeaderKeys.RERECORDS))
 					{
-						string rerecordStr = ParseHeader(str, MovieHeader.RERECORDS);
+						string rerecordStr = ParseHeader(str, HeaderKeys.RERECORDS);
 						try
 						{
 							Rerecords = int.Parse(rerecordStr);
@@ -810,9 +810,9 @@ namespace BizHawk.Client.Common
 							Rerecords = 0;
 						}
 					}
-					else if (str.Contains(MovieHeader.STARTSFROMSAVESTATE))
+					else if (str.Contains(HeaderKeys.STARTSFROMSAVESTATE))
 					{
-						str = ParseHeader(str, MovieHeader.STARTSFROMSAVESTATE);
+						str = ParseHeader(str, HeaderKeys.STARTSFROMSAVESTATE);
 						if (str == "1")
 							StartsFromSavestate = true;
 					}
@@ -878,9 +878,9 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
-			bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
-				Header.HeaderParams[MovieHeader.PAL] == "1";
+			string system = Header.Parameters[HeaderKeys.PLATFORM];
+			bool pal = Header.Parameters.ContainsKey(HeaderKeys.PAL) &&
+				Header.Parameters[HeaderKeys.PAL] == "1";
 
 			return frames / _PlatformFrameRates[system, pal];
 		}
@@ -895,9 +895,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
-				bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
-					Header.HeaderParams[MovieHeader.PAL] == "1";
+				string system = Header.Parameters[HeaderKeys.PLATFORM];
+				bool pal = Header.Parameters.ContainsKey(HeaderKeys.PAL) &&
+					Header.Parameters[HeaderKeys.PAL] == "1";
 
 				return _PlatformFrameRates[system, pal];
 			}

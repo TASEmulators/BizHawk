@@ -94,73 +94,73 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				//Header
-				_movieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				_movieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, VersionInfo.GetEmuVersion());
-				_movieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
-				_movieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-				_movieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
+				_movieToRecord.Header.Parameters[HeaderKeys.AUTHOR] = AuthorBox.Text;
+				_movieToRecord.Header.Parameters[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
+				_movieToRecord.Header.Parameters[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+				_movieToRecord.Header.Parameters[HeaderKeys.GUID] = HeaderKeys.NewGuid;
+				_movieToRecord.Header.Parameters[HeaderKeys.PLATFORM] = Global.Game.System;
 				if (Global.Game != null)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.SHA1, Global.Game.Hash);
+					_movieToRecord.Header.Parameters[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
+					_movieToRecord.Header.Parameters[HeaderKeys.SHA1] = Global.Game.Hash;
 					if (Global.Game.FirmwareHash != null)
 					{
-						_movieToRecord.Header.SetHeaderLine(MovieHeader.FIRMWARESHA1, Global.Game.FirmwareHash);
+						_movieToRecord.Header.Parameters[HeaderKeys.FIRMWARESHA1] = Global.Game.FirmwareHash;
 					}
 				}
 				else
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
+					_movieToRecord.Header.Parameters[HeaderKeys.GAMENAME] = "NULL";
 				}
 
 				if (Global.Emulator.BoardName != null)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, Global.Emulator.BoardName);
+					_movieToRecord.Header.Parameters[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
 				}
 
 				if (Global.Emulator is Gameboy)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
+					_movieToRecord.Header.Parameters[HeaderKeys.GB_FORCEDMG] = Global.Config.GB_ForceDMG.ToString();
+					_movieToRecord.Header.Parameters[HeaderKeys.GB_GBA_IN_CGB] = Global.Config.GB_GBACGB.ToString();
 				}
 
 				if (Global.Emulator is LibsnesCore)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
+					_movieToRecord.Header.Parameters[HeaderKeys.SGB] = ((Global.Emulator) as LibsnesCore).IsSGB.ToString();
 					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
 					{
-						_movieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header.Parameters[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is SMS)
 				{
 					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
 					{
-						_movieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header.Parameters[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is NES)
 				{
 					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
 					{
-						_movieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header.Parameters[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is ColecoVision)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
+					_movieToRecord.Header.Parameters[HeaderKeys.SKIPBIOS] = Global.Config.ColecoSkipBiosIntro.ToString();
 				}
 
 				else if (Global.Emulator is N64)
 				{
-					_movieToRecord.Header.SetHeaderLine(MovieHeader.VIDEOPLUGIN, Global.Config.N64VidPlugin);
+					_movieToRecord.Header.Parameters[HeaderKeys.VIDEOPLUGIN] = Global.Config.N64VidPlugin;
 
 					if (Global.Config.N64VidPlugin == "Rice")
 					{
 						var rice_settings = Global.Config.RicePlugin.GetPluginSettings();
 						foreach(var setting in rice_settings)
 						{
-							_movieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+							_movieToRecord.Header.Parameters[setting.Key] = setting.Value.ToString();
 						}
 					}
 					else if (Global.Config.N64VidPlugin == "Glide64")
@@ -168,13 +168,13 @@ namespace BizHawk.Client.EmuHawk
 						var glide_settings = Global.Config.GlidePlugin.GetPluginSettings();
 						foreach (var setting in glide_settings)
 						{
-							_movieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+							_movieToRecord.Header.Parameters[setting.Key] = setting.Value.ToString();
 						}
 					}
 
 					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
 					{
-						_movieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header.Parameters[HeaderKeys.PAL] = "1";
 					}
 				}
 

@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (Global.Emulator.SystemId)
 			{
 				case "Coleco":
-					string str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					string str = Global.MovieSession.Movie.Header.Parameters[HeaderKeys.SKIPBIOS];
 					if (!String.IsNullOrWhiteSpace(str))
 					{
 						if (str.ToLower() == "true")

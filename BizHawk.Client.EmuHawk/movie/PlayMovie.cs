@@ -171,19 +171,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var movie = new Movie(hf.CanonicalFullPath);
 			movie.PreLoadText(hf);
-			if (hf.Extension == ".FM2")
+			try
 			{
-				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+				//Don't do this from browse
+				if (movie.Header.Parameters[HeaderKeys.GAMENAME] == Global.Game.Name ||
+					Global.Config.PlayMovie_MatchGameName == false || force)
+				{
+					_movieList.Add(movie);
+				}
 			}
-			else if (hf.Extension == ".MC2")
+			catch (Exception ex)
 			{
-				movie.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
-			}
-			//Don't do this from browse
-			if (movie.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
-				Global.Config.PlayMovie_MatchGameName == false || force)
-			{
-				_movieList.Add(movie);
+				Console.WriteLine(ex.Message);
 			}
 		}
 
@@ -334,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
-			var headers = _movieList[firstIndex].Header.HeaderParams;
+			var headers = _movieList[firstIndex].Header.Parameters;
 
 			foreach (var kvp in headers)
 			{
@@ -343,26 +342,26 @@ namespace BizHawk.Client.EmuHawk
 
 				switch (kvp.Key)
 				{
-					case MovieHeader.SHA1:
+					case HeaderKeys.SHA1:
 						if (kvp.Value != Global.Game.Hash)
 						{
 							item.BackColor = Color.Pink;
 							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
 						}
 						break;
-					case MovieHeader.MOVIEVERSION:
-						if (kvp.Value != MovieHeader.MovieVersion)
+					case HeaderKeys.MOVIEVERSION:
+						if (kvp.Value != HeaderKeys.MovieVersion)
 						{
 							item.BackColor = Color.Yellow;
 						}
 						break;
-					case MovieHeader.EMULATIONVERSION:
+					case HeaderKeys.EMULATIONVERSION:
 						if (kvp.Value != VersionInfo.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}
 						break;
-					case MovieHeader.PLATFORM:
+					case HeaderKeys.PLATFORM:
 						if (kvp.Value != Global.Game.System)
 						{
 							item.BackColor = Color.Pink;
