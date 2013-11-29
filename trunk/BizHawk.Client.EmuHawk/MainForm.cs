@@ -1829,9 +1829,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var PluginToUse = String.Empty;
 
-			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			if (hasmovie && Global.MovieSession.Movie.Header.Parameters[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.Parameters.ContainsKey(HeaderKeys.VIDEOPLUGIN))
 			{
-				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
+				PluginToUse = Global.MovieSession.Movie.Header.Parameters[HeaderKeys.VIDEOPLUGIN];
 			}
 
 			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64"))
@@ -1857,14 +1857,14 @@ namespace BizHawk.Client.EmuHawk
 				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
 			}
 
-			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			if (hasmovie && Global.MovieSession.Movie.Header.Parameters[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.Parameters.ContainsKey(HeaderKeys.VIDEOPLUGIN))
 			{
 				var settings = new List<string>(video_settings.Parameters.Keys);
 				foreach (var setting in settings)
 				{
-					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
+					if (Global.MovieSession.Movie.Header.Parameters.ContainsKey(setting))
 					{
-						var Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
+						var Value = Global.MovieSession.Movie.Header.Parameters[setting];
 						if (video_settings.Parameters[setting] is bool)
 						{
 							try
