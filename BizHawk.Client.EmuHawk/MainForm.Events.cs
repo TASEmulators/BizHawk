@@ -1850,14 +1850,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddSubtitleContextMenuItem_Click(object sender, EventArgs e)
 		{
+			//TODO: rethink this?
 			var subForm = new SubtitleMaker();
 			subForm.DisableFrame();
 
 			int index = -1;
 			var sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Header.Subtitles.Count; x++)
 			{
-				sub = Global.MovieSession.Movie.Subtitles[x];
+				sub = Global.MovieSession.Movie.Header.Subtitles[x];
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -1876,10 +1877,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index >= 0)
 				{
-					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
+					Global.MovieSession.Movie.Header.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
+				Global.MovieSession.Movie.Header.Subtitles.Add(subForm.Sub);
 			}
 		}
 
