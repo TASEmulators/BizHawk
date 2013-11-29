@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Add(FramesItem);
 
 			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Header.Subtitles.Any();
 		}
 
 		private void button1_Click(object sender, EventArgs e)

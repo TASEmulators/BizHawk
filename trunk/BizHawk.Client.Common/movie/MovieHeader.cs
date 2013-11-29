@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -18,6 +19,10 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
 
+		public SubtitleList Subtitles { get; private set; }
+
+		#region Header Constants
+		
 		public const string EMULATIONVERSION = "emuVersion";
 		public const string MOVIEVERSION = "MovieVersion";
 		public const string PLATFORM = "Platform";
@@ -46,21 +51,23 @@ namespace BizHawk.Client.Common
 		//Board properties
 		public const string BOARDPROPERTIES = "BoardProperty";
 
+		#endregion
+
 		public static string MovieVersion = "BizHawk v0.0.1";
 
 		public static string MakeGUID()
 		{
-			return System.Guid.NewGuid().ToString();
+			return Guid.NewGuid().ToString();
 		}
 
 		public MovieHeader() //All required fields will be set to default values
 		{
-			
+			Subtitles = new SubtitleList();
 			HeaderParams.Add(EMULATIONVERSION, VersionInfo.GetEmuVersion());
 			HeaderParams.Add(MOVIEVERSION, MovieVersion);
-			HeaderParams.Add(PLATFORM, "");
-			HeaderParams.Add(GAMENAME, "");
-			HeaderParams.Add(AUTHOR, "");
+			HeaderParams.Add(PLATFORM, String.Empty);
+			HeaderParams.Add(GAMENAME, String.Empty);
+			HeaderParams.Add(AUTHOR, String.Empty);
 			HeaderParams.Add(RERECORDS, "0");
 			HeaderParams.Add(GUID, MakeGUID());
 		}

@@ -51,30 +51,30 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!ReadOnly)
 			{
-				_selectedMovie.Subtitles.Clear();
-				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
+				_selectedMovie.Header.Subtitles.Clear();
+				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
 					var s = new Subtitle();
 					
-					var c = SubGrid.Rows[x].Cells[0];
+					var c = SubGrid.Rows[i].Cells[0];
 					try { s.Frame = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 0); return; }
-					c = SubGrid.Rows[x].Cells[1];
+					catch { ShowError(i, 0); return; }
+					c = SubGrid.Rows[i].Cells[1];
 					try { s.X = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 1); return; }
-					c = SubGrid.Rows[x].Cells[2];
+					catch { ShowError(i, 1); return; }
+					c = SubGrid.Rows[i].Cells[2];
 					try { s.Y = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 2); return; }
-					c = SubGrid.Rows[x].Cells[3];
+					catch { ShowError(i, 2); return; }
+					c = SubGrid.Rows[i].Cells[3];
 					try { s.Duration = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 3); return; }
-					c = SubGrid.Rows[x].Cells[4];
+					catch { ShowError(i, 3); return; }
+					c = SubGrid.Rows[i].Cells[4];
 					try { s.Color = uint.Parse(c.Value.ToString(), NumberStyles.HexNumber); }
-					catch { ShowError(x, 4); return; }
-					try { c = SubGrid.Rows[x].Cells[5]; }
-					catch { ShowError(x, 5); return; }
+					catch { ShowError(i, 4); return; }
+					try { c = SubGrid.Rows[i].Cells[5]; }
+					catch { ShowError(i, 5); return; }
 					s.Message = c.Value.ToString();
-					_selectedMovie.Subtitles.Add(s);
+					_selectedMovie.Header.Subtitles.Add(s);
 				}
 				_selectedMovie.Save();
 			}
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_selectedMovie = m;
 			var subs = new SubtitleList();
-			subs.AddRange(m.Subtitles);
+			subs.AddRange(m.Header.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
 			{
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			c = SubGrid.Rows[index].Cells[5];
 			try { s.Message = c.Value.ToString(); }
 			catch { }
-			_selectedMovie.Subtitles.Add(s);
+			_selectedMovie.Header.Subtitles.Add(s);
 
 			return s;
 		}

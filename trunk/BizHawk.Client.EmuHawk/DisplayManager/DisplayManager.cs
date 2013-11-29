@@ -628,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
+				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
 
 				for (int i = 0; i < subList.Count; i++)
 				{

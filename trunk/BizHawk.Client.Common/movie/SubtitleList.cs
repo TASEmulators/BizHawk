@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -10,6 +11,13 @@ namespace BizHawk.Client.Common
 		public IEnumerable<Subtitle> GetSubtitles(int frame)
 		{
 			return this.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration);
+		}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
+			return sb.ToString();
 		}
 
 		public bool AddFromString(string subtitleStr)

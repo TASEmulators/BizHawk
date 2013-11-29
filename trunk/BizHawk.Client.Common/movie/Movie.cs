@@ -22,7 +22,6 @@ namespace BizHawk.Client.Common
 		public Movie(bool startsFromSavestate = false)
 		{
 			Header = new MovieHeader();
-			Subtitles = new SubtitleList();
 			Filename = String.Empty;
 			_preloadFramecount = 0;
 			StartsFromSavestate = startsFromSavestate;
@@ -36,8 +35,7 @@ namespace BizHawk.Client.Common
 
 		#region Properties
 		public MovieHeader Header { get; private set; }
-		public SubtitleList Subtitles { get; private set; }
-		
+
 		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
@@ -293,7 +291,7 @@ namespace BizHawk.Client.Common
 
 					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
-						Subtitles.AddFromString(str);
+						Header.Subtitles.AddFromString(str);
 					}
 					else if (str[0] == '|')
 					{
@@ -751,20 +749,17 @@ namespace BizHawk.Client.Common
 
 		private void WriteText(Stream stream)
 		{
-			using (StreamWriter sw = new StreamWriter(stream))
+			using (var sw = new StreamWriter(stream))
 			{
 				sw.Write(Header.ToString());
 
-				//TODO: clean this up
+				// TODO: clean this up
 				if (_loopOffset.HasValue)
 				{
 					sw.WriteLine("LoopOffset " + _loopOffset.ToString());
 				}
 
-				foreach (var subtitle in Subtitles)
-				{
-					sw.WriteLine(subtitle.ToString());
-				}
+				sw.Write(Header.Subtitles.ToString());
 
 				for (int i = 0; i < _log.Length; i++)
 				{
@@ -836,7 +831,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
-						Subtitles.AddFromString(str);
+						Header.Subtitles.AddFromString(str);
 					}
 					else if (Header.AddHeaderFromLine(str))
 					{
