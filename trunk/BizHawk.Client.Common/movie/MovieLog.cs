@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	//TODO: what is this object really trying to accomplish? COnsider making it a collection (ICollection, IEnumerable perhaps)
+	// TODO: what is this object really trying to accomplish? COnsider making it a collection (ICollection, IEnumerable perhaps)
 
 	/// <summary>
 	/// Represents the controller key presses of a movie

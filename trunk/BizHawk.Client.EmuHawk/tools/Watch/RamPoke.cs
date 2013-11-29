@@ -10,8 +10,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RamPoke : Form
 	{
-		//TODO: don't use textboxes as labels
-
+		// TODO: don't use textboxes as labels
 		private List<Watch> _watchList = new List<Watch>();
 
 		public Point InitialLocation = new Point(0, 0);
@@ -34,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			_watchList = _watchList.Where(x => !x.IsSeparator).ToList(); //Weed out separators just in case
+			_watchList = _watchList.Where(x => !x.IsSeparator).ToList(); // Weed out separators just in case
 
 			if (_watchList.Count == 0)
 			{
@@ -58,10 +57,11 @@ namespace BizHawk.Client.EmuHawk
 					UnSupportedConfiguration();
 				}
 			}
+
 			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
 			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : String.Empty;
-			ValueBox.Text = _watchList[0].ValueString.Replace(" ", "");
+			ValueBox.Text = _watchList[0].ValueString.Replace(" ", String.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
 			SizeLabel.Text = _watchList[0].Size.ToString();
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
@@ -83,14 +83,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
-			var success = true;
-			foreach (var watch in _watchList.Where(watch => !watch.Poke(ValueBox.Text)))
-			{
-				success = false;
-			}
-
+			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
 			OutputLabel.Text = success ? "Value successfully written." 
 				: "An error occured when writing Value.";
 		}

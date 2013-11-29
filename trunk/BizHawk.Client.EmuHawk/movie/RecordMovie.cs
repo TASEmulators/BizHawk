@@ -18,8 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		//TODO
 		//Allow relative paths in record textbox
 
-		private Movie _movieToRecord;
-
 		public RecordMovie()
 		{
 			InitializeComponent();
@@ -55,7 +53,6 @@ namespace BizHawk.Client.EmuHawk
 		private void OK_Click(object sender, EventArgs e)
 		{
 			var path = MakePath();
-
 			if (!String.IsNullOrWhiteSpace(path))
 			{
 				var test = new FileInfo(path);
@@ -68,7 +65,33 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				_movieToRecord = new Movie(path);
+				Movie _movieToRecord;
+
+				if (StartFromCombo.SelectedItem.ToString() == "Now")
+				{
+					_movieToRecord = new Movie(path, startsFromSavestate: true);
+					var temppath = path;
+					var writer = new StreamWriter(temppath);
+					Global.Emulator.SaveStateText(writer);
+					writer.Close();
+
+					var file = new FileInfo(temppath);
+					using (var sr = file.OpenText())
+					{
+						string str;
+						while ((str = sr.ReadLine()) != null)
+						{
+							if (!String.IsNullOrWhiteSpace(str))
+							{
+								_movieToRecord.Header.Comments.Add(str);
+							}
+						}
+					}
+				}
+				else
+				{
+					_movieToRecord = new Movie(path);
+				}
 
 				//Header
 				_movieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
@@ -155,27 +178,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now")
-				{
-					_movieToRecord.StartsFromSavestate = true;
-					var temppath = path;
-					var writer = new StreamWriter(temppath);
-					Global.Emulator.SaveStateText(writer);
-					writer.Close();
-
-					var file = new FileInfo(temppath);
-					using (var sr = file.OpenText())
-					{
-						string str;
-						while ((str = sr.ReadLine()) != null)
-						{
-							if (!String.IsNullOrWhiteSpace(str))
-							{
-								_movieToRecord.Header.Comments.Add(str);
-							}
-						}
-					}
-				}
 				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;

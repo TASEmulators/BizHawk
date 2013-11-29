@@ -90,27 +90,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
-			{
-				if (color != Color.LightGreen)
-				{
-					color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
-				}
-			}
-			else if (Global.MovieSession.Movie.FrameLagged(index))
-			{
-				if (color != Color.Pink)
-				{
-					color = Color.Pink;
-				}
-			}
-			else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				if (color != Color.LightGreen)
-				{
-					color = Color.LightGreen;
-				}
-			}
+			//if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
+			//{
+			//	if (color != Color.LightGreen)
+			//	{
+			//		color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
+			//	}
+			//}
+			//else if (Global.MovieSession.Movie.FrameLagged(index))
+			//{
+			//	if (color != Color.Pink)
+			//	{
+			//		color = Color.Pink;
+			//	}
+			//}
+			//else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
+			//{
+			//	if (color != Color.LightGreen)
+			//	{
+			//		color = Color.LightGreen;
+			//	}
+			//}
 			if (index == Global.Emulator.Frame)
 			{
 				if (color != Color.LightBlue)
@@ -137,11 +137,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayList()
 		{
 			TASView.ItemCount = Global.MovieSession.Movie.RawFrames;
-			if (Global.MovieSession.Movie.Frames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
-			{
-				//If we're at the end of the movie add one to show the cursor as a blank frame
-				TASView.ItemCount++;
-			}
+			//if (Global.MovieSession.Movie.Frames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
+			//{
+			//	//If we're at the end of the movie add one to show the cursor as a blank frame
+			//	TASView.ItemCount++;
+			//}
 			TASView.ensureVisible(Global.Emulator.Frame - 1);
 		}
 
@@ -415,17 +415,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
-			if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				stopOnFrame = 0;
-				RewindToFrame(TASView.selectedItem);
-			}
-			else
-			{
-				RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
-				stopOnFrame = TASView.selectedItem;
-				GlobalWin.MainForm.PressFrameAdvance = true;
-			}
+			//if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
+			//{
+			//	stopOnFrame = 0;
+			//	RewindToFrame(TASView.selectedItem);
+			//}
+			//else
+			//{
+			//	RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
+			//	stopOnFrame = TASView.selectedItem;
+			//	GlobalWin.MainForm.PressFrameAdvance = true;
+			//}
 
 			UpdateValues();
 		}
@@ -540,54 +540,54 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (frame <= Global.Emulator.Frame)
 			{
-				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
-				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
-					if (Global.MovieSession.Movie.IsRecording)
-					{
-						Global.MovieSession.Movie.StartPlayback();
-						GlobalWin.MainForm.RestoreReadWriteOnStop = true;
-					}
-				}
-				else
-				{
-					if (frame == 0)
-					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
-					}
-					else
-					{
-						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-						GlobalWin.MainForm.UpdateFrame = true;
-					}
-				}
+				//if (frame <= Global.MovieSession.Movie.StateFirstIndex)
+				//{
+				//	Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
+				//	if (Global.MovieSession.Movie.IsRecording)
+				//	{
+				//		Global.MovieSession.Movie.StartPlayback();
+				//		GlobalWin.MainForm.RestoreReadWriteOnStop = true;
+				//	}
+				//}
+				//else
+				//{
+				//	if (frame == 0)
+				//	{
+				//		Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.InitState)));
+				//	}
+				//	else
+				//	{
+				//		//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+				//		Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
+				//		GlobalWin.MainForm.UpdateFrame = true;
+				//	}
+				//}
 			}
-			else if (frame <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
-				GlobalWin.MainForm.UpdateFrame = true;
-			}
-			else
-			{
-				GlobalWin.MainForm.UnpauseEmulator();
-			}
+			//else if (frame <= Global.MovieSession.Movie.StateLastIndex)
+			//{
+			//	Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Global.MovieSession.Movie.GetState(frame - 1))));
+			//	GlobalWin.MainForm.UpdateFrame = true;
+			//}
+			//else
+			//{
+			//	GlobalWin.MainForm.UnpauseEmulator();
+			//}
 		}
 
 		public void DeleteFrame(int frame)
 		{
-			if (frame <= Global.MovieSession.Movie.StateLastIndex)
-			{
-				if (frame <= Global.MovieSession.Movie.StateFirstIndex)
-				{
-					RewindToFrame(0);
-				}
-				else
-				{
-					RewindToFrame(frame);
-				}
-			}
-			Global.MovieSession.Movie.DeleteFrame(frame);
+			//if (frame <= Global.MovieSession.Movie.StateLastIndex)
+			//{
+			//	if (frame <= Global.MovieSession.Movie.StateFirstIndex)
+			//	{
+			//		RewindToFrame(0);
+			//	}
+			//	else
+			//	{
+			//		RewindToFrame(frame);
+			//	}
+			//}
+			//Global.MovieSession.Movie.DeleteFrame(frame);
 		}
 
 		private void DeleteFrames()

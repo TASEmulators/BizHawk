@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Globalization;
 
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// A winform designed to search through ram values
+	/// A form designed to search through ram values
 	/// </summary>
 	public partial class RamSearch : Form, IToolForm
 	{
-		//TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
-
+		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
 		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
 		{
 			{ WatchList.ADDRESS, 60 },
@@ -34,20 +33,27 @@ namespace BizHawk.Client.EmuHawk
 		private RamSearchEngine _searches;
 		private RamSearchEngine.Settings _settings;
 
-		private int _defaultWidth; //For saving the default size of the dialog, so the user can restore if desired
+		private int _defaultWidth;
 		private int _defaultHeight;
 		private string _sortedColumn = String.Empty;
 		private bool _sortReverse;
 		private bool _forcePreviewClear;
 		private bool _autoSearch;
 
-		private bool _dropdownDontfire; //Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
+		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
-		public const int MaxDetailedSize = (1024 * 1024); //1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
-		public const int MaxSupportedSize = (1024 * 1024 * 64); //64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
+		public const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
+		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
 
-		public bool AskSave() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		public bool AskSave()
+		{
+			return true;
+		}
+
+		public bool UpdateBefore
+		{
+			get { return false; }
+		}
 
 		#region Initialize, Load, and Save
 
@@ -187,8 +193,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			//Size and Positioning
-			_defaultWidth = Size.Width; //Save these first so that the user can restore to its original size
+			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
 			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
@@ -228,7 +233,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed)
+			{
+				return;
+			}
 
 			_settings.Domain = Global.Emulator.MemoryDomains.MainMemory;
 			MessageLabel.Text = "Search restarted";
@@ -515,13 +523,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnPositions()
 		{
-			var Columns = Global.Config.RamSearchColumnIndexes
+			var columns = Global.Config.RamSearchColumnIndexes
 					.Where(x => WatchListView.Columns.ContainsKey(x.Key))
 					.OrderBy(x => x.Value).ToList();
 
-			for (var i = 0; i < Columns.Count; i++)
+			for (var i = 0; i < columns.Count; i++)
 			{
-				WatchListView.Columns[Columns[i].Key].DisplayIndex = i;
+				WatchListView.Columns[columns[i].Key].DisplayIndex = i;
 			}
 		}
 
@@ -575,6 +583,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SpecificValueBox.Text = "0";
 			}
+
 			SpecificValueBox.Type = _settings.Type = type;
 			_searches.SetType(type);
 
@@ -610,7 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_dropdownDontfire = true;
-			switch(size)
+			switch (size)
 			{
 				case Watch.WatchSize.Byte:
 					SizeDropdown.SelectedIndex = 0;
@@ -622,6 +631,7 @@ namespace BizHawk.Client.EmuHawk
 					SizeDropdown.SelectedIndex = 2;
 					break;
 			}
+
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
 			SpecificValueBox.Type = _settings.Type;
@@ -770,14 +780,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToRamWatch()
 		{
-			if (SelectedIndices.Count > 0)
+			var watches = SelectedWatches.ToList();
+			if (watches.Any())
 			{
 				GlobalWin.Tools.LoadRamWatch(true);
-				foreach(var watch in SelectedWatches)
-				{
-					GlobalWin.Tools.RamWatch.AddWatch(watch);
-				}
-
+				watches.ForEach(GlobalWin.Tools.RamWatch.AddWatch);
 				if (Global.Config.RamSearchAlwaysExcludeRamWatch)
 				{
 					RemoveRamWatchesFromList();
@@ -850,7 +857,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
-			var prompt = new InputPrompt {Text = "Go to Address", _Location = GetPromptPoint()};
+			var prompt = new InputPrompt { Text = "Go to Address", _Location = GetPromptPoint() };
 			prompt.SetMessage("Enter a hexadecimal value");
 			prompt.ShowHawkDialog();
 
@@ -897,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!String.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(_settings.Domain) {CurrentFileName = _currentFileName};
+				var watches = new WatchList(_settings.Domain) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -925,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(_settings.Domain) {CurrentFileName = _currentFileName};
+			var watches = new WatchList(_settings.Domain) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
@@ -968,9 +975,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			_1ByteMenuItem.Checked = _settings.Size == Watch.WatchSize.Byte;
-			_2ByteMenuItem.Checked = _settings.Size == Watch.WatchSize.Word;
-			_4ByteMenuItem.Checked = _settings.Size == Watch.WatchSize.DWord;
+			ByteMenuItem.Checked = _settings.Size == Watch.WatchSize.Byte;
+			WordMenuItem.Checked = _settings.Size == Watch.WatchSize.Word;
+			DWordMenuItem.Checked = _settings.Size == Watch.WatchSize.DWord;
 		}
 
 		private void DisplayTypeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1025,17 +1032,17 @@ namespace BizHawk.Client.EmuHawk
 			SetToFastMode();
 		}
 
-		private void _1ByteMenuItem_Click(object sender, EventArgs e)
+		private void ByteMenuItem_Click(object sender, EventArgs e)
 		{
 			SetSize(Watch.WatchSize.Byte);
 		}
 
-		private void _2ByteMenuItem_Click(object sender, EventArgs e)
+		private void WordMenuItem_Click(object sender, EventArgs e)
 		{
 			SetSize(Watch.WatchSize.Word);
 		}
 
-		private void _4ByteMenuItem_Click(object sender, EventArgs e)
+		private void DWordMenuItem_Click_Click(object sender, EventArgs e)
 		{
 			SetSize(Watch.WatchSize.DWord);
 		}
@@ -1314,7 +1321,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region ContextMenu and Toolbar
 
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			DoSearchContextMenuItem.Enabled = _searches.Count > 0;
 
@@ -1329,7 +1336,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
-			ContextMenuSeparator3.Visible = (SelectedIndices.Count > 0) || (Global.CheatList.ActiveCount > 0);
+			ContextMenuSeparator3.Visible = (SelectedIndices.Any()) || (Global.CheatList.ActiveCount > 0);
 
 			var allCheats = true;
 			foreach (var index in SelectedIndices)
