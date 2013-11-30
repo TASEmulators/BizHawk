@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var movie = new Movie(file.FullName);
 						movie.Load(); //State files will have to load everything unfortunately
-						if (movie.Frames == 0)
+						if (movie.FrameCount == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK,
 							                MessageBoxIcon.Hand);
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var movie = new Movie(file.CanonicalFullPath);
 						movie.Load(); //State files will have to load everything unfortunately
-						if (movie.Frames > 0)
+						if (movie.FrameCount > 0)
 						{
 							_movieList.Add(movie);
 							_sortReverse = false;
@@ -376,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 			DetailsView.Items.Add(FpsItem);
 
 			var FramesItem = new ListViewItem("Frames");
-			FramesItem.SubItems.Add(_movieList[firstIndex].RawFrames.ToString());
+			FramesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(FramesItem);
 
 			CommentsBtn.Enabled = _movieList[firstIndex].Header.Comments.Any();
@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					break;
@@ -468,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderByDescending(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
@@ -477,7 +477,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderBy(x => x.SysID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					break;
@@ -488,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderByDescending(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
@@ -497,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 							.OrderBy(x => x.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.RawFrames)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					break;
@@ -505,16 +505,16 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.RawFrames)
+							.OrderByDescending(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.RawFrames)
+							.OrderBy(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
 							.ThenBy(x => x.SysID)
 							.ThenBy(x => x.GameName)

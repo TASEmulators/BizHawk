@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 						case '1':
 							break;
 						case '2':
-							if (m.Frames != 0)
+							if (m.FrameCount != 0)
 							{
 								warningMsg = "hard reset";
 							}

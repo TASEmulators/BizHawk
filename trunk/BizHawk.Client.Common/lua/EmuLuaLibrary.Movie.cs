@@ -71,16 +71,9 @@ namespace BizHawk.Client.Common
 			return Global.MovieSession.Movie.IsActive;
 		}
 
-		public static int movie_length()
+		public static double movie_length()
 		{
-			if (Global.MovieSession.Movie.Frames.HasValue)
-			{
-				return Global.MovieSession.Movie.Frames.Value;
-			}
-			else
-			{
-				return -1;
-			}
+			return Global.MovieSession.Movie.FrameCount;
 		}
 
 		public static string movie_mode()

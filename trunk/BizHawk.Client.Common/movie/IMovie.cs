@@ -21,7 +21,15 @@ namespace BizHawk.Client.Common
 
 		#region Properties
 
+		double FrameCount { get; }
+
+		/// <summary>
+		/// Actual length of the input log, should only be used by code that iterates or needs a real length
+		/// </summary>
+		int InputLogLength { get; }
+		
 		ulong Rerecords { get; set; }
+		
 		IMovieHeader Header { get; }
 
 		#endregion
@@ -90,8 +98,6 @@ namespace BizHawk.Client.Common
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
 		void GetInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
-		int? Frames { get; } // Nullable is a hack, also why does calling code need to know the number of frames, can that be minimized?
-		int RawFrames { get; } // Hacky to need two different frame properties
 
 		string GetInput(int frame); // Should be a property of a Record object
 

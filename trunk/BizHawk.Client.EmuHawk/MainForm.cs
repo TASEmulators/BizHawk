@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (_autoDumpLength == 0)
 					{
-						_autoDumpLength = movie.RawFrames;
+						_autoDumpLength = movie.InputLogLength;
 					}
 					StartNewMovie(movie, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
