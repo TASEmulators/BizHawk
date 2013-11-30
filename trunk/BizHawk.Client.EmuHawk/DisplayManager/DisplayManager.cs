@@ -503,11 +503,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
+				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords;
 			}
 			else
 			{
-				return "";
+				return String.Empty;
 			}
 		}
 

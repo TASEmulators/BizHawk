@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -24,36 +21,30 @@ namespace BizHawk.Client.Common
 		public const string PAL = "PAL";
 		public const string BOARDNAME = "BoardName";
 
-		//Gameboy Settings that affect sync
+		// Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
 		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
-		public const string SGB = "SGB"; //a snes movie will set this to indicate that it's actually SGB
+		public const string SGB = "SGB"; // A snes movie will set this to indicate that it's actually SGB
 
-		//BIO skipping setting (affects sync)
+		// BIO skipping setting (affects sync)
 		public const string SKIPBIOS = "Skip_Bios";
 
-		//Plugin Settings
+		// Plugin Settings
 		public const string VIDEOPLUGIN = "VideoPlugin";
 
-		//Board properties
+		// Board properties
 		public const string BOARDPROPERTIES = "BoardProperty";
 
 		public static string NewGuid
 		{
-			get
-			{
-				return Guid.NewGuid().ToString();
-			}
+			get { return Guid.NewGuid().ToString(); }
 		}
 
 		public static bool Contains(string val)
 		{
-			var keys = new List<string>();
-			foreach (FieldInfo field in typeof(HeaderKeys).GetFields())
-			{
-				keys.Add(field.GetValue(null).ToString());
-			}
-
+			var keys = typeof(HeaderKeys).GetFields()
+				.Select(field => field.GetValue(null).ToString())
+				.ToList();
 			return keys.Contains(val);
 		}
 	}

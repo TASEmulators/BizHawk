@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				//Don't do this from browse
-				if (movie.Header.Parameters[HeaderKeys.GAMENAME] == Global.Game.Name ||
+				if (movie.Header[HeaderKeys.GAMENAME] == Global.Game.Name ||
 					Global.Config.PlayMovie_MatchGameName == false || force)
 				{
 					_movieList.Add(movie);
@@ -333,9 +333,8 @@ namespace BizHawk.Client.EmuHawk
 
 			int firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
-			var headers = _movieList[firstIndex].Header.Parameters;
 
-			foreach (var kvp in headers)
+			foreach (var kvp in _movieList[firstIndex].Header)
 			{
 				var item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);

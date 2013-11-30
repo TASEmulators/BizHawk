@@ -1,69 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-
-using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
+	using System.Linq;
+
 	public class MovieHeader : Dictionary<string, string>, IMovieHeader
 	{
-		//Required Header Params
-		//Emulation - Core version, will be 1.0.0 until there is a versioning system
-		//Movie -     Versioning for the Movie code itself, or perhaps this could be changed client version?
-		//Platform -  Must know what platform we are making a movie on!
-		//GameName -  Which game
-		//TODO: checksum of game, other stuff
-
-		public Dictionary<string, string> Parameters { get; private set; }
 		public List<string> Comments { get; private set; }
-
 		public Dictionary<string, string> BoardProperties { get; private set; }
-
 		public SubtitleList Subtitles { get; private set; }
 
-		public MovieHeader() //All required fields will be set to default values
+		public MovieHeader()
 		{
-			Parameters = new Dictionary<string, string>(); //Platform specific options go here
-			BoardProperties = new Dictionary<string, string>();
 			Comments = new List<string>();
 			Subtitles = new SubtitleList();
+			BoardProperties = new Dictionary<string, string>();
 
-			Parameters.Add(HeaderKeys.EMULATIONVERSION, VersionInfo.GetEmuVersion());
-			Parameters.Add(HeaderKeys.MOVIEVERSION, HeaderKeys.MovieVersion);
-			Parameters.Add(HeaderKeys.PLATFORM, String.Empty);
-			Parameters.Add(HeaderKeys.GAMENAME, String.Empty);
-			Parameters.Add(HeaderKeys.AUTHOR, String.Empty);
-			Parameters.Add(HeaderKeys.RERECORDS, "0");
-			Parameters.Add(HeaderKeys.GUID, HeaderKeys.NewGuid);
+			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
+			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+			this[HeaderKeys.PLATFORM] = String.Empty;
+			this[HeaderKeys.GAMENAME] = String.Empty;
+			this[HeaderKeys.AUTHOR] = String.Empty;
+			this[HeaderKeys.RERECORDS] = "0";
+			this[HeaderKeys.GUID] = HeaderKeys.NewGuid;
 		}
 
-		/// <summary>
-		/// Adds the key value pair to header params.  If key already exists, value will be updated
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="value"></param>
-		public void AddHeaderLine(string key, string value)
+		public new string this[string key]
 		{
-			string temp;
-
-			if (!Parameters.TryGetValue(key, out temp)) //TODO: does a failed attempt mess with value?
-				Parameters.Add(key, value);
-		}
-
-		private void AddBoardProperty(string key, string value)
-		{
-			string temp;
-			if (!BoardProperties.TryGetValue(key, out temp))
+			get
 			{
-				BoardProperties.Add(key, value);
+				return this.ContainsKey(key) ? base[key] : String.Empty;
+			}
+
+			set
+			{
+				if (ContainsKey(key))
+				{
+					base[key] = value;
+				}
+				else
+				{
+					Add(key, value);
+				}
 			}
 		}
 
-		new public void Clear()
+		public new void Clear()
 		{
-			Parameters.Clear();
 			BoardProperties.Clear();
 			Comments.Clear();
 			Subtitles.Clear();
@@ -74,7 +59,7 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder();
 
-			foreach (var kvp in Parameters)
+			foreach (var kvp in this)
 			{
 				sb
 					.Append(kvp.Key)
@@ -94,70 +79,102 @@ namespace BizHawk.Client.Common
 					.AppendLine();
 			}
 
-			foreach (string t in Comments)
-			{
-				sb.AppendLine(t);
-			}
-
-			//TOD: subtitles go here not wherever it is currently located
+			sb.Append(Subtitles);
+			Comments.ForEach(comment => sb.AppendLine(comment));
 
 			return sb.ToString();
 		}
 
-		public bool AddHeaderFromLine(string line)
+		public ulong Rerecords
+		{
+			get
+			{
+				if (!ContainsKey(HeaderKeys.RERECORDS))
+				{
+					this[HeaderKeys.RERECORDS] = "0";
+				}
+
+				return ulong.Parse(this[HeaderKeys.RERECORDS]);
+			}
+
+			set
+			{
+				this[HeaderKeys.RERECORDS] = value.ToString();
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
+				{
+					return bool.Parse(this[HeaderKeys.STARTSFROMSAVESTATE]);
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			set
+			{
+				if (value)
+				{
+					Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
+				}
+				else
+				{
+					Remove(HeaderKeys.STARTSFROMSAVESTATE);
+				}
+			}
+		}
+
+		public bool ParseLineFromFile(string line)
 		{
 			if (!String.IsNullOrWhiteSpace(line))
 			{
-				var splitLine = line.Split(new char[] { ' ' }, 2);
+				var splitLine = line.Split(new[] { ' ' }, 2);
 
 				if (line.Contains(HeaderKeys.BOARDPROPERTIES))
 				{
 					var boardSplit = splitLine[1].Split(' ');
-					AddBoardProperty(boardSplit[0], boardSplit[1]);
+					if (!BoardProperties.ContainsKey(boardSplit[0]))
+					{
+						BoardProperties.Add(boardSplit[0], boardSplit[1]);
+					}
 				}
 				else if (HeaderKeys.Contains(splitLine[0]))
 				{
-					Parameters.Add(splitLine[0], splitLine[1]);
+					Add(splitLine[0], splitLine[1]);
 				}
 				else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 				{
-					return false;
+					Subtitles.AddFromString(line);
 				}
 				else if (line.StartsWith("comment"))
 				{
 					Comments.Add(line.Substring(8, line.Length - 8));
 				}
-				else if (line[0] == '|')
+				else if (line.StartsWith("|"))
 				{
 					return false;
 				}
-				else if (Parameters.ContainsKey(HeaderKeys.PLATFORM) && Parameters[HeaderKeys.PLATFORM] == "N64")
+				else if (ContainsKey(HeaderKeys.PLATFORM) && this[HeaderKeys.PLATFORM] == "N64" 
+					&& ContainsKey(HeaderKeys.VIDEOPLUGIN))
 				{
-					if (Parameters.ContainsKey(HeaderKeys.VIDEOPLUGIN))
+					if (this[HeaderKeys.VIDEOPLUGIN] == "Rice")
 					{
-						if (Parameters[HeaderKeys.VIDEOPLUGIN] == "Rice")
+						if (Global.Config.RicePlugin.GetPluginSettings().Keys.Any(line.Contains))
 						{
-							ICollection<string> settings = Global.Config.RicePlugin.GetPluginSettings().Keys;
-							foreach (var setting in settings)
-							{
-								if (line.Contains(setting))
-								{
-									Parameters.Add(splitLine[0], splitLine[1]);
-									break;
-								}
-							}
+							Add(splitLine[0], splitLine[1]);
 						}
-						else if (Parameters[HeaderKeys.VIDEOPLUGIN] == "Glide64")
+					}
+					else if (this[HeaderKeys.VIDEOPLUGIN] == "Glide64")
+					{
+						if (Global.Config.GlidePlugin.GetPluginSettings().Keys.Any(line.Contains))
 						{
-							ICollection<string> settings = Global.Config.GlidePlugin.GetPluginSettings().Keys;
-							foreach (string setting in settings)
-							{
-								if (line.Contains(setting))
-								{
-									Parameters.Add(splitLine[0], splitLine[1]);
-									break;
-								}
-							}
+							Add(splitLine[0], splitLine[1]);
 						}
 					}
 				}
