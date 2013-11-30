@@ -17,6 +17,10 @@ namespace BizHawk.Client.Common
 		bool Changes { get; }
 		bool Loaded { get; }
 
+		#endregion
+
+		#region Properties
+
 		ulong Rerecords { get; set; }
 		IMovieHeader Header { get; }
 
@@ -28,6 +32,7 @@ namespace BizHawk.Client.Common
 		bool Load();
 		void Save();
 		void SaveAs();
+		string GetInputLog();
 
 		#endregion
 
@@ -84,8 +89,7 @@ namespace BizHawk.Client.Common
 		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
-		void DumpLogIntoSavestateText(TextWriter writer); // Why pass a Textwriter, just make a string property that is the inputlog as text
-		void LoadLogFromSavestateText(TextReader reader, bool isMultitracking); // Pass in the text? do we need to care if it is multitracking, and can't hte movie already know that?
+		void GetInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
 		int? Frames { get; } // Nullable is a hack, also why does calling code need to know the number of frames, can that be minimized?
 		int RawFrames { get; } // Hacky to need two different frame properties
 

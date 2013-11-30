@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-
+using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -439,20 +439,25 @@ namespace BizHawk.Client.Common
 			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
-		public void DumpLogIntoSavestateText(TextWriter writer)
+		public string GetInputLog()
 		{
-			writer.WriteLine("[Input]");
-			writer.WriteLine(HeaderKeys.GUID + " " + Header[HeaderKeys.GUID]);
+			var sb = new StringBuilder();
 
-			for (var i = 0; i < _log.Length; i++)
+			sb
+				.AppendLine("[Input]")
+				.AppendLine(HeaderKeys.GUID + " " + Header[HeaderKeys.GUID]);
+
+			foreach (var record in _log)
 			{
-				writer.WriteLine(_log[i]);
+				sb.AppendLine(record);
 			}
 
-			writer.WriteLine("[/Input]");
+			sb.AppendLine("[/Input]");
+
+			return sb.ToString();
 		}
 
-		public void LoadLogFromSavestateText(TextReader reader, bool isMultitracking)
+		public void GetInputLog(TextReader reader, bool isMultitracking)
 		{
 			int? stateFrame = null;
 			

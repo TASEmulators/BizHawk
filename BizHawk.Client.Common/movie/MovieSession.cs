@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive)
 			{
-				Movie.DumpLogIntoSavestateText(writer);
+				writer.Write(Movie.GetInputLog());
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace BizHawk.Client.Common
 					{
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+						Movie.GetInputLog(reader, MultiTrack.IsActive);
 					}
 					else
 					{
@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 								{
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+									Movie.GetInputLog(reader, MultiTrack.IsActive);
 									return true;
 								}
 								else
@@ -337,7 +337,7 @@ namespace BizHawk.Client.Common
 						Movie.SwitchToRecord();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+						Movie.GetInputLog(reader, MultiTrack.IsActive);
 						return true;
 					}
 					else
@@ -352,7 +352,7 @@ namespace BizHawk.Client.Common
 									Movie.SwitchToRecord();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+									Movie.GetInputLog(reader, MultiTrack.IsActive);
 									return true;
 								}
 								else
@@ -426,7 +426,7 @@ namespace BizHawk.Client.Common
 						Movie.StartNewRecording();
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
-						Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+						Movie.GetInputLog(reader, MultiTrack.IsActive);
 						return true;
 					}
 					else
@@ -442,7 +442,7 @@ namespace BizHawk.Client.Common
 									Movie.StartNewRecording();
 									reader.BaseStream.Position = 0;
 									reader.DiscardBufferedData();
-									Movie.LoadLogFromSavestateText(reader, MultiTrack.IsActive);
+									Movie.GetInputLog(reader, MultiTrack.IsActive);
 									return true;
 								}
 								else
