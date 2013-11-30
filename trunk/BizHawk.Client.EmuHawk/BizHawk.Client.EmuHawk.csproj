@@ -590,7 +590,6 @@
     <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\StateVisualizer.cs" />
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>

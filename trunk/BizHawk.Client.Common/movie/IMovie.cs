@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common
 		bool Loaded { get; }
 
 		ulong Rerecords { get; set; }
+		IMovieHeader Header { get; }
 
 		#endregion
 
@@ -78,6 +79,7 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Dubious, should reconsider
+
 		void CommitFrame(int frameNum, IController source); // Why pass in frameNum? Calling api 
 		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
@@ -88,9 +90,6 @@ namespace BizHawk.Client.Common
 		int RawFrames { get; } // Hacky to need two different frame properties
 
 		string GetInput(int frame); // Should be a property of a Record object
-
-		IMovieHeader Header { get; } // Expose IMovieHEader instead
-		MovieLog LogDump { get; } // Don't expose this!!!
 
 		#endregion
 	}
