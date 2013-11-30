@@ -36,6 +36,7 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Properties
+
 		public IMovieHeader Header { get; private set; }
 
 		public bool MakeBackup { get; set; }
@@ -49,16 +50,6 @@ namespace BizHawk.Client.Common
 		{
 			get { return Header.Rerecords; }
 			set { Header.Rerecords = value; }
-		}
-
-		public string SysID
-		{
-			get { return Header[HeaderKeys.PLATFORM]; }
-		}
-
-		public string GameName
-		{
-			get { return Header[HeaderKeys.GAMENAME]; }
 		}
 
 		public int InputLogLength
@@ -82,23 +73,6 @@ namespace BizHawk.Client.Common
 				else
 				{
 					return _preloadFramecount;
-				}
-			}
-		}
-
-		public bool StateCapturing
-		{
-			get
-			{
-				return _statecapturing;
-			}
-
-			set
-			{
-				_statecapturing = value;
-				if (value == false)
-				{
-					_log.ClearStates();
 				}
 			}
 		}
@@ -760,7 +734,6 @@ namespace BizHawk.Client.Common
 		private readonly MovieLog _log = new MovieLog();
 		private enum Moviemode { Inactive, Play, Record, Finished };
 		private Moviemode _mode = Moviemode.Inactive;
-		private bool _statecapturing;
 		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private bool _changes;
 		private int? _loopOffset;
