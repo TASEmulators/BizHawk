@@ -81,11 +81,13 @@ namespace BizHawk.Client.Common
 			{
 				InitState = state;
 			}
+			
 			if (Global.Emulator.Frame < StateFirstIndex)
 			{
 				_state_records.Clear();
 				_state_records.Add(new StateRecord(Global.Emulator.Frame, state));
 			}
+			
 			if (Global.Emulator.Frame > StateLastIndex)
 			{
 				if (StateSizeInBytes + state.Length > MAXSTATERECORDSIZE)
@@ -93,6 +95,7 @@ namespace BizHawk.Client.Common
 					// Discard the oldest state to save space.
 					_state_records.RemoveAt(0);
 				}
+				
 				_state_records.Add(new StateRecord(Global.Emulator.Frame,state));
 			}
 		}
@@ -101,7 +104,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != _movie_records[frameNum]))
 			{
-				TruncateStates(frameNum+1);
+				TruncateStates(frameNum + 1);
 			}
 
 			if (_movie_records.Count > frameNum)
@@ -123,12 +126,10 @@ namespace BizHawk.Client.Common
 				if (frame <= StateFirstIndex)
 				{
 					_state_records.Clear();
-					//Global.MovieSession.Movie.RewindToFrame(0); //TODO: unbreak this, also don't do it this way
 				}
 				else
 				{
 					_state_records.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
-					//Global.MovieSession.Movie.RewindToFrame(frame); //TODO: unbreak this, also don't do it this way
 				}
 			}
 		}
@@ -209,7 +210,7 @@ namespace BizHawk.Client.Common
 
 		#region private fields
 
-		private class StateRecord
+		private sealed class StateRecord
 		{
 			public StateRecord(int index, byte[] state)
 			{
@@ -226,8 +227,8 @@ namespace BizHawk.Client.Common
 		private readonly List<string> _movie_records = new List<string>();
 		private readonly List<StateRecord> _state_records = new List<StateRecord>();
 		
-		//TODO: Make this size limit configurable by the user
-		private const int MAXSTATERECORDSIZE = 512*1024*1024; //To limit memory usage.
+		// TODO: Make this size limit configurable by the user
+		private const int MAXSTATERECORDSIZE = 512 * 1024 * 1024; //To limit memory usage.
 
 		#endregion
 	}

@@ -414,11 +414,6 @@ namespace BizHawk.Client.Common
 
 		#region Public Misc Methods
 
-		public MovieLog LogDump
-		{
-			get { return _log; }
-		}
-
 		public void PokeFrame(int frameNum, string input)
 		{
 			_changes = true;
