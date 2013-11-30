@@ -35,11 +35,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (column == 1) //System
 			{
-				text = _movieList[index].SysID;
+				text = _movieList[index].Header.SystemID;
 			}
 			if (column == 2) //Game
 			{
-				text = _movieList[index].GameName;
+				text = _movieList[index].Header.GameName;
 			}
 			if (column == 3) //Time
 			{
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			//Pull out matching names
 			for (int i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].GameName)
+				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].Header.GameName)
 				{
 					Indices.Add(i);
 				}
@@ -446,8 +446,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderByDescending(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.Header.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -455,8 +455,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_movieList = _movieList
 							.OrderBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.Header.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -465,18 +465,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.SysID)
+							.OrderByDescending(x => x.Header.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Header.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.SysID)
+							.OrderBy(x => x.Header.SystemID)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Header.GameName)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -485,18 +485,18 @@ namespace BizHawk.Client.EmuHawk
 					if (_sortReverse)
 					{
 						_movieList = _movieList
-							.OrderByDescending(x => x.GameName)
+							.OrderByDescending(x => x.Header.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.Header.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
 					else
 					{
 						_movieList = _movieList
-							.OrderBy(x => x.GameName)
+							.OrderBy(x => x.Header.GameName)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.Header.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -507,7 +507,7 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderByDescending(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
+							.ThenBy(x => x.Header.SystemID)
 							.ThenBy(x => x.FrameCount)
 							.ToList();
 					}
@@ -516,8 +516,8 @@ namespace BizHawk.Client.EmuHawk
 						_movieList = _movieList
 							.OrderBy(x => x.FrameCount)
 							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SysID)
-							.ThenBy(x => x.GameName)
+							.ThenBy(x => x.Header.SystemID)
+							.ThenBy(x => x.Header.GameName)
 							.ToList();
 					}
 					break;
@@ -567,8 +567,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						copyStr
 							.Append(_movieList[index].Filename).Append('\t')
-							.Append(_movieList[index].SysID).Append('\t')
-							.Append(_movieList[index].GameName).Append('\t')
+							.Append(_movieList[index].Header.SystemID).Append('\t')
+							.Append(_movieList[index].Header.GameName).Append('\t')
 							.Append(_movieList[index].GetTime(true)).AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());

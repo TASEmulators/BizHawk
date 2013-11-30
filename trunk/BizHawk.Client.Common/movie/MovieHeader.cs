@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
-			this[HeaderKeys.PLATFORM] = String.Empty;
+			this[HeaderKeys.PLATFORM] = Global.Emulator.SystemId;
 			this[HeaderKeys.GAMENAME] = String.Empty;
 			this[HeaderKeys.AUTHOR] = String.Empty;
 			this[HeaderKeys.RERECORDS] = "0";
@@ -127,6 +127,46 @@ namespace BizHawk.Client.Common
 				{
 					Remove(HeaderKeys.STARTSFROMSAVESTATE);
 				}
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.GAMENAME))
+				{
+					return this[HeaderKeys.GAMENAME];
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			set
+			{
+				this[HeaderKeys.GAMENAME] = value;
+			}
+		}
+
+		public string SystemID
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.PLATFORM))
+				{
+					return this[HeaderKeys.PLATFORM];
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			set
+			{
+				this[HeaderKeys.PLATFORM] = value;
 			}
 		}
 
