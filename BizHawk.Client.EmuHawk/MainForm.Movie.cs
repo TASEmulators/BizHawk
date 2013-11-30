@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
-			if (Global.MovieSession.Movie.StartsFromSavestate)
+			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				LoadRom(CurrentlyOpenRom, true, true);
-				if (Global.MovieSession.Movie.StartsFromSavestate)
+				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (Global.Emulator.SystemId)
 			{
 				case "Coleco":
-					string str = Global.MovieSession.Movie.Header.Parameters[HeaderKeys.SKIPBIOS];
+					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
 					if (!String.IsNullOrWhiteSpace(str))
 					{
 						if (str.ToLower() == "true")

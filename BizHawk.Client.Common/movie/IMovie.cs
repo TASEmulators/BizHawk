@@ -16,9 +16,8 @@ namespace BizHawk.Client.Common
 		bool IsFinished { get; }
 		bool Changes { get; }
 		bool Loaded { get; }
-		bool StartsFromSavestate { get; }
 
-		int Rerecords { get; set; }
+		ulong Rerecords { get; set; }
 
 		#endregion
 
@@ -35,14 +34,13 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Tells the movie to start recording from the beginning.
-		/// This will clear sram, and the movie log
+		/// This will clear SRAM, and the movie log
 		/// </summary>
-		/// <param name="truncate"></param>
 		void StartNewRecording();
 
 		/// <summary>
 		/// Tells the movie to start playback from the beginning
-		/// This will clear sram
+		/// This will clear SRAM
 		/// </summary>
 		void StartNewPlayback();
 
@@ -50,18 +48,18 @@ namespace BizHawk.Client.Common
 		/// Sets the movie to inactive (note that it will still be in memory)
 		/// The saveChanges flag will tell the movie to save its contents to disk
 		/// </summary>
-		/// <param name="saveChanges"></param>
+		/// <param name="saveChanges">if true, will save to disk</param>
 		void Stop(bool saveChanges = true);
 
 		/// <summary>
 		/// Switches to record mode
-		/// Does not change the movie log or clear sram
+		/// Does not change the movie log or clear SRAM
 		/// </summary>
 		void SwitchToRecord();
 
 		/// <summary>
 		/// Switches to playback mode
-		/// Does not change the movie log or clear sram
+		/// Does not change the movie log or clear SRAM
 		/// </summary>
 		void SwitchToPlay();
 
@@ -93,7 +91,6 @@ namespace BizHawk.Client.Common
 
 		IMovieHeader Header { get; } // Expose IMovieHEader instead
 		MovieLog LogDump { get; } // Don't expose this!!!
-		//SubtitleList Subtitles { get; } // Don't expose this!!!
 
 		#endregion
 	}
