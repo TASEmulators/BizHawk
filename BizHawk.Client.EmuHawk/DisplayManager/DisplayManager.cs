@@ -347,34 +347,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsFinished)
 			{
-				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
-				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
-				{
-					s.Append(Global.MovieSession.Movie.Frames);
-				}
-				else
-				{
-					s.Append("infinity");
-				}
-				s.Append(" (Finished)");
-				return s.ToString();
+				var sb = new StringBuilder();
+				sb
+					.Append(Global.Emulator.Frame)
+					.Append('/')
+					.Append(Global.MovieSession.Movie.FrameCount)
+					.Append(" (Finished)");
+				return sb.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsPlaying)
 			{
-				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
-				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
-				{
-					s.Append(Global.MovieSession.Movie.Frames);
-				}
-				else
-				{
-					s.Append("infinity");
-				}
-				return s.ToString();
+				var sb = new StringBuilder();
+				sb
+					.Append(Global.Emulator.Frame)
+					.Append('/')
+					.Append(Global.MovieSession.Movie.FrameCount);
+
+				return sb.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{

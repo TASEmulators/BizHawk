@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 
 			else if (Movie.IsFinished)
 			{
-				if (Global.Emulator.Frame < Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Global.Emulator.Frame < Movie.FrameCount) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
 					LatchInputFromLog();

@@ -61,25 +61,23 @@ namespace BizHawk.Client.Common
 			get { return Header[HeaderKeys.GAMENAME]; }
 		}
 
-		public int RawFrames
+		public int InputLogLength
 		{
 			get { return Loaded ? _log.Length : _preloadFramecount; }
 		}
 
-		public int? Frames
+		public double FrameCount
 		{
 			get
 			{
-				if (Loaded)
+				if (_loopOffset.HasValue)
 				{
-					if (_loopOffset.HasValue)
-					{
-						return null;
-					}
-					else
-					{
-						return _log.Length;
-					}
+					return double.PositiveInfinity;
+				}
+				else if (Loaded)
+				{
+					
+					return _log.Length;
 				}
 				else
 				{
@@ -281,12 +279,22 @@ namespace BizHawk.Client.Common
 				string line;
 				while ((line = sr.ReadLine()) != null)
 				{
-					if (String.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
+					if (line.Contains("LoopOffset"))
+					{
+						try
+						{
+							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
+						}
+						catch (Exception)
+						{
+							continue;
+						}
+					}
+					else if (String.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
 					{
 						continue;
 					}
-
-					if (line.StartsWith("|"))
+					else if (line.StartsWith("|"))
 					{
 						var frames = sr.ReadToEnd();
 						var length = line.Length;
