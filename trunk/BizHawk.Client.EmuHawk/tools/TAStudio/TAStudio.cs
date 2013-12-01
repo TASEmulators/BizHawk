@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
