@@ -590,6 +590,12 @@
     <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.Designer.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -908,6 +914,9 @@
     <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </EmbeddedResource>
@@ -969,12 +978,6 @@
     <Compile Include="RenderPanel.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
-    <Compile Include="tools\TAStudio.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio.Designer.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\ToolBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1050,9 +1053,6 @@
     <EmbeddedResource Include="tools\InputPrompt.resx">
       <DependentUpon>InputPrompt.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio.resx">
-      <DependentUpon>TAStudio.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\ToolBox.resx">
       <DependentUpon>ToolBox.cs</DependentUpon>
