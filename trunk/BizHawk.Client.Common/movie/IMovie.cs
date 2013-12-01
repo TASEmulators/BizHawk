@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -97,7 +98,7 @@ namespace BizHawk.Client.Common
 		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
-		void GetInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
+		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
 
 		string GetInput(int frame); // Should be a property of a Record object
 

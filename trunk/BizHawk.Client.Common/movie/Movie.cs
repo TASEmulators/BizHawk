@@ -439,7 +439,7 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public void GetInputLog(TextReader reader, bool isMultitracking)
+		public void ExtractInputLog(TextReader reader, bool isMultitracking)
 		{
 			int? stateFrame = null;
 			
