@@ -27,13 +27,16 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSave())
 				{
 					SaveConfigSettings();
+					GlobalWin.OSD.AddMessage("TAStudio Disengaged");
+					if (Global.MovieSession.Movie is TasMovie)
+					{
+						Global.MovieSession.Movie = new Movie();
+					}
 				}
 				else
 				{
 					e.Cancel = true;
 				}
-
-				GlobalWin.OSD.AddMessage("TAStudio Disengaged");
 			};
 
 			TopMost = Global.Config.TAStudioTopMost;
@@ -74,7 +77,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				var result = MessageBox.Show("Warning, Tastudio doesn't support .bkm movie files at this time, opening this will cause you to lose your work, proceed? If you have unsaved changes you should cancel this, and savebefore opening TAStudio", "Unsupported movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+				if (result != DialogResult.Yes)
+				{
+					Close();
+					return;
+				}
+			}
+
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			Global.MovieSession.Movie = new TasMovie();
 			LoadConfigSettings();
 		}
 
