@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
-			this[HeaderKeys.PLATFORM] = Global.Emulator.SystemId;
+			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : String.Empty;
 			this[HeaderKeys.GAMENAME] = String.Empty;
 			this[HeaderKeys.AUTHOR] = String.Empty;
 			this[HeaderKeys.RERECORDS] = "0";

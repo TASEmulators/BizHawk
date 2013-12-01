@@ -124,6 +124,7 @@
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\IMovie.cs" />
     <Compile Include="movie\IMovieHeader.cs" />
+    <Compile Include="movie\IMovieRecord.cs" />
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="movie\Movie.cs" />
     <Compile Include="movie\MovieHeader.cs" />
