@@ -8,6 +8,22 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
 	{
+		public TasMovie(string filename, bool startsFromSavestate = false)
+			: this(startsFromSavestate)
+		{
+			Filename = filename;
+		}
+
+		public TasMovie(bool startsFromSavestate = false)
+		{
+			Filename = String.Empty;
+			Header = new MovieHeader();
+			Header.StartsFromSavestate = startsFromSavestate;
+		}
+
+		public string Filename { get; set; }
+
+		public IMovieHeader Header { get; private set; }
 
 		public bool IsCountingRerecords
 		{
@@ -62,23 +78,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public ulong Rerecords
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		public IMovieHeader Header
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public string Filename
 		{
 			get
 			{
