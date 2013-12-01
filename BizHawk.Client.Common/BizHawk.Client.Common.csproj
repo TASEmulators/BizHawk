@@ -131,11 +131,13 @@
     <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\MovieLog.cs" />
     <Compile Include="movie\MovieMnemonics.cs" />
+    <Compile Include="movie\MovieRecord.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
+    <Compile Include="movie\TasMovie.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
