@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditCommentsForm : Form
 	{
-		private IMovie selectedMovie;
+		private IMovie _selectedMovie;
 
 		public EditCommentsForm()
 		{
@@ -24,11 +24,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CommentGrid.Rows.Count > 8)
 			{
-				int x = Height + ((CommentGrid.Rows.Count - 8) * 21);
-				if (x < 600)
-					Height = x;
-				else
-					Height = 600;
+				var x = Height + ((CommentGrid.Rows.Count - 8) * 21);
+				Height = x < 600 ? x : 600;
 			}
 		}
 
@@ -41,30 +38,31 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.ReadOnly)
 			{
-				selectedMovie.Header.Comments.Clear();
-				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
+				_selectedMovie.Header.Comments.Clear();
+				for (int i = 0; i < CommentGrid.Rows.Count - 1; i++)
 				{
-					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
-					selectedMovie.Header.Comments.Add("comment " + c.Value);
+					var c = CommentGrid.Rows[i].Cells[0];
+					_selectedMovie.Header.Comments.Add("comment " + c.Value);
 				}
-				selectedMovie.Save();
+				_selectedMovie.Save();
 			}
 			Close();
 		}
 
 		public void GetMovie(IMovie m)
 		{
-			selectedMovie = m;
+			_selectedMovie = m;
 			if (m.Header.Comments.Count == 0) return;
 
-			for (int x = 0; x < m.Header.Comments.Count; x++)
+			for (int i = 0; i < m.Header.Comments.Count; i++)
 			{
-				string str = m.Header.Comments[x];
+				var str = m.Header.Comments[i];
 				if (str.Length >= 7 && str.Substring(0, 7) == "comment")
+				{
 					str = str.Remove(0, 7);
+				}
 				CommentGrid.Rows.Add();
-				DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
-				
+				var c = CommentGrid.Rows[i].Cells[0];
 				c.Value = str;
 			}
 		}

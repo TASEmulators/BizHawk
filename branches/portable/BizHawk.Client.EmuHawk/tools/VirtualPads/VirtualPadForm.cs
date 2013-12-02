@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				string str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
-				if (Global.Config.TASUpdatePads && str != "")
+				if (Global.Config.VirtualPadsUpdatePads && str != "")
 				{
 					switch (Global.Emulator.SystemId)
 					{

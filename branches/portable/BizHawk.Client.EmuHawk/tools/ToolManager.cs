@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -211,6 +209,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void UpdateToolsBefore(bool fromLua = false)
+		{
+			if (Has<LuaConsole>())
+			{
+				if (!fromLua)
+				{
+					LuaConsole.StartLuaDrawing();
+				}
+				LuaConsole.LuaImp.CallFrameBeforeEvent();
+			}
+			UpdateBefore();
+		}
+
+		public void UpdateToolsAfter(bool fromLua = false)
+		{
+			if (!fromLua && Has<LuaConsole>())
+			{
+				LuaConsole.ResumeScripts(true);
+			}
+
+			GlobalWin.Tools.UpdateAfter();
+
+			if (Has<LuaConsole>())
+			{
+				LuaConsole.LuaImp.CallFrameAfterEvent();
+				if (!fromLua)
+				{
+					GlobalWin.DisplayManager.PreFrameUpdateLuaSource();
+					LuaConsole.EndLuaDrawing();
+				}
+			}
+		}
+
 		//Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
@@ -376,5 +407,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		//TODO: this shouldn't be necessary
+		public void LoadRamWatch(bool loadDialog)
+		{
+			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			{
+				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
+			}
+			if (loadDialog)
+			{
+				GlobalWin.Tools.Load<RamWatch>();
+			}
+		}
 	}
 }

@@ -28,19 +28,21 @@ namespace BizHawk.Client.Common
 			else
 			{
 				_enabled = cheat.Enabled;
-				_watch = Watch.GenerateWatch(cheat.Domain,
+				_watch = Watch.GenerateWatch(
+					cheat.Domain,
 					cheat.Address ?? 0,
 					cheat.Size,
 					cheat.Type,
 					cheat.Name,
-					cheat.BigEndian ?? false
-					);
+					cheat.BigEndian ?? false);
 				_compare = cheat.Compare;
 				_val = cheat.Value ?? 0;
 
 				Pulse();
 			}
 		}
+
+		public delegate void CheatEventHandler(object sender);
 
 		public static Cheat Separator
 		{
@@ -49,10 +51,24 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		#region Properties
+		#region private parts
 
-		public delegate void CheatEventHandler(object sender);
-		public event CheatEventHandler Changed;
+		private readonly Watch _watch;
+		private int? _compare;
+		private int _val;
+		private bool _enabled;
+
+		private void Changes()
+		{
+			if (Changed != null)
+			{
+				Changed(this);
+			}
+		}
+
+		#endregion
+
+		#region Properties
 
 		public bool IsSeparator
 		{
@@ -61,7 +77,7 @@ namespace BizHawk.Client.Common
 
 		public bool Enabled
 		{
-			get { if (IsSeparator) return false; else return _enabled; }
+			get { return !IsSeparator && _enabled; }
 		}
 
 		public int? Address
@@ -76,12 +92,12 @@ namespace BizHawk.Client.Common
 
 		public bool? BigEndian
 		{
-			get { if (IsSeparator) return null; else return _watch.BigEndian; }
+			get { return IsSeparator ? (bool?)null : _watch.BigEndian; }
 		}
 
 		public int? Compare
 		{
-			get { if (_compare.HasValue && !IsSeparator) return _compare; else return null; }
+			get { return _compare.HasValue && !IsSeparator ? _compare : null; }
 		}
 
 		public MemoryDomain Domain
@@ -111,7 +127,7 @@ namespace BizHawk.Client.Common
 
 		public string Name
 		{
-			get { if (IsSeparator) return String.Empty; else return _watch.Notes; }
+			get { return IsSeparator ? String.Empty : _watch.Notes; }
 		}
 
 		public string AddressStr
@@ -164,6 +180,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public event CheatEventHandler Changed;
+
 		#endregion
 
 		#region Actions
@@ -172,7 +190,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				bool wasEnabled = _enabled;
+				var wasEnabled = _enabled;
 				_enabled = true;
 				if (!wasEnabled)
 				{
@@ -185,7 +203,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				bool wasEnabled = _enabled;
+				var wasEnabled = _enabled;
 				_enabled = false;
 				if (wasEnabled)
 				{
@@ -264,23 +282,6 @@ namespace BizHawk.Client.Common
 			{
 				_watch.Type = type;
 				Changes();
-			}
-		}
-
-		#endregion
-
-		#region private parts
-
-		private readonly Watch _watch;
-		private int? _compare;
-		private int _val;
-		private bool _enabled;
-
-		private void Changes()
-		{
-			if (Changed != null)
-			{
-				Changed(this);
 			}
 		}
 

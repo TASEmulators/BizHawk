@@ -581,13 +581,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
 			sfd.RestoreDirectory = true;
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
+			}
+
+			return new FileInfo(sfd.FileName);
 		}
 
 		private void LuaText_KeyUp(object sender, KeyEventArgs e)

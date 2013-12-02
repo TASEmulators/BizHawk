@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Drawing;
-using System.IO;
+using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -15,6 +13,13 @@ namespace BizHawk.Client.Common
 			return this.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration);
 		}
 
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
+			return sb.ToString();
+		}
+
 		public bool AddFromString(string subtitleStr)
 		{
 			if (!String.IsNullOrWhiteSpace(subtitleStr))
@@ -23,14 +28,14 @@ namespace BizHawk.Client.Common
 				{
 					var subparts = subtitleStr.Split(' ');
 
-					//Unfortunately I made the file format space delminated so this hack is necessary to get the message
-					string message = String.Empty;
-					for (int i = 6; i < subparts.Length; i++)
+					// Unfortunately I made the file format space delminated so this hack is necessary to get the message
+					var message = String.Empty;
+					for (var i = 6; i < subparts.Length; i++)
 					{
 						message += subparts[i] + ' ';
 					}
 
-					Add(new Subtitle()
+					Add(new Subtitle 
 					{
 						Frame = int.Parse(subparts[1]),
 						X = int.Parse(subparts[2]),

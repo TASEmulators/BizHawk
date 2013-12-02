@@ -1,9 +1,10 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -11,21 +12,21 @@ namespace BizHawk.Client.Common
 	{
 		#region Constructors
 
-		public Movie(string filename)
-			: this()
+		public Movie(string filename, bool startsFromSavestate = false)
+			: this(startsFromSavestate)
 		{
 			Rerecords = 0;
 			Filename = filename;
 			Loaded = !String.IsNullOrWhiteSpace(filename);
 		}
 
-		public Movie()
+		public Movie(bool startsFromSavestate = false)
 		{
 			Header = new MovieHeader();
-			Subtitles = new SubtitleList();
 			Filename = String.Empty;
 			_preloadFramecount = 0;
-			StartsFromSavestate = false;
+			Header.StartsFromSavestate = startsFromSavestate;
+			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
 			IsText = true;
@@ -35,9 +36,9 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Properties
-		public MovieHeader Header { get; private set; }
-		public SubtitleList Subtitles { get; private set; }
-		
+
+		public IMovieHeader Header { get; private set; }
+
 		public bool MakeBackup { get; set; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
@@ -45,102 +46,35 @@ namespace BizHawk.Client.Common
 		public bool Loaded { get; private set; }
 		public bool IsText { get; private set; }
 
-		public int Rerecords
+		public ulong Rerecords
 		{
-			get { return _rerecords; }
-			set
-			{
-				_rerecords = value;
-				Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
-			}
+			get { return Header.Rerecords; }
+			set { Header.Rerecords = value; }
 		}
 
-		public string SysID
-		{
-			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
-		}
-
-		public string GameName
-		{
-			get { return Header.GetHeaderLine(MovieHeader.GAMENAME); }
-		}
-
-		public int RawFrames
+		public int InputLogLength
 		{
 			get { return Loaded ? _log.Length : _preloadFramecount; }
 		}
 
-		public int? Frames
+		public double FrameCount
 		{
 			get
 			{
-				if (Loaded)
+				if (_loopOffset.HasValue)
 				{
-					if (_loopOffset.HasValue)
-					{
-						return null;
-					}
-					else
-					{
-						return _log.Length;
-					}
+					return double.PositiveInfinity;
+				}
+				else if (Loaded)
+				{
+					
+					return _log.Length;
 				}
 				else
 				{
 					return _preloadFramecount;
 				}
 			}
-		}
-
-		public bool StartsFromSavestate
-		{
-			get { return _startsfromsavestate; }
-			set
-			{
-				_startsfromsavestate = value;
-				if (value)
-				{
-					Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
-				}
-				else
-				{
-					Header.RemoveHeaderLine(MovieHeader.STARTSFROMSAVESTATE);
-				}
-			}
-		}
-
-		//TODO: these are getting too lengthy perhaps the log should just be exposed?
-		public int StateFirstIndex
-		{
-			get { return _log.StateFirstIndex; }
-		}
-
-		public int StateLastIndex
-		{
-			get { return _log.StateLastIndex; }
-		}
-
-		public bool StateCapturing
-		{
-			get { return _statecapturing; }
-			set
-			{
-				_statecapturing = value;
-				if (value == false)
-				{
-					_log.ClearStates();
-				}
-			}
-		}
-
-		public byte[] GetState(int frame)
-		{
-			return _log.GetState(frame);
-		}
-
-		public byte[] InitState
-		{
-			get { return _log.InitState; }
 		}
 
 		#endregion
@@ -172,11 +106,7 @@ namespace BizHawk.Client.Common
 			get { return _changes; }
 		}
 
-		/// <summary>
-		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
-		/// </summary>
-		/// <param name="truncate"></param>
-		public void StartRecording(bool truncate = true)
+		public void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
@@ -184,28 +114,21 @@ namespace BizHawk.Client.Common
 				SaveAs();
 				MakeBackup = false;
 			}
-			if (truncate)
-			{
-				_log.Clear();
-			}
+
+			_log.Clear();
 		}
 
-		public void StartPlayback()
+		public void StartNewPlayback()
 		{
 			_mode = Moviemode.Play;
+			Global.Emulator.ClearSaveRam();
 		}
 
-		/// <summary>
-		/// Tells the movie to recording mode
-		/// </summary>
 		public void SwitchToRecord()
 		{
 			_mode = Moviemode.Record;
 		}
 
-		/// <summary>
-		/// Tells the movie to go into playback mode
-		/// </summary>
 		public void SwitchToPlay()
 		{
 			_mode = Moviemode.Play;
@@ -221,6 +144,7 @@ namespace BizHawk.Client.Common
 					Save();
 				}
 			}
+
 			_changes = false;
 			_mode = Moviemode.Inactive;
 		}
@@ -228,7 +152,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// If a movie is in playback mode, this will set it to movie finished
 		/// </summary>
-		public void Finish()
+		private void Finish()
 		{
 			if (_mode == Moviemode.Play)
 			{
@@ -246,9 +170,13 @@ namespace BizHawk.Client.Common
 			{
 				return;
 			}
+
 			var directory_info = new FileInfo(Filename).Directory;
-			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
-			
+			if (directory_info != null)
+			{
+				Directory.CreateDirectory(directory_info.FullName);
+			}
+
 			if (IsText)
 			{
 				WriteText(Filename);
@@ -277,61 +205,74 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			string BackupName = Filename;
-			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			BackupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(BackupName) ?? String.Empty);
+			var backupName = Filename;
+			backupName = backupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
+			backupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(backupName) ?? String.Empty);
 
-			var directory_info = new FileInfo(BackupName).Directory;
-			if (directory_info != null) Directory.CreateDirectory(directory_info.FullName);
+			var directory_info = new FileInfo(backupName).Directory;
+			if (directory_info != null)
+			{
+				Directory.CreateDirectory(directory_info.FullName);
+			}
 
 			if (IsText)
 			{
-				WriteText(BackupName);
+				WriteText(backupName);
 			}
 			else
 			{
-				WriteBinary(BackupName);
+				WriteBinary(backupName);
 			}
 		}
 
 		/// <summary>
 		/// Load Header information only for displaying file information in dialogs such as play movie
 		/// </summary>
-		/// <returns></returns>
 		public bool PreLoadText(HawkFile hawkFile)
 		{
 			Loaded = false;
 			var file = new FileInfo(hawkFile.CanonicalFullPath);
 
 			if (file.Exists == false)
+			{
 				return false;
+			}
 			else
 			{
 				Header.Clear();
 				_log.Clear();
 			}
 
-			long origStreamPosn = hawkFile.GetStream().Position; 
-			hawkFile.GetStream().Position = 0; //Reset to start
-			StreamReader sr = new StreamReader(hawkFile.GetStream()); //No using block because we're sharing the stream and need to give it back undisposed.
-			if(!sr.EndOfStream)
+			var origStreamPosn = hawkFile.GetStream().Position; 
+			hawkFile.GetStream().Position = 0; // Reset to start
+			var sr = new StreamReader(hawkFile.GetStream());
+			
+			// No using block because we're sharing the stream and need to give it back undisposed.
+			if (!sr.EndOfStream)
 			{
-				string str;
-				while ((str = sr.ReadLine()) != null)
+				string line;
+				while ((line = sr.ReadLine()) != null)
 				{
-					if (String.IsNullOrWhiteSpace(str) || Header.AddHeaderFromLine(str))
+					if (line.Contains("LoopOffset"))
+					{
+						try
+						{
+							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
+						}
+						catch (Exception)
+						{
+							continue;
+						}
+					}
+					else if (String.IsNullOrWhiteSpace(line) || Header.ParseLineFromFile(line))
 					{
 						continue;
 					}
+					else if (line.StartsWith("|"))
+					{
+						var frames = sr.ReadToEnd();
+						var length = line.Length;
 
-					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-					{
-						Subtitles.AddFromString(str);
-					}
-					else if (str[0] == '|')
-					{
-						string frames = sr.ReadToEnd();
-						int length = str.Length;
 						// Account for line breaks of either size.
 						if (frames.IndexOf("\r\n") != -1)
 						{
@@ -339,16 +280,17 @@ namespace BizHawk.Client.Common
 						}
 
 						length++;
-						// Count the remaining frames and the current one.
-						_preloadFramecount = (frames.Length/length) + 1;
+						_preloadFramecount = (frames.Length / length) + 1; // Count the remaining frames and the current one.
 						break;
 					}
 					else
 					{
-						Header.Comments.Add(str);
+						Header.Comments.Add(line);
 					}
 				}
 			}
+			hawkFile.GetStream().Position = origStreamPosn;
+
 			hawkFile.GetStream().Position = origStreamPosn;
 
 			return true;
@@ -372,30 +314,38 @@ namespace BizHawk.Client.Common
 
 		public string GetInput(int frame)
 		{
-			if (frame >= 0)
+			if (frame < _log.Length)
 			{
-				int getframe;
-
-				if (_loopOffset.HasValue)
+				if (frame >= 0)
 				{
-					if (frame < _log.Length)
+					int getframe;
+
+					if (_loopOffset.HasValue)
 					{
-						getframe = frame;
+						if (frame < _log.Length)
+						{
+							getframe = frame;
+						}
+						else
+						{
+							getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						}
 					}
 					else
 					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Length - _loopOffset.Value)) + _loopOffset.Value;
+						getframe = frame;
 					}
+
+					return _log[getframe];
 				}
 				else
 				{
-					getframe = frame;
+					return String.Empty;
 				}
-
-				return _log[getframe];
 			}
 			else
 			{
+				Finish();
 				return String.Empty;
 			}
 		}
@@ -447,25 +397,6 @@ namespace BizHawk.Client.Common
 
 		#region Public Misc Methods
 
-		public MovieLog LogDump
-		{
-			get { return _log; }
-		}
-
-		public bool FrameLagged(int frame)
-		{
-			return _log.FrameLagged(frame);
-		}
-
-		public void CaptureState()
-		{
-			if (StateCapturing)
-			{
-				_log.AddState(Global.Emulator.SaveStateBinary());
-				GC.Collect();
-			}
-		}
-
 		public void PokeFrame(int frameNum, string input)
 		{
 			_changes = true;
@@ -474,40 +405,46 @@ namespace BizHawk.Client.Common
 
 		public void CommitFrame(int frameNum, IController source)
 		{
-			//Note: Truncation here instead of loadstate will make VBA style loadstates
-			//(Where an entire movie is loaded then truncated on the next frame
-			//this allows users to restore a movie with any savestate from that "timeline"
+			// Note: Truncation here instead of loadstate will make VBA style loadstates
+			// (Where an entire movie is loaded then truncated on the next frame
+			// this allows users to restore a movie with any savestate from that "timeline"
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
 				if (Global.Emulator.Frame < _log.Length)
 				{
 					_log.TruncateMovie(Global.Emulator.Frame);
-					_log .TruncateStates(Global.Emulator.Frame);
 				}
 			}
+
 			_changes = true;
-			MnemonicsGenerator mg = new MnemonicsGenerator();
+			var mg = new MnemonicsGenerator();
 			mg.SetSource(source);
 			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
-		public void DumpLogIntoSavestateText(TextWriter writer)
+		public string GetInputLog()
 		{
-			writer.WriteLine("[Input]");
-			writer.WriteLine(MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID));
+			var sb = new StringBuilder();
 
-			for (int x = 0; x < _log.Length; x++)
+			sb
+				.AppendLine("[Input]")
+				.AppendLine(HeaderKeys.GUID + " " + Header[HeaderKeys.GUID]);
+
+			foreach (var record in _log)
 			{
-				writer.WriteLine(_log[x]);
+				sb.AppendLine(record);
 			}
 
-			writer.WriteLine("[/Input]");
+			sb.AppendLine("[/Input]");
+
+			return sb.ToString();
 		}
 
-		public void LoadLogFromSavestateText(TextReader reader, bool isMultitracking)
+		public void ExtractInputLog(TextReader reader, bool isMultitracking)
 		{
 			int? stateFrame = null;
-			//We are in record mode so replace the movie log with the one from the savestate
+			
+			// We are in record mode so replace the movie log with the one from the savestate
 			if (!isMultitracking)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
@@ -515,26 +452,39 @@ namespace BizHawk.Client.Common
 					SaveAs();
 					MakeBackup = false;
 				}
+
 				_log.Clear();
 				while (true)
 				{
-					string line = reader.ReadLine();
-					if (line == null) break;
-					else if (line.Trim() == "") continue;
-					else if (line == "[Input]") continue;
-					else if (line == "[/Input]") break;
-					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					var line = reader.ReadLine();
+					if (line == null)
 					{
-						string[] strs = line.Split('x');
+						break;
+					}
+					else if (line.Trim() == String.Empty)
+					{
+						continue;
+					}
+					else if (line == "[Input]")
+					{
+						continue;
+					}
+					else if (line == "[/Input]")
+					{
+						break;
+					}
+					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
 						try
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } //TODO: message?
+						catch { } // TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
-						string[] strs = line.Split(' ');
+						var strs = line.Split(' ');
 						try
 						{
 							stateFrame = int.Parse(strs[1]);
@@ -552,39 +502,55 @@ namespace BizHawk.Client.Common
 				int i = 0;
 				while (true)
 				{
-					string line = reader.ReadLine();
-					if (line == null) break;
-					else if (line.Trim() == "") continue;
-					else if (line == "[Input]") continue;
-					else if (line == "[/Input]") break;
-					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					var line = reader.ReadLine();
+					if (line == null)
 					{
-						string[] strs = line.Split('x');
+						break;
+					}
+					else if (line.Trim() == string.Empty)
+					{
+						continue;
+					}
+					else if (line == "[Input]")
+					{
+						continue;
+					}
+					else if (line == "[/Input]")
+					{
+						break;
+					}
+					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					{
+						var strs = line.Split('x');
 						try
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } //TODO: message?
+						catch { } // TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
-						string[] strs = line.Split(' ');
+						var strs = line.Split(' ');
 						try
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { } //TODO: message?
+						catch { } // TODO: message?
 					}
-					if (line[0] == '|')
+					else if (line.StartsWith("|"))
 					{
 						_log.SetFrameAt(i, line);
 						i++;
 					}
 				}
 			}
+
 			if (stateFrame == null)
+			{
 				throw new Exception("Couldn't find stateFrame");
-			int stateFramei = (int)stateFrame;
+			}
+
+			var stateFramei = (int)stateFrame;
 
 			if (stateFramei > 0 && stateFramei < _log.Length)
 			{
@@ -594,32 +560,28 @@ namespace BizHawk.Client.Common
 					_log.TruncateMovie(stateFramei);
 				}
 			}
-			else if (stateFramei > _log.Length) //Post movie savestate
+			else if (stateFramei > _log.Length) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
 					_log.TruncateStates(_log.Length);
 					_log.TruncateMovie(_log.Length);
 				}
+
 				_mode = Moviemode.Finished;
 			}
+
 			if (IsCountingRerecords)
+			{
 				Rerecords++;
+			}
 		}
 
 		public string GetTime(bool preLoad)
 		{
-			string time = String.Empty;
+			var time = String.Empty;
 
-			double seconds;
-			if (preLoad)
-			{
-				seconds = GetSeconds(_preloadFramecount);
-			}
-			else
-			{
-				seconds = GetSeconds(_log.Length);
-			}
+			double seconds = GetSeconds(preLoad ? _preloadFramecount : _log.Length);
 
 			int hours = ((int)seconds) / 3600;
 			int minutes = (((int)seconds) / 60) % 60;
@@ -631,7 +593,7 @@ namespace BizHawk.Client.Common
 			
 			time += MakeDigits(minutes) + ":";
 
-			if (sec < 10) //Kludge
+			if (sec < 10) // Kludge
 			{
 				time += "0";
 			}
@@ -643,25 +605,25 @@ namespace BizHawk.Client.Common
 
 		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
 		{
-			//This function will compare the movie data to the savestate movie data to see if they match
+			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = String.Empty;
 			var log = new MovieLog();
 			int stateFrame = 0;
 			while (true)
 			{
-				string line = reader.ReadLine();
+				var line = reader.ReadLine();
 				if (line == null)
 				{
 					return LoadStateResult.EmptyLog;
 				}
-				else if (line.Trim() == "")
+				else if (line.Trim() == string.Empty)
 				{
 					continue;
 				}
 				else if (line.Contains("GUID"))
 				{
-					string guid = ParseHeader(line, MovieHeader.GUID);
-					if (Header.GetHeaderLine(MovieHeader.GUID) != guid)
+					var guid = line.Split(new[] { ' ' }, 2)[1];
+					if (Header[HeaderKeys.GUID] != guid)
 					{
 						if (!ignoreGuidMismatch)
 						{
@@ -669,9 +631,9 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
-				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+				else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 				{
-					string[] strs = line.Split('x');
+					var strs = line.Split('x');
 					try
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
@@ -684,7 +646,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.Contains("Frame "))
 				{
-					string[] strs = line.Split(' ');
+					var strs = line.Split(' ');
 					try
 					{
 						stateFrame = int.Parse(strs[1]);
@@ -695,8 +657,14 @@ namespace BizHawk.Client.Common
 						return LoadStateResult.MissingFrameNumber;
 					}
 				}
-				else if (line == "[Input]") continue;
-				else if (line == "[/Input]") break;
+				else if (line == "[Input]")
+				{
+					continue;
+				}
+				else if (line == "[/Input]")
+				{
+					break;
+				}
 				else if (line[0] == '|')
 				{
 					log.AppendFrame(line);
@@ -710,8 +678,9 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame == 0)
 			{
-				stateFrame = log.Length;  //In case the frame count failed to parse, revert to using the entire state input log
+				stateFrame = log.Length;  // In case the frame count failed to parse, revert to using the entire state input log
 			}
+
 			if (_log.Length < stateFrame)
 			{
 				if (IsFinished)
@@ -721,24 +690,25 @@ namespace BizHawk.Client.Common
 				else
 				{
 					errorMessage = "The savestate is from frame "
-						+ log.Length.ToString()
+						+ log.Length
 						+ " which is greater than the current movie length of "
-						+ _log.Length.ToString();
+						+ _log.Length;
 					return LoadStateResult.FutureEventError;
 				}
 			}
-			for (int i = 0; i < stateFrame; i++)
+
+			for (var i = 0; i < stateFrame; i++)
 			{
 				if (_log[i] != log[i])
 				{
 					errorMessage = "The savestate input does not match the movie input at frame "
-						+ (i + 1).ToString()
+						+ (i + 1)
 						+ ".";
 					return LoadStateResult.TimeLineError;
 				}
 			}
 
-			if (stateFrame > log.Length) //stateFrame is greater than state input log, so movie finished mode
+			if (stateFrame > log.Length) // stateFrame is greater than state input log, so movie finished mode
 			{
 				if (_mode == Moviemode.Play || _mode == Moviemode.Finished)
 				{
@@ -747,7 +717,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return LoadStateResult.NotInRecording; //TODO: For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+					return LoadStateResult.NotInRecording; // TODO: For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
 				}
 			}
 			else if (_mode == Moviemode.Finished)
@@ -765,10 +735,7 @@ namespace BizHawk.Client.Common
 		private readonly MovieLog _log = new MovieLog();
 		private enum Moviemode { Inactive, Play, Record, Finished };
 		private Moviemode _mode = Moviemode.Inactive;
-		private bool _statecapturing;
-		private bool _startsfromsavestate;
-		private int _preloadFramecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
-		private int _rerecords;
+		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private bool _changes;
 		private int? _loopOffset;
 
@@ -779,30 +746,29 @@ namespace BizHawk.Client.Common
 		private void WriteText(string fn)
 		{
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
+			{
 				WriteText(fs);
+			}
 		}
 
 		private void WriteBinary(string fn)
 		{
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
+			{
 				WriteBinary(fs);
+			}
 		}
 
 		private void WriteText(Stream stream)
 		{
-			using (StreamWriter sw = new StreamWriter(stream))
+			using (var sw = new StreamWriter(stream))
 			{
 				sw.Write(Header.ToString());
 
-				//TODO: clean this up
+				// TODO: clean this up
 				if (_loopOffset.HasValue)
 				{
-					sw.WriteLine("LoopOffset " + _loopOffset.ToString());
-				}
-
-				foreach (var subtitle in Subtitles)
-				{
-					sw.WriteLine(subtitle.ToString());
+					sw.WriteLine("LoopOffset " + _loopOffset);
 				}
 
 				for (int i = 0; i < _log.Length; i++)
@@ -831,69 +797,45 @@ namespace BizHawk.Client.Common
 				_log.Clear();
 			}
 
-			using (StreamReader sr = file.OpenText())
+			using (var sr = file.OpenText())
 			{
-				string str;
+				string line;
 
-				while ((str = sr.ReadLine()) != null)
+				while ((line = sr.ReadLine()) != null)
 				{
-					if (str == "")
+					if (line == String.Empty)
 					{
 						continue;
 					}
 
-					if (str.Contains(MovieHeader.RERECORDS))
+					if (line.Contains("LoopOffset"))
 					{
-						string rerecordStr = ParseHeader(str, MovieHeader.RERECORDS);
 						try
 						{
-							Rerecords = int.Parse(rerecordStr);
+							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
 						}
-						catch
+						catch (Exception)
 						{
-							Rerecords = 0;
+							continue;
 						}
 					}
-					else if (str.Contains(MovieHeader.STARTSFROMSAVESTATE))
-					{
-						str = ParseHeader(str, MovieHeader.STARTSFROMSAVESTATE);
-						if (str == "1")
-							StartsFromSavestate = true;
-					}
-
-					else if (str.Contains("LoopOffset"))
-					{
-						str = ParseHeader(str, "LoopOffset");
-						try
-						{
-							_loopOffset = int.Parse(str);
-						}
-						catch
-						{
-							//Do nothing
-						}
-					}
-					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-					{
-						Subtitles.AddFromString(str);
-					}
-					else if (Header.AddHeaderFromLine(str))
+					else if (Header.ParseLineFromFile(line))
 					{
 						continue;
 					}
-					else if (str[0] == '|')
+					else if (line.StartsWith("|"))
 					{
-						_log.AppendFrame(str);
+						_log.AppendFrame(line);
 					}
 					else
 					{
-						Header.Comments.Add(str);
+						Header.Comments.Add(line);
 					}
 				}
 			}
+
 			Loaded = true;
 			return true;
-
 		}
 
 		private bool LoadBinary()
@@ -901,16 +843,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private string MakeDigits(int num)
+		private static string MakeDigits(int num)
 		{
-			if (num < 10)
-			{
-				return "0" + num.ToString();
-			}
-			else
-			{
-				return num.ToString();
-			}
+			return num < 10 ? "0" + num : num.ToString();
 		}
 
 		private double GetSeconds(int frameCount)
@@ -922,86 +857,31 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 
-			string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
-			bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
-				Header.HeaderParams[MovieHeader.PAL] == "1";
+			var system = Header[HeaderKeys.PLATFORM];
+			var pal = Header.ContainsKey(HeaderKeys.PAL) &&
+				Header[HeaderKeys.PAL] == "1";
 
-			return frames / _PlatformFrameRates[system, pal];
-		}
-
-		private static string ParseHeader(string line, string headerName)
-		{
-			int x = line.LastIndexOf(headerName) + headerName.Length;
-			return line.Substring(x + 1, line.Length - x - 1);
+			return frames / this.FrameRates[system, pal];
 		}
 
 		public double Fps
 		{
 			get
 			{
-				string system = Header.GetHeaderLine(MovieHeader.PLATFORM);
-				bool pal = Header.HeaderParams.ContainsKey(MovieHeader.PAL) &&
-					Header.HeaderParams[MovieHeader.PAL] == "1";
+				var system = Header[HeaderKeys.PLATFORM];
+				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
+					Header[HeaderKeys.PAL] == "1";
 
-				return _PlatformFrameRates[system, pal];
+				return FrameRates[system, pal];
 			}
 		}
 
 		#endregion
 
-		private PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
-		public PlatformFrameRates _PlatformFrameRates
+		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
+		public PlatformFrameRates FrameRates
 		{
-			get { return _platformFrameRates; }
-		}
-
-		public class PlatformFrameRates
-		{
-			public double this[string systemId, bool pal]
-			{
-				get
-				{
-					string key = systemId + (pal ? "_PAL" : String.Empty);
-					if (rates.ContainsKey(key))
-					{
-						return rates[key];
-					}
-					else
-					{
-						return 60.0;
-					}
-				}
-			}
-
-			private Dictionary<string, double> rates = new Dictionary<string, double>
-			{
-				{ "NES", 60.098813897440515532 },
-				{ "NES_PAL", 50.006977968268290849 },
-				{ "FDS", 60.098813897440515532 },
-				{ "FDS_PAL", 50.006977968268290849 },
-				{ "SNES", (double)21477272 / (4 * 341 * 262) },
-				{ "SNES_PAL", (double)21281370 / (4 * 341 * 312) },
-				{ "SGB", (double)21477272 / (4 * 341 * 262) },
-				{ "SGB_PAL", (double)21281370 / (4 * 341 * 312) },
-				{ "PCE", (7159090.90909090 / 455 / 263) }, //~59.826
-				{ "PCECD", (7159090.90909090 / 455 / 263) }, //~59.826
-				{ "SMS", (3579545 / 262.0 / 228.0) },
-				{ "SMS_PAL", (3546893 / 313.0 / 228.0) },
-				{ "GG", (3579545 / 262.0 / 228.0) },
-				{ "GG_PAL", (3546893 / 313.0 / 228.0) },
-				{ "SG", (3579545 / 262.0 / 228.0) },
-				{ "SG_PAL", (3546893 / 313.0 / 228.0) },
-				{ "NGP", (6144000.0 / (515 * 198)) },
-				{ "VBOY", (20000000 / (259 * 384 * 4)) },  //~50.273
-				{ "LYNX", 59.8 },
-				{ "WSWAN", (3072000.0 / (159 * 256)) },
-				{ "GB", 262144.0 / 4389.0 },
-				{ "GBC", 262144.0 / 4389.0 },
-				{ "GBA", 262144.0 / 4389.0 },
-				{ "A26", 59.9227510135505 },
-				{ "A78", 59.9227510135505 },
-				{ "Coleco", 59.9227510135505 }
-			};
+			get { return _frameRates; }
 		}
 	}
 }

@@ -18,8 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		//TODO
 		//Allow relative paths in record textbox
 
-		Movie MovieToRecord;
-
 		public RecordMovie()
 		{
 			InitializeComponent();
@@ -28,105 +26,141 @@ namespace BizHawk.Client.EmuHawk
 		private string MakePath()
 		{
 			if (RecordBox.Text.Length == 0)
-				return "";
-			string path = RecordBox.Text;
+			{
+				return String.Empty;
+			}
+			var path = RecordBox.Text;
 			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 			{
 				if (path[0] != Path.DirectorySeparatorChar)
+				{
 					path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
+				}
 				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null) + path;
 
 				if (path[path.Length - 4] != '.') //If no file extension, add movie extension
+				{
 					path += "." + Global.Config.MovieExtension;
+				}
 				return path;
 			}
 			else
+			{
 				return path;
+			}
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			string path = MakePath();
-
-			if (path.Length > 0)
+			var path = MakePath();
+			if (!String.IsNullOrWhiteSpace(path))
 			{
-				FileInfo test = new FileInfo(path);
+				var test = new FileInfo(path);
 				if (test.Exists)
 				{
 					var result = MessageBox.Show(path + " already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 					if (result == DialogResult.Cancel)
+					{
 						return;
+					}
 				}
 
+				Movie _movieToRecord;
 
-				MovieToRecord = new Movie(path);
-
-				//Header
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, VersionInfo.GetEmuVersion());
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
-				if (Global.Game != null)
+				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SHA1, Global.Game.Hash);
-					if (Global.Game.FirmwareHash != null)
-						MovieToRecord.Header.SetHeaderLine(MovieHeader.FIRMWARESHA1, Global.Game.FirmwareHash);
+					_movieToRecord = new Movie(path, startsFromSavestate: true);
+					var temppath = path;
+					var writer = new StreamWriter(temppath);
+					Global.Emulator.SaveStateText(writer);
+					writer.Close();
+
+					var file = new FileInfo(temppath);
+					using (var sr = file.OpenText())
+					{
+						string str;
+						while ((str = sr.ReadLine()) != null)
+						{
+							if (!String.IsNullOrWhiteSpace(str))
+							{
+								_movieToRecord.Header.Comments.Add(str);
+							}
+						}
+					}
 				}
 				else
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
+					_movieToRecord = new Movie(path);
+				}
+
+				//Header
+				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
+				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
+				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+				_movieToRecord.Header[HeaderKeys.GUID] = HeaderKeys.NewGuid;
+				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
+				if (Global.Game != null)
+				{
+					_movieToRecord.Header[HeaderKeys.GAMENAME] = PathManager.FilesystemSafeName(Global.Game);
+					_movieToRecord.Header[HeaderKeys.SHA1] = Global.Game.Hash;
+					if (Global.Game.FirmwareHash != null)
+					{
+						_movieToRecord.Header[HeaderKeys.FIRMWARESHA1] = Global.Game.FirmwareHash;
+					}
+				}
+				else
+				{
+					_movieToRecord.Header[HeaderKeys.GAMENAME] = "NULL";
 				}
 
 				if (Global.Emulator.BoardName != null)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.BOARDNAME, Global.Emulator.BoardName);
+					_movieToRecord.Header[HeaderKeys.BOARDNAME] = Global.Emulator.BoardName;
 				}
 
 				if (Global.Emulator is Gameboy)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
+					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = Global.Config.GB_ForceDMG.ToString();
+					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = Global.Config.GB_GBACGB.ToString();
 				}
 
 				if (Global.Emulator is LibsnesCore)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
+					_movieToRecord.Header[HeaderKeys.SGB] = ((Global.Emulator) as LibsnesCore).IsSGB.ToString();
 					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
 					{
-						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is SMS)
 				{
 					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
 					{
-						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is NES)
 				{
 					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
 					{
-						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
 				else if (Global.Emulator is ColecoVision)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
+					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = Global.Config.ColecoSkipBiosIntro.ToString();
 				}
 
 				else if (Global.Emulator is N64)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.VIDEOPLUGIN, Global.Config.N64VidPlugin);
+					_movieToRecord.Header[HeaderKeys.VIDEOPLUGIN] = Global.Config.N64VidPlugin;
 
 					if (Global.Config.N64VidPlugin == "Rice")
 					{
 						var rice_settings = Global.Config.RicePlugin.GetPluginSettings();
 						foreach(var setting in rice_settings)
 						{
-							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
 						}
 					}
 					else if (Global.Config.N64VidPlugin == "Glide64")
@@ -134,41 +168,17 @@ namespace BizHawk.Client.EmuHawk
 						var glide_settings = Global.Config.GlidePlugin.GetPluginSettings();
 						foreach (var setting in glide_settings)
 						{
-							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
 						}
 					}
 
 					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
 					{
-						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now")
-				{
-					MovieToRecord.StartsFromSavestate = true;
-					var temppath = path;
-					var writer = new StreamWriter(temppath);
-					Global.Emulator.SaveStateText(writer);
-					writer.Close();
-
-					var file = new FileInfo(temppath);
-					using (StreamReader sr = file.OpenText())
-					{
-						string str;
-
-						while ((str = sr.ReadLine()) != null)
-						{
-							if (str == "")
-							{
-								continue;
-							}
-							else
-								MovieToRecord.Header.Comments.Add(str);
-						}
-					}
-				}
-				GlobalWin.MainForm.StartNewMovie(MovieToRecord, true);
+				GlobalWin.MainForm.StartNewMovie(_movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
@@ -191,26 +201,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			string filename = "";
-			SaveFileDialog sfd = new SaveFileDialog
+			var filename = String.Empty;
+			var sfd = new SaveFileDialog
 				{
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null),
 					DefaultExt = "." + Global.Config.MovieExtension,
 					FileName = RecordBox.Text,
 					OverwritePrompt = false
 				};
-			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
-			GlobalWin.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			GlobalWin.Sound.StartSound();
-			if (result == DialogResult.OK)
-			{
-				filename = sfd.FileName;
-			}
-
-			if ("" != filename)
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK 
+				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				RecordBox.Text = filename;
 			}
@@ -218,13 +222,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			string name = PathManager.FilesystemSafeName(Global.Game);
+			var name = PathManager.FilesystemSafeName(Global.Game);
 			name = Path.GetFileNameWithoutExtension(name);
 			RecordBox.Text = name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)
+			{
 				AuthorBox.Text = Global.Config.DefaultAuthor;
+			}
 		}
 
 		private void RecordBox_DragEnter(object sender, DragEventArgs e)
@@ -234,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordBox_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			RecordBox.Text = filePaths[0];
 		}
 	}

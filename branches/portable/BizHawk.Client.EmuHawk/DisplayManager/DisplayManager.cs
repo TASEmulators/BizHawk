@@ -347,34 +347,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsFinished)
 			{
-				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
-				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
-				{
-					s.Append(Global.MovieSession.Movie.Frames);
-				}
-				else
-				{
-					s.Append("infinity");
-				}
-				s.Append(" (Finished)");
-				return s.ToString();
+				var sb = new StringBuilder();
+				sb
+					.Append(Global.Emulator.Frame)
+					.Append('/')
+					.Append(Global.MovieSession.Movie.FrameCount)
+					.Append(" (Finished)");
+				return sb.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsPlaying)
 			{
-				StringBuilder s = new StringBuilder();
-				s.Append(Global.Emulator.Frame);
-				s.Append('/');
-				if (Global.MovieSession.Movie.Frames.HasValue)
-				{
-					s.Append(Global.MovieSession.Movie.Frames);
-				}
-				else
-				{
-					s.Append("infinity");
-				}
-				return s.ToString();
+				var sb = new StringBuilder();
+				sb
+					.Append(Global.Emulator.Frame)
+					.Append('/')
+					.Append(Global.MovieSession.Movie.FrameCount);
+
+				return sb.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
@@ -503,11 +492,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
+				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords;
 			}
 			else
 			{
-				return "";
+				return String.Empty;
 			}
 		}
 
@@ -628,7 +617,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
+				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
 
 				for (int i = 0; i < subList.Count; i++)
 				{

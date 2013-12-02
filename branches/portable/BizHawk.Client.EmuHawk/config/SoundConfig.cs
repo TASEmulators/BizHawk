@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -38,7 +32,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				listBoxSoundDevices.Items.Add(d);
 				if (d == Global.Config.SoundDevice)
+				{
 					listBoxSoundDevices.SelectedItem = d;
+				}
 			}
 			#endif
 		}
@@ -54,13 +50,13 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.UpdateSoundSettings();
 			GlobalWin.Sound.StartSound();
 			GlobalWin.OSD.AddMessage("Sound settings saved");
-			this.Close();
+			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("Sound config aborted");
-			this.Close();
+			Close();
 		}
 
 		private void trackBar1_Scroll(object sender, EventArgs e)
@@ -80,18 +76,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateSoundDialog()
 		{
-			if (SoundOnCheckBox.Checked)
-			{
-				SoundVolGroup.Enabled = true;
-				MuteFrameAdvance.Enabled = true;
-				ThrottlecheckBox.Enabled = true;
-			}
-			else
-			{
-				SoundVolGroup.Enabled = false;
-				MuteFrameAdvance.Enabled = false;
-				ThrottlecheckBox.Enabled = false;
-			}
+			SoundVolGroup.Enabled =
+			MuteFrameAdvance.Enabled =
+			ThrottlecheckBox.Enabled =
+				SoundOnCheckBox.Checked;
 		}
 	}
 }

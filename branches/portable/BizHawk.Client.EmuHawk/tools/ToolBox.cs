@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadRamWatch(true);
+			GlobalWin.Tools.LoadRamWatch(true);
 		}
 
 		private void toolStripButton3_Click(object sender, EventArgs e)
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
 		private void NESNameTable_Click(object sender, EventArgs e)
@@ -161,17 +161,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
 		private void GGGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
 		private void GBGameGenie_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEC();
+			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
 

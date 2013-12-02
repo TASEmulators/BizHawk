@@ -271,12 +271,14 @@ namespace BizHawk.Client.Common
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
 		public bool HexEditorSaveWindowPosition = true;
+		public bool HexEditorAlwaysOnTop = false;
 		public int HexEditorWndx = -1;  //Negative numbers will be ignored even with save window position set
 		public int HexEditorWndy = -1;
 		public int HexEditorWidth = -1;
 		public int HexEditorHeight = -1;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
+
 		//Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
 		public Color HexForegrndColor = Color.FromName("ControlText");
@@ -288,6 +290,7 @@ namespace BizHawk.Client.Common
 		//Trace Logger Settings
 		public bool TraceLoggerAutoLoad = false;
 		public bool TraceLoggerSaveWindowPosition = true;
+		public bool TraceLoggerOnTop = false;
 		public int TraceLoggerMaxLines = 100000;
 		public int TraceLoggerWndx = -1;
 		public int TraceLoggerWndy = -1;
@@ -472,13 +475,14 @@ namespace BizHawk.Client.Common
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
 		public bool AutoloadTAStudio = false;
+		public bool TAStudioTopMost = false;
 		public int TASWndx = -1;
 		public int TASWndy = -1;
 		public int TASWidth = -1;
 		public int TASHeight = -1;
-		public bool TASUpdatePads = true;
 
 		// VirtualPad Dialog
+		public bool VirtualPadsUpdatePads = true;
 		public bool VirtualPadSaveWindowPosition = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;

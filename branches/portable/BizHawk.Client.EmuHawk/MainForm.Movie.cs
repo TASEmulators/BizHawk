@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
-			if (Global.MovieSession.Movie.StartsFromSavestate)
+			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
@@ -46,13 +46,12 @@ namespace BizHawk.Client.EmuHawk
 			if (record)
 			{
 				Global.Emulator.ClearSaveRam();
-				Global.MovieSession.Movie.StartRecording();
+				Global.MovieSession.Movie.StartNewRecording();
 				Global.ReadOnly = false;
 			}
 			else
 			{
-				Global.Emulator.ClearSaveRam();
-				Global.MovieSession.Movie.StartPlayback();
+				Global.MovieSession.Movie.StartNewPlayback();
 			}
 			SetMainformMovieInfo();
 			GlobalWin.Tools.Restart<TAStudio>();
@@ -113,13 +112,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				LoadRom(CurrentlyOpenRom, true, true);
-				if (Global.MovieSession.Movie.StartsFromSavestate)
+				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
 				}
-				Global.Emulator.ClearSaveRam();
-				Global.MovieSession.Movie.StartPlayback();
+				Global.MovieSession.Movie.StartNewPlayback();
 				SetMainformMovieInfo();
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
 				Global.ReadOnly = true;
@@ -138,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (Global.Emulator.SystemId)
 			{
 				case "Coleco":
-					string str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
 					if (!String.IsNullOrWhiteSpace(str))
 					{
 						if (str.ToLower() == "true")

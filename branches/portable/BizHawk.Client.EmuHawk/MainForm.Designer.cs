@@ -314,6 +314,7 @@
 			this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.OpenRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadLastRomContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StopAVContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextSeparator_AfterROM = new System.Windows.Forms.ToolStripSeparator();
 			this.RecordMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PlayMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1866,7 +1867,6 @@
 			// 
 			// TAStudioMenuItem
 			// 
-			this.TAStudioMenuItem.Enabled = false;
 			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.TAStudioMenuItem.Name = "TAStudioMenuItem";
 			this.TAStudioMenuItem.Size = new System.Drawing.Size(189, 22);
@@ -2729,6 +2729,7 @@
 			this.MainFormContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenRomContextMenuItem,
             this.LoadLastRomContextMenuItem,
+            this.StopAVContextMenuItem,
             this.ContextSeparator_AfterROM,
             this.RecordMovieContextMenuItem,
             this.PlayMovieContextMenuItem,
@@ -2751,7 +2752,7 @@
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
 			this.MainFormContextMenu.Name = "contextMenuStrip1";
-			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 446);
+			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 468);
 			this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
 			this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
 			// 
@@ -2770,6 +2771,14 @@
 			this.LoadLastRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.LoadLastRomContextMenuItem.Text = "Load Last ROM";
 			this.LoadLastRomContextMenuItem.Click += new System.EventHandler(this.LoadLastRomContextMenuItem_Click);
+			// 
+			// StopAVContextMenuItem
+			// 
+			this.StopAVContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
+			this.StopAVContextMenuItem.Name = "StopAVContextMenuItem";
+			this.StopAVContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.StopAVContextMenuItem.Text = "Stop AVI/WAV";
+			this.StopAVContextMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// ContextSeparator_AfterROM
 			// 
@@ -3371,6 +3380,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator30;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+		private System.Windows.Forms.ToolStripMenuItem StopAVContextMenuItem;
 	}
 }
 

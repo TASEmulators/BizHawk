@@ -15,20 +15,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LockDownCores()
 		{
-			if (!VersionInfo.INTERIM)
-			{
-				string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
+			if (VersionInfo.INTERIM) return;
+			string[] coresToHide = { "PSX", "GBA", "INTV", "C64", "GEN" };
 
-				foreach (string core in coresToHide)
-				{
-					PathTabControl.TabPages.Remove(
-						AllTabPages.FirstOrDefault(x => x.Name == core) ?? new TabPage()
+			foreach (var core in coresToHide)
+			{
+				PathTabControl.TabPages.Remove(
+					AllTabPages.FirstOrDefault(x => x.Name == core) ?? new TabPage()
 					);
-				}
 			}
 		}
 
-		private AutoCompleteStringCollection AutoCompleteOptions
+		private static AutoCompleteStringCollection AutoCompleteOptions
 		{
 			get
 			{
@@ -88,25 +86,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private TabPage FindTabByName(string name)
 		{
-			IEnumerable<TabPage> query = from p in PathTabControl.TabPages.OfType<TabPage>() select p;
-			var tab = query.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper()));
-			if (tab == null)
-			{
-				return new TabPage();
-			}
-			else
-			{
-				return tab;
-			}
+			return PathTabControl.TabPages
+				.OfType<TabPage>()
+				.FirstOrDefault(x => x.Name.ToUpper().Contains(name.ToUpper())) 
+				?? new TabPage();
 		}
 
 		private void StartTabPages()
 		{
 			PathTabControl.TabPages.Clear();
-			//Separate by system
-			List<string> systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
+			var systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
 			systems.Sort();
-			foreach (string systemDisplayName in systems)
+			foreach (var systemDisplayName in systems)
 			{
 				PathTabControl.TabPages.Add(new TabPage
 				{
@@ -124,13 +115,13 @@ namespace BizHawk.Client.EmuHawk
 			const int buttonWidth = 26;
 			int widgetOffset = textboxWidth + 15;
 			const int rowHeight = 30;
-			List<PathEntry> paths = Global.Config.PathEntries.Where(x => x.System == tabPage.Name).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+			var paths = Global.Config.PathEntries.Where(x => x.System == tabPage.Name).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
 			int ypos = 14;
 
 			foreach (var path in paths)
 			{
-				TextBox box = new TextBox
+				var box = new TextBox
 				{
 					Text = path.Path,
 					Location = new Point(xpos, ypos),
@@ -143,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 					AutoCompleteSource = AutoCompleteSource.CustomSource,
 				};
 
-				Button btn = new Button
+				var btn = new Button
 				{
 					Text = String.Empty,
 					Image = Properties.Resources.OpenFile,
@@ -153,15 +144,15 @@ namespace BizHawk.Client.EmuHawk
 					Anchor = AnchorStyles.Top | AnchorStyles.Right,
 				};
 
-				TextBox tempBox = box;
-				string tempPath = path.Type;
-				string tempSystem = path.System;
+				var tempBox = box;
+				var tempPath = path.Type;
+				var tempSystem = path.System;
 				btn.Click += delegate
 				{
 					BrowseFolder(tempBox, tempPath, tempSystem);
 				};
 
-				Label label = new Label
+				var label = new Label
 				{
 					Text = path.Type,
 					Location = new Point(widgetOffset + buttonWidth + padding, ypos + 4),
@@ -177,17 +168,17 @@ namespace BizHawk.Client.EmuHawk
 				ypos += rowHeight;
 			}
 
-			string sys = tabPage.Name;
+			var sys = tabPage.Name;
 			if (tabPage.Name == "PCE") //Hack
 			{
 				sys = "PCECD";
 			}
 
-			bool hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
+			var hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
 
 			if (hasFirmwares)
 			{
-				Button firmwareButton = new Button
+				var firmwareButton = new Button
 				{
 					Name = sys,
 					Text = "&Firmware",
@@ -196,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				firmwareButton.Click += delegate
 				{
-					FirmwaresConfig f = new FirmwaresConfig { TargetSystem = sys };
+					var f = new FirmwaresConfig { TargetSystem = sys };
 					f.ShowDialog();
 				};
 
@@ -211,15 +202,15 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.TabPages.Clear();
 
 			//Separate by system
-			List<string> systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
+			var systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
 			systems.Sort();
 
 			//Hacky way to put global first
-			string global = systems.FirstOrDefault(x => x == "Global");
+			var global = systems.FirstOrDefault(x => x == "Global");
 			systems.Remove(global);
 			systems.Insert(0, global);
 
-			List<TabPage> tabPages = new List<TabPage>(systems.Count);
+			var tabPages = new List<TabPage>(systems.Count);
 
 			const int _x = 6;
 			const int textboxWidth = 70;
@@ -228,20 +219,20 @@ namespace BizHawk.Client.EmuHawk
 			const int widgetOffset = 85;
 			const int rowHeight = 30;
 
-			foreach (string systemDisplayName in systems)
+			foreach (var systemDisplayName in systems)
 			{
-				string systemId = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System;
-				TabPage t = new TabPage
+				var systemId = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System;
+				var t = new TabPage
 				{
 					Text = systemDisplayName,
 					Name = systemId,
 				};
-				List<PathEntry> paths = pathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+				var paths = pathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
-				int _y = 14;
+				var _y = 14;
 				foreach (var path in paths)
 				{
-					TextBox box = new TextBox
+					var box = new TextBox
 					{
 						Text = path.Path,
 						Location = new Point(_x, _y),
@@ -254,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 						AutoCompleteSource = AutoCompleteSource.CustomSource,
 					};
 
-					Button btn = new Button
+					var btn = new Button
 					{
 						Text = String.Empty,
 						Image = Properties.Resources.OpenFile,
@@ -264,15 +255,15 @@ namespace BizHawk.Client.EmuHawk
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 
-					TextBox tempBox = box;
-					string tempPath = path.Type;
-					string tempSystem = path.System;
+					var tempBox = box;
+					var tempPath = path.Type;
+					var tempSystem = path.System;
 					btn.Click += delegate
 					{
 						BrowseFolder(tempBox, tempPath, tempSystem);
 					};
 
-					Label label = new Label
+					var label = new Label
 						{
 						Text = path.Type,
 						Location = new Point(widgetOffset + buttonWidth + padding, _y + 4),
@@ -288,17 +279,17 @@ namespace BizHawk.Client.EmuHawk
 					_y += rowHeight;
 				}
 
-				string sys = systemDisplayName;
+				var sys = systemDisplayName;
 				if (systemDisplayName == "PCE") //Hack
 				{
 					sys = "PCECD";
 				}
 
-				bool hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
+				var hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
 
 				if (hasFirmwares)
 				{
-					Button firmwareButton = new Button
+					var firmwareButton = new Button
 					{
 						Name = sys,
 						Text = "&Firmware",
@@ -307,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 					};
 					firmwareButton.Click += delegate
 					{
-						FirmwaresConfig f = new FirmwaresConfig {TargetSystem = sys};
+						var f = new FirmwaresConfig {TargetSystem = sys};
 						f.ShowDialog();
 					};
 
@@ -333,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 				Description = "Set the directory for " + name,
 				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
 			};
-			DialogResult result = f.ShowDialog();
+			var result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				box.Text = PathManager.TryMakeRelative(f.SelectedPath, system);
@@ -345,9 +336,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
 			Global.Config.PathEntries["Global", "Base"].Path = BasePathBox.Text;
 
-			foreach (TextBox t in AllPathBoxes)
+			foreach (var t in AllPathBoxes)
 			{
-				PathEntry path_entry = Global.Config.PathEntries.FirstOrDefault(x => x.System == t.Parent.Name && x.Type == t.Name);
+				var path_entry = Global.Config.PathEntries.FirstOrDefault(x => x.System == t.Parent.Name && x.Type == t.Name);
 				path_entry.Path = t.Text;
 			}
 		}
@@ -359,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 				Description = "Set the directory for the base global path",
 				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
 			};
-			DialogResult result = f.ShowDialog();
+			var result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				BasePathBox.Text = f.SelectedPath;
@@ -378,8 +369,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoRomToggle()
 		{
-			List<Control> pcontrols = AllPathControls.Where(x => x.Name == "ROM").ToList();
-			foreach (Control c in pcontrols)
+			var pcontrols = AllPathControls.Where(x => x.Name == "ROM").ToList();
+			foreach (var c in pcontrols)
 			{
 				c.Enabled = !RecentForROMs.Checked;
 			}
@@ -389,10 +380,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				List<TextBox> _AllPathBoxes = new List<TextBox>();
+				var _AllPathBoxes = new List<TextBox>();
 				foreach (TabPage tp in PathTabControl.TabPages)
 				{
-					IEnumerable<TextBox> boxes = from b in tp.Controls.OfType<TextBox>() select b;
+					var boxes = tp.Controls.OfType<TextBox>();
 					_AllPathBoxes.AddRange(boxes);
 				}
 				return _AllPathBoxes;
@@ -403,10 +394,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				List<Control> _AllPathControls = new List<Control>();
+				var _AllPathControls = new List<Control>();
 				foreach (TabPage tp in PathTabControl.TabPages)
 				{
-					IEnumerable<Control> control = from c in tp.Controls.OfType<Control>() select c;
+					var control = tp.Controls.OfType<Control>();
 					_AllPathControls.AddRange(control);
 				}
 				return _AllPathControls;
@@ -415,10 +406,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<TabPage> AllTabPages
 		{
-			get
-			{
-				return PathTabControl.TabPages.Cast<TabPage>().ToList();
-			}
+			get { return PathTabControl.TabPages.Cast<TabPage>(); }
 		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)

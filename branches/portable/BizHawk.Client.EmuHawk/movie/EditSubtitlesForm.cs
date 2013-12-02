@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class EditSubtitlesForm : Form
 	{
 		public bool ReadOnly;
-		private IMovie selectedMovie;
+		private IMovie _selectedMovie;
 
 		public EditSubtitlesForm()
 		{
@@ -29,11 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SubGrid.Rows.Count > 8)
 			{
-				int x = Height + ((SubGrid.Rows.Count - 8) * 21);
-				if (x < 600)
-					Height = x;
-				else
-					Height = 600;
+				var x = Height + ((SubGrid.Rows.Count - 8) * 21);
+				Height = x < 600 ? x : 600;
 			}
 		}
 
@@ -44,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowError(int row, int column)
 		{
-			DataGridViewCell c = SubGrid.Rows[row].Cells[column];
-			string error = "Unable to parse value: " + c.Value;
-			string caption = "Parse Error Row " + row.ToString() + " Column " + column.ToString();
+			var c = SubGrid.Rows[row].Cells[column];
+			var error = "Unable to parse value: " + c.Value;
+			var caption = "Parse Error Row " + row + " Column " + column;
 			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
@@ -54,47 +51,47 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!ReadOnly)
 			{
-				selectedMovie.Subtitles.Clear();
-				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
+				_selectedMovie.Header.Subtitles.Clear();
+				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
-					Subtitle s = new Subtitle();
+					var s = new Subtitle();
 					
-					DataGridViewCell c = SubGrid.Rows[x].Cells[0];
+					var c = SubGrid.Rows[i].Cells[0];
 					try { s.Frame = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 0); return; }
-					c = SubGrid.Rows[x].Cells[1];
+					catch { ShowError(i, 0); return; }
+					c = SubGrid.Rows[i].Cells[1];
 					try { s.X = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 1); return; }
-					c = SubGrid.Rows[x].Cells[2];
+					catch { ShowError(i, 1); return; }
+					c = SubGrid.Rows[i].Cells[2];
 					try { s.Y = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 2); return; }
-					c = SubGrid.Rows[x].Cells[3];
+					catch { ShowError(i, 2); return; }
+					c = SubGrid.Rows[i].Cells[3];
 					try { s.Duration = int.Parse(c.Value.ToString()); }
-					catch { ShowError(x, 3); return; }
-					c = SubGrid.Rows[x].Cells[4];
+					catch { ShowError(i, 3); return; }
+					c = SubGrid.Rows[i].Cells[4];
 					try { s.Color = uint.Parse(c.Value.ToString(), NumberStyles.HexNumber); }
-					catch { ShowError(x, 4); return; }
-					try { c = SubGrid.Rows[x].Cells[5]; }
-					catch { ShowError(x, 5); return; }
+					catch { ShowError(i, 4); return; }
+					try { c = SubGrid.Rows[i].Cells[5]; }
+					catch { ShowError(i, 5); return; }
 					s.Message = c.Value.ToString();
-					selectedMovie.Subtitles.Add(s);
+					_selectedMovie.Header.Subtitles.Add(s);
 				}
-				selectedMovie.Save();
+				_selectedMovie.Save();
 			}
 			Close();
 		}
 
 		public void GetMovie(IMovie m)
 		{
-			selectedMovie = m;
-			SubtitleList subs = new SubtitleList();
-			subs.AddRange(m.Subtitles);
+			_selectedMovie = m;
+			var subs = new SubtitleList();
+			subs.AddRange(m.Header.Subtitles);
 
 			for (int x = 0; x < subs.Count; x++)
 			{
-				Subtitle s = subs[x];
+				var s = subs[x];
 				SubGrid.Rows.Add();
-				DataGridViewCell c = SubGrid.Rows[x].Cells[0];
+				var c = SubGrid.Rows[x].Cells[0];
 				c.Value = s.Frame;
 				c = SubGrid.Rows[x].Cells[1];
 				c.Value = s.X;
@@ -113,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ChangeRow(Subtitle s, int index)
 		{
 			if (index >= SubGrid.Rows.Count) return;
-			DataGridViewCell c = SubGrid.Rows[index].Cells[0];
+			var c = SubGrid.Rows[index].Cells[0];
 			c.Value = s.Frame;
 			c = SubGrid.Rows[index].Cells[1];
 			c.Value = s.X;
@@ -132,8 +129,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (index >= SubGrid.Rows.Count) return new Subtitle();
 			
-			Subtitle s = new Subtitle();
-			DataGridViewCell c = SubGrid.Rows[index].Cells[0];
+			var s = new Subtitle();
+			var c = SubGrid.Rows[index].Cells[0];
 
 			//Empty catch because it should default to subtitle default value
 			try { s.Frame = int.Parse(c.Value.ToString()); }
@@ -153,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			c = SubGrid.Rows[index].Cells[5];
 			try { s.Message = c.Value.ToString(); }
 			catch { }
-			selectedMovie.Subtitles.Add(s);
+			_selectedMovie.Header.Subtitles.Add(s);
 
 			return s;
 		}
@@ -161,15 +158,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (ReadOnly) return;
-			DataGridViewSelectedRowCollection c = SubGrid.SelectedRows;
+			var c = SubGrid.SelectedRows;
 			if (c.Count == 0) return;
-			SubtitleMaker s = new SubtitleMaker();
-			s.sub = GetRow(c[0].Index);
+			var s = new SubtitleMaker {Sub = GetRow(c[0].Index)};
 			if (s.ShowDialog() == DialogResult.OK)
 			{
-				ChangeRow(s.sub, SubGrid.SelectedRows[0].Index);
-				//if (SubGrid.Rows.Count == SubGrid.SelectedRows[0].Index + 1)
-				//	SubGrid.Rows.Add(); //Why does this case ChangeRow to edit the new changed row?
+				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
 			}
 		}
 	}

@@ -1,16 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace BizHawk.Client.Common
 {
-	//TODO: what is this object really trying to accomplish? COnsider making it a collection (ICollection, IEnumerable perhaps)
+	// TODO: what is this object really trying to accomplish? COnsider making it a collection (ICollection, IEnumerable perhaps)
 
 	/// <summary>
 	/// Represents the controller key presses of a movie
 	/// </summary>
-	public class MovieLog
+	public class MovieLog : IEnumerable<string>
 	{
+		public IEnumerator<string> GetEnumerator()
+		{
+			return _movieRecords.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
 		#region Properties
 
 		public byte[] InitState { get; private set; }
@@ -27,7 +38,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return _movie_records.Count;
+				return _movieRecords.Count;
 			}
 		}
 
@@ -61,7 +72,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			_movie_records.Clear();
+			_movieRecords.Clear();
 			_state_records.Clear();
 		}
 
@@ -72,7 +83,7 @@ namespace BizHawk.Client.Common
 
 		public void AppendFrame(string frame)
 		{
-			_movie_records.Add(frame);
+			_movieRecords.Add(frame);
 		}
 
 		public void AddState(byte[] state)
@@ -81,11 +92,13 @@ namespace BizHawk.Client.Common
 			{
 				InitState = state;
 			}
+			
 			if (Global.Emulator.Frame < StateFirstIndex)
 			{
 				_state_records.Clear();
 				_state_records.Add(new StateRecord(Global.Emulator.Frame, state));
 			}
+			
 			if (Global.Emulator.Frame > StateLastIndex)
 			{
 				if (StateSizeInBytes + state.Length > MAXSTATERECORDSIZE)
@@ -93,42 +106,41 @@ namespace BizHawk.Client.Common
 					// Discard the oldest state to save space.
 					_state_records.RemoveAt(0);
 				}
+				
 				_state_records.Add(new StateRecord(Global.Emulator.Frame,state));
 			}
 		}
 
 		public void SetFrameAt(int frameNum, string frame)
 		{
-			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != _movie_records[frameNum]))
+			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != _movieRecords[frameNum]))
 			{
-				TruncateStates(frameNum+1);
+				TruncateStates(frameNum + 1);
 			}
 
-			if (_movie_records.Count > frameNum)
+			if (_movieRecords.Count > frameNum)
 			{
-				_movie_records[frameNum] = frame;
+				_movieRecords[frameNum] = frame;
 			}
 			else
 			{
-				_movie_records.Add(frame);
+				_movieRecords.Add(frame);
 			}
 		}
 
 		public void AddFrameAt(int frame, string record)
 		{
-			_movie_records.Insert(frame, record);
+			_movieRecords.Insert(frame, record);
 
 			if (frame <= StateLastIndex)
 			{
 				if (frame <= StateFirstIndex)
 				{
 					_state_records.Clear();
-					//Global.MovieSession.Movie.RewindToFrame(0); //TODO: unbreak this, also don't do it this way
 				}
 				else
 				{
 					_state_records.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
-					//Global.MovieSession.Movie.RewindToFrame(frame); //TODO: unbreak this, also don't do it this way
 				}
 			}
 		}
@@ -140,7 +152,7 @@ namespace BizHawk.Client.Common
 
 		public void DeleteFrame(int frame)
 		{
-			_movie_records.RemoveAt(frame);
+			_movieRecords.RemoveAt(frame);
 			if (frame <= StateLastIndex)
 			{
 				if (frame <= StateFirstIndex)
@@ -173,15 +185,15 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return _movie_records[frame];
+				return _movieRecords[frame];
 			}
 		}
 
 		public void TruncateMovie(int frame)
 		{
-			if (frame < _movie_records.Count)
+			if (frame < _movieRecords.Count)
 			{
-				_movie_records.RemoveRange(frame, _movie_records.Count - frame);
+				_movieRecords.RemoveRange(frame, _movieRecords.Count - frame);
 				TruncateStates(frame);
 			}
 		}
@@ -209,7 +221,7 @@ namespace BizHawk.Client.Common
 
 		#region private fields
 
-		private class StateRecord
+		private sealed class StateRecord
 		{
 			public StateRecord(int index, byte[] state)
 			{
@@ -223,11 +235,11 @@ namespace BizHawk.Client.Common
 			public bool Lagged { get; private set; }
 		}
 
-		private readonly List<string> _movie_records = new List<string>();
+		private readonly List<string> _movieRecords = new List<string>();
 		private readonly List<StateRecord> _state_records = new List<StateRecord>();
 		
-		//TODO: Make this size limit configurable by the user
-		private const int MAXSTATERECORDSIZE = 512*1024*1024; //To limit memory usage.
+		// TODO: Make this size limit configurable by the user
+		private const int MAXSTATERECORDSIZE = 512 * 1024 * 1024; //To limit memory usage.
 
 		#endregion
 	}

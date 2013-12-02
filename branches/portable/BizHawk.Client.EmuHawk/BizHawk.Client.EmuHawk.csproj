@@ -230,12 +230,6 @@
     <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GifAnimator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GifAnimator.Designer.cs">
-      <DependentUpon>GifAnimator.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\HotkeyConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -489,9 +483,6 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\HexEditor\MemoryViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\IToolForm.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
@@ -605,7 +596,12 @@
     <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\StateVisualizer.cs" />
+    <Compile Include="tools\TAStudio\TAStudio.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.Designer.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -786,9 +782,6 @@
     <EmbeddedResource Include="config\GB\DualGBXMLCreator.resx">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\GifAnimator.resx">
-      <DependentUpon>GifAnimator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -885,9 +878,6 @@
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\MemoryViewer.resx">
-      <DependentUpon>MemoryViewer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </EmbeddedResource>
@@ -929,6 +919,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
+      <DependentUpon>TAStudio.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
@@ -991,12 +984,6 @@
     <Compile Include="RenderPanel.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
-    <Compile Include="tools\TAStudio.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio.Designer.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\ToolBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1073,9 +1060,6 @@
     <EmbeddedResource Include="tools\InputPrompt.resx">
       <DependentUpon>InputPrompt.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio.resx">
-      <DependentUpon>TAStudio.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\ToolBox.resx">
       <DependentUpon>ToolBox.cs</DependentUpon>

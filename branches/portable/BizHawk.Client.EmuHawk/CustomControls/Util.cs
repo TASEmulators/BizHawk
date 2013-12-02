@@ -1,20 +1,44 @@
 ﻿using System;
-using System.Text;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class Extensions
 	{
-		//extension method to make Control.Invoke easier to use
+		// extension method to make Control.Invoke easier to use
 		public static void Invoke(this Control control, Action action)
 		{
-			control.Invoke((Delegate)action);
+			control.Invoke(action);
 		}
 	}
 
+	public static class WinFormExtensions
+	{
+		/// <summary>
+		/// Handles EmuHawk specific issues before showing a modal dialog
+		/// </summary>
+		public static DialogResult ShowHawkDialog(this Form form)
+		{
+			GlobalWin.Sound.StopSound();
+			var result = form.ShowDialog();
+			GlobalWin.Sound.StartSound();
+			return result;
+		}
+
+		/// <summary>
+		/// Handles EmuHawk specific issues before showing a modal dialog
+		/// </summary>
+		public static DialogResult ShowHawkDialog(this CommonDialog form)
+		{
+			GlobalWin.Sound.StopSound();
+			var result = form.ShowDialog();
+			GlobalWin.Sound.StartSound();
+			return result;
+		}
+	}
 
 	public static class ListViewExtensions
 	{
@@ -70,27 +94,32 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static string CopyItemsAsText(this ListView listViewControl)
 		{
-			ListView.SelectedIndexCollection indexes = listViewControl.SelectedIndices;
+			var indexes = listViewControl.SelectedIndices;
 			if (indexes.Count <= 0)
-				return "";
+			{
+				return String.Empty;
+			}
 
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			
-			//walk over each selected item and subitem within it to generate a string from it
+			// walk over each selected item and subitem within it to generate a string from it
 			foreach (int index in indexes)
 			{
 				foreach (ListViewItem.ListViewSubItem item in listViewControl.Items[index].SubItems)
 				{
 					if (!String.IsNullOrWhiteSpace(item.Text))
+					{
 						sb.Append(item.Text).Append('\t');
+					}
 				}
-				//remove the last tab
+
+				// remove the last tab
 				sb.Remove(sb.Length - 1, 1);
 
 				sb.Append("\r\n");
 			}
 
-			//remove last newline
+			// remove last newline
 			sb.Length -= 2;
 
 	
