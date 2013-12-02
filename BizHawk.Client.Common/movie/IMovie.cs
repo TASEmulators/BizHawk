@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Client.Common
 {
@@ -23,6 +24,8 @@ namespace BizHawk.Client.Common
 		#region Properties
 
 		double FrameCount { get; }
+
+		TimeSpan Time { get; }
 
 		/// <summary>
 		/// Actual length of the input log, should only be used by code that iterates or needs a real length
@@ -91,7 +94,7 @@ namespace BizHawk.Client.Common
 		void CommitFrame(int frameNum, IController source); // Why pass in frameNum? Calling api 
 		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
+		
 		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
 
 		string GetInput(int frame); // Should be a property of a Record object

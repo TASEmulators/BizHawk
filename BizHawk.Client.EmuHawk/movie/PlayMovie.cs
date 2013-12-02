@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (column == 3) //Time
 			{
-				text = _movieList[index].GetTime(true);
+				text = _movieList[index].Time.ToString(@"hh\:mm\:ss\.fff");
 			}
 		}
 
@@ -569,7 +569,8 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].Header.SystemID).Append('\t')
 							.Append(_movieList[index].Header.GameName).Append('\t')
-							.Append(_movieList[index].GetTime(true)).AppendLine();
+							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
+							.AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());
 					}

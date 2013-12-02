@@ -65,6 +65,11 @@ namespace BizHawk.Client.Common
 			get { throw new NotImplementedException(); }
 		}
 
+		public TimeSpan Time
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public double FrameCount
 		{
 			get { throw new NotImplementedException(); }
@@ -146,11 +151,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public LoadStateResult CheckTimeLines(System.IO.TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
-		{
-			throw new NotImplementedException();
-		}
-
-		public string GetTime(bool preLoad)
 		{
 			throw new NotImplementedException();
 		}
