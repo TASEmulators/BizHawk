@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 		public Movie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
-			Rerecords = 0;
+			Header.Rerecords = 0;
 			Filename = filename;
 			Loaded = !String.IsNullOrWhiteSpace(filename);
 		}
@@ -45,12 +45,6 @@ namespace BizHawk.Client.Common
 		
 		public bool Loaded { get; private set; }
 		public bool IsText { get; private set; }
-
-		public ulong Rerecords
-		{
-			get { return Header.Rerecords; }
-			set { Header.Rerecords = value; }
-		}
 
 		public int InputLogLength
 		{
@@ -572,7 +566,7 @@ namespace BizHawk.Client.Common
 
 			if (IsCountingRerecords)
 			{
-				Rerecords++;
+				Header.Rerecords++;
 			}
 		}
 

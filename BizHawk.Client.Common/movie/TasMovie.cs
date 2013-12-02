@@ -26,6 +26,7 @@ namespace BizHawk.Client.Common
 			Header.StartsFromSavestate = startsFromSavestate;
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
+			IsCountingRerecords = true;
 		}
 
 		public string Filename { get; set; }
@@ -52,17 +53,7 @@ namespace BizHawk.Client.Common
 			get { return _mode == Moviemode.Finished; }
 		}
 
-		public bool IsCountingRerecords
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public bool IsCountingRerecords { get; set; }
 
 		public bool Changes
 		{

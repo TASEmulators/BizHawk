@@ -492,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords;
+				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
 			}
 			else
 			{

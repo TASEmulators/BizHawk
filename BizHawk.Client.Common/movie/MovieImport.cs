@@ -379,7 +379,7 @@ namespace BizHawk.Client.Common
 					{
 						rerecordCount = 0;
 					}
-					m.Rerecords = (ulong)rerecordCount;
+					m.Header.Rerecords = (ulong)rerecordCount;
 				}
 				else if (line.ToLower().StartsWith("guid"))
 				{
@@ -529,7 +529,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			 The savestate offset is <header_size + length_of_metadata_in_bytes + padding>. The savestate offset should be
@@ -779,7 +779,7 @@ namespace BizHawk.Client.Common
 			 loaded, the number is 0. Famtasia however displays "1" in such case. It always adds 1 to the number found in
 			 the file.
 			*/
-			m.Rerecords = rerecordCount + 1;
+			m.Header.Rerecords = rerecordCount + 1;
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
@@ -886,7 +886,7 @@ namespace BizHawk.Client.Common
 			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
@@ -1157,7 +1157,7 @@ namespace BizHawk.Client.Common
 					{
 						rerecordCount = 0;
 					}
-					m.Rerecords = (ulong)rerecordCount;
+					m.Header.Rerecords = (ulong)rerecordCount;
 					hf.Unbind();
 				}
 				else if (item.name.EndsWith(".sha256"))
@@ -1252,7 +1252,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 070 uint32	 Re-record Count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = (ulong)rerecordCount;
+			m.Header.Rerecords = (ulong)rerecordCount;
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
@@ -1367,7 +1367,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 0010: 4-byte little endian flag: begin from reset?
 			uint reset = r.ReadUInt32();
 			if (reset == 0)
@@ -1632,7 +1632,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			 008 4-byte little-endian unsigned int: length of movie description
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
@@ -1734,7 +1734,7 @@ namespace BizHawk.Client.Common
 			uint uid = r.ReadUInt32();
 			m.Header[HeaderKeys.GUID] = String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000";
 			// 00C 4-byte little-endian unsigned int: rerecord count
-			m.Rerecords = r.ReadUInt32();
+			m.Header.Rerecords = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
@@ -1996,7 +1996,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 014 1-byte flags: (movie start flags)
 			byte flags = r.ReadByte();
 			// bit 0: if "1", movie starts from an embedded "quicksave" snapshot
@@ -2298,7 +2298,7 @@ namespace BizHawk.Client.Common
 			r.ReadBytes(2);
 			// 01C 4-byte little-endian integer: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			020 BYTE	RenderMethod
 			0=POST_ALL,1=PRE_ALL
@@ -2481,7 +2481,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 00D 4-byte little-endian unsigned int: number of rerecords
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 011 4-byte little-endian unsigned int: number of frames removed by rerecord
 			r.ReadBytes(4);
 			// 015 4-byte little-endian unsigned int: number of frames advanced step by step
