@@ -8,6 +8,12 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
 	{
+		// TODO: put this in a better place so that it isn't in Movie.cs and here
+		private enum Moviemode { Inactive, Play, Record, Finished };
+
+		private MovieRecordList _records;
+		private Moviemode _mode;
+
 		public TasMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
 		{
@@ -19,11 +25,33 @@ namespace BizHawk.Client.Common
 			Filename = String.Empty;
 			Header = new MovieHeader();
 			Header.StartsFromSavestate = startsFromSavestate;
+			_records = new MovieRecordList();
+			_mode = Moviemode.Inactive;
 		}
 
 		public string Filename { get; set; }
 
 		public IMovieHeader Header { get; private set; }
+
+		public bool IsActive
+		{
+			get { return _mode != Moviemode.Inactive; }
+		}
+
+		public bool IsPlaying
+		{
+			get { return _mode == Moviemode.Play || _mode == Moviemode.Finished; }
+		}
+
+		public bool IsRecording
+		{
+			get { return _mode == Moviemode.Record; }
+		}
+
+		public bool IsFinished
+		{
+			get { return _mode == Moviemode.Finished; }
+		}
 
 		public bool IsCountingRerecords
 		{
@@ -35,26 +63,6 @@ namespace BizHawk.Client.Common
 			{
 				throw new NotImplementedException();
 			}
-		}
-
-		public bool IsActive
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool IsPlaying
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool IsRecording
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool IsFinished
-		{
-			get { throw new NotImplementedException(); }
 		}
 
 		public bool Changes
