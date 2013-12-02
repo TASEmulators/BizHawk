@@ -546,30 +546,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string GetTime(bool preLoad)
+		public TimeSpan Time
 		{
-			var time = String.Empty;
-
-			double seconds = GetSeconds(preLoad ? _preloadFramecount : _log.Length);
-
-			int hours = ((int)seconds) / 3600;
-			int minutes = (((int)seconds) / 60) % 60;
-			double sec = seconds % 60;
-			if (hours > 0)
+			get
 			{
-				time += MakeDigits(hours) + ":";
+				double dblseconds = GetSeconds(Loaded ? _log.Length : _preloadFramecount);
+				int seconds = (int)(dblseconds % 60);
+				int days = seconds / 86400;
+				int hours = seconds / 3600;
+				int minutes = (seconds / 60) % 60;
+				int milliseconds = (int)((dblseconds - (double)seconds) * 1000);
+				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
 			}
-			
-			time += MakeDigits(minutes) + ":";
-
-			if (sec < 10) // Kludge
-			{
-				time += "0";
-			}
-
-			time += Math.Round((decimal)sec, 2).ToString();
-			
-			return time;
 		}
 
 		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)

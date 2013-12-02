@@ -58,7 +58,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(678, 352);
+			this.Cancel.Location = new System.Drawing.Point(687, 352);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 55;
@@ -69,7 +69,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(597, 352);
+			this.OK.Location = new System.Drawing.Point(606, 352);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 50;
@@ -126,7 +126,7 @@
 			this.groupBox1.Controls.Add(this.SubtitlesBtn);
 			this.groupBox1.Controls.Add(this.CommentsBtn);
 			this.groupBox1.Controls.Add(this.DetailsView);
-			this.groupBox1.Location = new System.Drawing.Point(494, 28);
+			this.groupBox1.Location = new System.Drawing.Point(503, 28);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(259, 303);
 			this.groupBox1.TabIndex = 6;
@@ -172,7 +172,7 @@
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.Checked = true;
 			this.ReadOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(494, 356);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(503, 356);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
 			this.ReadOnlyCheckBox.TabIndex = 45;
@@ -246,7 +246,7 @@
 			this.MovieView.MultiSelect = false;
 			this.MovieView.Name = "MovieView";
 			this.MovieView.selectedItem = -1;
-			this.MovieView.Size = new System.Drawing.Size(463, 303);
+			this.MovieView.Size = new System.Drawing.Size(480, 303);
 			this.MovieView.TabIndex = 5;
 			this.MovieView.UseCompatibleStateImageBehavior = false;
 			this.MovieView.View = System.Windows.Forms.View.Details;
@@ -275,7 +275,7 @@
 			// columnHeader4
 			// 
 			this.columnHeader4.Text = "Length (est.)";
-			this.columnHeader4.Width = 64;
+			this.columnHeader4.Width = 82;
 			// 
 			// PlayMovie
 			// 
@@ -283,7 +283,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(765, 387);
+			this.ClientSize = new System.Drawing.Size(774, 387);
 			this.Controls.Add(this.MatchGameNameCheckBox);
 			this.Controls.Add(this.Scan);
 			this.Controls.Add(this.ShowStateFiles);
