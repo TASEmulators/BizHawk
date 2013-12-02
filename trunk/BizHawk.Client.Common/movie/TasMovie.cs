@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
 	{
-		// TODO: put this in a better place so that it isn't in Movie.cs and here
 		private enum Moviemode { Inactive, Play, Record, Finished };
 
 		private MovieRecordList _records;
