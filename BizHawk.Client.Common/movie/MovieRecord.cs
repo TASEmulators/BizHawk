@@ -30,13 +30,29 @@ namespace BizHawk.Client.Common
 
 	public class MovieRecordList : List<MovieRecord>
 	{
+		public MovieRecordList()
+			: base()
+		{
+			Guid = new Guid();
+		}
+
+		public Guid Guid { get; private set; }
+
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
+			sb
+				.AppendLine("[Input]")
+				.Append(HeaderKeys.GUID)
+				.Append(' ')
+				.Append(Guid)
+				.AppendLine();
+
 			foreach (var record in this)
 			{
 				sb.AppendLine(record.ToString());
 			}
+			sb.AppendLine("[/Input]");
 			return sb.ToString();
 		}
 	}
