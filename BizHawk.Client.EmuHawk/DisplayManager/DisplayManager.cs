@@ -786,6 +786,9 @@ namespace BizHawk.Client.EmuHawk
 				case 3:
 					filter = new Hq2xBase_SuperEagle();
 					break;
+				case 4:
+					filter = new Scanlines2x();
+					break;
 			
 			}
 			if (filter == null)

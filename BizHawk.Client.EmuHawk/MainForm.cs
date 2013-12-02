@@ -3714,5 +3714,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
 	}
 }
