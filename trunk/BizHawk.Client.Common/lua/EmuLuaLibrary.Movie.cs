@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 
 		public static string movie_rerecordcount()
 		{
-			return Global.MovieSession.Movie.Rerecords.ToString();
+			return Global.MovieSession.Movie.Header.Rerecords.ToString();
 		}
 
 		public static void movie_setreadonly(object lua_input)

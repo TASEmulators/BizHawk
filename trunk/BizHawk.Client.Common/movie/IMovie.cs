@@ -28,9 +28,7 @@ namespace BizHawk.Client.Common
 		/// Actual length of the input log, should only be used by code that iterates or needs a real length
 		/// </summary>
 		int InputLogLength { get; }
-		
-		ulong Rerecords { get; set; }
-		
+
 		IMovieHeader Header { get; }
 
 		#endregion
