@@ -343,12 +343,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ModifyFrame(string record, int frame)
-		{
-			_log.SetFrameAt(frame, record);
-			_changes = true;
-		}
-
 		public void ClearFrame(int frame)
 		{
 			_log.SetFrameAt(frame, MnemonicsGenerator.GetEmptyMnemonic);
@@ -358,24 +352,6 @@ namespace BizHawk.Client.Common
 		public void AppendFrame(string record)
 		{
 			_log.AppendFrame(record);
-			_changes = true;
-		}
-
-		public void InsertFrame(string record, int frame)
-		{
-			_log.AddFrameAt(frame, record);
-			_changes = true;
-		}
-
-		public void InsertBlankFrame(int frame)
-		{
-			_log.AddFrameAt(frame, MnemonicsGenerator.GetEmptyMnemonic);
-			_changes = true;
-		}
-
-		public void DeleteFrame(int frame)
-		{
-			_log.DeleteFrame(frame);
 			_changes = true;
 		}
 

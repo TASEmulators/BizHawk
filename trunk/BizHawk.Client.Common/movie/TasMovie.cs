@@ -72,19 +72,7 @@ namespace BizHawk.Client.Common
 
 		public int InputLogLength
 		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public ulong Rerecords
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return _records.Count; }
 		}
 
 		public bool Load()
@@ -137,27 +125,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public void ModifyFrame(string record, int frame)
-		{
-			throw new NotImplementedException();
-		}
-
 		public void AppendFrame(string record)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void InsertFrame(string record, int frame)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void InsertBlankFrame(int frame)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void DeleteFrame(int frame)
 		{
 			throw new NotImplementedException();
 		}

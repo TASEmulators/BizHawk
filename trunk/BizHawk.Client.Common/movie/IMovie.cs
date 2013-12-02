@@ -81,11 +81,7 @@ namespace BizHawk.Client.Common
 		#region Editing API
 
 		void ClearFrame(int frame);
-		void ModifyFrame(string record, int frame);
 		void AppendFrame(string record);
-		void InsertFrame(string record, int frame);
-		void InsertBlankFrame(int frame);
-		void DeleteFrame(int frame);
 		void TruncateMovie(int frame);
 
 		#endregion
