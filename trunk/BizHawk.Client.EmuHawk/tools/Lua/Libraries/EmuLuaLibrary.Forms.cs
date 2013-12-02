@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null)
+		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null, bool multiline = false)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -391,6 +391,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LuaTextBox textbox = new LuaTextBox();
+			textbox.Multiline = multiline;
 			SetText(textbox, caption);
 			SetLocation(textbox, X, Y);
 			SetSize(textbox, width, height);
