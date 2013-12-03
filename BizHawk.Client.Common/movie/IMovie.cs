@@ -83,21 +83,40 @@ namespace BizHawk.Client.Common
 
 		#region Editing API
 
+		/// <summary>
+		/// Repalces the given frame's input with an empty frame
+		/// </summary>
+		/// <param name="frame"></param>
 		void ClearFrame(int frame);
+		
+		/// <summary>
+		/// Adds the given input to the movie
+		/// Note: this edits the input log without the normal movie recording logic applied
+		/// </summary>
+		/// <param name="mg"></param>
 		void AppendFrame(MnemonicsGenerator mg);
+
+		/// <summary>
+		/// Replaces the input at the given frame with the given input
+		/// Note: this edits the input log without the normal movie recording logic applied
+		/// </summary>
+		void PokeFrame(int frame, MnemonicsGenerator mg);
+
+		/// <summary>
+		/// Records the given input into the given frame,
+		/// This is subject to normal movie recording logic
+		/// </summary>
+		void RecordFrame(int frame, MnemonicsGenerator mg);
+
 		void Truncate(int frame);
+		string GetInput(int frame);
 
 		#endregion
 
 		#region Dubious, should reconsider
 
-		void CommitFrame(int frameNum, MnemonicsGenerator mg); // Why pass in frameNum? Calling api 
-		void PokeFrame(int frameNum, MnemonicsGenerator mg); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		
 		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
-
-		string GetInput(int frame); // Should be a property of a Record object
 
 		#endregion
 	}
