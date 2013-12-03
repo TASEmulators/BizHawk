@@ -56,14 +56,14 @@ namespace BizHawk.Client.EmuHawk
 				//second copied line (2x width, 25%)
 				for (int x = 0; x < width; x++)
 				{
-					*destPtr++ = (byte)(s[0] >> 2);
-					*destPtr++ = (byte)(s[1] >> 2);
-					*destPtr++ = (byte)(s[2] >> 2);
-					*destPtr++ = (byte)(s[3] >> 0);
-					*destPtr++ = (byte)(s[0] >> 2);
-					*destPtr++ = (byte)(s[1] >> 2);
-					*destPtr++ = (byte)(s[2] >> 2);
-					*destPtr++ = (byte)(s[3] >> 0);
+					*destPtr++ = (byte)((s[0]*3) >> 2);
+					*destPtr++ = (byte)((s[1]*3) >> 2);
+					*destPtr++ = (byte)((s[2]*3) >> 2);
+					*destPtr++ = s[3];
+					*destPtr++ = (byte)((s[0]*3) >> 2);
+					*destPtr++ = (byte)((s[1]*3) >> 2);
+					*destPtr++ = (byte)((s[2]*3) >> 2);
+					*destPtr++ = s[3];
 					s += 4;
 				}
 				srcLine += srcPitch;
