@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					var movie = new Movie(cmdMovie);
-					Global.ReadOnly = true;
+					Global.MovieSession.ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (_autoDumpLength == 0)
 					{
@@ -1548,7 +1548,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Global.ReadOnly = true;
+				Global.MovieSession.ReadOnly = true;
 				StartNewMovie(movie, false);
 			}
 		}
@@ -2074,8 +2074,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.ReadOnly ^= true;
-				if (Global.ReadOnly)
+				Global.MovieSession.ReadOnly ^= true;
+				if (Global.MovieSession.ReadOnly)
 				{
 					GlobalWin.OSD.AddMessage("Movie read-only mode");
 				}

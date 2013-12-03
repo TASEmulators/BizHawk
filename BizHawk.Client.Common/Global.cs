@@ -20,7 +20,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 		public static MovieSession MovieSession = new MovieSession();
-		public static bool ReadOnly = true; //Global Movie Read only setting
 
 		/// <summary>
 		/// whether throttling is force-disabled by use of fast forward

@@ -65,7 +65,6 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return new TimeSpan();
 				double dblseconds = GetSeconds(_records.Count);
 				int seconds = (int)(dblseconds % 60);
 				int days = seconds / 86400;
@@ -139,34 +138,6 @@ namespace BizHawk.Client.Common
 			_records.Truncate(frame);
 		}
 
-		// TODO: 
-
-		public void StartNewRecording()
-		{
-			SwitchToRecord();
-			if (Global.Config.EnableBackupMovies && true/*TODO*/ && _records.Any())
-			{
-				// TODO
-			}
-		}
-
-		public bool Load()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Save()
-		{
-			Changes = false;
-			throw new NotImplementedException();
-		}
-
-		public void SaveAs()
-		{
-			Changes = false;
-			throw new NotImplementedException();
-		}
-
 		public void ClearFrame(int frame)
 		{
 			if (frame < _records.Count)
@@ -211,12 +182,40 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// TODO:
+
+		public void StartNewRecording()
+		{
+			SwitchToRecord();
+			if (Global.Config.EnableBackupMovies && true/*TODO*/ && _records.Any())
+			{
+				// TODO
+			}
+		}
+
+		public bool Load()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Save()
+		{
+			Changes = false;
+			throw new NotImplementedException();
+		}
+
+		public void SaveAs()
+		{
+			Changes = false;
+			throw new NotImplementedException();
+		}
+
 		public LoadStateResult CheckTimeLines(System.IO.TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void ExtractInputLog(System.IO.TextReader reader, bool isMultitracking)
+		public void ExtractInputLog(System.IO.TextReader reader)
 		{
 			throw new NotImplementedException();
 		}
