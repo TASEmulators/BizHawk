@@ -250,7 +250,7 @@ namespace BizHawk.Client.Common
 			}
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			mg.SetSource(controllers);
-			m.AppendFrame(mg.GetControllersAsMnemonic());
+			m.AppendFrame(mg);
 			return m;
 		}
 
@@ -576,7 +576,6 @@ namespace BizHawk.Client.Common
 			while (frame <= frameCount)
 			{
 				mg.SetSource(controllers);
-				string mnemonic = mg.GetControllersAsMnemonic();
 				byte update = r.ReadByte();
 				// aa: Number of delta bytes to follow
 				int delta = (update >> 5) & 0x3;
@@ -597,11 +596,10 @@ namespace BizHawk.Client.Common
 				frame += frames;
 				while (frames > 0)
 				{
-					m.AppendFrame(mnemonic);
+					m.AppendFrame(mg);
 					if (controllers["Reset"])
 					{
 						controllers["Reset"] = false;
-						mnemonic = mg.GetControllersAsMnemonic();
 					}
 					frames--;
 				}
@@ -856,7 +854,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -983,7 +981,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			return m;
 		}
@@ -1330,7 +1328,7 @@ namespace BizHawk.Client.Common
 					warningMsg = "Control commands are not properly supported.";
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -1452,7 +1450,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -1682,7 +1680,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -1954,7 +1952,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -2226,7 +2224,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -2446,7 +2444,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(mg);
 			}
 			r.Close();
 			fs.Close();
@@ -2614,7 +2612,7 @@ namespace BizHawk.Client.Common
 					{
 						controllers["Reset"] = true;
 						mg.SetSource(controllers);
-						m.AppendFrame(mg.GetControllersAsMnemonic());
+						m.AppendFrame(mg);
 						controllers["Reset"] = false;
 					}
 					// TODO: Other commands.
@@ -2630,7 +2628,7 @@ namespace BizHawk.Client.Common
 					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
 					{
-						m.AppendFrame(mg.GetControllersAsMnemonic());
+						m.AppendFrame(mg);
 					}
 				}
 				else if (((flag >> 2) & 0x1) != 0)
@@ -2743,7 +2741,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 					mg.SetSource(controllers);
-					m.AppendFrame(mg.GetControllersAsMnemonic());
+					m.AppendFrame(mg);
 					frames++;
 				}
 			}

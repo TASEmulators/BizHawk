@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		private List<byte> _state = new List<byte>();
 
-		public string Input { get; private set; }
+		public string Input { get; set; }
 		public bool Lagged { get; private set; }
 		public IEnumerable<byte> State
 		{

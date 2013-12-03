@@ -84,14 +84,14 @@ namespace BizHawk.Client.Common
 		#region Editing API
 
 		void ClearFrame(int frame);
-		void AppendFrame(string record);
+		void AppendFrame(MnemonicsGenerator mg);
 		void Truncate(int frame);
 
 		#endregion
 
 		#region Dubious, should reconsider
 
-		void CommitFrame(int frameNum, IController source); // Why pass in frameNum? Calling api 
+		void CommitFrame(int frameNum, MnemonicsGenerator mg); // Why pass in frameNum? Calling api 
 		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		

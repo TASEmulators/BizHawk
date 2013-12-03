@@ -349,9 +349,9 @@ namespace BizHawk.Client.Common
 			_changes = true;
 		}
 
-		public void AppendFrame(string record)
+		public void AppendFrame(MnemonicsGenerator mg)
 		{
-			_log.AppendFrame(record);
+			_log.AppendFrame(mg.GetControllersAsMnemonic());
 			_changes = true;
 		}
 
@@ -372,7 +372,7 @@ namespace BizHawk.Client.Common
 			_log.SetFrameAt(frameNum, input);
 		}
 
-		public void CommitFrame(int frameNum, IController source)
+		public void CommitFrame(int frameNum, MnemonicsGenerator mg)
 		{
 			// Note: Truncation here instead of loadstate will make VBA style loadstates
 			// (Where an entire movie is loaded then truncated on the next frame
@@ -386,8 +386,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_changes = true;
-			var mg = new MnemonicsGenerator();
-			mg.SetSource(source);
 			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
