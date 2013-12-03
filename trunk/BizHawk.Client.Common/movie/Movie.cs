@@ -366,10 +366,10 @@ namespace BizHawk.Client.Common
 
 		#region Public Misc Methods
 
-		public void PokeFrame(int frameNum, string input)
+		public void PokeFrame(int frameNum, MnemonicsGenerator mg)
 		{
 			_changes = true;
-			_log.SetFrameAt(frameNum, input);
+			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
 		public void CommitFrame(int frameNum, MnemonicsGenerator mg)

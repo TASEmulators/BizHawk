@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 						if (!mg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-							Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+							Movie.PokeFrame(Global.Emulator.Frame, mg);
 						}
 						else
 						{
