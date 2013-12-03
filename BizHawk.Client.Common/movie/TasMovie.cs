@@ -172,12 +172,15 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public void AppendFrame(string record)
+		public void AppendFrame(MnemonicsGenerator mg)
 		{
-			throw new NotImplementedException();
+			_records.Add(new MovieRecord()
+			{
+				Input = mg.GetControllersAsMnemonic(),
+			});
 		}
 
-		public void CommitFrame(int frameNum, Emulation.Common.IController source)
+		public void CommitFrame(int frameNum, MnemonicsGenerator mg)
 		{
 			throw new NotImplementedException();
 		}

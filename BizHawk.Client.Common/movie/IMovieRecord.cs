@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// String representation of the controller input as a series of mnemonics
 		/// </summary>
-		string Input { get; }
+		string Input { get; set;  }
 
 		/// <summary>
 		/// Whether or not this was a lag frame, 

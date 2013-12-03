@@ -182,7 +182,9 @@ namespace BizHawk.Client.Common
 				}
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				var mg = new MnemonicsGenerator();
+				mg.SetSource(Global.MovieOutputHardpoint);
+				Movie.CommitFrame(Global.Emulator.Frame, mg);
 			}
 		}
 
