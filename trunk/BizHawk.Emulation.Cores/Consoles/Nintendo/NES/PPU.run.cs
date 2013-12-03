@@ -207,11 +207,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									if (!renderspritenow)
 									{
 										//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
-										int addr = ppur.get_2007access();
-										if ((addr & 0x3F00) == 0x3F00)
-										{
-											pixel = addr & 0x1F;
-										}
+										//EDIT - this requires corect emulation of PPU OFF state, and seems only to apply when the PPU is OFF
+										//int addr = ppur.get_2007access();
+										//if ((addr & 0x3F00) == 0x3F00)
+										//{
+										//  System.Console.WriteLine("{0:X4}", addr);
+										//  pixel = addr & 0x1F;
+										//}
 									}
 									pixelcolor = PALRAM[pixel];
 									pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
