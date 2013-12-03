@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using BizHawk.Client.Common;
 
 //what license is this?? who knows??
 //ref: http://vba-rerecording.googlecode.com/svn/trunk/src/2xsai.cpp
@@ -33,7 +34,8 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe static void RunScanlines(byte* srcPtr, int srcPitch, byte* destPtr, int dstPitch, int width, int height)
 		{
-			const int intensity = (int)((0.75f) * 256);
+			int intensity = Global.Config.TargetScanlineFilterIntensity;
+
 			byte* srcLine = srcPtr;
 			for (int y = 0; y < height; y++)
 			{
@@ -54,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 				destPtr += dstPitch - width*2 * 4;
 				s = srcLine;
-				//second copied line (2x width, 25%)
+				//second copied line (2x width, dimmed)
 				for (int x = 0; x < width; x++)
 				{
 					*destPtr++ = (byte)((s[0] * intensity) >> 8);
