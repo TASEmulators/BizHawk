@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ss = report.Split('\n');
 				foreach (var s in ss)
-					dlg.Lines.Add(s);
+					dlg.Lines.Add(s.TrimEnd('\r'));
 				dlg.virtualListView1.ItemCount = ss.Length;
 				dlg.Text = title;
 				dlg.btnClear.Visible = false;
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!string.IsNullOrWhiteSpace(s))
 				{
-					Lines.Add(s);
+					Lines.Add(s.TrimEnd('\r'));
 					virtualListView1.ItemCount++;
 				}
 			}
