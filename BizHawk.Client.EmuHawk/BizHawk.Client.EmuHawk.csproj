@@ -411,6 +411,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanlineSlider.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScanlineSlider.Designer.cs">
+      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
@@ -840,6 +846,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ScanlineSlider.resx">
+      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>
     </EmbeddedResource>
