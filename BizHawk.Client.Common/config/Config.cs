@@ -59,6 +59,7 @@ namespace BizHawk.Client.Common
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
+		public int TargetScanlineFilterIntensity = 0; //choose between 0 and 256
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
