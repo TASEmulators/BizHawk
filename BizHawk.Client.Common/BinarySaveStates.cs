@@ -44,6 +44,17 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLoader LoadAndDetect(string Filename)
 		{
 			BinaryStateLoader ret = new BinaryStateLoader();
+
+			//PORTABLE TODO - SKIP THIS.. FOR NOW
+			//check whether its an archive before we try opening it
+			int offset;
+			bool isExecutable;
+			bool isArchive;
+			using(var archiveChecker = new SevenZipSharpArchiveHandler())
+				isArchive = archiveChecker.CheckSignature(Filename, out offset, out isExecutable);
+			if(!isArchive)
+				return null;
+
 			try
 			{
 				ret.zip = new ZipFile(Filename);
