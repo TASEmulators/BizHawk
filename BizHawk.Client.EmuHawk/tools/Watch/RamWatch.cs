@@ -730,7 +730,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var allCheats = SelectedWatches.All(watch => !Global.CheatList.IsActive(watch.Domain, watch.Address ?? 0));
+			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
 			if (allCheats)
 			{
 				ToolHelpers.UnfreezeAddress(SelectedWatches);
