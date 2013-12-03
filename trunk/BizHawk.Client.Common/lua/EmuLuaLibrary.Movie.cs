@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 
 		public static bool movie_getreadonly()
 		{
-			return Global.ReadOnly;
+			return Global.MovieSession.ReadOnly;
 		}
 
 		public static bool movie_getrerecordcounting()
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 
 		public static void movie_setreadonly(object lua_input)
 		{
-			Global.ReadOnly = (lua_input.ToString().ToUpper() == "TRUE"
+			Global.MovieSession.ReadOnly = (lua_input.ToString().ToUpper() == "TRUE"
 				|| lua_input.ToString() == "1");
 		}
 

@@ -116,7 +116,8 @@ namespace BizHawk.Client.Common
 		#region Dubious, should reconsider
 
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
+		
+		void ExtractInputLog(TextReader reader); //Is passing a textreader the only reasonable way to do this?
 
 		#endregion
 	}

@@ -407,12 +407,12 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public void ExtractInputLog(TextReader reader, bool isMultitracking)
+		public void ExtractInputLog(TextReader reader)
 		{
 			int? stateFrame = null;
 			
 			// We are in record mode so replace the movie log with the one from the savestate
-			if (!isMultitracking)
+			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 				{
@@ -816,7 +816,7 @@ namespace BizHawk.Client.Common
 			var pal = Header.ContainsKey(HeaderKeys.PAL) &&
 				Header[HeaderKeys.PAL] == "1";
 
-			return frames / FrameRates[system, pal];
+			return frames / _frameRates[system, pal];
 		}
 
 		public double Fps
@@ -827,16 +827,12 @@ namespace BizHawk.Client.Common
 				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
 					Header[HeaderKeys.PAL] == "1";
 
-				return FrameRates[system, pal];
+				return _frameRates[system, pal];
 			}
 		}
 
 		#endregion
 
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
-		public PlatformFrameRates FrameRates
-		{
-			get { return _frameRates; }
-		}
 	}
 }

@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 				= SaveMovieMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
-			ReadonlyMenuItem.Checked = Global.ReadOnly;
+			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
 			BindSavestatesToMoviesMenuItem.Checked = Global.Config.BindSavestatesToMovies;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
@@ -1760,7 +1760,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && Global.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && Global.MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 			
@@ -1773,7 +1773,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				if (Global.ReadOnly)
+				if (Global.MovieSession.ReadOnly)
 				{
 					ViewSubtitlesContextMenuItem.Text = "View Subtitles";
 					ViewCommentsContextMenuItem.Text = "View Comments";
@@ -1847,7 +1847,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var form = new EditSubtitlesForm { ReadOnly = Global.ReadOnly };
+				var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}

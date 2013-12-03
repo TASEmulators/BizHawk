@@ -43,16 +43,17 @@ namespace BizHawk.Client.EmuHawk
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
 			}
+
 			if (record)
 			{
-				Global.Emulator.ClearSaveRam();
 				Global.MovieSession.Movie.StartNewRecording();
-				Global.ReadOnly = false;
+				Global.MovieSession.ReadOnly = false;
 			}
 			else
 			{
 				Global.MovieSession.Movie.StartNewPlayback();
 			}
+
 			SetMainformMovieInfo();
 			GlobalWin.Tools.Restart<TAStudio>();
 			GlobalWin.Tools.Restart<VirtualPadForm>();
@@ -117,10 +118,11 @@ namespace BizHawk.Client.EmuHawk
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
 				}
+
 				Global.MovieSession.Movie.StartNewPlayback();
 				SetMainformMovieInfo();
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
-				Global.ReadOnly = true;
+				Global.MovieSession.ReadOnly = true;
 			}
 		}
 
