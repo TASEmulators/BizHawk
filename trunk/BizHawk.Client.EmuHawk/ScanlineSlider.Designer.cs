@@ -64,6 +64,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ScanlineSlider";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Scanline Intensity";
             this.Load += new System.EventHandler(this.ScanlineSlider_Load);
