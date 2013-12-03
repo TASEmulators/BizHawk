@@ -30,13 +30,12 @@
         {
             this.scanlinetrackbar = new System.Windows.Forms.TrackBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.scanlinetrackbar)).BeginInit();
             this.SuspendLayout();
             // 
             // scanlinetrackbar
             // 
-            this.scanlinetrackbar.Location = new System.Drawing.Point(23, 14);
+            this.scanlinetrackbar.Location = new System.Drawing.Point(2, 7);
             this.scanlinetrackbar.Maximum = 100;
             this.scanlinetrackbar.Name = "scanlinetrackbar";
             this.scanlinetrackbar.Size = new System.Drawing.Size(207, 45);
@@ -48,31 +47,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 68);
+            this.label1.Location = new System.Drawing.Point(206, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(21, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "0%";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(89, 63);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // ScanlineSlider
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(253, 91);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(237, 58);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.scanlinetrackbar);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ScanlineSlider";
@@ -89,6 +77,5 @@
 
         private System.Windows.Forms.TrackBar scanlinetrackbar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
     }
 }
