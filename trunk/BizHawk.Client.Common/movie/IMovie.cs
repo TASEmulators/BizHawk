@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 
 		void ClearFrame(int frame);
 		void AppendFrame(string record);
-		void TruncateMovie(int frame);
+		void Truncate(int frame);
 
 		#endregion
 

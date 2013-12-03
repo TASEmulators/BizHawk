@@ -55,5 +55,13 @@ namespace BizHawk.Client.Common
 			sb.AppendLine("[/Input]");
 			return sb.ToString();
 		}
+
+		public void Truncate(int index)
+		{
+			if (index < Count)
+			{
+				RemoveRange(index, Count - index);
+			}
+		}
 	}
 }

@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 			_changes = true;
 		}
 
-		public void TruncateMovie(int frame)
+		public void Truncate(int frame)
 		{
 			_log.TruncateMovie(frame);
 			_log.TruncateStates(frame);
@@ -818,7 +818,7 @@ namespace BizHawk.Client.Common
 			var pal = Header.ContainsKey(HeaderKeys.PAL) &&
 				Header[HeaderKeys.PAL] == "1";
 
-			return frames / this.FrameRates[system, pal];
+			return frames / FrameRates[system, pal];
 		}
 
 		public double Fps

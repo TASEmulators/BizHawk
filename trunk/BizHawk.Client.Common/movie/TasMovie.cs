@@ -8,10 +8,9 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
 	{
-		private enum Moviemode { Inactive, Play, Record, Finished };
-
-		private MovieRecordList _records;
-		private Moviemode _mode;
+		// TODO: preloading, or benchmark and see how much of a performaance gain it really is
+		// TODO: support loop Offset
+		#region Implementation
 
 		public TasMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
@@ -55,10 +54,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsCountingRerecords { get; set; }
 
-		public bool Changes
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public bool Changes { get; private set; }
 
 		public bool Loaded
 		{
@@ -67,17 +63,91 @@ namespace BizHawk.Client.Common
 
 		public TimeSpan Time
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				return new TimeSpan();
+				double dblseconds = GetSeconds(_records.Count);
+				int seconds = (int)(dblseconds % 60);
+				int days = seconds / 86400;
+				int hours = seconds / 3600;
+				int minutes = (seconds / 60) % 60;
+				int milliseconds = (int)((dblseconds - (double)seconds) * 1000);
+				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+			}
 		}
 
 		public double FrameCount
 		{
-			get { throw new NotImplementedException(); }
+			get { return _records.Count; }
 		}
 
 		public int InputLogLength
 		{
 			get { return _records.Count; }
+		}
+
+		public string GetInput(int frame)
+		{
+			if (frame < _records.Count)
+			{
+				return _records[frame].Input;
+			}
+			else
+			{
+				_mode = Moviemode.Finished;
+				return String.Empty;
+			}
+		}
+
+		public string GetInputLog()
+		{
+			return _records.ToString();
+		}
+
+		public void SwitchToRecord()
+		{
+			_mode = Moviemode.Record;
+		}
+
+		public void SwitchToPlay()
+		{
+			_mode = Moviemode.Play;
+			Save();
+		}
+
+		public void StartNewPlayback()
+		{
+			_mode = Moviemode.Play;
+			Global.Emulator.ClearSaveRam();
+		}
+
+		public void Stop(bool saveChanges = true)
+		{
+			if (saveChanges)
+			{
+				if (_mode == Moviemode.Record || Changes)
+				{
+					Save();
+				}
+			}
+
+			_mode = Moviemode.Inactive;
+		}
+
+		public void Truncate(int frame)
+		{
+			_records.Truncate(frame);
+		}
+
+		// TODO: 
+
+		public void StartNewRecording()
+		{
+			SwitchToRecord();
+			if (Global.Config.EnableBackupMovies && true/*TODO*/ && _records.Any())
+			{
+				// TODO
+			}
 		}
 
 		public bool Load()
@@ -87,41 +157,13 @@ namespace BizHawk.Client.Common
 
 		public void Save()
 		{
+			Changes = false;
 			throw new NotImplementedException();
 		}
 
 		public void SaveAs()
 		{
-			throw new NotImplementedException();
-		}
-
-		public string GetInputLog()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void StartNewRecording()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void StartNewPlayback()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Stop(bool saveChanges = true)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SwitchToRecord()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SwitchToPlay()
-		{
+			Changes = false;
 			throw new NotImplementedException();
 		}
 
@@ -131,11 +173,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public void AppendFrame(string record)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void TruncateMovie(int frame)
 		{
 			throw new NotImplementedException();
 		}
@@ -160,9 +197,30 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public string GetInput(int frame)
+		#endregion
+
+		#region Private
+
+		private enum Moviemode { Inactive, Play, Record, Finished };
+		private MovieRecordList _records;
+		private Moviemode _mode;
+		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
+
+		private double GetSeconds(int frameCount)
 		{
-			throw new NotImplementedException();
+			double frames = frameCount;
+
+			if (frames < 1)
+			{
+				return 0;
+			}
+
+			var system = Header[HeaderKeys.PLATFORM];
+			var pal = Header.ContainsKey(HeaderKeys.PAL) && Header[HeaderKeys.PAL] == "1";
+
+			return frames / _frameRates[system, pal];
 		}
+
+		#endregion
 	}
 }

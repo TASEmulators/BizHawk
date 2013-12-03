@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly Dictionary<string, double> _rates = new Dictionary<string, double>
+		private static Dictionary<string, double> _rates = new Dictionary<string, double>
 			{
 				{ "NES", 60.098813897440515532 },
 				{ "NES_PAL", 50.006977968268290849 },
