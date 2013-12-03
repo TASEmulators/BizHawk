@@ -366,13 +366,13 @@ namespace BizHawk.Client.Common
 
 		#region Public Misc Methods
 
-		public void PokeFrame(int frameNum, MnemonicsGenerator mg)
+		public void PokeFrame(int frame, MnemonicsGenerator mg)
 		{
 			_changes = true;
-			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
+			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
-		public void CommitFrame(int frameNum, MnemonicsGenerator mg)
+		public void RecordFrame(int frame, MnemonicsGenerator mg)
 		{
 			// Note: Truncation here instead of loadstate will make VBA style loadstates
 			// (Where an entire movie is loaded then truncated on the next frame
@@ -386,7 +386,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_changes = true;
-			_log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
+			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
 		public string GetInputLog()

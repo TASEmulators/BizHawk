@@ -141,7 +141,6 @@ namespace BizHawk.Client.Common
 
 			else if (Movie.IsPlaying)
 			{
-				
 				LatchInputFromLog();
 
 				//Movie may go into finished mode as a result from latching
@@ -184,7 +183,7 @@ namespace BizHawk.Client.Common
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 				var mg = new MnemonicsGenerator();
 				mg.SetSource(Global.MovieOutputHardpoint);
-				Movie.CommitFrame(Global.Emulator.Frame, mg);
+				Movie.RecordFrame(Global.Emulator.Frame, mg);
 			}
 		}
 

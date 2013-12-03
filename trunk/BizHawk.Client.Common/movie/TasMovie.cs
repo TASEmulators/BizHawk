@@ -169,25 +169,46 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
-			throw new NotImplementedException();
+			if (frame < _records.Count)
+			{
+				Changes = true;
+				_records[frame].Input = MnemonicsGenerator.GetEmptyMnemonic;
+			}
 		}
 
 		public void AppendFrame(MnemonicsGenerator mg)
 		{
+			Changes = true;
 			_records.Add(new MovieRecord()
 			{
 				Input = mg.GetControllersAsMnemonic(),
 			});
 		}
 
-		public void CommitFrame(int frameNum, MnemonicsGenerator mg)
+		public void RecordFrame(int frame, MnemonicsGenerator mg)
 		{
-			throw new NotImplementedException();
+			if (_mode == Moviemode.Record)
+			{
+				Changes = true;
+				if (Global.Config.VBAStyleMovieLoadState)
+				{
+					if (Global.Emulator.Frame < _records.Count)
+					{
+						_records.Truncate(Global.Emulator.Frame);
+					}
+				}
+
+				PokeFrame(frame, mg);
+			}
 		}
 
-		public void PokeFrame(int frameNum, MnemonicsGenerator mg)
+		public void PokeFrame(int frame, MnemonicsGenerator mg)
 		{
-			throw new NotImplementedException();
+			if (frame < _records.Count)
+			{
+				Changes = true;
+				_records[frame].Input = mg.GetControllersAsMnemonic();
+			}
 		}
 
 		public LoadStateResult CheckTimeLines(System.IO.TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
