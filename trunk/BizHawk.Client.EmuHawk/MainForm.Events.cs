@@ -582,7 +582,7 @@ namespace BizHawk.Client.EmuHawk
 			x2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 1;
 			SuperX2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 2;
 			SuperEagleMenuItem.Checked = Global.Config.TargetDisplayFilter == 3;
-			scanlines2xToolStripMenuItem.Checked = Global.Config.TargetDisplayFilter == 4;
+            scanlines2xToolStripMenuItem.Checked = Global.Config.TargetDisplayFilter == 4;
 		}
 
 		private void DisplayFilterMenuItem_Click(object sender, EventArgs e)
@@ -591,7 +591,10 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == x2SAIMenuItem) Global.Config.TargetDisplayFilter = 1;
 			if (sender == SuperX2SAIMenuItem) Global.Config.TargetDisplayFilter = 2;
 			if (sender == SuperEagleMenuItem) Global.Config.TargetDisplayFilter = 3;
-			if (sender == scanlines2xToolStripMenuItem) Global.Config.TargetDisplayFilter = 4;
+            if (sender == Scanlines25MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 192; }
+            if (sender == Scanlines50MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 128; }
+            if (sender == Scanlines75MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 64; }
+            if (sender == ScanlinesCustomMenuItem) { Global.Config.TargetDisplayFilter = 4; new ScanlineSlider().Show(); }
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
