@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		#region Dubious, should reconsider
 
 		void CommitFrame(int frameNum, MnemonicsGenerator mg); // Why pass in frameNum? Calling api 
-		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
+		void PokeFrame(int frameNum, MnemonicsGenerator mg); // Why does this exist as something different than Commit Frame?
 		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		
 		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in

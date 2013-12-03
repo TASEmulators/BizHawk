@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public void PokeFrame(int frameNum, string input)
+		public void PokeFrame(int frameNum, MnemonicsGenerator mg)
 		{
 			throw new NotImplementedException();
 		}
