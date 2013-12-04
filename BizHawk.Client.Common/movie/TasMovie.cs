@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public LoadStateResult CheckTimeLines(System.IO.TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
+		public LoadStateResult CheckTimeLines(System.IO.TextReader reader, out string errorMessage)
 		{
 			throw new NotImplementedException();
 		}

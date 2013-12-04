@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 
 		#region Dubious, should reconsider
 
-		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
+		LoadStateResult CheckTimeLines(TextReader reader, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
 		
 		void ExtractInputLog(TextReader reader); //Is passing a textreader the only reasonable way to do this?
 
@@ -124,4 +124,4 @@ namespace BizHawk.Client.Common
 }
 
 // TODO: delete this and refactor code that uses it!
-public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
+public enum LoadStateResult { Pass, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }

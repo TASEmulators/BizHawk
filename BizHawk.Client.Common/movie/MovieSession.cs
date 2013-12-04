@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 			{
 				if (ReadOnly)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
 						Movie.Save();
@@ -220,38 +220,13 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.Save();
-									Movie.SwitchToPlay();
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
+						return false;
 					}
 				}
 				else
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: true, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
 						reader.BaseStream.Position = 0;
@@ -260,34 +235,8 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
+						return false;
 					}
 				}
 			}
@@ -296,7 +245,7 @@ namespace BizHawk.Client.Common
 			{
 				if (ReadOnly)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
 						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
@@ -304,36 +253,12 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
 					}
 				}
 				else
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
 						Movie.SwitchToRecord();
@@ -344,35 +269,8 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.SwitchToRecord();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
+						return false;
 					}
 				}
 			}
@@ -380,35 +278,11 @@ namespace BizHawk.Client.Common
 			{
 				if (ReadOnly)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, errorMessage: out ErrorMSG);
 					if (result != LoadStateResult.Pass)
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: true, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.SwitchToPlay();
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
+						return false;
 					}
 					else if (Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
 					{
@@ -421,7 +295,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
+					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
 					if (result == LoadStateResult.Pass)
 					{
 						Global.Emulator.ClearSaveRam();
@@ -433,36 +307,8 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Global.Emulator.ClearSaveRam();
-									Movie.StartNewRecording();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
+						Output(ErrorMSG);
+						return false;
 					}
 				}
 			}
