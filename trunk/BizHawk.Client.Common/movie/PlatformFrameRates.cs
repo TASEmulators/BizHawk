@@ -21,6 +21,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		//these are political numbers, designed to be in accord with tasvideos.org tradition. theyre not necessarily mathematical factualities (although they may be in some cases)
+		//it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal valees (since this seems to be where theyre all collected)
+		//are we collecting them anywhere else? for avi-writing code perhaps?
 		private static Dictionary<string, double> _rates = new Dictionary<string, double>
 			{
 				{ "NES", 60.098813897440515532 },
