@@ -115,13 +115,9 @@ namespace BizHawk.Client.Common
 
 		#region Dubious, should reconsider
 
-		LoadStateResult CheckTimeLines(TextReader reader, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		
+		bool CheckTimeLines(TextReader reader, out string errorMessage); //Can we avoid passing a text reader?
 		void ExtractInputLog(TextReader reader); //Is passing a textreader the only reasonable way to do this?
 
 		#endregion
 	}
 }
-
-// TODO: delete this and refactor code that uses it!
-public enum LoadStateResult { Pass, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }
