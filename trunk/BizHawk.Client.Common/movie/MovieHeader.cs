@@ -24,7 +24,6 @@ namespace BizHawk.Client.Common
 			this[HeaderKeys.GAMENAME] = String.Empty;
 			this[HeaderKeys.AUTHOR] = String.Empty;
 			this[HeaderKeys.RERECORDS] = "0";
-			this[HeaderKeys.GUID] = HeaderKeys.NewGuid;
 		}
 
 		public new string this[string key]

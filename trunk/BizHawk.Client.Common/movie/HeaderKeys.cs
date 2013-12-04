@@ -13,7 +13,6 @@ namespace BizHawk.Client.Common
 		public const string GAMENAME = "GameName";
 		public const string AUTHOR = "Author";
 		public const string RERECORDS = "rerecordCount";
-		public const string GUID = "GUID";
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
 		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
@@ -34,11 +33,6 @@ namespace BizHawk.Client.Common
 
 		// Board properties
 		public const string BOARDPROPERTIES = "BoardProperty";
-
-		public static string NewGuid
-		{
-			get { return Guid.NewGuid().ToString(); }
-		}
 
 		public static bool Contains(string val)
 		{

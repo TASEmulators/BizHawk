@@ -393,9 +393,7 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder();
 
-			sb
-				.AppendLine("[Input]")
-				.AppendLine(HeaderKeys.GUID + " " + Header[HeaderKeys.GUID]);
+			sb.AppendLine("[Input]");
 
 			foreach (var record in _log)
 			{
@@ -558,7 +556,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage)
+		public LoadStateResult CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = String.Empty;
@@ -574,17 +572,6 @@ namespace BizHawk.Client.Common
 				else if (line.Trim() == string.Empty)
 				{
 					continue;
-				}
-				else if (line.Contains("GUID"))
-				{
-					var guid = line.Split(new[] { ' ' }, 2)[1];
-					if (Header[HeaderKeys.GUID] != guid)
-					{
-						if (!ignoreGuidMismatch)
-						{
-							return LoadStateResult.GuidMismatch;
-						}
-					}
 				}
 				else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 				{
@@ -624,11 +611,6 @@ namespace BizHawk.Client.Common
 				{
 					log.AppendFrame(line);
 				}
-			}
-
-			if (onlyGuid)
-			{
-				return LoadStateResult.Pass;
 			}
 
 			if (stateFrame == 0)

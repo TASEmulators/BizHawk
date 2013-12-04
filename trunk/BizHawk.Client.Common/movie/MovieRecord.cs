@@ -33,24 +33,17 @@ namespace BizHawk.Client.Common
 		public MovieRecordList()
 			: base()
 		{
-			Guid = new Guid();
-		}
 
-		public Guid Guid { get; private set; }
+		}
 
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
 			sb
 				.AppendLine("[Input]")
-				
+
 				.Append("Frame ")
 				.Append(Global.Emulator.Frame)
-				.AppendLine()
-				
-				.Append(HeaderKeys.GUID)
-				.Append(' ')
-				.Append(Guid)
 				.AppendLine();
 
 			foreach (var record in this)

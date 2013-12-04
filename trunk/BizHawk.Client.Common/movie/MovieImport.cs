@@ -383,7 +383,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("guid"))
 				{
-					m.Header[HeaderKeys.GUID] = ParseHeader(line, "guid");
+					continue; //We no longer care to keep this info
 				}
 				else if (line.ToLower().StartsWith("startsfromsavestate"))
 				{
@@ -1730,7 +1730,7 @@ namespace BizHawk.Client.Common
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header[HeaderKeys.GUID] = String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000";
+
 			// 00C 4-byte little-endian unsigned int: rerecord count
 			m.Header.Rerecords = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: number of frames
@@ -1989,7 +1989,7 @@ namespace BizHawk.Client.Common
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header[HeaderKeys.GUID] = String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000";
+
 			// 00C 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count

@@ -97,7 +97,6 @@ namespace BizHawk.Client.EmuHawk
 				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
 				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
-				_movieToRecord.Header[HeaderKeys.GUID] = HeaderKeys.NewGuid;
 				_movieToRecord.Header[HeaderKeys.PLATFORM] = Global.Game.System;
 				if (Global.Game != null)
 				{
