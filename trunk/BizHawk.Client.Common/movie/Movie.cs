@@ -29,7 +29,6 @@ namespace BizHawk.Client.Common
 			
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
-			IsText = true;
 			MakeBackup = true;
 		}
 
@@ -44,7 +43,6 @@ namespace BizHawk.Client.Common
 		public bool IsCountingRerecords { get; set; }
 		
 		public bool Loaded { get; private set; }
-		public bool IsText { get; private set; }
 
 		public int InputLogLength
 		{
@@ -171,14 +169,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(directory_info.FullName);
 			}
 
-			if (IsText)
-			{
-				WriteText(Filename);
-			}
-			else
-			{
-				WriteBinary(Filename);
-			}
+			Write(Filename);
 		}
 
 		public void Save()
@@ -209,14 +200,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(directory_info.FullName);
 			}
 
-			if (IsText)
-			{
-				WriteText(backupName);
-			}
-			else
-			{
-				WriteBinary(backupName);
-			}
+			Write(backupName);
 		}
 
 		/// <summary>
@@ -675,24 +659,17 @@ namespace BizHawk.Client.Common
 		private int _preloadFramecount; // Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private bool _changes;
 		private int? _loopOffset;
+		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 
 		#endregion
 
 		#region Helpers
 
-		private void WriteText(string fn)
+		private void Write(string fn)
 		{
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				WriteText(fs);
-			}
-		}
-
-		private void WriteBinary(string fn)
-		{
-			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
-			{
-				WriteBinary(fs);
 			}
 		}
 
@@ -713,10 +690,6 @@ namespace BizHawk.Client.Common
 					sw.WriteLine(_log[i]);
 				}
 			}
-		}
-
-		private void WriteBinary(Stream stream)
-		{
 		}
 
 		private bool LoadText()
@@ -775,11 +748,6 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private bool LoadBinary()
-		{
-			return true;
-		}
-
 		private static string MakeDigits(int num)
 		{
 			return num < 10 ? "0" + num : num.ToString();
@@ -814,7 +782,5 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 	}
 }
