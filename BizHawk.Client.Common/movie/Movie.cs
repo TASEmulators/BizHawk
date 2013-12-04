@@ -556,7 +556,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public LoadStateResult CheckTimeLines(TextReader reader, out string errorMessage)
+		public bool CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
 			errorMessage = String.Empty;
@@ -567,7 +567,7 @@ namespace BizHawk.Client.Common
 				var line = reader.ReadLine();
 				if (line == null)
 				{
-					return LoadStateResult.EmptyLog;
+					return false;
 				}
 				else if (line.Trim() == string.Empty)
 				{
@@ -583,7 +583,7 @@ namespace BizHawk.Client.Common
 					catch
 					{
 						errorMessage = "Savestate Frame number failed to parse";
-						return LoadStateResult.MissingFrameNumber;
+						return false;
 					}
 				}
 				else if (line.Contains("Frame "))
@@ -596,7 +596,7 @@ namespace BizHawk.Client.Common
 					catch
 					{
 						errorMessage = "Savestate Frame number failed to parse";
-						return LoadStateResult.MissingFrameNumber;
+						return false;
 					}
 				}
 				else if (line == "[Input]")
@@ -622,7 +622,7 @@ namespace BizHawk.Client.Common
 			{
 				if (IsFinished)
 				{
-					return LoadStateResult.Pass;
+					return true;
 				}
 				else
 				{
@@ -630,7 +630,7 @@ namespace BizHawk.Client.Common
 						+ log.Length
 						+ " which is greater than the current movie length of "
 						+ _log.Length;
-					return LoadStateResult.FutureEventError;
+					return false;
 				}
 			}
 
@@ -641,7 +641,7 @@ namespace BizHawk.Client.Common
 					errorMessage = "The savestate input does not match the movie input at frame "
 						+ (i + 1)
 						+ ".";
-					return LoadStateResult.TimeLineError;
+					return false;
 				}
 			}
 
@@ -650,11 +650,11 @@ namespace BizHawk.Client.Common
 				if (_mode == Moviemode.Play || _mode == Moviemode.Finished)
 				{
 					_mode = Moviemode.Finished;
-					return LoadStateResult.Pass;
+					return true;
 				}
 				else
 				{
-					return LoadStateResult.NotInRecording; // TODO: For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+					return false;
 				}
 			}
 			else if (_mode == Moviemode.Finished)
@@ -662,7 +662,7 @@ namespace BizHawk.Client.Common
 				_mode = Moviemode.Play;
 			}
 
-			return LoadStateResult.Pass;
+			return true;
 		}
 
 		#endregion

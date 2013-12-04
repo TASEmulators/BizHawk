@@ -211,11 +211,10 @@ namespace BizHawk.Client.Common
 				if (ReadOnly)
 				{
 					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result == LoadStateResult.Pass)
+					if (result)
 					{
 						Movie.Save();
 						Movie.SwitchToPlay();
-						
 						return true;
 					}
 					else
@@ -227,7 +226,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result == LoadStateResult.Pass)
+					if (result)
 					{
 						reader.BaseStream.Position = 0;
 						reader.DiscardBufferedData();
@@ -246,7 +245,7 @@ namespace BizHawk.Client.Common
 				if (ReadOnly)
 				{
 					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result == LoadStateResult.Pass)
+					if (result)
 					{
 						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 						return true;
@@ -259,7 +258,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result == LoadStateResult.Pass)
+					if (result)
 					{
 						Movie.SwitchToRecord();
 						reader.BaseStream.Position = 0;
@@ -279,7 +278,7 @@ namespace BizHawk.Client.Common
 				if (ReadOnly)
 				{
 					var result = Movie.CheckTimeLines(reader, errorMessage: out ErrorMSG);
-					if (result != LoadStateResult.Pass)
+					if (!result)
 					{
 						Output(ErrorMSG);
 						return false;
@@ -296,7 +295,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result == LoadStateResult.Pass)
+					if (result)
 					{
 						Global.Emulator.ClearSaveRam();
 						Movie.StartNewRecording();
