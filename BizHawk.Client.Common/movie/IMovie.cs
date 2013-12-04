@@ -23,8 +23,20 @@ namespace BizHawk.Client.Common
 
 		#region Properties
 
+		/// <summary>
+		/// The total number of frames that count towards the completion time of the movie
+		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)
+		/// </summary>
 		double FrameCount { get; }
+		
+		/// <summary>
+		/// The Fps used to calculate the time of the movie
+		/// </summary>
+		double Fps { get; }
 
+		/// <summary>
+		/// The time calculation based on FrameCount and Fps
+		/// </summary>
 		TimeSpan Time { get; }
 
 		/// <summary>

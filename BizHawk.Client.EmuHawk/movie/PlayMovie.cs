@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		private List<Movie> _movieList = new List<Movie>();
+		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
 

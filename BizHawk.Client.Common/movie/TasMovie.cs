@@ -184,6 +184,14 @@ namespace BizHawk.Client.Common
 
 		// TODO:
 
+		public double Fps
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		public void StartNewRecording()
 		{
 			SwitchToRecord();

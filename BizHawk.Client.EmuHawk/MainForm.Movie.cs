@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(Movie m, bool record)
+		public void StartNewMovie(IMovie movie, bool record)
 		{
 			//If a movie is already loaded, save it before starting a new movie
 			if (Global.MovieSession.Movie.IsActive)
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.MovieSession = new MovieSession
 			{
-				Movie = m,
+				Movie = movie,
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
-			Global.Config.RecentMovies.Add(m.Filename);
+			Global.Config.RecentMovies.Add(movie.Filename);
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
