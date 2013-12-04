@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 		//are we collecting them anywhere else? for avi-writing code perhaps?
 		private static Dictionary<string, double> _rates = new Dictionary<string, double>
 			{
-				{ "NES", 60.098813897440515532 },
+				{ "NES", 60.098813897440515532 }, //discussion here: http://forums.nesdev.com/viewtopic.php?t=492 ; a rational expression would be (19687500 / 11) / ((341*262-0.529780.5)/3) -> (118125000 / 1965513) -> 60.098813897440515529533511098629 (so our chosen number is very close)
 				{ "NES_PAL", 50.006977968268290849 },
 				{ "FDS", 60.098813897440515532 },
 				{ "FDS_PAL", 50.006977968268290849 },
