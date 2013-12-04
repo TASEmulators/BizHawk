@@ -196,94 +196,35 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//OMG this needs to be refactored!
 		public bool HandleMovieLoadState(StreamReader reader)
 		{
-			string ErrorMSG = String.Empty;
-
 			if (!Movie.IsActive)
 			{
 				return true;
 			}
 
-			else if (Movie.IsRecording)
-			{
-				if (ReadOnly)
-				{
-					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result)
-					{
-						Movie.Save();
-						Movie.SwitchToPlay();
-						return true;
-					}
-					else
-					{
-						Output(ErrorMSG);
-						return false;
-					}
-				}
-				else
-				{
-					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result)
-					{
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader);
-					}
-					else
-					{
-						Output(ErrorMSG);
-						return false;
-					}
-				}
-			}
+			string ErrorMSG = String.Empty;
 
-			else if (Movie.IsPlaying && !Movie.IsFinished)
+			if (ReadOnly)
 			{
-				if (ReadOnly)
+				var result = Movie.CheckTimeLines(reader, out ErrorMSG);
+				if (!result)
 				{
-					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result)
-					{
-						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
-						return true;
-					}
-					else
-					{
-						Output(ErrorMSG);
-					}
+					Output(ErrorMSG);
+					return false;
 				}
-				else
+
+				if (Movie.IsRecording)
 				{
-					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result)
-					{
-						Movie.SwitchToRecord();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader);
-						return true;
-					}
-					else
-					{
-						Output(ErrorMSG);
-						return false;
-					}
+					Movie.SwitchToPlay();
 				}
-			}
-			else if (Movie.IsFinished)
-			{
-				if (ReadOnly)
+				else if (Movie.IsPlaying && !Movie.IsFinished)
 				{
-					var result = Movie.CheckTimeLines(reader, errorMessage: out ErrorMSG);
-					if (!result)
-					{
-						Output(ErrorMSG);
-						return false;
-					}
-					else if (Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
+					// Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
+				}
+				else if (Movie.IsFinished)
+				{
+					if (Movie.IsFinished) // TimeLine check can change a movie to finished, hence the check here (not a good design)
 					{
 						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
@@ -292,23 +233,36 @@ namespace BizHawk.Client.Common
 						Movie.SwitchToPlay();
 					}
 				}
-				else
+			}
+			else
+			{
+				var result = Movie.CheckTimeLines(reader, out ErrorMSG);
+				if (!result)
 				{
-					var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-					if (result)
-					{
-						Global.Emulator.ClearSaveRam();
-						Movie.StartNewRecording();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader);
-						return true;
-					}
-					else
-					{
-						Output(ErrorMSG);
-						return false;
-					}
+					Output(ErrorMSG);
+					return false;
+				}
+
+				if (Movie.IsRecording)
+				{
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Movie.ExtractInputLog(reader);
+				}
+				else if (Movie.IsPlaying && !Movie.IsFinished)
+				{
+					Movie.SwitchToRecord();
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Movie.ExtractInputLog(reader);
+				}
+				else if (Movie.IsFinished)
+				{
+					Global.Emulator.ClearSaveRam();
+					Movie.StartNewRecording();
+					reader.BaseStream.Position = 0;
+					reader.DiscardBufferedData();
+					Movie.ExtractInputLog(reader);
 				}
 			}
 
