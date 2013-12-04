@@ -250,7 +250,7 @@ namespace BizHawk.Client.Common
 		{
 			string name = FilesystemSafeName(game);
 			
-			if (Global.Config.BindSavestatesToMovies && Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}

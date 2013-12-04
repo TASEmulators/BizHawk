@@ -518,7 +518,6 @@ namespace BizHawk.Client.Common
 
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
-		public bool BindSavestatesToMovies = true;
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;

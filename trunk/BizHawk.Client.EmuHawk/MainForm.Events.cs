@@ -233,7 +233,6 @@ namespace BizHawk.Client.EmuHawk
 				= Global.MovieSession.Movie.IsActive;
 
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
-			BindSavestatesToMoviesMenuItem.Checked = Global.Config.BindSavestatesToMovies;
 			AutomaticallyBackupMoviesMenuItem.Checked = Global.Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
 
@@ -431,11 +430,6 @@ namespace BizHawk.Client.EmuHawk
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
 			StopMovie(saveChanges: false);
-		}
-
-		private void BindSavestatesToMoviesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BindSavestatesToMovies ^= true;
 		}
 
 		private void AutomaticMovieBackupMenuItem_Click(object sender, EventArgs e)
