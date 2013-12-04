@@ -43,6 +43,11 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			sb
 				.AppendLine("[Input]")
+				
+				.Append("Frame ")
+				.Append(Global.Emulator.Frame)
+				.AppendLine()
+				
 				.Append(HeaderKeys.GUID)
 				.Append(' ')
 				.Append(Guid)
