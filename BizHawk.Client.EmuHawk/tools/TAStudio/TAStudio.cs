@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -13,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private int _defaultWidth;
 		private int _defaultHeight;
+		private TasMovie _tas;
 
 		#region API
 
@@ -56,6 +58,8 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed) return;
+
+			TASView.ItemCount = _tas.InputLogLength;
 		}
 
 		public void Restart()
@@ -89,7 +93,26 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			Global.MovieSession.Movie = new TasMovie();
+			_tas = Global.MovieSession.Movie as TasMovie;
+			_tas.StartNewRecording();
+
 			LoadConfigSettings();
+
+			SetUpColumns();
+		}
+
+		private void SetUpColumns()
+		{
+			TASView.Columns.Clear();
+			ToolHelpers.AddColumn(TASView, "", true, 18);
+			ToolHelpers.AddColumn(TASView, "Frame#", true, 68);
+
+			var mnemonics = MnemonicConstants.BUTTONS[Global.Emulator.Controller.Type.Name].Select(x => x.Value);
+
+			foreach (var mnemonic in mnemonics)
+			{
+				ToolHelpers.AddColumn(TASView, mnemonic, true, 20);
+			}
 		}
 
 		private void LoadConfigSettings()
