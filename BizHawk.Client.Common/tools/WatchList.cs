@@ -518,6 +518,8 @@ namespace BizHawk.Client.Common
 							bigEndian));
 					_domain = Global.Emulator.MemoryDomains[domain];
 				}
+
+				Domain = Global.Emulator.MemoryDomains[domain] ?? Global.Emulator.MemoryDomains.MainMemory;
 			}
 
 			if (!append)
