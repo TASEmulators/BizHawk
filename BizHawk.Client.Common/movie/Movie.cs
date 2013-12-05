@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -59,7 +57,6 @@ namespace BizHawk.Client.Common
 				}
 				else if (Loaded)
 				{
-					
 					return _log.Length;
 				}
 				else
@@ -450,7 +447,7 @@ namespace BizHawk.Client.Common
 							return false;
 						}
 					}
-					if (line[0] == '|')
+					else if (line[0] == '|')
 					{
 						_log.AppendFrame(line);
 					}
@@ -617,8 +614,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-
-
 			if (stateFrame == 0)
 			{
 				stateFrame = log.Length;  // In case the frame count failed to parse, revert to using the entire state input log
@@ -707,9 +702,9 @@ namespace BizHawk.Client.Common
 					sw.WriteLine("LoopOffset " + _loopOffset);
 				}
 
-				for (int i = 0; i < _log.Length; i++)
+				foreach (var input in _log)
 				{
-					sw.WriteLine(_log[i]);
+					sw.WriteLine(input);
 				}
 			}
 		}

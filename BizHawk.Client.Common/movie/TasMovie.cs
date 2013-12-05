@@ -21,8 +21,7 @@ namespace BizHawk.Client.Common
 		public TasMovie(bool startsFromSavestate = false)
 		{
 			Filename = String.Empty;
-			Header = new MovieHeader();
-			Header.StartsFromSavestate = startsFromSavestate;
+			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
 			IsCountingRerecords = true;
@@ -70,7 +69,7 @@ namespace BizHawk.Client.Common
 				int days = seconds / 86400;
 				int hours = seconds / 3600;
 				int minutes = (seconds / 60) % 60;
-				int milliseconds = (int)((dblseconds - (double)seconds) * 1000);
+				int milliseconds = (int)((dblseconds - seconds) * 1000);
 				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
 			}
 		}
@@ -150,7 +149,7 @@ namespace BizHawk.Client.Common
 		public void AppendFrame(MnemonicsGenerator mg)
 		{
 			Changes = true;
-			_records.Add(new MovieRecord()
+			_records.Add(new MovieRecord 
 			{
 				Input = mg.GetControllersAsMnemonic(),
 			});
@@ -183,7 +182,6 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO:
-
 		public double Fps
 		{
 			get
@@ -233,7 +231,7 @@ namespace BizHawk.Client.Common
 		#region Private
 
 		private enum Moviemode { Inactive, Play, Record, Finished };
-		private MovieRecordList _records;
+		private readonly MovieRecordList _records;
 		private Moviemode _mode;
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();
 
