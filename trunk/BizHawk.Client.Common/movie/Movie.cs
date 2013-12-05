@@ -100,6 +100,7 @@ namespace BizHawk.Client.Common
 
 		public void StartNewRecording()
 		{
+			Global.Emulator.ClearSaveRam();
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 			{
@@ -112,8 +113,8 @@ namespace BizHawk.Client.Common
 
 		public void StartNewPlayback()
 		{
-			_mode = Moviemode.Play;
 			Global.Emulator.ClearSaveRam();
+			_mode = Moviemode.Play;
 		}
 
 		public void SwitchToRecord()
@@ -389,8 +390,9 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public void ExtractInputLog(TextReader reader)
+		public bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
+			errorMessage = String.Empty;
 			int? stateFrame = null;
 			
 			// We are in record mode so replace the movie log with the one from the savestate
@@ -429,7 +431,11 @@ namespace BizHawk.Client.Common
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } // TODO: message?
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -438,7 +444,11 @@ namespace BizHawk.Client.Common
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { } //TODO: message?
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
 					}
 					if (line[0] == '|')
 					{
@@ -475,7 +485,11 @@ namespace BizHawk.Client.Common
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } // TODO: message?
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -484,7 +498,11 @@ namespace BizHawk.Client.Common
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { } // TODO: message?
+						catch
+						{
+							errorMessage = "Savestate Frame number failed to parse";
+							return false;
+						}
 					}
 					else if (line.StartsWith("|"))
 					{
@@ -496,7 +514,7 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame == null)
 			{
-				throw new Exception("Couldn't find stateFrame");
+				errorMessage = "Savestate Frame number failed to parse";
 			}
 
 			var stateFramei = (int)stateFrame;
@@ -524,6 +542,8 @@ namespace BizHawk.Client.Common
 			{
 				Header.Rerecords++;
 			}
+
+			return true;
 		}
 
 		public TimeSpan Time
@@ -596,6 +616,8 @@ namespace BizHawk.Client.Common
 					log.AppendFrame(line);
 				}
 			}
+
+
 
 			if (stateFrame == 0)
 			{
