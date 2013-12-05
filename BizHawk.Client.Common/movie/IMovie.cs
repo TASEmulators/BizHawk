@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 		#region Dubious, should reconsider
 
 		bool CheckTimeLines(TextReader reader, out string errorMessage); //Can we avoid passing a text reader?
-		void ExtractInputLog(TextReader reader); //Is passing a textreader the only reasonable way to do this?
+		bool ExtractInputLog(TextReader reader, out string errorMessage); //Is passing a textreader the only reasonable way to do this?
 
 		#endregion
 	}

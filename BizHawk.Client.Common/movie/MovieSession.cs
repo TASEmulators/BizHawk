@@ -203,14 +203,14 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			string ErrorMSG = String.Empty;
+			string errorMsg = String.Empty;
 
 			if (ReadOnly)
 			{
-				var result = Movie.CheckTimeLines(reader, out ErrorMSG);
+				var result = Movie.CheckTimeLines(reader, out errorMsg);
 				if (!result)
 				{
-					Output(ErrorMSG);
+					Output(errorMsg);
 					return false;
 				}
 
@@ -218,51 +218,29 @@ namespace BizHawk.Client.Common
 				{
 					Movie.SwitchToPlay();
 				}
-				else if (Movie.IsPlaying && !Movie.IsFinished)
-				{
-					// Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
-				}
 				else if (Movie.IsFinished)
 				{
-					if (Movie.IsFinished) // TimeLine check can change a movie to finished, hence the check here (not a good design)
-					{
-						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-					}
-					else
-					{
-						Movie.SwitchToPlay();
-					}
+					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
 			else
 			{
-				var result = Movie.CheckTimeLines(reader, out ErrorMSG);
-				if (!result)
+				if (Movie.IsFinished)
 				{
-					Output(ErrorMSG);
-					return false;
+					Movie.StartNewRecording(); 
 				}
-
-				if (Movie.IsRecording)
-				{
-					reader.BaseStream.Position = 0;
-					reader.DiscardBufferedData();
-					Movie.ExtractInputLog(reader);
-				}
-				else if (Movie.IsPlaying && !Movie.IsFinished)
+				else if (Movie.IsPlaying)
 				{
 					Movie.SwitchToRecord();
-					reader.BaseStream.Position = 0;
-					reader.DiscardBufferedData();
-					Movie.ExtractInputLog(reader);
 				}
-				else if (Movie.IsFinished)
+
+				reader.BaseStream.Position = 0;
+				reader.DiscardBufferedData();
+				var result = Movie.ExtractInputLog(reader, out errorMsg);
+				if (!result)
 				{
-					Global.Emulator.ClearSaveRam();
-					Movie.StartNewRecording();
-					reader.BaseStream.Position = 0;
-					reader.DiscardBufferedData();
-					Movie.ExtractInputLog(reader);
+					Output(errorMsg);
+					return false;
 				}
 			}
 

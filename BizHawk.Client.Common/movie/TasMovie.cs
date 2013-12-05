@@ -223,7 +223,7 @@ namespace BizHawk.Client.Common
 			throw new NotImplementedException();
 		}
 
-		public void ExtractInputLog(TextReader reader)
+		public bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
 			throw new NotImplementedException();
 		}
