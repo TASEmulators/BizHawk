@@ -88,7 +88,14 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < _records.Count)
 			{
-				return _records[frame].Input;
+				if (frame >= 0)
+				{
+					return _records[frame].Input;
+				}
+				else
+				{
+					return String.Empty;
+				}
 			}
 			else
 			{
