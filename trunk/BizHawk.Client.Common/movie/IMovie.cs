@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Client.Common
 {
@@ -24,23 +22,23 @@ namespace BizHawk.Client.Common
 		#region Properties
 
 		/// <summary>
-		/// The total number of frames that count towards the completion time of the movie
+		/// Gets the total number of frames that count towards the completion time of the movie
 		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)
 		/// </summary>
 		double FrameCount { get; }
 		
 		/// <summary>
-		/// The Fps used to calculate the time of the movie
+		/// Gets the Fps used to calculate the time of the movie
 		/// </summary>
 		double Fps { get; }
 
 		/// <summary>
-		/// The time calculation based on FrameCount and Fps
+		/// Gets the time calculation based on FrameCount and Fps
 		/// </summary>
 		TimeSpan Time { get; }
 
 		/// <summary>
-		/// Actual length of the input log, should only be used by code that iterates or needs a real length
+		/// Gets the actual length of the input log, should only be used by code that iterates or needs a real length
 		/// </summary>
 		int InputLogLength { get; }
 
@@ -55,6 +53,8 @@ namespace BizHawk.Client.Common
 		void Save();
 		void SaveAs();
 		string GetInputLog();
+		bool CheckTimeLines(TextReader reader, out string errorMessage);
+		bool ExtractInputLog(TextReader reader, out string errorMessage);
 
 		#endregion
 
@@ -96,16 +96,14 @@ namespace BizHawk.Client.Common
 		#region Editing API
 
 		/// <summary>
-		/// Repalces the given frame's input with an empty frame
+		/// Replaces the given frame's input with an empty frame
 		/// </summary>
-		/// <param name="frame"></param>
 		void ClearFrame(int frame);
 		
 		/// <summary>
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		/// <param name="mg"></param>
 		void AppendFrame(MnemonicsGenerator mg);
 
 		/// <summary>
@@ -122,13 +120,6 @@ namespace BizHawk.Client.Common
 
 		void Truncate(int frame);
 		string GetInput(int frame);
-
-		#endregion
-
-		#region Dubious, should reconsider
-
-		bool CheckTimeLines(TextReader reader, out string errorMessage); //Can we avoid passing a text reader?
-		bool ExtractInputLog(TextReader reader, out string errorMessage); //Is passing a textreader the only reasonable way to do this?
 
 		#endregion
 	}

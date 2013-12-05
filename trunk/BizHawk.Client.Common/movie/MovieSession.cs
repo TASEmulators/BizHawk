@@ -7,13 +7,21 @@ namespace BizHawk.Client.Common
 {
 	public class MovieSession
 	{
-		public MultitrackRecording MultiTrack = new MultitrackRecording();
-		public IMovie Movie;
-		public MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
-		public Action<string> MessageCallback; //Not Required
-		public Func<string, string, bool> AskYesNoCallback; //Not Required
+		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
+		private readonly MovieControllerAdapter _movieControllerAdapter = new MovieControllerAdapter();
 
-		public bool ReadOnly = true;
+		public MovieSession()
+		{
+			ReadOnly = true;
+		}
+
+		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
+		public MovieControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+
+		public IMovie Movie { get; set; }
+		public bool ReadOnly { get; set; }
+		public Action<string> MessageCallback { get; set; }
+		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		private void Output(string message)
 		{
@@ -23,42 +31,28 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private bool AskYesNo(string title, string message)
+		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
 		{
-			if (AskYesNoCallback != null)
+			if (_multiTrack.IsActive)
 			{
-				return AskYesNoCallback(title, message);
+				rewiredSource.PlayerSource = 1;
+				rewiredSource.PlayerTargetMask = 1 << _multiTrack.CurrentPlayer;
+				if (_multiTrack.RecordAll)
+				{
+					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
+				}
 			}
 			else
 			{
-				return true;
+				rewiredSource.PlayerSource = -1;
 			}
-		}
 
-		private bool HandleGuidError()
-		{
-			return AskYesNo(
-				"GUID Mismatch error",
-				"The savestate GUID does not match the current movie.  Proceed anyway?"
-			);
-		}
-
-		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
-		{
-			if (MultiTrack.IsActive)
-			{
-				rewiredSource.PlayerSource = 1;
-				rewiredSource.PlayerTargetMask = 1 << (MultiTrack.CurrentPlayer);
-				if (MultiTrack.RecordAll) rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
-			}
-			else rewiredSource.PlayerSource = -1;
-
-			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
+			_movieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			MovieControllerAdapter.LatchFromSource(source);
+			_movieControllerAdapter.LatchFromSource(source);
 		}
 
 		/// <summary>
@@ -71,13 +65,13 @@ namespace BizHawk.Client.Common
 			// Attempting to get a frame past the end of a movie changes the mode to finished
 			if (!Movie.IsFinished)
 			{
-				MovieControllerAdapter.SetControllersAsMnemonic(input);
+				_movieControllerAdapter.SetControllersAsMnemonic(input);
 			}
 		}
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			string message = "Movie ";
+			var message = "Movie ";
 			if (Movie.IsRecording)
 			{
 				message += "recording ";
@@ -96,12 +90,12 @@ namespace BizHawk.Client.Common
 				{
 					Output(Path.GetFileName(Movie.Filename) + " written to disk.");
 				}
+
 				Output(message);
 				ReadOnly = true;
 			}
 		}
 
-		//State handling
 		public void HandleMovieSaveState(StreamWriter writer)
 		{
 			if (Movie.IsActive)
@@ -125,10 +119,9 @@ namespace BizHawk.Client.Common
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
-
 			else if (Movie.IsFinished)
 			{
-				if (Global.Emulator.Frame < Movie.FrameCount) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Global.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
 					LatchInputFromLog();
@@ -138,12 +131,11 @@ namespace BizHawk.Client.Common
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
-
 			else if (Movie.IsPlaying)
 			{
 				LatchInputFromLog();
 
-				//Movie may go into finished mode as a result from latching
+				// Movie may go into finished mode as a result from latching
 				if (!Movie.IsFinished)
 				{
 					if (Global.ClientControls["Scrub Input"])
@@ -168,10 +160,9 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-
 			else if (Movie.IsRecording)
 			{
-				if (MultiTrack.IsActive)
+				if (_multiTrack.IsActive)
 				{
 					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 				}
@@ -203,7 +194,7 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			string errorMsg = String.Empty;
+			string errorMsg;
 
 			if (ReadOnly)
 			{
@@ -247,5 +238,4 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 	}
-
 }
