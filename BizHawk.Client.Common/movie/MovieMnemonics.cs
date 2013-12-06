@@ -187,13 +187,14 @@ namespace BizHawk.Client.Common
 
 	public class MnemonicsGenerator
 	{
-		IController Source;
+		private IController Source;
+		private string ControlType;
+
 		public void SetSource(IController source)
 		{
 			Source = source;
 			ControlType = source.Type.Name;
 		}
-		string ControlType;
 
 		bool IsBasePressed(string name)
 		{
@@ -358,7 +359,6 @@ namespace BizHawk.Client.Common
 			}
 			return input.ToString();
 		}
-
 
 		private string GetA78ControllersAsMnemonic()
 		{

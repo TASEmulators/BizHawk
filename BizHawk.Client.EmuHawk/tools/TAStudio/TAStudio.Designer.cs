@@ -692,7 +692,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerDescriptionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MarkerDescriptionBox.Location = new System.Drawing.Point(118, 495);
 			this.MarkerDescriptionBox.Name = "MarkerDescriptionBox";
-			this.MarkerDescriptionBox.Size = new System.Drawing.Size(194, 20);
+			this.MarkerDescriptionBox.Size = new System.Drawing.Size(185, 20);
 			this.MarkerDescriptionBox.TabIndex = 3;
 			// 
 			// TopMarkerBox
