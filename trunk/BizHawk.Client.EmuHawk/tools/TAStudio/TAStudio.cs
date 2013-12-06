@@ -105,6 +105,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				text = index.ToString().PadLeft(5, '0');
 			}
+			else
+			{
+				text = _tas[index].IsPressed(1, columnName) ? columnName : String.Empty;
+			}
 		}
 
 		private void TAStudio_Load(object sender, EventArgs e)
