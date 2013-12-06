@@ -190,6 +190,14 @@ namespace BizHawk.Client.Common
 		private IController Source;
 		private string ControlType;
 
+		public bool this[int player, string mnemonic]
+		{
+			get
+			{
+				return IsBasePressed("P" + player + " " + mnemonic); //TODO: not every controller uses "P"
+			}
+		}
+
 		public void SetSource(IController source)
 		{
 			Source = source;

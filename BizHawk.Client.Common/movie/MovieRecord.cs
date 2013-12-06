@@ -10,12 +10,23 @@ namespace BizHawk.Client.Common
 		private MnemonicsGenerator _mg;
 		private byte[] _state;
 
-		public string Input { get; private set; }
+		public string Input
+		{
+			get
+			{
+				return _mg.GetControllersAsMnemonic();
+			}
+		}
 
 		public bool Lagged { get; private set; }
 		public IEnumerable<byte> State
 		{
 			get { return _state; }
+		}
+
+		public bool IsPressed(int player, string mnemonic)
+		{
+			return _mg[player, mnemonic];
 		}
 
 		public void SetInput(MnemonicsGenerator mg)
