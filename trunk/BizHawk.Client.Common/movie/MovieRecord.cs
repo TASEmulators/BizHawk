@@ -7,18 +7,43 @@ namespace BizHawk.Client.Common
 {
 	public class MovieRecord : IMovieRecord
 	{
-		private List<byte> _state = new List<byte>();
+		private MnemonicsGenerator _mg;
+		private byte[] _state;
 
-		public string Input { get; set; }
+		public string Input { get; private set; }
+
 		public bool Lagged { get; private set; }
 		public IEnumerable<byte> State
 		{
 			get { return _state; }
 		}
 
-		public MovieRecord()
+		public void SetInput(MnemonicsGenerator mg)
 		{
+			_mg = mg;
+		}
 
+		public void ClearInput()
+		{
+			_mg = new MnemonicsGenerator();
+		}
+
+		public MovieRecord(MnemonicsGenerator mg, bool captureState)
+		{
+			_mg = mg;
+			if (captureState)
+			{
+				Lagged = Global.Emulator.IsLagFrame;
+				_state = Global.Emulator.SaveStateBinary();
+			}
+		}
+
+		public bool HasState
+		{
+			get
+			{
+				return State.Count() > 0;
+			}
 		}
 
 		public override string ToString()

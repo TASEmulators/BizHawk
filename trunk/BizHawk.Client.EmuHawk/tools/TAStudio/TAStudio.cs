@@ -12,6 +12,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : Form, IToolForm
 	{
+		private const string MarkerColumn = "";
+		private const string FrameColumn = "Frame#";
+
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private TasMovie _tas;
@@ -71,12 +74,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			
+			var record = _tas[index];
+			if (!record.HasState)
+			{
+				color = BackColor;
+			}
+			else
+			{
+				if (record.Lagged)
+				{
+					color = Color.Pink;
+				}
+				else
+				{
+					color = Color.LightGreen;
+				}
+			}
 		}
 
 		private void TASView_QueryItemText(int index, int column, out string text)
 		{
 			text = String.Empty;
+			var columnName = TASView.Columns[column].Name;
+
+			if (columnName == MarkerColumn)
+			{
+				text = "X";
+			}
+			else if (columnName == FrameColumn)
+			{
+				text = index.ToString().PadLeft(5, '0');
+			}
 		}
 
 		private void TAStudio_Load(object sender, EventArgs e)

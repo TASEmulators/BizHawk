@@ -10,6 +10,15 @@ namespace BizHawk.Client.Common
 	{
 		// TODO: preloading, or benchmark and see how much of a performaance gain it really is
 		// TODO: support loop Offset
+
+		public MovieRecord this[int index]
+		{
+			get
+			{
+				return _records[index];
+			}
+		}
+
 		#region Implementation
 
 		public TasMovie(string filename, bool startsFromSavestate = false)
@@ -149,17 +158,14 @@ namespace BizHawk.Client.Common
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].Input = MnemonicsGenerator.GetEmptyMnemonic;
+				_records[frame].ClearInput();
 			}
 		}
 
 		public void AppendFrame(MnemonicsGenerator mg)
 		{
 			Changes = true;
-			_records.Add(new MovieRecord 
-			{
-				Input = mg.GetControllersAsMnemonic(),
-			});
+			_records.Add(new MovieRecord(mg, true));
 		}
 
 		public void RecordFrame(int frame, MnemonicsGenerator mg)
@@ -175,7 +181,14 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				PokeFrame(frame, mg);
+				if (frame < _records.Count)
+				{
+					PokeFrame(frame, mg);
+				}
+				else
+				{
+					AppendFrame(mg);
+				}
 			}
 		}
 
@@ -184,7 +197,7 @@ namespace BizHawk.Client.Common
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].Input = mg.GetControllersAsMnemonic();
+				_records[frame].SetInput(mg);
 			}
 		}
 
