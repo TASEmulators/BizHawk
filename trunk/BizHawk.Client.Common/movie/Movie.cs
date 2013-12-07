@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using BizHawk.Common;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class Movie : IMovie
@@ -327,12 +329,14 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
-			_log.SetFrameAt(frame, MnemonicsGenerator.GetEmptyMnemonic);
+			_log.SetFrameAt(frame, new MnemonicsGenerator().EmptyMnemonic);
 			_changes = true;
 		}
 
-		public void AppendFrame(MnemonicsGenerator mg)
+		public void AppendFrame(IController source)
 		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(source);
 			_log.AppendFrame(mg.GetControllersAsMnemonic());
 			_changes = true;
 		}
@@ -348,13 +352,16 @@ namespace BizHawk.Client.Common
 
 		#region Public Misc Methods
 
-		public void PokeFrame(int frame, MnemonicsGenerator mg)
+		public void PokeFrame(int frame, IController source)
 		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(source);
+
 			_changes = true;
 			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());
 		}
 
-		public void RecordFrame(int frame, MnemonicsGenerator mg)
+		public void RecordFrame(int frame, IController source)
 		{
 			// Note: Truncation here instead of loadstate will make VBA style loadstates
 			// (Where an entire movie is loaded then truncated on the next frame
@@ -366,6 +373,9 @@ namespace BizHawk.Client.Common
 					_log.TruncateMovie(Global.Emulator.Frame);
 				}
 			}
+
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(source);
 
 			_changes = true;
 			_log.SetFrameAt(frame, mg.GetControllersAsMnemonic());

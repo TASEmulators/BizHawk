@@ -11,7 +11,6 @@
 
 		public void SetSticky(string button, bool sticky) { }
 		public bool IsSticky(string button) { return false; }
-
 		private static readonly NullController nullController = new NullController();
 		public static NullController GetNullController() { return nullController; }
 	}

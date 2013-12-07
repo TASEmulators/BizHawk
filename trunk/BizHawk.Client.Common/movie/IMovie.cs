@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	// TODO: message callback / event handler
@@ -104,19 +106,19 @@ namespace BizHawk.Client.Common
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void AppendFrame(MnemonicsGenerator mg);
+		void AppendFrame(IController source);
 
 		/// <summary>
 		/// Replaces the input at the given frame with the given input
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void PokeFrame(int frame, MnemonicsGenerator mg);
+		void PokeFrame(int frame, IController source);
 
 		/// <summary>
 		/// Records the given input into the given frame,
 		/// This is subject to normal movie recording logic
 		/// </summary>
-		void RecordFrame(int frame, MnemonicsGenerator mg);
+		void RecordFrame(int frame, IController source);
 
 		void Truncate(int frame);
 		string GetInput(int frame);

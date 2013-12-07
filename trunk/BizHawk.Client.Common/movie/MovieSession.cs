@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 						if (!mg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-							Movie.PokeFrame(Global.Emulator.Frame, mg);
+							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 						}
 						else
 						{
@@ -173,9 +173,7 @@ namespace BizHawk.Client.Common
 
 				// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				var mg = new MnemonicsGenerator();
-				mg.SetSource(Global.MovieOutputHardpoint);
-				Movie.RecordFrame(Global.Emulator.Frame, mg);
+				Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 			}
 		}
 

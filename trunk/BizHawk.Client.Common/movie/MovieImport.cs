@@ -152,7 +152,6 @@ namespace BizHawk.Client.Common
 					break;
 			}
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
@@ -249,8 +248,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
-			mg.SetSource(controllers);
-			m.AppendFrame(mg);
+			m.AppendFrame(controllers);
 			return m;
 		}
 
@@ -568,14 +566,12 @@ namespace BizHawk.Client.Common
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
 			while (frame <= frameCount)
 			{
-				mg.SetSource(controllers);
 				byte update = r.ReadByte();
 				// aa: Number of delta bytes to follow
 				int delta = (update >> 5) & 0x3;
@@ -596,7 +592,7 @@ namespace BizHawk.Client.Common
 				frame += frames;
 				while (frames > 0)
 				{
-					m.AppendFrame(mg);
+					m.AppendFrame(controllers);
 					if (controllers["Reset"])
 					{
 						controllers["Reset"] = false;
@@ -801,7 +797,6 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = "False";
 			// 090 frame data begins here
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 Right
 			 * 02 Left
@@ -853,8 +848,7 @@ namespace BizHawk.Client.Common
 						warningMsg = "FDS commands are not properly supported.";
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -921,7 +915,6 @@ namespace BizHawk.Client.Common
 				{
 					Type = new ControllerDefinition {Name = "Genesis 3-Button Controller"}
 				};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
@@ -980,8 +973,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			return m;
 		}
@@ -1292,7 +1284,6 @@ namespace BizHawk.Client.Common
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = name + " Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			int bytes = 256;
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
 			if (platform == "nes")
@@ -1327,8 +1318,7 @@ namespace BizHawk.Client.Common
 				{
 					warningMsg = "Control commands are not properly supported.";
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1414,7 +1404,6 @@ namespace BizHawk.Client.Common
 			byte[] md5 = r.ReadBytes(16);
 			m.Header[MD5] = String.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SMS Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1449,8 +1438,7 @@ namespace BizHawk.Client.Common
 						);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1641,7 +1629,6 @@ namespace BizHawk.Client.Common
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 Standard controllers store data in the following format:
 			 * 01: A
@@ -1679,8 +1666,7 @@ namespace BizHawk.Client.Common
 						warningMsg = "Extra input is not properly supported.";
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1746,7 +1732,6 @@ namespace BizHawk.Client.Common
 			 * other: reserved, set to 0
 			*/
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
@@ -1951,8 +1936,7 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -2162,7 +2146,6 @@ namespace BizHawk.Client.Common
 			{
 				controllers.Type.Name = "GBA Controller";
 			}
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 00 A
 			 * 02 00 B
@@ -2223,8 +2206,7 @@ namespace BizHawk.Client.Common
 						r.ReadBytes(2);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -2333,7 +2315,6 @@ namespace BizHawk.Client.Common
 			}
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 A
 			 * 02 B
@@ -2443,8 +2424,7 @@ namespace BizHawk.Client.Common
 						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg);
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -2566,7 +2546,6 @@ namespace BizHawk.Client.Common
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * bit 11: A
 			 * bit 10: X
@@ -2611,8 +2590,7 @@ namespace BizHawk.Client.Common
 					if (flag == 0x0)
 					{
 						controllers["Reset"] = true;
-						mg.SetSource(controllers);
-						m.AppendFrame(mg);
+						m.AppendFrame(controllers);
 						controllers["Reset"] = false;
 					}
 					// TODO: Other commands.
@@ -2625,10 +2603,9 @@ namespace BizHawk.Client.Common
 					{
 						throw new ArgumentException("RLE data repeats for frames beyond the total frame count.");
 					}
-					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
 					{
-						m.AppendFrame(mg);
+						m.AppendFrame(controllers);
 					}
 				}
 				else if (((flag >> 2) & 0x1) != 0)
@@ -2740,8 +2717,7 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
-					mg.SetSource(controllers);
-					m.AppendFrame(mg);
+					m.AppendFrame(controllers);
 					frames++;
 				}
 			}
