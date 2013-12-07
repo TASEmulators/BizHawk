@@ -243,7 +243,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				HardReset();
 			}
 
-			Controller.UpdateControls(Frame++);
+			Frame++;
+
 			//if (resetSignal)
 				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];

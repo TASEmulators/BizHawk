@@ -6,7 +6,6 @@
 		public bool this[string button] { get { return false; } }
 		public bool IsPressed(string button) { return false; }
 		public float GetFloat(string name) { return 0f; }
-		public void UpdateControls(int frame) { }
 		public void UnpressButton(string button) { }
 		public void ForceButton(string button) { }
 

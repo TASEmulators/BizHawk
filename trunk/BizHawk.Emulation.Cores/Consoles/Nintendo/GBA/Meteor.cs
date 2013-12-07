@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			Controller.UpdateControls(Frame++);
+			Frame++;
 			IsLagFrame = true;
 
 			if (Controller["Power"])

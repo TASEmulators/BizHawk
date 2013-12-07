@@ -39,7 +39,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public float GetFloat(string name) { return FloatButtons[name]; }
-		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
@@ -201,7 +200,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public float GetFloat(string name) { throw new NotImplementedException(); }
-		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
