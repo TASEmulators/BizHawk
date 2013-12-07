@@ -466,17 +466,130 @@ namespace BizHawk.Client.Common
 
 	public class NewMnemonicsGenerator
 	{
+		public MnemonicLookupTable MnemonicLookup { get; private set; }
+		public IController Source { get; private set; }
+
+		public List<string> ActivePlayers { get; set; }
+
+		public NewMnemonicsGenerator(IController source)
+		{
+			MnemonicLookup = new MnemonicLookupTable();
+			Source = source;
+			ActivePlayers = MnemonicLookup[Global.Emulator.SystemId].Select(x => x.Name).ToList();
+		}
+
 		public bool IsEmpty
 		{
-			get { return false; } // TODO
+			get
+			{
+				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+
+				foreach (var mc in collections)
+				{
+					foreach (var kvp in mc)
+					{
+						if (Source.IsPressed(kvp.Key))
+						{
+							return false;
+						}
+					}
+				}
+
+				return true;
+			}
 		}
 
 		public string EmptyMnemonic
 		{
 			get
 			{
-				return String.Empty; // TODO
+				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+				StringBuilder sb = new StringBuilder();
+
+				sb.Append('|');
+				foreach (var mc in collections)
+				{
+					foreach (var kvp in mc)
+					{
+						sb.Append('.');
+					}
+					sb.Append('|');
+				}
+
+				return sb.ToString();
 			}
+		}
+
+		public string MnemonicString
+		{
+			get
+			{
+				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+				StringBuilder sb = new StringBuilder();
+
+				sb.Append('|');
+				foreach (var mc in collections)
+				{
+					foreach(var kvp in mc)
+					{
+						sb.Append(Source.IsPressed(kvp.Key) ? kvp.Value : '.');
+					}
+					sb.Append('|');
+				}
+
+				return sb.ToString();
+			}
+		}
+
+		public IEnumerable<char> Mnemonics
+		{
+			get
+			{
+				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+
+				List<char> mnemonics = new List<char>();
+				foreach (var mc in collections)
+				{
+					mnemonics.AddRange(mc.Select(x => x.Value));
+				}
+
+				return mnemonics;
+			}
+		}
+
+		public Dictionary<string, char> AvailableMnemonics
+		{
+			get
+			{
+				var buttons = new Dictionary<string, char>();
+				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+
+				foreach (var mc in collections)
+				{
+					foreach (var kvp in mc)
+					{
+						buttons.Add(kvp.Key, kvp.Value);
+					}
+				}
+
+				return buttons;
+			}
+		}
+
+		public Dictionary<string, bool> GetBoolButtons()
+		{
+			var buttons = new Dictionary<string, bool>();
+			IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+
+			foreach (var mc in collections)
+			{
+				foreach (var kvp in mc)
+				{
+					buttons.Add(kvp.Key, Source.IsPressed(kvp.Key));
+				}
+			}
+
+			return buttons;
 		}
 	}
 }
