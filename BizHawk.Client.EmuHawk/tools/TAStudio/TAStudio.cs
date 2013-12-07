@@ -12,8 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : Form, IToolForm
 	{
-		private const string MarkerColumn = "";
-		private const string FrameColumn = "Frame#";
+		private const string MarkerColumnName = "MarkerColumn";
+		private const string FrameColumnName = "FrameColumn";
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -98,23 +98,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				text = String.Empty;
 				var columnName = TASView.Columns[column].Name;
+				var columnText = TASView.Columns[column].Text;
 
-				if (columnName == MarkerColumn)
+				if (columnName == MarkerColumnName)
 				{
-					text = "X";
+					text = "";
 				}
-				else if (columnName == FrameColumn)
+				else if (columnName == FrameColumnName)
 				{
 					text = index.ToString().PadLeft(5, '0');
 				}
 				else
 				{
-					text = _tas[index].IsPressed(1, columnName) ? columnName : String.Empty;
+					text = _tas[index].IsPressed(columnName) ? columnText : String.Empty;
 				}
 			}
 			catch (Exception ex)
 			{
-				text = "";
+				text = String.Empty;
 				MessageBox.Show("oops\n" + ex.ToString());
 			}
 		}
@@ -138,20 +139,37 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadConfigSettings();
 
+
+			_tas.ActivePlayers = new List<string> { "Player 1", "Player 2" };
 			SetUpColumns();
 		}
 
 		private void SetUpColumns()
 		{
 			TASView.Columns.Clear();
-			ToolHelpers.AddColumn(TASView, "", true, 18);
-			ToolHelpers.AddColumn(TASView, "Frame#", true, 68);
+			AddColumn(MarkerColumnName, "", 18);
+			AddColumn(FrameColumnName, "Frame#", 68);
 
 			var mnemonics = MnemonicConstants.BUTTONS[Global.Emulator.Controller.Type.Name].Select(x => x.Value);
 
-			foreach (var mnemonic in mnemonics)
+			foreach(var kvp in _tas.AvailableMnemonics)
 			{
-				ToolHelpers.AddColumn(TASView, mnemonic, true, 20);
+				AddColumn(kvp.Key, kvp.Value.ToString(), 20);
+			}
+		}
+
+		public void AddColumn(string columnName, string columnText, int columnWidth)
+		{
+			if (TASView.Columns[columnName] == null)
+			{
+				var column = new ColumnHeader
+				{
+					Name = columnName,
+					Text = columnText,
+					Width = columnWidth,
+				};
+
+				TASView.Columns.Add(column);
 			}
 		}
 

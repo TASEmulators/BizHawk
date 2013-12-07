@@ -13,11 +13,25 @@ namespace BizHawk.Client.Common
 		// TODO: preloading, or benchmark and see how much of a performaance gain it really is
 		// TODO: support loop Offset
 
+		private IController _source = Global.MovieOutputHardpoint; //TODO: don't do it this way;
+
 		public MovieRecord this[int index]
 		{
 			get
 			{
 				return _records[index];
+			}
+		}
+
+		public List<string> ActivePlayers { get; set; }
+
+		public Dictionary<string, char> AvailableMnemonics
+		{
+			get
+			{
+				NewMnemonicsGenerator mg = new NewMnemonicsGenerator(_source);
+				mg.ActivePlayers = ActivePlayers;
+				return mg.AvailableMnemonics;
 			}
 		}
 
@@ -199,7 +213,7 @@ namespace BizHawk.Client.Common
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].SetInput(source);
+				_records[frame].SetInput();
 			}
 		}
 
