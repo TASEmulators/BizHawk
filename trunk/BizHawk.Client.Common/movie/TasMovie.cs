@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 		public void AppendFrame(MnemonicsGenerator mg)
 		{
 			Changes = true;
-			_records.Add(new MovieRecord(mg, true));
+			_records.Add(new MovieRecord(mg.Source, true));
 		}
 
 		public void RecordFrame(int frame, MnemonicsGenerator mg)
@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].SetInput(mg);
+				_records[frame].SetInput(mg.Source);
 			}
 		}
 
