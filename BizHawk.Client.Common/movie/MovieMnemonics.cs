@@ -187,7 +187,7 @@ namespace BizHawk.Client.Common
 
 	public class MnemonicsGenerator
 	{
-		private IController Source;
+		public IController Source; // Making this public is a temporary hack
 		private string ControlType;
 
 		public bool this[int player, string mnemonic]

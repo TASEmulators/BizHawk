@@ -3,18 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class MovieRecord : IMovieRecord
 	{
-		private MnemonicsGenerator _mg;
+		Dictionary<string, bool> BoolButtons = new Dictionary<string, bool>();
 		private byte[] _state;
 
 		public string Input
 		{
 			get
 			{
-				return _mg.GetControllersAsMnemonic();
+				SimpleController controller = new SimpleController { Type = new ControllerDefinition() };
+				foreach (var kvp in BoolButtons)
+				{
+					controller["P1 " + kvp.Key] = kvp.Value; // TODO: multi-player, all cores
+				}
+
+				controller.Type.Name = Global.Emulator.ControllerDefinition.Name;
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controller);
+				return mg.GetControllersAsMnemonic();
 			}
 		}
 
@@ -26,22 +37,31 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(int player, string mnemonic)
 		{
-			return _mg[player, mnemonic];
+			return BoolButtons[mnemonic]; // TODO: player
 		}
 
-		public void SetInput(MnemonicsGenerator mg)
+
+		public void SetInput(IController controller)
 		{
-			_mg = mg;
+			var mnemonics = MnemonicConstants.BUTTONS[Global.Emulator.Controller.Type.Name].Select(x => x.Value);
+			foreach (var mnemonic in mnemonics)
+			{
+				BoolButtons[mnemonic] = controller["P1 " + mnemonic]; // TODO: doesn't work on every core, can't do multiplayer
+			}
 		}
 
 		public void ClearInput()
 		{
-			_mg = new MnemonicsGenerator();
+			foreach (var key in BoolButtons.Keys)
+			{
+				BoolButtons[key] = false;
+			}
 		}
 
-		public MovieRecord(MnemonicsGenerator mg, bool captureState)
+		public MovieRecord(IController controller, bool captureState)
 		{
-			_mg = mg;
+			SetInput(controller);
+
 			if (captureState)
 			{
 				Lagged = Global.Emulator.IsLagFrame;

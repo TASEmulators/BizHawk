@@ -94,20 +94,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_QueryItemText(int index, int column, out string text)
 		{
-			text = String.Empty;
-			var columnName = TASView.Columns[column].Name;
+			try
+			{
+				text = String.Empty;
+				var columnName = TASView.Columns[column].Name;
 
-			if (columnName == MarkerColumn)
-			{
-				text = "X";
+				if (columnName == MarkerColumn)
+				{
+					text = "X";
+				}
+				else if (columnName == FrameColumn)
+				{
+					text = index.ToString().PadLeft(5, '0');
+				}
+				else
+				{
+					text = _tas[index].IsPressed(1, columnName) ? columnName : String.Empty;
+				}
 			}
-			else if (columnName == FrameColumn)
+			catch (Exception ex)
 			{
-				text = index.ToString().PadLeft(5, '0');
-			}
-			else
-			{
-				text = _tas[index].IsPressed(1, columnName) ? columnName : String.Empty;
+				text = "";
+				MessageBox.Show("oops\n" + ex.ToString());
 			}
 		}
 
