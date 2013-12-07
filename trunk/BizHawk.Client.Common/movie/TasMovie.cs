@@ -238,13 +238,109 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			throw new NotImplementedException();
+			// there's a lot of common code here with SavestateManager.  refactor?
+			using (BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(Filename))
+			{
+				if (bw == null)
+					return false;
+
+				Header.Clear();
+				_records.Clear();
+
+				bw.GetMovieHeaderRequired(
+					delegate(Stream s)
+					{
+						StreamReader sr = new StreamReader(s);
+						string line;
+						while ((line = sr.ReadLine()) != null)
+							if (!Header.ParseLineFromFile(line))
+								Header.Comments.Add(line);
+					});
+				bw.GetInputLogRequired(
+					delegate(Stream s)
+					{
+						StreamReader sr = new StreamReader(s);
+						// TODO: deserialize input log here
+					});
+
+				if (Header.StartsFromSavestate)
+				{
+					// should we raise some sort of error if there's a savestate in the archive but Header.StartsFromSavestate is false?
+					bw.GetCoreState(
+						delegate(Stream s)
+						{
+							BinaryReader br = new BinaryReader(s);
+							Global.Emulator.LoadStateBinary(br);
+						},
+						delegate(Stream s)
+						{
+							StreamReader sr = new StreamReader(s);
+							Global.Emulator.LoadStateText(sr);
+						});
+				}
+				bw.GetFrameBuffer(
+					delegate(Stream s)
+					{
+						BinaryReader br = new BinaryReader(s);
+						int i;
+						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+						try
+						{
+							for (i = 0; i < buff.Length; i++)
+							{
+								int j = br.ReadInt32();
+								buff[i] = j;
+							}
+						}
+						catch (EndOfStreamException) { }
+					});
+			}
+			return true;
 		}
 
 		public void Save()
 		{
+			// there's a lot of common code here with SavestateManager.  refactor?
+
+			using (FileStream fs = new FileStream(Filename, FileMode.Create, FileAccess.Write))
+			using (BinaryStateSaver bs = new BinaryStateSaver(fs))
+			{
+				bs.PutMovieHeader(
+					delegate(Stream s)
+					{
+						StreamWriter sw = new StreamWriter(s);
+						sw.WriteLine(Header.ToString());
+						sw.Flush();
+					});
+				bs.PutInputLog(
+					delegate(Stream s)
+					{
+						StreamWriter sw = new StreamWriter(s);
+						sw.WriteLine(GetInputLog());
+						sw.Flush();
+					});
+				if (Header.StartsFromSavestate)
+				{
+#if true
+					bs.PutCoreStateText(
+						delegate(Stream s)
+						{
+							StreamWriter sw = new StreamWriter(s);
+							Global.Emulator.SaveStateText(sw);
+							sw.Flush();
+						});
+#else
+					bs.PutCoreStateBinary(
+						delegate(Stream s)
+						{
+							BinaryWriter bw = new BinaryWriter(s);
+							Global.Emulator.SaveStateBinary(bw);
+							bw.Flush();
+						});
+#endif
+				}
+			}
 			Changes = false;
-			throw new NotImplementedException();
 		}
 
 		public void SaveAs()

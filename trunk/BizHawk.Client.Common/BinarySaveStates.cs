@@ -11,6 +11,7 @@ namespace BizHawk.Client.Common
 		public const string Framebuffer = "Framebuffer";
 		public const string Input = "Input Log";
 		public const string CorestateText = "CoreText";
+		public const string Movieheader = "Movie";
 	}
 
 	/// <summary>
@@ -126,6 +127,11 @@ namespace BizHawk.Client.Common
 		{
 			GetFileByName(BinaryStateFileNames.Input, true, callback);
 		}
+
+		public void GetMovieHeaderRequired(Action<Stream> callback)
+		{
+			GetFileByName(BinaryStateFileNames.Movieheader, true, callback);
+		}
 	}
 
 	public class BinaryStateSaver : IDisposable
@@ -181,6 +187,11 @@ namespace BizHawk.Client.Common
 		public void PutInputLog(Action<Stream> callback)
 		{
 			PutFileByName(BinaryStateFileNames.Input, callback);
+		}
+
+		public void PutMovieHeader(Action<Stream> callback)
+		{
+			PutFileByName(BinaryStateFileNames.Movieheader, callback);
 		}
 
 		private bool isDisposed;
