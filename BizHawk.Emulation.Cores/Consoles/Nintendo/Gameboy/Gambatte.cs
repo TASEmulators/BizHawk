@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		internal void FrameAdvancePrep()
 		{
-			Controller.UpdateControls(Frame++);
+			Frame++;
 
 			// update our local copy of the controller data
 			CurrentButtons = 0;

@@ -772,11 +772,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				return buttons[name];
 			}
-
-			public void UpdateControls(int frame)
-			{
-				//throw new NotImplementedException();
-			}
 		}
 
 

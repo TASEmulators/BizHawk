@@ -492,14 +492,17 @@ namespace BizHawk.Emulation.Cores.Calculators
 				cpu.ExecuteCycles(10000);
 				cpu.Interrupt = true;
 			}
-			Controller.UpdateControls(Frame++);
+
+			Frame++;
 			if (lagged)
 			{
 				_lagcount++;
 				islag = true;
 			}
 			else
+			{
 				islag = false;
+			}
 		}
 
 		public void HardReset()

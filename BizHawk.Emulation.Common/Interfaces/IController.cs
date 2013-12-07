@@ -21,56 +21,71 @@ namespace BizHawk.Emulation.Common
 		{
 			public readonly float Min;
 			public readonly float Max;
+			
 			/// <summary>
 			/// default position
 			/// </summary>
 			public readonly float Mid;
-			public FloatRange(float Min, float Mid, float Max)
+			
+			public FloatRange(float min, float mid, float max)
 			{
-				this.Min = Min;
-				this.Mid = Mid;
-				this.Max = Max;
+				Min = min;
+				Mid = mid;
+				Max = max;
 			}
+			
 			// for terse construction
 			public static implicit operator FloatRange(float[] f)
 			{
 				if (f.Length != 3)
+				{
 					throw new ArgumentException();
+				}
+
 				return new FloatRange(f[0], f[1], f[2]);
 			}
 		}
 
-		public string Name;
-		public List<string> BoolButtons = new List<string>();
-		public List<string> FloatControls = new List<string>();
-		public List<FloatRange> FloatRanges = new List<FloatRange>();
-		/// <summary>
-		/// copy
-		/// </summary>
-		/// <param name="source"></param>
+		public string Name { get; set; }
+
+		public List<string> BoolButtons { get; set; }
+		public List<string> FloatControls { get; private set; }
+		public List<FloatRange> FloatRanges { get; private set; }
+		
 		public ControllerDefinition(ControllerDefinition source)
+			: this()
 		{
 			Name = source.Name;
+
 			foreach (var s in source.BoolButtons)
+			{
 				BoolButtons.Add(s);
+			}
+
 			foreach (var s in source.FloatControls)
+			{
 				FloatControls.Add(s);
+			}
 		}
-		public ControllerDefinition() { }
+
+		public ControllerDefinition()
+		{
+			BoolButtons = new List<string>();
+			FloatControls = new List<string>();
+			FloatRanges = new List<FloatRange>();
+		}
 	}
 
 	public interface IController
 	{
 		ControllerDefinition Type { get; }
 
-		//TODO - it is obnoxious for this to be here. must be removed.
+		// TODO - it is obnoxious for this to be here. must be removed.
 		bool this[string button] { get; }
-		//TODO - this can stay but it needs to be changed to go through the float
+		
+		// TODO - this can stay but it needs to be changed to go through the float
 		bool IsPressed(string button);
 
 		float GetFloat(string name);
-
-		//TODO - why does this have a frame argument. must be removed.
-		void UpdateControls(int frame);
 	}
 }

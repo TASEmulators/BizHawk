@@ -654,7 +654,6 @@ namespace BizHawk.Client.Common
 		public bool this[string button] { get { return MyBoolButtons[button]; } }
 		public bool IsPressed(string button) { return MyBoolButtons[button]; }
 		public float GetFloat(string name) { return MyFloatControls[name]; }
-		public void UpdateControls(int frame) { }
 		//--------
 
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();

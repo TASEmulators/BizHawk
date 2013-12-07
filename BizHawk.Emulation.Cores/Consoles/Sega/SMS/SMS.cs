@@ -240,14 +240,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
-			Controller.UpdateControls(Frame++);
+			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-            Cpu.Debug = CoreComm.Tracer.Enabled;
-            if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-                Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+			Cpu.Debug = CoreComm.Tracer.Enabled;
+			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			{
+				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+			}
 
 			if (IsGameGear == false)
+			{
 				Cpu.NonMaskableInterrupt = Controller["Pause"];
+			}
 
 			Vdp.ExecFrame(render);
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
