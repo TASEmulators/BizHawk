@@ -126,6 +126,7 @@
     <Compile Include="movie\IMovieHeader.cs" />
     <Compile Include="movie\IMovieRecord.cs" />
     <Compile Include="movie\InputAdapters.cs" />
+    <Compile Include="movie\MnemonicsGenerator.cs" />
     <Compile Include="movie\Movie.cs" />
     <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="movie\MovieRecord.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
+    <Compile Include="movie\MnemonicsLookupTable.cs" />
     <Compile Include="movie\PlatformFrameRates.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />

@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
@@ -162,13 +164,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void AppendFrame(MnemonicsGenerator mg)
+		public void AppendFrame(IController source)
 		{
 			Changes = true;
-			_records.Add(new MovieRecord(mg.Source, true));
+			_records.Add(new MovieRecord(source, true));
 		}
 
-		public void RecordFrame(int frame, MnemonicsGenerator mg)
+		public void RecordFrame(int frame, IController source)
 		{
 			if (_mode == Moviemode.Record)
 			{
@@ -183,21 +185,21 @@ namespace BizHawk.Client.Common
 
 				if (frame < _records.Count)
 				{
-					PokeFrame(frame, mg);
+					PokeFrame(frame, source);
 				}
 				else
 				{
-					AppendFrame(mg);
+					AppendFrame(source);
 				}
 			}
 		}
 
-		public void PokeFrame(int frame, MnemonicsGenerator mg)
+		public void PokeFrame(int frame, IController source)
 		{
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].SetInput(mg.Source);
+				_records[frame].SetInput(source);
 			}
 		}
 
