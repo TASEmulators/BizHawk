@@ -10,9 +10,12 @@ namespace BizHawk.Client.Common
 		public const string Corestate = "Core";
 		public const string Framebuffer = "Framebuffer";
 		public const string Input = "Input Log";
+		public const string CorestateText = "CoreText";
 	}
 
-
+	/// <summary>
+	/// more accurately should be called ZipStateLoader, as it supports both text and binary core data
+	/// </summary>
 	public class BinaryStateLoader : IDisposable
 	{
 		private bool isDisposed;
@@ -36,9 +39,23 @@ namespace BizHawk.Client.Common
 		}
 
 		ZipFile zip;
+		Version ver;
 
 		private BinaryStateLoader()
 		{
+		}
+
+		private void ReadVersion(Stream s)
+		{
+			// the "BizState 1.0" tag contains an integer in it describing the sub version.
+			if (s.Length == 0)
+				ver = new Version(1, 0, 0); // except for the first release, which doesn't
+			else
+			{
+				StreamReader sr = new StreamReader(s);
+				ver = new Version(1, 0, int.Parse(sr.ReadLine()));
+			}
+			Console.WriteLine("Read a zipstate of version {0}", ver.ToString());
 		}
 
 		public static BinaryStateLoader LoadAndDetect(string Filename)
@@ -59,7 +76,7 @@ namespace BizHawk.Client.Common
 			{
 				ret.zip = new ZipFile(Filename);
 				var e = ret.zip.GetEntry(BinaryStateFileNames.Versiontag);
-				if (e == null)
+				if (!ret.GetFileByName(BinaryStateFileNames.Versiontag, false, ret.ReadVersion))
 				{
 					ret.zip.Close();
 					return null;
@@ -93,9 +110,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void GetCoreState(Action<Stream> callback)
+		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
 		{
-			GetFileByName(BinaryStateFileNames.Corestate, true, callback);
+			if (!GetFileByName(BinaryStateFileNames.Corestate, false, callbackBinary)
+				&& !GetFileByName(BinaryStateFileNames.CorestateText, false, callbackText))
+				throw new Exception("Couldn't find Binary or Text savestate");
 		}
 
 		public bool GetFrameBuffer(Action<Stream> callback)
@@ -113,6 +132,13 @@ namespace BizHawk.Client.Common
 	{
 		private readonly ZipOutputStream zip;
 
+		private void WriteVersion(Stream s)
+		{
+			StreamWriter sw = new StreamWriter(s);
+			sw.WriteLine("1"); // version 1.0.1
+			sw.Flush();
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -126,7 +152,7 @@ namespace BizHawk.Client.Common
 				};
 			zip.SetLevel(0);
 
-			PutFileByName(BinaryStateFileNames.Versiontag, ss => { });	
+			PutFileByName(BinaryStateFileNames.Versiontag, WriteVersion);	
 		}
 
 		void PutFileByName(string Name, Action<Stream> callback)
@@ -137,9 +163,14 @@ namespace BizHawk.Client.Common
 			zip.CloseEntry();
 		}
 
-		public void PutCoreState(Action<Stream> callback)
+		public void PutCoreStateBinary(Action<Stream> callback)
 		{
 			PutFileByName(BinaryStateFileNames.Corestate, callback);
+		}
+
+		public void PutCoreStateText(Action<Stream> callback)
+		{
+			PutFileByName(BinaryStateFileNames.CorestateText, callback);
 		}
 
 		public void PutFrameBuffer(Action<Stream> callback)

@@ -29,13 +29,24 @@ namespace BizHawk.Client.Common
 				using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
 				using (BinaryStateSaver bs = new BinaryStateSaver(fs))
 				{
-					bs.PutCoreState(
+#if true
+					bs.PutCoreStateBinary(
 						delegate(Stream s)
 						{
 							BinaryWriter bw = new BinaryWriter(s);
 							Global.Emulator.SaveStateBinary(bw);
 							bw.Flush();
 						});
+#else
+					// this would put text states inside the zipfile
+					bs.PutCoreStateText(
+						delegate(Stream s)
+						{
+							StreamWriter sw = new StreamWriter(s);
+							Global.Emulator.SaveStateText(sw);
+							sw.Flush();
+						});
+#endif
 					if (Global.Config.SaveScreenshotWithStates)
 					{
 						bs.PutFrameBuffer(
@@ -92,6 +103,11 @@ namespace BizHawk.Client.Common
 						{
 							BinaryReader br = new BinaryReader(s);
 							Global.Emulator.LoadStateBinary(br);
+						},
+						delegate(Stream s)
+						{
+							StreamReader sr = new StreamReader(s);
+							Global.Emulator.LoadStateText(sr);
 						});
 
 					bw.GetFrameBuffer(
