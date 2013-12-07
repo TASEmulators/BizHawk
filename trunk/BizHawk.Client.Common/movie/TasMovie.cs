@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -10,17 +9,16 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovie : IMovie
 	{
+		// TODO: pass source into 
 		// TODO: preloading, or benchmark and see how much of a performaance gain it really is
 		// TODO: support loop Offset
-
-		private IController _source = Global.MovieOutputHardpoint; //TODO: don't do it this way;
+		// TODO: consider the fileformat of binary and lagged data
+		private readonly NewMnemonicsGenerator _mg;
+		private readonly IController _source = Global.MovieOutputHardpoint;
 
 		public MovieRecord this[int index]
 		{
-			get
-			{
-				return _records[index];
-			}
+			get { return _records[index]; }
 		}
 
 		public List<string> ActivePlayers { get; set; }
@@ -29,8 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				NewMnemonicsGenerator mg = new NewMnemonicsGenerator(_source);
-				mg.ActivePlayers = ActivePlayers;
+				var mg = new NewMnemonicsGenerator(_source) { ActivePlayers = this.ActivePlayers };
 				return mg.AvailableMnemonics;
 			}
 		}
@@ -50,6 +47,8 @@ namespace BizHawk.Client.Common
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
 			IsCountingRerecords = true;
+
+			_mg = new NewMnemonicsGenerator(_source);
 		}
 
 		public string Filename { get; set; }
@@ -115,7 +114,7 @@ namespace BizHawk.Client.Common
 			{
 				if (frame >= 0)
 				{
-					return _records[frame].Input;
+					return _mg.GenerateMnemonicString(_records[frame].Buttons);
 				}
 				else
 				{
@@ -181,7 +180,8 @@ namespace BizHawk.Client.Common
 		public void AppendFrame(IController source)
 		{
 			Changes = true;
-			_records.Add(new MovieRecord(source, true));
+			_mg.Source = source;
+			_records.Add(new MovieRecord(_mg.GetBoolButtons(), true));
 		}
 
 		public void RecordFrame(int frame, IController source)
@@ -213,7 +213,8 @@ namespace BizHawk.Client.Common
 			if (frame < _records.Count)
 			{
 				Changes = true;
-				_records[frame].SetInput();
+				_mg.Source = source;
+				_records[frame].SetInput(_mg.GetBoolButtons());
 			}
 		}
 
@@ -266,7 +267,7 @@ namespace BizHawk.Client.Common
 
 		#region Private
 
-		private enum Moviemode { Inactive, Play, Record, Finished };
+		private enum Moviemode { Inactive, Play, Record, Finished }
 		private readonly MovieRecordList _records;
 		private Moviemode _mode;
 		private readonly PlatformFrameRates _frameRates = new PlatformFrameRates();

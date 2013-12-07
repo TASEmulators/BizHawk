@@ -9,22 +9,12 @@ namespace BizHawk.Client.Common
 {
 	public class MovieRecord
 	{
-		// TODO: pass in ActivePlayers
-		// TODO: pass in IController source, probably wasteful though
-
-		private NewMnemonicsGenerator _mg;
+		private readonly byte[] _state;
 		private Dictionary<string, bool> _boolButtons = new Dictionary<string, bool>();
-		private byte[] _state;
 
-		public MovieRecord()
+		public MovieRecord(Dictionary<string, bool> buttons, bool captureState)
 		{
-			_mg = new NewMnemonicsGenerator(Global.MovieOutputHardpoint);
-		}
-
-		public MovieRecord(IController source, bool captureState)
-		{
-			_mg = new NewMnemonicsGenerator(source);
-			SetInput();
+			SetInput(buttons);
 			if (captureState)
 			{
 				Lagged = Global.Emulator.IsLagFrame;
@@ -32,27 +22,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> ActivePlayers
+		public Dictionary<string, bool> Buttons
 		{
-			get
-			{
-				return _mg.ActivePlayers;
-			}
-			set
-			{
-				_mg.ActivePlayers = value;
-			}
-		}
-
-		public string Input
-		{
-			get
-			{
-				return _mg.MnemonicString;
-			}
+			get { return _boolButtons; }
 		}
 
 		public bool Lagged { get; private set; }
+
 		public IEnumerable<byte> State
 		{
 			get { return _state; }
@@ -63,11 +39,15 @@ namespace BizHawk.Client.Common
 			return _boolButtons[buttonName];
 		}
 
+		public void SetButton(string button, bool pressed)
+		{
+			_boolButtons[button] = pressed;
+		}
 
-		public void SetInput()
+		public void SetInput(Dictionary<string, bool> buttons)
 		{
 			_boolButtons.Clear();
-			_boolButtons = _mg.GetBoolButtons();
+			_boolButtons = buttons;
 		}
 
 		public void ClearInput()
@@ -77,47 +57,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasState
 		{
-			get { return State.Count() > 0; }
-		}
-
-		public override string ToString()
-		{
-			return Input; // TODO: consider the fileformat of binary and lagged data
-		}
-	}
-
-	public class MovieRecordList : List<MovieRecord>
-	{
-		public MovieRecordList()
-			: base()
-		{
-
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			sb
-				.AppendLine("[Input]")
-
-				.Append("Frame ")
-				.Append(Global.Emulator.Frame)
-				.AppendLine();
-
-			foreach (var record in this)
-			{
-				sb.AppendLine(record.ToString());
-			}
-			sb.AppendLine("[/Input]");
-			return sb.ToString();
-		}
-
-		public void Truncate(int index)
-		{
-			if (index < Count)
-			{
-				RemoveRange(index, Count - index);
-			}
+			get { return State.Any(); }
 		}
 	}
 }

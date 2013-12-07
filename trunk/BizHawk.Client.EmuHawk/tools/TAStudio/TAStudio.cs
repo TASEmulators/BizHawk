@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -60,14 +59,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed)
+			{
+				return;
+			}
 
 			TASView.ItemCount = _tas.InputLogLength;
 		}
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed)
+			{
+				return;
+			}
 		}
 
 		#endregion
@@ -81,14 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (record.Lagged)
-				{
-					color = Color.Pink;
-				}
-				else
-				{
-					color = Color.LightGreen;
-				}
+				color = record.Lagged ? Color.Pink : Color.LightGreen;
 			}
 		}
 
@@ -96,13 +94,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				text = String.Empty;
 				var columnName = TASView.Columns[column].Name;
 				var columnText = TASView.Columns[column].Text;
 
 				if (columnName == MarkerColumnName)
 				{
-					text = "";
+					text = String.Empty;
 				}
 				else if (columnName == FrameColumnName)
 				{
@@ -116,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				text = String.Empty;
-				MessageBox.Show("oops\n" + ex.ToString());
+				MessageBox.Show("oops\n" + ex);
 			}
 		}
 
@@ -139,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadConfigSettings();
 
-
 			_tas.ActivePlayers = new List<string> { "Player 1", "Player 2" };
 			SetUpColumns();
 		}
@@ -147,12 +143,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TASView.Columns.Clear();
-			AddColumn(MarkerColumnName, "", 18);
+			AddColumn(MarkerColumnName, String.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			var mnemonics = MnemonicConstants.BUTTONS[Global.Emulator.Controller.Type.Name].Select(x => x.Value);
-
-			foreach(var kvp in _tas.AvailableMnemonics)
+			foreach (var kvp in _tas.AvailableMnemonics)
 			{
 				AddColumn(kvp.Key, kvp.Value.ToString(), 20);
 			}
@@ -221,6 +215,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.AutoloadTAStudio ^= true;
 		}
+
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TAStudioSaveWindowPosition ^= true;

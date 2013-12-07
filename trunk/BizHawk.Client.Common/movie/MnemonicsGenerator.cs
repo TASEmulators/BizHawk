@@ -467,7 +467,7 @@ namespace BizHawk.Client.Common
 	public class NewMnemonicsGenerator
 	{
 		public MnemonicLookupTable MnemonicLookup { get; private set; }
-		public IController Source { get; private set; }
+		public IController Source { get; set; }
 
 		public List<string> ActivePlayers { get; set; }
 
@@ -518,6 +518,31 @@ namespace BizHawk.Client.Common
 
 				return sb.ToString();
 			}
+		}
+
+		public string GenerateMnemonicString(Dictionary<string, bool> buttons)
+		{
+			IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append('|');
+			foreach (var mc in collections)
+			{
+				foreach (var kvp in mc)
+				{
+					if (buttons.ContainsKey(kvp.Key))
+					{
+						sb.Append(buttons[kvp.Key] ? kvp.Value : '.');
+					}
+					else
+					{
+						sb.Append('.');
+					}
+				}
+				sb.Append('|');
+			}
+
+			return sb.ToString();
 		}
 
 		public string MnemonicString

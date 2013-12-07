@@ -132,6 +132,7 @@
     <Compile Include="movie\MovieLog.cs" />
     <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieRecord.cs" />
+    <Compile Include="movie\MovieRecordList.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\MnemonicsLookupTable.cs" />
