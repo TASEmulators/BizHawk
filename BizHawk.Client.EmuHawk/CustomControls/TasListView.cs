@@ -30,7 +30,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// TODO: Get row
+			var headerHeight = 24; //Are these always true? Don't know, is there a way to programmatically determine them?
+			var rowHeight = 18;
+
+			PointedRowIndex = ((y - headerHeight) / rowHeight) + this.VScrollPos;
+			if (PointedRowIndex >= ItemCount)
+			{
+				PointedRowIndex = null;
+			}
 		}
 
 		protected override void OnMouseLeave(EventArgs e)
