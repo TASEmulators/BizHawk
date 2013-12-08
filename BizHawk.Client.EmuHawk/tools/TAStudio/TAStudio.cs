@@ -248,12 +248,18 @@ namespace BizHawk.Client.EmuHawk
 
 		#region TASView Events
 
+		private string StartDrawColumn = String.Empty; //TODO: move me
+		private bool StartOn = false; //TODO: move me
+
 		private void TASView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (TASView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TASView.PointedCell.Column))
 			{
 				_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
 				TASView.Refresh();
+
+				StartDrawColumn = TASView.PointedCell.Column;
+				StartOn = _tas.IsPressed(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
 			}
 		}
 
@@ -261,17 +267,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
-			if (TASView.IsPaintDown)
+			if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
 			{
-				_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+				_tas.SetButton(e.NewCell.Row.Value, StartDrawColumn, StartOn); //Notice it uses new row, old column, you can only paint across a single column
 				TASView.Refresh();
 			}
 		}
-
-		#endregion
-
-		#region Classes
-		// Everything in here will probably need to be moved at some point
 
 		#endregion
 	}

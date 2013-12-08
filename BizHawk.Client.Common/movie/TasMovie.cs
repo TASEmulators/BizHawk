@@ -37,6 +37,16 @@ namespace BizHawk.Client.Common
 			_records[frame].Buttons[buttonName] ^= true;
 		}
 
+		public void SetButton(int frame, string buttonName, bool value)
+		{
+			_records[frame].Buttons[buttonName] = value;
+		}
+
+		public bool IsPressed(int frame, string buttonName)
+		{
+			return _records[frame].Buttons[buttonName];
+		}
+
 		#region Implementation
 
 		public TasMovie(string filename, bool startsFromSavestate = false)
