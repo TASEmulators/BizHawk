@@ -105,6 +105,18 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>
 	{
+		/// <summary>
+		/// creates a minimal valid MemoryDomainList that does nothing
+		/// </summary>
+		/// <returns></returns>
+		public static MemoryDomainList GetDummyList()
+		{
+			MemoryDomain dummy = new MemoryDomain("Dummy", 256, MemoryDomain.Endian.Little, (a) => 0, (a, v) => { });
+			List<MemoryDomain> tmp = new List<MemoryDomain>(1);
+			tmp.Add(dummy);
+			return new MemoryDomainList(tmp, 0);
+		}
+
 		private readonly int _mainMemoryIndex;
 
 		public MemoryDomainList(IList<MemoryDomain> domains) 
