@@ -441,6 +441,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ConfigSubMenu.Name = "ConfigSubMenu";
 			this.ConfigSubMenu.Size = new System.Drawing.Size(55, 20);
 			this.ConfigSubMenu.Text = "&Config";
+			this.ConfigSubMenu.DropDownOpened += new System.EventHandler(this.ConfigSubMenu_DropDownOpened);
 			// 
 			// ProjectOptionsMenuItem
 			// 
@@ -496,10 +497,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DrawInputByDraggingMenuItem
 			// 
-			this.DrawInputByDraggingMenuItem.Enabled = false;
 			this.DrawInputByDraggingMenuItem.Name = "DrawInputByDraggingMenuItem";
 			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
+			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
 			// 
 			// CombineConsecutiveRecordingsMenuItem
 			// 
@@ -658,6 +659,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TASView.FullRowSelect = true;
 			this.TASView.GridLines = true;
+			this.TASView.InputPaintingMode = false;
 			this.TASView.ItemCount = 0;
 			this.TASView.Location = new System.Drawing.Point(12, 43);
 			this.TASView.Name = "TASView";
