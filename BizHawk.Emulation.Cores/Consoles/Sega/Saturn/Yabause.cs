@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios, bool GL = false)
 		{
-			CoreComm.RomStatusDetails = "Yeh";
+			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 			ResetCounters();
