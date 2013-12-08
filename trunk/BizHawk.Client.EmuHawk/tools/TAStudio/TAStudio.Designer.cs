@@ -666,6 +666,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
+			this.TASView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
 			// 
 			// Frame
 			// 
