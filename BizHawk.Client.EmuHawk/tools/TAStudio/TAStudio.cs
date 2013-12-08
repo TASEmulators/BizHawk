@@ -228,6 +228,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region TASView Events
+
+		private void TASView_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (TASView.PointedRowIndex.HasValue && !String.IsNullOrEmpty(TASView.PointedColumnName))
+			{
+				_tas.ToggleButton(TASView.PointedRowIndex.Value, TASView.PointedColumnName);
+				TASView.Refresh();
+			}
+		}
+
+		#endregion
+
 		#endregion
 	}
 }

@@ -32,6 +32,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void ToggleButton(int frame, string buttonName)
+		{
+			_records[frame].Buttons[buttonName] ^= true;
+		}
+
 		#region Implementation
 
 		public TasMovie(string filename, bool startsFromSavestate = false)

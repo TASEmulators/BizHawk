@@ -8,8 +8,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class TasListView : VirtualListView
 	{
-		public string PointedColumnName = String.Empty;
-		public int? PointedRowIndex = null;
+		public string PointedColumnName { get; private set; }
+		public int? PointedRowIndex { get; private set; }
 
 		private void CalculatePointedCell(int x, int y)
 		{
