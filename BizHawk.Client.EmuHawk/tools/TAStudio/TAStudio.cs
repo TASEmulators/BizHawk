@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : Form, IToolForm
 	{
+		// TOOD: clean up Input painting logic (lock to a column, lock to on or off)
+
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
 
@@ -44,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			TopMost = Global.Config.TAStudioTopMost;
+			TASView.InputPaintingMode = Global.Config.TAStudioDrawInput;
+			TASView.PointedCellChanged += TASView_PointedCellChanged;
 		}
 
 		public bool AskSave()
@@ -202,8 +206,22 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Config
+
+		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			DrawInputByDraggingMenuItem.Checked = Global.Config.TAStudioDrawInput;
+		}
+
+		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
+		{
+			TASView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+		}
+
+		#endregion
+
 		#region Settings Menu
-		
+
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveWindowPositionMenuItem.Checked = Global.Config.TAStudioSaveWindowPosition;
@@ -232,14 +250,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASView_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (TASView.PointedRowIndex.HasValue && !String.IsNullOrEmpty(TASView.PointedColumnName))
+			if (TASView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TASView.PointedCell.Column))
 			{
-				_tas.ToggleButton(TASView.PointedRowIndex.Value, TASView.PointedColumnName);
+				_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
 				TASView.Refresh();
 			}
 		}
 
 		#endregion
+
+		private void TASView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
+		{
+			if (TASView.IsPaintDown)
+			{
+				_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+				TASView.Refresh();
+			}
+		}
+
+		#endregion
+
+		#region Classes
+		// Everything in here will probably need to be moved at some point
 
 		#endregion
 	}
