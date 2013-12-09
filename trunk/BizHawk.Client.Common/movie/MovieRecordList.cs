@@ -41,5 +41,13 @@ namespace BizHawk.Client.Common
 				RemoveRange(index, Count - index);
 			}
 		}
+
+		public void TruncateStates(int index)
+		{
+			for (int i = index; i < Count; i++)
+			{
+				this[i].ClearState();
+			}
+		}
 	}
 }
