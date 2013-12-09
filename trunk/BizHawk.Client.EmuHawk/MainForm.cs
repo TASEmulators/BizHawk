@@ -3152,7 +3152,7 @@ namespace BizHawk.Client.EmuHawk
 
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
-									var snes = new LibsnesCore(nextComm);
+									var snes = new LibsnesCore(nextComm, EmuLoadHelper);
 									nextEmulator = snes;
 									byte[] romData = isXml ? null : rom.FileData;
 									byte[] xmlData = isXml ? rom.FileData : null;
@@ -3250,7 +3250,7 @@ namespace BizHawk.Client.EmuHawk
 										game.System = "SNES";
 										game.AddOption("SGB");
 										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-										var snes = new LibsnesCore(nextComm);
+										var snes = new LibsnesCore(nextComm, EmuLoadHelper);
 										nextEmulator = snes;
 										snes.Load(game, rom.FileData, EmuLoadHelper, deterministicemulation, null);
 									}

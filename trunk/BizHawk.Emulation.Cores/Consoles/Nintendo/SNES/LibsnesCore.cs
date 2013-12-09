@@ -181,15 +181,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				return "";
 			}
 
-			//build romfilename
-			string test = Path.Combine(CoreComm.SNES_FirmwaresPath ?? "", hint);
+			// not MSU-1.  ok.
 
-			//does it exist?
-			if (!File.Exists(test))
+			string firmwareID;
+
+			switch (hint)
 			{
-				System.Windows.Forms.MessageBox.Show("The SNES core is referencing a firmware file which could not be found. Please make sure it's in your configured SNES firmwares folder. The referenced filename is: " + hint);
-				return "";
+				case "cx4.rom": firmwareID = "CX4"; break;
+				case "dsp1.rom": firmwareID = "DSP1"; break;
+				case "dsp1b.rom": firmwareID = "DSP1b"; break;
+				case "dsp2.rom": firmwareID = "DSP2"; break;
+				case "dsp3.rom": firmwareID = "DSP3"; break;
+				case "dsp4.rom": firmwareID = "DSP4"; break;
+				case "st010.rom": firmwareID = "ST010"; break;
+				case "st011.rom": firmwareID = "ST011"; break;
+				case "st018.rom": firmwareID = "ST018"; break;
+				default:
+					EmuLoadHelper.ShowMessage(string.Format("Unrecognized SNES firmware request \"{0}\".", hint));
+					return "";
 			}
+
+			//build romfilename
+			string test = EmuLoadHelper.GetFirmwarePath("SNES", firmwareID, false, "Game may function incorrectly without the requested firmware.");
 
 			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
 
@@ -215,9 +228,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi api;
 		System.Xml.XmlDocument romxml;
 
-		public LibsnesCore(CoreComm comm)
+		public LibsnesCore(CoreComm comm, IEmuLoadHelper EmuLoadHelper)
 		{
 			CoreComm = comm;
+			this.EmuLoadHelper = EmuLoadHelper;
 			api = new LibsnesApi(CoreComm.SNES_ExePath);
 			api.CMD_init();
 			api.ReadHook = ReadHook;
@@ -916,6 +930,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		#endregion
 
 		public CoreComm CoreComm { get; private set; }
+		private IEmuLoadHelper EmuLoadHelper;
 
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)
