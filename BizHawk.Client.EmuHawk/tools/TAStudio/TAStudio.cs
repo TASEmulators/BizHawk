@@ -137,11 +137,18 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie = new TasMovie();
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
+			_tas.OnChanged += OnMovieChanged;
 
 			LoadConfigSettings();
 
 			_tas.ActivePlayers = new List<string> { "Player 1", "Player 2" };
 			SetUpColumns();
+		}
+
+		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
+		{
+			//TODO: move logic needs to go here
+			TASView.ItemCount = _tas.InputLogLength;
 		}
 
 		private void SetUpColumns()

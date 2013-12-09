@@ -34,19 +34,39 @@ namespace BizHawk.Client.Common
 
 		public void ToggleButton(int frame, string buttonName)
 		{
-			_records[frame].Buttons[buttonName] ^= true;
-			Changes = true;
+			//_records[frame].Buttons[buttonName] ^= true; //TODO: be this clean but still fire the event
+			_records[frame].SetButton(buttonName, !_records[frame].Buttons[buttonName]);
+
 		}
 
 		public void SetButton(int frame, string buttonName, bool value)
 		{
-			_records[frame].Buttons[buttonName] = value;
+			//_records[frame].Buttons[buttonName] = value; //TODO: be this clean but still fire the event
+			_records[frame].SetButton(buttonName, value);
 		}
 
 		public bool IsPressed(int frame, string buttonName)
 		{
 			return _records[frame].Buttons[buttonName];
 		}
+
+		private void InputChanged(object sender, MovieRecord.InputEventArgs e)
+		{
+			//TODO: manage green zone
+			Changes = true;
+
+			if (OnChanged != null)
+			{
+				OnChanged(sender, e);
+			}
+		}
+
+		#region Events
+
+		public delegate void MovieEventHandler(object sender, MovieRecord.InputEventArgs e);
+		public event MovieEventHandler OnChanged;
+
+		#endregion
 
 		#region Implementation
 
@@ -197,7 +217,9 @@ namespace BizHawk.Client.Common
 		{
 			Changes = true;
 			_mg.Source = source;
-			_records.Add(new MovieRecord(_mg.GetBoolButtons(), true));
+			var record = new MovieRecord(_mg.GetBoolButtons(), true);
+			record.OnChanged += InputChanged;
+			_records.Add(record);
 		}
 
 		public void RecordFrame(int frame, IController source)
