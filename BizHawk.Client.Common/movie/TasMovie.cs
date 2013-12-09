@@ -35,6 +35,7 @@ namespace BizHawk.Client.Common
 		public void ToggleButton(int frame, string buttonName)
 		{
 			_records[frame].Buttons[buttonName] ^= true;
+			Changes = true;
 		}
 
 		public void SetButton(int frame, string buttonName, bool value)

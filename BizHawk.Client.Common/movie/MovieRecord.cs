@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class MovieRecord
 	{
-		private readonly byte[] _state;
+		private byte[] _state = new byte[0];
 		private Dictionary<string, bool> _boolButtons = new Dictionary<string, bool>();
 
 		public MovieRecord(Dictionary<string, bool> buttons, bool captureState)
@@ -53,6 +53,11 @@ namespace BizHawk.Client.Common
 		public void ClearInput()
 		{
 			_boolButtons.Clear();
+		}
+
+		public void ClearState()
+		{
+			_state = new byte[0];
 		}
 
 		public bool HasState
