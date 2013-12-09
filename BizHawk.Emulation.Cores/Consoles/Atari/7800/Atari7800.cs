@@ -177,10 +177,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS, string GameDBfn)
+		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, IEmuLoadHelper EmuLoadHelper, string GameDBfn)
 		{
 			CoreComm = comm;
-			
+			byte[] highscoreBIOS = EmuLoadHelper.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
+			byte[] pal_bios = EmuLoadHelper.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
+			byte[] ntsc_bios = EmuLoadHelper.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
+
 			if (EMU7800.Win.GameProgramLibrary.EMU7800DB == null)
 			{
 				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));

@@ -254,8 +254,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		LibsnesApi.snes_trace_t tracecb;
 		LibsnesApi.snes_audio_sample_t soundcb;
 
-		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation, byte[] xmlData)
+		public void Load(GameInfo game, byte[] romData, IEmuLoadHelper EmuLoadHelper, bool DeterministicEmulation, byte[] xmlData)
 		{
+			byte[] sgbRomData = null;
+			if (game["SGB"])
+			{
+				sgbRomData = EmuLoadHelper.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				game.FirmwareHash = Util.Hash_SHA1(sgbRomData);
+			}
+	
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			api.CMD_init();

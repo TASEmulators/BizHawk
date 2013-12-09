@@ -63,6 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm = this;
 			Global.FirmwareManager = new FirmwareManager();
+			EmuLoadHelper = new MFEmuLoadHelper(this, Global.FirmwareManager);
 			Global.MovieSession = new MovieSession
 			{
 				Movie = new Movie(),
@@ -917,6 +918,8 @@ namespace BizHawk.Client.EmuHawk
 		private RetainedViewportPanel _retainedPanel;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
+
+		private IEmuLoadHelper EmuLoadHelper;
 
 		//avi/wav state
 		private IVideoWriter _currAviWriter;
@@ -3032,13 +3035,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							case "SAT":
 								{
-									string biosPath = Global.FirmwareManager.Request("SAT", "J");
-									if (!File.Exists(biosPath))
-									{
-										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
-										return false;
-									}
-									var saturn = new Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+									var saturn = new Yabause(nextComm, disc, EmuLoadHelper, Global.Config.SaturnUseGL);
 									nextEmulator = saturn;
 									SaturnSetPrefs(saturn);
 								}
@@ -3199,23 +3196,7 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "NES":
 								{
-									//TODO - move into nes core
-									var biosPath = nextComm.CoreFileProvider.PathFirmware("NES", "Bios_FDS");
-									byte[] bios = null;
-									if (File.Exists(biosPath))
-									{
-										bios = File.ReadAllBytes(biosPath);
-										// ines header + 24KB of garbage + actual bios + 8KB of garbage
-										if (bios.Length == 40976)
-										{
-											MessageBox.Show(this, "Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
-											var tmp = new byte[8192];
-											Buffer.BlockCopy(bios, 16 + 8192 * 3, tmp, 0, 8192);
-											bios = tmp;
-										}
-									}
-
-									var nes = new NES(nextComm, game, rom.FileData, bios, Global.MovieSession.Movie.Header.BoardProperties)
+									var nes = new NES(nextComm, game, rom.FileData, EmuLoadHelper, Global.MovieSession.Movie.Header.BoardProperties)
 									{
 										SoundOn = Global.Config.SoundEnabled,
 										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
@@ -3264,40 +3245,23 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
-									var sgbromPath = Global.FirmwareManager.Request("SNES", "Rom_SGB");
-									byte[] sgbrom;
 									try
-									{
-										if (File.Exists(sgbromPath))
-										{
-											sgbrom = File.ReadAllBytes(sgbromPath);
-										}
-										else
-										{
-											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
-											Global.Config.GB_AsSGB = false;
-											game.System = "GB";
-											goto RETRY;
-										}
-									}
-									catch (Exception)
-									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
-									}
-									if (sgbrom != null)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
 										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 										var snes = new LibsnesCore(nextComm);
 										nextEmulator = snes;
-										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-										snes.Load(game, rom.FileData, sgbrom, deterministicemulation, null);
+										snes.Load(game, rom.FileData, EmuLoadHelper, deterministicemulation, null);
+									}
+									catch
+									{
+										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+										EmuLoadHelper.ShowMessage("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
+										Global.Config.GB_AsSGB = false;
+										throw;
 									}
 								}
-								//}
 								break;
 							case "Coleco":
 								var colbiosPath = Global.FirmwareManager.Request("Coleco", "Bios");
@@ -3332,56 +3296,9 @@ namespace BizHawk.Client.EmuHawk
 								}
 								break;
 							case "A78":
-								var ntsc_biospath = Global.FirmwareManager.Request("A78", "Bios_NTSC");
-								var pal_biospath = Global.FirmwareManager.Request("A78", "Bios_PAL");
-								var hsbiospath = Global.FirmwareManager.Request("A78", "Bios_HSC");
-
-								var ntscfile = ntsc_biospath != null ? new FileInfo(ntsc_biospath) : null;
-								var palfile = pal_biospath != null ? new FileInfo(pal_biospath) : null;
-								var hsfile = hsbiospath != null ? new FileInfo(hsbiospath) : null;
-
-								byte[] NTSC_BIOS7800 = null;
-								byte[] PAL_BIOS7800 = null;
-								byte[] HighScoreBIOS = null;
-								if (ntscfile == null || !ntscfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								}
-								else
-								{
-									NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
-								}
-
-								if (palfile == null || !palfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								}
-								else
-								{
-									PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
-								}
-
-								if (hsfile == null || !hsfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									//throw new Exception();
-								}
-								else
-								{
-									HighScoreBIOS = File.ReadAllBytes(hsbiospath);
-								}
-
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								try
-								{
-									var a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
-									nextEmulator = a78;
-								}
-								catch (InvalidDataException ex)
-								{
-									MessageBox.Show(ex.Message, "Region specific bios missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									return false;
-								}
+								var a78 = new Atari7800(nextComm, game, rom.RomData, EmuLoadHelper, gamedbpath);
+								nextEmulator = a78;
 								break;
 							case "C64":
 								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
@@ -3391,21 +3308,9 @@ namespace BizHawk.Client.EmuHawk
 							case "GBA":
 								if (VersionInfo.INTERIM)
 								{
-									var gbabiospath = Global.FirmwareManager.Request("GBA", "Bios");
-									byte[] gbabios;
-
-									if (File.Exists(gbabiospath))
-									{
-										gbabios = File.ReadAllBytes(gbabiospath);
-									}
-									else
-									{
-										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-										throw new Exception();
-									}
 									GBA gba = new GBA(nextComm);
 									//var gba = new GarboDev.GbaManager(nextComm);
-									gba.Load(rom.RomData, gbabios);
+									gba.Load(rom.RomData, EmuLoadHelper);
 									nextEmulator = gba;
 								}
 								break;
