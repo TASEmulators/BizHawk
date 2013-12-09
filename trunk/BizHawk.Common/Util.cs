@@ -56,6 +56,15 @@ namespace BizHawk.Common
 			}
 		}
 
+		public static string Hash_SHA1(byte[] data)
+		{
+			using (var sha1 = System.Security.Cryptography.SHA1.Create())
+			{
+				sha1.TransformFinalBlock(data, 0, data.Length);
+				return BytesToHexString(sha1.Hash);
+			}
+		}
+
 		public static bool IsPowerOfTwo(int x)
 		{
 			if (x == 0) return true;
