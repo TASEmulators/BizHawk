@@ -62,43 +62,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (GambatteState == IntPtr.Zero)
 				throw new Exception("gambatte_create() returned null???");
 
-			LibGambatte.LoadFlags flags = 0;
+			try
+			{
+				LibGambatte.LoadFlags flags = 0;
 
-			if (game["ForceDMG"])
-				flags |= LibGambatte.LoadFlags.FORCE_DMG;
-			if (game["GBACGB"])
-				flags |= LibGambatte.LoadFlags.GBA_CGB;
-			if (game["MulitcartCompat"])
-				flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
+				if (game["ForceDMG"])
+					flags |= LibGambatte.LoadFlags.FORCE_DMG;
+				if (game["GBACGB"])
+					flags |= LibGambatte.LoadFlags.GBA_CGB;
+				if (game["MulitcartCompat"])
+					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 
-			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
-				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
+				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
+					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
-			// set real default colors (before anyone mucks with them at all)
-			ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
-			SetCGBColors(GBColors.ColorType.gambatte);
+				// set real default colors (before anyone mucks with them at all)
+				ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
+				SetCGBColors(GBColors.ColorType.gambatte);
 
-			InitSound();
+				InitSound();
 
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
+				Frame = 0;
+				LagCount = 0;
+				IsLagFrame = false;
 
-			InputCallback = new LibGambatte.InputGetter(ControllerCallback);
+				InputCallback = new LibGambatte.InputGetter(ControllerCallback);
 
-			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
+				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
 
-			InitMemoryDomains();
+				InitMemoryDomains();
 
-			CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
-				game.Name,
-				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
-				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
-				);
+				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+					game.Name,
+					Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
+					Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
+					);
 
-			TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
-			LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
+				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
+				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
 		}
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
@@ -740,8 +748,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void Dispose()
 		{
-			LibGambatte.gambatte_destroy(GambatteState);
-			GambatteState = IntPtr.Zero;
+			if (GambatteState != IntPtr.Zero)
+			{
+				LibGambatte.gambatte_destroy(GambatteState);
+				GambatteState = IntPtr.Zero;
+			}
 			DisposeSound();
 		}
 
@@ -826,9 +837,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		int latchaudio = 0;
 
-		//SpeexResampler resampler;
-		//DCFilter dcfilter;
-
 		BlipBuffer blip;
 
 		void ProcessSound()
@@ -858,20 +866,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		void InitSound()
 		{
-			//resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
-			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
-			// lowpass filtering on an actual GB was probably pretty aggressive?
-			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
 			blip = new BlipBuffer(1024);
 			blip.SetRates(2097152, 44100);
 		}
 
 		void DisposeSound()
 		{
-			blip.Dispose();
-			blip = null;
-			//resampler.Dispose();
-			//resampler = null;
+			if (blip != null)
+			{
+				blip.Dispose();
+				blip = null;
+			}
 		}
 
 		public void DiscardSamples()
