@@ -29,10 +29,7 @@ namespace BizHawk.Client.Common
 
 		public bool Lagged { get; private set; }
 
-		public IEnumerable<byte> State
-		{
-			get { return _state; }
-		}
+		#region Input Api
 
 		public bool IsPressed(string buttonName)
 		{
@@ -41,18 +38,35 @@ namespace BizHawk.Client.Common
 
 		public void SetButton(string button, bool pressed)
 		{
+			InputChanged(new Dictionary<string, bool>() { { button, pressed } });
 			_boolButtons[button] = pressed;
 		}
 
 		public void SetInput(Dictionary<string, bool> buttons)
 		{
+			InputChanged(buttons);
 			_boolButtons.Clear();
 			_boolButtons = buttons;
 		}
 
 		public void ClearInput()
 		{
+			InputChanged(_boolButtons);
 			_boolButtons.Clear();
+		}
+
+		#endregion
+
+		#region State API
+
+		public IEnumerable<byte> State
+		{
+			get { return _state; }
+		}
+
+		public bool HasState
+		{
+			get { return State.Any(); }
 		}
 
 		public void ClearState()
@@ -60,9 +74,31 @@ namespace BizHawk.Client.Common
 			_state = new byte[0];
 		}
 
-		public bool HasState
+		#endregion
+
+		#region Event Handling
+
+		public class InputEventArgs
 		{
-			get { return State.Any(); }
+			public InputEventArgs(Dictionary<string, bool> editedButtons)
+			{
+				EditedButtons = editedButtons;
+			}
+
+			public Dictionary<string, bool> EditedButtons { get; private set; }
 		}
+
+		public delegate void InputEventHandler(object sender, InputEventArgs e);
+		public event InputEventHandler OnChanged;
+
+		private void InputChanged(Dictionary <string, bool> editedButtons)
+		{
+			if (OnChanged != null) 
+			{
+				OnChanged(this, new InputEventArgs(editedButtons));
+			}
+		}
+
+		#endregion
 	}
 }
