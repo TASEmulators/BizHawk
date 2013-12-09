@@ -13,5 +13,6 @@ namespace BizHawk.Emulation.Common
 		void ShowMessage(string msg);
 
 		byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null);
+		string GetFirmwarePath(string sysID, string firmwareID, bool required, string msg = null);
 	}
 }
