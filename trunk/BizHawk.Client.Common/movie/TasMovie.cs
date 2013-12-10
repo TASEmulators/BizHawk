@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPlaying
 		{
-			get { return _mode == Moviemode.Play || _mode == Moviemode.Finished; }
+			get { return _mode == Moviemode.Play; }
 		}
 
 		public bool IsRecording
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsFinished
 		{
-			get { return _mode == Moviemode.Finished; }
+			get { return false; } //a TasMovie is never in this mode.
 		}
 
 		public bool IsCountingRerecords { get; set; }
@@ -256,12 +256,15 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO:
 		public double Fps
 		{
 			get
 			{
-				throw new NotImplementedException();
+				var system = Header[HeaderKeys.PLATFORM];
+				var pal = Header.ContainsKey(HeaderKeys.PAL) &&
+					Header[HeaderKeys.PAL] == "1";
+
+				return _frameRates[system, pal];
 			}
 		}
 
@@ -384,12 +387,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 			Changes = false;
-		}
-
-		public void SaveAs()
-		{
-			Changes = false;
-			throw new NotImplementedException();
 		}
 
 		public bool CheckTimeLines(TextReader reader, out string errorMessage)

@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 			{
-				SaveAs();
+				SaveBackup();
 				MakeBackup = false;
 			}
 
@@ -158,6 +158,7 @@ namespace BizHawk.Client.Common
 
 		public void SaveAs(string path)
 		{
+			Filename = path;
 			if (!Loaded)
 			{
 				return;
@@ -183,7 +184,7 @@ namespace BizHawk.Client.Common
 			_changes = false;
 		}
 
-		public void SaveAs()
+		public void SaveBackup()
 		{
 			if (!Loaded || String.IsNullOrWhiteSpace(Filename))
 			{
@@ -407,7 +408,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Length > 0)
 				{
-					SaveAs();
+					SaveBackup();
 					MakeBackup = false;
 				}
 

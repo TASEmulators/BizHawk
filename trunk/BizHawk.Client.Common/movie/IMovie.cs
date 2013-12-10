@@ -52,7 +52,6 @@ namespace BizHawk.Client.Common
 		string Filename { get; set; }
 		bool Load();
 		void Save();
-		void SaveAs();
 		string GetInputLog();
 		bool CheckTimeLines(TextReader reader, out string errorMessage);
 		bool ExtractInputLog(TextReader reader, out string errorMessage);
