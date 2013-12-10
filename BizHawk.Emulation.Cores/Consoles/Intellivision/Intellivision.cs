@@ -83,6 +83,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			Connect();
 
 			Cpu.LogData();
+
+			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "EROM", true, "Executive ROM is required."));
+			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "GROM", true, "Graphics ROM is required."));
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
