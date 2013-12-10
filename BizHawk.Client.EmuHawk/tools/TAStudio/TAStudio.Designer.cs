@@ -142,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
+			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewTASMenuItem
 			// 
@@ -161,20 +162,20 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SaveTASMenuItem
 			// 
-			this.SaveTASMenuItem.Enabled = false;
 			this.SaveTASMenuItem.Name = "SaveTASMenuItem";
 			this.SaveTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveTASMenuItem.Text = "&Save";
+			this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTASMenuItem_Click);
 			// 
 			// SaveAsTASMenuItem
 			// 
-			this.SaveAsTASMenuItem.Enabled = false;
 			this.SaveAsTASMenuItem.Name = "SaveAsTASMenuItem";
 			this.SaveAsTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
 			this.SaveAsTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveAsTASMenuItem.Text = "Save As";
+			this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTASMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 

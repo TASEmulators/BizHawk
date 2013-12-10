@@ -349,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.MOVIEVERSION:
-						if (kvp.Value != HeaderKeys.MovieVersion)
+						if (kvp.Value != HeaderKeys.MovieVersion1)
 						{
 							item.BackColor = Color.Yellow;
 						}

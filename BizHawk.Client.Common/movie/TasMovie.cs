@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Text;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -80,6 +80,7 @@ namespace BizHawk.Client.Common
 		{
 			Filename = String.Empty;
 			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
+			Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion2;
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
 			IsCountingRerecords = true;
@@ -166,7 +167,12 @@ namespace BizHawk.Client.Common
 
 		public string GetInputLog()
 		{
-			return _records.ToString();
+			StringBuilder sb = new StringBuilder();
+			foreach (var record in _records)
+			{
+				sb.AppendLine(_mg.GenerateMnemonicString(record.Buttons));
+			}
+			return sb.ToString();
 		}
 
 		public void SwitchToRecord()

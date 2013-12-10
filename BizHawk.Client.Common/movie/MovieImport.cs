@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 				}
 				if (errorMsg == String.Empty)
 				{
-					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 				}
 			}
 			catch (Exception except)
