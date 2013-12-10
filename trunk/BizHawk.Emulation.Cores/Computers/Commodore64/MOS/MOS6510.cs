@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// ------------------------------------
 
 		MOS6502X cpu;
+        int lagCycles;
 		bool pinNMILast;
 		LatchedPort port;
 		bool thisNMI;
@@ -78,12 +79,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (!thisNMI && pinNMILast)
 				cpu.NMI = true;
 
-			if (ReadAEC())
-			{
-				cpu.ExecuteOne();
-				pinNMILast = thisNMI;
-			}
+            if (ReadAEC())
+            {
+                cpu.ExecuteOne();
+                pinNMILast = thisNMI;
+            }
+            else
+            {
+                lagCycles++;
+            }
 		}
+
+        public int LagCycles
+        {
+            get
+            {
+                return lagCycles;
+            }
+            set
+            {
+                lagCycles = value;
+            }
+        }
 
 		// ------------------------------------
 
