@@ -197,12 +197,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case "st011.rom": firmwareID = "ST011"; break;
 				case "st018.rom": firmwareID = "ST018"; break;
 				default:
-					EmuLoadHelper.ShowMessage(string.Format("Unrecognized SNES firmware request \"{0}\".", hint));
+					CoreComm.ShowMessage(string.Format("Unrecognized SNES firmware request \"{0}\".", hint));
 					return "";
 			}
 
 			//build romfilename
-			string test = EmuLoadHelper.GetFirmwarePath("SNES", firmwareID, false, "Game may function incorrectly without the requested firmware.");
+			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareID, false, "Game may function incorrectly without the requested firmware.");
 
 			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
 
@@ -228,10 +228,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi api;
 		System.Xml.XmlDocument romxml;
 
-		public LibsnesCore(CoreComm comm, IEmuLoadHelper EmuLoadHelper)
+		public LibsnesCore(CoreComm comm)
 		{
 			CoreComm = comm;
-			this.EmuLoadHelper = EmuLoadHelper;
 			api = new LibsnesApi(CoreComm.SNES_ExePath);
 			api.CMD_init();
 			api.ReadHook = ReadHook;
@@ -268,12 +267,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		LibsnesApi.snes_trace_t tracecb;
 		LibsnesApi.snes_audio_sample_t soundcb;
 
-		public void Load(GameInfo game, byte[] romData, IEmuLoadHelper EmuLoadHelper, bool DeterministicEmulation, byte[] xmlData)
+		public void Load(GameInfo game, byte[] romData, bool DeterministicEmulation, byte[] xmlData)
 		{
 			byte[] sgbRomData = null;
 			if (game["SGB"])
 			{
-				sgbRomData = EmuLoadHelper.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
+				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
 				game.FirmwareHash = Util.Hash_SHA1(sgbRomData);
 			}
 	
@@ -930,7 +929,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		#endregion
 
 		public CoreComm CoreComm { get; private set; }
-		private IEmuLoadHelper EmuLoadHelper;
 
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)

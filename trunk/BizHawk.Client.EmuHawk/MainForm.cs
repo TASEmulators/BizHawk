@@ -63,7 +63,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm = this;
 			Global.FirmwareManager = new FirmwareManager();
-			EmuLoadHelper = new MFEmuLoadHelper(this, Global.FirmwareManager);
 			Global.MovieSession = new MovieSession
 			{
 				Movie = new Movie(),
@@ -138,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -918,8 +917,6 @@ namespace BizHawk.Client.EmuHawk
 		private RetainedViewportPanel _retainedPanel;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
-
-		private IEmuLoadHelper EmuLoadHelper;
 
 		//avi/wav state
 		private IVideoWriter _currAviWriter;
@@ -2872,6 +2869,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
+		void ShowMessageCoreComm(string message)
+		{
+			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+
 		private void NesSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
 		{
 			NESSpecialControlsMenuItem.Visible = true;
@@ -2995,7 +2998,7 @@ namespace BizHawk.Client.EmuHawk
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
-				var nextComm = new CoreComm();
+				var nextComm = new CoreComm(ShowMessageCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 				try
@@ -3035,7 +3038,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							case "SAT":
 								{
-									var saturn = new Yabause(nextComm, disc, EmuLoadHelper, Global.Config.SaturnUseGL);
+									var saturn = new Yabause(nextComm, disc, Global.Config.SaturnUseGL);
 									nextEmulator = saturn;
 									SaturnSetPrefs(saturn);
 								}
@@ -3141,8 +3144,6 @@ namespace BizHawk.Client.EmuHawk
 							isXml = true;
 						}
 
-
-					RETRY:
 						switch (game.System)
 						{
 							case "SNES":
@@ -3152,11 +3153,11 @@ namespace BizHawk.Client.EmuHawk
 
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
-									var snes = new LibsnesCore(nextComm, EmuLoadHelper);
+									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
 									byte[] romData = isXml ? null : rom.FileData;
 									byte[] xmlData = isXml ? rom.FileData : null;
-									snes.Load(game, romData, null, deterministicemulation, xmlData);
+									snes.Load(game, romData, deterministicemulation, xmlData);
 								}
 								break;
 							case "SMS":
@@ -3196,7 +3197,7 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "NES":
 								{
-									var nes = new NES(nextComm, game, rom.FileData, EmuLoadHelper, Global.MovieSession.Movie.Header.BoardProperties)
+									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties)
 									{
 										SoundOn = Global.Config.SoundEnabled,
 										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
@@ -3250,14 +3251,14 @@ namespace BizHawk.Client.EmuHawk
 										game.System = "SNES";
 										game.AddOption("SGB");
 										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-										var snes = new LibsnesCore(nextComm, EmuLoadHelper);
+										var snes = new LibsnesCore(nextComm);
 										nextEmulator = snes;
-										snes.Load(game, rom.FileData, EmuLoadHelper, deterministicemulation, null);
+										snes.Load(game, rom.FileData, deterministicemulation, null);
 									}
 									catch
 									{
 										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										EmuLoadHelper.ShowMessage("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
+										ShowMessageCoreComm("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 										Global.Config.GB_AsSGB = false;
 										throw;
 									}
@@ -3297,7 +3298,7 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								var a78 = new Atari7800(nextComm, game, rom.RomData, EmuLoadHelper, gamedbpath);
+								var a78 = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
 								nextEmulator = a78;
 								break;
 							case "C64":
@@ -3310,7 +3311,7 @@ namespace BizHawk.Client.EmuHawk
 								{
 									GBA gba = new GBA(nextComm);
 									//var gba = new GarboDev.GbaManager(nextComm);
-									gba.Load(rom.RomData, EmuLoadHelper);
+									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}
 								break;
@@ -3535,7 +3536,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAVI();
 			Global.Emulator.Dispose();
-			Global.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -3549,7 +3550,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = new CoreComm();
+				Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
 				Global.Game = GameInfo.GetNullGame();

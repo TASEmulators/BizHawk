@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			comm.NominalHeight = 160;
 		}
 
-		public void Load(byte[] rom, IEmuLoadHelper EmuLoadHelper)
+		public void Load(byte[] rom)
 		{
-			byte[] bios = EmuLoadHelper.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
+			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
 
 			if (bios.Length != 16384)
 				throw new InvalidDataException("GBA bios must be exactly 16384 bytes!");
