@@ -3151,6 +3151,7 @@ namespace BizHawk.Client.EmuHawk
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 
+									// need to get rid of this hack at some point
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
 									var snes = new LibsnesCore(nextComm);
@@ -3264,34 +3265,14 @@ namespace BizHawk.Client.EmuHawk
 								}
 								break;
 							case "Coleco":
-								var colbiosPath = Global.FirmwareManager.Request("Coleco", "Bios");
-								var colfile = colbiosPath != null ? new FileInfo(colbiosPath) : null;
-								if (colfile == null || !colfile.Exists)
 								{
-									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
-								}
-								else
-								{
-									var c = new ColecoVision(nextComm, game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
+									var c = new ColecoVision(nextComm, game, rom.RomData, Global.Config.ColecoSkipBiosIntro);
 									nextEmulator = c;
 								}
 								break;
 							case "INTV":
 								{
 									var intv = new Intellivision(nextComm, game, rom.RomData);
-									var eromPath = Global.FirmwareManager.Request("INTV", "EROM");
-									if (!File.Exists(eromPath))
-									{
-										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
-									}
-									intv.LoadExecutiveRom(eromPath);
-									var gromPath = Global.FirmwareManager.Request("INTV", "GROM");
-									if (!File.Exists(gromPath))
-									{
-										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
-									}
-									intv.LoadGraphicsRom(gromPath);
 									nextEmulator = intv;
 								}
 								break;
