@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		public const string Framebuffer = "Framebuffer";
 		public const string Input = "Input Log";
 		public const string CorestateText = "CoreText";
-		public const string Movieheader = "Movie";
+		public const string Movieheader = "Header";
 	}
 
 	/// <summary>

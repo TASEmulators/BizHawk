@@ -20,6 +20,10 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private TasMovie _tas;
 
+		// Input Painting
+		private string StartDrawColumn = String.Empty;
+		private bool StartOn = false;
+
 		#region API
 
 		public TAStudio()
@@ -206,6 +210,28 @@ namespace BizHawk.Client.EmuHawk
 
 		#region File Menu
 
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveTASMenuItem.Enabled = !String.IsNullOrWhiteSpace(_tas.Filename);
+		}
+
+		private void SaveTASMenuItem_Click(object sender, EventArgs e)
+		{
+			_tas.Save();
+			// TODO: inform the user it happened somehow
+		}
+
+		private void SaveAsTASMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = ToolHelpers.GetTasProjSaveFileFromUser(_tas.Filename);
+			if (DialogResult != null)
+			{
+				_tas.Filename = file.FullName;
+				_tas.Save();
+				// TODO: inform the user it happened somehow
+			}
+		}
+
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
@@ -255,9 +281,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region TASView Events
 
-		private string StartDrawColumn = String.Empty; //TODO: move me
-		private bool StartOn = false; //TODO: move me
-
 		private void TASView_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (TASView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TASView.PointedCell.Column))
@@ -270,8 +293,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
-
 		private void TASView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
 			if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
@@ -280,6 +301,8 @@ namespace BizHawk.Client.EmuHawk
 				TASView.Refresh();
 			}
 		}
+
+		#endregion
 
 		#endregion
 	}
