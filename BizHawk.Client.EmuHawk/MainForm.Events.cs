@@ -1746,11 +1746,12 @@ namespace BizHawk.Client.EmuHawk
 			
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
-				BackupMovieContextMenuItem.Visible =
 				ViewSubtitlesContextMenuItem.Visible =
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
+
+			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie is Movie && Global.MovieSession.Movie.IsActive;
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
@@ -1833,8 +1834,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Backup movie saved.");
-			Global.MovieSession.Movie.SaveAs();
+			if (Global.MovieSession.Movie is Movie)
+			{
+				GlobalWin.OSD.AddMessage("Backup movie saved.");
+				(Global.MovieSession.Movie as Movie).SaveBackup();
+			}
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
