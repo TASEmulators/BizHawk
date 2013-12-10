@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 
 		public int InputLogLength
 		{
-			get { return Loaded ? _log.Length : _preloadFramecount; }
+			get { return _log.Length; }
 		}
 
 		public double FrameCount

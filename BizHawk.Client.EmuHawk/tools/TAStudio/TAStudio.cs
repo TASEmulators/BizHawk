@@ -11,8 +11,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : Form, IToolForm
 	{
-		// TOOD: clean up Input painting logic (lock to a column, lock to on or off)
-
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
 
