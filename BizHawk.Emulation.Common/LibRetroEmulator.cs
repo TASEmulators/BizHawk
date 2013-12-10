@@ -37,7 +37,9 @@ namespace BizHawk.Emulation.Common
 				case LibRetro.RETRO_ENVIRONMENT.SET_PIXEL_FORMAT:
 					{
 						LibRetro.RETRO_PIXEL_FORMAT fmt = 0;
-						Marshal.PtrToStructure(data, fmt);
+						int[] tmp = new int[1];
+						Marshal.Copy(data, tmp, 0, 1);
+						fmt = (LibRetro.RETRO_PIXEL_FORMAT)tmp[0];
 						switch (fmt)
 						{
 							case LibRetro.RETRO_PIXEL_FORMAT.RGB565:
@@ -103,6 +105,29 @@ namespace BizHawk.Emulation.Common
 
 		private LibRetro retro;
 
+		public static LibRetroEmulator CreateDebug(CoreComm nextComm, byte[] debugfile)
+		{
+			System.IO.TextReader tr = new System.IO.StreamReader(new System.IO.MemoryStream(debugfile, false));
+			string modulename = tr.ReadLine();
+			string romname = tr.ReadLine();
+
+			byte[] romdata = System.IO.File.ReadAllBytes(romname);
+
+			var emu = new LibRetroEmulator(nextComm, modulename);
+			try
+			{
+				if (!emu.Load(romdata))
+					throw new Exception("LibRetroEmulator.Load() failed");
+				// ...
+			}
+			catch
+			{
+				emu.Dispose();
+				throw;
+			}
+			return emu;
+		}
+
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
@@ -113,27 +138,35 @@ namespace BizHawk.Emulation.Common
 			retro_input_state_cb = new LibRetro.retro_input_state_t(retro_input_state);
 
 			retro = new LibRetro(modulename);
-			CoreComm = nextComm;
+			try
+			{
+				CoreComm = nextComm;
 
-			retro.retro_set_environment(retro_environment_cb);
-			retro.retro_init();
-			retro.retro_set_video_refresh(retro_video_refresh_cb);
-			retro.retro_set_audio_sample(retro_audio_sample_cb);
-			retro.retro_set_audio_sample_batch(retro_audio_sample_batch_cb);
-			retro.retro_set_input_poll(retro_input_poll_cb);
-			retro.retro_set_input_state(retro_input_state_cb);
+				LibRetro.retro_system_info sys = new LibRetro.retro_system_info();
+				retro.retro_get_system_info(ref sys);
+
+				if (sys.need_fullpath)
+					throw new ArgumentException("This libretro core needs filepaths");
+				if (sys.block_extract)
+					throw new ArgumentException("This libretro needs non-blocked extract");
+
+				retro.retro_set_environment(retro_environment_cb);
+				retro.retro_init();
+				retro.retro_set_video_refresh(retro_video_refresh_cb);
+				retro.retro_set_audio_sample(retro_audio_sample_cb);
+				retro.retro_set_audio_sample_batch(retro_audio_sample_batch_cb);
+				retro.retro_set_input_poll(retro_input_poll_cb);
+				retro.retro_set_input_state(retro_input_state_cb);
+			}
+			catch
+			{
+				retro.Dispose();
+				throw;
+			}
 		}
 
 		public bool Load(byte[] data)
 		{
-			LibRetro.retro_system_info sys = new LibRetro.retro_system_info();
-			retro.retro_get_system_info(ref sys);
-
-			if (sys.need_fullpath)
-				throw new ArgumentException("This libretro core needs filepaths");
-			if (sys.block_extract)
-				throw new ArgumentException("This libretro needs non-blocked extract");
-
 			LibRetro.retro_game_info gi = new LibRetro.retro_game_info();
 			fixed (byte* p = &data[0])
 			{

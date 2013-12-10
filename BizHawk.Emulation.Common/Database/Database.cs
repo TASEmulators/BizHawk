@@ -178,6 +178,10 @@ namespace BizHawk.Emulation.Common
 				case ".N64":
 					Game.System = "N64";
 					break;
+
+				case ".DEBUG":
+					Game.System = "DEBUG";
+					break;
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
