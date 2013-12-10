@@ -3199,7 +3199,6 @@ namespace BizHawk.Client.EmuHawk
 								{
 									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties)
 									{
-										SoundOn = Global.Config.SoundEnabled,
 										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
 										NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
 										PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
