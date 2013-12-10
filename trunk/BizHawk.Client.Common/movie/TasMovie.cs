@@ -274,10 +274,15 @@ namespace BizHawk.Client.Common
 		public void StartNewRecording()
 		{
 			SwitchToRecord();
-			if (Global.Config.EnableBackupMovies && true/*TODO*/ && _records.Any())
+
+			// TODO: MakeBackup logic - Tastudio logic shoudl be to always make backups before saving!
+			if (Global.Config.EnableBackupMovies && _records.Any() && !String.IsNullOrWhiteSpace(Filename))
 			{
-				// TODO
+				Save();
 			}
+
+			_records.Clear();
+			Header.Clear();
 		}
 
 		public bool Load()
