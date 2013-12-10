@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			board.inputRead = false;
 			board.PollInput();
+            board.cpu.LagCycles = 0;
 
 			for (int count = 0; count < cyclesPerFrame; count++)
 			{
@@ -133,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
 
+            int test = board.cpu.LagCycles;
 			CoreComm.DriveLED = DriveLED;
 		}
 
