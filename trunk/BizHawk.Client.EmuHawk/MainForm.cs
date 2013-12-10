@@ -3305,6 +3305,13 @@ namespace BizHawk.Client.EmuHawk
 								}
 								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
 								break;
+
+							case "DEBUG":
+								if (VersionInfo.INTERIM)
+								{
+									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
+								}
+								break;
 						}
 					}
 

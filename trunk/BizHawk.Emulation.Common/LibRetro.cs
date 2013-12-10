@@ -312,9 +312,9 @@ namespace BizHawk.Emulation.Common
 			public string library_name;
 			public string library_version;
 			public string valid_extensions;
-			[MarshalAs(UnmanagedType.U8)]
+			[MarshalAs(UnmanagedType.U1)]
 			public bool need_fullpath;
-			[MarshalAs(UnmanagedType.U8)]
+			[MarshalAs(UnmanagedType.U1)]
 			public bool block_extract;
 		}
 
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Common
 
 		// standard callbacks
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return:MarshalAs(UnmanagedType.U8)]
+		[return:MarshalAs(UnmanagedType.U1)]
 		public delegate bool retro_environment_t(RETRO_ENVIRONMENT cmd, IntPtr data);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void retro_video_refresh_t(IntPtr data, uint width, uint height, uint pitch);
@@ -400,20 +400,20 @@ namespace BizHawk.Emulation.Common
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate uint epretro_serialize_size();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.U8)]
+		[return: MarshalAs(UnmanagedType.U1)]
 		public delegate bool epretro_serialize(IntPtr data, uint size);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.U8)]
+		[return: MarshalAs(UnmanagedType.U1)]
 		public delegate bool epretro_unserialize(IntPtr data, uint size);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void epretro_cheat_reset();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void epretro_cheat_set(uint index, [MarshalAs(UnmanagedType.U8)]bool enabled, string code);
+		public delegate void epretro_cheat_set(uint index, [MarshalAs(UnmanagedType.U1)]bool enabled, string code);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.U8)]
+		[return: MarshalAs(UnmanagedType.U1)]
 		public delegate bool epretro_load_game(ref retro_game_info game);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.U8)]
+		[return: MarshalAs(UnmanagedType.U1)]
 		public delegate bool epretro_load_game_special(uint game_type, ref retro_game_info info, uint num_info);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void epretro_unload_game();
