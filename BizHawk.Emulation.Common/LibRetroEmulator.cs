@@ -169,14 +169,10 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition
 		{
-			get { throw new NotImplementedException(); }
+			get { return NullEmulator.NullController; }
 		}
 
-		public IController Controller
-		{
-			get;
-			set;
-		}
+		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
@@ -191,7 +187,7 @@ namespace BizHawk.Emulation.Common
 
 		public string SystemId
 		{
-			get { throw new NotImplementedException(); }
+			get { return "TEST"; }
 		}
 
 		public bool DeterministicEmulation

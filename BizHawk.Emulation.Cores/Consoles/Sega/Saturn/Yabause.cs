@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		LibYabause.InputCallback InputCallbackH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, IEmuLoadHelper EmuLoadHelper, bool GL)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, bool GL)
 		{
-			byte[] bios = EmuLoadHelper.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
+			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
 			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
