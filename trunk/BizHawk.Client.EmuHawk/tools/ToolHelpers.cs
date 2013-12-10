@@ -11,6 +11,27 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ToolHelpers
 	{
+		public static FileInfo GetTasProjFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			ofd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
+			ofd.RestoreDirectory = true;
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(ofd.FileName);
+		}
+
 		public static FileInfo GetTasProjSaveFileFromUser(string currentFile)
 		{
 			var sfd = new SaveFileDialog();
