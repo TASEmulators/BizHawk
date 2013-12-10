@@ -17,7 +17,6 @@ namespace BizHawk.Client.Common
 		bool IsRecording { get; }
 		bool IsFinished { get; }
 		bool Changes { get; }
-		bool Loaded { get; }
 
 		#endregion
 

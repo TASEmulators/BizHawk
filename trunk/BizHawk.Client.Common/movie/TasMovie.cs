@@ -116,11 +116,6 @@ namespace BizHawk.Client.Common
 
 		public bool Changes { get; private set; }
 
-		public bool Loaded
-		{
-			get { throw new NotImplementedException(); }
-		}
-
 		public TimeSpan Time
 		{
 			get
@@ -160,7 +155,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_mode = Moviemode.Finished;
+				_mode = Moviemode.Finished; // TODO: never do this in a TasMovie!
 				return String.Empty;
 			}
 		}
@@ -183,7 +178,6 @@ namespace BizHawk.Client.Common
 		public void SwitchToPlay()
 		{
 			_mode = Moviemode.Play;
-			Save();
 		}
 
 		public void StartNewPlayback()
