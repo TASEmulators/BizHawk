@@ -146,11 +146,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// NewTASMenuItem
 			// 
-			this.NewTASMenuItem.Enabled = false;
 			this.NewTASMenuItem.Name = "NewTASMenuItem";
 			this.NewTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.NewTASMenuItem.Text = "&New";
+			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTASMenuItem_Click);
 			// 
 			// OpenTASMenuItem
 			// 
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator1
 			// 

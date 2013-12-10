@@ -138,15 +138,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
-			Global.MovieSession.Movie = new TasMovie();
-			_tas = Global.MovieSession.Movie as TasMovie;
-			_tas.StartNewRecording();
-			_tas.OnChanged += OnMovieChanged;
+			EngageTasStudio();
 
 			LoadConfigSettings();
 
 			_tas.ActivePlayers = new List<string> { "Player 1", "Player 2" };
 			SetUpColumns();
+		}
+
+		private void EngageTasStudio()
+		{
+			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			Global.MovieSession.Movie = new TasMovie();
+			_tas = Global.MovieSession.Movie as TasMovie;
+			_tas.StartNewRecording();
+			_tas.OnChanged += OnMovieChanged;
+		}
+
+		private void StartNewSession()
+		{
+			if (AskSave())
+			{
+				// TODO: power-cycle
+				// TODO: UI flow that conveniently allows to start from savestate
+				GlobalWin.OSD.AddMessage("new TAStudio session started");
+				_tas.StartNewRecording();
+			}
 		}
 
 		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
@@ -247,6 +264,12 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
+		private void NewTASMenuItem_Click(object sender, EventArgs e)
+		{
+			StartNewSession();
+		}
+
+
 		private void OpenTASMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.GetTasProjFileFromUser(_tas.Filename);
@@ -268,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTASMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.GetTasProjSaveFileFromUser(_tas.Filename);
-			if (DialogResult != null)
+			if (file != null)
 			{
 				_tas.Filename = file.FullName;
 				_tas.Save();
