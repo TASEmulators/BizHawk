@@ -482,6 +482,7 @@ namespace BizHawk.Client.Common
 		public int TASWidth = -1;
 		public int TASHeight = -1;
 		public bool TAStudioDrawInput = true;
+		public RecentFiles RecentTas = new RecentFiles(8);
 
 		// VirtualPad Dialog
 		public bool VirtualPadsUpdatePads = true;

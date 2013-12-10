@@ -206,6 +206,30 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.TASHeight = Bottom - Top;
 		}
 
+		public void LoadFileFromRecent(string path)
+		{
+			var askResult = true;
+			if (_tas.Changes)
+			{
+				askResult = AskSave();
+			}
+
+			if (askResult)
+			{
+				_tas.Filename = path;
+				var loadResult = _tas.Load();
+				if (!loadResult)
+				{
+					ToolHelpers.HandleLoadError(Global.Config.RecentTas, path);
+				}
+				else
+				{
+					Global.Config.RecentTas.Add(path);
+					TASView.ItemCount = _tas.InputLogLength;
+				}
+			}
+		}
+
 		#region Events
 
 		#region File Menu
@@ -213,6 +237,26 @@ namespace BizHawk.Client.EmuHawk
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveTASMenuItem.Enabled = !String.IsNullOrWhiteSpace(_tas.Filename);
+		}
+
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTas, LoadFileFromRecent)
+			);
+		}
+
+		private void OpenTASMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = ToolHelpers.GetTasProjFileFromUser(_tas.Filename);
+			if (file != null)
+			{
+				_tas.Filename = file.FullName;
+				_tas.Load();
+				Global.Config.RecentTas.Add(_tas.Filename);
+				// TOOD: message to the user
+			}
 		}
 
 		private void SaveTASMenuItem_Click(object sender, EventArgs e)
@@ -228,6 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_tas.Filename = file.FullName;
 				_tas.Save();
+				Global.Config.RecentTas.Add(_tas.Filename);
 				// TODO: inform the user it happened somehow
 			}
 		}

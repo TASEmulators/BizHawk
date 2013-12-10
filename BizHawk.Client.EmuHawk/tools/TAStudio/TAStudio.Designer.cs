@@ -154,11 +154,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OpenTASMenuItem
 			// 
-			this.OpenTASMenuItem.Enabled = false;
 			this.OpenTASMenuItem.Name = "OpenTASMenuItem";
 			this.OpenTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.OpenTASMenuItem.Text = "&Open";
+			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTASMenuItem_Click);
 			// 
 			// SaveTASMenuItem
 			// 
@@ -181,16 +181,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Enabled = false;
 			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(186, 22);
 			this.RecentSubMenu.Text = "Recent";
+			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator1
 			// 
