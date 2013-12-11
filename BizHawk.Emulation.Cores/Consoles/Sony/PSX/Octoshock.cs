@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		static IntPtr FopenCallbackProc(string fname, string mode)
 		{
+			// TODO - this should be using the CoreComm.CoreFileProvider interfaces
+
 			//TODO - probably this should never really fail. but for now, mednafen tries to create a bunch of junk, so just return failure for files which cant be opened
 
 			if (fname.StartsWith("$psx"))
