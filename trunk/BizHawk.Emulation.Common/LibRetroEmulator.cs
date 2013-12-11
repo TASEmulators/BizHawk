@@ -180,6 +180,7 @@ namespace BizHawk.Emulation.Common
 					return false;
 				}
 				savebuff = new byte[retro.retro_serialize_size()];
+				savebuff2 = new byte[savebuff.Length + 13];
 			}
 
 			LibRetro.retro_system_av_info av = new LibRetro.retro_system_av_info();
@@ -297,6 +298,7 @@ namespace BizHawk.Emulation.Common
 		#region savestates
 
 		private byte[] savebuff;
+		private byte[] savebuff2;
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
@@ -342,7 +344,12 @@ namespace BizHawk.Emulation.Common
 
 		public byte[] SaveStateBinary()
 		{
-			throw new NotImplementedException();
+			var ms = new System.IO.MemoryStream(savebuff2, true);
+			var bw = new System.IO.BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }

@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Common
 			public string meta;
 		}
 
-		// standard callbacks
+		#region callback prototypes
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return:MarshalAs(UnmanagedType.U1)]
 		public delegate bool retro_environment_t(RETRO_ENVIRONMENT cmd, IntPtr data);
@@ -367,8 +367,9 @@ namespace BizHawk.Emulation.Common
 		public delegate void retro_input_poll_t();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate short retro_input_state_t(uint port, uint device, uint index, uint id);
+		#endregion
 
-		// entry points
+		#region entry point prototypes
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void epretro_set_environment(retro_environment_t cb);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -423,7 +424,9 @@ namespace BizHawk.Emulation.Common
 		public delegate IntPtr epretro_get_memory_data(RETRO_MEMORY id);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate uint epretro_get_memory_size(RETRO_MEMORY id);
-
+		#endregion
+		#region entry points
+		// these are all hooked up by reflection on dll load
 		public epretro_set_environment retro_set_environment;
 		public epretro_set_video_refresh retro_set_video_refresh;
 		public epretro_set_audio_sample retro_set_audio_sample;
@@ -452,6 +455,7 @@ namespace BizHawk.Emulation.Common
 		public epretro_get_region retro_get_region;
 		public epretro_get_memory_data retro_get_memory_data;
 		public epretro_get_memory_size retro_get_memory_size;
+		#endregion
 
 		private static Dictionary<IntPtr, LibRetro> AttachedCores = new Dictionary<IntPtr, LibRetro>();
 		private IntPtr hModule = IntPtr.Zero;
@@ -514,16 +518,7 @@ namespace BizHawk.Emulation.Common
 
 		private static IEnumerable<FieldInfo> GetAllEntryPoints()
 		{
-			var fields = typeof(LibRetro).GetFields();
-			foreach (var field in fields)
-			{
-				if (field.FieldType.Name.StartsWith("epretro"))
-				{
-					// this is one of the entry point delegates
-					yield return field;
-				}
-			}
-			yield break;
+			return typeof(LibRetro).GetFields().Where((field) => field.FieldType.Name.StartsWith("epretro"));
 		}
 
 		private void ClearAllEntryPoints()
