@@ -311,6 +311,9 @@ namespace BizHawk.Emulation.Common
 		/// <param name="input">source to take input from when output is requested. if null, no autofetching</param>
 		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISyncSoundProvider input = null)
 		{
+			if (drainer != null && input != null)
+				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
+
 			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
 			st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
 
@@ -318,9 +321,6 @@ namespace BizHawk.Emulation.Common
 				throw new Exception("LibSpeexDSP returned null!");
 
 			CheckError(err);
-
-			if (drainer != null && input != null)
-				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
 
 			this.drainer = drainer ?? InternalDrain;
 			this.input = input;
