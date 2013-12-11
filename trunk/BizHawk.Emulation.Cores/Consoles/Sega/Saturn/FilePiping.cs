@@ -111,6 +111,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			thr.Join();
 			thr = null;
 			Exception ret = e;
+			e = null;
 			if (ret != null)
 				throw ret;
 		}
