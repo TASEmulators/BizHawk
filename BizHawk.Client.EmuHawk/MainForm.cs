@@ -593,12 +593,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
 			if (pathEntry == null)
 			{
-				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
 			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
