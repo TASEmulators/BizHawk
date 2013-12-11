@@ -109,9 +109,6 @@ namespace BizHawk.Client.Common
 
 			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
-
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;

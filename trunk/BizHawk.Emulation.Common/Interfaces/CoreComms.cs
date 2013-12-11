@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Common
 		public bool GG_HighlightActiveDisplayRegion;
 
 		public string PSX_FirmwaresPath;
-		public string SNES_FirmwaresPath;
-		public string C64_FirmwaresPath;
 
 		public ICoreFileProvider CoreFileProvider;
 
