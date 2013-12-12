@@ -158,6 +158,11 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 
+			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			{
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -171,19 +176,37 @@ namespace BizHawk.Client.EmuHawk
 
 				string arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
+				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--movie="))
+				{
 					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-type="))
+				{
 					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-name="))
+				{
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-length="))
+				{
 					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
+				}
 				else if (arg.StartsWith("--dump-close"))
+				{
 					autoCloseOnDump = true;
+				}
+				else if (arg.StartsWith("--fullscreen"))
+				{
+					ToggleFullscreen();
+				}
 				else
+				{
 					cmdRom = arg;
+				}
 			}
 
 			if (cmdRom != null)
@@ -244,69 +267,78 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
+
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
 				GlobalWin.Tools.Load<RamSearch>();
 			}
+
 			if (Global.Config.AutoLoadHexEditor)
 			{
 				GlobalWin.Tools.Load<HexEditor>();
 			}
+
 			if (Global.Config.RecentCheats.AutoLoad)
 			{
 				GlobalWin.Tools.Load<Cheats>();
 			}
+
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESPPU>();
 			}
+
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESNameTableViewer>();
 			}
+
 			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESDebugger>();
 			}
+
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 			{
 				LoadGameGenieEc();
 			}
+
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
 			{
 				GlobalWin.Tools.Load<GBGPUView>();
 			}
+
 			if (Global.Config.AutoloadTAStudio)
 			{
 				LoadTAStudio();
 			}
+
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualPadForm>();
 			}
+
 			if (Global.Config.AutoLoadLuaConsole)
 			{
 				OpenLuaConsole();
 			}
+
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PCEBGViewer>();
 			}
+
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
+
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
 				if (Global.CoreComm.CpuTraceAvailable)
 				{
 					LoadTraceLogger();
 				}
-			}
-
-			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
-			{
-				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
