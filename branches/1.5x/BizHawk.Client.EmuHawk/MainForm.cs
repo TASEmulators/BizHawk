@@ -158,6 +158,11 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 
+			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			{
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -182,6 +187,10 @@ namespace BizHawk.Client.EmuHawk
 					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
 				else if (arg.StartsWith("--dump-close"))
 					autoCloseOnDump = true;
+				else if (arg.StartsWith("--fullscreen"))
+				{
+					ToggleFullscreen();
+				}
 				else
 					cmdRom = arg;
 			}
@@ -302,11 +311,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LoadTraceLogger();
 				}
-			}
-
-			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
-			{
-				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
