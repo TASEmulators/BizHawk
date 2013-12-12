@@ -532,7 +532,18 @@ namespace BizHawk.Client.Common
 				{
 					if (buttons.ContainsKey(kvp.Key))
 					{
-						sb.Append(buttons[kvp.Key] ? kvp.Value : '.');
+						if (buttons[kvp.Key])
+						{
+							sb.Append(kvp.Value);
+							if (mc.IsControl)
+							{
+								break;
+							}
+						}
+						else
+						{
+							sb.Append('.');
+						}
 					}
 					else
 					{

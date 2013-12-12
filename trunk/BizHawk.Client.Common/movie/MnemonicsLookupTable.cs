@@ -9,12 +9,20 @@ namespace BizHawk.Client.Common
 	{
 		private readonly string _name = String.Empty;
 
-		public MnemonicCollection(string name)
+		public MnemonicCollection(string name, bool isControl)
 		{
 			_name = name;
+			IsControl = isControl;
 		}
 
 		public string Name { get { return _name; } }
+
+		/// <summary>
+		/// Flag to indicate that the mnemonic string is for control types (power, reset, disc swaping, etc)
+		/// Control types can only have one active control pressed at a time
+		/// Priority will be based on the enumerated order, so the dictionary should be made accordingly
+		/// </summary>
+		public bool IsControl { get; private set; }
 	}
 
 	public class CoreMnemonicCollection : List<MnemonicCollection>
@@ -66,7 +74,7 @@ namespace BizHawk.Client.Common
 			{
 				new CoreMnemonicCollection(new []{ "NES", "FDS" })
 				{
-					new MnemonicCollection("Console")
+					new MnemonicCollection("Console", true)
 					{
 						{ "Reset", 'r' },
 						{ "Power", 'P' },
@@ -76,7 +84,7 @@ namespace BizHawk.Client.Common
 						{ "VS Coin 1", 'c' },
 						{ "VS Coin 2", 'C' }
 					},
-					new MnemonicCollection("Player 1")
+					new MnemonicCollection("Player 1", false)
 					{
 						{ "P1 Up", 'U' },
 						{ "P1 Down", 'D' },
@@ -87,7 +95,7 @@ namespace BizHawk.Client.Common
 						{ "P1 B", 'B' },
 						{ "P1 A", 'A' }
 					},
-					new MnemonicCollection("Player 2")
+					new MnemonicCollection("Player 2", false)
 					{
 						{ "P2 Up", 'U' },
 						{ "P2 Down", 'D' },
@@ -98,7 +106,7 @@ namespace BizHawk.Client.Common
 						{ "P2 B", 'B' },
 						{ "P2 A", 'A' }
 					},
-					new MnemonicCollection("Player 3")
+					new MnemonicCollection("Player 3", false)
 					{
 						{ "P3 Up", 'U' },
 						{ "P3 Down", 'D' },
@@ -109,7 +117,7 @@ namespace BizHawk.Client.Common
 						{ "P3 B", 'B' },
 						{ "P3 A", 'A' }
 					},
-					new MnemonicCollection("Player 4")
+					new MnemonicCollection("Player 4", false)
 					{
 						{ "P4 Up", 'U' },
 						{ "P4 Down", 'D' },
@@ -123,12 +131,12 @@ namespace BizHawk.Client.Common
 				},
 				new CoreMnemonicCollection(new []{ "SNES", "SGB" })
 				{
-					new MnemonicCollection("Console")
+					new MnemonicCollection("Console", true)
 					{
 						{ "Reset", 'r' },
 						{ "Power", 'P' },
 					},
-					new MnemonicCollection("Player 1")
+					new MnemonicCollection("Player 1", false)
 					{
 						{ "P1 Up", 'U' },
 						{ "P1 Down", 'D' },
@@ -143,7 +151,7 @@ namespace BizHawk.Client.Common
 						{ "P1 L", 'L'},
 						{ "P1 R", 'R'}
 					},
-					new MnemonicCollection("Player 2")
+					new MnemonicCollection("Player 2", false)
 					{
 						{ "P2 Up", 'U' },
 						{ "P2 Down", 'D' },
@@ -159,7 +167,7 @@ namespace BizHawk.Client.Common
 						{ "P2 R", 'R'}
 						
 					},
-					new MnemonicCollection("Player 3")
+					new MnemonicCollection("Player 3", false)
 					{
 						{ "P3 Up", 'U' },
 						{ "P3 Down", 'D' },
@@ -174,7 +182,7 @@ namespace BizHawk.Client.Common
 						{ "P3 L", 'L'},
 						{ "P3 R", 'R'}
 					},
-					new MnemonicCollection("Player 4")
+					new MnemonicCollection("Player 4", false)
 					{
 						{ "P4 Up", 'U' },
 						{ "P4 Down", 'D' },
