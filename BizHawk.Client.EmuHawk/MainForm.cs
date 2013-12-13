@@ -3404,6 +3404,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
+				JumpLists.AddRecentItem(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 				{
 					LoadSaveRam();
