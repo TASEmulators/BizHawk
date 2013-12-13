@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
 
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			ofd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -43,12 +43,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			}
 
 			sfd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
 
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -94,12 +94,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";

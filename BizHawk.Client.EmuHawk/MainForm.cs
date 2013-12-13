@@ -2742,12 +2742,12 @@ namespace BizHawk.Client.EmuHawk
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -3610,7 +3610,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void ProcessMovieImport(string fn) //Nothing Winform Specific here, move to Movie import
 		{
-			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			string errorMsg;
 			string warningMsg;
 			var m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);

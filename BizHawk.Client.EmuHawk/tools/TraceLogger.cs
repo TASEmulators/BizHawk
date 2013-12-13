@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_logFile == null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".txt";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
 			else if (!String.IsNullOrWhiteSpace(_logFile.FullName))
 			{
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(_logFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
 
 			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
 				var name = PathManager.FilesystemSafeName(Global.Game);
-				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPath, null), name) + ".txt";
+				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + ".txt";
 				_logFile = new FileInfo(filename);
 				if (_logFile.Directory != null && !_logFile.Directory.Exists)
 				{

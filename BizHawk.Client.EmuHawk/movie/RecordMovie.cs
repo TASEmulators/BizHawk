@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
 				}
-				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null) + path;
+				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
 
 				if (path[path.Length - 4] != '.') //If no file extension, add movie extension
 				{
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			var filename = String.Empty;
 			var sfd = new SaveFileDialog
 				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null),
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 					DefaultExt = "." + Global.Config.MovieExtension,
 					FileName = RecordBox.Text,
 					OverwritePrompt = false
