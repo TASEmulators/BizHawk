@@ -88,7 +88,8 @@ namespace BizHawk.Client.Common
 			RealFirmwareReader reader = new RealFirmwareReader();
 
 			//build a list of files under the global firmwares path, and build a hash for each of them while we're at it
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(Global.Config.PathEntries.FirmwaresPath) });
+			var todo = new Queue<DirectoryInfo>();
+			todo.Enqueue(new DirectoryInfo(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null)));
 	
 			while (todo.Count != 0)
 			{
