@@ -528,32 +528,11 @@ namespace BizHawk.Client.Common
 			sb.Append('|');
 			foreach (var mc in collections)
 			{
-				if (mc.IsControl)
+				foreach (var kvp in mc)
 				{
-					bool anyPressed = false;
-					foreach (var kvp in mc)
+					if (buttons.ContainsKey(kvp.Key))
 					{
-						if (buttons.ContainsKey(kvp.Key) && buttons[kvp.Key])
-						{
-							sb.Append(kvp.Value);
-							anyPressed = true;
-							break;
-						}
-					}
-
-					if (!anyPressed)
-					{
-						sb.Append('.');
-					}
-				}
-				else
-				{
-					foreach (var kvp in mc)
-					{
-						if (buttons.ContainsKey(kvp.Key))
-						{
-							sb.Append(buttons[kvp.Key] ? kvp.Value : '.');
-						}
+						sb.Append(buttons[kvp.Key] ? kvp.Value : '.');
 					}
 				}
 
