@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null) };
+			var ofd = new OpenFileDialog { InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) };
 			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearList();
 
-			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);

@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			listviewSorter = new ListViewSorter(this, -1);
 
-			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null);
+			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					//lazy substring extraction. really should do a better job
-					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null) + Path.DirectorySeparatorChar;
+					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null) + Path.DirectorySeparatorChar;
 					
 					var path = ri.FilePath.Replace(basePath, "");
 

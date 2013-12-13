@@ -100,13 +100,15 @@ namespace BizHawk.Client.Common
 		}
 
 		//Some frequently requested paths, made into a property for convenience
-		public string WatchPath { get { return Global.Config.PathEntries["Global", "Watch (.wch)"].Path; } }
-		public string MoviesPath { get { return Global.Config.PathEntries["Global", "Movies"].Path; } }
-		public string LuaPath { get { return Global.Config.PathEntries["Global", "Lua"].Path; } }
-		public string LogPath { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
-		public string FirmwaresPath { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
-		public string AvPath { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
-		public string GlobalBase { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
+		public string WatchPathFragment { get { return Global.Config.PathEntries["Global", "Watch (.wch)"].Path; } }
+		public string MoviesPathFragment { get { return Global.Config.PathEntries["Global", "Movies"].Path; } }
+		public string LuaPathFragment { get { return Global.Config.PathEntries["Global", "Lua"].Path; } }
+		public string LogPathFragment { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
+		public string FirmwaresPathFragment { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
+		public string AvPathFragment { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
+		
+		//this one is special
+		public string GlobalBaseFragment { get { return Global.Config.PathEntries["Global", "Base"].Path; } }
 
 		public static List<PathEntry> DefaultValues
 		{
