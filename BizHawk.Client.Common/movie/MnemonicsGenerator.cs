@@ -1,29 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	// Scheduled for deletion
+	// Used with the version 1 movie implementation
 	public class MnemonicsGenerator
 	{
-		public IController Source; // Making this public is a temporary hack
+		private IController _source;
 
 		public bool this[int player, string mnemonic]
 		{
 			get
 			{
-				return IsBasePressed("P" + player + " " + mnemonic); //TODO: not every controller uses "P"
+				return IsBasePressed("P" + player + " " + mnemonic); // TODO: not every controller uses "P"
 			}
 		}
 
 		public void SetSource(IController source)
 		{
-			Source = source;
-			ControlType = source.Type.Name;
+			_source = source;
+			_controlType = source.Type.Name;
 		}
 
 		public bool IsEmpty
@@ -85,48 +83,49 @@ namespace BizHawk.Client.Common
 
 		private bool IsBasePressed(string name)
 		{
-			bool ret = Source.IsPressed(name);
-			return ret;
+			return _source.IsPressed(name);
 		}
 
 		private float GetBaseFloat(string name)
 		{
-			return Source.GetFloat(name);
+			return _source.GetFloat(name);
 		}
 
-		private string ControlType;
+		private string _controlType;
 
 		private string GetGBAControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 			if (IsBasePressed("Power"))
 			{
-				input.Append(MnemonicConstants.COMMANDS[ControlType]["Power"]);
+				input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
 			}
 			else
 			{
 				input.Append(".");
 			}
+
 			input.Append("|");
-			foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+			foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 			{
-				input.Append(IsBasePressed(button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+				input.Append(IsBasePressed(button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 			}
+
 			input.Append("|");
 			return input.ToString();
 		}
 
 		private string GetSNESControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 
 			if (IsBasePressed("Power"))
 			{
-				input.Append(MnemonicConstants.COMMANDS[ControlType]["Power"]);
+				input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
 			}
 			else if (IsBasePressed("Reset"))
 			{
-				input.Append(MnemonicConstants.COMMANDS[ControlType]["Reset"]);
+				input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
 			}
 			else
 			{
@@ -134,12 +133,13 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
+
 				input.Append("|");
 			}
 
@@ -148,22 +148,22 @@ namespace BizHawk.Client.Common
 
 		private string GetC64ControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
+
 				input.Append('|');
 			}
 
-			foreach (string button in MnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
+			foreach (var button in MnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
 			{
 				input.Append(IsBasePressed(button) ? MnemonicConstants.BUTTONS["Commodore 64 Keyboard"][button] : ".");
 			}
-			input.Append('|');
 
 			input.Append('|');
 			return input.ToString();
@@ -172,32 +172,39 @@ namespace BizHawk.Client.Common
 		private string GetDualGameBoyControllerAsMnemonic()
 		{
 			// |.|........|.|........|
-			StringBuilder input = new StringBuilder();
+			var input = new StringBuilder();
 
 			foreach (var t in MnemonicConstants.DGBMnemonic)
 			{
 				if (t.Item1 != null)
+				{
 					input.Append(IsBasePressed(t.Item1) ? t.Item2 : '.');
+				}
 				else
-					input.Append(t.Item2); // seperator
+				{
+					input.Append(t.Item2); // Separator
+				}
 			}
+
 			return input.ToString();
 		}
 
 		private string GetA78ControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 			input.Append(IsBasePressed("Power") ? 'P' : '.');
 			input.Append(IsBasePressed("Reset") ? 'r' : '.');
 			input.Append(IsBasePressed("Select") ? 's' : '.');
 			input.Append(IsBasePressed("Pause") ? 'p' : '.');
 			input.Append('|');
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
+
 				input.Append('|');
 			}
 
@@ -206,7 +213,7 @@ namespace BizHawk.Client.Common
 
 		private string GetN64ControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 			if (IsBasePressed("Power"))
 			{
 				input.Append('P');
@@ -219,22 +226,23 @@ namespace BizHawk.Client.Common
 			{
 				input.Append('.');
 			}
+
 			input.Append('|');
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
 
-				if (MnemonicConstants.ANALOGS[ControlType].Keys.Count > 0)
+				if (MnemonicConstants.ANALOGS[_controlType].Keys.Count > 0)
 				{
-					foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
+					foreach (var name in MnemonicConstants.ANALOGS[_controlType].Keys)
 					{
 						int val;
 
-						//Nasty hackery
+						// Nasty hackery
 						if (name == "Y Axis")
 						{
 							if (IsBasePressed("P" + player + " A Up"))
@@ -277,6 +285,7 @@ namespace BizHawk.Client.Common
 
 						input.Append(String.Format("{0:000}", val)).Append(',');
 					}
+
 					input.Remove(input.Length - 1, 1);
 				}
 
@@ -288,7 +297,7 @@ namespace BizHawk.Client.Common
 
 		private string GetSaturnControllersAsMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 			if (IsBasePressed("Power"))
 			{
 				input.Append('P');
@@ -301,14 +310,16 @@ namespace BizHawk.Client.Common
 			{
 				input.Append('.');
 			}
+
 			input.Append('|');
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
+
 				input.Append('|');
 			}
 
@@ -317,67 +328,67 @@ namespace BizHawk.Client.Common
 
 		public string GetControllersAsMnemonic()
 		{
-			if (ControlType == "Null Controller")
+			if (_controlType == "Null Controller")
 			{
 				return "|.|";
 			}
-			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
+			else if (_controlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				return GetA78ControllersAsMnemonic();
 			}
-			else if (ControlType == "SNES Controller")
+			else if (_controlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
 			}
-			else if (ControlType == "Commodore 64 Controller")
+			else if (_controlType == "Commodore 64 Controller")
 			{
 				return GetC64ControllersAsMnemonic();
 			}
-			else if (ControlType == "GBA Controller")
+			else if (_controlType == "GBA Controller")
 			{
 				return GetGBAControllersAsMnemonic();
 			}
-			else if (ControlType == "Dual Gameboy Controller")
+			else if (_controlType == "Dual Gameboy Controller")
 			{
 				return GetDualGameBoyControllerAsMnemonic();
 			}
-			else if (ControlType == "Nintento 64 Controller")
+			else if (_controlType == "Nintento 64 Controller")
 			{
 				return GetN64ControllersAsMnemonic();
 			}
-			else if (ControlType == "Saturn Controller")
+			else if (_controlType == "Saturn Controller")
 			{
 				return GetSaturnControllersAsMnemonic();
 			}
-			else if (ControlType == "PSP Controller")
+			else if (_controlType == "PSP Controller")
 			{
 				return "|.|"; // TODO
 			}
 
-			StringBuilder input = new StringBuilder("|");
+			var input = new StringBuilder("|");
 
-			if (ControlType == "PC Engine Controller")
+			if (_controlType == "PC Engine Controller")
 			{
 				input.Append(".");
 			}
-			else if (ControlType == "Atari 2600 Basic Controller")
+			else if (_controlType == "Atari 2600 Basic Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			else if (ControlType == "NES Controller")
+			else if (_controlType == "NES Controller")
 			{
 				if (IsBasePressed("Power"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["Power"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
 				}
 				else if (IsBasePressed("Reset"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["Reset"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
 				}
 				else if (IsBasePressed("FDS Eject"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["FDS Eject"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["FDS Eject"]);
 				}
 				else if (IsBasePressed("FDS Insert 0"))
 				{
@@ -397,220 +408,76 @@ namespace BizHawk.Client.Common
 				}
 				else if (IsBasePressed("VS Coin 1"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["VS Coin 1"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 1"]);
 				}
 				else if (IsBasePressed("VS Coin 2"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["VS Coin 2"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["VS Coin 2"]);
 				}
 				else
 				{
 					input.Append('.');
 				}
 			}
-			else if (ControlType == "Genesis 3-Button Controller")
+			else if (_controlType == "Genesis 3-Button Controller")
 			{
 				if (IsBasePressed("Power"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["Power"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
 				}
 				else if (IsBasePressed("Reset"))
 				{
-					input.Append(MnemonicConstants.COMMANDS[ControlType]["Reset"]);
+					input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
 				}
 				else
 				{
 					input.Append('.');
 				}
 			}
-			else if (ControlType == "Gameboy Controller")
+			else if (_controlType == "Gameboy Controller")
 			{
-				input.Append(IsBasePressed("Power") ? MnemonicConstants.COMMANDS[ControlType]["Power"] : ".");
+				input.Append(IsBasePressed("Power") ? MnemonicConstants.COMMANDS[_controlType]["Power"] : ".");
 			}
 
-			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller" && ControlType != "ColecoVision Basic Controller")
+			if (_controlType != "SMS Controller" && _controlType != "TI83 Controller" && _controlType != "ColecoVision Basic Controller")
 			{
 				input.Append("|");
 			}
 
-			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				string prefix = "";
-				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
+				var prefix = String.Empty;
+				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
 				{
-					prefix = "P" + player.ToString() + " ";
+					prefix = "P" + player + " ";
 				}
-				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed(prefix + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
+					input.Append(IsBasePressed(prefix + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
 				}
+
 				input.Append("|");
 			}
-			if (ControlType == "SMS Controller")
+
+			if (_controlType == "SMS Controller")
 			{
-				foreach (string command in MnemonicConstants.COMMANDS[ControlType].Keys)
+				foreach (var command in MnemonicConstants.COMMANDS[_controlType].Keys)
 				{
-					input.Append(IsBasePressed(command) ? MnemonicConstants.COMMANDS[ControlType][command] : ".");
+					input.Append(IsBasePressed(command) ? MnemonicConstants.COMMANDS[_controlType][command] : ".");
 				}
+
 				input.Append("|");
 			}
-			if (ControlType == "TI83 Controller")
+
+			if (_controlType == "TI83 Controller")
 			{
-				input.Append(".|"); //TODO: perhaps ON should go here?
+				input.Append(".|"); // TODO: perhaps ON should go here?
 			}
+
 			return input.ToString();
 		}
 
 		#endregion
-	}
-
-	public class NewMnemonicsGenerator
-	{
-		public MnemonicLookupTable MnemonicLookup { get; private set; }
-		public IController Source { get; set; }
-
-		public List<string> ActivePlayers { get; set; }
-
-		public NewMnemonicsGenerator(IController source)
-		{
-			MnemonicLookup = new MnemonicLookupTable();
-			Source = source;
-			ActivePlayers = MnemonicLookup[Global.Emulator.SystemId].Select(x => x.Name).ToList();
-		}
-
-		public bool IsEmpty
-		{
-			get
-			{
-				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-
-				foreach (var mc in collections)
-				{
-					foreach (var kvp in mc)
-					{
-						if (Source.IsPressed(kvp.Key))
-						{
-							return false;
-						}
-					}
-				}
-
-				return true;
-			}
-		}
-
-		public string EmptyMnemonic
-		{
-			get
-			{
-				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-				StringBuilder sb = new StringBuilder();
-
-				sb.Append('|');
-				foreach (var mc in collections)
-				{
-					foreach (var kvp in mc)
-					{
-						sb.Append('.');
-					}
-					sb.Append('|');
-				}
-
-				return sb.ToString();
-			}
-		}
-
-		public string GenerateMnemonicString(Dictionary<string, bool> buttons)
-		{
-			IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-			StringBuilder sb = new StringBuilder();
-
-			sb.Append('|');
-			foreach (var mc in collections)
-			{
-				foreach (var kvp in mc)
-				{
-					if (buttons.ContainsKey(kvp.Key))
-					{
-						sb.Append(buttons[kvp.Key] ? kvp.Value : '.');
-					}
-				}
-
-				sb.Append('|');
-			}
-			return sb.ToString();
-		}
-
-		public string MnemonicString
-		{
-			get
-			{
-				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-				StringBuilder sb = new StringBuilder();
-
-				sb.Append('|');
-				foreach (var mc in collections)
-				{
-					foreach(var kvp in mc)
-					{
-						sb.Append(Source.IsPressed(kvp.Key) ? kvp.Value : '.');
-					}
-					sb.Append('|');
-				}
-
-				return sb.ToString();
-			}
-		}
-
-		public IEnumerable<char> Mnemonics
-		{
-			get
-			{
-				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-
-				List<char> mnemonics = new List<char>();
-				foreach (var mc in collections)
-				{
-					mnemonics.AddRange(mc.Select(x => x.Value));
-				}
-
-				return mnemonics;
-			}
-		}
-
-		public Dictionary<string, char> AvailableMnemonics
-		{
-			get
-			{
-				var buttons = new Dictionary<string, char>();
-				IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-
-				foreach (var mc in collections)
-				{
-					foreach (var kvp in mc)
-					{
-						buttons.Add(kvp.Key, kvp.Value);
-					}
-				}
-
-				return buttons;
-			}
-		}
-
-		public Dictionary<string, bool> GetBoolButtons()
-		{
-			var buttons = new Dictionary<string, bool>();
-			IEnumerable<MnemonicCollection> collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
-
-			foreach (var mc in collections)
-			{
-				foreach (var kvp in mc)
-				{
-					buttons.Add(kvp.Key, Source.IsPressed(kvp.Key));
-				}
-			}
-
-			return buttons;
-		}
 	}
 }
