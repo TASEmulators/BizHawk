@@ -288,6 +288,11 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
+			var file = new FileInfo(Filename);
+			if (!file.Exists)
+			{
+				return false;
+			}
 			// there's a lot of common code here with SavestateManager.  refactor?
 			using (BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(Filename))
 			{
