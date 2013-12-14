@@ -158,10 +158,23 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			EngageTasStudio();
-			LoadConfigSettings();
-			_tas.ActivePlayers = new List<string> { "Player 1" };
+			if (Global.Config.AutoloadTAStudioProject)
+			{
+				Global.MovieSession.Movie = new TasMovie();
+				_tas = Global.MovieSession.Movie as TasMovie;
+				LoadFileFromRecent(Global.Config.RecentTas[0]);
+			}
+			else
+			{
+				EngageTasStudio();
+				
+			}
+
+			_tas.ActivePlayers = new List<string> { "Player 1" }; // TODO
+
+
 			SetUpColumns();
+			LoadConfigSettings();
 		}
 
 		private void EngageTasStudio()
@@ -239,13 +252,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadFileFromRecent(string path)
 		{
-			var askResult = true;
-			if (_tas.Changes)
-			{
-				askResult = AskSave();
-			}
-
-			if (askResult)
+			if (AskSave())
 			{
 				_tas.Filename = path;
 				var loadResult = _tas.Load();
@@ -286,14 +293,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenTASMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = ToolHelpers.GetTasProjFileFromUser(_tas.Filename);
-			if (file != null)
+			if (AskSave())
 			{
-				_tas.Filename = file.FullName;
-				_tas.Load();
-				Global.Config.RecentTas.Add(_tas.Filename);
-				TASView.ItemCount = _tas.InputLogLength;
-				// TOOD: message to the user
+				var file = ToolHelpers.GetTasProjFileFromUser(_tas.Filename);
+				if (file != null)
+				{
+					_tas.Filename = file.FullName;
+					_tas.Load();
+					Global.Config.RecentTas.Add(_tas.Filename);
+					TASView.ItemCount = _tas.InputLogLength;
+					// TOOD: message to the user
+				}
 			}
 		}
 
@@ -349,12 +359,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveWindowPositionMenuItem.Checked = Global.Config.TAStudioSaveWindowPosition;
 			AutoloadMenuItem.Checked = Global.Config.AutoloadTAStudio;
+			AutoloadProjectMenuItem.Checked = Global.Config.AutoloadTAStudioProject;
 			AlwaysOnTopMenuItem.Checked = Global.Config.TAStudioTopMost;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoloadTAStudio ^= true;
+		}
+
+		private void AutoloadProjectMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoloadTAStudioProject ^= true;
 		}
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)

@@ -108,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerDescriptionBox = new System.Windows.Forms.TextBox();
 			this.TopMarkerBox = new System.Windows.Forms.TextBox();
 			this.TopMarkerLabel = new System.Windows.Forms.Label();
+			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -578,6 +579,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoloadMenuItem,
+            this.AutoloadProjectMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
             this.toolStripSeparator12,
@@ -718,6 +720,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TopMarkerLabel.TabIndex = 4;
 			this.TopMarkerLabel.Text = "Marker 99999";
 			// 
+			// AutloadProjectMenuItem
+			// 
+			this.AutoloadProjectMenuItem.Name = "AutloadProjectMenuItem";
+			this.AutoloadProjectMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoloadProjectMenuItem.Text = "Autload &Project";
+			this.AutoloadProjectMenuItem.Click += new System.EventHandler(this.AutoloadProjectMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -819,5 +828,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.TextBox MarkerDescriptionBox;
 		private System.Windows.Forms.TextBox TopMarkerBox;
 		private System.Windows.Forms.Label TopMarkerLabel;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
 	}
 }
