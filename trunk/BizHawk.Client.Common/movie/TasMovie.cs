@@ -146,6 +146,10 @@ namespace BizHawk.Client.Common
 			{
 				if (frame >= 0)
 				{
+					if (!_records[frame].HasState)
+					{
+						_records[frame].CaptureSate();
+					}
 					return _mg.GenerateMnemonicString(_records[frame].Buttons);
 				}
 				else
@@ -155,7 +159,11 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_mode = Moviemode.Finished; // TODO: never do this in a TasMovie!
+				_mode = Moviemode.Record;
+
+				var buttons = _mg.ParseMnemonicString(_mg.EmptyMnemonic);
+
+				_records.Add(new MovieRecord(buttons, true));
 				return String.Empty;
 			}
 		}
@@ -363,6 +371,8 @@ namespace BizHawk.Client.Common
 						catch (EndOfStreamException) { }
 					});
 			}
+
+			_mode = Moviemode.Play;
 			return true;
 		}
 

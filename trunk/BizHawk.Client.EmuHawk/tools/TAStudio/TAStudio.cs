@@ -167,7 +167,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				EngageTasStudio();
-				
 			}
 
 			_tas.ActivePlayers = new List<string> { "Player 1" }; // TODO
