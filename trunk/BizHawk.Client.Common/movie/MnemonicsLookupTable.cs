@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
-	public class MnemonicCollection : Dictionary<string, char>
+	public class MnemonicCollection : NamedDictionary<string, char>
 	{
-		private readonly string _name = String.Empty;
-
 		public MnemonicCollection(string name)
+			: base(name)
 		{
-			_name = name;
+			
 		}
-
-		public string Name { get { return _name; } }
 	}
 
 	public class CoreMnemonicCollection : List<MnemonicCollection>
