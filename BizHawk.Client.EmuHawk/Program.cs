@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 #endif
-							throw e;
+							throw;
 						}
 					}
 #if WINDOWS
@@ -144,6 +144,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					message += "\n\nInner Exception:\n\n" + e.InnerException;
 				}
+
+				message += "\n\nStackTrace:\n" + e.StackTrace;
 				MessageBox.Show(message);
 			}
 #if WINDOWS
