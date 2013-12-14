@@ -17,8 +17,7 @@ namespace BizHawk.Client.Common
 			SetInput(buttons);
 			if (captureState)
 			{
-				Lagged = Global.Emulator.IsLagFrame;
-				_state = Global.Emulator.SaveStateBinary();
+				CaptureSate();
 			}
 		}
 
@@ -47,6 +46,12 @@ namespace BizHawk.Client.Common
 			InputChanged(buttons);
 			_boolButtons.Clear();
 			_boolButtons = buttons;
+		}
+
+		public void CaptureSate()
+		{
+			Lagged = Global.Emulator.IsLagFrame;
+			_state = Global.Emulator.SaveStateBinary();
 		}
 
 		public void ClearInput()
