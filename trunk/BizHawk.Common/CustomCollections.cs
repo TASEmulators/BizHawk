@@ -41,6 +41,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// A dictionary that contains a name parameter, which is required
 	/// </summary>
+	[Serializable]
 	public class NamedDictionary<K, V> : Dictionary<K, V>
 	{
 		public NamedDictionary(string name)
@@ -49,6 +50,8 @@ namespace BizHawk.Common
 		}
 
 		public string Name { get; private set; }
+
+		protected NamedDictionary(SerializationInfo info, StreamingContext context) : base(info, context) { }
 	}
 
 	/// <summary>
