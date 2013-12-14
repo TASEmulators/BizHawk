@@ -34,14 +34,14 @@ namespace BizHawk.Client.Common
 
 		public void ToggleButton(int frame, string buttonName)
 		{
-			//_records[frame].Buttons[buttonName] ^= true; //TODO: be this clean but still fire the event
+			InvalidateGreenzone(frame);
 			_records[frame].SetButton(buttonName, !_records[frame].Buttons[buttonName]);
 
 		}
 
 		public void SetButton(int frame, string buttonName, bool value)
 		{
-			//_records[frame].Buttons[buttonName] = value; //TODO: be this clean but still fire the event
+			InvalidateGreenzone(frame);
 			_records[frame].SetButton(buttonName, value);
 		}
 
@@ -52,12 +52,23 @@ namespace BizHawk.Client.Common
 
 		private void InputChanged(object sender, MovieRecord.InputEventArgs e)
 		{
-			//TODO: manage green zone
 			Changes = true;
 
 			if (OnChanged != null)
 			{
 				OnChanged(sender, e);
+			}
+		}
+
+		/// <summary>
+		/// Removes the greenzone content after the given frame
+		/// </summary>
+		/// <param name="frame"></param>
+		private void InvalidateGreenzone(int frame)
+		{
+			for (int i = frame + 1; i < _records.Count; i++)
+			{
+				_records[i].ClearState();
 			}
 		}
 
@@ -259,6 +270,7 @@ namespace BizHawk.Client.Common
 
 		public void PokeFrame(int frame, IController source)
 		{
+			InvalidateGreenzone(frame);
 			if (frame < _records.Count)
 			{
 				Changes = true;
