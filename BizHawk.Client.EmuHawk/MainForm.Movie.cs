@@ -48,14 +48,17 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.ResetCounters();
 			}
 
-			if (record)
+			if (!fromTastudio)
 			{
-				Global.MovieSession.Movie.StartNewRecording();
-				Global.MovieSession.ReadOnly = false;
-			}
-			else
-			{
-				Global.MovieSession.Movie.StartNewPlayback();
+				if (record)
+				{
+					Global.MovieSession.Movie.StartNewRecording();
+					Global.MovieSession.ReadOnly = false;
+				}
+				else
+				{
+					Global.MovieSession.Movie.StartNewPlayback();
+				}
 			}
 
 			SetMainformMovieInfo();

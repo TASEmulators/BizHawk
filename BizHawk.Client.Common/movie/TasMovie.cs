@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsCountingRerecords { get; set; }
 
-		public bool Changes { get; private set; }
+		public bool Changes { get; set; }
 
 		public TimeSpan Time
 		{
@@ -188,6 +188,9 @@ namespace BizHawk.Client.Common
 
 		public void Stop(bool saveChanges = true)
 		{
+			// adelikat: I think Tastudio should be in charge of saving, and so we should not attempt to manage any logic like that here
+			// EmuHawk client UI assumes someone has already picked a filename ahead of time and that it is in charge of movies
+			/*
 			if (saveChanges)
 			{
 				if (_mode == Moviemode.Record || Changes)
@@ -195,7 +198,7 @@ namespace BizHawk.Client.Common
 					Save();
 				}
 			}
-
+			*/
 			_mode = Moviemode.Inactive;
 		}
 
@@ -272,8 +275,9 @@ namespace BizHawk.Client.Common
 		{
 			SwitchToRecord();
 
-			// TODO: MakeBackup logic - Tastudio logic shoudl be to always make backups before saving!
-			if (Global.Config.EnableBackupMovies && _records.Any() && !String.IsNullOrWhiteSpace(Filename))
+			// TODO: MakeBackup logic - Tastudio logic should be to always make backups before saving!
+
+			if (Changes && !String.IsNullOrWhiteSpace(Filename))
 			{
 				Save();
 			}

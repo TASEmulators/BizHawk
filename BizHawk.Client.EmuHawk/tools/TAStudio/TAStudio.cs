@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : Form, IToolForm
 	{
+		// TODO: UI flow that conveniently allows to start from savestate
+
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
 
@@ -39,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.MovieSession.Movie is TasMovie)
 					{
 						Global.MovieSession.Movie = new Movie();
+						GlobalWin.MainForm.StopMovie(saveChanges: false);
 					}
 				}
 				else
@@ -54,7 +57,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			// TODO: eventually we want to do this
+			if (_tas.Changes)
+			{
+				GlobalWin.Sound.StopSound();
+				var result = MessageBox.Show("Save Changes?", "Tastudio", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				GlobalWin.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					SaveTASMenuItem_Click(null, null);
+				}
+				else if (result == DialogResult.No)
+				{
+					_tas.Changes = false;
+					return true;
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return false;
+				}
+
+			}
+
 			return true;
 		}
 
@@ -149,26 +172,17 @@ namespace BizHawk.Client.EmuHawk
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
 			_tas.OnChanged += OnMovieChanged;
-
-			try
-			{
-				GlobalWin.MainForm.StartNewMovie(_tas, true, true);
-				
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message);
-			}
+			GlobalWin.MainForm.StartNewMovie(_tas, true, true);
 		}
 
 		private void StartNewSession()
 		{
 			if (AskSave())
 			{
-				// TODO: power-cycle
-				// TODO: UI flow that conveniently allows to start from savestate
 				GlobalWin.OSD.AddMessage("new TAStudio session started");
 				_tas.StartNewRecording();
+				GlobalWin.MainForm.StartNewMovie(_tas, true, true);
+				TASView.ItemCount = _tas.InputLogLength;
 			}
 		}
 
@@ -284,7 +298,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTASMenuItem_Click(object sender, EventArgs e)
 		{
-			_tas.Save();
+			if (String.IsNullOrEmpty(_tas.Filename))
+			{
+				SaveAsTASMenuItem_Click(sender, e);
+			}
+			else
+			{
+				_tas.Save();
+			}
 			// TODO: inform the user it happened somehow
 		}
 
