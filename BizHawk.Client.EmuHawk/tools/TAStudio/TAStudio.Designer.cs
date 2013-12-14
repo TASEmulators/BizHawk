@@ -615,10 +615,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// RestoreDefaultSettingsMenuItem
 			// 
-			this.RestoreDefaultSettingsMenuItem.Enabled = false;
 			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
 			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
+			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
