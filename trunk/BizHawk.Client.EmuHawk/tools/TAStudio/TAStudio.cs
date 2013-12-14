@@ -292,6 +292,7 @@ namespace BizHawk.Client.EmuHawk
 				_tas.Filename = file.FullName;
 				_tas.Load();
 				Global.Config.RecentTas.Add(_tas.Filename);
+				TASView.ItemCount = _tas.InputLogLength;
 				// TOOD: message to the user
 			}
 		}

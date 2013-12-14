@@ -310,7 +310,20 @@ namespace BizHawk.Client.Common
 					delegate(Stream s)
 					{
 						StreamReader sr = new StreamReader(s);
-						// TODO: deserialize input log here
+						string line = String.Empty;
+						while (true)
+						{
+							line = sr.ReadLine();
+							if (line == null)
+							{
+								break;
+							}
+							else if (line.StartsWith("|"))
+							{
+								var parsedButtons = _mg.ParseMnemonicString(line);
+								_records.Add(new MovieRecord(parsedButtons, captureState: false));
+							}
+						}
 					});
 
 				if (Header.StartsFromSavestate)

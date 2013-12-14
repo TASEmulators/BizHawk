@@ -53,6 +53,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public Dictionary<string, bool> ParseMnemonicString(string mnemonic)
+		{
+			// TODo: clean me up
+			var buttons = new Dictionary<string, bool>(); 
+			var collections = AllCollections.SelectMany(mc => mc).ToList();
+			var availMnemonics = AvailableMnemonics;
+			List<char> mnemonicList = mnemonic.Replace("|", "").ToCharArray().ToList();
+
+			for (int i = 0; i < collections.Count; i++)
+			{
+				if (availMnemonics.ContainsKey(collections[i].Key))
+				{
+					buttons.Add(collections[i].Key, mnemonicList[i] != '.');
+				}
+			}
+
+			return buttons;
+		}
+
 		public string GenerateMnemonicString(Dictionary<string, bool> buttons)
 		{
 			var collections = MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
@@ -127,6 +146,14 @@ namespace BizHawk.Client.Common
 			get
 			{
 				return MnemonicLookup[Global.Emulator.SystemId].Where(x => ActivePlayers.Contains(x.Name));
+			}
+		}
+
+		private IEnumerable<MnemonicCollection> AllCollections
+		{
+			get
+			{
+				return MnemonicLookup[Global.Emulator.SystemId];
 			}
 		}
 	}
