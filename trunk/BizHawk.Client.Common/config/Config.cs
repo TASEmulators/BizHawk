@@ -476,7 +476,7 @@ namespace BizHawk.Client.Common
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
 		public bool AutoloadTAStudio = false;
-		public bool TAStudioTopMost = false;
+		public bool TAStudioTopMost = true;
 		public int TASWndx = -1;
 		public int TASWndy = -1;
 		public int TASWidth = -1;

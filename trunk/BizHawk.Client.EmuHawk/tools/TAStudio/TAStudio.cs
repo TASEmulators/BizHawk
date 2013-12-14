@@ -366,6 +366,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.TAStudioTopMost ^= true;
 		}
 
+		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(_defaultWidth, _defaultHeight);
+
+			Global.Config.TAStudioSaveWindowPosition = true;
+			Global.Config.TAStudioTopMost = true;
+		}
+
 		#endregion
 
 		#region TASView Events
