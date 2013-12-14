@@ -388,8 +388,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ppubus_read(ppur.get_atread(), true); //at or nt?
 						if (realSprite) runppu(kFetchTime);
 
-						//TODO - fake sprites should not come through ppubus_read but rather peek it
-						//(at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
+						// TODO - fake sprites should not come through ppubus_read but rather peek it
+						// (at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
 
 						if (junksprite)
 						{
@@ -410,35 +410,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							oam->patterns[1] = ppubus_read(addr, true);
 							if (realSprite) runppu(kFetchTime);
 
-							//hflip
+							// hflip
 							if ((oam->oam[2] & 0x40) == 0)
 							{
-								oam->patterns[0] = Bitrev.byte_8[oam->patterns[0]];
-								oam->patterns[1] = Bitrev.byte_8[oam->patterns[1]];
+								oam->patterns[0] = BitReverse.Byte8[oam->patterns[0]];
+								oam->patterns[1] = BitReverse.Byte8[oam->patterns[1]];
 							}
 						}
-					} //sprite pattern fetch loop
+					} // sprite pattern fetch loop
 
 					ppuphase = PPUPHASE.BG;
 
-					//fetch BG: two tiles for next line
+					// fetch BG: two tiles for next line
 					for (int xt = 0; xt < 2; xt++)
 						Read_bgdata(ref bgdata[xt]);
 
-					//this sequence is tuned to pass 10-even_odd_timing.nes
+					// this sequence is tuned to pass 10-even_odd_timing.nes
 					runppu(kFetchTime);
 					bool evenOddDestiny = reg_2001.show_bg;
 					runppu(kFetchTime);
 
-					//After memory access 170, the PPU simply rests for 4 cycles (or the
-					//equivelant of half a memory access cycle) before repeating the whole
-					//pixel/scanline rendering process. If the scanline being rendered is the very
-					//first one on every second frame, then this delay simply doesn't exist.
+					// After memory access 170, the PPU simply rests for 4 cycles (or the
+					// equivelant of half a memory access cycle) before repeating the whole
+					// pixel/scanline rendering process. If the scanline being rendered is the very
+					// first one on every second frame, then this delay simply doesn't exist.
 					if (sl == 0 && idleSynch && evenOddDestiny && chopdot)
 					{ }
 					else
 						runppu(1);
-				} //scanline loop
+				} // scanline loop
 
 				ppur.status.sl = 241;
 

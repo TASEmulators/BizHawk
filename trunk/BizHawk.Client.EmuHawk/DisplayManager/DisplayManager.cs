@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		public unsafe void Clear()
 		{
 			FromBitmap(false);
-			Util.memset(PixelPtr, 0, Stride * Height);
+			Util.Memset(PixelPtr, 0, Stride * Height);
 		}
 
 		public Bitmap PeekBitmap()

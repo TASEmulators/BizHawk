@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public bool CheckID()
 			{
 				fixed (iNES_HEADER* self = &this)
-					return 0 == Util.memcmp(self, "NES\x1A", 4);
+					return 0 == Util.Memcmp(self, "NES\x1A", 4);
 			}
 
 			//some cleanup code recommended by fceux
@@ -41,27 +41,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				fixed (iNES_HEADER* self = &this)
 				{
-					if (0 == Util.memcmp((byte*)(self) + 0x7, "DiskDude", 8))
+					if (0 == Util.Memcmp((byte*)(self) + 0x7, "DiskDude", 8))
 					{
-						Util.memset((byte*)(self) + 0x7, 0, 0x9);
+						Util.Memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((byte*)(self) + 0x7, "demiforce", 9))
+					if (0 == Util.Memcmp((byte*)(self) + 0x7, "demiforce", 9))
 					{
-						Util.memset((byte*)(self) + 0x7, 0, 0x9);
+						Util.Memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((byte*)(self) + 0x8, "blargg", 6)) //found a test rom with this in there, mucking up the wram size
+					if (0 == Util.Memcmp((byte*)(self) + 0x8, "blargg", 6)) //found a test rom with this in there, mucking up the wram size
 					{
-						Util.memset((byte*)(self) + 0x8, 0, 6);
+						Util.Memset((byte*)(self) + 0x8, 0, 6);
 					}
 
-					if (0 == Util.memcmp((byte*)(self) + 0xA, "Ni03", 4))
+					if (0 == Util.Memcmp((byte*)(self) + 0xA, "Ni03", 4))
 					{
-						if (0 == Util.memcmp((byte*)(self) + 0x7, "Dis", 3))
-							Util.memset((byte*)(self) + 0x7, 0, 0x9);
+						if (0 == Util.Memcmp((byte*)(self) + 0x7, "Dis", 3))
+							Util.Memset((byte*)(self) + 0x7, 0, 0x9);
 						else
-							Util.memset((byte*)(self) + 0xA, 0, 0x6);
+							Util.Memset((byte*)(self) + 0xA, 0, 0x6);
 					}
 				}
 			}
