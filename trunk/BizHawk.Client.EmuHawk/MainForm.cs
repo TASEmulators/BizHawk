@@ -3561,7 +3561,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			Global.MovieSession.Movie.Stop();
+
+			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
+			if (!(Global.MovieSession.Movie is TasMovie))
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+			
+			
 			RebootStatusBarIcon.Visible = false;
 		}
 

@@ -135,12 +135,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			EngageTasStudio();
-
 			LoadConfigSettings();
-
-			_tas.ActivePlayers = new List<string> { "Player 1", "Player 2" };
+			_tas.ActivePlayers = new List<string> { "Player 1" };
 			SetUpColumns();
 		}
 
@@ -148,9 +145,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			Global.MovieSession.Movie = new TasMovie();
+			
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
 			_tas.OnChanged += OnMovieChanged;
+
+			try
+			{
+				GlobalWin.MainForm.StartNewMovie(_tas, true, true);
+				
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
 		}
 
 		private void StartNewSession()
@@ -162,12 +170,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("new TAStudio session started");
 				_tas.StartNewRecording();
 			}
-		}
-
-		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
-		{
-			//TODO: move logic needs to go here
-			TASView.ItemCount = _tas.InputLogLength;
 		}
 
 		private void SetUpColumns()
@@ -346,6 +348,12 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region TASView Events
+
+		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
+		{
+			//TODO: move logic needs to go here
+			TASView.ItemCount = _tas.InputLogLength;
+		}
 
 		private void TASView_MouseDown(object sender, MouseEventArgs e)
 		{

@@ -12,10 +12,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(IMovie movie, bool record)
+		public void StartNewMovie(IMovie movie, bool record, bool fromTastudio = false) //TasStudio flag is a hack for now
 		{
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive)
+			if (!fromTastudio && Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.Save();
 			}
@@ -37,7 +37,11 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
-			Global.Config.RecentMovies.Add(movie.Filename);
+			if (!fromTastudio)
+			{
+				Global.Config.RecentMovies.Add(movie.Filename);
+			}
+
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
@@ -55,7 +59,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetMainformMovieInfo();
-			GlobalWin.Tools.Restart<TAStudio>();
+
+			if (!fromTastudio)
+			{
+				GlobalWin.Tools.Restart<TAStudio>();
+			}
+
 			GlobalWin.Tools.Restart<VirtualPadForm>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
@@ -133,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//On movie load, these need to be set based on the contents of the movie file
-		private void SetSyncDependentSettings()
+		public void SetSyncDependentSettings()
 		{
 			switch (Global.Emulator.SystemId)
 			{
