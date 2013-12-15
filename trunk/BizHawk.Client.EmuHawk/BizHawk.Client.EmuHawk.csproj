@@ -499,6 +499,9 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
+    <Compile Include="tools\Lua\LuaCheckbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -507,6 +510,9 @@
     </Compile>
     <Compile Include="tools\Lua\LuaConsole.Designer.cs">
       <DependentUpon>LuaConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaDropDown.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Lua\LuaFunctionsForm.cs">
       <SubType>Form</SubType>
@@ -622,6 +628,7 @@
     <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TAStudio\Marker.cs" />
     <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
