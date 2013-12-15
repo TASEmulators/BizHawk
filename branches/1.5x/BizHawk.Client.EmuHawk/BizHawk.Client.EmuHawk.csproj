@@ -497,11 +497,17 @@
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\Lua\LuaCheckbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Lua\LuaConsole.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\Lua\LuaConsole.Designer.cs">
       <DependentUpon>LuaConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaDropDown.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Lua\LuaFunctionsForm.cs">
       <SubType>Form</SubType>
