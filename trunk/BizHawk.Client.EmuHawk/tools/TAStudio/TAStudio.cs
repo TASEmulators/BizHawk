@@ -282,6 +282,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void GoToFrame(int frame)
+		{
+			//If past greenzone, emulate and capture states
+			//if past greenzone AND movie, record input and capture states
+			//If in greenzone, loadstate
+			//If near a greenzone item, load and emulate
+				//Do capturing and recording as needed
+
+			if (_tas[frame - 1].HasState) // Go back 1 frame and emulate
+			{
+				_tas.SwitchToPlay();
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
+				Global.Emulator.FrameAdvance(true, true);
+				GlobalWin.DisplayManager.NeedsToPaint = true;
+				TASView.Refresh();
+			}
+			else
+			{
+				//Find the earliest frame before this state
+			}
+		}
+
 		#region Events
 
 		#region File Menu
@@ -449,7 +471,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (StartMarkerDrag)
 			{
-				// TODO e.NewCell.Row
+				if (e.NewCell.Row.HasValue)
+				{
+					GoToFrame(e.NewCell.Row.Value + 1);
+				}
 			}
 			else if (StartFrameDrag)
 			{
