@@ -93,6 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -108,7 +109,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerDescriptionBox = new System.Windows.Forms.TextBox();
 			this.TopMarkerBox = new System.Windows.Forms.TextBox();
 			this.TopMarkerLabel = new System.Windows.Forms.Label();
-			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -596,6 +596,13 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoloadMenuItem.Text = "Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
+			// AutoloadProjectMenuItem
+			// 
+			this.AutoloadProjectMenuItem.Name = "AutoloadProjectMenuItem";
+			this.AutoloadProjectMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoloadProjectMenuItem.Text = "Autload &Project";
+			this.AutoloadProjectMenuItem.Click += new System.EventHandler(this.AutoloadProjectMenuItem_Click);
+			// 
 			// SaveWindowPositionMenuItem
 			// 
 			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
@@ -672,6 +679,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
 			this.TASView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
+			this.TASView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
 			// 
 			// Frame
 			// 
@@ -719,13 +727,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TopMarkerLabel.Size = new System.Drawing.Size(100, 16);
 			this.TopMarkerLabel.TabIndex = 4;
 			this.TopMarkerLabel.Text = "Marker 99999";
-			// 
-			// AutloadProjectMenuItem
-			// 
-			this.AutoloadProjectMenuItem.Name = "AutloadProjectMenuItem";
-			this.AutoloadProjectMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AutoloadProjectMenuItem.Text = "Autload &Project";
-			this.AutoloadProjectMenuItem.Click += new System.EventHandler(this.AutoloadProjectMenuItem_Click);
 			// 
 			// TAStudio
 			// 

@@ -20,9 +20,13 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private TasMovie _tas;
 
+		private MarkerList _markers = new MarkerList();
+
 		// Input Painting
 		private string StartDrawColumn = String.Empty;
 		private bool StartOn = false;
+		private bool StartMarkerDrag = false;
+		private bool StartFrameDrag = false;
 
 		#region API
 
@@ -109,7 +113,11 @@ namespace BizHawk.Client.EmuHawk
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
-			if (!record.HasState)
+			if (_markers.CurrentFrame == index + 1)
+			{
+				color = Color.LightBlue;
+			}
+			else if (!record.HasState)
 			{
 				color = BackColor;
 			}
@@ -128,11 +136,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					text = String.Empty;
+					if (_markers.CurrentFrame == index + 1)
+					{
+						text = ">";
+					}
+					else
+					{
+						text = String.Empty;
+					}
 				}
 				else if (columnName == FrameColumnName)
 				{
-					text = index.ToString().PadLeft(5, '0');
+					text = (index + 1).ToString().PadLeft(5, '0');
 				}
 				else
 				{
@@ -404,17 +419,42 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TASView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TASView.PointedCell.Column))
 			{
-				_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
-				TASView.Refresh();
+				if (TASView.PointedCell.Column == MarkerColumnName)
+				{
+					StartMarkerDrag = true;
+				}
+				else if (TASView.PointedCell.Column == FrameColumnName)
+				{
+					// TODO
+				}
+				else
+				{
+					_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+					TASView.Refresh();
 
-				StartDrawColumn = TASView.PointedCell.Column;
-				StartOn = _tas.IsPressed(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+					StartDrawColumn = TASView.PointedCell.Column;
+					StartOn = _tas.IsPressed(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+				}
 			}
+		}
+
+		private void TASView_MouseUp(object sender, MouseEventArgs e)
+		{
+			StartMarkerDrag = false;
+			StartFrameDrag = false;
+			StartDrawColumn = String.Empty;
 		}
 
 		private void TASView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
-			if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
+			if (StartMarkerDrag)
+			{
+				// TODO e.NewCell.Row
+			}
+			else if (StartFrameDrag)
+			{
+			}
+			else if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
 			{
 				_tas.SetButton(e.NewCell.Row.Value, StartDrawColumn, StartOn); //Notice it uses new row, old column, you can only paint across a single column
 				TASView.Refresh();
