@@ -82,6 +82,10 @@ namespace BizHawk.Client.EmuHawk
 						hval++;
 						Text = hval.ToString("X");
 					}
+					else
+					{
+						Text = "0";
+					}
 					break;
 				case BoxType.Signed:
 					var sval = int.Parse(text);
@@ -90,6 +94,10 @@ namespace BizHawk.Client.EmuHawk
 						sval++;
 						Text = sval.ToString();
 					}
+					else
+					{
+						Text = "0";
+					}
 					break;
 				case BoxType.Unsigned:
 					var uval = uint.Parse(text);
@@ -97,6 +105,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						uval++;
 						Text = uval.ToString();
+					}
+					else
+					{
+						Text = "0";
 					}
 					break;
 			}
@@ -109,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case BoxType.Hex:
 					var hval = uint.Parse(text, NumberStyles.HexNumber);
-					if (hval < uint.MaxValue)
+					if (hval > 0)
 					{
 						hval--;
 						Text = hval.ToString("X");
@@ -117,15 +129,12 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case BoxType.Signed:
 					var sval = int.Parse(text);
-					if (sval < int.MaxValue)
-					{
-						sval--;
-						Text = sval.ToString();
-					}
+					sval--;
+					Text = sval.ToString();
 					break;
 				case BoxType.Unsigned:
 					var uval = uint.Parse(text);
-					if (uval < uint.MaxValue)
+					if (uval > 0)
 					{
 						uval--;
 						Text = uval.ToString();
