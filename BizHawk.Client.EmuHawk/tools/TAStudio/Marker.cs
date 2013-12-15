@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return Global.Emulator.Frame; }
 		}
 
-		public virtual string Message
+		public override string Message
 		{
 			get { return String.Empty; }
 			set { return; }
