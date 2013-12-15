@@ -296,6 +296,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
 				Global.Emulator.FrameAdvance(true, true);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
+				TASView.ensureVisible(frame);
 				TASView.Refresh();
 			}
 			else
@@ -447,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TASView.PointedCell.Column == FrameColumnName)
 				{
-					// TODO
+					StartFrameDrag = true;
 				}
 				else
 				{
@@ -473,11 +474,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.NewCell.Row.HasValue)
 				{
-					GoToFrame(e.NewCell.Row.Value + 1);
+					GoToFrame(e.NewCell.Row.Value);
 				}
 			}
 			else if (StartFrameDrag)
 			{
+				if (e.NewCell.Row.HasValue)
+				{
+					TASView.SelectItem(e.NewCell.Row.Value, true);
+				}
 			}
 			else if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
 			{
