@@ -3219,8 +3219,11 @@ namespace BizHawk.Client.EmuHawk
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData);
 								break;
 							case "GEN":
-								nextEmulator = new Genesis(nextComm, game, rom.RomData);
-								break;
+								{
+									//nextEmulator = new Genesis(nextComm, game, rom.RomData);
+									nextEmulator = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(nextComm, rom.RomData, "GEN");
+									break;
+								}
 							case "TI83":
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								if (Global.Config.TI83autoloadKeyPad)
