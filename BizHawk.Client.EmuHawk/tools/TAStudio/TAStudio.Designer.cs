@@ -107,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.MarkerLabel = new System.Windows.Forms.Label();
 			this.MarkerDescriptionBox = new System.Windows.Forms.TextBox();
-			this.TopMarkerBox = new System.Windows.Forms.TextBox();
 			this.TopMarkerLabel = new System.Windows.Forms.Label();
 			this.TASMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -710,13 +709,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerDescriptionBox.Size = new System.Drawing.Size(185, 20);
 			this.MarkerDescriptionBox.TabIndex = 3;
 			// 
-			// TopMarkerBox
-			// 
-			this.TopMarkerBox.Location = new System.Drawing.Point(115, 23);
-			this.TopMarkerBox.Name = "TopMarkerBox";
-			this.TopMarkerBox.Size = new System.Drawing.Size(188, 20);
-			this.TopMarkerBox.TabIndex = 5;
-			// 
 			// TopMarkerLabel
 			// 
 			this.TopMarkerLabel.AutoSize = true;
@@ -733,7 +725,6 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 519);
-			this.Controls.Add(this.TopMarkerBox);
 			this.Controls.Add(this.TopMarkerLabel);
 			this.Controls.Add(this.MarkerDescriptionBox);
 			this.Controls.Add(this.MarkerLabel);
@@ -827,7 +818,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 		private System.Windows.Forms.Label MarkerLabel;
 		private System.Windows.Forms.TextBox MarkerDescriptionBox;
-		private System.Windows.Forms.TextBox TopMarkerBox;
 		private System.Windows.Forms.Label TopMarkerLabel;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
 	}

@@ -629,6 +629,12 @@
       <DependentUpon>LuaBox.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\Marker.cs" />
+    <Compile Include="tools\TAStudio\MarkerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
+      <DependentUpon>MarkerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -988,6 +994,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\LuaBox.resx">
       <DependentUpon>LuaBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
+      <DependentUpon>MarkerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControlsBox.resx">
       <DependentUpon>MarkerControlsBox.cs</DependentUpon>
