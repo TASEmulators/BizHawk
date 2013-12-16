@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "TI83", "TI-83" },
 				{ "INTV", "Intellivision" },
 				{ "C64", "C64" },
+				{ "GEN", "Genesis" },
 			};
 
 		public string TargetSystem = null;
@@ -126,7 +127,10 @@ namespace BizHawk.Client.EmuHawk
 				//build the groups in the listview as we go:
 				if (!groups.ContainsKey(fr.systemId))
 				{
-					lvFirmwares.Groups.Add(fr.systemId, SystemGroupNames[fr.systemId]);
+					string name;
+					if (!SystemGroupNames.TryGetValue(fr.systemId, out name))
+						name = "FIX ME (FirmwaresConfig.cs)";
+					lvFirmwares.Groups.Add(fr.systemId, name);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
 					groups[fr.systemId] = lvg;
 				}
