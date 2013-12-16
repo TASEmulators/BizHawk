@@ -3221,7 +3221,7 @@ namespace BizHawk.Client.EmuHawk
 							case "GEN":
 								{
 									//nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(nextComm, rom.RomData, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									nextEmulator = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(nextComm, rom.RomData, null, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
 									break;
 								}
 							case "TI83":

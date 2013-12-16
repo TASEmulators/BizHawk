@@ -192,6 +192,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
+		public const int CD_MAX_TRACKS = 100;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void cd_read_cb(int lba, IntPtr dest);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct CDTrack
+		{
+			public int start;
+			public int end;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class CDData
+		{
+			public int end;
+			public int last;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
+			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
+			public cd_read_cb readcallback;
+		}
 
 	}
 }

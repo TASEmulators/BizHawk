@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		static GPGX AttachedCore = null;
 
+		DiscSystem.Disc CD;
 		byte[] romfile;
 
 		bool disposed = false;
@@ -35,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Wayplay
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, string romextension, bool sixbutton, ControlType controls)
+		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, bool sixbutton, ControlType controls)
 		{
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
@@ -130,7 +131,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			if (filename == "PRIMARY_ROM")
+			{
+				if (romfile == null)
+				{
+					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_ROM because none was provided.");
+					return 0;
+				}
 				srcdata = romfile;
+			}
+			else if (filename == "PRIMARY_CD")
+			{
+				if (CD == null)
+				{
+					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_CD because none was provided.");
+					return 0;
+				}
+				srcdata = GetCDData();
+			}
 			else
 			{
 				// use fromtend firmware interface
@@ -176,11 +193,61 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 			else
 			{
-				Console.WriteLine("Couldn't satisfy firmware request {0} for unknown reasons", filename);
-				return 0;
+				throw new Exception();
+				//Console.WriteLine("Couldn't satisfy firmware request {0} for unknown reasons", filename);
+				//return 0;
 			}
 
 		}
+
+		void CDRead(int lba, IntPtr dest)
+		{
+			byte[] data = new byte[2048];
+			CD.ReadLBA_2048(lba, data, 0);
+			Marshal.Copy(data, 0, dest, 2048);
+		}
+
+		LibGPGX.cd_read_cb cd_callback_handle;
+
+		unsafe byte[] GetCDData()
+		{
+			LibGPGX.CDData ret = new LibGPGX.CDData();
+			int size = Marshal.SizeOf(ret);
+
+			ret.readcallback = cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
+
+			var ses = CD.TOC.Sessions[0];
+			int ntrack = ses.Tracks.Count;
+	
+			// bet you a dollar this is all wrong
+			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
+			{
+				if (i < ntrack)
+				{
+					ret.tracks[i].start = ses.Tracks[i].Indexes[1].aba - 150;
+					ret.tracks[i].end = ses.Tracks[i].length_aba + ret.tracks[i].start;
+					if (i == ntrack - 1)
+					{
+						ret.end = ret.tracks[i].end;
+						ret.last = ntrack;
+					}
+				}
+				else
+				{
+					ret.tracks[i].start = 0;
+					ret.tracks[i].end = 0;
+				}
+			}
+
+			byte[] retdata = new byte[size];
+
+			fixed (byte* p = &retdata[0])
+			{
+				Marshal.StructureToPtr(ret, (IntPtr)p, false);
+			}
+			return retdata;
+		}
+
 
 		#region controller
 
