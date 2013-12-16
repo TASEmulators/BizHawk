@@ -147,6 +147,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					return 0;
 				}
 				srcdata = GetCDData();
+				if (srcdata.Length != maxsize)
+				{
+					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_CD because of struct size.");
+					return 0;
+				}
 			}
 			else
 			{
