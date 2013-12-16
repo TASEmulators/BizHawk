@@ -541,7 +541,7 @@ int load_rom(char *filename)
   }
 
   /* auto-detect CD image files */
-  size = cdd_load();
+  size = cdd_load((char *)(cart.rom));
   if (size < 0)
   {
     /* error opening file */
@@ -730,7 +730,7 @@ int load_rom(char *filename)
 
         /* automatically load associated .iso image */
         strncpy(&filename[strlen(filename) - 4], ".iso", 4);
-        cdd_load(); // should this be checked for failure?
+        cdd_load((char *)cdc.ram); // should this be checked for failure?
       }
       else
       {

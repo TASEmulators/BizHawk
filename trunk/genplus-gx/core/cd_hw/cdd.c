@@ -134,14 +134,33 @@ typedef struct
 	void (*cdd_readcallback)(int lba, void *dest);
 } frontendcd_t;
 
-int cdd_load(void)
+int cdd_load(char *header)
 {
 	frontendcd_t fecd;
+	char data[2048];
+	int startoffs;
+
+
 	int bytes = sizeof(frontendcd_t);
 	if (load_archive("PRIMARY_CD", (unsigned char *)&fecd, bytes, NULL) != bytes)
 		return 0;
+
+	// look for valid header
+	fecd.cdd_readcallback(0, data);
+	if (memcmp("SEGADISCSYSTEM", data, 14) == 0)
+		startoffs = 0;
+	else if (memcmp("SEGADISCSYSTEM", data + 16, 14) == 0)
+		startoffs = 16;
+	else
+		return 0;
+	// copy security block
+	memcpy(header, data + startoffs, 0x210);
+
+	// copy disk information
 	cdd_readcallback = fecd.cdd_readcallback;
 	memcpy(&cdd.toc, &fecd.toc, sizeof(toc_t));
+	
+	cdd.loaded = 1;
 	return 1;
 }
 
