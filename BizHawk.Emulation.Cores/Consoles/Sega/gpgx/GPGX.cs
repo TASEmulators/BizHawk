@@ -21,8 +21,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		LibGPGX.load_archive_cb LoadCallback = null;
 
-		public GPGX(CoreComm NextComm, byte[] romfile, string romextension)
+		LibGPGX.InputData input = new LibGPGX.InputData();
+
+		// still working out what all the possibilities are here
+		public enum ControlType
 		{
+			None,
+			OnePlayer,
+			Normal,
+			Xea1p,
+			Activator,
+			Teamplayer,
+			Wayplay
+		};
+
+		public GPGX(CoreComm NextComm, byte[] romfile, string romextension, bool sixbutton, ControlType controls)
+		{
+			// three or six button?
+			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
+
 			try
 			{
 				CoreComm = NextComm;
@@ -39,8 +56,54 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				this.romfile = romfile;
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback))
+				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
+				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
+
+				switch (controls)
+				{
+					case ControlType.None:
+					default:
+						break;
+					case ControlType.Activator:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_ACTIVATOR;
+						break;
+					case ControlType.Normal:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						break;
+					case ControlType.OnePlayer:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_MD_GAMEPAD;
+						break;
+					case ControlType.Xea1p:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_XE_A1P;
+						break;
+					case ControlType.Teamplayer:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_TEAMPLAYER;
+						break;
+					case ControlType.Wayplay:
+						system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
+						system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_WAYPLAY;
+						break;
+				}
+
+
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, sixbutton, system_a, system_b))
 					throw new Exception("gpgx_init() failed");
+
+				{
+					int fpsnum = 60;
+					int fpsden = 1;
+					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
+					CoreComm.VsyncNum = fpsnum;
+					CoreComm.VsyncDen = fpsden;
+				}
+
+				savebuff = new byte[LibGPGX.gpgx_state_size()];
+				savebuff2 = new byte[savebuff.Length + 13];
+
+				SetControllerDefinition();
 			}
 			catch
 			{
@@ -97,18 +160,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region controller
 
-		public ControllerDefinition ControllerDefinition { get { return NullEmulator.NullController; } }
+		GPGXControlConverter ControlConverter;
+
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
+
+		void SetControllerDefinition()
+		{
+			if (!LibGPGX.gpgx_get_control(input))
+				throw new Exception("gpgx_get_control() failed");
+
+			ControlConverter = new GPGXControlConverter(input);
+
+			ControllerDefinition = ControlConverter.ControllerDef;
+
+		}
 
 		#endregion
 
+		// TODO: use render and rendersound
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			// do we really have to get each time?  nothing has changed
+			if (!LibGPGX.gpgx_get_control(input))
+				throw new Exception("gpgx_get_control() failed!");
+
+			ControlConverter.Convert(Controller, input);
+
+			if (!LibGPGX.gpgx_put_control(input))
+				throw new Exception("gpgx_put_control() failed!");
+
 			IsLagFrame = true;
 			Frame++;
 			LibGPGX.gpgx_advance();
 			update_video();
 			update_audio();
+
+			IsLagFrame = false; // TODO
+			if (IsLagFrame)
+				LagCount++;
 		}
 
 		public int Frame { get; private set; }
@@ -161,6 +251,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region savestates
 
+		private byte[] savebuff;
+		private byte[] savebuff2;
+
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 		}
@@ -171,15 +264,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
+			if (!LibGPGX.gpgx_state_save(savebuff, savebuff.Length))
+				throw new Exception("gpgx_state_save() returned false");
+
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
+			int newlen = reader.ReadInt32();
+			if (newlen != savebuff.Length)
+				throw new Exception("Unexpected state size");
+			reader.Read(savebuff, 0, savebuff.Length);
+			if (!LibGPGX.gpgx_state_load(savebuff, savebuff.Length))
+				throw new Exception("gpgx_state_load() returned false");
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			var ms = new System.IO.MemoryStream(savebuff2, true);
+			var bw = new System.IO.BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return savebuff2;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }

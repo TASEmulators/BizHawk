@@ -364,6 +364,10 @@ namespace BizHawk.Client.Common
 			{
 				return "|.|"; // TODO
 			}
+			else if (_controlType == "GPGX Genesis Controller")
+			{
+				return "|.|"; // TODO
+			}
 
 			var input = new StringBuilder("|");
 

@@ -409,6 +409,7 @@
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
