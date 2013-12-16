@@ -317,6 +317,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (AttachedCore != this)
 					throw new Exception();
 				AttachedCore = null;
+				disposed = true;
 			}
 		}
 
