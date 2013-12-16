@@ -542,6 +542,11 @@ namespace BizHawk.Client.Common
 				// TODO
 				return;
 			}
+			else if (ControlType == "GPGX Genesis Controller")
+			{
+				// TODO
+				return;
+			}
 
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
