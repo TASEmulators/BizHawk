@@ -168,6 +168,70 @@ GPGX_EX void gpgx_advance(void)
 }
 
 
+static uint8_t brm_format[0x40] =
+{
+  0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x5f,0x00,0x00,0x00,0x00,0x40,
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  0x53,0x45,0x47,0x41,0x5f,0x43,0x44,0x5f,0x52,0x4f,0x4d,0x00,0x01,0x00,0x00,0x00,
+  0x52,0x41,0x4d,0x5f,0x43,0x41,0x52,0x54,0x52,0x49,0x44,0x47,0x45,0x5f,0x5f,0x5f
+};
+
+GPGX_EX void gpgx_clear_sram(void)
+{
+	// clear sram
+	if (sram.sram)
+		memset(sram.sram, 0, 0x10000);
+
+	// clear and format bram
+	memset(scd.bram, 0, 0x2000);
+	brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = 0x00;
+	brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (sizeof(scd.bram) / 64) - 3;
+	memcpy(scd.bram + 0x2000 - 0x40, brm_format, 0x40);
+
+	// clear and format ebram
+	memset(scd.cartridge.area, 0x00, scd.cartridge.mask + 1);
+    brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = (((scd.cartridge.mask + 1) / 64) - 3) >> 8;
+    brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (((scd.cartridge.mask + 1) / 64) - 3) & 0xff;
+	memcpy(scd.cartridge.area + scd.cartridge.mask + 1 - 0x40, brm_format, 0x40);
+}
+
+GPGX_EX void gpgx_get_sram(void **area, int *size, int type)
+{
+	if (type == 0)
+	{
+		// cart sram
+		if (sram.on)
+		{
+			if (area)
+			*area = sram.sram;
+			if (size)
+				*size = 0x10000;
+		}
+	}
+	else if (type == 1)
+	{
+		// bram
+		if (cdd.loaded)
+		{
+			if (area)
+				*area = scd.bram;
+			if (size)
+				*size = 0x2000;
+		}
+	}
+	else if (type == 2)
+	{
+		// external bram
+		if (scd.cartridge.id)
+		{
+			if (area)
+				*area = scd.cartridge.area;
+			if (size)
+				*size = scd.cartridge.mask + 1;
+		}
+	}
+}
+
 GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b)
 {
 	memset(&bitmap, 0, sizeof(bitmap));
@@ -240,6 +304,7 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	system_reset();
 
 	update_viewport();
+	gpgx_clear_sram();
 
 	return 1;
 }
