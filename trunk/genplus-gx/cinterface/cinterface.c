@@ -146,6 +146,7 @@ GPGX_EX int gpgx_put_control(t_input *src, int bytes)
 	if (bytes != sizeof(t_input))
 		return 0;
 	memcpy(&input, src, sizeof(t_input));
+	return 1;
 }
 
 GPGX_EX void gpgx_advance(void)
