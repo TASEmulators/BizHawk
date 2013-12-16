@@ -38,6 +38,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gpgx_put_control(IntPtr src, int bytes);
 
+		public const int MAX_SRAM_TYPES = 3;
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_get_sram(ref IntPtr area, ref int size, int type);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_clear_sram();
+
 		public static bool gpgx_get_control(InputData dest)
 		{
 			int bytes = Marshal.SizeOf(typeof(InputData));

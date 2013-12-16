@@ -8,6 +8,8 @@ using BizHawk.Emulation.Common;
 
 using System.Runtime.InteropServices;
 
+using System.IO;
+
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -308,30 +310,99 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region saveram
 
+		// this all feels very messy
+
+		struct SaveRamInfo
+		{
+			public int totalsize;
+			public IntPtr[] areas;
+			public int[] sizes;
+
+			public int arraysize { get { return totalsize + 4 * LibGPGX.MAX_SRAM_TYPES; } }
+		}
+
+		SaveRamInfo GetSaveRamInfo()
+		{
+			SaveRamInfo ret = new SaveRamInfo
+			{
+				areas = new IntPtr[LibGPGX.MAX_SRAM_TYPES],
+				sizes = new int[LibGPGX.MAX_SRAM_TYPES],
+			};
+			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
+			{
+				IntPtr area = IntPtr.Zero;
+				int size = 0;
+				LibGPGX.gpgx_get_sram(ref area, ref size, i);
+				ret.areas[i] = area;
+				ret.sizes[i] = size;
+				ret.totalsize += size;
+			}
+			return ret;
+		}
+
 		public byte[] ReadSaveRam()
 		{
-			throw new NotImplementedException();
+			var sri = GetSaveRamInfo();
+			if (sri.totalsize == 0)
+				return new byte[0];
+
+			byte[] ret = new byte[sri.arraysize];
+
+			MemoryStream ms = new MemoryStream(ret, true);
+			BinaryWriter bw = new BinaryWriter(ms);
+
+			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
+			{
+				bw.Write(sri.sizes[i]);
+				if (sri.areas[i] != IntPtr.Zero)
+				{
+					byte[] data = new byte[sri.sizes[i]];
+					Marshal.Copy(sri.areas[i], data, 0, sri.sizes[i]);
+					bw.Write(data);
+				}
+			}
+			bw.Flush();
+			ms.Close();
+			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			throw new NotImplementedException();
+			var sri = GetSaveRamInfo();
+			if (sri.arraysize!= data.Length)
+				throw new Exception("Unexpected SaveRam size");
+
+			MemoryStream ms = new MemoryStream(data, false);
+			BinaryReader br = new BinaryReader(ms);
+
+			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
+			{
+				int size = br.ReadInt32();
+				if (size != sri.sizes[i])
+					throw new Exception("Unexpected SaveRam size");
+				if (sri.areas[i] != IntPtr.Zero)
+				{
+					byte[] tmp = new byte[sri.sizes[i]];
+					br.Read(tmp, 0, sri.sizes[i]);
+					Marshal.Copy(tmp, 0, sri.areas[i], sri.sizes[i]);
+				}
+			}
 		}
 
 		public void ClearSaveRam()
 		{
-			throw new NotImplementedException();
+			LibGPGX.gpgx_clear_sram();
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				return false;
+				return GetSaveRamInfo().totalsize > 0;
 			}
 			set
 			{
-				throw new NotImplementedException();
+				throw new Exception();
 			}
 		}
 
