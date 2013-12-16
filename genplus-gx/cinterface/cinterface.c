@@ -13,15 +13,15 @@
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
 
-char GG_ROM[256] = "GG_ROM";
-char AR_ROM[256] = "AR_ROM";
-char SK_ROM[256] = "SK_ROM";
-char SK_UPMEM[256] = "SK_UPMEM";
-char GG_BIOS[256] = "GG_BIOS";
-char CD_BIOS_EU[256] = "CD_BIOS_EU";
+char GG_ROM[256] = "GG_ROM"; // game genie rom
+char AR_ROM[256] = "AR_ROM"; // actin replay rom
+char SK_ROM[256] = "SK_ROM"; // sanic and knuckles
+char SK_UPMEM[256] = "SK_UPMEM"; // sanic and knuckles
+char GG_BIOS[256] = "GG_BIOS"; // game gear bootrom
+char CD_BIOS_EU[256] = "CD_BIOS_EU"; // cd bioses
 char CD_BIOS_US[256] = "CD_BIOS_US";
 char CD_BIOS_JP[256] = "CD_BIOS_JP";
-char MS_BIOS_US[256] = "MS_BIOS_US";
+char MS_BIOS_US[256] = "MS_BIOS_US"; // master system bioses
 char MS_BIOS_EU[256] = "MS_BIOS_EU";
 char MS_BIOS_JP[256] = "MS_BIOS_JP";
 

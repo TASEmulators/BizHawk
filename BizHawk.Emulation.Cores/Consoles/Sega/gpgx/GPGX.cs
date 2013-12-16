@@ -133,7 +133,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				srcdata = romfile;
 			else
 			{
-				// use corecomm for firmware requests
+				// use fromtend firmware interface
+
+				string firmwareID = null;
+				switch (filename)
+				{
+					case "CD_BIOS_EU": firmwareID = "CD_BIOS_EU"; break;
+					case "CD_BIOS_JP": firmwareID = "CD_BIOS_JP"; break;
+					case "CD_BIOS_US": firmwareID = "CD_BIOS_US"; break;
+					default:
+						break;
+				}
+				if (firmwareID != null)
+				{
+					srcdata = CoreComm.CoreFileProvider.GetFirmware("GEN", firmwareID, false);
+					if (srcdata == null)
+					{
+						Console.WriteLine("Frontend couldn't satisfy firmware request GEN:{0}", firmwareID);
+						return 0;
+					}
+				}
+				else
+				{
+					Console.WriteLine("Unrecognized firmware request {0}", filename);
+					return 0;
+				}
 			}
 
 			if (srcdata != null)
@@ -171,9 +195,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new Exception("gpgx_get_control() failed");
 
 			ControlConverter = new GPGXControlConverter(input);
-
 			ControllerDefinition = ControlConverter.ControllerDef;
-
 		}
 
 		#endregion
