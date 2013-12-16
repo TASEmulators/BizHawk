@@ -238,7 +238,6 @@ void cdd_read_data(uint8 *dst)
 
 void cdd_read_audio(unsigned int samples)
 {
-/*
   // previous audio outputs //
   int16 l = cdd.audio[0];
   int16 r = cdd.audio[1];
@@ -247,7 +246,7 @@ void cdd_read_audio(unsigned int samples)
   samples = blip_clocks_needed(blip[0], samples);
 
   // audio track playing ? //
-  if (!scd.regs[0x36>>1].byte.h && cdd.toc.tracks[cdd.index].fd)
+  if (0) // (!scd.regs[0x36>>1].byte.h && cdd.toc.tracks[cdd.index].fd)
   {
     int i, mul, delta;
 
@@ -264,7 +263,7 @@ void cdd_read_audio(unsigned int samples)
 #else
       uint8 *ptr = cdc.ram;
 #endif
-      fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
+      //fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
 
       // process 16-bit (little-endian) stereo samples //
       for (i=0; i<samples; i++)
@@ -335,7 +334,6 @@ void cdd_read_audio(unsigned int samples)
   // end of Blip Buffer timeframe //
   blip_end_frame(blip[0], samples);
   blip_end_frame(blip[1], samples);
-*/
 }
 
 

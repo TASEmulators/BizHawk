@@ -34,7 +34,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Its not clear whether we can ever have enough info to ID a turboCD disc (we're using hashes)
 		/// </summary>
-		TurboCD
+		TurboCD,
+
+		/// <summary>
+		/// MegaDrive addon
+		/// </summary>
+		MegaCD
 	}
 
 	sealed public partial class Disc
@@ -47,6 +52,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//sega doesnt put anything identifying in the cdfs volume info. but its consistent about putting its own header here in sector 0
 			if (DetectSegaSaturn()) return DiscType.SegaSaturn;
+
+			// not fully tested yet
+			if (DetectMegaCD()) return DiscType.MegaCD;
 
 			//we dont know how to detect TurboCD.
 			//an emulator frontend will likely just guess TurboCD if the disc is UnknownFormat
@@ -73,11 +81,24 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		bool DetectSegaSaturn()
 		{
+			return StringAt("SEGA SEGASATURN", 0);
+		}
+
+		/// <summary>
+		/// probably wrong
+		/// </summary>
+		bool DetectMegaCD()
+		{
+			return StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
+		}
+
+		private bool StringAt(string s, int n)
+		{
 			byte[] data = new byte[2048];
 			ReadLBA_2048(0, data, 0);
-			byte[] cmp = System.Text.Encoding.ASCII.GetBytes("SEGA SEGASATURN");
-			byte[] cmp2 = new byte[15];
-			Buffer.BlockCopy(data, 0, cmp2, 0, 15);
+			byte[] cmp = System.Text.Encoding.ASCII.GetBytes(s);
+			byte[] cmp2 = new byte[cmp.Length];
+			Buffer.BlockCopy(data, n, cmp2, 0, cmp.Length);
 			return System.Linq.Enumerable.SequenceEqual(cmp, cmp2);
 		}
 	}

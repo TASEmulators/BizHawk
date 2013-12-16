@@ -3057,10 +3057,15 @@ namespace BizHawk.Client.EmuHawk
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
+								case DiscType.MegaCD:
+									game.System = "GEN";
+									break;
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core, so this prevents regressions
+								default:// PCECD was bizhawk's first CD core,
+										// and during that time, all CDs were blindly sent to it
+										// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
@@ -3068,6 +3073,13 @@ namespace BizHawk.Client.EmuHawk
 
 						switch (game.System)
 						{
+							case "GEN":
+								{
+									var genesis = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(
+										nextComm, null, disc, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									nextEmulator = genesis;
+								}
+								break;
 							case "SAT":
 								{
 									var saturn = new Yabause(nextComm, disc, Global.Config.SaturnUseGL);
@@ -3385,7 +3397,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 
-				if (Global.Emulator.CoreComm.RomStatusDetails == null)
+				if (Global.Emulator.CoreComm.RomStatusDetails == null && rom != null)
 				{
 					Global.Emulator.CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",

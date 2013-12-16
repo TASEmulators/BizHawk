@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
 				this.romfile = romfile;
+				this.CD = CD;
 
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;

@@ -89,6 +89,9 @@ namespace BizHawk.Emulation.Common
 			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", "us_scd1_9210.bin", "Sega CD US (9210)");
 			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", "us_scd2_9303.bin", "Sega CD US (9303)");
 
+			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
+			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
+			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
 			Option("GEN", "CD_BIOS_EU", eu_mcd1_9210);
 			Option("GEN", "CD_BIOS_EU", eu_mcd2_9303);
 			Option("GEN", "CD_BIOS_EU", eu_mcd2_9306);
@@ -133,14 +136,16 @@ namespace BizHawk.Emulation.Common
 		//defines a firmware file
 		static FirmwareFile File(string hash, string recommendedName, string descr)
 		{
+			string hashfix = hash.ToUpperInvariant();
+
 			var ff = new FirmwareFile
 				{
-					hash = hash,
+					hash = hashfix,
 					recommendedName = recommendedName,
 					descr = descr
 				};
 			FirmwareFiles.Add(ff);
-			FirmwareFilesByHash[hash] = ff;
+			FirmwareFilesByHash[hashfix] = ff;
 			return ff;
 		}
 
@@ -189,9 +194,17 @@ namespace BizHawk.Emulation.Common
 				(from fr in FirmwareRecords
 				 where fr.firmwareId == firmwareId
 				 && fr.systemId == sysId
-				 select fr).First();
+				 select fr);
 
-			return found;
+			try
+			{
+				return found.First();
+			}
+			catch (InvalidOperationException)
+			{
+				// list is empty;
+				return null;
+			}
 		}
 
 	} //static class FirmwareDatabase
