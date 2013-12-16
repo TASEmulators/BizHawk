@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.tools.TAStudio
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class MarkerControl
 	{
@@ -45,6 +45,8 @@
 			// 
 			// MarkerBox
 			// 
+			this.MarkerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerBox.Location = new System.Drawing.Point(103, 1);
 			this.MarkerBox.Name = "MarkerBox";
 			this.MarkerBox.Size = new System.Drawing.Size(188, 20);

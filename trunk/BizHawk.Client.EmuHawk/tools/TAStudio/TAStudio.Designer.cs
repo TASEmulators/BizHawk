@@ -105,9 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.MarkerLabel = new System.Windows.Forms.Label();
-			this.MarkerDescriptionBox = new System.Windows.Forms.TextBox();
-			this.TopMarkerLabel = new System.Windows.Forms.Label();
+			this.PreviousMarkerFromFrameControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.PreviousMarkerFromSelectionControl = new BizHawk.Client.EmuHawk.MarkerControl();
 			this.TASMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -181,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
+			this.RecentSubMenu.Image = ((System.Drawing.Image)(resources.GetObject("RecentSubMenu.Image")));
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(186, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -670,10 +669,10 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView.GridLines = true;
 			this.TASView.InputPaintingMode = false;
 			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(12, 43);
+			this.TASView.Location = new System.Drawing.Point(12, 49);
 			this.TASView.Name = "TASView";
 			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(291, 452);
+			this.TASView.Size = new System.Drawing.Size(291, 444);
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
@@ -689,45 +688,31 @@ namespace BizHawk.Client.EmuHawk
 			this.Log.Text = "Log";
 			this.Log.Width = 222;
 			// 
-			// MarkerLabel
+			// PreviousMarkerFromFrameControl
 			// 
-			this.MarkerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MarkerLabel.AutoSize = true;
-			this.MarkerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MarkerLabel.ForeColor = System.Drawing.Color.DeepSkyBlue;
-			this.MarkerLabel.Location = new System.Drawing.Point(12, 496);
-			this.MarkerLabel.Name = "MarkerLabel";
-			this.MarkerLabel.Size = new System.Drawing.Size(100, 16);
-			this.MarkerLabel.TabIndex = 2;
-			this.MarkerLabel.Text = "Marker 99999";
+			this.PreviousMarkerFromFrameControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PreviousMarkerFromFrameControl.Location = new System.Drawing.Point(12, 25);
+			this.PreviousMarkerFromFrameControl.Name = "PreviousMarkerFromFrameControl";
+			this.PreviousMarkerFromFrameControl.Size = new System.Drawing.Size(292, 24);
+			this.PreviousMarkerFromFrameControl.TabIndex = 2;
 			// 
-			// MarkerDescriptionBox
+			// PreviousMarkerFromSelectionControl
 			// 
-			this.MarkerDescriptionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MarkerDescriptionBox.Location = new System.Drawing.Point(118, 495);
-			this.MarkerDescriptionBox.Name = "MarkerDescriptionBox";
-			this.MarkerDescriptionBox.Size = new System.Drawing.Size(185, 20);
-			this.MarkerDescriptionBox.TabIndex = 3;
-			// 
-			// TopMarkerLabel
-			// 
-			this.TopMarkerLabel.AutoSize = true;
-			this.TopMarkerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TopMarkerLabel.ForeColor = System.Drawing.Color.DeepSkyBlue;
-			this.TopMarkerLabel.Location = new System.Drawing.Point(9, 24);
-			this.TopMarkerLabel.Name = "TopMarkerLabel";
-			this.TopMarkerLabel.Size = new System.Drawing.Size(100, 16);
-			this.TopMarkerLabel.TabIndex = 4;
-			this.TopMarkerLabel.Text = "Marker 99999";
+			this.PreviousMarkerFromSelectionControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PreviousMarkerFromSelectionControl.Location = new System.Drawing.Point(11, 493);
+			this.PreviousMarkerFromSelectionControl.Name = "PreviousMarkerFromSelectionControl";
+			this.PreviousMarkerFromSelectionControl.Size = new System.Drawing.Size(292, 24);
+			this.PreviousMarkerFromSelectionControl.TabIndex = 3;
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 519);
-			this.Controls.Add(this.TopMarkerLabel);
-			this.Controls.Add(this.MarkerDescriptionBox);
-			this.Controls.Add(this.MarkerLabel);
+			this.Controls.Add(this.PreviousMarkerFromSelectionControl);
+			this.Controls.Add(this.PreviousMarkerFromFrameControl);
 			this.Controls.Add(this.TASMenu);
 			this.Controls.Add(this.TASView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -816,9 +801,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
-		private System.Windows.Forms.Label MarkerLabel;
-		private System.Windows.Forms.TextBox MarkerDescriptionBox;
-		private System.Windows.Forms.Label TopMarkerLabel;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
+		private MarkerControl PreviousMarkerFromFrameControl;
+		private MarkerControl PreviousMarkerFromSelectionControl;
 	}
 }
