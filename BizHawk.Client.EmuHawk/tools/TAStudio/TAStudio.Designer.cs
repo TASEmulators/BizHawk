@@ -19,9 +19,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				components.Dispose();
 			}
-
-			//Global.MovieSession.Movie.StateCapturing = false; //TODO: This doesn't go here, extend this method in the .cs file
-
 			base.Dispose(disposing);
 		}
 
@@ -719,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
 			this.Name = "TAStudio";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.TASMenu.ResumeLayout(false);
