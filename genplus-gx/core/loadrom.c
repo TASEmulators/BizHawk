@@ -92,7 +92,7 @@ typedef struct
 ROMINFO rominfo;
 uint8 romtype;
 
-static uint8 rom_region;
+uint8 rom_region;
 
 /***************************************************************************
  * Genesis ROM Manufacturers

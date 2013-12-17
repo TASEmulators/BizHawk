@@ -83,7 +83,7 @@ static const uint8 hc_320[210] =
   0xFE, 0xFF
 };
 
-static struct
+struct
 {
   uint8 State;
   uint8 Port;

@@ -41,19 +41,19 @@
 #include "blip_buf.h"
 
 /* FM output buffer (large enough to hold a whole frame at original chips rate) */
-static int fm_buffer[1080 * 2];
-static int fm_last[2];
-static int *fm_ptr;
+int fm_buffer[1080 * 2];
+int fm_last[2];
+int *fm_ptr;
 
 /* Cycle-accurate FM samples */
-static uint32 fm_cycles_ratio;
-static uint32 fm_cycles_start;
-static uint32 fm_cycles_count;
+uint32 fm_cycles_ratio;
+uint32 fm_cycles_start;
+uint32 fm_cycles_count;
 
 /* YM chip function pointers */
-static void (*YM_Reset)(void);
-static void (*YM_Update)(int *buffer, int length);
-static void (*YM_Write)(unsigned int a, unsigned int v);
+void (*YM_Reset)(void);
+void (*YM_Update)(int *buffer, int length);
+void (*YM_Write)(unsigned int a, unsigned int v);
 
 /* Run FM chip until required M-cycles */
 INLINE void fm_update(unsigned int cycles)

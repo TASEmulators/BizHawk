@@ -502,7 +502,7 @@ static UINT32  LFO_AM;
 static INT32  LFO_PM;
 
 /* emulated chip */
-static YM2413 ym2413;
+YM2413 ym2413;
 
 /* advance LFO to next sample */
 INLINE void advance_lfo(void)

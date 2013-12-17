@@ -37,12 +37,6 @@
  ****************************************************************************************/
 #include "shared.h"
 
-#ifdef USE_LIBTREMOR
-#define SUPPORTED_EXT 20
-#else
-#define SUPPORTED_EXT 10
-#endif
-
 /* BCD conversion lookup tables */
 static const uint8 lut_BCD_8[100] =
 {

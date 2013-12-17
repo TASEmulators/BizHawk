@@ -49,7 +49,7 @@ uint32 zbank;             /* Z80 bank window address */
 uint8 zstate;             /* Z80 bus state (d0 = BUSACK, d1 = /RESET) */
 uint8 pico_current;       /* PICO current page */
 
-static uint8 tmss[4];     /* TMSS security register */
+uint8 tmss[4];     /* TMSS security register */
 
 /*--------------------------------------------------------------------------*/
 /* Init, reset, shutdown functions                                          */
