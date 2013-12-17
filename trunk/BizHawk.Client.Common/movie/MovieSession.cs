@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleMovieSaveState(StreamWriter writer)
+		public void HandleMovieSaveState(TextWriter writer)
 		{
 			if (Movie.IsActive)
 			{
@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HandleMovieLoadState(StreamReader reader)
+		public bool HandleMovieLoadState(TextReader reader)
 		{
 			if (!Movie.IsActive)
 			{
@@ -223,8 +223,9 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 				}
 
-				reader.BaseStream.Position = 0;
-				reader.DiscardBufferedData();
+				// fixme: this is evil
+				((StreamReader)reader).BaseStream.Position = 0;
+				((StreamReader)reader).DiscardBufferedData();
 				var result = Movie.ExtractInputLog(reader, out errorMsg);
 				if (!result)
 				{
