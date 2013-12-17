@@ -326,6 +326,19 @@ namespace BizHawk.Client.Common
 			return input.ToString();
 		}
 
+		private string GetGeneis6ButtonControllersAsMnemonic()
+		{
+			var input = new StringBuilder("|");
+
+			foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
+			{
+				input.Append(IsBasePressed(button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
+			}
+
+			input.Append("|");
+			return input.ToString();
+		}
+
 		public string GetControllersAsMnemonic()
 		{
 			if (_controlType == "Null Controller")
@@ -366,7 +379,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (_controlType == "GPGX Genesis Controller")
 			{
-				return "|.|"; // TODO
+				return GetGeneis6ButtonControllersAsMnemonic();
 			}
 
 			var input = new StringBuilder("|");

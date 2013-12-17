@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
 			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
 			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
 			new CName("B", LibGPGX.INPUT_KEYS.INPUT_B),
 			new CName("C", LibGPGX.INPUT_KEYS.INPUT_C),
-			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
 			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
 		};
 
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new CName("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
 			new CName("Left", LibGPGX.INPUT_KEYS.INPUT_LEFT),
 			new CName("Right", LibGPGX.INPUT_KEYS.INPUT_RIGHT),
+			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
 			new CName("B", LibGPGX.INPUT_KEYS.INPUT_B),
 			new CName("C", LibGPGX.INPUT_KEYS.INPUT_C),
-			new CName("A", LibGPGX.INPUT_KEYS.INPUT_A),
 			new CName("Start", LibGPGX.INPUT_KEYS.INPUT_START),
-			new CName("Z", LibGPGX.INPUT_KEYS.INPUT_Z),
-			new CName("Y", LibGPGX.INPUT_KEYS.INPUT_Y),
 			new CName("X", LibGPGX.INPUT_KEYS.INPUT_X),
+			new CName("Y", LibGPGX.INPUT_KEYS.INPUT_Y),
+			new CName("Z", LibGPGX.INPUT_KEYS.INPUT_Z),
 			new CName("Mode", LibGPGX.INPUT_KEYS.INPUT_MODE),
 		};
 

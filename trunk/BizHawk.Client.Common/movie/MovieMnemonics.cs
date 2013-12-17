@@ -35,6 +35,13 @@ namespace BizHawk.Client.Common
 				}
 			},
 			{
+				"GPGX Genesis Controller", new Dictionary<string, string>
+				{
+					{"P1 Up", "U"}, {"P1 Down", "D"}, {"P1 Left", "L"}, {"P1 Right", "R"}, {"P1 A", "A"}, {"P1 B", "B"}, {"P1 C", "C"},
+					{"P1 Start", "S"}, {"P1 X", "X"}, {"P1 Y", "Y"}, {"P1 Z", "Z"}, {"P1 Mode", "M"}
+				}
+			},
+			{
 				"NES Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
@@ -152,7 +159,7 @@ namespace BizHawk.Client.Common
 
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>
 		{
-			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
+			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"GPGX Genesis Controller", 1}, {"NES Controller", 4},
 			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
 			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}, {"Nintento 64 Controller", 4}, {"Saturn Controller", 2}
 		};
@@ -286,6 +293,21 @@ namespace BizHawk.Client.Common
 				Force("Power", true);
 			}
 			int start = 3;
+			foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+			{
+				Force(button, c[start++]);
+			}
+		}
+
+		private void SetGensis6ControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			if (mnemonic.Length < 9)
+			{
+				return;
+			}
+			int start = 1;
 			foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
 			{
 				Force(button, c[start++]);
@@ -544,7 +566,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (ControlType == "GPGX Genesis Controller")
 			{
-				// TODO
+				SetGensis6ControllersAsMnemonic(mnemonic);
 				return;
 			}
 
