@@ -98,7 +98,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TASView.ItemCount = _tas.InputLogLength;
-			TASView.ensureVisible(_tas.InputLogLength - 1);
+			if (_tas.IsRecording)
+			{
+				TASView.ensureVisible(_tas.InputLogLength - 1);
+			}
+			else
+			{
+				TASView.ensureVisible(Global.Emulator.Frame - 1);
+			}
 		}
 
 		public void Restart()
