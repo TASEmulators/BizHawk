@@ -30,44 +30,24 @@ namespace BizHawk.Client.Common
 				using (BinaryStateSaver bs = new BinaryStateSaver(fs))
 				{
 #if true
-					bs.PutCoreStateBinary(
-						delegate(Stream s)
-						{
-							BinaryWriter bw = new BinaryWriter(s);
-							Global.Emulator.SaveStateBinary(bw);
-							bw.Flush();
-						});
+					bs.PutLump(BinaryStateLump.Corestate, (bw) => Global.Emulator.SaveStateBinary(bw));
 #else
 					// this would put text states inside the zipfile
-					bs.PutCoreStateText(
-						delegate(Stream s)
-						{
-							StreamWriter sw = new StreamWriter(s);
-							Global.Emulator.SaveStateText(sw);
-							sw.Flush();
-						});
+					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
 #endif
 					if (Global.Config.SaveScreenshotWithStates)
 					{
-						bs.PutFrameBuffer(
-							delegate(Stream s)
-							{
-								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
-								BinaryWriter bw = new BinaryWriter(s);
-								bw.Write(buff);
-								bw.Flush();
-							});
+						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
 					}
 					if (Global.MovieSession.Movie.IsActive)
 					{
-						bs.PutInputLog(
-							delegate(Stream s)
+						bs.PutLump(BinaryStateLump.Input,
+							delegate(TextWriter tw)
 							{
-								StreamWriter sw = new StreamWriter(s);
 								// this never should have been a core's responsibility
-								sw.WriteLine("Frame {0}", Global.Emulator.Frame);
-								Global.MovieSession.HandleMovieSaveState(sw);
-								sw.Flush();
+								tw.WriteLine("Frame {0}", Global.Emulator.Frame);
+								Global.MovieSession.HandleMovieSaveState(tw);
 							});
 					}
 				}
@@ -77,8 +57,8 @@ namespace BizHawk.Client.Common
 		public static bool LoadStateFile(string path, string name)
 		{
 			// try to detect binary first
-			BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(path);
-			if (bw != null)
+			BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(path);
+			if (bl != null)
 			{
 				try
 				{
@@ -86,34 +66,16 @@ namespace BizHawk.Client.Common
 
 					if (Global.MovieSession.Movie.IsActive)
 					{
-						bw.GetInputLogRequired(
-							delegate(Stream s)
-							{
-								StreamReader sr = new StreamReader(s);
-								succeed = Global.MovieSession.HandleMovieLoadState(sr);
-							});
+						bl.GetLump(BinaryStateLump.Input, true, (tr) => succeed = Global.MovieSession.HandleMovieLoadState(tr));
 						if (!succeed)
-						{
 							return false;
-						}
 					}
 
-					bw.GetCoreState(
-						delegate(Stream s)
-						{
-							BinaryReader br = new BinaryReader(s);
-							Global.Emulator.LoadStateBinary(br);
-						},
-						delegate(Stream s)
-						{
-							StreamReader sr = new StreamReader(s);
-							Global.Emulator.LoadStateText(sr);
-						});
+					bl.GetCoreState((br) => Global.Emulator.LoadStateBinary(br), (tr) => Global.Emulator.LoadStateText(tr));
 
-					bw.GetFrameBuffer(
-						delegate(Stream s)
+					bl.GetLump(BinaryStateLump.Framebuffer, false, 
+						delegate(BinaryReader br)
 						{
-							BinaryReader br = new BinaryReader(s);
 							int i;
 							var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
 							try
@@ -129,7 +91,7 @@ namespace BizHawk.Client.Common
 				}
 				finally
 				{
-					bw.Dispose();
+					bl.Dispose();
 				}
 
 				return true;

@@ -314,31 +314,29 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 			// there's a lot of common code here with SavestateManager.  refactor?
-			using (BinaryStateLoader bw = BinaryStateLoader.LoadAndDetect(Filename))
+			using (BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(Filename))
 			{
-				if (bw == null)
+				if (bl == null)
 					return false;
 
 				Header.Clear();
 				_records.Clear();
 
-				bw.GetMovieHeaderRequired(
-					delegate(Stream s)
+				bl.GetLump(BinaryStateLump.Movieheader, true,
+					delegate(TextReader tr)
 					{
-						StreamReader sr = new StreamReader(s);
 						string line;
-						while ((line = sr.ReadLine()) != null)
+						while ((line = tr.ReadLine()) != null)
 							if (!Header.ParseLineFromFile(line))
 								Header.Comments.Add(line);
 					});
-				bw.GetInputLogRequired(
-					delegate(Stream s)
+				bl.GetLump(BinaryStateLump.Input, true,
+					delegate(TextReader tr)
 					{
-						StreamReader sr = new StreamReader(s);
 						string line = String.Empty;
 						while (true)
 						{
-							line = sr.ReadLine();
+							line = tr.ReadLine();
 							if (line == null)
 							{
 								break;
@@ -354,7 +352,7 @@ namespace BizHawk.Client.Common
 				if (Header.StartsFromSavestate)
 				{
 					// should we raise some sort of error if there's a savestate in the archive but Header.StartsFromSavestate is false?
-					bw.GetCoreState(
+					bl.GetCoreState(
 						delegate(Stream s)
 						{
 							BinaryReader br = new BinaryReader(s);
@@ -366,10 +364,9 @@ namespace BizHawk.Client.Common
 							Global.Emulator.LoadStateText(sr);
 						});
 				}
-				bw.GetFrameBuffer(
-					delegate(Stream s)
+				bl.GetLump(BinaryStateLump.Framebuffer, false,
+					delegate(BinaryReader br)
 					{
-						BinaryReader br = new BinaryReader(s);
 						int i;
 						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
 						try
@@ -395,38 +392,14 @@ namespace BizHawk.Client.Common
 			using (FileStream fs = new FileStream(Filename, FileMode.Create, FileAccess.Write))
 			using (BinaryStateSaver bs = new BinaryStateSaver(fs))
 			{
-				bs.PutMovieHeader(
-					delegate(Stream s)
-					{
-						StreamWriter sw = new StreamWriter(s);
-						sw.WriteLine(Header.ToString());
-						sw.Flush();
-					});
-				bs.PutInputLog(
-					delegate(Stream s)
-					{
-						StreamWriter sw = new StreamWriter(s);
-						sw.WriteLine(GetInputLog());
-						sw.Flush();
-					});
+				bs.PutLump(BinaryStateLump.Movieheader, (tw) => tw.WriteLine(Header.ToString()));
+				bs.PutLump(BinaryStateLump.Input, (tw) => tw.WriteLine(GetInputLog()));
 				if (Header.StartsFromSavestate)
 				{
 #if true
-					bs.PutCoreStateText(
-						delegate(Stream s)
-						{
-							StreamWriter sw = new StreamWriter(s);
-							Global.Emulator.SaveStateText(sw);
-							sw.Flush();
-						});
+					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
 #else
-					bs.PutCoreStateBinary(
-						delegate(Stream s)
-						{
-							BinaryWriter bw = new BinaryWriter(s);
-							Global.Emulator.SaveStateBinary(bw);
-							bw.Flush();
-						});
+					bs.PutLump(BinaryStateLump.Corestate, (bw) => Global.Emulator.SaveStateBinary(bw));
 #endif
 				}
 			}

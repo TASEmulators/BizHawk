@@ -1,24 +1,55 @@
 ﻿using System;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
+
 	public class BinaryStateFileNames
 	{
+		/*
 		public const string Versiontag = "BizState 1.0";
 		public const string Corestate = "Core";
 		public const string Framebuffer = "Framebuffer";
 		public const string Input = "Input Log";
 		public const string CorestateText = "CoreText";
 		public const string Movieheader = "Header";
+		*/
+
+		private static Dictionary<BinaryStateLump, string> LumpNames;
+
+		static BinaryStateFileNames()
+		{
+			LumpNames = new Dictionary<BinaryStateLump, string>();
+			LumpNames[BinaryStateLump.Versiontag] = "BizState 1.0";
+			LumpNames[BinaryStateLump.Corestate] = "Core";
+			LumpNames[BinaryStateLump.Framebuffer] = "Framebuffer";
+			LumpNames[BinaryStateLump.Input] = "Input Log";
+			LumpNames[BinaryStateLump.CorestateText] = "CoreText";
+			LumpNames[BinaryStateLump.Movieheader] = "Header";
+		}
+
+		public static string Get(BinaryStateLump Lump) { return LumpNames[Lump]; }
 	}
+
+
+	public enum BinaryStateLump
+	{
+		Versiontag,
+		Corestate,
+		Framebuffer,
+		Input,
+		CorestateText,
+		Movieheader
+	};
 
 	/// <summary>
 	/// more accurately should be called ZipStateLoader, as it supports both text and binary core data
 	/// </summary>
 	public class BinaryStateLoader : IDisposable
 	{
+
 		private bool isDisposed;
 		public void Dispose()
 		{
@@ -76,8 +107,7 @@ namespace BizHawk.Client.Common
 			try
 			{
 				ret.zip = new ZipFile(Filename);
-				var e = ret.zip.GetEntry(BinaryStateFileNames.Versiontag);
-				if (!ret.GetFileByName(BinaryStateFileNames.Versiontag, false, ret.ReadVersion))
+				if (!ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
 					ret.zip.Close();
 					return null;
@@ -90,8 +120,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		bool GetFileByName(string Name, bool abort, Action<Stream> callback)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="Lump">lump to retriever</param>
+		/// <param name="abort">true to throw exception on failure</param>
+		/// <param name="callback">function to call with the desired stream</param>
+		/// <returns>true if callback was called and stream was loaded</returns>
+		public bool GetLump(BinaryStateLump Lump, bool abort, Action<Stream> callback)
 		{
+			string Name = BinaryStateFileNames.Get(Lump);
 			var e = zip.GetEntry(Name);
 			if (e != null)
 			{
@@ -111,13 +149,44 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public bool GetLump(BinaryStateLump Lump, bool abort, Action<BinaryReader> callback)
+		{
+			return GetLump(Lump, abort, delegate(Stream s)
+			{
+				BinaryReader br = new BinaryReader(s);
+				callback(br);
+			});
+		}
+
+		public bool GetLump(BinaryStateLump Lump, bool abort, Action<TextReader> callback)
+		{
+			return GetLump(Lump, abort, delegate(Stream s)
+			{
+				TextReader tr = new StreamReader(s);
+				callback(tr);
+			});
+		}
+
+		/// <summary>
+		/// load binary state, or text state if binary state lump doesn't exist
+		/// </summary>
+		/// <param name="callbackBinary"></param>
+		/// <param name="callbackText"></param>
 		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
 		{
-			if (!GetFileByName(BinaryStateFileNames.Corestate, false, callbackBinary)
-				&& !GetFileByName(BinaryStateFileNames.CorestateText, false, callbackText))
+			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
+				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
 				throw new Exception("Couldn't find Binary or Text savestate");
 		}
 
+		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
+		{
+			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
+				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+				throw new Exception("Couldn't find Binary or Text savestate");
+		}
+
+		/*
 		public bool GetFrameBuffer(Action<Stream> callback)
 		{
 			return GetFileByName(BinaryStateFileNames.Framebuffer, false, callback);
@@ -132,6 +201,7 @@ namespace BizHawk.Client.Common
 		{
 			GetFileByName(BinaryStateFileNames.Movieheader, true, callback);
 		}
+		*/
 	}
 
 	public class BinaryStateSaver : IDisposable
@@ -158,17 +228,39 @@ namespace BizHawk.Client.Common
 				};
 			zip.SetLevel(0);
 
-			PutFileByName(BinaryStateFileNames.Versiontag, WriteVersion);	
+			PutLump(BinaryStateLump.Versiontag, WriteVersion);	
 		}
 
-		void PutFileByName(string Name, Action<Stream> callback)
+		public void PutLump(BinaryStateLump Lump, Action<Stream> callback)
 		{
+			string Name = BinaryStateFileNames.Get(Lump);
 			var e = new ZipEntry(Name) {CompressionMethod = CompressionMethod.Stored};
 			zip.PutNextEntry(e);
 			callback(zip);
 			zip.CloseEntry();
 		}
 
+		public void PutLump(BinaryStateLump Lump, Action<BinaryWriter> callback)
+		{
+			PutLump(Lump, delegate(Stream s)
+			{
+				BinaryWriter bw = new BinaryWriter(s);
+				callback(bw);
+				bw.Flush();
+			});
+		}
+
+		public void PutLump(BinaryStateLump Lump, Action<TextWriter> callback)
+		{
+			PutLump(Lump, delegate(Stream s)
+			{
+				TextWriter tw = new StreamWriter(s);
+				callback(tw);
+				tw.Flush();
+			});
+		}
+
+		/*
 		public void PutCoreStateBinary(Action<Stream> callback)
 		{
 			PutFileByName(BinaryStateFileNames.Corestate, callback);
@@ -193,6 +285,7 @@ namespace BizHawk.Client.Common
 		{
 			PutFileByName(BinaryStateFileNames.Movieheader, callback);
 		}
+		*/
 
 		private bool isDisposed;
 		public void Dispose()
