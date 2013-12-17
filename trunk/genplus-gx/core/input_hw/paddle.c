@@ -38,7 +38,7 @@
 
 #include "shared.h"
 
-static struct
+struct
 {
   uint8 State;
 } paddle[2];

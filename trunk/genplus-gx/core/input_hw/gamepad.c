@@ -40,14 +40,14 @@
 #include "shared.h"
 #include "gamepad.h"
 
-static struct
+struct
 {
   uint8 State;
   uint8 Counter;
   uint8 Timeout;
 } gamepad[MAX_DEVICES];
 
-static uint8 pad_index;
+uint8 pad_index;
 
 
 void gamepad_reset(int port)

@@ -38,7 +38,7 @@
 
 #include "shared.h"
 
-static struct
+struct
 {
   uint8 State;
   uint8 Counter;

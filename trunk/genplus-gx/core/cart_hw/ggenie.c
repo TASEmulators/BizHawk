@@ -41,7 +41,7 @@
 
 #include "shared.h"
 
-static struct
+struct
 {
   uint8 enabled;
   uint8 *rom;

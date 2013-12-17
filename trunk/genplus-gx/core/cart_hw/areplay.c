@@ -41,7 +41,7 @@
 #define TYPE_PRO1 0x12
 #define TYPE_PRO2 0x22
 
-static struct
+struct
 {
   uint8 enabled;
   uint8 status;

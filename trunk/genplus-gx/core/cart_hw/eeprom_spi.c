@@ -70,7 +70,7 @@ typedef struct
   T_STATE_SPI state;  /* current operation state */
 } T_EEPROM_SPI;
 
-static T_EEPROM_SPI spi_eeprom;
+T_EEPROM_SPI spi_eeprom;
 
 void eeprom_spi_init()
 {

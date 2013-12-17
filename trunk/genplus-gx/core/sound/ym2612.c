@@ -607,13 +607,13 @@ typedef struct
 } YM2612;
 
 /* emulated chip */
-static YM2612 ym2612;
+YM2612 ym2612;
 
 /* current chip state */
-static INT32  m2,c1,c2;   /* Phase Modulation input for operators 2,3,4 */
-static INT32  mem;        /* one sample delay memory */
-static INT32  out_fm[8];  /* outputs of working channels */
-static UINT32 bitmask;    /* working channels output bitmasking (DAC quantization) */ 
+INT32  m2,c1,c2;   /* Phase Modulation input for operators 2,3,4 */
+INT32  mem;        /* one sample delay memory */
+INT32  out_fm[8];  /* outputs of working channels */
+UINT32 bitmask;    /* working channels output bitmasking (DAC quantization) */ 
 
 
 INLINE void FM_KEYON(FM_CH *CH , int s )

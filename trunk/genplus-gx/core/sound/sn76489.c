@@ -92,7 +92,7 @@ static const uint16 PSGVolumeValues[16] =
   1516,1205,957,760,603,479,381,303,240,191,152,120,96,76,60,0
 };
 
-static SN76489_Context SN76489;
+SN76489_Context SN76489;
 
 static blip_t* blip[2];
 

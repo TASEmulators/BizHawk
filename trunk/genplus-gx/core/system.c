@@ -51,9 +51,9 @@ uint8 system_bios;
 uint32 system_clock;
 int16 SVP_cycles = 800; 
 
-static uint8 pause_b;
-static EQSTATE eq;
-static int16 llp,rrp;
+uint8 pause_b;
+EQSTATE eq;
+int16 llp,rrp;
 
 /******************************************************************************************/
 /* Audio subsystem                                                                        */

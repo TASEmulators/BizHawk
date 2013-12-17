@@ -149,7 +149,7 @@ static const T_GAME_ENTRY database[GAME_CNT] =
   {{"T-120146-50"}, 0,      {16, 0x1FFF, 0x1FFF, 0x300000, 0x380001, 0x300000, 0, 7, 1}}    /* Brian Lara Cricket 96, Shane Warne Cricket */
 };
 
-static T_EEPROM_I2C eeprom_i2c;
+T_EEPROM_I2C eeprom_i2c;
 
 static unsigned int eeprom_i2c_read_byte(unsigned int address);
 static unsigned int eeprom_i2c_read_word(unsigned int address);
