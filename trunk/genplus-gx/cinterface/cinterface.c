@@ -181,56 +181,79 @@ GPGX_EX void gpgx_advance(void)
 GPGX_EX void gpgx_clear_sram(void)
 {
 	// clear sram
-	if (sram.sram)
-		memset(sram.sram, 0, 0x10000);
+	if (sram.on)
+		memset(sram.sram, 0xff, 0x10000);
 
-	// clear and format bram
-	memset(scd.bram, 0, 0x2000);
-	brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = 0x00;
-	brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (sizeof(scd.bram) / 64) - 3;
-	memcpy(scd.bram + 0x2000 - 0x40, brm_format, 0x40);
+	if (cdd.loaded)
+	{
+		// clear and format bram
+		memset(scd.bram, 0, 0x2000);
+		brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = 0x00;
+		brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (sizeof(scd.bram) / 64) - 3;
+		memcpy(scd.bram + 0x2000 - 0x40, brm_format, 0x40);
 
-	// clear and format ebram
-	memset(scd.cartridge.area, 0x00, scd.cartridge.mask + 1);
-    brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = (((scd.cartridge.mask + 1) / 64) - 3) >> 8;
-    brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (((scd.cartridge.mask + 1) / 64) - 3) & 0xff;
-	memcpy(scd.cartridge.area + scd.cartridge.mask + 1 - 0x40, brm_format, 0x40);
-}
-
-GPGX_EX void gpgx_get_sram(void **area, int *size, int type)
-{
-	if (type == 0)
-	{
-		// cart sram
-		if (sram.on)
-		{
-			if (area)
-			*area = sram.sram;
-			if (size)
-				*size = 0x10000;
-		}
-	}
-	else if (type == 1)
-	{
-		// bram
-		if (cdd.loaded)
-		{
-			if (area)
-				*area = scd.bram;
-			if (size)
-				*size = 0x2000;
-		}
-	}
-	else if (type == 2)
-	{
-		// external bram
 		if (scd.cartridge.id)
 		{
-			if (area)
-				*area = scd.cartridge.area;
-			if (size)
-				*size = scd.cartridge.mask + 1;
+			// clear and format ebram
+			memset(scd.cartridge.area, 0x00, scd.cartridge.mask + 1);
+			brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = (((scd.cartridge.mask + 1) / 64) - 3) >> 8;
+			brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (((scd.cartridge.mask + 1) / 64) - 3) & 0xff;
+			memcpy(scd.cartridge.area + scd.cartridge.mask + 1 - 0x40, brm_format, 0x40);
 		}
+	}
+}
+
+// a bit hacky:
+// in order to present a single memory block to the frontend,
+// we copy the bram bits next to the ebram bits
+
+GPGX_EX void gpgx_sram_prepread(void)
+{
+	if (!sram.on && cdd.loaded && scd.cartridge.id)
+	{
+		void *dest = scd.cartridge.area + scd.cartridge.mask + 1;
+		memcpy(dest, scd.bram, 0x2000);
+	}
+}
+
+GPGX_EX void gpgx_sram_commitwrite(void)
+{
+	if (!sram.on && cdd.loaded && scd.cartridge.id)
+	{
+		void *src = scd.cartridge.area + scd.cartridge.mask + 1;
+		memcpy(scd.bram, src, 0x2000);
+	}
+}
+
+GPGX_EX void gpgx_get_sram(void **area, int *size)
+{
+	if (sram.on)
+	{
+		if (area)
+			*area = sram.sram;
+		if (size)
+			*size = 0x10000;
+	}
+	else if (scd.cartridge.id)
+	{
+		if (area)
+			*area = scd.cartridge.area;
+		if (size)
+			*size = scd.cartridge.mask + 1 + 0x2000;
+	}
+	else if (cdd.loaded)
+	{
+		if (area)
+			*area = scd.bram;
+		if (size)
+			*size = 0x2000;
+	}
+	else
+	{
+		if (area)
+			*area = NULL;
+		if (size)
+			*size = 0;
 	}
 }
 

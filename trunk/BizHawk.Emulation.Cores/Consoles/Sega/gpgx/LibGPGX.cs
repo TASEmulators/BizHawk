@@ -38,12 +38,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gpgx_put_control(IntPtr src, int bytes);
 
-		public const int MAX_SRAM_TYPES = 3;
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gpgx_get_sram(ref IntPtr area, ref int size, int type);
+		public static extern void gpgx_get_sram(ref IntPtr area, ref int size);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_clear_sram();
+
+		// call this before reading sram returned by gpgx_get_sram()
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_sram_prepread();
+
+		// call this after writing sram returned by gpgx_get_sram()
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_sram_commitwrite();
+
 
 		public static bool gpgx_get_control(InputData dest)
 		{
