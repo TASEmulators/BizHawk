@@ -108,6 +108,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				savebuff2 = new byte[savebuff.Length + 13];
 
 				SetControllerDefinition();
+
+				// pull the default video size from the core
+				update_video();
 			}
 			catch
 			{
