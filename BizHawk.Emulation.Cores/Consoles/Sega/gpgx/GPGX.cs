@@ -310,83 +310,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region saveram
 
-		// this all feels very messy
-
-		struct SaveRamInfo
-		{
-			public int totalsize;
-			public IntPtr[] areas;
-			public int[] sizes;
-
-			public int arraysize { get { return totalsize + 4 * LibGPGX.MAX_SRAM_TYPES; } }
-		}
-
-		SaveRamInfo GetSaveRamInfo()
-		{
-			SaveRamInfo ret = new SaveRamInfo
-			{
-				areas = new IntPtr[LibGPGX.MAX_SRAM_TYPES],
-				sizes = new int[LibGPGX.MAX_SRAM_TYPES],
-			};
-			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
-			{
-				IntPtr area = IntPtr.Zero;
-				int size = 0;
-				LibGPGX.gpgx_get_sram(ref area, ref size, i);
-				ret.areas[i] = area;
-				ret.sizes[i] = size;
-				ret.totalsize += size;
-			}
-			return ret;
-		}
-
 		public byte[] ReadSaveRam()
 		{
-			var sri = GetSaveRamInfo();
-			if (sri.totalsize == 0)
+			int size = 0;
+			IntPtr area = IntPtr.Zero;
+			LibGPGX.gpgx_get_sram(ref area, ref size);
+			if (size <= 0 || area == IntPtr.Zero)
 				return new byte[0];
+			LibGPGX.gpgx_sram_prepread();
 
-			byte[] ret = new byte[sri.arraysize];
-
-			MemoryStream ms = new MemoryStream(ret, true);
-			BinaryWriter bw = new BinaryWriter(ms);
-
-			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
-			{
-				bw.Write(sri.sizes[i]);
-				if (sri.areas[i] != IntPtr.Zero)
-				{
-					byte[] data = new byte[sri.sizes[i]];
-					Marshal.Copy(sri.areas[i], data, 0, sri.sizes[i]);
-					bw.Write(data);
-				}
-			}
-			bw.Flush();
-			ms.Close();
+			byte[] ret = new byte[size];
+			Marshal.Copy(area, ret, 0, size);
 			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			var sri = GetSaveRamInfo();
-			if (sri.arraysize!= data.Length)
-				throw new Exception("Unexpected SaveRam size");
+			int size = 0;
+			IntPtr area = IntPtr.Zero;
+			LibGPGX.gpgx_get_sram(ref area, ref size);
+			if (size <= 0 || area == IntPtr.Zero)
+				return;
+			if (size != data.Length)
+				throw new Exception("Unexpected saveram size");
 
-			MemoryStream ms = new MemoryStream(data, false);
-			BinaryReader br = new BinaryReader(ms);
-
-			for (int i = 0; i < LibGPGX.MAX_SRAM_TYPES; i++)
-			{
-				int size = br.ReadInt32();
-				if (size != sri.sizes[i])
-					throw new Exception("Unexpected SaveRam size");
-				if (sri.areas[i] != IntPtr.Zero)
-				{
-					byte[] tmp = new byte[sri.sizes[i]];
-					br.Read(tmp, 0, sri.sizes[i]);
-					Marshal.Copy(tmp, 0, sri.areas[i], sri.sizes[i]);
-				}
-			}
+			Marshal.Copy(data, 0, area, size);
+			LibGPGX.gpgx_sram_commitwrite();
 		}
 
 		public void ClearSaveRam()
@@ -398,7 +347,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			get
 			{
-				return GetSaveRamInfo().totalsize > 0;
+				int size = 0;
+				IntPtr area = IntPtr.Zero;
+				LibGPGX.gpgx_get_sram(ref area, ref size);
+				return size > 0 && area != IntPtr.Zero;
 			}
 			set
 			{
