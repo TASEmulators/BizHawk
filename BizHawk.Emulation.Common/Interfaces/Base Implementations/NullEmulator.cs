@@ -30,6 +30,11 @@ namespace BizHawk.Emulation.Common
 					new MemoryDomain("Main RAM", 1, MemoryDomain.Endian.Little, addr => 0, (a, v) => { })
 				});
 			memoryDomains = new MemoryDomainList(domains);
+
+			var d = DateTime.Now;
+			xmas = d.Month == 12 && d.Day >= 17 && d.Day <= 27;
+			if (xmas)
+				pleg = new Pleg();
 		}
 		public void ResetCounters()
 		{
@@ -43,8 +48,10 @@ namespace BizHawk.Emulation.Common
 			for (int i = 0; i < 256 * 192; i++)
 			{
 				byte b = (byte)rand.Next();
-				frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
-				//frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
+				if (xmas)
+					frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
+				else
+					frameBuffer[i] = Colors.Luminosity((byte) rand.Next());
 			}
 		}
 		public ControllerDefinition ControllerDefinition { get { return NullController; } }
@@ -79,7 +86,8 @@ namespace BizHawk.Emulation.Common
 			return new List<KeyValuePair<string, int>>();
 		}
 
-		Pleg pleg = new Pleg();
+		bool xmas;
+		Pleg pleg;
 
 		short[] sampbuff = new short[735 * 2];
 
@@ -87,7 +95,8 @@ namespace BizHawk.Emulation.Common
 		{
 			nsamp = 735;
 			samples = sampbuff;
-			pleg.Generate(samples);
+			if (xmas)
+				pleg.Generate(samples);
 		}
 
 		public void DiscardSamples()
@@ -96,7 +105,8 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamples(short[] samples)
 		{
-			pleg.Generate(samples);
+			if (xmas)
+				pleg.Generate(samples);
 		}
 
 		public int MaxVolume
@@ -114,6 +124,8 @@ namespace BizHawk.Emulation.Common
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
 	}
+
+	#region super tone generator
 
 	class Pleg
 	{
@@ -138,14 +150,10 @@ namespace BizHawk.Emulation.Common
 
 		void Off(int c, int n)
 		{
-			for (int i = 0; i < SinMen.Count; i++)
+			foreach (var s in SinMen)
 			{
-				var s = SinMen[i];
-				if (s.c == c && s.n == n)
-				{
-					SinMen.RemoveAt(i);
-					break;
-				}
+				if (s.c == c && s.n == n && !s.fading)
+					s.fading = true;
 			}
 		}
 		void On(int c, int n)
@@ -161,8 +169,19 @@ namespace BizHawk.Emulation.Common
 		short Next()
 		{
 			int ret = 0;
-			foreach (var s in SinMen)
-				ret += s.Next();
+			for (int i = 0; i < SinMen.Count; i++)
+			{
+				var s = SinMen[i];
+				if (s.Done)
+				{
+					SinMen.RemoveAt(i);
+					i--;
+				}
+				else
+				{
+					ret += s.Next();
+				}
+			}
 			if (ret > 32767) ret = 32767;
 			if (ret < -32767) ret = -32767;
 			return (short)ret;
@@ -214,6 +233,10 @@ namespace BizHawk.Emulation.Common
 		double freq;
 		double amp;
 
+		public bool fading = false;
+
+		public bool Done { get { return amp < 2.0; } }
+
 		static double GetFreq(int note)
 		{
 			return Math.Pow(2.0, note / 12.0) * 13.0;
@@ -225,6 +248,8 @@ namespace BizHawk.Emulation.Common
 			theta += freq * Math.PI / 22050.0;
 			if (theta >= Math.PI * 2.0)
 				theta -= Math.PI * 2.0;
+			if (fading)
+				amp *= 0.87;
 			return result;
 		}
 
@@ -235,4 +260,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 	}
+
+	#endregion
 }
