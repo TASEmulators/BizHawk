@@ -59,6 +59,7 @@ namespace BizHawk.Client.Common
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
+		public int TargetScanlineFilterIntensity = 0; //choose between 0 and 256
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
@@ -475,11 +476,14 @@ namespace BizHawk.Client.Common
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
 		public bool AutoloadTAStudio = false;
+		public bool AutoloadTAStudioProject = false;
 		public bool TAStudioTopMost = false;
 		public int TASWndx = -1;
 		public int TASWndy = -1;
 		public int TASWidth = -1;
 		public int TASHeight = -1;
+		public bool TAStudioDrawInput = true;
+		public RecentFiles RecentTas = new RecentFiles(8);
 
 		// VirtualPad Dialog
 		public bool VirtualPadsUpdatePads = true;
@@ -517,7 +521,6 @@ namespace BizHawk.Client.Common
 
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
-		public bool BindSavestatesToMovies = true;
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;

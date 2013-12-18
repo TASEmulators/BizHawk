@@ -41,24 +41,24 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public static string GetBasePathAbsolute()
 		{
-			if (Global.Config.PathEntries.GlobalBase.Length < 1) //If empty, then EXE path
+			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) //If empty, then EXE path
 				return GetExeDirectoryAbsolute();
 
-			if (Global.Config.PathEntries.GlobalBase.Length >= 5 &&
-				Global.Config.PathEntries.GlobalBase.Substring(0, 5) == "%exe%")
+			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5 &&
+				Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
 				return GetExeDirectoryAbsolute();
-			if (Global.Config.PathEntries.GlobalBase[0] == '.')
+			if (Global.Config.PathEntries.GlobalBaseFragment[0] == '.')
 			{
-				if (Global.Config.PathEntries.GlobalBase.Length == 1)
+				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 1)
 					return GetExeDirectoryAbsolute();
 				else
 				{
-					if (Global.Config.PathEntries.GlobalBase.Length == 2 &&
-						Global.Config.PathEntries.GlobalBase == ".\\")
+					if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
+						Global.Config.PathEntries.GlobalBaseFragment == ".\\")
 						return GetExeDirectoryAbsolute();
 					else
 					{
-						string tmp = Global.Config.PathEntries.GlobalBase;
+						string tmp = Global.Config.PathEntries.GlobalBaseFragment;
 						tmp = tmp.Remove(0, 1);
 						tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
 						return tmp;
@@ -66,8 +66,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (Global.Config.PathEntries.GlobalBase.Substring(0, 2) == "..")
-				return RemoveParents(Global.Config.PathEntries.GlobalBase, GetExeDirectoryAbsolute());
+			if (Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 2) == "..")
+				return RemoveParents(Global.Config.PathEntries.GlobalBaseFragment, GetExeDirectoryAbsolute());
 
 			//In case of error, return EXE path
 			return GetExeDirectoryAbsolute();
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 
 		public static string StandardFirmwareName(string name)
 		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null), name);
+			return Path.Combine(MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null), name);
 		}
 
 		public static string MakeAbsolutePath(string path, string system)
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetLuaPath()
 		{
-			return MakeAbsolutePath(Global.Config.PathEntries.LuaPath, null);
+			return MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null);
 		}
 
 		public static string GetRomsPath(string sysID)
@@ -250,7 +250,7 @@ namespace BizHawk.Client.Common
 		{
 			string name = FilesystemSafeName(game);
 			
-			if (Global.Config.BindSavestatesToMovies && Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			}

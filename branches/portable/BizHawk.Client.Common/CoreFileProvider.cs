@@ -10,6 +10,13 @@ namespace BizHawk.Client.Common
 		public string SubfileDirectory;
 		public FirmwareManager FirmwareManager;
 
+		Action<string> ShowWarning;
+
+		public CoreFileProvider(Action<string> ShowWarning)
+		{
+			this.ShowWarning = ShowWarning;
+		}
+
 		public Stream OpenFirmware(string sysId, string key)
 		{
 			var fn = PathFirmware(sysId, key);
@@ -26,6 +33,58 @@ namespace BizHawk.Client.Common
 			return Path.Combine(Path.GetDirectoryName(SubfileDirectory) ?? String.Empty, fname);
 		}
 
+		#region EmuLoadHelper api
+		void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
+		{
+			if (required)
+			{
+				string fullmsg = string.Format(
+					"Couldn't find required firmware \"{0}:{1}\".  This is fatal{2}", sysID, firmwareID, msg != null ? ": " + msg : ".");
+				throw new Exception(fullmsg);
+			}
+			else
+			{
+				if (msg != null)
+				{
+					string fullmsg = string.Format(
+						"Couldn't find firmware \"{0}:{1}\".  Will attempt to continue: {2}", sysID, firmwareID, msg);
+					ShowWarning(msg);
+				}
+			}
+		}
+
+
+		public string GetFirmwarePath(string sysID, string firmwareID, bool required, string msg = null)
+		{
+			string path = FirmwareManager.Request(sysID, firmwareID);
+			if (path != null && !File.Exists(path))
+				path = null;
+
+			if (path == null)
+				FirmwareWarn(sysID, firmwareID, required, msg);
+			return path;
+		}
+
+		public byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null)
+		{
+			byte[] ret = null;
+			string path = GetFirmwarePath(sysID, firmwareID, required, msg);
+			if (path != null && File.Exists(path))
+			{
+				try
+				{
+					ret = File.ReadAllBytes(path);
+				}
+				catch (IOException) { }
+			}
+
+			if (ret == null && path != null)
+				FirmwareWarn(sysID, firmwareID, required, msg);
+			return ret;
+		}
+
+		#endregion
+
 		public static void SyncCoreCommInputSignals(CoreComm target = null)
 		{
 			if (target == null)
@@ -33,7 +92,7 @@ namespace BizHawk.Client.Common
 				target = Global.CoreComm;
 			}
 
-			var cfp = new CoreFileProvider();
+			var cfp = new CoreFileProvider(target.ShowMessage);
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;
 
@@ -48,11 +107,8 @@ namespace BizHawk.Client.Common
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
-
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPath, null); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;

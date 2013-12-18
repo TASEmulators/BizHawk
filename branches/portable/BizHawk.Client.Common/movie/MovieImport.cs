@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 				}
 				if (errorMsg == String.Empty)
 				{
-					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+					m.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 				}
 			}
 			catch (Exception except)
@@ -152,7 +152,6 @@ namespace BizHawk.Client.Common
 					break;
 			}
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
@@ -249,8 +248,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
-			mg.SetSource(controllers);
-			m.AppendFrame(mg.GetControllersAsMnemonic());
+			m.AppendFrame(controllers);
 			return m;
 		}
 
@@ -379,11 +377,11 @@ namespace BizHawk.Client.Common
 					{
 						rerecordCount = 0;
 					}
-					m.Rerecords = (ulong)rerecordCount;
+					m.Header.Rerecords = (ulong)rerecordCount;
 				}
 				else if (line.ToLower().StartsWith("guid"))
 				{
-					m.Header[HeaderKeys.GUID] = ParseHeader(line, "guid");
+					continue; //We no longer care to keep this info
 				}
 				else if (line.ToLower().StartsWith("startsfromsavestate"))
 				{
@@ -529,7 +527,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			 The savestate offset is <header_size + length_of_metadata_in_bytes + padding>. The savestate offset should be
@@ -568,15 +566,12 @@ namespace BizHawk.Client.Common
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
 			while (frame <= frameCount)
 			{
-				mg.SetSource(controllers);
-				string mnemonic = mg.GetControllersAsMnemonic();
 				byte update = r.ReadByte();
 				// aa: Number of delta bytes to follow
 				int delta = (update >> 5) & 0x3;
@@ -597,11 +592,10 @@ namespace BizHawk.Client.Common
 				frame += frames;
 				while (frames > 0)
 				{
-					m.AppendFrame(mnemonic);
+					m.AppendFrame(controllers);
 					if (controllers["Reset"])
 					{
 						controllers["Reset"] = false;
-						mnemonic = mg.GetControllersAsMnemonic();
 					}
 					frames--;
 				}
@@ -779,7 +773,7 @@ namespace BizHawk.Client.Common
 			 loaded, the number is 0. Famtasia however displays "1" in such case. It always adds 1 to the number found in
 			 the file.
 			*/
-			m.Rerecords = rerecordCount + 1;
+			m.Header.Rerecords = rerecordCount + 1;
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
@@ -803,7 +797,6 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = "False";
 			// 090 frame data begins here
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 Right
 			 * 02 Left
@@ -855,8 +848,7 @@ namespace BizHawk.Client.Common
 						warningMsg = "FDS commands are not properly supported.";
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -886,7 +878,7 @@ namespace BizHawk.Client.Common
 			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
@@ -923,7 +915,6 @@ namespace BizHawk.Client.Common
 				{
 					Type = new ControllerDefinition {Name = "Genesis 3-Button Controller"}
 				};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
@@ -982,8 +973,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			return m;
 		}
@@ -1157,7 +1147,7 @@ namespace BizHawk.Client.Common
 					{
 						rerecordCount = 0;
 					}
-					m.Rerecords = (ulong)rerecordCount;
+					m.Header.Rerecords = (ulong)rerecordCount;
 					hf.Unbind();
 				}
 				else if (item.name.EndsWith(".sha256"))
@@ -1252,7 +1242,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.GAMENAME] = gameName;
 			// 070 uint32	 Re-record Count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = (ulong)rerecordCount;
+			m.Header.Rerecords = (ulong)rerecordCount;
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
@@ -1294,7 +1284,6 @@ namespace BizHawk.Client.Common
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = name + " Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			int bytes = 256;
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
 			if (platform == "nes")
@@ -1329,8 +1318,7 @@ namespace BizHawk.Client.Common
 				{
 					warningMsg = "Control commands are not properly supported.";
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1367,7 +1355,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 0010: 4-byte little endian flag: begin from reset?
 			uint reset = r.ReadUInt32();
 			if (reset == 0)
@@ -1416,7 +1404,6 @@ namespace BizHawk.Client.Common
 			byte[] md5 = r.ReadBytes(16);
 			m.Header[MD5] = String.Format("{0:x8}", Util.BytesToHexString(md5).ToLower());
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SMS Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1451,8 +1438,7 @@ namespace BizHawk.Client.Common
 						);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1632,7 +1618,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			 008 4-byte little-endian unsigned int: length of movie description
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
@@ -1643,7 +1629,6 @@ namespace BizHawk.Client.Common
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 Standard controllers store data in the following format:
 			 * 01: A
@@ -1681,8 +1666,7 @@ namespace BizHawk.Client.Common
 						warningMsg = "Extra input is not properly supported.";
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1732,9 +1716,9 @@ namespace BizHawk.Client.Common
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header[HeaderKeys.GUID] = String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000";
+
 			// 00C 4-byte little-endian unsigned int: rerecord count
-			m.Rerecords = r.ReadUInt32();
+			m.Header.Rerecords = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
@@ -1748,7 +1732,6 @@ namespace BizHawk.Client.Common
 			 * other: reserved, set to 0
 			*/
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
@@ -1953,8 +1936,7 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -1991,12 +1973,12 @@ namespace BizHawk.Client.Common
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header[HeaderKeys.GUID] = String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000";
+
 			// 00C 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 014 1-byte flags: (movie start flags)
 			byte flags = r.ReadByte();
 			// bit 0: if "1", movie starts from an embedded "quicksave" snapshot
@@ -2164,7 +2146,6 @@ namespace BizHawk.Client.Common
 			{
 				controllers.Type.Name = "GBA Controller";
 			}
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 00 A
 			 * 02 00 B
@@ -2225,8 +2206,7 @@ namespace BizHawk.Client.Common
 						r.ReadBytes(2);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -2298,7 +2278,7 @@ namespace BizHawk.Client.Common
 			r.ReadBytes(2);
 			// 01C 4-byte little-endian integer: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			/*
 			020 BYTE	RenderMethod
 			0=POST_ALL,1=PRE_ALL
@@ -2335,7 +2315,6 @@ namespace BizHawk.Client.Common
 			}
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 A
 			 * 02 B
@@ -2445,8 +2424,7 @@ namespace BizHawk.Client.Common
 						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					}
 				}
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
+				m.AppendFrame(controllers);
 			}
 			r.Close();
 			fs.Close();
@@ -2481,7 +2459,7 @@ namespace BizHawk.Client.Common
 			uint frameCount = r.ReadUInt32();
 			// 00D 4-byte little-endian unsigned int: number of rerecords
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
+			m.Header.Rerecords = rerecordCount;
 			// 011 4-byte little-endian unsigned int: number of frames removed by rerecord
 			r.ReadBytes(4);
 			// 015 4-byte little-endian unsigned int: number of frames advanced step by step
@@ -2568,7 +2546,6 @@ namespace BizHawk.Client.Common
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
 			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * bit 11: A
 			 * bit 10: X
@@ -2613,8 +2590,7 @@ namespace BizHawk.Client.Common
 					if (flag == 0x0)
 					{
 						controllers["Reset"] = true;
-						mg.SetSource(controllers);
-						m.AppendFrame(mg.GetControllersAsMnemonic());
+						m.AppendFrame(controllers);
 						controllers["Reset"] = false;
 					}
 					// TODO: Other commands.
@@ -2627,10 +2603,9 @@ namespace BizHawk.Client.Common
 					{
 						throw new ArgumentException("RLE data repeats for frames beyond the total frame count.");
 					}
-					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
 					{
-						m.AppendFrame(mg.GetControllersAsMnemonic());
+						m.AppendFrame(controllers);
 					}
 				}
 				else if (((flag >> 2) & 0x1) != 0)
@@ -2742,8 +2717,7 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
-					mg.SetSource(controllers);
-					m.AppendFrame(mg.GetControllersAsMnemonic());
+					m.AppendFrame(controllers);
 					frames++;
 				}
 			}

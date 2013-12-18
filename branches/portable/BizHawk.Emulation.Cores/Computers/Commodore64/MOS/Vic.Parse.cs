@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		const int baResetCounter = 7;
 		const int pipelineUpdateVc = 1;
-		const int pipelineChkSprChunch = 2;
+		const int pipelineChkSprCrunch = 2;
 		const int pipelineUpdateMcBase = 4;
 		const int pipelineChkBrdL1 = 8;
 		const int pipelineChkBrdL0 = 16;
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 				if (parseact != 0)
 				{
-					if ((parseact & pipelineChkSprChunch) != 0)
+					if ((parseact & pipelineChkSprCrunch) != 0)
 					{
 						foreach (SpriteGenerator spr in sprites)
 						{

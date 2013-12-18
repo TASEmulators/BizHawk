@@ -19,9 +19,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				components.Dispose();
 			}
-
-			//Global.MovieSession.Movie.StateCapturing = false; //TODO: This doesn't go here, extend this method in the .cs file
-
 			base.Dispose(disposing);
 		}
 
@@ -93,6 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoloadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -101,13 +99,11 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TASView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.TASView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.MarkerLabel = new System.Windows.Forms.Label();
-			this.MarkerDescriptionBox = new System.Windows.Forms.TextBox();
-			this.TopMarkerBox = new System.Windows.Forms.TextBox();
-			this.TopMarkerLabel = new System.Windows.Forms.Label();
+			this.PreviousMarkerFromFrameControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.PreviousMarkerFromSelectionControl = new BizHawk.Client.EmuHawk.MarkerControl();
 			this.TASMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -142,49 +138,50 @@ namespace BizHawk.Client.EmuHawk
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
+			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewTASMenuItem
 			// 
-			this.NewTASMenuItem.Enabled = false;
 			this.NewTASMenuItem.Name = "NewTASMenuItem";
 			this.NewTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.NewTASMenuItem.Text = "&New";
+			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTASMenuItem_Click);
 			// 
 			// OpenTASMenuItem
 			// 
-			this.OpenTASMenuItem.Enabled = false;
 			this.OpenTASMenuItem.Name = "OpenTASMenuItem";
 			this.OpenTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.OpenTASMenuItem.Text = "&Open";
+			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTASMenuItem_Click);
 			// 
 			// SaveTASMenuItem
 			// 
-			this.SaveTASMenuItem.Enabled = false;
 			this.SaveTASMenuItem.Name = "SaveTASMenuItem";
 			this.SaveTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveTASMenuItem.Text = "&Save";
+			this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTASMenuItem_Click);
 			// 
 			// SaveAsTASMenuItem
 			// 
-			this.SaveAsTASMenuItem.Enabled = false;
 			this.SaveAsTASMenuItem.Name = "SaveAsTASMenuItem";
 			this.SaveAsTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
 			this.SaveAsTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveAsTASMenuItem.Text = "Save As";
+			this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTASMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Enabled = false;
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
+			this.RecentSubMenu.Image = ((System.Drawing.Image)(resources.GetObject("RecentSubMenu.Image")));
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(186, 22);
 			this.RecentSubMenu.Text = "Recent";
+			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator3
 			// 
@@ -441,6 +438,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ConfigSubMenu.Name = "ConfigSubMenu";
 			this.ConfigSubMenu.Size = new System.Drawing.Size(55, 20);
 			this.ConfigSubMenu.Text = "&Config";
+			this.ConfigSubMenu.DropDownOpened += new System.EventHandler(this.ConfigSubMenu_DropDownOpened);
 			// 
 			// ProjectOptionsMenuItem
 			// 
@@ -496,10 +494,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DrawInputByDraggingMenuItem
 			// 
-			this.DrawInputByDraggingMenuItem.Enabled = false;
 			this.DrawInputByDraggingMenuItem.Name = "DrawInputByDraggingMenuItem";
 			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
+			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
 			// 
 			// CombineConsecutiveRecordingsMenuItem
 			// 
@@ -576,6 +574,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoloadMenuItem,
+            this.AutoloadProjectMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
             this.toolStripSeparator12,
@@ -591,6 +590,13 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AutoloadMenuItem.Text = "Autoload";
 			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
+			// 
+			// AutoloadProjectMenuItem
+			// 
+			this.AutoloadProjectMenuItem.Name = "AutoloadProjectMenuItem";
+			this.AutoloadProjectMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoloadProjectMenuItem.Text = "Autload &Project";
+			this.AutoloadProjectMenuItem.Click += new System.EventHandler(this.AutoloadProjectMenuItem_Click);
 			// 
 			// SaveWindowPositionMenuItem
 			// 
@@ -613,10 +619,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// RestoreDefaultSettingsMenuItem
 			// 
-			this.RestoreDefaultSettingsMenuItem.Enabled = false;
 			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
 			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
+			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -649,22 +655,26 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
 			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TASView.FullRowSelect = true;
 			this.TASView.GridLines = true;
+			this.TASView.InputPaintingMode = false;
 			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(12, 43);
+			this.TASView.Location = new System.Drawing.Point(12, 49);
 			this.TASView.Name = "TASView";
 			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(291, 452);
+			this.TASView.Size = new System.Drawing.Size(291, 444);
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
+			this.TASView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
+			this.TASView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
 			// 
 			// Frame
 			// 
@@ -675,60 +685,38 @@ namespace BizHawk.Client.EmuHawk
 			this.Log.Text = "Log";
 			this.Log.Width = 222;
 			// 
-			// MarkerLabel
+			// PreviousMarkerFromFrameControl
 			// 
-			this.MarkerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MarkerLabel.AutoSize = true;
-			this.MarkerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MarkerLabel.ForeColor = System.Drawing.Color.DeepSkyBlue;
-			this.MarkerLabel.Location = new System.Drawing.Point(12, 496);
-			this.MarkerLabel.Name = "MarkerLabel";
-			this.MarkerLabel.Size = new System.Drawing.Size(100, 16);
-			this.MarkerLabel.TabIndex = 2;
-			this.MarkerLabel.Text = "Marker 99999";
+			this.PreviousMarkerFromFrameControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PreviousMarkerFromFrameControl.Location = new System.Drawing.Point(12, 25);
+			this.PreviousMarkerFromFrameControl.Name = "PreviousMarkerFromFrameControl";
+			this.PreviousMarkerFromFrameControl.Size = new System.Drawing.Size(292, 24);
+			this.PreviousMarkerFromFrameControl.TabIndex = 2;
 			// 
-			// MarkerDescriptionBox
+			// PreviousMarkerFromSelectionControl
 			// 
-			this.MarkerDescriptionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.MarkerDescriptionBox.Location = new System.Drawing.Point(118, 495);
-			this.MarkerDescriptionBox.Name = "MarkerDescriptionBox";
-			this.MarkerDescriptionBox.Size = new System.Drawing.Size(194, 20);
-			this.MarkerDescriptionBox.TabIndex = 3;
-			// 
-			// TopMarkerBox
-			// 
-			this.TopMarkerBox.Location = new System.Drawing.Point(115, 23);
-			this.TopMarkerBox.Name = "TopMarkerBox";
-			this.TopMarkerBox.Size = new System.Drawing.Size(188, 20);
-			this.TopMarkerBox.TabIndex = 5;
-			// 
-			// TopMarkerLabel
-			// 
-			this.TopMarkerLabel.AutoSize = true;
-			this.TopMarkerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TopMarkerLabel.ForeColor = System.Drawing.Color.DeepSkyBlue;
-			this.TopMarkerLabel.Location = new System.Drawing.Point(9, 24);
-			this.TopMarkerLabel.Name = "TopMarkerLabel";
-			this.TopMarkerLabel.Size = new System.Drawing.Size(100, 16);
-			this.TopMarkerLabel.TabIndex = 4;
-			this.TopMarkerLabel.Text = "Marker 99999";
+			this.PreviousMarkerFromSelectionControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PreviousMarkerFromSelectionControl.Location = new System.Drawing.Point(11, 493);
+			this.PreviousMarkerFromSelectionControl.Name = "PreviousMarkerFromSelectionControl";
+			this.PreviousMarkerFromSelectionControl.Size = new System.Drawing.Size(292, 24);
+			this.PreviousMarkerFromSelectionControl.TabIndex = 3;
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 519);
-			this.Controls.Add(this.TopMarkerBox);
-			this.Controls.Add(this.TopMarkerLabel);
-			this.Controls.Add(this.MarkerDescriptionBox);
-			this.Controls.Add(this.MarkerLabel);
+			this.Controls.Add(this.PreviousMarkerFromSelectionControl);
+			this.Controls.Add(this.PreviousMarkerFromFrameControl);
 			this.Controls.Add(this.TASMenu);
 			this.Controls.Add(this.TASView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
 			this.Name = "TAStudio";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.TASMenu.ResumeLayout(false);
@@ -751,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
-		private VirtualListView TASView;
+		private TasListView TASView;
 		private System.Windows.Forms.ColumnHeader Log;
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -810,9 +798,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
-		private System.Windows.Forms.Label MarkerLabel;
-		private System.Windows.Forms.TextBox MarkerDescriptionBox;
-		private System.Windows.Forms.TextBox TopMarkerBox;
-		private System.Windows.Forms.Label TopMarkerLabel;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
+		private MarkerControl PreviousMarkerFromFrameControl;
+		private MarkerControl PreviousMarkerFromSelectionControl;
 	}
 }

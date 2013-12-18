@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			lagged = true;
 			CoreComm.DriveLED = false;
-			Controller.UpdateControls(Frame++);
+			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
 			Cpu.Debug = CoreComm.Tracer.Enabled;

@@ -12,17 +12,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(Movie m, bool record)
+		public void StartNewMovie(IMovie movie, bool record, bool fromTastudio = false) //TasStudio flag is a hack for now
 		{
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive)
+			if (!fromTastudio && Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.Save();
 			}
 
 			Global.MovieSession = new MovieSession
 			{
-				Movie = m,
+				Movie = movie,
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
@@ -37,24 +37,37 @@ namespace BizHawk.Client.EmuHawk
 
 			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 
-			Global.Config.RecentMovies.Add(m.Filename);
+			if (!fromTastudio)
+			{
+				Global.Config.RecentMovies.Add(movie.Filename);
+			}
+
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
 				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
 			}
-			if (record)
+
+			if (!fromTastudio)
 			{
-				Global.Emulator.ClearSaveRam();
-				Global.MovieSession.Movie.StartNewRecording();
-				Global.ReadOnly = false;
+				if (record)
+				{
+					Global.MovieSession.Movie.StartNewRecording();
+					Global.MovieSession.ReadOnly = false;
+				}
+				else
+				{
+					Global.MovieSession.Movie.StartNewPlayback();
+				}
 			}
-			else
-			{
-				Global.MovieSession.Movie.StartNewPlayback();
-			}
+
 			SetMainformMovieInfo();
-			GlobalWin.Tools.Restart<TAStudio>();
+
+			if (!fromTastudio)
+			{
+				GlobalWin.Tools.Restart<TAStudio>();
+			}
+
 			GlobalWin.Tools.Restart<VirtualPadForm>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
@@ -117,10 +130,11 @@ namespace BizHawk.Client.EmuHawk
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
 				}
+
 				Global.MovieSession.Movie.StartNewPlayback();
 				SetMainformMovieInfo();
 				GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
-				Global.ReadOnly = true;
+				Global.MovieSession.ReadOnly = true;
 			}
 		}
 
@@ -131,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//On movie load, these need to be set based on the contents of the movie file
-		private void SetSyncDependentSettings()
+		public void SetSyncDependentSettings()
 		{
 			switch (Global.Emulator.SystemId)
 			{

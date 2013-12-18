@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
 
-		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, string biosPath, bool skipbios)
+		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, bool skipbios)
 		{
 			CoreComm = comm;
 
@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			PSG = new SN76489();
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
+			string biosPath = CoreComm.CoreFileProvider.GetFirmwarePath("Coleco", "Bios", true, "Coleco BIOS file is required.");
 			BiosRom = File.ReadAllBytes(biosPath);
 
 			if (game["NoSkip"])

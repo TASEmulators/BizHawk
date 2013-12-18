@@ -19,12 +19,11 @@ namespace BizHawk.Client.Common
 			BoardProperties = new Dictionary<string, string>();
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
-			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion;
+			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
 			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : String.Empty;
 			this[HeaderKeys.GAMENAME] = String.Empty;
 			this[HeaderKeys.AUTHOR] = String.Empty;
 			this[HeaderKeys.RERECORDS] = "0";
-			this[HeaderKeys.GUID] = HeaderKeys.NewGuid;
 		}
 
 		public new string this[string key]

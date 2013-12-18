@@ -54,7 +54,7 @@ namespace BizHawk.Common
 			this.Hnd = GCHandle.Alloc(this.Arr, GCHandleType.Pinned);
 			this.Ptr = this.Hnd.AddrOfPinnedObject().ToPointer();
 			this.Byteptr = (byte*)this.Ptr;
-			Util.memset(this.Byteptr, 0, this.Len * itemsize);
+			Util.Memset(this.Byteptr, 0, this.Len * itemsize);
 		}
 
 		public void Dispose()

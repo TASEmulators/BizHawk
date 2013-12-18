@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public void Get(Stream s)
 		{
 			if (thr != null)
-				throw new Exception("Can only serve one thing at a time!");
+				throw new InvalidOperationException("Can only serve one thing at a time!");
 			if (e != null)
-				throw new Exception("Previous attempt failed!", e);
+				throw new InvalidOperationException("Previous attempt failed!", e);
 			if (!s.CanWrite)
 				throw new ArgumentException("Stream must be readable!");
 
@@ -74,9 +74,9 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public void Offer(Stream s)
 		{
 			if (thr != null)
-				throw new Exception("Can only serve one thing at a time!");
+				throw new InvalidOperationException("Can only serve one thing at a time!");
 			if (e != null)
-				throw new Exception("Previous attempt failed!", e);
+				throw new InvalidOperationException("Previous attempt failed!", e);
 			if (!s.CanRead)
 				throw new ArgumentException("Stream must be readable!");
 
@@ -104,15 +104,16 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			}
 		}
 
-		public Exception GetResults()
+		public void Finish()
 		{
 			if (thr == null)
-				throw new Exception("No pending!");
+				throw new InvalidOperationException("No pending!");
 			thr.Join();
 			thr = null;
 			Exception ret = e;
 			e = null;
-			return ret;
+			if (ret != null)
+				throw ret;
 		}
 	}
 }

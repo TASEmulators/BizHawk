@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom)
 		{
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(), leftinfo, leftrom);
-			R = new Gameboy(new CoreComm(), rightinfo, rightrom);
+			L = new Gameboy(new CoreComm(comm.ShowMessage), leftinfo, leftrom);
+			R = new Gameboy(new CoreComm(comm.ShowMessage), rightinfo, rightrom);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);

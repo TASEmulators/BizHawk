@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -16,21 +17,32 @@ namespace BizHawk.Client.Common
 		bool IsRecording { get; }
 		bool IsFinished { get; }
 		bool Changes { get; }
-		bool Loaded { get; }
 
 		#endregion
 
 		#region Properties
 
+		/// <summary>
+		/// Gets the total number of frames that count towards the completion time of the movie
+		/// Possibly (but unlikely different from InputLogLength (could be infinity, or maybe an implementation automatically discounts empty frames at the end of a movie, etc)
+		/// </summary>
 		double FrameCount { get; }
+		
+		/// <summary>
+		/// Gets the Fps used to calculate the time of the movie
+		/// </summary>
+		double Fps { get; }
 
 		/// <summary>
-		/// Actual length of the input log, should only be used by code that iterates or needs a real length
+		/// Gets the time calculation based on FrameCount and Fps
+		/// </summary>
+		TimeSpan Time { get; }
+
+		/// <summary>
+		/// Gets the actual length of the input log, should only be used by code that iterates or needs a real length
 		/// </summary>
 		int InputLogLength { get; }
-		
-		ulong Rerecords { get; set; }
-		
+
 		IMovieHeader Header { get; }
 
 		#endregion
@@ -40,8 +52,9 @@ namespace BizHawk.Client.Common
 		string Filename { get; set; }
 		bool Load();
 		void Save();
-		void SaveAs();
 		string GetInputLog();
+		bool CheckTimeLines(TextReader reader, out string errorMessage);
+		bool ExtractInputLog(TextReader reader, out string errorMessage);
 
 		#endregion
 
@@ -82,29 +95,32 @@ namespace BizHawk.Client.Common
 
 		#region Editing API
 
+		/// <summary>
+		/// Replaces the given frame's input with an empty frame
+		/// </summary>
 		void ClearFrame(int frame);
-		void ModifyFrame(string record, int frame);
-		void AppendFrame(string record);
-		void InsertFrame(string record, int frame);
-		void InsertBlankFrame(int frame);
-		void DeleteFrame(int frame);
-		void TruncateMovie(int frame);
+		
+		/// <summary>
+		/// Adds the given input to the movie
+		/// Note: this edits the input log without the normal movie recording logic applied
+		/// </summary>
+		void AppendFrame(IController source);
 
-		#endregion
+		/// <summary>
+		/// Replaces the input at the given frame with the given input
+		/// Note: this edits the input log without the normal movie recording logic applied
+		/// </summary>
+		void PokeFrame(int frame, IController source);
 
-		#region Dubious, should reconsider
+		/// <summary>
+		/// Records the given input into the given frame,
+		/// This is subject to normal movie recording logic
+		/// </summary>
+		void RecordFrame(int frame, IController source);
 
-		void CommitFrame(int frameNum, IController source); // Why pass in frameNum? Calling api 
-		void PokeFrame(int frameNum, string input); // Why does this exist as something different than Commit Frame?
-		LoadStateResult CheckTimeLines(TextReader reader, bool onlyGuid, bool ignoreGuidMismatch, out string errorMessage); // No need to return a status, no reason to have hacky flags, no need to pass a textreader
-		string GetTime(bool preLoad); // Rename to simply: Time, and make it a Timespan
-		void ExtractInputLog(TextReader reader, bool isMultitracking); // how about the movie know if it is multi-tracking rather than having to pass it in
-
-		string GetInput(int frame); // Should be a property of a Record object
+		void Truncate(int frame);
+		string GetInput(int frame);
 
 		#endregion
 	}
 }
-
-// TODO: delete this and refactor code that uses it!
-public enum LoadStateResult { Pass, GuidMismatch, TimeLineError, FutureEventError, NotInRecording, EmptyLog, MissingFrameNumber }

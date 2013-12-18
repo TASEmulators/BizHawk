@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		public unsafe void Clear()
 		{
 			FromBitmap(false);
-			Util.memset(PixelPtr, 0, Stride * Height);
+			Util.Memset(PixelPtr, 0, Stride * Height);
 		}
 
 		public Bitmap PeekBitmap()
@@ -492,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords;
+				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
 			}
 			else
 			{
@@ -785,6 +785,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case 3:
 					filter = new Hq2xBase_SuperEagle();
+					break;
+				case 4:
+					filter = new Scanlines2x();
 					break;
 			
 			}

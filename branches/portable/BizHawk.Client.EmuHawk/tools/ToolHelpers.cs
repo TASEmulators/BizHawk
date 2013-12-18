@@ -11,6 +11,57 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ToolHelpers
 	{
+		public static FileInfo GetTasProjFileFromUser(string currentFile)
+		{
+			var ofd = new OpenFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+			}
+
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			ofd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
+			ofd.RestoreDirectory = true;
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(ofd.FileName);
+		}
+
+		public static FileInfo GetTasProjSaveFileFromUser(string currentFile)
+		{
+			var sfd = new SaveFileDialog();
+			if (!String.IsNullOrWhiteSpace(currentFile))
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			}
+
+			sfd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			var result = sfd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(sfd.FileName);
+		}
+
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
 			var ofd = new OpenFileDialog();
@@ -19,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
 
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -43,12 +94,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPath, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 
 			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";

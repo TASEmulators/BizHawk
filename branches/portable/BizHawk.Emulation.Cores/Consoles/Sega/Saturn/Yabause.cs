@@ -41,9 +41,10 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		LibYabause.InputCallback InputCallbackH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios, bool GL = false)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, bool GL)
 		{
-			CoreComm.RomStatusDetails = "Yeh";
+			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
+			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 			ResetCounters();
@@ -78,9 +79,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL))
 				throw new Exception("libyabause_init() failed!");
 
-			var e = fp.GetResults();
-			if (e != null)
-				throw e;
+			fp.Finish();
 
 			LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
 			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());
@@ -249,9 +248,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				var fp = new FilePiping();
 				fp.Get(ms);
 				bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
-				var e = fp.GetResults();
-				if (e != null)
-					throw e;
+				fp.Finish();
 				if (!success)
 					throw new Exception("libyabause_savesaveram() failed!");
 				var ret = ms.ToArray();
@@ -272,9 +269,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				var fp = new FilePiping();
 				fp.Offer(data);
 				bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
-				var e = fp.GetResults();
-				if (e != null)
-					throw e;
+				fp.Finish();
 				if (!success)
 					throw new Exception("libyabause_loadsaveram() failed!");
 			}
@@ -320,9 +315,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			var fp = new FilePiping();
 			fp.Offer(data);
 			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
-			var e = fp.GetResults();
-			if (e != null)
-				throw e;
+			fp.Finish();
 			if (!succeed)
 				throw new Exception("libyabause_loadstate() failed");
 		}
@@ -333,9 +326,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			var fp = new FilePiping();
 			fp.Get(ms);
 			bool succeed = LibYabause.libyabause_savestate(fp.GetPipeNameNative());
-			var e = fp.GetResults();
-			if (e != null)
-				throw e;
+			fp.Finish();
 			var ret = ms.ToArray();
 			ms.Close();
 			if (!succeed)

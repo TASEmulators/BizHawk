@@ -7,11 +7,21 @@ namespace BizHawk.Client.Common
 {
 	public class MovieSession
 	{
-		public MultitrackRecording MultiTrack = new MultitrackRecording();
-		public IMovie Movie;
-		public MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
-		public Action<string> MessageCallback; //Not Required
-		public Func<string, string, bool> AskYesNoCallback; //Not Required
+		private readonly MultitrackRecording _multiTrack = new MultitrackRecording();
+		private readonly MovieControllerAdapter _movieControllerAdapter = new MovieControllerAdapter();
+
+		public MovieSession()
+		{
+			ReadOnly = true;
+		}
+
+		public MultitrackRecording MultiTrack { get { return _multiTrack; } }
+		public MovieControllerAdapter MovieControllerAdapter { get { return _movieControllerAdapter; } }
+
+		public IMovie Movie { get; set; }
+		public bool ReadOnly { get; set; }
+		public Action<string> MessageCallback { get; set; }
+		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		private void Output(string message)
 		{
@@ -21,42 +31,28 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private bool AskYesNo(string title, string message)
+		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
 		{
-			if (AskYesNoCallback != null)
+			if (_multiTrack.IsActive)
 			{
-				return AskYesNoCallback(title, message);
+				rewiredSource.PlayerSource = 1;
+				rewiredSource.PlayerTargetMask = 1 << _multiTrack.CurrentPlayer;
+				if (_multiTrack.RecordAll)
+				{
+					rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
+				}
 			}
 			else
 			{
-				return true;
+				rewiredSource.PlayerSource = -1;
 			}
-		}
 
-		private bool HandleGuidError()
-		{
-			return AskYesNo(
-				"GUID Mismatch error",
-				"The savestate GUID does not match the current movie.  Proceed anyway?"
-			);
-		}
-
-		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
-		{
-			if (MultiTrack.IsActive)
-			{
-				rewiredSource.PlayerSource = 1;
-				rewiredSource.PlayerTargetMask = 1 << (MultiTrack.CurrentPlayer);
-				if (MultiTrack.RecordAll) rewiredSource.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
-			}
-			else rewiredSource.PlayerSource = -1;
-
-			MovieControllerAdapter.LatchPlayerFromSource(rewiredSource, MultiTrack.CurrentPlayer);
+			_movieControllerAdapter.LatchPlayerFromSource(rewiredSource, _multiTrack.CurrentPlayer);
 		}
 
 		public void LatchInputFromPlayer(IController source)
 		{
-			MovieControllerAdapter.LatchFromSource(source);
+			_movieControllerAdapter.LatchFromSource(source);
 		}
 
 		/// <summary>
@@ -69,15 +65,13 @@ namespace BizHawk.Client.Common
 			// Attempting to get a frame past the end of a movie changes the mode to finished
 			if (!Movie.IsFinished)
 			{
-				MovieControllerAdapter.SetControllersAsMnemonic(
-					Movie.GetInput(Global.Emulator.Frame)
-				);
+				_movieControllerAdapter.SetControllersAsMnemonic(input);
 			}
 		}
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			string message = "Movie ";
+			var message = "Movie ";
 			if (Movie.IsRecording)
 			{
 				message += "recording ";
@@ -96,13 +90,13 @@ namespace BizHawk.Client.Common
 				{
 					Output(Path.GetFileName(Movie.Filename) + " written to disk.");
 				}
+
 				Output(message);
-				Global.ReadOnly = true;
+				ReadOnly = true;
 			}
 		}
 
-		//State handling
-		public void HandleMovieSaveState(StreamWriter writer)
+		public void HandleMovieSaveState(TextWriter writer)
 		{
 			if (Movie.IsActive)
 			{
@@ -115,7 +109,7 @@ namespace BizHawk.Client.Common
 			if (Movie.IsPlaying)
 			{
 				Movie.ClearFrame(Global.Emulator.Frame);
-				Output("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
+				Output("Scrubbed input at frame " + Global.Emulator.Frame);
 			}
 		}
 
@@ -125,10 +119,9 @@ namespace BizHawk.Client.Common
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
-
 			else if (Movie.IsFinished)
 			{
-				if (Global.Emulator.Frame < Movie.FrameCount) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Global.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
 					LatchInputFromLog();
@@ -138,13 +131,11 @@ namespace BizHawk.Client.Common
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
-
 			else if (Movie.IsPlaying)
 			{
-				
 				LatchInputFromLog();
 
-				//Movie may go into finished mode as a result from latching
+				// Movie may go into finished mode as a result from latching
 				if (!Movie.IsFinished)
 				{
 					if (Global.ClientControls["Scrub Input"])
@@ -160,7 +151,7 @@ namespace BizHawk.Client.Common
 						if (!mg.IsEmpty)
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-							Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+							Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 						}
 						else
 						{
@@ -169,10 +160,9 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-
 			else if (Movie.IsRecording)
 			{
-				if (MultiTrack.IsActive)
+				if (_multiTrack.IsActive)
 				{
 					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 				}
@@ -180,9 +170,10 @@ namespace BizHawk.Client.Common
 				{
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
-				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+
+				// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+				// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+				Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 			}
 		}
 
@@ -190,283 +181,60 @@ namespace BizHawk.Client.Common
 		{
 			using (var sr = new StreamReader(path))
 			{
-				return Global.MovieSession.HandleMovieLoadState(sr);
+				return HandleMovieLoadState(sr);
 			}
 		}
 
-		//OMG this needs to be refactored!
-		public bool HandleMovieLoadState(StreamReader reader)
+		public bool HandleMovieLoadState(TextReader reader)
 		{
-			string ErrorMSG = String.Empty;
-
 			if (!Movie.IsActive)
 			{
 				return true;
 			}
 
-			else if (Movie.IsRecording)
-			{
-				if (Global.ReadOnly)
-				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result == LoadStateResult.Pass)
-					{
-						Movie.Save();
-						Movie.SwitchToPlay();
-						
-						return true;
-					}
-					else
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.Save();
-									Movie.SwitchToPlay();
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
-				}
-				else
-				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: true, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result == LoadStateResult.Pass)
-					{
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-					}
-					else
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
-				}
-			}
+			string errorMsg;
 
-			else if (Movie.IsPlaying && !Movie.IsFinished)
+			if (ReadOnly)
 			{
-				if (Global.ReadOnly)
+				var result = Movie.CheckTimeLines(reader, out errorMsg);
+				if (!result)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result == LoadStateResult.Pass)
-					{
-						//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
-						return true;
-					}
-					else
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
+					Output(errorMsg);
+					return false;
 				}
-				else
+
+				if (Movie.IsRecording)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result == LoadStateResult.Pass)
-					{
-						Movie.SwitchToRecord();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-						return true;
-					}
-					else
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.SwitchToRecord();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
+					Movie.SwitchToPlay();
+				}
+				else if (Movie.IsFinished)
+				{
+					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
-			else if (Movie.IsFinished)
+			else
 			{
-				if (Global.ReadOnly)
+				if (Movie.IsFinished)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: false, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result != LoadStateResult.Pass)
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: true, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Movie.SwitchToPlay();
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
-					else if (Movie.IsFinished) //TimeLine check can change a movie to finished, hence the check here (not a good design)
-					{
-						LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-					}
-					else
-					{
-						Movie.SwitchToPlay();
-					}
+					Movie.StartNewRecording(); 
 				}
-				else
+				else if (Movie.IsPlaying)
 				{
-					var result = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: false, errorMessage: out ErrorMSG);
-					if (result == LoadStateResult.Pass)
-					{
-						Global.Emulator.ClearSaveRam();
-						Movie.StartNewRecording();
-						reader.BaseStream.Position = 0;
-						reader.DiscardBufferedData();
-						Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-						return true;
-					}
-					else
-					{
-						if (result == LoadStateResult.GuidMismatch)
-						{
-							if (HandleGuidError())
-							{
-								var newresult = Movie.CheckTimeLines(reader, onlyGuid: !Global.ReadOnly, ignoreGuidMismatch: true, errorMessage: out ErrorMSG);
-								if (newresult == LoadStateResult.Pass)
-								{
-									Global.Emulator.ClearSaveRam();
-									Movie.StartNewRecording();
-									reader.BaseStream.Position = 0;
-									reader.DiscardBufferedData();
-									Movie.ExtractInputLog(reader, MultiTrack.IsActive);
-									return true;
-								}
-								else
-								{
-									Output(ErrorMSG);
-									return false;
-								}
-							}
-							else
-							{
-								return false;
-							}
-						}
-						else
-						{
-							Output(ErrorMSG);
-							return false;
-						}
-					}
+					Movie.SwitchToRecord();
+				}
+
+				// fixme: this is evil
+				((StreamReader)reader).BaseStream.Position = 0;
+				((StreamReader)reader).DiscardBufferedData();
+				var result = Movie.ExtractInputLog(reader, out errorMsg);
+				if (!result)
+				{
+					Output(errorMsg);
+					return false;
 				}
 			}
 
 			return true;
 		}
 	}
-
 }

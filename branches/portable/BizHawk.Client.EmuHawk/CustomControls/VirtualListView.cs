@@ -541,6 +541,17 @@ namespace BizHawk.Client.EmuHawk
 			if (handler != null) handler(this, e);
 		}
 		#if WINDOWS
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		public static extern int GetScrollPos(IntPtr hWnd, System.Windows.Forms.Orientation nBar);
+
+		/// <summary>
+		/// Gets and Sets the Vertical Scroll position of the control.
+		/// </summary>
+		public int VScrollPos
+		{
+			get { return GetScrollPos((IntPtr)this.Handle, System.Windows.Forms.Orientation.Vertical); }
+		}
+		
 		protected override void WndProc(ref System.Windows.Forms.Message m) {
 		NMHDR nm1;
 		bool messageProcessed = false;
@@ -577,10 +588,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 		break;
 
-		case (int)WindowsMessage.WM_SCROLL:
-		//http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
-		OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
-		break;
+				case (int)WindowsMessage.WM_SCROLL:
+					//http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
+					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), m.WParam.ToInt32()));
+					break;
 
 		//obscure message loop flakiness when exceptions are thrown from the message loop...
 		//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)

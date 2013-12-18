@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Common
 		public bool GG_HighlightActiveDisplayRegion;
 
 		public string PSX_FirmwaresPath;
-		public string SNES_FirmwaresPath;
-		public string C64_FirmwaresPath;
 
 		public ICoreFileProvider CoreFileProvider;
 
@@ -70,6 +68,16 @@ namespace BizHawk.Emulation.Common
 
 		public bool DriveLED = false;
 		public bool UsesDriveLed = false;
+
+		/// <summary>
+		/// show a message.  reasonably annoying (dialog box), shouldn't be used most of the time
+		/// </summary>
+		public Action<string> ShowMessage { get; private set; }
+
+		public CoreComm(Action<string> ShowMessage)
+		{
+			this.ShowMessage = ShowMessage;
+		}
 	}
 
 	public class TraceBuffer

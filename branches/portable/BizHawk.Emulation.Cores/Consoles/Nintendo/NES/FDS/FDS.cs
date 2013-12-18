@@ -92,6 +92,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <param name="diskimage"></param>
 		public void SetDiskImage(byte[] diskimage)
 		{
+			// each FDS format is worse than the last
+			if (diskimage.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
+			{
+				int nsides = diskimage.Length / 65500;
+
+				MemoryStream ms = new MemoryStream();
+				ms.Write(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"), 0, 4);
+				ms.WriteByte((byte)nsides);
+				byte[] nulls = new byte[11];
+				ms.Write(nulls, 0, 11);
+				ms.Write(diskimage, 0, diskimage.Length);
+				ms.Close();
+				diskimage = ms.ToArray();
+			}
+			
 			this.diskimage = diskimage;
 			diskdiffs = new byte[NumSides][];
 		}

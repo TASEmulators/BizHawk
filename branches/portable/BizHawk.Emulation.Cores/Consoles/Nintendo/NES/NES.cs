@@ -15,8 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(CoreComm comm, GameInfo game, byte[] rom, byte[] fdsbios = null, Dictionary<string, string> boardProperties = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, Dictionary<string, string> boardProperties = null)
 		{
+			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
+			if (fdsbios != null && fdsbios.Length == 40976)
+			{
+				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
+				var tmp = new byte[8192];
+				Buffer.BlockCopy(fdsbios, 16 + 8192 * 3, tmp, 0, 8192);
+				fdsbios = tmp;
+			}
+
 			if (boardProperties != null)
 			{
 				InitialMapperRegisterValues.Set(boardProperties);
@@ -590,7 +599,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
-			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A")))
+			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
+				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
 			{
 				// there's not much else to do with FDS images other than to feed them to the board
 				origin = EDetectionOrigin.FDS;

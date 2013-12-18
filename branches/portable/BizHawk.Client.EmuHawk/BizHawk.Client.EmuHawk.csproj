@@ -77,12 +77,14 @@
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -102,6 +104,7 @@
     <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT' ">
       <HintPath>..\SlimDX.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
     <Reference Include="OpenTK">
       <HintPath>..\OpenTK.dll</HintPath>
     </Reference>
@@ -332,6 +335,9 @@
     <Compile Include="CustomControls\SmartTextBoxControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\TasListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\TextDebugView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -348,10 +354,12 @@
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="DisplayManager\Filters\Scanlines.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="JumpLists.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
       <SubType>Form</SubType>
@@ -416,6 +424,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanlineSlider.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScanlineSlider.Designer.cs">
+      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
@@ -491,6 +505,9 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
+    <Compile Include="tools\Lua\LuaCheckbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Lua\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -499,6 +516,9 @@
     </Compile>
     <Compile Include="tools\Lua\LuaConsole.Designer.cs">
       <DependentUpon>LuaConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaDropDown.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Lua\LuaFunctionsForm.cs">
       <SubType>Form</SubType>
@@ -595,6 +615,55 @@
     </Compile>
     <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\BookmarksBranchesBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
+      <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\HistoryBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\HistoryBox.Designer.cs">
+      <DependentUpon>HistoryBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\LuaBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\LuaBox.Designer.cs">
+      <DependentUpon>LuaBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\Marker.cs" />
+    <Compile Include="tools\TAStudio\MarkerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
+      <DependentUpon>MarkerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\MarkerControlsBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\MarkerControlsBox.Designer.cs">
+      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\PlaybackBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\PlaybackBox.Designer.cs">
+      <DependentUpon>PlaybackBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\RecorderBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\RecorderBox.Designer.cs">
+      <DependentUpon>RecorderBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\SplicerBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\SplicerBox.Designer.cs">
+      <DependentUpon>SplicerBox.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.cs">
       <SubType>Form</SubType>
@@ -845,6 +914,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ScanlineSlider.resx">
+      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>
     </EmbeddedResource>
@@ -919,6 +991,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
+      <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
+      <DependentUpon>HistoryBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\LuaBox.resx">
+      <DependentUpon>LuaBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
+      <DependentUpon>MarkerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\MarkerControlsBox.resx">
+      <DependentUpon>MarkerControlsBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
+      <DependentUpon>PlaybackBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\RecorderBox.resx">
+      <DependentUpon>RecorderBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\SplicerBox.resx">
+      <DependentUpon>SplicerBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>

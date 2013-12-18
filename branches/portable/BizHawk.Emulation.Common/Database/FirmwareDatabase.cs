@@ -79,6 +79,26 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", ti83_108);
 			Option("TI83", "Rom", ti83p_103);
 			Option("TI83", "Rom", ti83p_112);
+
+			// mega cd
+			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", "eu_mcd1_9210.bin", "Mega CD EU (9210)");
+			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", "eu_mcd2_9303.bin", "Mega CD EU (9303)");
+			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", "eu_mcd2_9306.bin", "Mega CD EU (9310)");
+			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", "jp_mcd1_9111.bin", "Mega CD JP (9111)");
+			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", "jp_mcd1_9112.bin", "Mega CD JP (9112)");
+			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", "us_scd1_9210.bin", "Sega CD US (9210)");
+			var us_scd2_9303 = File("bd3ee0c8ab732468748bf98953603ce772612704", "us_scd2_9303.bin", "Sega CD US (9303)");
+
+			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
+			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
+			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
+			Option("GEN", "CD_BIOS_EU", eu_mcd1_9210);
+			Option("GEN", "CD_BIOS_EU", eu_mcd2_9303);
+			Option("GEN", "CD_BIOS_EU", eu_mcd2_9306);
+			Option("GEN", "CD_BIOS_JP", jp_mcd1_9111);
+			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
+			Option("GEN", "CD_BIOS_US", us_scd1_9210);
+			Option("GEN", "CD_BIOS_US", us_scd2_9303);	
 		}
 
 		//adds a defined firmware ID to the database
@@ -116,14 +136,16 @@ namespace BizHawk.Emulation.Common
 		//defines a firmware file
 		static FirmwareFile File(string hash, string recommendedName, string descr)
 		{
+			string hashfix = hash.ToUpperInvariant();
+
 			var ff = new FirmwareFile
 				{
-					hash = hash,
+					hash = hashfix,
 					recommendedName = recommendedName,
 					descr = descr
 				};
 			FirmwareFiles.Add(ff);
-			FirmwareFilesByHash[hash] = ff;
+			FirmwareFilesByHash[hashfix] = ff;
 			return ff;
 		}
 
@@ -172,9 +194,17 @@ namespace BizHawk.Emulation.Common
 				(from fr in FirmwareRecords
 				 where fr.firmwareId == firmwareId
 				 && fr.systemId == sysId
-				 select fr).First();
+				 select fr);
 
-			return found;
+			try
+			{
+				return found.First();
+			}
+			catch (InvalidOperationException)
+			{
+				// list is empty;
+				return null;
+			}
 		}
 
 	} //static class FirmwareDatabase

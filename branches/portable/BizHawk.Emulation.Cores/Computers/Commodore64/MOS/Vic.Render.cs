@@ -213,6 +213,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					if (bufOffset == bufLength)
 						bufOffset = 0;
 				}
+
 				pixBuffer[pixBufferIndex] = pixel;
 				pixBufferIndex++;
 

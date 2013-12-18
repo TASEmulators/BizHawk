@@ -147,8 +147,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
-
-			Controller.UpdateControls(Frame++);
+			Frame++;
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
 			YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
 

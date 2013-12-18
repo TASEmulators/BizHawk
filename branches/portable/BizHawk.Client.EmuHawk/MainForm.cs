@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -158,6 +158,11 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 
+			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
+			{
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -171,19 +176,37 @@ namespace BizHawk.Client.EmuHawk
 
 				string arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
+				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--movie="))
+				{
 					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-type="))
+				{
 					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-name="))
+				{
 					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+				}
 				else if (arg.StartsWith("--dump-length="))
+				{
 					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
+				}
 				else if (arg.StartsWith("--dump-close"))
+				{
 					autoCloseOnDump = true;
+				}
+				else if (arg.StartsWith("--fullscreen"))
+				{
+					ToggleFullscreen();
+				}
 				else
+				{
 					cmdRom = arg;
+				}
 			}
 
 			if (cmdRom != null)
@@ -209,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					var movie = new Movie(cmdMovie);
-					Global.ReadOnly = true;
+					Global.MovieSession.ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (_autoDumpLength == 0)
 					{
@@ -244,69 +267,78 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
 			}
+
 			if (Global.Config.RecentSearches.AutoLoad)
 			{
 				GlobalWin.Tools.Load<RamSearch>();
 			}
+
 			if (Global.Config.AutoLoadHexEditor)
 			{
 				GlobalWin.Tools.Load<HexEditor>();
 			}
+
 			if (Global.Config.RecentCheats.AutoLoad)
 			{
 				GlobalWin.Tools.Load<Cheats>();
 			}
+
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESPPU>();
 			}
+
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESNameTableViewer>();
 			}
+
 			if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
 			{
 				GlobalWin.Tools.Load<NESDebugger>();
 			}
+
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 			{
 				LoadGameGenieEc();
 			}
+
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
 			{
 				GlobalWin.Tools.Load<GBGPUView>();
 			}
+
 			if (Global.Config.AutoloadTAStudio)
 			{
 				LoadTAStudio();
 			}
+
 			if (Global.Config.AutoloadVirtualPad)
 			{
 				GlobalWin.Tools.Load<VirtualPadForm>();
 			}
+
 			if (Global.Config.AutoLoadLuaConsole)
 			{
 				OpenLuaConsole();
 			}
+
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
 				GlobalWin.Tools.Load<PCEBGViewer>();
 			}
+
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 			{
 				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 			}
+
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
 				if (Global.CoreComm.CpuTraceAvailable)
 				{
 					LoadTraceLogger();
 				}
-			}
-
-			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
-			{
-				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
@@ -593,12 +625,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"];
+			PathEntry pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
 			if (pathEntry == null)
 			{
-				pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
+				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
 			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
+			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -1548,7 +1580,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Global.ReadOnly = true;
+				Global.MovieSession.ReadOnly = true;
 				StartNewMovie(movie, false);
 			}
 		}
@@ -2074,8 +2106,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.ReadOnly ^= true;
-				if (Global.ReadOnly)
+				Global.MovieSession.ReadOnly ^= true;
+				if (Global.MovieSession.ReadOnly)
 				{
 					GlobalWin.OSD.AddMessage("Movie read-only mode");
 				}
@@ -2710,12 +2742,12 @@ namespace BizHawk.Client.EmuHawk
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPath, null);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -2869,6 +2901,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
+		void ShowMessageCoreComm(string message)
+		{
+			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+
 		private void NesSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
 		{
 			NESSpecialControlsMenuItem.Visible = true;
@@ -2992,7 +3030,7 @@ namespace BizHawk.Client.EmuHawk
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
-				var nextComm = new CoreComm();
+				var nextComm = new CoreComm(ShowMessageCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 				try
@@ -3019,10 +3057,15 @@ namespace BizHawk.Client.EmuHawk
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
+								case DiscType.MegaCD:
+									game.System = "GEN";
+									break;
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core, so this prevents regressions
+								default:// PCECD was bizhawk's first CD core,
+										// and during that time, all CDs were blindly sent to it
+										// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
@@ -3030,15 +3073,16 @@ namespace BizHawk.Client.EmuHawk
 
 						switch (game.System)
 						{
+							case "GEN":
+								{
+									var genesis = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(
+										nextComm, null, disc, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									nextEmulator = genesis;
+								}
+								break;
 							case "SAT":
 								{
-									string biosPath = Global.FirmwareManager.Request("SAT", "J");
-									if (!File.Exists(biosPath))
-									{
-										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
-										return false;
-									}
-									var saturn = new Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+									var saturn = new Yabause(nextComm, disc, Global.Config.SaturnUseGL);
 									nextEmulator = saturn;
 									SaturnSetPrefs(saturn);
 								}
@@ -3144,8 +3188,6 @@ namespace BizHawk.Client.EmuHawk
 							isXml = true;
 						}
 
-
-					RETRY:
 						switch (game.System)
 						{
 							case "SNES":
@@ -3153,13 +3195,14 @@ namespace BizHawk.Client.EmuHawk
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 
+									// need to get rid of this hack at some point
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
 									byte[] romData = isXml ? null : rom.FileData;
 									byte[] xmlData = isXml ? rom.FileData : null;
-									snes.Load(game, romData, null, deterministicemulation, xmlData);
+									snes.Load(game, romData, deterministicemulation, xmlData);
 								}
 								break;
 							case "SMS":
@@ -3188,8 +3231,11 @@ namespace BizHawk.Client.EmuHawk
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData);
 								break;
 							case "GEN":
-								nextEmulator = new Genesis(nextComm, game, rom.RomData);
-								break;
+								{
+									//nextEmulator = new Genesis(nextComm, game, rom.RomData);
+									nextEmulator = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(nextComm, rom.RomData, null, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									break;
+								}
 							case "TI83":
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								if (Global.Config.TI83autoloadKeyPad)
@@ -3199,25 +3245,8 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "NES":
 								{
-									//TODO - move into nes core
-									var biosPath = nextComm.CoreFileProvider.PathFirmware("NES", "Bios_FDS");
-									byte[] bios = null;
-									if (File.Exists(biosPath))
+									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties)
 									{
-										bios = File.ReadAllBytes(biosPath);
-										// ines header + 24KB of garbage + actual bios + 8KB of garbage
-										if (bios.Length == 40976)
-										{
-											MessageBox.Show(this, "Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
-											var tmp = new byte[8192];
-											Buffer.BlockCopy(bios, 16 + 8192 * 3, tmp, 0, 8192);
-											bios = tmp;
-										}
-									}
-
-									var nes = new NES(nextComm, game, rom.FileData, bios, Global.MovieSession.Movie.Header.BoardProperties)
-									{
-										SoundOn = Global.Config.SoundEnabled,
 										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
 										NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
 										PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
@@ -3264,124 +3293,40 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
-									var sgbromPath = Global.FirmwareManager.Request("SNES", "Rom_SGB");
-									byte[] sgbrom;
 									try
-									{
-										if (File.Exists(sgbromPath))
-										{
-											sgbrom = File.ReadAllBytes(sgbromPath);
-										}
-										else
-										{
-											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
-											Global.Config.GB_AsSGB = false;
-											game.System = "GB";
-											goto RETRY;
-										}
-									}
-									catch (Exception)
-									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
-									}
-									if (sgbrom != null)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
 										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 										var snes = new LibsnesCore(nextComm);
 										nextEmulator = snes;
-										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-										snes.Load(game, rom.FileData, sgbrom, deterministicemulation, null);
+										snes.Load(game, rom.FileData, deterministicemulation, null);
+									}
+									catch
+									{
+										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+										ShowMessageCoreComm("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
+										Global.Config.GB_AsSGB = false;
+										throw;
 									}
 								}
-								//}
 								break;
 							case "Coleco":
-								var colbiosPath = Global.FirmwareManager.Request("Coleco", "Bios");
-								var colfile = colbiosPath != null ? new FileInfo(colbiosPath) : null;
-								if (colfile == null || !colfile.Exists)
 								{
-									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
-								}
-								else
-								{
-									var c = new ColecoVision(nextComm, game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
+									var c = new ColecoVision(nextComm, game, rom.RomData, Global.Config.ColecoSkipBiosIntro);
 									nextEmulator = c;
 								}
 								break;
 							case "INTV":
 								{
 									var intv = new Intellivision(nextComm, game, rom.RomData);
-									var eromPath = Global.FirmwareManager.Request("INTV", "EROM");
-									if (!File.Exists(eromPath))
-									{
-										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
-									}
-									intv.LoadExecutiveRom(eromPath);
-									var gromPath = Global.FirmwareManager.Request("INTV", "GROM");
-									if (!File.Exists(gromPath))
-									{
-										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
-									}
-									intv.LoadGraphicsRom(gromPath);
 									nextEmulator = intv;
 								}
 								break;
 							case "A78":
-								var ntsc_biospath = Global.FirmwareManager.Request("A78", "Bios_NTSC");
-								var pal_biospath = Global.FirmwareManager.Request("A78", "Bios_PAL");
-								var hsbiospath = Global.FirmwareManager.Request("A78", "Bios_HSC");
-
-								var ntscfile = ntsc_biospath != null ? new FileInfo(ntsc_biospath) : null;
-								var palfile = pal_biospath != null ? new FileInfo(pal_biospath) : null;
-								var hsfile = hsbiospath != null ? new FileInfo(hsbiospath) : null;
-
-								byte[] NTSC_BIOS7800 = null;
-								byte[] PAL_BIOS7800 = null;
-								byte[] HighScoreBIOS = null;
-								if (ntscfile == null || !ntscfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								}
-								else
-								{
-									NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
-								}
-
-								if (palfile == null || !palfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								}
-								else
-								{
-									PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
-								}
-
-								if (hsfile == null || !hsfile.Exists)
-								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									//throw new Exception();
-								}
-								else
-								{
-									HighScoreBIOS = File.ReadAllBytes(hsbiospath);
-								}
-
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								try
-								{
-									var a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
-									nextEmulator = a78;
-								}
-								catch (InvalidDataException ex)
-								{
-									MessageBox.Show(ex.Message, "Region specific bios missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									return false;
-								}
+								var a78 = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
+								nextEmulator = a78;
 								break;
 							case "C64":
 								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
@@ -3391,21 +3336,9 @@ namespace BizHawk.Client.EmuHawk
 							case "GBA":
 								if (VersionInfo.INTERIM)
 								{
-									var gbabiospath = Global.FirmwareManager.Request("GBA", "Bios");
-									byte[] gbabios;
-
-									if (File.Exists(gbabiospath))
-									{
-										gbabios = File.ReadAllBytes(gbabiospath);
-									}
-									else
-									{
-										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-										throw new Exception();
-									}
 									GBA gba = new GBA(nextComm);
 									//var gba = new GarboDev.GbaManager(nextComm);
-									gba.Load(rom.RomData, gbabios);
+									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}
 								break;
@@ -3418,6 +3351,13 @@ namespace BizHawk.Client.EmuHawk
 									SaveType = 1;
 								}
 								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
+								break;
+
+							case "DEBUG":
+								if (VersionInfo.INTERIM)
+								{
+									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
+								}
 								break;
 						}
 					}
@@ -3457,7 +3397,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 
-				if (Global.Emulator.CoreComm.RomStatusDetails == null)
+				if (Global.Emulator.CoreComm.RomStatusDetails == null && rom != null)
 				{
 					Global.Emulator.CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
@@ -3479,6 +3419,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
+				JumpLists.AddRecentItem(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 				{
 					LoadSaveRam();
@@ -3630,12 +3571,19 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAVI();
 			Global.Emulator.Dispose();
-			Global.CoreComm = new CoreComm();
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			Global.MovieSession.Movie.Stop();
+
+			// adelikat: TODO: Ugly hack! But I don't know a way around this yet.
+			if (!(Global.MovieSession.Movie is TasMovie))
+			{
+				Global.MovieSession.Movie.Stop();
+			}
+			
+			
 			RebootStatusBarIcon.Visible = false;
 		}
 
@@ -3644,7 +3592,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = new CoreComm();
+				Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
 				Global.Game = GameInfo.GetNullGame();
@@ -3684,7 +3632,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void ProcessMovieImport(string fn) //Nothing Winform Specific here, move to Movie import
 		{
-			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			string errorMsg;
 			string warningMsg;
 			var m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
@@ -3714,5 +3662,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
 	}
 }

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		static int[] TimingBuilder_Cycle14Act = new int[]
         {
 			pipelineUpdateVc, 0,
-			pipelineChkSprChunch, 0,
+			pipelineChkSprCrunch, 0,
 			pipelineUpdateMcBase, 0,
         };
 		static int[] TimingBuilder_Cycle55Act = new int[]

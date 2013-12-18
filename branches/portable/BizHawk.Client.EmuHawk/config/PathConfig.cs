@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadSettings()
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
-			BasePathBox.Text = Global.Config.PathEntries.GlobalBase;
+			BasePathBox.Text = Global.Config.PathEntries.GlobalBaseFragment;
 			
 			StartTabPages();
 			SetDefaultFocusedTab();

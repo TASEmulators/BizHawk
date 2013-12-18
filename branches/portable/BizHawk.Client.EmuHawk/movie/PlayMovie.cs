@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
-		private List<Movie> _movieList = new List<Movie>();
+		private List<IMovie> _movieList = new List<IMovie>();
 		private bool _sortReverse;
 		private string _sortedCol;
 
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (column == 3) //Time
 			{
-				text = _movieList[index].GetTime(true);
+				text = _movieList[index].Time.ToString(@"hh\:mm\:ss\.fff");
 			}
 		}
 
@@ -63,14 +63,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			Global.ReadOnly = ReadOnlyCheckBox.Checked;
+			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 			Run();
 			Close();
 		}
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null) };
+			var ofd = new OpenFileDialog { InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) };
 			var filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearList();
 
-			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPath, null);
+			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
@@ -349,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.MOVIEVERSION:
-						if (kvp.Value != HeaderKeys.MovieVersion)
+						if (kvp.Value != HeaderKeys.MovieVersion1)
 						{
 							item.BackColor = Color.Yellow;
 						}
@@ -569,7 +569,8 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].Header.SystemID).Append('\t')
 							.Append(_movieList[index].Header.GameName).Append('\t')
-							.Append(_movieList[index].GetTime(true)).AppendLine();
+							.Append(_movieList[index].Time.ToString(@"hh\:mm\:ss\.fff"))
+							.AppendLine();
 
 						Clipboard.SetDataObject(copyStr.ToString());
 					}

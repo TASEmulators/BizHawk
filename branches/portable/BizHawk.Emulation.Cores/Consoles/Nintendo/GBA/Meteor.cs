@@ -43,12 +43,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			comm.NominalHeight = 160;
 		}
 
-		public void Load(byte[] rom, byte[] bios)
+		public void Load(byte[] rom)
 		{
+			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("GBA", "Bios", true, "GBA bios file is mandatory.");
+
 			if (bios.Length != 16384)
-				throw new Exception("GBA bios must be exactly 16384 bytes!");
+				throw new InvalidDataException("GBA bios must be exactly 16384 bytes!");
 			if (rom.Length > 32 * 1024 * 1024)
-				throw new Exception("Rom is too big!");
+				throw new InvalidDataException("Rom file is too big!  No GBA game is larger than 32MB");
 			Init();
 			LibMeteor.libmeteor_hardreset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
@@ -59,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			Controller.UpdateControls(Frame++);
+			Frame++;
 			IsLagFrame = true;
 
 			if (Controller["Power"])

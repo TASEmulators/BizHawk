@@ -20,7 +20,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 		public static MovieSession MovieSession = new MovieSession();
-		public static bool ReadOnly = true; //Global Movie Read only setting
 
 		/// <summary>
 		/// whether throttling is force-disabled by use of fast forward
@@ -60,7 +59,7 @@ namespace BizHawk.Client.Common
 
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
 
-		public static AutoFireStickyXORAdapter AutofireStickyXORAdapter = new AutoFireStickyXORAdapter();
+		public static AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
 
 		/// <summary>
 		/// will OR together two IControllers
@@ -70,7 +69,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
-		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
+		public static StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
 
 		/// <summary>
 		/// Forces any controller button to Off, useful for things like Joypad.Set

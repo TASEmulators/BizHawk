@@ -20,11 +20,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					"addclick",
 					"button",
+					"checkbox",
 					"clearclicks",
 					"destroy",
 					"destroyall",
+					"dropdown",
 					"getproperty",
 					"gettext",
+					"ischecked",
 					"label",
 					"newform",
 					"openfile",
@@ -127,6 +130,23 @@ namespace BizHawk.Client.EmuHawk
 			return (int)button.Handle;
 		}
 
+		public int forms_checkbox(object form_handle, string caption, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			LuaCheckbox checkbox = new LuaCheckbox();
+			form.Controls.Add(checkbox);
+			SetText(checkbox, caption);
+			SetLocation(checkbox, X, Y);
+			
+
+			return (int)checkbox.Handle;
+		}
+
 		public void forms_clearclicks(object handle)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
@@ -168,6 +188,24 @@ namespace BizHawk.Client.EmuHawk
 				form.Close();
 				_luaForms.Remove(form);
 			}
+		}
+
+		public int forms_dropdown(object form_handle, LuaTable items, object X = null, object Y = null, object width = null, object height = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			List<string> dropdownItems = items.Values.Cast<string>().ToList();
+			dropdownItems.Sort();
+
+			LuaDropDown dropdown = new LuaDropDown(dropdownItems);
+			form.Controls.Add(dropdown);
+			SetLocation(dropdown, X, Y);
+			SetSize(dropdown, width, height);
+			return (int)dropdown.Handle;
 		}
 
 		public string forms_getproperty(object handle, object property)
@@ -218,7 +256,14 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control.Handle == ptr)
 							{
-								return control.Text;
+								if (control is LuaDropDown)
+								{
+									return (control as LuaDropDown).SelectedItem.ToString();
+								}
+								else
+								{
+									return control.Text;
+								}
 							}
 						}
 					}
@@ -230,6 +275,44 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return String.Empty;
+		}
+
+		public bool forms_ischecked(object handle)
+		{
+			try
+			{
+				IntPtr ptr = new IntPtr(LuaInt(handle));
+				foreach (LuaWinform form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						return false;
+					}
+					else
+					{
+						foreach (Control control in form.Controls)
+						{
+							if (control.Handle == ptr)
+							{
+								if (control is LuaCheckbox)
+								{
+									return (control as LuaCheckbox).Checked;
+								}
+								else
+								{
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.console_output(ex.Message);
+			}
+
+			return false;
 		}
 
 		public int forms_label(object form_handle, object caption, object X = null, object Y = null, object width = null, object height = null)
@@ -382,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null)
+		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null, bool multiline = false)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -391,6 +474,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LuaTextBox textbox = new LuaTextBox();
+			textbox.Multiline = multiline;
 			SetText(textbox, caption);
 			SetLocation(textbox, X, Y);
 			SetSize(textbox, width, height);
