@@ -310,47 +310,77 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region saveram
 
+		byte[] DisposedSaveRam = null;
+
 		public byte[] ReadSaveRam()
 		{
-			int size = 0;
-			IntPtr area = IntPtr.Zero;
-			LibGPGX.gpgx_get_sram(ref area, ref size);
-			if (size <= 0 || area == IntPtr.Zero)
-				return new byte[0];
-			LibGPGX.gpgx_sram_prepread();
+			if (disposed)
+			{
+				return DisposedSaveRam ?? new byte[0];
+			}
+			else
+			{
+				int size = 0;
+				IntPtr area = IntPtr.Zero;
+				LibGPGX.gpgx_get_sram(ref area, ref size);
+				if (size <= 0 || area == IntPtr.Zero)
+					return new byte[0];
+				LibGPGX.gpgx_sram_prepread();
 
-			byte[] ret = new byte[size];
-			Marshal.Copy(area, ret, 0, size);
-			return ret;
+				byte[] ret = new byte[size];
+				Marshal.Copy(area, ret, 0, size);
+				return ret;
+			}
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			int size = 0;
-			IntPtr area = IntPtr.Zero;
-			LibGPGX.gpgx_get_sram(ref area, ref size);
-			if (size <= 0 || area == IntPtr.Zero)
-				return;
-			if (size != data.Length)
-				throw new Exception("Unexpected saveram size");
+			if (disposed)
+			{
+				throw new ObjectDisposedException(typeof(GPGX).ToString());
+			}
+			else
+			{
+				int size = 0;
+				IntPtr area = IntPtr.Zero;
+				LibGPGX.gpgx_get_sram(ref area, ref size);
+				if (size <= 0 || area == IntPtr.Zero)
+					return;
+				if (size != data.Length)
+					throw new Exception("Unexpected saveram size");
 
-			Marshal.Copy(data, 0, area, size);
-			LibGPGX.gpgx_sram_commitwrite();
+				Marshal.Copy(data, 0, area, size);
+				LibGPGX.gpgx_sram_commitwrite();
+			}
 		}
 
 		public void ClearSaveRam()
 		{
-			LibGPGX.gpgx_clear_sram();
+			if (disposed)
+			{
+				throw new ObjectDisposedException(typeof(GPGX).ToString());
+			}
+			else
+			{
+				LibGPGX.gpgx_clear_sram();
+			}
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				int size = 0;
-				IntPtr area = IntPtr.Zero;
-				LibGPGX.gpgx_get_sram(ref area, ref size);
-				return size > 0 && area != IntPtr.Zero;
+				if (disposed)
+				{
+					throw new ObjectDisposedException(typeof(GPGX).ToString());
+				}
+				else
+				{
+					int size = 0;
+					IntPtr area = IntPtr.Zero;
+					LibGPGX.gpgx_get_sram(ref area, ref size);
+					return size > 0 && area != IntPtr.Zero;
+				}
 			}
 			set
 			{
@@ -450,6 +480,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				if (AttachedCore != this)
 					throw new Exception();
+				if (SaveRamModified)
+					DisposedSaveRam = ReadSaveRam();
 				AttachedCore = null;
 				disposed = true;
 			}
