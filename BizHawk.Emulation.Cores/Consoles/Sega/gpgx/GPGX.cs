@@ -375,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				if (disposed)
 				{
-					throw new ObjectDisposedException(typeof(GPGX).ToString());
+					return DisposedSaveRam != null;
 				}
 				else
 				{
