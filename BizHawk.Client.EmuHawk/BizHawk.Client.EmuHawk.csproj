@@ -1277,6 +1277,7 @@
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
+    <None Include="images\alt_about_image.gif" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
