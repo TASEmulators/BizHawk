@@ -151,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 			RewireInputChain();
 			GlobalWin.Tools = new ToolManager();
+			RewireSound();
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
