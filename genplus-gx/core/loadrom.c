@@ -525,7 +525,7 @@ int load_bios(void)
  * Return 0 on error, 1 on success
  *
  ***************************************************************************/
-int load_rom(char *filename)
+int load_rom(const char *filename)
 {
   int i, size;
 
@@ -729,8 +729,11 @@ int load_rom(char *filename)
         scd.cartridge.boot = 0x40;
 
         /* automatically load associated .iso image */
-        strncpy(&filename[strlen(filename) - 4], ".iso", 4);
-        cdd_load((char *)cdc.ram); // should this be checked for failure?
+		// this will only possibly work if a CD and a ROM are provided at the same time, which the frontend
+		// has no provision for at the moment
+        if (cdd_load((char *)cdc.ram) <= 0)
+		  // no load, so disable CD hardware
+		  system_hw = SYSTEM_MD;
       }
       else
       {

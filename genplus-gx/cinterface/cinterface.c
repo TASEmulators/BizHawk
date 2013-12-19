@@ -135,7 +135,7 @@ int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize)
 // return 0 on failure, else actual loaded size
 // extension, if not null, should be populated with the extension of the file loaded
 // (up to 3 chars and null terminator, no more)
-int load_archive(char *filename, unsigned char *buffer, int maxsize, char *extension)
+int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension)
 {
 	if (extension)
 		memcpy(extension, romextension, 4);
@@ -404,13 +404,8 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 			config.input[i].padtype = sixbutton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	{
-	//copy our desired fname into a r/w string buffer, since load_rom may edit it (!)
-		char fname[64];
-		strcpy(fname,"PRIMARY_ROM");
-		if (!load_rom(fname))
-			return 0;
-	}
+	if (!load_rom("PRIMARY_ROM"))
+		return 0;
 
 	audio_init(44100, 0);
 	system_init();
