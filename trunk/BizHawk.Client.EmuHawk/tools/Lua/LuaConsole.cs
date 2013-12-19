@@ -686,7 +686,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!item.Enabled && item.Thread != null)
 				{
+					var items = SelectedItems.ToList();
+					foreach (var sitem in items)
+					{
+						var temp = sitem;
+						var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == temp.Thread).ToList();
+						foreach (var function in functions)
+						{
+							LuaImp.RegisteredFunctions.Remove(function);
+
+						}
+						UpdateRegisteredFunctionsDialog();
+					}
 					item.Stop();
+					
 				}
 			}
 
