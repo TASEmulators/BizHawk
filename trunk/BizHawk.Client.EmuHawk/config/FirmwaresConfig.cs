@@ -20,7 +20,8 @@ using BizHawk.Emulation.Common;
 //TODO - we may eventually need to add a progress dialog for this. we should have one for other reasons.
 //I started making one in Bizhawk.Util as QuickProgressPopup but ran out of time
 
-//IDEA: show current path in tooltip
+//IDEA: show current path in tooltip (esp. for custom resolved)
+//IDEA: prepop set customization to dir of current custom
 
 //TODO - display some kind if [!] if you have a user-specified file which is known but defined as incompatible by the firmware DB
 
@@ -81,8 +82,6 @@ namespace BizHawk.Client.EmuHawk
 			imageList1.Images.AddRange(new[] { EmuHawk.Properties.Resources.RetroQuestion, EmuHawk.Properties.Resources.ExclamationRed, EmuHawk.Properties.Resources.GreenCheck });
 
 			listviewSorter = new ListViewSorter(this, -1);
-
-			currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
@@ -147,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				WarpToSystemId(TargetSystem);
 			}
 
-			DoScan();
+			RefreshBasePath();
 		}
 
 		private void FirmwaresConfig_FormClosed(object sender, FormClosedEventArgs e)
@@ -383,6 +382,20 @@ namespace BizHawk.Client.EmuHawk
 		private void tsmiCopy_Click(object sender, EventArgs e)
 		{
 			PerformListCopy();
+		}
+
+		private void linkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			new PathConfig().ShowDialog(this);
+			RefreshBasePath();
+		}
+
+		void RefreshBasePath()
+		{
+			string oldBasePath = currSelectorDir;
+			linkBasePath.Text = currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (oldBasePath != currSelectorDir)
+				DoScan();
 		}
 
 	}		//class FirmwaresConfig
