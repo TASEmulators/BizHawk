@@ -404,8 +404,13 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 			config.input[i].padtype = sixbutton ? DEVICE_PAD6B : DEVICE_PAD3B;
 	}
 
-	if (!load_rom("PRIMARY_ROM"))
-		return 0;
+	{
+	//copy our desired fname into a r/w string buffer, since load_rom may edit it (!)
+		char fname[64];
+		strcpy(fname,"PRIMARY_ROM");
+		if (!load_rom(fname))
+			return 0;
+	}
 
 	audio_init(44100, 0);
 	system_init();
