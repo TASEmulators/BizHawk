@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private TasMovie _tas;
 
 		private MarkerList _markers = new MarkerList();
+		private List<TasClipboardEntry> TasClipboard = new List<TasClipboardEntry>();
 
 		// Input Painting
 		private string StartDrawColumn = String.Empty;
@@ -313,6 +314,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SetSplicer()
+		{
+			// TODO: columns selected
+			// TODO: clipboard
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			string message = String.Empty;
+
+			if (list.Count > 0)
+			{
+				message = list.Count.ToString() + " rows, 0 col, clipboard: ";
+			}
+			else
+			{
+				message = list.Count.ToString() + " selected: none, clipboard: ";
+			}
+
+			message += TasClipboard.Any() ? TasClipboard.Count.ToString() : "empty";
+
+			SplicerStatusLabel.Text = message;
+		}
+
 		#region Events
 
 		#region File Menu
@@ -394,6 +416,18 @@ namespace BizHawk.Client.EmuHawk
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
 			TASView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+		}
+
+		private void CopyMenuItem_Click(object sender, EventArgs e)
+		{
+			TasClipboard.Clear();
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int i = 0; i < list.Count; i++)
+			{
+				TasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
+			}
+
+			SetSplicer();
 		}
 
 		#endregion
@@ -499,11 +533,37 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetSplicer();
+		}
+
 		#endregion
 
-		private void PreviousMarkerFromFrameControl_Load(object sender, EventArgs e)
-		{
+		#endregion
 
+		#region Classes
+
+		public class TasClipboardEntry
+		{
+			private readonly Dictionary<string, bool> _buttons;
+			private int _frame;
+
+			public TasClipboardEntry(int frame, Dictionary<string, bool> buttons)
+			{
+				_frame = frame;
+				_buttons = buttons;
+			}
+
+			public int Frame
+			{
+				get { return _frame; }
+			}
+
+			public Dictionary<string, bool> Buttons
+			{
+				get { return _buttons; }
+			}
 		}
 
 		#endregion
