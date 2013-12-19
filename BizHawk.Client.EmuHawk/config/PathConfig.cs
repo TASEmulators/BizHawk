@@ -152,10 +152,16 @@ namespace BizHawk.Client.EmuHawk
 					BrowseFolder(tempBox, tempPath, tempSystem);
 				};
 
+				int infoPadding = 0;
+				if (tabPage.Name.Contains("Global") && path.Type == "Firmware")
+				{
+					infoPadding = 26;
+				}
+
 				var label = new Label
 				{
 					Text = path.Type,
-					Location = new Point(widgetOffset + buttonWidth + padding, ypos + 4),
+					Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, ypos + 4),
 					Width = 100,
 					Name = path.Type,
 					Anchor = AnchorStyles.Top | AnchorStyles.Right,
@@ -174,17 +180,18 @@ namespace BizHawk.Client.EmuHawk
 				sys = "PCECD";
 			}
 
-			var hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
-
-			if (hasFirmwares)
+			if (tabPage.Name.Contains("Global"))
 			{
 				var firmwareButton = new Button
 				{
 					Name = sys,
-					Text = "&Firmware",
-					Location = new Point(xpos, ypos),
-					Width = 75,
+					Text = String.Empty,
+					Image = Properties.Resources.Help,
+					Location = new Point(499, 253),
+					Width = 26,
+					Anchor = AnchorStyles.Top | AnchorStyles.Right
 				};
+
 				firmwareButton.Click += delegate
 				{
 					var f = new FirmwaresConfig { TargetSystem = sys };
@@ -304,6 +311,7 @@ namespace BizHawk.Client.EmuHawk
 
 					t.Controls.Add(firmwareButton);
 				}
+
 				tabPages.Add(t);
 				
 			}
