@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -14,16 +13,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : Form, IToolForm
 	{
-		//TODO:
-		//remember column widths and restore column width on restore default settings
-		//column click
-		//column reorder
+		// TODO:
+		// remember column widths and restore column width on restore default settings
+		// column click
+		// column reorder
+		public EmuLuaLibrary LuaImp { get; set; }
 
-		public EmuLuaLibrary LuaImp;
-
+		private readonly LuaFileList _luaList;
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private readonly LuaFileList _luaList;
 
 		public bool UpdateBefore { get { return true; } }
 		public void UpdateValues() { }
@@ -106,11 +104,17 @@ namespace BizHawk.Client.EmuHawk
 							luaFile.Enabled = false;
 							ConsoleLog(e.Message);
 						}
-						else MessageBox.Show(e.ToString());
+						else
+						{
+							MessageBox.Show(e.ToString());
+						}
 					}
 				}
+				else
+				{
+					luaFile.Enabled = false;
+				}
 
-				else luaFile.Enabled = false;
 				luaFile.Paused = false;
 			}
 			else
@@ -122,7 +126,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				RunLuaScripts();
-				
 			}
 
 			UpdateDialog();
@@ -153,7 +156,10 @@ namespace BizHawk.Client.EmuHawk
 							file.Enabled = false;
 							ConsoleLog(e.Message);
 						}
-						else MessageBox.Show(e.ToString());
+						else
+						{
+							MessageBox.Show(e.ToString());
+						}
 					}
 				}
 				else
@@ -198,9 +204,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (column == 0)
 			{
-				text = Path.GetFileNameWithoutExtension(_luaList[index].Path); //TODO: how about a list of Names and allow the user to name them?
+				text = Path.GetFileNameWithoutExtension(_luaList[index].Path); // TODO: how about allow the user to name scripts?
 			}
-			if (column == 1)
+			else if (column == 1)
 			{
 				text = _luaList[index].Path;
 			}
@@ -217,11 +223,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			_defaultWidth = Size.Width;		//Save these first so that the user can restore to its original size
+			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Global.Config.LuaConsoleSaveWindowPosition && Global.Config.LuaConsoleWndx >= 0 && Global.Config.LuaConsoleWndy >= 0)
+			if (Global.Config.LuaConsoleSaveWindowPosition && Global.Config.LuaConsoleWndx >= 0
+			    && Global.Config.LuaConsoleWndy >= 0)
+			{
 				Location = new Point(Global.Config.LuaConsoleWndx, Global.Config.LuaConsoleWndy);
+			}
 
 			if (Global.Config.LuaConsoleWidth >= 0 && Global.Config.LuaConsoleHeight >= 0)
 			{
@@ -237,7 +246,6 @@ namespace BizHawk.Client.EmuHawk
 					Filter = filter, RestoreDirectory = true
 				};
 
-
 			if (!Directory.Exists(ofd.InitialDirectory))
 			{
 				Directory.CreateDirectory(ofd.InitialDirectory);
@@ -250,39 +258,21 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateNumberOfScripts()
 		{
 			var message = String.Empty;
-			int active = 0, paused = 0, separators = 0;
-			foreach (var file in _luaList)
-			{
-				if (!file.IsSeparator)
-				{
-					if (file.Enabled)
-					{
-						active++;
-						if (file.Paused)
-						{
-							paused++;
-						}
-					}
-				}
-				else
-				{
-					separators++;
-				}
-			}
+			var total = SelectedFiles.Count();
+			var active = _luaList.Count(file => file.Enabled);
+			var paused = _luaList.Count(file => file.Enabled && file.Paused);
 
-			var L = _luaList.Count - separators;
-
-			if (L == 1)
+			if (total == 1)
 			{
-				message += L + " script (" + active + " active, " + paused + " paused)";
+				message += total + " script (" + active + " active, " + paused + " paused)";
 			}
-			else if (L == 0)
+			else if (total == 0)
 			{
-				message += L + " scripts";
+				message += total + " scripts";
 			}
 			else
 			{
-				message += L + " scripts (" + active + " active, " + paused + " paused)";
+				message += total + " scripts (" + active + " active, " + paused + " paused)";
 			}
 
 			NumberOfScripts.Text = message;
@@ -301,7 +291,9 @@ namespace BizHawk.Client.EmuHawk
 		public void WriteToOutputWindow(string message)
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
 				return;
+			}
 
 			OutputBox.Invoke(() =>
 			{
@@ -314,7 +306,9 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearOutputWindow()
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
 				return;
+			}
 
 			OutputBox.Invoke(() =>
 			{
@@ -329,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// resumes suspended coroutines
+		/// resumes suspended Co-routines
 		/// </summary>
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
@@ -340,30 +334,33 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.GuiLibrary.DrawNewEmu();
 				}
+
 				foreach (var lf in _luaList)
 				{
-					var oldcd = Environment.CurrentDirectory; //save old current directory before this lua thread clobbers it for the .net thread
+					var oldcd = Environment.CurrentDirectory; // Save old current directory before this lua thread clobbers it for the .net thread
 
 					try
 					{
-						if (lf.Enabled && lf.Thread != null && !(lf.Paused))
+						if (lf.Enabled && lf.Thread != null && !lf.Paused)
 						{
 							var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 							if (!prohibit)
 							{
-								//restore this lua thread's preferred current directory
+								// Restore this lua thread's preferred current directory
 								if (lf.CurrentDirectory != null)
 								{
 									Environment.CurrentDirectory = lf.CurrentDirectory;
 								}
+
 								var result = LuaImp.ResumeScript(lf.Thread);
 								if (result.Terminated)
 								{
 									lf.Stop();
 								}
+
 								lf.FrameWaiting = result.WaitForFrame;
 
-								//if the lua thread changed its current directory, capture that here
+								// If the lua thread changed its current directory, capture that here
 								lf.CurrentDirectory = Environment.CurrentDirectory;
 							}
 						}
@@ -376,24 +373,23 @@ namespace BizHawk.Client.EmuHawk
 							lf.Thread = null;
 							ConsoleLog(ex.ToString());
 						}
-						else MessageBox.Show(ex.ToString());
+						else
+						{
+							MessageBox.Show(ex.ToString());
+						}
 					}
 
-					//restore the current directory
+					// Restore the current directory
 					Environment.CurrentDirectory = oldcd;
 				}
 			}
-			//LuaImp.gui_drawFinishEmu();
 		}
 
 		public void StartLuaDrawing()
 		{
-			if (_luaList.Any())
+			if (_luaList.Any() && LuaImp.GuiLibrary.SurfaceIsNull)
 			{
-				if (LuaImp.GuiLibrary.SurfaceIsNull)
-				{
-					LuaImp.GuiLibrary.DrawNewEmu();
-				}
+				LuaImp.GuiLibrary.DrawNewEmu();
 			}
 		}
 
@@ -433,6 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = "NULL";
 				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
+
 			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
@@ -457,7 +454,10 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadSessionFromRecent(string path)
 		{
 			var doload = true;
-			if (_luaList.Changes) doload = AskSave();
+			if (_luaList.Changes)
+			{
+				doload = AskSave();
+			}
 
 			if (doload)
 			{
@@ -509,12 +509,13 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 			}
+
 			return true;
 		}
 
 		private static void OpenLuaWriter(string path)
 		{
-			var writer = new LuaWriter {CurrentFile = path};
+			var writer = new LuaWriter { CurrentFile = path };
 			writer.Show();
 		}
 
@@ -697,8 +698,8 @@ namespace BizHawk.Client.EmuHawk
 						foreach (var function in functions)
 						{
 							LuaImp.RegisteredFunctions.Remove(function);
-
 						}
+
 						UpdateRegisteredFunctionsDialog();
 					}
 
@@ -839,7 +840,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					var form = new LuaRegisteredFunctionsList {StartLocation = GetPromptPoint()};
+					var form = new LuaRegisteredFunctionsList { StartLocation = GetPromptPoint() };
 					form.Show();
 				}
 			}
@@ -945,12 +946,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path) == (".lua") || Path.GetExtension(path) == (".txt"))
+					if (Path.GetExtension(path) == ".lua" || Path.GetExtension(path) == ".txt")
 					{
 						LoadLuaFile(path);
 						UpdateDialog();
 					}
-					else if (Path.GetExtension(path) == (".luases"))
+					else if (Path.GetExtension(path) == ".luases")
 					{
 						_luaList.LoadLuaSession(path);
 						RunLuaScripts();
@@ -984,11 +985,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RemoveScriptMenuItem_Click(null, null);
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
 			{
 				SelectAllMenuItem_Click(null, null);
 			}
-			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
+			else if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) // F12
 			{
 				RegisteredFunctionsMenuItem_Click(null, null);
 			}
@@ -1001,7 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OutputBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) //F12
+			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) // F12
 			{
 				RegisteredFunctionsMenuItem_Click(null, null);
 			}
