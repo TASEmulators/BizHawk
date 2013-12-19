@@ -44,6 +44,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_clear_sram();
 
+		public const int MIN_MEM_DOMAIN = 0;
+		public const int MAX_MEM_DOMAIN = 9;
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		// apparently, if you use built in string marshalling, the interop will assume that
+		// the unmanaged char pointer was allocated in hglobal and try to free it that way
+		public static extern IntPtr gpgx_get_memdom(int which, ref IntPtr area, ref int size);
+
 		// call this before reading sram returned by gpgx_get_sram()
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_sram_prepread();
