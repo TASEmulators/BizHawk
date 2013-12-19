@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
-					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.RemoveFunction(nlf);
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Remove(nlf);
 				}
 				PopulateListView();
 			}
