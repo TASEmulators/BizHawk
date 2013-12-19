@@ -703,7 +703,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					item.Stop();
-					
 				}
 			}
 

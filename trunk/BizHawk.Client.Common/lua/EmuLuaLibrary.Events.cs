@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
 			{
-				_luaFunctions.RemoveFunction(nlf);
+				_luaFunctions.Remove(nlf);
 				return true;
 			}
 
@@ -205,7 +205,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Name == name.ToString()))
 			{
-				_luaFunctions.RemoveFunction(nlf);
+				_luaFunctions.Remove(nlf);
 				return true;
 			}
 
