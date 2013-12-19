@@ -90,7 +90,6 @@ namespace BizHawk.Client.EmuHawk
 				var luaFile = new LuaFile(String.Empty, path);
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
-				LuaListView.Refresh();
 				Global.Config.RecentLua.Add(path);
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
@@ -110,6 +109,7 @@ namespace BizHawk.Client.EmuHawk
 						else MessageBox.Show(e.ToString());
 					}
 				}
+
 				else luaFile.Enabled = false;
 				luaFile.Paused = false;
 			}
@@ -122,8 +122,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				RunLuaScripts();
-				UpdateDialog();
+				
 			}
+
+			UpdateDialog();
 		}
 
 		public void UpdateDialog()
@@ -131,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.ItemCount = _luaList.Count;
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
+			UpdateRegisteredFunctionsDialog();
 		}
 
 		public void RunLuaScripts()
@@ -698,19 +701,20 @@ namespace BizHawk.Client.EmuHawk
 						}
 						UpdateRegisteredFunctionsDialog();
 					}
+
 					item.Stop();
 					
 				}
 			}
 
-			LuaListView.Refresh();
 			_luaList.Changes = true;
+			UpdateDialog();
 		}
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			SelectedFiles.ToList().ForEach(x => x.TogglePause());
-			LuaListView.Refresh();
+			UpdateDialog();
 		}
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
