@@ -102,9 +102,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PreviousMarkerFromFrameControl = new BizHawk.Client.EmuHawk.MarkerControl();
-			this.PreviousMarkerFromSelectionControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.TasStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
+			this.TasSplicerBox = new BizHawk.Client.EmuHawk.SplicerBox();
+			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.TASMenu.SuspendLayout();
+			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -118,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(530, 24);
+			this.TASMenu.Size = new System.Drawing.Size(506, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			// 
@@ -666,10 +670,10 @@ namespace BizHawk.Client.EmuHawk
 			this.TASView.GridLines = true;
 			this.TASView.InputPaintingMode = false;
 			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(12, 49);
+			this.TASView.Location = new System.Drawing.Point(8, 27);
 			this.TASView.Name = "TASView";
 			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(291, 444);
+			this.TASView.Size = new System.Drawing.Size(288, 471);
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
@@ -685,31 +689,55 @@ namespace BizHawk.Client.EmuHawk
 			this.Log.Text = "Log";
 			this.Log.Width = 222;
 			// 
-			// PreviousMarkerFromFrameControl
+			// TasStatusStrip
 			// 
-			this.PreviousMarkerFromFrameControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PreviousMarkerFromFrameControl.Location = new System.Drawing.Point(12, 25);
-			this.PreviousMarkerFromFrameControl.Name = "PreviousMarkerFromFrameControl";
-			this.PreviousMarkerFromFrameControl.Size = new System.Drawing.Size(292, 24);
-			this.PreviousMarkerFromFrameControl.TabIndex = 2;
+			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageStatusLabel});
+			this.TasStatusStrip.Location = new System.Drawing.Point(0, 497);
+			this.TasStatusStrip.Name = "TasStatusStrip";
+			this.TasStatusStrip.Size = new System.Drawing.Size(506, 22);
+			this.TasStatusStrip.TabIndex = 4;
+			this.TasStatusStrip.Text = "statusStrip1";
 			// 
-			// PreviousMarkerFromSelectionControl
+			// MessageStatusLabel
 			// 
-			this.PreviousMarkerFromSelectionControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PreviousMarkerFromSelectionControl.Location = new System.Drawing.Point(11, 493);
-			this.PreviousMarkerFromSelectionControl.Name = "PreviousMarkerFromSelectionControl";
-			this.PreviousMarkerFromSelectionControl.Size = new System.Drawing.Size(292, 24);
-			this.PreviousMarkerFromSelectionControl.TabIndex = 3;
+			this.MessageStatusLabel.Name = "MessageStatusLabel";
+			this.MessageStatusLabel.Size = new System.Drawing.Size(105, 17);
+			this.MessageStatusLabel.Text = "TAStudio engaged";
+			// 
+			// TasPlaybackBox
+			// 
+			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasPlaybackBox.Location = new System.Drawing.Point(302, 25);
+			this.TasPlaybackBox.Name = "TasPlaybackBox";
+			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
+			this.TasPlaybackBox.TabIndex = 5;
+			// 
+			// TasSplicerBox
+			// 
+			this.TasSplicerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasSplicerBox.Location = new System.Drawing.Point(302, 145);
+			this.TasSplicerBox.Name = "TasSplicerBox";
+			this.TasSplicerBox.Size = new System.Drawing.Size(204, 65);
+			this.TasSplicerBox.TabIndex = 6;
+			// 
+			// TasBookmarksBranchesBox
+			// 
+			this.TasBookmarksBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasBookmarksBranchesBox.Location = new System.Drawing.Point(302, 216);
+			this.TasBookmarksBranchesBox.Name = "TasBookmarksBranchesBox";
+			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 278);
+			this.TasBookmarksBranchesBox.TabIndex = 7;
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(530, 519);
-			this.Controls.Add(this.PreviousMarkerFromSelectionControl);
-			this.Controls.Add(this.PreviousMarkerFromFrameControl);
+			this.ClientSize = new System.Drawing.Size(506, 519);
+			this.Controls.Add(this.TasBookmarksBranchesBox);
+			this.Controls.Add(this.TasSplicerBox);
+			this.Controls.Add(this.TasPlaybackBox);
+			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
 			this.Controls.Add(this.TASView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -721,6 +749,8 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
+			this.TasStatusStrip.ResumeLayout(false);
+			this.TasStatusStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -799,7 +829,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
-		private MarkerControl PreviousMarkerFromFrameControl;
-		private MarkerControl PreviousMarkerFromSelectionControl;
+		private System.Windows.Forms.StatusStrip TasStatusStrip;
+		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
+		private PlaybackBox TasPlaybackBox;
+		private SplicerBox TasSplicerBox;
+		private BookmarksBranchesBox TasBookmarksBranchesBox;
 	}
 }

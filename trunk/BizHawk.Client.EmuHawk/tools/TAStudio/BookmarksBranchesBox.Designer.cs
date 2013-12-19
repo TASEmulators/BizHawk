@@ -38,7 +38,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BookmarksBranchesGroupBox.Location = new System.Drawing.Point(3, 0);
 			this.BookmarksBranchesGroupBox.Name = "BookmarksBranchesGroupBox";
-			this.BookmarksBranchesGroupBox.Size = new System.Drawing.Size(198, 237);
+			this.BookmarksBranchesGroupBox.Size = new System.Drawing.Size(198, 249);
 			this.BookmarksBranchesGroupBox.TabIndex = 0;
 			this.BookmarksBranchesGroupBox.TabStop = false;
 			this.BookmarksBranchesGroupBox.Text = "Bookmarks / Branches";

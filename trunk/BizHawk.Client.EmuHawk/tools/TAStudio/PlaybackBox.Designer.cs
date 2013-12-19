@@ -66,6 +66,7 @@
 			// AutoRestoreCheckbox
 			// 
 			this.AutoRestoreCheckbox.AutoSize = true;
+			this.AutoRestoreCheckbox.Enabled = false;
 			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 87);
 			this.AutoRestoreCheckbox.Name = "AutoRestoreCheckbox";
 			this.AutoRestoreCheckbox.Size = new System.Drawing.Size(141, 17);
@@ -75,6 +76,7 @@
 			// 
 			// SeekProgressBar
 			// 
+			this.SeekProgressBar.Enabled = false;
 			this.SeekProgressBar.Location = new System.Drawing.Point(6, 71);
 			this.SeekProgressBar.Name = "SeekProgressBar";
 			this.SeekProgressBar.Size = new System.Drawing.Size(186, 10);
@@ -84,6 +86,7 @@
 			// TurboSeekCheckbox
 			// 
 			this.TurboSeekCheckbox.AutoSize = true;
+			this.TurboSeekCheckbox.Enabled = false;
 			this.TurboSeekCheckbox.Location = new System.Drawing.Point(103, 48);
 			this.TurboSeekCheckbox.Name = "TurboSeekCheckbox";
 			this.TurboSeekCheckbox.Size = new System.Drawing.Size(80, 17);
@@ -94,6 +97,7 @@
 			// FollowCursorCheckbox
 			// 
 			this.FollowCursorCheckbox.AutoSize = true;
+			this.FollowCursorCheckbox.Enabled = false;
 			this.FollowCursorCheckbox.Location = new System.Drawing.Point(10, 48);
 			this.FollowCursorCheckbox.Name = "FollowCursorCheckbox";
 			this.FollowCursorCheckbox.Size = new System.Drawing.Size(89, 17);
@@ -103,6 +107,7 @@
 			// 
 			// NextMarkerButton
 			// 
+			this.NextMarkerButton.Enabled = false;
 			this.NextMarkerButton.Location = new System.Drawing.Point(154, 19);
 			this.NextMarkerButton.Name = "NextMarkerButton";
 			this.NextMarkerButton.Size = new System.Drawing.Size(38, 23);
@@ -112,6 +117,7 @@
 			// 
 			// FrameAdvanceButton
 			// 
+			this.FrameAdvanceButton.Enabled = false;
 			this.FrameAdvanceButton.Location = new System.Drawing.Point(117, 19);
 			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
 			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
@@ -121,6 +127,7 @@
 			// 
 			// PauseButton
 			// 
+			this.PauseButton.Enabled = false;
 			this.PauseButton.Location = new System.Drawing.Point(80, 19);
 			this.PauseButton.Name = "PauseButton";
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
@@ -130,6 +137,7 @@
 			// 
 			// RewindButton
 			// 
+			this.RewindButton.Enabled = false;
 			this.RewindButton.Location = new System.Drawing.Point(43, 19);
 			this.RewindButton.Name = "RewindButton";
 			this.RewindButton.Size = new System.Drawing.Size(38, 23);
@@ -139,6 +147,7 @@
 			// 
 			// PreviousMarkerButton
 			// 
+			this.PreviousMarkerButton.Enabled = false;
 			this.PreviousMarkerButton.Location = new System.Drawing.Point(6, 19);
 			this.PreviousMarkerButton.Name = "PreviousMarkerButton";
 			this.PreviousMarkerButton.Size = new System.Drawing.Size(38, 23);

@@ -501,6 +501,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void PreviousMarkerFromFrameControl_Load(object sender, EventArgs e)
+		{
+
+		}
+
 		#endregion
 	}
 }
