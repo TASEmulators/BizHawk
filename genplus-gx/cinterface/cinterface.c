@@ -177,7 +177,6 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
-
 GPGX_EX void gpgx_clear_sram(void)
 {
 	// clear sram
@@ -225,28 +224,110 @@ GPGX_EX void gpgx_sram_commitwrite(void)
 	}
 }
 
+GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
+{
+	if (!area || !size)
+		return NULL;
+	switch (which)
+	{
+	case 0:
+		*area = work_ram;
+		*size = 0x10000;
+		return "68K RAM";
+	case 1:
+		*area = zram;
+		*size = 0x2000;
+		return "Z80 RAM";
+	case 2:
+		if (!cdd.loaded)
+		{
+			*area = ext.md_cart.rom;
+			*size = ext.md_cart.romsize;
+			return "MD CART";
+		}
+		else if (scd.cartridge.id)
+		{
+			*area = scd.cartridge.area;
+			*size = scd.cartridge.mask + 1;
+			return "EBRAM";
+		}
+		else return NULL;
+	case 3:
+		if (cdd.loaded)
+		{
+			*area = scd.bootrom;
+			*size = 0x20000;
+			return "CD BOOT ROM";
+		}
+		else return NULL;
+	case 4:
+		if (cdd.loaded)
+		{
+			*area = scd.prg_ram;
+			*size = 0x80000;
+			return "CD PRG RAM";
+		}
+		else return NULL;
+	case 5:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram[0];
+			*size = 0x20000;
+			return "CD WORD RAM[0] (1M)";
+		}
+		else return NULL;
+	case 6:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram[1];
+			*size = 0x20000;
+			return "CD WORD RAM[1] (1M)";
+		}
+		else return NULL;
+	case 7:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram_2M;
+			*size = 0x40000;
+			return "CD WORD RAM (2M)";
+		}
+		else return NULL;
+	case 8:
+		if (cdd.loaded)
+		{
+			*area = scd.bram;
+			*size = 0x2000;
+			return "CD BRAM";
+		}
+		else return NULL;
+	case 9:
+		*area = boot_rom;
+		*size = 0x800;
+		return "BOOT ROM";
+	default:
+		return NULL;
+	}
+}
+
 GPGX_EX void gpgx_get_sram(void **area, int *size)
 {
+	if (!area || !size)
+		return;
+
 	if (sram.on)
 	{
-		if (area)
-			*area = sram.sram;
-		if (size)
-			*size = 0x10000;
+		*area = sram.sram;
+		*size = 0x10000;
 	}
 	else if (scd.cartridge.id)
 	{
-		if (area)
-			*area = scd.cartridge.area;
-		if (size)
-			*size = scd.cartridge.mask + 1 + 0x2000;
+		*area = scd.cartridge.area;
+		*size = scd.cartridge.mask + 1 + 0x2000;
 	}
 	else if (cdd.loaded)
 	{
-		if (area)
-			*area = scd.bram;
-		if (size)
-			*size = 0x2000;
+		*area = scd.bram;
+		*size = 0x2000;
 	}
 	else
 	{

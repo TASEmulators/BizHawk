@@ -53,8 +53,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				AttachedCore = this;
 
-				MemoryDomains = MemoryDomainList.GetDummyList();
-
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
 				this.romfile = romfile;
@@ -111,6 +109,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				// pull the default video size from the core
 				update_video();
+
+				SetMemoryDomains();
 			}
 			catch
 			{
@@ -471,6 +471,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		#endregion
 
 		public MemoryDomainList MemoryDomains { get; private set; }
+
+		unsafe void SetMemoryDomains()
+		{
+			var mm = new List<MemoryDomain>();
+			for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
+			{
+				IntPtr area = IntPtr.Zero;
+				int size = 0;
+				IntPtr pname = LibGPGX.gpgx_get_memdom(i, ref area, ref size);
+				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
+					continue;
+				string name = Marshal.PtrToStringAnsi(pname);
+				byte *p = (byte*) area;
+
+				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						return p[addr];
+					},
+					delegate(int addr, byte val)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr] = val;
+					}));
+			}
+
+			MemoryDomains = new MemoryDomainList(mm, 0);
+		}
+
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
