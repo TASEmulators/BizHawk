@@ -194,8 +194,13 @@ namespace BizHawk.Client.EmuHawk
 
 				firmwareButton.Click += delegate
 				{
+					if (Owner is FirmwaresConfig)
+					{
+						MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+						return;
+					}
 					var f = new FirmwaresConfig { TargetSystem = sys };
-					f.ShowDialog();
+					f.ShowDialog(this);
 				};
 
 				tabPage.Controls.Add(firmwareButton);

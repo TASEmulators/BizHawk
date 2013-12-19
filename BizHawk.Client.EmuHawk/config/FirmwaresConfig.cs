@@ -386,6 +386,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkBasePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			if (Owner is PathConfig)
+			{
+				MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+				return;
+			}
 			new PathConfig().ShowDialog(this);
 			RefreshBasePath();
 		}
