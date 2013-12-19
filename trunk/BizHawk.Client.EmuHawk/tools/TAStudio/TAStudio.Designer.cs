@@ -105,8 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TasStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
-			this.TasSplicerBox = new BizHawk.Client.EmuHawk.SplicerBox();
 			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -692,7 +692,8 @@ namespace BizHawk.Client.EmuHawk
 			// TasStatusStrip
 			// 
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MessageStatusLabel});
+            this.MessageStatusLabel,
+            this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 497);
 			this.TasStatusStrip.Name = "TasStatusStrip";
 			this.TasStatusStrip.Size = new System.Drawing.Size(506, 22);
@@ -713,21 +714,20 @@ namespace BizHawk.Client.EmuHawk
 			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
 			this.TasPlaybackBox.TabIndex = 5;
 			// 
-			// TasSplicerBox
-			// 
-			this.TasSplicerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasSplicerBox.Location = new System.Drawing.Point(302, 145);
-			this.TasSplicerBox.Name = "TasSplicerBox";
-			this.TasSplicerBox.Size = new System.Drawing.Size(204, 65);
-			this.TasSplicerBox.TabIndex = 6;
-			// 
 			// TasBookmarksBranchesBox
 			// 
 			this.TasBookmarksBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasBookmarksBranchesBox.Location = new System.Drawing.Point(302, 216);
+			this.TasBookmarksBranchesBox.Location = new System.Drawing.Point(302, 151);
 			this.TasBookmarksBranchesBox.Name = "TasBookmarksBranchesBox";
-			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 278);
+			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 343);
 			this.TasBookmarksBranchesBox.TabIndex = 7;
+			// 
+			// SplicerStatusLabel
+			// 
+			this.SplicerStatusLabel.Name = "SplicerStatusLabel";
+			this.SplicerStatusLabel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+			this.SplicerStatusLabel.Size = new System.Drawing.Size(175, 17);
+			this.SplicerStatusLabel.Text = "0 selected, clipboard: empty";
 			// 
 			// TAStudio
 			// 
@@ -735,7 +735,6 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
 			this.Controls.Add(this.TasBookmarksBranchesBox);
-			this.Controls.Add(this.TasSplicerBox);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
@@ -832,7 +831,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.StatusStrip TasStatusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
 		private PlaybackBox TasPlaybackBox;
-		private SplicerBox TasSplicerBox;
 		private BookmarksBranchesBox TasBookmarksBranchesBox;
+		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
 	}
 }
