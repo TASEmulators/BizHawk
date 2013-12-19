@@ -29,10 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.SplicerGroupBox = new System.Windows.Forms.GroupBox();
-			this.SelectionNameLabel = new System.Windows.Forms.Label();
-			this.ClipboardNameLabel = new System.Windows.Forms.Label();
-			this.SelectionStatsLabel = new System.Windows.Forms.Label();
 			this.ClipboardStatsLabel = new System.Windows.Forms.Label();
+			this.SelectionStatsLabel = new System.Windows.Forms.Label();
+			this.ClipboardNameLabel = new System.Windows.Forms.Label();
+			this.SelectionNameLabel = new System.Windows.Forms.Label();
 			this.SplicerGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -52,14 +52,25 @@
 			this.SplicerGroupBox.TabStop = false;
 			this.SplicerGroupBox.Text = "Splicer";
 			// 
-			// SelectionNameLabel
+			// ClipboardStatsLabel
 			// 
-			this.SelectionNameLabel.AutoSize = true;
-			this.SelectionNameLabel.Location = new System.Drawing.Point(6, 16);
-			this.SelectionNameLabel.Name = "SelectionNameLabel";
-			this.SelectionNameLabel.Size = new System.Drawing.Size(54, 13);
-			this.SelectionNameLabel.TabIndex = 0;
-			this.SelectionNameLabel.Text = "Selection:";
+			this.ClipboardStatsLabel.AutoSize = true;
+			this.ClipboardStatsLabel.Enabled = false;
+			this.ClipboardStatsLabel.Location = new System.Drawing.Point(66, 33);
+			this.ClipboardStatsLabel.Name = "ClipboardStatsLabel";
+			this.ClipboardStatsLabel.Size = new System.Drawing.Size(35, 13);
+			this.ClipboardStatsLabel.TabIndex = 3;
+			this.ClipboardStatsLabel.Text = "empty";
+			// 
+			// SelectionStatsLabel
+			// 
+			this.SelectionStatsLabel.AutoSize = true;
+			this.SelectionStatsLabel.Enabled = false;
+			this.SelectionStatsLabel.Location = new System.Drawing.Point(66, 16);
+			this.SelectionStatsLabel.Name = "SelectionStatsLabel";
+			this.SelectionStatsLabel.Size = new System.Drawing.Size(87, 13);
+			this.SelectionStatsLabel.TabIndex = 2;
+			this.SelectionStatsLabel.Text = "1 row, 8 columns";
 			// 
 			// ClipboardNameLabel
 			// 
@@ -70,23 +81,14 @@
 			this.ClipboardNameLabel.TabIndex = 1;
 			this.ClipboardNameLabel.Text = "Clipboard:";
 			// 
-			// SelectionStatsLabel
+			// SelectionNameLabel
 			// 
-			this.SelectionStatsLabel.AutoSize = true;
-			this.SelectionStatsLabel.Location = new System.Drawing.Point(66, 16);
-			this.SelectionStatsLabel.Name = "SelectionStatsLabel";
-			this.SelectionStatsLabel.Size = new System.Drawing.Size(87, 13);
-			this.SelectionStatsLabel.TabIndex = 2;
-			this.SelectionStatsLabel.Text = "1 row, 8 columns";
-			// 
-			// ClipboardStatsLabel
-			// 
-			this.ClipboardStatsLabel.AutoSize = true;
-			this.ClipboardStatsLabel.Location = new System.Drawing.Point(66, 33);
-			this.ClipboardStatsLabel.Name = "ClipboardStatsLabel";
-			this.ClipboardStatsLabel.Size = new System.Drawing.Size(35, 13);
-			this.ClipboardStatsLabel.TabIndex = 3;
-			this.ClipboardStatsLabel.Text = "empty";
+			this.SelectionNameLabel.AutoSize = true;
+			this.SelectionNameLabel.Location = new System.Drawing.Point(6, 16);
+			this.SelectionNameLabel.Name = "SelectionNameLabel";
+			this.SelectionNameLabel.Size = new System.Drawing.Size(54, 13);
+			this.SelectionNameLabel.TabIndex = 0;
+			this.SelectionNameLabel.Text = "Selection:";
 			// 
 			// SplicerBox
 			// 
