@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TASView = new BizHawk.Client.EmuHawk.TasListView();
+			this.TasView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.TasStatusStrip = new System.Windows.Forms.StatusStrip();
@@ -659,27 +659,27 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.TasView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
-			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TASView.FullRowSelect = true;
-			this.TASView.GridLines = true;
-			this.TASView.InputPaintingMode = false;
-			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(8, 27);
-			this.TASView.Name = "TASView";
-			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(288, 471);
-			this.TASView.TabIndex = 1;
-			this.TASView.UseCompatibleStateImageBehavior = false;
-			this.TASView.View = System.Windows.Forms.View.Details;
-			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
-			this.TASView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
-			this.TASView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
+			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TasView.FullRowSelect = true;
+			this.TasView.GridLines = true;
+			this.TasView.InputPaintingMode = false;
+			this.TasView.ItemCount = 0;
+			this.TasView.Location = new System.Drawing.Point(8, 27);
+			this.TasView.Name = "TASView";
+			this.TasView.selectedItem = -1;
+			this.TasView.Size = new System.Drawing.Size(288, 471);
+			this.TasView.TabIndex = 1;
+			this.TasView.UseCompatibleStateImageBehavior = false;
+			this.TasView.View = System.Windows.Forms.View.Details;
+			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
+			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
+			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
 			// 
 			// Frame
 			// 
@@ -739,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Controls.Add(this.TASView);
+			this.Controls.Add(this.TasView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
@@ -769,7 +769,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
-		private TasListView TASView;
+		private TasListView TasView;
 		private System.Windows.Forms.ColumnHeader Log;
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
