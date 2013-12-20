@@ -290,6 +290,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		// TODO: use render and rendersound
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			if (Controller["Reset"])
+				LibGPGX.gpgx_reset(false);
+			if (Controller["Power"])
+				LibGPGX.gpgx_reset(true);
+
 			// do we really have to get each time?  nothing has changed
 			if (!LibGPGX.gpgx_get_control(input))
 				throw new Exception("gpgx_get_control() failed!");

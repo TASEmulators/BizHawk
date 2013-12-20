@@ -109,6 +109,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ControllerDef = new ControllerDefinition();
 
+			ControllerDef.BoolButtons.Add("Power");
+			ControllerDef.BoolButtons.Add("Reset");
+
 			for (int i = 0; i < LibGPGX.MAX_DEVICES; i++)
 			{
 				switch (input.dev[i])
