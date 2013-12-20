@@ -1162,16 +1162,11 @@ namespace BizHawk.Client.EmuHawk
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
-			VSControlsMenuItem.Enabled = Global.Emulator.BoardName == "VS";
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			FdsEjectDiskMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
-
-			VSCoin1MenuItem.Enabled =
-				VSCoin2MenuItem.Enabled =
-				Global.Emulator.BoardName == "VS";
 
 			for (int i = 1; i < FDSControlsMenuItem.DropDownItems.Count; i++)
 			{
@@ -1226,30 +1221,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.Click("FDS Eject");
 				GlobalWin.OSD.AddMessage("FDS disk ejected.");
 			}
-		}
-
-		private void VSCoin1MenuItem_Click(object sender, EventArgs e)
-		{
-			//if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("FDS Eject"))
-			//{
-			//	if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
-			//	{
-			//		Global.ClickyVirtualPadController.Click(button);
-			//		GlobalWin.OSD.AddMessage(msg);
-			//	}
-			//}
-		}
-
-		private void VSCoin2MenuItem_Click(object sender, EventArgs e)
-		{
-			//if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("FDS Eject"))
-			//{
-			//	if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
-			//	{
-			//		Global.ClickyVirtualPadController.Click(button);
-			//		GlobalWin.OSD.AddMessage(msg);
-			//	}
-			//}
 		}
 
 		#endregion

@@ -225,9 +225,6 @@
 			this.NESSoundChannelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FDSControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FdsEjectDiskMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VSControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VSCoin1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VSCoin2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEBGViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
@@ -1965,8 +1962,7 @@
             this.toolStripSeparator17,
             this.NESGraphicSettingsMenuItem,
             this.NESSoundChannelsMenuItem,
-            this.FDSControlsMenuItem,
-            this.VSControlsMenuItem});
+            this.FDSControlsMenuItem});
 			this.NESSubMenu.Name = "NESSubMenu";
 			this.NESSubMenu.Size = new System.Drawing.Size(40, 19);
 			this.NESSubMenu.Text = "&NES";
@@ -2032,32 +2028,9 @@
 			// FdsEjectDiskMenuItem
 			// 
 			this.FdsEjectDiskMenuItem.Name = "FdsEjectDiskMenuItem";
-			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.FdsEjectDiskMenuItem.Text = "&Eject Disk";
 			this.FdsEjectDiskMenuItem.Click += new System.EventHandler(this.FdsEjectDiskMenuItem_Click);
-			// 
-			// VSControlsMenuItem
-			// 
-			this.VSControlsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.VSCoin1MenuItem,
-            this.VSCoin2MenuItem});
-			this.VSControlsMenuItem.Name = "VSControlsMenuItem";
-			this.VSControlsMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.VSControlsMenuItem.Text = "VS Controls";
-			// 
-			// VSCoin1MenuItem
-			// 
-			this.VSCoin1MenuItem.Name = "VSCoin1MenuItem";
-			this.VSCoin1MenuItem.Size = new System.Drawing.Size(152, 22);
-			this.VSCoin1MenuItem.Text = "VS Coin &1";
-			this.VSCoin1MenuItem.Click += new System.EventHandler(this.VSCoin1MenuItem_Click);
-			// 
-			// VSCoin2MenuItem
-			// 
-			this.VSCoin2MenuItem.Name = "VSCoin2MenuItem";
-			this.VSCoin2MenuItem.Size = new System.Drawing.Size(152, 22);
-			this.VSCoin2MenuItem.Text = "VS Coin &2";
-			this.VSCoin2MenuItem.Click += new System.EventHandler(this.VSCoin2MenuItem_Click);
 			// 
 			// PCESubMenu
 			// 
@@ -3462,9 +3435,6 @@
         private System.Windows.Forms.ToolStripMenuItem Scanlines75MenuItem;
         private System.Windows.Forms.ToolStripMenuItem ScanlinesCustomMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VSControlsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VSCoin1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem VSCoin2MenuItem;
 	}
 }
 
