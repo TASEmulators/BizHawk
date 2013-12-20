@@ -34,9 +34,9 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
-			TASView.QueryItemText += TASView_QueryItemText;
-			TASView.QueryItemBkColor += TASView_QueryItemBkColor;
-			TASView.VirtualMode = true;
+			TasView.QueryItemText += TASView_QueryItemText;
+			TasView.QueryItemBkColor += TASView_QueryItemBkColor;
+			TasView.VirtualMode = true;
 			Closing += (o, e) =>
 			{
 				if (AskSave())
@@ -56,8 +56,8 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			TopMost = Global.Config.TAStudioTopMost;
-			TASView.InputPaintingMode = Global.Config.TAStudioDrawInput;
-			TASView.PointedCellChanged += TASView_PointedCellChanged;
+			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
+			TasView.PointedCellChanged += TASView_PointedCellChanged;
 		}
 
 		public bool AskSave()
@@ -98,14 +98,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			TASView.ItemCount = _tas.InputLogLength;
+			TasView.ItemCount = _tas.InputLogLength;
 			if (_tas.IsRecording)
 			{
-				TASView.ensureVisible(_tas.InputLogLength - 1);
+				TasView.ensureVisible(_tas.InputLogLength - 1);
 			}
 			else
 			{
-				TASView.ensureVisible(Global.Emulator.Frame - 1);
+				TasView.ensureVisible(Global.Emulator.Frame - 1);
 			}
 		}
 
@@ -140,8 +140,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var columnName = TASView.Columns[column].Name;
-				var columnText = TASView.Columns[column].Text;
+				var columnName = TasView.Columns[column].Name;
+				var columnText = TasView.Columns[column].Text;
 
 				if (columnName == MarkerColumnName)
 				{
@@ -218,13 +218,13 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("new TAStudio session started");
 				_tas.StartNewRecording();
 				GlobalWin.MainForm.StartNewMovie(_tas, true, true);
-				TASView.ItemCount = _tas.InputLogLength;
+				TasView.ItemCount = _tas.InputLogLength;
 			}
 		}
 
 		private void SetUpColumns()
 		{
-			TASView.Columns.Clear();
+			TasView.Columns.Clear();
 			AddColumn(MarkerColumnName, String.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddColumn(string columnName, string columnText, int columnWidth)
 		{
-			if (TASView.Columns[columnName] == null)
+			if (TasView.Columns[columnName] == null)
 			{
 				var column = new ColumnHeader
 				{
@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 					Width = columnWidth,
 				};
 
-				TASView.Columns.Add(column);
+				TasView.Columns.Add(column);
 			}
 		}
 
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Global.Config.RecentTas.Add(path);
-					TASView.ItemCount = _tas.InputLogLength;
+					TasView.ItemCount = _tas.InputLogLength;
 				}
 			}
 		}
@@ -305,8 +305,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
 				Global.Emulator.FrameAdvance(true, true);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
-				TASView.ensureVisible(frame);
-				TASView.Refresh();
+				TasView.ensureVisible(frame);
+				TasView.Refresh();
 			}
 			else
 			{
@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: columns selected
 			// TODO: clipboard
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			ListView.SelectedIndexCollection list = TasView.SelectedIndices;
 			string message = String.Empty;
 
 			if (list.Count > 0)
@@ -368,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 					_tas.Filename = file.FullName;
 					_tas.Load();
 					Global.Config.RecentTas.Add(_tas.Filename);
-					TASView.ItemCount = _tas.InputLogLength;
+					TasView.ItemCount = _tas.InputLogLength;
 					// TOOD: message to the user
 				}
 			}
@@ -415,13 +415,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
-			TASView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
+			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput ^= true;
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
 			TasClipboard.Clear();
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			ListView.SelectedIndexCollection list = TasView.SelectedIndices;
 			for (int i = 0; i < list.Count; i++)
 			{
 				TasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
@@ -477,28 +477,28 @@ namespace BizHawk.Client.EmuHawk
 		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
 		{
 			//TODO: move logic needs to go here
-			TASView.ItemCount = _tas.InputLogLength;
+			TasView.ItemCount = _tas.InputLogLength;
 		}
 
 		private void TASView_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (TASView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TASView.PointedCell.Column))
+			if (TasView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TasView.PointedCell.Column))
 			{
-				if (TASView.PointedCell.Column == MarkerColumnName)
+				if (TasView.PointedCell.Column == MarkerColumnName)
 				{
 					StartMarkerDrag = true;
 				}
-				else if (TASView.PointedCell.Column == FrameColumnName)
+				else if (TasView.PointedCell.Column == FrameColumnName)
 				{
 					StartFrameDrag = true;
 				}
 				else
 				{
-					_tas.ToggleButton(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
-					TASView.Refresh();
+					_tas.ToggleButton(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+					TasView.Refresh();
 
-					StartDrawColumn = TASView.PointedCell.Column;
-					StartOn = _tas.IsPressed(TASView.PointedCell.Row.Value, TASView.PointedCell.Column);
+					StartDrawColumn = TasView.PointedCell.Column;
+					StartOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 				}
 			}
 		}
@@ -521,15 +521,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (StartFrameDrag)
 			{
-				if (e.NewCell.Row.HasValue)
+				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
 				{
-					TASView.SelectItem(e.NewCell.Row.Value, true);
+					int startVal, endVal;
+					if (e.OldCell.Row.Value < e.NewCell.Row.Value)
+					{
+						startVal = e.OldCell.Row.Value;
+						endVal = e.NewCell.Row.Value;
+					}
+					else
+					{
+						startVal = e.NewCell.Row.Value;
+						endVal = e.OldCell.Row.Value;
+					}
+
+					for (int i = startVal + 1; i <= endVal; i++)
+					{
+						TasView.SelectItem(i, true);
+					}
 				}
 			}
-			else if (TASView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
+			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
 			{
 				_tas.SetButton(e.NewCell.Row.Value, StartDrawColumn, StartOn); //Notice it uses new row, old column, you can only paint across a single column
-				TASView.Refresh();
+				TasView.Refresh();
 			}
 		}
 
