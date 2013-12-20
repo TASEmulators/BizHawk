@@ -211,11 +211,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		}
 
-		void CDRead(int lba, IntPtr dest)
+		void CDRead(int lba, IntPtr dest, bool audio)
 		{
-			byte[] data = new byte[2048];
-			CD.ReadLBA_2048(lba, data, 0);
-			Marshal.Copy(data, 0, dest, 2048);
+			if (audio)
+			{
+				byte[] data = new byte[2352];
+				CD.ReadLBA_2352(lba, data, 0);
+				Marshal.Copy(data, 0, dest, 2352);
+			}
+			else
+			{
+				byte[] data = new byte[2048];
+				CD.ReadLBA_2048(lba, data, 0);
+				Marshal.Copy(data, 0, dest, 2048);
+			}
 		}
 
 		LibGPGX.cd_read_cb cd_callback_handle;

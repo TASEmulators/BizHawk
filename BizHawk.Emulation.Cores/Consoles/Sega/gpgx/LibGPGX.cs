@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public const int CD_MAX_TRACKS = 100;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void cd_read_cb(int lba, IntPtr dest);
+		public delegate void cd_read_cb(int lba, IntPtr dest, bool audio);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CDTrack

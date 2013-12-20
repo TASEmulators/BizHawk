@@ -120,12 +120,12 @@ static const unsigned char waveHeader[32] =
 static blip_t* blip[2];
 
 // FRONTEND INTERFACE
-void (*cdd_readcallback)(int lba, void *dest);
+void (*cdd_readcallback)(int lba, void *dest, int audio);
 
 typedef struct
 {
 	toc_t toc;
-	void (*cdd_readcallback)(int lba, void *dest);
+	void (*cdd_readcallback)(int lba, void *dest, int audio);
 } frontendcd_t;
 
 int cdd_load(char *header)
@@ -140,7 +140,7 @@ int cdd_load(char *header)
 		return 0;
 
 	// look for valid header
-	fecd.cdd_readcallback(0, data);
+	fecd.cdd_readcallback(0, data, 0);
 	if (memcmp("SEGADISCSYSTEM", data, 14) == 0)
 		startoffs = 0;
 	else if (memcmp("SEGADISCSYSTEM", data + 16, 14) == 0)
@@ -182,6 +182,12 @@ void cdd_reset(void)
   /* reset logical block address */
   cdd.lba = 0;
 
+  // reset audio subblock position
+  cdd.sampleOffset = 0;
+
+  // reset audio read position
+  cdd.sampleLba = 0;
+
   /* reset status */
   cdd.status = cdd.loaded ? CD_STOP : NO_DISC;
   
@@ -203,6 +209,8 @@ int cdd_context_save(uint8 *state)
   save_param(&cdd.scanOffset, sizeof(cdd.scanOffset));
   save_param(&cdd.volume, sizeof(cdd.volume));
   save_param(&cdd.status, sizeof(cdd.status));
+  save_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
+  save_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
 
   return bufferptr;
 }
@@ -219,13 +227,8 @@ int cdd_context_load(uint8 *state)
   load_param(&cdd.scanOffset, sizeof(cdd.scanOffset));
   load_param(&cdd.volume, sizeof(cdd.volume));
   load_param(&cdd.status, sizeof(cdd.status));
-
-  /* adjust current LBA within track limit */
-  lba = cdd.lba;
-  if (lba < cdd.toc.tracks[cdd.index].start)
-  {
-    lba = cdd.toc.tracks[cdd.index].start;
-  }
+  load_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
+  load_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
 
   return bufferptr;
 }
@@ -237,7 +240,6 @@ void cdd_unload(void)
 
   /* reset TOC */
   memset(&cdd.toc, 0x00, sizeof(cdd.toc));
-
 }
 
 void cdd_read_data(uint8 *dst)
@@ -245,7 +247,7 @@ void cdd_read_data(uint8 *dst)
   /* only read DATA track sectors */
   if ((cdd.lba >= 0) && (cdd.lba < cdd.toc.tracks[0].end))
   {
-	cdd_readcallback(cdd.lba, dst);
+	cdd_readcallback(cdd.lba, dst, 0);
   }
 }
 
@@ -259,7 +261,7 @@ void cdd_read_audio(unsigned int samples)
   samples = blip_clocks_needed(blip[0], samples);
 
   // audio track playing ? //
-  if (0) // (!scd.regs[0x36>>1].byte.h && cdd.toc.tracks[cdd.index].fd)
+  if (!scd.regs[0x36>>1].byte.h)
   {
     int i, mul, delta;
 
@@ -276,7 +278,39 @@ void cdd_read_audio(unsigned int samples)
 #else
       uint8 *ptr = cdc.ram;
 #endif
-      //fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
+	  {
+		char scratch[2352];
+		// copy the end of current sector
+	    int nsampreq = samples;
+		unsigned char *dest = cdc.ram;
+		cdd_readcallback(cdd.sampleLba, scratch, 1);
+		memcpy(cdc.ram, scratch + cdd.sampleOffset * 4, 2352 - cdd.sampleOffset * 4);
+		cdd.sampleLba++;
+		nsampreq -= 588 - cdd.sampleOffset;
+		dest += 2352 - cdd.sampleOffset * 4;
+		cdd.sampleOffset = 0;
+		// fill full sectors
+		while (nsampreq >= 588)
+		{
+		  cdd_readcallback(cdd.sampleLba, scratch, 1);
+		  memcpy(dest, scratch, 2352);
+		  cdd.sampleLba++;
+		  nsampreq -= 588;
+		  dest += 2352;
+		}
+		// do last partial sector
+		if (nsampreq > 0)
+		{
+		  cdd_readcallback(cdd.sampleLba, scratch, 1);
+		  memcpy(dest, scratch, nsampreq * 4);
+		  cdd.sampleOffset = nsampreq;
+		  dest += nsampreq * 4;
+		  nsampreq = 0;
+		}
+	    //printf("samples: %i\n", samples);
+		//memset(cdc.ram, 0, samples * 4);
+        //fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
+	  }
 
       // process 16-bit (little-endian) stereo samples //
       for (i=0; i<samples; i++)
@@ -400,6 +434,12 @@ void cdd_update(void)
       if (cdd.lba >= cdd.toc.tracks[cdd.index].start)
       {
         /* audio track playing */
+		// if it wasn't before, set the audio start position
+		if (scd.regs[0x36>>1].byte.h)
+		{
+		  cdd.sampleLba = cdd.lba + 1;
+		  cdd.sampleOffset = 0;
+		}
         scd.regs[0x36>>1].byte.h = 0x00;
       }
 
@@ -446,6 +486,9 @@ void cdd_update(void)
       if (cdd.status == CD_PLAY)
       {
       	scd.regs[0x36>>1].byte.h = 0x00;
+		// set audio start point
+		cdd.sampleLba = cdd.lba;
+		cdd.sampleOffset = 0;
       }
     }
     else if (cdd.lba < cdd.toc.tracks[cdd.index].start)
@@ -649,12 +692,6 @@ void cdd_process(void)
       /* update current track index */
       cdd.index = index;
 
-      /* stay within track limits when seeking files */
-      if (lba < cdd.toc.tracks[index].start) 
-      {
-        lba = cdd.toc.tracks[index].start;
-      }
-      
       /* no audio track playing (yet) */
       scd.regs[0x36>>1].byte.h = 0x01;
 
@@ -702,12 +739,6 @@ void cdd_process(void)
       /* update current track index */
       cdd.index = index;
 
-      /* stay within track limits */
-      if (lba < cdd.toc.tracks[index].start) 
-      {
-        lba = cdd.toc.tracks[index].start;
-      }
-      
       /* no audio track playing */
       scd.regs[0x36>>1].byte.h = 0x01;
 
