@@ -8,32 +8,28 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
-using BizHawk.Emulation;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.DiscSystem;
-
-using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
+using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Intellivision;
-using BizHawk.Emulation.Cores.PCEngine;
-
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Genesis;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
-
-using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Sony.PSP;
+using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,9 +39,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : "");
+			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
 
-			//Hide Status bar icons
+			// Hide Status bar icons
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
@@ -55,8 +51,8 @@ namespace BizHawk.Client.EmuHawk
 
 		static MainForm()
 		{
-			//if this isnt here, then our assemblyresolving hacks wont work due to the check for MainForm.INTERIM
-			//its.. weird. dont ask.
+			// If this isnt here, then our assemblyresolving hacks wont work due to the check for MainForm.INTERIM
+			// its.. weird. dont ask.
 		}
 
 		public MainForm(string[] args)
@@ -89,12 +85,15 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
 
-			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
-			//we could background thread this later instead if we wanted to be real clever
+			// In order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
+			// we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (var NesCartFile = new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
+				using (var NesCartFile =
+						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
+				{
 					return Util.ReadAllBytes(NesCartFile.GetStream());
+				}
 			};
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
@@ -126,13 +125,23 @@ namespace BizHawk.Client.EmuHawk
 
 			ResizeBegin += (o, e) =>
 			{
-				if (GlobalWin.Sound != null) GlobalWin.Sound.StopSound();
+				if (GlobalWin.Sound != null)
+				{
+					GlobalWin.Sound.StopSound();
+				}
 			};
 
 			ResizeEnd += (o, e) =>
 			{
-				if (GlobalWin.RenderPanel != null) GlobalWin.RenderPanel.Resized = true;
-				if (GlobalWin.Sound != null) GlobalWin.Sound.StartSound();
+				if (GlobalWin.RenderPanel != null)
+				{
+					GlobalWin.RenderPanel.Resized = true;
+				}
+
+				if (GlobalWin.Sound != null)
+				{
+					GlobalWin.Sound.StartSound();
+				}
 			};
 
 			Input.Initialize();
@@ -152,7 +161,8 @@ namespace BizHawk.Client.EmuHawk
 			RewireInputChain();
 			GlobalWin.Tools = new ToolManager();
 			RewireSound();
-			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
+
+			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
 			string cmdMovie = null;
@@ -166,16 +176,16 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < args.Length; i++)
 			{
-				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
+				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
 				if (args[i] == ">")
 				{
 					i++;
-					string stdout = args[i];
+					var stdout = args[i];
 					Console.SetOut(new StreamWriter(stdout));
 					continue;
 				}
 
-				string arg = args[i].ToLower();
+				var arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
 				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
@@ -212,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (cmdRom != null)
 			{
-				//Commandline should always override auto-load
+				// Commandline should always override auto-load
 				LoadRom(cmdRom);
 				if (Global.Game == null)
 				{
@@ -234,11 +244,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var movie = new Movie(cmdMovie);
 					Global.MovieSession.ReadOnly = true;
+
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (_autoDumpLength == 0)
 					{
 						_autoDumpLength = movie.InputLogLength;
 					}
+
 					StartNewMovie(movie, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
@@ -380,10 +392,11 @@ namespace BizHawk.Client.EmuHawk
 			CheckMessages();
 			LogConsole.PositionConsole();
 
-			for (; ; )
+			for (;;)
 			{
 				Input.Instance.Update();
-				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
+
+				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
 				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
@@ -406,17 +419,20 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
 
-
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
-				if (GlobalWin.DisplayManager.NeedsToPaint) { Render(); }
+				if (GlobalWin.DisplayManager.NeedsToPaint)
+				{
+					Render();
+				}
 
 				CheckMessages();
 				if (_exit)
 				{
 					break;
 				}
+
 				Thread.Sleep(0);
 			}
 
@@ -429,13 +445,18 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (GlobalWin.DisplayManager != null) GlobalWin.DisplayManager.Dispose();
+			if (GlobalWin.DisplayManager != null)
+			{
+				GlobalWin.DisplayManager.Dispose();
+			}
+
 			GlobalWin.DisplayManager = null;
 
 			if (disposing && (components != null))
 			{
 				components.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 
@@ -471,16 +492,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				//the main form gets input
-				if (ActiveForm == this) return true;
+				// the main form gets input
+				if (ActiveForm == this)
+				{
+					return true;
+				}
 
-				//modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig) return true;
-				if (ActiveForm is ControllerConfig) return true;
-				if (ActiveForm is TAStudio) return true;
-				if (ActiveForm is VirtualPadForm) return true;
-				//if no form is active on this process, then the background input setting applies
-				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
+				// modals that need to capture input for binding purposes get input, of course
+				if (ActiveForm is HotkeyConfig ||
+					ActiveForm is ControllerConfig ||
+					ActiveForm is TAStudio ||
+					ActiveForm is VirtualPadForm)
+				{
+					return true;
+				}
+
+				// if no form is active on this process, then the background input setting applies
+				if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
+				{
+					return true;
+				}
 
 				return false;
 			}
@@ -490,63 +521,48 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				//loop through all available events
+				// loop through all available events
 				var ie = Input.Instance.DequeueEvent();
 				if (ie == null) { break; }
 
-				//useful debugging:
-				//Console.WriteLine(ie);
+				// useful debugging:
+				// Console.WriteLine(ie);
 
-				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
+				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-				//look for hotkey bindings for this key
+				// look for hotkey bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
-					//bool sys_hotkey = false;
-
-					//maybe it is a system alt-key which hasnt been overridden
+					// Maybe it is a system alt-key which hasnt been overridden
 					if (ie.EventType == Input.InputEventType.Press)
 					{
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLower()[0];
-							if (c >= 'a' && c <= 'z' || c == ' ')
+							if ((c >= 'a' && c <= 'z') || c == ' ')
 							{
 								SendAltKeyChar(c);
-								//sys_hotkey = true;
 							}
 						}
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
 						{
 							SendPlainAltKey(32);
-							//sys_hotkey = true;
 						}
 					}
-					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
 
-					//????????????
-					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
-					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
-					//if (!sys_hotkey)
-					//{
-					//  var mutated_ie = new Input.InputEvent();
-					//  mutated_ie.EventType = ie.EventType;
-					//  mutated_ie.LogicalButton = ie.LogicalButton;
-					//  mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
-					//  Global.ControllerInputCoalescer.Receive(ie);
-					//}
+					// ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				//zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
-				//maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				//adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
+				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
 				bool handled;
 				switch (Global.Config.Input_Hotkey_OverrideOptions)
 				{
 					default:
-					case 0: //Both allowed
+					case 0: // Both allowed
 						GlobalWin.ControllerInputCoalescer.Receive(ie);
 
 						handled = false;
@@ -555,16 +571,16 @@ namespace BizHawk.Client.EmuHawk
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
-						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
 							GlobalWin.HotkeyCoalescer.Receive(ie);
 						}
+
 						break;
-					case 1: //Input overrides Hokeys
+					case 1: // Input overrides Hokeys
 						GlobalWin.ControllerInputCoalescer.Receive(ie);
-						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
-						if (!inputisbound)
+						if (!Global.ActiveController.HasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
 							if (ie.EventType == Input.InputEventType.Press)
@@ -572,30 +588,31 @@ namespace BizHawk.Client.EmuHawk
 								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 							}
 
-							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+							// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 							if (!handled)
 							{
 								GlobalWin.HotkeyCoalescer.Receive(ie);
 							}
 						}
 						break;
-					case 2: //Hotkeys override Input
+					case 2: // Hotkeys override Input
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
 						{
 							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
-						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
 							GlobalWin.HotkeyCoalescer.Receive(ie);
 							GlobalWin.ControllerInputCoalescer.Receive(ie);
 						}
+
 						break;
 				}
 
-			} //foreach event
+			} // foreach event
 
 			// also handle floats
 			GlobalWin.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
@@ -626,12 +643,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			PathEntry pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
+			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
+			
 			if (pathEntry == null)
 			{
 				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
 			}
-			string path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
+			
+			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
 
 			var f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
@@ -648,24 +667,30 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Clipboard.SetImage(img);
 			}
+
 			GlobalWin.OSD.AddMessage("Screenshot saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
 		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
-			TakeScreenshot(path);
+			TakeScreenshot(
+				String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now)
+			);
 		}
 
 		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
 			if (fi.Directory != null && fi.Directory.Exists == false)
+			{
 				fi.Directory.Create();
+			}
+
 			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
+
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
 		}
 
@@ -712,12 +737,15 @@ namespace BizHawk.Client.EmuHawk
 				// start at target zoom and work way down until we find acceptable zoom
 				for (; zoom >= 1; zoom--)
 				{
-					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width)
+					    && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+					{
 						break;
+					}
 				}
 
 				// Change size
-				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
+				Size = new Size((video.BufferWidth * zoom) + borderWidth, ((video.BufferHeight * zoom) + borderHeight));
 				PerformLayout();
 				GlobalWin.RenderPanel.Resized = true;
 
@@ -725,10 +753,14 @@ namespace BizHawk.Client.EmuHawk
 				if (area.Contains(Bounds) == false)
 				{
 					if (Bounds.Right > area.Right) // Window is off the right edge
+					{
 						Location = new Point(area.Right - Size.Width, Location.Y);
+					}
 
 					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
+					{
 						Location = new Point(Location.X, area.Bottom - Size.Height);
+					}
 				}
 			}
 		}
@@ -740,10 +772,9 @@ namespace BizHawk.Client.EmuHawk
 				_windowed_location = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
-				if (Global.Config.ShowMenuInFullscreen)
-					MainMenuStrip.Visible = true;
-				else
-					MainMenuStrip.Visible = false;
+
+				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
+
 				MainStatusBar.Visible = false;
 				PerformLayout();
 				GlobalWin.RenderPanel.Resized = true;
@@ -784,18 +815,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetNesSoundChannels()
 		{
-			NES nes = Global.Emulator as NES;
-			nes.SetSquare1(Global.Config.NESSquare1);
-			nes.SetSquare2(Global.Config.NESSquare2);
-			nes.SetTriangle(Global.Config.NESTriangle);
-			nes.SetNoise(Global.Config.NESNoise);
-			nes.SetDMC(Global.Config.NESDMC);
+			var nes = Global.Emulator as NES;
+			if (nes != null)
+			{
+				nes.SetSquare1(Global.Config.NESSquare1);
+				nes.SetSquare2(Global.Config.NESSquare2);
+				nes.SetTriangle(Global.Config.NESTriangle);
+				nes.SetNoise(Global.Config.NESNoise);
+				nes.SetDMC(Global.Config.NESDMC);
+			}
 		}
 
 		public void ClickSpeedItem(int num)
 		{
-			if ((ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
-			else SetSpeedPercent(num);
+			if ((ModifierKeys & Keys.Control) != 0)
+			{
+				SetSpeedPercentAlternate(num);
+			}
+			else
+			{
+				SetSpeedPercent(num);
+			}
 		}
 
 		public void FrameSkipMessage()
@@ -821,7 +861,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
@@ -837,7 +881,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
@@ -846,13 +894,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
 		}
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
@@ -861,13 +914,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
 		}
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
@@ -876,13 +934,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ1(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowOBJ1 = setto.Value;
@@ -891,13 +954,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowOBJ1 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ1 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ2(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowOBJ2 = setto.Value;
@@ -912,7 +980,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowOBJ3 = setto.Value;
@@ -921,13 +993,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowOBJ3 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ3 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Global.Emulator is LibsnesCore))
+			{
+				return;
+			}
+
 			if (setto.HasValue)
 			{
 				Global.Config.SNES_ShowOBJ4 = setto.Value;
@@ -936,6 +1013,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SNES_ShowOBJ4 ^= true;
 			}
+
 			CoreFileProvider.SyncCoreCommInputSignals();
 			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ4 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
@@ -951,17 +1029,17 @@ namespace BizHawk.Client.EmuHawk
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
 
-		//avi/wav state
+		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
 		private ISoundProvider _aviSoundInput;
-		private MetaspuSoundProvider _dumpProxy; //an audio proxy used for dumping
-		private long _soundRemainder; //audio timekeeping for video dumping
+		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
+		private long _soundRemainder; // audio timekeeping for video dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
 		private EventWaitHandle _mainWait;
 		private bool _exit;
 		private bool _runloopFrameProgress;
-		private DateTime FrameAdvanceTimestamp = DateTime.MinValue;
+		private DateTime _frameAdvanceTimestamp = DateTime.MinValue;
 		private int _runloopFps;
 		private int _runloopLastFps;
 		private bool _runloopFrameadvance;
@@ -971,7 +1049,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Throttle _throttle;
 		private bool _unthrottled;
 
-		//For handling automatic pausing when entering the menu
+		// For handling automatic pausing when entering the menu
 		private bool _wasPaused;
 		private bool _didMenuPause;
 
@@ -989,6 +1067,7 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Private methods
+
 		private static void UpdateToolsLoadstate()
 		{
 			if (GlobalWin.Tools.Has<SNESGraphicsDebugger>())
@@ -1018,7 +1097,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CheckHotkey(string trigger)
 		{
-			//todo - could have these in a table somehow ?
+			// todo - could have these in a table somehow ?
 			switch (trigger)
 			{
 				default:
@@ -1207,10 +1286,16 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateDumpIcon()
 		{
 			DumpStatusButton.Image = Properties.Resources.Blank;
-			DumpStatusButton.ToolTipText = "";
+			DumpStatusButton.ToolTipText = string.Empty;
 
-			if (Global.Emulator == null) return;
-			if (Global.Game == null) return;
+			if (Global.Emulator == null)
+			{
+				return;
+			}
+			else if (Global.Game == null)
+			{
+				return;
+			}
 
 			var status = Global.Game.Status;
 			string annotation;
@@ -1254,17 +1339,21 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.Image = Properties.Resources.GreenCheck;
 				annotation = "Verified good dump";
 			}
+
 			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
+			{
 				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
+			}
 
 			DumpStatusButton.ToolTipText = annotation;
 		}
 
 		private static void LoadSaveRam()
 		{
-			try //zero says: this is sort of sketchy... but this is no time for rearchitecting
+			try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 			{
 				byte[] sram;
+
 				// GBA core might not know how big the saveram ought to be, so just send it the whole file
 				if (Global.Emulator is GBA)
 				{
@@ -1273,12 +1362,19 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					sram = new byte[Global.Emulator.ReadSaveRam().Length];
-					using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+					using (var reader = new BinaryReader(
+							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+					{
 						reader.Read(sram, 0, sram.Length);
+					}
 				}
+
 				Global.Emulator.StoreSaveRam(sram);
 			}
-			catch (IOException) { }
+			catch (IOException)
+			{
+				
+			}
 		}
 
 		private static void SaveRam()
@@ -1290,7 +1386,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			//Make backup first
+			// Make backup first
 			if (Global.Config.BackupSaveram && f.Exists)
 			{
 				var backup = path + ".bak";
@@ -1299,18 +1395,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					backupFile.Delete();
 				}
+
 				f.CopyTo(backup);
 			}
 
-
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-
 			var saveram = Global.Emulator.ReadSaveRam();
 
-			// this assumes that the default state of the core's sram is 0-filled, so don't do
-			// int len = Util.SaveRamBytesUsed(saveram);
-			int len = saveram.Length;
-			writer.Write(saveram, 0, len);
+			writer.Write(saveram, 0, saveram.Length);
 			writer.Close();
 		}
 
@@ -1365,6 +1457,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			Dictionary<string, Config.AnalogBind> abinds;
 			if (analogbinds.TryGetValue(def.Name, out abinds))
 			{
@@ -1377,6 +1470,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			return ret;
 		}
 
@@ -1395,13 +1489,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			return ret;
 		}
 
 		private void SaturnSetPrefs(Yabause e = null)
 		{
 			if (e == null)
+			{
 				e = Global.Emulator as Yabause;
+			}
 
 			if (Global.Config.SaturnUseGL != e.GLMode)
 			{
@@ -1409,12 +1506,17 @@ namespace BizHawk.Client.EmuHawk
 				FlagNeedsReboot();
 				return;
 			}
+
 			if (e.GLMode && Global.Config.SaturnUseGL)
 			{
 				if (Global.Config.SaturnDispFree)
+				{
 					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
+				}
 				else
+				{
 					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
+				}
 			}
 		}
 
@@ -1484,9 +1586,14 @@ namespace BizHawk.Client.EmuHawk
 				case "SNES":
 				case "SGB":
 					if ((Global.Emulator as LibsnesCore).IsSGB)
+					{
 						SNESSubMenu.Text = "&SGB";
+					}
 					else
+					{
 						SNESSubMenu.Text = "&SNES";
+					}
+
 					SNESSubMenu.Visible = true;
 					break;
 				case "Coleco":
@@ -1612,14 +1719,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Restart()
 		{
+			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!GlobalWin.Tools.Has<Cheats>())
 			{
 				Global.CheatList.NewList(GenerateDefaultCheatFilename());
 			}
-			//If Cheat tool is loaded, restarting will restart the list too anyway
 		}
 
-		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
+		// Contains a mapping: profilename->exepath ; or null if the exe wasnt available
 		private string SNES_Prepare(string profile)
 		{
 			SNES_Check(profile);
@@ -1627,19 +1734,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
 			}
+
 			return _snesPrepared[profile];
 		}
 
 		private void SNES_Check(string profile)
 		{
-			if (_snesPrepared.ContainsKey(profile)) return;
+			if (_snesPrepared.ContainsKey(profile))
+			{
+				return;
+			}
 
 			const string bits = "32";
 
-			//disabled til it works
-			//if (Win32.Is64BitOperatingSystem)
-			//  bits = "64";
-
+			// disabled til it works
+			// if (Win32.Is64BitOperatingSystem)
+			// bits = "64";
 			var exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
 			var thisDir = PathManager.GetExeDirectoryAbsolute();
 			var exePath = Path.Combine(thisDir, exename);
@@ -1670,8 +1780,15 @@ namespace BizHawk.Client.EmuHawk
 				Controls.Remove(_renderTarget);
 			}
 
-			if (_retainedPanel != null) _retainedPanel.Dispose();
-			if (GlobalWin.RenderPanel != null) GlobalWin.RenderPanel.Dispose();
+			if (_retainedPanel != null)
+			{
+				_retainedPanel.Dispose();
+			}
+
+			if (GlobalWin.RenderPanel != null)
+			{
+				GlobalWin.RenderPanel.Dispose();
+			}
 
 #if WINDOWS
 			if (gdi)
@@ -1723,19 +1840,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
-
 			_throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
 			_throttle.signal_unthrottle = _unthrottled || superfastforward;
-
-			if (fastforward)
-			{
-				_throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
-			}
-			else
-			{
-				_throttle.SetSpeedPercent(Global.Config.SpeedPercent);
-			}
-
+			_throttle.SetSpeedPercent(fastforward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent);
 		}
 
 		private void SetSpeedPercentAlternate(int value)
@@ -1775,12 +1882,13 @@ namespace BizHawk.Client.EmuHawk
 			var video = Global.Emulator.VideoProvider;
 			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 
-			//TODO - replace with BitmapBuffer
+			// TODO - replace with BitmapBuffer
 			var framebuf = video.GetVideoBuffer();
 			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* ptr = (int*)bmpdata.Scan0.ToPointer();
 			int stride = bmpdata.Stride / 4;
 			for (int y = 0; y < video.BufferHeight; y++)
+			{
 				for (int x = 0; x < video.BufferWidth; x++)
 				{
 					int col = framebuf[(y * video.BufferWidth) + x];
@@ -1788,16 +1896,22 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.Emulator is TI83)
 					{
 						if (col == 0)
+						{
 							col = Color.Black.ToArgb();
+						}
 						else
+						{
 							col = Color.White.ToArgb();
+						}
 					}
 
 					// make opaque
 					col |= unchecked((int)0xff000000);
 
-					ptr[y * stride + x] = col;
+					ptr[(y * stride) + x] = col;
 				}
+			}
+
 			image.UnlockBits(bmpdata);
 			return image;
 		}
@@ -1842,7 +1956,9 @@ namespace BizHawk.Client.EmuHawk
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return;
+			}
 
 			if (File.Exists(ofd.FileName) == false)
 			{
@@ -1859,31 +1975,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private static VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
 		{
-			var PluginToUse = String.Empty;
+			var pluginToUse = String.Empty;
 
 			if (hasmovie && Global.MovieSession.Movie.Header[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.ContainsKey(HeaderKeys.VIDEOPLUGIN))
 			{
-				PluginToUse = Global.MovieSession.Movie.Header[HeaderKeys.VIDEOPLUGIN];
+				pluginToUse = Global.MovieSession.Movie.Header[HeaderKeys.VIDEOPLUGIN];
 			}
 
-			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64"))
+			if (pluginToUse == string.Empty || (pluginToUse != "Rice" && pluginToUse != "Glide64"))
 			{
-				PluginToUse = Global.Config.N64VidPlugin;
+				pluginToUse = Global.Config.N64VidPlugin;
 			}
 
-			var video_settings = new VideoPluginSettings(PluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
+			var video_settings = new VideoPluginSettings(pluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
 
-			if (PluginToUse == "Rice")
+			if (pluginToUse == "Rice")
 			{
 				Global.Config.RicePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
 			}
-			else if (PluginToUse == "Glide64")
+			else if (pluginToUse == "Glide64")
 			{
 				Global.Config.GlidePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
 			}
-			else if (PluginToUse == "Glide64mk2")
+			else if (pluginToUse == "Glide64mk2")
 			{
 				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
@@ -1933,14 +2049,14 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
 		}
 
-		//sends a simulation of a plain alt key keystroke
+		// sends a simulation of a plain alt key keystroke
 		private void SendPlainAltKey(int lparam)
 		{
 			var m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
 			base.WndProc(ref m);
 		}
 
-		//sends an alt+mnemonic combination
+		// sends an alt+mnemonic combination
 		private void SendAltKeyChar(char c)
 		{
 			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
@@ -1949,13 +2065,21 @@ namespace BizHawk.Client.EmuHawk
 		private static string FormatFilter(params string[] args)
 		{
 			var sb = new StringBuilder();
-			if (args.Length % 2 != 0) throw new ArgumentException();
+			if (args.Length % 2 != 0)
+			{
+				throw new ArgumentException();
+			}
+
 			var num = args.Length / 2;
 			for (int i = 0; i < num; i++)
 			{
 				sb.AppendFormat("{0} ({1})|{1}", args[i * 2], args[i * 2 + 1]);
-				if (i != num - 1) sb.Append('|');
+				if (i != num - 1)
+				{
+					sb.Append('|');
+				}
 			}
+
 			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
 			str = str.Replace(";", "; ");
 			return str;
@@ -1965,7 +2089,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
 
-			//adelikat: ugly design for this, I know
+			// adelikat: ugly design for this, I know
 			if (VersionInfo.INTERIM)
 			{
 				ofd.Filter = FormatFilter(
@@ -2010,7 +2134,6 @@ namespace BizHawk.Client.EmuHawk
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
-
 					"All Files", "*.*");
 			}
 
@@ -2042,7 +2165,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.MainWndy = -1;
 			}
 
-			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
+			if (Global.Config.ShowLogWindow)
+			{
+				LogConsole.SaveConfigSettings();
+			}
+
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
@@ -2050,16 +2177,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SaveSlot == 0)
 			{
-				Global.Config.SaveSlot = 9; //Wrap to end of slot list
+				Global.Config.SaveSlot = 9; // Wrap to end of slot list
 			}
 			else if (Global.Config.SaveSlot > 9)
 			{
-				Global.Config.SaveSlot = 9; //Meh, just in case
+				Global.Config.SaveSlot = 9; // Meh, just in case
 			}
 			else
 			{
 				Global.Config.SaveSlot--;
 			}
+
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}
@@ -2068,11 +2196,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SaveSlot >= 9)
 			{
-				Global.Config.SaveSlot = 0; //Wrap to beginning of slot list
+				Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
 			}
 			else if (Global.Config.SaveSlot < 0)
 			{
-				Global.Config.SaveSlot = 0; //Meh, just in case
+				Global.Config.SaveSlot = 0; // Meh, just in case
 			}
 			else
 			{
@@ -2108,14 +2236,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.ReadOnly ^= true;
-				if (Global.MovieSession.ReadOnly)
-				{
-					GlobalWin.OSD.AddMessage("Movie read-only mode");
-				}
-				else
-				{
-					GlobalWin.OSD.AddMessage("Movie read+write mode");
-				}
+				GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
 			}
 			else
 			{
@@ -2130,6 +2251,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SoundVolume = 100;
 			}
+
 			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
@@ -2141,13 +2263,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.SoundVolume = 0;
 			}
+
 			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
 		private static void SoftReset()
 		{
-			//is it enough to run this for one frame? maybe..
+			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
@@ -2160,7 +2283,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void HardReset()
 		{
-			//is it enough to run this for one frame? maybe..
+			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
@@ -2209,13 +2332,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.SaveSlot == 9) Slot9StatusButton.BackColor = SystemColors.ControlDark;
 		}
 
-		private Bitmap CaptureOSD() //sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
+		private Bitmap CaptureOSD() // sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
 		{
 			// this code captures the emu display with OSD and lua composited onto it.
 			// it's slow and a bit hackish; a better solution is to create a new
 			// "dummy render" class that implements IRenderer, IBlitter, and possibly
 			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-
 			if (captureosd_rvp == null)
 			{
 				captureosd_rvp = new RetainedViewportPanel();
@@ -2225,7 +2347,6 @@ namespace BizHawk.Client.EmuHawk
 			// this size can be different for showing off stretching or filters
 			captureosd_rvp.Width = Global.Emulator.VideoProvider.BufferWidth;
 			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
-
 
 			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
 			return (Bitmap)captureosd_rvp.GetBitmap().Clone();
@@ -2265,6 +2386,7 @@ namespace BizHawk.Client.EmuHawk
 				case 10:
 					return;
 			}
+
 			FrameBufferResized();
 		}
 
@@ -2290,6 +2412,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.TargetZoomFactor = 5;
 					return;
 			}
+
 			FrameBufferResized();
 		}
 
@@ -2350,6 +2473,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LedLightStatusLabel.Visible = true;
 					}
+
 					if (Global.Emulator.CoreComm.DriveLED)
 					{
 						LedLightStatusLabel.Image = Properties.Resources.LightOn;
@@ -2411,13 +2535,14 @@ namespace BizHawk.Client.EmuHawk
 		private static void VsyncMessage()
 		{
 			GlobalWin.OSD.AddMessage(
-				"Display Vsync set to " + (Global.Config.VSyncThrottle ?  "on" : "off")
+				"Display Vsync set to " + (Global.Config.VSyncThrottle ? "on" : "off")
 			);
 		}
 
 		private static bool StateErrorAskUser(string title, string message)
 		{
-			var result = MessageBox.Show(message,
+			var result = MessageBox.Show(
+				message,
 				title,
 				MessageBoxButtons.YesNo,
 				MessageBoxIcon.Question
@@ -2426,19 +2551,24 @@ namespace BizHawk.Client.EmuHawk
 			return result == DialogResult.Yes;
 		}
 
-		//--alt key hacks
+		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
-			//this is necessary to trap plain alt keypresses so that only our hotkey system gets them
-			if (m.Msg == 0x0112) //WM_SYSCOMMAND
-				if (m.WParam.ToInt32() == 0xF100) //SC_KEYMENU
+			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
+			if (m.Msg == 0x0112) // WM_SYSCOMMAND
+			{
+				if (m.WParam.ToInt32() == 0xF100) // SC_KEYMENU
+				{
 					return;
+				}
+			}
+
 			base.WndProc(ref m);
 		}
 
 		protected override bool ProcessDialogChar(char charCode)
 		{
-			//this is necessary to trap alt+char combinations so that only our hotkey system gets them
+			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
 			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 		}
 
@@ -2462,7 +2592,7 @@ namespace BizHawk.Client.EmuHawk
 			DateTime now = DateTime.Now;
 			bool suppressCaptureRewind = false;
 
-			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
+			double frameAdvanceTimestampDelta = (now - this._frameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
 			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
@@ -2473,12 +2603,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
-				if (FrameAdvanceTimestamp == DateTime.MinValue)
+				if (this._frameAdvanceTimestamp == DateTime.MinValue)
 				{
 					PauseEmulator();
 					runFrame = true;
 					_runloopFrameadvance = true;
-					FrameAdvanceTimestamp = now;
+					this._frameAdvanceTimestamp = now;
 				}
 				else
 				{
@@ -2499,7 +2629,7 @@ namespace BizHawk.Client.EmuHawk
 					_runloopFrameProgress = false;
 					PauseEmulator();
 				}
-				FrameAdvanceTimestamp = DateTime.MinValue;
+				this._frameAdvanceTimestamp = DateTime.MinValue;
 			}
 
 			if (!EmulatorPaused)
@@ -2798,7 +2928,7 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter = null;
 			GlobalWin.OSD.AddMessage("A/V capture aborted");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
 			_aviSoundInput = null;
 			_dumpProxy = null; // return to normal sound output
@@ -2819,7 +2949,7 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter = null;
 			GlobalWin.OSD.AddMessage("A/V capture stopped");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
 			_aviSoundInput = null;
 			_dumpProxy = null; // return to normal sound output
@@ -2902,13 +3032,13 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Scheduled for refactor
 
-		void ShowMessageCoreComm(string message)
+		private void ShowMessageCoreComm(string message)
 		{
 			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
 
-		private void NesSpeicalMenuAdd(string name, string button, string msg) //TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
+		private void NesSpeicalMenuAdd(string name, string button, string msg) // TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
 		{
 			NESSpecialControlsMenuItem.Visible = true;
 			NESSpecialControlsMenuItem.DropDownItems.Add(name, null, delegate
@@ -2924,7 +3054,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		private void NesSpecialMenuControls() //Ditto
+		private void NesSpecialMenuControls() // Ditto
 		{
 			// ugly and hacky
 			NESSpecialControlsMenuItem.Visible = false;
@@ -2943,17 +3073,19 @@ namespace BizHawk.Client.EmuHawk
 					NesSpeicalMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
 				}
 			}
+
 			if (ss.Contains("VS Coin 1"))
 			{
 				NesSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
 			}
+
 			if (ss.Contains("VS Coin 2"))
 			{
 				NesSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
 			}
 		}
 
-		private static void RewireInputChain() //Move to Client.Common
+		private static void RewireInputChain() // Move to Client.Common
 		{
 			GlobalWin.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
 
@@ -2973,8 +3105,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Emulator.Controller = Global.ControllerOutput;
 			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
 
-			//connect the movie session before MovieOutputHardpoint if it is doing anything
-			//otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
+			// connect the movie session before MovieOutputHardpoint if it is doing anything
+			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
 			if (Global.MovieSession.Movie != null)
 			{
 				Global.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
@@ -2985,7 +3117,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void SyncControls() //Move to client.comon
+		private static void SyncControls() // Move to client.comon
 		{
 			var def = Global.Emulator.ControllerDefinition;
 
@@ -2999,25 +3131,34 @@ namespace BizHawk.Client.EmuHawk
 			RewireInputChain();
 		}
 
-		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false) //Move to client.common
+		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false) // Move to client.common
 		{
-			if (path == null) return false;
+			if (path == null)
+			{
+				return false;
+			}
+
 			using (var file = new HawkFile())
 			{
 				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64" };
 
-				//lets not use this unless we need to
-				//file.NonArchiveExtensions = romExtensions;
+				// lets not use this unless we need to
+				// file.NonArchiveExtensions = romExtensions;
 				file.Open(path);
 
-				//if the provided file doesnt even exist, give up!
-				if (!file.Exists) return false;
+				// if the provided file doesnt even exist, give up!
+				if (!file.Exists)
+				{
+					return false;
+				}
 
-				//try binding normal rom extensions first
+				// try binding normal rom extensions first
 				if (!file.IsBound)
+				{
 					file.BindSoleItemOf(romExtensions);
+				}
 
-				//if we have an archive and need to bind something, then pop the dialog
+				// if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
 				{
 					var ac = new ArchiveChooser(file);
@@ -3025,7 +3166,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						file.BindArchiveMember(ac.SelectedMemberIndex);
 					}
-					else return false;
+					else
+					{
+						return false;
+					}
 				}
 
 				IEmulator nextEmulator = null;
@@ -3036,10 +3180,10 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-					string ext = file.Extension.ToLower();
+					var ext = file.Extension.ToLower();
 					if (ext == ".iso" || ext == ".cue")
 					{
-						Disc disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
+						var disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
@@ -3064,7 +3208,7 @@ namespace BizHawk.Client.EmuHawk
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default:// PCECD was bizhawk's first CD core,
+								default: // PCECD was bizhawk's first CD core,
 										// and during that time, all CDs were blindly sent to it
 										// so this prevents regressions
 									game.System = "PCECD";
@@ -3076,8 +3220,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							case "GEN":
 								{
-									var genesis = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(
-										nextComm, null, disc, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									var genesis = new GPGX(
+										nextComm, null, disc, "GEN", true, GPGX.ControlType.Normal);
 									nextEmulator = genesis;
 								}
 								break;
@@ -3115,26 +3259,49 @@ namespace BizHawk.Client.EmuHawk
 									rom = new RomGame(new HawkFile(biosPath));
 
 									if (rom.GameInfo.Status == RomStatus.BadDump)
-										MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n" +
-											"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
-
+									{
+										MessageBox.Show(
+											"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
+											+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+									}
 									else if (rom.GameInfo.NotInDatabase)
-										MessageBox.Show("The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
-
+									{
+										MessageBox.Show(
+											"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+									}
 									else if (rom.GameInfo["BIOS"] == false)
-										MessageBox.Show("The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+									{
+										MessageBox.Show(
+											"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+									}
 
 									if (rom.GameInfo["SuperSysCard"])
+									{
 										game.AddOption("SuperSysCard");
-									if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
-										MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
+									}
 
-									if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
-									if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
-									if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
+									if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
+									{
+										MessageBox.Show(
+											"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
+									}
+
+									if (Global.Config.PceSpriteLimit)
+									{
+										game.AddOption("ForceSpriteLimit");
+									}
+
+									if (Global.Config.PceEqualizeVolume)
+									{
+										game.AddOption("EqualizeVolumes");
+									}
+
+									if (Global.Config.PceArcadeCardRewindHack)
+									{
+										game.AddOption("ArcadeRewindHack");
+									}
 
 									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
-
 									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData);
 									break;
 								}
@@ -3154,15 +3321,39 @@ namespace BizHawk.Client.EmuHawk
 									var L = Database.GetGameInfo(XMLG.Assets["LeftRom"], "left.gb");
 									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
 
-									if (Global.Config.GB_ForceDMG) L.AddOption("ForceDMG");
-									if (Global.Config.GB_GBACGB) L.AddOption("GBACGB");
-									if (Global.Config.GB_MulticartCompat) L.AddOption("MulitcartCompat");
-									if (Global.Config.GB_ForceDMG) R.AddOption("ForceDMG");
-									if (Global.Config.GB_GBACGB) R.AddOption("GBACGB");
-									if (Global.Config.GB_MulticartCompat) R.AddOption("MulitcartCompat");
+									if (Global.Config.GB_ForceDMG)
+									{
+										L.AddOption("ForceDMG");
+									}
+
+									if (Global.Config.GB_GBACGB)
+									{
+										L.AddOption("GBACGB");
+									}
+
+									if (Global.Config.GB_MulticartCompat)
+									{
+										L.AddOption("MulitcartCompat");
+									}
+
+									if (Global.Config.GB_ForceDMG)
+									{
+										R.AddOption("ForceDMG");
+									}
+
+									if (Global.Config.GB_GBACGB)
+									{
+										R.AddOption("GBACGB");
+									}
+
+									if (Global.Config.GB_MulticartCompat)
+									{
+										R.AddOption("MulitcartCompat");
+									}
 
 									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"]);
 									nextEmulator = gbl;
+
 									// other stuff todo
 									break;
 
@@ -3197,7 +3388,7 @@ namespace BizHawk.Client.EmuHawk
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 
 									// need to get rid of this hack at some point
-									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
@@ -3208,15 +3399,39 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "SMS":
 							case "SG":
-								if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
-								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
-								if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
-								if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
+								if (Global.Config.SmsEnableFM)
+								{
+									game.AddOption("UseFM");
+								}
+
+								if (Global.Config.SmsAllowOverlock)
+								{
+									game.AddOption("AllowOverclock");
+								}
+
+								if (Global.Config.SmsForceStereoSeparation)
+								{
+									game.AddOption("ForceStereo");
+								}
+
+								if (Global.Config.SmsSpriteLimit)
+								{
+									game.AddOption("SpriteLimit");
+								}
+
 								nextEmulator = new SMS(nextComm, game, rom.RomData);
 								break;
 							case "GG":
-								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
-								if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
+								if (Global.Config.SmsAllowOverlock)
+								{
+									game.AddOption("AllowOverclock");
+								}
+
+								if (Global.Config.SmsSpriteLimit)
+								{
+									game.AddOption("SpriteLimit");
+								}
+
 								nextEmulator = new SMS(nextComm, game, rom.RomData);
 								break;
 							case "A26":
@@ -3228,13 +3443,17 @@ namespace BizHawk.Client.EmuHawk
 							case "PCE":
 							case "PCECD":
 							case "SGX":
-								if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
+								if (Global.Config.PceSpriteLimit)
+								{
+									game.AddOption("ForceSpriteLimit");
+								}
+
 								nextEmulator = new PCEngine(nextComm, game, rom.RomData);
 								break;
 							case "GEN":
 								{
-									//nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new BizHawk.Emulation.Cores.Consoles.Sega.gpgx.GPGX(nextComm, rom.RomData, null, "GEN", true, Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal);
+									// nextEmulator = new Genesis(nextComm, game, rom.RomData);
+									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", true, GPGX.ControlType.Normal);
 									break;
 								}
 							case "TI83":
@@ -3267,9 +3486,21 @@ namespace BizHawk.Client.EmuHawk
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+									if (Global.Config.GB_ForceDMG)
+									{
+										game.AddOption("ForceDMG");
+									}
+
+									if (Global.Config.GB_GBACGB)
+									{
+										game.AddOption("GBACGB");
+									}
+
+									if (Global.Config.GB_MulticartCompat)
+									{
+										game.AddOption("MulitcartCompat");
+									}
+
 									var gb = new Gameboy(nextComm, game, rom.FileData);
 									nextEmulator = gb;
 									if (gb.IsCGBMode())
@@ -3338,7 +3569,7 @@ namespace BizHawk.Client.EmuHawk
 								if (VersionInfo.INTERIM)
 								{
 									GBA gba = new GBA(nextComm);
-									//var gba = new GarboDev.GbaManager(nextComm);
+									// var gba = new GarboDev.GbaManager(nextComm);
 									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}
@@ -3364,7 +3595,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					if (nextEmulator == null)
+					{
 						throw new Exception("No core could load the rom.");
+					}
 				}
 				catch (Exception ex)
 				{
@@ -3388,9 +3621,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (game.System == "NES")
 				{
-					NES nes = Global.Emulator as NES;
-					if (nes.GameName != null)
+					var nes = Global.Emulator as NES;
+					if (nes != null && nes.GameName != null)
+					{
 						Global.Game.Name = nes.GameName;
+					}
+
 					Global.Game.Status = nes.RomStatus;
 					SetNesSoundChannels();
 				}
@@ -3412,8 +3648,8 @@ namespace BizHawk.Client.EmuHawk
 					Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
 				}
 
-				//restarts the lua console if a different rom is loaded.
-				//im not really a fan of how this is done..
+				// restarts the lua console if a different rom is loaded.
+				// im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != file.CanonicalFullPath)
 				{
 					GlobalWin.Tools.Restart<LuaConsole>();
@@ -3425,6 +3661,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LoadSaveRam();
 				}
+
 				if (Global.Config.AutoSavestates)
 				{
 					LoadState("Auto");
@@ -3459,7 +3696,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SaveState(string name) //Move to client.common
+		public void SaveState(string name) // Move to client.common
 		{
 			if (Global.Emulator is NullEmulator)
 			{
@@ -3474,7 +3711,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			//Make backup first
+			// Make backup first
 			if (Global.Config.BackupSavestates && file.Exists)
 			{
 				var backup = path + ".bak";
@@ -3494,7 +3731,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SaveStateFile(string filename, string name, bool fromLua)  //Move to client.common
+		public void SaveStateFile(string filename, string name, bool fromLua)  // Move to client.common
 		{
 			SavestateManager.SaveStateFile(filename, name);
 
@@ -3506,7 +3743,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadStateFile(string path, string name, bool fromLua = false) //Move to client.commo
+		public void LoadStateFile(string path, string name, bool fromLua = false) // Move to client.commo
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 
@@ -3530,14 +3767,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadState(string name, bool fromLua = false) //Move to client.commo
+		public void LoadState(string name, bool fromLua = false) // Move to client.commo
 		{
 			if (Global.Emulator is NullEmulator)
 			{
 				return;
 			}
 
-			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
 			{
 				GlobalWin.OSD.AddMessage("Unable to load " + name + ".State");
@@ -3547,8 +3784,8 @@ namespace BizHawk.Client.EmuHawk
 			LoadStateFile(path, name, fromLua);
 		}
 
-		//whats the difference between these two methods??
-		//its very tricky. rename to be more clear or combine them.
+		// whats the difference between these two methods??
+		// its very tricky. rename to be more clear or combine them.
 		private void CloseGame(bool clearSram = false)
 		{
 			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
@@ -3583,8 +3820,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.Movie.Stop();
 			}
-			
-			
+
 			RebootStatusBarIcon.Visible = false;
 		}
 
@@ -3610,16 +3846,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SwapBackupSavestate(string path) //Move inside Saveslot Manager
+		private void SwapBackupSavestate(string path) // Move inside Saveslot Manager
 		{
-			//Takes the .state and .bak files and swaps them
+			// Takes the .state and .bak files and swaps them
 			var state = new FileInfo(path);
 			var backup = new FileInfo(path + ".bak");
 			var temp = new FileInfo(path + ".bak.tmp");
 
-			if (state.Exists == false) return;
-			if (backup.Exists == false) return;
-			if (temp.Exists) temp.Delete();
+			if (!state.Exists || !backup.Exists)
+			{
+				return;
+			}
+
+			if (temp.Exists)
+			{
+				temp.Delete();
+			}
 
 			backup.CopyTo(path + ".bak.tmp");
 			backup.Delete();
@@ -3631,7 +3873,7 @@ namespace BizHawk.Client.EmuHawk
 			_stateSlots.ToggleRedo(Global.Config.SaveSlot);
 		}
 
-		private static void ProcessMovieImport(string fn) //Nothing Winform Specific here, move to Movie import
+		private static void ProcessMovieImport(string fn) // Nothing Winform Specific here, move to Movie import
 		{
 			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			string errorMsg;
@@ -3658,7 +3900,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(d);
 			}
 
-			var outPath = Path.Combine(d, (Path.GetFileName(fn) + "." + Global.Config.MovieExtension));
+			var outPath = Path.Combine(d, Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
 			m.SaveAs(outPath);
 		}
 
