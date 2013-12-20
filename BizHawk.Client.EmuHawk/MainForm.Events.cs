@@ -6,10 +6,11 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1158,6 +1159,35 @@ namespace BizHawk.Client.EmuHawk
 
 		#region NES
 
+		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
+			VSControlsMenuItem.Enabled = Global.Emulator.BoardName == "VS";
+		}
+
+		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			FdsEjectDiskMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
+
+			VSCoin1MenuItem.Enabled =
+				VSCoin2MenuItem.Enabled =
+				Global.Emulator.BoardName == "VS";
+
+			for (int i = 1; i < FDSControlsMenuItem.DropDownItems.Count; i++)
+			{
+				FDSControlsMenuItem.DropDownItems.Remove(FDSControlsMenuItem.DropDownItems[i]);
+			}
+
+			for (int i = 0; i < 16; i++)
+			{
+				var str = "FDS Insert " + i;
+				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(str))
+				{
+					FdsInsertDiskMenuAdd("Insert Disk " + i, str, "FDS Disk " + i + " inserted.");
+				}
+			}
+		}
+
 		private void NESDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<NESDebugger>();
@@ -1187,6 +1217,39 @@ namespace BizHawk.Client.EmuHawk
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<NESSoundConfig>();
+		}
+
+		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			{
+				Global.ClickyVirtualPadController.Click("FDS Eject");
+				GlobalWin.OSD.AddMessage("FDS disk ejected.");
+			}
+		}
+
+		private void VSCoin1MenuItem_Click(object sender, EventArgs e)
+		{
+			//if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("FDS Eject"))
+			//{
+			//	if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			//	{
+			//		Global.ClickyVirtualPadController.Click(button);
+			//		GlobalWin.OSD.AddMessage(msg);
+			//	}
+			//}
+		}
+
+		private void VSCoin2MenuItem_Click(object sender, EventArgs e)
+		{
+			//if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("FDS Eject"))
+			//{
+			//	if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			//	{
+			//		Global.ClickyVirtualPadController.Click(button);
+			//		GlobalWin.OSD.AddMessage(msg);
+			//	}
+			//}
 		}
 
 		#endregion

@@ -1554,7 +1554,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NES":
 					NESSubMenu.Visible = true;
-					NesSpecialMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -2551,6 +2550,21 @@ namespace BizHawk.Client.EmuHawk
 			return result == DialogResult.Yes;
 		}
 
+		private void FdsInsertDiskMenuAdd(string name, string button, string msg)
+		{
+			FDSControlsMenuItem.DropDownItems.Add(name, null, delegate
+			{
+				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
+				{
+					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+					{
+						Global.ClickyVirtualPadController.Click(button);
+						GlobalWin.OSD.AddMessage(msg);
+					}
+				}
+			});
+		}
+
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
@@ -3035,54 +3049,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ShowMessageCoreComm(string message)
 		{
 			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-		}
-
-
-		private void NesSpeicalMenuAdd(string name, string button, string msg) // TODO: don't do this, put these into the menu but hide them in the dropdownopened event as needed
-		{
-			NESSpecialControlsMenuItem.Visible = true;
-			NESSpecialControlsMenuItem.DropDownItems.Add(name, null, delegate
-			{
-				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
-				{
-					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
-					{
-						Global.ClickyVirtualPadController.Click(button);
-						GlobalWin.OSD.AddMessage(msg);
-					}
-				}
-			});
-		}
-
-		private void NesSpecialMenuControls() // Ditto
-		{
-			// ugly and hacky
-			NESSpecialControlsMenuItem.Visible = false;
-			NESSpecialControlsMenuItem.DropDownItems.Clear();
-			var ss = Global.Emulator.ControllerDefinition.BoolButtons;
-			if (ss.Contains("FDS Eject"))
-			{
-				NesSpeicalMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");
-			}
-
-			for (int i = 0; i < 16; i++)
-			{
-				var s = "FDS Insert " + i;
-				if (ss.Contains(s))
-				{
-					NesSpeicalMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
-				}
-			}
-
-			if (ss.Contains("VS Coin 1"))
-			{
-				NesSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
-			}
-
-			if (ss.Contains("VS Coin 2"))
-			{
-				NesSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
-			}
 		}
 
 		private static void RewireInputChain() // Move to Client.Common
@@ -3905,6 +3871,5 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
 	}
 }
