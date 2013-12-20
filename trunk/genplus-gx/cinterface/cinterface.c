@@ -417,4 +417,10 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	return 1;
 }
 
-
+GPGX_EX void gpgx_reset(int hard)
+{
+	if (hard)
+		system_reset();
+	else
+		gen_reset(0);
+}
