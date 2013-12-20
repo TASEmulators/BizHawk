@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	/*
 	 * how to use:
+	 * 0) get https://code.google.com/p/pdbparse/
 	 * 1) set modulename to the name of the dll file.
 	 * 2) set symbolname to the name of a file that you produced by executing the following command:
 	 *    pdb_print_gvars.py [module pdb file] 0x00000000 > [output file]
