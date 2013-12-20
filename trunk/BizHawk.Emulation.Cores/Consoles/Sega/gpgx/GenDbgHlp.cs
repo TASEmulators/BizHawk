@@ -7,6 +7,21 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
+	/*
+	 * how to use:
+	 * 1) set modulename to the name of the dll file.
+	 * 2) set symbolname to the name of a file that you produced by executing the following command:
+	 *    pdb_print_gvars.py [module pdb file] 0x00000000 > [output file]
+	 * 3) set start to an address (relative to the beginning of the dll) to start scanning
+	 * 4) set length to the byte length of the scan area
+	 * 5) instantiate a GenDbWind, and use it to control the scanner while you manipulate the dll into various configurations.
+	 * 
+	 * ideas for modification:
+	 * 1) unhardcode config parameters and allow modifying them through the interface
+	 * 2) read section sizes and positions from the dll itself instead of the start\length params
+	 * 3) support an ignore list of symbols
+	 */
+
 	public class GenDbgHlp : IDisposable
 	{
 		private static class Win32

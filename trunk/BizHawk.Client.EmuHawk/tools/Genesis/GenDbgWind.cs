@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk.tools.Genesis
 {
+	// see GenDbgHlp.cs for a general overview of this
 	public partial class GenDbgWind : Form
 	{
 		GenDbgHlp dbg;
