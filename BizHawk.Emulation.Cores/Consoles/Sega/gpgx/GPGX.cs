@@ -468,6 +468,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
+			update_video();
 		}
 
 		public byte[] SaveStateBinary()

@@ -123,7 +123,13 @@ GPGX_EX int gpgx_state_load(void *src, int size)
 	if (size != STATE_SIZE)
 		return 0;
 
-	return !!state_load((unsigned char *) src);
+	if (state_load((unsigned char *) src))
+	{
+		update_viewport();
+		return 1;
+	}
+	else
+		return 0;
 }
 
 void osd_input_update(void)
