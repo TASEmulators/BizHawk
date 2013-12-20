@@ -467,6 +467,12 @@
     <Compile Include="tools\GB\GBGPUView.Designer.cs">
       <DependentUpon>GBGPUView.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Genesis\GenDbgWind.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Genesis\GenDbgWind.Designer.cs">
+      <DependentUpon>GenDbgWind.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Genesis\GenGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -931,6 +937,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGPUView.resx">
       <DependentUpon>GBGPUView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Genesis\GenDbgWind.resx">
+      <DependentUpon>GenDbgWind.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Genesis\GenGameGenie.resx">
       <DependentUpon>GenGameGenie.cs</DependentUpon>

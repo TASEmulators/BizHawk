@@ -240,7 +240,7 @@ void gen_reset(int hard_reset)
   }
 
   /* 68k & Z80 could be anywhere in VDP frame (Bonkers, Eternal Champions, X-Men 2) */
-  m68k.cycles = Z80.cycles = (uint32)((MCYCLES_PER_LINE * lines_per_frame) * ((double)rand() / (double)RAND_MAX));
+  m68k.cycles = Z80.cycles = 0; //(uint32)((MCYCLES_PER_LINE * lines_per_frame) * ((double)rand() / (double)RAND_MAX));
 
   /* 68k cycles should be a multiple of 7 */
   m68k.cycles = (m68k.cycles / 7) * 7;
