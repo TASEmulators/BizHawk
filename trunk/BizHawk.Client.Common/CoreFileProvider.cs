@@ -107,8 +107,6 @@ namespace BizHawk.Client.Common
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
-
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
