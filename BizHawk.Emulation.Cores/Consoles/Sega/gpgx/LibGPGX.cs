@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public static extern void gpgx_clear_sram();
 
 		public const int MIN_MEM_DOMAIN = 0;
-		public const int MAX_MEM_DOMAIN = 9;
+		public const int MAX_MEM_DOMAIN = 13;
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		// apparently, if you use built in string marshalling, the interop will assume that

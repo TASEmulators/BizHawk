@@ -312,6 +312,26 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		return "BOOT ROM";
 	default:
 		return NULL;
+	case 10:
+		if (sram.on)
+		{
+			*area = sram.sram;
+			*size = 0x10000;
+			return "SRAM";
+		}
+		else return NULL;
+	case 11:
+		*area = cram;
+		*size = 128;
+		return "CRAM";
+	case 12:
+		*area = vsram;
+		*size = 128;
+		return "VSRAM";
+	case 13:
+		*area = vram;
+		*size = 65536;
+		return "VRAM";
 	}
 }
 
