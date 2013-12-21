@@ -917,6 +917,24 @@ namespace BizHawk.Client.EmuHawk
 			DisableAllContextMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 		}
 
+		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
+		{
+			var selected = SelectedCheats.ToList();
+			if (selected.Any())
+			{
+				GlobalWin.Tools.Load<HexEditor>();
+
+				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
+				{
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<int> { selected.First().Address ?? 0 });
+				}
+				else
+				{
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address ?? 0));
+				}
+			}
+		}
+
 		#endregion
 
 		#endregion
