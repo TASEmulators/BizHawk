@@ -374,8 +374,7 @@ namespace BizHawk.Client.Common
 								BIGENDIAN
 							);
 
-							Cheat c = new Cheat(w, value, compare, !Global.Config.DisableCheatsOnLoad && ENABLED);
-							_cheatList.Add(c);
+							Add(new Cheat(w, value, compare, !Global.Config.DisableCheatsOnLoad && ENABLED));
 						}
 					}
 					catch
