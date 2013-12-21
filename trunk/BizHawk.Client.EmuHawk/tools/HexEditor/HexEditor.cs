@@ -14,8 +14,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	using System.Diagnostics.CodeAnalysis;
-
 	public partial class HexEditor : Form, IToolForm
 	{
 		private const int FontWidth = 7; // Width of 1 digits
@@ -874,7 +872,6 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1407:ArithmeticExpressionsMustDeclarePrecedence", Justification = "Reviewed. Suppression is OK here.")]
 		private int GetPointedAddress(int x, int y)
 		{
 			int address;
@@ -908,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / _dataSize))
 			{
-				address = i * 16 + (column * _dataSize);
+				address = (i * 16) + (column * _dataSize);
 			}
 			else
 			{
@@ -1105,39 +1102,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
-		{
-			var data = Clipboard.GetDataObject();
-
-			CopyContextItem.Visible = 
-				FreezeContextItem.Visible =
-				AddToRamWatchContextItem.Visible =
-				PokeContextItem.Visible = 
-				IncrementContextItem.Visible =
-				DecrementContextItem.Visible =
-				ContextSeparator2.Visible =
-				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
-
-			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
-			PasteContextItem.Visible = data != null && data.GetDataPresent(DataFormats.Text);
-
-			ContextSeparator1.Visible =
-				HighlightedAddress.HasValue ||
-				_secondaryHighlightedAddresses.Any() ||
-				(data != null && data.GetDataPresent(DataFormats.Text));
-
-			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
-			{
-				FreezeContextItem.Text = "Un&freeze";
-				FreezeContextItem.Image = Properties.Resources.Unfreeze;
-			}
-			else
-			{
-				FreezeContextItem.Text = "&Freeze";
-				FreezeContextItem.Image = Properties.Resources.Freeze;
-			}
-		}
-
 		private string ValueString(int address)
 		{
 			if (address != -1)
@@ -1179,41 +1143,6 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < numToHighlight; i++)
 			{
 				_secondaryHighlightedAddresses.Add(found + 1 + i);
-			}
-		}
-
-		private void Copy()
-		{
-			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
-			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
-			if (!String.IsNullOrWhiteSpace(value))
-			{
-				Clipboard.SetDataObject(value);
-			}
-		}
-
-		private void Paste()
-		{
-			var data = Clipboard.GetDataObject();
-
-			if (data != null && data.GetDataPresent(DataFormats.Text))
-			{
-				var clipboardRaw = (String)data.GetData(DataFormats.Text);
-				var hex = InputValidate.DoHexString(clipboardRaw);
-
-				var numBytes = hex.Length / 2;
-				for (var i = 0; i < numBytes; i++)
-				{
-					var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
-					var address = _addressHighlighted + i;
-					_domain.PokeByte(address, (byte)value);
-				}
-
-				UpdateValues();
-			}
-			else
-			{
-				// Do nothing
 			}
 		}
 
@@ -1288,12 +1217,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			Copy();
+			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
+			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
+			if (!String.IsNullOrWhiteSpace(value))
+			{
+				Clipboard.SetDataObject(value);
+			}
 		}
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			Paste();
+			var data = Clipboard.GetDataObject();
+
+			if (data != null && data.GetDataPresent(DataFormats.Text))
+			{
+				var clipboardRaw = (String)data.GetData(DataFormats.Text);
+				var hex = InputValidate.DoHexString(clipboardRaw);
+
+				var numBytes = hex.Length / 2;
+				for (var i = 0; i < numBytes; i++)
+				{
+					var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
+					var address = _addressHighlighted + i;
+					_domain.PokeByte(address, (byte)value);
+				}
+
+				UpdateValues();
+			}
 		}
 
 		private void FindMenuItem_Click(object sender, EventArgs e)
@@ -1868,6 +1818,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateValues();
+		}
+
+		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			var data = Clipboard.GetDataObject();
+
+			CopyContextItem.Visible =
+				FreezeContextItem.Visible =
+				AddToRamWatchContextItem.Visible =
+				PokeContextItem.Visible =
+				IncrementContextItem.Visible =
+				DecrementContextItem.Visible =
+				ContextSeparator2.Visible =
+				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+
+			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
+			PasteContextItem.Visible = data != null && data.GetDataPresent(DataFormats.Text);
+
+			ContextSeparator1.Visible =
+				HighlightedAddress.HasValue ||
+				_secondaryHighlightedAddresses.Any() ||
+				(data != null && data.GetDataPresent(DataFormats.Text));
+
+			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
+			{
+				FreezeContextItem.Text = "Un&freeze";
+				FreezeContextItem.Image = Properties.Resources.Unfreeze;
+			}
+			else
+			{
+				FreezeContextItem.Text = "&Freeze";
+				FreezeContextItem.Image = Properties.Resources.Freeze;
+			}
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)
