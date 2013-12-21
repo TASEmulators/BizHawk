@@ -780,20 +780,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: can't unfreeze address 0??
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains(address))
+					Global.CheatList.Where(x => x.Contains(address)).ToList()
 				);
 			}
 
 			MemoryViewerBox.Refresh();
-		}
-
-		private void UpdateRelatedDialogs()
-		{
-			GlobalWin.Tools.UpdateValues<RamWatch>();
-			GlobalWin.Tools.UpdateValues<RamSearch>();
-			GlobalWin.Tools.UpdateValues<Cheats>();
-			GlobalWin.MainForm.UpdateCheatStatus();
-			UpdateValues();
 		}
 
 		// TODO refactor to int?
@@ -813,8 +804,7 @@ namespace BizHawk.Client.EmuHawk
 					watch,
 					watch.Value ?? 0));
 
-				MemoryViewerBox.Refresh();
-				UpdateRelatedDialogs();
+				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
 
@@ -1446,7 +1436,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			UpdateRelatedDialogs();
+			ToolHelpers.UpdateCheatRelatedTools(null, null);
 		}
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
