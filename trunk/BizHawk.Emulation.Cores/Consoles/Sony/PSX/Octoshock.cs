@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		static IntPtr FopenCallbackProc(string fname, string mode)
 		{
+			throw new NotImplementedException("Antiquated CoreComm.PSX_FirmwaresPath must be replaced by CoreFileProvider");
+
 			// TODO - this should be using the CoreComm.CoreFileProvider interfaces
 
 			//TODO - probably this should never really fail. but for now, mednafen tries to create a bunch of junk, so just return failure for files which cant be opened
@@ -132,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (parts[0] != "$psx") throw new InvalidOperationException("Octoshock using some weird path we dont handle yet");
 				if (parts[1] == "firmware")
 				{
-					fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
+					//fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
 					if (!File.Exists(fname))
 					{
 						System.Windows.Forms.MessageBox.Show("the Octoshock core is referencing a firmware file which could not be found. Please make sure it's in your configured PSX firmwares folder. The referenced filename is: " + parts[1]);
