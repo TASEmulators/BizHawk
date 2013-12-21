@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
-			UpdateCheatStatus();
+			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
 		}
 
@@ -3657,7 +3657,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
-
+				ToolHelpers.UpdateCheatRelatedTools(null, null);
 				return true;
 			}
 		}
