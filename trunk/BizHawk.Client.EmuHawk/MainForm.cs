@@ -3810,6 +3810,7 @@ namespace BizHawk.Client.EmuHawk
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();
+				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
 
