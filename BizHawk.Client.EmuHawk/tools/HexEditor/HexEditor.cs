@@ -865,6 +865,11 @@ namespace BizHawk.Client.EmuHawk
 			_rowsVisible = (MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight;
 			var totalRows = _domain.Size / 16;
 
+			if (totalRows < _rowsVisible)
+			{
+				_rowsVisible = totalRows;
+			}
+
 			HexScrollBar.Maximum = totalRows - 1;
 			HexScrollBar.LargeChange = _rowsVisible;
 			HexScrollBar.Visible = totalRows > _rowsVisible;
