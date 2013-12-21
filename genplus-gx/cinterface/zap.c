@@ -464,17 +464,18 @@ void zap(void)
 	Y(zbank_memory_map);
 	
 	Z(&sram); // NB: sram.sram is not allocated
-	
+
 	Z(&svp);
 	
 	Z(&bitmap);
 	Z(&snd);
+
 	Z(&mcycles_vdp);
-	Z(&SVP_cycles);
+
 	Z(&system_hw);
 	Z(&system_bios);
 	Z(&system_clock);
-	
+
 	Y(reg);
 	Y(sat);
 	Y(vram);
@@ -591,6 +592,5 @@ void zap(void)
 	Z(&eq);
 	Z(&llp);
 	Z(&rrp);
-
 }
 

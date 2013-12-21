@@ -49,7 +49,7 @@ uint32 mcycles_vdp;
 uint8 system_hw;
 uint8 system_bios;
 uint32 system_clock;
-int16 SVP_cycles = 800; 
+const int16 SVP_cycles = 800; 
 
 uint8 pause_b;
 EQSTATE eq;
