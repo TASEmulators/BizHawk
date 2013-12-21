@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			SetPauseStatusbarIcon();
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
+			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 		}
 
 		static MainForm()
