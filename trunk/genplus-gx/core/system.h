@@ -98,7 +98,7 @@ typedef struct
 extern t_bitmap bitmap;
 extern t_snd snd;
 extern uint32 mcycles_vdp;
-extern int16 SVP_cycles; 
+extern const int16 SVP_cycles; 
 extern uint8 system_hw;
 extern uint8 system_bios;
 extern uint32 system_clock;
