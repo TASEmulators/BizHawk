@@ -377,8 +377,10 @@ unsigned int io_68k_read(unsigned int offset)
     case 0x02:  /* Port B Data */
     case 0x03:  /* Port C Data */
     {
-      unsigned int mask = 0x80 | io_reg[offset + 3];
-      unsigned int data = port[offset-1].data_r();
+	  unsigned int mask, data;
+	  real_input_callback();
+      mask = 0x80 | io_reg[offset + 3];
+      data = port[offset-1].data_r();
       return (io_reg[offset] & mask) | (data & ~mask);
     }
 
@@ -452,11 +454,13 @@ void io_z80_write(unsigned int offset, unsigned int data, unsigned int cycles)
 
 unsigned int io_z80_read(unsigned int offset)
 {
+  unsigned int data, ctrl;
+  real_input_callback();
   /* Read port A & port B input data */
-  unsigned int data = (port[0].data_r()) | (port[1].data_r() << 8);
+  data = (port[0].data_r()) | (port[1].data_r() << 8);
 
   /* I/O control register value */
-  unsigned int ctrl = io_reg[0x0F];
+  ctrl = io_reg[0x0F];
 
   /* I/O ports */
   if (offset)

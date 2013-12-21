@@ -122,6 +122,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		};
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void input_cb();
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_input_callback(input_cb cb);
+
 		/// <summary>
 		/// not every flag is valid for every device!
 		/// </summary>
