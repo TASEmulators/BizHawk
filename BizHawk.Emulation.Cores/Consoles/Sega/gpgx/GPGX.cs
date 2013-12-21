@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		bool disposed = false;
 
 		LibGPGX.load_archive_cb LoadCallback = null;
+		LibGPGX.input_cb InputCallback = null;
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
@@ -111,6 +112,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				update_video();
 
 				SetMemoryDomains();
+
+				InputCallback = new LibGPGX.input_cb(input_callback);
+				LibGPGX.gpgx_set_input_callback(InputCallback);
 			}
 			catch
 			{
@@ -285,6 +289,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
+		// core callback for input
+		void input_callback()
+		{
+			CoreComm.InputCallback.Call();
+			IsLagFrame = false;
+		}
+
 		#endregion
 
 		// TODO: use render and rendersound
@@ -310,7 +321,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			update_video();
 			update_audio();
 
-			IsLagFrame = false; // TODO
 			if (IsLagFrame)
 				LagCount++;
 		}
@@ -485,6 +495,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#endregion
 
+		#region debugging tools
+
 		public MemoryDomainList MemoryDomains { get; private set; }
 
 		unsafe void SetMemoryDomains()
@@ -523,6 +535,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			return new List<KeyValuePair<string, int>>();
 		}
+
+		#endregion
 
 		public void Dispose()
 		{

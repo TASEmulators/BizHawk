@@ -136,6 +136,19 @@ void osd_input_update(void)
 {
 }
 
+void (*input_callback_cb)(void);
+
+void real_input_callback(void)
+{
+	if (input_callback_cb)
+		input_callback_cb();
+}
+
+GPGX_EX void gpgx_set_input_callback(void (*fecb)(void))
+{
+	input_callback_cb = fecb;
+}
+
 int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize);
 
 // return 0 on failure, else actual loaded size
