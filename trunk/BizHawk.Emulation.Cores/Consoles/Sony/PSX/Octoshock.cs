@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			// TODO - this should be using the CoreComm.CoreFileProvider interfaces
 
 			//TODO - probably this should never really fail. but for now, mednafen tries to create a bunch of junk, so just return failure for files which cant be opened
-
+			/*
 			if (fname.StartsWith("$psx"))
 			{
 				string[] parts = fname.Split('/');
@@ -169,6 +169,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			VirtualFiles[ret.id] = ret;
 			return new IntPtr(ret.id);
+			*/
 		}
 		static int FcloseCallbackProc(IntPtr fp)
 		{
