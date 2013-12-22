@@ -100,12 +100,12 @@ namespace BizHawk.Client.Common
 			//target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
 			//target.NES_ShowBG = Global.Config.NESDispBackground;
 			//target.NES_ShowOBJ = Global.Config.NESDispSprites;
-			target.PCE_ShowBG1 = Global.Config.PCEDispBG1;
-			target.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
-			target.PCE_ShowBG2 = Global.Config.PCEDispBG2;
-			target.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
-			target.SMS_ShowBG = Global.Config.SMSDispBG;
-			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
+			//target.PCE_ShowBG1 = Global.Config.PCEDispBG1;
+			//target.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
+			//target.PCE_ShowBG2 = Global.Config.PCEDispBG2;
+			//target.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
+			//target.SMS_ShowBG = Global.Config.SMSDispBG;
+			//target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;

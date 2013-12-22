@@ -624,8 +624,27 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				disc.Dispose();
 		}
 
-		public object GetSettings() { return null; }
+		public PCESettings Settings = new PCESettings();
+
+		public object GetSettings() { return  Settings.Clone(); }
 		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
+		public bool PutSettings(object o)
+		{
+			Settings = (PCESettings)o;
+			return false;
+		}
+
+		public class PCESettings
+		{
+			public bool ShowBG1 = true;
+			public bool ShowOBJ1 = true;
+			public bool ShowBG2 = true;
+			public bool ShowOBJ2 = true;
+
+			public PCESettings Clone()
+			{
+				return (PCESettings)MemberwiseClone();
+			}
+		}
 	}
 }
