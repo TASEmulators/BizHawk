@@ -56,7 +56,7 @@
 			// 
 			this.CloseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CloseBtn.Location = new System.Drawing.Point(152, 135);
+			this.CloseBtn.Location = new System.Drawing.Point(152, 110);
 			this.CloseBtn.Name = "CloseBtn";
 			this.CloseBtn.Size = new System.Drawing.Size(0, 23);
 			this.CloseBtn.TabIndex = 1;
@@ -98,7 +98,7 @@
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 166);
+			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 141);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;
@@ -280,7 +280,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CloseBtn;
-			this.ClientSize = new System.Drawing.Size(140, 170);
+			this.ClientSize = new System.Drawing.Size(140, 145);
 			this.Controls.Add(this.CloseBtn);
 			this.Controls.Add(this.ToolBoxStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
