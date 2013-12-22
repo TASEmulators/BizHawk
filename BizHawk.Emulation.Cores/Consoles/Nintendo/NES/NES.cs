@@ -890,6 +890,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
 			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
+
+			SetPalette(Settings.Palette);
 			return false;
 		}
 
@@ -897,7 +899,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public bool AllowMoreThanEightSprites = false;
 			public bool ClipLeftAndRight = false;
-			public bool AutoLoadPalette = true;
 			public bool DispBackground = true;
 			public bool DispSprites = true;
 			public int BackgroundColor = 0;
@@ -907,9 +908,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int PAL_TopLine = 0;
 			public int PAL_BottomLine = 239;
 
+			public int[,] Palette;
+
 			public NESSettings Clone()
 			{
 				return (NESSettings)MemberwiseClone();
+			}
+
+			public NESSettings()
+			{
+				Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+			}
+			
+			[Newtonsoft.Json.JsonConstructor]
+			public NESSettings(int[,] Palette)
+			{
+				if (Palette == null)
+					// only needed for SVN purposes
+					this.Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+				else
+					this.Palette = Palette;
 			}
 		}
 	}

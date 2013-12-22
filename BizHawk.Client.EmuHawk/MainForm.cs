@@ -3433,14 +3433,7 @@ namespace BizHawk.Client.EmuHawk
 							case "NES":
 								{
 									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties);
-
 									nextEmulator = nes;
-									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
-										HawkFile.ExistsAt(Global.Config.NESPaletteFile))
-									{
-										nes.SetPalette(
-											NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
-									}
 								}
 								break;
 							case "GB":

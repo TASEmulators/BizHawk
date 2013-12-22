@@ -39,8 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			PAL_LastLineNumeric.Value = settings.PAL_BottomLine;
 			AllowMoreSprites.Checked = settings.AllowMoreThanEightSprites;
 			ClipLeftAndRightCheckBox.Checked = settings.ClipLeftAndRight;
-			AutoLoadPalette.Checked = settings.AutoLoadPalette;
-			PalettePath.Text = Global.Config.NESPaletteFile;
 			DispSprites.Checked = settings.DispSprites;
 			DispBackground.Checked = settings.DispBackground;
 			BGColorDialog.Color = Color.FromArgb(unchecked(settings.BackgroundColor | (int)0xFF000000));
@@ -68,25 +66,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			if (PalettePath.Text.Length > 0)
+			if (AutoLoadPalette.Checked)
 			{
-				palette = new HawkFile(PalettePath.Text);
-
-				if (palette != null && palette.Exists)
+				if (PalettePath.Text.Length > 0)
 				{
-					if (Global.Config.NESPaletteFile != palette.Name)
+					palette = new HawkFile(PalettePath.Text);
+
+					if (palette != null && palette.Exists)
 					{
-						Global.Config.NESPaletteFile = palette.Name;
-						nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
+						var data = NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
+						settings.Palette = data;
 						GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
 					}
 				}
-			}
-			else
-			{
-				Global.Config.NESPaletteFile = "";
-				nes.SetPalette(NES.Palettes.FCEUX_Standard);
-				GlobalWin.OSD.AddMessage("Standard Palette set");
+				else
+				{
+					settings.Palette = (int[,])NES.Palettes.FCEUX_Standard.Clone();
+					GlobalWin.OSD.AddMessage("Standard Palette set");
+				}
 			}
 
 			settings.NTSC_TopLine = (int)NTSC_FirstLineNumeric.Value;
@@ -95,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			settings.PAL_BottomLine = (int)PAL_LastLineNumeric.Value;
 			settings.AllowMoreThanEightSprites = AllowMoreSprites.Checked;
 			settings.ClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
-			settings.AutoLoadPalette = AutoLoadPalette.Checked;
 			settings.DispSprites = DispSprites.Checked;
 			settings.DispBackground = DispBackground.Checked;
 			settings.BackgroundColor = BGColorDialog.Color.ToArgb();
