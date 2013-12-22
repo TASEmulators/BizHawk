@@ -1192,6 +1192,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\pcejin1.bmp" />
     <None Include="images\watch.ico" />
     <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
