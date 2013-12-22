@@ -408,17 +408,49 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		//TODO: this shouldn't be necessary
+		#region Specialized Tool Loading Logic
+
 		public void LoadRamWatch(bool loadDialog)
 		{
 			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
 				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 			}
+
 			if (loadDialog)
 			{
 				GlobalWin.Tools.Load<RamWatch>();
 			}
 		}
+
+		public void LoadTraceLogger()
+		{
+			if (Global.Emulator.CoreComm.CpuTraceAvailable)
+			{
+				Load<TraceLogger>();
+			}
+		}
+
+		public void LoadGameGenieEc()
+		{
+			if (Global.Emulator.SystemId == "NES")
+			{
+				Load<NESGameGenie>();
+			}
+			else if (Global.Emulator.SystemId == "SNES")
+			{
+				Load<SNESGameGenie>();
+			}
+			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			{
+				Load<GBGameGenie>();
+			}
+			else if (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
+			{
+				Load<GenGameGenie>();
+			}
+		}
+
+		#endregion
 	}
 }

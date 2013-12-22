@@ -1129,7 +1129,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceLoggerMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadTraceLogger();
+			GlobalWin.Tools.LoadTraceLogger();
 		}
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)
@@ -1207,7 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1342,7 +1342,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		#endregion
@@ -1553,7 +1553,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		#endregion
@@ -1658,7 +1658,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)

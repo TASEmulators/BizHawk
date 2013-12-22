@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 			{
-				LoadGameGenieEc();
+				GlobalWin.Tools.LoadGameGenieEc();
 			}
 
 			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
@@ -349,10 +349,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
-				if (Global.CoreComm.CpuTraceAvailable)
-				{
-					LoadTraceLogger();
-				}
+				GlobalWin.Tools.LoadTraceLogger();
 			}
 
 			if (Global.Config.DisplayStatusBar == false)
@@ -693,34 +690,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
-		}
-
-		public void LoadGameGenieEc()
-		{
-			if (Global.Emulator is NES)
-			{
-				GlobalWin.Tools.Load<NESGameGenie>();
-			}
-			else if (Global.Emulator is LibsnesCore)
-			{
-				GlobalWin.Tools.Load<SNESGameGenie>();
-			}
-			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
-			{
-				GlobalWin.Tools.Load<GBGameGenie>();
-			}
-			else if (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
-			{
-				GlobalWin.Tools.Load<GenGameGenie>();
-			}
-		}
-
-		public void LoadTraceLogger()
-		{
-			if (Global.Emulator.CoreComm.CpuTraceAvailable)
-			{
-				GlobalWin.Tools.Load<TraceLogger>();
-			}
 		}
 
 		public void FrameBufferResized()
@@ -1211,7 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 				case "MT Increment Player":
 					Global.MovieSession.MultiTrack.CurrentPlayer++;
 					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) // TODO: Replace with console's maximum or current maximum players??!
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 					}
@@ -1223,7 +1192,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.MovieSession.MultiTrack.RecordAll = false;
 					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
 					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
+						Global.MovieSession.MultiTrack.CurrentPlayer = 5; // TODO: Replace with console's maximum or current maximum players??!
 					}
 					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
 					GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -1233,7 +1202,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Ram Watch": GlobalWin.Tools.LoadRamWatch(true); break;
 				case "Ram Search": GlobalWin.Tools.Load<RamSearch>(); break;
 				case "Hex Editor": GlobalWin.Tools.Load<HexEditor>(); break;
-				case "Trace Logger": LoadTraceLogger(); break;
+				case "Trace Logger": GlobalWin.Tools.LoadTraceLogger(); break;
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": GlobalWin.Tools.Load<Cheats>(); break;
 				case "TAStudio": LoadTAStudio(); break;
