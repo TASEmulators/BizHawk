@@ -814,19 +814,6 @@ namespace BizHawk.Client.EmuHawk
 			LogWindowAsConsoleMenuItem.Enabled = true;
 		}
 
-		public void SetNesSoundChannels()
-		{
-			var nes = Global.Emulator as NES;
-			if (nes != null)
-			{
-				nes.SetSquare1(Global.Config.NESSquare1);
-				nes.SetSquare2(Global.Config.NESSquare2);
-				nes.SetTriangle(Global.Config.NESTriangle);
-				nes.SetNoise(Global.Config.NESNoise);
-				nes.SetDMC(Global.Config.NESDMC);
-			}
-		}
-
 		public void ClickSpeedItem(int num)
 		{
 			if ((ModifierKeys & Keys.Control) != 0)
@@ -3571,7 +3558,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Global.Game.Status = nes.RomStatus;
-					SetNesSoundChannels();
 				}
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;

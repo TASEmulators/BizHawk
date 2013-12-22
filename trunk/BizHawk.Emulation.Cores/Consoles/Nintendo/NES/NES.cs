@@ -893,6 +893,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
 
 			SetPalette(Settings.Palette);
+
+			apu.Square1V = Settings.Square1;
+			apu.Square2V = Settings.Square2;
+			apu.TriangleV = Settings.Triangle;
+			apu.NoiseV = Settings.Noise;
+			apu.DMCV = Settings.DMC;
+
 			return false;
 		}
 
@@ -910,6 +917,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int PAL_BottomLine = 239;
 
 			public int[,] Palette;
+
+			public int Square1 = 376;
+			public int Square2 = 376;
+			public int Triangle = 426;
+			public int Noise = 247;
+			public int DMC = 167;
 
 			public NESSettings Clone()
 			{
