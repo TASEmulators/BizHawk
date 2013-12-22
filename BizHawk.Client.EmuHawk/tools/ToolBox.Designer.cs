@@ -46,6 +46,7 @@
 			this.SNESGraphicsDebuggerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.SNESGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GGGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GbGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
@@ -55,7 +56,7 @@
 			// 
 			this.CloseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CloseBtn.Location = new System.Drawing.Point(254, 99);
+			this.CloseBtn.Location = new System.Drawing.Point(152, 135);
 			this.CloseBtn.Name = "CloseBtn";
 			this.CloseBtn.Size = new System.Drawing.Size(0, 23);
 			this.CloseBtn.TabIndex = 1;
@@ -90,13 +91,14 @@
             this.SNESGraphicsDebuggerToolbarItem,
             this.SNESGameGenieToolbarItem,
             this.GGGameGenieToolbarItem,
+            this.GbGpuViewerToolBarItem,
             this.GBGameGenieToolbarItem,
             this.PceBgViewerToolbarItem});
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
 			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.ToolBoxStrip.Size = new System.Drawing.Size(239, 130);
+			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 166);
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;
@@ -243,6 +245,16 @@
 			this.GGGameGenieToolbarItem.ToolTipText = "Game Gear Game Genie Encoder/Decoder";
 			this.GGGameGenieToolbarItem.Click += new System.EventHandler(this.GGGameGenieToolbarItem_Click);
 			// 
+			// GbGpuViewerToolBarItem
+			// 
+			this.GbGpuViewerToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("GbGpuViewerToolBarItem.Image")));
+			this.GbGpuViewerToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GbGpuViewerToolBarItem.Name = "GbGpuViewerToolBarItem";
+			this.GbGpuViewerToolBarItem.Size = new System.Drawing.Size(49, 20);
+			this.GbGpuViewerToolBarItem.Text = "Gpu";
+			this.GbGpuViewerToolBarItem.ToolTipText = "Gameboy Game Genie Encoder/Decoder";
+			this.GbGpuViewerToolBarItem.Click += new System.EventHandler(this.GbGpuViewerToolBarItem_Click);
+			// 
 			// GBGameGenieToolbarItem
 			// 
 			this.GBGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("GBGameGenieToolbarItem.Image")));
@@ -258,8 +270,8 @@
 			this.PceBgViewerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
 			this.PceBgViewerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PceBgViewerToolbarItem.Name = "PceBgViewerToolbarItem";
-			this.PceBgViewerToolbarItem.Size = new System.Drawing.Size(42, 20);
-			this.PceBgViewerToolbarItem.Text = "BG";
+			this.PceBgViewerToolbarItem.Size = new System.Drawing.Size(41, 20);
+			this.PceBgViewerToolbarItem.Text = "Bg";
 			this.PceBgViewerToolbarItem.ToolTipText = "PC Engine Background Viewer";
 			this.PceBgViewerToolbarItem.Click += new System.EventHandler(this.PceBgViewerToolbarItem_Click);
 			// 
@@ -268,11 +280,12 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CloseBtn;
-			this.ClientSize = new System.Drawing.Size(242, 134);
+			this.ClientSize = new System.Drawing.Size(140, 170);
 			this.Controls.Add(this.CloseBtn);
 			this.Controls.Add(this.ToolBoxStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(129, 62);
+			this.MaximumSize = new System.Drawing.Size(270, 600);
+			this.MinimumSize = new System.Drawing.Size(135, 38);
 			this.Name = "ToolBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Load += new System.EventHandler(this.ToolBox_Load);
@@ -303,6 +316,7 @@
 		private System.Windows.Forms.ToolStripButton PceBgViewerToolbarItem;
 		private System.Windows.Forms.Button CloseBtn;
 		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
 
 	}
 }
