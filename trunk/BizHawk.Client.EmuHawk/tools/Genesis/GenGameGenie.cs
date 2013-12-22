@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Sega.Genesis;
+//using BizHawk.Emulation.Cores.Sega.Genesis;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
 
@@ -21,14 +21,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (!(Global.Emulator is Genesis))
+			if (!(Global.Emulator.SystemId == "GEN"))
 			{
 				Close();
 			}
 		}
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is Genesis))
+			if (!(Global.Emulator.SystemId == "GEN"))
 			{
 				Close();
 			}
@@ -39,40 +39,39 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 
-			GameGenieTable.Add('A', 0);   
-			GameGenieTable.Add('B', 1);   
-			GameGenieTable.Add('C', 2);   
-			GameGenieTable.Add('D', 3);   
-			GameGenieTable.Add('E', 4);   
-			GameGenieTable.Add('F', 5);   
-			GameGenieTable.Add('G', 6);   
-			GameGenieTable.Add('H', 7);   
-			GameGenieTable.Add('J', 8);   
-			GameGenieTable.Add('K', 9);   
-			GameGenieTable.Add('L', 10);  
-			GameGenieTable.Add('M', 11);  
-			GameGenieTable.Add('N', 12);  
-			GameGenieTable.Add('P', 13);  
-			GameGenieTable.Add('R', 14);  
-			GameGenieTable.Add('S', 15);  
-			GameGenieTable.Add('T', 16);  
-			GameGenieTable.Add('V', 17);  
-			GameGenieTable.Add('W', 18);  
-			GameGenieTable.Add('X', 19);  
-			GameGenieTable.Add('Y', 20);  
-			GameGenieTable.Add('Z', 21);  
-			GameGenieTable.Add('0', 22);  
-			GameGenieTable.Add('1', 23);  
-			GameGenieTable.Add('2', 24);  
-			GameGenieTable.Add('3', 25);  
-			GameGenieTable.Add('4', 26);  
-			GameGenieTable.Add('5', 27);  
-			GameGenieTable.Add('6', 28);  
-			GameGenieTable.Add('7', 29);  
-			GameGenieTable.Add('8', 30);  
-			GameGenieTable.Add('9', 31);  
+			GameGenieTable.Add('A', 0);
+			GameGenieTable.Add('B', 1);
+			GameGenieTable.Add('C', 2);
+			GameGenieTable.Add('D', 3);
+			GameGenieTable.Add('E', 4);
+			GameGenieTable.Add('F', 5);
+			GameGenieTable.Add('G', 6);
+			GameGenieTable.Add('H', 7);
+			GameGenieTable.Add('J', 8);
+			GameGenieTable.Add('K', 9);
+			GameGenieTable.Add('L', 10);
+			GameGenieTable.Add('M', 11);
+			GameGenieTable.Add('N', 12);
+			GameGenieTable.Add('P', 13);
+			GameGenieTable.Add('R', 14);
+			GameGenieTable.Add('S', 15);
+			GameGenieTable.Add('T', 16);
+			GameGenieTable.Add('V', 17);
+			GameGenieTable.Add('W', 18);
+			GameGenieTable.Add('X', 19);
+			GameGenieTable.Add('Y', 20);
+			GameGenieTable.Add('Z', 21);
+			GameGenieTable.Add('0', 22);
+			GameGenieTable.Add('1', 23);
+			GameGenieTable.Add('2', 24);
+			GameGenieTable.Add('3', 25);
+			GameGenieTable.Add('4', 26);
+			GameGenieTable.Add('5', 27);
+			GameGenieTable.Add('6', 28);
+			GameGenieTable.Add('7', 29);
+			GameGenieTable.Add('8', 30);
+			GameGenieTable.Add('9', 31);
 		}
-
 
 		// code is code to be converted, val is pointer to value, add is pointer to address
 		private void GenGGDecode(string code, ref int val, ref int add)
@@ -241,59 +240,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void addcheatbt_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Genesis)
+			string NAME;
+			int ADDRESS = 0;
+			int VALUE = 0;
+
+			if (!String.IsNullOrWhiteSpace(cheatname.Text))
 			{
-				string NAME;
-				int ADDRESS = 0;
-				int VALUE = 0;
-				int romDataDomainIndex = 0;
-
-
-				if (!String.IsNullOrWhiteSpace(cheatname.Text))
-				{
-					NAME = cheatname.Text;
-				}
-				else
-				{
-					_processing = true;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					NAME = GGCodeMaskBox.Text;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-					_processing = false;
-				}
-
-				if (!String.IsNullOrWhiteSpace(AddressBox.Text))
-				{
-					ADDRESS = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-				}
-
-				if (!String.IsNullOrWhiteSpace(ValueBox.Text))
-				{
-					VALUE = ValueBox.ToRawInt().Value;
-				}
-
-				for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
-				{
-					if (Global.Emulator.MemoryDomains[i].ToString() == "Rom Data")
-					{
-						romDataDomainIndex = i;
-					}
-				}
-
-				Watch watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[romDataDomainIndex],
-					ADDRESS,
-					Watch.WatchSize.Word,
-					Watch.DisplayType.Hex,
-					NAME, true
-				);
-
-				Global.CheatList.Add(new Cheat(
-					watch,
-					VALUE
-				));
+				NAME = cheatname.Text;
+			}
+			else
+			{
+				_processing = true;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
+				NAME = GGCodeMaskBox.Text;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+				_processing = false;
 			}
 
+			if (!String.IsNullOrWhiteSpace(AddressBox.Text))
+			{
+				ADDRESS = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			}
+
+			if (!String.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				VALUE = ValueBox.ToRawInt().Value;
+			}
+
+			Watch watch = Watch.GenerateWatch(
+				Global.Emulator.MemoryDomains["MD CART"],
+				ADDRESS,
+				Watch.WatchSize.Word,
+				Watch.DisplayType.Hex,
+				NAME, true
+			);
+
+			Global.CheatList.Add(new Cheat(
+				watch,
+				VALUE
+			));
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)

@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			//Do nothing;
+			// Do nothing;
 		}
 
 		public void Restart()
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
-			CheatEditor.SetEditEvent(AddCheat); //CheatList.Add is already an upsert, so there is nothing different to handle here
+			CheatEditor.SetEditEvent(AddCheat); // CheatList.Add is already an upsert, so there is nothing different to handle here
 			UpdateDialog();
 		}
 
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
 				((Global.Emulator is NES)
-				|| (Global.Emulator is Genesis)
+				/*|| (Global.Emulator.SystemId == "GEN")*/
 				|| (Global.Emulator.SystemId == "GB")
 				|| (Global.Game.System == "GG")
 				|| (Global.Emulator is LibsnesCore));
@@ -224,8 +224,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			//Size and Positioning
-			_defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			// Size and Positioning
+			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
 			if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
