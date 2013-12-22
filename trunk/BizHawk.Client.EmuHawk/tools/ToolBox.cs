@@ -27,8 +27,11 @@ namespace BizHawk.Client.EmuHawk
 			);
 
 			SetTools();
-			ToolBoxStrip.Items[0].Select();
+			ToolBoxItems.First().Select();
 			SetText();
+			SetSize();
+
+			ToolBoxItems.First().Select();
 		}
 
 		public bool AskSave() { return true;  }
@@ -59,56 +62,40 @@ namespace BizHawk.Client.EmuHawk
 
 			PceBgViewerToolbarItem.Visible = Global.Emulator is PCEngine;
 			
-			GBGameGenieToolbarItem.Visible = Global.Game.System == "GB";
+			GBGameGenieToolbarItem.Visible = 
+				GbGpuViewerToolBarItem.Visible =
+				Global.Game.System == "GB";
 
 			foreach (var button in ToolBoxItems)
 			{
 				var toolBtn = button as ToolStripButton;
 				toolBtn.Click += (o, e) => Close();
-				toolBtn.Paint += (o, e) => SetText();
+				toolBtn.Paint += (o, e) =>
+					{
+						if (ToolBoxItems.Any(x => x.Selected))
+						{
+							SetText();
+						}
+					};
 			}
-
-			SetSize();
 		}
 
 		private void SetSize()
 		{
-			var tools = ToolBoxItems.ToList();
-			
-			int iconWidth = tools.Where(i => i.Visible).Max(i => i.Width);
-			int iconheight = tools.Where(i => i.Visible).Max(i => i.Height);
-
-			int total = tools.Count;
-			bool isOdd = total % 4 != 0;
-
-			int padding = 5;
-			int width = iconWidth * 4;
-			int height = iconheight * (tools.Count / 4) + (isOdd ? iconheight : 0);
-			Size = new Size(width + padding, height + padding);
+			var rows = (int)(Math.Ceiling(ToolBoxItems.Count() / 4.0));
+			this.Height = 30 + (rows * 30);
 		}
 
 		private void SetText()
 		{
-			Text = SelectedButtonText;
-		}
-
-		private string SelectedButtonText
-		{
-			get
+			var items = ToolBoxItems.ToList();
+			if (items.Any(x => x.Selected))
 			{
-				foreach (var button in ToolBoxStrip.Items)
-				{
-					if (button is ToolStripButton)
-					{
-						var toolBtn = button as ToolStripButton;
-						if (toolBtn.Selected && toolBtn.Visible)
-						{
-							return toolBtn.ToolTipText;
-						}
-					}
-				}
-
-				return String.Empty;
+				Text = items.FirstOrDefault(x => x.Selected).ToolTipText;
+			}
+			else
+			{
+				Text = String.Empty;
 			}
 		}
 
@@ -119,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return ToolBoxStrip.Items.Cast<ToolStripItem>();
+				return ToolBoxStrip.Items.Cast<ToolStripItem>().Where(x => x.Visible);
 			}
 		}
 
@@ -182,10 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83KeypadToolbarItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is TI83)
-			{
-				GlobalWin.Tools.Load<TI83KeyPad>();
-			}
+			GlobalWin.Tools.Load<TI83KeyPad>();
 		}
 
 		private void TAStudioToolbarItem_Click(object sender, EventArgs e)
@@ -195,10 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESGraphicsDebuggerToolbarItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is LibsnesCore)
-			{
-				GlobalWin.Tools.Load<SNESGraphicsDebugger>();
-			}
+			GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 		}
 
 		private void VirtualpadToolbarItem_Click(object sender, EventArgs e)
@@ -221,19 +202,16 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
+		private void GbGpuViewerToolBarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GBGPUView>();
+		}
+
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				GlobalWin.Tools.Load<PCEBGViewer>();
-			}
+			GlobalWin.Tools.Load<PCEBGViewer>();
 		}
 
 		#endregion
-
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
