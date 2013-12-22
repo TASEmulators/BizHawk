@@ -1795,7 +1795,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && Global.MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && !Global.MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 			
