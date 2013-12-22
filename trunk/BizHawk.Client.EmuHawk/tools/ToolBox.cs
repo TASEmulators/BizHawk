@@ -92,14 +92,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloseBtn_Click(object sender, EventArgs e)
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			Close();
-		}
-
-		private void CloseBtn_Enter(object sender, EventArgs e)
-		{
-			//ToolBoxStrip.Focus();
+			if (keyData == Keys.Escape)
+			{
+				Close();
+				return true;
+			}
+			else
+			{
+				return base.ProcessCmdKey(ref msg, keyData);
+			}
 		}
 
 		#region Icon Clicks

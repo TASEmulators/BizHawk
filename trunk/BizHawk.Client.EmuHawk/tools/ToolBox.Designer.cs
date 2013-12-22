@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
-			this.CloseBtn = new System.Windows.Forms.Button();
 			this.ToolBoxStrip = new ToolStripEx();
 			this.CheatsToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.RamWatchToolbarItem = new System.Windows.Forms.ToolStripButton();
@@ -51,19 +50,6 @@
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// CloseBtn
-			// 
-			this.CloseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CloseBtn.Location = new System.Drawing.Point(152, 110);
-			this.CloseBtn.Name = "CloseBtn";
-			this.CloseBtn.Size = new System.Drawing.Size(0, 23);
-			this.CloseBtn.TabIndex = 1;
-			this.CloseBtn.TabStop = false;
-			this.CloseBtn.UseVisualStyleBackColor = true;
-			this.CloseBtn.Click += new System.EventHandler(this.CloseBtn_Click);
-			this.CloseBtn.Enter += new System.EventHandler(this.CloseBtn_Enter);
 			// 
 			// ToolBoxStrip
 			// 
@@ -279,9 +265,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CloseBtn;
 			this.ClientSize = new System.Drawing.Size(140, 145);
-			this.Controls.Add(this.CloseBtn);
 			this.Controls.Add(this.ToolBoxStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(270, 600);
@@ -314,7 +298,6 @@
 		private System.Windows.Forms.ToolStripButton TAStudioToolbarItem;
 		private System.Windows.Forms.ToolStripButton GGGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton PceBgViewerToolbarItem;
-		private System.Windows.Forms.Button CloseBtn;
 		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
 
