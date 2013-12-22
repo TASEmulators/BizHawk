@@ -885,4 +885,7 @@
   <data name="pcejin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pcejin1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="gba_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gba-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

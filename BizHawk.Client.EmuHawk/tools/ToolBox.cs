@@ -8,6 +8,7 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
@@ -64,6 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			GBGameGenieToolbarItem.Visible = 
 				GbGpuViewerToolBarItem.Visible =
 				Global.Game.System == "GB";
+
+			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
 			foreach (var button in ToolBoxItems)
 			{
@@ -197,6 +200,11 @@ namespace BizHawk.Client.EmuHawk
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCEBGViewer>();
+		}
+
+		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GBAGPUView>();
 		}
 
 		#endregion

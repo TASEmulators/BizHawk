@@ -1288,6 +1288,7 @@
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
     <None Include="images\alt_about_image.gif" />
+    <None Include="images\gba-icon.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
