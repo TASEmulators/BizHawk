@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[Newtonsoft.Json.JsonObject]
 	public class PathEntryCollection : IEnumerable<PathEntry>
 	{
 		public List<PathEntry> Paths { get; private set; }
@@ -259,6 +260,13 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "Base", Path= Path.Combine(".", "Saturn"), Ordinal = 0 },
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry { System = "DEBUG", SystemDisplayName = "DEBUG", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 				};
 			}
 		}

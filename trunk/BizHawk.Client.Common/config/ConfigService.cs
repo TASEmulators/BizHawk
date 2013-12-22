@@ -17,8 +17,13 @@ namespace BizHawk.Client.Common
 				if (file.Exists)
 					using (var reader = file.OpenText())
 					{
-						var s = new JsonSerializer {SuppressMissingMemberException = true, SuppressDuplicateMemberException = true};
-						var r = new JsonReader(reader);
+						var s = new JsonSerializer
+						{
+							MissingMemberHandling = MissingMemberHandling.Ignore,
+							TypeNameHandling = TypeNameHandling.Auto
+							//SuppressDuplicateMemberException = true
+						};
+						var r = new JsonTextReader(reader);
 						config = (T)s.Deserialize(r, typeof(T));
 					}
 			}
@@ -30,6 +35,7 @@ namespace BizHawk.Client.Common
 			//if (config == null) return new T();
 
 			//patch up arrays in the config with the minimum number of things
+			// TODO: do we still need this with the new json.net version?
 			foreach(var fi in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public))
 				if (fi.FieldType.IsArray)
 				{
@@ -56,8 +62,12 @@ namespace BizHawk.Client.Common
 			var file = new FileInfo(filepath);
 			using (var writer = file.CreateText())
 			{
-				var s = new JsonSerializer();
-				var w = new JsonWriter(writer) { Formatting = Formatting.Indented };
+				var s = new JsonSerializer
+				{
+					TypeNameHandling = TypeNameHandling.Auto
+				};
+
+				var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
 				s.Serialize(w, config);
 			}
 		}

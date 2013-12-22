@@ -130,6 +130,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private readonly MemoryDomainList memoryDomains;
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 
 }

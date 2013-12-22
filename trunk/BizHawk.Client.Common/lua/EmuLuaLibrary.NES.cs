@@ -51,47 +51,51 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		// these methods are awkward.  perhaps with the new core config system, one could
+		// automatically bring out all of the settings to a lua table, with names.  that
+		// would be completely arbitrary and would remove the whole requirement for this mess
+
 		public static bool nes_getallowmorethaneightsprites()
 		{
-			return Global.Config.NESAllowMoreThanEightSprites;
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
 		}
 
 		public static int nes_getbottomscanline(bool pal = false)
 		{
 			if (pal)
 			{
-				return Global.Config.PAL_NESBottomLine;
+				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_BottomLine;
 			}
 			else
 			{
-				return Global.Config.NTSC_NESBottomLine;
+				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
 			}
 		}
 
 		public static bool nes_getclipleftandright()
 		{
-			return Global.Config.NESClipLeftAndRight;
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
 		}
 
 		public static bool nes_getdispbackground()
 		{
-			return Global.Config.NESDispBackground;
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispBackground;
 		}
 
 		public static bool nes_getdispsprites()
 		{
-			return Global.Config.NESDispSprites;
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispSprites;
 		}
 
 		public static int nes_gettopscanline(bool pal = false)
 		{
 			if (pal)
 			{
-				return Global.Config.PAL_NESTopLine;
+				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_TopLine;
 			}
 			else
 			{
-				return Global.Config.NTSC_NESTopLine;
+				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
 			}
 		}
 
@@ -108,80 +112,83 @@ namespace BizHawk.Client.Common
 
 		public static void nes_setallowmorethaneightsprites(bool allow)
 		{
-			Global.Config.NESAllowMoreThanEightSprites = allow;
 			if (Global.Emulator is NES)
 			{
-				(Global.Emulator as NES).CoreComm.NES_UnlimitedSprites = allow;
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				s.AllowMoreThanEightSprites = allow;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
 		public static void nes_setclipleftandright(bool leftandright)
 		{
-			Global.Config.NESClipLeftAndRight = leftandright;
 			if (Global.Emulator is NES)
 			{
-				(Global.Emulator as NES).SetClipLeftAndRight(leftandright);
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				s.ClipLeftAndRight = leftandright;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
+		// these seem to duplicate emu.setrenderplanes???
 		public static void nes_setdispbackground(bool show)
 		{
-			Global.Config.NESDispBackground = show;
-			CoreFileProvider.SyncCoreCommInputSignals();
+			if (Global.Emulator is NES)
+			{
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				s.DispBackground = show;
+				Global.Emulator.PutSettings(s);
+			}
 		}
 
 		public static void nes_setdispsprites(bool show)
 		{
-			Global.Config.NESDispSprites = show;
-			CoreFileProvider.SyncCoreCommInputSignals();
+			if (Global.Emulator is NES)
+			{
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+				s.DispSprites = show;
+				Global.Emulator.PutSettings(s);
+			}
 		}
 
 		public static void nes_setscanlines(object top, object bottom, bool pal = false)
 		{
-
-			int first = LuaInt(top);
-			int last = LuaInt(bottom);
-			if (first > 127)
-			{
-				first = 127;
-			}
-			else if (first < 0)
-			{
-				first = 0;
-			}
-
-			if (last > 239)
-			{
-				last = 239;
-			}
-			else if (last < 128)
-			{
-				last = 128;
-			}
-
-			if (pal)
-			{
-				Global.Config.PAL_NESTopLine = first;
-				Global.Config.PAL_NESBottomLine = last;
-			}
-			else
-			{
-				Global.Config.NTSC_NESTopLine = first;
-				Global.Config.NTSC_NESBottomLine = last;
-			}
-
 			if (Global.Emulator is NES)
 			{
+				int first = LuaInt(top);
+				int last = LuaInt(bottom);
+				if (first > 127)
+				{
+					first = 127;
+				}
+				else if (first < 0)
+				{
+					first = 0;
+				}
+
+				if (last > 239)
+				{
+					last = 239;
+				}
+				else if (last < 128)
+				{
+					last = 128;
+				}
+
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
+
 				if (pal)
 				{
-					(Global.Emulator as NES).PAL_FirstDrawLine = first;
-					(Global.Emulator as NES).PAL_LastDrawLine = last;
+					s.PAL_TopLine = first;
+					s.PAL_BottomLine = last;
 				}
 				else
 				{
-					(Global.Emulator as NES).NTSC_FirstDrawLine = first;
-					(Global.Emulator as NES).NTSC_LastDrawLine = last;
+					s.NTSC_TopLine = first;
+					s.NTSC_BottomLine = last;
 				}
+
+				Global.Emulator.PutSettings(s);
 			}
 		}
 	}

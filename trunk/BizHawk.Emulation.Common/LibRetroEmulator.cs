@@ -548,5 +548,9 @@ namespace BizHawk.Emulation.Common
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

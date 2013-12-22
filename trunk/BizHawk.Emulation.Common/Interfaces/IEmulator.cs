@@ -123,10 +123,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		CoreComm CoreComm { get; }
 
-
-		// this MUST BE the same as MemoryDomains[0], else DRAGONS
-		/// <summary>
-
 		///The list of all avaialble memory domains
 		/// A memory domain is a byte array that respresents a distinct part of the emulated system.
 		/// By convention the Main Memory is the 1st domain in the list
@@ -144,6 +140,31 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <returns></returns>
 		List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters();
+
+		// ====settings interface====
+
+		// in addition to these methods, it's expected that the constructor or Load() method
+		// will take a SyncSettings object to set the initial state of the core (and possibly a settings object?)
+
+		/// <summary>
+		/// get the current core settings, excepting movie settings
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		object GetSettings();
+
+		/// <summary>
+		/// get the current core settings that affect movie sync
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		object GetSyncSettings();
+
+		/// <summary>
+		/// change the core settings, excepting movie settings
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSettings</param>
+		/// <returns>true if a core reboot will be required to implement these</returns>
+		bool PutSettings(object o);
+
 	}
 
 	public enum DisplayType { NTSC, PAL, DENDY }

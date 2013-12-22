@@ -289,5 +289,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

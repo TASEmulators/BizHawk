@@ -281,6 +281,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int MaxVolume { get; set; }
 		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 
 }

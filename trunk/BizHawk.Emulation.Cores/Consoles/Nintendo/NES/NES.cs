@@ -195,10 +195,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		class MyVideoProvider : IVideoProvider
 		{
-			public int ntsc_top = 8;
-			public int ntsc_bottom = 231;
-			public int pal_top = 0;
-			public int pal_bottom = 239;
+			//public int ntsc_top = 8;
+			//public int ntsc_bottom = 231;
+			//public int pal_top = 0;
+			//public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
 			
@@ -220,18 +220,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int the_bottom;
 				if (emu.DisplayType == DisplayType.NTSC)
 				{
-					the_top = ntsc_top;
-					the_bottom = ntsc_bottom;
+					the_top = emu.Settings.NTSC_TopLine;
+					the_bottom = emu.Settings.NTSC_BottomLine;
 				}
 				else
 				{
-					the_top = pal_top;
-					the_bottom = pal_bottom;
+					the_top = emu.Settings.PAL_TopLine;
+					the_bottom = emu.Settings.PAL_BottomLine;
 				}
 
 				int backdrop = 0;
-				if (emu.CoreComm != null)
-					backdrop = emu.CoreComm.NES_BackdropColor;
+				backdrop = emu.Settings.BackgroundColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
@@ -258,56 +257,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (emu.DisplayType == DisplayType.NTSC)
 					{
-						return ntsc_bottom - ntsc_top + 1;
+						return emu.Settings.NTSC_BottomLine - emu.Settings.NTSC_TopLine + 1;
 					}
 					else
 					{
-						return pal_bottom - pal_top + 1;
+						return emu.Settings.PAL_BottomLine - emu.Settings.PAL_TopLine + 1;
 					}
 				}
 			}
 			
-		}
-
-		public int NTSC_FirstDrawLine
-		{
-			get { return videoProvider.ntsc_top; }
-			set { videoProvider.ntsc_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.ntsc_top; }
-		}
-
-		public int NTSC_LastDrawLine
-		{
-			get { return videoProvider.ntsc_bottom; }
-			set { videoProvider.ntsc_bottom = value; }
-		}
-
-		public int PAL_FirstDrawLine
-		{
-			get { return videoProvider.pal_top; }
-			set { videoProvider.pal_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.pal_top; }
-		}
-
-		public int PAL_LastDrawLine
-		{
-			get { return videoProvider.pal_bottom; }
-			set { videoProvider.pal_bottom = value; }
-		}
-
-		public void SetClipLeftAndRight(bool clip)
-		{
-			if (clip)
-			{
-				videoProvider.left = 8;
-				videoProvider.right = 248;
-			}
-			else
-			{
-				videoProvider.left = 0;
-				videoProvider.right = 255;
-			}
-			
-			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
-			videoProvider.FillFrameBuffer();
 		}
 
 		MyVideoProvider videoProvider;
@@ -911,6 +869,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				new KeyValuePair<string, int>("Flag T", cpu.FlagT ? 1 : 0)
 
 			};
+		}
+
+		NESSettings Settings = new NESSettings();
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o)
+		{ 
+			Settings = (NESSettings)o;
+			if (Settings.ClipLeftAndRight)
+			{
+				videoProvider.left = 8;
+				videoProvider.right = 248;
+			}
+			else
+			{
+				videoProvider.left = 0;
+				videoProvider.right = 255;
+			}
+			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
+			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
+			return false;
+		}
+
+		public class NESSettings
+		{
+			public bool AllowMoreThanEightSprites = false;
+			public bool ClipLeftAndRight = false;
+			public bool AutoLoadPalette = true;
+			public bool DispBackground = true;
+			public bool DispSprites = true;
+			public int BackgroundColor = 0;
+
+			public int NTSC_TopLine = 8;
+			public int NTSC_BottomLine = 231;
+			public int PAL_TopLine = 0;
+			public int PAL_BottomLine = 239;
+
+			public NESSettings Clone()
+			{
+				return (NESSettings)MemberwiseClone();
+			}
 		}
 	}
 }

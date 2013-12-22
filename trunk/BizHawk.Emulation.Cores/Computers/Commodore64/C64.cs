@@ -171,5 +171,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			//domains.Add(new MemoryDomain("1541 RAM", 0x1000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
 			memoryDomains = new MemoryDomainList(domains);
 		}
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

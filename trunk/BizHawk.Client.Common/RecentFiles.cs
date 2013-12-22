@@ -4,10 +4,11 @@ using System.Linq;
 
 namespace BizHawk.Client.Common
 {
+	[Newtonsoft.Json.JsonObject]
 	public class RecentFiles : IEnumerable
 	{
-		private readonly int MAX_RECENT_FILES;       //Maximum number of files
-		private readonly List<string> recentlist;    //List of recent files
+		public int MAX_RECENT_FILES { get; private set; }       //Maximum number of files
+		public List<string> recentlist { get; private set; }    //List of recent files
 		
 		public bool AutoLoad = false;
 
