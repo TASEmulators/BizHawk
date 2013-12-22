@@ -2298,16 +2298,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stateSlots.Update();
 
-			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Color.Black : Color.Black;
-			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Color.Black : Color.Black;
-			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Color.Black : Color.Black;
-			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Color.Black : Color.Black;
-			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Color.Black : Color.Black;
-			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Color.Black : Color.Black;
-			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Color.Black : Color.Black;
-			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Color.Black : Color.Black;
-			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Color.Black : Color.Black;
-			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Color.Black : Color.Black;
+			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Color.Black : Color.Gray;
+			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Color.Black : Color.Gray;
+			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Color.Black : Color.Gray;
+			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Color.Black : Color.Gray;
+			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Color.Black : Color.Gray;
+			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Color.Black : Color.Gray;
+			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Color.Black : Color.Gray;
+			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Color.Black : Color.Gray;
+			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Color.Black : Color.Gray;
+			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Color.Black : Color.Gray;
 
 			Slot1StatusButton.BackColor = SystemColors.Control;
 			Slot2StatusButton.BackColor = SystemColors.Control;
