@@ -2152,6 +2152,16 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(file.FullName);
 		}
 
+		/// <summary>
+		/// send core settings to emu, setting reboot flag if needed
+		/// </summary>
+		/// <param name="o"></param>
+		private void PutCoreSettings(object o)
+		{
+			if (Global.Emulator.PutSettings(o))
+				FlagNeedsReboot();
+		}
+
 		private void SaveConfig()
 		{
 			if (Global.Config.SaveWindowPosition)
@@ -3253,23 +3263,8 @@ namespace BizHawk.Client.EmuHawk
 											"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
 									}
 
-									if (Global.Config.PceSpriteLimit)
-									{
-										game.AddOption("ForceSpriteLimit");
-									}
-
-									if (Global.Config.PceEqualizeVolume)
-									{
-										game.AddOption("EqualizeVolumes");
-									}
-
-									if (Global.Config.PceArcadeCardRewindHack)
-									{
-										game.AddOption("ArcadeRewindHack");
-									}
-
 									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
-									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData);
+									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
 									break;
 								}
 						}
@@ -3410,12 +3405,7 @@ namespace BizHawk.Client.EmuHawk
 							case "PCE":
 							case "PCECD":
 							case "SGX":
-								if (Global.Config.PceSpriteLimit)
-								{
-									game.AddOption("ForceSpriteLimit");
-								}
-
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData);
+								nextEmulator = new PCEngine(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
 								break;
 							case "GEN":
 								{
@@ -3431,10 +3421,9 @@ namespace BizHawk.Client.EmuHawk
 								}
 								break;
 							case "NES":
-								{
-									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties);
-									nextEmulator = nes;
-								}
+									nextEmulator = new NES(nextComm, game, rom.FileData,
+										Global.Config.GetCoreSettings<NES>(),
+										Global.MovieSession.Movie.Header.BoardProperties);
 								break;
 							case "GB":
 							case "GBC":
@@ -3557,15 +3546,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MessageBox.Show("Exception during loadgame:\n\n" + ex);
 					return false;
-				}
-
-				// load core settings
-				{
-					string typename = nextEmulator.GetType().ToString();
-					object settings = null;
-					Global.Config.CoreSettings.TryGetValue(typename, out settings);
-					if (settings != null)
-						nextEmulator.PutSettings(settings);
 				}
 
 				CloseGame();
@@ -3774,13 +3754,9 @@ namespace BizHawk.Client.EmuHawk
 
 			{
 				// save settings object
-				string typename = Global.Emulator.GetType().ToString();
-				object settings = Global.Emulator.GetSettings();
-				if (settings != null)
-					Global.Config.CoreSettings[typename] = settings;
-				object syncsettings = Global.Emulator.GetSyncSettings();
-				if (syncsettings != null)
-					Global.Config.CoreSyncSettings[typename] = syncsettings;
+				Type t = Global.Emulator.GetType();
+				Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
+				Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
 			}
 
 			Global.Emulator.Dispose();

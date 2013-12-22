@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
-		public PCEngine(CoreComm comm, GameInfo game, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -70,12 +70,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Type = NecSystemType.SuperGrafx;
 					break;
 			}
-			Init(game, rom);
+			Init(game, rom, (PCESettings)Settings);
 		}
 
 		public string BoardName { get { return null; } }
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -83,12 +83,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
-			Init(game, rom);
+			Init(game, rom, (PCESettings)Settings);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
 		}
 
-		void Init(GameInfo game, byte[] rom)
+		void Init(GameInfo game, byte[] rom, PCESettings Settings)
 		{
 			Controller = NullController.GetNullController();
 			Cpu = new HuC6280();
@@ -98,6 +98,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SCSI = new ScsiCDBus(this, disc);
 
 			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+
+			this.Settings = Settings;
 
 			if (TurboGrafx)
 			{
@@ -182,7 +184,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				ArcadeRam = new byte[0x200000];
 				ArcadeCard = true;
-				ArcadeCardRewindHack = game["ArcadeRewindHack"];
+				ArcadeCardRewindHack = Settings.ArcadeCardRewindHack;
 				for (int i = 0; i < 4; i++)
 					ArcadePage[i] = new ArcadeCardPage();
 			}
@@ -194,7 +196,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemoryPopulous;
 			}
 
-			if (game["ForceSpriteLimit"] || game.NotInDatabase)
+			if (Settings.SpriteLimit || game.NotInDatabase)
 			{
 				VDC1.PerformSpriteLimit = true;
 				if (VDC2 != null)
@@ -207,7 +209,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
-			if (game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
+			if (Settings.EqualizeVolume || (game.NotInDatabase && TurboCD))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -630,8 +632,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public object GetSyncSettings() { return null; }
 		public bool PutSettings(object o)
 		{
-			Settings = (PCESettings)o;
-			return false;
+			PCESettings n = (PCESettings)o;
+			bool ret;
+			if (n.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack ||
+				n.SpriteLimit != Settings.SpriteLimit ||
+				n.EqualizeVolume != Settings.EqualizeVolume)
+				ret = true;
+			else
+				ret = false;
+
+			Settings = n;
+			return ret;
 		}
 
 		public class PCESettings
@@ -640,6 +651,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			public bool ShowOBJ1 = true;
 			public bool ShowBG2 = true;
 			public bool ShowOBJ2 = true;
+
+			// these three require core reboot to use
+			public bool SpriteLimit = false;
+			public bool EqualizeVolume = false;
+			public bool ArcadeCardRewindHack = true;
 
 			public PCESettings Clone()
 			{

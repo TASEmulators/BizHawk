@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -307,9 +308,59 @@ namespace BizHawk.Client.Common
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
 
-		// emulation core settings
+		#region emulation core settings
+
 		public Dictionary<string, object> CoreSettings = new Dictionary<string, object>();
 		public Dictionary<string, object> CoreSyncSettings = new Dictionary<string, object>();
+
+		public object GetCoreSettings<T>()
+			where T : IEmulator
+		{
+			return GetCoreSettings(typeof(T));
+		}
+		public object GetCoreSettings(Type t)
+		{
+			object ret;
+			CoreSettings.TryGetValue(t.ToString(), out ret);
+			return ret;
+		}
+		public void PutCoreSettings<T>(object o)
+			where T : IEmulator
+		{
+			PutCoreSettings(o, typeof(T));
+		}
+		public void PutCoreSettings(object o, Type t)
+		{
+			if (o != null)
+				CoreSettings[t.ToString()] = o;
+			else
+				CoreSettings.Remove(t.ToString());
+		}
+		public object GetCoreSyncSettings<T>()
+			where T : IEmulator
+		{
+			return GetCoreSyncSettings(typeof(T));
+		}
+		public object GetCoreSyncSettings(Type t)
+		{
+			object ret;
+			CoreSyncSettings.TryGetValue(t.ToString(), out ret);
+			return ret;
+		}
+		public void PutCoreSyncSettings<T>(object o)
+			where T : IEmulator
+		{
+			PutCoreSyncSettings(o, typeof(T));
+		}
+		public void PutCoreSyncSettings(object o, Type t)
+		{
+			if (o != null)
+				CoreSyncSettings[t.ToString()] = o;
+			else
+				CoreSyncSettings.Remove(t.ToString());
+		}
+
+		#endregion
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
@@ -591,9 +642,9 @@ namespace BizHawk.Client.Common
 		public bool GGHighlightActiveDisplayRegion = false;
 
 		// PCEngine Settings
-		public bool PceSpriteLimit = false;
-		public bool PceEqualizeVolume = false;
-		public bool PceArcadeCardRewindHack = true;
+		//public bool PceSpriteLimit = false;
+		//public bool PceEqualizeVolume = false;
+		//public bool PceArcadeCardRewindHack = true;
 
 		// Genesis Settings
 

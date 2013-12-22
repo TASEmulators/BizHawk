@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(CoreComm comm, GameInfo game, byte[] rom, Dictionary<string, string> boardProperties = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, Dictionary<string, string> boardProperties = null)
 		{
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CoreComm.UsesDriveLed = true;
 				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
+			PutSettings(Settings);
 		}
 
 		private NES()
