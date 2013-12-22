@@ -168,7 +168,7 @@ namespace BizHawk.Client.Common
 					new Binding { DisplayName = "Lua Console", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 5 },
 					new Binding { DisplayName = "Cheats", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 6 },
 					new Binding { DisplayName = "TAStudio", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 7 },
-					new Binding { DisplayName = "ToolBox", Bindings = "T", TabGroup = "Tools", DefaultBinding = "", Ordinal = 8 },
+					new Binding { DisplayName = "ToolBox", Bindings = "Shift+T", TabGroup = "Tools", DefaultBinding = "", Ordinal = 8 },
 					new Binding { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools", DefaultBinding = "", Ordinal = 9 },
 
 					new Binding { DisplayName = "New Search", Bindings = "", TabGroup = "Ram Search", DefaultBinding = "", Ordinal = 10 },
