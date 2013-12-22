@@ -48,6 +48,7 @@
 			this.GbGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -79,7 +80,8 @@
             this.GGGameGenieToolbarItem,
             this.GbGpuViewerToolBarItem,
             this.GBGameGenieToolbarItem,
-            this.PceBgViewerToolbarItem});
+            this.PceBgViewerToolbarItem,
+            this.GbaGpuViewerToolBarItem});
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
@@ -261,6 +263,16 @@
 			this.PceBgViewerToolbarItem.ToolTipText = "PC Engine Background Viewer";
 			this.PceBgViewerToolbarItem.Click += new System.EventHandler(this.PceBgViewerToolbarItem_Click);
 			// 
+			// GbaGpuViewerToolBarItem
+			// 
+			this.GbaGpuViewerToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.gba_icon;
+			this.GbaGpuViewerToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GbaGpuViewerToolBarItem.Name = "GbaGpuViewerToolBarItem";
+			this.GbaGpuViewerToolBarItem.Size = new System.Drawing.Size(49, 20);
+			this.GbaGpuViewerToolBarItem.Text = "Gpu";
+			this.GbaGpuViewerToolBarItem.ToolTipText = "Gameboy Advance Gpu Viewer";
+			this.GbaGpuViewerToolBarItem.Click += new System.EventHandler(this.GbaGpuViewerToolBarItem_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -300,6 +312,7 @@
 		private System.Windows.Forms.ToolStripButton PceBgViewerToolbarItem;
 		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
+		private System.Windows.Forms.ToolStripButton GbaGpuViewerToolBarItem;
 
 	}
 }
