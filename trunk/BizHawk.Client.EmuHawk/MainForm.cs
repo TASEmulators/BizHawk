@@ -709,12 +709,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.Load<GBGameGenie>();
 			}
-			/* adelikat: Genesis decoding doesn't seem to work yet
-			else if (Global.Emulator.SystemId == "GEN")
+			else if (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
 			{
 				GlobalWin.Tools.Load<GenGameGenie>();
 			}
-			*/
 		}
 
 		public void LoadTraceLogger()

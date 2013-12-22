@@ -49,6 +49,7 @@
 			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.GenesisGameGenieToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -81,7 +82,8 @@
             this.GbGpuViewerToolBarItem,
             this.GBGameGenieToolbarItem,
             this.PceBgViewerToolbarItem,
-            this.GbaGpuViewerToolBarItem});
+            this.GbaGpuViewerToolBarItem,
+            this.GenesisGameGenieToolBarItem});
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
@@ -273,6 +275,16 @@
 			this.GbaGpuViewerToolBarItem.ToolTipText = "Gameboy Advance Gpu Viewer";
 			this.GbaGpuViewerToolBarItem.Click += new System.EventHandler(this.GbaGpuViewerToolBarItem_Click);
 			// 
+			// GenesisGameGenieToolBarItem
+			// 
+			this.GenesisGameGenieToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GenesisControllerIcon;
+			this.GenesisGameGenieToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GenesisGameGenieToolBarItem.Name = "GenesisGameGenieToolBarItem";
+			this.GenesisGameGenieToolBarItem.Size = new System.Drawing.Size(43, 20);
+			this.GenesisGameGenieToolBarItem.Text = "GG";
+			this.GenesisGameGenieToolBarItem.ToolTipText = "Genesis Game Genie Encoder/Decoder";
+			this.GenesisGameGenieToolBarItem.Click += new System.EventHandler(this.GenesisGameGenieToolBarItem_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,6 +325,7 @@
 		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
 		private System.Windows.Forms.ToolStripButton GbaGpuViewerToolBarItem;
+		private System.Windows.Forms.ToolStripButton GenesisGameGenieToolBarItem;
 
 	}
 }
