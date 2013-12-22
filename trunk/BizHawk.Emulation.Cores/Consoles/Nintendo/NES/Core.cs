@@ -432,7 +432,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// sets the provided palette as current
 		/// </summary>
-		public void SetPalette(int[,] pal)
+		private void SetPalette(int[,] pal)
 		{
 			Array.Copy(pal,palette,64*3);
 			for(int i=0;i<64*8;i++)

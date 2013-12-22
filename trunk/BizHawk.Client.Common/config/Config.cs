@@ -336,11 +336,11 @@ namespace BizHawk.Client.Common
 		// NES Graphics settings
 		//public bool NESAllowMoreThanEightSprites = false;
 		//public bool NESClipLeftAndRight = false;
-		public bool NESAutoLoadPalette = true;
+		//public bool NESAutoLoadPalette = true;
 		//public bool NESDispBackground = true;
 		//public bool NESDispSprites = true;
 		//public int NESBackgroundColor = 0;
-		public string NESPaletteFile = "";
+		//public string NESPaletteFile = "";
 		//public int NTSC_NESTopLine = 8;
 		//public int NTSC_NESBottomLine = 231;
 		//public int PAL_NESTopLine = 8;
