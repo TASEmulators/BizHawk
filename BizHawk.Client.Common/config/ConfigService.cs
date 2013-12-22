@@ -2,14 +2,35 @@
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace BizHawk.Client.Common
 {
 	public static class ConfigService
 	{
-		public static T Load<T>(string filepath, T currentConfig) where T : new()
+		static JsonSerializer Serializer;
+
+		static ConfigService()
 		{
-			T config = new T();
+			Serializer = new JsonSerializer
+			{
+				MissingMemberHandling = MissingMemberHandling.Ignore,
+				TypeNameHandling = TypeNameHandling.Auto,
+				ConstructorHandling = ConstructorHandling.Default,
+
+				// because of the peculiar setup of Binding.cs and PathEntry.cs
+				ObjectCreationHandling = ObjectCreationHandling.Replace,
+				
+				ContractResolver = new DefaultContractResolver
+				{
+					DefaultMembersSearchFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic
+				},
+			};
+		}
+
+		public static T Load<T>(string filepath) where T : new()
+		{
+			T config = default(T);
 
 			try
 			{
@@ -17,14 +38,8 @@ namespace BizHawk.Client.Common
 				if (file.Exists)
 					using (var reader = file.OpenText())
 					{
-						var s = new JsonSerializer
-						{
-							MissingMemberHandling = MissingMemberHandling.Ignore,
-							TypeNameHandling = TypeNameHandling.Auto
-							//SuppressDuplicateMemberException = true
-						};
 						var r = new JsonTextReader(reader);
-						config = (T)s.Deserialize(r, typeof(T));
+						config = (T)Serializer.Deserialize(r, typeof(T));
 					}
 			}
 			catch (Exception ex)
@@ -32,28 +47,9 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Config Error", ex);
 			}
 
-			//if (config == null) return new T();
+			if (config == null)
+				return new T();
 
-			//patch up arrays in the config with the minimum number of things
-			// TODO: do we still need this with the new json.net version?
-			foreach(var fi in typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public))
-				if (fi.FieldType.IsArray)
-				{
-					Array aold = fi.GetValue(currentConfig) as Array;
-					Array anew = fi.GetValue(config) as Array;
-					if (aold.Length == anew.Length) continue;
-
-					//create an array of the right size
-					Array acreate = Array.CreateInstance(fi.FieldType.GetElementType(), Math.Max(aold.Length,anew.Length));
-					
-					//copy the old values in, (presumably the defaults), and then copy the new ones on top
-					Array.Copy(aold, acreate, Math.Min(aold.Length,acreate.Length));
-					Array.Copy(anew, acreate, Math.Min(anew.Length, acreate.Length));
-					
-					//stash it into the config struct
-					fi.SetValue(config, acreate);
-				}
-					
 			return config;
 		}
 
@@ -62,13 +58,8 @@ namespace BizHawk.Client.Common
 			var file = new FileInfo(filepath);
 			using (var writer = file.CreateText())
 			{
-				var s = new JsonSerializer
-				{
-					TypeNameHandling = TypeNameHandling.Auto
-				};
-
 				var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
-				s.Serialize(w, config);
+				Serializer.Serialize(w, config);
 			}
 		}
 	}

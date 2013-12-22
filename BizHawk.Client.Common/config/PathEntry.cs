@@ -39,6 +39,12 @@ namespace BizHawk.Client.Common
 			Paths.AddRange(DefaultValues);
 		}
 
+		[Newtonsoft.Json.JsonConstructor]
+		public PathEntryCollection(List<PathEntry> Paths)
+		{
+			this.Paths = Paths;
+		}
+
 		public void Add(PathEntry p)
 		{
 			Paths.Add(p);

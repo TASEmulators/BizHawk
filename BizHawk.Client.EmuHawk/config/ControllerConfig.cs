@@ -317,8 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
 			// still have to hit OK at the end.
-			var cd = new ControlDefaults();
-			cd = ConfigService.Load(Config.ControlDefaultPath, cd);
+			var cd =  ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
 			LoadPanels(cd);
 
 			tabControl1.SelectTab(wasTabbedMain);
@@ -358,8 +357,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var cd = new ControlDefaults();
-				cd = ConfigService.Load(Config.ControlDefaultPath, cd);
+				var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
 				cd.AllTrollers[_theDefinition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[_theDefinition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAnalog[_theDefinition.Name] = new Dictionary<string, Config.AnalogBind>();
