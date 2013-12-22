@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordMovie));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
-			this.Browse = new System.Windows.Forms.Button();
+			this.BrowseBtn = new System.Windows.Forms.Button();
 			this.RecordBox = new System.Windows.Forms.TextBox();
 			this.StartFromCombo = new System.Windows.Forms.ComboBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -64,18 +64,18 @@
 			this.OK.TabIndex = 0;
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
-			// Browse
+			// BrowseBtn
 			// 
-			this.Browse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Browse.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
-			this.Browse.Location = new System.Drawing.Point(423, 13);
-			this.Browse.Name = "Browse";
-			this.Browse.Size = new System.Drawing.Size(25, 23);
-			this.Browse.TabIndex = 1;
-			this.Browse.UseVisualStyleBackColor = true;
-			this.Browse.Click += new System.EventHandler(this.button1_Click);
+			this.BrowseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
+			this.BrowseBtn.Location = new System.Drawing.Point(423, 13);
+			this.BrowseBtn.Name = "BrowseBtn";
+			this.BrowseBtn.Size = new System.Drawing.Size(25, 23);
+			this.BrowseBtn.TabIndex = 1;
+			this.BrowseBtn.UseVisualStyleBackColor = true;
+			this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
 			// 
 			// RecordBox
 			// 
@@ -109,7 +109,7 @@
 			this.groupBox1.Controls.Add(this.DefaultAuthorCheckBox);
 			this.groupBox1.Controls.Add(this.AuthorBox);
 			this.groupBox1.Controls.Add(this.StartFromCombo);
-			this.groupBox1.Controls.Add(this.Browse);
+			this.groupBox1.Controls.Add(this.BrowseBtn);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.label1);
@@ -197,7 +197,7 @@
 
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button OK;
-		private System.Windows.Forms.Button Browse;
+		private System.Windows.Forms.Button BrowseBtn;
 		private System.Windows.Forms.TextBox RecordBox;
 		private System.Windows.Forms.ComboBox StartFromCombo;
 		private System.Windows.Forms.GroupBox groupBox1;
