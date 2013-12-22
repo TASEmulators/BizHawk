@@ -49,8 +49,12 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
-				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
+				// in the future, we could do something more arbitrary here.
+				// but this isn't any worse than the old system
+				NES.NESSettings s = (NES.NESSettings)Global.Emulator.GetSettings();
+				s.DispSprites = (bool)lua_p[0];
+				s.DispBackground = (bool)lua_p[1];
+				Global.Emulator.PutSettings(s);
 			}
 			else if (Global.Emulator is PCEngine)
 			{

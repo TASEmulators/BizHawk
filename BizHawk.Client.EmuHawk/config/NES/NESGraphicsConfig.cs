@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private HawkFile palette;
 		private NES nes;
+		private NES.NESSettings settings;
 
 		public NESGraphicsConfig()
 		{
@@ -26,23 +27,24 @@ namespace BizHawk.Client.EmuHawk
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
 			nes = Global.Emulator as NES;
+			settings = (NES.NESSettings)nes.GetSettings();
 			LoadStuff();
 		}
 
 		private void LoadStuff()
 		{
-			NTSC_FirstLineNumeric.Value = Global.Config.NTSC_NESTopLine;
-			NTSC_LastLineNumeric.Value = Global.Config.NTSC_NESBottomLine;
-			PAL_FirstLineNumeric.Value = Global.Config.PAL_NESTopLine;
-			PAL_LastLineNumeric.Value = Global.Config.PAL_NESBottomLine;
-			AllowMoreSprites.Checked = Global.Config.NESAllowMoreThanEightSprites;
-			ClipLeftAndRightCheckBox.Checked = Global.Config.NESClipLeftAndRight;
-			AutoLoadPalette.Checked = Global.Config.NESAutoLoadPalette;
+			NTSC_FirstLineNumeric.Value = settings.NTSC_TopLine;
+			NTSC_LastLineNumeric.Value = settings.NTSC_BottomLine;
+			PAL_FirstLineNumeric.Value = settings.PAL_TopLine;
+			PAL_LastLineNumeric.Value = settings.PAL_BottomLine;
+			AllowMoreSprites.Checked = settings.AllowMoreThanEightSprites;
+			ClipLeftAndRightCheckBox.Checked = settings.ClipLeftAndRight;
+			AutoLoadPalette.Checked = settings.AutoLoadPalette;
 			PalettePath.Text = Global.Config.NESPaletteFile;
-			DispSprites.Checked = Global.Config.NESDispSprites;
-			DispBackground.Checked = Global.Config.NESDispBackground;
-			BGColorDialog.Color = Color.FromArgb(unchecked(Global.Config.NESBackgroundColor | (int)0xFF000000));
-			checkUseBackdropColor.Checked = (Global.Config.NESBackgroundColor & 0xFF000000) != 0;
+			DispSprites.Checked = settings.DispSprites;
+			DispBackground.Checked = settings.DispBackground;
+			BGColorDialog.Color = Color.FromArgb(unchecked(settings.BackgroundColor | (int)0xFF000000));
+			checkUseBackdropColor.Checked = (settings.BackgroundColor & 0xFF000000) != 0;
 			SetColorBox();
 		}
 
@@ -87,29 +89,20 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Standard Palette set");
 			}
 
-			Global.Config.NTSC_NESTopLine = (int)NTSC_FirstLineNumeric.Value;
-			nes.NTSC_FirstDrawLine = (int)NTSC_FirstLineNumeric.Value;
-
-			Global.Config.NTSC_NESBottomLine = (int)NTSC_LastLineNumeric.Value;
-			nes.NTSC_LastDrawLine = (int)NTSC_LastLineNumeric.Value;
-
-			Global.Config.PAL_NESTopLine = (int)PAL_FirstLineNumeric.Value;
-			nes.PAL_FirstDrawLine = (int)PAL_FirstLineNumeric.Value;
-
-			Global.Config.PAL_NESBottomLine = (int)PAL_LastLineNumeric.Value;
-			nes.PAL_LastDrawLine = (int)PAL_LastLineNumeric.Value;
-
-			Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
-			Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
-			nes.SetClipLeftAndRight(ClipLeftAndRightCheckBox.Checked);
-			Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
-			Global.Config.NESDispSprites = DispSprites.Checked;
-			Global.Config.NESDispBackground = DispBackground.Checked;
-			Global.Config.NESBackgroundColor = BGColorDialog.Color.ToArgb();
+			settings.NTSC_TopLine = (int)NTSC_FirstLineNumeric.Value;
+			settings.NTSC_BottomLine = (int)NTSC_LastLineNumeric.Value;
+			settings.PAL_TopLine = (int)PAL_FirstLineNumeric.Value;
+			settings.PAL_BottomLine = (int)PAL_LastLineNumeric.Value;
+			settings.AllowMoreThanEightSprites = AllowMoreSprites.Checked;
+			settings.ClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
+			settings.AutoLoadPalette = AutoLoadPalette.Checked;
+			settings.DispSprites = DispSprites.Checked;
+			settings.DispBackground = DispBackground.Checked;
+			settings.BackgroundColor = BGColorDialog.Color.ToArgb();
 			if (!checkUseBackdropColor.Checked)
-			{
-				Global.Config.NESBackgroundColor &= 0x00FFFFFF;
-			}
+				settings.BackgroundColor &= 0x00FFFFFF;
+
+			nes.PutSettings(settings);
 			Close();
 		}
 
@@ -152,19 +145,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			NTSC_FirstLineNumeric.Value = 8;
-			NTSC_LastLineNumeric.Value = 231;
-			PAL_FirstLineNumeric.Value = 0;
-			PAL_LastLineNumeric.Value = 239;
-			AllowMoreSprites.Checked = false;
-			ClipLeftAndRightCheckBox.Checked = false;
-			AutoLoadPalette.Checked = true;
-			PalettePath.Text = "";
-			DispSprites.Checked = true;
-			DispBackground.Checked = true;
-			BGColorDialog.Color = Color.FromArgb(unchecked(0 | (int)0xFF000000));
-			checkUseBackdropColor.Checked = false;
-			SetColorBox();
+			settings = new NES.NESSettings();
+			LoadStuff();
 		}
 	}
 }

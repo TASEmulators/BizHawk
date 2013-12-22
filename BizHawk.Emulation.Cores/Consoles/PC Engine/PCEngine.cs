@@ -623,5 +623,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (disc != null)
 				disc.Dispose();
 		}
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

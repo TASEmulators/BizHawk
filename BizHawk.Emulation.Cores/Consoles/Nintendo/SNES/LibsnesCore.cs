@@ -1045,5 +1045,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void EndAsyncSound() { }
 
 		#endregion audio stuff
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

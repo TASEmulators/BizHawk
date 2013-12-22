@@ -96,10 +96,10 @@ namespace BizHawk.Client.Common
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;
 
-			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
-			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
-			target.NES_ShowBG = Global.Config.NESDispBackground;
-			target.NES_ShowOBJ = Global.Config.NESDispSprites;
+			//target.NES_BackdropColor = Global.Config.NESBackgroundColor;
+			//target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
+			//target.NES_ShowBG = Global.Config.NESDispBackground;
+			//target.NES_ShowOBJ = Global.Config.NESDispSprites;
 			target.PCE_ShowBG1 = Global.Config.PCEDispBG1;
 			target.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
 			target.PCE_ShowBG2 = Global.Config.PCEDispBG2;

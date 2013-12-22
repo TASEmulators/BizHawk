@@ -139,8 +139,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			if (factor == 0)
 				LibYabause.libyabause_glresize(width, height);
 		}
-		
-		
+
+
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				}
 			}
 		}
-	
+
 
 		#endregion
 
@@ -631,5 +631,9 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		#endregion
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
 	}
 }

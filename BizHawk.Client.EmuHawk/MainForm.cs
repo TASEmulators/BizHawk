@@ -3176,8 +3176,8 @@ namespace BizHawk.Client.EmuHawk
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
 								default: // PCECD was bizhawk's first CD core,
-										// and during that time, all CDs were blindly sent to it
-										// so this prevents regressions
+									// and during that time, all CDs were blindly sent to it
+									// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
@@ -3432,14 +3432,8 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "NES":
 								{
-									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties)
-									{
-										NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
-										NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
-										PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
-									};
-									nes.NTSC_LastDrawLine = Global.Config.PAL_NESBottomLine;
-									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
+									var nes = new NES(nextComm, game, rom.FileData, Global.MovieSession.Movie.Header.BoardProperties);
+
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
 										HawkFile.ExistsAt(Global.Config.NESPaletteFile))
@@ -3570,6 +3564,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MessageBox.Show("Exception during loadgame:\n\n" + ex);
 					return false;
+				}
+
+				// load core settings
+				{
+					string typename = nextEmulator.GetType().ToString();
+					object settings = null;
+					Global.Config.CoreSettings.TryGetValue(typename, out settings);
+					if (settings != null)
+						nextEmulator.PutSettings(settings);
 				}
 
 				CloseGame();
@@ -3775,6 +3778,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			StopAVI();
+
+			{
+				// save settings object
+				string typename = Global.Emulator.GetType().ToString();
+				object settings = Global.Emulator.GetSettings();
+				if (settings != null)
+					Global.Config.CoreSettings[typename] = settings;
+				object syncsettings = Global.Emulator.GetSyncSettings();
+				if (syncsettings != null)
+					Global.Config.CoreSyncSettings[typename] = syncsettings;
+			}
+
 			Global.Emulator.Dispose();
 			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();

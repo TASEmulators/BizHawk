@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 		public int Ordinal = 0;
 	}
 
+	[Newtonsoft.Json.JsonObject]
 	public class BindingCollection : IEnumerable<Binding>
 	{
 		public List<Binding> Bindings { get; private set; }

@@ -308,6 +308,10 @@ namespace BizHawk.Client.Common
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
 
+		// emulation core settings
+		public Dictionary<string, object> CoreSettings = new Dictionary<string, object>();
+		public Dictionary<string, object> CoreSyncSettings = new Dictionary<string, object>();
+
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
 		public bool NESPPUSaveWindowPosition = true;
@@ -331,17 +335,17 @@ namespace BizHawk.Client.Common
 		public int NESNameTableRefreshRate = 4;
 
 		// NES Graphics settings
-		public bool NESAllowMoreThanEightSprites = false;
-		public bool NESClipLeftAndRight = false;
+		//public bool NESAllowMoreThanEightSprites = false;
+		//public bool NESClipLeftAndRight = false;
 		public bool NESAutoLoadPalette = true;
-		public bool NESDispBackground = true;
-		public bool NESDispSprites = true;
-		public int NESBackgroundColor = 0;
+		//public bool NESDispBackground = true;
+		//public bool NESDispSprites = true;
+		//public int NESBackgroundColor = 0;
 		public string NESPaletteFile = "";
-		public int NTSC_NESTopLine = 8;
-		public int NTSC_NESBottomLine = 231;
-		public int PAL_NESTopLine = 8;
-		public int PAL_NESBottomLine = 231;
+		//public int NTSC_NESTopLine = 8;
+		//public int NTSC_NESBottomLine = 231;
+		//public int PAL_NESTopLine = 8;
+		//public int PAL_NESBottomLine = 231;
 
 		// gb gpu view settings
 		public bool AutoLoadGBGPUView = false;
