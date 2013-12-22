@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1235,9 +1236,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCESubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			PCEAlwaysPerformSpriteLimitMenuItem.Checked = Global.Config.PceSpriteLimit;
-			PCEAlwaysEqualizeVolumesMenuItem.Checked = Global.Config.PceEqualizeVolume;
-			PCEArcadeCardRewindEnableMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
+			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+
+			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
+			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
 		}
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
@@ -1247,26 +1250,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.PceSpriteLimit ^= true;
-			FlagNeedsReboot();
+			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			s.SpriteLimit ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void PCEAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.PceEqualizeVolume ^= true;
-			FlagNeedsReboot();
+			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			s.EqualizeVolume ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void PCEArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.PceArcadeCardRewindHack ^= true;
-			FlagNeedsReboot();
+			var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			s.ArcadeCardRewindHack ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void PCEGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new PCEGraphicsConfig().ShowDialog();
-			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		#endregion
