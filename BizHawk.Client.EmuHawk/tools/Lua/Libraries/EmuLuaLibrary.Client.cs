@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void client_opentracelogger()
 		{
-			GlobalWin.MainForm.LoadTraceLogger();
+			GlobalWin.Tools.LoadTraceLogger();
 		}
 
 		public static void client_paint()

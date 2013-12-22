@@ -673,7 +673,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		#endregion

@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesGameGenieToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void NesNameTableToolbarItem_Click(object sender, EventArgs e)
@@ -181,17 +181,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESGameGenieToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void GGGameGenieToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void GBGameGenieToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadGameGenieEc();
+			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
 		private void GbGpuViewerToolBarItem_Click(object sender, EventArgs e)
