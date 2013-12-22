@@ -68,6 +68,8 @@ namespace BizHawk.Client.EmuHawk
 
 			GbaGpuViewerToolBarItem.Visible = Global.Emulator is GBA;
 
+			GenesisGameGenieToolBarItem.Visible = Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM;
+
 			foreach (var button in ToolBoxItems)
 			{
 				if (button.Visible)
@@ -205,6 +207,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBAGPUView>();
+		}
+
+		private void GenesisGameGenieToolBarItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GenGameGenie>();
 		}
 
 		#endregion
