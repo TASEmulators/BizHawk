@@ -1076,7 +1076,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config = ConfigService.Load(PathManager.DefaultIniPath, Global.Config);
+			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			GlobalWin.OSD.AddMessage("Config file loaded");
 		}

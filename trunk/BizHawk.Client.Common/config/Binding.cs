@@ -18,6 +18,12 @@ namespace BizHawk.Client.Common
 	{
 		public List<Binding> Bindings { get; private set; }
 
+		[Newtonsoft.Json.JsonConstructor]
+		public BindingCollection(List<Binding> Bindings)
+		{
+			this.Bindings = Bindings;
+		}
+
 		public BindingCollection()
 		{
 			Bindings = new List<Binding>();

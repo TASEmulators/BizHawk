@@ -16,8 +16,7 @@ namespace BizHawk.Client.Common
 		{
 			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
 			{
-				ControlDefaults cd = new ControlDefaults();
-				cd = ConfigService.Load(ControlDefaultPath, cd);
+				ControlDefaults cd = ConfigService.Load<ControlDefaults>(ControlDefaultPath);
 				AllTrollers = cd.AllTrollers;
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
