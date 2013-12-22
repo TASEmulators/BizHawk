@@ -27,9 +27,9 @@ namespace BizHawk.Client.EmuHawk
 			);
 
 			SetTools();
-			ToolBoxItems.First().Select();
 			SetSize();
 
+			ToolBoxStrip.Select();
 			ToolBoxItems.First().Select();
 		}
 
@@ -73,6 +73,8 @@ namespace BizHawk.Client.EmuHawk
 					toolBtn.Click += (o, e) => Close();
 				}
 			}
+
+			NesDebuggerToolbarItem.Visible = !VersionInfo.INTERIM;
 		}
 
 		private void SetSize()
