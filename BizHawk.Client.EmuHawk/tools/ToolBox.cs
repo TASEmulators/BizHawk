@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -23,7 +25,9 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.MainForm.Location.Y
 			);
 
-			HideShowIcons();
+			SetTools();
+			ToolBoxStrip.Items[0].Select();
+			SetText();
 		}
 
 		public bool AskSave() { return true;  }
@@ -32,10 +36,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			HideShowIcons();
+			SetTools();
 		}
 
-		private void HideShowIcons()
+		private void SetTools()
 		{
 			NesPPUToolbarItem.Visible =
 				NesDebuggerToolbarItem.Visible =
@@ -54,8 +58,82 @@ namespace BizHawk.Client.EmuHawk
 
 			GBGameGenieToolbarItem.Visible = Global.Game.System == "GB";
 
-			Size = new Size(Size.Width, ToolBoxStrip.Size.Height + 50);
+			foreach (var button in ToolBoxItems)
+			{
+				//if (button is ToolStripButton)
+				//{
+					var toolBtn = button as ToolStripButton;
+					toolBtn.Click += (o, e) => Close();
+					toolBtn.Paint += (o, e) => SetText();
+				//}
+			}
+
+			SetSize();
 		}
+
+		private void SetSize()
+		{
+			var tools = ToolBoxItems.ToList();
+			
+			int iconWidth = tools.Where(i => i.Visible).Max(i => i.Width);
+			int iconheight = tools.Where(i => i.Visible).Max(i => i.Height);
+
+			int total = tools.Count;
+			bool isOdd = total % 4 != 0;
+
+			int padding = 5;
+			int width = iconWidth * 4;
+			int height = iconheight * (tools.Count / 4) + (isOdd ? iconheight : 0);
+			Size = new Size(width + padding, height + padding);
+		}
+
+		private void SetText()
+		{
+			Text = SelectedButtonText;
+		}
+
+		private string SelectedButtonText
+		{
+			get
+			{
+				foreach (var button in ToolBoxStrip.Items)
+				{
+					if (button is ToolStripButton)
+					{
+						var toolBtn = button as ToolStripButton;
+						if (toolBtn.Selected && toolBtn.Visible)
+						{
+							return toolBtn.ToolTipText;
+						}
+					}
+				}
+
+				return String.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Provide LINQ capabilities to an outdated form collection
+		/// </summary>
+		private IEnumerable<ToolStripItem> ToolBoxItems
+		{
+			get
+			{
+				return ToolBoxStrip.Items.Cast<ToolStripItem>();
+			}
+		}
+
+		private void CloseBtn_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private void CloseBtn_Enter(object sender, EventArgs e)
+		{
+			ToolBoxStrip.Focus();
+		}
+
+		#region Icon Clicks
 
 		private void CheatsToolBarItem_Click(object sender, EventArgs e)
 		{
@@ -142,5 +220,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.LoadGameGenieEc();
 		}
+
+		#endregion
 	}
 }
