@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,19 +15,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			DispOBJ1.Checked = Global.Config.PCEDispOBJ1;
-			DispBG1.Checked = Global.Config.PCEDispBG1;
-			DispOBJ2.Checked = Global.Config.PCEDispOBJ2;
-			DispBG2.Checked = Global.Config.PCEDispBG2;
+			PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+
+			DispOBJ1.Checked = s.ShowOBJ1;
+			DispBG1.Checked = s.ShowBG1;
+			DispOBJ2.Checked = s.ShowOBJ2;
+			DispBG2.Checked = s.ShowBG2;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			Global.Config.PCEDispOBJ1 = DispOBJ1.Checked;
-			Global.Config.PCEDispBG1 = DispBG1.Checked;
-			Global.Config.PCEDispOBJ2 = DispOBJ2.Checked;
-			Global.Config.PCEDispBG2 = DispBG2.Checked;
-
+			PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+			s.ShowOBJ1 = DispOBJ1.Checked;
+			s.ShowBG1 = DispBG1.Checked;
+			s.ShowOBJ2 = DispOBJ2.Checked;
+			s.ShowBG2 = DispBG2.Checked;
+			Global.Emulator.PutSettings(s);
 			Close();
 		}
 	}

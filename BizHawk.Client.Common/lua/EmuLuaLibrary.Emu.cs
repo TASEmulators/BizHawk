@@ -58,13 +58,15 @@ namespace BizHawk.Client.Common
 			}
 			else if (Global.Emulator is PCEngine)
 			{
-				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
-				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
+				PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+				s.ShowOBJ1 = (bool)lua_p[0];
+				s.ShowBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
 				{
-					Global.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
-					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
+					s.ShowOBJ2 = (bool)lua_p[2];
+					s.ShowBG2 = (bool)lua_p[3];
 				}
+				Global.Emulator.PutSettings(s);
 			}
 			else if (Global.Emulator is SMS)
 			{

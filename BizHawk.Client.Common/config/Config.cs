@@ -388,10 +388,10 @@ namespace BizHawk.Client.Common
 		public int SaturnGLH = 480;
 
 		// PCE Graphics settings
-		public bool PCEDispBG1 = true;
-		public bool PCEDispOBJ1 = true;
-		public bool PCEDispBG2 = true;
-		public bool PCEDispOBJ2 = true;
+		//public bool PCEDispBG1 = true;
+		//public bool PCEDispOBJ1 = true;
+		//public bool PCEDispBG2 = true;
+		//public bool PCEDispOBJ2 = true;
 
 		// PCE BG Viewer settings
 		public bool PCEBGViewerSaveWIndowPosition = true;
