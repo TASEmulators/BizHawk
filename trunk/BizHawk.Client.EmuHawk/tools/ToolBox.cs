@@ -8,6 +8,7 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -56,16 +57,15 @@ namespace BizHawk.Client.EmuHawk
 			GGGameGenieToolbarItem.Visible =
 				Global.Game.System == "GG";
 
+			PceBgViewerToolbarItem.Visible = Global.Emulator is PCEngine;
+			
 			GBGameGenieToolbarItem.Visible = Global.Game.System == "GB";
 
 			foreach (var button in ToolBoxItems)
 			{
-				//if (button is ToolStripButton)
-				//{
-					var toolBtn = button as ToolStripButton;
-					toolBtn.Click += (o, e) => Close();
-					toolBtn.Paint += (o, e) => SetText();
-				//}
+				var toolBtn = button as ToolStripButton;
+				toolBtn.Click += (o, e) => Close();
+				toolBtn.Paint += (o, e) => SetText();
 			}
 
 			SetSize();
@@ -221,6 +221,19 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.LoadGameGenieEc();
 		}
 
+		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is PCEngine)
+			{
+				GlobalWin.Tools.Load<PCEBGViewer>();
+			}
+		}
+
 		#endregion
+
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

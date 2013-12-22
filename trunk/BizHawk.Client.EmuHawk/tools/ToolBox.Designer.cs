@@ -47,6 +47,7 @@
 			this.SNESGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GGGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.ToolBoxStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -89,7 +90,8 @@
             this.SNESGraphicsDebuggerToolbarItem,
             this.SNESGameGenieToolbarItem,
             this.GGGameGenieToolbarItem,
-            this.GBGameGenieToolbarItem});
+            this.GBGameGenieToolbarItem,
+            this.PceBgViewerToolbarItem});
 			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
 			this.ToolBoxStrip.Name = "ToolBoxStrip";
@@ -251,6 +253,16 @@
 			this.GBGameGenieToolbarItem.ToolTipText = "Gameboy Game Genie Encoder/Decoder";
 			this.GBGameGenieToolbarItem.Click += new System.EventHandler(this.GBGameGenieToolbarItem_Click);
 			// 
+			// PceBgViewerToolbarItem
+			// 
+			this.PceBgViewerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
+			this.PceBgViewerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PceBgViewerToolbarItem.Name = "PceBgViewerToolbarItem";
+			this.PceBgViewerToolbarItem.Size = new System.Drawing.Size(42, 20);
+			this.PceBgViewerToolbarItem.Text = "BG";
+			this.PceBgViewerToolbarItem.ToolTipText = "PC Engine Background Viewer";
+			this.PceBgViewerToolbarItem.Click += new System.EventHandler(this.PceBgViewerToolbarItem_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -288,8 +300,9 @@
 		private System.Windows.Forms.ToolStripButton SNESGameGenieToolbarItem;
 		private System.Windows.Forms.ToolStripButton TAStudioToolbarItem;
 		private System.Windows.Forms.ToolStripButton GGGameGenieToolbarItem;
-		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton PceBgViewerToolbarItem;
 		private System.Windows.Forms.Button CloseBtn;
+		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
 
 	}
 }
