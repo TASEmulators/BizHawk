@@ -28,12 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.OK = new System.Windows.Forms.Button();
+			this.Ok = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.PathTabControl = new System.Windows.Forms.TabControl();
 			this.SaveBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.button1 = new System.Windows.Forms.Button();
+			this.SpecialCommandsBtn = new System.Windows.Forms.Button();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.BasePathBox = new System.Windows.Forms.TextBox();
 			this.BrowseBase = new System.Windows.Forms.Button();
@@ -41,16 +41,16 @@
 			this.DefaultsBtn = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// OK
+			// Ok
 			// 
-			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(471, 411);
-			this.OK.Name = "OK";
-			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 0;
-			this.OK.Text = "&Ok";
-			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.Ok.Location = new System.Drawing.Point(471, 411);
+			this.Ok.Name = "Ok";
+			this.Ok.Size = new System.Drawing.Size(75, 23);
+			this.Ok.TabIndex = 0;
+			this.Ok.Text = "&Ok";
+			this.Ok.UseVisualStyleBackColor = true;
+			this.Ok.Click += new System.EventHandler(this.Ok_Click);
 			// 
 			// Cancel
 			// 
@@ -98,16 +98,16 @@
 			this.label1.TabIndex = 210;
 			this.label1.Text = "Special Commands";
 			// 
-			// button1
+			// SpecialCommandsBtn
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
-			this.button1.Location = new System.Drawing.Point(496, 47);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(26, 23);
-			this.button1.TabIndex = 209;
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.SpecialCommandsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SpecialCommandsBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
+			this.SpecialCommandsBtn.Location = new System.Drawing.Point(496, 47);
+			this.SpecialCommandsBtn.Name = "SpecialCommandsBtn";
+			this.SpecialCommandsBtn.Size = new System.Drawing.Size(26, 23);
+			this.SpecialCommandsBtn.TabIndex = 209;
+			this.SpecialCommandsBtn.UseVisualStyleBackColor = true;
+			this.SpecialCommandsBtn.Click += new System.EventHandler(this.SpecialCommandsBtn_Click);
 			// 
 			// RecentForROMs
 			// 
@@ -163,14 +163,14 @@
 			// 
 			// PathConfig
 			// 
-			this.AcceptButton = this.OK;
+			this.AcceptButton = this.Ok;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(639, 446);
 			this.Controls.Add(this.DefaultsBtn);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.SpecialCommandsBtn);
 			this.Controls.Add(this.RecentForROMs);
 			this.Controls.Add(this.BasePathBox);
 			this.Controls.Add(this.BrowseBase);
@@ -178,7 +178,7 @@
 			this.Controls.Add(this.SaveBtn);
 			this.Controls.Add(this.PathTabControl);
 			this.Controls.Add(this.Cancel);
-			this.Controls.Add(this.OK);
+			this.Controls.Add(this.Ok);
 			this.MinimumSize = new System.Drawing.Size(360, 250);
 			this.Name = "PathConfig";
 			this.ShowIcon = false;
@@ -192,12 +192,12 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button OK;
+		private System.Windows.Forms.Button Ok;
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.TabControl PathTabControl;
 		private System.Windows.Forms.Button SaveBtn;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button SpecialCommandsBtn;
 		private System.Windows.Forms.CheckBox RecentForROMs;
 		private System.Windows.Forms.TextBox BasePathBox;
 		private System.Windows.Forms.Button BrowseBase;
