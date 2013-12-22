@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SetTools();
 			ToolBoxItems.First().Select();
-			SetText();
 			SetSize();
 
 			ToolBoxItems.First().Select();
@@ -68,15 +67,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var button in ToolBoxItems)
 			{
-				var toolBtn = button as ToolStripButton;
-				toolBtn.Click += (o, e) => Close();
-				toolBtn.Paint += (o, e) =>
-					{
-						if (ToolBoxItems.Any(x => x.Selected))
-						{
-							SetText();
-						}
-					};
+				if (button.Visible)
+				{
+					var toolBtn = button as ToolStripButton;
+					toolBtn.Click += (o, e) => Close();
+				}
 			}
 		}
 
@@ -84,19 +79,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var rows = (int)(Math.Ceiling(ToolBoxItems.Count() / 4.0));
 			this.Height = 30 + (rows * 30);
-		}
-
-		private void SetText()
-		{
-			var items = ToolBoxItems.ToList();
-			if (items.Any(x => x.Selected))
-			{
-				Text = items.FirstOrDefault(x => x.Selected).ToolTipText;
-			}
-			else
-			{
-				Text = String.Empty;
-			}
 		}
 
 		/// <summary>
@@ -117,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseBtn_Enter(object sender, EventArgs e)
 		{
-			ToolBoxStrip.Focus();
+			//ToolBoxStrip.Focus();
 		}
 
 		#region Icon Clicks
