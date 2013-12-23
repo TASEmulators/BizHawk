@@ -2098,7 +2098,7 @@ namespace BizHawk.Client.EmuHawk
 		/// send core sync settings to emu, setting reboot flag if needed
 		/// </summary>
 		/// <param name="o"></param>
-		private void PutCoreSyncSettings(object o)
+		public void PutCoreSyncSettings(object o)
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -3104,6 +3104,11 @@ namespace BizHawk.Client.EmuHawk
 				var nextComm = new CoreComm(ShowMessageCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
+				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
+				// any settings changes that we made need to make it back to config before we try to instantiate that core with
+				// the new settings objects
+				CommitCoreSettingsToConfig();
+
 				try
 				{
 					var ext = file.Extension.ToLower();
@@ -3147,7 +3152,7 @@ namespace BizHawk.Client.EmuHawk
 							case "GEN":
 								{
 									var genesis = new GPGX(
-										nextComm, null, disc, "GEN", true, GPGX.ControlType.Normal);
+										nextComm, null, disc, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
 									nextEmulator = genesis;
 								}
 								break;
@@ -3331,7 +3336,7 @@ namespace BizHawk.Client.EmuHawk
 							case "GEN":
 								{
 									// nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", true, GPGX.ControlType.Normal);
+									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
 									break;
 								}
 							case "TI83":
@@ -3614,6 +3619,16 @@ namespace BizHawk.Client.EmuHawk
 			LoadStateFile(path, name, fromLua);
 		}
 
+		void CommitCoreSettingsToConfig()
+		{
+			// save settings object
+			Type t = Global.Emulator.GetType();
+			Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
+			// don't trample config with loaded-from-movie settings
+			if (!Global.MovieSession.Movie.IsActive)
+				Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
+		}
+
 		// whats the difference between these two methods??
 		// its very tricky. rename to be more clear or combine them.
 		private void CloseGame(bool clearSram = false)
@@ -3639,14 +3654,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAVI();
 
-			{
-				// save settings object
-				Type t = Global.Emulator.GetType();
-				Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
-				// don't trample config with loaded-from-movie settings
-				if (!Global.MovieSession.Movie.IsActive)
-					Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
-			}
+			CommitCoreSettingsToConfig();
 
 			Global.Emulator.Dispose();
 			Global.CoreComm = new CoreComm(ShowMessageCoreComm);

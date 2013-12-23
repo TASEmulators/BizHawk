@@ -1739,6 +1739,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region GEN
+
+		private void GenesisSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			config.GenericCoreConfig.DoDialog(this, "Genesis Settings");
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
