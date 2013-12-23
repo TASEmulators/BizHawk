@@ -1730,6 +1730,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region DGB
+
+		private void DGBsettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			BizHawk.Client.EmuHawk.config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)

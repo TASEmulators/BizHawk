@@ -147,13 +147,16 @@ namespace BizHawk.Emulation.Common
 		// will take a SyncSettings object to set the initial state of the core (and possibly a settings object?)
 
 		/// <summary>
-		/// get the current core settings, excepting movie settings
+		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object, and changes to the return
+		/// should not affect emulation (unless the object is later passed to PutSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
 		object GetSettings();
 
 		/// <summary>
-		/// get the current core settings that affect movie sync
+		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
+		/// should be a clone of the active in-core object, and changes to the return
+		/// should not affect emulation (unless the object is later passed to PutSyncSettings)
 		/// </summary>
 		/// <returns>a json-serializable object</returns>
 		object GetSyncSettings();

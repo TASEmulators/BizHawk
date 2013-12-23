@@ -35,6 +35,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		LibsnesCore.SnesSaveController LCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
 		LibsnesCore.SnesSaveController RCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
 
+		public bool IsCGBMode(bool right)
+		{
+			return right ? R.IsCGBMode() : L.IsCGBMode();
+		}
+
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings)
 		{
 			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? GambatteLinkSettings.GetDefaults();
