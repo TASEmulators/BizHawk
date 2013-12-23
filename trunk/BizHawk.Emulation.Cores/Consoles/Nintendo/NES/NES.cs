@@ -902,6 +902,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return false;
 		}
+		public bool PutSyncSettings(object o) { return false; }
 
 		public class NESSettings
 		{
@@ -926,7 +927,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESSettings Clone()
 			{
-				return (NESSettings)MemberwiseClone();
+				var ret = (NESSettings)MemberwiseClone();
+				ret.Palette = (int[,])ret.Palette.Clone();
+				return ret;
 			}
 
 			public NESSettings()

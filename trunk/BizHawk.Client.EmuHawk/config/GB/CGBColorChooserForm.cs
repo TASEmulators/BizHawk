@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			bmpView1.ChangeBitmapSize(bmpView1.Size);
-			type = Global.Config.CGBColors;
+			type = ((Gameboy.GambatteSettings)Global.Emulator.GetSettings()).CGBColors;
 			switch (type)
 			{
 				case GBColors.ColorType.gambatte: radioButton1.Checked = true; break;
@@ -71,18 +71,17 @@ namespace BizHawk.Client.EmuHawk
 				RefreshType();
 		}
 
-		public static bool DoCGBColorChooserFormDialog(IWin32Window parent)
+		public static void DoCGBColorChooserFormDialog(IWin32Window parent)
 		{
 			using (var dlg = new CGBColorChooserForm())
 			{
 				var result = dlg.ShowDialog(parent);
 				if (result == DialogResult.OK)
 				{
-					Global.Config.CGBColors = dlg.type;
-					return true;
+					var s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
+					s.CGBColors = dlg.type;
+					Global.Emulator.PutSettings(s);
 				}
-				else
-					return false;
 			}
 		}
 

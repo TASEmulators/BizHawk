@@ -644,6 +644,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Settings = n;
 			return ret;
 		}
+		public bool PutSyncSettings(object o) { return false; }
 
 		public class PCESettings
 		{

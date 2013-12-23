@@ -1498,28 +1498,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBForceDMGMenuItem.Checked = Global.Config.GB_ForceDMG;
-			GBAInCGBModeMenuItem.Checked = Global.Config.GB_GBACGB;
-			GBMulticartCompatibilityMenuItem.Checked = Global.Config.GB_MulticartCompat;
+			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+
+			GBForceDMGMenuItem.Checked = s.ForceDMG;
+			GBAInCGBModeMenuItem.Checked = s.GBACGB;
+			GBMulticartCompatibilityMenuItem.Checked = s.MulticartCompat;
 			LoadGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.GB_ForceDMG ^= true;
-			FlagNeedsReboot();
+			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			s.ForceDMG ^= true;
+			PutCoreSyncSettings(s);
 		}
 
 		private void GBAInCGBModeMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.GB_GBACGB ^= true;
-			FlagNeedsReboot();
+			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			s.GBACGB ^= true;
+			PutCoreSyncSettings(s);
 		}
 
 		private void GBMulticartCompatibilityMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.GB_MulticartCompat ^= true;
-			FlagNeedsReboot();
+			var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+			s.MulticartCompat ^= true;
+			PutCoreSyncSettings(s);
 		}
 
 		private void GBPaletteConfigMenuItem_Click(object sender, EventArgs e)
@@ -1528,16 +1533,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var gb = Global.Emulator as Gameboy;
 				if (gb.IsCGBMode())
-				{
-					if (CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
-					{
-						gb.SetCGBColors(Global.Config.CGBColors);
-					}
-				}
+					CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
 				else
-				{
-					ColorChooserForm.DoColorChooserFormDialog(gb.ChangeDMGColors, this);
-				}
+					ColorChooserForm.DoColorChooserFormDialog(this);
 			}
 		}
 
