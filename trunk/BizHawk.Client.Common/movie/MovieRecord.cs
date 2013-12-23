@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 		public void CaptureSate()
 		{
 			Lagged = Global.Emulator.IsLagFrame;
-			_state = Global.Emulator.SaveStateBinary();
+			_state = (byte[])Global.Emulator.SaveStateBinary().Clone();
 		}
 
 		public void ClearInput()

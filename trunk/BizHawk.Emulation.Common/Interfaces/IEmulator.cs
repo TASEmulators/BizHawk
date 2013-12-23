@@ -111,6 +111,10 @@ namespace BizHawk.Emulation.Common
 		void LoadStateText(TextReader reader);
 		void SaveStateBinary(BinaryWriter writer);
 		void LoadStateBinary(BinaryReader reader);
+		/// <summary>
+		/// save state binary to a byte buffer
+		/// </summary>
+		/// <returns>you may NOT modify this.  if you call SaveStateBinary() again with the same core, the old data MAY be overwritten.</returns>
 		byte[] SaveStateBinary();
 
 		/// <summary>

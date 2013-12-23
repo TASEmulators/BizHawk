@@ -258,7 +258,11 @@ namespace BizHawk.Client.EmuHawk
 		class RewindThreader : IDisposable
 		{
 			//adelikat: tweak this to test performance with threading or not with threading
-			public static bool IsThreaded = true;
+			// natt: IEmulator.SaveStateBinary() returns a byte[] but you're not allowed to modify it,
+			// and if the method is called again, the data from a previous call could be invalidated.
+			// GPGX and N64 make use of this property.  if you set IsThreaded = true, you'll need to Clone() in many cases,
+			// which will kill N64 for sure...
+			public static bool IsThreaded = false;
 
 			MainForm mf;
 
@@ -419,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DoRewindSettings()
 		{
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-			LastState = Global.Emulator.SaveStateBinary();
+			LastState = (byte[])Global.Emulator.SaveStateBinary().Clone();
 
 			int state_size = 0;
 			if (LastState.Length >= Global.Config.Rewind_LargeStateSize)
@@ -557,8 +561,11 @@ namespace BizHawk.Client.EmuHawk
 				TempBuf = new byte[TempBuf.Length * 2];
 				goto RETRY;
 			}
-			
-			LastState = CurrentState;
+
+		if (LastState != null && LastState.Length == CurrentState.Length)
+			Buffer.BlockCopy(CurrentState, 0, LastState, 0, LastState.Length);
+		else
+			LastState = (byte[])CurrentState.Clone();
 			var seg = new ArraySegment<byte>(TempBuf, 0, (int)ms.Position);
 			RewindBuf.Push(seg);
 		}
