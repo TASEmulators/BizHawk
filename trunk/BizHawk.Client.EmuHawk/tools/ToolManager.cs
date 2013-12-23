@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BizHawk.Client.Common;
 
@@ -117,6 +118,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			// If Cheat tool is loaded, restarting will restart the list too anyway
+			if (!GlobalWin.Tools.Has<Cheats>())
+			{
+				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+			}
+
 			_tools.ForEach(x => x.Restart());
 		}
 
@@ -195,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var tool = Activator.CreateInstance(typeof(T));
 
-			//Add to the list and extract it, so it will be strongly typed as T
+			// Add to the list and extract it, so it will be strongly typed as T
 			_tools.Add(tool as IToolForm);
 			return _tools.FirstOrDefault(x => x is T);
 		}
@@ -242,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
+		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
 		public RamWatch RamWatch
@@ -452,5 +459,25 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		public static string GenerateDefaultCheatFilename()
+		{
+			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
+
+			if (pathEntry == null)
+			{
+				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
+			}
+
+			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+			{
+				f.Directory.Create();
+			}
+
+			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+		}
 	}
 }

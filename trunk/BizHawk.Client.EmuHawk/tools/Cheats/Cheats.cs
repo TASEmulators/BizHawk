@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			Global.CheatList.NewList(GlobalWin.MainForm.GenerateDefaultCheatFilename());
+			Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
 			UpdateDialog();
 			UpdateMessageLabel();
 			ToggleGameGenieButton();
