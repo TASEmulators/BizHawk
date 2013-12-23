@@ -451,10 +451,6 @@ namespace BizHawk.Client.Common
 		public int PCEBGViewerWndy = -1;
 		public int PCEBGViewerRefreshRate = 16;
 
-		// SMS Graphics settings
-		public bool SMSDispBG = true;
-		public bool SMSDispOBJ = true;
-
 		// Coleco Settings
 		public bool ColecoSkipBiosIntro = false;
 
@@ -640,6 +636,9 @@ namespace BizHawk.Client.Common
 		public bool SmsSpriteLimit = false;
 		public bool GGShowClippedRegions = false;
 		public bool GGHighlightActiveDisplayRegion = false;
+		// SMS Graphics settings
+		public bool SMSDispBG = true;
+		public bool SMSDispOBJ = true;
 
 		// PCEngine Settings
 		//public bool PceSpriteLimit = false;

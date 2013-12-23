@@ -196,7 +196,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemoryPopulous;
 			}
 
-			if (Settings.SpriteLimit || game.NotInDatabase)
+			// the gamedb can force sprite limit on, ignoring settings
+			if (Settings.SpriteLimit || game["ForceSpriteLimit"] || game.NotInDatabase)
 			{
 				VDC1.PerformSpriteLimit = true;
 				if (VDC2 != null)
@@ -209,7 +210,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
-			if (Settings.EqualizeVolume || (game.NotInDatabase && TurboCD))
+			// the gamedb can also force equalizevolumes on
+			if (Settings.EqualizeVolume || game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -628,7 +630,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public PCESettings Settings = new PCESettings();
 
-		public object GetSettings() { return  Settings.Clone(); }
+		public object GetSettings() { return Settings.Clone(); }
 		public object GetSyncSettings() { return null; }
 		public bool PutSettings(object o)
 		{
