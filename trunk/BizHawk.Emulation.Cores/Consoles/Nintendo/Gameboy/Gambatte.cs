@@ -908,8 +908,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool PutSyncSettings(object o)
 		{
-			SyncSettings = (GambatteSyncSettings)o;
-			return true;
+			var s = (GambatteSyncSettings)o;
+			bool ret;
+			if (s.ForceDMG != SyncSettings.ForceDMG ||
+				s.GBACGB != SyncSettings.GBACGB ||
+				s.MulticartCompat != SyncSettings.MulticartCompat)
+				ret = true;
+			else
+				ret = false;
+
+			SyncSettings = s;
+			return ret;
 		}
 
 		public class GambatteSettings
@@ -940,17 +949,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			public bool ForceDMG = false;
-			public bool GBACGB = false;
-			public bool MulticartCompat = false;
+			[System.ComponentModel.Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			public bool ForceDMG { get; set; }
+			[System.ComponentModel.Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			public bool GBACGB { get; set; }
+			[System.ComponentModel.Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			public bool MulticartCompat { get; set; }
 
 			public static GambatteSyncSettings GetDefaults()
 			{
-				return new GambatteSyncSettings();
+				return new GambatteSyncSettings
+				{
+					ForceDMG = false,
+					GBACGB = false,
+					MulticartCompat = false
+				};
 			}
 
 			public GambatteSyncSettings Clone()
 			{
+				// this does include anonymous backing fields for auto properties
 				return (GambatteSyncSettings)MemberwiseClone();
 			}
 		}

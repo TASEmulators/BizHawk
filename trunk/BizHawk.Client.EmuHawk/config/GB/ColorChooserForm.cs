@@ -228,12 +228,12 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAllBackdrops();
 		}
 
-		public static void DoColorChooserFormDialog(IWin32Window parent)
+		static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s, bool fromemu)
 		{
 			using (var dlg = new ColorChooserForm())
 			{
-				var s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
-
+				if (fromemu)
+					s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
 				dlg.SetAllColors(s.GBPalette);
 
 				var result = dlg.ShowDialog(parent);
@@ -244,9 +244,20 @@ namespace BizHawk.Client.EmuHawk
 						colorints[i] = dlg.colors[i].ToArgb();
 
 					s.GBPalette = colorints;
-					Global.Emulator.PutSettings(s);
+					if (fromemu)
+						Global.Emulator.PutSettings(s);
 				}
 			}
+		}
+
+		public static void DoColorChooserFormDialog(IWin32Window parent)
+		{
+			DoColorChooserFormDialog(parent, null, true);
+		}
+
+		public static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
+		{
+			DoColorChooserFormDialog(parent, s, false);
 		}
 
 		void LoadColorFile(string filename, bool alert)

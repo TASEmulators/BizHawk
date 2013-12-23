@@ -1479,6 +1479,7 @@ namespace BizHawk.Client.EmuHawk
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
 			SaturnSubMenu.Visible = false;
+			DGBSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1531,7 +1532,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SNESSubMenu.Text = "&SNES";
 					}
-
 					SNESSubMenu.Visible = true;
 					break;
 				case "Coleco":
@@ -1542,6 +1542,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SAT":
 					SaturnSubMenu.Visible = true;
+					break;
+				case "DGB":
+					DGBSubMenu.Visible = true;
 					break;
 			}
 		}
@@ -3742,5 +3745,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
 	}
 }

@@ -215,6 +215,12 @@
     <Compile Include="config\GB\ColorChooserForm.Designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GB\DGBPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GB\DGBPrefs.Designer.cs">
+      <DependentUpon>DGBPrefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\GB\DualGBFileSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -226,6 +232,12 @@
     </Compile>
     <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\GBPrefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\GB\GBPrefControl.Designer.cs">
+      <DependentUpon>GBPrefControl.cs</DependentUpon>
     </Compile>
     <Compile Include="config\HotkeyConfig.cs">
       <SubType>Form</SubType>
@@ -845,11 +857,17 @@
     <EmbeddedResource Include="config\GB\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\DGBPrefs.resx">
+      <DependentUpon>DGBPrefs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GB\DualGBXMLCreator.resx">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\GBPrefControl.resx">
+      <DependentUpon>GBPrefControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
