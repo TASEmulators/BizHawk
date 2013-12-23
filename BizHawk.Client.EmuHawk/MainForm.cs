@@ -639,25 +639,7 @@ namespace BizHawk.Client.EmuHawk
 			SetPauseStatusbarIcon();
 		}
 
-		public string GenerateDefaultCheatFilename()
-		{
-			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
-			
-			if (pathEntry == null)
-			{
-				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
-			}
-			
-			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
-			{
-				f.Directory.Create();
-			}
-
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
-		}
+		
 
 		public void TakeScreenshotToClipboard()
 		{
@@ -1670,15 +1652,6 @@ namespace BizHawk.Client.EmuHawk
 				PauseStatusButton.Image = Properties.Resources.Blank;
 				PauseStatusButton.Visible = false;
 				PauseStatusButton.ToolTipText = String.Empty;
-			}
-		}
-
-		private void Cheats_Restart()
-		{
-			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!GlobalWin.Tools.Has<Cheats>())
-			{
-				Global.CheatList.NewList(GenerateDefaultCheatFilename());
 			}
 		}
 
@@ -3523,7 +3496,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				GlobalWin.Tools.Restart();
-				Cheats_Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -3703,7 +3675,6 @@ namespace BizHawk.Client.EmuHawk
 
 				RewireSound();
 				ResetRewindBuffer();
-				Cheats_Restart();
 				Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
