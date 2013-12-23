@@ -129,6 +129,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						DoMouseAnalog(i, player);
 						player++;
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
+						break;
+					default:
+						throw new Exception("Unhandled control device!  Something needs to be implemented first.");
 				}
 			}
 
