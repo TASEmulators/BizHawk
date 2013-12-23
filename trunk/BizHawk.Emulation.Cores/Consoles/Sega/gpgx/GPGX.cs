@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 
 using System.IO;
 
+using System.ComponentModel;
+
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -39,13 +41,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Wayplay
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, bool sixbutton, ControlType controls)
+		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
 		{
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			try
 			{
+				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+
 				CoreComm = NextComm;
 				if (AttachedCore != null)
 				{
@@ -62,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (controls)
+				switch (this.SyncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -92,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, sixbutton, system_a, system_b))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -625,9 +629,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#endregion
 
+		GPGXSyncSettings SyncSettings;
+
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			bool ret;
+			var n = (GPGXSyncSettings)o;
+			if (n.UseSixButton != SyncSettings.UseSixButton || n.ControlType != SyncSettings.ControlType)
+				ret = true;
+			else
+				ret = false;
+			SyncSettings = n;
+			return ret;
+		}
+
+		public class GPGXSyncSettings
+		{
+			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
+			public bool UseSixButton { get; set; }
+			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
+			public ControlType ControlType { get; set; }
+
+			public static GPGXSyncSettings GetDefaults()
+			{
+				return new GPGXSyncSettings
+				{
+					UseSixButton = true,
+					ControlType = ControlType.Normal
+				};
+			}
+
+			public GPGXSyncSettings Clone()
+			{
+				return (GPGXSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

@@ -293,6 +293,8 @@
 			this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -380,11 +382,12 @@
             this.N64SubMenu,
             this.SaturnSubMenu,
             this.DGBSubMenu,
+            this.GenesisSubMenu,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 40);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 57);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2550,7 +2553,7 @@
 			// SaturnPreferencesMenuItem
 			// 
 			this.SaturnPreferencesMenuItem.Name = "SaturnPreferencesMenuItem";
-			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.SaturnPreferencesMenuItem.Text = "Preferences...";
 			this.SaturnPreferencesMenuItem.Click += new System.EventHandler(this.SaturnPreferencesMenuItem_Click);
 			// 
@@ -2568,6 +2571,21 @@
 			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DGBsettingsToolStripMenuItem_Click);
+			// 
+			// GenesisSubMenu
+			// 
+			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GenesisSettingsToolStripMenuItem});
+			this.GenesisSubMenu.Name = "GenesisSubMenu";
+			this.GenesisSubMenu.Size = new System.Drawing.Size(56, 17);
+			this.GenesisSubMenu.Text = "&Genesis";
+			// 
+			// GenesisSettingsToolStripMenuItem
+			// 
+			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
+			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GenesisSettingsToolStripMenuItem.Text = "Settings...";
+			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -3455,6 +3473,8 @@
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 	}
 }
 

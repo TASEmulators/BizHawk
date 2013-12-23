@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 				{
 					dlg.GetSettings(out s, out ss);
 					Global.Emulator.PutSettings(s);
-					Global.Emulator.PutSyncSettings(ss);
+					GlobalWin.MainForm.PutCoreSyncSettings(ss);
 				}
 			}
 		}
