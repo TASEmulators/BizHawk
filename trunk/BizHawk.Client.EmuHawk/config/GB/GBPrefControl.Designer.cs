@@ -40,8 +40,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
 			this.propertyGrid1.Name = "propertyGrid1";
+			this.propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
 			this.propertyGrid1.Size = new System.Drawing.Size(318, 276);
 			this.propertyGrid1.TabIndex = 0;
+			this.propertyGrid1.ToolbarVisible = false;
 			// 
 			// buttonDefaults
 			// 
