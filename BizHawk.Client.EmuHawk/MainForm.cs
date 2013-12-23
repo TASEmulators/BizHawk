@@ -2118,6 +2118,23 @@ namespace BizHawk.Client.EmuHawk
 				FlagNeedsReboot();
 		}
 
+		/// <summary>
+		/// send core sync settings to emu, setting reboot flag if needed
+		/// </summary>
+		/// <param name="o"></param>
+		private void PutCoreSyncSettings(object o)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant setings while recording BLOCKED.");
+			}
+			else
+			{
+				if (Global.Emulator.PutSyncSettings(o))
+					FlagNeedsReboot();
+			}
+		}
+
 		private void SaveConfig()
 		{
 			if (Global.Config.SaveWindowPosition)
@@ -3239,37 +3256,9 @@ namespace BizHawk.Client.EmuHawk
 									var L = Database.GetGameInfo(XMLG.Assets["LeftRom"], "left.gb");
 									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
 
-									if (Global.Config.GB_ForceDMG)
-									{
-										L.AddOption("ForceDMG");
-									}
-
-									if (Global.Config.GB_GBACGB)
-									{
-										L.AddOption("GBACGB");
-									}
-
-									if (Global.Config.GB_MulticartCompat)
-									{
-										L.AddOption("MulitcartCompat");
-									}
-
-									if (Global.Config.GB_ForceDMG)
-									{
-										R.AddOption("ForceDMG");
-									}
-
-									if (Global.Config.GB_GBACGB)
-									{
-										R.AddOption("GBACGB");
-									}
-
-									if (Global.Config.GB_MulticartCompat)
-									{
-										R.AddOption("MulitcartCompat");
-									}
-
-									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"]);
+									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"],
+										Global.Config.GetCoreSettings<GambatteLink>(),
+										Global.Config.GetCoreSyncSettings<GambatteLink>());
 									nextEmulator = gbl;
 
 									// other stuff todo
@@ -3385,42 +3374,10 @@ namespace BizHawk.Client.EmuHawk
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									if (Global.Config.GB_ForceDMG)
-									{
-										game.AddOption("ForceDMG");
-									}
-
-									if (Global.Config.GB_GBACGB)
-									{
-										game.AddOption("GBACGB");
-									}
-
-									if (Global.Config.GB_MulticartCompat)
-									{
-										game.AddOption("MulitcartCompat");
-									}
-
-									var gb = new Gameboy(nextComm, game, rom.FileData);
+									var gb = new Gameboy(nextComm, game, rom.FileData,
+										Global.Config.GetCoreSettings<Gameboy>(),
+										Global.Config.GetCoreSyncSettings<Gameboy>());
 									nextEmulator = gb;
-									if (gb.IsCGBMode())
-									{
-										gb.SetCGBColors(Global.Config.CGBColors);
-									}
-									else
-									{
-										try
-										{
-											using (var f = new StreamReader(Global.Config.GB_PaletteFile))
-											{
-												int[] colors = ColorChooserForm.LoadPalFile(f);
-												if (colors != null)
-												{
-													gb.ChangeDMGColors(colors);
-												}
-											}
-										}
-										catch { }
-									}
 								}
 								else
 								{
@@ -3711,7 +3668,9 @@ namespace BizHawk.Client.EmuHawk
 				// save settings object
 				Type t = Global.Emulator.GetType();
 				Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
-				Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
+				// don't trample config with loaded-from-movie settings
+				if (!Global.MovieSession.Movie.IsActive)
+					Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
 			}
 
 			Global.Emulator.Dispose();

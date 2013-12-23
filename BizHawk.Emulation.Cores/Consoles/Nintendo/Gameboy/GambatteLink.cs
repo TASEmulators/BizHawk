@@ -35,11 +35,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		LibsnesCore.SnesSaveController LCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
 		LibsnesCore.SnesSaveController RCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
 
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom)
+		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings)
 		{
+			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? GambatteLinkSettings.GetDefaults();
+			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? GambatteLinkSyncSettings.GetDefaults();
+
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage), leftinfo, leftrom);
-			R = new Gameboy(new CoreComm(comm.ShowMessage), rightinfo, rightrom);
+			L = new Gameboy(new CoreComm(comm.ShowMessage), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
+			R = new Gameboy(new CoreComm(comm.ShowMessage), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
@@ -418,8 +421,79 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#endregion
 
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
+		public object GetSettings()
+		{
+			return new GambatteLinkSettings
+			{
+				L = (Gameboy.GambatteSettings)L.GetSettings(),
+				R = (Gameboy.GambatteSettings)R.GetSettings()
+			};
+		}
+		public object GetSyncSettings()
+		{
+			return new GambatteLinkSyncSettings
+			{
+				L = (Gameboy.GambatteSyncSettings)L.GetSyncSettings(),
+				R = (Gameboy.GambatteSyncSettings)R.GetSyncSettings()
+			};
+		}
+		public bool PutSettings(object o)
+		{
+			var s = (GambatteLinkSettings)o;
+			return L.PutSettings(s.L) || R.PutSettings(s.R);
+		}
+		public bool PutSyncSettings(object o)
+		{
+			var s = (GambatteLinkSyncSettings)o;
+			return L.PutSyncSettings(s.L) || R.PutSyncSettings(s.R);
+		}
+
+		public class GambatteLinkSettings
+		{
+			public Gameboy.GambatteSettings L;
+			public Gameboy.GambatteSettings R;
+
+			public static GambatteLinkSettings GetDefaults()
+			{
+				return new GambatteLinkSettings
+				{
+					L = Gameboy.GambatteSettings.GetDefaults(),
+					R = Gameboy.GambatteSettings.GetDefaults()
+				};
+			}
+
+			public GambatteLinkSettings Clone()
+			{
+				return new GambatteLinkSettings
+				{
+					L = L.Clone(),
+					R = R.Clone()
+				};
+			}
+		}
+		public class GambatteLinkSyncSettings
+		{
+			public Gameboy.GambatteSyncSettings L;
+			public Gameboy.GambatteSyncSettings R;
+
+			public static GambatteLinkSyncSettings GetDefaults()
+			{
+				return new GambatteLinkSyncSettings
+				{
+					L = Gameboy.GambatteSyncSettings.GetDefaults(),
+					R = Gameboy.GambatteSyncSettings.GetDefaults()
+				};
+			}
+
+			public GambatteLinkSyncSettings Clone()
+			{
+				return new GambatteLinkSyncSettings
+				{
+					L = L.Clone(),
+					R = R.Clone()
+				};
+			}
+		}
+
 	}
 }

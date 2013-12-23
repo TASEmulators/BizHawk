@@ -127,8 +127,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Emulator is Gameboy)
 				{
-					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = Global.Config.GB_ForceDMG.ToString();
-					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = Global.Config.GB_GBACGB.ToString();
+					// probably won't fix any of this in movie 1.0?? (movie 2.0 only??)
+					// FIXME: the multicartcompat is in the syncsettings object.  is that supposed to go here?
+					// FIXME: these are never read back and given to the core, anywhere
+					var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = s.ForceDMG.ToString();
+					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = s.GBACGB.ToString();
 				}
 
 				if (Global.Emulator is LibsnesCore)

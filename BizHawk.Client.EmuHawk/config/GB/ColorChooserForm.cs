@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,11 +17,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly Color[] colors = new Color[12];
-
-		/// <summary>
-		/// the most recently loaded or saved palette file
-		/// </summary>
-		string currentfile;
 
 		/// <summary>
 		/// gambatte's default dmg colors
@@ -41,8 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			10798341, 8956165, 1922333, 337157,
 			10798341, 8956165, 1922333, 337157
 		};
-
-
 
 		private void RefreshAllBackdrops()
 		{
@@ -151,7 +145,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						colors[i] = dlg.Color;
 						sender.BackColor = colors[i];
-						label4.Text = "Current palette file (modified):";
 					}
 				}
 			}
@@ -232,39 +225,26 @@ namespace BizHawk.Client.EmuHawk
 			{
 				colors[i] = Color.FromArgb(255, Color.FromArgb(_colors[i]));
 			}
-
 			RefreshAllBackdrops();
 		}
 
-		public static bool DoColorChooserFormDialog(Action<int[]> ColorUpdater, IWin32Window parent)
+		public static void DoColorChooserFormDialog(IWin32Window parent)
 		{
 			using (var dlg = new ColorChooserForm())
 			{
-				//if (colors != null)
-				//	dlg.SetAllColors(colors);
+				var s = (Gameboy.GambatteSettings)Global.Emulator.GetSettings();
 
-				dlg.SetAllColors(DefaultDMGColors);
-				dlg.textBox1.Text = "(none)";
-				dlg.currentfile = "";
-
-				if (!string.IsNullOrEmpty(Global.Config.GB_PaletteFile))
-				{
-					dlg.LoadColorFile(Global.Config.GB_PaletteFile, false);
-				}
+				dlg.SetAllColors(s.GBPalette);
 
 				var result = dlg.ShowDialog(parent);
-				if (result != DialogResult.OK)
-				{
-					return false;
-				}
-				else
+				if (result == DialogResult.OK)
 				{
 					int[] colorints = new int[12];
 					for (int i = 0; i < 12; i++)
 						colorints[i] = dlg.colors[i].ToArgb();
-					ColorUpdater(colorints);
-					Global.Config.GB_PaletteFile = dlg.currentfile;
-					return true;
+
+					s.GBPalette = colorints;
+					Global.Emulator.PutSettings(s);
 				}
 			}
 		}
@@ -280,9 +260,6 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception();
 
 					SetAllColors(newcolors);
-					textBox1.Text = Path.GetFileName(filename);
-					currentfile = filename;
-					label4.Text = "Current palette file:";
 				}
 			}
 			catch
@@ -303,9 +280,6 @@ namespace BizHawk.Client.EmuHawk
 						// clear alpha because gambatte color files don't usually contain it
 						savecolors[i] = colors[i].ToArgb() & 0xffffff;
 					SavePalFile(f, savecolors);
-					currentfile = filename;
-					label4.Text = "Current palette file:";
-					textBox1.Text = Path.GetFileName(filename);
 				}
 			}
 			catch
@@ -323,12 +297,8 @@ namespace BizHawk.Client.EmuHawk
 				ofd.RestoreDirectory = true;
 
 				var result = ofd.ShowDialog(this);
-				if (result != DialogResult.OK)
-				{
-					return;
-				}
-
-				LoadColorFile(ofd.FileName, true);
+				if (result == DialogResult.OK)
+					LoadColorFile(ofd.FileName, true);
 			}
 		}
 
@@ -356,25 +326,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				if (!String.IsNullOrWhiteSpace(currentfile))
-				{
-					sfd.InitialDirectory = Path.GetDirectoryName(currentfile);
-					sfd.FileName = Path.GetFileName(currentfile);
-				}
-				else
-				{
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
-					sfd.FileName = Global.Game.Name + ".pal";
-				}
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
+				sfd.FileName = Global.Game.Name + ".pal";
+
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;
 				var result = sfd.ShowDialog(this);
-				if (result != DialogResult.OK)
-				{
-					return;
-				}
-
-				SaveColorFile(sfd.FileName);
+				if (result == DialogResult.OK)
+					SaveColorFile(sfd.FileName);
 			}
 		}
 
@@ -384,15 +343,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultButton_Click(object sender, EventArgs e)
 		{
-			textBox1.Text = "(none)";
-			currentfile = "";
 			SetAllColors(DefaultDMGColors);
 		}
 
 		private void DefaultButtonCGB_Click(object sender, EventArgs e)
 		{
-			textBox1.Text = "(none)";
-			currentfile = "";
 			SetAllColors(DefaultCGBColors);
 		}
 

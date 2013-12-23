@@ -671,12 +671,12 @@ namespace BizHawk.Client.Common
 		//TI 83 settings
 
 		//GB settings
-		public bool GB_ForceDMG = false;
-		public bool GB_GBACGB = false;
-		public bool GB_MulticartCompat = false;
-		public string GB_PaletteFile = "";
+		//public bool GB_ForceDMG = false;
+		//public bool GB_GBACGB = false;
+		//public bool GB_MulticartCompat = false;
+		//public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
-		public GBColors.ColorType CGBColors = GBColors.ColorType.gambatte;
+		//public GBColors.ColorType CGBColors = GBColors.ColorType.gambatte;
 
 		//Dual Gb
 

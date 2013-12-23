@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return fn;
 		}
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings)
 		{
 			CoreComm = comm;
 
@@ -64,22 +64,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			try
 			{
+				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+
 				LibGambatte.LoadFlags flags = 0;
 
-				if (game["ForceDMG"])
+				if (this.SyncSettings.ForceDMG)
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				if (game["GBACGB"])
+				if (this.SyncSettings.GBACGB)
 					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				if (game["MulitcartCompat"])
+				if (this.SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
-
 
 				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
 					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
-				SetCGBColors(GBColors.ColorType.gambatte);
+				PutSettings(Settings ?? GambatteSettings.GetDefaults());
 
 				InitSound();
 
@@ -891,8 +891,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 		#endregion
 
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
+		GambatteSettings Settings;
+		GambatteSyncSettings SyncSettings;
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{
+			Settings = (GambatteSettings)o;
+			if (IsCGBMode())
+				SetCGBColors(Settings.CGBColors);
+			else
+				ChangeDMGColors(Settings.GBPalette);
+			return false;
+		}
+
+		public bool PutSyncSettings(object o)
+		{
+			SyncSettings = (GambatteSyncSettings)o;
+			return true;
+		}
+
+		public class GambatteSettings
+		{
+			public int[] GBPalette;
+			public GBColors.ColorType CGBColors;
+
+			public static GambatteSettings GetDefaults()
+			{
+				var ret = new GambatteSettings();
+				ret.GBPalette = new[]
+				{
+					10798341, 8956165, 1922333, 337157,
+					10798341, 8956165, 1922333, 337157,
+					10798341, 8956165, 1922333, 337157
+				};
+				ret.CGBColors = GBColors.ColorType.gambatte;
+				return ret;
+			}
+
+			public GambatteSettings Clone()
+			{
+				var ret = (GambatteSettings)MemberwiseClone();
+				ret.GBPalette = (int[])GBPalette.Clone();
+				return ret;
+			}
+		}
+
+		public class GambatteSyncSettings
+		{
+			public bool ForceDMG = false;
+			public bool GBACGB = false;
+			public bool MulticartCompat = false;
+
+			public static GambatteSyncSettings GetDefaults()
+			{
+				return new GambatteSyncSettings();
+			}
+
+			public GambatteSyncSettings Clone()
+			{
+				return (GambatteSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

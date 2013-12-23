@@ -165,6 +165,12 @@ namespace BizHawk.Emulation.Common
 		/// <returns>true if a core reboot will be required to implement these</returns>
 		bool PutSettings(object o);
 
+		/// <summary>
+		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
+		/// <returns>true if a core reboot will be required to implement these</returns>
+		bool PutSyncSettings(object o);
 	}
 
 	public enum DisplayType { NTSC, PAL, DENDY }
