@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 				AskYesNoCallback = StateErrorAskUser
 			};
 
-			RewireInputChain();
+			InputManager.RewireInputChain();
 
 			if (!record)
 			{
