@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Common
 		//public bool NES_UnlimitedSprites = false;
 		//public bool NES_ShowBG = true, NES_ShowOBJ = true;
 		//public bool PCE_ShowBG1 = true, PCE_ShowOBJ1 = true, PCE_ShowBG2 = true, PCE_ShowOBJ2 = true;
-		public bool SMS_ShowBG = true, SMS_ShowOBJ = true;
-		public bool GG_ShowClippedRegions;
-		public bool GG_HighlightActiveDisplayRegion;
+		//public bool SMS_ShowBG = true, SMS_ShowOBJ = true;
+		//public bool GG_ShowClippedRegions;
+		//public bool GG_HighlightActiveDisplayRegion;
 
 		public ICoreFileProvider CoreFileProvider;
 

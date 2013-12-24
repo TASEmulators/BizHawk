@@ -70,8 +70,10 @@ namespace BizHawk.Client.Common
 			}
 			else if (Global.Emulator is SMS)
 			{
-				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
-				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
+				SMS.SMSSettings s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+				s.DispOBJ = (bool)lua_p[0];
+				s.DispBG = (bool)lua_p[1];
+				Global.Emulator.PutSettings(s);
 			}
 		}
 

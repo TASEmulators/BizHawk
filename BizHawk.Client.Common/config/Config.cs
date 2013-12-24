@@ -630,15 +630,15 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 
 		// SMS / GameGear Settings
-		public bool SmsEnableFM = true;
-		public bool SmsAllowOverlock = false;
-		public bool SmsForceStereoSeparation = false;
-		public bool SmsSpriteLimit = false;
-		public bool GGShowClippedRegions = false;
-		public bool GGHighlightActiveDisplayRegion = false;
+		//public bool SmsEnableFM = true;
+		//public bool SmsAllowOverlock = false;
+		//public bool SmsForceStereoSeparation = false;
+		//public bool SmsSpriteLimit = false;
+		//public bool GGShowClippedRegions = false;
+		//public bool GGHighlightActiveDisplayRegion = false;
 		// SMS Graphics settings
-		public bool SMSDispBG = true;
-		public bool SMSDispOBJ = true;
+		//public bool SMSDispBG = true;
+		//public bool SMSDispOBJ = true;
 
 		// PCEngine Settings
 		//public bool PceSpriteLimit = false;
