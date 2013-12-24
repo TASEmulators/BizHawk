@@ -148,7 +148,8 @@ namespace BizHawk.Emulation.Common
 		// ====settings interface====
 
 		// in addition to these methods, it's expected that the constructor or Load() method
-		// will take a SyncSettings object to set the initial state of the core (and possibly a settings object?)
+		// will take a Settings and SyncSettings object to set the initial state of the core
+		// (if those are null, default settings are to be used)
 
 		/// <summary>
 		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object, and changes to the return

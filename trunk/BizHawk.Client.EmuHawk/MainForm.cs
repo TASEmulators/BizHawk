@@ -3294,10 +3294,9 @@ namespace BizHawk.Client.EmuHawk
 								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), Global.Config.GetCoreSyncSettings<SMS>());
 								break;
 							case "A26":
-								nextEmulator = new Atari2600(nextComm, game, rom.FileData);
-								((Atari2600)nextEmulator).SetBw(Global.Config.Atari2600_BW);
-								((Atari2600)nextEmulator).SetP0Diff(Global.Config.Atari2600_LeftDifficulty);
-								((Atari2600)nextEmulator).SetP1Diff(Global.Config.Atari2600_RightDifficulty);
+								nextEmulator = new Atari2600(nextComm, game, rom.FileData,
+									Global.Config.GetCoreSettings<Atari2600>(),
+									Global.Config.GetCoreSyncSettings<Atari2600>());
 								break;
 							case "PCE":
 							case "PCECD":
@@ -3724,6 +3723,5 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
 	}
 }

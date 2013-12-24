@@ -4,6 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -21,9 +22,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public Atari2600(CoreComm comm, GameInfo game, byte[] rom)
+		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
 			CoreComm = comm;
+			this.Settings = (A2600Settings)Settings ?? A2600Settings.GetDefaults();
+			this.SyncSettings = (A2600SyncSettings)SyncSettings ?? A2600SyncSettings.GetDefaults();
+
 			var domains = new List<MemoryDomain>(1)
 				{
 					new MemoryDomain("Main RAM", 128, MemoryDomain.Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value),
@@ -131,10 +135,67 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 		public void Dispose() { }
 
-		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
-		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o) { Settings = (A2600Settings)o; return false; }
+		public bool PutSyncSettings(object o) { SyncSettings = (A2600SyncSettings)o; return false; }
+
+		public A2600Settings Settings { get; private set; }
+		public A2600SyncSettings SyncSettings { get; private set; }
+
+		public class A2600Settings
+		{
+			// todo: descriptions
+			public bool ShowBG { get; set; }
+			public bool ShowPlayer1 { get; set; }
+			public bool ShowPlayer2 { get; set; }
+			public bool ShowMissle1 { get; set; }
+			public bool ShowMissle2 { get; set; }
+			public bool ShowBall { get; set; }
+			public bool ShowPlayfield { get; set; }
+
+			public A2600Settings Clone()
+			{
+				return (A2600Settings)MemberwiseClone();
+			}
+			public static A2600Settings GetDefaults()
+			{
+				return new A2600Settings
+				{
+					ShowBG = true,
+					ShowPlayer1 = true,
+					ShowPlayer2 = true,
+					ShowMissle1 = true,
+					ShowMissle2 = true,
+					ShowBall = true,
+					ShowPlayfield = true
+				};
+			}
+		}
+
+		public class A2600SyncSettings
+		{
+			[Description("Set the TV Type switch on the console to B&W or Color")]
+			public bool BW { get; set; }
+			[Description("Set the Left Difficulty switch on the console")]
+			public bool LeftDifficulty { get; set; }
+			[Description("Set the Right Difficulty switch on the console")]
+			public bool RightDifficulty { get; set; }
+
+			public A2600SyncSettings Clone()
+			{
+				return (A2600SyncSettings)MemberwiseClone();
+			}
+			public static A2600SyncSettings GetDefaults()
+			{
+				return new A2600SyncSettings
+				{
+					BW = false,
+					LeftDifficulty = true,
+					RightDifficulty = true
+				};
+			}
+		}
 	}
 
 }

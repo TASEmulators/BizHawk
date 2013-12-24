@@ -248,17 +248,7 @@
 			this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadTIFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariBWMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariLeftDifficultyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariRightDifficultyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
-			this.AtariShowBGMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariShowPlayfieldMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPlayer1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPlayer2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowMissle1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowMissle2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowBallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBForceDMGMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBAInCGBModeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2214,96 +2204,17 @@
 			// AtariSubMenu
 			// 
 			this.AtariSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AtariBWMenuItem,
-            this.AtariLeftDifficultyMenuItem,
-            this.AtariRightDifficultyMenuItem,
-            this.toolStripSeparator26,
-            this.AtariShowBGMenuItem,
-            this.AtariShowPlayfieldMenuItem,
-            this.ShowPlayer1MenuItem,
-            this.ShowPlayer2MenuItem,
-            this.ShowMissle1MenuItem,
-            this.ShowMissle2MenuItem,
-            this.ShowBallMenuItem});
+            this.AtariSettingsToolStripMenuItem});
 			this.AtariSubMenu.Name = "AtariSubMenu";
 			this.AtariSubMenu.Size = new System.Drawing.Size(42, 17);
 			this.AtariSubMenu.Text = "&Atari";
-			this.AtariSubMenu.DropDownOpened += new System.EventHandler(this.AtariSubMenu_DropDownOpened);
 			// 
-			// AtariBWMenuItem
+			// AtariSettingsToolStripMenuItem
 			// 
-			this.AtariBWMenuItem.Name = "AtariBWMenuItem";
-			this.AtariBWMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.AtariBWMenuItem.Text = "B-W TV";
-			this.AtariBWMenuItem.Click += new System.EventHandler(this.AtariBWMenuItem_Click);
-			// 
-			// AtariLeftDifficultyMenuItem
-			// 
-			this.AtariLeftDifficultyMenuItem.Name = "AtariLeftDifficultyMenuItem";
-			this.AtariLeftDifficultyMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.AtariLeftDifficultyMenuItem.Text = "Left Difficulty";
-			this.AtariLeftDifficultyMenuItem.Click += new System.EventHandler(this.AtariLeftDifficultyMenuItem_Click);
-			// 
-			// AtariRightDifficultyMenuItem
-			// 
-			this.AtariRightDifficultyMenuItem.Name = "AtariRightDifficultyMenuItem";
-			this.AtariRightDifficultyMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.AtariRightDifficultyMenuItem.Text = "Right Difficulty";
-			this.AtariRightDifficultyMenuItem.Click += new System.EventHandler(this.AtariRightDifficultyMenuItem_Click);
-			// 
-			// toolStripSeparator26
-			// 
-			this.toolStripSeparator26.Name = "toolStripSeparator26";
-			this.toolStripSeparator26.Size = new System.Drawing.Size(141, 6);
-			// 
-			// AtariShowBGMenuItem
-			// 
-			this.AtariShowBGMenuItem.Name = "AtariShowBGMenuItem";
-			this.AtariShowBGMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.AtariShowBGMenuItem.Text = "Show BG";
-			this.AtariShowBGMenuItem.Click += new System.EventHandler(this.AtariShowBGMenuItem_Click);
-			// 
-			// AtariShowPlayfieldMenuItem
-			// 
-			this.AtariShowPlayfieldMenuItem.Name = "AtariShowPlayfieldMenuItem";
-			this.AtariShowPlayfieldMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.AtariShowPlayfieldMenuItem.Text = "Show Playfield";
-			this.AtariShowPlayfieldMenuItem.Click += new System.EventHandler(this.AtariShowPlayfieldMenuItem_Click);
-			// 
-			// ShowPlayer1MenuItem
-			// 
-			this.ShowPlayer1MenuItem.Name = "ShowPlayer1MenuItem";
-			this.ShowPlayer1MenuItem.Size = new System.Drawing.Size(144, 22);
-			this.ShowPlayer1MenuItem.Text = "Show Player 1";
-			this.ShowPlayer1MenuItem.Click += new System.EventHandler(this.ShowPlayer1MenuItem_Click);
-			// 
-			// ShowPlayer2MenuItem
-			// 
-			this.ShowPlayer2MenuItem.Name = "ShowPlayer2MenuItem";
-			this.ShowPlayer2MenuItem.Size = new System.Drawing.Size(144, 22);
-			this.ShowPlayer2MenuItem.Text = "Show Player 2";
-			this.ShowPlayer2MenuItem.Click += new System.EventHandler(this.ShowPlayer2MenuItem_Click);
-			// 
-			// ShowMissle1MenuItem
-			// 
-			this.ShowMissle1MenuItem.Name = "ShowMissle1MenuItem";
-			this.ShowMissle1MenuItem.Size = new System.Drawing.Size(144, 22);
-			this.ShowMissle1MenuItem.Text = "Show Missle 1";
-			this.ShowMissle1MenuItem.Click += new System.EventHandler(this.ShowMissle1MenuItem_Click);
-			// 
-			// ShowMissle2MenuItem
-			// 
-			this.ShowMissle2MenuItem.Name = "ShowMissle2MenuItem";
-			this.ShowMissle2MenuItem.Size = new System.Drawing.Size(144, 22);
-			this.ShowMissle2MenuItem.Text = "Show Missle 2";
-			this.ShowMissle2MenuItem.Click += new System.EventHandler(this.ShowMissle2MenuItem_Click);
-			// 
-			// ShowBallMenuItem
-			// 
-			this.ShowBallMenuItem.Name = "ShowBallMenuItem";
-			this.ShowBallMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.ShowBallMenuItem.Text = "Show Ball";
-			this.ShowBallMenuItem.Click += new System.EventHandler(this.ShowBallMenuItem_Click);
+			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
+			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
 			// GBSubMenu
 			// 
@@ -2568,7 +2479,7 @@
 			// DGBsettingsToolStripMenuItem
 			// 
 			this.DGBsettingsToolStripMenuItem.Name = "DGBsettingsToolStripMenuItem";
-			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DGBsettingsToolStripMenuItem_Click);
 			// 
@@ -2583,7 +2494,7 @@
 			// GenesisSettingsToolStripMenuItem
 			// 
 			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
-			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.GenesisSettingsToolStripMenuItem.Text = "Settings...";
 			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
 			// 
@@ -2837,7 +2748,7 @@
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
 			this.MainFormContextMenu.Name = "contextMenuStrip1";
-			this.MainFormContextMenu.Size = new System.Drawing.Size(217, 468);
+			this.MainFormContextMenu.Size = new System.Drawing.Size(202, 468);
 			this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
 			this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
 			// 
@@ -2845,7 +2756,7 @@
 			// 
 			this.OpenRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenRomContextMenuItem.Name = "OpenRomContextMenuItem";
-			this.OpenRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.OpenRomContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.OpenRomContextMenuItem.Text = "Open Rom";
 			this.OpenRomContextMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
@@ -2853,7 +2764,7 @@
 			// 
 			this.LoadLastRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.LoadLastRomContextMenuItem.Name = "LoadLastRomContextMenuItem";
-			this.LoadLastRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.LoadLastRomContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.LoadLastRomContextMenuItem.Text = "Load Last ROM";
 			this.LoadLastRomContextMenuItem.Click += new System.EventHandler(this.LoadLastRomContextMenuItem_Click);
 			// 
@@ -2861,20 +2772,20 @@
 			// 
 			this.StopAVContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAVContextMenuItem.Name = "StopAVContextMenuItem";
-			this.StopAVContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.StopAVContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.StopAVContextMenuItem.Text = "Stop AVI/WAV";
 			this.StopAVContextMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// ContextSeparator_AfterROM
 			// 
 			this.ContextSeparator_AfterROM.Name = "ContextSeparator_AfterROM";
-			this.ContextSeparator_AfterROM.Size = new System.Drawing.Size(213, 6);
+			this.ContextSeparator_AfterROM.Size = new System.Drawing.Size(198, 6);
 			// 
 			// RecordMovieContextMenuItem
 			// 
 			this.RecordMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RecordHS;
 			this.RecordMovieContextMenuItem.Name = "RecordMovieContextMenuItem";
-			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.RecordMovieContextMenuItem.Text = "Record Movie";
 			this.RecordMovieContextMenuItem.Click += new System.EventHandler(this.RecordMovieMenuItem_Click);
 			// 
@@ -2882,7 +2793,7 @@
 			// 
 			this.PlayMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
 			this.PlayMovieContextMenuItem.Name = "PlayMovieContextMenuItem";
-			this.PlayMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.PlayMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.PlayMovieContextMenuItem.Text = "Play Movie";
 			this.PlayMovieContextMenuItem.Click += new System.EventHandler(this.PlayMovieMenuItem_Click);
 			// 
@@ -2890,7 +2801,7 @@
 			// 
 			this.RestartMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.RestartMovieContextMenuItem.Name = "RestartMovieContextMenuItem";
-			this.RestartMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.RestartMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.RestartMovieContextMenuItem.Text = "Restart Movie";
 			this.RestartMovieContextMenuItem.Click += new System.EventHandler(this.PlayFromBeginningMenuItem_Click);
 			// 
@@ -2898,7 +2809,7 @@
 			// 
 			this.StopMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopMovieContextMenuItem.Name = "StopMovieContextMenuItem";
-			this.StopMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.StopMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.StopMovieContextMenuItem.Text = "Stop Movie";
 			this.StopMovieContextMenuItem.Click += new System.EventHandler(this.StopMovieMenuItem_Click);
 			// 
@@ -2906,14 +2817,14 @@
 			// 
 			this.LoadLastMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.LoadLastMovieContextMenuItem.Name = "LoadLastMovieContextMenuItem";
-			this.LoadLastMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.LoadLastMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.LoadLastMovieContextMenuItem.Text = "Load Last Movie";
 			this.LoadLastMovieContextMenuItem.Click += new System.EventHandler(this.LoadLastMovieContextMenuItem_Click);
 			// 
 			// BackupMovieContextMenuItem
 			// 
 			this.BackupMovieContextMenuItem.Name = "BackupMovieContextMenuItem";
-			this.BackupMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.BackupMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.BackupMovieContextMenuItem.Text = "Backup Movie";
 			this.BackupMovieContextMenuItem.Click += new System.EventHandler(this.BackupMovieContextMenuItem_Click);
 			// 
@@ -2921,28 +2832,28 @@
 			// 
 			this.StopNoSaveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopNoSaveContextMenuItem.Name = "StopNoSaveContextMenuItem";
-			this.StopNoSaveContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.StopNoSaveContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.StopNoSaveContextMenuItem.Text = "Stop Movie without Saving";
 			this.StopNoSaveContextMenuItem.Click += new System.EventHandler(this.StopMovieWithoutSavingMenuItem_Click);
 			// 
 			// ViewSubtitlesContextMenuItem
 			// 
 			this.ViewSubtitlesContextMenuItem.Name = "ViewSubtitlesContextMenuItem";
-			this.ViewSubtitlesContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ViewSubtitlesContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ViewSubtitlesContextMenuItem.Text = "View Subtitles";
 			this.ViewSubtitlesContextMenuItem.Click += new System.EventHandler(this.ViewSubtitlesContextMenuItem_Click);
 			// 
 			// AddSubtitleContextMenuItem
 			// 
 			this.AddSubtitleContextMenuItem.Name = "AddSubtitleContextMenuItem";
-			this.AddSubtitleContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.AddSubtitleContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.AddSubtitleContextMenuItem.Text = "Add Subtitle";
 			this.AddSubtitleContextMenuItem.Click += new System.EventHandler(this.AddSubtitleContextMenuItem_Click);
 			// 
 			// ViewCommentsContextMenuItem
 			// 
 			this.ViewCommentsContextMenuItem.Name = "ViewCommentsContextMenuItem";
-			this.ViewCommentsContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ViewCommentsContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ViewCommentsContextMenuItem.Text = "View Comments";
 			this.ViewCommentsContextMenuItem.Click += new System.EventHandler(this.ViewCommentsContextMenuItem_Click);
 			// 
@@ -2950,27 +2861,27 @@
 			// 
 			this.SaveMovieContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMovieContextMenuItem.Name = "SaveMovieContextMenuItem";
-			this.SaveMovieContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.SaveMovieContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.SaveMovieContextMenuItem.Text = "Save Movie";
 			this.SaveMovieContextMenuItem.Click += new System.EventHandler(this.SaveMovieMenuItem_Click);
 			// 
 			// ContextSeparator_AfterMovie
 			// 
 			this.ContextSeparator_AfterMovie.Name = "ContextSeparator_AfterMovie";
-			this.ContextSeparator_AfterMovie.Size = new System.Drawing.Size(213, 6);
+			this.ContextSeparator_AfterMovie.Size = new System.Drawing.Size(198, 6);
 			// 
 			// UndoSavestateContextMenuItem
 			// 
 			this.UndoSavestateContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoSavestateContextMenuItem.Name = "UndoSavestateContextMenuItem";
-			this.UndoSavestateContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.UndoSavestateContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.UndoSavestateContextMenuItem.Text = "Undo Savestate";
 			this.UndoSavestateContextMenuItem.Click += new System.EventHandler(this.UndoSavestateContextMenuItem_Click);
 			// 
 			// ContextSeparator_AfterUndo
 			// 
 			this.ContextSeparator_AfterUndo.Name = "ContextSeparator_AfterUndo";
-			this.ContextSeparator_AfterUndo.Size = new System.Drawing.Size(213, 6);
+			this.ContextSeparator_AfterUndo.Size = new System.Drawing.Size(198, 6);
 			// 
 			// ConfigContextMenuItem
 			// 
@@ -2987,7 +2898,7 @@
             this.toolStripMenuItem6,
             this.toolStripMenuItem7});
 			this.ConfigContextMenuItem.Name = "ConfigContextMenuItem";
-			this.ConfigContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ConfigContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ConfigContextMenuItem.Text = "Config";
 			// 
 			// controllersToolStripMenuItem1
@@ -3077,7 +2988,7 @@
 			// 
 			this.ScreenshotContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.camera;
 			this.ScreenshotContextMenuItem.Name = "ScreenshotContextMenuItem";
-			this.ScreenshotContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ScreenshotContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ScreenshotContextMenuItem.Text = "Screenshot";
 			this.ScreenshotContextMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
 			// 
@@ -3085,26 +2996,26 @@
 			// 
 			this.CloseRomContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
 			this.CloseRomContextMenuItem.Name = "CloseRomContextMenuItem";
-			this.CloseRomContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.CloseRomContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.CloseRomContextMenuItem.Text = "Close ROM";
 			this.CloseRomContextMenuItem.Click += new System.EventHandler(this.CloseRomMenuItem_Click);
 			// 
 			// ClearSRAMContextMenuItem
 			// 
 			this.ClearSRAMContextMenuItem.Name = "ClearSRAMContextMenuItem";
-			this.ClearSRAMContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ClearSRAMContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ClearSRAMContextMenuItem.Text = "Close and Clear SRAM";
 			this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.ClearSRAMContextMenuItem_Click);
 			// 
 			// ShowMenuContextMenuSeparator
 			// 
 			this.ShowMenuContextMenuSeparator.Name = "ShowMenuContextMenuSeparator";
-			this.ShowMenuContextMenuSeparator.Size = new System.Drawing.Size(213, 6);
+			this.ShowMenuContextMenuSeparator.Size = new System.Drawing.Size(198, 6);
 			// 
 			// ShowMenuContextMenuItem
 			// 
 			this.ShowMenuContextMenuItem.Name = "ShowMenuContextMenuItem";
-			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
@@ -3355,9 +3266,6 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AtariBWMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AtariLeftDifficultyMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AtariRightDifficultyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigEnableSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem EnableContextMenuMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BackupSavestatesMenuItem;
@@ -3407,14 +3315,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VirtualPadMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
-		private System.Windows.Forms.ToolStripMenuItem AtariShowBGMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowPlayer1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowPlayer2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowMissle1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowMissle2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowBallMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AtariShowPlayfieldMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBGPUViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AudioThrottleMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator27;
@@ -3475,6 +3375,7 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
 	}
 }
 
