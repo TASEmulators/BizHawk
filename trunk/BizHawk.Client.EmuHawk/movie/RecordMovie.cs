@@ -159,7 +159,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Global.Emulator is ColecoVision)
 				{
-					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = Global.Config.ColecoSkipBiosIntro.ToString();
+					var s = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = s.SkipBiosIntro.ToString();
 				}
 				else if (Global.Emulator is N64)
 				{
@@ -223,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.Filter = filter;
 
 			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK 
+			if (result == DialogResult.OK
 				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				RecordBox.Text = filename;

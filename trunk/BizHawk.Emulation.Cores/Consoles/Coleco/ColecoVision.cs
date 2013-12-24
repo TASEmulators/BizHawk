@@ -23,9 +23,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
 
-		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, bool skipbios)
+		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
 			CoreComm = comm;
+			this.SyncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
+			bool skipbios = this.SyncSettings.SkipBiosIntro;
 
 			Cpu = new Z80A();
 			Cpu.ReadMemory = ReadMemory;
@@ -40,6 +42,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			string biosPath = CoreComm.CoreFileProvider.GetFirmwarePath("Coleco", "Bios", true, "Coleco BIOS file is required.");
 			BiosRom = File.ReadAllBytes(biosPath);
 
+			// gamedb can overwrite the syncsettings; this is ok
 			if (game["NoSkip"])
 				skipbios = false;
 			LoadRom(rom, skipbios);
@@ -291,8 +294,25 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void EndAsyncSound() { }
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings; }
 		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			var n = (ColecoSyncSettings)o;
+			bool ret = n.SkipBiosIntro != SyncSettings.SkipBiosIntro;
+			SyncSettings = n;
+			return ret;
+		}
+
+		ColecoSyncSettings SyncSettings;
+
+		public class ColecoSyncSettings
+		{
+			public bool SkipBiosIntro = false;
+			public ColecoSyncSettings Clone()
+			{
+				return (ColecoSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

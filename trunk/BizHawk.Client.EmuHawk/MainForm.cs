@@ -2040,6 +2040,19 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(file.FullName);
 		}
 
+		object __SyncSettingsHack = null;
+
+		object GetCoreSyncSettings<T>()
+			where T : IEmulator
+		{
+			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
+			// from a config file or from the movie file
+
+			// since all we have right now is movie 1.0, we get silly hacks instead
+
+			return __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings<T>();
+		}
+
 		/// <summary>
 		/// send core settings to emu, setting reboot flag if needed
 		/// </summary>
@@ -3062,7 +3075,7 @@ namespace BizHawk.Client.EmuHawk
 							case "GEN":
 								{
 									var genesis = new GPGX(
-										nextComm, null, disc, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
+										nextComm, null, disc, "GEN", GetCoreSyncSettings<GPGX>());
 									nextEmulator = genesis;
 								}
 								break;
@@ -3149,7 +3162,7 @@ namespace BizHawk.Client.EmuHawk
 
 									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"],
 										Global.Config.GetCoreSettings<GambatteLink>(),
-										Global.Config.GetCoreSyncSettings<GambatteLink>());
+										GetCoreSyncSettings<GambatteLink>());
 									nextEmulator = gbl;
 
 									// other stuff todo
@@ -3198,12 +3211,12 @@ namespace BizHawk.Client.EmuHawk
 							case "SMS":
 							case "SG":
 							case "GG":
-								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), Global.Config.GetCoreSyncSettings<SMS>());
+								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), GetCoreSyncSettings<SMS>());
 								break;
 							case "A26":
 								nextEmulator = new Atari2600(nextComm, game, rom.FileData,
 									Global.Config.GetCoreSettings<Atari2600>(),
-									Global.Config.GetCoreSyncSettings<Atari2600>());
+									GetCoreSyncSettings<Atari2600>());
 								break;
 							case "PCE":
 							case "PCECD":
@@ -3213,7 +3226,7 @@ namespace BizHawk.Client.EmuHawk
 							case "GEN":
 								{
 									// nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
+									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
 									break;
 								}
 							case "TI83":
@@ -3234,7 +3247,7 @@ namespace BizHawk.Client.EmuHawk
 								{
 									var gb = new Gameboy(nextComm, game, rom.FileData,
 										Global.Config.GetCoreSettings<Gameboy>(),
-										Global.Config.GetCoreSyncSettings<Gameboy>());
+										GetCoreSyncSettings<Gameboy>());
 									nextEmulator = gb;
 								}
 								else
@@ -3259,7 +3272,7 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "Coleco":
 								{
-									var c = new ColecoVision(nextComm, game, rom.RomData, Global.Config.ColecoSkipBiosIntro);
+									var c = new ColecoVision(nextComm, game, rom.RomData, GetCoreSyncSettings<ColecoVision>());
 									nextEmulator = c;
 								}
 								break;

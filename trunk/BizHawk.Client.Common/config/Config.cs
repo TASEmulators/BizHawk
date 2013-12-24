@@ -452,7 +452,7 @@ namespace BizHawk.Client.Common
 		public int PCEBGViewerRefreshRate = 16;
 
 		// Coleco Settings
-		public bool ColecoSkipBiosIntro = false;
+		//public bool ColecoSkipBiosIntro = false;
 
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
