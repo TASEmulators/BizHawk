@@ -804,7 +804,7 @@ namespace BizHawk.Client.EmuHawk
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
-				SyncControls();
+				InputManager.SyncControls();
 			}
 		}
 
@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 			if (hotkeys.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
-				SyncControls();
+				InputManager.SyncControls();
 			}
 		}
 

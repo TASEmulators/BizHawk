@@ -105,6 +105,7 @@
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
+    <Compile Include="InputManager.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
