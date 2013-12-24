@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
+			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession
 			{
@@ -397,10 +398,10 @@ namespace BizHawk.Client.EmuHawk
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
 				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
-				Global.ActiveController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
+				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(GlobalWin.ControllerInputCoalescer);
+				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				if (Global.ClientControls["Autohold"])
 				{
@@ -517,8 +518,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ProcessInput()
 		{
+			ControllerInputCoalescer conInput = Global.ControllerInputCoalescer as ControllerInputCoalescer;
+
 			for (; ; )
 			{
+				
 				// loop through all available events
 				var ie = Input.Instance.DequeueEvent();
 				if (ie == null) { break; }
@@ -561,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case 0: // Both allowed
-						GlobalWin.ControllerInputCoalescer.Receive(ie);
+						conInput.Receive(ie);
 
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
@@ -577,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 
 						break;
 					case 1: // Input overrides Hokeys
-						GlobalWin.ControllerInputCoalescer.Receive(ie);
+						conInput.Receive(ie);
 						if (!Global.ActiveController.HasBinding(ie.LogicalButton.ToString()))
 						{
 							handled = false;
@@ -604,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!handled)
 						{
 							GlobalWin.HotkeyCoalescer.Receive(ie);
-							GlobalWin.ControllerInputCoalescer.Receive(ie);
+							conInput.Receive(ie);
 						}
 
 						break;
@@ -613,7 +617,7 @@ namespace BizHawk.Client.EmuHawk
 			} // foreach event
 
 			// also handle floats
-			GlobalWin.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
+			conInput.AcceptNewFloats(Input.Instance.GetFloats());
 		}
 
 		public void RebootCore()
@@ -3016,7 +3020,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void RewireInputChain() // Move to Client.Common
 		{
-			GlobalWin.ControllerInputCoalescer = new ControllerInputCoalescer { Type = Global.ActiveController.Type };
+			Global.ControllerInputCoalescer.Clear();
+			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 
 			Global.OrControllerAdapter.Source = Global.ActiveController;
 			Global.OrControllerAdapter.SourceOr = Global.AutoFireController;
