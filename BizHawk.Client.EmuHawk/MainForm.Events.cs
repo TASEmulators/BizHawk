@@ -13,6 +13,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.ColecoVision;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1600,13 +1601,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ColecoSkipBiosMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
+			var ss = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.ColecoSkipBiosIntro ^= true;
-			FlagNeedsReboot();
+			var ss = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.SkipBiosIntro ^= true;
+			PutCoreSyncSettings(ss);
 		}
 
 		#endregion

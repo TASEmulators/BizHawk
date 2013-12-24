@@ -32,10 +32,31 @@ namespace BizHawk.Client.EmuHawk
 			if (!record)
 			{
 				Global.MovieSession.Movie.Load();
-				SetSyncDependentSettings();
 			}
 
-			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
+			try
+			{
+				// movie 1.0 hack: restore sync settings for the only core that fully supported them in movie 1.0
+				if (!record && Global.Emulator.SystemId == "Coleco")
+				{
+					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
+					if (!String.IsNullOrWhiteSpace(str))
+					{
+						__SyncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
+						{
+							SkipBiosIntro = str.ToLower() == "true"
+						};
+					}
+				}
+
+				// load the rom in any case
+				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
+			}
+			finally
+			{
+				// ensure subsequent calls to LoadRom won't get the settings object created here
+				__SyncSettingsHack = null;
+			}
 
 			if (!fromTastudio)
 			{
@@ -142,28 +163,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.MovieSession.StopMovie(saveChanges);
 			SetMainformMovieInfo();
-		}
-
-		//On movie load, these need to be set based on the contents of the movie file
-		public void SetSyncDependentSettings()
-		{
-			switch (Global.Emulator.SystemId)
-			{
-				case "Coleco":
-					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
-					if (!String.IsNullOrWhiteSpace(str))
-					{
-						if (str.ToLower() == "true")
-						{
-							Global.Config.ColecoSkipBiosIntro = true;
-						}
-						else
-						{
-							Global.Config.ColecoSkipBiosIntro = false;
-						}
-					}
-					break;
-			}
 		}
 	}
 }
