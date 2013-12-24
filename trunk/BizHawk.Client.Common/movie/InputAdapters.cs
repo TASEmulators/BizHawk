@@ -129,7 +129,13 @@ namespace BizHawk.Client.Common
 
 		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
 		protected WorkingDictionary<string, float> Floats = new WorkingDictionary<string, float>();
-		
+
+		public virtual void Clear()
+		{
+			Buttons = new WorkingDictionary<string, bool>();
+			Floats = new WorkingDictionary<string, float>();
+		}
+
 		public virtual bool this[string button]
 		{
 			get { return Buttons[button]; } set { Buttons[button] = value; }

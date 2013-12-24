@@ -84,5 +84,9 @@ namespace BizHawk.Client.Common
 		public static SimpleController MovieOutputController = new SimpleController();
 
 		public static Controller ClientControls;
+
+		// Input state which has been estine for game controller inputs are coalesce here
+		// This relies on a client specific implementation!
+		public static SimpleController ControllerInputCoalescer;
 	}
 }

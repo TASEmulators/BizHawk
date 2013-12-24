@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable input_get()
 		{
 			var buttons = _lua.NewTable();
-			foreach (var kvp in GlobalWin.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
+			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
 			{
 				buttons[kvp.Key] = true;
 			}
