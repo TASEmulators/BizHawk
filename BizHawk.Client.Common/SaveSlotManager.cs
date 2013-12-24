@@ -99,5 +99,32 @@ namespace BizHawk.Client.Common
 			ClearRedoList();
 			Update();
 		}
+
+		public void SwapBackupSavestate(string path)
+		{
+			// Takes the .state and .bak files and swaps them
+			var state = new FileInfo(path);
+			var backup = new FileInfo(path + ".bak");
+			var temp = new FileInfo(path + ".bak.tmp");
+
+			if (!state.Exists || !backup.Exists)
+			{
+				return;
+			}
+
+			if (temp.Exists)
+			{
+				temp.Delete();
+			}
+
+			backup.CopyTo(path + ".bak.tmp");
+			backup.Delete();
+			state.CopyTo(path + ".bak");
+			state.Delete();
+			temp.CopyTo(path);
+			temp.Delete();
+
+			ToggleRedo(Global.Config.SaveSlot);
+		}
 	}
 }

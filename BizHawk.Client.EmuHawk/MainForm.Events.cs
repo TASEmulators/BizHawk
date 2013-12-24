@@ -1874,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			SwapBackupSavestate(
+			_stateSlots.SwapBackupSavestate(
 				PathManager.SaveStatePrefix(Global.Game) +
 				".QuickSave" +
 				Global.Config.SaveSlot +

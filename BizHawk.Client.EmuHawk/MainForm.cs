@@ -3571,33 +3571,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SwapBackupSavestate(string path) // Move inside Saveslot Manager
-		{
-			// Takes the .state and .bak files and swaps them
-			var state = new FileInfo(path);
-			var backup = new FileInfo(path + ".bak");
-			var temp = new FileInfo(path + ".bak.tmp");
-
-			if (!state.Exists || !backup.Exists)
-			{
-				return;
-			}
-
-			if (temp.Exists)
-			{
-				temp.Delete();
-			}
-
-			backup.CopyTo(path + ".bak.tmp");
-			backup.Delete();
-			state.CopyTo(path + ".bak");
-			state.Delete();
-			temp.CopyTo(path);
-			temp.Delete();
-
-			_stateSlots.ToggleRedo(Global.Config.SaveSlot);
-		}
-
 		private static void ProcessMovieImport(string fn) // Nothing Winform Specific here, move to Movie import
 		{
 			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
