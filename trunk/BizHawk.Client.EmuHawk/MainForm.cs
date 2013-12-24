@@ -1480,11 +1480,14 @@ namespace BizHawk.Client.EmuHawk
 			N64SubMenu.Visible = false;
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
+			GenesisSubMenu.Visible = false;
 
 			switch (system)
 			{
 				default:
+					break;
 				case "GEN":
+					GenesisSubMenu.Visible = true;
 					break;
 				case "NULL":
 					N64SubMenu.Visible = true;
@@ -1501,15 +1504,15 @@ namespace BizHawk.Client.EmuHawk
 					PCESubMenu.Visible = true;
 					break;
 				case "SMS":
-					SMSSubMenu.Text = "SMS";
+					SMSSubMenu.Text = "&SMS";
 					SMSSubMenu.Visible = true;
 					break;
 				case "SG":
-					SMSSubMenu.Text = "SG";
+					SMSSubMenu.Text = "&SG";
 					SMSSubMenu.Visible = true;
 					break;
 				case "GG":
-					SMSSubMenu.Text = "GG";
+					SMSSubMenu.Text = "&GG";
 					SMSSubMenu.Visible = true;
 					break;
 				case "GB":
@@ -2088,7 +2091,7 @@ namespace BizHawk.Client.EmuHawk
 		/// send core settings to emu, setting reboot flag if needed
 		/// </summary>
 		/// <param name="o"></param>
-		private void PutCoreSettings(object o)
+		public void PutCoreSettings(object o)
 		{
 			if (Global.Emulator.PutSettings(o))
 				FlagNeedsReboot();
@@ -3287,40 +3290,8 @@ namespace BizHawk.Client.EmuHawk
 								break;
 							case "SMS":
 							case "SG":
-								if (Global.Config.SmsEnableFM)
-								{
-									game.AddOption("UseFM");
-								}
-
-								if (Global.Config.SmsAllowOverlock)
-								{
-									game.AddOption("AllowOverclock");
-								}
-
-								if (Global.Config.SmsForceStereoSeparation)
-								{
-									game.AddOption("ForceStereo");
-								}
-
-								if (Global.Config.SmsSpriteLimit)
-								{
-									game.AddOption("SpriteLimit");
-								}
-
-								nextEmulator = new SMS(nextComm, game, rom.RomData);
-								break;
 							case "GG":
-								if (Global.Config.SmsAllowOverlock)
-								{
-									game.AddOption("AllowOverclock");
-								}
-
-								if (Global.Config.SmsSpriteLimit)
-								{
-									game.AddOption("SpriteLimit");
-								}
-
-								nextEmulator = new SMS(nextComm, game, rom.RomData);
+								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), Global.Config.GetCoreSyncSettings<SMS>());
 								break;
 							case "A26":
 								nextEmulator = new Atari2600(nextComm, game, rom.FileData);

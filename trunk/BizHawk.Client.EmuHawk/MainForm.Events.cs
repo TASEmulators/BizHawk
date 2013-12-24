@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1280,12 +1281,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SMSEnableFMChipMenuItem.Checked = Global.Config.SmsEnableFM;
-			SMSOverclockMenuItem.Checked = Global.Config.SmsAllowOverlock;
-			SMSForceStereoMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
-			SMSSpriteLimitMenuItem.Checked = Global.Config.SmsSpriteLimit;
-			ShowClippedRegionsMenuItem.Checked = Global.Config.GGShowClippedRegions;
-			HighlightActiveDisplayRegionMenuItem.Checked = Global.Config.GGHighlightActiveDisplayRegion;
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
+			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
+			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
+			SMSSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
+			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
 			SMSEnableFMChipMenuItem.Visible =
 				SMSOverclockMenuItem.Visible =
@@ -1300,44 +1303,49 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSEnableFMChipMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SmsEnableFM ^= true;
-			FlagNeedsReboot();
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.EnableFM ^= true;
+			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSOverclockMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SmsAllowOverlock ^= true;
-			FlagNeedsReboot();
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.AllowOverlock ^= true;
+			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSForceStereoMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SmsForceStereoSeparation ^= true;
-			FlagNeedsReboot();
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.ForceStereoSeparation ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void SMSSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SmsSpriteLimit ^= true;
-			FlagNeedsReboot();
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.SpriteLimit ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void ShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.GGShowClippedRegions ^= true;
-			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.ShowClippedRegions ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void HighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.HighlightActiveDisplayRegion ^= true;
+			PutCoreSettings(s);
 		}
 
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new SMSGraphicsConfig().ShowDialog();
-			CoreFileProvider.SyncCoreCommInputSignals();
 		}
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)

@@ -124,8 +124,8 @@ namespace BizHawk.Client.Common
 			target.SNES_UseRingBuffer = Global.Config.SNESUseRingBuffer;
 			target.SNES_AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize;
 
-			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			//target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			//target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 
 			target.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
 			target.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
