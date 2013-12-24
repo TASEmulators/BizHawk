@@ -648,9 +648,9 @@ namespace BizHawk.Client.Common
 		// Genesis Settings
 
 		//Atari 2600 Settings
-		public bool Atari2600_BW = false;
-		public bool Atari2600_LeftDifficulty = true;
-		public bool Atari2600_RightDifficulty = true;
+		//public bool Atari2600_BW = false;
+		//public bool Atari2600_LeftDifficulty = true;
+		//public bool Atari2600_RightDifficulty = true;
 
 		//Atari 7800 Settings
 
@@ -714,13 +714,13 @@ namespace BizHawk.Client.Common
 		public bool LuaWriterStartEmpty = false;
 
 		//Atari 2600 Settings
-		public bool Atari2600_ShowBG = true;
-		public bool Atari2600_ShowPlayer1 = true;
-		public bool Atari2600_ShowPlayer2 = true;
-		public bool Atari2600_ShowMissle1 = true;
-		public bool Atari2600_ShowMissle2 = true;
-		public bool Atari2600_ShowBall = true;
-		public bool Atari2600_ShowPlayfield = true;
+		//public bool Atari2600_ShowBG = true;
+		//public bool Atari2600_ShowPlayer1 = true;
+		//public bool Atari2600_ShowPlayer2 = true;
+		//public bool Atari2600_ShowMissle1 = true;
+		//public bool Atari2600_ShowMissle2 = true;
+		//public bool Atari2600_ShowBall = true;
+		//public bool Atari2600_ShowPlayfield = true;
 	}
 
 	#region Sub-classes TODO - it is about time to port these to separate files

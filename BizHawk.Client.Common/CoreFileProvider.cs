@@ -127,13 +127,13 @@ namespace BizHawk.Client.Common
 			//target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			//target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 
-			target.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
-			target.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
-			target.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
-			target.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
-			target.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
-			target.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
-			target.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
+			//target.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
+			//target.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
+			//target.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
+			//target.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
+			//target.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
+			//target.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
+			//target.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
 		}
 	}
 }
