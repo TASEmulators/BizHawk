@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CoreComm.UsesDriveLed = true;
 				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
-			PutSettings(Settings);
+			PutSettings(Settings ?? new NESSettings());
 		}
 
 		private NES()
