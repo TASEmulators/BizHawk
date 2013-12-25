@@ -28,6 +28,22 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
+		#region Duplicate code to mainform, need to refactor!
+
+		object __SyncSettingsHack = null;
+
+		object GetCoreSyncSettings<T>()
+			where T : IEmulator
+		{
+			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
+			// from a config file or from the movie file
+
+			// since all we have right now is movie 1.0, we get silly hacks instead
+
+			return __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings<T>();
+		}
+
+		#endregion
 		#region SNES specific stuff - clean up or move elsewhere
 
 		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
@@ -395,7 +411,7 @@ namespace BizHawk.Client.Common
 
 									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"],
 										Global.Config.GetCoreSettings<GambatteLink>(),
-										Global.Config.GetCoreSyncSettings<GambatteLink>());
+										GetCoreSyncSettings<GambatteLink>());
 									nextEmulator = gbl;
 
 									// other stuff todo
@@ -449,7 +465,7 @@ namespace BizHawk.Client.Common
 							case "A26":
 								nextEmulator = new Atari2600(nextComm, game, rom.FileData,
 									Global.Config.GetCoreSettings<Atari2600>(),
-									Global.Config.GetCoreSyncSettings<Atari2600>());
+									GetCoreSyncSettings<Atari2600>());
 								break;
 							case "PCE":
 							case "PCECD":
@@ -476,7 +492,7 @@ namespace BizHawk.Client.Common
 								{
 									var gb = new Gameboy(nextComm, game, rom.FileData,
 										Global.Config.GetCoreSettings<Gameboy>(),
-										Global.Config.GetCoreSyncSettings<Gameboy>());
+										GetCoreSyncSettings<Gameboy>());
 									nextEmulator = gb;
 								}
 								else
@@ -502,9 +518,8 @@ namespace BizHawk.Client.Common
 								break;
 							case "Coleco":
 								{
-									throw new Exception("Natt needs to refactor this!");
-									//var c = new ColecoVision(nextComm, game, rom.RomData, Global.Config.ColecoSkipBiosIntro);
-									//nextEmulator = c;
+									var c = new ColecoVision(nextComm, game, rom.RomData, GetCoreSyncSettings<ColecoVision>());
+									nextEmulator = c;
 								}
 								break;
 							case "INTV":
