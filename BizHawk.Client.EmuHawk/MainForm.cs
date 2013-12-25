@@ -970,7 +970,6 @@ namespace BizHawk.Client.EmuHawk
 		private Control _renderTarget;
 		private RetainedViewportPanel _retainedPanel;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
-		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
 
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
@@ -1614,47 +1613,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// Contains a mapping: profilename->exepath ; or null if the exe wasnt available
-		private string SNES_Prepare(string profile)
-		{
-			SNES_Check(profile);
-			if (_snesPrepared[profile] == null)
-			{
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-			}
-
-			return _snesPrepared[profile];
-		}
-
-		private void SNES_Check(string profile)
-		{
-			if (_snesPrepared.ContainsKey(profile))
-			{
-				return;
-			}
-
-			const string bits = "32";
-
-			// disabled til it works
-			// if (Win32.Is64BitOperatingSystem)
-			// bits = "64";
-			var exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
-			var thisDir = PathManager.GetExeDirectoryAbsolute();
-			var exePath = Path.Combine(thisDir, exename);
-
-			if (!File.Exists(exePath))
-			{
-				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
-			}
-
-			if (!File.Exists(exePath))
-			{
-				exePath = null;
-			}
-
-			_snesPrepared[profile] = exePath;
-		}
-
 		private void SyncPresentationMode()
 		{
 			GlobalWin.DisplayManager.Suspend();
@@ -1859,69 +1817,6 @@ namespace BizHawk.Client.EmuHawk
 		private static void SaveSlotSelectedMessage()
 		{
 			GlobalWin.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
-		}
-
-		private static VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
-		{
-			var pluginToUse = String.Empty;
-
-			if (hasmovie && Global.MovieSession.Movie.Header[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.ContainsKey(HeaderKeys.VIDEOPLUGIN))
-			{
-				pluginToUse = Global.MovieSession.Movie.Header[HeaderKeys.VIDEOPLUGIN];
-			}
-
-			if (pluginToUse == string.Empty || (pluginToUse != "Rice" && pluginToUse != "Glide64"))
-			{
-				pluginToUse = Global.Config.N64VidPlugin;
-			}
-
-			var video_settings = new VideoPluginSettings(pluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
-
-			if (pluginToUse == "Rice")
-			{
-				Global.Config.RicePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
-			}
-			else if (pluginToUse == "Glide64")
-			{
-				Global.Config.GlidePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
-			}
-			else if (pluginToUse == "Glide64mk2")
-			{
-				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
-			}
-
-			if (hasmovie && Global.MovieSession.Movie.Header[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.ContainsKey(HeaderKeys.VIDEOPLUGIN))
-			{
-				var settings = new List<string>(video_settings.Parameters.Keys);
-				foreach (var setting in settings)
-				{
-					if (Global.MovieSession.Movie.Header.ContainsKey(setting))
-					{
-						var Value = Global.MovieSession.Movie.Header[setting];
-						if (video_settings.Parameters[setting] is bool)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = bool.Parse(Value);
-							}
-							catch { }
-						}
-						else if (video_settings.Parameters[setting] is int)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = int.Parse(Value);
-							}
-							catch { }
-						}
-					}
-				}
-			}
-
-			return video_settings;
 		}
 
 		private void Render()
@@ -2980,356 +2875,38 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(this, message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
-		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false) // Move to client.common
+		private void ShowLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
-			if (path == null)
+			MessageBox.Show(this, e.Message, e.AttemptedCoreLoad + " load warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		// Still needs a good bit of refactoring
+		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
+		{
+			RomLoader loader = new RomLoader();
+			loader.ChooseArchive = LoadArhiveChooser;
+			loader.CoreCommMessageCallback = ShowMessageCoreComm;
+			loader.OnLoadError += ShowLoadError;
+			var result = loader.LoadRom(path, hasmovie);
+
+			if (result)
 			{
-				return false;
-			}
+				var nextEmulator = loader.LoadedEmulator; // TODO: just reference the property and get rid of this
+				var nextComm = loader.NextComm; // Ditto
+				var game = loader.Game; // Ditto
+				var rom = loader.Rom; // Ditto
+				var canonicalPath = loader.CanonicalFullPath;
 
-			using (var file = new HawkFile())
-			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64" };
-
-				// lets not use this unless we need to
-				// file.NonArchiveExtensions = romExtensions;
-				file.Open(path);
-
-				// if the provided file doesnt even exist, give up!
-				if (!file.Exists)
+				if (loader.LoadedEmulator is Yabause)
 				{
-					return false;
+					SaturnSetPrefs(loader.LoadedEmulator as Yabause);
 				}
-
-				// try binding normal rom extensions first
-				if (!file.IsBound)
+				else if (loader.LoadedEmulator is TI83)
 				{
-					file.BindSoleItemOf(romExtensions);
-				}
-
-				// if we have an archive and need to bind something, then pop the dialog
-				if (file.IsArchive && !file.IsBound)
-				{
-					var ac = new ArchiveChooser(file);
-					if (ac.ShowDialog(this) == DialogResult.OK)
+					if (Global.Config.TI83autoloadKeyPad)
 					{
-						file.BindArchiveMember(ac.SelectedMemberIndex);
+						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
-					else
-					{
-						return false;
-					}
-				}
-
-				IEmulator nextEmulator = null;
-				RomGame rom = null;
-				GameInfo game = null;
-				var nextComm = new CoreComm(ShowMessageCoreComm);
-				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-
-				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
-				// any settings changes that we made need to make it back to config before we try to instantiate that core with
-				// the new settings objects
-				CommitCoreSettingsToConfig();
-
-				try
-				{
-					var ext = file.Extension.ToLower();
-					if (ext == ".iso" || ext == ".cue")
-					{
-						var disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
-						var hash = disc.GetHash();
-						game = Database.CheckDatabase(hash);
-						if (game == null)
-						{
-							// try to use our wizard methods
-							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-
-							switch (disc.DetectDiscType())
-							{
-								case DiscType.SegaSaturn:
-									game.System = "SAT";
-									break;
-								case DiscType.SonyPSP:
-									game.System = "PSP";
-									break;
-								case DiscType.SonyPSX:
-									game.System = "PSX";
-									break;
-								case DiscType.MegaCD:
-									game.System = "GEN";
-									break;
-								case DiscType.TurboCD:
-								case DiscType.UnknownCDFS:
-								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core,
-									// and during that time, all CDs were blindly sent to it
-									// so this prevents regressions
-									game.System = "PCECD";
-									break;
-							}
-						}
-
-						switch (game.System)
-						{
-							case "GEN":
-								{
-									var genesis = new GPGX(
-										nextComm, null, disc, "GEN", GetCoreSyncSettings<GPGX>());
-									nextEmulator = genesis;
-								}
-								break;
-							case "SAT":
-								{
-									var saturn = new Yabause(nextComm, disc, Global.Config.SaturnUseGL);
-									nextEmulator = saturn;
-									SaturnSetPrefs(saturn);
-								}
-								break;
-							case "PSP":
-								{
-									var psp = new PSP(nextComm, file.Name);
-									nextEmulator = psp;
-								}
-								break;
-							case "PSX":
-								{
-									var psx = new Octoshock(nextComm);
-									nextEmulator = psx;
-									psx.LoadCuePath(file.CanonicalFullPath);
-									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
-								}
-								break;
-							case "PCE":
-							case "PCECD":
-								{
-									var biosPath = Global.FirmwareManager.Request("PCECD", "Bios");
-									if (File.Exists(biosPath) == false)
-									{
-										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
-										return false;
-									}
-
-									rom = new RomGame(new HawkFile(biosPath));
-
-									if (rom.GameInfo.Status == RomStatus.BadDump)
-									{
-										MessageBox.Show(
-											"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
-											+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
-									}
-									else if (rom.GameInfo.NotInDatabase)
-									{
-										MessageBox.Show(
-											"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
-									}
-									else if (rom.GameInfo["BIOS"] == false)
-									{
-										MessageBox.Show(
-											"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
-									}
-
-									if (rom.GameInfo["SuperSysCard"])
-									{
-										game.AddOption("SuperSysCard");
-									}
-
-									if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
-									{
-										MessageBox.Show(
-											"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
-									}
-
-									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
-									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
-									break;
-								}
-						}
-					}
-					else if (file.Extension.ToLower() == ".xml")
-					{
-						try
-						{
-							var XMLG = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
-							game = XMLG.GI;
-
-							switch (game.System)
-							{
-								case "DGB":
-
-									var L = Database.GetGameInfo(XMLG.Assets["LeftRom"], "left.gb");
-									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
-
-									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"],
-										Global.Config.GetCoreSettings<GambatteLink>(),
-										GetCoreSyncSettings<GambatteLink>());
-									nextEmulator = gbl;
-
-									// other stuff todo
-									break;
-
-								default:
-									return false;
-							}
-						}
-						catch (Exception ex)
-						{
-							MessageBox.Show(ex.ToString(), "XMLGame Load Error");
-						}
-					}
-					else // most extensions
-					{
-						rom = new RomGame(file);
-						game = rom.GameInfo;
-
-						bool isXml = false;
-
-						// other xml has already been handled
-						if (file.Extension.ToLower() == ".xml")
-						{
-							game.System = "SNES";
-							isXml = true;
-						}
-
-						switch (game.System)
-						{
-							case "SNES":
-								{
-									game.System = "SNES";
-									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-
-									// need to get rid of this hack at some point
-									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
-
-									var snes = new LibsnesCore(nextComm);
-									nextEmulator = snes;
-									byte[] romData = isXml ? null : rom.FileData;
-									byte[] xmlData = isXml ? rom.FileData : null;
-									snes.Load(game, romData, deterministicemulation, xmlData);
-								}
-								break;
-							case "SMS":
-							case "SG":
-							case "GG":
-								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), GetCoreSyncSettings<SMS>());
-								break;
-							case "A26":
-								nextEmulator = new Atari2600(nextComm, game, rom.FileData,
-									Global.Config.GetCoreSettings<Atari2600>(),
-									GetCoreSyncSettings<Atari2600>());
-								break;
-							case "PCE":
-							case "PCECD":
-							case "SGX":
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
-								break;
-							case "GEN":
-								{
-									// nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
-									break;
-								}
-							case "TI83":
-								nextEmulator = new TI83(nextComm, game, rom.RomData);
-								if (Global.Config.TI83autoloadKeyPad)
-								{
-									GlobalWin.Tools.Load<TI83KeyPad>();
-								}
-								break;
-							case "NES":
-									nextEmulator = new NES(nextComm, game, rom.FileData,
-										Global.Config.GetCoreSettings<NES>(),
-										Global.MovieSession.Movie.Header.BoardProperties);
-								break;
-							case "GB":
-							case "GBC":
-								if (!Global.Config.GB_AsSGB)
-								{
-									var gb = new Gameboy(nextComm, game, rom.FileData,
-										Global.Config.GetCoreSettings<Gameboy>(),
-										GetCoreSyncSettings<Gameboy>());
-									nextEmulator = gb;
-								}
-								else
-								{
-									try
-									{
-										game.System = "SNES";
-										game.AddOption("SGB");
-										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-										var snes = new LibsnesCore(nextComm);
-										nextEmulator = snes;
-										snes.Load(game, rom.FileData, deterministicemulation, null);
-									}
-									catch
-									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										ShowMessageCoreComm("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-										Global.Config.GB_AsSGB = false;
-										throw;
-									}
-								}
-								break;
-							case "Coleco":
-								{
-									var c = new ColecoVision(nextComm, game, rom.RomData, GetCoreSyncSettings<ColecoVision>());
-									nextEmulator = c;
-								}
-								break;
-							case "INTV":
-								{
-									var intv = new Intellivision(nextComm, game, rom.RomData);
-									nextEmulator = intv;
-								}
-								break;
-							case "A78":
-								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								var a78 = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
-								nextEmulator = a78;
-								break;
-							case "C64":
-								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
-								c64.HardReset();
-								nextEmulator = c64;
-								break;
-							case "GBA":
-								if (VersionInfo.INTERIM)
-								{
-									GBA gba = new GBA(nextComm);
-									// var gba = new GarboDev.GbaManager(nextComm);
-									gba.Load(rom.RomData);
-									nextEmulator = gba;
-								}
-								break;
-							case "N64":
-								Global.Game = game;
-								var video_settings = N64GenerateVideoSettings(game, hasmovie);
-								int SaveType = 0;
-								if (game.OptionValue("SaveType") == "EEPROM_16K")
-								{
-									SaveType = 1;
-								}
-								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
-								break;
-
-							case "DEBUG":
-								if (VersionInfo.INTERIM)
-								{
-									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
-								}
-								break;
-						}
-					}
-
-					if (nextEmulator == null)
-					{
-						throw new Exception("No core could load the rom.");
-					}
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show("Exception during loadgame:\n\n" + ex);
-					return false;
 				}
 
 				CloseGame();
@@ -3376,13 +2953,13 @@ namespace BizHawk.Client.EmuHawk
 
 				// restarts the lua console if a different rom is loaded.
 				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != file.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != canonicalPath)
 				{
 					GlobalWin.Tools.Restart<LuaConsole>();
 				}
 
-				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
-				JumpLists.AddRecentItem(file.CanonicalFullPath);
+				Global.Config.RecentRoms.Add(canonicalPath);
+				JumpLists.AddRecentItem(canonicalPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 				{
 					LoadSaveRam();
@@ -3403,7 +2980,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				CurrentlyOpenRom = file.CanonicalFullPath;
+				CurrentlyOpenRom = canonicalPath;
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
@@ -3418,6 +2995,24 @@ namespace BizHawk.Client.EmuHawk
 				RewireSound();
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// This is probably fine the way it is, but consider refactor
+		private int? LoadArhiveChooser(HawkFile file)
+		{
+			var ac = new ArchiveChooser(file);
+			if (ac.ShowDialog(this) == DialogResult.OK)
+			{
+				return ac.SelectedMemberIndex;
+			}
+			else
+			{
+				return null;
 			}
 		}
 
