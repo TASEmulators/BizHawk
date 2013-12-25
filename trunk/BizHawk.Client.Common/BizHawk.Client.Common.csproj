@@ -150,6 +150,7 @@
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
     <Compile Include="RomGame.cs" />
+    <Compile Include="RomLoader.cs" />
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />
