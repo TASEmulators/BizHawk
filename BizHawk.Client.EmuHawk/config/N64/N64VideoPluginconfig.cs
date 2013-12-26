@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,280 +29,293 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
+			var s = (N64SyncSettings)Global.Emulator.GetSyncSettings();
 			//Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
-			Global.Config.N64VideoSizeX = Int32.Parse(strArr[0].Trim());
-			Global.Config.N64VideoSizeY = Int32.Parse(strArr[1].Trim());
-			Global.Config.N64VidPlugin = PluginComboBox.Text;
+			s.VideoSizeX = Int32.Parse(strArr[0].Trim());
+			s.VideoSizeY = Int32.Parse(strArr[1].Trim());
+			switch (PluginComboBox.Text)
+			{
+				case "Rice": s.VidPlugin = PLUGINTYPE.RICE; break;
+				case "Glide64": s.VidPlugin = PLUGINTYPE.GLIDE; break;
+				case "Glide64mk2": s.VidPlugin = PLUGINTYPE.GLIDE64MK2; break;
+			}
 
 			//Rice
-			Global.Config.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
-			Global.Config.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
-			Global.Config.RicePlugin.AccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
-			Global.Config.RicePlugin.InN64Resolution = RiceInN64Resolution_CB.Checked;
-			Global.Config.RicePlugin.SaveVRAM = RiceSaveVRAM_CB.Checked;
-			Global.Config.RicePlugin.DoubleSizeForSmallTxtrBuf = RiceDoubleSizeForSmallTxtrBuf_CB.Checked;
-			Global.Config.RicePlugin.DefaultCombinerDisable = RiceDefaultCombinerDisable_CB.Checked;
-			Global.Config.RicePlugin.EnableHacks = RiceEnableHacks_CB.Checked;
-			Global.Config.RicePlugin.WinFrameMode = RiceWinFrameMode_CB.Checked;
-			Global.Config.RicePlugin.FullTMEMEmulation = RiceFullTMEMEmulation_CB.Checked;
-			Global.Config.RicePlugin.OpenGLVertexClipper = RiceOpenGLVertexClipper_CB.Checked;
-			Global.Config.RicePlugin.EnableSSE = RiceEnableSSE_CB.Checked;
-			Global.Config.RicePlugin.EnableVertexShader = RiceEnableVertexShader_CB.Checked;
-			Global.Config.RicePlugin.SkipFrame = RiceSkipFrame_CB.Checked;
-			Global.Config.RicePlugin.TexRectOnly = RiceTexRectOnly_CB.Checked;
-			Global.Config.RicePlugin.SmallTextureOnly = RiceSmallTextureOnly_CB.Checked;
-			Global.Config.RicePlugin.LoadHiResCRCOnly = RiceLoadHiResCRCOnly_CB.Checked;
-			Global.Config.RicePlugin.LoadHiResTextures = RiceLoadHiResTextures_CB.Checked;
-			Global.Config.RicePlugin.DumpTexturesToFiles = RiceDumpTexturesToFiles_CB.Checked;
+			s.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
+			s.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
+			s.RicePlugin.AccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
+			s.RicePlugin.InN64Resolution = RiceInN64Resolution_CB.Checked;
+			s.RicePlugin.SaveVRAM = RiceSaveVRAM_CB.Checked;
+			s.RicePlugin.DoubleSizeForSmallTxtrBuf = RiceDoubleSizeForSmallTxtrBuf_CB.Checked;
+			s.RicePlugin.DefaultCombinerDisable = RiceDefaultCombinerDisable_CB.Checked;
+			s.RicePlugin.EnableHacks = RiceEnableHacks_CB.Checked;
+			s.RicePlugin.WinFrameMode = RiceWinFrameMode_CB.Checked;
+			s.RicePlugin.FullTMEMEmulation = RiceFullTMEMEmulation_CB.Checked;
+			s.RicePlugin.OpenGLVertexClipper = RiceOpenGLVertexClipper_CB.Checked;
+			s.RicePlugin.EnableSSE = RiceEnableSSE_CB.Checked;
+			s.RicePlugin.EnableVertexShader = RiceEnableVertexShader_CB.Checked;
+			s.RicePlugin.SkipFrame = RiceSkipFrame_CB.Checked;
+			s.RicePlugin.TexRectOnly = RiceTexRectOnly_CB.Checked;
+			s.RicePlugin.SmallTextureOnly = RiceSmallTextureOnly_CB.Checked;
+			s.RicePlugin.LoadHiResCRCOnly = RiceLoadHiResCRCOnly_CB.Checked;
+			s.RicePlugin.LoadHiResTextures = RiceLoadHiResTextures_CB.Checked;
+			s.RicePlugin.DumpTexturesToFiles = RiceDumpTexturesToFiles_CB.Checked;
 
-			Global.Config.RicePlugin.FrameBufferSetting = RiceFrameBufferSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.FrameBufferWriteBackControl = RiceFrameBufferWriteBackControl_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RenderToTexture = RiceRenderToTexture_Combo.SelectedIndex;
-			Global.Config.RicePlugin.ScreenUpdateSetting = RiceScreenUpdateSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.Mipmapping = RiceMipmapping_Combo.SelectedIndex;
-			Global.Config.RicePlugin.FogMethod = RiceFogMethod_Combo.SelectedIndex;
-			Global.Config.RicePlugin.ForceTextureFilter = RiceForceTextureFilter_Combo.SelectedIndex;
-			Global.Config.RicePlugin.TextureEnhancement = RiceTextureEnhancement_Combo.SelectedIndex;
-			Global.Config.RicePlugin.TextureEnhancementControl = RiceTextureEnhancementControl_Combo.SelectedIndex;
-			Global.Config.RicePlugin.TextureQuality = RiceTextureQuality_Combo.SelectedIndex;
-			Global.Config.RicePlugin.OpenGLDepthBufferSetting = (RiceOpenGLDepthBufferSetting_Combo.SelectedIndex + 1) * 16;
+			s.RicePlugin.FrameBufferSetting = RiceFrameBufferSetting_Combo.SelectedIndex;
+			s.RicePlugin.FrameBufferWriteBackControl = RiceFrameBufferWriteBackControl_Combo.SelectedIndex;
+			s.RicePlugin.RenderToTexture = RiceRenderToTexture_Combo.SelectedIndex;
+			s.RicePlugin.ScreenUpdateSetting = RiceScreenUpdateSetting_Combo.SelectedIndex;
+			s.RicePlugin.Mipmapping = RiceMipmapping_Combo.SelectedIndex;
+			s.RicePlugin.FogMethod = RiceFogMethod_Combo.SelectedIndex;
+			s.RicePlugin.ForceTextureFilter = RiceForceTextureFilter_Combo.SelectedIndex;
+			s.RicePlugin.TextureEnhancement = RiceTextureEnhancement_Combo.SelectedIndex;
+			s.RicePlugin.TextureEnhancementControl = RiceTextureEnhancementControl_Combo.SelectedIndex;
+			s.RicePlugin.TextureQuality = RiceTextureQuality_Combo.SelectedIndex;
+			s.RicePlugin.OpenGLDepthBufferSetting = (RiceOpenGLDepthBufferSetting_Combo.SelectedIndex + 1) * 16;
 			switch (RiceMultiSampling_Combo.SelectedIndex)
 			{
-				case 0: Global.Config.RicePlugin.MultiSampling = 0; break;
-				case 1: Global.Config.RicePlugin.MultiSampling = 2; break;
-				case 2: Global.Config.RicePlugin.MultiSampling = 4; break;
-				case 3: Global.Config.RicePlugin.MultiSampling = 8; break;
-				case 4: Global.Config.RicePlugin.MultiSampling = 16; break;
-				default: Global.Config.RicePlugin.MultiSampling = 0; break;
+				case 0: s.RicePlugin.MultiSampling = 0; break;
+				case 1: s.RicePlugin.MultiSampling = 2; break;
+				case 2: s.RicePlugin.MultiSampling = 4; break;
+				case 3: s.RicePlugin.MultiSampling = 8; break;
+				case 4: s.RicePlugin.MultiSampling = 16; break;
+				default: s.RicePlugin.MultiSampling = 0; break;
 			}
-			Global.Config.RicePlugin.ColorQuality = RiceColorQuality_Combo.SelectedIndex;
-			Global.Config.RicePlugin.OpenGLRenderSetting = RiceOpenGLRenderSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.AnisotropicFiltering = RiceAnisotropicFiltering_TB.Value;
+			s.RicePlugin.ColorQuality = RiceColorQuality_Combo.SelectedIndex;
+			s.RicePlugin.OpenGLRenderSetting = RiceOpenGLRenderSetting_Combo.SelectedIndex;
+			s.RicePlugin.AnisotropicFiltering = RiceAnisotropicFiltering_TB.Value;
 
-			Global.Config.RicePlugin.UseDefaultHacks = RiceUseDefaultHacks_CB.Checked;
-			Global.Config.RicePlugin.DisableTextureCRC = RiceDisableTextureCRC_CB.Checked;
-			Global.Config.RicePlugin.DisableCulling = RiceDisableCulling_CB.Checked;
-			Global.Config.RicePlugin.IncTexRectEdge = RiceIncTexRectEdge_CB.Checked;
-			Global.Config.RicePlugin.ZHack = RiceZHack_CB.Checked;
-			Global.Config.RicePlugin.TextureScaleHack = RiceTextureScaleHack_CB.Checked;
-			Global.Config.RicePlugin.PrimaryDepthHack = RicePrimaryDepthHack_CB.Checked;
-			Global.Config.RicePlugin.Texture1Hack = RiceTexture1Hack_CB.Checked;
-			Global.Config.RicePlugin.FastLoadTile = RiceFastLoadTile_CB.Checked;
-			Global.Config.RicePlugin.UseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
+			s.RicePlugin.UseDefaultHacks = RiceUseDefaultHacks_CB.Checked;
+			s.RicePlugin.DisableTextureCRC = RiceDisableTextureCRC_CB.Checked;
+			s.RicePlugin.DisableCulling = RiceDisableCulling_CB.Checked;
+			s.RicePlugin.IncTexRectEdge = RiceIncTexRectEdge_CB.Checked;
+			s.RicePlugin.ZHack = RiceZHack_CB.Checked;
+			s.RicePlugin.TextureScaleHack = RiceTextureScaleHack_CB.Checked;
+			s.RicePlugin.PrimaryDepthHack = RicePrimaryDepthHack_CB.Checked;
+			s.RicePlugin.Texture1Hack = RiceTexture1Hack_CB.Checked;
+			s.RicePlugin.FastLoadTile = RiceFastLoadTile_CB.Checked;
+			s.RicePlugin.UseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
 
 			if (InputValidate.IsValidSignedNumber(RiceVIWidth_Text.Text))
-				Global.Config.RicePlugin.VIWidth = int.Parse(RiceVIWidth_Text.Text);
+				s.RicePlugin.VIWidth = int.Parse(RiceVIWidth_Text.Text);
 			else
-				Global.Config.RicePlugin.VIWidth = -1;
+				s.RicePlugin.VIWidth = -1;
 
 			if (InputValidate.IsValidSignedNumber(RiceVIHeight_Text.Text))
-				Global.Config.RicePlugin.VIHeight = int.Parse(RiceVIHeight_Text.Text);
+				s.RicePlugin.VIHeight = int.Parse(RiceVIHeight_Text.Text);
 			else
-				Global.Config.RicePlugin.VIHeight = -1;
+				s.RicePlugin.VIHeight = -1;
 
-			Global.Config.RicePlugin.UseCIWidthAndRatio = RiceUseCIWidthAndRatio_Combo.SelectedIndex;
-			Global.Config.RicePlugin.FullTMEM = RiceFullTMEM_Combo.SelectedIndex;
-			Global.Config.RicePlugin.TxtSizeMethod2 = RiceTxtSizeMethod2_CB.Checked;
-			Global.Config.RicePlugin.EnableTxtLOD = RiceEnableTxtLOD_CB.Checked;
-			Global.Config.RicePlugin.FastTextureCRC = RiceFastTextureCRC_Combo.SelectedIndex;
-			Global.Config.RicePlugin.EmulateClear = RiceEmulateClear_CB.Checked;
-			Global.Config.RicePlugin.ForceScreenClear = RiceForceScreenClear_CB.Checked;
-			Global.Config.RicePlugin.AccurateTextureMappingHack = RiceAccurateTextureMappingHack_Combo.SelectedIndex;
-			Global.Config.RicePlugin.NormalBlender = RiceNormalBlender_Combo.SelectedIndex;
-			Global.Config.RicePlugin.DisableBlender = RiceDisableBlender_CB.Checked;
-			Global.Config.RicePlugin.ForceDepthBuffer = RiceForceDepthBuffer_CB.Checked;
-			Global.Config.RicePlugin.DisableObjBG = RiceDisableObjBG_CB.Checked;
-			Global.Config.RicePlugin.FrameBufferOption = RiceFrameBufferOption_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
-			Global.Config.RicePlugin.ScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
-			Global.Config.RicePlugin.EnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
+			s.RicePlugin.UseCIWidthAndRatio = RiceUseCIWidthAndRatio_Combo.SelectedIndex;
+			s.RicePlugin.FullTMEM = RiceFullTMEM_Combo.SelectedIndex;
+			s.RicePlugin.TxtSizeMethod2 = RiceTxtSizeMethod2_CB.Checked;
+			s.RicePlugin.EnableTxtLOD = RiceEnableTxtLOD_CB.Checked;
+			s.RicePlugin.FastTextureCRC = RiceFastTextureCRC_Combo.SelectedIndex;
+			s.RicePlugin.EmulateClear = RiceEmulateClear_CB.Checked;
+			s.RicePlugin.ForceScreenClear = RiceForceScreenClear_CB.Checked;
+			s.RicePlugin.AccurateTextureMappingHack = RiceAccurateTextureMappingHack_Combo.SelectedIndex;
+			s.RicePlugin.NormalBlender = RiceNormalBlender_Combo.SelectedIndex;
+			s.RicePlugin.DisableBlender = RiceDisableBlender_CB.Checked;
+			s.RicePlugin.ForceDepthBuffer = RiceForceDepthBuffer_CB.Checked;
+			s.RicePlugin.DisableObjBG = RiceDisableObjBG_CB.Checked;
+			s.RicePlugin.FrameBufferOption = RiceFrameBufferOption_Combo.SelectedIndex;
+			s.RicePlugin.RenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
+			s.RicePlugin.ScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
+			s.RicePlugin.EnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
 
-			Global.Config.GlidePlugin.autodetect_ucode = Glide_autodetect_ucode.Checked;
-			Global.Config.GlidePlugin.ucode = Glide_ucode.SelectedIndex;
-			Global.Config.GlidePlugin.flame_corona = Glide_flame_corona.Checked;
-			Global.Config.GlidePlugin.card_id = Glide_card_id.SelectedIndex;
-			Global.Config.GlidePlugin.tex_filter = Glide_tex_filter.SelectedIndex;
-			Global.Config.GlidePlugin.wireframe = Glide_wireframe.Checked;
-			Global.Config.GlidePlugin.wfmode = Glide_wfmode.SelectedIndex;
-			Global.Config.GlidePlugin.fast_crc = Glide_fast_crc.Checked;
-			Global.Config.GlidePlugin.filter_cache = Glide_filter_cache.Checked;
-			Global.Config.GlidePlugin.unk_as_red = Glide_unk_as_red.Checked;
-			Global.Config.GlidePlugin.fb_read_always = Glide_fb_read_always.Checked;
-			Global.Config.GlidePlugin.motionblur = Glide_motionblur.Checked;
-			Global.Config.GlidePlugin.fb_render = Glide_fb_render.Checked;
-			Global.Config.GlidePlugin.noditheredalpha = Glide_noditheredalpha.Checked;
-			Global.Config.GlidePlugin.noglsl = Glide_noglsl.Checked;
-			Global.Config.GlidePlugin.fbo = Glide_fbo.Checked;
-			Global.Config.GlidePlugin.disable_auxbuf = Glide_disable_auxbuf.Checked;
-			Global.Config.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
+			s.GlidePlugin.autodetect_ucode = Glide_autodetect_ucode.Checked;
+			s.GlidePlugin.ucode = Glide_ucode.SelectedIndex;
+			s.GlidePlugin.flame_corona = Glide_flame_corona.Checked;
+			s.GlidePlugin.card_id = Glide_card_id.SelectedIndex;
+			s.GlidePlugin.tex_filter = Glide_tex_filter.SelectedIndex;
+			s.GlidePlugin.wireframe = Glide_wireframe.Checked;
+			s.GlidePlugin.wfmode = Glide_wfmode.SelectedIndex;
+			s.GlidePlugin.fast_crc = Glide_fast_crc.Checked;
+			s.GlidePlugin.filter_cache = Glide_filter_cache.Checked;
+			s.GlidePlugin.unk_as_red = Glide_unk_as_red.Checked;
+			s.GlidePlugin.fb_read_always = Glide_fb_read_always.Checked;
+			s.GlidePlugin.motionblur = Glide_motionblur.Checked;
+			s.GlidePlugin.fb_render = Glide_fb_render.Checked;
+			s.GlidePlugin.noditheredalpha = Glide_noditheredalpha.Checked;
+			s.GlidePlugin.noglsl = Glide_noglsl.Checked;
+			s.GlidePlugin.fbo = Glide_fbo.Checked;
+			s.GlidePlugin.disable_auxbuf = Glide_disable_auxbuf.Checked;
+			s.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
 
-			Global.Config.GlidePlugin.offset_x =
+			s.GlidePlugin.offset_x =
 				InputValidate.IsValidSignedNumber(Glide_offset_x.Text) ? 
 				int.Parse(Glide_offset_x.Text) : 0;
 
-			Global.Config.GlidePlugin.offset_y =
+			s.GlidePlugin.offset_y =
 				InputValidate.IsValidSignedNumber(Glide_offset_y.Text) ? 
 				int.Parse(Glide_offset_y.Text) : 0;
 
-			Global.Config.GlidePlugin.scale_x =
+			s.GlidePlugin.scale_x =
 				InputValidate.IsValidSignedNumber(Glide_scale_x.Text) ? 
 				int.Parse(Glide_scale_x.Text) : 100000;
 
-			Global.Config.GlidePlugin.scale_y =
+			s.GlidePlugin.scale_y =
 				InputValidate.IsValidSignedNumber(Glide_scale_y.Text) ?
 				int.Parse(Glide_scale_y.Text) : 100000;
 
-			Global.Config.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
-			Global.Config.GlidePlugin.alt_tex_size = Glide_alt_tex_size.Checked;
-			Global.Config.GlidePlugin.buff_clear = Glide_buff_clear.Checked;
-			Global.Config.GlidePlugin.decrease_fillrect_edge = Glide_decrease_fillrect_edge.Checked;
-			Global.Config.GlidePlugin.detect_cpu_write = Glide_detect_cpu_write.Checked;
-			Global.Config.GlidePlugin.fb_clear = Glide_fb_clear.Checked;
-			Global.Config.GlidePlugin.fb_hires = Glide_fb_hires.Checked;
-			Global.Config.GlidePlugin.fb_read_alpha = Glide_fb_read_alpha.Checked;
-			Global.Config.GlidePlugin.fb_smart = Glide_fb_smart.Checked;
-			Global.Config.GlidePlugin.fillcolor_fix = Glide_fillcolor_fix.Checked;
-			Global.Config.GlidePlugin.fog = Glide_fog.Checked;
-			Global.Config.GlidePlugin.force_depth_compare = Glide_force_depth_compare.Checked;
-			Global.Config.GlidePlugin.force_microcheck = Glide_force_microcheck.Checked;
-			Global.Config.GlidePlugin.fb_hires_buf_clear = Glide_fb_hires_buf_clear.Checked;
-			Global.Config.GlidePlugin.fb_ignore_aux_copy = Glide_fb_ignore_aux_copy.Checked;
-			Global.Config.GlidePlugin.fb_ignore_previous = Glide_fb_ignore_previous.Checked;
-			Global.Config.GlidePlugin.increase_primdepth = Glide_increase_primdepth.Checked;
-			Global.Config.GlidePlugin.increase_texrect_edge = Glide_increase_texrect_edge.Checked;
-			Global.Config.GlidePlugin.fb_optimize_texrect = Glide_fb_optimize_texrect.Checked;
-			Global.Config.GlidePlugin.fb_optimize_write = Glide_fb_optimize_write.Checked;
-			Global.Config.GlidePlugin.PPL = Glide_PPL.Checked;
-			Global.Config.GlidePlugin.soft_depth_compare = Glide_soft_depth_compare.Checked;
-			Global.Config.GlidePlugin.use_sts1_only = Glide_use_sts1_only.Checked;
-			Global.Config.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
+			s.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
+			s.GlidePlugin.alt_tex_size = Glide_alt_tex_size.Checked;
+			s.GlidePlugin.buff_clear = Glide_buff_clear.Checked;
+			s.GlidePlugin.decrease_fillrect_edge = Glide_decrease_fillrect_edge.Checked;
+			s.GlidePlugin.detect_cpu_write = Glide_detect_cpu_write.Checked;
+			s.GlidePlugin.fb_clear = Glide_fb_clear.Checked;
+			s.GlidePlugin.fb_hires = Glide_fb_hires.Checked;
+			s.GlidePlugin.fb_read_alpha = Glide_fb_read_alpha.Checked;
+			s.GlidePlugin.fb_smart = Glide_fb_smart.Checked;
+			s.GlidePlugin.fillcolor_fix = Glide_fillcolor_fix.Checked;
+			s.GlidePlugin.fog = Glide_fog.Checked;
+			s.GlidePlugin.force_depth_compare = Glide_force_depth_compare.Checked;
+			s.GlidePlugin.force_microcheck = Glide_force_microcheck.Checked;
+			s.GlidePlugin.fb_hires_buf_clear = Glide_fb_hires_buf_clear.Checked;
+			s.GlidePlugin.fb_ignore_aux_copy = Glide_fb_ignore_aux_copy.Checked;
+			s.GlidePlugin.fb_ignore_previous = Glide_fb_ignore_previous.Checked;
+			s.GlidePlugin.increase_primdepth = Glide_increase_primdepth.Checked;
+			s.GlidePlugin.increase_texrect_edge = Glide_increase_texrect_edge.Checked;
+			s.GlidePlugin.fb_optimize_texrect = Glide_fb_optimize_texrect.Checked;
+			s.GlidePlugin.fb_optimize_write = Glide_fb_optimize_write.Checked;
+			s.GlidePlugin.PPL = Glide_PPL.Checked;
+			s.GlidePlugin.soft_depth_compare = Glide_soft_depth_compare.Checked;
+			s.GlidePlugin.use_sts1_only = Glide_use_sts1_only.Checked;
+			s.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
 
-			Global.Config.GlidePlugin.depth_bias =
+			s.GlidePlugin.depth_bias =
 				InputValidate.IsValidSignedNumber(Glide_depth_bias.Text) ?
 				int.Parse(Glide_depth_bias.Text) : 20;
 
-			Global.Config.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
+			s.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
 
-			Global.Config.GlidePlugin.fix_tex_coord = InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text) ?
+			s.GlidePlugin.fix_tex_coord = InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text) ?
 				int.Parse(Glide_fix_tex_coord.Text) : 0;
 
-			Global.Config.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
+			s.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
 
-			Global.Config.GlidePlugin.stipple_mode =
+			s.GlidePlugin.stipple_mode =
 				InputValidate.IsValidSignedNumber(Glide_stipple_mode.Text) ?
 				int.Parse(Glide_stipple_mode.Text) : 2;
 
-			Global.Config.GlidePlugin.stipple_pattern =
+			s.GlidePlugin.stipple_pattern =
 				InputValidate.IsValidSignedNumber(Glide_stipple_pattern.Text) ?
 				int.Parse(Glide_stipple_pattern.Text) : 1041204192;
 
-			Global.Config.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
-			Global.Config.GlidePlugin.enable_hacks_for_game = Glide_enable_hacks_for_game.SelectedIndex;
+			s.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
+			s.GlidePlugin.enable_hacks_for_game = Glide_enable_hacks_for_game.SelectedIndex;
 
-			Global.Config.Glide64mk2Plugin.card_id = Glide64mk2_card_id.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.wrpFBO = Glide64mk2_wrpFBO.Checked;
-			Global.Config.Glide64mk2Plugin.wrpAnisotropic = Glide64mk2_wrpAnisotropic.Checked;
-			Global.Config.Glide64mk2Plugin.fb_get_info = Glide64mk2_fb_get_info.Checked;
-			Global.Config.Glide64mk2Plugin.fb_render = Glide64mk2_fb_render.Checked;
+			s.Glide64mk2Plugin.card_id = Glide64mk2_card_id.SelectedIndex;
+			s.Glide64mk2Plugin.wrpFBO = Glide64mk2_wrpFBO.Checked;
+			s.Glide64mk2Plugin.wrpAnisotropic = Glide64mk2_wrpAnisotropic.Checked;
+			s.Glide64mk2Plugin.fb_get_info = Glide64mk2_fb_get_info.Checked;
+			s.Glide64mk2Plugin.fb_render = Glide64mk2_fb_render.Checked;
 
-			Global.Config.Glide64mk2Plugin.UseDefaultHacks = Glide64mk2_UseDefaultHacks1.Checked || Glide64mk2_UseDefaultHacks2.Checked;
+			s.Glide64mk2Plugin.UseDefaultHacks = Glide64mk2_UseDefaultHacks1.Checked || Glide64mk2_UseDefaultHacks2.Checked;
 
-			Global.Config.Glide64mk2Plugin.use_sts1_only = Glide64mk2_use_sts1_only.Checked;
-			Global.Config.Glide64mk2Plugin.optimize_texrect = Glide64mk2_optimize_texrect.Checked;
-			Global.Config.Glide64mk2Plugin.increase_texrect_edge = Glide64mk2_increase_texrect_edge.Checked;
-			Global.Config.Glide64mk2Plugin.ignore_aux_copy = Glide64mk2_ignore_aux_copy.Checked;
-			Global.Config.Glide64mk2Plugin.hires_buf_clear = Glide64mk2_hires_buf_clear.Checked;
-			Global.Config.Glide64mk2Plugin.force_microcheck = Glide64mk2_force_microcheck.Checked;
-			Global.Config.Glide64mk2Plugin.fog = Glide64mk2_fog.Checked;
-			Global.Config.Glide64mk2Plugin.fb_smart = Glide64mk2_fb_smart.Checked;
-			Global.Config.Glide64mk2Plugin.fb_read_alpha = Glide64mk2_fb_read_alpha.Checked;
-			Global.Config.Glide64mk2Plugin.fb_hires = Glide64mk2_fb_hires.Checked;
-			Global.Config.Glide64mk2Plugin.detect_cpu_write = Glide64mk2_detect_cpu_write.Checked;
-			Global.Config.Glide64mk2Plugin.decrease_fillrect_edge = Glide64mk2_decrease_fillrect_edge.Checked;
-			Global.Config.Glide64mk2Plugin.buff_clear = Glide64mk2_buff_clear.Checked;
-			Global.Config.Glide64mk2Plugin.alt_tex_size = Glide64mk2_alt_tex_size.Checked;
-			Global.Config.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
+			s.Glide64mk2Plugin.use_sts1_only = Glide64mk2_use_sts1_only.Checked;
+			s.Glide64mk2Plugin.optimize_texrect = Glide64mk2_optimize_texrect.Checked;
+			s.Glide64mk2Plugin.increase_texrect_edge = Glide64mk2_increase_texrect_edge.Checked;
+			s.Glide64mk2Plugin.ignore_aux_copy = Glide64mk2_ignore_aux_copy.Checked;
+			s.Glide64mk2Plugin.hires_buf_clear = Glide64mk2_hires_buf_clear.Checked;
+			s.Glide64mk2Plugin.force_microcheck = Glide64mk2_force_microcheck.Checked;
+			s.Glide64mk2Plugin.fog = Glide64mk2_fog.Checked;
+			s.Glide64mk2Plugin.fb_smart = Glide64mk2_fb_smart.Checked;
+			s.Glide64mk2Plugin.fb_read_alpha = Glide64mk2_fb_read_alpha.Checked;
+			s.Glide64mk2Plugin.fb_hires = Glide64mk2_fb_hires.Checked;
+			s.Glide64mk2Plugin.detect_cpu_write = Glide64mk2_detect_cpu_write.Checked;
+			s.Glide64mk2Plugin.decrease_fillrect_edge = Glide64mk2_decrease_fillrect_edge.Checked;
+			s.Glide64mk2Plugin.buff_clear = Glide64mk2_buff_clear.Checked;
+			s.Glide64mk2Plugin.alt_tex_size = Glide64mk2_alt_tex_size.Checked;
+			s.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
 
-			Global.Config.Glide64mk2Plugin.stipple_pattern =
+			s.Glide64mk2Plugin.stipple_pattern =
 				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_pattern.Text) ?
 				int.Parse(Glide64mk2_stipple_pattern.Text) : 1041204192;
 
-			Global.Config.Glide64mk2Plugin.stipple_mode =
+			s.Glide64mk2Plugin.stipple_mode =
 				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_mode.Text) ?
 				int.Parse(Glide64mk2_stipple_mode.Text) : 2;
 
-			Global.Config.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.filtering = Glide64mk2_filtering.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.correct_viewport = Glide64mk2_correct_viewport.Checked;
-			Global.Config.Glide64mk2Plugin.force_calc_sphere = Glide64mk2_force_calc_sphere.Checked;
-			Global.Config.Glide64mk2Plugin.pal230 = Glide64mk2_pal230.Checked;
-			Global.Config.Glide64mk2Plugin.texture_correction = Glide64mk2_texture_correction.Checked;
-			Global.Config.Glide64mk2Plugin.n64_z_scale = Glide64mk2_n64_z_scale.Checked;
-			Global.Config.Glide64mk2Plugin.old_style_adither = Glide64mk2_old_style_adither.Checked;
-			Global.Config.Glide64mk2Plugin.zmode_compare_less = Glide64mk2_zmode_compare_less.Checked;
-			Global.Config.Glide64mk2Plugin.adjust_aspect = Glide64mk2_adjust_aspect.Checked;
-			Global.Config.Glide64mk2Plugin.clip_zmax = Glide64mk2_clip_zmax.Checked;
-			Global.Config.Glide64mk2Plugin.clip_zmin = Glide64mk2_clip_zmin.Checked;
-			Global.Config.Glide64mk2Plugin.force_quad3d = Glide64mk2_force_quad3d.Checked;
-			Global.Config.Glide64mk2Plugin.useless_is_useless = Glide64mk2_useless_is_useless.Checked;
-			Global.Config.Glide64mk2Plugin.fb_read_always = Glide64mk2_fb_read_always.Checked;
-			Global.Config.Glide64mk2Plugin.aspectmode = Glide64mk2_aspectmode.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.fb_crc_mode = Glide64mk2_fb_crc_mode.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.enable_hacks_for_game = Glide64mk2_enable_hacks_for_game.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
-			Global.Config.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
+			s.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
+			s.Glide64mk2Plugin.filtering = Glide64mk2_filtering.SelectedIndex;
+			s.Glide64mk2Plugin.correct_viewport = Glide64mk2_correct_viewport.Checked;
+			s.Glide64mk2Plugin.force_calc_sphere = Glide64mk2_force_calc_sphere.Checked;
+			s.Glide64mk2Plugin.pal230 = Glide64mk2_pal230.Checked;
+			s.Glide64mk2Plugin.texture_correction = Glide64mk2_texture_correction.Checked;
+			s.Glide64mk2Plugin.n64_z_scale = Glide64mk2_n64_z_scale.Checked;
+			s.Glide64mk2Plugin.old_style_adither = Glide64mk2_old_style_adither.Checked;
+			s.Glide64mk2Plugin.zmode_compare_less = Glide64mk2_zmode_compare_less.Checked;
+			s.Glide64mk2Plugin.adjust_aspect = Glide64mk2_adjust_aspect.Checked;
+			s.Glide64mk2Plugin.clip_zmax = Glide64mk2_clip_zmax.Checked;
+			s.Glide64mk2Plugin.clip_zmin = Glide64mk2_clip_zmin.Checked;
+			s.Glide64mk2Plugin.force_quad3d = Glide64mk2_force_quad3d.Checked;
+			s.Glide64mk2Plugin.useless_is_useless = Glide64mk2_useless_is_useless.Checked;
+			s.Glide64mk2Plugin.fb_read_always = Glide64mk2_fb_read_always.Checked;
+			s.Glide64mk2Plugin.aspectmode = Glide64mk2_aspectmode.SelectedIndex;
+			s.Glide64mk2Plugin.fb_crc_mode = Glide64mk2_fb_crc_mode.SelectedIndex;
+			s.Glide64mk2Plugin.enable_hacks_for_game = Glide64mk2_enable_hacks_for_game.SelectedIndex;
+			s.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
+			s.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
+			var s = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+
 			//Load Variables
 			//Global
-			var video_setting = Global.Config.N64VideoSizeX
+			var video_setting = s.VideoSizeX
 						+ " x "
-						+ Global.Config.N64VideoSizeY;
+						+ s.VideoSizeY;
 
 			var index = VideoResolutionComboBox.Items.IndexOf(video_setting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			PluginComboBox.Text = Global.Config.N64VidPlugin;
+			switch (s.VidPlugin)
+			{
+				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64mk2"; break;
+				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64"; break;
+				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
+			}
 
 			//Rice
-			RiceNormalAlphaBlender_CB.Checked = Global.Config.RicePlugin.NormalAlphaBlender;
-			RiceFastTextureLoading_CB.Checked = Global.Config.RicePlugin.FastTextureLoading;
-			RiceAccurateTextureMapping_CB.Checked = Global.Config.RicePlugin.AccurateTextureMapping;
-			RiceInN64Resolution_CB.Checked = Global.Config.RicePlugin.InN64Resolution;
-			RiceSaveVRAM_CB.Checked = Global.Config.RicePlugin.SaveVRAM;
-			RiceDoubleSizeForSmallTxtrBuf_CB.Checked = Global.Config.RicePlugin.DoubleSizeForSmallTxtrBuf;
-			RiceDefaultCombinerDisable_CB.Checked = Global.Config.RicePlugin.DefaultCombinerDisable;
-			RiceEnableHacks_CB.Checked = Global.Config.RicePlugin.EnableHacks;
-			RiceWinFrameMode_CB.Checked = Global.Config.RicePlugin.WinFrameMode;
-			RiceFullTMEMEmulation_CB.Checked = Global.Config.RicePlugin.FullTMEMEmulation;
-			RiceOpenGLVertexClipper_CB.Checked = Global.Config.RicePlugin.OpenGLVertexClipper;
-			RiceEnableSSE_CB.Checked = Global.Config.RicePlugin.EnableSSE;
-			RiceEnableVertexShader_CB.Checked = Global.Config.RicePlugin.EnableVertexShader;
-			RiceSkipFrame_CB.Checked = Global.Config.RicePlugin.SkipFrame;
-			RiceTexRectOnly_CB.Checked = Global.Config.RicePlugin.TexRectOnly;
-			RiceSmallTextureOnly_CB.Checked = Global.Config.RicePlugin.SmallTextureOnly;
-			RiceLoadHiResCRCOnly_CB.Checked = Global.Config.RicePlugin.LoadHiResCRCOnly;
-			RiceLoadHiResTextures_CB.Checked = Global.Config.RicePlugin.LoadHiResTextures;
-			RiceDumpTexturesToFiles_CB.Checked = Global.Config.RicePlugin.DumpTexturesToFiles;
+			RiceNormalAlphaBlender_CB.Checked = s.RicePlugin.NormalAlphaBlender;
+			RiceFastTextureLoading_CB.Checked = s.RicePlugin.FastTextureLoading;
+			RiceAccurateTextureMapping_CB.Checked = s.RicePlugin.AccurateTextureMapping;
+			RiceInN64Resolution_CB.Checked = s.RicePlugin.InN64Resolution;
+			RiceSaveVRAM_CB.Checked = s.RicePlugin.SaveVRAM;
+			RiceDoubleSizeForSmallTxtrBuf_CB.Checked = s.RicePlugin.DoubleSizeForSmallTxtrBuf;
+			RiceDefaultCombinerDisable_CB.Checked = s.RicePlugin.DefaultCombinerDisable;
+			RiceEnableHacks_CB.Checked = s.RicePlugin.EnableHacks;
+			RiceWinFrameMode_CB.Checked = s.RicePlugin.WinFrameMode;
+			RiceFullTMEMEmulation_CB.Checked = s.RicePlugin.FullTMEMEmulation;
+			RiceOpenGLVertexClipper_CB.Checked = s.RicePlugin.OpenGLVertexClipper;
+			RiceEnableSSE_CB.Checked = s.RicePlugin.EnableSSE;
+			RiceEnableVertexShader_CB.Checked = s.RicePlugin.EnableVertexShader;
+			RiceSkipFrame_CB.Checked = s.RicePlugin.SkipFrame;
+			RiceTexRectOnly_CB.Checked = s.RicePlugin.TexRectOnly;
+			RiceSmallTextureOnly_CB.Checked = s.RicePlugin.SmallTextureOnly;
+			RiceLoadHiResCRCOnly_CB.Checked = s.RicePlugin.LoadHiResCRCOnly;
+			RiceLoadHiResTextures_CB.Checked = s.RicePlugin.LoadHiResTextures;
+			RiceDumpTexturesToFiles_CB.Checked = s.RicePlugin.DumpTexturesToFiles;
 
-			RiceFrameBufferSetting_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferSetting;
-			RiceFrameBufferWriteBackControl_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferWriteBackControl;
-			RiceRenderToTexture_Combo.SelectedIndex = Global.Config.RicePlugin.RenderToTexture;
-			RiceScreenUpdateSetting_Combo.SelectedIndex = Global.Config.RicePlugin.ScreenUpdateSetting;
-			RiceMipmapping_Combo.SelectedIndex = Global.Config.RicePlugin.Mipmapping;
-			RiceFogMethod_Combo.SelectedIndex = Global.Config.RicePlugin.FogMethod;
-			RiceForceTextureFilter_Combo.SelectedIndex = Global.Config.RicePlugin.ForceTextureFilter;
-			RiceTextureEnhancement_Combo.SelectedIndex = Global.Config.RicePlugin.TextureEnhancement;
-			RiceTextureEnhancementControl_Combo.SelectedIndex = Global.Config.RicePlugin.TextureEnhancementControl;
-			RiceTextureQuality_Combo.SelectedIndex = Global.Config.RicePlugin.TextureQuality;
-			RiceOpenGLDepthBufferSetting_Combo.SelectedIndex = (Global.Config.RicePlugin.OpenGLDepthBufferSetting / 16) - 1;
-			switch (Global.Config.RicePlugin.MultiSampling)
+			RiceFrameBufferSetting_Combo.SelectedIndex = s.RicePlugin.FrameBufferSetting;
+			RiceFrameBufferWriteBackControl_Combo.SelectedIndex = s.RicePlugin.FrameBufferWriteBackControl;
+			RiceRenderToTexture_Combo.SelectedIndex = s.RicePlugin.RenderToTexture;
+			RiceScreenUpdateSetting_Combo.SelectedIndex = s.RicePlugin.ScreenUpdateSetting;
+			RiceMipmapping_Combo.SelectedIndex = s.RicePlugin.Mipmapping;
+			RiceFogMethod_Combo.SelectedIndex = s.RicePlugin.FogMethod;
+			RiceForceTextureFilter_Combo.SelectedIndex = s.RicePlugin.ForceTextureFilter;
+			RiceTextureEnhancement_Combo.SelectedIndex = s.RicePlugin.TextureEnhancement;
+			RiceTextureEnhancementControl_Combo.SelectedIndex = s.RicePlugin.TextureEnhancementControl;
+			RiceTextureQuality_Combo.SelectedIndex = s.RicePlugin.TextureQuality;
+			RiceOpenGLDepthBufferSetting_Combo.SelectedIndex = (s.RicePlugin.OpenGLDepthBufferSetting / 16) - 1;
+			switch (s.RicePlugin.MultiSampling)
 			{
 				case 0: RiceMultiSampling_Combo.SelectedIndex = 0; break;
 				case 2: RiceMultiSampling_Combo.SelectedIndex = 1; break;
@@ -310,160 +324,160 @@ namespace BizHawk.Client.EmuHawk
 				case 16: RiceMultiSampling_Combo.SelectedIndex = 4; break;
 				default: RiceMultiSampling_Combo.SelectedIndex = 0; break;
 			}
-			RiceColorQuality_Combo.SelectedIndex = Global.Config.RicePlugin.ColorQuality;
-			RiceOpenGLRenderSetting_Combo.SelectedIndex = Global.Config.RicePlugin.OpenGLRenderSetting;
-			RiceAnisotropicFiltering_TB.Value = Global.Config.RicePlugin.AnisotropicFiltering;
+			RiceColorQuality_Combo.SelectedIndex = s.RicePlugin.ColorQuality;
+			RiceOpenGLRenderSetting_Combo.SelectedIndex = s.RicePlugin.OpenGLRenderSetting;
+			RiceAnisotropicFiltering_TB.Value = s.RicePlugin.AnisotropicFiltering;
 			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
 
-			RiceUseDefaultHacks_CB.Checked = Global.Config.RicePlugin.UseDefaultHacks;
+			RiceUseDefaultHacks_CB.Checked = s.RicePlugin.UseDefaultHacks;
 
 			UpdateRiceHacksSection();
-			if (!Global.Config.RicePlugin.UseDefaultHacks)
+			if (!s.RicePlugin.UseDefaultHacks)
 			{
-				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.Texture1Hack;
+				RiceTexture1Hack_CB.Checked = s.RicePlugin.Texture1Hack;
 
-				RiceDisableTextureCRC_CB.Checked = Global.Config.RicePlugin.DisableTextureCRC;
-				RiceDisableCulling_CB.Checked = Global.Config.RicePlugin.DisableCulling;
-				RiceIncTexRectEdge_CB.Checked = Global.Config.RicePlugin.IncTexRectEdge;
-				RiceZHack_CB.Checked = Global.Config.RicePlugin.ZHack;
-				RiceTextureScaleHack_CB.Checked = Global.Config.RicePlugin.TextureScaleHack;
-				RicePrimaryDepthHack_CB.Checked = Global.Config.RicePlugin.PrimaryDepthHack;
-				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.Texture1Hack;
-				RiceFastLoadTile_CB.Checked = Global.Config.RicePlugin.FastLoadTile;
-				RiceUseSmallerTexture_CB.Checked = Global.Config.RicePlugin.UseSmallerTexture;
-				RiceVIWidth_Text.Text = Global.Config.RicePlugin.VIWidth.ToString();
-				RiceVIHeight_Text.Text = Global.Config.RicePlugin.VIHeight.ToString();
-				RiceUseCIWidthAndRatio_Combo.SelectedIndex = Global.Config.RicePlugin.UseCIWidthAndRatio;
-				RiceFullTMEM_Combo.SelectedIndex = Global.Config.RicePlugin.FullTMEM;
-				RiceTxtSizeMethod2_CB.Checked = Global.Config.RicePlugin.TxtSizeMethod2;
-				RiceEnableTxtLOD_CB.Checked = Global.Config.RicePlugin.EnableTxtLOD;
-				RiceFastTextureCRC_Combo.SelectedIndex = Global.Config.RicePlugin.FastTextureCRC;
-				RiceEmulateClear_CB.Checked = Global.Config.RicePlugin.EmulateClear;
-				RiceForceScreenClear_CB.Checked = Global.Config.RicePlugin.ForceScreenClear;
-				RiceAccurateTextureMappingHack_Combo.SelectedIndex = Global.Config.RicePlugin.AccurateTextureMappingHack;
-				RiceNormalBlender_Combo.SelectedIndex = Global.Config.RicePlugin.NormalBlender;
-				RiceDisableBlender_CB.Checked = Global.Config.RicePlugin.DisableBlender;
-				RiceForceDepthBuffer_CB.Checked = Global.Config.RicePlugin.ForceDepthBuffer;
-				RiceDisableObjBG_CB.Checked = Global.Config.RicePlugin.DisableObjBG;
-				RiceFrameBufferOption_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferOption;
-				RiceRenderToTextureOption_Combo.SelectedIndex = Global.Config.RicePlugin.RenderToTextureOption;
-				RiceScreenUpdateSettingHack_Combo.SelectedIndex = Global.Config.RicePlugin.ScreenUpdateSettingHack;
-				RiceEnableHacksForGame_Combo.SelectedIndex = Global.Config.RicePlugin.EnableHacksForGame;
+				RiceDisableTextureCRC_CB.Checked = s.RicePlugin.DisableTextureCRC;
+				RiceDisableCulling_CB.Checked = s.RicePlugin.DisableCulling;
+				RiceIncTexRectEdge_CB.Checked = s.RicePlugin.IncTexRectEdge;
+				RiceZHack_CB.Checked = s.RicePlugin.ZHack;
+				RiceTextureScaleHack_CB.Checked = s.RicePlugin.TextureScaleHack;
+				RicePrimaryDepthHack_CB.Checked = s.RicePlugin.PrimaryDepthHack;
+				RiceTexture1Hack_CB.Checked = s.RicePlugin.Texture1Hack;
+				RiceFastLoadTile_CB.Checked = s.RicePlugin.FastLoadTile;
+				RiceUseSmallerTexture_CB.Checked = s.RicePlugin.UseSmallerTexture;
+				RiceVIWidth_Text.Text = s.RicePlugin.VIWidth.ToString();
+				RiceVIHeight_Text.Text = s.RicePlugin.VIHeight.ToString();
+				RiceUseCIWidthAndRatio_Combo.SelectedIndex = s.RicePlugin.UseCIWidthAndRatio;
+				RiceFullTMEM_Combo.SelectedIndex = s.RicePlugin.FullTMEM;
+				RiceTxtSizeMethod2_CB.Checked = s.RicePlugin.TxtSizeMethod2;
+				RiceEnableTxtLOD_CB.Checked = s.RicePlugin.EnableTxtLOD;
+				RiceFastTextureCRC_Combo.SelectedIndex = s.RicePlugin.FastTextureCRC;
+				RiceEmulateClear_CB.Checked = s.RicePlugin.EmulateClear;
+				RiceForceScreenClear_CB.Checked = s.RicePlugin.ForceScreenClear;
+				RiceAccurateTextureMappingHack_Combo.SelectedIndex = s.RicePlugin.AccurateTextureMappingHack;
+				RiceNormalBlender_Combo.SelectedIndex = s.RicePlugin.NormalBlender;
+				RiceDisableBlender_CB.Checked = s.RicePlugin.DisableBlender;
+				RiceForceDepthBuffer_CB.Checked = s.RicePlugin.ForceDepthBuffer;
+				RiceDisableObjBG_CB.Checked = s.RicePlugin.DisableObjBG;
+				RiceFrameBufferOption_Combo.SelectedIndex = s.RicePlugin.FrameBufferOption;
+				RiceRenderToTextureOption_Combo.SelectedIndex = s.RicePlugin.RenderToTextureOption;
+				RiceScreenUpdateSettingHack_Combo.SelectedIndex = s.RicePlugin.ScreenUpdateSettingHack;
+				RiceEnableHacksForGame_Combo.SelectedIndex = s.RicePlugin.EnableHacksForGame;
 			}
 
-			Glide_autodetect_ucode.Checked = Global.Config.GlidePlugin.autodetect_ucode;
-			Glide_ucode.SelectedIndex = Global.Config.GlidePlugin.ucode;
-			Glide_flame_corona.Checked = Global.Config.GlidePlugin.flame_corona;
-			Glide_card_id.SelectedIndex = Global.Config.GlidePlugin.card_id;
-			Glide_tex_filter.SelectedIndex = Global.Config.GlidePlugin.tex_filter;
-			Glide_wireframe.Checked = Global.Config.GlidePlugin.wireframe;
-			Glide_wfmode.SelectedIndex = Global.Config.GlidePlugin.wfmode;
-			Glide_fast_crc.Checked = Global.Config.GlidePlugin.fast_crc;
-			Glide_filter_cache.Checked = Global.Config.GlidePlugin.filter_cache;
-			Glide_unk_as_red.Checked = Global.Config.GlidePlugin.unk_as_red;
-			Glide_fb_read_always.Checked = Global.Config.GlidePlugin.fb_read_always;
-			Glide_motionblur.Checked = Global.Config.GlidePlugin.motionblur;
-			Glide_fb_render.Checked = Global.Config.GlidePlugin.fb_render;
-			Glide_noditheredalpha.Checked = Global.Config.GlidePlugin.noditheredalpha;
-			Glide_noglsl.Checked = Global.Config.GlidePlugin.noglsl;
-			Glide_fbo.Checked = Global.Config.GlidePlugin.fbo;
-			Glide_disable_auxbuf.Checked = Global.Config.GlidePlugin.disable_auxbuf;
-			Glide_fb_get_info.Checked = Global.Config.GlidePlugin.fb_get_info;
-			Glide_offset_x.Text = Global.Config.GlidePlugin.offset_x.ToString();
-			Glide_offset_y.Text = Global.Config.GlidePlugin.offset_y.ToString();
-			Glide_scale_x.Text = Global.Config.GlidePlugin.scale_x.ToString();
-			Glide_scale_y.Text = Global.Config.GlidePlugin.scale_y.ToString();
+			Glide_autodetect_ucode.Checked = s.GlidePlugin.autodetect_ucode;
+			Glide_ucode.SelectedIndex = s.GlidePlugin.ucode;
+			Glide_flame_corona.Checked = s.GlidePlugin.flame_corona;
+			Glide_card_id.SelectedIndex = s.GlidePlugin.card_id;
+			Glide_tex_filter.SelectedIndex = s.GlidePlugin.tex_filter;
+			Glide_wireframe.Checked = s.GlidePlugin.wireframe;
+			Glide_wfmode.SelectedIndex = s.GlidePlugin.wfmode;
+			Glide_fast_crc.Checked = s.GlidePlugin.fast_crc;
+			Glide_filter_cache.Checked = s.GlidePlugin.filter_cache;
+			Glide_unk_as_red.Checked = s.GlidePlugin.unk_as_red;
+			Glide_fb_read_always.Checked = s.GlidePlugin.fb_read_always;
+			Glide_motionblur.Checked = s.GlidePlugin.motionblur;
+			Glide_fb_render.Checked = s.GlidePlugin.fb_render;
+			Glide_noditheredalpha.Checked = s.GlidePlugin.noditheredalpha;
+			Glide_noglsl.Checked = s.GlidePlugin.noglsl;
+			Glide_fbo.Checked = s.GlidePlugin.fbo;
+			Glide_disable_auxbuf.Checked = s.GlidePlugin.disable_auxbuf;
+			Glide_fb_get_info.Checked = s.GlidePlugin.fb_get_info;
+			Glide_offset_x.Text = s.GlidePlugin.offset_x.ToString();
+			Glide_offset_y.Text = s.GlidePlugin.offset_y.ToString();
+			Glide_scale_x.Text = s.GlidePlugin.scale_x.ToString();
+			Glide_scale_y.Text = s.GlidePlugin.scale_y.ToString();
 			
 
-			GlideUseDefaultHacks1.Checked = Global.Config.GlidePlugin.UseDefaultHacks;
-			GlideUseDefaultHacks2.Checked = Global.Config.GlidePlugin.UseDefaultHacks;
+			GlideUseDefaultHacks1.Checked = s.GlidePlugin.UseDefaultHacks;
+			GlideUseDefaultHacks2.Checked = s.GlidePlugin.UseDefaultHacks;
 
 			UpdateGlideHacksSection();
-			if (!Global.Config.GlidePlugin.UseDefaultHacks)
+			if (!s.GlidePlugin.UseDefaultHacks)
 			{
-				Glide_alt_tex_size.Checked = Global.Config.GlidePlugin.alt_tex_size;
-				Glide_buff_clear.Checked = Global.Config.GlidePlugin.buff_clear;
-				Glide_decrease_fillrect_edge.Checked = Global.Config.GlidePlugin.decrease_fillrect_edge;
-				Glide_detect_cpu_write.Checked = Global.Config.GlidePlugin.detect_cpu_write;
-				Glide_fb_clear.Checked = Global.Config.GlidePlugin.fb_clear;
-				Glide_fb_hires.Checked = Global.Config.GlidePlugin.fb_hires;
-				Glide_fb_read_alpha.Checked = Global.Config.GlidePlugin.fb_read_alpha;
-				Glide_fb_smart.Checked = Global.Config.GlidePlugin.fb_smart;
-				Glide_fillcolor_fix.Checked = Global.Config.GlidePlugin.fillcolor_fix;
-				Glide_fog.Checked = Global.Config.GlidePlugin.fog;
-				Glide_force_depth_compare.Checked = Global.Config.GlidePlugin.force_depth_compare;
-				Glide_force_microcheck.Checked = Global.Config.GlidePlugin.force_microcheck;
-				Glide_fb_hires_buf_clear.Checked = Global.Config.GlidePlugin.fb_hires_buf_clear;
-				Glide_fb_ignore_aux_copy.Checked = Global.Config.GlidePlugin.fb_ignore_aux_copy;
-				Glide_fb_ignore_previous.Checked = Global.Config.GlidePlugin.fb_ignore_previous;
-				Glide_increase_primdepth.Checked = Global.Config.GlidePlugin.increase_primdepth;
-				Glide_increase_texrect_edge.Checked = Global.Config.GlidePlugin.increase_texrect_edge;
-				Glide_fb_optimize_texrect.Checked = Global.Config.GlidePlugin.fb_optimize_texrect;
-				Glide_fb_optimize_write.Checked = Global.Config.GlidePlugin.fb_optimize_write;
-				Glide_PPL.Checked = Global.Config.GlidePlugin.PPL;
-				Glide_soft_depth_compare.Checked = Global.Config.GlidePlugin.soft_depth_compare;
-				Glide_use_sts1_only.Checked = Global.Config.GlidePlugin.use_sts1_only;
-				Glide_wrap_big_tex.Checked = Global.Config.GlidePlugin.wrap_big_tex;
+				Glide_alt_tex_size.Checked = s.GlidePlugin.alt_tex_size;
+				Glide_buff_clear.Checked = s.GlidePlugin.buff_clear;
+				Glide_decrease_fillrect_edge.Checked = s.GlidePlugin.decrease_fillrect_edge;
+				Glide_detect_cpu_write.Checked = s.GlidePlugin.detect_cpu_write;
+				Glide_fb_clear.Checked = s.GlidePlugin.fb_clear;
+				Glide_fb_hires.Checked = s.GlidePlugin.fb_hires;
+				Glide_fb_read_alpha.Checked = s.GlidePlugin.fb_read_alpha;
+				Glide_fb_smart.Checked = s.GlidePlugin.fb_smart;
+				Glide_fillcolor_fix.Checked = s.GlidePlugin.fillcolor_fix;
+				Glide_fog.Checked = s.GlidePlugin.fog;
+				Glide_force_depth_compare.Checked = s.GlidePlugin.force_depth_compare;
+				Glide_force_microcheck.Checked = s.GlidePlugin.force_microcheck;
+				Glide_fb_hires_buf_clear.Checked = s.GlidePlugin.fb_hires_buf_clear;
+				Glide_fb_ignore_aux_copy.Checked = s.GlidePlugin.fb_ignore_aux_copy;
+				Glide_fb_ignore_previous.Checked = s.GlidePlugin.fb_ignore_previous;
+				Glide_increase_primdepth.Checked = s.GlidePlugin.increase_primdepth;
+				Glide_increase_texrect_edge.Checked = s.GlidePlugin.increase_texrect_edge;
+				Glide_fb_optimize_texrect.Checked = s.GlidePlugin.fb_optimize_texrect;
+				Glide_fb_optimize_write.Checked = s.GlidePlugin.fb_optimize_write;
+				Glide_PPL.Checked = s.GlidePlugin.PPL;
+				Glide_soft_depth_compare.Checked = s.GlidePlugin.soft_depth_compare;
+				Glide_use_sts1_only.Checked = s.GlidePlugin.use_sts1_only;
+				Glide_wrap_big_tex.Checked = s.GlidePlugin.wrap_big_tex;
 
-				Glide_depth_bias.Text = Global.Config.GlidePlugin.depth_bias.ToString();
-				Glide_filtering.SelectedIndex = Global.Config.GlidePlugin.filtering;
-				Glide_fix_tex_coord.Text = Global.Config.GlidePlugin.fix_tex_coord.ToString();
-				Glide_lodmode.SelectedIndex = Global.Config.GlidePlugin.lodmode;
-				Glide_stipple_mode.Text = Global.Config.GlidePlugin.stipple_mode.ToString();
-				Glide_stipple_pattern.Text = Global.Config.GlidePlugin.stipple_pattern.ToString();
-				Glide_swapmode.SelectedIndex = Global.Config.GlidePlugin.swapmode;
-				Glide_enable_hacks_for_game.SelectedIndex = Global.Config.GlidePlugin.enable_hacks_for_game;
+				Glide_depth_bias.Text = s.GlidePlugin.depth_bias.ToString();
+				Glide_filtering.SelectedIndex = s.GlidePlugin.filtering;
+				Glide_fix_tex_coord.Text = s.GlidePlugin.fix_tex_coord.ToString();
+				Glide_lodmode.SelectedIndex = s.GlidePlugin.lodmode;
+				Glide_stipple_mode.Text = s.GlidePlugin.stipple_mode.ToString();
+				Glide_stipple_pattern.Text = s.GlidePlugin.stipple_pattern.ToString();
+				Glide_swapmode.SelectedIndex = s.GlidePlugin.swapmode;
+				Glide_enable_hacks_for_game.SelectedIndex = s.GlidePlugin.enable_hacks_for_game;
 			}
 
-			Glide64mk2_card_id.SelectedIndex = Global.Config.Glide64mk2Plugin.card_id;
-			Glide64mk2_wrpFBO.Checked = Global.Config.Glide64mk2Plugin.wrpFBO;
-			Glide64mk2_wrpAnisotropic.Checked = Global.Config.Glide64mk2Plugin.wrpAnisotropic;
-			Glide64mk2_fb_get_info.Checked = Global.Config.Glide64mk2Plugin.fb_get_info;
-			Glide64mk2_fb_render.Checked = Global.Config.Glide64mk2Plugin.fb_render;
+			Glide64mk2_card_id.SelectedIndex = s.Glide64mk2Plugin.card_id;
+			Glide64mk2_wrpFBO.Checked = s.Glide64mk2Plugin.wrpFBO;
+			Glide64mk2_wrpAnisotropic.Checked = s.Glide64mk2Plugin.wrpAnisotropic;
+			Glide64mk2_fb_get_info.Checked = s.Glide64mk2Plugin.fb_get_info;
+			Glide64mk2_fb_render.Checked = s.Glide64mk2Plugin.fb_render;
 
-			Glide64mk2_UseDefaultHacks1.Checked = Global.Config.Glide64mk2Plugin.UseDefaultHacks;
-			Glide64mk2_UseDefaultHacks2.Checked = Global.Config.Glide64mk2Plugin.UseDefaultHacks;
+			Glide64mk2_UseDefaultHacks1.Checked = s.Glide64mk2Plugin.UseDefaultHacks;
+			Glide64mk2_UseDefaultHacks2.Checked = s.Glide64mk2Plugin.UseDefaultHacks;
 
 			UpdateGlide64mk2HacksSection();
-			if (!Global.Config.Glide64mk2Plugin.UseDefaultHacks)
+			if (!s.Glide64mk2Plugin.UseDefaultHacks)
 			{
-				Glide64mk2_use_sts1_only.Checked = Global.Config.Glide64mk2Plugin.use_sts1_only;
-				Glide64mk2_optimize_texrect.Checked = Global.Config.Glide64mk2Plugin.optimize_texrect;
-				Glide64mk2_increase_texrect_edge.Checked = Global.Config.Glide64mk2Plugin.increase_texrect_edge;
-				Glide64mk2_ignore_aux_copy.Checked = Global.Config.Glide64mk2Plugin.ignore_aux_copy;
-				Glide64mk2_hires_buf_clear.Checked = Global.Config.Glide64mk2Plugin.hires_buf_clear;
-				Glide64mk2_force_microcheck.Checked = Global.Config.Glide64mk2Plugin.force_microcheck;
-				Glide64mk2_fog.Checked = Global.Config.Glide64mk2Plugin.fog;
-				Glide64mk2_fb_smart.Checked = Global.Config.Glide64mk2Plugin.fb_smart;
-				Glide64mk2_fb_read_alpha.Checked = Global.Config.Glide64mk2Plugin.fb_read_alpha;
-				Glide64mk2_fb_hires.Checked = Global.Config.Glide64mk2Plugin.fb_hires;
-				Glide64mk2_detect_cpu_write.Checked = Global.Config.Glide64mk2Plugin.detect_cpu_write;
-				Glide64mk2_decrease_fillrect_edge.Checked = Global.Config.Glide64mk2Plugin.decrease_fillrect_edge;
-				Glide64mk2_buff_clear.Checked = Global.Config.Glide64mk2Plugin.buff_clear;
-				Glide64mk2_alt_tex_size.Checked = Global.Config.Glide64mk2Plugin.alt_tex_size;
-				Glide64mk2_swapmode.SelectedIndex = Global.Config.Glide64mk2Plugin.swapmode;
-				Glide64mk2_stipple_pattern.Text = Global.Config.Glide64mk2Plugin.stipple_pattern.ToString();
-				Glide64mk2_stipple_mode.Text = Global.Config.Glide64mk2Plugin.stipple_mode.ToString();
-				Glide64mk2_lodmode.SelectedIndex = Global.Config.Glide64mk2Plugin.lodmode;
-				Glide64mk2_filtering.SelectedIndex = Global.Config.Glide64mk2Plugin.filtering;
-				Glide64mk2_correct_viewport.Checked = Global.Config.Glide64mk2Plugin.correct_viewport;
-				Glide64mk2_force_calc_sphere.Checked = Global.Config.Glide64mk2Plugin.force_calc_sphere;
-				Glide64mk2_pal230.Checked = Global.Config.Glide64mk2Plugin.pal230;
-				Glide64mk2_texture_correction.Checked = Global.Config.Glide64mk2Plugin.texture_correction;
-				Glide64mk2_n64_z_scale.Checked = Global.Config.Glide64mk2Plugin.n64_z_scale;
-				Glide64mk2_old_style_adither.Checked = Global.Config.Glide64mk2Plugin.old_style_adither;
-				Glide64mk2_zmode_compare_less.Checked = Global.Config.Glide64mk2Plugin.zmode_compare_less;
-				Glide64mk2_adjust_aspect.Checked = Global.Config.Glide64mk2Plugin.adjust_aspect;
-				Glide64mk2_clip_zmax.Checked = Global.Config.Glide64mk2Plugin.clip_zmax;
-				Glide64mk2_clip_zmin.Checked = Global.Config.Glide64mk2Plugin.clip_zmin;
-				Glide64mk2_force_quad3d.Checked = Global.Config.Glide64mk2Plugin.force_quad3d;
-				Glide64mk2_useless_is_useless.Checked = Global.Config.Glide64mk2Plugin.useless_is_useless;
-				Glide64mk2_fb_read_always.Checked = Global.Config.Glide64mk2Plugin.fb_read_always;
-				Glide64mk2_aspectmode.SelectedIndex = Global.Config.Glide64mk2Plugin.aspectmode;
-				Glide64mk2_fb_crc_mode.SelectedIndex = Global.Config.Glide64mk2Plugin.fb_crc_mode;
-				Glide64mk2_enable_hacks_for_game.SelectedIndex = Global.Config.Glide64mk2Plugin.enable_hacks_for_game;
-				Glide64mk2_read_back_to_screen.SelectedIndex = Global.Config.Glide64mk2Plugin.read_back_to_screen;
-				Glide64mk2_fast_crc.Checked = Global.Config.Glide64mk2Plugin.fast_crc;
+				Glide64mk2_use_sts1_only.Checked = s.Glide64mk2Plugin.use_sts1_only;
+				Glide64mk2_optimize_texrect.Checked = s.Glide64mk2Plugin.optimize_texrect;
+				Glide64mk2_increase_texrect_edge.Checked = s.Glide64mk2Plugin.increase_texrect_edge;
+				Glide64mk2_ignore_aux_copy.Checked = s.Glide64mk2Plugin.ignore_aux_copy;
+				Glide64mk2_hires_buf_clear.Checked = s.Glide64mk2Plugin.hires_buf_clear;
+				Glide64mk2_force_microcheck.Checked = s.Glide64mk2Plugin.force_microcheck;
+				Glide64mk2_fog.Checked = s.Glide64mk2Plugin.fog;
+				Glide64mk2_fb_smart.Checked = s.Glide64mk2Plugin.fb_smart;
+				Glide64mk2_fb_read_alpha.Checked = s.Glide64mk2Plugin.fb_read_alpha;
+				Glide64mk2_fb_hires.Checked = s.Glide64mk2Plugin.fb_hires;
+				Glide64mk2_detect_cpu_write.Checked = s.Glide64mk2Plugin.detect_cpu_write;
+				Glide64mk2_decrease_fillrect_edge.Checked = s.Glide64mk2Plugin.decrease_fillrect_edge;
+				Glide64mk2_buff_clear.Checked = s.Glide64mk2Plugin.buff_clear;
+				Glide64mk2_alt_tex_size.Checked = s.Glide64mk2Plugin.alt_tex_size;
+				Glide64mk2_swapmode.SelectedIndex = s.Glide64mk2Plugin.swapmode;
+				Glide64mk2_stipple_pattern.Text = s.Glide64mk2Plugin.stipple_pattern.ToString();
+				Glide64mk2_stipple_mode.Text = s.Glide64mk2Plugin.stipple_mode.ToString();
+				Glide64mk2_lodmode.SelectedIndex = s.Glide64mk2Plugin.lodmode;
+				Glide64mk2_filtering.SelectedIndex = s.Glide64mk2Plugin.filtering;
+				Glide64mk2_correct_viewport.Checked = s.Glide64mk2Plugin.correct_viewport;
+				Glide64mk2_force_calc_sphere.Checked = s.Glide64mk2Plugin.force_calc_sphere;
+				Glide64mk2_pal230.Checked = s.Glide64mk2Plugin.pal230;
+				Glide64mk2_texture_correction.Checked = s.Glide64mk2Plugin.texture_correction;
+				Glide64mk2_n64_z_scale.Checked = s.Glide64mk2Plugin.n64_z_scale;
+				Glide64mk2_old_style_adither.Checked = s.Glide64mk2Plugin.old_style_adither;
+				Glide64mk2_zmode_compare_less.Checked = s.Glide64mk2Plugin.zmode_compare_less;
+				Glide64mk2_adjust_aspect.Checked = s.Glide64mk2Plugin.adjust_aspect;
+				Glide64mk2_clip_zmax.Checked = s.Glide64mk2Plugin.clip_zmax;
+				Glide64mk2_clip_zmin.Checked = s.Glide64mk2Plugin.clip_zmin;
+				Glide64mk2_force_quad3d.Checked = s.Glide64mk2Plugin.force_quad3d;
+				Glide64mk2_useless_is_useless.Checked = s.Glide64mk2Plugin.useless_is_useless;
+				Glide64mk2_fb_read_always.Checked = s.Glide64mk2Plugin.fb_read_always;
+				Glide64mk2_aspectmode.SelectedIndex = s.Glide64mk2Plugin.aspectmode;
+				Glide64mk2_fb_crc_mode.SelectedIndex = s.Glide64mk2Plugin.fb_crc_mode;
+				Glide64mk2_enable_hacks_for_game.SelectedIndex = s.Glide64mk2Plugin.enable_hacks_for_game;
+				Glide64mk2_read_back_to_screen.SelectedIndex = s.Glide64mk2Plugin.read_back_to_screen;
+				Glide64mk2_fast_crc.Checked = s.Glide64mk2Plugin.fast_crc;
 			}
 		}
 		

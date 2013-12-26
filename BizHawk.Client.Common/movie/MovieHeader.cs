@@ -199,24 +199,6 @@ namespace BizHawk.Client.Common
 				{
 					return false;
 				}
-				else if (ContainsKey(HeaderKeys.PLATFORM) && this[HeaderKeys.PLATFORM] == "N64" 
-					&& ContainsKey(HeaderKeys.VIDEOPLUGIN))
-				{
-					if (this[HeaderKeys.VIDEOPLUGIN] == "Rice")
-					{
-						if (Global.Config.RicePlugin.GetPluginSettings().Keys.Any(line.Contains))
-						{
-							Add(splitLine[0], splitLine[1]);
-						}
-					}
-					else if (this[HeaderKeys.VIDEOPLUGIN] == "Glide64")
-					{
-						if (Global.Config.GlidePlugin.GetPluginSettings().Keys.Any(line.Contains))
-						{
-							Add(splitLine[0], splitLine[1]);
-						}
-					}
-				}
 			}
 
 			return true;
