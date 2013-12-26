@@ -1925,15 +1925,19 @@ namespace BizHawk.Client.EmuHawk
 
 		object __SyncSettingsHack = null;
 
-		object GetCoreSyncSettings<T>()
-			where T : IEmulator
+		void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
 			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
 			// from a config file or from the movie file
 
 			// since all we have right now is movie 1.0, we get silly hacks instead
 
-			return __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings<T>();
+			e.Settings =  __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings(e.Core);
+		}
+
+		void CoreSettings(object sender, RomLoader.SettingsLoadArgs e)
+		{
+			e.Settings = Global.Config.GetCoreSettings(e.Core);
 		}
 
 		/// <summary>
@@ -2878,6 +2882,9 @@ namespace BizHawk.Client.EmuHawk
 				};
 
 			loader.OnLoadError += ShowLoadError;
+
+			loader.OnLoadSettings += CoreSettings;
+			loader.OnLoadSyncSettings += CoreSyncSettings;
 
 			var result = loader.LoadRom(path, hasmovie);
 
