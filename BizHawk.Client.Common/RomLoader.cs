@@ -30,6 +30,7 @@ namespace BizHawk.Client.Common
 	{
 		#region Duplicate code to mainform, need to refactor!
 
+		/*
 		object __SyncSettingsHack = null;
 
 		object GetCoreSyncSettings<T>()
@@ -41,6 +42,25 @@ namespace BizHawk.Client.Common
 			// since all we have right now is movie 1.0, we get silly hacks instead
 
 			return __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings<T>();
+		}
+		*/
+
+		object GetCoreSettings<T>()
+			where T : IEmulator
+		{
+			var e = new SettingsLoadArgs(typeof(T));
+			if (OnLoadSettings != null)
+				OnLoadSettings(this, e);
+			return e.Settings;
+		}
+
+		object GetCoreSyncSettings<T>()
+			where T : IEmulator
+		{
+			var e = new SettingsLoadArgs(typeof(T));
+			if (OnLoadSyncSettings != null)
+				OnLoadSyncSettings(this, e);
+			return e.Settings;
 		}
 
 		#endregion
@@ -185,6 +205,21 @@ namespace BizHawk.Client.Common
 			public string AttemptedCoreLoad { get; private set; }
 		}
 
+		public class SettingsLoadArgs
+		{
+			public object Settings { get; set; }
+			public Type Core { get; private set; }
+			public SettingsLoadArgs(Type t)
+			{
+				Core = t;
+				Settings = null;
+			}
+		}
+		public delegate void SettingsLoadEventHandler(object sender, SettingsLoadArgs e);
+		public event SettingsLoadEventHandler OnLoadSettings;
+		public event SettingsLoadEventHandler OnLoadSyncSettings;
+
+
 		public delegate void LoadErrorEventHandler(object sener, RomErrorArgs e);
 		public event LoadErrorEventHandler OnLoadError;
 
@@ -320,7 +355,7 @@ namespace BizHawk.Client.Common
 							case "GEN":
 								{
 									var genesis = new GPGX(
-										nextComm, null, disc, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
+										nextComm, null, disc, "GEN", GetCoreSettings<GPGX>());
 									nextEmulator = genesis;
 								}
 								break;
@@ -390,7 +425,7 @@ namespace BizHawk.Client.Common
 									}
 
 									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
-									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
+									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, GetCoreSettings<PCEngine>());
 									break;
 								}
 						}
@@ -410,7 +445,7 @@ namespace BizHawk.Client.Common
 									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
 
 									var gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"],
-										Global.Config.GetCoreSettings<GambatteLink>(),
+										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>());
 									nextEmulator = gbl;
 
@@ -460,22 +495,22 @@ namespace BizHawk.Client.Common
 							case "SMS":
 							case "SG":
 							case "GG":
-								nextEmulator = new SMS(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<SMS>(), Global.Config.GetCoreSyncSettings<SMS>());
+								nextEmulator = new SMS(nextComm, game, rom.RomData, GetCoreSettings<SMS>(), GetCoreSyncSettings<SMS>());
 								break;
 							case "A26":
 								nextEmulator = new Atari2600(nextComm, game, rom.FileData,
-									Global.Config.GetCoreSettings<Atari2600>(),
+									GetCoreSettings<Atari2600>(),
 									GetCoreSyncSettings<Atari2600>());
 								break;
 							case "PCE":
 							case "PCECD":
 							case "SGX":
-								nextEmulator = new PCEngine(nextComm, game, rom.RomData, Global.Config.GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, rom.RomData, GetCoreSettings<PCEngine>());
 								break;
 							case "GEN":
 								{
 									// nextEmulator = new Genesis(nextComm, game, rom.RomData);
-									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", Global.Config.GetCoreSyncSettings<GPGX>());
+									nextEmulator = new GPGX(nextComm, rom.RomData, null, "GEN", GetCoreSyncSettings<GPGX>());
 									break;
 								}
 							case "TI83":
@@ -483,7 +518,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "NES":
 								nextEmulator = new NES(nextComm, game, rom.FileData,
-									Global.Config.GetCoreSettings<NES>(),
+									GetCoreSettings<NES>(),
 									Global.MovieSession.Movie.Header.BoardProperties);
 								break;
 							case "GB":
@@ -491,7 +526,7 @@ namespace BizHawk.Client.Common
 								if (!Global.Config.GB_AsSGB)
 								{
 									var gb = new Gameboy(nextComm, game, rom.FileData,
-										Global.Config.GetCoreSettings<Gameboy>(),
+										GetCoreSettings<Gameboy>(),
 										GetCoreSyncSettings<Gameboy>());
 									nextEmulator = gb;
 								}
