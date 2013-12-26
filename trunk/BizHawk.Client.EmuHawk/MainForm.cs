@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,24 +10,13 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Atari.Atari2600;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
-using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.Genesis;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
-using BizHawk.Emulation.Cores.Sony.PSP;
-using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -2883,20 +2871,18 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
-			RomLoader loader = new RomLoader();
-			loader.ChooseArchive = LoadArhiveChooser;
-			loader.CoreCommMessageCallback = ShowMessageCoreComm;
+			RomLoader loader = new RomLoader()
+				{
+					ChooseArchive = LoadArhiveChooser,
+					CoreCommMessageCallback = ShowMessageCoreComm
+				};
+
 			loader.OnLoadError += ShowLoadError;
+
 			var result = loader.LoadRom(path, hasmovie);
 
 			if (result)
 			{
-				var nextEmulator = loader.LoadedEmulator; // TODO: just reference the property and get rid of this
-				var nextComm = loader.NextComm; // Ditto
-				var game = loader.Game; // Ditto
-				var rom = loader.Rom; // Ditto
-				var canonicalPath = loader.CanonicalFullPath;
-
 				if (loader.LoadedEmulator is Yabause)
 				{
 					SaturnSetPrefs(loader.LoadedEmulator as Yabause);
@@ -2911,19 +2897,19 @@ namespace BizHawk.Client.EmuHawk
 
 				CloseGame();
 				Global.Emulator.Dispose();
-				Global.Emulator = nextEmulator;
-				Global.CoreComm = nextComm;
-				Global.Game = game;
+				Global.Emulator = loader.LoadedEmulator;
+				Global.CoreComm = loader.NextComm;
+				Global.Game = loader.Game;
 				CoreFileProvider.SyncCoreCommInputSignals();
 				InputManager.SyncControls();
 
-				if (nextEmulator is LibsnesCore)
+				if (loader.LoadedEmulator is LibsnesCore)
 				{
-					var snes = nextEmulator as LibsnesCore;
-					snes.SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Global.Config.SNESPalette, false));
+					(loader.LoadedEmulator as LibsnesCore)
+						.SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Global.Config.SNESPalette, false));
 				}
 
-				if (game.System == "NES")
+				if (loader.Game.System == "NES")
 				{
 					var nes = Global.Emulator as NES;
 					if (nes != null && nes.GameName != null)
@@ -2934,16 +2920,16 @@ namespace BizHawk.Client.EmuHawk
 					Global.Game.Status = nes.RomStatus;
 				}
 
-				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
+				Text = DisplayNameForSystem(loader.Game.System) + " - " + loader.Game.Name;
 				ResetRewindBuffer();
 
-				if (Global.Emulator.CoreComm.RomStatusDetails == null && rom != null)
+				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
 				{
 					Global.Emulator.CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
-						game.Name,
-						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData)),
-						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom.RomData)));
+						loader.Game.Name,
+						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(loader.Rom.RomData)),
+						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(loader.Rom.RomData)));
 				}
 
 				if (Global.Emulator.BoardName != null)
@@ -2953,14 +2939,14 @@ namespace BizHawk.Client.EmuHawk
 
 				// restarts the lua console if a different rom is loaded.
 				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != canonicalPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms[0] != loader.CanonicalFullPath)
 				{
 					GlobalWin.Tools.Restart<LuaConsole>();
 				}
 
-				Global.Config.RecentRoms.Add(canonicalPath);
-				JumpLists.AddRecentItem(canonicalPath);
-				if (File.Exists(PathManager.SaveRamPath(game)))
+				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
+				JumpLists.AddRecentItem(loader.CanonicalFullPath);
+				if (File.Exists(PathManager.SaveRamPath(loader.Game)))
 				{
 					LoadSaveRam();
 				}
@@ -2980,7 +2966,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				CurrentlyOpenRom = canonicalPath;
+				CurrentlyOpenRom = loader.CanonicalFullPath;
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
