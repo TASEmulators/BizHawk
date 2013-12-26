@@ -164,25 +164,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Global.Emulator is N64)
 				{
-					_movieToRecord.Header[HeaderKeys.VIDEOPLUGIN] = Global.Config.N64VidPlugin;
-
-					if (Global.Config.N64VidPlugin == "Rice")
-					{
-						var rice_settings = Global.Config.RicePlugin.GetPluginSettings();
-						foreach (var setting in rice_settings)
-						{
-							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
-						}
-					}
-					else if (Global.Config.N64VidPlugin == "Glide64")
-					{
-						var glide_settings = Global.Config.GlidePlugin.GetPluginSettings();
-						foreach (var setting in glide_settings)
-						{
-							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
-						}
-					}
-
 					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
 					{
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";

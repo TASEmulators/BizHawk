@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -447,21 +448,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			this.bizhawkCore = bizhawkCore;
 
 			string VidDllName;
-			if (video_settings.PluginName == "Rice")
+			if (video_settings.Plugin == PLUGINTYPE.RICE)
 			{
 				VidDllName = "mupen64plus-video-rice.dll";
 			}
-			else if (video_settings.PluginName == "Glide64")
+			else if (video_settings.Plugin == PLUGINTYPE.GLIDE)
 			{
 				VidDllName = "mupen64plus-video-glide64.dll";
 			}
-			else if (video_settings.PluginName == "Glide64mk2")
+			else if (video_settings.Plugin == PLUGINTYPE.GLIDE64MK2)
 			{
 				VidDllName = "mupen64plus-video-glide64mk2.dll";
 			}
 			else
 			{
-				throw new InvalidOperationException(string.Format("Unknown plugin \"" + video_settings.PluginName));
+				throw new InvalidOperationException(string.Format("Unknown plugin {0}", video_settings.Plugin));
 			}
 
 			// Load each of the DLLs
@@ -623,15 +624,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void set_video_parameters(VideoPluginSettings video_settings)
 		{
 			IntPtr video_plugin_section = IntPtr.Zero;
-			if (video_settings.PluginName == "Rice")
+			if (video_settings.Plugin == PLUGINTYPE.RICE)
 			{
 				m64pConfigOpenSection("Video-Rice", ref video_plugin_section);
 			}
-			else if (video_settings.PluginName == "Glide64")
+			else if (video_settings.Plugin == PLUGINTYPE.GLIDE)
 			{
 				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
 			}
-			else if (video_settings.PluginName == "Glide64mk2")
+			else if (video_settings.Plugin == PLUGINTYPE.GLIDE64MK2)
 			{
 				m64pConfigOpenSection("Video-Glide64mk2", ref video_plugin_section);
 			}
@@ -881,7 +882,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 	public class VideoPluginSettings
 	{
-		public string PluginName;
+		public PLUGINTYPE Plugin;
 		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
 		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
 
@@ -889,9 +890,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public int Height;
 		public int Width;
 
-		public VideoPluginSettings (string Name, int Width, int Height)
+		public VideoPluginSettings (PLUGINTYPE Plugin, int Width, int Height)
 		{
-			this.PluginName = Name;
+			this.Plugin = Plugin;
 			this.Width = Width;
 			this.Height = Height;
 		}

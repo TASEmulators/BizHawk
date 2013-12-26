@@ -111,73 +111,6 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		#region N64 specific stuff - clean up or move elsewhere
-
-		private static VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
-		{
-			var pluginToUse = String.Empty;
-
-			if (hasmovie && Global.MovieSession.Movie.Header[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.ContainsKey(HeaderKeys.VIDEOPLUGIN))
-			{
-				pluginToUse = Global.MovieSession.Movie.Header[HeaderKeys.VIDEOPLUGIN];
-			}
-
-			if (pluginToUse == string.Empty || (pluginToUse != "Rice" && pluginToUse != "Glide64"))
-			{
-				pluginToUse = Global.Config.N64VidPlugin;
-			}
-
-			var video_settings = new VideoPluginSettings(pluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
-
-			if (pluginToUse == "Rice")
-			{
-				Global.Config.RicePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
-			}
-			else if (pluginToUse == "Glide64")
-			{
-				Global.Config.GlidePlugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
-			}
-			else if (pluginToUse == "Glide64mk2")
-			{
-				Global.Config.Glide64mk2Plugin.FillPerGameHacks(game);
-				video_settings.Parameters = Global.Config.Glide64mk2Plugin.GetPluginSettings();
-			}
-
-			if (hasmovie && Global.MovieSession.Movie.Header[HeaderKeys.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.ContainsKey(HeaderKeys.VIDEOPLUGIN))
-			{
-				var settings = new List<string>(video_settings.Parameters.Keys);
-				foreach (var setting in settings)
-				{
-					if (Global.MovieSession.Movie.Header.ContainsKey(setting))
-					{
-						var Value = Global.MovieSession.Movie.Header[setting];
-						if (video_settings.Parameters[setting] is bool)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = bool.Parse(Value);
-							}
-							catch { }
-						}
-						else if (video_settings.Parameters[setting] is int)
-						{
-							try
-							{
-								video_settings.Parameters[setting] = int.Parse(Value);
-							}
-							catch { }
-						}
-					}
-				}
-			}
-
-			return video_settings;
-		}
-
-		#endregion
-
 		public RomLoader()
 		{
 			Deterministic = true;
@@ -583,13 +516,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "N64":
 								Global.Game = game;
-								var video_settings = N64GenerateVideoSettings(game, hasmovie);
-								int SaveType = 0;
-								if (game.OptionValue("SaveType") == "EEPROM_16K")
-								{
-									SaveType = 1;
-								}
-								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
+								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
 								break;
 
 							case "DEBUG":

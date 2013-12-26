@@ -225,6 +225,7 @@
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\N64\mupen64plusApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
