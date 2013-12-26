@@ -8,8 +8,10 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm
+	public class Rewinder
 	{
+		public bool RewindActive = true;
+
 		public StreamBlobDatabase RewindBuf;// = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
 		private RewindThreader RewindThread;
 
@@ -264,9 +266,9 @@ namespace BizHawk.Client.EmuHawk
 			// which will kill N64 for sure...
 			public static bool IsThreaded = false;
 
-			MainForm mf;
+			Rewinder mf;
 
-			public RewindThreader(MainForm mf, bool isThreaded)
+			public RewindThreader(Rewinder mf, bool isThreaded)
 			{
 				IsThreaded = isThreaded;
 				this.mf = mf;
@@ -382,7 +384,8 @@ namespace BizHawk.Client.EmuHawk
 			ConcurrentQueue<Job> Jobs = new ConcurrentQueue<Job>();
 		}
 
-		private void CaptureRewindState()
+		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
+		public void CaptureRewindState()
 		{
 			if (RewindImpossible)
 				return;
