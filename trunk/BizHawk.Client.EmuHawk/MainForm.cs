@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
+			_hotkeys = new HotkeyActions(this);
 			Global.Rewinder = new Rewinder()
 			{
 				MessageCallback = GlobalWin.OSD.AddMessage
@@ -60,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageCallback = GlobalWin.OSD.AddMessage,
 				AskYesNoCallback = StateErrorAskUser
 			};
+
 			_mainWait = new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
@@ -956,6 +958,8 @@ namespace BizHawk.Client.EmuHawk
 		private RetainedViewportPanel captureosd_rvp;
 		private SysdrawingRenderPanel captureosd_srp;
 
+		private HotkeyActions _hotkeys;
+
 		#endregion
 
 		#region Private methods
@@ -974,7 +978,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleToggleLight();
 		}
 
-		private static void ClearAutohold()
+		public void ClearAutohold()
 		{
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
@@ -989,21 +993,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CheckHotkey(string trigger)
 		{
-			// todo - could have these in a table somehow ?
+			var result = _hotkeys.CheckHotkey(trigger);
+
+			if (result)
+			{
+				return true;
+			}
+
+			// If Item wasn't in the list, use the legacy switch
 			switch (trigger)
 			{
 				default:
 					return false;
-				case "Pause": TogglePause(); break;
 				case "Toggle Throttle":
 					_unthrottled ^= true;
 					GlobalWin.OSD.AddMessage("Unthrottled: " + _unthrottled);
 					break;
-				case "Soft Reset": SoftReset(); break;
-				case "Hard Reset": HardReset(); break;
 				case "Quick Load": LoadState("QuickSave" + Global.Config.SaveSlot); break;
 				case "Quick Save": SaveState("QuickSave" + Global.Config.SaveSlot); break;
-				case "Clear Autohold": ClearAutohold(); break;
 				case "Screenshot": TakeScreenshot(); break;
 				case "Full Screen": ToggleFullscreen(); break;
 				case "Open ROM": OpenRom(); break;
@@ -2004,7 +2011,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
-		private static void SoftReset()
+		public void SoftReset()
 		{
 			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
@@ -2017,7 +2024,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void HardReset()
+		public void HardReset()
 		{
 			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
