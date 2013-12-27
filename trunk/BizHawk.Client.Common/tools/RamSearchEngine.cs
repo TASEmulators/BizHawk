@@ -55,50 +55,53 @@ namespace BizHawk.Client.Common
 				case Watch.WatchSize.Byte:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						for (int i = 0; i < _settings.Domain.Size; i++)
+						for (int i = 0; i < domain.Size; i++)
 						{
 							_watchList.Add(new MiniByteWatchDetailed(domain, i));
 						}
 					}
 					else
 					{
-						for (int i = 0; i < _settings.Domain.Size; i++)
+						for (int i = 0; i < domain.Size; i++)
 						{
 							_watchList.Add(new MiniByteWatch(domain, i));
 						}
 					}
+
 					break;
 				case Watch.WatchSize.Word:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
 						{
 							_watchList.Add(new MiniWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
-						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
 						{
 							_watchList.Add(new MiniWordWatch(domain, i, _settings.BigEndian));
 						}
 					}
+
 					break;
 				case Watch.WatchSize.DWord:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
 						{
 							_watchList.Add(new MiniDWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
-						for (int i = 0; i < _settings.Domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
 						{
 							_watchList.Add(new MiniDWordWatch(domain, i, _settings.BigEndian));
 						}
 					}
+
 					break;
 			}
 
@@ -145,7 +148,7 @@ namespace BizHawk.Client.Common
 		public int DoSearch()
 		{
 			int before = _watchList.Count;
-			
+
 			switch (_compareTo)
 			{
 				default:
@@ -316,6 +319,11 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<int> addresses)
 		{
+			if (_keepHistory)
+			{
+				_history.AddState(_watchList);
+			}
+
 			_watchList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
 		}
 
