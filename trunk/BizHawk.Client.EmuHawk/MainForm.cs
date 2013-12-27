@@ -47,7 +47,11 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
-			GlobalWin.Rewinder = new Rewinder();
+			GlobalWin.Rewinder = new Rewinder()
+			{
+				MessageCallback = GlobalWin.OSD.AddMessage
+			};
+
 			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
 			Global.MovieSession = new MovieSession

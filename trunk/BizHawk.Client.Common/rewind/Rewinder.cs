@@ -1,15 +1,13 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class Rewinder
 	{
 		public bool RewindActive = true;
 
-		private  StreamBlobDatabase RewindBuffer;
+		private StreamBlobDatabase RewindBuffer;
 		private RewindThreader RewindThread;
 		private byte[] LastState;
 		private bool RewindImpossible;
@@ -17,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool RewindDeltaEnable = false;
 		private byte[] RewindFellationBuf;
 		private byte[] TempBuf = new byte[0];
+
+		public Action<string> MessageCallback;
 
 		// TODO: make RewindBuf never be null
 		public float FullnessRatio
@@ -109,11 +109,17 @@ namespace BizHawk.Client.EmuHawk
 				long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
 
 				if (RewindBuffer != null)
+				{
 					RewindBuffer.Dispose();
+				}
+
 				RewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap, BufferManage);
 
 				if (RewindThread != null)
+				{
 					RewindThread.Dispose();
+				}
+
 				RewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
 			}
 		}
@@ -175,16 +181,24 @@ namespace BizHawk.Client.EmuHawk
 			LastState = null;
 		}
 
+		private void DoMessage(string message)
+		{
+			if (MessageCallback != null)
+			{
+				MessageCallback(message);
+			}
+		}
+
 		private void SetRewindParams(bool enabled, int frequency)
 		{
 			if (RewindActive != enabled)
 			{
-				GlobalWin.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+				DoMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
 			}
 
 			if (RewindFrequency != frequency && enabled)
 			{
-				GlobalWin.OSD.AddMessage("Rewind frequency set to " + frequency);
+				DoMessage("Rewind frequency set to " + frequency);
 			}
 
 			RewindActive = enabled;

@@ -4,9 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Concurrent;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class RewindThreader : IDisposable
 	{
@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ConcurrentQueue<Job> Jobs = new ConcurrentQueue<Job>();
 		private EventWaitHandle _ewh, _ewh2;
 		private Thread _thread;
-
-		// TODO: this is bad design!
 		private Rewinder _rewinder;
 
 		public RewindThreader(Rewinder rewinder, bool isThreaded)
