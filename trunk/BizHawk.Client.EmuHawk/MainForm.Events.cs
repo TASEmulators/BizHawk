@@ -1497,15 +1497,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESDisplayMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			SnesBg1MenuItem.Checked = Global.Config.SNES_ShowBG1_1;
-			SnesBg2MenuItem.Checked = Global.Config.SNES_ShowBG2_1;
-			SnesBg3MenuItem.Checked = Global.Config.SNES_ShowBG3_1;
-			SnesBg4MenuItem.Checked = Global.Config.SNES_ShowBG4_1;
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 
-			SnesObj1MenuItem.Checked = Global.Config.SNES_ShowOBJ1;
-			SnesObj2MenuItem.Checked = Global.Config.SNES_ShowOBJ2;
-			SnesObj3MenuItem.Checked = Global.Config.SNES_ShowOBJ3;
-			SnesObj4MenuItem.Checked = Global.Config.SNES_ShowOBJ4;
+			SnesBg1MenuItem.Checked = s.ShowBG1_1;
+			SnesBg2MenuItem.Checked = s.ShowBG2_1;
+			SnesBg3MenuItem.Checked = s.ShowBG3_1;
+			SnesBg4MenuItem.Checked = s.ShowBG4_1;
+
+			SnesObj1MenuItem.Checked = s.ShowOBJ_0;
+			SnesObj2MenuItem.Checked = s.ShowOBJ_1;
+			SnesObj3MenuItem.Checked = s.ShowOBJ_2;
+			SnesObj4MenuItem.Checked = s.ShowOBJ_3;
 
 			SnesBg1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
 			SnesBg2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
@@ -1576,23 +1578,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			var so = new SNESOptions
-			{
-				UseRingBuffer = Global.Config.SNESUseRingBuffer,
-				AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize,
-				Profile = Global.Config.SNESProfile
-			};
-			if (so.ShowDialog() == DialogResult.OK)
-			{
-				Global.Config.SNESProfile = so.Profile;
-				Global.Config.SNESUseRingBuffer = so.UseRingBuffer;
-				Global.Config.SNESAlwaysDoubleSize = so.AlwaysDoubleSize;
-				if (Global.Config.SNESProfile != so.Profile)
-				{
-					FlagNeedsReboot();
-				}
-				CoreFileProvider.SyncCoreCommInputSignals();
-			}
+			SNESOptions.DoSettingsDialog(this);
 		}
 
 		#endregion

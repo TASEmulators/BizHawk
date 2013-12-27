@@ -48,53 +48,6 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
-		#region SNES specific stuff - clean up or move elsewhere
-
-		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
-
-		// Contains a mapping: profilename->exepath ; or null if the exe wasnt available
-		private string SNES_Prepare(string profile)
-		{
-			SNES_Check(profile);
-			if (_snesPrepared[profile] == null)
-			{
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-			}
-
-			return _snesPrepared[profile];
-		}
-
-		private void SNES_Check(string profile)
-		{
-			if (_snesPrepared.ContainsKey(profile))
-			{
-				return;
-			}
-
-			const string bits = "32";
-
-			// disabled til it works
-			// if (Win32.Is64BitOperatingSystem)
-			// bits = "64";
-			var exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
-			var thisDir = PathManager.GetExeDirectoryAbsolute();
-			var exePath = Path.Combine(thisDir, exename);
-
-			if (!File.Exists(exePath))
-			{
-				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
-			}
-
-			if (!File.Exists(exePath))
-			{
-				exePath = null;
-			}
-
-			_snesPrepared[profile] = exePath;
-		}
-
-		#endregion
-
 		public RomLoader()
 		{
 			Deterministic = true;
@@ -396,13 +349,10 @@ namespace BizHawk.Client.Common
 						{
 							case "SNES":
 								{
-									game.System = "SNES";
-									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-
 									// need to get rid of this hack at some point
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); //Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 
-									var snes = new LibsnesCore(nextComm);
+									var snes = new LibsnesCore(nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 									nextEmulator = snes;
 									byte[] romData = isXml ? null : rom.FileData;
 									byte[] xmlData = isXml ? rom.FileData : null;
@@ -453,8 +403,7 @@ namespace BizHawk.Client.Common
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-										var snes = new LibsnesCore(nextComm);
+										var snes = new LibsnesCore(nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 										nextEmulator = snes;
 										snes.Load(game, rom.FileData, Deterministic, null);
 									}

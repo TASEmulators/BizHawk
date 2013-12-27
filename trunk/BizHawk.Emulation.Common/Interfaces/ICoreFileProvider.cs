@@ -19,6 +19,12 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		string PathSubfile(string fname);
 
+		/// <summary>
+		/// produces a path that contains emulation related dll and exe files
+		/// </summary>
+		/// <returns></returns>
+		string DllPath();
+
 		#region EmuLoadHelper api
 
 		/// <summary>

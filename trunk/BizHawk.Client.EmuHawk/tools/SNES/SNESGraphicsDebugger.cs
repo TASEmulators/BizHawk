@@ -1348,10 +1348,11 @@ namespace BizHawk.Client.EmuHawk
 			if (suppression) return;
 			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
-			Global.Config.SNESPalette = pal.ToString();
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			s.Palette = pal.ToString();
 			if (currentSnesCore != null)
 			{
-				currentSnesCore.SetPalette(pal);
+				currentSnesCore.PutSettings(s);
 			}
 			RegenerateData();
 			RenderView();
@@ -1361,56 +1362,57 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshBGENCheckStatesFromConfig()
 		{
-			checkEN0_BG1.Checked = Global.Config.SNES_ShowBG1_0;
-			checkEN0_BG2.Checked = Global.Config.SNES_ShowBG2_0;
-			checkEN0_BG3.Checked = Global.Config.SNES_ShowBG3_0;
-			checkEN0_BG4.Checked = Global.Config.SNES_ShowBG4_0;
-			checkEN1_BG1.Checked = Global.Config.SNES_ShowBG1_1;
-			checkEN1_BG2.Checked = Global.Config.SNES_ShowBG2_1;
-			checkEN1_BG3.Checked = Global.Config.SNES_ShowBG3_1;
-			checkEN1_BG4.Checked = Global.Config.SNES_ShowBG4_1;
-			checkEN0_OBJ.Checked = Global.Config.SNES_ShowOBJ1;
-			checkEN1_OBJ.Checked = Global.Config.SNES_ShowOBJ2;
-			checkEN2_OBJ.Checked = Global.Config.SNES_ShowOBJ3;
-			checkEN3_OBJ.Checked = Global.Config.SNES_ShowOBJ4;
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			checkEN0_BG1.Checked = s.ShowBG1_0;
+			checkEN0_BG2.Checked = s.ShowBG2_0;
+			checkEN0_BG3.Checked = s.ShowBG3_0;
+			checkEN0_BG4.Checked = s.ShowBG4_0;
+			checkEN1_BG1.Checked = s.ShowBG1_1;
+			checkEN1_BG2.Checked = s.ShowBG2_1;
+			checkEN1_BG3.Checked = s.ShowBG3_1;
+			checkEN1_BG4.Checked = s.ShowBG4_1;
+			checkEN0_OBJ.Checked = s.ShowOBJ_0;
+			checkEN1_OBJ.Checked = s.ShowOBJ_1;
+			checkEN2_OBJ.Checked = s.ShowOBJ_2;
+			checkEN3_OBJ.Checked = s.ShowOBJ_3;
 		}
 
 		private void checkEN_CheckedChanged(object sender, EventArgs e)
 		{
 			if(suppression) return;
-			if (sender == checkEN0_BG1) Global.Config.SNES_ShowBG1_0 = checkEN0_BG1.Checked;
-			if (sender == checkEN0_BG2) Global.Config.SNES_ShowBG2_0 = checkEN0_BG2.Checked;
-			if (sender == checkEN0_BG3) Global.Config.SNES_ShowBG3_0 = checkEN0_BG3.Checked;
-			if (sender == checkEN0_BG4) Global.Config.SNES_ShowBG4_0 = checkEN0_BG4.Checked;
-			if (sender == checkEN1_BG1) Global.Config.SNES_ShowBG1_1 = checkEN1_BG1.Checked;
-			if (sender == checkEN1_BG2) Global.Config.SNES_ShowBG2_1 = checkEN1_BG2.Checked;
-			if (sender == checkEN1_BG3) Global.Config.SNES_ShowBG3_1 = checkEN1_BG3.Checked;
-			if (sender == checkEN1_BG4) Global.Config.SNES_ShowBG4_1 = checkEN1_BG4.Checked;
-			if (sender == checkEN0_OBJ) Global.Config.SNES_ShowOBJ1 = checkEN0_OBJ.Checked;
-			if (sender == checkEN1_OBJ) Global.Config.SNES_ShowOBJ2 = checkEN1_OBJ.Checked;
-			if (sender == checkEN2_OBJ) Global.Config.SNES_ShowOBJ3 = checkEN2_OBJ.Checked;
-			if (sender == checkEN3_OBJ) Global.Config.SNES_ShowOBJ4 = checkEN3_OBJ.Checked;
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+			if (sender == checkEN0_BG1) s.ShowBG1_0 = checkEN0_BG1.Checked;
+			if (sender == checkEN0_BG2) s.ShowBG2_0 = checkEN0_BG2.Checked;
+			if (sender == checkEN0_BG3) s.ShowBG3_0 = checkEN0_BG3.Checked;
+			if (sender == checkEN0_BG4) s.ShowBG4_0 = checkEN0_BG4.Checked;
+			if (sender == checkEN1_BG1) s.ShowBG1_1 = checkEN1_BG1.Checked;
+			if (sender == checkEN1_BG2) s.ShowBG2_1 = checkEN1_BG2.Checked;
+			if (sender == checkEN1_BG3) s.ShowBG3_1 = checkEN1_BG3.Checked;
+			if (sender == checkEN1_BG4) s.ShowBG4_1 = checkEN1_BG4.Checked;
+			if (sender == checkEN0_OBJ) s.ShowOBJ_0 = checkEN0_OBJ.Checked;
+			if (sender == checkEN1_OBJ) s.ShowOBJ_1 = checkEN1_OBJ.Checked;
+			if (sender == checkEN2_OBJ) s.ShowOBJ_2 = checkEN2_OBJ.Checked;
+			if (sender == checkEN3_OBJ) s.ShowOBJ_3 = checkEN3_OBJ.Checked;
 
 			if ((Control.ModifierKeys & Keys.Shift) != 0)
 			{
-				if (sender == checkEN0_BG1) Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0;
-				if (sender == checkEN1_BG1) Global.Config.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_1;
-				if (sender == checkEN0_BG2) Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0;
-				if (sender == checkEN1_BG2) Global.Config.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_1;
-				if (sender == checkEN0_BG3) Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0;
-				if (sender == checkEN1_BG3) Global.Config.SNES_ShowBG3_0 = Global.Config.SNES_ShowBG3_1;
-				if (sender == checkEN0_BG4) Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0;
-				if (sender == checkEN1_BG4) Global.Config.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_1;
-				if (sender == checkEN0_OBJ) Global.Config.SNES_ShowOBJ2 = Global.Config.SNES_ShowOBJ3 = Global.Config.SNES_ShowOBJ4 = Global.Config.SNES_ShowOBJ1;
-				if (sender == checkEN1_OBJ) Global.Config.SNES_ShowOBJ1 = Global.Config.SNES_ShowOBJ3 = Global.Config.SNES_ShowOBJ4 = Global.Config.SNES_ShowOBJ2;
-				if (sender == checkEN2_OBJ) Global.Config.SNES_ShowOBJ1 = Global.Config.SNES_ShowOBJ2 = Global.Config.SNES_ShowOBJ4 = Global.Config.SNES_ShowOBJ3;
-				if (sender == checkEN3_OBJ) Global.Config.SNES_ShowOBJ1 = Global.Config.SNES_ShowOBJ2 = Global.Config.SNES_ShowOBJ3 = Global.Config.SNES_ShowOBJ4;
+				if (sender == checkEN0_BG1) s.ShowBG1_1 = s.ShowBG1_0;
+				if (sender == checkEN1_BG1) s.ShowBG1_0 = s.ShowBG1_1;
+				if (sender == checkEN0_BG2) s.ShowBG2_1 = s.ShowBG2_0;
+				if (sender == checkEN1_BG2) s.ShowBG2_0 = s.ShowBG2_1;
+				if (sender == checkEN0_BG3) s.ShowBG3_1 = s.ShowBG3_0;
+				if (sender == checkEN1_BG3) s.ShowBG3_0 = s.ShowBG3_1;
+				if (sender == checkEN0_BG4) s.ShowBG4_1 = s.ShowBG4_0;
+				if (sender == checkEN1_BG4) s.ShowBG4_0 = s.ShowBG4_1;
+				if (sender == checkEN0_OBJ) s.ShowOBJ_1 = s.ShowOBJ_2 = s.ShowOBJ_3 = s.ShowOBJ_0;
+				if (sender == checkEN1_OBJ) s.ShowOBJ_0 = s.ShowOBJ_2 = s.ShowOBJ_3 = s.ShowOBJ_1;
+				if (sender == checkEN2_OBJ) s.ShowOBJ_0 = s.ShowOBJ_1 = s.ShowOBJ_3 = s.ShowOBJ_2;
+				if (sender == checkEN3_OBJ) s.ShowOBJ_0 = s.ShowOBJ_1 = s.ShowOBJ_2 = s.ShowOBJ_3;
 				suppression = true;
 				RefreshBGENCheckStatesFromConfig();
 				suppression = false;
 			}
-
-			CoreFileProvider.SyncCoreCommInputSignals();
+			Global.Emulator.PutSettings(s);
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)
