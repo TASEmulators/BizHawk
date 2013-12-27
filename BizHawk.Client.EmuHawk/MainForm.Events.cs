@@ -2081,7 +2081,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
 				}
 			}
-			else if (IsValidMovieExtension(ext))
+			else if (MovieSession.IsValidMovieExtension(ext))
 			{
 				StartNewMovie(new Movie(filePaths[0]), false);
 			}
