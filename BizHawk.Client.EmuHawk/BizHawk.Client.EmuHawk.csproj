@@ -368,6 +368,7 @@
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="DisplayManager\Filters\Scanlines.cs" />
     <Compile Include="GlobalWin.cs" />
+    <Compile Include="HotkeyActions.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
