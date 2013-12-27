@@ -1637,11 +1637,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var dlg = new SaturnPrefs())
 			{
-				var result = dlg.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					SaturnSetPrefs();
-				}
+				dlg.ShowDialog(this);
 			}
 		}
 

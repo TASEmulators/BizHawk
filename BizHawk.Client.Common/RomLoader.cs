@@ -294,7 +294,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "SAT":
 								{
-									var saturn = new Yabause(nextComm, disc, Global.Config.SaturnUseGL);
+									var saturn = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
 									nextEmulator = saturn;
 								}
 								break;
