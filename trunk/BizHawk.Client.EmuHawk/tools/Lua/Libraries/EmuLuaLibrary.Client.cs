@@ -67,12 +67,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					GlobalWin.Rewinder.RewindActive = false;
+					Global.Rewinder.RewindActive = false;
 					GlobalWin.OSD.AddMessage("Rewind suspended");
 				}
 				else
 				{
-					GlobalWin.Rewinder.RewindActive = true;
+					Global.Rewinder.RewindActive = true;
 					GlobalWin.OSD.AddMessage("Rewind enabled");
 				}
 			}

@@ -19,10 +19,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (GlobalWin.Rewinder.HasBuffer)
+			if (Global.Rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = String.Format("{0:0.00}", GlobalWin.Rewinder.FullnessRatio * 100) + "%";
-				RewindFramesUsedLabel.Text = GlobalWin.Rewinder.Count.ToString();
+				FullnessLabel.Text = String.Format("{0:0.00}", Global.Rewinder.FullnessRatio * 100) + "%";
+				RewindFramesUsedLabel.Text = Global.Rewinder.Count.ToString();
 			}
 			else
 			{
@@ -126,11 +126,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RewindEnabledSmall = SmallStateEnabledBox.Checked;
 			Global.Config.RewindEnabledMedium = MediumStateEnabledBox.Checked;
 			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
-
-			GlobalWin.Rewinder.DoRewindSettings();
-
+			Global.Rewinder.DoRewindSettings();
 			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
-
 			Global.Config.Rewind_MediumStateSize = (int)(MediumStateUpDown.Value * 1024);
 			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
 			Global.Config.Rewind_OnDisk = DiskBufferCheckbox.Checked;
@@ -260,9 +257,9 @@ namespace BizHawk.Client.EmuHawk
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
 
-				if (GlobalWin.Rewinder.Count > 0)
+				if (Global.Rewinder.Count > 0)
 				{
-					avg_state_size = GlobalWin.Rewinder.Size / GlobalWin.Rewinder.Count;
+					avg_state_size = Global.Rewinder.Size / Global.Rewinder.Count;
 				}
 				else
 				{

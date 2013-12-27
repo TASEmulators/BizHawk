@@ -9,7 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static MainForm MainForm;
 		public static ToolManager Tools;
-		public static Rewinder Rewinder;
 #if WINDOWS
 		public static DirectSound DSound;
 		public static Direct3D Direct3D;
