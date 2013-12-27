@@ -31,6 +31,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static bool IsValidMovieExtension(string ext)
+		{
+			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
+			{
+				return true;
+			}
+			else if (ext.ToUpper() == ".TAS" || ext.ToUpper() == ".BKM")
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
 		{
 			if (_multiTrack.IsActive)

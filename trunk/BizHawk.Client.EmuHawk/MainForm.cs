@@ -1527,20 +1527,6 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		private static bool IsValidMovieExtension(string ext)
-		{
-			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
-			{
-				return true;
-			}
-			else if (ext.ToUpper() == ".TAS" || ext.ToUpper() == ".BKM")
-			{
-				return true;
-			}
-
-			return false;
-		}
-
 		private void LoadMoviesFromRecent(string path)
 		{
 			var movie = new Movie(path);
