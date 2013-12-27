@@ -12,7 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
-		private bool _preventSelectedChangeEvent; // Selected Index Changed events are a pain
 
 		private void LockDownCores()
 		{
@@ -54,8 +53,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
 			BasePathBox.Text = Global.Config.PathEntries.GlobalBaseFragment;
-			
-			StartTabPages();
+
+			DoTabs(Global.Config.PathEntries.ToList());
 			SetDefaultFocusedTab();
 			DoRomToggle();
 		}
@@ -73,126 +72,8 @@ namespace BizHawk.Client.EmuHawk
 				?? new TabPage();
 		}
 
-		private void StartTabPages()
-		{
-			PathTabControl.TabPages.Clear();
-			var systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
-			systems.Sort();
-			foreach (var systemDisplayName in systems)
-			{
-				PathTabControl.TabPages.Add(new TabPage
-				{
-					Text = systemDisplayName,
-					Name = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System
-				});
-			}
-		}
-
-		private void DoTabPage(TabPage tabPage)
-		{
-			const int xpos = 6;
-			int textboxWidth = tabPage.Width - 150;
-			const int padding = 5;
-			const int buttonWidth = 26;
-			int widgetOffset = textboxWidth + 15;
-			const int rowHeight = 30;
-			var paths = Global.Config.PathEntries.Where(x => x.System == tabPage.Name).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
-
-			int ypos = 14;
-
-			foreach (var path in paths)
-			{
-				var box = new TextBox
-				{
-					Text = path.Path,
-					Location = new Point(xpos, ypos),
-					Width = textboxWidth,
-					Name = path.Type,
-					Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-					MinimumSize = new Size(26, 23),
-					AutoCompleteMode = AutoCompleteMode.SuggestAppend,
-					AutoCompleteCustomSource = AutoCompleteOptions,
-					AutoCompleteSource = AutoCompleteSource.CustomSource,
-				};
-
-				var btn = new Button
-				{
-					Text = String.Empty,
-					Image = Properties.Resources.OpenFile,
-					Location = new Point(widgetOffset, ypos - 1),
-					Width = buttonWidth,
-					Name = path.Type,
-					Anchor = AnchorStyles.Top | AnchorStyles.Right,
-				};
-
-				var tempBox = box;
-				var tempPath = path.Type;
-				var tempSystem = path.System;
-				btn.Click += delegate
-				{
-					BrowseFolder(tempBox, tempPath, tempSystem);
-				};
-
-				int infoPadding = 0;
-				if (tabPage.Name.Contains("Global") && path.Type == "Firmware")
-				{
-					infoPadding = 26;
-				}
-
-				var label = new Label
-				{
-					Text = path.Type,
-					Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, ypos + 4),
-					Width = 100,
-					Name = path.Type,
-					Anchor = AnchorStyles.Top | AnchorStyles.Right,
-				};
-
-				tabPage.Controls.Add(label);
-				tabPage.Controls.Add(btn);
-				tabPage.Controls.Add(box);
-
-				ypos += rowHeight;
-			}
-
-			var sys = tabPage.Name;
-			if (tabPage.Name == "PCE") // Hack
-			{
-				sys = "PCECD";
-			}
-
-			if (tabPage.Name.Contains("Global"))
-			{
-				var firmwareButton = new Button
-				{
-					Name = sys,
-					Text = String.Empty,
-					Image = Properties.Resources.Help,
-					Location = new Point(499, 253),
-					Width = 26,
-					Anchor = AnchorStyles.Top | AnchorStyles.Right
-				};
-
-				firmwareButton.Click += delegate
-				{
-					if (Owner is FirmwaresConfig)
-					{
-						MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
-						return;
-					}
-
-					var f = new FirmwaresConfig { TargetSystem = sys };
-					f.ShowDialog(this);
-				};
-
-				tabPage.Controls.Add(firmwareButton);
-			}
-		}
-
-		// TODO: this is only used by the defaults button, refactor since it is now redundant code (will have to force the rebuilding of all tabpages, currently they only build as necessar
 		private void DoTabs(List<PathEntry> pathCollection)
 		{
-			_preventSelectedChangeEvent = true;
 			PathTabControl.Visible = false;
 			PathTabControl.TabPages.Clear();
 
@@ -258,10 +139,16 @@ namespace BizHawk.Client.EmuHawk
 						BrowseFolder(tempBox, tempPath, tempSystem);
 					};
 
+					int infoPadding = 0;
+					if (t.Name.Contains("Global") && path.Type == "Firmware")
+					{
+						infoPadding = 26;
+					}
+
 					var label = new Label
 						{
 						Text = path.Type,
-						Location = new Point(widgetOffset + buttonWidth + padding, _y + 4),
+						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, _y + 4),
 						Width = 100,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
@@ -280,21 +167,28 @@ namespace BizHawk.Client.EmuHawk
 					sys = "PCECD";
 				}
 
-				var hasFirmwares = FirmwaresConfig.SystemGroupNames.Any(x => x.Key == sys);
-
-				if (hasFirmwares)
+				if (t.Name.Contains("Global"))
 				{
 					var firmwareButton = new Button
 					{
 						Name = sys,
-						Text = "&Firmware",
-						Location = new Point(_x, _y),
-						Width = 75,
+						Text = String.Empty,
+						Image = Properties.Resources.Help,
+						Location = new Point(115, 253),
+						Width = 26,
+						Anchor = AnchorStyles.Top | AnchorStyles.Right
 					};
+
 					firmwareButton.Click += delegate
 					{
+						if (Owner is FirmwaresConfig)
+						{
+							MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
+							return;
+						}
+
 						var f = new FirmwaresConfig { TargetSystem = sys };
-						f.ShowDialog();
+						f.ShowDialog(this);
 					};
 
 					t.Controls.Add(firmwareButton);
@@ -305,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 
 			PathTabControl.TabPages.AddRange(tabPages.ToArray());
 			PathTabControl.Visible = true;
-			_preventSelectedChangeEvent = false;
 		}
 
 		private static void BrowseFolder(TextBox box, string name, string system)
@@ -342,11 +235,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoRomToggle()
 		{
-			var pcontrols = AllPathControls.Where(x => x.Name == "ROM").ToList();
-			foreach (var c in pcontrols)
-			{
-				c.Enabled = !RecentForROMs.Checked;
-			}
+			AllPathControls
+				.Where(x => x.Name == "ROM")
+				.ToList()
+				.ForEach(control => control.Enabled = !RecentForROMs.Checked);
 		}
 
 		private IEnumerable<TextBox> AllPathBoxes
@@ -358,6 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					allPathBoxes.AddRange(tp.Controls.OfType<TextBox>());
 				}
+
 				return allPathBoxes;
 			}
 		}
@@ -371,6 +264,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					allPathControls.AddRange(tp.Controls.OfType<Control>());
 				}
+
 				return allPathControls;
 			}
 		}
@@ -391,18 +285,6 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			DoRomToggle();
-		}
-
-		private void PathTabControl_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_preventSelectedChangeEvent && PathTabControl.TabPages.Count > 0)
-			{
-				var tabPage = (sender as TabControl).SelectedTab;
-				if (tabPage.Controls.Count == 0)
-				{
-					DoTabPage((sender as TabControl).SelectedTab);
-				}
-			}
 		}
 
 		private void BrowseBase_Click(object sender, EventArgs e)
@@ -432,6 +314,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
 			DoTabs(PathEntryCollection.DefaultValues);
+			SetDefaultFocusedTab();
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
