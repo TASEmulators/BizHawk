@@ -2473,20 +2473,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Rewinder.Rewind(1);
 				suppressCaptureRewind = true;
-				if (0 == GlobalWin.Rewinder.RewindBuf.Count)
-				{
-					runFrame = false;
-				}
-				else
-				{
-					runFrame = true;
-				}
+
+				runFrame = !(GlobalWin.Rewinder.Count == 0);
+
 				//we don't want to capture input when rewinding, even in record mode
 				if (Global.MovieSession.Movie.IsRecording)
 				{
 					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
+
 			if (UpdateFrame)
 			{
 				runFrame = true;

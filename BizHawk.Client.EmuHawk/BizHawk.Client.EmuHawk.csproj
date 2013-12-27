@@ -432,7 +432,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rewind.cs" />
+    <Compile Include="rewind\Rewinder.cs" />
+    <Compile Include="rewind\RewindThreader.cs" />
+    <Compile Include="rewind\StreamBlobDatabase.cs" />
     <Compile Include="ScanlineSlider.cs">
       <SubType>Form</SubType>
     </Compile>
