@@ -28,23 +28,8 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		#region Duplicate code to mainform, need to refactor!
-
-		/*
-		object __SyncSettingsHack = null;
-
-		object GetCoreSyncSettings<T>()
-			where T : IEmulator
-		{
-			// if movie 2.0 was finished, this is where you'd decide whether to get a settings object
-			// from a config file or from the movie file
-
-			// since all we have right now is movie 1.0, we get silly hacks instead
-
-			return __SyncSettingsHack ?? Global.Config.GetCoreSyncSettings<T>();
-		}
-		*/
-
+		// helper methods for the settings events
+		
 		object GetCoreSettings<T>()
 			where T : IEmulator
 		{
@@ -63,7 +48,6 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
-		#endregion
 		#region SNES specific stuff - clean up or move elsewhere
 
 		private readonly Dictionary<string, string> _snesPrepared = new Dictionary<string, string>();
@@ -357,7 +341,7 @@ namespace BizHawk.Client.Common
 											, game.System);
 									}
 
-									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
+									game.FirmwareHash = Util.Hash_SHA1(rom.RomData);
 									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, GetCoreSettings<PCEngine>());
 									break;
 								}

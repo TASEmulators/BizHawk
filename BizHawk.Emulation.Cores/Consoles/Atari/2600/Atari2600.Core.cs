@@ -197,8 +197,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 						game.Name,
-						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
-						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
+						Util.Hash_SHA1(rom), Util.Hash_MD5(rom),
 						mapper.GetType());
 		}
 

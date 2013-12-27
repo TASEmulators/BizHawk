@@ -95,8 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
-					Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
+					Util.Hash_SHA1(romdata), Util.Hash_MD5(romdata)
 					);
 
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);

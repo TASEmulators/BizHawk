@@ -2907,8 +2907,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 						loader.Game.Name,
-						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(loader.Rom.RomData)),
-						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(loader.Rom.RomData)));
+						Util.Hash_SHA1(loader.Rom.RomData),
+						Util.Hash_MD5(loader.Rom.RomData));
 				}
 
 				if (Global.Emulator.BoardName != null)
