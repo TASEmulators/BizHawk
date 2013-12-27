@@ -738,6 +738,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchListView.ItemCount = _searches.Count;
 				SetTotal();
 				WatchListView.SelectedIndices.Clear();
+				ToggleSearchDependentToolBarItems();
 			}
 		}
 
