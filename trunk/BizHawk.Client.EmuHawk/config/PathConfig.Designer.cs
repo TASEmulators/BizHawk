@@ -66,16 +66,15 @@
 			// 
 			// PathTabControl
 			// 
-			this.PathTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PathTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.PathTabControl.Location = new System.Drawing.Point(12, 84);
 			this.PathTabControl.Multiline = true;
 			this.PathTabControl.Name = "PathTabControl";
 			this.PathTabControl.SelectedIndex = 0;
 			this.PathTabControl.Size = new System.Drawing.Size(615, 321);
 			this.PathTabControl.TabIndex = 2;
-			this.PathTabControl.SelectedIndexChanged += new System.EventHandler(this.PathTabControl_SelectedIndexChanged);
 			// 
 			// SaveBtn
 			// 
@@ -122,8 +121,8 @@
 			// 
 			// BasePathBox
 			// 
-			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.BasePathBox.Location = new System.Drawing.Point(12, 15);
 			this.BasePathBox.Name = "BasePathBox";
 			this.BasePathBox.Size = new System.Drawing.Size(510, 20);
