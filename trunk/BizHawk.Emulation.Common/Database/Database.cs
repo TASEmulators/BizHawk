@@ -114,11 +114,11 @@ namespace BizHawk.Emulation.Common
 			if (db.TryGetValue(hash, out cgi))
 				return new GameInfo(cgi);
 
-			hash = Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData));
+			hash = Util.Hash_MD5(RomData);
 			if (db.TryGetValue(hash, out cgi))
 				return new GameInfo(cgi);
 
-			hash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(RomData));
+			hash = Util.Hash_SHA1(RomData);
 			if (db.TryGetValue(hash, out cgi))
 				return new GameInfo(cgi);
 

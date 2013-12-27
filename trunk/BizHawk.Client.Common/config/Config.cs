@@ -581,17 +581,10 @@ namespace BizHawk.Client.Common
 		public bool SNESUseRingBuffer = true;
 		public bool SNESAlwaysDoubleSize = false;
 
-		//N64 settings
-
-		//TI 83 settings
-
 		//GB settings
-		//public bool GB_ForceDMG = false;
-		//public bool GB_GBACGB = false;
-		//public bool GB_MulticartCompat = false;
-		//public string GB_PaletteFile = "";
+		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
+		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
-		//public GBColors.ColorType CGBColors = GBColors.ColorType.gambatte;
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
