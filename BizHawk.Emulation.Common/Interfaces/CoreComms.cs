@@ -17,14 +17,14 @@ namespace BizHawk.Emulation.Common
 
 		public ICoreFileProvider CoreFileProvider;
 
-		public string SNES_ExePath;
-		public string SNES_Profile;
-		public bool SNES_UseRingBuffer;
-		public bool SNES_AlwaysDoubleSize;
+		//public string SNES_ExePath;
+		//public string SNES_Profile;
+		//public bool SNES_UseRingBuffer;
+		//public bool SNES_AlwaysDoubleSize;
 
-		public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
-		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
-		public bool SNES_ShowOBJ_0, SNES_ShowOBJ_1, SNES_ShowOBJ_2, SNES_ShowOBJ_3;
+		//public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
+		//public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
+		//public bool SNES_ShowOBJ_0, SNES_ShowOBJ_1, SNES_ShowOBJ_2, SNES_ShowOBJ_3;
 
 		//public bool Atari2600_ShowBG = true, Atari2600_ShowPlayer1 = true, Atari2600_ShowPlayer2 = true, Atari2600_ShowMissle1 = true, Atari2600_ShowMissle2 = true, Atari2600_ShowBall = true, Atari2600_ShowPF = true;
 

@@ -796,121 +796,129 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
+				s.ShowBG1_1 = s.ShowBG1_0 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				s.ShowBG1_1 = s.ShowBG1_0 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG1_1 ? "BG 1 Layer On" : "BG 1 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowBG1_1 ? "BG 1 Layer On" : "BG 1 Layer Off");
 		}
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
+				s.ShowBG2_1 = s.ShowBG2_0 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				s.ShowBG2_1 = s.ShowBG2_0 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
 		}
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
+				s.ShowBG3_1 = s.ShowBG3_0 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				s.ShowBG3_1 = s.ShowBG3_0 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
 		}
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
+				s.ShowBG4_1 = s.ShowBG4_0 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				s.ShowBG4_1 = s.ShowBG4_0 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ1(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowOBJ1 = setto.Value;
+				s.ShowOBJ_0 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowOBJ1 ^= true;
+				s.ShowOBJ_0 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ1 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowOBJ_0 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ2(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowOBJ2 = setto.Value;
+				s.ShowOBJ_1 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowOBJ2 ^= true;
+				s.ShowOBJ_1 ^= true;
 			}
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ2 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowOBJ_1 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowOBJ3 = setto.Value;
+				s.ShowOBJ_2 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowOBJ3 ^= true;
+				s.ShowOBJ_2 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ3 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowOBJ_2 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
 		}
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
+			var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
 			if (setto.HasValue)
 			{
-				Global.Config.SNES_ShowOBJ4 = setto.Value;
+				s.ShowOBJ_3 = setto.Value;
 			}
 			else
 			{
-				Global.Config.SNES_ShowOBJ4 ^= true;
+				s.ShowOBJ_3 ^= true;
 			}
 
-			CoreFileProvider.SyncCoreCommInputSignals();
-			GlobalWin.OSD.AddMessage(Global.Config.SNES_ShowOBJ4 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
+			Global.Emulator.PutSettings(s);
+			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
 
 		#endregion
@@ -2830,12 +2838,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game = loader.Game;
 				CoreFileProvider.SyncCoreCommInputSignals();
 				InputManager.SyncControls();
-
-				if (loader.LoadedEmulator is LibsnesCore)
-				{
-					(loader.LoadedEmulator as LibsnesCore)
-						.SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Global.Config.SNESPalette, false));
-				}
 
 				if (loader.Game.System == "NES")
 				{

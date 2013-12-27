@@ -390,24 +390,24 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsDebuggerRefreshRate = 4;
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
-		public string SNESPalette = "BizHawk";
+		//public string SNESPalette = "BizHawk";
 
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.
 		//this may not be important for the bg (there are two priority levels)
 		//but it may be useful for OBJ, so we might want to control them separately
-		public bool SNES_ShowBG1_0 = true;
-		public bool SNES_ShowBG2_0 = true;
-		public bool SNES_ShowBG3_0 = true;
-		public bool SNES_ShowBG4_0 = true;
-		public bool SNES_ShowBG1_1 = true;
-		public bool SNES_ShowBG2_1 = true;
-		public bool SNES_ShowBG3_1 = true;
-		public bool SNES_ShowBG4_1 = true;
-		public bool SNES_ShowOBJ1 = true;
-		public bool SNES_ShowOBJ2 = true;
-		public bool SNES_ShowOBJ3 = true;
-		public bool SNES_ShowOBJ4 = true;
+		//public bool SNES_ShowBG1_0 = true;
+		//public bool SNES_ShowBG2_0 = true;
+		//public bool SNES_ShowBG3_0 = true;
+		//public bool SNES_ShowBG4_0 = true;
+		//public bool SNES_ShowBG1_1 = true;
+		//public bool SNES_ShowBG2_1 = true;
+		//public bool SNES_ShowBG3_1 = true;
+		//public bool SNES_ShowBG4_1 = true;
+		//public bool SNES_ShowOBJ1 = true;
+		//public bool SNES_ShowOBJ2 = true;
+		//public bool SNES_ShowOBJ3 = true;
+		//public bool SNES_ShowOBJ4 = true;
 
 		// PCE BG Viewer settings
 		public bool PCEBGViewerSaveWIndowPosition = true;
@@ -577,9 +577,9 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 
 		//SNES settings
-		public string SNESProfile = "Compatibility";
-		public bool SNESUseRingBuffer = true;
-		public bool SNESAlwaysDoubleSize = false;
+		//public string SNESProfile = "Compatibility";
+		//public bool SNESUseRingBuffer = true;
+		//public bool SNESAlwaysDoubleSize = false;
 
 		//GB settings
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
