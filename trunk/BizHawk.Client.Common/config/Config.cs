@@ -409,27 +409,12 @@ namespace BizHawk.Client.Common
 		public bool SNES_ShowOBJ3 = true;
 		public bool SNES_ShowOBJ4 = true;
 
-		// SATURN GRAPHICS SETTINGS
-		public bool SaturnUseGL = false;
-		public int SaturnDispFactor = 1;
-		public bool SaturnDispFree = false;
-		public int SaturnGLW = 640;
-		public int SaturnGLH = 480;
-
 		// PCE BG Viewer settings
 		public bool PCEBGViewerSaveWIndowPosition = true;
 		public bool PCEBGViewerAutoload = false;
 		public int PCEBGViewerWndx = -1;
 		public int PCEBGViewerWndy = -1;
 		public int PCEBGViewerRefreshRate = 16;
-
-		// Coleco Settings
-		//public bool ColecoSkipBiosIntro = false;
-
-		//GB Debugger settings
-		public bool AutoloadGBDebugger = false;
-		public bool GBDebuggerSaveWindowPosition = true;
-		public bool GameBoySkipBIOS = true;
 
 		#region Cheats Dialog
 

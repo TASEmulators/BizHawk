@@ -41,21 +41,26 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		LibYabause.InputCallback InputCallbackH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, bool GL)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object SyncSettings)
 		{
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
 			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
+
+			this.SyncSettings = (SaturnSyncSettings)SyncSettings ?? new SaturnSyncSettings();
+
 			ResetCounters();
-			Init(bios, GL);
+			Init(bios);
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
 		}
 
-		void Init(byte[] bios, bool GL = false)
+		void Init(byte[] bios)
 		{
+			bool GL = SyncSettings.UseGL;
+
 			if (AttachedCore != null)
 			{
 				AttachedCore.Dispose();
@@ -92,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			InitMemoryDomains();
 
 			GLMode = GL;
+			// if in GL mode, this will trigger the initial GL resize
+			PutSyncSettings(this.SyncSettings);
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -632,9 +639,42 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#endregion
 
+		SaturnSyncSettings SyncSettings;
+
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
-		public bool PutSyncSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			var n = (SaturnSyncSettings)o;
+			bool ret = SaturnSyncSettings.NeedsReboot(SyncSettings, n);
+
+			SyncSettings = n;
+
+			if (GLMode && SyncSettings.UseGL)
+				if (SyncSettings.DispFree)
+					SetGLRes(0, SyncSettings.GLW, SyncSettings.GLH);
+				else
+					SetGLRes(SyncSettings.DispFactor, 0, 0);
+			return ret;
+		}
+
+		public class SaturnSyncSettings
+		{
+			public bool UseGL = false;
+			public int DispFactor = 1;
+			public bool DispFree = false;
+			public int GLW = 640;
+			public int GLH = 480;
+
+			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
+			{
+				return x.UseGL != y.UseGL;
+			}
+			public SaturnSyncSettings Clone()
+			{
+				return (SaturnSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

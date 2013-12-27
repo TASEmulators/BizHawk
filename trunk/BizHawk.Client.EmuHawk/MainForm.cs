@@ -1376,32 +1376,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaturnSetPrefs(Yabause e = null)
-		{
-			if (e == null)
-			{
-				e = Global.Emulator as Yabause;
-			}
 
-			if (Global.Config.SaturnUseGL != e.GLMode)
-			{
-				// theoretically possible; not coded. meh.
-				FlagNeedsReboot();
-				return;
-			}
-
-			if (e.GLMode && Global.Config.SaturnUseGL)
-			{
-				if (Global.Config.SaturnDispFree)
-				{
-					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
-				}
-				else
-				{
-					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
-				}
-			}
-		}
 
 		private void HandlePlatformMenus()
 		{
@@ -2891,11 +2866,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
-				if (loader.LoadedEmulator is Yabause)
-				{
-					SaturnSetPrefs(loader.LoadedEmulator as Yabause);
-				}
-				else if (loader.LoadedEmulator is TI83)
+				if (loader.LoadedEmulator is TI83)
 				{
 					if (Global.Config.TI83autoloadKeyPad)
 					{
