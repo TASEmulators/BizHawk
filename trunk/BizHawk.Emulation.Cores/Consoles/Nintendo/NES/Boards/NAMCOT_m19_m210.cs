@@ -33,11 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
 			nt_banks_1k.Dispose();
-			if (audio != null)
-			{
-				audio.Dispose();
-				audio = null;
-			}
 		}
 
 		public override void SyncState(Serializer ser)
@@ -78,7 +73,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//hydelide 3 *this is a good test of more advanced features
 					Cart.vram_size = 8; //not many test cases of this, but hydelide 3 needs it.
 					AssertPrg(128,256); AssertChr(128,256); AssertVram(8); AssertWram(0,8);
-					audio = new Namco163Audio();
+					if (NES.apu != null)
+						audio = new Namco163Audio(NES.apu.ExternalQueue);
 					break;
 
 				//mapper 210:
@@ -320,12 +316,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					audio.Clock();
 				}
 			}
-		}
-
-		public override void ApplyCustomAudio(short[] samples)
-		{
-			if (audio != null)
-				audio.ApplyCustomAudio(samples);
 		}
 	}
 }
