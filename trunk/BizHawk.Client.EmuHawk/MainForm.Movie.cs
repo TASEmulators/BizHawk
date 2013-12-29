@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
 					if (!String.IsNullOrWhiteSpace(str))
 					{
-						__SyncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
+						this._syncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
 						{
 							SkipBiosIntro = str.ToLower() == "true"
 						};
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			finally
 			{
 				// ensure subsequent calls to LoadRom won't get the settings object created here
-				__SyncSettingsHack = null;
+				this._syncSettingsHack = null;
 			}
 
 			if (!fromTastudio)

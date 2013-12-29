@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudioToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.LoadTAStudio();
+			GlobalWin.Tools.Load<TAStudio>();
 		}
 
 		private void SNESGraphicsDebuggerToolbarItem_Click(object sender, EventArgs e)
