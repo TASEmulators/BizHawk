@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void client_opentasstudio()
 		{
-			GlobalWin.MainForm.LoadTAStudio();
+			GlobalWin.Tools.Load<TAStudio>();
 		}
 
 		public static void client_opentoolbox()

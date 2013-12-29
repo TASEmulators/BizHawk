@@ -448,12 +448,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			RecordAVI();
+			this.RecordAv();
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
 		{
-			StopAVI();
+			this.StopAv();
 		}
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
@@ -1136,7 +1136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadTAStudio();
+			GlobalWin.Tools.Load<TAStudio>();
 		}
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
@@ -1542,12 +1542,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesObj1MenuItem_Click(object sender, EventArgs e)
 		{
-			SNES_ToggleOBJ1();
+			this.SNES_ToggleObj1();
 		}
 
 		private void SnesObj2MenuItem_Click(object sender, EventArgs e)
 		{
-			SNES_ToggleOBJ2();
+			this.SNES_ToggleObj2();
 		}
 
 		private void SnesObj3MenuItem_Click(object sender, EventArgs e)
