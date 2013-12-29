@@ -77,7 +77,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				WritePipeMessage(eMessage.eMessage_QUERY_serialize_size);
 				int ret = brPipe.ReadInt32();
-				Console.WriteLine("eMessage.eMessage_QUERY_serialize_size: " + ret);
 				if (ret > 100)
 				{
 					return ret;
