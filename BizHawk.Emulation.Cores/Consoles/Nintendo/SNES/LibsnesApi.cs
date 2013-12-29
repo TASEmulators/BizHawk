@@ -220,11 +220,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				//this approach is slower than having one big case. but, its easier to manage. once the code is stable, someone could clean it up (probably creating a delegate table would be best)
 				if (Handle_SIG(msg)) continue;
 				if (Handle_BRK(msg)) continue;
-				switch (msg)
-				{
-					case eMessage.eMessage_Complete:
-						return;
-				}
 			}
 		} 
 
@@ -260,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void SPECIAL_Resume()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_run);
+			WritePipeMessage(eMessage.eMessage_ResumeAfterBRK);
 		}
 	}
 

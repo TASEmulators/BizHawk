@@ -578,7 +578,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_layer_enable(4, 2, Settings.ShowOBJ_2);
 			api.QUERY_set_layer_enable(4, 3, Settings.ShowOBJ_3);
 
-			RefreshMemoryCallbacks();
+			RefreshMemoryCallbacks(false);
 
 			//apparently this is one frame?
 			timeFrameCounter++;
@@ -596,12 +596,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.EndBufferIO();
 		}
 
-		void RefreshMemoryCallbacks()
+		void RefreshMemoryCallbacks(bool suppress)
 		{
 			var mcs = CoreComm.MemoryCallbackSystem;
-			api.QUERY_set_state_hook_exec(mcs.HasExecutes);
-			api.QUERY_set_state_hook_read(mcs.HasReads);
-			api.QUERY_set_state_hook_write(mcs.HasWrites);
+			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
+			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
+			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
 		public DisplayType DisplayType
@@ -927,6 +927,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			fixed (byte* pbuf = &data[0])
 				api.CMD_unserialize(new IntPtr(pbuf), size);
 		}
+
+
 		/// <summary>
 		/// handle the unmanaged part of savestating
 		/// </summary>
