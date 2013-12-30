@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class RamSearchEngine
 	{
-		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy };
+		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy }
 		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
 		
 		private int? _differentBy;
@@ -72,14 +72,14 @@ namespace BizHawk.Client.Common
 				case Watch.WatchSize.Word:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						for (int i = 0; i < domain.Size; i += _settings.CheckMisAligned ? 1 : 2)
 						{
 							_watchList.Add(new MiniWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
-						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 2))
+						for (int i = 0; i < domain.Size; i += _settings.CheckMisAligned ? 1 : 2)
 						{
 							_watchList.Add(new MiniWordWatch(domain, i, _settings.BigEndian));
 						}
@@ -89,14 +89,14 @@ namespace BizHawk.Client.Common
 				case Watch.WatchSize.DWord:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						for (int i = 0; i < domain.Size; i += _settings.CheckMisAligned ? 1 : 4)
 						{
 							_watchList.Add(new MiniDWordWatchDetailed(domain, i, _settings.BigEndian));
 						}
 					}
 					else
 					{
-						for (int i = 0; i < domain.Size; i += (_settings.CheckMisAligned ? 1 : 4))
+						for (int i = 0; i < domain.Size; i += _settings.CheckMisAligned ? 1 : 4)
 						{
 							_watchList.Add(new MiniDWordWatch(domain, i, _settings.BigEndian));
 						}
@@ -219,7 +219,11 @@ namespace BizHawk.Client.Common
 
 		public Compare CompareTo
 		{
-			get { return _compareTo; }
+			get
+			{
+				return _compareTo;
+			}
+
 			set
 			{
 				if (CanDoCompareType(value))
@@ -310,7 +314,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_settings.Mode == Settings.SearchMode.Detailed)
 			{
-				foreach (IMiniWatchDetails watch in _watchList.Cast<IMiniWatchDetails>())
+				foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 				{
 					watch.ClearChangeCount();
 				}
@@ -334,45 +338,66 @@ namespace BizHawk.Client.Common
 				_watchList.Clear();
 			}
 
-			switch(_settings.Size)
+			switch (_settings.Size)
 			{
 				default:
 				case Watch.WatchSize.Byte:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						foreach(var addr in addresses) { _watchList.Add(new MiniByteWatchDetailed(_settings.Domain, addr)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniByteWatchDetailed(_settings.Domain, addr));
+						}
 					}
 					else
 					{
-						foreach(var addr in addresses) { _watchList.Add(new MiniByteWatch(_settings.Domain, addr)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniByteWatch(_settings.Domain, addr));
+						}
 					}
+
 					break;
 				case Watch.WatchSize.Word:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						foreach (var addr in addresses) { _watchList.Add(new MiniWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian));
+						}
 					}
 					else
 					{
-						foreach (var addr in addresses) { _watchList.Add(new MiniWordWatch(_settings.Domain, addr, _settings.BigEndian)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniWordWatch(_settings.Domain, addr, _settings.BigEndian));
+						}
 					}
+
 					break;
 				case Watch.WatchSize.DWord:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
 					{
-						foreach (var addr in addresses) { _watchList.Add(new MiniDWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniDWordWatchDetailed(_settings.Domain, addr, _settings.BigEndian));
+						}
 					}
 					else
 					{
-						foreach (var addr in addresses) { _watchList.Add(new MiniDWordWatch(_settings.Domain, addr, _settings.BigEndian)); }
+						foreach (var addr in addresses)
+						{
+							_watchList.Add(new MiniDWordWatch(_settings.Domain, addr, _settings.BigEndian));
+						}
 					}
+
 					break;
 			}
 		}
 
 		public void Sort(string column, bool reverse)
 		{
-			switch(column)
+			switch (column)
 			{
 				case WatchList.ADDRESS:
 					if (reverse)
@@ -383,6 +408,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList.OrderBy(x => x.Address).ToList();
 					}
+
 					break;
 				case WatchList.VALUE:
 					if (reverse)
@@ -393,6 +419,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList.OrderBy(x => GetValue(x.Address)).ToList();
 					}
+
 					break;
 				case WatchList.PREV:
 					if (reverse)
@@ -403,6 +430,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList.OrderBy(x => x.Previous).ToList();
 					}
+
 					break;
 				case WatchList.CHANGES:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
@@ -422,6 +450,7 @@ namespace BizHawk.Client.Common
 								.Cast<IMiniWatch>().ToList();
 						}
 					}
+
 					break;
 				case WatchList.DIFF:
 					if (reverse)
@@ -432,6 +461,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList.OrderBy(x => (GetValue(x.Address) - x.Previous)).ToList();
 					}
+
 					break;
 			}
 		}
@@ -507,7 +537,6 @@ namespace BizHawk.Client.Common
 					{
 						throw new InvalidOperationException();
 					}
-					
 			}
 		}
 
@@ -523,7 +552,7 @@ namespace BizHawk.Client.Common
 					case ComparisonOperator.NotEqual:
 						return watchList.Where(x => GetValue(x.Address) != _compareValue.Value);
 					case ComparisonOperator.GreaterThan:
-						return watchList.Where(x =>  GetValue(x.Address) > _compareValue.Value);
+						return watchList.Where(x => GetValue(x.Address) > _compareValue.Value);
 					case ComparisonOperator.GreaterThanEqual:
 						return watchList.Where(x => GetValue(x.Address) >= _compareValue.Value);
 					case ComparisonOperator.LessThan:
@@ -695,6 +724,7 @@ namespace BizHawk.Client.Common
 					{
 						return theByte;
 					}
+
 				case Watch.WatchSize.Word:
 					var theWord = _settings.Domain.PeekWord(addr, _settings.BigEndian);
 					if (_settings.Type == Watch.DisplayType.Signed)
@@ -705,6 +735,7 @@ namespace BizHawk.Client.Common
 					{
 						return theWord;
 					}
+
 				case Watch.WatchSize.DWord:
 					var theDWord = _settings.Domain.PeekDWord(addr, _settings.BigEndian);
 					if (_settings.Type == Watch.DisplayType.Signed)
@@ -749,7 +780,7 @@ namespace BizHawk.Client.Common
 			void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian);
 		}
 
-		private class MiniByteWatch : IMiniWatch
+		private sealed class MiniByteWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
 			private byte _previous;
@@ -771,7 +802,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private class MiniWordWatch : IMiniWatch
+		private sealed class MiniWordWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
 			private ushort _previous;
@@ -793,7 +824,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public class MiniDWordWatch : IMiniWatch
+		public sealed class MiniDWordWatch : IMiniWatch
 		{
 			public int Address { get; private set; }
 			private uint _previous;
@@ -818,8 +849,9 @@ namespace BizHawk.Client.Common
 		private sealed class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
+
 			private byte _previous;
-			int _changecount;
+			private int _changecount;
 
 			public MiniByteWatchDetailed(MemoryDomain domain, int addr)
 			{
@@ -844,7 +876,7 @@ namespace BizHawk.Client.Common
 
 			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				byte value = domain.PeekByte(Address);
+				var value = domain.PeekByte(Address);
 				if (value != Previous)
 				{
 					_changecount++;
@@ -870,8 +902,9 @@ namespace BizHawk.Client.Common
 		private sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
+
 			private ushort _previous;
-			int _changecount;
+			private int _changecount;
 
 			public MiniWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{
@@ -896,11 +929,12 @@ namespace BizHawk.Client.Common
 
 			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				ushort value = domain.PeekWord(Address, bigendian);
+				var value = domain.PeekWord(Address, bigendian);
 				if (value != Previous)
 				{
 					_changecount++;
 				}
+
 				switch (type)
 				{
 					case Watch.PreviousType.Original:
@@ -921,8 +955,9 @@ namespace BizHawk.Client.Common
 		public sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
 			public int Address { get; private set; }
+
 			private uint _previous;
-			int _changecount;
+			private int _changecount;
 
 			public MiniDWordWatchDetailed(MemoryDomain domain, int addr, bool bigEndian)
 			{
@@ -947,11 +982,12 @@ namespace BizHawk.Client.Common
 
 			public void Update(Watch.PreviousType type, MemoryDomain domain, bool bigendian)
 			{
-				uint value = domain.PeekDWord(Address, bigendian);
+				var value = domain.PeekDWord(Address, bigendian);
 				if (value != Previous)
 				{
 					_changecount++;
 				}
+
 				switch (type)
 				{
 					case Watch.PreviousType.Original:
@@ -974,15 +1010,15 @@ namespace BizHawk.Client.Common
 			/*Require restart*/
 			public enum SearchMode { Fast, Detailed }
 
-			public SearchMode Mode;
-			public MemoryDomain Domain;
-			public Watch.WatchSize Size;
-			public bool CheckMisAligned;
+			public SearchMode Mode { get; set; }
+			public MemoryDomain Domain { get; set; }
+			public Watch.WatchSize Size { get; set; }
+			public bool CheckMisAligned { get; set; }
 
 			/*Can be changed mid-search*/
-			public Watch.DisplayType Type;
-			public bool BigEndian;
-			public Watch.PreviousType PreviousType;
+			public Watch.DisplayType Type { get; set; }
+			public bool BigEndian { get; set; }
+			public Watch.PreviousType PreviousType { get; set; }
 
 			public Settings()
 			{

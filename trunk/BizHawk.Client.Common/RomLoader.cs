@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		public bool Deterministic { get; private set; }
 
-		public class RomErrorArgs
+		public class RomErrorArgs : EventArgs
 		{
 			// TODO: think about naming here, what to pass, a lot of potential good information about what went wrong could go here!
 			public RomErrorArgs(string message, string systemId)
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			public string AttemptedCoreLoad { get; private set; }
 		}
 
-		public class SettingsLoadArgs
+		public class SettingsLoadArgs : EventArgs
 		{
 			public object Settings { get; set; }
 			public Type Core { get; private set; }

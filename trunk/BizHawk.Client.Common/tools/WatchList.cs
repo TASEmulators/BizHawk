@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange };
+		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange }
 
 		private List<Watch> _watchList = new List<Watch>();
 		private MemoryDomain _domain;
@@ -86,6 +86,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.BigEndian)
 							.ToList();
 					}
+
 					break;
 				case VALUE:
 					if (reverse)
@@ -108,8 +109,9 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.BigEndian)
 							.ToList();
 					}
+
 					break;
-				case PREV: //Note: these only work if all entries are detailed objects!
+				case PREV: // Note: these only work if all entries are detailed objects!
 					if (reverse)
 					{
 						_watchList = _watchList
@@ -128,6 +130,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Type)
 							.ToList();
 					}
+
 					break;
 				case DIFF:
 					if (reverse)
@@ -148,6 +151,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Type)
 							.ToList();
 					}
+
 					break;
 				case CHANGES:
 					if (reverse)
@@ -168,6 +172,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Type)
 							.ToList();
 					}
+
 					break;
 				case DOMAIN:
 					if (reverse)
@@ -190,6 +195,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.BigEndian)
 							.ToList();
 					}
+
 					break;
 				case NOTES:
 					if (reverse)
@@ -210,6 +216,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Type)
 							.ToList();
 					}
+
 					break;
 			}
 		}
@@ -220,7 +227,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "{0:X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString() + "}";
+					return "{0:X" + IntHelpers.GetNumDigits(this._domain.Size - 1) + "}";
 				}
 				else
 				{
@@ -260,11 +267,12 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(Watch watch)
 		{
-			bool result = _watchList.Remove(watch);
+			var result = _watchList.Remove(watch);
 			if (result)
 			{
 				Changes = true;
 			}
+
 			return result;
 		}
 
@@ -317,7 +325,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(string path, bool append)
 		{
-			bool result = LoadFile(path, append);
+			var result = LoadFile(path, append);
 
 			if (result)
 			{
@@ -339,7 +347,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!String.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				LoadFile(CurrentFileName, append:false);
+				LoadFile(CurrentFileName, append: false);
 				Changes = false;
 			}
 		}
@@ -351,22 +359,22 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (StreamWriter sw = new StreamWriter(CurrentFileName))
+			using (var sw = new StreamWriter(CurrentFileName))
 			{
-				StringBuilder sb = new StringBuilder();
+				var sb = new StringBuilder();
 				sb
 					.Append("Domain ").AppendLine(_domain.Name)
 					.Append("SystemID ").AppendLine(Global.Emulator.SystemId);
 
-				foreach (Watch w in _watchList)
+				foreach (var watch in _watchList)
 				{
 					sb
-						.Append(String.Format(AddressFormatStr, w.Address ?? 0)).Append('\t')
-						.Append(w.SizeAsChar).Append('\t')
-						.Append(w.TypeAsChar).Append('\t')
-						.Append(w.BigEndian ? '1' : '0').Append('\t')
-						.Append(w.DomainName).Append('\t')
-						.Append(w.Notes)
+						.Append(String.Format(AddressFormatStr, watch.Address ?? 0)).Append('\t')
+						.Append(watch.SizeAsChar).Append('\t')
+						.Append(watch.TypeAsChar).Append('\t')
+						.Append(watch.BigEndian ? '1' : '0').Append('\t')
+						.Append(watch.DomainName).Append('\t')
+						.Append(watch.Notes)
 						.AppendLine();
 				}
 
@@ -393,12 +401,16 @@ namespace BizHawk.Client.Common
 
 		private bool LoadFile(string path, bool append)
 		{
-			string domain = String.Empty;
+			var domain = String.Empty;
 			var file = new FileInfo(path);
-			if (file.Exists == false) return false;
-			bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
-			bool isOldBizHawkWatch = false;
-			using (StreamReader sr = file.OpenText())
+			if (file.Exists == false)
+			{
+				return false;
+			}
+
+			var isBizHawkWatch = true; // Hack to support .wch files from other emulators
+			var isOldBizHawkWatch = false;
+			using (var sr = file.OpenText())
 			{
 				string line;
 
@@ -409,8 +421,8 @@ namespace BizHawk.Client.Common
 
 				while ((line = sr.ReadLine()) != null)
 				{
-					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
+					// .wch files from other emulators start with a number representing the number of watch, that line can be discarded here
+					// Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
 					if (line.Length < 5)
 					{
 						isBizHawkWatch = false;
@@ -428,38 +440,35 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					int numColumns = StringHelpers.HowMany(line, '\t');
+					var numColumns = StringHelpers.HowMany(line, '\t');
 					int startIndex;
 					if (numColumns == 5)
 					{
-						//If 5, then this is a post 1.0.5 .wch file
+						// If 5, then this is a post 1.0.5 .wch file
 						if (isBizHawkWatch)
 						{
-							//Do nothing here
+							// Do nothing here
 						}
 						else
 						{
 							startIndex = line.IndexOf('\t') + 1;
-							line = line.Substring(startIndex, line.Length - startIndex);   //5 digit value representing the watch position number
+							line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
 						}
 					}
 					else if (numColumns == 4)
 					{
 						isOldBizHawkWatch = true;
 					}
-					else //4 is 1.0.5 and earlier
+					else // 4 is 1.0.5 and earlier
 					{
-						continue;   //If not 4, something is wrong with this line, ignore it
+						continue;   // If not 4, something is wrong with this line, ignore it
 					}
 
-
-
-					//Temporary, rename if kept
+					// Temporary, rename if kept
 					int addr;
-					bool bigEndian;
-					MemoryDomain memDomain = Global.Emulator.MemoryDomains.MainMemory;
+					var memDomain = Global.Emulator.MemoryDomains.MainMemory;
 
-					string temp = line.Substring(0, line.IndexOf('\t'));
+					var temp = line.Substring(0, line.IndexOf('\t'));
 					try
 					{
 						addr = Int32.Parse(temp, NumberStyles.HexNumber);
@@ -470,16 +479,15 @@ namespace BizHawk.Client.Common
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   //Type
-					Watch.WatchSize size = Watch.SizeFromChar(line[0]);
-
-
-					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   //Signed
-					Watch.DisplayType type = Watch.DisplayTypeFromChar(line[0]);
+					line = line.Substring(startIndex, line.Length - startIndex);   // Type
+					var size = Watch.SizeFromChar(line[0]);
 
 					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   //Endian
+					line = line.Substring(startIndex, line.Length - startIndex);   // Signed
+					var type = Watch.DisplayTypeFromChar(line[0]);
+
+					startIndex = line.IndexOf('\t') + 1;
+					line = line.Substring(startIndex, line.Length - startIndex);   // Endian
 					try
 					{
 						startIndex = Int16.Parse(line[0].ToString());
@@ -488,25 +496,19 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					if (startIndex == 0)
-					{
-						bigEndian = false;
-					}
-					else
-					{
-						bigEndian = true;
-					}
+
+					var bigEndian = startIndex != 0;
 
 					if (isBizHawkWatch && !isOldBizHawkWatch)
 					{
 						startIndex = line.IndexOf('\t') + 1;
-						line = line.Substring(startIndex, line.Length - startIndex);   //Domain
+						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
 						temp = line.Substring(0, line.IndexOf('\t'));
 						memDomain = Global.Emulator.MemoryDomains[temp] ?? Global.Emulator.MemoryDomains.MainMemory;
 					}
 
 					startIndex = line.IndexOf('\t') + 1;
-					string notes = line.Substring(startIndex, line.Length - startIndex);
+					var notes = line.Substring(startIndex, line.Length - startIndex);
 
 					_watchList.Add(
 						Watch.GenerateWatch(
@@ -531,6 +533,7 @@ namespace BizHawk.Client.Common
 			{
 				Changes = true;
 			}
+
 			return true;
 		}
 

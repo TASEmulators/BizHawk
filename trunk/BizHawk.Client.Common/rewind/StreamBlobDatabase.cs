@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Threading;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.IO;
 
 namespace BizHawk.Client.Common
 {
@@ -25,7 +23,7 @@ namespace BizHawk.Client.Common
 			_mCapacity = capacity;
 			if (onDisk)
 			{
-				var path = Path.Combine(System.IO.Path.GetTempPath(), "bizhawk.rewindbuf-pid" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid().ToString());
+				var path = Path.Combine(Path.GetTempPath(), "bizhawk.rewindbuf-pid" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid());
 
 				// I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 				// Otherwise we would have a more complex tempfile management problem here.
@@ -40,7 +38,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Returns the amount of the buffer that's used
+		/// Gets the amount of the buffer that's used
 		/// </summary>
 		public long Size { get { return _mSize; } }
 
@@ -50,12 +48,12 @@ namespace BizHawk.Client.Common
 		public float FullnessRatio { get { return (float)((double)Size / (double)_mCapacity); } }
 
 		/// <summary>
-		/// the number of frames stored here
+		/// Gets the number of frames stored here
 		/// </summary>
 		public int Count { get { return _mBookmarks.Count; } }
 
 		/// <summary>
-		/// The underlying stream to 
+		/// Gets the underlying stream to 
 		/// </summary>
 		public Stream Stream { get { return _mStream; } }
 
@@ -141,7 +139,7 @@ namespace BizHawk.Client.Common
 
 		CLEANUP:
 			// while the head impinges on tail items, discard them
-			for (; ; )
+			for (;;)
 			{
 				if (_mTail == null)
 				{
@@ -150,12 +148,15 @@ namespace BizHawk.Client.Common
 
 				if (_mHead.Value.EndExclusive > _mTail.Value.Index && _mHead.Value.Index <= _mTail.Value.Index)
 				{
-					LinkedListNode<ListItem> nextTail = _mTail.Next;
+					var nextTail = _mTail.Next;
 					_mSize -= _mTail.Value.Length;
 					_mBookmarks.Remove(_mTail);
 					_mTail = nextTail;
 				}
-				else break;
+				else
+				{
+					break;
+				}
 			}
 
 			return _mHead.Value.Index;
@@ -177,12 +178,7 @@ namespace BizHawk.Client.Common
 				_mTail = null;
 			}
 
-			_mHead = nextHead;
-
-			if (_mHead == null)
-			{
-				_mHead = _mBookmarks.Last;
-			}
+			_mHead = nextHead ?? _mBookmarks.Last;
 
 			return ret;
 		}
@@ -196,18 +192,14 @@ namespace BizHawk.Client.Common
 
 			var ret = _mTail.Value;
 			_mSize -= ret.Length;
-			LinkedListNode<ListItem> nextTail = _mTail.Next;
+			var nextTail = _mTail.Next;
 			_mBookmarks.Remove(_mTail);
 			if (_mTail == _mHead)
 			{
 				_mHead = null;
 			}
 
-			_mTail = nextTail;
-			if (_mTail == null)
-			{
-				_mTail = _mBookmarks.First;
-			}
+			_mTail = nextTail ?? _mBookmarks.First;
 
 			return ret;
 		}
@@ -222,7 +214,7 @@ namespace BizHawk.Client.Common
 
 			int ts = _mTail.Value.Timestamp;
 			LinkedListNode<ListItem> curr = _mTail;
-			for (; ; )
+			for (;;)
 			{
 				if (curr == null)
 				{
