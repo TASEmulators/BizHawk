@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		DiscSystem.Disc CD;
 		byte[] romfile;
+		bool drivelight;
 
 		bool disposed = false;
 
@@ -119,6 +120,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				InputCallback = new LibGPGX.input_cb(input_callback);
 				LibGPGX.gpgx_set_input_callback(InputCallback);
+
+				if (CD != null)
+					CoreComm.UsesDriveLed = true;
 			}
 			catch
 			{
@@ -232,6 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				byte[] data = new byte[2048];
 				CD.ReadLBA_2048(lba, data, 0);
 				Marshal.Copy(data, 0, dest, 2048);
+				drivelight = true;
 			}
 		}
 
@@ -321,12 +326,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			IsLagFrame = true;
 			Frame++;
+			drivelight = false;
 			LibGPGX.gpgx_advance();
 			update_video();
 			update_audio();
 
 			if (IsLagFrame)
 				LagCount++;
+
+			if (CD != null)
+				CoreComm.DriveLED = drivelight;
 		}
 
 		public int Frame { get; private set; }
