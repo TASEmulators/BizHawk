@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 					"setlayer_obj_1",
 					"setlayer_obj_2",
 					"setlayer_obj_3",
-					"setlayer_obj_4",
+					"setlayer_obj_4"
 				};
 			}
 		}

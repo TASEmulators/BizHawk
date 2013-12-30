@@ -12,9 +12,9 @@ namespace BizHawk.Client.Common
 
 		Action<string> ShowWarning;
 
-		public CoreFileProvider(Action<string> ShowWarning)
+		public CoreFileProvider(Action<string> showWarning)
 		{
-			this.ShowWarning = ShowWarning;
+			ShowWarning = showWarning;
 		}
 
 		public Stream OpenFirmware(string sysId, string key)
@@ -39,6 +39,7 @@ namespace BizHawk.Client.Common
 		}
 
 		#region EmuLoadHelper api
+
 		void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)
 		{
 			if (required)

@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
 		public MovieLuaLibrary(Lua lua)
-			: base()
 		{
 			_lua = lua;
 		}
@@ -27,12 +26,12 @@ namespace BizHawk.Client.Common
 					"rerecordcount",
 					"setreadonly",
 					"setrerecordcounting",
-					"stop",
+					"stop"
 				};
 			}
 		}
 
-		private Lua _lua;
+		private readonly Lua _lua;
 
 		public static string movie_filename()
 		{
@@ -41,14 +40,14 @@ namespace BizHawk.Client.Common
 
 		public LuaTable movie_getinput(object frame)
 		{
-			LuaTable input = _lua.NewTable();
+			var input = _lua.NewTable();
 
-			MovieControllerAdapter m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
+			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
 				Global.MovieSession.Movie.GetInput(LuaInt(frame))
 			);
 
-			foreach (string button in m.Type.BoolButtons)
+			foreach (var button in m.Type.BoolButtons)
 			{
 				input[button] = m[button];
 			}
@@ -103,14 +102,12 @@ namespace BizHawk.Client.Common
 
 		public static void movie_setreadonly(object lua_input)
 		{
-			Global.MovieSession.ReadOnly = (lua_input.ToString().ToUpper() == "TRUE"
-				|| lua_input.ToString() == "1");
+			Global.MovieSession.ReadOnly = lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1";
 		}
 
 		public static void movie_setrerecordcounting(object lua_input)
 		{
-			Global.MovieSession.Movie.IsCountingRerecords
-				= (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1");
+			Global.MovieSession.Movie.IsCountingRerecords = lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1";
 		}
 
 		public static void movie_stop()

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
@@ -50,12 +48,12 @@ namespace BizHawk.Client.Common
 					"write_s32_be",
 					"write_u16_be",
 					"write_u24_be",
-					"write_u32_be",
+					"write_u32_be"
 				};
 			}
 		}
 
-		private int _current_memory_domain; //Main memory by default
+		private int _currentMemoryDomain; // Main memory by default
 
 		#region Memory Library Helpers
 
@@ -121,12 +119,12 @@ namespace BizHawk.Client.Common
 
 		private uint M_R_U8(int addr)
 		{
-			return Global.Emulator.MemoryDomains[_current_memory_domain].PeekByte(addr);
+			return Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekByte(addr);
 		}
 
 		private void M_W_U8(int addr, uint v)
 		{
-			Global.Emulator.MemoryDomains[_current_memory_domain].PokeByte(addr, (byte)v);
+			Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeByte(addr, (byte)v);
 		}
 
 		#endregion
@@ -138,12 +136,12 @@ namespace BizHawk.Client.Common
 
 		public string memory_getcurrentmemorydomain()
 		{
-			return Global.Emulator.MemoryDomains[_current_memory_domain].Name;
+			return Global.Emulator.MemoryDomains[_currentMemoryDomain].Name;
 		}
 
 		public int memory_getcurrentmemorydomainsize()
 		{
-			return Global.Emulator.MemoryDomains[_current_memory_domain].Size;
+			return Global.Emulator.MemoryDomains[_currentMemoryDomain].Size;
 		}
 
 		public uint memory_readbyte(object lua_addr)
@@ -155,7 +153,7 @@ namespace BizHawk.Client.Common
 		public float memory_readfloat(object lua_addr, bool bigendian)
 		{
 			int addr = LuaInt(lua_addr);
-			uint val = Global.Emulator.MemoryDomains[_current_memory_domain].PeekDWord(addr, bigendian);
+			uint val = Global.Emulator.MemoryDomains[_currentMemoryDomain].PeekDWord(addr, bigendian);
 
 			byte[] bytes = BitConverter.GetBytes(val);
 			float _float = BitConverter.ToSingle(bytes, 0);
@@ -175,7 +173,7 @@ namespace BizHawk.Client.Common
 			float dv = (float)(double)lua_v;
 			byte[] bytes = BitConverter.GetBytes(dv);
 			uint v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MemoryDomains[_current_memory_domain].PokeDWord(addr, v, bigendian);
+			Global.Emulator.MemoryDomains[_currentMemoryDomain].PokeDWord(addr, v, bigendian);
 		}
 
 		public bool memory_usememorydomain(object lua_input)
@@ -187,7 +185,7 @@ namespace BizHawk.Client.Common
 			{
 				if (Global.Emulator.MemoryDomains[x].Name == lua_input.ToString())
 				{
-					_current_memory_domain = x;
+					_currentMemoryDomain = x;
 					return true;
 				}
 			}

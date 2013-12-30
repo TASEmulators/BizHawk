@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
@@ -35,7 +34,7 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator is NES)
 			{
 				var decoder = new NESGameGenieDecoder(code);
-				Watch watch = Watch.GenerateWatch(
+				var watch = Watch.GenerateWatch(
 					Global.Emulator.MemoryDomains[1],
 					decoder.Address,
 					Watch.WatchSize.Byte,
@@ -54,7 +53,6 @@ namespace BizHawk.Client.Common
 		// these methods are awkward.  perhaps with the new core config system, one could
 		// automatically bring out all of the settings to a lua table, with names.  that
 		// would be completely arbitrary and would remove the whole requirement for this mess
-
 		public static bool nes_getallowmorethaneightsprites()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
@@ -155,8 +153,8 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is NES)
 			{
-				int first = LuaInt(top);
-				int last = LuaInt(bottom);
+				var first = LuaInt(top);
+				var last = LuaInt(bottom);
 				if (first > 127)
 				{
 					first = 127;

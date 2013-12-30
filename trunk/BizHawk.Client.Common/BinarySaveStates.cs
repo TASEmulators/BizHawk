@@ -1,7 +1,8 @@
 ﻿using System;
-using ICSharpCode.SharpZipLib.Zip;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
 {
@@ -17,7 +18,7 @@ namespace BizHawk.Client.Common
 		public const string Movieheader = "Header";
 		*/
 
-		private static Dictionary<BinaryStateLump, string> LumpNames;
+		private static readonly Dictionary<BinaryStateLump, string> LumpNames;
 
 		static BinaryStateFileNames()
 		{
@@ -50,7 +51,7 @@ namespace BizHawk.Client.Common
 	public class BinaryStateLoader : IDisposable
 	{
 
-		private bool isDisposed;
+		private bool _isDisposed;
 		public void Dispose()
 		{
 			Dispose(true);
@@ -59,9 +60,9 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!isDisposed)
+			if (!_isDisposed)
 			{
-				isDisposed = true;
+				_isDisposed = true;
 
 				if (disposing)
 				{
@@ -70,8 +71,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		ZipFile zip;
-		Version ver;
+		private ZipFile zip;
+		private Version ver;
 
 		private BinaryStateLoader()
 		{
@@ -81,10 +82,12 @@ namespace BizHawk.Client.Common
 		{
 			// the "BizState 1.0" tag contains an integer in it describing the sub version.
 			if (s.Length == 0)
+			{
 				ver = new Version(1, 0, 0); // except for the first release, which doesn't
+			}
 			else
 			{
-				StreamReader sr = new StreamReader(s);
+				var sr = new StreamReader(s);
 				ver = new Version(1, 0, int.Parse(sr.ReadLine()));
 			}
 			Console.WriteLine("Read a zipstate of version {0}", ver.ToString());
@@ -92,17 +95,22 @@ namespace BizHawk.Client.Common
 
 		public static BinaryStateLoader LoadAndDetect(string Filename)
 		{
-			BinaryStateLoader ret = new BinaryStateLoader();
+			var ret = new BinaryStateLoader();
 
-			//PORTABLE TODO - SKIP THIS.. FOR NOW
-			//check whether its an archive before we try opening it
+			// PORTABLE TODO - SKIP THIS.. FOR NOW
+			// check whether its an archive before we try opening it
 			int offset;
 			bool isExecutable;
 			bool isArchive;
-			using(var archiveChecker = new SevenZipSharpArchiveHandler())
+			using (var archiveChecker = new SevenZipSharpArchiveHandler())
+			{
 				isArchive = archiveChecker.CheckSignature(Filename, out offset, out isExecutable);
-			if(!isArchive)
+			}
+
+			if (!isArchive)
+			{
 				return null;
+			}
 
 			try
 			{
@@ -112,6 +120,7 @@ namespace BizHawk.Client.Common
 					ret.zip.Close();
 					return null;
 				}
+
 				return ret;
 			}
 			catch (ZipException)
@@ -121,7 +130,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// 
+		/// Gets a lump
 		/// </summary>
 		/// <param name="Lump">lump to retriever</param>
 		/// <param name="abort">true to throw exception on failure</param>
@@ -133,7 +142,7 @@ namespace BizHawk.Client.Common
 			var e = zip.GetEntry(Name);
 			if (e != null)
 			{
-				using (Stream zs = zip.GetInputStream(e))
+				using (var zs = zip.GetInputStream(e))
 				{
 					callback(zs);
 				}
@@ -170,8 +179,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// load binary state, or text state if binary state lump doesn't exist
 		/// </summary>
-		/// <param name="callbackBinary"></param>
-		/// <param name="callbackText"></param>
 		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
@@ -210,7 +217,7 @@ namespace BizHawk.Client.Common
 
 		private void WriteVersion(Stream s)
 		{
-			StreamWriter sw = new StreamWriter(s);
+			var sw = new StreamWriter(s);
 			sw.WriteLine("1"); // version 1.0.1
 			sw.Flush();
 		}
@@ -244,7 +251,7 @@ namespace BizHawk.Client.Common
 		{
 			PutLump(Lump, delegate(Stream s)
 			{
-				BinaryWriter bw = new BinaryWriter(s);
+				var bw = new BinaryWriter(s);
 				callback(bw);
 				bw.Flush();
 			});
@@ -287,7 +294,8 @@ namespace BizHawk.Client.Common
 		}
 		*/
 
-		private bool isDisposed;
+		private bool _isDisposed;
+
 		public void Dispose()
 		{
 			Dispose(true);
@@ -296,9 +304,9 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!isDisposed)
+			if (!_isDisposed)
 			{
-				isDisposed = true;
+				_isDisposed = true;
 
 				if (disposing)
 				{
@@ -306,6 +314,5 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
-
 	}
 }

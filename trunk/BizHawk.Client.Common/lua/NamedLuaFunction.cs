@@ -9,6 +9,7 @@ namespace BizHawk.Client.Common
 		private readonly string _name;
 		private readonly string _event;
 		private readonly Action _action;
+
 		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, Lua lua, string name = null)
 		{
 			_function = function;
@@ -32,7 +33,6 @@ namespace BizHawk.Client.Common
 						ex.Message
 					);
 				}
-
 			};
 		}
 

@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return this.FirstOrDefault(x => x.Guid.ToString() == guid) ?? null;
+				return this.FirstOrDefault(x => x.Guid.ToString() == guid);
 			}
 		}
 

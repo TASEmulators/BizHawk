@@ -29,9 +29,12 @@ namespace BizHawk.Client.Common
 			Path = path;
 			IsSeparator = false;
 
-			//the current directory for the lua task will start off wherever the lua file is located
+			// the current directory for the lua task will start off wherever the lua file is located
 			var directory_info = new FileInfo(path).Directory;
-			if (directory_info != null) CurrentDirectory = directory_info.FullName;
+			if (directory_info != null)
+			{
+				CurrentDirectory = directory_info.FullName;
+			}
 		}
 
 		public LuaFile(bool isSeparator)
