@@ -27,12 +27,12 @@ namespace BizHawk.Client.Common
 
 		protected static int LuaInt(object luaArg)
 		{
-			return Convert.ToInt32((double)luaArg);
+			return (int)(double)luaArg;
 		}
 
 		protected static uint LuaUInt(object luaArg)
 		{
-			return Convert.ToUInt32((double)luaArg);
+			return (uint)(double)luaArg;
 		}
 
 		/// <summary>
