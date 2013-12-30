@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public class LuaFileList : List<LuaFile>
 	{
-		public LuaFileList() : base() { }
+		internal LuaFileList() { }
 		
 		private string _filename = String.Empty;
 		private bool _changes;
 
-		public Action ChangedCallback;
-		public Action LoadCallback;
+		public Action ChangedCallback { get; set; }
+		public Action LoadCallback { get; set; }
 
 		public void StopAllScripts()
 		{
@@ -27,6 +26,7 @@ namespace BizHawk.Client.Common
 			{
 				return _changes;
 			}
+
 			set
 			{
 				_changes = value;
@@ -34,17 +34,23 @@ namespace BizHawk.Client.Common
 				{
 					ChangedCallback();
 				}
-				
 			}
 		}
 
 		public string Filename
 		{
-			get { return _filename; }
-			set { _filename = (value ?? String.Empty); }
+			get
+			{
+				return _filename;
+			}
+
+			set
+			{
+				_filename = value ?? String.Empty;
+			}
 		}
 
-		new public void Clear()
+		public new void Clear()
 		{
 			StopAllScripts();
 			_filename = String.Empty;
@@ -52,25 +58,25 @@ namespace BizHawk.Client.Common
 			base.Clear();
 		}
 
-		new public void Add(LuaFile item)
+		public new void Add(LuaFile item)
 		{
 			Changes = true;
 			base.Add(item);
 		}
 
-		new public void Insert(int index, LuaFile item)
+		public new void Insert(int index, LuaFile item)
 		{
 			Changes = true;
 			base.Insert(index, item);
 		}
 
-		new public bool Remove(LuaFile item)
+		public new bool Remove(LuaFile item)
 		{
 			Changes = true;
 			return base.Remove(item);
 		}
 
-		new public int RemoveAll(Predicate<LuaFile> match)
+		public new int RemoveAll(Predicate<LuaFile> match)
 		{
 			return base.RemoveAll(match);
 		}
@@ -109,6 +115,7 @@ namespace BizHawk.Client.Common
 				{
 					LoadCallback();
 				}
+
 				return true;
 			}
 			else
@@ -138,6 +145,7 @@ namespace BizHawk.Client.Common
 						.Append(file.Path)
 						.AppendLine();
 				}
+
 				sw.Write(sb.ToString());
 			}
 

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Linq;
 
-using LuaInterface;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Nintendo.NES;
+
+using LuaInterface;
 
 namespace BizHawk.Client.Common
 {
-	public partial class EmulatorLuaLibrary : LuaLibraryBase
+	public class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
-			: base()
 		{
 			_lua = lua;
 			_frameAdvanceCallback = frameAdvanceCallback;
@@ -41,9 +41,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private Lua _lua;
-		private Action _frameAdvanceCallback;
-		private Action _yieldCallback;
+		private readonly Lua _lua;
+		private readonly Action _frameAdvanceCallback;
+		private readonly Action _yieldCallback;
 
 		private static void emu_setrenderplanes_do(object[] lua_p)
 		{
@@ -51,14 +51,14 @@ namespace BizHawk.Client.Common
 			{
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
-				NES.NESSettings s = (NES.NESSettings)Global.Emulator.GetSettings();
+				var s = (NES.NESSettings)Global.Emulator.GetSettings();
 				s.DispSprites = (bool)lua_p[0];
 				s.DispBackground = (bool)lua_p[1];
 				Global.Emulator.PutSettings(s);
 			}
 			else if (Global.Emulator is PCEngine)
 			{
-				PCEngine.PCESettings s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
+				var s = (PCEngine.PCESettings)Global.Emulator.GetSettings();
 				s.ShowOBJ1 = (bool)lua_p[0];
 				s.ShowBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
@@ -66,11 +66,12 @@ namespace BizHawk.Client.Common
 					s.ShowOBJ2 = (bool)lua_p[2];
 					s.ShowBG2 = (bool)lua_p[3];
 				}
+
 				Global.Emulator.PutSettings(s);
 			}
 			else if (Global.Emulator is SMS)
 			{
-				SMS.SMSSettings s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+				var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 				s.DispOBJ = (bool)lua_p[0];
 				s.DispBG = (bool)lua_p[1];
 				Global.Emulator.PutSettings(s);
@@ -79,7 +80,7 @@ namespace BizHawk.Client.Common
 
 		public static void emu_displayvsync(object boolean)
 		{
-			string temp = boolean.ToString();
+			var temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
 			{
 				if (temp == "0" || temp.ToLower() == "false")
@@ -110,11 +111,12 @@ namespace BizHawk.Client.Common
 
 		public LuaTable emu_getregisters()
 		{
-			LuaTable table = _lua.NewTable();
+			var table = _lua.NewTable();
 			foreach (var kvp in Global.Emulator.GetCpuFlagsAndRegisters())
 			{
 				table[kvp.Key] = kvp.Value;
 			}
+
 			return table;
 		}
 
@@ -135,7 +137,7 @@ namespace BizHawk.Client.Common
 
 		public static void emu_limitframerate(object boolean)
 		{
-			string temp = boolean.ToString();
+			var temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
 			{
 				if (temp == "0" || temp.ToLower() == "false")
@@ -151,7 +153,7 @@ namespace BizHawk.Client.Common
 
 		public static void emu_minimizeframeskip(object boolean)
 		{
-			string temp = boolean.ToString();
+			var temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
 			{
 				if (temp == "0" || temp.ToLower() == "false")
@@ -166,8 +168,11 @@ namespace BizHawk.Client.Common
 		}
 
 		public static void emu_setrenderplanes( // For now, it accepts arguments up to 5.
-			object lua_p0, object lua_p1 = null, object lua_p2 = null,
-			object lua_p3 = null, object lua_p4 = null)
+			object lua_p0, 
+			object lua_p1 = null, 
+			object lua_p2 = null,
+			object lua_p3 = null, 
+			object lua_p4 = null)
 		{
 			emu_setrenderplanes_do(LuaVarArgs(lua_p0, lua_p1, lua_p2, lua_p3, lua_p4));
 		}

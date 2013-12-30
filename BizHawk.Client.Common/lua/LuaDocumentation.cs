@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 namespace BizHawk.Client.Common
 {
 	public interface ILuaDocumentation
@@ -17,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		public void Add(string method_lib, string method_name, System.Reflection.MethodInfo method)
 		{
-			LibraryFunction f = new LibraryFunction(method_lib, method_name, method);
+			var f = new LibraryFunction(method_lib, method_name, method);
 			FunctionList.Add(f);
 		}
 
@@ -33,8 +32,8 @@ namespace BizHawk.Client.Common
 
 		public List<string> GetLibraryList()
 		{
-			HashSet<string> libs = new HashSet<string>();
-			foreach (LibraryFunction function in FunctionList)
+			var libs = new HashSet<string>();
+			foreach (var function in FunctionList)
 			{
 				libs.Add(function.Library);
 			}
@@ -53,11 +52,12 @@ namespace BizHawk.Client.Common
 			{
 				Library = method_lib;
 				Name = method_name;
-				System.Reflection.ParameterInfo[] info = method.GetParameters();
-				foreach (System.Reflection.ParameterInfo p in info)
+				var info = method.GetParameters();
+				foreach (var p in info)
 				{
 					Parameters.Add(p.ToString());
 				}
+
 				return_type = method.ReturnType.ToString();
 			}
 			
@@ -70,17 +70,18 @@ namespace BizHawk.Client.Common
 			{
 				get
 				{
-					StringBuilder list = new StringBuilder();
+					var list = new StringBuilder();
 					list.Append('(');
 					for (int i = 0; i < Parameters.Count; i++)
 					{
-						string param = Parameters[i].Replace("System", "").Replace("Object", "").Replace(" ", "").Replace(".", "").Replace("LuaInterface", "");
+						var param = Parameters[i].Replace("System", "").Replace("Object", "").Replace(" ", "").Replace(".", "").Replace("LuaInterface", "");
 						list.Append(param);
 						if (i < Parameters.Count - 1)
 						{
 							list.Append(',');
 						}
 					}
+
 					list.Append(')');
 					return list.ToString();
 				}

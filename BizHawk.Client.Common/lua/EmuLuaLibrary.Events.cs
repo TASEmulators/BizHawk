@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -32,8 +33,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public Action<string> LogOutputCallback = null;
-		public Lua CurrentThread;
+		public Action<string> LogOutputCallback { get; set; }
+		public Lua CurrentThread { get; set; }
 
 		#region Events Library Helpers
 
