@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public class LuaFileList : List<LuaFile>
 	{
-		internal LuaFileList() { }
+		public LuaFileList() { }
 		
 		private string _filename = String.Empty;
 		private bool _changes;
