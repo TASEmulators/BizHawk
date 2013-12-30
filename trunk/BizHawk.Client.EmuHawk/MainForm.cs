@@ -265,11 +265,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (cmdLoadState != null && Global.Game != null)
 			{
-				LoadState("QuickSave" + cmdLoadState);
+				LoadQuickSave("QuickSave" + cmdLoadState);
 			}
 			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
 			{
-				LoadState("QuickSave" + Global.Config.SaveSlot);
+				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 			}
 
 			if (Global.Config.RecentWatches.AutoLoad)
@@ -1012,8 +1012,8 @@ namespace BizHawk.Client.EmuHawk
 					_unthrottled ^= true;
 					GlobalWin.OSD.AddMessage("Unthrottled: " + _unthrottled);
 					break;
-				case "Quick Load": LoadState("QuickSave" + Global.Config.SaveSlot); break;
-				case "Quick Save": SaveState("QuickSave" + Global.Config.SaveSlot); break;
+				case "Quick Load": LoadQuickSave("QuickSave" + Global.Config.SaveSlot); break;
+				case "Quick Save": SaveQuickSave("QuickSave" + Global.Config.SaveSlot); break;
 				case "Screenshot": TakeScreenshot(); break;
 				case "Full Screen": ToggleFullscreen(); break;
 				case "Open ROM": OpenRom(); break;
@@ -1039,26 +1039,26 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.AutoSavestates = autoSaveState;
 					break;
 
-				case "Save State 0": SaveState("QuickSave0"); break;
-				case "Save State 1": SaveState("QuickSave1"); break;
-				case "Save State 2": SaveState("QuickSave2"); break;
-				case "Save State 3": SaveState("QuickSave3"); break;
-				case "Save State 4": SaveState("QuickSave4"); break;
-				case "Save State 5": SaveState("QuickSave5"); break;
-				case "Save State 6": SaveState("QuickSave6"); break;
-				case "Save State 7": SaveState("QuickSave7"); break;
-				case "Save State 8": SaveState("QuickSave8"); break;
-				case "Save State 9": SaveState("QuickSave9"); break;
-				case "Load State 0": LoadState("QuickSave0"); break;
-				case "Load State 1": LoadState("QuickSave1"); break;
-				case "Load State 2": LoadState("QuickSave2"); break;
-				case "Load State 3": LoadState("QuickSave3"); break;
-				case "Load State 4": LoadState("QuickSave4"); break;
-				case "Load State 5": LoadState("QuickSave5"); break;
-				case "Load State 6": LoadState("QuickSave6"); break;
-				case "Load State 7": LoadState("QuickSave7"); break;
-				case "Load State 8": LoadState("QuickSave8"); break;
-				case "Load State 9": LoadState("QuickSave9"); break;
+				case "Save State 0": SaveQuickSave("QuickSave0"); break;
+				case "Save State 1": SaveQuickSave("QuickSave1"); break;
+				case "Save State 2": SaveQuickSave("QuickSave2"); break;
+				case "Save State 3": SaveQuickSave("QuickSave3"); break;
+				case "Save State 4": SaveQuickSave("QuickSave4"); break;
+				case "Save State 5": SaveQuickSave("QuickSave5"); break;
+				case "Save State 6": SaveQuickSave("QuickSave6"); break;
+				case "Save State 7": SaveQuickSave("QuickSave7"); break;
+				case "Save State 8": SaveQuickSave("QuickSave8"); break;
+				case "Save State 9": SaveQuickSave("QuickSave9"); break;
+				case "Load State 0": LoadQuickSave("QuickSave0"); break;
+				case "Load State 1": LoadQuickSave("QuickSave1"); break;
+				case "Load State 2": LoadQuickSave("QuickSave2"); break;
+				case "Load State 3": LoadQuickSave("QuickSave3"); break;
+				case "Load State 4": LoadQuickSave("QuickSave4"); break;
+				case "Load State 5": LoadQuickSave("QuickSave5"); break;
+				case "Load State 6": LoadQuickSave("QuickSave6"); break;
+				case "Load State 7": LoadQuickSave("QuickSave7"); break;
+				case "Load State 8": LoadQuickSave("QuickSave8"); break;
+				case "Load State 9": LoadQuickSave("QuickSave9"); break;
 				case "Select State 0": SelectSlot(0); break;
 				case "Select State 1": SelectSlot(1); break;
 				case "Select State 2": SelectSlot(2); break;
@@ -1694,7 +1694,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
-				SaveStateFile(sfd.FileName, sfd.FileName, false);
+				SaveState(sfd.FileName, sfd.FileName, false);
 			}
 		}
 
@@ -1723,7 +1723,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			LoadStateFile(ofd.FileName, Path.GetFileName(ofd.FileName));
+			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
 		}
 
 		private static void SaveSlotSelectedMessage()
@@ -2361,6 +2361,59 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false) // Move to client.common
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+
+			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
+			{
+				SetMainformMovieInfo();
+				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.Tools.UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
+				UpdateToolsLoadstate();
+				GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+				}
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Loadstate error!");
+			}
+		}
+
+		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
+		{
+			if (Global.Emulator is NullEmulator)
+			{
+				return;
+			}
+
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+			if (File.Exists(path) == false)
+			{
+				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
+				return;
+			}
+
+			LoadState(path, quickSlotName, fromLua);
+		}
+
+		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
+		{
+			SavestateManager.SaveStateFile(path, userFriendlyStateName);
+
+			GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
+
+			if (!fromLua)
+			{
+				UpdateStatusSlots();
+			}
+		}
+
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
@@ -2962,7 +3015,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Config.AutoSavestates)
 				{
-					LoadState("Auto");
+					LoadQuickSave("Auto");
 				}
 
 				GlobalWin.Tools.Restart();
@@ -3011,14 +3064,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SaveState(string name) // Move to client.common
+		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
+		public void SaveQuickSave(string quickSlotName)
 		{
 			if (Global.Emulator is NullEmulator)
 			{
 				return;
 			}
 
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && file.Directory.Exists == false)
@@ -3026,6 +3080,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
+			
 			// Make backup first
 			if (Global.Config.BackupSavestates && file.Exists)
 			{
@@ -3039,65 +3094,12 @@ namespace BizHawk.Client.EmuHawk
 				file.CopyTo(backup);
 			}
 
-			SaveStateFile(path, name, false);
+			SaveState(path, quickSlotName, false);
 
 			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
-				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(name);
+				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
 			}
-		}
-
-		public void SaveStateFile(string filename, string name, bool fromLua)  // Move to client.common
-		{
-			SavestateManager.SaveStateFile(filename, name);
-
-			GlobalWin.OSD.AddMessage("Saved state: " + name);
-
-			if (!fromLua)
-			{
-				UpdateStatusSlots();
-			}
-		}
-
-		public void LoadStateFile(string path, string name, bool fromLua = false) // Move to client.commo
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-
-			if (SavestateManager.LoadStateFile(path, name))
-			{
-				SetMainformMovieInfo();
-				GlobalWin.OSD.ClearGUIText();
-				GlobalWin.Tools.UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
-				UpdateToolsLoadstate();
-				GlobalWin.OSD.AddMessage("Loaded state: " + name);
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(name);
-				}
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Loadstate error!");
-			}
-		}
-
-		public void LoadState(string name, bool fromLua = false) // Move to client.commo
-		{
-			if (Global.Emulator is NullEmulator)
-			{
-				return;
-			}
-
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
-			if (File.Exists(path) == false)
-			{
-				GlobalWin.OSD.AddMessage("Unable to load " + name + ".State");
-				return;
-			}
-
-			LoadStateFile(path, name, fromLua);
 		}
 
 		private static void CommitCoreSettingsToConfig()
@@ -3119,7 +3121,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
 			{
-				SaveState("Auto");
+				SaveQuickSave("Auto");
 			}
 
 			if (clearSram)

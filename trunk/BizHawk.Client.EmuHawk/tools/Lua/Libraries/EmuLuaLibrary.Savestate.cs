@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (lua_input is string)
 			{
-				GlobalWin.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
+				GlobalWin.MainForm.LoadState(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (slot >= 0 && slot <= 9)
 			{
-				GlobalWin.MainForm.LoadState("QuickSave" + slot.ToString(), true);
+				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slot.ToString(), true);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			if (lua_input is string)
 			{
 				string path = lua_input.ToString();
-				GlobalWin.MainForm.SaveStateFile(path, path, true);
+				GlobalWin.MainForm.SaveState(path, path, true);
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (slot >= 0 && slot <= 9)
 			{
-				GlobalWin.MainForm.SaveState("QuickSave" + slot.ToString());
+				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slot.ToString());
 			}
 		}
 	}

@@ -293,32 +293,32 @@ namespace BizHawk.Client.EmuHawk
 			CloseRom();
 		}
 
-		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
-		private void Savestate2MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave2"); }
-		private void Savestate3MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave3"); }
-		private void Savestate4MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave4"); }
-		private void Savestate5MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave5"); }
-		private void Savestate6MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave6"); }
-		private void Savestate7MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave7"); }
-		private void Savestate8MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave8"); }
-		private void Savestate9MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave9"); }
-		private void Savestate0MenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave0"); }
+		private void Savestate1MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave1"); }
+		private void Savestate2MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave2"); }
+		private void Savestate3MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave3"); }
+		private void Savestate4MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave4"); }
+		private void Savestate5MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave5"); }
+		private void Savestate6MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave6"); }
+		private void Savestate7MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave7"); }
+		private void Savestate8MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave8"); }
+		private void Savestate9MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave9"); }
+		private void Savestate0MenuItem_Click(object sender, EventArgs e) { SaveQuickSave("QuickSave0"); }
 
 		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveStateAs();
 		}
 
-		private void Loadstate1MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
-		private void Loadstate2MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
-		private void Loadstate3MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
-		private void Loadstate4MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
-		private void Loadstate5MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
-		private void Loadstate6MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
-		private void Loadstate7MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
-		private void Loadstate8MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
-		private void Loadstate9MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
-		private void Loadstate0MenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
+		private void Loadstate1MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave1"); }
+		private void Loadstate2MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave2"); }
+		private void Loadstate3MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave3"); }
+		private void Loadstate4MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave4"); }
+		private void Loadstate5MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave5"); }
+		private void Loadstate6MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave6"); }
+		private void Loadstate7MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave7"); }
+		private void Loadstate8MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave8"); }
+		private void Loadstate9MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave9"); }
+		private void Loadstate0MenuItem_Click(object sender, EventArgs e) { LoadQuickSave("QuickSave0"); }
 
 		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e)
 		{
@@ -359,12 +359,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveToCurrentSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveState("QuickSave" + Global.Config.SaveSlot);
+			SaveQuickSave("QuickSave" + Global.Config.SaveSlot);
 		}
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadState("QuickSave" + Global.Config.SaveSlot);
+			LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
@@ -1912,12 +1912,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_stateSlots.HasSlot(slot))
 				{
-					LoadState("QuickSave" + slot);
+					LoadQuickSave("QuickSave" + slot);
 				}
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				SaveState("QuickSave" + slot);
+				SaveQuickSave("QuickSave" + slot);
 			}
 		}
 
@@ -2073,7 +2073,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (ext.ToUpper() == ".STATE")
 			{
-				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
+				LoadState(filePaths[0], Path.GetFileName(filePaths[0]));
 			}
 			else if (ext.ToUpper() == ".CHT")
 			{
