@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
-				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+				LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
 			}
 
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+					LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
 				}
 
