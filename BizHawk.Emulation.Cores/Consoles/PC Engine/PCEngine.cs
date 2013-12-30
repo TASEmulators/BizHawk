@@ -70,7 +70,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Type = NecSystemType.SuperGrafx;
 					break;
 			}
-			Init(game, rom, (PCESettings)Settings);
+			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			Init(game, rom);
 		}
 
 		public string BoardName { get { return null; } }
@@ -83,12 +84,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
-			Init(game, rom, (PCESettings)Settings);
+			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
 		}
 
-		void Init(GameInfo game, byte[] rom, PCESettings Settings)
+		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
 			Cpu = new HuC6280();
@@ -98,8 +100,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SCSI = new ScsiCDBus(this, disc);
 
 			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
-
-			this.Settings = Settings;
 
 			if (TurboGrafx)
 			{
@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				disc.Dispose();
 		}
 
-		public PCESettings Settings = new PCESettings();
+		public PCESettings Settings;
 
 		public object GetSettings() { return Settings.Clone(); }
 		public object GetSyncSettings() { return null; }
