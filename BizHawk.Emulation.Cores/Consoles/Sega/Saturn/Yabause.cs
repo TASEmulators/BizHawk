@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
+			CoreComm.UsesDriveLed = true;
 		}
 
 		void Init(byte[] bios)
@@ -219,6 +220,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
+
+			CoreComm.DriveLED = false;
 
 			IsLagFrame = LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
@@ -626,6 +629,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				return 0; // failure
 			}
 			Marshal.Copy(data, 0, dest, 2352);
+			CoreComm.DriveLED = true;
 			return 1; // success
 		}
 		/// <summary>
