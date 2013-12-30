@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace BizHawk.Client.Common
 {
@@ -13,10 +13,11 @@ namespace BizHawk.Client.Common
 		// which will kill N64 for sure...
 		public static bool IsThreaded = false;
 
-		private readonly ConcurrentQueue<Job> Jobs = new ConcurrentQueue<Job>();
-		private EventWaitHandle _ewh, _ewh2;
-		private Thread _thread;
-		private Rewinder _rewinder;
+		private readonly ConcurrentQueue<Job> _jobs = new ConcurrentQueue<Job>();
+		private readonly EventWaitHandle _ewh;
+		private readonly EventWaitHandle _ewh2;
+		private readonly Thread _thread;
+		private readonly Rewinder _rewinder;
 
 		public RewindThreader(Rewinder rewinder, bool isThreaded)
 		{
@@ -27,8 +28,7 @@ namespace BizHawk.Client.Common
 			{
 				_ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
 				_ewh2 = new EventWaitHandle(false, EventResetMode.AutoReset);
-				_thread = new Thread(ThreadProc);
-				_thread.IsBackground = true;
+				_thread = new Thread(ThreadProc) { IsBackground = true };
 				_thread.Start();
 			}
 		}
@@ -40,9 +40,8 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var job = new Job();
-			job.Type = JobType.Abort;
-			Jobs.Enqueue(job);
+			var job = new Job { Type = JobType.Abort };
+			_jobs.Enqueue(job);
 			_ewh.Set();
 
 			_thread.Join();
@@ -50,15 +49,49 @@ namespace BizHawk.Client.Common
 			_ewh2.Dispose();
 		}
 
-		void ThreadProc()
+		public void Rewind(int frames)
 		{
-			for (; ; )
+			if (!IsThreaded)
+			{
+				_rewinder._RunRewind(frames);
+				return;
+			}
+
+			var job = new Job
+			{
+				Type = JobType.Rewind,
+				Frames = frames
+			};
+			_jobs.Enqueue(job);
+			_ewh.Set();
+			_ewh2.WaitOne();
+		}
+
+		public void Capture(byte[] coreSavestate)
+		{
+			if (!IsThreaded)
+			{
+				_rewinder.RunCapture(coreSavestate);
+				return;
+			}
+
+			var job = new Job
+			{
+				Type = JobType.Capture,
+				CoreState = coreSavestate
+			};
+			DoSafeEnqueue(job);
+		}
+
+		private void ThreadProc()
+		{
+			for (;; )
 			{
 				_ewh.WaitOne();
-				while (Jobs.Count != 0)
+				while (_jobs.Count != 0)
 				{
-					Job job = null;
-					if (Jobs.TryDequeue(out job))
+					Job job;
+					if (_jobs.TryDequeue(out job))
 					{
 						if (job.Type == JobType.Abort)
 						{
@@ -80,47 +113,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Rewind(int frames)
+		private void DoSafeEnqueue(Job job)
 		{
-			if (!IsThreaded)
-			{
-				_rewinder._RunRewind(frames);
-				return;
-			}
-
-			var job = new Job();
-			job.Type = JobType.Rewind;
-			job.Frames = frames;
-			Jobs.Enqueue(job);
-			_ewh.Set();
-			_ewh2.WaitOne();
-		}
-
-		void DoSafeEnqueue(Job job)
-		{
-			Jobs.Enqueue(job);
+			_jobs.Enqueue(job);
 			_ewh.Set();
 
-			//just in case... we're getting really behind.. slow it down here
-			//if this gets backed up too much, then the rewind will seem to malfunction since it requires all the captures in the queue to complete first
-			while (Jobs.Count > 15)
+			// just in case... we're getting really behind.. slow it down here
+			// if this gets backed up too much, then the rewind will seem to malfunction since it requires all the captures in the queue to complete first
+			while (_jobs.Count > 15)
 			{
 				Thread.Sleep(0);
 			}
-		}
-
-		public void Capture(byte[] coreSavestate)
-		{
-			if (!IsThreaded)
-			{
-				_rewinder.RunCapture(coreSavestate);
-				return;
-			}
-
-			var job = new Job();
-			job.Type = JobType.Capture;
-			job.CoreState = coreSavestate;
-			DoSafeEnqueue(job);
 		}
 
 		private enum JobType
@@ -128,11 +131,11 @@ namespace BizHawk.Client.Common
 			Capture, Rewind, Abort
 		}
 
-		private class Job
+		private sealed class Job
 		{
-			public JobType Type;
-			public byte[] CoreState;
-			public int Frames;
+			public JobType Type { get; set; }
+			public byte[] CoreState { get; set; }
+			public int Frames { get; set; }
 		}
 	}
 }

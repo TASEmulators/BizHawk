@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 {
 	public abstract class Watch
 	{
-		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 };
-		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float };
-		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 };
+		public enum WatchSize { Byte = 1, Word = 2, DWord = 4, Separator = 0 }
+		public enum DisplayType { Separator, Signed, Unsigned, Hex, Binary, FixedPoint_12_4, FixedPoint_20_12, Float }
+		public enum PreviousType { Original = 0, LastSearch = 1, LastFrame = 2, LastChange = 3 }
 
 		public static string DisplayTypeToString(DisplayType type)
 		{
@@ -161,11 +161,11 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "X" + IntHelpers.GetNumDigits(_domain.Size - 1).ToString();
+					return "X" + IntHelpers.GetNumDigits(this._domain.Size - 1);
 				}
 				else
 				{
-					return "";
+					return String.Empty;
 				}
 			}
 		}
@@ -350,6 +350,7 @@ namespace BizHawk.Client.Common
 			{
 				_type = type;
 			}
+
 			_bigEndian = bigEndian;
 			if (notes != null)
 			{
@@ -452,6 +453,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Signed:
 						if (InputValidate.IsValidSignedNumber(value))
@@ -462,6 +464,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Hex:
 						if (InputValidate.IsValidHexNumber(value))
@@ -472,6 +475,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Binary:
 						if (InputValidate.IsValidBinaryNumber(value))
@@ -482,6 +486,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 				}
 
@@ -498,8 +503,8 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				string diff = String.Empty;
-				int diffVal = _value - _previous;
+				var diff = String.Empty;
+				var diffVal = _value - _previous;
 				if (diffVal > 0)
 				{
 					diff = "+";
@@ -508,6 +513,7 @@ namespace BizHawk.Client.Common
 				{
 					diff = "-";
 				}
+
 				return diff + FormatValue((byte)(_previous - _value));
 			}
 		}
@@ -526,6 +532,7 @@ namespace BizHawk.Client.Common
 						_previous = _value;
 						_changecount++;
 					}
+
 					break;
 				case PreviousType.LastFrame:
 					_previous = _value;
@@ -534,6 +541,7 @@ namespace BizHawk.Client.Common
 					{
 						_changecount++;
 					}
+
 					break;
 			}
 		}
@@ -554,6 +562,7 @@ namespace BizHawk.Client.Common
 			{
 				_type = type;
 			}
+
 			_bigEndian = bigEndian;
 
 			if (notes != null)
@@ -627,7 +636,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(4);
 				case DisplayType.FixedPoint_12_4:
-					return String.Format("{0:F4}", (val / 16.0));
+					return String.Format("{0:F4}", val / 16.0);
 				case DisplayType.Binary:
 					return Convert.ToString(val, 2).PadLeft(16, '0').Insert(8, " ").Insert(4, " ").Insert(14, " ");
 			}
@@ -649,6 +658,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Signed:
 						if (InputValidate.IsValidSignedNumber(value))
@@ -659,6 +669,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Hex:
 						if (InputValidate.IsValidHexNumber(value))
@@ -669,6 +680,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Binary:
 						if (InputValidate.IsValidBinaryNumber(value))
@@ -679,6 +691,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.FixedPoint_12_4:
 						if (InputValidate.IsValidFixedPointNumber(value))
@@ -689,8 +702,10 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 				}
+
 				PokeWord(val);
 				return true;
 			}
@@ -720,6 +735,7 @@ namespace BizHawk.Client.Common
 						_previous = temp;
 						_changecount++;
 					}
+
 					break;
 				case PreviousType.LastFrame:
 					_previous = _value;
@@ -728,6 +744,7 @@ namespace BizHawk.Client.Common
 					{
 						_changecount++;
 					}
+
 					break;
 			}
 		}
@@ -748,6 +765,7 @@ namespace BizHawk.Client.Common
 			{
 				_type = type;
 			}
+
 			_bigEndian = bigEndian;
 
 			if (notes != null)
@@ -823,10 +841,10 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
-					return String.Format("{0:0.######}", (val / 4096.0));
+					return String.Format("{0:0.######}", val / 4096.0);
 				case DisplayType.Float:
-					byte[] bytes = BitConverter.GetBytes(val);
-					float _float = BitConverter.ToSingle(bytes, 0);
+					var bytes = BitConverter.GetBytes(val);
+					var _float = BitConverter.ToSingle(bytes, 0);
 					return String.Format("{0:0.######}", _float);
 			}
 		}
@@ -847,6 +865,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Signed:
 						if (InputValidate.IsValidSignedNumber(value))
@@ -857,6 +876,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Hex:
 						if (InputValidate.IsValidHexNumber(value))
@@ -867,6 +887,7 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.FixedPoint_20_12:
 						if (InputValidate.IsValidFixedPointNumber(value))
@@ -877,19 +898,22 @@ namespace BizHawk.Client.Common
 						{
 							return false;
 						}
+
 						break;
 					case DisplayType.Float:
 						if (InputValidate.IsValidDecimalNumber(value))
 						{
-							byte[] bytes = BitConverter.GetBytes(float.Parse(value));
+							var bytes = BitConverter.GetBytes(float.Parse(value));
 							val = BitConverter.ToUInt32(bytes, 0);
 						}
 						else
 						{
 							return false;
 						}
+
 						break;
 				}
+
 				PokeDWord(val);
 				return true;
 			}
@@ -918,6 +942,7 @@ namespace BizHawk.Client.Common
 						_previous = _value;
 						_changecount++;
 					}
+
 					break;
 				case PreviousType.LastFrame:
 					_previous = _value;
@@ -926,6 +951,7 @@ namespace BizHawk.Client.Common
 					{
 						_changecount++;
 					}
+
 					break;
 			}
 		}
