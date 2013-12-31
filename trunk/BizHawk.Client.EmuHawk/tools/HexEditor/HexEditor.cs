@@ -601,11 +601,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGroupBoxTitle()
 		{
-			var memoryDomain = _domain.ToString();
-			var systemID = Global.Emulator.SystemId;
-			var addresses = _domain.Size / _dataSize;
-			var addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
-			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + addressesString + " addresses";
+			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / _dataSize).TrimStart('0');
+			MemoryViewerBox.Text = Global.Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
