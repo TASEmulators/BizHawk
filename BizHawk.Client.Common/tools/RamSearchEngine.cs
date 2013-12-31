@@ -190,10 +190,7 @@ namespace BizHawk.Client.Common
 
 		public bool Preview(int address)
 		{
-			var listOfOne = new List<IMiniWatch>
-			{
-				_watchList.BinarySearch(x => x.Address, address)
-			};
+			var listOfOne = Enumerable.Repeat(_watchList.BinarySearch(x => x.Address, address), 1);
 
 			switch (_compareTo)
 			{
