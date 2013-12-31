@@ -47,7 +47,13 @@ namespace BizHawk.Client.Common
 		{
 			_history.Clear();
 			var domain = _settings.Domain;
-			_watchList = new List<IMiniWatch>(domain.Size);
+			var listSize = domain.Size;
+			if (!_settings.CheckMisAligned)
+			{
+				listSize /= (int)_settings.Size;
+			}
+
+			_watchList = new List<IMiniWatch>(listSize);
 
 			switch (_settings.Size)
 			{
