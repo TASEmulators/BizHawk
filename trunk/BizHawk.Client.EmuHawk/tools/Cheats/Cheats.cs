@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
-			CheatEditor.SetEditEvent(AddCheat); // CheatList.Add is already an upsert, so there is nothing different to handle here
+			CheatEditor.SetEditEvent(EditCheat);
 			UpdateDialog();
 		}
 
@@ -192,6 +192,12 @@ namespace BizHawk.Client.EmuHawk
 			Global.CheatList.Add(CheatEditor.Cheat);
 			UpdateDialog();
 			UpdateMessageLabel();
+		}
+
+		private void EditCheat()
+		{
+			Global.CheatList.Remove(CheatEditor.OriginalCheat);
+			AddCheat();
 		}
 
 		public void SaveConfigSettings()
