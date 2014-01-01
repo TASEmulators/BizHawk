@@ -476,11 +476,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave)
-			{
-				return true;
-			}
-
 			if (_luaList.Changes)
 			{
 				GlobalWin.Sound.StopSound();

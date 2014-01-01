@@ -118,11 +118,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave)
-			{
-				return true;
-			}
-
 			if (Global.CheatList.Changes)
 			{
 				GlobalWin.Sound.StopSound();

@@ -99,11 +99,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
-			{
-				return true;
-			}
-
 			if (_watches.Changes)
 			{
 				GlobalWin.Sound.StopSound();
