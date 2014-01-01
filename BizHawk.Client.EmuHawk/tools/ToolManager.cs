@@ -8,9 +8,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
-		//TODO: merge ToolHelper code where logical
-		//For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
-		//Also a UsesRam, and similar method
+		// TODO: merge ToolHelper code where logical
+		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
+		// Also a UsesRam, and similar method
 
 		private List<IToolForm> _tools = new List<IToolForm>();
 
@@ -147,6 +147,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns></returns>
 		public bool AskSave()
 		{
+			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			{
+				return true;
+			}
+
 			foreach (var tool in _tools)
 			{
 				var result = tool.AskSave();
@@ -167,6 +172,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns></returns>
 		public bool AskSave<T>() where T : IToolForm
 		{
+			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			{
+				return true;
+			}
+
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
