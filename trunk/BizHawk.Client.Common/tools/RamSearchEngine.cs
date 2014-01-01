@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 		private readonly Settings _settings = new Settings();
 		private readonly UndoHistory<IMiniWatch> _history = new UndoHistory<IMiniWatch>(true);
 		private bool _keepHistory = true;
+		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
 
 		public RamSearchEngine(Settings settings)
 		{
@@ -190,7 +191,16 @@ namespace BizHawk.Client.Common
 
 		public bool Preview(int address)
 		{
-			var listOfOne = Enumerable.Repeat(_watchList.BinarySearch(x => x.Address, address), 1);
+			IEnumerable<IMiniWatch> listOfOne;
+
+			if (_isSorted)
+			{
+				listOfOne = Enumerable.Repeat(_watchList.BinarySearch(x => x.Address, address), 1);
+			}
+			else
+			{
+				listOfOne = Enumerable.Repeat(_watchList.FirstOrDefault(x => x.Address == address), 1);
+			}
 
 			switch (_compareTo)
 			{
@@ -400,6 +410,7 @@ namespace BizHawk.Client.Common
 
 		public void Sort(string column, bool reverse)
 		{
+			_isSorted = false;
 			switch (column)
 			{
 				case WatchList.ADDRESS:
@@ -410,6 +421,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_watchList = _watchList.OrderBy(x => x.Address).ToList();
+						_isSorted = true;
 					}
 
 					break;
