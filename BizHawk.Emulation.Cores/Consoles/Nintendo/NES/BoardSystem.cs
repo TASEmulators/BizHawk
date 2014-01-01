@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//mixes the board's custom audio into the supplied sample buffer
 			void ApplyCustomAudio(short[] samples);
 
-			MapperProperties InitialRegisterValues { get; set; }
+			Dictionary<string, string> InitialRegisterValues { get; set; }
 		};
 
 
@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-			private MapperProperties _initialRegisterValues = new MapperProperties();
-			public MapperProperties InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
+			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
+			public Dictionary<string, string> InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
@@ -351,7 +351,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				newboard = CreateBoardInstance(board.GetType());
 			}
 			newboard.Create(this);
-			newboard.InitialRegisterValues = InitialMapperRegisterValues;
+			// i suppose the old board could have changed its initial register values, although it really shouldn't
+			// you can't use SyncSettings.BoardProperties here because they very well might be different than before
+			// in case the user actually changed something in the UI
+			newboard.InitialRegisterValues = board.InitialRegisterValues;
 			newboard.Configure(origin);
 			newboard.ROM = board.ROM;
 			newboard.VROM = board.VROM;
@@ -441,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// finds a board class which can handle the provided cart
 		/// </summary>
-		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, MapperProperties properties)
+		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
 			NES nes = new NES();
 			nes.cart = cart;

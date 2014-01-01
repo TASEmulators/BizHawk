@@ -48,6 +48,12 @@ namespace BizHawk.Client.EmuHawk
 						};
 					}
 				}
+				else if (!record && Global.Emulator.SystemId == "NES")
+				{
+					var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
+					s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
+					this._syncSettingsHack = s;
+				}
 
 				// load the rom in any case
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
