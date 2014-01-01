@@ -18,7 +18,8 @@ using BizHawk.Emulation.Common.Components;
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
+	//MMC5 isn't actually all that common
+	//[NES.INESBoardImplPriority]
 	public sealed class ExROM : NES.NESBoardBase
 	{
 		//configuraton
