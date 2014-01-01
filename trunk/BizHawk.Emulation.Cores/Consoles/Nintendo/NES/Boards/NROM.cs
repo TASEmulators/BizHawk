@@ -16,10 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER000":
-					if (Cart.prg_size <= 32)
-						break;
-					else
-						return false; // NROM-368
 				case "MAPPER219": //adelikat: a version of 3D-Block tries to use this ROM, but plays fine as NROM and 219 is undocumented by Disch
 					break;
 
