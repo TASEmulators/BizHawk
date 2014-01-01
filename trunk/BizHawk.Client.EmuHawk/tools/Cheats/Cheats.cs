@@ -92,16 +92,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadFileFromRecent(string path)
 		{
-			var ask_result = true;
-			if (Global.CheatList.Changes)
+			var askResult = Global.CheatList.Changes ? AskSave() : true;
+			if (askResult)
 			{
-				ask_result = AskSave();
-			}
-
-			if (ask_result)
-			{
-				var load_result = Global.CheatList.Load(path, append: false);
-				if (!load_result)
+				var loadResult = Global.CheatList.Load(path, append: false);
+				if (!loadResult)
 				{
 					ToolHelpers.HandleLoadError(Global.Config.RecentWatches, path);
 				}
@@ -116,18 +111,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMessageLabel(bool saved = false)
 		{
-			string message;
-			
-			if (saved)
-			{
-				message = Path.GetFileName(Global.CheatList.CurrentFileName) + " saved.";
-			}
-			else
-			{
-				message = Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : String.Empty);
-			}
-
-			MessageLabel.Text = message;
+			MessageLabel.Text = saved 
+				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
+				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : String.Empty);
 		}
 
 		public bool AskSave()
@@ -224,7 +210,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			// Size and Positioning
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
@@ -264,6 +249,70 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return width;
+		}
+
+		private void SaveColumnInfo()
+		{
+			if (CheatListView.Columns[NAME] != null)
+			{
+				Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
+				Global.Config.CheatsColumnWidths[NAME] = CheatListView.Columns[NAME].Width;
+			}
+
+			if (CheatListView.Columns[ADDRESS] != null)
+			{
+				Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ADDRESS] = CheatListView.Columns[ADDRESS].Width;
+			}
+
+			if (CheatListView.Columns[VALUE] != null)
+			{
+				Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[VALUE] = CheatListView.Columns[VALUE].Width;
+			}
+
+			if (CheatListView.Columns[COMPARE] != null)
+			{
+				Global.Config.CheatsColumnIndices[COMPARE] = CheatListView.Columns[COMPARE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[COMPARE] = CheatListView.Columns[COMPARE].Width;
+			}
+
+			if (CheatListView.Columns[ON] != null)
+			{
+				Global.Config.CheatsColumnIndices[ON] = CheatListView.Columns[ON].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ON] = CheatListView.Columns[ON].Width;
+			}
+
+			if (CheatListView.Columns[DOMAIN] != null)
+			{
+				Global.Config.CheatsColumnIndices[DOMAIN] = CheatListView.Columns[DOMAIN].DisplayIndex;
+				Global.Config.CheatsColumnWidths[DOMAIN] = CheatListView.Columns[DOMAIN].Width;
+			}
+
+			if (CheatListView.Columns[SIZE] != null)
+			{
+				Global.Config.CheatsColumnIndices[SIZE] = CheatListView.Columns[SIZE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[SIZE] = CheatListView.Columns[SIZE].Width;
+			}
+
+			if (CheatListView.Columns[ENDIAN] != null)
+			{
+				Global.Config.CheatsColumnIndices[ENDIAN] = CheatListView.Columns[ENDIAN].DisplayIndex;
+				Global.Config.CheatsColumnWidths[ENDIAN] = CheatListView.Columns[ENDIAN].Width;
+			}
+
+			if (CheatListView.Columns[TYPE] != null)
+			{
+				Global.Config.CheatsColumnIndices[TYPE] = CheatListView.Columns[TYPE].DisplayIndex;
+				Global.Config.CheatsColumnWidths[TYPE] = CheatListView.Columns[TYPE].Width;
+			}
+		}
+
+		private void DoColumnToggle(string column)
+		{
+			Global.Config.CheatsColumnShow[column] ^= true;
+			SaveColumnInfo();
+			LoadColumnInfo();
 		}
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
@@ -338,145 +387,6 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
-		private void MoveUp()
-		{
-			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices[0] == 0)
-			{
-				return;
-			}
-
-			foreach (var index in indices)
-			{
-				var cheat = Global.CheatList[index];
-				Global.CheatList.Remove(cheat);
-				Global.CheatList.Insert(index - 1, cheat);
-			}
-
-			var newindices = indices.Select(t => t - 1).ToList();
-
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
-			{
-				CheatListView.SelectItem(newi, true);
-			}
-
-			UpdateMessageLabel();
-			UpdateDialog();
-		}
-
-		private void MoveDown()
-		{
-			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == Global.CheatList.Count - 1)
-			{
-				return;
-			}
-
-			for (var i = indices.Count - 1; i >= 0; i--)
-			{
-				var cheat = Global.CheatList[indices[i]];
-				Global.CheatList.Remove(cheat);
-				Global.CheatList.Insert(indices[i] + 1, cheat);
-			}
-
-			UpdateMessageLabel();
-
-			var newindices = indices.Select(t => t + 1).ToList();
-
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
-			{
-				CheatListView.SelectItem(newi, true);
-			}
-
-			UpdateDialog();
-		}
-
-		private void Remove()
-		{
-			var items = SelectedItems.ToList();
-			if (items.Any())
-			{
-				foreach (var item in items)
-				{
-					Global.CheatList.Remove(item);
-				}
-
-				CheatListView.SelectedIndices.Clear();
-				UpdateDialog();
-			}
-		}
-
-		private void Toggle()
-		{
-			SelectedCheats.ToList().ForEach(x => x.Toggle());
-		}
-
-		private void SaveColumnInfo()
-		{
-			if (CheatListView.Columns[NAME] != null)
-			{
-				Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
-				Global.Config.CheatsColumnWidths[NAME] = CheatListView.Columns[NAME].Width;
-			}
-
-			if (CheatListView.Columns[ADDRESS] != null)
-			{
-				Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
-				Global.Config.CheatsColumnWidths[ADDRESS] = CheatListView.Columns[ADDRESS].Width;
-			}
-
-			if (CheatListView.Columns[VALUE] != null)
-			{
-				Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
-				Global.Config.CheatsColumnWidths[VALUE] = CheatListView.Columns[VALUE].Width;
-			}
-
-			if (CheatListView.Columns[COMPARE] != null)
-			{
-				Global.Config.CheatsColumnIndices[COMPARE] = CheatListView.Columns[COMPARE].DisplayIndex;
-				Global.Config.CheatsColumnWidths[COMPARE] = CheatListView.Columns[COMPARE].Width;
-			}
-
-			if (CheatListView.Columns[ON] != null)
-			{
-				Global.Config.CheatsColumnIndices[ON] = CheatListView.Columns[ON].DisplayIndex;
-				Global.Config.CheatsColumnWidths[ON] = CheatListView.Columns[ON].Width;
-			}
-
-			if (CheatListView.Columns[DOMAIN] != null)
-			{
-				Global.Config.CheatsColumnIndices[DOMAIN] = CheatListView.Columns[DOMAIN].DisplayIndex;
-				Global.Config.CheatsColumnWidths[DOMAIN] = CheatListView.Columns[DOMAIN].Width;
-			}
-
-			if (CheatListView.Columns[SIZE] != null)
-			{
-				Global.Config.CheatsColumnIndices[SIZE] = CheatListView.Columns[SIZE].DisplayIndex;
-				Global.Config.CheatsColumnWidths[SIZE] = CheatListView.Columns[SIZE].Width;
-			}
-
-			if (CheatListView.Columns[ENDIAN] != null)
-			{
-				Global.Config.CheatsColumnIndices[ENDIAN] = CheatListView.Columns[ENDIAN].DisplayIndex;
-				Global.Config.CheatsColumnWidths[ENDIAN] = CheatListView.Columns[ENDIAN].Width;
-			}
-
-			if (CheatListView.Columns[TYPE] != null)
-			{
-				Global.Config.CheatsColumnIndices[TYPE] = CheatListView.Columns[TYPE].DisplayIndex;
-				Global.Config.CheatsColumnWidths[TYPE] = CheatListView.Columns[TYPE].Width;
-			}
-		}
-
-		private void DoColumnToggle(string column)
-		{
-			Global.Config.CheatsColumnShow[column] ^= true;
-			SaveColumnInfo();
-			LoadColumnInfo();
-		}
-
 		private void DoSelectedIndexChange()
 		{
 			if (SelectedCheats.Any())
@@ -502,31 +412,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			var result = true;
-			if (Global.CheatList.Changes)
-			{
-				result = AskSave();
-			}
-
+			var result = Global.CheatList.Changes ? AskSave() : true;
 			if (result)
 			{
 				StartNewList();
 			}
-		}
-
-		public string GenerateDefaultCheatFilename()
-		{
-			var pathEntry = Global.Config.PathEntries[Global.Emulator.SystemId, "Cheats"] ??
-			                      Global.Config.PathEntries[Global.Emulator.SystemId, "Base"];
-			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Emulator.SystemId);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && f.Directory.Exists == false)
-			{
-				f.Directory.Create();
-			}
-
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
 		#region Events
@@ -610,7 +500,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
-			Remove();
+			var items = SelectedItems.ToList();
+			if (items.Any())
+			{
+				foreach (var item in items)
+				{
+					Global.CheatList.Remove(item);
+				}
+
+				CheatListView.SelectedIndices.Clear();
+				UpdateDialog();
+			}
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -630,12 +530,57 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			MoveUp();
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices[0] == 0)
+			{
+				return;
+			}
+
+			foreach (var index in indices)
+			{
+				var cheat = Global.CheatList[index];
+				Global.CheatList.Remove(cheat);
+				Global.CheatList.Insert(index - 1, cheat);
+			}
+
+			var newindices = indices.Select(t => t - 1).ToList();
+
+			CheatListView.SelectedIndices.Clear();
+			foreach (var newi in newindices)
+			{
+				CheatListView.SelectItem(newi, true);
+			}
+
+			UpdateMessageLabel();
+			UpdateDialog();
 		}
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
-			MoveDown();
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0 || indices.Last() == Global.CheatList.Count - 1)
+			{
+				return;
+			}
+
+			for (var i = indices.Count - 1; i >= 0; i--)
+			{
+				var cheat = Global.CheatList[indices[i]];
+				Global.CheatList.Remove(cheat);
+				Global.CheatList.Insert(indices[i] + 1, cheat);
+			}
+
+			UpdateMessageLabel();
+
+			var newindices = indices.Select(t => t + 1).ToList();
+
+			CheatListView.SelectedIndices.Clear();
+			foreach (var newi in newindices)
+			{
+				CheatListView.SelectItem(newi, true);
+			}
+
+			UpdateDialog();
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
@@ -648,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
-			Toggle();
+			SelectedCheats.ToList().ForEach(x => x.Toggle());
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
@@ -842,14 +787,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{
-			Toggle();
+			ToggleMenuItem_Click(sender, e);
 		}
 
 		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
 			{
-				Remove();
+				RemoveCheatMenuItem_Click(sender, e);
 			}
 			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift)
 			{
