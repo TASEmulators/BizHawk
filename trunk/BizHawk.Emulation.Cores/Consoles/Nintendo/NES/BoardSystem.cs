@@ -295,7 +295,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			protected void AssertVram(params int[] vram) { Assert_memtype(Cart.vram_size, "vram", vram); }
 			protected void Assert_memtype(int value, string name, int[] valid)
 			{
-				if (DisableConfigAsserts) return;
+				// only disable vram and wram asserts, as UNIF knows its prg and chr sizes
+				if (DisableConfigAsserts && (name == "wram" || name == "vram")) return;
 				foreach (int i in valid) if (value == i) return;
 				Assert(false, "unhandled {0} size of {1}", name,value);
 			}
