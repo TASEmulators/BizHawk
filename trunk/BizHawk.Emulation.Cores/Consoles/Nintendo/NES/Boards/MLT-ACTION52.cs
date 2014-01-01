@@ -104,8 +104,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cheetahmen = true;
 			}
 
-			prg_mode = bool.Parse(InitialRegisterValues["prg_mode"] ?? "false");
-			prg_reg = int.Parse(InitialRegisterValues["prg_reg"] ?? "0");
+			prg_mode = bool.Parse(InitialRegisterValues.GetValueOrDefault("prg_mode", "false"));
+			prg_reg = int.Parse(InitialRegisterValues.GetValueOrDefault("prg_reg", "0"));
 
 			return true;
 		}

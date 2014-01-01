@@ -69,13 +69,13 @@ namespace BizHawk.Client.EmuHawk
 				SaveState3MenuItem.Font.Size,
 				_stateSlots.HasSlot(3) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
-			
+
 			SaveState4MenuItem.Font = new Font(
 				SaveState4MenuItem.Font.FontFamily,
 				SaveState4MenuItem.Font.Size,
 				_stateSlots.HasSlot(4) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular
 			);
-			
+
 			SaveState5MenuItem.Font = new Font(
 				SaveState5MenuItem.Font.FontFamily,
 				SaveState5MenuItem.Font.Size,
@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			x2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 1;
 			SuperX2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 2;
 			SuperEagleMenuItem.Checked = Global.Config.TargetDisplayFilter == 3;
-            scanlines2xToolStripMenuItem.Checked = Global.Config.TargetDisplayFilter == 4;
+			scanlines2xToolStripMenuItem.Checked = Global.Config.TargetDisplayFilter == 4;
 		}
 
 		private void DisplayFilterMenuItem_Click(object sender, EventArgs e)
@@ -589,10 +589,10 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == x2SAIMenuItem) Global.Config.TargetDisplayFilter = 1;
 			if (sender == SuperX2SAIMenuItem) Global.Config.TargetDisplayFilter = 2;
 			if (sender == SuperEagleMenuItem) Global.Config.TargetDisplayFilter = 3;
-            if (sender == Scanlines25MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 192; }
-            if (sender == Scanlines50MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 128; }
-            if (sender == Scanlines75MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 64; }
-            if (sender == ScanlinesCustomMenuItem) { Global.Config.TargetDisplayFilter = 4; new ScanlineSlider().Show(); }
+			if (sender == Scanlines25MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 192; }
+			if (sender == Scanlines50MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 128; }
+			if (sender == Scanlines75MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 64; }
+			if (sender == ScanlinesCustomMenuItem) { Global.Config.TargetDisplayFilter = 4; new ScanlineSlider().Show(); }
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -670,7 +670,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayStatusBar ^= true;
-			
+
 			if (!_inFullscreen)
 			{
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
@@ -875,8 +875,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SaveScreenshotWithStates ^= true;
 			GlobalWin.OSD.AddMessage(Global.Config.SaveScreenshotWithStates
-				                         ? "Screenshots will be saved in savestates"
-				                         : "Screenshots will not be saved in savestates");
+										 ? "Screenshots will be saved in savestates"
+										 : "Screenshots will not be saved in savestates");
 		}
 
 		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1100,7 +1100,7 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = Global.Emulator.CoreComm.CpuTraceAvailable;
-			CheatsMenuItem.Enabled = 
+			CheatsMenuItem.Enabled =
 				HexEditorMenuItem.Enabled =
 				RamSearchMenuItem.Enabled =
 				RamWatchMenuItem.Enabled =
@@ -1231,6 +1231,16 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("FDS disk ejected.");
 			}
 		}
+
+
+		private void moiveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new config.NES.NESSyncSettingsForm())
+			{
+				dlg.ShowDialog(this);
+			}
+		}
+
 
 		#endregion
 
@@ -1698,12 +1708,12 @@ namespace BizHawk.Client.EmuHawk
 				CloseRomContextMenuItem.Visible =
 				UndoSavestateContextMenuItem.Visible =
 				!(Global.Emulator is NullEmulator);
-			
-			RecordMovieContextMenuItem.Visible = 
-				PlayMovieContextMenuItem.Visible = 
+
+			RecordMovieContextMenuItem.Visible =
+				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
 				!(Global.Emulator is NullEmulator) && !Global.MovieSession.Movie.IsActive;
-			
+
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
 				ViewSubtitlesContextMenuItem.Visible =
@@ -1718,7 +1728,7 @@ namespace BizHawk.Client.EmuHawk
 			AddSubtitleContextMenuItem.Visible = !(Global.Emulator is NullEmulator) && Global.MovieSession.Movie.IsActive && !Global.MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
-			
+
 			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Global.Game));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
@@ -1741,12 +1751,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(
-				PathManager.SaveStatePrefix(Global.Game) + 
-				".QuickSave" + 
+				PathManager.SaveStatePrefix(Global.Game) +
+				".QuickSave" +
 				Global.Config.SaveSlot +
 				".State.bak"
 			);
-			
+
 			if (file.Exists)
 			{
 				UndoSavestateContextMenuItem.Enabled = true;

@@ -380,7 +380,7 @@ namespace BizHawk.Client.Common
 									game, 
 									rom.FileData,
 									GetCoreSettings<NES>(),
-									Global.MovieSession.Movie.Header.BoardProperties);
+									GetCoreSyncSettings<NES>());
 								break;
 							case "GB":
 							case "GBC":

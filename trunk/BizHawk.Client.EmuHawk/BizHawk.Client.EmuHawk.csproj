@@ -266,6 +266,7 @@
     <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NES\DataTableDictionaryBind.cs" />
     <Compile Include="config\NES\NESGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -277,6 +278,12 @@
     </Compile>
     <Compile Include="config\NES\NESSoundConfig.Designer.cs">
       <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NES\NESSyncSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
+      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
@@ -886,6 +893,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESSoundConfig.resx">
       <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
+      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathConfig.resx">
       <DependentUpon>PathConfig.cs</DependentUpon>

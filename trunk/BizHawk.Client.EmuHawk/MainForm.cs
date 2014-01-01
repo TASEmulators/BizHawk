@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
-			
+
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
 
@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckMessages();
 			LogConsole.PositionConsole();
 
-			for (;;)
+			for (; ; )
 			{
 				Input.Instance.Update();
 
@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion`
-		
+
 		#region Properties
 
 		public string CurrentlyOpenRom;
@@ -515,7 +515,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (; ; )
 			{
-				
+
 				// loop through all available events
 				var ie = Input.Instance.DequeueEvent();
 				if (ie == null) { break; }
@@ -685,7 +685,7 @@ namespace BizHawk.Client.EmuHawk
 				for (; zoom >= 1; zoom--)
 				{
 					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width)
-					    && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+						&& (((video.BufferHeight * zoom) + borderHeight) < area.Height))
 					{
 						break;
 					}
@@ -2144,7 +2144,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
-			
+
 			if (oldp < 3)
 			{
 				newp = 3;
@@ -2201,7 +2201,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
-			
+
 			if (oldp > 800)
 			{
 				newp = 800;
@@ -2274,8 +2274,8 @@ namespace BizHawk.Client.EmuHawk
 						LedLightStatusLabel.Visible = true;
 					}
 
-					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED 
-						? Properties.Resources.LightOn 
+					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED
+						? Properties.Resources.LightOn
 						: Properties.Resources.LightOff;
 				}
 				else
@@ -2318,8 +2318,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.AcceptBackgroundInput ^= true;
 			GlobalWin.OSD.AddMessage(Global.Config.AcceptBackgroundInput
-				                         ? "Background Input enabled"
-				                         : "Background Input disabled");
+										 ? "Background Input enabled"
+										 : "Background Input disabled");
 		}
 
 		private static void LimitFrameRateMessage()
@@ -2786,8 +2786,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
-			_aviSoundInput = !Global.Emulator.StartAsyncSound() 
-				? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V) 
+			_aviSoundInput = !Global.Emulator.StartAsyncSound()
+				? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
 				: Global.Emulator.SoundProvider;
 
 			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
@@ -2887,8 +2887,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						output = Global.Config.AVI_CaptureOSD 
-							? new BmpVideoProvder(CaptureOSD()) 
+						output = Global.Config.AVI_CaptureOSD
+							? new BmpVideoProvder(CaptureOSD())
 							: Global.Emulator.VideoProvider;
 					}
 
@@ -2940,7 +2940,7 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
-			var loader = new RomLoader 
+			var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
 					CoreCommMessageCallback = ShowMessageCoreComm
@@ -3080,7 +3080,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			
+
 			// Make backup first
 			if (Global.Config.BackupSavestates && file.Exists)
 			{
@@ -3107,7 +3107,7 @@ namespace BizHawk.Client.EmuHawk
 			// save settings object
 			var t = Global.Emulator.GetType();
 			Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
-			
+
 			// don't trample config with loaded-from-movie settings
 			if (!Global.MovieSession.Movie.IsActive)
 			{
@@ -3186,7 +3186,7 @@ namespace BizHawk.Client.EmuHawk
 			string errorMsg;
 			string warningMsg;
 			var m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
-			
+
 			if (!String.IsNullOrWhiteSpace(errorMsg))
 			{
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -3199,7 +3199,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				GlobalWin.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-				                         Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+										 Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
 			}
 
 			if (!Directory.Exists(d))

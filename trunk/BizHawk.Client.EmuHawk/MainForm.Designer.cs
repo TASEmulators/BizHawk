@@ -346,6 +346,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.moiveSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1958,7 +1959,8 @@
             this.toolStripSeparator17,
             this.NESGraphicSettingsMenuItem,
             this.NESSoundChannelsMenuItem,
-            this.FDSControlsMenuItem});
+            this.FDSControlsMenuItem,
+            this.moiveSettingsToolStripMenuItem});
 			this.NESSubMenu.Name = "NESSubMenu";
 			this.NESSubMenu.Size = new System.Drawing.Size(38, 17);
 			this.NESSubMenu.Text = "&NES";
@@ -2212,7 +2214,7 @@
 			// AtariSettingsToolStripMenuItem
 			// 
 			this.AtariSettingsToolStripMenuItem.Name = "AtariSettingsToolStripMenuItem";
-			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.AtariSettingsToolStripMenuItem.Text = "Settings...";
 			this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
 			// 
@@ -3019,6 +3021,13 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
+			// moiveSettingsToolStripMenuItem
+			// 
+			this.moiveSettingsToolStripMenuItem.Name = "moiveSettingsToolStripMenuItem";
+			this.moiveSettingsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.moiveSettingsToolStripMenuItem.Text = "Moive Settings...";
+			this.moiveSettingsToolStripMenuItem.Click += new System.EventHandler(this.moiveSettingsToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -3376,6 +3385,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem moiveSettingsToolStripMenuItem;
 	}
 }
 

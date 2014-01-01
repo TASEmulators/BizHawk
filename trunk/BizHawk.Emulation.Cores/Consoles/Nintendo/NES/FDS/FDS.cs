@@ -402,22 +402,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x6000)
 				WRAM[addr + 0x2000] = value;
 		}
-
-		/*
-		public override void ApplyCustomAudio(short[] samples)
-		{
-			audio.ApplyCustomAudio(samples);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			if (audio != null)
-			{
-				audio.Dispose();
-				audio = null;
-			}
-		}
-		*/
 	}
 }

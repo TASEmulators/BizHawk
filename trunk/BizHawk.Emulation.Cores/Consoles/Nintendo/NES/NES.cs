@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, Dictionary<string, string> boardProperties = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
@@ -26,11 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsbios = tmp;
 			}
 
-			if (boardProperties != null)
-			{
-				InitialMapperRegisterValues.Set(boardProperties);
-			}
-
+			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
@@ -76,39 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return ret;
 			}
 			return null;
-		}
-
-		MapperProperties InitialMapperRegisterValues = new MapperProperties();
-
-		public class MapperProperties
-		{
-			private List<KeyValuePair<string, string>> _properties = new List<KeyValuePair<string, string>>();
-
-			public string this[string key]
-			{
-				get
-				{
-					if(_properties.Any(x => x.Key == key))
-					{
-						return _properties.FirstOrDefault(x => x.Key == key).Value;
-					}
-					else
-					{
-						return null;
-					}
-				}
-			}
-
-			public void Set(Dictionary<string, string> values)
-			{
-				_properties.Clear();
-				_properties.AddRange(values);
-			}
-
-			public void Add(string key, string value)
-			{
-				_properties.Add(new KeyValuePair<string, string>(key, value));
-			}
 		}
 
 		class NESWatch
@@ -546,6 +509,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
 
+			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
+
 			origin = EDetectionOrigin.None;
 
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
@@ -873,9 +838,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		NESSettings Settings = new NESSettings();
+		NESSyncSettings SyncSettings = new NESSyncSettings();
 
 		public object GetSettings() { return Settings.Clone(); }
-		public object GetSyncSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o)
 		{ 
 			Settings = (NESSettings)o;
@@ -902,7 +868,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return false;
 		}
-		public bool PutSyncSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			var n = (NESSyncSettings)o;
+			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, n);
+			SyncSettings = n;
+			return ret;
+		}
 
 		public class NESSettings
 		{
@@ -947,6 +919,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					this.Palette = Palette;
 			}
 		}
+
+		public class NESSyncSettings
+		{
+			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
+
+			public NESSyncSettings Clone()
+			{
+				var ret = (NESSyncSettings)MemberwiseClone();
+				ret.BoardProperties = new Dictionary<string, string>(BoardProperties);
+				return ret;
+			}
+
+			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
+			{
+				return !Util.DictionaryEqual(x.BoardProperties, y.BoardProperties);
+			}
+		}
+
+
 	}
 }
 
