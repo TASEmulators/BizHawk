@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -24,13 +17,14 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Privates
 
-		private Cheat _cheat;
 		private const string HexInd = "0x";
-		private bool _loading = false;
-		private bool _editmode = false;
 
-		private Action _addCallback = null;
-		private Action _editCallback = null;
+		private Cheat _cheat;
+		private bool _loading;
+		private bool _editmode;
+
+		private Action _addCallback;
+		private Action _editCallback;
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
@@ -38,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ToolHelpers.PopulateMemoryDomainDropdown(ref DomainDropDown, Global.Emulator.MemoryDomains.MainMemory);
 			}
+
 			SetFormToDefault();
 		}
 
@@ -73,8 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = String.Empty; //Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+				CompareBox.Text = String.Empty; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
 			}
+
 			_loading = false;
 		}
 
@@ -111,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(Watch.DisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = String.Empty; //TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = String.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
@@ -163,21 +159,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
 					break;
 				case 1:
-					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
 					break;
 				case 2:
-					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll<string>(e => Watch.DisplayTypeToString(e)).ToArray());
+					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
 					break;
 			}
+
 			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
 		}
 
 		private void CheckFormState()
 		{
-			bool valid = (!String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text));
+			var valid = !String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text);
 			AddButton.Enabled = valid;
 			EditButton.Enabled = _editmode && valid;
 		}
@@ -191,7 +188,6 @@ namespace BizHawk.Client.EmuHawk
 				ValueBox.ByteSize = 
 					CompareBox.ByteSize =
 					GetCurrentSize();
-
 			}
 		}
 
@@ -252,7 +248,6 @@ namespace BizHawk.Client.EmuHawk
 			if (cheat.IsSeparator)
 			{
 				SetFormToDefault();
-				
 			}
 			else
 			{
@@ -267,11 +262,16 @@ namespace BizHawk.Client.EmuHawk
 			SetFormToDefault();
 		}
 
+		public Cheat OriginalCheat
+		{
+			get { return _cheat; }
+		}
+
 		public Cheat Cheat
 		{
 			get
 			{
-				Watch watch = Watch.GenerateWatch(
+				var watch = Watch.GenerateWatch(
 					Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
 					AddressBox.ToRawInt().Value,
 					GetCurrentSize(),
@@ -287,14 +287,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetAddEvent(Action AddCallback)
+		public void SetAddEvent(Action addCallback)
 		{
-			_addCallback = AddCallback;
+			_addCallback = addCallback;
 		}
 
-		public void SetEditEvent(Action EditCallback)
+		public void SetEditEvent(Action editCallback)
 		{
-			_editCallback = EditCallback;
+			_editCallback = editCallback;
 		}
 
 		#endregion
