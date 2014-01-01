@@ -527,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + k < _domain.Size)
 					{
-						rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
+						rowStr.Append(Remap(MakeByte(_addr + k)));
 					}
 				}
 
@@ -537,8 +537,20 @@ namespace BizHawk.Client.EmuHawk
 			return rowStr.ToString();
 		}
 
+		private byte MakeByte(int address)
+		{
+			return Global.CheatList.IsActive(_domain, address)
+				? (byte) Global.CheatList[_domain, address].Value.Value
+				: _domain.PeekByte(address); 
+		}
+
 		private int MakeValue(int address)
 		{
+			if (Global.CheatList.IsActive(_domain, address))
+			{
+				return Global.CheatList[_domain, address].Value.Value;
+			}
+
 			switch (_dataSize)
 			{
 				default:
