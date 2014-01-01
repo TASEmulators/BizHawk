@@ -11,14 +11,11 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
-
-		private List<IToolForm> _tools = new List<IToolForm>();
+		private readonly List<IToolForm> _tools = new List<IToolForm>();
 
 		/// <summary>
 		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public IToolForm Load<T>() where T : IToolForm
 		{
 			var existingTool = _tools.FirstOrDefault(x => x is T);
@@ -44,8 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Returns true if an instance of T exists
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public bool Has<T>() where T : IToolForm
 		{
 			return _tools.Any(x => x is T);
@@ -54,8 +49,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets the instance of T, or creates and returns a new instance
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public IToolForm Get<T>() where T : IToolForm
 		{
 			var existingTool = _tools.FirstOrDefault(x => x is T);
@@ -83,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in beforeList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) //Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
 				{
 					tool.UpdateValues();
 				}
@@ -93,12 +86,9 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateAfter()
 		{
 			var afterList = _tools.Where(x => !x.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in afterList.Where(tool => !tool.IsDisposed))
 			{
-				if (!tool.IsDisposed)
-				{
-					tool.UpdateValues();
-				}
+				tool.UpdateValues();
 			}
 		}
 
@@ -111,7 +101,6 @@ namespace BizHawk.Client.EmuHawk
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
-				
 				tool.UpdateValues();
 			}
 		}
@@ -130,7 +119,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Calls Restart() on an instance of T, if it exists
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		public void Restart<T>() where T : IToolForm
 		{
 			CloseIfDisposed<T>();
@@ -144,7 +132,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Runs AskSave on every tool dialog, false is returned if any tool returns false
 		/// </summary>
-		/// <returns></returns>
 		public bool AskSave()
 		{
 			if (Global.Config.SupressAskSave) // User has elected to not be nagged
@@ -152,24 +139,15 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			foreach (var tool in _tools)
-			{
-				var result = tool.AskSave();
-				if (!result)
-				{
-					return false;
-				}
-			}
-
-			return true;
+			return _tools
+				.Select(tool => tool.AskSave())
+				.All(result => result);
 		}
 
 		/// <summary>
 		/// Calls AskSave() on an instance of T, if it exists, else returns true
 		/// The caller should interpret false as cancel and will back out of the action that invokes this call
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public bool AskSave<T>() where T : IToolForm
 		{
 			if (Global.Config.SupressAskSave) // User has elected to not be nagged
@@ -191,7 +169,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// If T exists, this call will close the tool, and remove it from memory
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		public void Close<T>() where T : IToolForm
 		{
 			var tool = _tools.FirstOrDefault(x => x is T);
@@ -234,8 +211,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaConsole.StartLuaDrawing();
 				}
+
 				LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
+
 			UpdateBefore();
 		}
 
@@ -472,12 +451,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static string GenerateDefaultCheatFilename()
 		{
-			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"];
-
-			if (pathEntry == null)
-			{
-				pathEntry = Global.Config.PathEntries[Global.Game.System, "Base"];
-			}
+			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"]
+			                ?? Global.Config.PathEntries[Global.Game.System, "Base"];
 
 			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
 
