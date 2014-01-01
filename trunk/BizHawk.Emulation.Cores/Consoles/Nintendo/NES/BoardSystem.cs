@@ -2,6 +2,7 @@
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -52,7 +53,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			Dictionary<string, string> InitialRegisterValues { get; set; }
 		};
-
 
 		[INESBoardImpl]
 		public abstract class NESBoardBase : INESBoard
@@ -679,6 +679,56 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (!sha1_table.ContainsKey(sha1)) return new List<CartInfo>();
 				return sha1_table[sha1];
+			}
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Field)]
+	public class MapperPropAttribute : Attribute
+	{
+		public string Name { get; private set; }
+		public MapperPropAttribute(string Name)
+		{
+			this.Name = Name;
+		}
+		public MapperPropAttribute()
+		{
+			this.Name = null;
+		}
+	}
+
+	public static class AutoMapperProps
+	{
+		public static void Apply(NES.INESBoard board)
+		{
+			var fields = board.GetType().GetFields();
+			foreach (var field in fields)
+			{
+				var attribs = field.GetCustomAttributes(false);
+				foreach (var attrib in attribs)
+				{
+					if (attrib is MapperPropAttribute)
+					{
+						string Name = ((MapperPropAttribute)attrib).Name ?? field.Name;
+
+						string Value;
+						if (board.InitialRegisterValues.TryGetValue(Name, out Value))
+						{
+							try
+							{
+								field.SetValue(board, Convert.ChangeType(Value, field.FieldType));
+							}
+							catch (Exception e)
+							{
+								if (e is InvalidCastException || e is FormatException || e is OverflowException)
+									throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
+								else
+									throw e;
+							}
+						}
+						break;
+					}
+				}
 			}
 		}
 	}
