@@ -405,10 +405,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
-			UpdateDialog();
-			UpdateMessageLabel();
-			ToggleGameGenieButton();
+			var result = Global.CheatList.Changes ? AskSave() : true;
+			if (result)
+			{
+				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
+				UpdateDialog();
+				UpdateMessageLabel();
+				ToggleGameGenieButton();
+			}
 		}
 
 		private void NewList()
