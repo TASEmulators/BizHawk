@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 
 		// TODO: reconsider the need for exposing these;
 		public IEmulator LoadedEmulator { get; private set; }
-		public CoreComm NextComm { get; private set; }
 		public GameInfo Game { get; private set; }
 		public RomGame Rom { get; private set; }
 		public string CanonicalFullPath { get; private set; }
@@ -98,8 +97,6 @@ namespace BizHawk.Client.Common
 
 		public Func<HawkFile, int?> ChooseArchive { get; set; }
 
-		public Action<string> CoreCommMessageCallback { get; set; } // TODO: eww, do we have to do this?
-
 		private int? HandleArchive(HawkFile file)
 		{
 			if (ChooseArchive != null)
@@ -118,22 +115,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO I'm in mainform.cs and here, move me to a common place that both can call, static method on the config object?
-		private static void CommitCoreSettingsToConfig()
-		{
-			// save settings object
-			var t = Global.Emulator.GetType();
-			Global.Config.PutCoreSettings(Global.Emulator.GetSettings(), t);
-			
-			// don't trample config with loaded-from-movie settings
-			if (!Global.MovieSession.Movie.IsActive)
-			{
-				Global.Config.PutCoreSyncSettings(Global.Emulator.GetSyncSettings(), t);
-			}
-		}
-
-		// TODO: the hasMovie hack should be obsoleted by the standardized movie sync setting saving/loading
-		public bool LoadRom(string path, bool hasmovie = false)
+		public bool LoadRom(string path, CoreComm nextComm)
 		{
 			if (path == null)
 			{
@@ -177,13 +159,6 @@ namespace BizHawk.Client.Common
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
-				var nextComm = new CoreComm(CoreCommMessageCallback);
-				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-
-				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
-				// any settings changes that we made need to make it back to config before we try to instantiate that core with
-				// the new settings objects
-				CommitCoreSettingsToConfig();
 
 				try
 				{
@@ -438,7 +413,6 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "N64":
-								Global.Game = game;
 								nextEmulator = new N64(nextComm, game, rom.RomData, GetCoreSyncSettings<N64>());
 								break;
 							case "DEBUG":
@@ -465,7 +439,6 @@ namespace BizHawk.Client.Common
 
 				Rom = rom;
 				LoadedEmulator = nextEmulator;
-				NextComm = nextComm;
 				Game = game;
 				CanonicalFullPath = file.CanonicalFullPath;
 				return true;

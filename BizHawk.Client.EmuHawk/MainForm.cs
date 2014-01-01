@@ -2948,7 +2948,6 @@ namespace BizHawk.Client.EmuHawk
 			var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
-					CoreCommMessageCallback = ShowMessageCoreComm
 				};
 
 			loader.OnLoadError += ShowLoadError;
@@ -2956,7 +2955,15 @@ namespace BizHawk.Client.EmuHawk
 			loader.OnLoadSettings += CoreSettings;
 			loader.OnLoadSyncSettings += CoreSyncSettings;
 
-			var result = loader.LoadRom(path, hasmovie);
+			// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
+			// any settings changes that we made need to make it back to config before we try to instantiate that core with
+			// the new settings objects
+			CommitCoreSettingsToConfig();
+
+			var nextComm = new CoreComm(ShowMessageCoreComm);
+			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
+
+			var result = loader.LoadRom(path, nextComm);
 
 			if (result)
 			{
@@ -2971,7 +2978,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame();
 				Global.Emulator.Dispose();
 				Global.Emulator = loader.LoadedEmulator;
-				Global.CoreComm = loader.NextComm;
+				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
 				CoreFileProvider.SyncCoreCommInputSignals();
 				InputManager.SyncControls();
