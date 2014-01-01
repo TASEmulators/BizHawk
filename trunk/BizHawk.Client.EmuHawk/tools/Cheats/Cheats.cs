@@ -199,11 +199,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				((Global.Emulator is NES)
+				   (Global.Emulator is NES)
 				|| (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
 				|| (Global.Emulator.SystemId == "GB")
 				|| (Global.Game.System == "GG")
-				|| (Global.Emulator is LibsnesCore));
+				|| (Global.Emulator is LibsnesCore);
 		}
 
 		private void AddCheat()
@@ -592,7 +592,6 @@ namespace BizHawk.Client.EmuHawk
 		private void CheatsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RemoveCheatMenuItem.Enabled =
-				DuplicateMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
 				ToggleMenuItem.Enabled =
@@ -602,30 +601,16 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-				((Global.Emulator is NES) 
+					   (Global.Emulator is NES) 
 					|| (Global.Emulator is Genesis)
 					|| (Global.Emulator.SystemId == "GB")
 					|| (Global.Game.System == "GG")
-					|| (Global.Emulator is LibsnesCore));
+					|| (Global.Emulator is LibsnesCore);
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
 			Remove();
-		}
-
-		private void DuplicateMenuItem_Click(object sender, EventArgs e)
-		{
-			if (CheatListView.SelectedIndices.Count > 0)
-			{
-				foreach (int index in CheatListView.SelectedIndices)
-				{
-					Global.CheatList.Add(new Cheat(Global.CheatList[index]));
-				}
-			}
-
-			UpdateDialog();
-			UpdateMessageLabel();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
@@ -655,10 +640,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (var i = 0; i < Global.CheatList.Count; i++)
-			{
-				CheatListView.SelectItem(i, true);
-			}
+			Enumerable
+				.Range(0, Global.CheatList.Count)
+				.ToList()
+				.ForEach(i => CheatListView.SelectItem(i, true));
 		}
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
@@ -704,6 +689,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.DisableCheatsOnLoad ^= true;
 		}
+
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RecentCheats.AutoLoad ^= true;
@@ -843,7 +829,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
 		{
-
 			Global.Config.CheatsColumnIndices[NAME] = CheatListView.Columns[NAME].DisplayIndex;
 			Global.Config.CheatsColumnIndices[ADDRESS] = CheatListView.Columns[ADDRESS].DisplayIndex;
 			Global.Config.CheatsColumnIndices[VALUE] = CheatListView.Columns[VALUE].DisplayIndex;
@@ -866,7 +851,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Remove();
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift)
 			{
 				SelectAllMenuItem_Click(null, null);
 			}
@@ -895,7 +880,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewCheatForm_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == (".cht"))
+			if (Path.GetExtension(filePaths[0]) == ".cht")
 			{
 				LoadFile(new FileInfo(filePaths[0]), append: false);
 				UpdateDialog();
@@ -908,7 +893,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		private void CheatsContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			ToggleContextMenuItem.Enabled =
 				RemoveContextMenuItem.Enabled =

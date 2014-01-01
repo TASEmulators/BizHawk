@@ -37,10 +37,11 @@
 			this.Compare = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.On = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ToggleContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableAllContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ViewInHexEditorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,6 @@
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveCheatMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DuplicateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertSeparatorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.MoveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +91,6 @@
 			this.SaveToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.RemoveToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.DuplicateToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.SeparatorToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
@@ -102,8 +101,7 @@
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
 			this.CheatEditor = new BizHawk.Client.EmuHawk.CheatEdit();
-			this.ViewInHexEditorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStrip1.SuspendLayout();
+			this.CheatsContextMenu.SuspendLayout();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.CheatGroupBox.SuspendLayout();
@@ -125,7 +123,7 @@
             this.Compare,
             this.On,
             this.Domain});
-			this.CheatListView.ContextMenuStrip = this.contextMenuStrip1;
+			this.CheatListView.ContextMenuStrip = this.CheatsContextMenu;
 			this.CheatListView.FullRowSelect = true;
 			this.CheatListView.GridLines = true;
 			this.CheatListView.HideSelection = false;
@@ -176,16 +174,16 @@
 			this.Domain.Text = "Domain";
 			this.Domain.Width = 75;
 			// 
-			// contextMenuStrip1
+			// CheatsContextMenu
 			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.CheatsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleContextMenuItem,
             this.RemoveContextMenuItem,
             this.DisableAllContextMenuItem,
             this.ViewInHexEditorContextMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(170, 114);
-			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+			this.CheatsContextMenu.Name = "contextMenuStrip1";
+			this.CheatsContextMenu.Size = new System.Drawing.Size(170, 92);
+			this.CheatsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.CheatsContextMenu_Opening);
 			// 
 			// ToggleContextMenuItem
 			// 
@@ -212,6 +210,13 @@
 			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.DisableAllContextMenuItem.Text = "&Disable All";
 			this.DisableAllContextMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
+			// 
+			// ViewInHexEditorContextMenuItem
+			// 
+			this.ViewInHexEditorContextMenuItem.Name = "ViewInHexEditorContextMenuItem";
+			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.ViewInHexEditorContextMenuItem.Text = "View in Hex Editor";
+			this.ViewInHexEditorContextMenuItem.Click += new System.EventHandler(this.ViewInHexEditorContextMenuItem_Click);
 			// 
 			// CheatsMenu
 			// 
@@ -317,7 +322,6 @@
 			// 
 			this.CheatsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RemoveCheatMenuItem,
-            this.DuplicateMenuItem,
             this.InsertSeparatorMenuItem,
             this.toolStripSeparator3,
             this.MoveUpMenuItem,
@@ -341,15 +345,6 @@
 			this.RemoveCheatMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.RemoveCheatMenuItem.Text = "&Remove Cheat";
 			this.RemoveCheatMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
-			// 
-			// DuplicateMenuItem
-			// 
-			this.DuplicateMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
-			this.DuplicateMenuItem.Name = "DuplicateMenuItem";
-			this.DuplicateMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-			this.DuplicateMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.DuplicateMenuItem.Text = "&Duplicate";
-			this.DuplicateMenuItem.Click += new System.EventHandler(this.DuplicateMenuItem_Click);
 			// 
 			// InsertSeparatorMenuItem
 			// 
@@ -590,7 +585,6 @@
             this.SaveToolBarItem,
             this.toolStripSeparator,
             this.RemoveToolbarItem,
-            this.DuplicateToolBarItem,
             this.SeparatorToolbarItem,
             this.toolStripSeparator2,
             this.MoveUpToolbarItem,
@@ -647,16 +641,6 @@
 			this.RemoveToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.RemoveToolbarItem.Text = "&Remove";
 			this.RemoveToolbarItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
-			// 
-			// DuplicateToolBarItem
-			// 
-			this.DuplicateToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.DuplicateToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateToolBarItem.Image")));
-			this.DuplicateToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.DuplicateToolBarItem.Name = "DuplicateToolBarItem";
-			this.DuplicateToolBarItem.Size = new System.Drawing.Size(23, 22);
-			this.DuplicateToolBarItem.Text = "&Duplicate";
-			this.DuplicateToolBarItem.Click += new System.EventHandler(this.DuplicateMenuItem_Click);
 			// 
 			// SeparatorToolbarItem
 			// 
@@ -750,13 +734,6 @@
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);
 			this.CheatEditor.TabIndex = 0;
 			// 
-			// ViewInHexEditorContextMenuItem
-			// 
-			this.ViewInHexEditorContextMenuItem.Name = "ViewInHexEditorContextMenuItem";
-			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(169, 22);
-			this.ViewInHexEditorContextMenuItem.Text = "View in Hex Editor";
-			this.ViewInHexEditorContextMenuItem.Click += new System.EventHandler(this.ViewInHexEditorContextMenuItem_Click);
-			// 
 			// Cheats
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -775,7 +752,7 @@
 			this.Load += new System.EventHandler(this.NewCheatForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
-			this.contextMenuStrip1.ResumeLayout(false);
+			this.CheatsContextMenu.ResumeLayout(false);
 			this.CheatsMenu.ResumeLayout(false);
 			this.CheatsMenu.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -808,7 +785,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CheatsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem RemoveCheatMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DuplicateMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InsertSeparatorMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem MoveUpMenuItem;
@@ -832,7 +808,6 @@
 		private System.Windows.Forms.ToolStripButton SaveToolBarItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
 		private System.Windows.Forms.ToolStripButton RemoveToolbarItem;
-		private System.Windows.Forms.ToolStripButton DuplicateToolBarItem;
 		private System.Windows.Forms.ToolStripButton SeparatorToolbarItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripButton MoveUpToolbarItem;
@@ -853,7 +828,7 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowSizeMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowEndianMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDisplayTypeMenuItem;
-		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ContextMenuStrip CheatsContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ToggleContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RemoveContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisableAllContextMenuItem;
