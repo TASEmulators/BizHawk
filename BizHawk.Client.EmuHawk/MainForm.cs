@@ -2940,6 +2940,11 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
+			if (!GlobalWin.Tools.AskSave())
+			{
+				return false;
+			}
+
 			var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
