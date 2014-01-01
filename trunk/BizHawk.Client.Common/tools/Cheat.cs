@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 
 		public int? Value
 		{
-			get { return _watch.Value; }
+			get { return IsSeparator ? (int?)null : _val; }
 		}
 
 		public bool? BigEndian

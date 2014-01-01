@@ -48,6 +48,14 @@ namespace BizHawk.Client.Common
 			get { return _cheatList[index]; }
 		}
 
+		public Cheat this[MemoryDomain domain, int address]
+		{
+			get
+			{
+				return _cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
+			}
+		}
+
 		public void Pulse()
 		{
 			_cheatList.ForEach(cheat => cheat.Pulse());
@@ -92,11 +100,6 @@ namespace BizHawk.Client.Common
 			_cheatList.Clear();
 			_currentFileName = String.Empty;
 			Changes = false;
-		}
-
-		public void Update()
-		{
-			_cheatList.ForEach(x => x.Pulse());
 		}
 
 		public void Add(Cheat cheat)

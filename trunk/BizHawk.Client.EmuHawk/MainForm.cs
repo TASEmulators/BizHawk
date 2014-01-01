@@ -2538,6 +2538,7 @@ namespace BizHawk.Client.EmuHawk
 				// client input-related duties
 				GlobalWin.OSD.ClearGUIText();
 
+				Global.CheatList.Pulse();
 				if (!isTurboing)
 				{
 					GlobalWin.Tools.UpdateToolsBefore();
@@ -2588,7 +2589,6 @@ namespace BizHawk.Client.EmuHawk
 
 				coreskipaudio = Global.ClientControls["Turbo"] && _currAviWriter == null;
 
-				Global.CheatList.Pulse();
 				Global.Emulator.FrameAdvance(!_throttle.skipnextframe || _currAviWriter != null, !coreskipaudio);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
