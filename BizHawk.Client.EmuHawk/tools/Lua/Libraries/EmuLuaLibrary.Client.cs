@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class MultiClientLuaLibrary : LuaLibraryBase
 	{
+		private Dictionary<int, string> _filterMappings = new Dictionary<int,string>
+			{
+				{ 0, "None" },
+				{ 1, "x2SAI" },
+				{ 2, "SuperX2SAI" },
+				{ 3, "SuperEagle" },
+				{ 4, "Scanlines" },
+			};
+
 		public MultiClientLuaLibrary(Action<string> logOutputCallback)
 			: this()
 		{
@@ -23,6 +33,8 @@ namespace BizHawk.Client.EmuHawk
 					"closerom",
 					"enablerewind",
 					"frameskip",
+					"getdisplayfilter",
+					"gettargetscanlineintensity",
 					"getwindowsize",
 					"ispaused",
 					"opencheats",
@@ -41,7 +53,9 @@ namespace BizHawk.Client.EmuHawk
 					"screenshot",
 					"screenshottoclipboard",
 					"screenwidth",
+					"setdisplayfilter",
 					"setscreenshotosd",
+					"settargetscanlineintensity",
 					"setwindowsize",
 					"speedmode",
 					"togglepause",
@@ -100,14 +114,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static bool client_ispaused()
+		public string client_getdisplayfilter()
 		{
-			return GlobalWin.MainForm.EmulatorPaused;
+			return _filterMappings[Global.Config.TargetDisplayFilter];
+		}
+
+		private static int client_gettargetscanlineintensity()
+		{
+			return Global.Config.TargetScanlineFilterIntensity;
 		}
 
 		public static int client_getwindowsize()
 		{
 			return Global.Config.TargetZoomFactor;
+		}
+
+		public static bool client_ispaused()
+		{
+			return GlobalWin.MainForm.EmulatorPaused;
 		}
 
 		public static void client_opencheats()
@@ -190,6 +214,23 @@ namespace BizHawk.Client.EmuHawk
 		public static void client_screenshottoclipboard()
 		{
 			GlobalWin.MainForm.TakeScreenshotToClipboard();
+		}
+
+		public void client_setdisplayfilter(string filter)
+		{
+			foreach (var kvp in _filterMappings)
+			{
+				if (String.Equals(kvp.Value, filter, StringComparison.CurrentCultureIgnoreCase))
+				{
+					Global.Config.TargetDisplayFilter = kvp.Key;
+					return;
+				}
+			}
+		}
+
+		private static void client_settargetscanlineintensity(int val)
+		{
+			Global.Config.TargetScanlineFilterIntensity = val;
 		}
 
 		public static void client_setscreenshotosd(bool value)
