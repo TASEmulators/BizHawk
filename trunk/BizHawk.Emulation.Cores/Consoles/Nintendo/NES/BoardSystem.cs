@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								currCart.board_type = xmlreader.GetAttribute("type");
 								currCart.pcb = xmlreader.GetAttribute("pcb");
-								int mapper = byte.Parse(xmlreader.GetAttribute("mapper"));
+								int mapper = int.Parse(xmlreader.GetAttribute("mapper"));
 								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
 								currCart.mapper = (byte)mapper;
 								state = 3;
