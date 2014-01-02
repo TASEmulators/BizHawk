@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			return _filterMappings[Global.Config.TargetDisplayFilter];
 		}
 
-		private static int client_gettargetscanlineintensity()
+		public static int client_gettargetscanlineintensity()
 		{
 			return Global.Config.TargetScanlineFilterIntensity;
 		}
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void client_settargetscanlineintensity(int val)
+		public static void client_settargetscanlineintensity(int val)
 		{
 			Global.Config.TargetScanlineFilterIntensity = val;
 		}
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				int speed = Convert.ToInt32(percent.ToString());
-				if (speed > 0 && speed < 1600) //arbituarily capping it at 1600%
+				if (speed > 0 && speed < 1600) // arbituarily capping it at 1600%
 				{
 					GlobalWin.MainForm.ClickSpeedItem(speed);
 				}
