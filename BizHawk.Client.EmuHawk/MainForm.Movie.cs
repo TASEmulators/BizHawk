@@ -54,7 +54,17 @@ namespace BizHawk.Client.EmuHawk
 					s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
 					this._syncSettingsHack = s;
 				}
-
+				else if (!record && Global.Emulator is Emulation.Cores.Consoles.Sega.gpgx.GPGX)
+				{
+					// unfortunately, gpgx is being released with movie 1.0
+					// we don't save the control settings there, so hack and assume a particular configuration
+					var s = new Emulation.Cores.Consoles.Sega.gpgx.GPGX.GPGXSyncSettings
+					{
+						ControlType = Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal,
+						UseSixButton = true,
+					};
+					this._syncSettingsHack = s;
+				}
 				// load the rom in any case
 				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
 			}
