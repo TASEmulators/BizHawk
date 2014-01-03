@@ -1414,7 +1414,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
+			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
 		}
 
 		#endregion
@@ -1652,7 +1652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenesisSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GenericCoreConfig.DoDialog(this, "Genesis Settings");
+			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
 		#endregion

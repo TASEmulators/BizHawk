@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk;
 
-namespace BizHawk.Client.EmuHawk.config
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
@@ -54,6 +54,11 @@ namespace BizHawk.Client.EmuHawk.config
 		private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			syncsettingschanged = true;
+		}
+
+		private void GenericCoreConfig_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
