@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.config
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class GenericCoreConfig
 	{
@@ -129,7 +129,9 @@
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.tabControl1);
 			this.Name = "GenericCoreConfig";
+			this.ShowIcon = false;
 			this.Text = "GenericCoreConfig";
+			this.Load += new System.EventHandler(this.GenericCoreConfig_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);

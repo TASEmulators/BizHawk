@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadForm : Form, IToolForm
 	{
-		private int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultWidth;
 		private int defaultHeight;
 		private readonly List<IVirtualPad> _pads = new List<IVirtualPad>();
 
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultWidth = Size.Width;
 			defaultHeight = Size.Height;
 
 			StickyBox.Checked = Global.Config.VirtualPadSticky;
@@ -174,9 +174,17 @@ namespace BizHawk.Client.EmuHawk
 					ControllerBox.Controls.Add(gbapad1);
 					break;
 				case "GEN":
-					VirtualPadGen3Button genpad1 = new VirtualPadGen3Button { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadGen6Button genpad1 = new VirtualPadGen6Button { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadGen6Button genpad2 = new VirtualPadGen6Button { Location = new Point(195, 19), Controller = "P2" };
 					_pads.Add(genpad1);
+					_pads.Add(genpad2);
 					ControllerBox.Controls.Add(genpad1);
+					ControllerBox.Controls.Add(genpad2);
+
+					VirtualPadNESControl gencontrol = new VirtualPadNESControl { Location = new Point(8, 105) };
+					_pads.Add(gencontrol);
+					ControllerBox.Controls.Add(gencontrol);
+
 					break;
 				case "Coleco":
 					VirtualPadColeco coleco1 = new VirtualPadColeco { Location = new Point(8, 19), Controller = "P1" };

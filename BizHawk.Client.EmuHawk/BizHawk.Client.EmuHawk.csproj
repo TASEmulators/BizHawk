@@ -765,6 +765,12 @@
     <Compile Include="tools\VirtualPads\VirtualPadGen3Button.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.Designer.cs">
+      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\VirtualPadN64.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1076,6 +1082,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\VirtualPadGen6Button.resx">
+      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadN64.resx">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>

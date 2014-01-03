@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		public override string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("");
-			input.Append(B2.Checked ? "r" : ".");
+			input.Append(B2.Checked ? "r" : B1.Checked ? "P" : ".");
 			input.Append("|");
 			return input.ToString();
 		}
@@ -112,32 +112,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "NES")
-			{
-				return;
-			}
-			else if (sender == B1)
+			if (sender == B1)
 			{
 				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
 				if (B1.Checked)
+				{
 					B1.BackColor = Color.Pink;
+				}
 				else
+				{
 					B1.BackColor = SystemColors.Control;
+				}
 			}
 			else if (sender == B2)
 			{
 				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 				if (B2.Checked)
+				{
 					B2.BackColor = Color.Pink;
+				}
 				else
+				{
 					B2.BackColor = SystemColors.Control;
+				}
 			}
 		}
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "NES") return;
-
 			B1.Checked = false;
 			B2.Checked = false;
 
