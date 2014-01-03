@@ -330,9 +330,28 @@ namespace BizHawk.Client.Common
 		{
 			var input = new StringBuilder("|");
 
-			foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
+			if (IsBasePressed("Power"))
 			{
-				input.Append(IsBasePressed(button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
+				input.Append(MnemonicConstants.COMMANDS[_controlType]["Power"]);
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append(MnemonicConstants.COMMANDS[_controlType]["Reset"]);
+			}
+			else
+			{
+				input.Append('.');
+			}
+
+			input.Append("|");
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[_controlType]; player++)
+			{
+				foreach (var button in MnemonicConstants.BUTTONS[_controlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[_controlType][button] : ".");
+				}
+
+				input.Append("|");
 			}
 
 			input.Append("|");
