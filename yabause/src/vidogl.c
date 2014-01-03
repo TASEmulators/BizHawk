@@ -3221,7 +3221,7 @@ static void Vdp2DrawNBG0(void)
       }
 
       if( (Vdp2Regs->ZMYN0.all & 0x7FF00) == 0 )
-         info.coordincx = 1.0f; 
+         info.coordincy = 1.0f; 
       else
          info.coordincy = (float) 65536 / (Vdp2Regs->ZMYN0.all & 0x7FF00);
       
@@ -3414,7 +3414,7 @@ static void Vdp2DrawNBG1(void)
    }
 
       if( (Vdp2Regs->ZMYN1.all & 0x7FF00) == 0 )
-         info.coordincx = 1.0f; 
+         info.coordincy = 1.0f; 
       else
          info.coordincy = (float) 65536 / (Vdp2Regs->ZMYN1.all & 0x7FF00);
       
