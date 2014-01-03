@@ -37,8 +37,8 @@ namespace BizHawk.Client.Common
 			{
 				"GPGX Genesis Controller", new Dictionary<string, string>
 				{
-					{"P1 Up", "U"}, {"P1 Down", "D"}, {"P1 Left", "L"}, {"P1 Right", "R"}, {"P1 A", "A"}, {"P1 B", "B"}, {"P1 C", "C"},
-					{"P1 Start", "S"}, {"P1 X", "X"}, {"P1 Y", "Y"}, {"P1 Z", "Z"}, {"P1 Mode", "M"}
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"A", "A"}, {"B", "B"}, {"C", "C"},
+					{"Start", "S"}, {"X", "X"}, {"Y", "Y"}, {"Z", "Z"}, {"Mode", "M"}
 				}
 			},
 			{
