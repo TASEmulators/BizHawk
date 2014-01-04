@@ -528,15 +528,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
 					delegate(int addr)
 					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
+						return p[addr & (size - 1)];
 					},
 					delegate(int addr, byte val)
 					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
+						p[addr & (size - 1)] = val;
 					}));
 			}
 
