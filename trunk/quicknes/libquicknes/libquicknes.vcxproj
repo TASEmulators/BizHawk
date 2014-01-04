@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\fex\blargg_common.cpp" />
+    <ClCompile Include="..\fex\blargg_errors.cpp" />
+    <ClCompile Include="..\fex\Data_Reader.cpp" />
+    <ClCompile Include="..\nes_emu\abstract_file.cpp" />
+    <ClCompile Include="..\nes_emu\apu_state.cpp" />
+    <ClCompile Include="..\nes_emu\Blip_Buffer.cpp" />
+    <ClCompile Include="..\nes_emu\Effects_Buffer.cpp" />
+    <ClCompile Include="..\nes_emu\Mapper_Fme7.cpp" />
+    <ClCompile Include="..\nes_emu\Mapper_Mmc5.cpp" />
+    <ClCompile Include="..\nes_emu\Mapper_Namco106.cpp" />
+    <ClCompile Include="..\nes_emu\Mapper_Vrc6.cpp" />
+    <ClCompile Include="..\nes_emu\misc_mappers.cpp" />
+    <ClCompile Include="..\nes_emu\Multi_Buffer.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Apu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Buffer.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Cart.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Core.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Cpu.cpp" />
+    <ClCompile Include="..\nes_emu\nes_data.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Effects_Buffer.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Emu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_File.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Film.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Film_Data.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Film_Packer.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Mapper.cpp" />
+    <ClCompile Include="..\nes_emu\nes_mappers.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Mmc1.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Mmc3.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Namco_Apu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Oscs.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Ppu.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Ppu_Impl.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Ppu_Rendering.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Recorder.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_State.cpp" />
+    <ClCompile Include="..\nes_emu\nes_util.cpp" />
+    <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>
+    <RootNamespace>libquicknes</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);BLARGG_SOURCE_BEGIN="blargg_common.h";BLARGG_ENABLE_OPTIMIZER="blargg_common.h"</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);BLARGG_SOURCE_BEGIN="blargg_common.h";BLARGG_ENABLE_OPTIMIZER="blargg_common.h"</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
