@@ -272,6 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleSearchDependentToolBarItems();
 			SetReboot(false);
 			MessageLabel.Text = String.Empty;
+			SetDomainLabel();
 		}
 
 		public void NextCompareTo(bool reverse = false)
@@ -492,7 +493,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SetMemoryDomain(string name)
 		{
 			_settings.Domain = Global.Emulator.MemoryDomains[name];
-			SetDomainLabel();
 			SetReboot(true);
 			SpecificAddressBox.MaxLength = IntHelpers.GetNumDigits(_settings.Domain.Size);
 			DoDomainSizeCheck();
