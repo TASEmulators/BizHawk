@@ -9,6 +9,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		static QuickNES()
+		{
+			LibQuickNES.qn_setup_mappers();
+		}
+
 		public QuickNES(CoreComm nextComm, byte[] Rom)
 		{
 			CoreComm = nextComm;
