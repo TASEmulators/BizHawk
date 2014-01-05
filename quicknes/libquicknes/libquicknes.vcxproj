@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\bizinterface.cpp" />
     <ClCompile Include="..\fex\blargg_common.cpp" />
     <ClCompile Include="..\fex\blargg_errors.cpp" />
     <ClCompile Include="..\fex\Data_Reader.cpp" />
@@ -85,7 +86,7 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DLLEXPORT=__declspec(dllexport)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,7 +103,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DLLEXPORT=__declspec(dllexport)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);DISABLE_AUTO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
