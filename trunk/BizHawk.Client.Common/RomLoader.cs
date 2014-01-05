@@ -14,6 +14,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -350,12 +351,19 @@ namespace BizHawk.Client.Common
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								break;
 							case "NES":
-								nextEmulator = new NES(
-									nextComm, 
-									game, 
-									rom.FileData,
-									GetCoreSettings<NES>(),
-									GetCoreSyncSettings<NES>());
+								if (false)
+								{
+									nextEmulator = new NES(
+										nextComm,
+										game,
+										rom.FileData,
+										GetCoreSettings<NES>(),
+										GetCoreSyncSettings<NES>());
+								}
+								else
+								{
+									nextEmulator = new QuickNES(nextComm, rom.FileData);
+								}
 								break;
 							case "GB":
 							case "GBC":
