@@ -19,6 +19,11 @@ public:
 
 #define EXPORT extern "C" __declspec(dllexport)
 
+EXPORT void qn_setup_mappers()
+{
+	register_optional_mappers();
+}
+
 EXPORT Nes_Emu *qn_new()
 {
 	return new Nes_Emu();

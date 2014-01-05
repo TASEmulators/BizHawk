@@ -11,6 +11,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public const string dllname = "libquicknes.dll";
 
 		/// <summary>
+		/// setup extra mappers.  should be done before anything else
+		/// </summary>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_setup_mappers();
+		/// <summary>
 		/// create a new quicknes context
 		/// </summary>
 		/// <returns>NULL on failure</returns>
