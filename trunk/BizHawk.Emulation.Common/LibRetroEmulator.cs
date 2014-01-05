@@ -212,7 +212,9 @@ namespace BizHawk.Emulation.Common
 		{
 			IsLagFrame = true;
 			Frame++;
+			nsamprecv = 0;
 			retro.retro_run();
+			Console.WriteLine("[{0}]", nsamprecv);
 		}
 
 		public int Frame { get; private set; }
@@ -406,8 +408,13 @@ namespace BizHawk.Emulation.Common
 
 		short[] sampbuff = new short[0];
 
+		// debug
+		int nsamprecv = 0;
+
 		void SetupResampler(double fps, double sps)
 		{
+			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
+
 			// todo: more precise?
 			uint spsnum = (uint)sps * 1000;
 			uint spsden = (uint)1000;
@@ -418,6 +425,7 @@ namespace BizHawk.Emulation.Common
 		void retro_audio_sample(short left, short right)
 		{
 			resampler.EnqueueSample(left, right);
+			nsamprecv++;
 		}
 
 		uint retro_audio_sample_batch(IntPtr data, uint frames)
@@ -426,6 +434,7 @@ namespace BizHawk.Emulation.Common
 				sampbuff = new short[frames * 2];
 			Marshal.Copy(data, sampbuff, 0, (int)(frames * 2));
 			resampler.EnqueueSamples(sampbuff, (int)frames);
+			nsamprecv += (int)frames;
 			// what is the return from this used for?
 			return frames;
 		}

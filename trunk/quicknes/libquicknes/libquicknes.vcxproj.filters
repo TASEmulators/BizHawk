@@ -144,5 +144,8 @@
     <ClCompile Include="..\fex\Data_Reader.cpp">
       <Filter>Source Files\fex</Filter>
     </ClCompile>
+    <ClCompile Include="..\bizinterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
