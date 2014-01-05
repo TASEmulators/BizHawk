@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="dest">8bpp, at least as big as qn_get_image_dimensions()</param>
 		/// <param name="pitch">byte pitch</param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_set_pixels(IntPtr e, byte[] dest, int pitch);
+		public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
 		/// <summary>
 		/// emulate a single frame
 		/// </summary>
@@ -64,6 +64,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <returns>string error</returns>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr qn_emulate_frame(IntPtr e, int pad1, int pad2);
+		/// <summary>
+		/// blit to rgb32
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="dest">rgb32 256x240 packed</param>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_blit(IntPtr e, IntPtr dest);
 		/// <summary>
 		/// get number of times joypad was read in most recent frame
 		/// </summary>
