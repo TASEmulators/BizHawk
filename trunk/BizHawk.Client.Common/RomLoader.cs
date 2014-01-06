@@ -222,7 +222,7 @@ namespace BizHawk.Client.Common
 								var biosPath = Global.FirmwareManager.Request("PCECD", "Bios");
 								if (!File.Exists(biosPath))
 								{
-									ThrowLoadError("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.", game.System);
+									ThrowLoadError("PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.", game.System);
 									return false;
 								}
 
