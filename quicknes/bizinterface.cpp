@@ -228,3 +228,13 @@ EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *siz
 		return 1;
 	}
 }
+
+EXPORT unsigned char qn_peek_prgbus(Nes_Emu *e, int addr)
+{
+	return e->peek_prg(addr & 0xffff);
+}
+
+EXPORT void qn_poke_prgbus(Nes_Emu *e, int addr, unsigned char val)
+{
+	e->poke_prg(addr & 0xffff, val);
+}

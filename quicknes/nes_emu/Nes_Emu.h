@@ -197,7 +197,12 @@ public:
 	// Optional 8K memory
 	enum { high_mem_size = 0x2000 };
 	byte* high_mem()            { return emu.impl->sram; }
-	
+
+// Prg peek/poke for debuggin
+	byte peek_prg(nes_addr_t addr) const { return *static_cast<Nes_Cpu>(emu).get_code(addr); }
+	void poke_prg(nes_addr_t addr, byte value) { *static_cast<Nes_Cpu>(emu).get_code(addr) = value; }
+
+
 	// End of public interface
 public:
 	blargg_err_t set_sample_rate( long rate, class Nes_Buffer* );
