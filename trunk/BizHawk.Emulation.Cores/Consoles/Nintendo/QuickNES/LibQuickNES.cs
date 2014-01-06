@@ -192,6 +192,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <returns></returns>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool qn_get_memory_area(IntPtr e, int which, ref IntPtr data, ref int size, ref bool writable, ref IntPtr name);
+		/// <summary>
+		/// peek the system bus
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="addr">0000:ffff, but non-ram/rom addresses won't work</param>
+		/// <returns></returns>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte qn_peek_prgbus(IntPtr e, int addr);
+		/// <summary>
+		/// poke the system bus
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="addr">0000:ffff, but non-ram/rom addresses won't work</param>
+		/// <param name="val"></param>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_poke_prgbus(IntPtr e, int addr, byte val);
 
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions

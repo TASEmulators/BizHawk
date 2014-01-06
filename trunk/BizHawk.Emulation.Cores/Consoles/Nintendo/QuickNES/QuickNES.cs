@@ -292,25 +292,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					mm.Add(new MemoryDomain
 					(
-					Marshal.PtrToStringAnsi(name),
-					size,
-					MemoryDomain.Endian.Unknown,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						return p[addr];
-					},
-					delegate(int addr, byte val)
-					{
-						if (!writable)
-							return;
-						if (addr < 0 || addr >= size)
-							throw new ArgumentOutOfRangeException();
-						p[addr] = val;
-					}));
+						Marshal.PtrToStringAnsi(name),
+						size,
+						MemoryDomain.Endian.Unknown,
+						delegate(int addr)
+						{
+							if (addr < 0 || addr >= size)
+								throw new ArgumentOutOfRangeException();
+							return p[addr];
+						},
+						delegate(int addr, byte val)
+						{
+							if (!writable)
+								return;
+							if (addr < 0 || addr >= size)
+								throw new ArgumentOutOfRangeException();
+							p[addr] = val;
+						}
+					));
 				}
 			}
+			// add system bus
+			mm.Add(new MemoryDomain
+			(
+				"System Bus",
+				0x10000,
+				MemoryDomain.Endian.Unknown,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
+					return LibQuickNES.qn_peek_prgbus(Context, addr);
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
+					LibQuickNES.qn_poke_prgbus(Context, addr, val);
+				}
+			));
 			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
 
