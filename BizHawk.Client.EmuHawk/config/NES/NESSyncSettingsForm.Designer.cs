@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.config.NES
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class NESSyncSettingsForm
 	{
