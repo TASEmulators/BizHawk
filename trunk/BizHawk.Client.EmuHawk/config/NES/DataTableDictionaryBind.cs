@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 
-namespace BizHawk.Client.EmuHawk.config.NES
+namespace BizHawk.Client.EmuHawk
 {
 	public class DataTableDictionaryBind<TKey, TValue>
 	{

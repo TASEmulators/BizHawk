@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk.config.NES
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form
 	{
@@ -33,7 +33,9 @@ namespace BizHawk.Client.EmuHawk.config.NES
 		{
 			DialogResult = DialogResult.OK;
 			if (DTDB.WasModified)
+			{
 				GlobalWin.MainForm.PutCoreSyncSettings(SyncSettings);
+			}
 		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)

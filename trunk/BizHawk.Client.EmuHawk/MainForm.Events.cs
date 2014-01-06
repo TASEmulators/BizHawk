@@ -1171,6 +1171,13 @@ namespace BizHawk.Client.EmuHawk
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
+
+			NESDebuggerMenuItem.Visible = VersionInfo.INTERIM;
+
+			NESDebuggerMenuItem.Enabled =
+				NESPPUViewerMenuItem.Enabled =
+				NESNametableViewerMenuItem.Enabled =
+				Global.Emulator is NES;
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1232,10 +1239,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
-		private void moiveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var dlg = new config.NES.NESSyncSettingsForm())
+			using (var dlg = new NESSyncSettingsForm())
 			{
 				dlg.ShowDialog(this);
 			}

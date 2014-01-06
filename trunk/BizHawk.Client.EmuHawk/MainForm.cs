@@ -361,11 +361,6 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator();
 			}
 
-			if (!VersionInfo.INTERIM)
-			{
-				NESDebuggerMenuItem.Enabled = false;
-			}
-
 			// start dumping, if appropriate
 			if (cmdDumpType != null && cmdDumpName != null)
 			{
