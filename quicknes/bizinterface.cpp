@@ -36,14 +36,17 @@ EXPORT void qn_delete(Nes_Emu *e)
 
 EXPORT const char *qn_loadines(Nes_Emu *e, const void *data, int length)
 {
-	Mem_File_Reader r = Mem_File_Reader(data, length);
-	Auto_File_Reader a = Auto_File_Reader(r);
+	Mem_File_Reader r(data, length);
+	Auto_File_Reader a(r);
 	return e->load_ines(a);
 }
 
 EXPORT const char *qn_set_sample_rate(Nes_Emu *e, int rate)
 {
-	return e->set_sample_rate(rate);
+	const char *ret = e->set_sample_rate(rate);
+	if (!ret)
+		e->set_equalizer(Nes_Emu::nes_eq);
+	return ret;
 }
 
 EXPORT void qn_get_image_dimensions(Nes_Emu *e, int *width, int *height)
@@ -69,9 +72,9 @@ EXPORT void qn_blit(Nes_Emu *e, char *dest)
 	// what is the point of the 256 color bitmap and the dynamic color allocation to it?
 	// why not just render directly to a 512 color bitmap with static palette positions?
 
-	const char *src = (const char *)e->frame().pixels;
+	const unsigned char *src = e->frame().pixels;
 	const int srcpitch = e->frame().pitch;
-	const char *srcend = src + e->image_height * srcpitch;
+	const unsigned char *srcend = src + e->image_height * srcpitch;
 
 	const short *lut = e->frame().palette;
 	const Nes_Emu::rgb_t *colors = e->nes_colors;
@@ -114,8 +117,8 @@ EXPORT void qn_reset(Nes_Emu *e, int hard)
 
 EXPORT const char *qn_state_size(Nes_Emu *e, int *size)
 {
-	Sim_Writer w = Sim_Writer();
-	Auto_File_Writer a = Auto_File_Writer(w);
+	Sim_Writer w;
+	Auto_File_Writer a(w);
 	const char *ret = e->save_state(a);
 	if (size)
 		*size = w.size();
@@ -124,8 +127,8 @@ EXPORT const char *qn_state_size(Nes_Emu *e, int *size)
 
 EXPORT const char *qn_state_save(Nes_Emu *e, void *dest, int size)
 {
-	Mem_Writer w = Mem_Writer(dest, size, 0);
-	Auto_File_Writer a = Auto_File_Writer(w);
+	Mem_Writer w(dest, size, 0);
+	Auto_File_Writer a(w);
 	const char *ret = e->save_state(a);
 	if (!ret && w.size() != size)
 		return "Buffer Underrun!";
@@ -134,8 +137,8 @@ EXPORT const char *qn_state_save(Nes_Emu *e, void *dest, int size)
 
 EXPORT const char *qn_state_load(Nes_Emu *e, const void *src, int size)
 {
-	Mem_File_Reader r = Mem_File_Reader(src, size);
-	Auto_File_Reader a = Auto_File_Reader(r);
+	Mem_File_Reader r(src, size);
+	Auto_File_Reader a(r);
 	return e->load_state(a);
 }
 
@@ -146,8 +149,8 @@ EXPORT int qn_has_battery_ram(Nes_Emu *e)
 
 EXPORT const char *qn_battery_ram_size(Nes_Emu *e, int *size)
 {
-	Sim_Writer w = Sim_Writer();
-	Auto_File_Writer a = Auto_File_Writer(w);
+	Sim_Writer w;
+	Auto_File_Writer a(w);
 	const char *ret = e->save_battery_ram(a);
 	if (size)
 		*size = w.size();
@@ -156,8 +159,8 @@ EXPORT const char *qn_battery_ram_size(Nes_Emu *e, int *size)
 
 EXPORT const char *qn_battery_ram_save(Nes_Emu *e, void *dest, int size)
 {
-	Mem_Writer w = Mem_Writer(dest, size, 0);
-	Auto_File_Writer a = Auto_File_Writer(w);
+	Mem_Writer w(dest, size, 0);
+	Auto_File_Writer a(w);
 	const char *ret = e->save_battery_ram(a);
 	if (!ret && w.size() != size)
 		return "Buffer Underrun!";
@@ -166,8 +169,8 @@ EXPORT const char *qn_battery_ram_save(Nes_Emu *e, void *dest, int size)
 
 EXPORT const char *qn_battery_ram_load(Nes_Emu *e, const void *src, int size)
 {
-	Mem_File_Reader r = Mem_File_Reader(src, size);
-	Auto_File_Reader a = Auto_File_Reader(r);
+	Mem_File_Reader r(src, size);
+	Auto_File_Reader a(r);
 	return e->load_battery_ram(a);
 }
 
