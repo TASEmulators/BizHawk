@@ -12,10 +12,16 @@ namespace BizHawk.Client.Common
 	{
 		IController Source { get; set;  }
 
+		string Name { get; }
+
 		/// <summary>
-		/// The
+		/// Will be prepended to all button names
+		/// Example: "P1"
 		/// </summary>
 		string ControllerPrefix { get; set; }
+
+		void Add(string key, char value);
+
 		char this[string key] { get; }
 		bool IsEmpty { get; }
 		string MnemonicString { get; }
@@ -32,22 +38,51 @@ namespace BizHawk.Client.Common
 		IDictionary<string, bool> ParseMnemonicSegment(string mnemonicSegment);
 	}
 
-	public interface IMnemonicGeneratorCollection
+	/// <summary>
+	/// A console specific collection of Mnemonic generators
+	/// This handles includes all the "business" logic specific to the console
+	/// </summary>
+	public interface IMnemonicPorts
 	{
-		IEnumerable<IMnemonicGenerator> Generators { get; }
+		/// <summary>
+		/// Total number of available controller ports (this does not include the console controls
+		/// </summary>
+		int Count { get; }
+
+		/// <summary>
+		/// Gets or sets the given port with an IMnemonicGenerator implementation
+		/// Ports are zero based
+		/// Set will throw an InvalidOperationException if a particular implementation is not allowed, this is platform specific logic such as NES doesn't allow a zapper in port 0, etc
+		/// Both will throw an ArgumentOutOfRangeException exception if portNum is not less than Count
+		/// </summary>
+		IMnemonicGenerator this[int portNum] { get; set; }
+
+		/// <summary>
+		/// Gets an IMnemonicGenerator implementation that represents the buttons and controls on the console itself (Reset, Power, etc)
+		/// </summary>
+		IMnemonicGenerator ConsoleControls { get; }
 	}
 
 	public class BooleanControllerMnemonicGenerator : IMnemonicGenerator
 	{
 		private NamedDictionary<string, char> _controllerMnemonics;
 
-		public BooleanControllerMnemonicGenerator(string name)
+		public BooleanControllerMnemonicGenerator(string name, IDictionary<string, char> mnemonics)
 		{
 			_controllerMnemonics = new NamedDictionary<string, char>(name);
 		}
 
+		public void Add(string key, char value)
+		{
+			_controllerMnemonics.Add(key, value);
+		}
+
 		public IController Source { get; set; }
 		public string ControllerPrefix { get; set; }
+		public string Name
+		{
+			get { return _controllerMnemonics.Name; }
+		}
 
 		public char this[string key]
 		{
