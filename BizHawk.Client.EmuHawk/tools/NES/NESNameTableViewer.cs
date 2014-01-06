@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NES;
 
 using BizHawk.Client.Common;
 
@@ -13,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 		//TODO:
 		//Show Scroll Lines + UI Toggle
 
-		private NES _nes;
-		private readonly NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
+		private INESPPUDebug _nes;
+		private int Scanline = 0;
 
 		public bool AskSave() { return true; }
 		public bool UpdateBefore { get { return true; } }
@@ -23,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-			Callback.Callback = () => Generate();
 		}
 
 		private void SaveConfigSettings()
@@ -47,16 +46,16 @@ namespace BizHawk.Client.EmuHawk
 
 			int* dptr = (int*)bmpdata.Scan0.ToPointer();
 			int pitch = bmpdata.Stride / 4;
-			int pt_add = _nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
+			int pt_add = _nes.bg_pattern_hi ? 0x1000 : 0;
 
 			//buffer all the data from the ppu, because it will be read multiple times and that is slow
 			byte[] p = new byte[0x3000];
 			for (int x = 0; x < 0x3000; x++)
-				p[x] = _nes.ppu.ppubus_peek(x);
+				p[x] = _nes.PPUBUS(x);
 
 			byte[] palram = new byte[0x20];
 			for (int x = 0; x < 0x20; x++)
-				palram[x] = _nes.ppu.PALRAM[x];
+				palram[x] = _nes.PALRAM(x);
 
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
@@ -109,10 +108,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator is IHasNESPPUDebug)
 			{
-				NES.PPU ppu = (Global.Emulator as NES).ppu;
-				ppu.NTViewCallback = Callback;
+				_nes = (Global.Emulator as IHasNESPPUDebug).GetDebugger();
+				_nes.SetNTViewCallback(Scanline, () => Generate());
+
 			}
 			else
 			{
@@ -122,9 +122,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator is IHasNESPPUDebug)
 			{
-				_nes = Global.Emulator as NES;
+				_nes = (Global.Emulator as IHasNESPPUDebug).GetDebugger();
 				Generate(true);
 			}
 			else
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
 				Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
 
-			_nes = Global.Emulator as NES;
+			_nes = (Global.Emulator as IHasNESPPUDebug).GetDebugger();
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}
@@ -169,15 +169,15 @@ namespace BizHawk.Client.EmuHawk
 			int temp;
 			if (int.TryParse(txtScanline.Text, out temp))
 			{
-				Callback.Scanline = temp;
+				Scanline = temp;
+				_nes.SetNTViewCallback(Scanline, () => Generate());
 			}
 		}
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			if (_nes == null) return;
-			if (_nes.ppu.NTViewCallback == Callback)
-				_nes.ppu.NTViewCallback = null;
+			_nes.SetNTViewCallback(Scanline, null);
 		}
 
 
@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			XYLabel.Text = TileX.ToString() + " : " + TileY.ToString();
 			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
 			PPUAddressLabel.Text = String.Format("{0:X4}", PPUAddress);
-			int TileID = _nes.ppu.ppubus_read(PPUAddress, true);
+			int TileID = _nes.PPUBUS(PPUAddress);
 			TileIDLabel.Text = String.Format("{0:X2}", TileID);
 			TableLabel.Text = NameTable.ToString();
 
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			int tx = px >> 3;
 			int ty = py >> 3;
 			int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-			int at = _nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
+			int at = _nes.PPUBUS(atbyte_ptr + 0x2000);
 			if ((ty & 2) != 0) at >>= 4;
 			if ((tx & 2) != 0) at >>= 2;
 			at &= 0x03;

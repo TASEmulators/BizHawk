@@ -6,12 +6,18 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 //TODO - redo all timekeeping in terms of master clock
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 
-	public partial class NES : IEmulator
+	public partial class NES : IEmulator, IHasNESPPUDebug
 	{
+		public INESPPUDebug GetDebugger()
+		{
+			return new NESHawkPPUDebug(this);
+		}
+
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
