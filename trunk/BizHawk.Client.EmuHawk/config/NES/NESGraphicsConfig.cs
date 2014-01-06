@@ -15,9 +15,9 @@ namespace BizHawk.Client.EmuHawk
 		//Hotkeys for BG & Sprite display toggle
 		//NTSC filter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
 
-		private HawkFile palette;
 		private NES nes;
 		private NES.NESSettings settings;
+		Bitmap bmp;
 
 		public NESGraphicsConfig()
 		{
@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			BGColorDialog.Color = Color.FromArgb(unchecked(settings.BackgroundColor | (int)0xFF000000));
 			checkUseBackdropColor.Checked = (settings.BackgroundColor & 0xFF000000) != 0;
 			SetColorBox();
+			SetPaletteImage();
 		}
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
@@ -62,29 +63,67 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			PalettePath.Text = ofd.FileName;
+			AutoLoadPalette.Checked = true;
+			SetPaletteImage();
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void SetPaletteImage()
 		{
-			if (AutoLoadPalette.Checked)
+			var pal = ResolvePalette(false);
+
+			int w = pictureBoxPalette.Size.Width;
+			int h = pictureBoxPalette.Size.Height;
+
+			bmp = new Bitmap(w, h);
+			for (int j = 0; j < h; j++)
+			{
+				int cy = j * 4 / h;
+				for (int i = 0; i < w; i++)
+				{
+					int cx = i * 16 / w;
+					int cindex = cy * 16 + cx;
+					Color col = Color.FromArgb(0xff, pal[cindex, 0], pal[cindex, 1], pal[cindex, 2]);
+					bmp.SetPixel(i, j, col);
+				}
+			}
+			pictureBoxPalette.Image = bmp;
+		}
+
+		private int[,] ResolvePalette(bool showmsg = false)
+		{
+			if (AutoLoadPalette.Checked) // checkbox checked: try to load palette from file
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					palette = new HawkFile(PalettePath.Text);
+					HawkFile palette = new HawkFile(PalettePath.Text);
 
 					if (palette != null && palette.Exists)
 					{
 						var data = NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
-						settings.Palette = data;
-						GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						if (showmsg) GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						return data;
+					}
+					else
+					{
+						return settings.Palette;
 					}
 				}
-				else
+				else // no filename: interpret this as "reset to default"
 				{
-					settings.Palette = (int[,])NES.Palettes.FCEUX_Standard.Clone();
-					GlobalWin.OSD.AddMessage("Standard Palette set");
+					if (showmsg) GlobalWin.OSD.AddMessage("Standard Palette set");
+					return (int[,])NES.Palettes.FCEUX_Standard.Clone();
 				}
 			}
+			else // checkbox unchecked: we're reusing whatever palette was set
+			{
+				return settings.Palette;
+			}
+		}
+
+
+		private void OK_Click(object sender, EventArgs e)
+		{
+			settings.Palette = ResolvePalette(true);
 
 			settings.NTSC_TopLine = (int)NTSC_FirstLineNumeric.Value;
 			settings.NTSC_BottomLine = (int)NTSC_LastLineNumeric.Value;
@@ -143,6 +182,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			settings = new NES.NESSettings();
 			LoadStuff();
+		}
+
+		private void AutoLoadPalette_Click(object sender, EventArgs e)
+		{
+			SetPaletteImage();
 		}
 	}
 }
