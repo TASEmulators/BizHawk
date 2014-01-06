@@ -123,6 +123,8 @@
     <Compile Include="lua\LuaFunctionList.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
+    <Compile Include="movie\ControllerLookups\MnemonicGenerators.cs" />
+    <Compile Include="movie\ControllerLookups\NesMnemonicGenerator.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\IMovie.cs" />
     <Compile Include="movie\IMovieHeader.cs" />
