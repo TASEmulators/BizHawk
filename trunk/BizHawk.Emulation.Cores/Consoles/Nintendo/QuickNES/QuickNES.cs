@@ -9,6 +9,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		private class FPCtrl : IDisposable
+		{
+			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+			public static extern uint _control87(uint @new, uint mask);
+
+			public static void PrintCurrentFP()
+			{
+				uint curr = _control87(0, 0);
+				Console.WriteLine("Current FP word: 0x{0:x8}", curr);
+			}
+
+			uint cw;
+
+			public IDisposable Save()
+			{
+				cw = _control87(0, 0);
+				_control87(0x00000, 0x30000);
+				return this;
+			}
+			public void Dispose()
+			{
+				_control87(cw, 0x30000);
+			}
+		}
+
+		FPCtrl FP = new FPCtrl();
+
 		static QuickNES()
 		{
 			LibQuickNES.qn_setup_mappers();
@@ -16,24 +43,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public QuickNES(CoreComm nextComm, byte[] Rom)
 		{
-			CoreComm = nextComm;
-
-			Context = LibQuickNES.qn_new();
-			if (Context == IntPtr.Zero)
-				throw new InvalidOperationException("qn_new() returned NULL");
-			try
+			using (FP.Save())
 			{
-				LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, Rom, Rom.Length));
+				CoreComm = nextComm;
 
-				InitSaveRamBuff();
-				InitSaveStateBuff();
-				InitVideo();
-				InitAudio();
-			}
-			catch
-			{
-				Dispose();
-				throw;
+				Context = LibQuickNES.qn_new();
+				if (Context == IntPtr.Zero)
+					throw new InvalidOperationException("qn_new() returned NULL");
+				try
+				{
+					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, Rom, Rom.Length));
+
+					InitSaveRamBuff();
+					InitSaveStateBuff();
+					InitVideo();
+					InitAudio();
+				}
+				catch
+				{
+					Dispose();
+					throw;
+				}
 			}
 		}
 
@@ -84,22 +114,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			if (Controller["Power"])
-				LibQuickNES.qn_reset(Context, true);
-			if (Controller["Reset"])
-				LibQuickNES.qn_reset(Context, false);
+			using (FP.Save())
+			{
+				if (Controller["Power"])
+					LibQuickNES.qn_reset(Context, true);
+				if (Controller["Reset"])
+					LibQuickNES.qn_reset(Context, false);
 
-			int j1, j2;
-			SetPads(out j1, out j2);
+				int j1, j2;
+				SetPads(out j1, out j2);
 
-			Frame++;
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_emulate_frame(Context, j1, j2));
-			IsLagFrame = LibQuickNES.qn_get_joypad_read_count(Context) == 0;
-			if (IsLagFrame)
-				LagCount++;
+				Frame++;
+				LibQuickNES.ThrowStringError(LibQuickNES.qn_emulate_frame(Context, j1, j2));
+				IsLagFrame = LibQuickNES.qn_get_joypad_read_count(Context) == 0;
+				if (IsLagFrame)
+					LagCount++;
 
-			Blit();
-			DrainAudio();
+				Blit();
+				DrainAudio();
+			}
 		}
 
 		#region state
@@ -332,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void DrainAudio()
 		{
-			NumSamples = LibQuickNES.qn_read_audio(Context, MonoBuff, 1024);
+			NumSamples = LibQuickNES.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
 			unsafe
 			{
 				fixed (short *_src = &MonoBuff[0], _dst = &StereoBuff[0])
