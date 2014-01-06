@@ -59,6 +59,7 @@
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
+			this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
@@ -67,12 +68,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(213, 385);
+			this.OK.Location = new System.Drawing.Point(213, 477);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 70;
@@ -84,7 +86,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(294, 385);
+			this.Cancel.Location = new System.Drawing.Point(294, 477);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 75;
@@ -105,13 +107,14 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.pictureBoxPalette);
 			this.groupBox1.Controls.Add(this.AutoLoadPalette);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.PalettePath);
 			this.groupBox1.Controls.Add(this.BrowsePalette);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(352, 95);
+			this.groupBox1.Size = new System.Drawing.Size(352, 184);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Palette Config";
@@ -119,14 +122,13 @@
 			// AutoLoadPalette
 			// 
 			this.AutoLoadPalette.AutoSize = true;
-			this.AutoLoadPalette.Checked = true;
-			this.AutoLoadPalette.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.AutoLoadPalette.Location = new System.Drawing.Point(6, 66);
 			this.AutoLoadPalette.Name = "AutoLoadPalette";
 			this.AutoLoadPalette.Size = new System.Drawing.Size(129, 17);
 			this.AutoLoadPalette.TabIndex = 10;
 			this.AutoLoadPalette.Text = "Change to this palette";
 			this.AutoLoadPalette.UseVisualStyleBackColor = true;
+			this.AutoLoadPalette.Click += new System.EventHandler(this.AutoLoadPalette_Click);
 			// 
 			// label1
 			// 
@@ -173,7 +175,7 @@
 			this.groupBox2.Controls.Add(this.NTSC_FirstLineNumeric);
 			this.groupBox2.Controls.Add(this.ClipLeftAndRightCheckBox);
 			this.groupBox2.Controls.Add(this.AllowMoreSprites);
-			this.groupBox2.Location = new System.Drawing.Point(12, 113);
+			this.groupBox2.Location = new System.Drawing.Point(12, 202);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(352, 150);
 			this.groupBox2.TabIndex = 4;
@@ -234,9 +236,9 @@
 			// 
 			// btnAreaFull
 			// 
-			this.btnAreaFull.Location = new System.Drawing.Point(7, 115);
+			this.btnAreaFull.Location = new System.Drawing.Point(6, 115);
 			this.btnAreaFull.Name = "btnAreaFull";
-			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaFull.Size = new System.Drawing.Size(96, 23);
 			this.btnAreaFull.TabIndex = 40;
 			this.btnAreaFull.Text = "Full [0,239]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
@@ -244,9 +246,9 @@
 			// 
 			// btnAreaStandard
 			// 
-			this.btnAreaStandard.Location = new System.Drawing.Point(8, 92);
+			this.btnAreaStandard.Location = new System.Drawing.Point(6, 92);
 			this.btnAreaStandard.Name = "btnAreaStandard";
-			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaStandard.Size = new System.Drawing.Size(96, 23);
 			this.btnAreaStandard.TabIndex = 35;
 			this.btnAreaStandard.Text = "Standard [8,231]";
 			this.btnAreaStandard.UseVisualStyleBackColor = true;
@@ -325,7 +327,7 @@
 			this.groupBox3.Controls.Add(this.groupBox4);
 			this.groupBox3.Controls.Add(this.DispBackground);
 			this.groupBox3.Controls.Add(this.DispSprites);
-			this.groupBox3.Location = new System.Drawing.Point(12, 266);
+			this.groupBox3.Location = new System.Drawing.Point(12, 358);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(352, 113);
 			this.groupBox3.TabIndex = 5;
@@ -417,7 +419,7 @@
 			// RestoreDefaultsButton
 			// 
 			this.RestoreDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 385);
+			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 477);
 			this.RestoreDefaultsButton.Name = "RestoreDefaultsButton";
 			this.RestoreDefaultsButton.Size = new System.Drawing.Size(102, 23);
 			this.RestoreDefaultsButton.TabIndex = 65;
@@ -425,13 +427,21 @@
 			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
 			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
 			// 
+			// pictureBoxPalette
+			// 
+			this.pictureBoxPalette.Location = new System.Drawing.Point(6, 89);
+			this.pictureBoxPalette.Name = "pictureBoxPalette";
+			this.pictureBoxPalette.Size = new System.Drawing.Size(340, 89);
+			this.pictureBoxPalette.TabIndex = 11;
+			this.pictureBoxPalette.TabStop = false;
+			// 
 			// NESGraphicsConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(381, 409);
+			this.ClientSize = new System.Drawing.Size(381, 512);
 			this.Controls.Add(this.RestoreDefaultsButton);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -439,7 +449,6 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(389, 494);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(389, 434);
 			this.Name = "NESGraphicsConfig";
@@ -459,6 +468,7 @@
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -496,5 +506,6 @@
 		private System.Windows.Forms.NumericUpDown PAL_LastLineNumeric;
 		private System.Windows.Forms.NumericUpDown PAL_FirstLineNumeric;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.PictureBox pictureBoxPalette;
 	}
 }
