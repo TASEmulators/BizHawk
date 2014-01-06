@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		#region FPU precision
+
 		private class FPCtrl : IDisposable
 		{
 			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -36,6 +38,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		FPCtrl FP = new FPCtrl();
 
+		#endregion
+
 		static QuickNES()
 		{
 			LibQuickNES.qn_setup_mappers();
@@ -58,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					InitSaveStateBuff();
 					InitVideo();
 					InitAudio();
+					InitMemoryDomains();
 				}
 				catch
 				{
@@ -266,15 +271,57 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			private set;
 		}
 
-		public MemoryDomainList MemoryDomains
+		#region debugging
+
+		unsafe void InitMemoryDomains()
 		{
-			get { return MemoryDomainList.GetDummyList(); }
+			List<MemoryDomain> mm = new List<MemoryDomain>();
+			for (int i = 0; ; i++)
+			{
+				IntPtr data = IntPtr.Zero;
+				int size = 0;
+				bool writable = false;
+				IntPtr name = IntPtr.Zero;
+
+				if (!LibQuickNES.qn_get_memory_area(Context, i, ref data, ref size, ref writable, ref name))
+					break;
+
+				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
+				{
+					byte* p = (byte*)data;
+
+					mm.Add(new MemoryDomain
+					(
+					Marshal.PtrToStringAnsi(name),
+					size,
+					MemoryDomain.Endian.Unknown,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						return p[addr];
+					},
+					delegate(int addr, byte val)
+					{
+						if (!writable)
+							return;
+						if (addr < 0 || addr >= size)
+							throw new ArgumentOutOfRangeException();
+						p[addr] = val;
+					}));
+				}
+			}
+			MemoryDomains = new MemoryDomainList(mm, 0);
 		}
+
+		public MemoryDomainList MemoryDomains { get; private set; }
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
 			return new List<KeyValuePair<string, int>>();
 		}
+
+		#endregion
 
 		#region settings
 

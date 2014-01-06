@@ -193,3 +193,38 @@ EXPORT void qn_set_sprite_limit(Nes_Emu *e, int n)
 {
 	e->set_sprite_mode((Nes_Emu::sprite_mode_t)n);
 }
+
+EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *size, int *writable, const char **name)
+{
+	if (!data || !size || !writable || !name)
+		return 0;
+	switch (which)
+	{
+	default:
+		return 0;
+	case 0:
+		*data = e->low_mem();
+		*size = e->low_mem_size;
+		*writable = 1;
+		*name = "RAM";
+		return 1;
+	case 1:
+		*data = e->high_mem();
+		*size = e->high_mem_size;
+		*writable = 1;
+		*name = "WRAM";
+		return 1;
+	case 2:
+		*data = e->chr_mem();
+		*size = e->chr_size();
+		*writable = 0;
+		*name = "CHR";
+		return 1;
+	case 3:
+		*data = e->nametable_mem();
+		*size = e->nametable_size();
+		*writable = 0;
+		*name = "CIRAM (nametables)";
+		return 1;
+	}
+}

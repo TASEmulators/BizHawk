@@ -180,6 +180,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="n">0 to hide, 8 for normal, 64 for all</param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void qn_set_sprite_limit(IntPtr e, int n);
+		/// <summary>
+		/// get memory area for debugging
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="which"></param>
+		/// <param name="data"></param>
+		/// <param name="size"></param>
+		/// <param name="writable"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool qn_get_memory_area(IntPtr e, int which, ref IntPtr data, ref int size, ref bool writable, ref IntPtr name);
 
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions
