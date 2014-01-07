@@ -558,10 +558,11 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 
-		//GB settings
+		// Core Pick
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
+		public bool NES_InQuickNES = false;
 
 		//LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;
