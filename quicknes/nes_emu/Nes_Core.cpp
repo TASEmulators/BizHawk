@@ -348,7 +348,7 @@ void Nes_Core::reset( bool full_reset, bool erase_battery_ram )
 		
 		// SRAM
 		lrom_readable = 0;
-		sram_present = false;
+		sram_present = true;
 		enable_sram( false );
 		if ( !cart->has_battery_ram() || erase_battery_ram )
 			memset( impl->sram, 0xFF, impl->sram_size );
