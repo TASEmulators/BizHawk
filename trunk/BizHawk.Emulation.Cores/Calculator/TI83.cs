@@ -673,6 +673,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public class Link
 		{
+            //Emulates TI linking software.
+            //See http://www.ticalc.org/archives/files/fileinfo/294/29418.html for documentation
+
+            //Note: Each hardware read/write to the link port calls tthe update method.
+
 			readonly TI83 Parent;
 
 			private FileStream CurrentFile;
@@ -994,7 +999,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				CurrentData.Enqueue(0x00);
 
 				CurrentStatus = Status.PrepareReceive;
-				NextStep = Finalize;
+                NextStep = FinalizeFile;
 				Parent.LinkActive = true;
 			}
 
@@ -1021,20 +1026,20 @@ namespace BizHawk.Emulation.Cores.Calculators
 				CurrentData.Enqueue(0x00);
 
 				CurrentStatus = Status.PrepareReceive;
-				NextStep = Finalize;
+                NextStep = FinalizeFile;
 				Parent.LinkActive = true;
 			}
 
 			//adelikat: This isn't used (yet?) and causes a warning.  Did you really mean to override finalize? if so it should be protected virtual, else rename this
-			/*
-			private void Finalize()
+			//Envian: I didn't notice there was a naming conflict. Fixed it since this method is necessary for the file upload proccess.
+			private void FinalizeFile()
 			{
+                //Resets the link software, and checks to see if there is an additional file to send.
 				CurrentData.Clear();
 				Parent.LinkActive = false;
 				NextStep = null;
 				SendNextFile();
 			}
-			 */
 		}
 
 		public object GetSettings() { return null; }
