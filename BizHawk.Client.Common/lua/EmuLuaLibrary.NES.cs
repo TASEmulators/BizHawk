@@ -31,11 +31,11 @@ namespace BizHawk.Client.Common
 
 		public void nes_addgamegenie(string code)
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator.SystemId == "NES")
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[1],
+					Global.Emulator.MemoryDomains["System Bus"],
 					decoder.Address,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 
 		public void nes_removegamegenie(string code)
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator.SystemId == "NES")
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				Global.CheatList.RemoveRange(
