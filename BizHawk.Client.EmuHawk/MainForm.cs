@@ -3219,5 +3219,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void coreSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
+			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+		}
+
+		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+		}
+
+		private void nESInQuickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES ^= true;
+		}
 	}
 }

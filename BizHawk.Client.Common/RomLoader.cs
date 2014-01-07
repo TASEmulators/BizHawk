@@ -351,7 +351,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								break;
 							case "NES":
-								if (false)
+								if (!Global.Config.NES_InQuickNES)
 								{
 									nextEmulator = new NES(
 										nextComm,
