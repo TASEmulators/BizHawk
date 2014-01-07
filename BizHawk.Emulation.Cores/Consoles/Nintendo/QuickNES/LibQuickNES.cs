@@ -208,6 +208,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="val"></param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void qn_poke_prgbus(IntPtr e, int addr, byte val);
+		/// <summary>
+		/// get the mapper that's loaded
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="number">recieves mapper number</param>
+		/// <returns>mapper name</returns>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr qn_get_mapper(IntPtr e, ref int number);
 
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions

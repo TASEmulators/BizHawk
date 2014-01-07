@@ -188,6 +188,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "Famicom":
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
+					CoreComm.VsyncNum = 39375000;
+					CoreComm.VsyncDen = 655171;
 					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
 					break;
