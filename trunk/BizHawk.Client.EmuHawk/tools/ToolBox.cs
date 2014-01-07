@@ -47,9 +47,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NesPPUToolbarItem.Visible =
 				NesDebuggerToolbarItem.Visible =
-				NesGameGenieToolbarItem.Visible =
 				NesNameTableToolbarItem.Visible =
 				Global.Emulator is NES;
+
+			NesGameGenieToolbarItem.Visible = Global.Emulator.SystemId == "NES";
 
 			TI83KeypadToolbarItem.Visible = Global.Emulator is TI83;
 

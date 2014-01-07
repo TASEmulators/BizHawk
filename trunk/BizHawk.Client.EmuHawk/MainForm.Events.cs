@@ -1175,6 +1175,7 @@ namespace BizHawk.Client.EmuHawk
 			NESDebuggerMenuItem.Enabled =
 				NESPPUViewerMenuItem.Enabled =
 				NESNametableViewerMenuItem.Enabled =
+				NESSoundChannelsMenuItem.Enabled =
 				Global.Emulator is NES;
 		}
 
