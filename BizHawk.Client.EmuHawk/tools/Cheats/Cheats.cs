@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				   (Global.Emulator is NES)
+				   (Global.Emulator.SystemId == "NES")
 				|| (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
 				|| (Global.Emulator.SystemId == "GB")
 				|| (Global.Game.System == "GG")
@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible = 
-					   (Global.Emulator is NES) 
+					   (Global.Emulator.SystemId == "NES") 
 					|| (Global.Emulator is Genesis)
 					|| (Global.Emulator.SystemId == "GB")
 					|| (Global.Game.System == "GG")
