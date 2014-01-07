@@ -307,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<NESDebugger>();
 			}
 
-			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
+			if (Global.Config.NESGGAutoload && Global.Emulator.SystemId == "NES")
 			{
 				GlobalWin.Tools.LoadGameGenieEc();
 			}
