@@ -226,6 +226,18 @@ EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *siz
 		*writable = 0;
 		*name = "CIRAM (nametables)";
 		return 1;
+	case 4:
+		*data = e->cart()->prg();
+		*size = e->cart()->prg_size();
+		*writable = 0;
+		*name = "PRG ROM";
+		return 1;
+	case 5:
+		*data = e->cart()->chr();
+		*size = e->cart()->chr_size();
+		*writable = 0;
+		*name = "CHR VROM";
+		return 1;
 	}
 }
 
@@ -237,4 +249,31 @@ EXPORT unsigned char qn_peek_prgbus(Nes_Emu *e, int addr)
 EXPORT void qn_poke_prgbus(Nes_Emu *e, int addr, unsigned char val)
 {
 	e->poke_prg(addr & 0xffff, val);
+}
+
+EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
+{
+	int m = e->cart()->mapper_code();
+	if (number)
+		*number = m;
+	switch (m)
+	{
+	default: return "unknown";
+	case 0: return "nrom";
+	case 1: return "mmc1";
+	case 2: return "unrom";
+	case 3: return "cnrom";
+	case 4: return "mmc3";
+	case 7: return "aorom";
+	case 69: return "fme7";
+	case 5: return "mmc5";
+	case 19: return "namco106";
+	case 24: return "vrc6a";
+	case 26: return "vrc6b";
+	case 11: return "color_dreams";
+	case 34: return "nina1";
+	case 66: return "gnrom";
+	case 87: return "mapper_87";
+	case 232: return "quattro";
+	}
 }

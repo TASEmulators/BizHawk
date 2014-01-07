@@ -64,6 +64,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					InitVideo();
 					InitAudio();
 					InitMemoryDomains();
+
+					int mapper = 0;
+					string mappername = Marshal.PtrToStringAnsi(LibQuickNES.qn_get_mapper(Context, ref mapper));
+					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
+					BoardName = mappername;
+					CoreComm.VsyncNum = 39375000;
+					CoreComm.VsyncDen = 655171;
 				}
 				catch
 				{
@@ -153,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public string SystemId { get { return "NES"; } }
 		public bool DeterministicEmulation { get { return true; } }
-		public string BoardName { get { return null; } } // TODO
+		public string BoardName { get; private set; }
 
 		#region saveram
 
