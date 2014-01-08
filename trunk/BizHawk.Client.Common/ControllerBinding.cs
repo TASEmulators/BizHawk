@@ -9,23 +9,21 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
+		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
+		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
+		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
+		private readonly Dictionary<string, Config.AnalogBind> _floatBinds = new Dictionary<string, Config.AnalogBind>();
+
 		private ControllerDefinition _type;
-		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
-
-		private readonly WorkingDictionary<string, float> FloatButtons = new WorkingDictionary<string, float>();
-
-		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
-
-		private readonly Dictionary<string, Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
 
 		public Controller(ControllerDefinition definition)
 		{
 			_type = definition;
 			for (int i = 0; i < _type.FloatControls.Count; i++)
 			{
-				FloatButtons[_type.FloatControls[i]] = _type.FloatRanges[i].Mid;
-				FloatRanges[_type.FloatControls[i]] = _type.FloatRanges[i];
+				_floatButtons[_type.FloatControls[i]] = _type.FloatRanges[i].Mid;
+				_floatRanges[_type.FloatControls[i]] = _type.FloatRanges[i];
 			}
 		}
 
@@ -36,21 +34,21 @@ namespace BizHawk.Client.Common
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
-			return buttons[button];
+			return _buttons[button];
 		}
 
-		public float GetFloat(string name) { return FloatButtons[name]; }
+		public float GetFloat(string name) { return _floatButtons[name]; }
 
 		// Looks for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
-			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
+			return (from kvp in _bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
 		}
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
 		public bool HasBinding(string button)
 		{
-			return bindings.SelectMany(kvp => kvp.Value).Any(bound_button => bound_button == button);
+			return _bindings.SelectMany(kvp => kvp.Value).Any(boundButton => boundButton == button);
 		}
 
 		/// <summary>
@@ -59,28 +57,28 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromPhysical(IController controller)
 		{
-			buttons.Clear();
+			_buttons.Clear();
 			
-			foreach (var kvp in bindings)
+			foreach (var kvp in _bindings)
 			{
-				buttons[kvp.Key] = false;
+				_buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
 					if (controller[bound_button])
 					{
-						buttons[kvp.Key] = true;
+						_buttons[kvp.Key] = true;
 					}
 				}
 			}
 
-			foreach (var kvp in FloatBinds)
+			foreach (var kvp in _floatBinds)
 			{
-				float input = controller.GetFloat(kvp.Value.Value);
+				var input = controller.GetFloat(kvp.Value.Value);
 				string outkey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
 				float deadzone = kvp.Value.Deadzone;
 				ControllerDefinition.FloatRange range;
-				if (FloatRanges.TryGetValue(outkey, out range))
+				if (_floatRanges.TryGetValue(outkey, out range))
 				{
 					// input range is assumed to be -10000,0,10000
 
@@ -89,20 +87,30 @@ namespace BizHawk.Client.Common
 						float absinput = Math.Abs(input);
 						float zeropoint = deadzone * 10000.0f;
 						if (absinput < zeropoint)
+						{
 							input = 0.0f;
+						}
 						else
 						{
 							absinput -= zeropoint;
 							absinput *= 10000.0f;
-							absinput /= (10000.0f - zeropoint);
+							absinput /= 10000.0f - zeropoint;
 							input = absinput * Math.Sign(input);
 						}
 					}
 
-					float output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
-					if (output < range.Min) output = range.Min;
-					if (output > range.Max) output = range.Max;
-					FloatButtons[outkey] = output;
+					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					if (output < range.Min)
+					{
+						output = range.Min;
+					}
+
+					if (output > range.Max)
+					{
+						output = range.Max;
+					}
+
+					_floatButtons[outkey] = output;
 				}
 			}
 		}
@@ -120,7 +128,7 @@ namespace BizHawk.Client.Common
 				{
 					if (controller.IsPressed(button))
 					{
-						buttons[button] = true;
+						_buttons[button] = true;
 					}
 				}
 			}
@@ -128,7 +136,7 @@ namespace BizHawk.Client.Common
 
 		public void BindButton(string button, string control)
 		{
-			bindings[button].Add(control);
+			_bindings[button].Add(control);
 		}
 
 		public void BindMulti(string button, string controlString)
@@ -141,13 +149,13 @@ namespace BizHawk.Client.Common
 			var controlbindings = controlString.Split(',');
 			foreach (var control in controlbindings)
 			{
-				bindings[button].Add(control.Trim());
+				_bindings[button].Add(control.Trim());
 			}
 		}
 
 		public void BindFloat(string button, Config.AnalogBind bind)
 		{
-			FloatBinds[button] = bind;
+			_floatBinds[button] = bind;
 		}
 
 		/// <summary>
@@ -155,27 +163,28 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public List<KeyValuePair<string, string>> MappingList()
 		{
-			return (from key in bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
+			return (from key in _bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
 		}
 
 		public List<string> PressedButtons
 		{
 			get
 			{
-				return (from button in buttons where button.Value select button.Key).ToList();
+				return (from button in _buttons where button.Value select button.Key).ToList();
 			}
 		}
 	}
 
 	public class AutofireController : IController
 	{
-		private readonly ControllerDefinition type;
-		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
-		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
+		private readonly ControllerDefinition _type;
+		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
+		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
 
-		private bool autofire = true;
-		public bool Autofire { get { return false; } set { autofire = value; } }
+		private bool _autofire = true;
+
+		public bool Autofire { get { return false; } set { _autofire = value; } }
 		public int On { get; set; }
 		public int Off { get; set; }
 
@@ -183,28 +192,21 @@ namespace BizHawk.Client.Common
 		{
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
-			type = definition;
+			_type = definition;
 		}
 
-		public ControllerDefinition Type { get { return type; } }
+		public ControllerDefinition Type { get { return _type; } }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
-			if (autofire)
+			if (_autofire)
 			{
-				int a = (Global.Emulator.Frame - buttonStarts[button])%(On + Off);
-				if (a < On)
-				{
-					return buttons[button];
-				}
-				else
-				{
-					return false;
-				}
+				var a = (Global.Emulator.Frame - _buttonStarts[button]) % (On + Off);
+				return a < On && _buttons[button];
 			}
 			else
 			{
-				return buttons[button];
+				return _buttons[button];
 			}
 		}
 
@@ -213,7 +215,7 @@ namespace BizHawk.Client.Common
 		// look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
-			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
+			return (from kvp in _bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
 		}
 
 		/// <summary>
@@ -222,26 +224,26 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromPhysical(IController controller)
 		{
-			foreach (var kvp in bindings)
+			foreach (var kvp in _bindings)
 			{
 				foreach (var bound_button in kvp.Value)
 				{
-					if (buttons[kvp.Key] == false && controller[bound_button])
+					if (_buttons[kvp.Key] == false && controller[bound_button])
 					{
-						buttonStarts[kvp.Key] = Global.Emulator.Frame;
+						_buttonStarts[kvp.Key] = Global.Emulator.Frame;
 					}
 				}
 			}
 			
-			buttons.Clear();
-			foreach (var kvp in bindings)
+			_buttons.Clear();
+			foreach (var kvp in _bindings)
 			{
-				buttons[kvp.Key] = false;
+				_buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
 					if (controller[bound_button])
 					{
-						buttons[kvp.Key] = true;
+						_buttons[kvp.Key] = true;
 					}
 				}
 			}
@@ -252,16 +254,16 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void OR_FromLogical(IController controller)
 		{
-			foreach (var button in type.BoolButtons.Where(controller.IsPressed))
+			foreach (var button in _type.BoolButtons.Where(controller.IsPressed))
 			{
-				buttons[button] = true;
+				_buttons[button] = true;
 				Console.WriteLine(button);
 			}
 		}
 
 		public void BindButton(string button, string control)
 		{
-			bindings[button].Add(control);
+			_bindings[button].Add(control);
 		}
 
 		public void BindMulti(string button, string controlString)
@@ -271,16 +273,16 @@ namespace BizHawk.Client.Common
 				var controlbindings = controlString.Split(',');
 				foreach (var control in controlbindings)
 				{
-					bindings[button].Add(control.Trim());
+					_bindings[button].Add(control.Trim());
 				}
 			}
 		}
 
 		public void IncrementStarts()
 		{
-			foreach (var key in buttonStarts.Keys.ToArray())
+			foreach (var key in _buttonStarts.Keys.ToArray())
 			{
-				buttonStarts[key]++;
+				_buttonStarts[key]++;
 			}
 		}
 
@@ -288,7 +290,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return (from button in buttons where button.Value select button.Key).ToList();
+				return (from button in _buttons where button.Value select button.Key).ToList();
 			}
 		}
 	}

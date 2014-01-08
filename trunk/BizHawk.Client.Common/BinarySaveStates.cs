@@ -6,7 +6,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
 {
-
 	public class BinaryStateFileNames
 	{
 		/*
@@ -31,9 +30,11 @@ namespace BizHawk.Client.Common
 			LumpNames[BinaryStateLump.Movieheader] = "Header";
 		}
 
-		public static string Get(BinaryStateLump Lump) { return LumpNames[Lump]; }
+		public static string Get(BinaryStateLump lump)
+		{
+			return LumpNames[lump];
+		}
 	}
-
 
 	public enum BinaryStateLump
 	{
@@ -43,14 +44,13 @@ namespace BizHawk.Client.Common
 		Input,
 		CorestateText,
 		Movieheader
-	};
+	}
 
 	/// <summary>
 	/// more accurately should be called ZipStateLoader, as it supports both text and binary core data
 	/// </summary>
 	public class BinaryStateLoader : IDisposable
 	{
-
 		private bool _isDisposed;
 		public void Dispose()
 		{
@@ -66,13 +66,13 @@ namespace BizHawk.Client.Common
 
 				if (disposing)
 				{
-					zip.Close();
+					_zip.Close();
 				}
 			}
 		}
 
-		private ZipFile zip;
-		private Version ver;
+		private ZipFile _zip;
+		private Version _ver;
 
 		private BinaryStateLoader()
 		{
@@ -83,28 +83,29 @@ namespace BizHawk.Client.Common
 			// the "BizState 1.0" tag contains an integer in it describing the sub version.
 			if (s.Length == 0)
 			{
-				ver = new Version(1, 0, 0); // except for the first release, which doesn't
+				_ver = new Version(1, 0, 0); // except for the first release, which doesn't
 			}
 			else
 			{
 				var sr = new StreamReader(s);
-				ver = new Version(1, 0, int.Parse(sr.ReadLine()));
+				_ver = new Version(1, 0, int.Parse(sr.ReadLine()));
 			}
-			Console.WriteLine("Read a zipstate of version {0}", ver.ToString());
+
+			Console.WriteLine("Read a zipstate of version {0}", _ver);
 		}
 
-		public static BinaryStateLoader LoadAndDetect(string Filename)
+		public static BinaryStateLoader LoadAndDetect(string filename)
 		{
 			var ret = new BinaryStateLoader();
 
 			// PORTABLE TODO - SKIP THIS.. FOR NOW
 			// check whether its an archive before we try opening it
-			int offset;
-			bool isExecutable;
 			bool isArchive;
 			using (var archiveChecker = new SevenZipSharpArchiveHandler())
 			{
-				isArchive = archiveChecker.CheckSignature(Filename, out offset, out isExecutable);
+				int offset;
+				bool isExecutable;
+				isArchive = archiveChecker.CheckSignature(filename, out offset, out isExecutable);
 			}
 
 			if (!isArchive)
@@ -114,10 +115,10 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				ret.zip = new ZipFile(Filename);
+				ret._zip = new ZipFile(filename);
 				if (!ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
 				{
-					ret.zip.Close();
+					ret._zip.Close();
 					return null;
 				}
 
@@ -132,20 +133,21 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets a lump
 		/// </summary>
-		/// <param name="Lump">lump to retriever</param>
+		/// <param name="lump">lump to retriever</param>
 		/// <param name="abort">true to throw exception on failure</param>
 		/// <param name="callback">function to call with the desired stream</param>
 		/// <returns>true if callback was called and stream was loaded</returns>
-		public bool GetLump(BinaryStateLump Lump, bool abort, Action<Stream> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream> callback)
 		{
-			string Name = BinaryStateFileNames.Get(Lump);
-			var e = zip.GetEntry(Name);
+			string Name = BinaryStateFileNames.Get(lump);
+			var e = _zip.GetEntry(Name);
 			if (e != null)
 			{
-				using (var zs = zip.GetInputStream(e))
+				using (var zs = _zip.GetInputStream(e))
 				{
 					callback(zs);
 				}
+
 				return true;
 			}
 			else if (abort)
@@ -158,20 +160,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool GetLump(BinaryStateLump Lump, bool abort, Action<BinaryReader> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback)
 		{
-			return GetLump(Lump, abort, delegate(Stream s)
+			return GetLump(lump, abort, delegate(Stream s)
 			{
-				BinaryReader br = new BinaryReader(s);
+				var br = new BinaryReader(s);
 				callback(br);
 			});
 		}
 
-		public bool GetLump(BinaryStateLump Lump, bool abort, Action<TextReader> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
 		{
-			return GetLump(Lump, abort, delegate(Stream s)
+			return GetLump(lump, abort, delegate(Stream s)
 			{
-				TextReader tr = new StreamReader(s);
+				var tr = new StreamReader(s);
 				callback(tr);
 			});
 		}
@@ -182,15 +184,19 @@ namespace BizHawk.Client.Common
 		public void GetCoreState(Action<Stream> callbackBinary, Action<Stream> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			{
 				throw new Exception("Couldn't find Binary or Text savestate");
+			}
 		}
 
 		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+			{
 				throw new Exception("Couldn't find Binary or Text savestate");
+			}
 		}
 
 		/*
@@ -215,7 +221,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly ZipOutputStream zip;
 
-		private void WriteVersion(Stream s)
+		private static void WriteVersion(Stream s)
 		{
 			var sw = new StreamWriter(s);
 			sw.WriteLine("1"); // version 1.0.1
@@ -238,18 +244,18 @@ namespace BizHawk.Client.Common
 			PutLump(BinaryStateLump.Versiontag, WriteVersion);	
 		}
 
-		public void PutLump(BinaryStateLump Lump, Action<Stream> callback)
+		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
-			string Name = BinaryStateFileNames.Get(Lump);
+			string Name = BinaryStateFileNames.Get(lump);
 			var e = new ZipEntry(Name) {CompressionMethod = CompressionMethod.Stored};
 			zip.PutNextEntry(e);
 			callback(zip);
 			zip.CloseEntry();
 		}
 
-		public void PutLump(BinaryStateLump Lump, Action<BinaryWriter> callback)
+		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
 		{
-			PutLump(Lump, delegate(Stream s)
+			PutLump(lump, delegate(Stream s)
 			{
 				var bw = new BinaryWriter(s);
 				callback(bw);
@@ -257,9 +263,9 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public void PutLump(BinaryStateLump Lump, Action<TextWriter> callback)
+		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
-			PutLump(Lump, delegate(Stream s)
+			PutLump(lump, delegate(Stream s)
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);
