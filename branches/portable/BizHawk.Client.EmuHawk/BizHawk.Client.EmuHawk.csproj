@@ -221,6 +221,12 @@
     <Compile Include="config\GB\ColorChooserForm.Designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GB\DGBPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GB\DGBPrefs.Designer.cs">
+      <DependentUpon>DGBPrefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\GB\DualGBFileSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -232,6 +238,18 @@
     </Compile>
     <Compile Include="config\GB\DualGBXMLCreator.Designer.cs">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GB\GBPrefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\GB\GBPrefControl.Designer.cs">
+      <DependentUpon>GBPrefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\GenericCoreConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GenericCoreConfig.Designer.cs">
+      <DependentUpon>GenericCoreConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\HotkeyConfig.cs">
       <SubType>Form</SubType>
@@ -254,6 +272,7 @@
     <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NES\DataTableDictionaryBind.cs" />
     <Compile Include="config\NES\NESGraphicsConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -265,6 +284,12 @@
     </Compile>
     <Compile Include="config\NES\NESSoundConfig.Designer.cs">
       <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NES\NESSyncSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
+      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
@@ -356,6 +381,7 @@
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="DisplayManager\Filters\Scanlines.cs" />
     <Compile Include="GlobalWin.cs" />
+    <Compile Include="HotkeyActions.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
@@ -368,10 +394,6 @@
       <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.Movie.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Rewind.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -472,6 +494,12 @@
     </Compile>
     <Compile Include="tools\GB\GBGPUView.Designer.cs">
       <DependentUpon>GBGPUView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Genesis\GenDbgWind.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Genesis\GenDbgWind.Designer.cs">
+      <DependentUpon>GenDbgWind.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Genesis\GenGameGenie.cs">
       <SubType>Form</SubType>
@@ -743,6 +771,12 @@
     <Compile Include="tools\VirtualPads\VirtualPadGen3Button.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPads\VirtualPadGen6Button.Designer.cs">
+      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPads\VirtualPadN64.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -845,11 +879,20 @@
     <EmbeddedResource Include="config\GB\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\DGBPrefs.resx">
+      <DependentUpon>DGBPrefs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GB\DualGBXMLCreator.resx">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GB\GBPrefControl.resx">
+      <DependentUpon>GBPrefControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\GenericCoreConfig.resx">
+      <DependentUpon>GenericCoreConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
@@ -862,6 +905,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESSoundConfig.resx">
       <DependentUpon>NESSoundConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
+      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathConfig.resx">
       <DependentUpon>PathConfig.cs</DependentUpon>
@@ -937,6 +983,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGPUView.resx">
       <DependentUpon>GBGPUView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Genesis\GenDbgWind.resx">
+      <DependentUpon>GenDbgWind.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Genesis\GenGameGenie.resx">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
@@ -1039,6 +1088,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPads\VirtualPadGen6Button.resx">
+      <DependentUpon>VirtualPadGen6Button.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPads\VirtualPadN64.resx">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
@@ -1190,6 +1242,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\pcejin1.bmp" />
     <None Include="images\watch.ico" />
     <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
@@ -1284,6 +1337,8 @@
     <Content Include="config\ControllerImages\N64.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
+    <None Include="images\alt_about_image.gif" />
+    <None Include="images\gba-icon.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return fn;
 		}
 
-		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata, object Settings, object SyncSettings)
 		{
 			CoreComm = comm;
 
@@ -64,22 +64,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			try
 			{
+				this.SyncSettings = (GambatteSyncSettings)SyncSettings ?? GambatteSyncSettings.GetDefaults();
+
 				LibGambatte.LoadFlags flags = 0;
 
-				if (game["ForceDMG"])
+				if (this.SyncSettings.ForceDMG)
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				if (game["GBACGB"])
+				if (this.SyncSettings.GBACGB)
 					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				if (game["MulitcartCompat"])
+				if (this.SyncSettings.MulticartCompat)
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
-
 
 				if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
 					throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 				// set real default colors (before anyone mucks with them at all)
-				ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
-				SetCGBColors(GBColors.ColorType.gambatte);
+				PutSettings(Settings ?? GambatteSettings.GetDefaults());
 
 				InitSound();
 
@@ -95,8 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 					game.Name,
-					Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
-					Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
+					Util.Hash_SHA1(romdata), Util.Hash_MD5(romdata)
 					);
 
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
@@ -891,5 +890,86 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 		#endregion
 
+		GambatteSettings Settings;
+		GambatteSyncSettings SyncSettings;
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{
+			Settings = (GambatteSettings)o;
+			if (IsCGBMode())
+				SetCGBColors(Settings.CGBColors);
+			else
+				ChangeDMGColors(Settings.GBPalette);
+			return false;
+		}
+
+		public bool PutSyncSettings(object o)
+		{
+			var s = (GambatteSyncSettings)o;
+			bool ret;
+			if (s.ForceDMG != SyncSettings.ForceDMG ||
+				s.GBACGB != SyncSettings.GBACGB ||
+				s.MulticartCompat != SyncSettings.MulticartCompat)
+				ret = true;
+			else
+				ret = false;
+
+			SyncSettings = s;
+			return ret;
+		}
+
+		public class GambatteSettings
+		{
+			public int[] GBPalette;
+			public GBColors.ColorType CGBColors;
+
+			public static GambatteSettings GetDefaults()
+			{
+				var ret = new GambatteSettings();
+				ret.GBPalette = new[]
+				{
+					10798341, 8956165, 1922333, 337157,
+					10798341, 8956165, 1922333, 337157,
+					10798341, 8956165, 1922333, 337157
+				};
+				ret.CGBColors = GBColors.ColorType.gambatte;
+				return ret;
+			}
+
+			public GambatteSettings Clone()
+			{
+				var ret = (GambatteSettings)MemberwiseClone();
+				ret.GBPalette = (int[])GBPalette.Clone();
+				return ret;
+			}
+		}
+
+		public class GambatteSyncSettings
+		{
+			[System.ComponentModel.Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
+			public bool ForceDMG { get; set; }
+			[System.ComponentModel.Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			public bool GBACGB { get; set; }
+			[System.ComponentModel.Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
+			public bool MulticartCompat { get; set; }
+
+			public static GambatteSyncSettings GetDefaults()
+			{
+				return new GambatteSyncSettings
+				{
+					ForceDMG = false,
+					GBACGB = false,
+					MulticartCompat = false
+				};
+			}
+
+			public GambatteSyncSettings Clone()
+			{
+				// this does include anonymous backing fields for auto properties
+				return (GambatteSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

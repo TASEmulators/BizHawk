@@ -6,20 +6,11 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/Namco_163_audio
-	public sealed class Namco163Audio : IDisposable
+	public sealed class Namco163Audio
 	{
-		//ByteBuffer ram = new ByteBuffer(0x80);
 		byte[] ram = new byte[0x80];
 		int addr;
 		bool autoincrement;
-
-		public void Dispose()
-		{
-			//ram.Dispose();
-			ram = null;
-			resampler.Dispose();
-			resampler = null;
-		}
 
 		/// <summary>
 		/// F800:FFFF
@@ -66,8 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int ch;
 
 		// output buffer; not savestated
-		//short[] samplebuff = new short[2048];
-		//int samplebuffpos;
+		int latchout = 0;
 
 		/// <summary>
 		/// 119318hz (CPU / 15)
@@ -80,11 +70,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ch = 8;
 
 			byte samp = ClockChannel(ch);
-
-			//samplebuff[samplebuffpos++] = samp;
-			//samplebuffpos &= 2047;
-			short ss = (short)(samp * 150 - 18000);
-			resampler.EnqueueSample(ss, ss);
+			int s = samp * 150;
+			int delta = latchout - s;
+			latchout = s;
+			enqueuer(delta);
 		}
 
 		byte ClockChannel(int ch)
@@ -118,62 +107,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("ch", ref ch);
 		}
 
-		SpeexResampler resampler; 
-		DCFilter dc;
-		MetaspuAsync metaspu;
+		Action<int> enqueuer;
 
-		public Namco163Audio()
+		public Namco163Audio(Action<int> enqueuer)
 		{
-			resampler = new SpeexResampler(2, 119318, 44100, 119318, 44100, null, null);
-			dc = DCFilter.DetatchedMode(4096);
-			metaspu = new MetaspuAsync(resampler, ESynchMethod.ESynchMethod_V);
+			this.enqueuer = enqueuer;
 		}
-
-		public void ApplyCustomAudio(short[] samples)
-		{
-			short[] tmp = new short[samples.Length];
-			metaspu.GetSamples(tmp);
-			for (int i = 0; i < samples.Length; i++)
-			{
-				int samp = samples[i] + tmp[i];
-				if (samp > 32767)
-					samples[i] = 32767;
-				else if (samp < -32768)
-					samples[i] = -32768;
-				else
-					samples[i] = (short)samp;
-			}
-			dc.PushThroughSamples(samples, samples.Length);
-		}
-
-		// the same junk used in FDSAudio
-		// the problem here is, the raw 120khz output contains significant amounts of crap that gets
-		// massively garbaged up by this resampling
-		/*
-		public void ApplyCustomAudio(short[] samples)
-		{
-			for (int i = 0; i < samples.Length; i += 2)
-			{
-				// worst imaginable resampling
-				int pos = i * samplebuffpos / samples.Length;
-				int samp = samplebuff[pos] * 50 - 12096;
-				samp += samples[i];
-				if (samp > 32767)
-					samples[i] = 32767;
-				else if (samp < -32768)
-					samples[i] = -32768;
-				else
-					samples[i] = (short)samp;
-
-				// NES audio is mono, so this should be identical anyway
-				samples[i + 1] = samples[i];
-			}
-			samplebuffpos = 0;
-
-			dc.PushThroughSamples(samples, samples.Length);
-		}
-		*/
-
-
 	}
 }

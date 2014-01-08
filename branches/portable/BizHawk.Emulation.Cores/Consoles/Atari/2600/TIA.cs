@@ -708,12 +708,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				// Pick the pixel color from collisions
 				uint pixelColor = 0x000000;
-				if (core.CoreComm.Atari2600_ShowBG)
+				if (core.Settings.ShowBG)
 				{
 					pixelColor = palette[playField.bkColor];
 				}
 
-				if ((collisions & CXPF) != 0 && core.CoreComm.Atari2600_ShowPF)
+				if ((collisions & CXPF) != 0 && core.Settings.ShowPlayfield)
 				{
 					if (playField.score)
 					{
@@ -735,7 +735,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXBL) != 0)
 				{
 					ball.collisions |= collisions;
-					if (core.CoreComm.Atari2600_ShowBall) 
+					if (core.Settings.ShowBall) 
 					{
 						pixelColor = palette[playField.pfColor];
 					}
@@ -744,7 +744,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXM1) != 0)
 				{
 					player1.missile.Collisions |= collisions;
-					if (core.CoreComm.Atari2600_ShowMissle2)
+					if (core.Settings.ShowMissle2)
 					{
 						pixelColor = palette[player1.color];
 					}
@@ -753,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXP1) != 0)
 				{
 					player1.collisions |= collisions;
-					if (core.CoreComm.Atari2600_ShowPlayer2)
+					if (core.Settings.ShowPlayer2)
 					{
 						pixelColor = palette[player1.color];
 					}
@@ -762,7 +762,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXM0) != 0)
 				{
 					player0.missile.Collisions |= collisions;
-					if (core.CoreComm.Atari2600_ShowMissle1)
+					if (core.Settings.ShowMissle1)
 					{
 						pixelColor = palette[player0.color];
 					}
@@ -771,13 +771,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if ((collisions & CXP0) != 0)
 				{
 					player0.collisions |= collisions;
-					if (core.CoreComm.Atari2600_ShowPlayer1)
+					if (core.Settings.ShowPlayer1)
 					{
 						pixelColor = palette[player0.color];
 					}
 				}
 
-				if (playField.priority && (collisions & CXPF) != 0 && core.CoreComm.Atari2600_ShowPF)
+				if (playField.priority && (collisions & CXPF) != 0 && core.Settings.ShowPlayfield)
 				{
 					if (playField.score)
 					{

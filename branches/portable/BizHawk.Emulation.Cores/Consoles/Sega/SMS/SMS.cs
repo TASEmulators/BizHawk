@@ -125,8 +125,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
-		public SMS(CoreComm comm, GameInfo game, byte[] rom)
+		public SMS(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
+			this.Settings = (SMSSettings)Settings ?? new SMSSettings();
+			this.SyncSettings = (SMSSyncSettings)SyncSettings ?? new SMSSyncSettings();
+
 			CoreComm = comm;
 			
 			IsGameGear = game.System == "GG";
@@ -143,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			CoreComm.VsyncDen = 1;
             
             if (game["Japan"]) Region = "Japan";
-            if (game.NotInDatabase || game["FM"] && game["UseFM"])
+            if (game.NotInDatabase || game["FM"] && this.SyncSettings.EnableFM && !IsGameGear)
                 HasYM2413 = true;
 
             if (Controller == null)
@@ -168,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
             else
                 InitCodeMastersMapper();
 
-            if (game["ForceStereo"])
+            if (this.Settings.ForceStereoSeparation && !IsGameGear)
             {
                 byte stereoByte = 0xAD;
                 if (game["StereoByte"])
@@ -178,10 +181,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
                 PSG.StereoPanning = stereoByte;
             }
 
-            if (game["AllowOverclock"] && game["OverclockSafe"])
+            if (this.SyncSettings.AllowOverlock && game["OverclockSafe"])
                 Vdp.IPeriod = 512;
 
-            if (game["SpriteLimit"])
+            if (this.Settings.SpriteLimit)
                 Vdp.SpriteLimit = true;
 
             if (game["BIOS"])
@@ -462,5 +465,61 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{
+			SMSSettings n = (SMSSettings)o;
+			bool ret = SMSSettings.RebootNeeded(Settings, n);
+			Settings = n;
+			return ret;
+		}
+		public bool PutSyncSettings(object o)
+		{
+			SMSSyncSettings n = (SMSSyncSettings)o;
+			bool ret = SMSSyncSettings.RebootNeeded(SyncSettings, n);
+			SyncSettings = n;
+			return ret;	
+		}
+
+		public SMSSettings Settings;
+		public SMSSyncSettings SyncSettings;
+
+		public class SMSSettings
+		{
+			public bool ForceStereoSeparation = false;
+			public bool SpriteLimit = false;
+			// GG settings
+			public bool ShowClippedRegions = false;
+			public bool HighlightActiveDisplayRegion = false;
+			// graphics settings
+			public bool DispBG = true;
+			public bool DispOBJ = true;
+
+			public SMSSettings Clone()
+			{
+				return (SMSSettings)MemberwiseClone();
+			}
+			public static bool RebootNeeded(SMSSettings x, SMSSettings y)
+			{
+				return x.ForceStereoSeparation != y.ForceStereoSeparation || x.SpriteLimit != y.SpriteLimit;
+			}
+		}
+
+		public class SMSSyncSettings
+		{
+			public bool EnableFM = true;
+			public bool AllowOverlock = false;
+
+			public SMSSyncSettings Clone()
+			{
+				return (SMSSyncSettings)MemberwiseClone();
+			}
+			public static bool RebootNeeded(SMSSyncSettings x, SMSSyncSettings y)
+			{
+				return x.EnableFM != y.EnableFM || x.AllowOverlock != y.AllowOverlock;
+			}
+		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BizHawk.Client.Common;
 
@@ -7,17 +8,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
-		//TODO: merge ToolHelper code where logical
-		//For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
-		//Also a UsesRam, and similar method
-
-		private List<IToolForm> _tools = new List<IToolForm>();
+		// TODO: merge ToolHelper code where logical
+		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
+		// Also a UsesRam, and similar method
+		private readonly List<IToolForm> _tools = new List<IToolForm>();
 
 		/// <summary>
 		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public IToolForm Load<T>() where T : IToolForm
 		{
 			var existingTool = _tools.FirstOrDefault(x => x is T);
@@ -43,8 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Returns true if an instance of T exists
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public bool Has<T>() where T : IToolForm
 		{
 			return _tools.Any(x => x is T);
@@ -53,8 +49,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets the instance of T, or creates and returns a new instance
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public IToolForm Get<T>() where T : IToolForm
 		{
 			var existingTool = _tools.FirstOrDefault(x => x is T);
@@ -82,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in beforeList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) //Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
 				{
 					tool.UpdateValues();
 				}
@@ -92,12 +86,9 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateAfter()
 		{
 			var afterList = _tools.Where(x => !x.UpdateBefore);
-			foreach (var tool in afterList)
+			foreach (var tool in afterList.Where(tool => !tool.IsDisposed))
 			{
-				if (!tool.IsDisposed)
-				{
-					tool.UpdateValues();
-				}
+				tool.UpdateValues();
 			}
 		}
 
@@ -110,20 +101,24 @@ namespace BizHawk.Client.EmuHawk
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
-				
 				tool.UpdateValues();
 			}
 		}
 
 		public void Restart()
 		{
+			// If Cheat tool is loaded, restarting will restart the list too anyway
+			if (!GlobalWin.Tools.Has<Cheats>())
+			{
+				Global.CheatList.NewList(GenerateDefaultCheatFilename());
+			}
+
 			_tools.ForEach(x => x.Restart());
 		}
 
 		/// <summary>
 		/// Calls Restart() on an instance of T, if it exists
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		public void Restart<T>() where T : IToolForm
 		{
 			CloseIfDisposed<T>();
@@ -137,29 +132,29 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Runs AskSave on every tool dialog, false is returned if any tool returns false
 		/// </summary>
-		/// <returns></returns>
 		public bool AskSave()
 		{
-			foreach (var tool in _tools)
+			if (Global.Config.SupressAskSave) // User has elected to not be nagged
 			{
-				var result = tool.AskSave();
-				if (!result)
-				{
-					return false;
-				}
+				return true;
 			}
 
-			return true;
+			return _tools
+				.Select(tool => tool.AskSave())
+				.All(result => result);
 		}
 
 		/// <summary>
 		/// Calls AskSave() on an instance of T, if it exists, else returns true
 		/// The caller should interpret false as cancel and will back out of the action that invokes this call
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		public bool AskSave<T>() where T : IToolForm
 		{
+			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			{
+				return true;
+			}
+
 			var tool = _tools.FirstOrDefault(x => x is T);
 			if (tool != null)
 			{
@@ -174,7 +169,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// If T exists, this call will close the tool, and remove it from memory
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		public void Close<T>() where T : IToolForm
 		{
 			var tool = _tools.FirstOrDefault(x => x is T);
@@ -195,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var tool = Activator.CreateInstance(typeof(T));
 
-			//Add to the list and extract it, so it will be strongly typed as T
+			// Add to the list and extract it, so it will be strongly typed as T
 			_tools.Add(tool as IToolForm);
 			return _tools.FirstOrDefault(x => x is T);
 		}
@@ -217,8 +211,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaConsole.StartLuaDrawing();
 				}
+
 				LuaConsole.LuaImp.CallFrameBeforeEvent();
 			}
+
 			UpdateBefore();
 		}
 
@@ -242,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
+		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
 		public RamWatch RamWatch
@@ -408,17 +404,65 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		//TODO: this shouldn't be necessary
+		#region Specialized Tool Loading Logic
+
 		public void LoadRamWatch(bool loadDialog)
 		{
 			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
 				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 			}
+
 			if (loadDialog)
 			{
 				GlobalWin.Tools.Load<RamWatch>();
 			}
+		}
+
+		public void LoadTraceLogger()
+		{
+			if (Global.Emulator.CoreComm.CpuTraceAvailable)
+			{
+				Load<TraceLogger>();
+			}
+		}
+
+		public void LoadGameGenieEc()
+		{
+			if (Global.Emulator.SystemId == "NES")
+			{
+				Load<NESGameGenie>();
+			}
+			else if (Global.Emulator.SystemId == "SNES")
+			{
+				Load<SNESGameGenie>();
+			}
+			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
+			{
+				Load<GBGameGenie>();
+			}
+			else if (Global.Emulator.SystemId == "GEN" && VersionInfo.INTERIM)
+			{
+				Load<GenGameGenie>();
+			}
+		}
+
+		#endregion
+
+		public static string GenerateDefaultCheatFilename()
+		{
+			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"]
+			                ?? Global.Config.PathEntries[Global.Game.System, "Base"];
+
+			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
+
+			var f = new FileInfo(path);
+			if (f.Directory != null && f.Directory.Exists == false)
+			{
+				f.Directory.Create();
+			}
+
+			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 	}
 }

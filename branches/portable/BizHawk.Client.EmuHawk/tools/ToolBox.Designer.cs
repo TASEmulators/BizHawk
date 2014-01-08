@@ -28,246 +28,304 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
-            this.toolStrip1 = new ToolStripEx();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.HexEditor = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.TAStudioButton = new System.Windows.Forms.ToolStripButton();
-            this.NESDebugger = new System.Windows.Forms.ToolStripButton();
-            this.NESPPU = new System.Windows.Forms.ToolStripButton();
-            this.NESNameTable = new System.Windows.Forms.ToolStripButton();
-            this.NESGameGenie = new System.Windows.Forms.ToolStripButton();
-            this.KeypadTool = new System.Windows.Forms.ToolStripButton();
-            this.SNESGraphicsDebuggerButton = new System.Windows.Forms.ToolStripButton();
-            this.SNESGameGenie = new System.Windows.Forms.ToolStripButton();
-            this.GGGameGenie = new System.Windows.Forms.ToolStripButton();
-            this.GBGameGenie = new System.Windows.Forms.ToolStripButton();
-            this.GameboyDebuggerTool = new System.Windows.Forms.ToolStripButton();
-            this.toolStrip1.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStrip1.ClickThrough = true;
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
-            this.toolStripButton2,
-            this.toolStripButton3,
-            this.HexEditor,
-            this.toolStripButton5,
-            this.toolStripButton6,
-            this.TAStudioButton,
-            this.NESDebugger,
-            this.NESPPU,
-            this.NESNameTable,
-            this.NESGameGenie,
-            this.KeypadTool,
-            this.SNESGraphicsDebuggerButton,
-            this.SNESGameGenie,
-            this.GGGameGenie,
-            this.GBGameGenie,
-            this.GameboyDebuggerTool});
-            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
-            this.toolStrip1.Location = new System.Drawing.Point(9, 11);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(100, 375);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.TabStop = true;
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(63, 20);
-            this.toolStripButton1.Text = "Cheats";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // toolStripButton2
-            // 
-            this.toolStripButton2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(88, 20);
-            this.toolStripButton2.Text = "Ram Watch";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(89, 20);
-            this.toolStripButton3.Text = "Ram Search";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
-            // 
-            // HexEditor
-            // 
-            this.HexEditor.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
-            this.HexEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.HexEditor.Name = "HexEditor";
-            this.HexEditor.Size = new System.Drawing.Size(81, 20);
-            this.HexEditor.Text = "Hex Editor";
-            this.HexEditor.Click += new System.EventHandler(this.HexEditor_Click);
-            // 
-            // toolStripButton5
-            // 
-            this.toolStripButton5.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc;
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(92, 20);
-            this.toolStripButton5.Text = "Lua Console";
-            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
-            // 
-            // toolStripButton6
-            // 
-            this.toolStripButton6.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(76, 20);
-            this.toolStripButton6.Text = "TAStudio";
-            this.toolStripButton6.Click += new System.EventHandler(this.TAStudioButton_Click);
-            // 
-            // TAStudioButton
-            // 
-            this.TAStudioButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-            this.TAStudioButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TAStudioButton.Name = "TAStudioButton";
-            this.TAStudioButton.Size = new System.Drawing.Size(86, 20);
-            this.TAStudioButton.Text = "VirtualPads";
-            this.TAStudioButton.Click += new System.EventHandler(this.VirtualPadButton_Click);
-            // 
-            // NESDebugger
-            // 
-            this.NESDebugger.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
-            this.NESDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NESDebugger.Name = "NESDebugger";
-            this.NESDebugger.Size = new System.Drawing.Size(79, 20);
-            this.NESDebugger.Text = "Debugger";
-            this.NESDebugger.Click += new System.EventHandler(this.NESDebugger_Click);
-            // 
-            // NESPPU
-            // 
-            this.NESPPU.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
-            this.NESPPU.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NESPPU.Name = "NESPPU";
-            this.NESPPU.Size = new System.Drawing.Size(49, 20);
-            this.NESPPU.Text = "PPU";
-            this.NESPPU.Click += new System.EventHandler(this.NESPPU_Click);
-            // 
-            // NESNameTable
-            // 
-            this.NESNameTable.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
-            this.NESNameTable.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NESNameTable.Name = "NESNameTable";
-            this.NESNameTable.Size = new System.Drawing.Size(85, 20);
-            this.NESNameTable.Text = "Nametable";
-            this.NESNameTable.Click += new System.EventHandler(this.NESNameTable_Click);
-            // 
-            // NESGameGenie
-            // 
-            this.NESGameGenie.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
-            this.NESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NESGameGenie.Name = "NESGameGenie";
-            this.NESGameGenie.Size = new System.Drawing.Size(91, 20);
-            this.NESGameGenie.Text = "Game Genie";
-            this.NESGameGenie.Click += new System.EventHandler(this.NESGameGenie_Click);
-            // 
-            // KeypadTool
-            // 
-            this.KeypadTool.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator;
-            this.KeypadTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.KeypadTool.Name = "KeypadTool";
-            this.KeypadTool.Size = new System.Drawing.Size(66, 20);
-            this.KeypadTool.Text = "Keypad";
-            this.KeypadTool.Click += new System.EventHandler(this.KeyPadTool_Click);
-            // 
-            // SNESGraphicsDebuggerButton
-            // 
-            this.SNESGraphicsDebuggerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
-            this.SNESGraphicsDebuggerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.SNESGraphicsDebuggerButton.Name = "SNESGraphicsDebuggerButton";
-            this.SNESGraphicsDebuggerButton.Size = new System.Drawing.Size(99, 20);
-            this.SNESGraphicsDebuggerButton.Text = "Gfx Debugger";
-            this.SNESGraphicsDebuggerButton.Click += new System.EventHandler(this.SNESGraphicsDebuggerButton_Click);
-            // 
-            // SNESGameGenie
-            // 
-            this.SNESGameGenie.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
-            this.SNESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.SNESGameGenie.Name = "SNESGameGenie";
-            this.SNESGameGenie.Size = new System.Drawing.Size(91, 20);
-            this.SNESGameGenie.Text = "Game Genie";
-            this.SNESGameGenie.Click += new System.EventHandler(this.SNESGameGenie_Click);
-            // 
-            // GGGameGenie
-            // 
-            this.GGGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("GGGameGenie.Image")));
-            this.GGGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.GGGameGenie.Name = "GGGameGenie";
-            this.GGGameGenie.Size = new System.Drawing.Size(91, 20);
-            this.GGGameGenie.Text = "Game Genie";
-            this.GGGameGenie.Click += new System.EventHandler(this.GGGameGenie_Click);
-            // 
-            // GBGameGenie
-            // 
-            this.GBGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("GBGameGenie.Image")));
-            this.GBGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.GBGameGenie.Name = "GBGameGenie";
-            this.GBGameGenie.Size = new System.Drawing.Size(91, 20);
-            this.GBGameGenie.Text = "Game Genie";
-            this.GBGameGenie.Click += new System.EventHandler(this.GBGameGenie_Click);
-            // 
-            // GameboyDebuggerTool
-            // 
-            this.GameboyDebuggerTool.Name = "GameboyDebuggerTool";
-            this.GameboyDebuggerTool.Size = new System.Drawing.Size(23, 4);
-            // 
-            // ToolBox
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(160, 449);
-            this.Controls.Add(this.toolStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(129, 62);
-            this.Name = "ToolBox";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Tool Box";
-            this.Load += new System.EventHandler(this.ToolBox_Load);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
+			this.ToolBoxStrip = new ToolStripEx();
+			this.CheatsToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.RamWatchToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.RamSearchToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.HexEditorToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.LuaConsoleToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.TAStudioToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.VirtualpadToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.NesDebuggerToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.NesPPUToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.NesNameTableToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.NesGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.TI83KeypadToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.SNESGraphicsDebuggerToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.SNESGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GGGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GbGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.GBGameGenieToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.PceBgViewerToolbarItem = new System.Windows.Forms.ToolStripButton();
+			this.GbaGpuViewerToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.GenesisGameGenieToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.ToolBoxStrip.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// ToolBoxStrip
+			// 
+			this.ToolBoxStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ToolBoxStrip.AutoSize = false;
+			this.ToolBoxStrip.BackColor = System.Drawing.SystemColors.Control;
+			this.ToolBoxStrip.ClickThrough = true;
+			this.ToolBoxStrip.Dock = System.Windows.Forms.DockStyle.None;
+			this.ToolBoxStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.ToolBoxStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CheatsToolBarItem,
+            this.RamWatchToolbarItem,
+            this.RamSearchToolbarItem,
+            this.HexEditorToolbarItem,
+            this.LuaConsoleToolbarItem,
+            this.TAStudioToolbarItem,
+            this.VirtualpadToolbarItem,
+            this.NesDebuggerToolbarItem,
+            this.NesPPUToolbarItem,
+            this.NesNameTableToolbarItem,
+            this.NesGameGenieToolbarItem,
+            this.TI83KeypadToolbarItem,
+            this.SNESGraphicsDebuggerToolbarItem,
+            this.SNESGameGenieToolbarItem,
+            this.GGGameGenieToolbarItem,
+            this.GbGpuViewerToolBarItem,
+            this.GBGameGenieToolbarItem,
+            this.PceBgViewerToolbarItem,
+            this.GbaGpuViewerToolBarItem,
+            this.GenesisGameGenieToolBarItem});
+			this.ToolBoxStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+			this.ToolBoxStrip.Location = new System.Drawing.Point(2, 2);
+			this.ToolBoxStrip.Name = "ToolBoxStrip";
+			this.ToolBoxStrip.Padding = new System.Windows.Forms.Padding(0);
+			this.ToolBoxStrip.Size = new System.Drawing.Size(137, 141);
+			this.ToolBoxStrip.Stretch = true;
+			this.ToolBoxStrip.TabIndex = 0;
+			this.ToolBoxStrip.TabStop = true;
+			// 
+			// CheatsToolBarItem
+			// 
+			this.CheatsToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
+			this.CheatsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.CheatsToolBarItem.Name = "CheatsToolBarItem";
+			this.CheatsToolBarItem.Size = new System.Drawing.Size(23, 20);
+			this.CheatsToolBarItem.ToolTipText = "Cheats";
+			this.CheatsToolBarItem.Click += new System.EventHandler(this.CheatsToolBarItem_Click);
+			// 
+			// RamWatchToolbarItem
+			// 
+			this.RamWatchToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
+			this.RamWatchToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RamWatchToolbarItem.Name = "RamWatchToolbarItem";
+			this.RamWatchToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.RamWatchToolbarItem.ToolTipText = "Ram Watch";
+			this.RamWatchToolbarItem.Click += new System.EventHandler(this.RamWatchToolbarItem_Click);
+			// 
+			// RamSearchToolbarItem
+			// 
+			this.RamSearchToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
+			this.RamSearchToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RamSearchToolbarItem.Name = "RamSearchToolbarItem";
+			this.RamSearchToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.RamSearchToolbarItem.ToolTipText = "Ram Search";
+			this.RamSearchToolbarItem.Click += new System.EventHandler(this.RamSearchToolbarItem_Click);
+			// 
+			// HexEditorToolbarItem
+			// 
+			this.HexEditorToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
+			this.HexEditorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.HexEditorToolbarItem.Name = "HexEditorToolbarItem";
+			this.HexEditorToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.HexEditorToolbarItem.ToolTipText = "Hex Editor";
+			this.HexEditorToolbarItem.Click += new System.EventHandler(this.HexEditorToolbarItem_Click);
+			// 
+			// LuaConsoleToolbarItem
+			// 
+			this.LuaConsoleToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc;
+			this.LuaConsoleToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.LuaConsoleToolbarItem.Name = "LuaConsoleToolbarItem";
+			this.LuaConsoleToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.LuaConsoleToolbarItem.ToolTipText = "Lua Console";
+			this.LuaConsoleToolbarItem.Click += new System.EventHandler(this.LuaConsoleToolbarItem_Click);
+			// 
+			// TAStudioToolbarItem
+			// 
+			this.TAStudioToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
+			this.TAStudioToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.TAStudioToolbarItem.Name = "TAStudioToolbarItem";
+			this.TAStudioToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.TAStudioToolbarItem.ToolTipText = "TAStudio";
+			this.TAStudioToolbarItem.Click += new System.EventHandler(this.TAStudioToolbarItem_Click);
+			// 
+			// VirtualpadToolbarItem
+			// 
+			this.VirtualpadToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.VirtualpadToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.VirtualpadToolbarItem.Name = "VirtualpadToolbarItem";
+			this.VirtualpadToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.VirtualpadToolbarItem.ToolTipText = "Virtualpads";
+			this.VirtualpadToolbarItem.Click += new System.EventHandler(this.VirtualpadToolbarItem_Click);
+			// 
+			// NesDebuggerToolbarItem
+			// 
+			this.NesDebuggerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
+			this.NesDebuggerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NesDebuggerToolbarItem.Name = "NesDebuggerToolbarItem";
+			this.NesDebuggerToolbarItem.Size = new System.Drawing.Size(49, 20);
+			this.NesDebuggerToolbarItem.Text = "Dbg";
+			this.NesDebuggerToolbarItem.ToolTipText = "Nes Debugger";
+			this.NesDebuggerToolbarItem.Click += new System.EventHandler(this.NesDebuggerToolbarItem_Click);
+			// 
+			// NesPPUToolbarItem
+			// 
+			this.NesPPUToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
+			this.NesPPUToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NesPPUToolbarItem.Name = "NesPPUToolbarItem";
+			this.NesPPUToolbarItem.Size = new System.Drawing.Size(49, 20);
+			this.NesPPUToolbarItem.Text = "PPU";
+			this.NesPPUToolbarItem.ToolTipText = "Nes PPU Viewer";
+			this.NesPPUToolbarItem.Click += new System.EventHandler(this.NesPPUToolbarItem_Click);
+			// 
+			// NesNameTableToolbarItem
+			// 
+			this.NesNameTableToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
+			this.NesNameTableToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NesNameTableToolbarItem.Name = "NesNameTableToolbarItem";
+			this.NesNameTableToolbarItem.Size = new System.Drawing.Size(40, 20);
+			this.NesNameTableToolbarItem.Text = "Nt";
+			this.NesNameTableToolbarItem.ToolTipText = "Nes Nametable Viewer";
+			this.NesNameTableToolbarItem.Click += new System.EventHandler(this.NesNameTableToolbarItem_Click);
+			// 
+			// NesGameGenieToolbarItem
+			// 
+			this.NesGameGenieToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon;
+			this.NesGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.NesGameGenieToolbarItem.Name = "NesGameGenieToolbarItem";
+			this.NesGameGenieToolbarItem.Size = new System.Drawing.Size(43, 20);
+			this.NesGameGenieToolbarItem.Text = "GG";
+			this.NesGameGenieToolbarItem.ToolTipText = "NES Game Genie Encoder/Decoder";
+			this.NesGameGenieToolbarItem.Click += new System.EventHandler(this.NesGameGenieToolbarItem_Click);
+			// 
+			// TI83KeypadToolbarItem
+			// 
+			this.TI83KeypadToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator;
+			this.TI83KeypadToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.TI83KeypadToolbarItem.Name = "TI83KeypadToolbarItem";
+			this.TI83KeypadToolbarItem.Size = new System.Drawing.Size(23, 20);
+			this.TI83KeypadToolbarItem.ToolTipText = "TI83 Keypad";
+			this.TI83KeypadToolbarItem.Click += new System.EventHandler(this.TI83KeypadToolbarItem_Click);
+			// 
+			// SNESGraphicsDebuggerToolbarItem
+			// 
+			this.SNESGraphicsDebuggerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
+			this.SNESGraphicsDebuggerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.SNESGraphicsDebuggerToolbarItem.Name = "SNESGraphicsDebuggerToolbarItem";
+			this.SNESGraphicsDebuggerToolbarItem.Size = new System.Drawing.Size(44, 20);
+			this.SNESGraphicsDebuggerToolbarItem.Text = "Gfx";
+			this.SNESGraphicsDebuggerToolbarItem.ToolTipText = "SNES Gfx Debugger";
+			this.SNESGraphicsDebuggerToolbarItem.Click += new System.EventHandler(this.SNESGraphicsDebuggerToolbarItem_Click);
+			// 
+			// SNESGameGenieToolbarItem
+			// 
+			this.SNESGameGenieToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SNESControllerIcon;
+			this.SNESGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.SNESGameGenieToolbarItem.Name = "SNESGameGenieToolbarItem";
+			this.SNESGameGenieToolbarItem.Size = new System.Drawing.Size(43, 20);
+			this.SNESGameGenieToolbarItem.Text = "GG";
+			this.SNESGameGenieToolbarItem.ToolTipText = "SNES Game Genie Encoder/Decoder";
+			this.SNESGameGenieToolbarItem.Click += new System.EventHandler(this.SNESGameGenieToolbarItem_Click);
+			// 
+			// GGGameGenieToolbarItem
+			// 
+			this.GGGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("GGGameGenieToolbarItem.Image")));
+			this.GGGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GGGameGenieToolbarItem.Name = "GGGameGenieToolbarItem";
+			this.GGGameGenieToolbarItem.Size = new System.Drawing.Size(43, 20);
+			this.GGGameGenieToolbarItem.Text = "GG";
+			this.GGGameGenieToolbarItem.ToolTipText = "Game Gear Game Genie Encoder/Decoder";
+			this.GGGameGenieToolbarItem.Click += new System.EventHandler(this.GGGameGenieToolbarItem_Click);
+			// 
+			// GbGpuViewerToolBarItem
+			// 
+			this.GbGpuViewerToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("GbGpuViewerToolBarItem.Image")));
+			this.GbGpuViewerToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GbGpuViewerToolBarItem.Name = "GbGpuViewerToolBarItem";
+			this.GbGpuViewerToolBarItem.Size = new System.Drawing.Size(49, 20);
+			this.GbGpuViewerToolBarItem.Text = "Gpu";
+			this.GbGpuViewerToolBarItem.ToolTipText = "Gameboy Game Genie Encoder/Decoder";
+			this.GbGpuViewerToolBarItem.Click += new System.EventHandler(this.GbGpuViewerToolBarItem_Click);
+			// 
+			// GBGameGenieToolbarItem
+			// 
+			this.GBGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("GBGameGenieToolbarItem.Image")));
+			this.GBGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GBGameGenieToolbarItem.Name = "GBGameGenieToolbarItem";
+			this.GBGameGenieToolbarItem.Size = new System.Drawing.Size(43, 20);
+			this.GBGameGenieToolbarItem.Text = "GG";
+			this.GBGameGenieToolbarItem.ToolTipText = "Gameboy Game Genie Encoder/Decoder";
+			this.GBGameGenieToolbarItem.Click += new System.EventHandler(this.GBGameGenieToolbarItem_Click);
+			// 
+			// PceBgViewerToolbarItem
+			// 
+			this.PceBgViewerToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcejin1;
+			this.PceBgViewerToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PceBgViewerToolbarItem.Name = "PceBgViewerToolbarItem";
+			this.PceBgViewerToolbarItem.Size = new System.Drawing.Size(41, 20);
+			this.PceBgViewerToolbarItem.Text = "Bg";
+			this.PceBgViewerToolbarItem.ToolTipText = "PC Engine Background Viewer";
+			this.PceBgViewerToolbarItem.Click += new System.EventHandler(this.PceBgViewerToolbarItem_Click);
+			// 
+			// GbaGpuViewerToolBarItem
+			// 
+			this.GbaGpuViewerToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.gba_icon;
+			this.GbaGpuViewerToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GbaGpuViewerToolBarItem.Name = "GbaGpuViewerToolBarItem";
+			this.GbaGpuViewerToolBarItem.Size = new System.Drawing.Size(49, 20);
+			this.GbaGpuViewerToolBarItem.Text = "Gpu";
+			this.GbaGpuViewerToolBarItem.ToolTipText = "Gameboy Advance Gpu Viewer";
+			this.GbaGpuViewerToolBarItem.Click += new System.EventHandler(this.GbaGpuViewerToolBarItem_Click);
+			// 
+			// GenesisGameGenieToolBarItem
+			// 
+			this.GenesisGameGenieToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GenesisControllerIcon;
+			this.GenesisGameGenieToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GenesisGameGenieToolBarItem.Name = "GenesisGameGenieToolBarItem";
+			this.GenesisGameGenieToolBarItem.Size = new System.Drawing.Size(43, 20);
+			this.GenesisGameGenieToolBarItem.Text = "GG";
+			this.GenesisGameGenieToolBarItem.ToolTipText = "Genesis Game Genie Encoder/Decoder";
+			this.GenesisGameGenieToolBarItem.Click += new System.EventHandler(this.GenesisGameGenieToolBarItem_Click);
+			// 
+			// ToolBox
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(140, 145);
+			this.Controls.Add(this.ToolBoxStrip);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximumSize = new System.Drawing.Size(270, 600);
+			this.MinimumSize = new System.Drawing.Size(135, 38);
+			this.Name = "ToolBox";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Load += new System.EventHandler(this.ToolBox_Load);
+			this.ToolBoxStrip.ResumeLayout(false);
+			this.ToolBoxStrip.PerformLayout();
+			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private ToolStripEx toolStrip1;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
-		private System.Windows.Forms.ToolStripButton toolStripButton2;
-		private System.Windows.Forms.ToolStripButton toolStripButton3;
-		private System.Windows.Forms.ToolStripButton HexEditor;
-		private System.Windows.Forms.ToolStripButton toolStripButton5;
-		private System.Windows.Forms.ToolStripButton NESPPU;
-		private System.Windows.Forms.ToolStripButton NESDebugger;
-		private System.Windows.Forms.ToolStripButton NESGameGenie;
-		private System.Windows.Forms.ToolStripButton NESNameTable;
-		private System.Windows.Forms.ToolStripButton KeypadTool;
-		private System.Windows.Forms.ToolStripButton TAStudioButton;
-		private System.Windows.Forms.ToolStripButton GameboyDebuggerTool;
-		private System.Windows.Forms.ToolStripButton SNESGraphicsDebuggerButton;
-		private System.Windows.Forms.ToolStripButton SNESGameGenie;
-		private System.Windows.Forms.ToolStripButton toolStripButton6;
-		private System.Windows.Forms.ToolStripButton GGGameGenie;
-		private System.Windows.Forms.ToolStripButton GBGameGenie;
+		private ToolStripEx ToolBoxStrip;
+		private System.Windows.Forms.ToolStripButton CheatsToolBarItem;
+		private System.Windows.Forms.ToolStripButton RamWatchToolbarItem;
+		private System.Windows.Forms.ToolStripButton RamSearchToolbarItem;
+		private System.Windows.Forms.ToolStripButton HexEditorToolbarItem;
+		private System.Windows.Forms.ToolStripButton LuaConsoleToolbarItem;
+		private System.Windows.Forms.ToolStripButton NesPPUToolbarItem;
+		private System.Windows.Forms.ToolStripButton NesDebuggerToolbarItem;
+		private System.Windows.Forms.ToolStripButton NesGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton NesNameTableToolbarItem;
+		private System.Windows.Forms.ToolStripButton TI83KeypadToolbarItem;
+		private System.Windows.Forms.ToolStripButton VirtualpadToolbarItem;
+		private System.Windows.Forms.ToolStripButton SNESGraphicsDebuggerToolbarItem;
+		private System.Windows.Forms.ToolStripButton SNESGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton TAStudioToolbarItem;
+		private System.Windows.Forms.ToolStripButton GGGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton PceBgViewerToolbarItem;
+		private System.Windows.Forms.ToolStripButton GBGameGenieToolbarItem;
+		private System.Windows.Forms.ToolStripButton GbGpuViewerToolBarItem;
+		private System.Windows.Forms.ToolStripButton GbaGpuViewerToolBarItem;
+		private System.Windows.Forms.ToolStripButton GenesisGameGenieToolBarItem;
 
 	}
 }

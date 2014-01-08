@@ -460,7 +460,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 				addr => VDP.VRAM[addr & 0xFFFF],
 				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
-			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, MemoryDomain.Endian.Big,
+			var RomDomain = new MemoryDomain("MD CART", RomData.Length, MemoryDomain.Endian.Big,
 				addr => RomData[addr], //adelikat: For speed considerations, I didn't mask this, every tool that uses memory domains is smart enough not to overflow, if I'm wrong let me know!
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
@@ -479,5 +479,10 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o) { return false; }
 	}
 }

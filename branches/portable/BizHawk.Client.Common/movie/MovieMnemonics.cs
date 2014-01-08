@@ -37,8 +37,8 @@ namespace BizHawk.Client.Common
 			{
 				"GPGX Genesis Controller", new Dictionary<string, string>
 				{
-					{"P1 Up", "U"}, {"P1 Down", "D"}, {"P1 Left", "L"}, {"P1 Right", "R"}, {"P1 A", "A"}, {"P1 B", "B"}, {"P1 C", "C"},
-					{"P1 Start", "S"}, {"P1 X", "X"}, {"P1 Y", "Y"}, {"P1 Z", "Z"}, {"P1 Mode", "M"}
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"A", "A"}, {"B", "B"}, {"C", "C"},
+					{"Start", "S"}, {"X", "X"}, {"Y", "Y"}, {"Z", "Z"}, {"Mode", "M"}
 				}
 			},
 			{
@@ -148,6 +148,7 @@ namespace BizHawk.Client.Common
 			{"Gameboy Controller", new Dictionary<string, string> {{"Power", "P"}}},
 			{"GBA Controller", new Dictionary<string, string> {{"Power", "P"}}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string> {{"Reset", "r"}}},
+			{"GPGX Genesis Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 			{"NES Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Power", "P"}, {"FDS Eject", "E"}, {"FDS Insert 0", "0"}, {"FDS Insert 1", "1"}, {"VS Coin 1", "c"}, {"VS Coin 2", "C"}}},
 			{"SNES Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
 			{"PC Engine Controller", new Dictionary<string, string>()},
@@ -303,14 +304,40 @@ namespace BizHawk.Client.Common
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+
 			if (mnemonic.Length < 9)
 			{
 				return;
 			}
-			int start = 1;
-			foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+
+			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				Force(button, c[start++]);
+				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + 1);
+
+				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in MnemonicConstants.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
 			}
 		}
 

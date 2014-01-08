@@ -79,6 +79,7 @@ extern char MS_BIOS_EU[256];
 extern char MS_BIOS_JP[256];
 
 void osd_input_update(void);
-int load_archive(char *filename, unsigned char *buffer, int maxsize, char *extension);
+int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension);
+void real_input_callback(void);
 
 #endif /* _OSD_H */

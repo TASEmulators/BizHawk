@@ -228,10 +228,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi api;
 		System.Xml.XmlDocument romxml;
 
-		public LibsnesCore(CoreComm comm)
+		string GetExePath()
 		{
+			const string bits = "32";
+			// disabled til it works
+			// if (Win32.Is64BitOperatingSystem)
+			// bits = "64";
+
+			var exename = "libsneshawk-" + bits + "-" +  SyncSettings.Profile.ToLower() + ".exe";
+
+			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
+
+			if (!File.Exists(exePath))
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + SyncSettings.Profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+
+			return exePath;
+		}
+
+		public LibsnesCore(CoreComm comm, object Settings, object SyncSettings)
+		{
+			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
+			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 			CoreComm = comm;
-			api = new LibsnesApi(CoreComm.SNES_ExePath);
+
+			api = new LibsnesApi(GetExePath());
 			api.CMD_init();
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
@@ -292,9 +312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
 			api.QUERY_set_audio_sample(soundcb);
 
-			// set default palette. Should be overridden by frontend probably
-			SetPalette(SnesColors.ColorType.BizHawk);
-
+			RefreshPalette();
 
 			// start up audio resampler
 			InitAudio();
@@ -425,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
-			bool doubleSize = CoreComm.SNES_AlwaysDoubleSize;
+			bool doubleSize = Settings.AlwaysDoubleSize;
 			bool lineDouble = doubleSize, dotDouble = doubleSize;
 
 			vidWidth = width;
@@ -503,7 +521,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			api.MessageCounter = 0;
 
-			if(CoreComm.SNES_UseRingBuffer)
+			if(Settings.UseRingBuffer)
 				api.BeginBufferIO();
 
 			/* if the input poll callback is called, it will set this to false
@@ -547,20 +565,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (powerSignal) api.CMD_power();
 
 			//too many messages
-			api.QUERY_set_layer_enable(0, 0, CoreComm.SNES_ShowBG1_0);
-			api.QUERY_set_layer_enable(0, 1, CoreComm.SNES_ShowBG1_1);
-			api.QUERY_set_layer_enable(1, 0, CoreComm.SNES_ShowBG2_0);
-			api.QUERY_set_layer_enable(1, 1, CoreComm.SNES_ShowBG2_1);
-			api.QUERY_set_layer_enable(2, 0, CoreComm.SNES_ShowBG3_0);
-			api.QUERY_set_layer_enable(2, 1, CoreComm.SNES_ShowBG3_1);
-			api.QUERY_set_layer_enable(3, 0, CoreComm.SNES_ShowBG4_0);
-			api.QUERY_set_layer_enable(3, 1, CoreComm.SNES_ShowBG4_1);
-			api.QUERY_set_layer_enable(4, 0, CoreComm.SNES_ShowOBJ_0);
-			api.QUERY_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
-			api.QUERY_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
-			api.QUERY_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
+			api.QUERY_set_layer_enable(0, 0, Settings.ShowBG1_0);
+			api.QUERY_set_layer_enable(0, 1, Settings.ShowBG1_1);
+			api.QUERY_set_layer_enable(1, 0, Settings.ShowBG2_0);
+			api.QUERY_set_layer_enable(1, 1, Settings.ShowBG2_1);
+			api.QUERY_set_layer_enable(2, 0, Settings.ShowBG3_0);
+			api.QUERY_set_layer_enable(2, 1, Settings.ShowBG3_1);
+			api.QUERY_set_layer_enable(3, 0, Settings.ShowBG4_0);
+			api.QUERY_set_layer_enable(3, 1, Settings.ShowBG4_1);
+			api.QUERY_set_layer_enable(4, 0, Settings.ShowOBJ_0);
+			api.QUERY_set_layer_enable(4, 1, Settings.ShowOBJ_1);
+			api.QUERY_set_layer_enable(4, 2, Settings.ShowOBJ_2);
+			api.QUERY_set_layer_enable(4, 3, Settings.ShowOBJ_3);
 
-			RefreshMemoryCallbacks();
+			RefreshMemoryCallbacks(false);
 
 			//apparently this is one frame?
 			timeFrameCounter++;
@@ -578,12 +596,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.EndBufferIO();
 		}
 
-		void RefreshMemoryCallbacks()
+		void RefreshMemoryCallbacks(bool suppress)
 		{
 			var mcs = CoreComm.MemoryCallbackSystem;
-			api.QUERY_set_state_hook_exec(mcs.HasExecutes);
-			api.QUERY_set_state_hook_read(mcs.HasReads);
-			api.QUERY_set_state_hook_write(mcs.HasWrites);
+			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
+			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
+			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
 		public DisplayType DisplayType
@@ -800,7 +818,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
 			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
-			writer.WriteLine("Profile {0}", CoreComm.SNES_Profile);
+			writer.WriteLine("Profile {0}", SyncSettings.Profile);
 		}
 		public void LoadStateText(TextReader reader)
 		{
@@ -832,7 +850,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(CoreComm.SNES_Profile);
+			writer.Write(SyncSettings.Profile);
 
 			writer.Flush();
 		}
@@ -880,7 +898,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ValidateLoadstateProfile(string profile)
 		{
-			if (profile != CoreComm.SNES_Profile)
+			if (profile != SyncSettings.Profile)
 			{
 				throw new InvalidOperationException("You've attempted to load a savestate made using a different SNES profile than your current configuration. We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.");
 			}
@@ -909,6 +927,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			fixed (byte* pbuf = &data[0])
 				api.CMD_unserialize(new IntPtr(pbuf), size);
 		}
+
+
 		/// <summary>
 		/// handle the unmanaged part of savestating
 		/// </summary>
@@ -1045,5 +1065,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void EndAsyncSound() { }
 
 		#endregion audio stuff
+
+		void RefreshPalette()
+		{
+			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Settings.Palette, false));
+
+		}
+
+		SnesSettings Settings;
+		SnesSyncSettings SyncSettings;
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{
+			SnesSettings n = (SnesSettings)o;
+			bool refreshneeded = n.Palette != Settings.Palette;
+			Settings = n;
+			if (refreshneeded)
+				RefreshPalette();
+			return false;
+		}
+		public bool PutSyncSettings(object o)
+		{
+			SnesSyncSettings n = (SnesSyncSettings)o;
+			bool ret = n.Profile != SyncSettings.Profile;
+			SyncSettings = n;
+			return ret;
+		}
+
+		public class SnesSettings
+		{
+			public bool ShowBG1_0 = true;
+			public bool ShowBG2_0 = true;
+			public bool ShowBG3_0 = true;
+			public bool ShowBG4_0 = true;
+			public bool ShowBG1_1 = true;
+			public bool ShowBG2_1 = true;
+			public bool ShowBG3_1 = true;
+			public bool ShowBG4_1 = true;
+			public bool ShowOBJ_0 = true;
+			public bool ShowOBJ_1 = true;
+			public bool ShowOBJ_2 = true;
+			public bool ShowOBJ_3 = true;
+
+			public bool UseRingBuffer = true;
+			public bool AlwaysDoubleSize = false;
+			public string Palette = "BizHawk";
+
+			public SnesSettings Clone()
+			{
+				return (SnesSettings)MemberwiseClone();
+			}
+		}
+
+		public class SnesSyncSettings
+		{
+			public string Profile = "Compatibility";
+
+			public SnesSyncSettings Clone()
+			{
+				return (SnesSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

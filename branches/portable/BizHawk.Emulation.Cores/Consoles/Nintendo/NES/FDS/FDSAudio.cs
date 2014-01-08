@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		public void SyncState(Serializer ser)
 		{
-			// no need to sync the DCFilter or the samplebuff
 			ser.Sync("waveram", ref waveram, false);
 			ser.Sync("waverampos", ref waverampos);
 
@@ -152,27 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public FDSAudio(Action<int> SendDiff)
 		{
 			this.SendDiff = SendDiff;
-			/*
-			// minor hack: due to the way the initialization sequence goes, this might get called
-			// with m2rate = 0.  such an instance will never be asked for samples, though
-			if (m2rate > 0)
-			{
-				blip = new Sound.Utilities.BlipBuffer(blipsize);
-				blip.SetRates(m2rate, 44100);
-			}
-			*/
 		}
-
-		/*
-		public void Dispose()
-		{
-			if (blip != null)
-			{
-				blip.Dispose();
-				blip = null;
-			}
-		}
-		*/
 
 		void CalcMod()
 		{
@@ -206,7 +185,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (latchedoutput != tmp)
 			{
-				//dlist.Add(new Delta(sampleclock, tmp - latchedoutput));
 				SendDiff((tmp - latchedoutput) * 6);
 				latchedoutput = tmp;
 			}
@@ -284,7 +262,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					CalcOut();
 				}
 			}
-			//sampleclock++;
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -384,57 +361,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			return ret;
 		}
-
-		/*
-		Sound.Utilities.BlipBuffer blip;
-
-		struct Delta
-		{
-			public uint time;
-			public int value;
-			public Delta(uint time, int value)
-			{
-				this.time = time;
-				this.value = value;
-			}
-		}
-		List<Delta> dlist = new List<Delta>();
-
-		uint sampleclock = 0;
-		const int blipsize = 4096;
-
-		short[] mixout = new short[blipsize];
-
-		public void ApplyCustomAudio(short[] samples)
-		{
-			int nsamp = samples.Length / 2;
-			if (nsamp > blipsize) // oh well.
-				nsamp = blipsize;
-			uint targetclock = (uint)blip.ClocksNeeded(nsamp);
-			foreach (var d in dlist)
-			{
-				// original deltas are in -2016..2016
-				blip.AddDelta(d.time * targetclock / sampleclock, d.value * 6);
-			}
-			//Console.WriteLine("sclock {0} tclock {1} ndelta {2}", sampleclock, targetclock, dlist.Count);
-			dlist.Clear();
-			blip.EndFrame(targetclock);
-			sampleclock = 0;
-			blip.ReadSamples(mixout, nsamp, false);
-
-			for (int i = 0, j = 0; i < nsamp; i++, j += 2)
-			{
-				int s = mixout[i] + samples[j];
-				if (s > 32767)
-					samples[j] = 32767;
-				else if (s <= -32768)
-					samples[j] = -32768;
-				else
-					samples[j] = (short)s;
-				// nes audio is mono, so we can ignore the original value of samples[j+1]
-				samples[j + 1] = samples[j];
-			}
-		}
-		*/
 	}
 }

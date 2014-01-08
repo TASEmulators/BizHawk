@@ -83,6 +83,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap alt_about_image {
+            get {
+                object obj = ResourceManager.GetObject("alt_about_image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap atari_controller {
             get {
                 object obj = ResourceManager.GetObject("atari_controller", resourceCulture);
@@ -463,6 +473,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap gba_icon {
+            get {
+                object obj = ResourceManager.GetObject("gba_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GBController {
             get {
                 object obj = ResourceManager.GetObject("GBController", resourceCulture);
@@ -755,6 +775,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap Pause {
             get {
                 object obj = ResourceManager.GetObject("Pause", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pcejin1 {
+            get {
+                object obj = ResourceManager.GetObject("pcejin1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

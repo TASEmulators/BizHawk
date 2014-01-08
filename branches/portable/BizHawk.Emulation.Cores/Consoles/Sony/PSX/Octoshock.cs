@@ -122,17 +122,19 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		static IntPtr FopenCallbackProc(string fname, string mode)
 		{
+			throw new NotImplementedException("Antiquated CoreComm.PSX_FirmwaresPath must be replaced by CoreFileProvider");
+
 			// TODO - this should be using the CoreComm.CoreFileProvider interfaces
 
 			//TODO - probably this should never really fail. but for now, mednafen tries to create a bunch of junk, so just return failure for files which cant be opened
-
+			/*
 			if (fname.StartsWith("$psx"))
 			{
 				string[] parts = fname.Split('/');
 				if (parts[0] != "$psx") throw new InvalidOperationException("Octoshock using some weird path we dont handle yet");
 				if (parts[1] == "firmware")
 				{
-					fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
+					//fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
 					if (!File.Exists(fname))
 					{
 						System.Windows.Forms.MessageBox.Show("the Octoshock core is referencing a firmware file which could not be found. Please make sure it's in your configured PSX firmwares folder. The referenced filename is: " + parts[1]);
@@ -167,6 +169,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			VirtualFiles[ret.id] = ret;
 			return new IntPtr(ret.id);
+			*/
 		}
 		static int FcloseCallbackProc(IntPtr fp)
 		{
@@ -278,6 +281,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int MaxVolume { get; set; }
 		private List<MemoryDomain> memoryDomains = new List<MemoryDomain>();
 		public MemoryDomainList MemoryDomains { get; private set; }
-	}
 
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o) { return false; }
+	}
 }

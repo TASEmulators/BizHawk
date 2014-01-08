@@ -53,18 +53,18 @@ namespace BizHawk.Client.EmuHawk
 			this.DeselectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectBetweenMarkersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.reselectClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ReselectClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteInsertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PasteInsertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.insertFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.insertNumFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DeleteFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.InsertFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.InsertNumFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,12 +99,16 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TASView = new BizHawk.Client.EmuHawk.TasListView();
+			this.TasView = new BizHawk.Client.EmuHawk.TasListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PreviousMarkerFromFrameControl = new BizHawk.Client.EmuHawk.MarkerControl();
-			this.PreviousMarkerFromSelectionControl = new BizHawk.Client.EmuHawk.MarkerControl();
+			this.TasStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
+			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.TASMenu.SuspendLayout();
+			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -118,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(530, 24);
+			this.TASMenu.Size = new System.Drawing.Size(506, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			// 
@@ -231,18 +235,18 @@ namespace BizHawk.Client.EmuHawk
             this.DeselectMenuItem,
             this.selectAllToolStripMenuItem,
             this.SelectBetweenMarkersMenuItem,
-            this.reselectClipboardToolStripMenuItem,
+            this.ReselectClipboardMenuItem,
             this.toolStripSeparator7,
-            this.copyToolStripMenuItem,
-            this.pasteToolStripMenuItem,
-            this.pasteInsertToolStripMenuItem,
-            this.cutToolStripMenuItem,
+            this.CopyMenuItem,
+            this.PasteMenuItem,
+            this.PasteInsertMenuItem,
+            this.CutMenuItem,
             this.toolStripSeparator8,
-            this.clearToolStripMenuItem2,
-            this.deleteFramesToolStripMenuItem,
-            this.cloneToolStripMenuItem,
-            this.insertFrameToolStripMenuItem,
-            this.insertNumFramesToolStripMenuItem,
+            this.ClearMenuItem,
+            this.DeleteFramesMenuItem,
+            this.CloneMenuItem,
+            this.InsertFrameMenuItem,
+            this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
@@ -308,97 +312,97 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
 			// 
-			// reselectClipboardToolStripMenuItem
+			// ReselectClipboardMenuItem
 			// 
-			this.reselectClipboardToolStripMenuItem.Enabled = false;
-			this.reselectClipboardToolStripMenuItem.Name = "reselectClipboardToolStripMenuItem";
-			this.reselectClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-			this.reselectClipboardToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.reselectClipboardToolStripMenuItem.Text = "Reselect Clipboard";
+			this.ReselectClipboardMenuItem.Enabled = false;
+			this.ReselectClipboardMenuItem.Name = "ReselectClipboardMenuItem";
+			this.ReselectClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
+			this.ReselectClipboardMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
 			this.toolStripSeparator7.Size = new System.Drawing.Size(237, 6);
 			// 
-			// copyToolStripMenuItem
+			// CopyMenuItem
 			// 
-			this.copyToolStripMenuItem.Enabled = false;
-			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.copyToolStripMenuItem.Text = "Copy";
+			this.CopyMenuItem.Name = "CopyMenuItem";
+			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.CopyMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CopyMenuItem.Text = "Copy";
+			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
-			// pasteToolStripMenuItem
+			// PasteMenuItem
 			// 
-			this.pasteToolStripMenuItem.Enabled = false;
-			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.pasteToolStripMenuItem.Text = "&Paste";
+			this.PasteMenuItem.Enabled = false;
+			this.PasteMenuItem.Name = "PasteMenuItem";
+			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+			this.PasteMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PasteMenuItem.Text = "&Paste";
 			// 
-			// pasteInsertToolStripMenuItem
+			// PasteInsertMenuItem
 			// 
-			this.pasteInsertToolStripMenuItem.Enabled = false;
-			this.pasteInsertToolStripMenuItem.Name = "pasteInsertToolStripMenuItem";
-			this.pasteInsertToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+			this.PasteInsertMenuItem.Enabled = false;
+			this.PasteInsertMenuItem.Name = "PasteInsertMenuItem";
+			this.PasteInsertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.V)));
-			this.pasteInsertToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.pasteInsertToolStripMenuItem.Text = "&Paste Insert";
+			this.PasteInsertMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PasteInsertMenuItem.Text = "&Paste Insert";
 			// 
-			// cutToolStripMenuItem
+			// CutMenuItem
 			// 
-			this.cutToolStripMenuItem.Enabled = false;
-			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.cutToolStripMenuItem.Text = "&Cut";
+			this.CutMenuItem.Enabled = false;
+			this.CutMenuItem.Name = "CutMenuItem";
+			this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+			this.CutMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CutMenuItem.Text = "&Cut";
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(237, 6);
 			// 
-			// clearToolStripMenuItem2
+			// ClearMenuItem
 			// 
-			this.clearToolStripMenuItem2.Enabled = false;
-			this.clearToolStripMenuItem2.Name = "clearToolStripMenuItem2";
-			this.clearToolStripMenuItem2.ShortcutKeyDisplayString = "Del";
-			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(240, 22);
-			this.clearToolStripMenuItem2.Text = "Clear";
+			this.ClearMenuItem.Enabled = false;
+			this.ClearMenuItem.Name = "ClearMenuItem";
+			this.ClearMenuItem.ShortcutKeyDisplayString = "Del";
+			this.ClearMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.ClearMenuItem.Text = "Clear";
 			// 
-			// deleteFramesToolStripMenuItem
+			// DeleteFramesMenuItem
 			// 
-			this.deleteFramesToolStripMenuItem.Enabled = false;
-			this.deleteFramesToolStripMenuItem.Name = "deleteFramesToolStripMenuItem";
-			this.deleteFramesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
-			this.deleteFramesToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.deleteFramesToolStripMenuItem.Text = "&Delete";
+			this.DeleteFramesMenuItem.Enabled = false;
+			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
+			this.DeleteFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
+			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.DeleteFramesMenuItem.Text = "&Delete";
 			// 
-			// cloneToolStripMenuItem
+			// CloneMenuItem
 			// 
-			this.cloneToolStripMenuItem.Enabled = false;
-			this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-			this.cloneToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
-			this.cloneToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.cloneToolStripMenuItem.Text = "&Clone";
+			this.CloneMenuItem.Enabled = false;
+			this.CloneMenuItem.Name = "CloneMenuItem";
+			this.CloneMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
+			this.CloneMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.CloneMenuItem.Text = "&Clone";
 			// 
-			// insertFrameToolStripMenuItem
+			// InsertFrameMenuItem
 			// 
-			this.insertFrameToolStripMenuItem.Enabled = false;
-			this.insertFrameToolStripMenuItem.Name = "insertFrameToolStripMenuItem";
-			this.insertFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+			this.InsertFrameMenuItem.Enabled = false;
+			this.InsertFrameMenuItem.Name = "InsertFrameMenuItem";
+			this.InsertFrameMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Insert)));
-			this.insertFrameToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.insertFrameToolStripMenuItem.Text = "&Insert";
+			this.InsertFrameMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.InsertFrameMenuItem.Text = "&Insert";
 			// 
-			// insertNumFramesToolStripMenuItem
+			// InsertNumFramesMenuItem
 			// 
-			this.insertNumFramesToolStripMenuItem.Enabled = false;
-			this.insertNumFramesToolStripMenuItem.Name = "insertNumFramesToolStripMenuItem";
-			this.insertNumFramesToolStripMenuItem.ShortcutKeyDisplayString = "Ins";
-			this.insertNumFramesToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.insertNumFramesToolStripMenuItem.Text = "Insert # of Frames";
+			this.InsertNumFramesMenuItem.Enabled = false;
+			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
+			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "Ins";
+			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
 			// 
 			// toolStripSeparator6
 			// 
@@ -655,26 +659,27 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.TasView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
-			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TASView.FullRowSelect = true;
-			this.TASView.GridLines = true;
-			this.TASView.InputPaintingMode = false;
-			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(12, 49);
-			this.TASView.Name = "TASView";
-			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(291, 444);
-			this.TASView.TabIndex = 1;
-			this.TASView.UseCompatibleStateImageBehavior = false;
-			this.TASView.View = System.Windows.Forms.View.Details;
-			this.TASView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
-			this.TASView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
+			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TasView.FullRowSelect = true;
+			this.TasView.GridLines = true;
+			this.TasView.InputPaintingMode = false;
+			this.TasView.ItemCount = 0;
+			this.TasView.Location = new System.Drawing.Point(8, 27);
+			this.TasView.Name = "TASView";
+			this.TasView.selectedItem = -1;
+			this.TasView.Size = new System.Drawing.Size(288, 471);
+			this.TasView.TabIndex = 1;
+			this.TasView.UseCompatibleStateImageBehavior = false;
+			this.TasView.View = System.Windows.Forms.View.Details;
+			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
+			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
+			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
 			// 
 			// Frame
 			// 
@@ -685,33 +690,56 @@ namespace BizHawk.Client.EmuHawk
 			this.Log.Text = "Log";
 			this.Log.Width = 222;
 			// 
-			// PreviousMarkerFromFrameControl
+			// TasStatusStrip
 			// 
-			this.PreviousMarkerFromFrameControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PreviousMarkerFromFrameControl.Location = new System.Drawing.Point(12, 25);
-			this.PreviousMarkerFromFrameControl.Name = "PreviousMarkerFromFrameControl";
-			this.PreviousMarkerFromFrameControl.Size = new System.Drawing.Size(292, 24);
-			this.PreviousMarkerFromFrameControl.TabIndex = 2;
+			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageStatusLabel,
+            this.SplicerStatusLabel});
+			this.TasStatusStrip.Location = new System.Drawing.Point(0, 497);
+			this.TasStatusStrip.Name = "TasStatusStrip";
+			this.TasStatusStrip.Size = new System.Drawing.Size(506, 22);
+			this.TasStatusStrip.TabIndex = 4;
+			this.TasStatusStrip.Text = "statusStrip1";
 			// 
-			// PreviousMarkerFromSelectionControl
+			// MessageStatusLabel
 			// 
-			this.PreviousMarkerFromSelectionControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PreviousMarkerFromSelectionControl.Location = new System.Drawing.Point(11, 493);
-			this.PreviousMarkerFromSelectionControl.Name = "PreviousMarkerFromSelectionControl";
-			this.PreviousMarkerFromSelectionControl.Size = new System.Drawing.Size(292, 24);
-			this.PreviousMarkerFromSelectionControl.TabIndex = 3;
+			this.MessageStatusLabel.Name = "MessageStatusLabel";
+			this.MessageStatusLabel.Size = new System.Drawing.Size(105, 17);
+			this.MessageStatusLabel.Text = "TAStudio engaged";
+			// 
+			// SplicerStatusLabel
+			// 
+			this.SplicerStatusLabel.Name = "SplicerStatusLabel";
+			this.SplicerStatusLabel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+			this.SplicerStatusLabel.Size = new System.Drawing.Size(175, 17);
+			this.SplicerStatusLabel.Text = "0 selected, clipboard: empty";
+			// 
+			// TasPlaybackBox
+			// 
+			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasPlaybackBox.Location = new System.Drawing.Point(302, 25);
+			this.TasPlaybackBox.Name = "TasPlaybackBox";
+			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 120);
+			this.TasPlaybackBox.TabIndex = 5;
+			// 
+			// TasBookmarksBranchesBox
+			// 
+			this.TasBookmarksBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasBookmarksBranchesBox.Location = new System.Drawing.Point(302, 151);
+			this.TasBookmarksBranchesBox.Name = "TasBookmarksBranchesBox";
+			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 343);
+			this.TasBookmarksBranchesBox.TabIndex = 7;
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(530, 519);
-			this.Controls.Add(this.PreviousMarkerFromSelectionControl);
-			this.Controls.Add(this.PreviousMarkerFromFrameControl);
+			this.ClientSize = new System.Drawing.Size(506, 519);
+			this.Controls.Add(this.TasBookmarksBranchesBox);
+			this.Controls.Add(this.TasPlaybackBox);
+			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Controls.Add(this.TASView);
+			this.Controls.Add(this.TasView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
@@ -721,6 +749,8 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
+			this.TasStatusStrip.ResumeLayout(false);
+			this.TasStatusStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -739,26 +769,26 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ConfigSubMenu;
-		private TasListView TASView;
+		private TasListView TasView;
 		private System.Windows.Forms.ColumnHeader Log;
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ColumnHeader Frame;
-		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem InsertFrameMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-		private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem deleteFramesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem insertNumFramesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CloneMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DeleteFramesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem InsertNumFramesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem TruncateMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pasteInsertToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PasteInsertMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ExportMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UndoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RedoMenuItem;
@@ -767,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem DeselectMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectBetweenMarkersMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem reselectClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ReselectClipboardMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripMenuItem ProjectOptionsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
@@ -799,7 +829,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoloadProjectMenuItem;
-		private MarkerControl PreviousMarkerFromFrameControl;
-		private MarkerControl PreviousMarkerFromSelectionControl;
+		private System.Windows.Forms.StatusStrip TasStatusStrip;
+		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
+		private PlaybackBox TasPlaybackBox;
+		private BookmarksBranchesBox TasBookmarksBranchesBox;
+		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
 	}
 }

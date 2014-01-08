@@ -115,7 +115,7 @@
             this.ScriptContextSeparator,
             this.StopAllScriptsContextItem});
 			this.ScriptListContextMenu.Name = "contextMenuStrip1";
-			this.ScriptListContextMenu.Size = new System.Drawing.Size(165, 164);
+			this.ScriptListContextMenu.Size = new System.Drawing.Size(165, 142);
 			this.ScriptListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ScriptListContextMenu_Opening);
 			// 
 			// ToggleScriptContextItem

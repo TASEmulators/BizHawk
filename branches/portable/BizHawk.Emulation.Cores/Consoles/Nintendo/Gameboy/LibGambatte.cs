@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// set cgb palette lookup
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="lut">uint32[32768], input color (r,g,b) is at lut[r | g << 5 | b << 10]</param>
+		/// <param name="lut">uint32[32768], input color (r,g,b) is at lut[r | g &lt;&lt; 5 | b &lt;&lt; 10]</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setcgbpalette(IntPtr core, int[] lut);
 

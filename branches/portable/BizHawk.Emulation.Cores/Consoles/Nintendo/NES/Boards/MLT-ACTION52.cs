@@ -76,8 +76,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		PRG Mode 1: |     $8000     |     $8000     |
 					+---------------+---------------+
 		*/
-		public bool prg_mode;
-		public int prg_reg;
+		[MapperProp]
+		public bool prg_mode = false;
+		[MapperProp]
+		public int prg_reg = 0;
 		public int chr_reg;
 		public int chip_offset;
 		public bool cheetahmen = false;
@@ -104,8 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cheetahmen = true;
 			}
 
-			prg_mode = bool.Parse(InitialRegisterValues["prg_mode"] ?? "false");
-			prg_reg = int.Parse(InitialRegisterValues["prg_reg"] ?? "0");
+			AutoMapperProps.Apply(this);
 
 			return true;
 		}

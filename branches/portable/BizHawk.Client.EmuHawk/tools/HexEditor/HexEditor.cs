@@ -14,8 +14,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	using System.Diagnostics.CodeAnalysis;
-
 	public partial class HexEditor : Form, IToolForm
 	{
 		private const int FontWidth = 7; // Width of 1 digits
@@ -529,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + k < _domain.Size)
 					{
-						rowStr.Append(Remap(_domain.PeekByte(_addr + k)));
+						rowStr.Append(Remap(MakeByte(_addr + k)));
 					}
 				}
 
@@ -539,8 +537,20 @@ namespace BizHawk.Client.EmuHawk
 			return rowStr.ToString();
 		}
 
+		private byte MakeByte(int address)
+		{
+			return Global.CheatList.IsActive(_domain, address)
+				? (byte) Global.CheatList[_domain, address].Value.Value
+				: _domain.PeekByte(address); 
+		}
+
 		private int MakeValue(int address)
 		{
+			if (Global.CheatList.IsActive(_domain, address))
+			{
+				return Global.CheatList[_domain, address].Value.Value;
+			}
+
 			switch (_dataSize)
 			{
 				default:
@@ -603,11 +613,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGroupBoxTitle()
 		{
-			var memoryDomain = _domain.ToString();
-			var systemID = Global.Emulator.SystemId;
-			var addresses = _domain.Size / _dataSize;
-			var addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
-			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + addressesString + " addresses";
+			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / _dataSize).TrimStart('0');
+			MemoryViewerBox.Text = Global.Emulator.SystemId + " " + _domain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
@@ -780,20 +787,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: can't unfreeze address 0??
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains(address))
+					Global.CheatList.Where(x => x.Contains(address)).ToList()
 				);
 			}
 
 			MemoryViewerBox.Refresh();
-		}
-
-		private void UpdateRelatedDialogs()
-		{
-			GlobalWin.Tools.UpdateValues<RamWatch>();
-			GlobalWin.Tools.UpdateValues<RamSearch>();
-			GlobalWin.Tools.UpdateValues<Cheats>();
-			GlobalWin.MainForm.UpdateCheatStatus();
-			UpdateValues();
 		}
 
 		// TODO refactor to int?
@@ -813,8 +811,7 @@ namespace BizHawk.Client.EmuHawk
 					watch,
 					watch.Value ?? 0));
 
-				MemoryViewerBox.Refresh();
-				UpdateRelatedDialogs();
+				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
 
@@ -877,6 +874,11 @@ namespace BizHawk.Client.EmuHawk
 			_rowsVisible = (MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight;
 			var totalRows = _domain.Size / 16;
 
+			if (totalRows < _rowsVisible)
+			{
+				_rowsVisible = totalRows;
+			}
+
 			HexScrollBar.Maximum = totalRows - 1;
 			HexScrollBar.LargeChange = _rowsVisible;
 			HexScrollBar.Visible = totalRows > _rowsVisible;
@@ -884,7 +886,6 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1407:ArithmeticExpressionsMustDeclarePrecedence", Justification = "Reviewed. Suppression is OK here.")]
 		private int GetPointedAddress(int x, int y)
 		{
 			int address;
@@ -918,7 +919,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / _dataSize))
 			{
-				address = i * 16 + (column * _dataSize);
+				address = (i * 16) + (column * _dataSize);
 			}
 			else
 			{
@@ -1115,39 +1116,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
-		{
-			var data = Clipboard.GetDataObject();
-
-			CopyContextItem.Visible = 
-				FreezeContextItem.Visible =
-				AddToRamWatchContextItem.Visible =
-				PokeContextItem.Visible = 
-				IncrementContextItem.Visible =
-				DecrementContextItem.Visible =
-				ContextSeparator2.Visible =
-				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
-
-			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
-			PasteContextItem.Visible = data != null && data.GetDataPresent(DataFormats.Text);
-
-			ContextSeparator1.Visible =
-				HighlightedAddress.HasValue ||
-				_secondaryHighlightedAddresses.Any() ||
-				(data != null && data.GetDataPresent(DataFormats.Text));
-
-			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
-			{
-				FreezeContextItem.Text = "Un&freeze";
-				FreezeContextItem.Image = Properties.Resources.Unfreeze;
-			}
-			else
-			{
-				FreezeContextItem.Text = "&Freeze";
-				FreezeContextItem.Image = Properties.Resources.Freeze;
-			}
-		}
-
 		private string ValueString(int address)
 		{
 			if (address != -1)
@@ -1189,41 +1157,6 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < numToHighlight; i++)
 			{
 				_secondaryHighlightedAddresses.Add(found + 1 + i);
-			}
-		}
-
-		private void Copy()
-		{
-			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
-			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
-			if (!String.IsNullOrWhiteSpace(value))
-			{
-				Clipboard.SetDataObject(value);
-			}
-		}
-
-		private void Paste()
-		{
-			var data = Clipboard.GetDataObject();
-
-			if (data != null && data.GetDataPresent(DataFormats.Text))
-			{
-				var clipboardRaw = (String)data.GetData(DataFormats.Text);
-				var hex = InputValidate.DoHexString(clipboardRaw);
-
-				var numBytes = hex.Length / 2;
-				for (var i = 0; i < numBytes; i++)
-				{
-					var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
-					var address = _addressHighlighted + i;
-					_domain.PokeByte(address, (byte)value);
-				}
-
-				UpdateValues();
-			}
-			else
-			{
-				// Do nothing
 			}
 		}
 
@@ -1298,12 +1231,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			Copy();
+			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
+			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
+			if (!String.IsNullOrWhiteSpace(value))
+			{
+				Clipboard.SetDataObject(value);
+			}
 		}
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			Paste();
+			var data = Clipboard.GetDataObject();
+
+			if (data != null && data.GetDataPresent(DataFormats.Text))
+			{
+				var clipboardRaw = (String)data.GetData(DataFormats.Text);
+				var hex = InputValidate.DoHexString(clipboardRaw);
+
+				var numBytes = hex.Length / 2;
+				for (var i = 0; i < numBytes; i++)
+				{
+					var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
+					var address = _addressHighlighted + i;
+					_domain.PokeByte(address, (byte)value);
+				}
+
+				UpdateValues();
+			}
 		}
 
 		private void FindMenuItem_Click(object sender, EventArgs e)
@@ -1446,7 +1400,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			UpdateRelatedDialogs();
+			ToolHelpers.UpdateCheatRelatedTools(null, null);
 		}
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
@@ -1878,6 +1832,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateValues();
+		}
+
+		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			var data = Clipboard.GetDataObject();
+
+			CopyContextItem.Visible =
+				FreezeContextItem.Visible =
+				AddToRamWatchContextItem.Visible =
+				PokeContextItem.Visible =
+				IncrementContextItem.Visible =
+				DecrementContextItem.Visible =
+				ContextSeparator2.Visible =
+				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+
+			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
+			PasteContextItem.Visible = data != null && data.GetDataPresent(DataFormats.Text);
+
+			ContextSeparator1.Visible =
+				HighlightedAddress.HasValue ||
+				_secondaryHighlightedAddresses.Any() ||
+				(data != null && data.GetDataPresent(DataFormats.Text));
+
+			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
+			{
+				FreezeContextItem.Text = "Un&freeze";
+				FreezeContextItem.Image = Properties.Resources.Unfreeze;
+			}
+			else
+			{
+				FreezeContextItem.Text = "&Freeze";
+				FreezeContextItem.Image = Properties.Resources.Freeze;
+			}
 		}
 
 		private void IncrementContextItem_Click(object sender, EventArgs e)

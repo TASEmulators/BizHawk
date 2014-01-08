@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Sega.Saturn;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,13 +19,15 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			try
 			{
-				radioButtonGL.Checked = Global.Config.SaturnUseGL;
-				radioButtonSoft.Checked = !Global.Config.SaturnUseGL;
-				radioButtonFree.Checked = Global.Config.SaturnDispFree;
-				radioButtonFactor.Checked = !Global.Config.SaturnDispFree;
-				numericUpDownFactor.Value = Global.Config.SaturnDispFactor;
-				numericUpDown1.Value = Global.Config.SaturnGLW;
-				numericUpDown2.Value = Global.Config.SaturnGLH;
+				var ss = (Yabause.SaturnSyncSettings)Global.Emulator.GetSyncSettings();
+
+				radioButtonGL.Checked = ss.UseGL;
+				radioButtonSoft.Checked = !ss.UseGL;
+				radioButtonFree.Checked = ss.DispFree;
+				radioButtonFactor.Checked = !ss.DispFree;
+				numericUpDownFactor.Value = ss.DispFactor;
+				numericUpDown1.Value = ss.GLW;
+				numericUpDown2.Value = ss.GLH;
 			}
 			catch (ArgumentOutOfRangeException)
 			{
@@ -44,11 +47,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			Global.Config.SaturnUseGL = radioButtonGL.Checked;
-			Global.Config.SaturnDispFree = radioButtonFree.Checked;
-			Global.Config.SaturnDispFactor = (int)numericUpDownFactor.Value;
-			Global.Config.SaturnGLW = (int)numericUpDown1.Value;
-			Global.Config.SaturnGLH = (int)numericUpDown2.Value;
+			var ss = (Yabause.SaturnSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.UseGL = radioButtonGL.Checked;
+			ss.DispFree = radioButtonFree.Checked;
+			ss.DispFactor = (int)numericUpDownFactor.Value;
+			ss.GLW = (int)numericUpDown1.Value;
+			ss.GLH = (int)numericUpDown2.Value;
+			GlobalWin.MainForm.PutCoreSyncSettings(ss);
 		}
 	}
 }

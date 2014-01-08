@@ -108,8 +108,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (ActiveLine >= FrameHeight)
 				return;
 
-			RenderBackgroundScanline(pce.CoreComm.PCE_ShowBG1);
-			RenderSpritesScanline(pce.CoreComm.PCE_ShowOBJ1);
+			RenderBackgroundScanline(pce.Settings.ShowBG1);
+			RenderSpritesScanline(pce.Settings.ShowOBJ1);
 		}
 
 		void RenderBackgroundScanline(bool show)

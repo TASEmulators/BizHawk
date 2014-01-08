@@ -106,6 +106,8 @@ namespace BizHawk.Client.EmuHawk
 			PL.Checked = false;
 			PR.Checked = false;
 
+			BStart.Checked = false;
+
 			BX.Checked = false;
 			BY.Checked = false;
 			BZ.Checked = false;

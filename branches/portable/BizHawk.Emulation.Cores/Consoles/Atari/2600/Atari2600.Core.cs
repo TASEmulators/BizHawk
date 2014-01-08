@@ -197,8 +197,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 						game.Name,
-						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
-						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
+						Util.Hash_SHA1(rom), Util.Hash_MD5(rom),
 						mapper.GetType());
 		}
 
@@ -262,13 +261,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return value;
 		}
 
-		private bool bw;
-		private bool p0difficulty = true;
-		private bool p1difficulty = true;
+		//private bool bw;
+		//private bool p0difficulty = true;
+		//private bool p1difficulty = true;
 
-		public void SetBw(bool setting) { bw = setting; }
-		public void SetP0Diff(bool setting) { p0difficulty = setting; }
-		public void SetP1Diff(bool setting) { p1difficulty = setting; }
+		//public void SetBw(bool setting) { bw = setting; }
+		//public void SetP0Diff(bool setting) { p0difficulty = setting; }
+		//public void SetP1Diff(bool setting) { p1difficulty = setting; }
 
 		public byte ReadConsoleSwitches(bool peek)
 		{
@@ -280,9 +279,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (reset) value &= 0xFE;
 			if (select) value &= 0xFD;
-			if (bw) value &= 0xF7;
-			if (p0difficulty) value &= 0xBF;
-			if (p1difficulty) value &= 0x7F;
+			if (SyncSettings.BW) value &= 0xF7;
+			if (SyncSettings.LeftDifficulty) value &= 0xBF;
+			if (SyncSettings.RightDifficulty) value &= 0x7F;
 			if(!peek) _islag = false;
 			return value;
 		}

@@ -1,13 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.Client.Common
 {
+	[Newtonsoft.Json.JsonObject]
 	public class RecentFiles : IEnumerable
 	{
-		private readonly int MAX_RECENT_FILES;       //Maximum number of files
-		private readonly List<string> recentlist;    //List of recent files
+		public int MAX_RECENT_FILES { get; private set; }       // Maximum number of files
+		public List<string> recentlist { get; private set; }    // List of recent files
 		
 		public bool AutoLoad = false;
 
@@ -45,13 +47,14 @@ namespace BizHawk.Client.Common
 
 		public void Add(string newFile)
 		{
-			for (int x = 0; x < recentlist.Count; x++)
+			for (int i = 0; i < recentlist.Count; i++)
 			{
-				if (string.Compare(newFile, recentlist[x]) == 0)
+				if (String.Compare(newFile, recentlist[i], StringComparison.CurrentCultureIgnoreCase) == 0)
 				{
-					recentlist.Remove(newFile); //intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
+					recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
 				}
 			}
+
 			recentlist.Insert(0, newFile);
 			if (recentlist.Count > MAX_RECENT_FILES)
 			{
@@ -61,15 +64,16 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(string newFile)
 		{
-			bool removed = false;
-			for (int x = 0; x < recentlist.Count; x++)
+			var removed = false;
+			for (int i = 0; i < recentlist.Count; i++)
 			{
-				if (string.Compare(newFile, recentlist[x]) == 0)
+				if (String.Compare(newFile, recentlist[i], StringComparison.CurrentCultureIgnoreCase) == 0)
 				{
-					recentlist.Remove(newFile); //intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
+					recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
 					removed = true;
 				}
 			}
+
 			return removed;
 		}
 
@@ -88,7 +92,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return "";
+					return String.Empty;
 				}
 			}
 		}

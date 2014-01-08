@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[Newtonsoft.Json.JsonObject]
 	public class PathEntryCollection : IEnumerable<PathEntry>
 	{
 		public List<PathEntry> Paths { get; private set; }
@@ -36,6 +37,12 @@ namespace BizHawk.Client.Common
 		{
 			Paths = new List<PathEntry>();
 			Paths.AddRange(DefaultValues);
+		}
+
+		[Newtonsoft.Json.JsonConstructor]
+		public PathEntryCollection(List<PathEntry> Paths)
+		{
+			this.Paths = Paths;
 		}
 
 		public void Add(PathEntry p)
@@ -57,7 +64,35 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Paths.FirstOrDefault(x => x.HasSystem(system) && x.Type == type);
+				return Paths.FirstOrDefault(x => x.HasSystem(system) && x.Type == type) ?? TryGetDebugPath(system, type);
+			}
+		}
+
+		private PathEntry TryGetDebugPath(string system, string type)
+		{
+			if (Paths.Any(p => p.HasSystem(system)))
+			{
+				// we have the system, but not the type.  don't attempt to add an unknown type
+				return null;
+			}
+			else
+			{
+				// we don't have anything for the system in question.  add a set of stock paths
+
+				string systempath = PathManager.RemoveInvalidFileSystemChars(system) + "_INTERIM";
+				string systemdisp = system + " (INTERIM)";
+
+				Paths.AddRange(new[]
+				{
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Base", Path= Path.Combine(".", systempath), Ordinal = 0 },
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry { System = system, SystemDisplayName=systemdisp, Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+				});
+
+				return this[system, type];
 			}
 		}
 
@@ -142,16 +177,16 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "NES", SystemDisplayName="NES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 					new PathEntry { System = "NES", SystemDisplayName="NES", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
 
-					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Base", Path= Path.Combine(".", "SNES"), Ordinal = 0 },
+					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Base", Path = Path.Combine(".", "SNES"), Ordinal = 0 },
 					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "SNES_SGB", SystemDisplayName="SNES", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Base", Path= Path.Combine(".", "GBA"), Ordinal = 0 },
+					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Base", Path = Path.Combine(".", "GBA"), Ordinal = 0 },
 					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "GBA", SystemDisplayName="GBA", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
@@ -163,28 +198,28 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "SMS", SystemDisplayName="SMS", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "SMS", SystemDisplayName="SMS", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Base", Path= Path.Combine(".", "Game Gear"), Ordinal = 0 },
+					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Base", Path = Path.Combine(".", "Game Gear"), Ordinal = 0 },
 					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "GG", SystemDisplayName="GG", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Base", Path= Path.Combine(".", "SG-1000"), Ordinal = 0 },
+					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Base", Path = Path.Combine(".", "SG-1000"), Ordinal = 0 },
 					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "SG", SystemDisplayName="SG", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Base", Path= Path.Combine(".", "Genesis"), Ordinal = 0 },
+					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Base", Path = Path.Combine(".", "Genesis"), Ordinal = 0 },
 					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "GEN", SystemDisplayName="Genesis", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "PCE_PCECD_SGX", SystemDisplayName="PC Engine", Type = "Base", Path= Path.Combine(".", "PC Engine"), Ordinal = 0 },
+					new PathEntry { System = "PCE_PCECD_SGX", SystemDisplayName="PC Engine", Type = "Base", Path = Path.Combine(".", "PC Engine"), Ordinal = 0 },
 					new PathEntry { System = "PCE_PCECD_SGX", SystemDisplayName="PC Engine", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "PCE_PCECD_SGX", SystemDisplayName="PC Engine", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "PCE_PCECD_SGX", SystemDisplayName="PC Engine", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
@@ -207,40 +242,40 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 					new PathEntry { System = "DGB", SystemDisplayName="Dual Gameboy", Type = "Palettes", Path = Path.Combine(".", "Palettes"),  Ordinal = 6 },
 
-					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Base", Path= Path.Combine(".", "TI83"), Ordinal = 0 },
+					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Base", Path = Path.Combine(".", "TI83"), Ordinal = 0 },
 					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "TI83", SystemDisplayName="TI83", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "Base", Path= Path.Combine(".", "Atari 2600"), Ordinal = 0 },
+					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "Base", Path = Path.Combine(".", "Atari 2600"), Ordinal = 0 },
 					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "A26", SystemDisplayName="Atari 2600", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Base", Path= Path.Combine(".", "Atari 7800"), Ordinal = 0 },
+					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Base", Path = Path.Combine(".", "Atari 7800"), Ordinal = 0 },
 					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "A78", SystemDisplayName="Atari 7800", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "Base", Path= Path.Combine(".", "C64"), Ordinal = 0 },
+					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "Base", Path = Path.Combine(".", "C64"), Ordinal = 0 },
 					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "C64", SystemDisplayName="Commodore 64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Base", Path= Path.Combine(".", "PSX"), Ordinal = 0 },
+					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Base", Path = Path.Combine(".", "PSX"), Ordinal = 0 },
 					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "ROM", Path = ".", Ordinal = 1 },
-					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "PSX", SystemDisplayName="Playstation", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "Coleco", SystemDisplayName = "Coleco", Type = "Base", Path= Path.Combine(".", "Coleco"), Ordinal = 0 },
+					new PathEntry { System = "Coleco", SystemDisplayName = "Coleco", Type = "Base", Path = Path.Combine(".", "Coleco"), Ordinal = 0 },
 					new PathEntry { System = "Coleco", SystemDisplayName = "Coleco", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "Coleco", SystemDisplayName = "Coleco", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "Coleco", SystemDisplayName = "Coleco", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
@@ -253,7 +288,7 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "N64", SystemDisplayName = "N64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "N64", SystemDisplayName = "N64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Base", Path= Path.Combine(".", "Saturn"), Ordinal = 0 },
+					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Base", Path = Path.Combine(".", "Saturn"), Ordinal = 0 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "SAT", SystemDisplayName = "Saturn", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },

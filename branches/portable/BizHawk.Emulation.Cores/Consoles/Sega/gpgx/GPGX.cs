@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 
 using System.IO;
 
+using System.ComponentModel;
+
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -19,10 +21,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		DiscSystem.Disc CD;
 		byte[] romfile;
+		bool drivelight;
 
 		bool disposed = false;
 
 		LibGPGX.load_archive_cb LoadCallback = null;
+		LibGPGX.input_cb InputCallback = null;
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
@@ -38,13 +42,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Wayplay
 		};
 
-		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, bool sixbutton, ControlType controls)
+		public GPGX(CoreComm NextComm, byte[] romfile, DiscSystem.Disc CD, string romextension, object SyncSettings)
 		{
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			try
 			{
+				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
+
 				CoreComm = NextComm;
 				if (AttachedCore != null)
 				{
@@ -52,8 +58,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					AttachedCore = null;
 				}
 				AttachedCore = this;
-
-				MemoryDomains = MemoryDomainList.GetDummyList();
 
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
@@ -63,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (controls)
+				switch (this.SyncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -93,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, sixbutton, system_a, system_b))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -111,6 +115,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				// pull the default video size from the core
 				update_video();
+
+				SetMemoryDomains();
+
+				InputCallback = new LibGPGX.input_cb(input_callback);
+				LibGPGX.gpgx_set_input_callback(InputCallback);
+
+				if (CD != null)
+					CoreComm.UsesDriveLed = true;
 			}
 			catch
 			{
@@ -211,11 +223,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		}
 
-		void CDRead(int lba, IntPtr dest)
+		void CDRead(int lba, IntPtr dest, bool audio)
 		{
-			byte[] data = new byte[2048];
-			CD.ReadLBA_2048(lba, data, 0);
-			Marshal.Copy(data, 0, dest, 2048);
+			if (audio)
+			{
+				byte[] data = new byte[2352];
+				CD.ReadLBA_2352(lba, data, 0);
+				Marshal.Copy(data, 0, dest, 2352);
+			}
+			else
+			{
+				byte[] data = new byte[2048];
+				CD.ReadLBA_2048(lba, data, 0);
+				Marshal.Copy(data, 0, dest, 2048);
+				drivelight = true;
+			}
 		}
 
 		LibGPGX.cd_read_cb cd_callback_handle;
@@ -276,11 +298,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
+		// core callback for input
+		void input_callback()
+		{
+			CoreComm.InputCallback.Call();
+			IsLagFrame = false;
+		}
+
 		#endregion
 
 		// TODO: use render and rendersound
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			if (Controller["Reset"])
+				LibGPGX.gpgx_reset(false);
+			if (Controller["Power"])
+				LibGPGX.gpgx_reset(true);
+
 			// do we really have to get each time?  nothing has changed
 			if (!LibGPGX.gpgx_get_control(input))
 				throw new Exception("gpgx_get_control() failed!");
@@ -292,13 +326,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			IsLagFrame = true;
 			Frame++;
+			drivelight = false;
 			LibGPGX.gpgx_advance();
 			update_video();
 			update_audio();
 
-			IsLagFrame = false; // TODO
 			if (IsLagFrame)
 				LagCount++;
+
+			if (CD != null)
+				CoreComm.DriveLED = drivelight;
 		}
 
 		public int Frame { get; private set; }
@@ -454,6 +491,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
+			update_video();
 		}
 
 		public byte[] SaveStateBinary()
@@ -470,12 +508,44 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#endregion
 
+		#region debugging tools
+
 		public MemoryDomainList MemoryDomains { get; private set; }
+
+		unsafe void SetMemoryDomains()
+		{
+			var mm = new List<MemoryDomain>();
+			for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
+			{
+				IntPtr area = IntPtr.Zero;
+				int size = 0;
+				IntPtr pname = LibGPGX.gpgx_get_memdom(i, ref area, ref size);
+				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
+					continue;
+				string name = Marshal.PtrToStringAnsi(pname);
+				byte *p = (byte*) area;
+
+				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
+					delegate(int addr)
+					{
+						return p[addr & (size - 1)];
+					},
+					delegate(int addr, byte val)
+					{
+						p[addr & (size - 1)] = val;
+					}));
+			}
+
+			MemoryDomains = new MemoryDomainList(mm, 0);
+		}
+
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
 			return new List<KeyValuePair<string, int>>();
 		}
+
+		#endregion
 
 		public void Dispose()
 		{
@@ -563,5 +633,44 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		#endregion
+
+		GPGXSyncSettings SyncSettings;
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			bool ret;
+			var n = (GPGXSyncSettings)o;
+			if (n.UseSixButton != SyncSettings.UseSixButton || n.ControlType != SyncSettings.ControlType)
+				ret = true;
+			else
+				ret = false;
+			SyncSettings = n;
+			return ret;
+		}
+
+		public class GPGXSyncSettings
+		{
+			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
+			public bool UseSixButton { get; set; }
+			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
+			public ControlType ControlType { get; set; }
+
+			public static GPGXSyncSettings GetDefaults()
+			{
+				return new GPGXSyncSettings
+				{
+					UseSixButton = true,
+					ControlType = ControlType.Normal
+				};
+			}
+
+			public GPGXSyncSettings Clone()
+			{
+				return (GPGXSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

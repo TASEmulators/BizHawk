@@ -132,9 +132,13 @@ namespace BizHawk.Client.EmuHawk
 			return p;
 		}
 
+		Bitmap nullGraphicsBitmap = new Bitmap(1, 1);
 		private Graphics GetGraphics()
 		{
-			var g = luaSurface.GetGraphics();
+			Graphics g;
+			if (luaSurface == null)
+				g = Graphics.FromImage(nullGraphicsBitmap);
+			else g = luaSurface.GetGraphics();
 			int tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
 			int ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)

@@ -203,5 +203,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Dispose()
 		{
 		}
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o) { return false; }
 	}
 }

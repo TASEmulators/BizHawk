@@ -123,11 +123,30 @@ GPGX_EX int gpgx_state_load(void *src, int size)
 	if (size != STATE_SIZE)
 		return 0;
 
-	return !!state_load((unsigned char *) src);
+	if (state_load((unsigned char *) src))
+	{
+		update_viewport();
+		return 1;
+	}
+	else
+		return 0;
 }
 
 void osd_input_update(void)
 {
+}
+
+void (*input_callback_cb)(void);
+
+void real_input_callback(void)
+{
+	if (input_callback_cb)
+		input_callback_cb();
+}
+
+GPGX_EX void gpgx_set_input_callback(void (*fecb)(void))
+{
+	input_callback_cb = fecb;
 }
 
 int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize);
@@ -135,7 +154,7 @@ int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize)
 // return 0 on failure, else actual loaded size
 // extension, if not null, should be populated with the extension of the file loaded
 // (up to 3 chars and null terminator, no more)
-int load_archive(char *filename, unsigned char *buffer, int maxsize, char *extension)
+int load_archive(const char *filename, unsigned char *buffer, int maxsize, char *extension)
 {
 	if (extension)
 		memcpy(extension, romextension, 4);
@@ -176,7 +195,6 @@ GPGX_EX void gpgx_advance(void)
 
 	nsamples = audio_update(soundbuffer);
 }
-
 
 GPGX_EX void gpgx_clear_sram(void)
 {
@@ -225,28 +243,130 @@ GPGX_EX void gpgx_sram_commitwrite(void)
 	}
 }
 
+GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
+{
+	if (!area || !size)
+		return NULL;
+	switch (which)
+	{
+	case 0:
+		*area = work_ram;
+		*size = 0x10000;
+		return "68K RAM";
+	case 1:
+		*area = zram;
+		*size = 0x2000;
+		return "Z80 RAM";
+	case 2:
+		if (!cdd.loaded)
+		{
+			*area = ext.md_cart.rom;
+			*size = ext.md_cart.romsize;
+			return "MD CART";
+		}
+		else if (scd.cartridge.id)
+		{
+			*area = scd.cartridge.area;
+			*size = scd.cartridge.mask + 1;
+			return "EBRAM";
+		}
+		else return NULL;
+	case 3:
+		if (cdd.loaded)
+		{
+			*area = scd.bootrom;
+			*size = 0x20000;
+			return "CD BOOT ROM";
+		}
+		else return NULL;
+	case 4:
+		if (cdd.loaded)
+		{
+			*area = scd.prg_ram;
+			*size = 0x80000;
+			return "CD PRG RAM";
+		}
+		else return NULL;
+	case 5:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram[0];
+			*size = 0x20000;
+			return "CD WORD RAM[0] (1M)";
+		}
+		else return NULL;
+	case 6:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram[1];
+			*size = 0x20000;
+			return "CD WORD RAM[1] (1M)";
+		}
+		else return NULL;
+	case 7:
+		if (cdd.loaded)
+		{
+			*area = scd.word_ram_2M;
+			*size = 0x40000;
+			return "CD WORD RAM (2M)";
+		}
+		else return NULL;
+	case 8:
+		if (cdd.loaded)
+		{
+			*area = scd.bram;
+			*size = 0x2000;
+			return "CD BRAM";
+		}
+		else return NULL;
+	case 9:
+		*area = boot_rom;
+		*size = 0x800;
+		return "BOOT ROM";
+	default:
+		return NULL;
+	case 10:
+		if (sram.on)
+		{
+			*area = sram.sram;
+			*size = 0x10000;
+			return "SRAM";
+		}
+		else return NULL;
+	case 11:
+		*area = cram;
+		*size = 128;
+		return "CRAM";
+	case 12:
+		*area = vsram;
+		*size = 128;
+		return "VSRAM";
+	case 13:
+		*area = vram;
+		*size = 65536;
+		return "VRAM";
+	}
+}
+
 GPGX_EX void gpgx_get_sram(void **area, int *size)
 {
+	if (!area || !size)
+		return;
+
 	if (sram.on)
 	{
-		if (area)
-			*area = sram.sram;
-		if (size)
-			*size = 0x10000;
+		*area = sram.sram;
+		*size = 0x10000;
 	}
 	else if (scd.cartridge.id)
 	{
-		if (area)
-			*area = scd.cartridge.area;
-		if (size)
-			*size = scd.cartridge.mask + 1 + 0x2000;
+		*area = scd.cartridge.area;
+		*size = scd.cartridge.mask + 1 + 0x2000;
 	}
 	else if (cdd.loaded)
 	{
-		if (area)
-			*area = scd.bram;
-		if (size)
-			*size = 0x2000;
+		*area = scd.bram;
+		*size = 0x2000;
 	}
 	else
 	{
@@ -336,4 +456,10 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	return 1;
 }
 
-
+GPGX_EX void gpgx_reset(int hard)
+{
+	if (hard)
+		system_reset();
+	else
+		gen_reset(0);
+}

@@ -65,9 +65,8 @@ namespace BizHawk.Client.EmuHawk
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-
 			string iniPath = System.IO.Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-			Global.Config = ConfigService.Load<Config>(iniPath, new Config());
+			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 

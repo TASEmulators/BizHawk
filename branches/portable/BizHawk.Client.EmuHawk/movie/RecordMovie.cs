@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RecordMovie : Form
 	{
-		//TODO
-		//Allow relative paths in record textbox
-
+		// TODO
+		// Allow relative paths in record textbox
 		public RecordMovie()
 		{
 			InitializeComponent();
@@ -29,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return String.Empty;
 			}
+
 			var path = RecordBox.Text;
 			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 			{
@@ -36,12 +36,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
 				}
+
 				path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
 
-				if (path[path.Length - 4] != '.') //If no file extension, add movie extension
+				if (path[path.Length - 4] != '.') // If no file extension, add movie extension
 				{
 					path += "." + Global.Config.MovieExtension;
 				}
+
 				return path;
 			}
 			else
@@ -50,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			var path = MakePath();
 			if (!String.IsNullOrWhiteSpace(path))
@@ -69,6 +71,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
+					var fileInfo = new FileInfo(path);
+					if (!fileInfo.Exists)
+					{
+						Directory.CreateDirectory(fileInfo.DirectoryName);
+					}
+
 					_movieToRecord = new Movie(path, startsFromSavestate: true);
 					var temppath = path;
 					var writer = new StreamWriter(temppath);
@@ -93,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 					_movieToRecord = new Movie(path);
 				}
 
-				//Header
+				// Header
 				_movieToRecord.Header[HeaderKeys.AUTHOR] = AuthorBox.Text;
 				_movieToRecord.Header[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 				_movieToRecord.Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
@@ -119,13 +127,17 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Emulator is Gameboy)
 				{
-					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = Global.Config.GB_ForceDMG.ToString();
-					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = Global.Config.GB_GBACGB.ToString();
+					// probably won't fix any of this in movie 1.0?? (movie 2.0 only??)
+					// FIXME: the multicartcompat is in the syncsettings object.  is that supposed to go here?
+					// FIXME: these are never read back and given to the core, anywhere
+					var s = (Gameboy.GambatteSyncSettings)Global.Emulator.GetSyncSettings();
+					_movieToRecord.Header[HeaderKeys.GB_FORCEDMG] = s.ForceDMG.ToString();
+					_movieToRecord.Header[HeaderKeys.GB_GBA_IN_CGB] = s.GBACGB.ToString();
 				}
 
 				if (Global.Emulator is LibsnesCore)
 				{
-					_movieToRecord.Header[HeaderKeys.SGB] = ((Global.Emulator) as LibsnesCore).IsSGB.ToString();
+					_movieToRecord.Header[HeaderKeys.SGB] = (Global.Emulator as LibsnesCore).IsSGB.ToString();
 					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
 					{
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
@@ -147,30 +159,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Global.Emulator is ColecoVision)
 				{
-					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = Global.Config.ColecoSkipBiosIntro.ToString();
+					var s = (ColecoVision.ColecoSyncSettings)Global.Emulator.GetSyncSettings();
+					_movieToRecord.Header[HeaderKeys.SKIPBIOS] = s.SkipBiosIntro.ToString();
 				}
-
 				else if (Global.Emulator is N64)
 				{
-					_movieToRecord.Header[HeaderKeys.VIDEOPLUGIN] = Global.Config.N64VidPlugin;
-
-					if (Global.Config.N64VidPlugin == "Rice")
-					{
-						var rice_settings = Global.Config.RicePlugin.GetPluginSettings();
-						foreach(var setting in rice_settings)
-						{
-							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
-						}
-					}
-					else if (Global.Config.N64VidPlugin == "Glide64")
-					{
-						var glide_settings = Global.Config.GlidePlugin.GetPluginSettings();
-						foreach (var setting in glide_settings)
-						{
-							_movieToRecord.Header[setting.Key] = setting.Value.ToString();
-						}
-					}
-
 					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
 					{
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
@@ -184,13 +177,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.Config.DefaultAuthor = AuthorBox.Text;
 				}
+
 				Close();
 			}
 			else
 			{
 				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -198,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			var filename = String.Empty;
 			var sfd = new SaveFileDialog
@@ -212,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.Filter = filter;
 
 			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK 
+			if (result == DialogResult.OK
 				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
 				RecordBox.Text = filename;

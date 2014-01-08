@@ -6,7 +6,6 @@ namespace BizHawk.Client.Common
 	public class JoypadLuaLibrary : LuaLibraryBase
 	{
 		public JoypadLuaLibrary(Lua lua)
-			: base()
 		{
 			_lua = lua;
 		}
@@ -26,30 +25,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private Lua _lua;
+		private readonly Lua _lua;
 
 		public LuaTable joypad_get(object controller = null)
 		{
-			LuaTable buttons = _lua.NewTable();
-			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+			var buttons = _lua.NewTable();
+			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
 			{
 				if (controller == null)
 				{
 					buttons[button] = Global.ControllerOutput[button];
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller))
 				{
 					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
 				}
 			}
 
-			foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
+			foreach (var button in Global.ControllerOutput.Source.Type.FloatControls)
 			{
 				if (controller == null)
 				{
 					buttons[button] = Global.ControllerOutput.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller))
 				{
 					buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
 				}
@@ -64,11 +63,12 @@ namespace BizHawk.Client.Common
 
 		public LuaTable joypad_getimmediate()
 		{
-			LuaTable buttons = _lua.NewTable();
-			foreach (string button in Global.ActiveController.Type.BoolButtons)
+			var buttons = _lua.NewTable();
+			foreach (var button in Global.ActiveController.Type.BoolButtons)
 			{
 				buttons[button] = Global.ActiveController[button];
 			}
+
 			return buttons;
 		}
 
@@ -78,9 +78,9 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in buttons.Keys)
 				{
-					bool invert = false;
+					var invert = false;
 					bool? theValue;
-					string theValueStr = buttons[button].ToString();
+					var theValueStr = buttons[button].ToString();
 
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 					{
 						if (theValue == true)
 						{
-							if (controller == null) //Force On
+							if (controller == null) // Force On
 							{
 								Global.ClickyVirtualPadController.Click(button.ToString());
 								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
-						else if (theValue == false) //Force off
+						else if (theValue == false) // Force off
 						{
 							if (controller == null)
 							{
@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							//Turn everything off
+							// Turn everything off
 							if (controller == null)
 							{
 								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
-					else //Inverse
+					else // Inverse
 					{
 						if (controller == null)
 						{
@@ -158,7 +158,10 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			catch { /*Eat it*/ }
+			catch
+			{
+				 /*Eat it*/
+			}
 		}
 
 		public void joypad_setanalog(LuaTable controls, object controller = null)
@@ -167,13 +170,13 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var name in controls.Keys)
 				{
-					string theValueStr = controls[name].ToString();
+					var theValueStr = controls[name].ToString();
 
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
 						try
 						{
-							float theValue = float.Parse(theValueStr);
+							var theValue = float.Parse(theValueStr);
 							if (controller == null)
 							{
 								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);

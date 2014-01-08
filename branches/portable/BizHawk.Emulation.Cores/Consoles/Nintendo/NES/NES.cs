@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(CoreComm comm, GameInfo game, byte[] rom, Dictionary<string, string> boardProperties = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
 			byte[] fdsbios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
 			if (fdsbios != null && fdsbios.Length == 40976)
@@ -26,11 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsbios = tmp;
 			}
 
-			if (boardProperties != null)
-			{
-				InitialMapperRegisterValues.Set(boardProperties);
-			}
-
+			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
@@ -48,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				CoreComm.UsesDriveLed = true;
 				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
+			PutSettings(Settings ?? new NESSettings());
 		}
 
 		private NES()
@@ -75,39 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return ret;
 			}
 			return null;
-		}
-
-		MapperProperties InitialMapperRegisterValues = new MapperProperties();
-
-		public class MapperProperties
-		{
-			private List<KeyValuePair<string, string>> _properties = new List<KeyValuePair<string, string>>();
-
-			public string this[string key]
-			{
-				get
-				{
-					if(_properties.Any(x => x.Key == key))
-					{
-						return _properties.FirstOrDefault(x => x.Key == key).Value;
-					}
-					else
-					{
-						return null;
-					}
-				}
-			}
-
-			public void Set(Dictionary<string, string> values)
-			{
-				_properties.Clear();
-				_properties.AddRange(values);
-			}
-
-			public void Add(string key, string value)
-			{
-				_properties.Add(new KeyValuePair<string, string>(key, value));
-			}
 		}
 
 		class NESWatch
@@ -195,10 +159,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		class MyVideoProvider : IVideoProvider
 		{
-			public int ntsc_top = 8;
-			public int ntsc_bottom = 231;
-			public int pal_top = 0;
-			public int pal_bottom = 239;
+			//public int ntsc_top = 8;
+			//public int ntsc_bottom = 231;
+			//public int pal_top = 0;
+			//public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
 			
@@ -220,18 +184,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int the_bottom;
 				if (emu.DisplayType == DisplayType.NTSC)
 				{
-					the_top = ntsc_top;
-					the_bottom = ntsc_bottom;
+					the_top = emu.Settings.NTSC_TopLine;
+					the_bottom = emu.Settings.NTSC_BottomLine;
 				}
 				else
 				{
-					the_top = pal_top;
-					the_bottom = pal_bottom;
+					the_top = emu.Settings.PAL_TopLine;
+					the_bottom = emu.Settings.PAL_BottomLine;
 				}
 
 				int backdrop = 0;
-				if (emu.CoreComm != null)
-					backdrop = emu.CoreComm.NES_BackdropColor;
+				backdrop = emu.Settings.BackgroundColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
@@ -258,56 +221,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (emu.DisplayType == DisplayType.NTSC)
 					{
-						return ntsc_bottom - ntsc_top + 1;
+						return emu.Settings.NTSC_BottomLine - emu.Settings.NTSC_TopLine + 1;
 					}
 					else
 					{
-						return pal_bottom - pal_top + 1;
+						return emu.Settings.PAL_BottomLine - emu.Settings.PAL_TopLine + 1;
 					}
 				}
 			}
 			
-		}
-
-		public int NTSC_FirstDrawLine
-		{
-			get { return videoProvider.ntsc_top; }
-			set { videoProvider.ntsc_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.ntsc_top; }
-		}
-
-		public int NTSC_LastDrawLine
-		{
-			get { return videoProvider.ntsc_bottom; }
-			set { videoProvider.ntsc_bottom = value; }
-		}
-
-		public int PAL_FirstDrawLine
-		{
-			get { return videoProvider.pal_top; }
-			set { videoProvider.pal_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.pal_top; }
-		}
-
-		public int PAL_LastDrawLine
-		{
-			get { return videoProvider.pal_bottom; }
-			set { videoProvider.pal_bottom = value; }
-		}
-
-		public void SetClipLeftAndRight(bool clip)
-		{
-			if (clip)
-			{
-				videoProvider.left = 8;
-				videoProvider.right = 248;
-			}
-			else
-			{
-				videoProvider.left = 0;
-				videoProvider.right = 255;
-			}
-			
-			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
-			videoProvider.FillFrameBuffer();
 		}
 
 		MyVideoProvider videoProvider;
@@ -586,6 +508,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			List<string> hash_sha1_several = new List<string>();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
+
+			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
 
 			origin = EDetectionOrigin.None;
 
@@ -912,6 +836,108 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			};
 		}
+
+		NESSettings Settings = new NESSettings();
+		NESSyncSettings SyncSettings = new NESSyncSettings();
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o)
+		{ 
+			Settings = (NESSettings)o;
+			if (Settings.ClipLeftAndRight)
+			{
+				videoProvider.left = 8;
+				videoProvider.right = 248;
+			}
+			else
+			{
+				videoProvider.left = 0;
+				videoProvider.right = 255;
+			}
+			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
+			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
+
+			SetPalette(Settings.Palette);
+
+			apu.Square1V = Settings.Square1;
+			apu.Square2V = Settings.Square2;
+			apu.TriangleV = Settings.Triangle;
+			apu.NoiseV = Settings.Noise;
+			apu.DMCV = Settings.DMC;
+
+			return false;
+		}
+		public bool PutSyncSettings(object o)
+		{
+			var n = (NESSyncSettings)o;
+			bool ret = NESSyncSettings.NeedsReboot(SyncSettings, n);
+			SyncSettings = n;
+			return ret;
+		}
+
+		public class NESSettings
+		{
+			public bool AllowMoreThanEightSprites = false;
+			public bool ClipLeftAndRight = false;
+			public bool DispBackground = true;
+			public bool DispSprites = true;
+			public int BackgroundColor = 0;
+
+			public int NTSC_TopLine = 8;
+			public int NTSC_BottomLine = 231;
+			public int PAL_TopLine = 0;
+			public int PAL_BottomLine = 239;
+
+			public int[,] Palette;
+
+			public int Square1 = 376;
+			public int Square2 = 376;
+			public int Triangle = 426;
+			public int Noise = 247;
+			public int DMC = 167;
+
+			public NESSettings Clone()
+			{
+				var ret = (NESSettings)MemberwiseClone();
+				ret.Palette = (int[,])ret.Palette.Clone();
+				return ret;
+			}
+
+			public NESSettings()
+			{
+				Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+			}
+			
+			[Newtonsoft.Json.JsonConstructor]
+			public NESSettings(int[,] Palette)
+			{
+				if (Palette == null)
+					// only needed for SVN purposes
+					this.Palette = (int[,])Palettes.FCEUX_Standard.Clone();
+				else
+					this.Palette = Palette;
+			}
+		}
+
+		public class NESSyncSettings
+		{
+			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
+
+			public NESSyncSettings Clone()
+			{
+				var ret = (NESSyncSettings)MemberwiseClone();
+				ret.BoardProperties = new Dictionary<string, string>(BoardProperties);
+				return ret;
+			}
+
+			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
+			{
+				return !Util.DictionaryEqual(x.BoardProperties, y.BoardProperties);
+			}
+		}
+
+
 	}
 }
 

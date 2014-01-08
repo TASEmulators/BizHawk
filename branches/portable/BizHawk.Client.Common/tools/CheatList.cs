@@ -18,12 +18,13 @@ namespace BizHawk.Client.Common
 			{
 				return _changes;
 			}
+
 			set
 			{
 				_changes = value;
 				if (value)
 				{
-					CheatChanged(Cheat.Separator); //Pass a dummy, no cheat invoked this change
+					CheatChanged(Cheat.Separator); // Pass a dummy, no cheat invoked this change
 				}
 			}
 		}
@@ -47,12 +48,17 @@ namespace BizHawk.Client.Common
 			get { return _cheatList[index]; }
 		}
 
+		public Cheat this[MemoryDomain domain, int address]
+		{
+			get
+			{
+				return _cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
+			}
+		}
+
 		public void Pulse()
 		{
-			foreach(var cheat in _cheatList)
-			{
-				cheat.Pulse();
-			}
+			_cheatList.ForEach(cheat => cheat.Pulse());
 		}
 
 		/// <summary>
@@ -96,17 +102,11 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
-		public void Update()
-		{
-			_cheatList.ForEach(x => x.Pulse());
-		}
-
 		public void Add(Cheat cheat)
 		{
 			if (cheat.IsSeparator)
 			{
 				_cheatList.Add(cheat);
-				
 			}
 			else
 			{
@@ -115,6 +115,7 @@ namespace BizHawk.Client.Common
 				{
 					_cheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
 				}
+
 				_cheatList.Add(cheat);
 			}
 
@@ -138,7 +139,7 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(Cheat c)
 		{
-			bool result = _cheatList.Remove(c);
+			var result = _cheatList.Remove(c);
 			if (result)
 			{
 				Changes = true;
@@ -152,7 +153,6 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(Watch w)
 		{
-			
 			var cheat = _cheatList.FirstOrDefault(x => x.Domain == w.Domain && x.Address == w.Address);
 			if (cheat != null)
 			{
@@ -184,6 +184,7 @@ namespace BizHawk.Client.Common
 			{
 				_cheatList.Remove(cheat);
 			}
+
 			Changes = true;
 		}
 
@@ -254,15 +255,15 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				FileInfo file = new FileInfo(path);
+				var file = new FileInfo(path);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
 					file.Directory.Create();
 				}
 
-				using (StreamWriter sw = new StreamWriter(path))
+				using (var sw = new StreamWriter(path))
 				{
-					StringBuilder sb = new StringBuilder();
+					var sb = new StringBuilder();
 
 					foreach (var cheat in _cheatList)
 					{
@@ -272,7 +273,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							//Set to hex for saving 
+							// Set to hex for saving 
 							cheat.SetType(Watch.DisplayType.Hex);
 
 							sb
@@ -316,7 +317,7 @@ namespace BizHawk.Client.Common
 				_currentFileName = path;
 			}
 
-			using (StreamReader sr = file.OpenText())
+			using (var sr = file.OpenText())
 			{
 				if (!append)
 				{
@@ -335,15 +336,18 @@ namespace BizHawk.Client.Common
 						else
 						{
 							int? compare;
-							Watch.WatchSize size = Watch.WatchSize.Byte;
-							Watch.DisplayType type = Watch.DisplayType.Hex;
-							bool BIGENDIAN = false;
+							var size = Watch.WatchSize.Byte;
+							var type = Watch.DisplayType.Hex;
+							var bigendian = false;
 
+							if (s.Length < 6)
+							{
+								continue;
+							}
 
-							if (s.Length < 6) continue;
-							string[] vals = s.Split('\t');
-							int ADDR = Int32.Parse(vals[0], NumberStyles.HexNumber);
-							int value = Int32.Parse(vals[1], NumberStyles.HexNumber);
+							var vals = s.Split('\t');
+							var address = Int32.Parse(vals[0], NumberStyles.HexNumber);
+							var value = Int32.Parse(vals[1], NumberStyles.HexNumber);
 
 							if (vals[2] == "N")
 							{
@@ -353,29 +357,29 @@ namespace BizHawk.Client.Common
 							{
 								compare = Int32.Parse(vals[2], NumberStyles.HexNumber);
 							}
-							MemoryDomain domain = Global.Emulator.MemoryDomains[vals[3]];
-							bool ENABLED = vals[4] == "1";
-							string name = vals[5];
 
-							//For backwards compatibility, don't assume these values exist
+							var domain = Global.Emulator.MemoryDomains[vals[3]];
+							var enabled = vals[4] == "1";
+							var name = vals[5];
+
+							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 6)
 							{
 								size = Watch.SizeFromChar(vals[6][0]);
 								type = Watch.DisplayTypeFromChar(vals[7][0]);
-								BIGENDIAN = vals[8] == "1";
+								bigendian = vals[8] == "1";
 							}
 
-							Watch w = Watch.GenerateWatch(
+							var watch = Watch.GenerateWatch(
 								domain,
-								ADDR,
+								address,
 								size,
 								type,
 								name,
-								BIGENDIAN
+								bigendian
 							);
 
-							Cheat c = new Cheat(w, value, compare, !Global.Config.DisableCheatsOnLoad && ENABLED);
-							_cheatList.Add(c);
+							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled));
 						}
 					}
 					catch
@@ -413,6 +417,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case ADDRESS:
 					if (reverse)
@@ -429,6 +434,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Name)
 							.ToList();
 					}
+
 					break;
 				case VALUE:
 					if (reverse)
@@ -447,6 +453,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case COMPARE:
 					if (reverse)
@@ -465,6 +472,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case ON:
 					if (reverse)
@@ -483,6 +491,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case DOMAIN:
 					if (reverse)
@@ -501,6 +510,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case SIZE:
 					if (reverse)
@@ -519,6 +529,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case ENDIAN:
 					if (reverse)
@@ -537,6 +548,7 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 				case TYPE:
 					if (reverse)
@@ -555,11 +567,12 @@ namespace BizHawk.Client.Common
 							.ThenBy(x => x.Address ?? 0)
 							.ToList();
 					}
+
 					break;
 			}
 		}
 
-		public class CheatListEventArgs
+		public class CheatListEventArgs : EventArgs
 		{
 			public CheatListEventArgs(Cheat c)
 			{
@@ -580,6 +593,7 @@ namespace BizHawk.Client.Common
 			{
 				Changed(this, new CheatListEventArgs(sender as Cheat));
 			}
+
 			_changes = true;
 		}
 

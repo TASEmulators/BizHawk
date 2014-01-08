@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RamWatch : Form, IToolForm
 	{
 		private readonly Dictionary<string, int> _defaultColumnWidths = new Dictionary<string, int>
-			{
+		{
 			{ WatchList.ADDRESS, 60 },
 			{ WatchList.VALUE, 59 },
 			{ WatchList.PREV, 59 },
@@ -99,11 +99,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
-			{
-				return true;
-			}
-
 			if (_watches.Changes)
 			{
 				GlobalWin.Sound.StopSound();

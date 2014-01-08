@@ -26,57 +26,58 @@ namespace BizHawk.Client.Common
 					"setlayer_obj_1",
 					"setlayer_obj_2",
 					"setlayer_obj_3",
-					"setlayer_obj_4",
+					"setlayer_obj_4"
 				};
 			}
 		}
 
 		public static bool snes_getlayer_bg_1()
 		{
-			return Global.Config.SNES_ShowBG1_1;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG1_1;
 		}
 
 		public static bool snes_getlayer_bg_2()
 		{
-			return Global.Config.SNES_ShowBG2_1;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG2_1;
 		}
 
 		public static bool snes_getlayer_bg_3()
 		{
-			return Global.Config.SNES_ShowBG3_1;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG3_1;
 		}
 
 		public static bool snes_getlayer_bg_4()
 		{
-			return Global.Config.SNES_ShowBG4_1;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG4_1;
 		}
 
 		public static bool snes_getlayer_obj_1()
 		{
-			return Global.Config.SNES_ShowOBJ1;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_0;
 		}
 
 		public static bool snes_getlayer_obj_2()
 		{
-			return Global.Config.SNES_ShowOBJ2;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_1;
 		}
 
 		public static bool snes_getlayer_obj_3()
 		{
-			return Global.Config.SNES_ShowOBJ3;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_2;
 		}
 
 		public static bool snes_getlayer_obj_4()
 		{
-			return Global.Config.SNES_ShowOBJ4;
+			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_3;
 		}
 
 		public static void snes_setlayer_bg_1(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowBG1_1 = s.ShowBG1_0 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -84,8 +85,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowBG2_1 = s.ShowBG2_0 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -93,8 +95,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowBG3_1 = s.ShowBG3_0 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -102,8 +105,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowBG4_1 = s.ShowBG4_0 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -111,8 +115,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ1 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowOBJ_0 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -120,8 +125,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ2 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowOBJ_1 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -129,8 +135,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ3 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowOBJ_2 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 
@@ -138,8 +145,9 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ4 = value;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				var s = (LibsnesCore.SnesSettings)Global.Emulator.GetSettings();
+				s.ShowOBJ_3 = value;
+				Global.Emulator.PutSettings(s);
 			}
 		}
 	}

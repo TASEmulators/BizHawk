@@ -41,21 +41,27 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		LibYabause.InputCallback InputCallbackH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, bool GL)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object SyncSettings)
 		{
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
 			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
+
+			this.SyncSettings = (SaturnSyncSettings)SyncSettings ?? new SaturnSyncSettings();
+
 			ResetCounters();
-			Init(bios, GL);
+			Init(bios);
 
 			InputCallbackH = new LibYabause.InputCallback(() => CoreComm.InputCallback.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
+			CoreComm.UsesDriveLed = true;
 		}
 
-		void Init(byte[] bios, bool GL = false)
+		void Init(byte[] bios)
 		{
+			bool GL = SyncSettings.UseGL;
+
 			if (AttachedCore != null)
 			{
 				AttachedCore.Dispose();
@@ -92,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			InitMemoryDomains();
 
 			GLMode = GL;
+			// if in GL mode, this will trigger the initial GL resize
+			PutSyncSettings(this.SyncSettings);
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -139,8 +147,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			if (factor == 0)
 				LibYabause.libyabause_glresize(width, height);
 		}
-		
-		
+
+
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
@@ -212,6 +220,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
+
+			CoreComm.DriveLED = false;
 
 			IsLagFrame = LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
@@ -424,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				}
 			}
 		}
-	
+
 
 		#endregion
 
@@ -619,6 +629,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				return 0; // failure
 			}
 			Marshal.Copy(data, 0, dest, 2352);
+			CoreComm.DriveLED = true;
 			return 1; // success
 		}
 		/// <summary>
@@ -631,5 +642,43 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		#endregion
+
+		SaturnSyncSettings SyncSettings;
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o)
+		{
+			var n = (SaturnSyncSettings)o;
+			bool ret = SaturnSyncSettings.NeedsReboot(SyncSettings, n);
+
+			SyncSettings = n;
+
+			if (GLMode && SyncSettings.UseGL)
+				if (SyncSettings.DispFree)
+					SetGLRes(0, SyncSettings.GLW, SyncSettings.GLH);
+				else
+					SetGLRes(SyncSettings.DispFactor, 0, 0);
+			return ret;
+		}
+
+		public class SaturnSyncSettings
+		{
+			public bool UseGL = false;
+			public int DispFactor = 1;
+			public bool DispFree = false;
+			public int GLW = 640;
+			public int GLH = 480;
+
+			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
+			{
+				return x.UseGL != y.UseGL;
+			}
+			public SaturnSyncSettings Clone()
+			{
+				return (SaturnSyncSettings)MemberwiseClone();
+			}
+		}
 	}
 }

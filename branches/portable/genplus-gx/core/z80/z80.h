@@ -36,14 +36,14 @@ enum {
 /****************************************************************************/
 typedef struct
 {
-  PAIR  pc,sp,af,bc,de,hl,ix,iy,wz;
-  PAIR  af2,bc2,de2,hl2;
-  UINT8  r,r2,iff1,iff2,halt,im,i;
-  UINT8  nmi_state;      /* nmi line state */
-  UINT8  nmi_pending;    /* nmi pending */
-  UINT8  irq_state;      /* irq line state */
-  UINT8  after_ei;       /* are we in the EI shadow? */
-  UINT32 cycles;         /* master clock cycles global counter */
+  PAIR  pc,sp,af,bc,de,hl,ix,iy,wz; // 0x00
+  PAIR  af2,bc2,de2,hl2;            // 0x24
+  UINT8  r,r2,iff1,iff2,halt,im,i;  // 0x34
+  UINT8  nmi_state;                 // 0x3b /* nmi line state */
+  UINT8  nmi_pending;               // 0x3c /* nmi pending */
+  UINT8  irq_state;                 // 0x3d /* irq line state */
+  UINT8  after_ei;                  // 0x3e /* are we in the EI shadow? */
+  UINT32 cycles;                    // 0x40 /* master clock cycles global counter */
   const struct z80_irq_daisy_chain *daisy;
   int    (*irq_callback)(int irqline);
 }  Z80_Regs;

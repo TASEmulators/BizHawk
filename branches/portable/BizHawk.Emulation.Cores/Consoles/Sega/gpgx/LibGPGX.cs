@@ -44,6 +44,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_clear_sram();
 
+		public const int MIN_MEM_DOMAIN = 0;
+		public const int MAX_MEM_DOMAIN = 13;
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		// apparently, if you use built in string marshalling, the interop will assume that
+		// the unmanaged char pointer was allocated in hglobal and try to free it that way
+		public static extern IntPtr gpgx_get_memdom(int which, ref IntPtr area, ref int size);
+
 		// call this before reading sram returned by gpgx_get_sram()
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_sram_prepread();
@@ -52,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_sram_commitwrite();
 
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_reset(bool hard);
 
 		public static bool gpgx_get_control(InputData dest)
 		{
@@ -111,6 +121,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_XE_A1P = 0x09,	// XE-A1P analog controller
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		};
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void input_cb();
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_input_callback(input_cb cb);
 
 		/// <summary>
 		/// not every flag is valid for every device!
@@ -210,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public const int CD_MAX_TRACKS = 100;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void cd_read_cb(int lba, IntPtr dest);
+		public delegate void cd_read_cb(int lba, IntPtr dest, bool audio);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CDTrack

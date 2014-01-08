@@ -45,7 +45,12 @@
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -77,6 +82,7 @@
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="helpers\InputValidate.cs" />
+    <Compile Include="InputManager.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="KeyTurbo.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
@@ -94,6 +100,8 @@
     <Compile Include="lua\LuaFunctionList.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
+    <Compile Include="movie\ControllerLookups\MnemonicGenerators.cs" />
+    <Compile Include="movie\ControllerLookups\NesMnemonicGenerator.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\IMovie.cs" />
     <Compile Include="movie\IMovieHeader.cs" />
@@ -120,7 +128,11 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="helpers\StringHelpers.cs" />
+    <Compile Include="rewind\Rewinder.cs" />
+    <Compile Include="rewind\RewindThreader.cs" />
+    <Compile Include="rewind\StreamBlobDatabase.cs" />
     <Compile Include="RomGame.cs" />
+    <Compile Include="RomLoader.cs" />
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />

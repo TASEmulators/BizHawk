@@ -2,6 +2,7 @@
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -50,9 +51,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//mixes the board's custom audio into the supplied sample buffer
 			void ApplyCustomAudio(short[] samples);
 
-			MapperProperties InitialRegisterValues { get; set; }
+			Dictionary<string, string> InitialRegisterValues { get; set; }
 		};
-
 
 		[INESBoardImpl]
 		public abstract class NESBoardBase : INESBoard
@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-			private MapperProperties _initialRegisterValues = new MapperProperties();
-			public MapperProperties InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
+			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
+			public Dictionary<string, string> InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
@@ -295,7 +295,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			protected void AssertVram(params int[] vram) { Assert_memtype(Cart.vram_size, "vram", vram); }
 			protected void Assert_memtype(int value, string name, int[] valid)
 			{
-				if (DisableConfigAsserts) return;
+				// only disable vram and wram asserts, as UNIF knows its prg and chr sizes
+				if (DisableConfigAsserts && (name == "wram" || name == "vram")) return;
 				foreach (int i in valid) if (value == i) return;
 				Assert(false, "unhandled {0} size of {1}", name,value);
 			}
@@ -351,7 +352,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				newboard = CreateBoardInstance(board.GetType());
 			}
 			newboard.Create(this);
-			newboard.InitialRegisterValues = InitialMapperRegisterValues;
+			// i suppose the old board could have changed its initial register values, although it really shouldn't
+			// you can't use SyncSettings.BoardProperties here because they very well might be different than before
+			// in case the user actually changed something in the UI
+			newboard.InitialRegisterValues = board.InitialRegisterValues;
 			newboard.Configure(origin);
 			newboard.ROM = board.ROM;
 			newboard.VROM = board.VROM;
@@ -441,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// finds a board class which can handle the provided cart
 		/// </summary>
-		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, MapperProperties properties)
+		static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
 			NES nes = new NES();
 			nes.cart = cart;
@@ -590,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								currCart.board_type = xmlreader.GetAttribute("type");
 								currCart.pcb = xmlreader.GetAttribute("pcb");
-								int mapper = byte.Parse(xmlreader.GetAttribute("mapper"));
+								int mapper = int.Parse(xmlreader.GetAttribute("mapper"));
 								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
 								currCart.mapper = (byte)mapper;
 								state = 3;
@@ -675,6 +679,56 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (!sha1_table.ContainsKey(sha1)) return new List<CartInfo>();
 				return sha1_table[sha1];
+			}
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Field)]
+	public class MapperPropAttribute : Attribute
+	{
+		public string Name { get; private set; }
+		public MapperPropAttribute(string Name)
+		{
+			this.Name = Name;
+		}
+		public MapperPropAttribute()
+		{
+			this.Name = null;
+		}
+	}
+
+	public static class AutoMapperProps
+	{
+		public static void Apply(NES.INESBoard board)
+		{
+			var fields = board.GetType().GetFields();
+			foreach (var field in fields)
+			{
+				var attribs = field.GetCustomAttributes(false);
+				foreach (var attrib in attribs)
+				{
+					if (attrib is MapperPropAttribute)
+					{
+						string Name = ((MapperPropAttribute)attrib).Name ?? field.Name;
+
+						string Value;
+						if (board.InitialRegisterValues.TryGetValue(Name, out Value))
+						{
+							try
+							{
+								field.SetValue(board, Convert.ChangeType(Value, field.FieldType));
+							}
+							catch (Exception e)
+							{
+								if (e is InvalidCastException || e is FormatException || e is OverflowException)
+									throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
+								else
+									throw e;
+							}
+						}
+						break;
+					}
+				}
 			}
 		}
 	}

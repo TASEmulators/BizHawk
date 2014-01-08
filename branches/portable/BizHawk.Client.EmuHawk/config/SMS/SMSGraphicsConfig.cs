@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,15 +16,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			DispOBJ.Checked = Global.Config.SMSDispOBJ;
-			DispBG.Checked = Global.Config.SMSDispBG;
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			DispOBJ.Checked = s.DispOBJ;
+			DispBG.Checked = s.DispBG;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			Global.Config.SMSDispOBJ = DispOBJ.Checked;
-			Global.Config.SMSDispBG = DispBG.Checked;
-
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.DispOBJ = DispOBJ.Checked;
+			s.DispBG = DispBG.Checked;
+			GlobalWin.MainForm.PutCoreSettings(s);
 			Close();
 		}
 	}

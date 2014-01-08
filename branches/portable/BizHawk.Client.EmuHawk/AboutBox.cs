@@ -164,7 +164,11 @@ namespace BizHawk.Client.EmuHawk
 #else
 			Text = "BizHawk Interim Build (RELEASE MODE) SVN r" + SubWCRev.SVN_REV;
 #endif
-        }
+			if (DateTime.Now > DateTime.Parse("12/17/2013") && DateTime.Now <= DateTime.Parse("12/25/2013"))
+			{
+				pictureBox1.Image = Properties.Resources.alt_about_image;
+			}
+		}
 
 		private void Close_Click(object sender, EventArgs e)
 		{

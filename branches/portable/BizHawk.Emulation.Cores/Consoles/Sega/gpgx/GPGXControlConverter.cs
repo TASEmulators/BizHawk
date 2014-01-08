@@ -109,6 +109,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ControllerDef = new ControllerDefinition();
 
+			ControllerDef.BoolButtons.Add("Power");
+			ControllerDef.BoolButtons.Add("Reset");
+
 			for (int i = 0; i < LibGPGX.MAX_DEVICES; i++)
 			{
 				switch (input.dev[i])
@@ -126,6 +129,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						DoMouseAnalog(i, player);
 						player++;
 						break;
+					case LibGPGX.INPUT_DEVICE.DEVICE_NONE:
+						break;
+					default:
+						throw new Exception("Unhandled control device!  Something needs to be implemented first.");
 				}
 			}
 

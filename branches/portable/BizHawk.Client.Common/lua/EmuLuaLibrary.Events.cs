@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -32,8 +33,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public Action<string> LogOutputCallback = null;
-		public Lua CurrentThread;
+		public Action<string> LogOutputCallback { get; set; }
+		public Lua CurrentThread { get; set; }
 
 		#region Events Library Helpers
 
@@ -194,7 +195,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
 			{
-				_luaFunctions.RemoveFunction(nlf);
+				_luaFunctions.Remove(nlf);
 				return true;
 			}
 
@@ -205,7 +206,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Name == name.ToString()))
 			{
-				_luaFunctions.RemoveFunction(nlf);
+				_luaFunctions.Remove(nlf);
 				return true;
 			}
 

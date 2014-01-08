@@ -4,9 +4,9 @@
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
-      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",    
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
       "P1 Start": "Return, J1 B10, X1 Start",
-	  "P1 Select": "Space, J1 B9, X1 Back",
+      "P1 Select": "Space, J1 B9, X1 Back",
       "P1 B": "X, X1 A",
       "P1 A": "Z, X1 B",
       "P2 Up": "",
@@ -15,7 +15,7 @@
       "P2 Right": "",
       "P2 Start": "",
       "P2 Select": "",
-	  "P2 B": "",
+      "P2 B": "",
       "P2 A": "",
       "Reset": "",
       "Power": ""
@@ -537,6 +537,34 @@
       "MODE": "BackSlash",
       "DEL": "Delete",
       "COMMA": "Comma"
+    },
+    "GPGX Genesis Controller": {
+      "P1 Up": "UpArrow,J1 POV1U,  X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow,J1 POV1D,  X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow,J1 POV1R,  X1 DpadRight, X1 LStickRight",
+      "P1 A": "Z, J1 B1, X1 A",
+      "P1 B": "X, J1 B1, X1 B",
+      "P1 C": "C, J1 B4, X1 X",
+      "P1 Start": "Return, X1 J1 B10, X1 Start",
+      "P1 X": "A",
+      "P1 Y": "S",
+      "P1 Z": "D",
+      "P1 Mode": "E",
+      "P2 Up": "",
+      "P2 Down": "",
+      "P2 Left": "",
+      "P2 Right": "",
+      "P2 A": "",
+      "P2 B": "",
+      "P2 C": "",
+      "P2 Start": "",
+      "P2 X": "",
+      "P2 Y": "",
+      "P2 Z": "",
+      "P2 Mode": "",
+      "Power": "",
+      "Reset": ""
     }
   },
   "AllTrollersAutoFire": {
@@ -554,7 +582,7 @@
       "P2 Left": "",
       "P2 Right": "",
       "P2 Start": "",
-	  "P2 Select": "",
+      "P2 Select": "",
       "P2 B": "",
       "P2 A": "",
       "Reset": "",
@@ -606,8 +634,8 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 B2": "S, J1 B3",
-      "P1 B1": "A, J1 B4",
+      "P1 B2": "A, J1 B3",
+      "P1 B1": "S, J1 B4",
       "P1 Select": "",
       "P1 Run": "",
       "P2 Up": "",
@@ -648,8 +676,8 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 B1": "S, J1 B3",
-      "P1 B2": "A, J1 B4",
+      "P1 B1": "A, J1 B3",
+      "P1 B2": "S, J1 B4",
       "Reset": "",
       "Pause": "",
       "P2 Up": "",
@@ -658,51 +686,80 @@
       "P2 Right": "",
       "P2 B1": "",
       "P2 B2": ""
+    },
+    "GPGX Genesis Controller": {
+      "P1 Up": "",
+      "P1 Down": "",
+      "P1 Left": "",
+      "P1 Right": "",
+      "P1 A": "",
+      "P1 B": "",
+      "P1 C": "",
+      "P1 Start": "",
+      "P1 X": "",
+      "P1 Y": "",
+      "P1 Z": "",
+      "P1 Mode": "",
+      "P2 Up": "",
+      "P2 Down": "",
+      "P2 Left": "",
+      "P2 Right": "",
+      "P2 A": "",
+      "P2 B": "",
+      "P2 C": "",
+      "P2 Start": "",
+      "P2 X": "",
+      "P2 Y": "",
+      "P2 Z": "",
+      "P2 Mode": "",
+      "Power": "",
+      "Reset": ""
     }
   },
   "AllTrollersAnalog": {
     "Nintento 64 Controller": {
       "P1 X Axis": {
         "Value": "J1 X",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P1 Y Axis": {
         "Value": "J1 Y",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P2 X Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P2 Y Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P3 X Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P3 Y Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P4 X Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P4 Y Axis": {
         "Value": "",
-        "Mult": 1,
+        "Mult": 1.0,
         "Deadzone": 0.1
       }
     },
-    "NES Controller": {}
+    "NES Controller": {},
+    "GPGX Genesis Controller": {}
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace BizHawk.Common
 {
@@ -8,9 +9,9 @@ namespace BizHawk.Common
 	{
 		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		private static System.Runtime.InteropServices.GCHandle HexConvHandle;
-		
+
 		public static char* HexConvPtr { get; set; }
-		
+
 		static Util()
 		{
 			HexConvHandle = System.Runtime.InteropServices.GCHandle.Alloc(HexConvArr, System.Runtime.InteropServices.GCHandleType.Pinned);
@@ -26,6 +27,11 @@ namespace BizHawk.Common
 			}
 		}
 
+		public static string Hash_MD5(byte[] data)
+		{
+			return Hash_MD5(data, 0, data.Length);
+		}
+
 		public static string Hash_SHA1(byte[] data, int offset, int len)
 		{
 			using (var sha1 = System.Security.Cryptography.SHA1.Create())
@@ -37,11 +43,7 @@ namespace BizHawk.Common
 
 		public static string Hash_SHA1(byte[] data)
 		{
-			using (var sha1 = System.Security.Cryptography.SHA1.Create())
-			{
-				sha1.TransformFinalBlock(data, 0, data.Length);
-				return BytesToHexString(sha1.Hash);
-			}
+			return Hash_SHA1(data, 0, data.Length);
 		}
 
 		public static bool IsPowerOfTwo(int x)
@@ -82,7 +84,7 @@ namespace BizHawk.Common
 		public static string ReadStringAsciiZ(this BinaryReader r)
 		{
 			var sb = new StringBuilder();
-			for (;;)
+			for (; ; )
 			{
 				int b = r.ReadByte();
 				if (b <= 0)
@@ -373,6 +375,41 @@ namespace BizHawk.Common
 
 			var precision = "2";
 			return String.Format("{0:N" + precision + "}{1}", size, suffix);
+		}
+
+		// http://stackoverflow.com/questions/3928822/comparing-2-dictionarystring-string-instances
+		public static bool DictionaryEqual<TKey, TValue>(
+			IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
+		{
+			if (first == second) return true;
+			if ((first == null) || (second == null)) return false;
+			if (first.Count != second.Count) return false;
+
+			var comparer = EqualityComparer<TValue>.Default;
+
+			foreach (KeyValuePair<TKey, TValue> kvp in first)
+			{
+				TValue secondValue;
+				if (!second.TryGetValue(kvp.Key, out secondValue)) return false;
+				if (!comparer.Equals(kvp.Value, secondValue)) return false;
+			}
+			return true;
+		}
+
+		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+		{
+			TValue ret;
+			dict.TryGetValue(key, out ret);
+			return ret;
+		}
+
+		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultvalue)
+		{
+			TValue ret;
+			if (!dict.TryGetValue(key, out ret))
+				return defaultvalue;
+			else
+				return ret;
 		}
 	}
 

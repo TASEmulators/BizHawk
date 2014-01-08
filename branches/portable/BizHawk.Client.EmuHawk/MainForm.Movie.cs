@@ -27,15 +27,52 @@ namespace BizHawk.Client.EmuHawk
 				AskYesNoCallback = StateErrorAskUser
 			};
 
-			RewireInputChain();
+			InputManager.RewireInputChain();
 
 			if (!record)
 			{
 				Global.MovieSession.Movie.Load();
-				SetSyncDependentSettings();
 			}
 
-			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
+			try
+			{
+				// movie 1.0 hack: restore sync settings for the only core that fully supported them in movie 1.0
+				if (!record && Global.Emulator.SystemId == "Coleco")
+				{
+					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
+					if (!String.IsNullOrWhiteSpace(str))
+					{
+						this._syncSettingsHack = new Emulation.Cores.ColecoVision.ColecoVision.ColecoSyncSettings
+						{
+							SkipBiosIntro = str.ToLower() == "true"
+						};
+					}
+				}
+				else if (!record && Global.Emulator.SystemId == "NES")
+				{
+					var s = new Emulation.Cores.Nintendo.NES.NES.NESSyncSettings();
+					s.BoardProperties = new System.Collections.Generic.Dictionary<string, string>(Global.MovieSession.Movie.Header.BoardProperties);
+					this._syncSettingsHack = s;
+				}
+				else if (!record && Global.Emulator is Emulation.Cores.Consoles.Sega.gpgx.GPGX)
+				{
+					// unfortunately, gpgx is being released with movie 1.0
+					// we don't save the control settings there, so hack and assume a particular configuration
+					var s = new Emulation.Cores.Consoles.Sega.gpgx.GPGX.GPGXSyncSettings
+					{
+						ControlType = Emulation.Cores.Consoles.Sega.gpgx.GPGX.ControlType.Normal,
+						UseSixButton = true,
+					};
+					this._syncSettingsHack = s;
+				}
+				// load the rom in any case
+				LoadRom(GlobalWin.MainForm.CurrentlyOpenRom, true, !record);
+			}
+			finally
+			{
+				// ensure subsequent calls to LoadRom won't get the settings object created here
+				this._syncSettingsHack = null;
+			}
 
 			if (!fromTastudio)
 			{
@@ -44,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 			{
-				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+				LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetCounters();
 			}
 
@@ -127,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.Header.StartsFromSavestate)
 				{
-					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+					LoadState(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 					Global.Emulator.ResetCounters();
 				}
 
@@ -142,28 +179,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.MovieSession.StopMovie(saveChanges);
 			SetMainformMovieInfo();
-		}
-
-		//On movie load, these need to be set based on the contents of the movie file
-		public void SetSyncDependentSettings()
-		{
-			switch (Global.Emulator.SystemId)
-			{
-				case "Coleco":
-					string str = Global.MovieSession.Movie.Header[HeaderKeys.SKIPBIOS];
-					if (!String.IsNullOrWhiteSpace(str))
-					{
-						if (str.ToLower() == "true")
-						{
-							Global.Config.ColecoSkipBiosIntro = true;
-						}
-						else
-						{
-							Global.Config.ColecoSkipBiosIntro = false;
-						}
-					}
-					break;
-			}
 		}
 	}
 }

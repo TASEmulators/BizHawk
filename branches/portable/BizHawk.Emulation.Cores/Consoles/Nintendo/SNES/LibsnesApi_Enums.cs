@@ -9,10 +9,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public enum eMessage : int
 		{
 			eMessage_NotSet,
-			eMessage_Complete,
+			
 			eMessage_SetBuffer,
 			eMessage_BeginBufferIO,
 			eMessage_EndBufferIO,
+			eMessage_ResumeAfterBRK,
 
 			eMessage_QUERY_library_id,
 			eMessage_QUERY_library_revision_major,

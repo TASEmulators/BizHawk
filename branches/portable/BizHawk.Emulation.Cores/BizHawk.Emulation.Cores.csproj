@@ -59,6 +59,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -220,6 +224,7 @@
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\N64\mupen64plusApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -349,7 +354,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Consoles\Nintendo\NES\Boards\NROM368.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
@@ -387,6 +391,8 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />
@@ -407,6 +413,7 @@
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />

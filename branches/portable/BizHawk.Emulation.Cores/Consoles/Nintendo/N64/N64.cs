@@ -6,6 +6,7 @@ using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -398,11 +399,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		mupen64plusApi api;
 
-		public N64(CoreComm comm, GameInfo game, byte[] rom, VideoPluginSettings video_settings, int SaveType)
+		public N64(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
+			int SaveType = 0;
+			if (game.OptionValue("SaveType") == "EEPROM_16K")
+				SaveType = 1;
+
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
+
+			this.SyncSettings = (N64SyncSettings)SyncSettings ?? new N64SyncSettings();
 
 			byte country_code = rom[0x3E];
 			switch (country_code)
@@ -429,10 +436,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					break;
 			}
 
-			api = new mupen64plusApi(this, rom, video_settings, SaveType);
+			api = new mupen64plusApi(this, rom, this.SyncSettings.GetVPS(game), SaveType);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
 
 			InitMemoryDomains();
 		}
+
+		N64SyncSettings SyncSettings;
+
+		public object GetSettings() { return null; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
+		public bool PutSettings(object o) { return false; }
+		public bool PutSyncSettings(object o) { SyncSettings = (N64SyncSettings)o; return true; }
 	}
 }

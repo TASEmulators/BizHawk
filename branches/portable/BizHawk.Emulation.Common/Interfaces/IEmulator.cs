@@ -111,6 +111,10 @@ namespace BizHawk.Emulation.Common
 		void LoadStateText(TextReader reader);
 		void SaveStateBinary(BinaryWriter writer);
 		void LoadStateBinary(BinaryReader reader);
+		/// <summary>
+		/// save state binary to a byte buffer
+		/// </summary>
+		/// <returns>you may NOT modify this.  if you call SaveStateBinary() again with the same core, the old data MAY be overwritten.</returns>
 		byte[] SaveStateBinary();
 
 		/// <summary>
@@ -122,10 +126,6 @@ namespace BizHawk.Emulation.Common
 		/// the corecomm module in use by this core.
 		/// </summary>
 		CoreComm CoreComm { get; }
-
-
-		// this MUST BE the same as MemoryDomains[0], else DRAGONS
-		/// <summary>
 
 		///The list of all avaialble memory domains
 		/// A memory domain is a byte array that respresents a distinct part of the emulated system.
@@ -144,6 +144,41 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <returns></returns>
 		List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters();
+
+		// ====settings interface====
+
+		// in addition to these methods, it's expected that the constructor or Load() method
+		// will take a Settings and SyncSettings object to set the initial state of the core
+		// (if those are null, default settings are to be used)
+
+		/// <summary>
+		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object, and changes to the return
+		/// should not affect emulation (unless the object is later passed to PutSettings)
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		object GetSettings();
+
+		/// <summary>
+		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
+		/// should be a clone of the active in-core object, and changes to the return
+		/// should not affect emulation (unless the object is later passed to PutSyncSettings)
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		object GetSyncSettings();
+
+		/// <summary>
+		/// change the core settings, excepting movie settings
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSettings</param>
+		/// <returns>true if a core reboot will be required to implement these</returns>
+		bool PutSettings(object o);
+
+		/// <summary>
+		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
+		/// <returns>true if a core reboot will be required to implement these</returns>
+		bool PutSyncSettings(object o);
 	}
 
 	public enum DisplayType { NTSC, PAL, DENDY }

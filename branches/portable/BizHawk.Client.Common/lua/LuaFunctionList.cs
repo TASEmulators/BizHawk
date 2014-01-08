@@ -9,15 +9,15 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return this.FirstOrDefault(x => x.Guid.ToString() == guid) ?? null;
+				return this.FirstOrDefault(x => x.Guid.ToString() == guid);
 			}
 		}
 
-		public void RemoveFunction(NamedLuaFunction function)
+		public new bool Remove(NamedLuaFunction function)
 		{
 			Global.Emulator.CoreComm.InputCallback.Remove(function.Callback);
 			Global.Emulator.CoreComm.MemoryCallbackSystem.Remove(function.Callback);
-			Remove(function);
+			return base.Remove(function);
 		}
 
 		public void ClearAll()

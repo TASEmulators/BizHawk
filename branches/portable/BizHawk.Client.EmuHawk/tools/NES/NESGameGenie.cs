@@ -1,38 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESGameGenie : Form, IToolForm
 	{
+		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
+		{
+			{ 'A', 0 }, // 0000
+			{ 'P', 1 }, // 0001
+			{ 'Z', 2 }, // 0010
+			{ 'L', 3 }, // 0011
+			{ 'G', 4 }, // 0100
+			{ 'I', 5 }, // 0101
+			{ 'T', 6 }, // 0110
+			{ 'Y', 7 }, // 0111
+			{ 'E', 8 }, // 1000
+			{ 'O', 9 }, // 1001
+			{ 'X', 10}, // 1010
+			{ 'U', 11}, // 1011
+			{ 'K', 12}, // 1100
+			{ 'S', 13}, // 1101
+			{ 'V', 14}, // 1110
+			{ 'N', 15}, // 1111
+		};
+
 		private int? _address;
 		private int? _value;
 		private int? _compare;
-		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>
-		{
-			{ 'A', 0 }, //0000
-			{ 'P', 1 }, //0001
-			{ 'Z', 2 }, //0010
-			{ 'L', 3 }, //0011
-			{ 'G', 4 }, //0100
-			{ 'I', 5 }, //0101
-			{ 'T', 6 }, //0110
-			{ 'Y', 7 }, //0111
-			{ 'E', 8 }, //1000
-			{ 'O', 9 }, //1001
-			{ 'X', 10}, //1010
-			{ 'U', 11}, //1011
-			{ 'K', 12}, //1100
-			{ 'S', 13}, //1101
-			{ 'V', 14}, //1110
-			{ 'N', 15}, //1111
-		};
 
 		public int? Address { get { return _address; } }
 		public int? Value { get { return _value; } }
@@ -42,14 +42,15 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES))
+			if (Global.Emulator.SystemId != "NES")
 			{
 				Close();
 			}
 		}
+
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is NES))
+			if (Global.Emulator.SystemId != "NES")
 			{
 				Close();
 			}
@@ -80,7 +81,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DecodeGameGenieCode(string code)
 		{
-
 			var decoder = new NESGameGenieDecoder(code);
 			_address = decoder.Address;
 			_value = decoder.Value;
@@ -149,8 +149,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text))
 			{
-				Watch watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[1], /*System Bus*/
+				var watch = Watch.GenerateWatch(
+					Global.Emulator.MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -196,11 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			//Make uppercase
-			if (e.KeyChar >= 97 && e.KeyChar < 123)
-				e.KeyChar -= (char)32;
-
-			if (!(GameGenieTable.ContainsKey(e.KeyChar)))
+			if (!_gameGenieTable.ContainsKey(char.ToUpper(e.KeyChar)))
 			{
 				if (e.KeyChar != (char)Keys.Back || e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 				{
@@ -258,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GameGenieCode.Text.Length < 8)
 			{
-				string code = String.Empty;
+				var code = String.Empty;
 				if (sender == A) code = "A";
 				if (sender == P) code += "P";
 				if (sender == Z) code += "Z";
@@ -292,6 +288,7 @@ namespace BizHawk.Client.EmuHawk
 					EncodeGameGenie();
 				}
 			}
+
 			TryEnableAddCheat();
 		}
 
@@ -317,6 +314,7 @@ namespace BizHawk.Client.EmuHawk
 					EncodeGameGenie();
 				}
 			}
+
 			TryEnableAddCheat();
 		}
 
@@ -333,6 +331,7 @@ namespace BizHawk.Client.EmuHawk
 					ClearProperties();
 				}
 			}
+
 			TryEnableAddCheat();
 		}
 

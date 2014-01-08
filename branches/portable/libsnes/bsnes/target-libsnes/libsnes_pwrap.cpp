@@ -10,10 +10,10 @@
 //TODO - factor out modular components (ringbuffer and the like)
 
 //types of messages:
-//cmd: frontend->core: "command to core" a command from the frontend which causes emulation to proceed. when sending a command, the frontend should wait for an eMessage_brk_complete before proceeding, although a debugger might proceed after any BRK
-//query: frontend->core: "query to core" a query from the frontend which can (and should) be satisfied immediately by the core but which does not result in emulation processes
+//cmd: frontend->core: "command to core" a command from the frontend which causes emulation to proceed. when sending a command, the frontend should wait for an eMessage_BRK_Complete before proceeding, although a debugger might proceed after any BRK
+//query: frontend->core: "query to core" a query from the frontend which can (and should) be satisfied immediately by the core but which does not result in emulation processes (notably, nothing resembling a CMD and nothing which can trigger a BRK)
 //sig: core->frontend: "core signal" a synchronous operation called from the emulation process which the frontend should handle immediately without issuing any calls into the core
-//brk: core->frontend: "core break" the emulation process has suspended. the core is free to do whatever it wishes.
+//brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 //(and there are other assorted special messages...)
 
 
@@ -41,11 +41,11 @@ typedef uint16 u16;
 enum eMessage : int32
 {
 	eMessage_NotSet,
-	eMessage_Complete,
 
 	eMessage_SetBuffer,
 	eMessage_BeginBufferIO,
 	eMessage_EndBufferIO,
+	eMessage_ResumeAfterBRK, //resumes execution of the core, after a BRK. no change to current CMD
 
 	eMessage_QUERY_library_id,
 	eMessage_QUERY_library_revision_major,
@@ -111,7 +111,7 @@ enum eEmulationExitReason
 	eEmulationExitReason_NotSet,
 	eEmulationExitReason_BRK,
 	eEmulationExitReason_SIG,
-	eEmulationExitReason_Complete, //TODO rename CMD_Complete
+	eEmulationExitReason_CMD_Complete,
 };
 
 enum eEmulationCallback
@@ -728,7 +728,7 @@ bool Handle_QUERY(eMessage msg)
 			char* dstbuf = ReadPipeSharedPtr();
 			uint8_t* srcbuf = snes_get_memory_data(id);
 			memcpy(dstbuf,srcbuf,snes_get_memory_size(id));
-			WritePipe(eMessage_Complete);
+			WritePipe(eMessage_BRK_Complete);
 			break;
 		}
 
@@ -875,6 +875,14 @@ bool Handle_QUERY(eMessage msg)
 
 bool Handle_CMD(eMessage msg)
 {
+	if(msg == eMessage_ResumeAfterBRK)
+	{
+		//careful! dont switch back to co_emu, we were in another cothread probably when the BRK happened.
+		//i'm not sure its completely safe to be returning to co_emu below in the normal CMD handler, either...
+		co_switch(co_emu_suspended);
+		return true;		
+	}
+	
 	if(msg<=eMessage_CMD_FIRST || msg>=eMessage_CMD_LAST) return false;
 
 	s_EmulationControl.command = msg;
@@ -911,11 +919,11 @@ TOP:
 		case eEmulationExitReason_NotSet:
 			goto HANDLEMESSAGES;
 		
-		case eEmulationExitReason_Complete:
-			//printf("eEmulationExitReason_Complete (command:%d)\n",s_EmulationControl.command);
+		case eEmulationExitReason_CMD_Complete:
+			//printf("eEmulationExitReason_CMD_Complete (command:%d)\n",s_EmulationControl.command);
 			//MessageBox(0,"ZING","ZING",MB_OK);
 			//printf("WRITING COMPLETE\n");
-			WritePipe(eMessage_Complete);
+			WritePipe(eMessage_BRK_Complete);
 			
 			//special post-completion messages (return values)
 			switch(s_EmulationControl.command)
@@ -1025,7 +1033,7 @@ HANDLEMESSAGES:
 
 		switch(msg)
 		{
-		case eMessage_Complete:
+		case eMessage_BRK_Complete:
 			return;
 		
 		case eMessage_SetBuffer:
@@ -1172,7 +1180,7 @@ void emuthread()
 			break;
 		}
 
-		s_EmulationControl.exitReason = eEmulationExitReason_Complete;
+		s_EmulationControl.exitReason = eEmulationExitReason_CMD_Complete;
 		SETCONTROL;
 	}
 }

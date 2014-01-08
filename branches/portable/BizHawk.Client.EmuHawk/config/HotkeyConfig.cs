@@ -88,10 +88,12 @@ namespace BizHawk.Client.EmuHawk
 
 			//Buckets
 			var Tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct().ToList();
-			var _y = 14;
-			var _x = 6;
+
 			foreach (var tab in Tabs)
 			{
+				var _y = 14;
+				var _x = 6;
+
 				var tb = new TabPage {Name = tab, Text = tab};
 
 				var bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();

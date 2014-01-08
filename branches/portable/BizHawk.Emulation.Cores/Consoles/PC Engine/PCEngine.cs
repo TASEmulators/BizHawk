@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
-		public PCEngine(CoreComm comm, GameInfo game, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -70,12 +70,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Type = NecSystemType.SuperGrafx;
 					break;
 			}
+			this.Settings = (PCESettings)Settings ?? new PCESettings();
 			Init(game, rom);
 		}
 
 		public string BoardName { get { return null; } }
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -83,6 +84,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			systemid = "PCECD";
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
+			this.Settings = (PCESettings)Settings ?? new PCESettings();
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
@@ -182,7 +184,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				ArcadeRam = new byte[0x200000];
 				ArcadeCard = true;
-				ArcadeCardRewindHack = game["ArcadeRewindHack"];
+				ArcadeCardRewindHack = Settings.ArcadeCardRewindHack;
 				for (int i = 0; i < 4; i++)
 					ArcadePage[i] = new ArcadeCardPage();
 			}
@@ -194,7 +196,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemoryPopulous;
 			}
 
-			if (game["ForceSpriteLimit"] || game.NotInDatabase)
+			// the gamedb can force sprite limit on, ignoring settings
+			if (Settings.SpriteLimit || game["ForceSpriteLimit"] || game.NotInDatabase)
 			{
 				VDC1.PerformSpriteLimit = true;
 				if (VDC2 != null)
@@ -207,7 +210,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
-			if (game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
+			// the gamedb can also force equalizevolumes on
+			if (Settings.EqualizeVolume || game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -622,6 +626,44 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			if (disc != null)
 				disc.Dispose();
+		}
+
+		public PCESettings Settings;
+
+		public object GetSettings() { return Settings.Clone(); }
+		public object GetSyncSettings() { return null; }
+		public bool PutSettings(object o)
+		{
+			PCESettings n = (PCESettings)o;
+			bool ret;
+			if (n.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack ||
+				n.SpriteLimit != Settings.SpriteLimit ||
+				n.EqualizeVolume != Settings.EqualizeVolume)
+				ret = true;
+			else
+				ret = false;
+
+			Settings = n;
+			return ret;
+		}
+		public bool PutSyncSettings(object o) { return false; }
+
+		public class PCESettings
+		{
+			public bool ShowBG1 = true;
+			public bool ShowOBJ1 = true;
+			public bool ShowBG2 = true;
+			public bool ShowOBJ2 = true;
+
+			// these three require core reboot to use
+			public bool SpriteLimit = false;
+			public bool EqualizeVolume = false;
+			public bool ArcadeCardRewindHack = true;
+
+			public PCESettings Clone()
+			{
+				return (PCESettings)MemberwiseClone();
+			}
 		}
 	}
 }

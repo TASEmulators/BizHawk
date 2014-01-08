@@ -12,9 +12,9 @@ namespace BizHawk.Client.Common
 		public virtual void LuaRegister(Lua lua, ILuaDocumentation docs = null)
 		{
 			lua.NewTable(Name);
-			foreach (string methodName in Functions)
+			foreach (var methodName in Functions)
 			{
-				string func = Name + "." + methodName;
+				var func = Name + "." + methodName;
 				var method = GetType().GetMethod(Name + "_" + methodName);
 				lua.RegisterFunction(func, this, method);
 
@@ -25,14 +25,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected static int LuaInt(object lua_arg)
+		protected static int LuaInt(object luaArg)
 		{
-			return Convert.ToInt32((double)lua_arg);
+			return (int)(double)luaArg;
 		}
 
-		protected static uint LuaUInt(object lua_arg)
+		protected static uint LuaUInt(object luaArg)
 		{
-			return Convert.ToUInt32((double)lua_arg);
+			return (uint)(double)luaArg;
 		}
 
 		/// <summary>
@@ -40,16 +40,20 @@ namespace BizHawk.Client.Common
 		/// So, if you want to support variable arguments, declare them as optional and pass
 		/// them to this method.
 		/// </summary>
-		/// <param name="lua_args"></param>
-		/// <returns></returns>
-		protected static object[] LuaVarArgs(params object[] lua_args)
+		protected static object[] LuaVarArgs(params object[] luaArgs)
 		{
-			int n = lua_args.Length;
+			int n = luaArgs.Length;
 			int trim = 0;
 			for (int i = n - 1; i >= 0; --i)
-				if (lua_args[i] == null) ++trim;
-			object[] lua_result = new object[n - trim];
-			Array.Copy(lua_args, lua_result, n - trim);
+			{
+				if (luaArgs[i] == null)
+				{
+					++trim;
+				}
+			}
+
+			var lua_result = new object[n - trim];
+			Array.Copy(luaArgs, lua_result, n - trim);
 			return lua_result;
 		}
 	}

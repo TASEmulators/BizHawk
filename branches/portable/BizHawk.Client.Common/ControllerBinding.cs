@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
-		private ControllerDefinition type;
+		private ControllerDefinition _type;
 		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 
@@ -21,17 +21,18 @@ namespace BizHawk.Client.Common
 
 		public Controller(ControllerDefinition definition)
 		{
-			type = definition;
-			for (int i = 0; i < type.FloatControls.Count; i++)
+			_type = definition;
+			for (int i = 0; i < _type.FloatControls.Count; i++)
 			{
-				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
-				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
+				FloatButtons[_type.FloatControls[i]] = _type.FloatRanges[i].Mid;
+				FloatRanges[_type.FloatControls[i]] = _type.FloatRanges[i];
 			}
 		}
 
-		public ControllerDefinition Type { get { return type; } }
+		public ControllerDefinition Type { get { return _type; } }
+
 		/// <summary>don't do this</summary>
-		public void ForceType(ControllerDefinition newtype) { type = newtype; }
+		public void ForceType(ControllerDefinition newtype) { _type = newtype; }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
@@ -40,13 +41,13 @@ namespace BizHawk.Client.Common
 
 		public float GetFloat(string name) { return FloatButtons[name]; }
 
-		//look for bindings which are activated by the supplied physical button.
+		// Looks for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
 			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
 		}
 
-		//Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
+		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
 		public bool HasBinding(string button)
 		{
 			return bindings.SelectMany(kvp => kvp.Value).Any(bound_button => bound_button == button);
@@ -66,7 +67,9 @@ namespace BizHawk.Client.Common
 				foreach (var bound_button in kvp.Value)
 				{
 					if (controller[bound_button])
+					{
 						buttons[kvp.Key] = true;
+					}
 				}
 			}
 
@@ -110,15 +113,17 @@ namespace BizHawk.Client.Common
 		public void OR_FromLogical(IController controller)
 		{
 			// change: or from each button that the other input controller has
-			//foreach (string button in type.BoolButtons)
+			// foreach (string button in type.BoolButtons)
 			if (controller.Type != null)
-				foreach (string button in controller.Type.BoolButtons)
+			{
+				foreach (var button in controller.Type.BoolButtons)
 				{
 					if (controller.IsPressed(button))
 					{
 						buttons[button] = true;
 					}
 				}
+			}
 		}
 
 		public void BindButton(string button, string control)
@@ -129,10 +134,15 @@ namespace BizHawk.Client.Common
 		public void BindMulti(string button, string controlString)
 		{
 			if (string.IsNullOrEmpty(controlString))
+			{
 				return;
-			string[] controlbindings = controlString.Split(',');
-			foreach (string control in controlbindings)
+			}
+
+			var controlbindings = controlString.Split(',');
+			foreach (var control in controlbindings)
+			{
 				bindings[button].Add(control.Trim());
+			}
 		}
 
 		public void BindFloat(string button, Config.AnalogBind bind)
@@ -143,7 +153,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns a list of all keys mapped and the name of the button they are mapped to
 		/// </summary>
-		/// <returns></returns>
 		public List<KeyValuePair<string, string>> MappingList()
 		{
 			return (from key in bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
@@ -201,7 +210,7 @@ namespace BizHawk.Client.Common
 
 		public float GetFloat(string name) { throw new NotImplementedException(); }
 
-		//look for bindings which are activated by the supplied physical button.
+		// look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
 			return (from kvp in bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
@@ -218,7 +227,9 @@ namespace BizHawk.Client.Common
 				foreach (var bound_button in kvp.Value)
 				{
 					if (buttons[kvp.Key] == false && controller[bound_button])
+					{
 						buttonStarts[kvp.Key] = Global.Emulator.Frame;
+					}
 				}
 			}
 			
@@ -241,13 +252,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void OR_FromLogical(IController controller)
 		{
-			foreach (string button in type.BoolButtons)
+			foreach (var button in type.BoolButtons.Where(controller.IsPressed))
 			{
-				if (controller.IsPressed(button))
-				{
-					buttons[button] = true;
-					Console.WriteLine(button);
-				}
+				buttons[button] = true;
+				Console.WriteLine(button);
 			}
 		}
 
@@ -260,8 +268,8 @@ namespace BizHawk.Client.Common
 		{
 			if (!String.IsNullOrEmpty(controlString))
 			{
-				string[] controlbindings = controlString.Split(',');
-				foreach (string control in controlbindings)
+				var controlbindings = controlString.Split(',');
+				foreach (var control in controlbindings)
 				{
 					bindings[button].Add(control.Trim());
 				}
@@ -270,7 +278,10 @@ namespace BizHawk.Client.Common
 
 		public void IncrementStarts()
 		{
-			foreach (var key in buttonStarts.Keys.ToArray()) buttonStarts[key]++;
+			foreach (var key in buttonStarts.Keys.ToArray())
+			{
+				buttonStarts[key]++;
+			}
 		}
 
 		public List<string> PressedButtons
