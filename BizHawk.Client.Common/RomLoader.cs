@@ -8,13 +8,13 @@ using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -364,6 +364,7 @@ namespace BizHawk.Client.Common
 								{
 									nextEmulator = new QuickNES(nextComm, rom.FileData);
 								}
+
 								break;
 							case "GB":
 							case "GBC":
@@ -414,7 +415,7 @@ namespace BizHawk.Client.Common
 							case "GBA":
 								if (VersionInfo.INTERIM)
 								{
-									GBA gba = new GBA(nextComm);
+									var gba = new GBA(nextComm);
 									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}

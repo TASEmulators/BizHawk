@@ -8,10 +8,10 @@ namespace BizHawk.Client.Common
 {
 	public class RomGame
 	{
-		public byte[] RomData;
-		public byte[] FileData;
-		public GameInfo GameInfo;
-		public string Extension;
+		public byte[] RomData { get; set; }
+		public byte[] FileData { get; set; }
+		public GameInfo GameInfo { get; set; }
+		public string Extension { get; set; }
 
 		private const int BankSize = 1024;
 
@@ -22,15 +22,17 @@ namespace BizHawk.Client.Common
 		public RomGame(HawkFile file, string patch)
 		{
 			if (!file.Exists)
+			{
 				throw new Exception("The file needs to exist, yo.");
+			}
 
 			Extension = file.Extension;
 
 			var stream = file.GetStream();
 			int fileLength = (int)stream.Length;
 
-			//read the entire contents of the file into memory.
-			//unfortunate in the case of large files, but thats what we've got to work with for now.
+			// read the entire contents of the file into memory.
+			// unfortunate in the case of large files, but thats what we've got to work with for now.
 
 			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
@@ -42,34 +44,40 @@ namespace BizHawk.Client.Common
 				headerOffset = 0;
 			}
 			else if (headerOffset > 0)
+			{
 				Console.WriteLine("Assuming header of {0} bytes.", headerOffset);
+			}
 
-			//read the entire file into FileData.
+			// read the entire file into FileData.
 			FileData = new byte[fileLength];
 			stream.Read(FileData, 0, fileLength);
 
-			//if there was no header offset, RomData is equivalent to FileData 
-			//(except in cases where the original interleaved file data is necessary.. in that case we'll have problems.. 
-			//but this whole architecture is not going to withstand every peculiarity and be fast as well.
+			// if there was no header offset, RomData is equivalent to FileData 
+			// (except in cases where the original interleaved file data is necessary.. in that case we'll have problems.. 
+			// but this whole architecture is not going to withstand every peculiarity and be fast as well.
 			if (headerOffset == 0)
 			{
 				RomData = FileData;
 			}
 			else
 			{
-				//if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isnt needed)
+				// if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isnt needed)
 				int romLength = fileLength - headerOffset;
 				RomData = new byte[romLength];
 				Buffer.BlockCopy(FileData, headerOffset, RomData, 0, romLength);
 			}
 
 			if (file.Extension == ".SMD")
+			{
 				RomData = DeInterleaveSMD(RomData);
+			}
 
 			if (file.Extension == ".Z64" || file.Extension == ".N64" || file.Extension == ".V64")
+			{
 				RomData = MutateSwapN64(RomData);
+			}
 
-			//note: this will be taking several hashes, of a potentially large amount of data.. yikes!
+			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
 			
 			CheckForPatchOptions();
@@ -80,7 +88,9 @@ namespace BizHawk.Client.Common
 				{
 					patchFile.BindFirstOf("IPS");
 					if (patchFile.IsBound)
+					{
 						IPS.Patch(RomData, patchFile.GetStream());
+					}
 				}
 			}
 		}
@@ -91,9 +101,13 @@ namespace BizHawk.Client.Common
 			// odd bytes and the second 8k containing all even bytes.
 
 			int size = source.Length;
-			if (size > 0x400000) size = 0x400000;
+			if (size > 0x400000)
+			{
+				size = 0x400000;
+			}
+
 			int pages = size / 0x4000;
-			byte[] output = new byte[size];
+			var output = new byte[size];
 
 			for (int page = 0; page < pages; page++)
 			{
@@ -114,7 +128,6 @@ namespace BizHawk.Client.Common
 			//  .V64 = Bytse Swapped
 
 			// File extension does not always match the format
-
 			int size = source.Length;
 
 			// V64 format
@@ -129,15 +142,16 @@ namespace BizHawk.Client.Common
 						pSource[i + 1] = temp;
 					}
 				}
+
 				// N64 format
 				else if (pSource[0] == 0x40)
 				{
 					for (int i = 0; i < size; i += 4)
 					{
-						//output[i] = source[i + 3];
-						//output[i + 3] = source[i];
-						//output[i + 1] = source[i + 2];
-						//output[i + 2] = source[i + 1];
+						// output[i] = source[i + 3];
+						// output[i + 3] = source[i];
+						// output[i + 1] = source[i + 2];
+						// output[i + 2] = source[i + 1];
 
 						byte temp = pSource[i];
 						pSource[i] = source[i + 3];
@@ -148,8 +162,7 @@ namespace BizHawk.Client.Common
 						pSource[i + 2] = temp;
 					}
 				}
-				// Z64 format (or some other unknown format)
-				else
+				else // Z64 format (or some other unknown format)
 				{
 				}
 			}
@@ -163,7 +176,7 @@ namespace BizHawk.Client.Common
 			{
 				if (GameInfo["PatchBytes"])
 				{
-				    string args = GameInfo.OptionValue("PatchBytes");
+					var args = GameInfo.OptionValue("PatchBytes");
 					foreach (var val in args.Split(','))
 					{
 						var split = val.Split(':');

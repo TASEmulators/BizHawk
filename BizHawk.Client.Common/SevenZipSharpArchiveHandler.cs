@@ -1,6 +1,5 @@
-using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 using BizHawk.Common;
 
@@ -11,12 +10,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class SevenZipSharpArchiveHandler : IHawkFileArchiveHandler
 	{
+		private SevenZip.SevenZipExtractor _extractor;
+
 		public void Dispose()
 		{
-			if (extractor != null)
+			if (_extractor != null)
 			{
-				extractor.Dispose();
-				extractor = null;
+				_extractor.Dispose();
+				_extractor = null;
 			}
 		}
 
@@ -28,26 +29,33 @@ namespace BizHawk.Client.Common
 
 		public IHawkFileArchiveHandler Construct(string path)
 		{
-			SevenZipSharpArchiveHandler ret = new SevenZipSharpArchiveHandler();
+			var ret = new SevenZipSharpArchiveHandler();
 			ret.Open(path);
 			return ret;
 		}
 
-		void Open(string path)
+		private void Open(string path)
 		{
-			extractor = new SevenZip.SevenZipExtractor(path);
+			_extractor = new SevenZip.SevenZipExtractor(path);
 		}
-
-		SevenZip.SevenZipExtractor extractor;
 
 		public List<HawkFileArchiveItem> Scan()
 		{
-			List<HawkFileArchiveItem> ret = new List<HawkFileArchiveItem>();
-			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+			var ret = new List<HawkFileArchiveItem>();
+			for (int i = 0; i < _extractor.ArchiveFileData.Count; i++)
 			{
-				var afd = extractor.ArchiveFileData[i];
-				if (afd.IsDirectory) continue;
-				var ai = new HawkFileArchiveItem { name = HawkFile.Util_FixArchiveFilename(afd.FileName), size = (long)afd.Size, archiveIndex = i, index = ret.Count };
+				var afd = _extractor.ArchiveFileData[i];
+				if (afd.IsDirectory)
+				{
+					continue;
+				}
+
+				var ai = new HawkFileArchiveItem
+					{
+						name = HawkFile.Util_FixArchiveFilename(afd.FileName), 
+						size = (long)afd.Size, archiveIndex = i, index = ret.Count
+					};
+
 				ret.Add(ai);
 			}
 
@@ -56,8 +64,7 @@ namespace BizHawk.Client.Common
 
 		public void ExtractFile(int index, Stream stream)
 		{
-			extractor.ExtractFile(index, stream);
+			_extractor.ExtractFile(index, stream);
 		}
 	}
-
 }

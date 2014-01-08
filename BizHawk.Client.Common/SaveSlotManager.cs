@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -6,8 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public class SaveSlotManager
 	{
-		private readonly bool[] slots = new bool[10];
-		private readonly bool[] redo = new bool[10];
+		private readonly bool[] _slots = new bool[10];
+		private readonly bool[] _redo = new bool[10];
 
 		public SaveSlotManager()
 		{
@@ -20,10 +21,12 @@ namespace BizHawk.Client.Common
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					slots[i] = false;
+					_slots[i] = false;
 				}
+
 				return;
 			}
+
 			for (int i = 0; i < 10; i++)
 			{
 				var file = new FileInfo(
@@ -33,7 +36,8 @@ namespace BizHawk.Client.Common
 				{
 					file.Directory.Create();
 				}
-				slots[i] = file.Exists;
+
+				_slots[i] = file.Exists;
 			}
 		}
 
@@ -42,11 +46,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				Update();
-				for (int i = 0; i < 10; i++)
-				{
-					if (slots[i]) return true;
-				}
-				return false;
+				return _slots.Any(slot => slot);
 			}
 		}
 
@@ -63,14 +63,14 @@ namespace BizHawk.Client.Common
 			}
 
 			Update();
-			return slots[slot];
+			return _slots[slot];
 		}
 
 		public void ClearRedoList()
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				redo[i] = false;
+				_redo[i] = false;
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			redo[slot] ^= true;
+			_redo[slot] ^= true;
 		}
 
 		public bool IsRedo(int slot)
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			return redo[slot];
+			return _redo[slot];
 		}
 
 		public void Clear()
