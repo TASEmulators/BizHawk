@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	// Used with the version 2 movie implementation (TasMovie.cs)
+	/*
 	public class NewMnemonicsGenerator
 	{
 		public MnemonicLookupTable MnemonicLookup { get; private set; }
@@ -157,4 +158,5 @@ namespace BizHawk.Client.Common
 			}
 		}
 	}
+	*/
 }
