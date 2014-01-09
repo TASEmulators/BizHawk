@@ -31,11 +31,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string EmptyMnemonicString { get; }
 
+		// Analog TODO: this assumes the Generator is boolean
 		/// <summary>
 		/// Parses a segment of a full mnemonic string (the content between pipes)
 		/// Note: this assume the pipes are not being passed in!
 		/// </summary>
 		IDictionary<string, bool> ParseMnemonicSegment(string mnemonicSegment);
+
+		// Analog Support TODO: this assume the Generator is boolean
+		//Dictionary<string, bool> GetBoolButtons();
+
+		Dictionary<string, char> AvailableMnemonics { get; }
 	}
 
 	/// <summary>
@@ -50,6 +56,11 @@ namespace BizHawk.Client.Common
 		int Count { get; }
 
 		/// <summary>
+		/// Source controller to read input state from
+		/// </summary>
+		IController Source { get; set; }
+
+		/// <summary>
 		/// Gets or sets the given port with an IMnemonicGenerator implementation
 		/// Ports are zero based
 		/// Set will throw an InvalidOperationException if a particular implementation is not allowed, this is platform specific logic such as NES doesn't allow a zapper in port 0, etc
@@ -61,6 +72,18 @@ namespace BizHawk.Client.Common
 		/// Gets an IMnemonicGenerator implementation that represents the buttons and controls on the console itself (Reset, Power, etc)
 		/// </summary>
 		IMnemonicGenerator ConsoleControls { get; }
+
+		Dictionary<string, bool> ParseMnemonicString(string mnemonicStr);
+
+		// Analog TODO: this assume the generators are boolean
+		Dictionary<string, bool> GetBoolButtons();
+
+		// TODO: this shouldn't be required, refactor MovieRecord
+		string GenerateMnemonicString(Dictionary<string, bool> buttons);
+
+		string EmptyMnemonic { get; }
+
+		Dictionary<string, char> AvailableMnemonics { get; }
 	}
 
 	public class BooleanControllerMnemonicGenerator : IMnemonicGenerator
@@ -75,6 +98,14 @@ namespace BizHawk.Client.Common
 		public void Add(string key, char value)
 		{
 			_controllerMnemonics.Add(key, value);
+		}
+
+		public Dictionary<string, char> AvailableMnemonics
+		{
+			get
+			{
+				return _controllerMnemonics.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			}
 		}
 
 		public IController Source { get; set; }
