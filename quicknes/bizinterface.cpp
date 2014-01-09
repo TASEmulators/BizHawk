@@ -67,7 +67,7 @@ EXPORT const char *qn_emulate_frame(Nes_Emu *e, int pad1, int pad2)
 	return e->emulate_frame(pad1, pad2);
 }
 
-EXPORT void qn_blit(Nes_Emu *e, char *dest)
+EXPORT void qn_blit(Nes_Emu *e, char *dest, const Nes_Emu::rgb_t *colors)
 {
 	// what is the point of the 256 color bitmap and the dynamic color allocation to it?
 	// why not just render directly to a 512 color bitmap with static palette positions?
@@ -77,7 +77,6 @@ EXPORT void qn_blit(Nes_Emu *e, char *dest)
 	const unsigned char *srcend = src + e->image_height * srcpitch;
 
 	const short *lut = e->frame().palette;
-	const Nes_Emu::rgb_t *colors = e->nes_colors;
 
 	for (; src < srcend; src += srcpitch)
 	{
@@ -90,6 +89,11 @@ EXPORT void qn_blit(Nes_Emu *e, char *dest)
 			*dest++ = 0xff;
 		}
 	}
+}
+
+EXPORT const Nes_Emu::rgb_t *qn_get_default_colors()
+{
+	return Nes_Emu::nes_colors;
 }
 
 EXPORT int qn_get_joypad_read_count(Nes_Emu *e)

@@ -285,6 +285,12 @@
     <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NES\QuickNesConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\QuickNesConfig.Designer.cs">
+      <DependentUpon>QuickNesConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -902,6 +908,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\QuickNesConfig.resx">
+      <DependentUpon>QuickNesConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathConfig.resx">
       <DependentUpon>PathConfig.cs</DependentUpon>

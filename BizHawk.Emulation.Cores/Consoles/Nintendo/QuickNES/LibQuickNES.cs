@@ -74,8 +74,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		/// <param name="e">Context</param>
 		/// <param name="dest">rgb32 256x240 packed</param>
+		/// <param name="colors">rgb 24 colors, red first, 512 of them (1536 bytes)</param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_blit(IntPtr e, IntPtr dest);
+		public static extern void qn_blit(IntPtr e, IntPtr dest, byte[] colors);
+		/// <summary>
+		/// get quicknes's default palette
+		/// </summary>
+		/// <returns>1536 bytes suitable for qn_blit</returns>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr qn_get_default_colors();
 		/// <summary>
 		/// get number of times joypad was read in most recent frame
 		/// </summary>

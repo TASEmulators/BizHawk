@@ -5,6 +5,8 @@ using System.Text;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -46,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.qn_setup_mappers();
 		}
 
-		public QuickNES(CoreComm nextComm, byte[] Rom)
+		public QuickNES(CoreComm nextComm, byte[] Rom, object Settings)
 		{
 			using (FP.Save())
 			{
@@ -71,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					BoardName = mappername;
 					CoreComm.VsyncNum = 39375000;
 					CoreComm.VsyncDen = 655171;
+					PutSettings(Settings ?? QuickNESSettings.GetDefaults());
 				}
 				catch
 				{
@@ -367,9 +370,102 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#region settings
 
+		public class QuickNESSettings
+		{
+			[DefaultValue(8)]
+			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
+			public int NumSprites
+			{
+				get { return _NumSprites; }
+				set { _NumSprites = Math.Min(64, Math.Max(0, value)); }
+			}
+			[JsonIgnore]
+			private int _NumSprites;
+
+			[DefaultValue(false)]
+			[Description("Clip the left and right 8 pixels of the display, which sometimes contain nametable garbage.")]
+			public bool ClipLeftAndRight { get; set; }
+
+			[DefaultValue(false)]
+			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
+			public bool ClipTopAndBottom { get; set; }
+
+			[Browsable(false)]
+			public byte[] Palette
+			{
+				get { return _Palette; }
+				set
+				{
+					if (value == null)
+						throw new ArgumentNullException();
+					else if (value.Length == 64 * 8 * 3)
+						_Palette = value;
+					else
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+			[JsonIgnore]
+			private byte[] _Palette;
+
+			public QuickNESSettings Clone()
+			{
+				var ret = (QuickNESSettings)MemberwiseClone();
+				ret._Palette = (byte[])_Palette.Clone();
+				return ret;
+			}
+			public static QuickNESSettings GetDefaults()
+			{
+				return new QuickNESSettings
+				{
+					NumSprites = 8,
+					ClipLeftAndRight = false,
+					ClipTopAndBottom = false,
+					_Palette = GetDefaultColors()
+				};
+			}
+
+			public void SetNesHawkPalette(int[,] pal)
+			{
+				if (pal.GetLength(0) != 64 || pal.GetLength(1) != 3)
+					throw new ArgumentOutOfRangeException();
+				for (int c = 0; c < 64; c++)
+				{
+					_Palette[c * 3] = (byte)pal[c, 0];
+					_Palette[c * 3 + 1] = (byte)pal[c, 1];
+					_Palette[c * 3 + 2] = (byte)pal[c, 2];
+				}
+				for (int c = 64; c < 512; c++)
+				{
+					int a = c & 63;
+					int r = _Palette[a * 3];
+					int g = _Palette[a * 3 + 1];
+					int b = _Palette[a * 3 + 2];
+					BizHawk.Emulation.Cores.Nintendo.NES.NES.Palettes.ApplyDeemphasis(ref r, ref g, ref b, c >> 6);
+					_Palette[c * 3] = (byte)r;
+					_Palette[c * 3 + 1] = (byte)g;
+					_Palette[c * 3 + 2] = (byte)b;
+				}
+			}
+
+			static byte[] GetDefaultColors()
+			{
+				IntPtr src = LibQuickNES.qn_get_default_colors();
+				byte[] ret = new byte[1536];
+				Marshal.Copy(src, ret, 0, 1536);
+				return ret;
+			}
+
+			public void SetDefaultColors()
+			{
+				_Palette = GetDefaultColors();
+			}
+		}
+
+		QuickNESSettings Settings = QuickNESSettings.GetDefaults();
+
 		public object GetSettings()
 		{
-			return null;
+			return Settings.Clone();
 		}
 
 		public object GetSyncSettings()
@@ -379,6 +475,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public bool PutSettings(object o)
 		{
+			Settings = (QuickNESSettings)o;
+			LibQuickNES.qn_set_sprite_limit(Context, Settings.NumSprites);
 			return false;
 		}
 
@@ -428,7 +526,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject());
+			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), Settings.Palette);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }

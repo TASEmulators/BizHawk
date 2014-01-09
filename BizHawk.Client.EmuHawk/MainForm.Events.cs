@@ -12,6 +12,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Client.EmuHawk.config.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1220,8 +1222,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new NESGraphicsConfig().ShowDialog();
-			CoreFileProvider.SyncCoreCommInputSignals();
+			if (Global.Emulator is NES)
+				new NESGraphicsConfig().ShowDialog(this);
+			else if (Global.Emulator is QuickNES)
+				new QuickNesConfig().ShowDialog(this);
 		}
 
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)

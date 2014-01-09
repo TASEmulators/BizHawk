@@ -98,6 +98,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		// this should go away now
 		public static void SyncCoreCommInputSignals(CoreComm target = null)
 		{
 			if (target == null)
