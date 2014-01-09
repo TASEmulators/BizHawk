@@ -362,7 +362,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									nextEmulator = new QuickNES(nextComm, rom.FileData);
+									nextEmulator = new QuickNES(nextComm, rom.FileData, GetCoreSettings<QuickNES>());
 								}
 
 								break;
