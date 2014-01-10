@@ -2184,9 +2184,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				newp = 800;
 			}
-			else
+			else if (oldp < 1600)
 			{
 				newp = 1600;
+			}
+			else
+			{
+				newp = 3200;
 			}
 
 			SetSpeedPercent(newp);
@@ -2197,7 +2201,11 @@ namespace BizHawk.Client.EmuHawk
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
-			if (oldp > 800)
+			if (oldp > 1600)
+			{
+				newp = 1600;
+			}
+			else if (oldp > 800)
 			{
 				newp = 800;
 			}
