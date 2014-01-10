@@ -393,6 +393,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />

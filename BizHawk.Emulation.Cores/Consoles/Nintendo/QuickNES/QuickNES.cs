@@ -428,22 +428,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			{
 				if (pal.GetLength(0) != 64 || pal.GetLength(1) != 3)
 					throw new ArgumentOutOfRangeException();
-				for (int c = 0; c < 64; c++)
-				{
-					_Palette[c * 3] = (byte)pal[c, 0];
-					_Palette[c * 3 + 1] = (byte)pal[c, 1];
-					_Palette[c * 3 + 2] = (byte)pal[c, 2];
-				}
-				for (int c = 64; c < 512; c++)
+				for (int c = 0; c < 512; c++)
 				{
 					int a = c & 63;
-					int r = _Palette[a * 3];
-					int g = _Palette[a * 3 + 1];
-					int b = _Palette[a * 3 + 2];
-					BizHawk.Emulation.Cores.Nintendo.NES.NES.Palettes.ApplyDeemphasis(ref r, ref g, ref b, c >> 6);
-					_Palette[c * 3] = (byte)r;
-					_Palette[c * 3 + 1] = (byte)g;
-					_Palette[c * 3 + 2] = (byte)b;
+					byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
+					byte[] outp = new byte[3];
+					Nes_NTSC_Colors.Emphasis(inp, outp, c);
+					_Palette[c * 3] = outp[0];
+					_Palette[c * 3 + 1] = outp[1];
+					_Palette[c * 3 + 2] = outp[2];
 				}
 			}
 
