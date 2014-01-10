@@ -49,18 +49,18 @@ EXPORT const char *qn_set_sample_rate(Nes_Emu *e, int rate)
 	return ret;
 }
 
-EXPORT void qn_get_image_dimensions(Nes_Emu *e, int *width, int *height)
-{
-	if (width)
-		*width = e->buffer_width;
-	if (height)
-		*height = e->buffer_height();
-}
+//EXPORT void qn_get_image_dimensions(Nes_Emu *e, int *width, int *height)
+//{
+//	if (width)
+//		*width = e->buffer_width;
+//	if (height)
+//		*height = e->buffer_height();
+//}
 
-EXPORT void qn_set_pixels(Nes_Emu *e, void *dest, int pitch)
-{
-	e->set_pixels(dest, pitch);
-}
+//EXPORT void qn_set_pixels(Nes_Emu *e, void *dest, int pitch)
+//{
+//	e->set_pixels(dest, pitch);
+//}
 
 EXPORT const char *qn_emulate_frame(Nes_Emu *e, int pad1, int pad2)
 {

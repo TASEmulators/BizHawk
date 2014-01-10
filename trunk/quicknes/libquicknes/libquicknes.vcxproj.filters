@@ -84,15 +84,6 @@
     <ClCompile Include="..\nes_emu\Nes_File.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Film.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Film_Data.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Film_Packer.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
     <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
@@ -121,9 +112,6 @@
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
     <ClCompile Include="..\nes_emu\Nes_Ppu_Rendering.cpp">
-      <Filter>Source Files\nes_emu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\nes_emu\Nes_Recorder.cpp">
       <Filter>Source Files\nes_emu</Filter>
     </ClCompile>
     <ClCompile Include="..\nes_emu\Nes_State.cpp">

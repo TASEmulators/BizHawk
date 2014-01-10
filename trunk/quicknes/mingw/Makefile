@@ -25,9 +25,6 @@ SRCS = \
 	../nes_emu/Nes_Effects_Buffer.cpp \
 	../nes_emu/Nes_Emu.cpp \
 	../nes_emu/Nes_File.cpp \
-	../nes_emu/Nes_Film.cpp \
-	../nes_emu/Nes_Film_Data.cpp \
-	../nes_emu/Nes_Film_Packer.cpp \
 	../nes_emu/Nes_Fme7_Apu.cpp \
 	../nes_emu/Nes_Mapper.cpp \
 	../nes_emu/nes_mappers.cpp \
@@ -38,7 +35,6 @@ SRCS = \
 	../nes_emu/Nes_Ppu.cpp \
 	../nes_emu/Nes_Ppu_Impl.cpp \
 	../nes_emu/Nes_Ppu_Rendering.cpp \
-	../nes_emu/Nes_Recorder.cpp \
 	../nes_emu/Nes_State.cpp \
 	../nes_emu/nes_util.cpp \
 	../nes_emu/Nes_Vrc6_Apu.cpp \
@@ -46,6 +42,10 @@ SRCS = \
 	../fex/Data_Reader.cpp \
 	../fex/blargg_errors.cpp \
 	../fex/blargg_common.cpp
+#	../nes_emu/Nes_Recorder.cpp 
+#	../nes_emu/Nes_Film.cpp 
+#	../nes_emu/Nes_Film_Data.cpp 
+#	../nes_emu/Nes_Film_Packer.cpp 
 
 OBJS = $(SRCS:.cpp=.o)
 

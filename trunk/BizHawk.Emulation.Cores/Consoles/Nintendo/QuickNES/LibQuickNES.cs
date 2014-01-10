@@ -50,16 +50,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="e">context</param>
 		/// <param name="width">width</param>
 		/// <param name="height">height</param>
-		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_get_image_dimensions(IntPtr e, ref int width, ref int height);
+		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void qn_get_image_dimensions(IntPtr e, ref int width, ref int height);
 		/// <summary>
 		/// set output video buffer that will be used for all subsequent renders until replaced
 		/// </summary>
 		/// <param name="e">context</param>
 		/// <param name="dest">8bpp, at least as big as qn_get_image_dimensions()</param>
 		/// <param name="pitch">byte pitch</param>
-		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
+		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
 		/// <summary>
 		/// emulate a single frame
 		/// </summary>

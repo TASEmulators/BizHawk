@@ -34,9 +34,6 @@
     <ClCompile Include="..\nes_emu\Nes_Effects_Buffer.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Emu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_File.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Film.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Film_Data.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Film_Packer.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Fme7_Apu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Mapper.cpp" />
     <ClCompile Include="..\nes_emu\nes_mappers.cpp" />
@@ -47,7 +44,6 @@
     <ClCompile Include="..\nes_emu\Nes_Ppu.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Ppu_Impl.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Ppu_Rendering.cpp" />
-    <ClCompile Include="..\nes_emu\Nes_Recorder.cpp" />
     <ClCompile Include="..\nes_emu\Nes_State.cpp" />
     <ClCompile Include="..\nes_emu\nes_util.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp" />
