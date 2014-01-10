@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--dump-close"))
 				{
-					this._autoCloseOnDump = true;
+					_autoCloseOnDump = true;
 				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
@@ -364,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 			// start dumping, if appropriate
 			if (cmdDumpType != null && cmdDumpName != null)
 			{
-				this.RecordAv(cmdDumpType, cmdDumpName);
+				RecordAv(cmdDumpType, cmdDumpName);
 			}
 
 			UpdateStatusSlots();
@@ -711,7 +711,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_inFullscreen == false)
 			{
-				this._windowedLocation = Location;
+				_windowedLocation = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
 
@@ -728,7 +728,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
-				Location = this._windowedLocation;
+				Location = _windowedLocation;
 				PerformLayout();
 				FrameBufferResized();
 				_inFullscreen = false;
@@ -1021,8 +1021,8 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle Menu": MainMenuStrip.Visible ^= true; break;
 				case "Volume Up": VolumeUp(); break;
 				case "Volume Down": VolumeDown(); break;
-				case "Record A/V": this.RecordAv(); break;
-				case "Stop A/V": this.StopAv(); break;
+				case "Record A/V": RecordAv(); break;
+				case "Stop A/V": StopAv(); break;
 				case "Larger Window": IncreaseWindowSize(); break;
 				case "Smaller Window": DecreaseWIndowSize(); break;
 				case "Increase Speed": IncreaseSpeed(); break;
@@ -1160,8 +1160,8 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle BG 2": SNES_ToggleBG2(); break;
 				case "Toggle BG 3": SNES_ToggleBG3(); break;
 				case "Toggle BG 4": SNES_ToggleBG4(); break;
-				case "Toggle OBJ 1": this.SNES_ToggleObj1(); break;
-				case "Toggle OBJ 2": this.SNES_ToggleObj2(); break;
+				case "Toggle OBJ 1": SNES_ToggleObj1(); break;
+				case "Toggle OBJ 2": SNES_ToggleObj2(); break;
 				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
 				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
 
@@ -2057,18 +2057,18 @@ namespace BizHawk.Client.EmuHawk
 			// it's slow and a bit hackish; a better solution is to create a new
 			// "dummy render" class that implements IRenderer, IBlitter, and possibly
 			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-			if (this._captureOsdRvp == null)
+			if (_captureOsdRvp == null)
 			{
-				this._captureOsdRvp = new RetainedViewportPanel();
-				this._captureOsdSrp = new SysdrawingRenderPanel(this._captureOsdRvp);
+				_captureOsdRvp = new RetainedViewportPanel();
+				_captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
 			}
 
 			// this size can be different for showing off stretching or filters
-			this._captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
-			this._captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
+			_captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+			_captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
-			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, this._captureOsdSrp);
-			return (Bitmap)this._captureOsdRvp.GetBitmap().Clone();
+			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
+			return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
 		}
 
 		private void ShowConsole()
@@ -2469,7 +2469,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				// handle the initial trigger of a frame advance
-				if (this._frameAdvanceTimestamp == DateTime.MinValue)
+				if (_frameAdvanceTimestamp == DateTime.MinValue)
 				{
 					PauseEmulator();
 					runFrame = true;
@@ -2598,7 +2598,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!PauseAVI)
 				{
-					this.AvFrameAdvance();
+					AvFrameAdvance();
 				}
 
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
@@ -2906,7 +2906,7 @@ namespace BizHawk.Client.EmuHawk
 				catch (Exception e)
 				{
 					MessageBox.Show("Video dumping died:\n\n" + e);
-					this.AbortAv();
+					AbortAv();
 				}
 
 				if (_autoDumpLength > 0)
@@ -2914,8 +2914,8 @@ namespace BizHawk.Client.EmuHawk
 					_autoDumpLength--;
 					if (_autoDumpLength == 0) // finish
 					{
-						this.StopAv();
-						if (this._autoCloseOnDump)
+						StopAv();
+						if (_autoCloseOnDump)
 						{
 							_exit = true;
 						}
@@ -2923,6 +2923,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				GlobalWin.DisplayManager.NeedsToPaint = true;
+			}
+		}
+
+		private int? LoadArhiveChooser(HawkFile file)
+		{
+			var ac = new ArchiveChooser(file);
+			if (ac.ShowDialog(this) == DialogResult.OK)
+			{
+				return ac.SelectedMemberIndex;
+			}
+			else
+			{
+				return null;
 			}
 		}
 
@@ -3062,20 +3075,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				return false;
-			}
-		}
-
-		// This is probably fine the way it is, but consider refactor
-		private int? LoadArhiveChooser(HawkFile file)
-		{
-			var ac = new ArchiveChooser(file);
-			if (ac.ShowDialog(this) == DialogResult.OK)
-			{
-				return ac.SelectedMemberIndex;
-			}
-			else
-			{
-				return null;
 			}
 		}
 
