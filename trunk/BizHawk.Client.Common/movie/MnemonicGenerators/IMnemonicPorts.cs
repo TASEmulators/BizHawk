@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -12,12 +10,12 @@ namespace BizHawk.Client.Common
 	public interface IMnemonicPorts
 	{
 		/// <summary>
-		/// Total number of available controller ports (this does not include the console controls
+		/// Gets the total number of available controller ports (this does not include the console controls
 		/// </summary>
 		int Count { get; }
 
 		/// <summary>
-		/// Source controller to read input state from
+		/// Gets or sets the Source controller to read the input state from
 		/// </summary>
 		IController Source { get; set; }
 
