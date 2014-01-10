@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void InitVideo()
 		{
-			int w = 0, h = 0;
+			//int w = 0, h = 0;
 			//LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
 			//VideoInput = new byte[w * h];
 			//VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);

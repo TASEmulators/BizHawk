@@ -30,10 +30,10 @@
 		{
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonPal = new System.Windows.Forms.Button();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttonPalReset = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
@@ -42,6 +42,9 @@
 			// 
 			// propertyGrid1
 			// 
+			this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.propertyGrid1.Location = new System.Drawing.Point(12, 12);
 			this.propertyGrid1.Name = "propertyGrid1";
 			this.propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
@@ -51,6 +54,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.pictureBox1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 207);
 			this.groupBox1.Name = "groupBox1";
@@ -59,8 +64,17 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Palette Preview:";
 			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Location = new System.Drawing.Point(6, 19);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(453, 131);
+			this.pictureBox1.TabIndex = 0;
+			this.pictureBox1.TabStop = false;
+			// 
 			// buttonOK
 			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.Location = new System.Drawing.Point(321, 369);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
@@ -71,6 +85,7 @@
 			// 
 			// buttonCancel
 			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(402, 369);
 			this.buttonCancel.Name = "buttonCancel";
@@ -81,6 +96,7 @@
 			// 
 			// buttonPal
 			// 
+			this.buttonPal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonPal.Location = new System.Drawing.Point(61, 369);
 			this.buttonPal.Name = "buttonPal";
 			this.buttonPal.Size = new System.Drawing.Size(75, 23);
@@ -89,16 +105,9 @@
 			this.buttonPal.UseVisualStyleBackColor = true;
 			this.buttonPal.Click += new System.EventHandler(this.buttonPal_Click);
 			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Location = new System.Drawing.Point(6, 19);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(453, 131);
-			this.pictureBox1.TabIndex = 0;
-			this.pictureBox1.TabStop = false;
-			// 
 			// buttonPalReset
 			// 
+			this.buttonPalReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonPalReset.Location = new System.Drawing.Point(142, 369);
 			this.buttonPalReset.Name = "buttonPalReset";
 			this.buttonPalReset.Size = new System.Drawing.Size(75, 23);
@@ -109,6 +118,7 @@
 			// 
 			// label1
 			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 374);
 			this.label1.Name = "label1";
@@ -130,8 +140,10 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.propertyGrid1);
+			this.MinimumSize = new System.Drawing.Size(390, 285);
 			this.Name = "QuickNesConfig";
-			this.Text = "QuickNesConfig";
+			this.ShowIcon = false;
+			this.Text = "NES Graphics Settings";
 			this.Load += new System.EventHandler(this.QuickNesConfig_Load);
 			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

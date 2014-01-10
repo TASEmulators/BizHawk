@@ -1172,12 +1172,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESDebuggerMenuItem.Visible = VersionInfo.INTERIM;
+			NESDebuggerMenuItem.Visible =
+			MovieSettingsMenuItem.Visible =
+				VersionInfo.INTERIM;
 
 			NESDebuggerMenuItem.Enabled =
 				NESPPUViewerMenuItem.Enabled =
 				NESNametableViewerMenuItem.Enabled =
 				NESSoundChannelsMenuItem.Enabled =
+				MovieSettingsMenuItem.Enabled =
 				Global.Emulator is NES;
 		}
 
