@@ -488,11 +488,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
-			if (VideoInput != null)
-			{
-				VideoInputH.Free();
-				VideoInput = null;
-			}
+			//if (VideoInput != null)
+			//{
+			//	VideoInputH.Free();
+			//	VideoInput = null;
+			//}
 			if (VideoOutput != null)
 			{
 				VideoOutputH.Free();
@@ -503,8 +503,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region VideoProvider
 
 		int[] VideoOutput;
-		byte[] VideoInput;
-		GCHandle VideoInputH;
+		//byte[] VideoInput;
+		//GCHandle VideoInputH;
 		GCHandle VideoOutputH;
 
 		int cropleft = 0;
@@ -523,10 +523,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		void InitVideo()
 		{
 			int w = 0, h = 0;
-			LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
-			VideoInput = new byte[w * h];
-			VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);
-			LibQuickNES.qn_set_pixels(Context, VideoInputH.AddrOfPinnedObject(), w);
+			//LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
+			//VideoInput = new byte[w * h];
+			//VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);
+			//LibQuickNES.qn_set_pixels(Context, VideoInputH.AddrOfPinnedObject(), w);
 			VideoOutput = new int[256 * 240];
 			VideoOutputH = GCHandle.Alloc(VideoOutput, GCHandleType.Pinned);
 		}

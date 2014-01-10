@@ -37,11 +37,13 @@ public:
 	enum { buffer_width  = Nes_Ppu::buffer_width };
 	int buffer_height() const { return buffer_height_; }
 	enum { bits_per_pixel = 8 };
-	
+
+private:
 	// Set graphics buffer to render pixels to. Pixels points to top-left pixel and
 	// row_bytes is the number of bytes to get to the next line (positive or negative).
 	void set_pixels( void* pixels, long row_bytes );
-	
+public:
+
 	// Size of image generated in graphics buffer
 	enum { image_width   = 256 };
 	enum { image_height  = 240 };
@@ -241,6 +243,7 @@ private:
 	void clear_sound_buf();
 	void fade_samples( blip_sample_t*, int size, int step );
 	
+	char* host_pixel_buff;
 	char* host_pixels;
 	int host_palette_size;
 	frame_t single_frame;
