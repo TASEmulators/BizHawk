@@ -93,6 +93,10 @@ namespace BizHawk.Client.Common
 		public BooleanControllerMnemonicGenerator(string name, IDictionary<string, char> mnemonics)
 		{
 			_controllerMnemonics = new NamedDictionary<string, char>(name);
+			foreach (var kvp in mnemonics)
+			{
+				_controllerMnemonics.Add(kvp.Key, kvp.Value);
+			}
 		}
 
 		public void Add(string key, char value)
@@ -104,7 +108,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return _controllerMnemonics.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+				return _controllerMnemonics.ToDictionary(kvp => ControllerPrefix + " " + kvp.Key, kvp => kvp.Value);
 			}
 		}
 

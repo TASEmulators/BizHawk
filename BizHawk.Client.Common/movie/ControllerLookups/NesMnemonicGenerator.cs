@@ -160,16 +160,16 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kvps = new List<KeyValuePair<string, char>>();
-				foreach (var blah in AvailableGenerators)
+				var dictionary = new Dictionary<string, char>();
+				foreach (var generator in AvailableGenerators)
 				{
-					foreach (var blah2 in blah.AvailableMnemonics)
+					foreach (var mnemonic in generator.AvailableMnemonics)
 					{
-						kvps.Add(blah2);
+						dictionary.Add(mnemonic.Key, mnemonic.Value);
 					}
 				}
 
-				return kvps.ToDictionary(x => x.Key, x => x.Value);
+				return dictionary;
 			}
 		}
 		#endregion
