@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="dest">rgb32 256x240 packed</param>
 		/// <param name="colors">rgb 24 colors, red first, 512 of them (1536 bytes)</param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_blit(IntPtr e, IntPtr dest, byte[] colors);
+		public static extern void qn_blit(IntPtr e, IntPtr dest, byte[] colors, int cropleft, int croptop, int cropright, int cropbottom);
 		/// <summary>
 		/// get quicknes's default palette
 		/// </summary>
