@@ -470,6 +470,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			Settings = (QuickNESSettings)o;
 			LibQuickNES.qn_set_sprite_limit(Context, Settings.NumSprites);
+			RecalculateCrops();
 			return false;
 		}
 
@@ -506,6 +507,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		GCHandle VideoInputH;
 		GCHandle VideoOutputH;
 
+		int cropleft = 0;
+		int cropright = 0;
+		int croptop = 0;
+		int cropbottom = 0;
+
+		void RecalculateCrops()
+		{
+			cropright = cropleft = Settings.ClipLeftAndRight ? 8 : 0;
+			cropbottom = croptop = Settings.ClipTopAndBottom ? 8 : 0;
+			BufferWidth = 256 - cropleft - cropright;
+			BufferHeight = 240 - croptop - cropbottom;
+		}
+
 		void InitVideo()
 		{
 			int w = 0, h = 0;
@@ -519,14 +533,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), Settings.Palette);
+			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), Settings.Palette, cropleft, croptop, cropright, cropbottom);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return VideoOutput; }
-		public int VirtualWidth { get { return 292; } } // probably different on pal
-		public int BufferWidth { get { return 256; } }
-		public int BufferHeight { get { return 240; } }
+		public int VirtualWidth { get { return (int)(BufferWidth * 1.14); } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion
