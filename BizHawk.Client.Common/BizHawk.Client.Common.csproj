@@ -127,10 +127,10 @@
     <Compile Include="movie\IMovie.cs" />
     <Compile Include="movie\IMovieHeader.cs" />
     <Compile Include="movie\InputAdapters.cs" />
+    <Compile Include="movie\MnemonicGenerators\BooleanControllerMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicGenerators\IMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicGenerators\IMnemonicPorts.cs" />
     <Compile Include="movie\MnemonicGenerators\MnemonicGeneratorFactory.cs" />
-    <Compile Include="movie\MnemonicGenerators\MnemonicGenerators.cs" />
     <Compile Include="movie\MnemonicGenerators\NesMnemonicGenerator.cs" />
     <Compile Include="movie\MnemonicsGenerator.cs" />
     <Compile Include="movie\Movie.cs" />
