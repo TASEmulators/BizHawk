@@ -23,13 +23,13 @@ namespace BizHawk.Client.EmuHawk
 			dataGridView1.DataSource = DTDB.Table;
 		}
 
-		private void buttonCancel_Click(object sender, EventArgs e)
+		private void CancelBtn_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
+		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			if (DTDB.WasModified)
@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void buttonHelp_Click(object sender, EventArgs e)
+		private void HelpBtn_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show(this, "Board Properties are special per-mapper system settings.  They are only useful to advanced users creating Tool Assisted Superplays.  No support will be provided if you break something with them.", "Help");
 		}

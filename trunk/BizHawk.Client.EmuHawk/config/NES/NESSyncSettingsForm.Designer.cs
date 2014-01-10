@@ -28,36 +28,36 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.OkBtn = new System.Windows.Forms.Button();
+			this.CancelBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
-			this.buttonHelp = new System.Windows.Forms.Button();
+			this.HelpBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// buttonOK
+			// OkBtn
 			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(124, 238);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
-			this.buttonOK.TabIndex = 0;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.OkBtn.Location = new System.Drawing.Point(140, 238);
+			this.OkBtn.Name = "OkBtn";
+			this.OkBtn.Size = new System.Drawing.Size(67, 23);
+			this.OkBtn.TabIndex = 0;
+			this.OkBtn.Text = "OK";
+			this.OkBtn.UseVisualStyleBackColor = true;
+			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
 			// 
-			// buttonCancel
+			// CancelBtn
 			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(205, 238);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 1;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.CancelBtn.Location = new System.Drawing.Point(213, 238);
+			this.CancelBtn.Name = "CancelBtn";
+			this.CancelBtn.Size = new System.Drawing.Size(67, 23);
+			this.CancelBtn.TabIndex = 1;
+			this.CancelBtn.Text = "Cancel";
+			this.CancelBtn.UseVisualStyleBackColor = true;
+			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
 			// label1
 			// 
@@ -80,30 +80,31 @@
 			this.dataGridView1.Size = new System.Drawing.Size(268, 207);
 			this.dataGridView1.TabIndex = 3;
 			// 
-			// buttonHelp
+			// HelpBtn
 			// 
-			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonHelp.Location = new System.Drawing.Point(12, 238);
-			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(23, 23);
-			this.buttonHelp.TabIndex = 4;
-			this.buttonHelp.Text = "?";
-			this.buttonHelp.UseVisualStyleBackColor = true;
-			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.HelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.HelpBtn.Location = new System.Drawing.Point(12, 238);
+			this.HelpBtn.Name = "HelpBtn";
+			this.HelpBtn.Size = new System.Drawing.Size(23, 23);
+			this.HelpBtn.TabIndex = 4;
+			this.HelpBtn.Text = "?";
+			this.HelpBtn.UseVisualStyleBackColor = true;
+			this.HelpBtn.Click += new System.EventHandler(this.HelpBtn_Click);
 			// 
 			// NESSyncSettingsForm
 			// 
-			this.AcceptButton = this.buttonOK;
+			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(292, 273);
-			this.Controls.Add(this.buttonHelp);
+			this.Controls.Add(this.HelpBtn);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.buttonOK);
+			this.Controls.Add(this.CancelBtn);
+			this.Controls.Add(this.OkBtn);
+			this.MinimumSize = new System.Drawing.Size(210, 150);
 			this.Name = "NESSyncSettingsForm";
+			this.ShowIcon = false;
 			this.Text = "NES Movie Settings";
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
@@ -113,10 +114,10 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.Button OkBtn;
+		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.DataGridView dataGridView1;
-		private System.Windows.Forms.Button buttonHelp;
+		private System.Windows.Forms.Button HelpBtn;
 	}
 }
