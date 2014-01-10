@@ -11,6 +11,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Bump 'n' Jump
 	//Cybernoid
 
+	/*
+	 * What's going on here?
+	 * 
+	 * 1. Security Diode should include all Mapper185 carts, but they aren't included?
+	 * 2. Good luck ever getting bus conflicts right, considering all of the third party crap overloaded onto this mapper.
+	 * 3. (Minor) Configuration shouldn't be serialized.
+	 * 4. What is prg_mask?  It's obviously a mask for swapping 16K prg banks... which this board never does.
+	 * 5. Like on real CNROM, the reg writes are masked so only the lowest 2 bits show.  But then:
+	 * 5a. AssertChr(64); could never be handled correctly by this class.
+	 * 5b. The copy protection check compares on bits of the chr reg that are always 0.  Nonsensical.
+	 * 5c. The real cart's security diodes, which are connected to higher data bits, are never actually read.
+	 * 6. chr_enabled is forced to true after any PPU read, which is wrong.  Probably a hack for #5; since the real security setting is never used.
+	 * 7. Related to 5a; the AVE-74*161 implementation is busted.
+	 */
+
 	[NES.INESBoardImplPriority]
 	public sealed class CNROM : NES.NESBoardBase
 	{
