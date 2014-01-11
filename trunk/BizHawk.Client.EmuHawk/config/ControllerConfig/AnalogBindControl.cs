@@ -78,5 +78,10 @@ namespace BizHawk.Client.EmuHawk
 			Bind.Deadzone = trackBarDeadzone.Value / 20.0f;
 			labelDeadzone.Text = String.Format("Deadzone: {0}", (Bind.Deadzone*100)) + "%";
 		}
+
+		private void buttonFlip_Click(object sender, EventArgs e)
+		{
+			trackBarSensitivity.Value *= -1;
+		}
 	}
 }
