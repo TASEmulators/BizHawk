@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (prg_slot == 0)
 				{
 					//...$C000:
-					prg_banks_16k[0] = 0x0F;
+					prg_banks_16k[0] = 0x00;
 					prg_banks_16k[1] = prg;
 				}
 				else
