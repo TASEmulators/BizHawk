@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 {
 	public class BooleanControllerMnemonicGenerator : IMnemonicGenerator
 	{
-		private NamedDictionary<string, char> _controllerMnemonics;
+		private readonly NamedDictionary<string, char> _controllerMnemonics;
 
-		public BooleanControllerMnemonicGenerator(string name, IDictionary<string, char> mnemonics)
+		public BooleanControllerMnemonicGenerator(string name, IEnumerable<KeyValuePair<string, char>> mnemonics)
 		{
 			_controllerMnemonics = new NamedDictionary<string, char>(name);
 			foreach (var kvp in mnemonics)
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 			var buttons = new Dictionary<string, bool>();
 			var keys = _controllerMnemonics.Select(kvp => kvp.Key).ToList();
 
-			for (int i = 0; i < mnemonicSegment.Length; i++)
+			for (var i = 0; i < mnemonicSegment.Length; i++)
 			{
 				buttons.Add(keys[i], mnemonicSegment[i] != '.');
 			}
