@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace BizHawk.Client.Common
@@ -8,8 +9,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// DONT USE ME RIGHT NOW
 		/// </summary>
-		/// <param name="tw"></param>
-		public void WriteToText(System.IO.TextWriter tw)
+		public void WriteToText(TextWriter tw)
 		{
 			tw.WriteLine("[Input]");
 			tw.WriteLine("Frame {0}", Global.Emulator.Frame);

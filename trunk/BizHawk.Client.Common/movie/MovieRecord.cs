@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -37,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		public void SetButton(string button, bool pressed)
 		{
-			InputChanged(new Dictionary<string, bool>() { { button, pressed } });
+			InputChanged(new Dictionary<string, bool> { { button, pressed } });
 			_boolButtons[button] = pressed;
 		}
 
@@ -96,7 +92,7 @@ namespace BizHawk.Client.Common
 		public delegate void InputEventHandler(object sender, InputEventArgs e);
 		public event InputEventHandler OnChanged;
 
-		private void InputChanged(Dictionary <string, bool> editedButtons)
+		private void InputChanged(Dictionary<string, bool> editedButtons)
 		{
 			if (OnChanged != null) 
 			{

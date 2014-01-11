@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -14,8 +10,8 @@ namespace BizHawk.Client.Common
 		string Name { get; }
 
 		/// <summary>
-		/// Will be prepended to all button names
-		/// Example: "P1"
+		/// Gets or sets the prefix that will be prepended to all button names
+		/// Example: "P1" would combine with "Up" to make "P1 Up"
 		/// </summary>
 		string ControllerPrefix { get; set; }
 
@@ -26,7 +22,7 @@ namespace BizHawk.Client.Common
 		string MnemonicString { get; }
 
 		/// <summary>
-		/// Returns a string that represents an empty or default mnemonic 
+		/// Gets a string that represents an empty or default mnemonic
 		/// </summary>
 		string EmptyMnemonicString { get; }
 
@@ -36,9 +32,6 @@ namespace BizHawk.Client.Common
 		/// Note: this assume the pipes are not being passed in!
 		/// </summary>
 		IDictionary<string, bool> ParseMnemonicSegment(string mnemonicSegment);
-
-		// Analog Support TODO: this assume the Generator is boolean
-		//Dictionary<string, bool> GetBoolButtons();
 
 		Dictionary<string, char> AvailableMnemonics { get; }
 	}
