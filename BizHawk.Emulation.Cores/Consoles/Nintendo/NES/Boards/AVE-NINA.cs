@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPRG(int addr)
 		{
 			addr |= (prg_bank_32k << 15);
-			return ROM[addr];	
+			return ROM[addr];
 		}
 
 		public override void WriteWRAM(int addr, byte value)
@@ -82,20 +82,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				default:
 					//apparently these regs are patched in over the WRAM..
-					base.WriteWRAM(addr,value);
+					base.WriteWRAM(addr, value);
 					break;
 			}
 		}
 
 	}
 
-	//AKA mapper 079
-	//historically, mapper 113 is confused with this, but I can't find any need for mapper 113. bootgod's db has nothing for mapper 113
+	// according to the latest on nesdev:
+	// mapper 079: [.... PCCC] @ 4100
+	// mapper 113: [MCPP PCCC] @ 4100  (no games for this are in bootgod)
 	class AVE_NINA_006 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
-		//bool mirror_control_enabled;
+		bool mirror_control_enabled;
 
 		//state
 		int chr_bank_8k, prg_bank_32k;
@@ -113,8 +114,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER079":
+					AssertPrg(32, 64); AssertChr(32, 64);
 					break;
 				case "MAPPER113":
+					mirror_control_enabled = true;
 					break;
 				case "AVE-NINA-06": //Blackjack (U)
 				case "AVE-NINA-03": //F-15 City War (U)
@@ -147,7 +150,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr_bank_8k &= chr_bank_mask_8k;
 					prg_bank_32k = ((value >> 3) & 7);
 					prg_bank_32k &= prg_bank_mask_32k;
-					//if (mirror_control_enabled) SetMirrorType(value.Bit(7) ? EMirrorType.Vertical : EMirrorType.Horizontal);
+					if (mirror_control_enabled)
+						SetMirrorType(value.Bit(7) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 					//NES.LogLine("chr={0:X2}, prg={1:X2}, with val={2:X2}", chr_reg, prg_reg, value);
 					break;
 			}
@@ -166,10 +170,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr |= (chr_bank_8k << 13);
 				return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+			else
+				return base.ReadPPU(addr);
 		}
-
-
 	}
 
 }
