@@ -2846,7 +2846,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (_currAviWriter != null)
 			{
-				var nsampnum = 44100 * (Global.Emulator.CoreComm.VsyncDen + _soundRemainder);
+				var nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + _soundRemainder;
 				var nsamp = nsampnum / Global.Emulator.CoreComm.VsyncNum;
 
 				// exactly remember fractional parts of an audio sample
