@@ -43,63 +43,17 @@ namespace BizHawk.Client.EmuHawk
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				archiveItems.Add(lvi);
-				lvMembers.Items.Add(lvi);
-			}
+            }
 
-			SortItems();
+			InitializeFileView();
 		}
 
-		private bool IsVerifiedRegion(string name, string region)
+		private void InitializeFileView()
 		{
-			if (name.Contains(region) && name.Contains("[!]"))
-				return true;
-			else
-				return false;
-		}
-
-		private bool IsUnverifiedRegion(string name, string region)
-		{
-			if (name.Contains(region) && !(name.Contains("[!]")))
-				return true;
-			else
-				return false;
-		}
-
-		private bool IsNotRegion(string name)
-		{
-			if (name.Contains("(W)")) return false;
-			if (name.Contains("(JU)")) return false;
-			if (name.Contains("(U)")) return false;
-			if (name.Contains("(J)")) return false;
-			if (name.Contains("(E)")) return false;
-			return true;
-		}
-
-		private void SortItems()
-		{
-			List<ListViewItem> lvitems = lvMembers.Items.Cast<ListViewItem>().ToList();
-
-			List<ListViewItem> sorteditems = new List<ListViewItem>();
-
-			sorteditems.AddRange(lvitems.Where(x => IsVerifiedRegion(x.SubItems[1].Text, "(W)")).OrderBy(x => x.Name).ToList());
-			sorteditems.AddRange(lvitems.Where(x => IsUnverifiedRegion(x.SubItems[1].Text, "(W)")).OrderBy(x => x.Name).ToList());
-
-			sorteditems.AddRange(lvitems.Where(x => IsVerifiedRegion(x.SubItems[1].Text, "(JU)")).OrderBy(x => x.Name).ToList());
-			sorteditems.AddRange(lvitems.Where(x => IsUnverifiedRegion(x.SubItems[1].Text, "(JU)")).OrderBy(x => x.Name).ToList());
-
-			sorteditems.AddRange(lvitems.Where(x => IsVerifiedRegion(x.SubItems[1].Text, "(U)")).OrderBy(x => x.Name).ToList());
-			sorteditems.AddRange(lvitems.Where(x => IsUnverifiedRegion(x.SubItems[1].Text, "(U)")).OrderBy(x => x.Name).ToList());
-
-			sorteditems.AddRange(lvitems.Where(x => IsVerifiedRegion(x.SubItems[1].Text, "(J)")).OrderBy(x => x.Name).ToList());
-			sorteditems.AddRange(lvitems.Where(x => IsUnverifiedRegion(x.SubItems[1].Text, "(J)")).OrderBy(x => x.Name).ToList());
-
-			sorteditems.AddRange(lvitems.Where(x => IsVerifiedRegion(x.SubItems[1].Text, "(E)")).OrderBy(x => x.Name).ToList());
-			sorteditems.AddRange(lvitems.Where(x => IsUnverifiedRegion(x.SubItems[1].Text, "(E)")).OrderBy(x => x.Name).ToList());
-
-			sorteditems.AddRange(lvitems.Where(x => IsNotRegion(x.SubItems[1].Text)).ToList());
+            archiveItems.OrderBy(x => x.Name);
 
 			lvMembers.Items.Clear();
-			foreach (ListViewItem i in sorteditems)
+			foreach (ListViewItem i in archiveItems)
 			{
 				lvMembers.Items.Add(i);
 			}
@@ -135,6 +89,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ArchiveChooser_Load(object sender, EventArgs e)
 		{
 			lvMembers.Items[0].Selected = true;
+            tbFilter.Select();
 		}
 
 		private void btnSearch_Click(object sender, EventArgs e)
@@ -207,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (searchResultIdx != null)
 			{
-				lvMembers.Focus();
+				lvMembers.Select();
 				lvMembers.Items[searchResultIdx.Value].Selected = true;
 			}
 			else
