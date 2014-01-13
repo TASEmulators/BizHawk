@@ -58,7 +58,7 @@
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 276);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(472, 29);
-            this.flowLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.TabIndex = 1;
             // 
             // btnCancel
             // 
@@ -66,7 +66,7 @@
             this.btnCancel.Location = new System.Drawing.Point(394, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -76,7 +76,7 @@
             this.btnOK.Location = new System.Drawing.Point(313, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 7;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -94,7 +94,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(472, 276);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // lvMembers
             // 
@@ -108,7 +108,7 @@
             this.lvMembers.MultiSelect = false;
             this.lvMembers.Name = "lvMembers";
             this.lvMembers.Size = new System.Drawing.Size(466, 164);
-            this.lvMembers.TabIndex = 3;
+            this.lvMembers.TabIndex = 0;
             this.lvMembers.UseCompatibleStateImageBehavior = false;
             this.lvMembers.View = System.Windows.Forms.View.Details;
             // 
@@ -143,10 +143,10 @@
             this.cbInstantFilter.AutoSize = true;
             this.cbInstantFilter.Checked = true;
             this.cbInstantFilter.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbInstantFilter.Location = new System.Drawing.Point(258, 33);
+            this.cbInstantFilter.Location = new System.Drawing.Point(263, 5);
             this.cbInstantFilter.Name = "cbInstantFilter";
             this.cbInstantFilter.Size = new System.Drawing.Size(106, 17);
-            this.cbInstantFilter.TabIndex = 6;
+            this.cbInstantFilter.TabIndex = 3;
             this.cbInstantFilter.Text = "Filter while typing";
             this.cbInstantFilter.UseVisualStyleBackColor = true;
             this.cbInstantFilter.CheckedChanged += new System.EventHandler(this.cbInstantFilter_CheckedChanged);
@@ -157,7 +157,7 @@
             this.radRegEx.Location = new System.Drawing.Point(71, 58);
             this.radRegEx.Name = "radRegEx";
             this.radRegEx.Size = new System.Drawing.Size(116, 17);
-            this.radRegEx.TabIndex = 5;
+            this.radRegEx.TabIndex = 6;
             this.radRegEx.Text = "Regular Expression";
             this.radRegEx.UseVisualStyleBackColor = true;
             this.radRegEx.CheckedChanged += new System.EventHandler(this.radRegEx_CheckedChanged);
@@ -169,34 +169,34 @@
             this.radSimple.Location = new System.Drawing.Point(9, 57);
             this.radSimple.Name = "radSimple";
             this.radSimple.Size = new System.Drawing.Size(56, 17);
-            this.radSimple.TabIndex = 4;
+            this.radSimple.TabIndex = 6;
             this.radSimple.TabStop = true;
             this.radSimple.Text = "Simple";
             this.radSimple.UseVisualStyleBackColor = true;
             // 
             // btnFilter
             // 
-            this.btnFilter.Location = new System.Drawing.Point(177, 29);
+            this.btnFilter.Location = new System.Drawing.Point(182, 1);
             this.btnFilter.Name = "btnFilter";
             this.btnFilter.Size = new System.Drawing.Size(75, 23);
-            this.btnFilter.TabIndex = 3;
+            this.btnFilter.TabIndex = 2;
             this.btnFilter.Text = "Filter";
             this.btnFilter.UseVisualStyleBackColor = true;
             this.btnFilter.Click += new System.EventHandler(this.btnFilter_Click);
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(177, 3);
+            this.btnSearch.Location = new System.Drawing.Point(182, 27);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
-            this.btnSearch.TabIndex = 2;
+            this.btnSearch.TabIndex = 5;
             this.btnSearch.Text = "Find";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // tbFilter
             // 
-            this.tbFilter.Location = new System.Drawing.Point(4, 31);
+            this.tbFilter.Location = new System.Drawing.Point(9, 3);
             this.tbFilter.Name = "tbFilter";
             this.tbFilter.Size = new System.Drawing.Size(167, 20);
             this.tbFilter.TabIndex = 1;
@@ -204,10 +204,10 @@
             // 
             // tbSearch
             // 
-            this.tbSearch.Location = new System.Drawing.Point(4, 4);
+            this.tbSearch.Location = new System.Drawing.Point(9, 29);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(167, 20);
-            this.tbSearch.TabIndex = 0;
+            this.tbSearch.TabIndex = 4;
             // 
             // ArchiveChooser
             // 
