@@ -52,10 +52,18 @@ namespace BizHawk.Client.EmuHawk
 		{
             archiveItems.OrderBy(x => x.Name);
 
-			lvMembers.Items.Clear();
-			foreach (ListViewItem i in archiveItems)
+			lvMembers.BeginUpdate();
+			try
 			{
-				lvMembers.Items.Add(i);
+				lvMembers.Items.Clear();
+				foreach (ListViewItem i in archiveItems)
+				{
+					lvMembers.Items.Add(i);
+				}
+			}
+			finally
+			{
+				lvMembers.EndUpdate();
 			}
 		}
 
@@ -121,9 +129,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void StartMatching(TextBox tb, Action<IMatcher> func)
-		{
+	{
 			try
 			{
+				errorBalloon.Hide(tb);
 				var searchMatcher = CreateMatcher(tb.Text);
                 if (searchMatcher != null)
 				{
@@ -142,7 +151,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSearch(IMatcher searchMatcher)
 		{
-            errorBalloon.Hide(tbSearch);
             int count = lvMembers.Items.Count;
 			int searchStartIdx = 0;
 			if (lvMembers.SelectedItems.Count > 0)
@@ -175,13 +183,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoFilter(IMatcher searchMatcher)
 		{
-			lvMembers.Items.Clear();
-			foreach (ListViewItem item in archiveItems)
+			lvMembers.BeginUpdate();
+			try
 			{
-				if (searchMatcher.Matches(item))
+				lvMembers.Items.Clear();
+				foreach (ListViewItem item in archiveItems)
 				{
-					lvMembers.Items.Add(item);
+					if (searchMatcher.Matches(item))
+					{
+						lvMembers.Items.Add(item);
+					}
 				}
+			}
+			finally
+			{
+				lvMembers.EndUpdate();
 			}
 		}
 
