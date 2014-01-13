@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr >= 0x1800)
 			{
-				eRAM[(addr & 0x07)] = (byte)(value & 0x0F);
+				eRAM[(addr & 0x03)] = (byte)(value & 0x0F);
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr >= 0x1800)
 			{
-				return eRAM[(addr & 0x07)];
+				return eRAM[(addr & 0x03)];
 			}
 			else
 			{
