@@ -278,8 +278,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			switch (s.VidPlugin)
 			{
-				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64mk2"; break;
-				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64"; break;
+				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
+				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64"; break;
 				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
 			}
 
