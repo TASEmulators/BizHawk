@@ -17,64 +17,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class JALECO_JF_05_06_07 : NES.NESBoardBase
 	{
 		bool hibit, lowbit;
+		int prg_byte_mask;
+		int chr;
+		int chr_mask_8k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
 				case "MAPPER087":
+					AssertPrg(8, 16, 32);
+					AssertChr(8, 16, 32);
+					AssertVram(0);
+					Cart.wram_size = 0;
 					break;
 				case "JALECO-JF-05":
 				case "JALECO-JF-06":
-					AssertPrg(16); AssertChr(16); AssertVram(0); AssertWram(0);
-					break;
+				case "TAITO-74*139/74":
 				case "JALECO-JF-07":
-					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(0);
+				case "JALECO-JF-08":
+				case "KONAMI-74*139/74":
+				case "JALECO-JF-10":
+					AssertPrg(16, 32); AssertChr(16, 32); AssertVram(0); AssertWram(0);
 					break;
 				default:
 					return false;
 			}
-			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
+			prg_byte_mask = Cart.prg_size * 1024 - 1;
+			chr_mask_8k = Cart.chr_size / 8 - 1;
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
 			return true;
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("hibit", ref hibit);
-			ser.Sync("lowbit", ref lowbit);
+			ser.Sync("chr", ref chr);
 		}
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			hibit = value.Bit(0);
-			lowbit = value.Bit(1);
+			// 2 bits, but flipped
+			chr = value << 1 & 2 | value >> 1 & 1;
+			chr &= chr_mask_8k;
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
-			{
-				if (lowbit)
-				{
-					if (hibit)
-						return VROM[addr + 0x6000];
-					return VROM[addr + 0x2000];
-				}
-				else
-				{
-					if (hibit)
-						return VROM[addr + 0x4000];
-					return VROM[addr];
-				}
-			}
-			return base.ReadPPU(addr);
+				return VROM[addr | chr << 13];
+			else
+				return base.ReadPPU(addr);
 		}
 
 		public override byte ReadPRG(int addr)
 		{
-			if (addr > 0x4000) addr -= 0x4000;
-			return base.ReadPRG(addr);
+			return ROM[addr & prg_byte_mask];
 		}
 	}
 }

@@ -2,7 +2,11 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//Urusei Yatsura - Lum no Wedding Bell (J)
+	// Mapper 101:
+	// bad dumps of Urusei - Lum no Wedding Bell (J)
+	// good dumps of this rom are on Mapper087; only bad dumps with CHR banks out of order go here
+	// nothing else uses this, other than hypothetical homebrews which might prefer it to CxROM
+	// because of no bus conflicts
 	public sealed class Mapper101 : NES.NESBoardBase
 	{
 		//configuration
@@ -23,7 +27,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER101":
-					AssertPrg(32); AssertWram(0); AssertVram(0); AssertBattery(false);
+					AssertPrg(16, 32); AssertVram(0);
+					Cart.wram_size = 0;
+					Cart.wram_battery = false;
+					AssertChr(8, 16, 32, 64, 128, 256, 512, 1024, 2048);
 					break;
 				default:
 					return false;
