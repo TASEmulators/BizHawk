@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
 				case "NAMCOT-3407": //family jockey (J)
-					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
+					AssertPrg(32); AssertChr(32, 16); AssertVram(0); AssertWram(0);
 					break;
 				case "NAMCOT-3413": //pro yakyuu family stadium (J)
 					AssertPrg(64); AssertChr(32); AssertVram(0); AssertWram(0);
@@ -47,6 +47,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//break;
 				case "TENGEN-800030": // Pac-Mania (U), etc
 					AssertPrg(64, 128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
+					break;
+				case "NES-DE1ROM":
+					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
+					break;
+				case "NAMCOT-3451":
+					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
 					break;
 				default:
 					return false;

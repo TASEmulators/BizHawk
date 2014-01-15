@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER075":
 					break;
 				case "KONAMI-VRC-1":
+				case "JALECO-JF-20":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				default:

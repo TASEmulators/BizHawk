@@ -103,6 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER005":
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
+				case "HVC-ELROM":
 					AssertPrg(128, 256); AssertChr(128);
 					break;
 				case "NES-EKROM": //Gemfire (U)
