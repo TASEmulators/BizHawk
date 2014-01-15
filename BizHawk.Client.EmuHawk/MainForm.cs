@@ -3242,5 +3242,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.NES_InQuickNES ^= true;
 		}
+
+		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new BatchRun().ShowDialog();
+		}
 	}
 }
