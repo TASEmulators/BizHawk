@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case "NES-PNROM": //punch-out!!
 				case "HVC-PEEOROM":
+				case "NES-PEEOROM":
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
 					break;
 				

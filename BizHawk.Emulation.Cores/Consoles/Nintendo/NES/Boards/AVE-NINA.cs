@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "AVE-NINA-06": //Blackjack (U)
 				case "AVE-NINA-03": //F-15 City War (U)
 				case "AVE-MB-91": //Deathbots (U)
+					if (Cart.chips.Count == 0) // some boards had no mapper chips on them
+						return false;
 					AssertPrg(32, 64); AssertChr(32, 64); AssertWram(0); AssertVram(0);
 					break;
 

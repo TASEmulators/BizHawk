@@ -388,6 +388,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "NES-SNROM": //dragon warrior 2
 				case "HVC-SNROM":
+				case "VIRGIN-SNROM":
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
 				case "SxROM-JUNK":

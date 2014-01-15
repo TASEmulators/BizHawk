@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//configure
 			switch (Cart.board_type)
 			{
-				case "NES-JLROM": //mr gimmick!
+				case "NES-JLROM": // Mr Gimmick
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
 					break;
 				case "NES-JSROM": // batman(E)
@@ -110,10 +110,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
 					break;
 				case "SUNSOFT-FME-7": //Barcode World (J)
-					AssertPrg(128,256); AssertChr(128,256); AssertWram(0,8); AssertVram(0);
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);
 					break;
-				case "NES-BTR": //Batman - Return of the Joker (U)
-					AssertPrg(128); AssertChr(256); AssertWram(8); AssertVram(0); AssertBattery(false);
+				case "NES-BTR": //Batman - Return of the Joker (U), Mr Gimmick (Proto)
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0); AssertBattery(false);
 					break;
 				default:
 					return false;
