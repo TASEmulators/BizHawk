@@ -39,8 +39,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SROM":
 				case "SETA-NROM-128":
 				case "BANDAI-NROM-128":
+				case "JALECO-JF-03":
+				case "NAMCOT-3305":
+				case "SUNSOFT-NROM-256":
 					AssertPrg(8, 16, 32); 
 					AssertChr(8); AssertVram(0); AssertWram(0, 8);
+					break;
+				case "AVE-NINA-03":
+					if (Cart.chips.Count != 0)
+						return false;
+					AssertPrg(8, 16, 32); 
+					AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
 				default:

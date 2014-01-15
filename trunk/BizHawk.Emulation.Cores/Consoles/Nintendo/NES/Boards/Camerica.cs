@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER232":
 					break;
 				case "CAMERICA-ALGQ": //Quattro Adventure (U)
-				case "CAMERICA-9096": //Quattro Arcade (U)
+				case "CAMERICA-BF9096": //Quattro Arcade (U)
 					AssertPrg(256); AssertChr(0); AssertWram(0); AssertVram(8);
 					break;
 				default:

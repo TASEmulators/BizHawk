@@ -114,6 +114,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-ETROM":
 				case "HVC-ETROM":
 					break;
+				case "NES-EWROM":
+				case "HVC-EWROM":
+					break;
 				default:
 					return false;
 			}
