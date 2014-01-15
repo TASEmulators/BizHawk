@@ -149,6 +149,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						remap = (addr) => addr;
 					}
+					else if (Cart.pcb == "350603")
+					{
+						remap = (addr) => addr;
+					}
 					else
 						throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
 					break;

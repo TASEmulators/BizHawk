@@ -22,11 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-NROM-256": //super mario bros.
 				case "NES-NROM-256": //10 yard fight
 				case "HVC-RROM": //balloon fight
+				case "BANDAI-NROM-256":
 				case "HVC-NROM-128":
 				case "IREM-NROM-128":
 				case "KONAMI-NROM-128":
 				case "NES-NROM-128":
 				case "NAMCOT-3301":
+				case "NAMCOT-3302":
 				case "HVC-HROM": //Donkey Kong Jr. (J)
 				case "JALECO-JF-01": //Exerion (J)
 				case "UNIF_NES-NROM-256": // Locksmith

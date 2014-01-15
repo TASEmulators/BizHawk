@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-CNROM": //adventure island
 				case "UNIF_NES-CNROM": // some of these should be bus_conflict = false because UNIF is bad
 				case "HVC-CNROM":
+				case "TAITO-CNROM":
+				case "BANDAI-CNROM":
 					bus_conflict = true;
 					AssertPrg(16, 32);
 					break;

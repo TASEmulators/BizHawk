@@ -63,10 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "BANDAI-FCG-1": // no eprom
-					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0); AssertVram(0);
-					break;
 				case "BANDAI-FCG-2": // no eprom
-					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
+					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					break;
 				case "BANDAI-LZ93D50+24C01": // 1kbit eprom
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
