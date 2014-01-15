@@ -81,7 +81,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)mupen64plus.dll $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)mupen64plus.dll" "$(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
