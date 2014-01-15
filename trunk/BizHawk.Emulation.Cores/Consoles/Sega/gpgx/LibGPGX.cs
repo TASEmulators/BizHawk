@@ -20,8 +20,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_advance();
 
+		public enum Region : int
+		{
+			Autodetect = 0,
+			USA = 1,
+			Europe = 2,
+			Japan_NTSC = 3,
+			Japan_PAL = 4
+		}
+
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b);
+		public static extern bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_get_fps(ref int num, ref int den);

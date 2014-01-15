@@ -377,7 +377,7 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 	}
 }
 
-GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b)
+GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region)
 {
 	zap();
 
@@ -411,14 +411,14 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.mono  = 0; /* STEREO output */
 
 	/* system options */
-	config.system= 0; /* AUTO */
-	config.region_detect  = 0; /* AUTO */
+	config.system = 0; /* AUTO */
+	config.region_detect = region; // see loadrom.c
 	config.vdp_mode = 0; /* AUTO */
 	config.master_clock= 0; /* AUTO */
 	config.force_dtack = 0;
 	config.addr_error  = 1;
-	config.bios  = 0;
-	config.lock_on  = 0;
+	config.bios = 0;
+	config.lock_on = 0;
 
 	/* video options */
 	config.overscan = 0;
