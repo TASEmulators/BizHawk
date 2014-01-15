@@ -453,6 +453,13 @@
       <DependentUpon>ScanlineSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
+    <Compile Include="tools\BatchRun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\BatchRun.Designer.cs">
+      <DependentUpon>BatchRun.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BatchRunner.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -965,6 +972,9 @@
     </Compile>
     <EmbeddedResource Include="ScanlineSlider.resx">
       <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BatchRun.resx">
+      <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>

@@ -157,6 +157,9 @@ namespace BizHawk.Client.Common
 					}
 				}
 
+				// set this here so we can see what file we tried to load even if an error occurs
+				CanonicalFullPath = file.CanonicalFullPath;
+
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
@@ -234,18 +237,21 @@ namespace BizHawk.Client.Common
 										"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
 										+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!",
 										game.System);
+									return false;
 								}
 								else if (rom.GameInfo.NotInDatabase)
 								{
 									ThrowLoadError(
 										"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.", 
 										game.System);
+									return false;
 								}
 								else if (rom.GameInfo["BIOS"] == false)
 								{
 									ThrowLoadError(
 										"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.", 
 										game.System);
+									return false;
 								}
 
 								if (rom.GameInfo["SuperSysCard"])
@@ -258,6 +264,7 @@ namespace BizHawk.Client.Common
 									ThrowLoadError(
 										"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.",
 										game.System);
+									return false;
 								}
 
 								game.FirmwareHash = Util.Hash_SHA1(rom.RomData);
@@ -295,6 +302,7 @@ namespace BizHawk.Client.Common
 						catch (Exception ex)
 						{
 							ThrowLoadError(ex.ToString(), "XMLGame Load Error"); // TODO: don't pass in XMLGame Load Error as a system ID
+							return false;
 						}
 					}
 					else // most extensions
@@ -449,7 +457,6 @@ namespace BizHawk.Client.Common
 				Rom = rom;
 				LoadedEmulator = nextEmulator;
 				Game = game;
-				CanonicalFullPath = file.CanonicalFullPath;
 				return true;
 			}
 		}
