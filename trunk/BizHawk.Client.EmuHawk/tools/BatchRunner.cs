@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public void DumpToTW(System.IO.TextWriter tw)
 			{
-				tw.WriteLine("{0}\t{1}\t{2}\t{3}\n", Filename, Fullname, CoreType, Status);
+				tw.WriteLine("{0}\t{1}\t{2}\t{3}", Filename, Fullname, CoreType, Status);
 			}
 		}
 
