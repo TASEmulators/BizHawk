@@ -101,6 +101,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-JLROM": //mr gimmick!
 					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
 					break;
+				case "NES-JSROM": // batman(E)
+					AssertPrg(128); AssertChr(256); AssertWram(8); AssertVram(0); AssertBattery(false);
+					break;
 				case "MAPPER069":
 					break;
 				case "SUNSOFT-5A": //Batman (J)

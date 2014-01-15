@@ -93,12 +93,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "TAITO-TC0190FMC":
 				case "TAITO-TC0350FMR":
-					AssertPrg(128); AssertChr(128,256); AssertWram(0); AssertVram(0);
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					pal16 = false;
 					break;
 				case "TAITO-TC0190FMC+PAL16R4":
 					//this is the same as the base TAITO-TC0190FMC, with an added PAL16R4ACN which is a "programmable TTL device", presumably just the IRQ and mirroring
-					AssertPrg(128,256); AssertChr(256); AssertWram(0); AssertVram(0);
+					AssertPrg(128, 256); AssertChr(256); AssertWram(0); AssertVram(0);
 					pal16 = true;
 					mmc3 = new MMC3Variant(this);
 					break;

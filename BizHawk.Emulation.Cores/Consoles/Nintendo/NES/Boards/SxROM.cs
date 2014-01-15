@@ -341,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(32); AssertChr(16,32); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SFROM": //bubble bobble
+				case "NES-SF1ROM":
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SGROM": //bionic commando
@@ -354,8 +355,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
 					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
 					break;
-				case "HVC-SJROM": //zombie hunter.. but it has no wram????
-					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
+				case "HVC-SJROM": //zombie hunter (wram is missing), artelius.
+					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0, 8);
 					break;
 				case "NES-SJROM": //air fortress
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8);
