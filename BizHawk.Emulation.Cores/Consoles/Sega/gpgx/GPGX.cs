@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this.SyncSettings.UseSixButton, system_a, system_b, this.SyncSettings.Region))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -643,10 +643,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			bool ret;
 			var n = (GPGXSyncSettings)o;
-			if (n.UseSixButton != SyncSettings.UseSixButton || n.ControlType != SyncSettings.ControlType)
-				ret = true;
-			else
-				ret = false;
+			ret = GPGXSyncSettings.NeedsReboot(SyncSettings, n);
 			SyncSettings = n;
 			return ret;
 		}
@@ -654,22 +651,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public class GPGXSyncSettings
 		{
 			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
+			[DefaultValue(true)]
 			public bool UseSixButton { get; set; }
 			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
+			[DefaultValue(ControlType.Normal)]
 			public ControlType ControlType { get; set; }
+			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
+			[DefaultValue(LibGPGX.Region.Autodetect)]
+			public LibGPGX.Region Region { get; set; }
+
+			public GPGXSyncSettings()
+			{
+				UseSixButton = true;
+				ControlType = ControlType.Normal;
+				Region = LibGPGX.Region.Autodetect;
+			}
 
 			public static GPGXSyncSettings GetDefaults()
 			{
-				return new GPGXSyncSettings
-				{
-					UseSixButton = true,
-					ControlType = ControlType.Normal
-				};
+				return new GPGXSyncSettings();
 			}
 
 			public GPGXSyncSettings Clone()
 			{
 				return (GPGXSyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
+			{
+				return x.UseSixButton != y.UseSixButton || x.ControlType != y.ControlType || x.Region != y.Region;
 			}
 		}
 	}
