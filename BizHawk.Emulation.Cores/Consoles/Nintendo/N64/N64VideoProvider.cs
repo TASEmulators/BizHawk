@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Nintendo.N64
+{
+	class N64VideoProvider : IVideoProvider, IDisposable
+	{
+		private int[] frameBuffer;
+		private mupen64plusApi api;
+
+		/// <summary>
+		/// Creates N64 Video system with mupen64plus backend
+		/// </summary>
+		/// <param name="api">mupen64plus DLL that is used</param>
+		public N64VideoProvider(mupen64plusApi api)
+		{
+			this.api = api;
+			int width = 0;
+			int height = 0;
+			api.GetScreenDimensions(ref width, ref height);
+			SetBufferSize(width, height);
+		}
+
+		public int[] GetVideoBuffer()
+		{
+			return frameBuffer;
+		}
+
+		public int VirtualWidth { get { return BufferWidth; } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
+		public int BackgroundColor { get { return 0; } }
+
+		/// <summary>
+		/// Fetches current frame buffer from mupen64
+		/// </summary>
+		public void DoVideoFrame()
+		{
+			int width = 0;
+			int height = 0;
+			api.GetScreenDimensions(ref width, ref height);
+			if (width != BufferWidth || height != BufferHeight)
+			{
+				SetBufferSize(width, height);
+			}
+			api.Getm64pFrameBuffer(frameBuffer, ref width, ref height);
+		}
+
+		/// <summary>
+		/// Sets a new width and height for frame buffer
+		/// </summary>
+		/// <param name="width">New width in pixels</param>
+		/// <param name="height">New height in pixels</param>
+		private void SetBufferSize(int width, int height)
+		{
+			BufferHeight = height;
+			BufferWidth = width;
+			frameBuffer = new int[width * height];
+		}
+
+		public void Dispose()
+		{
+			// api is disposed by N64
+			api = null;
+		}
+	}
+}

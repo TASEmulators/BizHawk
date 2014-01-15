@@ -12,13 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public class mupen64plusApi : IDisposable
 	{
+		// Only left in because api needs to know the number of frames passed
+		// because of a bug
 		private readonly N64 bizhawkCore;
 		static mupen64plusApi AttachedCore = null;
 
 		bool disposed = false;
-
-		uint m64pSamplingRate;
-		short[] m64pAudioBuffer = new short[2];
 
 		Thread m64pEmulator;
 
@@ -439,12 +438,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType)
 		{
+			// There can only be one core (otherwise breaks mupen64plus)
 			if (AttachedCore != null)
 			{
 				AttachedCore.Dispose();
 				AttachedCore = null;
 			}
-
 			this.bizhawkCore = bizhawkCore;
 
 			string VidDllName;
@@ -485,7 +484,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			connectFunctionPointers();
 
 			// Start up the core
-			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { }, "", IntPtr.Zero);
+			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
+				(IntPtr foo, int level, string Message) => { },
+				"", IntPtr.Zero);
 
 			// Set the savetype if needed
 			if (SaveType != 0)
@@ -498,9 +499,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Pass the rom to the core
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
 
-			// Resize the video to the size in bizhawk's settings
-			SetVideoSize(video_settings.Width, video_settings.Height);
-
 			// Open the general video settings section in the config system
 			IntPtr video_section = IntPtr.Zero;
 			m64pConfigOpenSection("Video-General", ref video_section);
@@ -511,6 +509,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			set_video_parameters(video_settings);
 
+			// Order of plugin loading is important, do not change!
 			// Set up and connect the graphics plugin
 			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
@@ -520,22 +519,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up our input plugin
-			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { });
+			result = AudPluginStartup(CoreDll, "Input",
+				(IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
 
 			// Set up and connect the RSP plugin
 			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
 
-			// Set up the frame callback function
-			m64pFrameCallback = new FrameCallback(Getm64pFrameBuffer);
-			result = m64pCoreDoCommandFrameCallback(m64p_command.M64CMD_SET_FRAME_CALLBACK, 0, m64pFrameCallback);
-
-			// Set up the VI callback function
-			m64pVICallback = new VICallback(VI);
-			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
-
 			InitSaveram();
+
+			// Initialize event invoker
+			m64pFrameCallback = new FrameCallback(FireFrameFinishedEvent);
+			result = m64pCoreDoCommandFrameCallback(m64p_command.M64CMD_SET_FRAME_CALLBACK, 0, m64pFrameCallback);
+			m64pVICallback = new VICallback(FireVIEvent);
+			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
 
 			// Start the emulator in another thread
 			m64pEmulator = new Thread(ExecuteEmulator);
@@ -544,14 +542,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Wait for the core to boot up
 			m64pStartupComplete.WaitOne();
 
-			// Set up the resampler
-			m64pSamplingRate = (uint)AudGetAudioRate();
-			bizhawkCore.resampler = new SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
-
 			AttachedCore = this;
 		}
 
 		volatile bool emulator_running = false;
+		/// <summary>
+		/// Starts execution of mupen64plus
+		/// Does not return until the emulator stops
+		/// </summary>
 		public void ExecuteEmulator()
 		{
 			emulator_running = true;
@@ -611,16 +609,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 		}
 
-		public void SetVideoSize(int vidX, int vidY)
-		{
-			bizhawkCore.VirtualWidth = vidX;
-			bizhawkCore.BufferWidth = vidX;
-			bizhawkCore.BufferHeight = vidY;
-
-			bizhawkCore.frameBuffer = new int[vidX * vidY];
-			m64p_FrameBuffer = new int[vidX * vidY];
-		}
-
+		/// <summary>
+		/// Puts plugin settings of EmuHawk into mupen64plus
+		/// </summary>
+		/// <param name="video_settings">Settings to put into mupen64plus</param>
 		public void set_video_parameters(VideoPluginSettings video_settings)
 		{
 			IntPtr video_plugin_section = IntPtr.Zero;
@@ -656,77 +648,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
-
-		int[] m64p_FrameBuffer;
-
+		private int[] m64pBuffer = new int[0];
 		/// <summary>
-		/// This function will be used as the frame callback. It pulls the framebuffer from mupen64plus
+		/// This function copies the frame buffer from mupen64plus
 		/// </summary>
-		public void Getm64pFrameBuffer()
+		public void Getm64pFrameBuffer(int[] buffer, ref int width, ref int height)
 		{
-			int width = 0;
-			int height = 0;
-
-			// Get the size of the frame buffer
-			GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
-
-			// If it's not the same size as the current one, change the sizes
-			if (width != bizhawkCore.BufferWidth || height != bizhawkCore.BufferHeight)
-			{
-				SetVideoSize(width, height);
-			}
-
+			if(m64pBuffer.Length != width * height)
+				m64pBuffer = new int[width * height];
 			// Actually get the frame buffer
-			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			GFXReadScreen2(m64pBuffer, ref width, ref height, 0);
 
 			// vflip
-			int fromindex = bizhawkCore.BufferWidth * (bizhawkCore.BufferHeight - 1) * 4;
+			int fromindex = width * (height - 1) * 4;
 			int toindex = 0;
-			for (int j = 0; j < bizhawkCore.BufferHeight; j++)
+
+			for (int j = 0; j < height; j++)
 			{
-				Buffer.BlockCopy(m64p_FrameBuffer, fromindex, bizhawkCore.frameBuffer, toindex, bizhawkCore.BufferWidth * 4);
-				fromindex -= bizhawkCore.BufferWidth * 4;
-				toindex += bizhawkCore.BufferWidth * 4;
+				Buffer.BlockCopy(m64pBuffer, fromindex, buffer, toindex, width * 4);
+				fromindex -= width * 4;
+				toindex += width * 4;
 			}
 			
 			// opaque
 			unsafe
 			{
-				fixed (int* ptr = &bizhawkCore.frameBuffer[0])
+				fixed (int* ptr = &buffer[0])
 				{
-					int l = bizhawkCore.frameBuffer.Length;
+					int l = buffer.Length;
 					for (int i = 0; i < l; i++)
 					{
 						ptr[i] |= unchecked((int)0xff000000);
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// This function will be used as the VI callback. It checks the audio rate and updates the resampler if necessary.
-		/// It then polls the audio buffer for samples. It then marks the frame as complete.
-		/// </summary>
-		public void VI()
-		{
-			uint s = (uint)AudGetAudioRate();
-			if (s != m64pSamplingRate)
-			{
-				m64pSamplingRate = s;
-				bizhawkCore.resampler.ChangeRate(s, 44100, s, 44100);
-				//Console.WriteLine("N64 ARate Change {0}", s);
-			}
-
-			int m64pAudioBufferSize = AudGetBufferSize();
-			if (m64pAudioBuffer.Length < m64pAudioBufferSize)
-				m64pAudioBuffer = new short[m64pAudioBufferSize];
-
-			if (m64pAudioBufferSize > 0)
-			{
-				AudReadAudioBuffer(m64pAudioBuffer);
-				bizhawkCore.resampler.EnqueueSamples(m64pAudioBuffer, m64pAudioBufferSize / 2);
-			}
-			m64pFrameComplete.Set();
 		}
 
 		public int get_memory_size(N64_MEMORY id)
@@ -777,6 +732,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// When using the dynamic recompiler if a state is loaded too early some pointers are not set up yet, so mupen
 			// tries to access null pointers and the emulator crashes. It seems like it takes 2 frames to fully set up the recompiler,
 			// so if two frames haven't been run yet, run them, then load the state.
+
 			if (bizhawkCore.Frame < 2)
 			{
 				frame_advance();
@@ -851,9 +807,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				// Backup the saveram in case bizhawk wants to get at is after we've freed the libraries
 				saveram_backup = SaveSaveram();
 
-				bizhawkCore.resampler.Dispose();
-				bizhawkCore.resampler = null;
-
 				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_GFX);
 				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO);
 				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_INPUT);
@@ -877,6 +830,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 				disposed = true;
 			}
+		}
+
+		public void GetScreenDimensions(ref int width, ref int height)
+		{
+			GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
+		}
+
+		public uint GetSamplingRate()
+		{
+			return (uint)AudGetAudioRate();
+		}
+
+		public int GetAudioBufferSize()
+		{
+			return AudGetBufferSize();
+		}
+
+		public void GetAudioBuffer(short[] buffer)
+		{
+			AudReadAudioBuffer(buffer);
+		}
+
+		public event Action FrameFinished;
+		public event Action VInterrupt;
+
+		private void FireFrameFinishedEvent()
+		{
+			// Execute Frame Callback functions
+			if (FrameFinished != null)
+				FrameFinished();
+		}
+
+		private void FireVIEvent()
+		{
+			// Execute VI Callback functions
+			if (VInterrupt != null)
+				VInterrupt();
+			m64pFrameComplete.Set();
+		}
+
+		private void CompletedFrameCallback()
+		{
+			m64pFrameComplete.Set();
 		}
 	}
 
