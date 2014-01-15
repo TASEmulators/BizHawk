@@ -10,7 +10,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	public class N64 : IEmulator, IVideoProvider
+	public class N64 : IEmulator
 	{
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{
@@ -64,24 +64,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public string BoardName { get { return null; } }
 
 		public CoreComm CoreComm { get; private set; }
-		public byte[] rom;
-		public GameInfo game;
 
-		public IVideoProvider VideoProvider { get { return this; } }
-		public int[] frameBuffer;// = new int[800 * 600];
-		public int[] GetVideoBuffer() {	return frameBuffer;	}
-		public int VirtualWidth { get; set; }
-		public int BufferWidth { get; set; }
-		public int BufferHeight { get; set; }
-		public int BackgroundColor { get { return 0; } }
+		private N64VideoProvider videoProvider;
+		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		
 		private DisplayType _display_type = DisplayType.NTSC;
 		public DisplayType DisplayType { get { return _display_type; } }
 
-		public SpeexResampler resampler;
-
+		private N64Audio audioProvider;
 		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return audioProvider.Resampler; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 
@@ -118,18 +110,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		};
 
-		public int Frame { get; set; }
+		public int Frame { get; private set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
+		public bool IsLagFrame { get; private set; }
 		public void ResetCounters()
 		{
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
 		}
+
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
-			RefreshMemoryCallbacks();
+			audioProvider.RenderSound = rendersound;
 
 			if (Controller["Reset"])
 			{
@@ -142,10 +135,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			IsLagFrame = true;
 			api.frame_advance();
+
 			if (IsLagFrame) LagCount++;
-			Frame++; 
+			Frame++;
 		}
 
+		/// <summary>
+		/// Translates controller inputs from EmuHawk and
+		/// shoves them into mupen64plus
+		/// </summary>
 		public void setControllers()
 		{
 			CoreComm.InputCallback.Call();
@@ -171,6 +169,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
+		/// <summary>
+		/// Read all buttons from a controller and translate them
+		/// into a form the N64 understands
+		/// </summary>
+		/// <param name="num">Number of controller to translate</param>
+		/// <returns>Bitlist of pressed buttons</returns>
 		public int ReadController(int num)
 		{
 			int buttons = 0;
@@ -193,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return buttons;
 		}
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return false; } }
 
 		public byte[] ReadSaveRam()
 		{
@@ -211,12 +215,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public bool SaveRamModified { get { return true; } set { } }
-
-		void SyncState(Serializer ser)
-		{
-			ser.BeginSection("N64");
-			ser.EndSection();
-		}
 
 		// these next 5 functions are all exact copy paste from gambatte.
 		// if something's wrong here, it's probably wrong there too
@@ -321,11 +319,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 
 			if (mcs.HasReads)
-				readcb = delegate(uint addr) { mcs.CallRead(addr); RefreshMemoryCallbacks(); };
+				readcb = delegate(uint addr) { mcs.CallRead(addr); };
 			else
 				readcb = null;
 			if (mcs.HasWrites)
-				writecb = delegate(uint addr) { mcs.CallWrite(addr); RefreshMemoryCallbacks(); };
+				writecb = delegate(uint addr) { mcs.CallWrite(addr); };
 			else
 				writecb = null;
 
@@ -394,11 +392,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public void Dispose()
 		{
+			videoProvider.Dispose();
+			audioProvider.Dispose();
 			api.Dispose();
 		}
 
-		mupen64plusApi api;
+		// mupen64plus DLL Api
+		private mupen64plusApi api;
 
+		/// <summary>
+		/// Create mupen64plus Emulator
+		/// </summary>
+		/// <param name="comm">Core communication object</param>
+		/// <param name="game">Game information of game to load</param>
+		/// <param name="rom">Rom that should be loaded</param>
+		/// <param name="SyncSettings">N64SyncSettings object</param>
 		public N64(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
 		{
 			int SaveType = 0;
@@ -406,8 +414,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				SaveType = 1;
 
 			CoreComm = comm;
-			this.rom = rom;
-			this.game = game;
 
 			this.SyncSettings = (N64SyncSettings)SyncSettings ?? new N64SyncSettings();
 
@@ -439,7 +445,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api = new mupen64plusApi(this, rom, this.SyncSettings.GetVPS(game), SaveType);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
 
+			audioProvider = new N64Audio(api);
+			videoProvider = new N64VideoProvider(api);
+			api.FrameFinished += videoProvider.DoVideoFrame;
+			api.VInterrupt += audioProvider.DoAudioFrame;
+
 			InitMemoryDomains();
+			RefreshMemoryCallbacks();
 		}
 
 		N64SyncSettings SyncSettings;

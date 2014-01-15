@@ -106,7 +106,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)mupen64plus.dll $(TargetDir)..\..\..\..\..\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)mupen64plus.dll" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
