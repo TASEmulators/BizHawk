@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertBattery(false);
 					break;
 				case "NES-TKROM": //kirby's adventure
+				case "NES-TKEPROM": // kirby's adventure (proto)
 				case "HVC-TKROM": //Akuma No Shoutaijou (J)
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					break;

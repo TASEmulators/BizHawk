@@ -129,8 +129,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						remap = (addr) => ((addr & 0xF000) | ((addr >> 2) & 3));
 					else if (Cart.pcb == "351406")
 						remap = (addr) => ((addr & 0xF000) | ((addr & 1) << 1) | ((addr & 2) >> 1));
-					else throw new Exception("Unknown PCB type for VRC4");
-
+					else if (Cart.pcb == "351948") // Ganbare Goemon Gaiden
+						throw new Exception("VRC4: Fix me!");
+					else if (Cart.pcb == "352889") // Ganbare Goemon Gaiden 2
+						throw new Exception("VRC4: Fix me!");
+					else
+						throw new Exception("Unknown PCB type for VRC4");
 					break;
 				case "KONAMI-VRC-2":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);

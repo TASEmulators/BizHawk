@@ -380,6 +380,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SLRROM": //tecmo bowl
+				case "HVC-SLRROM":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "HVC-SMROM": //Hokkaidou Rensa Satsujin: Okhotsu ni Shoyu  
@@ -430,6 +431,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "NES-SOROM": //Nobunaga's Ambition
+				case "HVC-SOROM": // KHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
 					break;
 				default: return false;

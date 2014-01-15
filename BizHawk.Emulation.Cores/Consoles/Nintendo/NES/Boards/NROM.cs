@@ -34,7 +34,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "UNIF_NES-NROM-256": // Locksmith
 				case "UNIF_NES-NROM-128": // various
 				case "TENGEN-800003": // ms pac man, others
-					AssertPrg(8, 16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
+				case "JALECO-JF-02":
+				case "TAITO-NROM-256":
+				case "HVC-SROM":
+				case "SETA-NROM-128":
+				case "BANDAI-NROM-128":
+					AssertPrg(8, 16, 32); 
+					AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 
 				default:
