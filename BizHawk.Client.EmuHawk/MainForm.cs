@@ -46,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 		public MainForm(string[] args)
 		{
 			GlobalWin.MainForm = this;
-			_hotkeys = new HotkeyActions(this);
 			Global.Rewinder = new Rewinder()
 			{
 				MessageCallback = GlobalWin.OSD.AddMessage
@@ -955,7 +954,6 @@ namespace BizHawk.Client.EmuHawk
 		private RetainedViewportPanel _captureOsdRvp;
 		private SysdrawingRenderPanel _captureOsdSrp;
 
-		private readonly HotkeyActions _hotkeys;
 		private object _syncSettingsHack;
 
 		#endregion
@@ -976,7 +974,7 @@ namespace BizHawk.Client.EmuHawk
 			HandleToggleLight();
 		}
 
-		public void ClearAutohold()
+		private static void ClearAutohold()
 		{
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
@@ -987,197 +985,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.OSD.AddMessage("Autohold keys cleared");
-		}
-
-		private bool CheckHotkey(string trigger)
-		{
-			var result = _hotkeys.CheckHotkey(trigger);
-
-			if (result)
-			{
-				return true;
-			}
-
-			// If Item wasn't in the list, use the legacy switch
-			switch (trigger)
-			{
-				default:
-					return false;
-				case "Toggle Throttle":
-					_unthrottled ^= true;
-					GlobalWin.OSD.AddMessage("Unthrottled: " + _unthrottled);
-					break;
-				case "Quick Load": LoadQuickSave("QuickSave" + Global.Config.SaveSlot); break;
-				case "Quick Save": SaveQuickSave("QuickSave" + Global.Config.SaveSlot); break;
-				case "Screenshot": TakeScreenshot(); break;
-				case "Full Screen": ToggleFullscreen(); break;
-				case "Open ROM": OpenRom(); break;
-				case "Close ROM": CloseRom(); break;
-				case "Display FPS": ToggleFPS(); break;
-				case "Frame Counter": ToggleFrameCounter(); break;
-				case "Lag Counter": ToggleLagCounter(); break;
-				case "Input Display": ToggleInputDisplay(); break;
-				case "Toggle BG Input": ToggleBackgroundInput(); break;
-				case "Toggle Menu": MainMenuStrip.Visible ^= true; break;
-				case "Volume Up": VolumeUp(); break;
-				case "Volume Down": VolumeDown(); break;
-				case "Record A/V": RecordAv(); break;
-				case "Stop A/V": StopAv(); break;
-				case "Larger Window": IncreaseWindowSize(); break;
-				case "Smaller Window": DecreaseWIndowSize(); break;
-				case "Increase Speed": IncreaseSpeed(); break;
-				case "Decrease Speed": DecreaseSpeed(); break;
-				case "Reboot Core":
-					bool autoSaveState = Global.Config.AutoSavestates;
-					Global.Config.AutoSavestates = false;
-					LoadRom(CurrentlyOpenRom);
-					Global.Config.AutoSavestates = autoSaveState;
-					break;
-
-				case "Save State 0": SaveQuickSave("QuickSave0"); break;
-				case "Save State 1": SaveQuickSave("QuickSave1"); break;
-				case "Save State 2": SaveQuickSave("QuickSave2"); break;
-				case "Save State 3": SaveQuickSave("QuickSave3"); break;
-				case "Save State 4": SaveQuickSave("QuickSave4"); break;
-				case "Save State 5": SaveQuickSave("QuickSave5"); break;
-				case "Save State 6": SaveQuickSave("QuickSave6"); break;
-				case "Save State 7": SaveQuickSave("QuickSave7"); break;
-				case "Save State 8": SaveQuickSave("QuickSave8"); break;
-				case "Save State 9": SaveQuickSave("QuickSave9"); break;
-				case "Load State 0": LoadQuickSave("QuickSave0"); break;
-				case "Load State 1": LoadQuickSave("QuickSave1"); break;
-				case "Load State 2": LoadQuickSave("QuickSave2"); break;
-				case "Load State 3": LoadQuickSave("QuickSave3"); break;
-				case "Load State 4": LoadQuickSave("QuickSave4"); break;
-				case "Load State 5": LoadQuickSave("QuickSave5"); break;
-				case "Load State 6": LoadQuickSave("QuickSave6"); break;
-				case "Load State 7": LoadQuickSave("QuickSave7"); break;
-				case "Load State 8": LoadQuickSave("QuickSave8"); break;
-				case "Load State 9": LoadQuickSave("QuickSave9"); break;
-				case "Select State 0": SelectSlot(0); break;
-				case "Select State 1": SelectSlot(1); break;
-				case "Select State 2": SelectSlot(2); break;
-				case "Select State 3": SelectSlot(3); break;
-				case "Select State 4": SelectSlot(4); break;
-				case "Select State 5": SelectSlot(5); break;
-				case "Select State 6": SelectSlot(6); break;
-				case "Select State 7": SelectSlot(7); break;
-				case "Select State 8": SelectSlot(8); break;
-				case "Select State 9": SelectSlot(9); break;
-				case "Save Named State": SaveStateAs(); break;
-				case "Load Named State": LoadStateAs(); break;
-				case "Previous Slot": PreviousSlot(); break;
-				case "Next Slot": NextSlot(); break;
-
-				case "Toggle read-only": ToggleReadOnly(); break;
-				case "Play Movie": LoadPlayMovieDialog(); break;
-				case "Record Movie": LoadRecordMovieDialog(); break;
-				case "Stop Movie": StopMovie(); break;
-				case "Play from beginning": RestartMovie(); break;
-				case "Save Movie": SaveMovie(); break;
-				case "Toggle MultiTrack":
-					if (Global.MovieSession.Movie.IsActive)
-					{
-
-						if (Global.Config.VBAStyleMovieLoadState)
-						{
-							GlobalWin.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
-						}
-						else
-						{
-							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-							if (Global.MovieSession.MultiTrack.IsActive)
-							{
-								GlobalWin.OSD.AddMessage("MultiTrack Enabled");
-								GlobalWin.OSD.MT = "Recording None";
-							}
-							else
-							{
-								GlobalWin.OSD.AddMessage("MultiTrack Disabled");
-							}
-							Global.MovieSession.MultiTrack.RecordAll = false;
-							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						}
-					}
-					else
-					{
-						GlobalWin.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
-					}
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Select All":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = true;
-					GlobalWin.OSD.MT = "Recording All";
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Select None":
-					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					GlobalWin.OSD.MT = "Recording None";
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Increment Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer++;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) // TODO: Replace with console's maximum or current maximum players??!
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
-					}
-					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-					break;
-				case "MT Decrement Player":
-					Global.MovieSession.MultiTrack.CurrentPlayer--;
-					Global.MovieSession.MultiTrack.RecordAll = false;
-					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 5; // TODO: Replace with console's maximum or current maximum players??!
-					}
-					GlobalWin.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer;
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-					break;
-				case "Movie Poke": ToggleModePokeMode(); break;
-
-				case "Ram Watch": GlobalWin.Tools.LoadRamWatch(true); break;
-				case "Ram Search": GlobalWin.Tools.Load<RamSearch>(); break;
-				case "Hex Editor": GlobalWin.Tools.Load<HexEditor>(); break;
-				case "Trace Logger": GlobalWin.Tools.LoadTraceLogger(); break;
-				case "Lua Console": OpenLuaConsole(); break;
-				case "Cheats": GlobalWin.Tools.Load<Cheats>(); break;
-				case "TAStudio": GlobalWin.Tools.Load<TAStudio>(); break;
-				case "ToolBox": GlobalWin.Tools.Load<ToolBox>(); break;
-				case "Virtual Pad": GlobalWin.Tools.Load<VirtualPadForm>(); break;
-
-				case "Do Search": GlobalWin.Tools.RamSearch.DoSearch(); break;
-				case "New Search": GlobalWin.Tools.RamSearch.NewSearch(); break;
-				case "Previous Compare To": GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true); break;
-				case "Next Compare To": GlobalWin.Tools.RamSearch.NextCompareTo(); break;
-				case "Previous Operator": GlobalWin.Tools.RamSearch.NextOperator(reverse: true); break;
-				case "Next Operator": GlobalWin.Tools.RamSearch.NextOperator(); break;
-
-				case "Toggle BG 1": SNES_ToggleBG1(); break;
-				case "Toggle BG 2": SNES_ToggleBG2(); break;
-				case "Toggle BG 3": SNES_ToggleBG3(); break;
-				case "Toggle BG 4": SNES_ToggleBG4(); break;
-				case "Toggle OBJ 1": SNES_ToggleObj1(); break;
-				case "Toggle OBJ 2": SNES_ToggleObj2(); break;
-				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
-				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
-
-
-				case "Y Up Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_SmallChange); break;
-				case "Y Up Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange); break;
-				case "Y Down Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange)); break;
-				case "Y Down Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange)); break;
-
-				case "X Up Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null); break;
-				case "X Up Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null); break;
-				case "X Down Small": GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null); break;
-				case "X Down Large": GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null); break;
-			}
-
-			return true;
 		}
 
 		private void UpdateDumpIcon()
@@ -1998,7 +1805,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
-		public void SoftReset()
+		private static void SoftReset()
 		{
 			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
@@ -2011,7 +1818,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void HardReset()
+		private static void HardReset()
 		{
 			// is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
