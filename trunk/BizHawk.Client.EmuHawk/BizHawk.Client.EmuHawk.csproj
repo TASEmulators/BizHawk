@@ -381,7 +381,6 @@
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="DisplayManager\Filters\Scanlines.cs" />
     <Compile Include="GlobalWin.cs" />
-    <Compile Include="HotkeyActions.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
@@ -393,6 +392,10 @@
     <Compile Include="LogWindow.Designer.cs">
       <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainForm.Hotkey.cs">
+		<DependentUpon>MainForm.cs</DependentUpon>
+		<SubType>Form</SubType>
+	</Compile>
     <Compile Include="MainForm.Movie.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
