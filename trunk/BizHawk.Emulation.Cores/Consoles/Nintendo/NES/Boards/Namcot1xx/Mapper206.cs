@@ -48,6 +48,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TENGEN-800030": // Pac-Mania (U), etc
 					AssertPrg(64, 128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
 					break;
+				case "TENGEN-800002":
+					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
+					break;
 				case "NES-DE1ROM":
 					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
