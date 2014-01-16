@@ -341,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(32); AssertChr(16,32); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SFROM": //bubble bobble
+				case "HVC-SFROM":
 				case "NES-SF1ROM":
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
 					break;

@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case "NES-AMROM": //time lord
+				case "HVC-AMROM":
 					//http://forums.nesdev.com/viewtopic.php?p=95438
 					//adding 723 cycles to FrameAdvance_ppudead() does indeed fix it
 					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0);

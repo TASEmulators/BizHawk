@@ -42,6 +42,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "JALECO-JF-03":
 				case "NAMCOT-3305":
 				case "SUNSOFT-NROM-256":
+				case "TAITO-NROM-128":
+				case "IREM-NROM-256":
+				case "NAMCOT-3303":
+				case "NAMCOT-3311":
 					AssertPrg(8, 16, 32); 
 					AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;

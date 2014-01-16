@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertBattery(false);
 					break;
 				case "NES-TFROM": //legacy of the wizard
+				case "HVC-TFROM":
 					AssertPrg(128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
@@ -68,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "KONAMI-TLROM": //Super C
 				case "HVC-TLROM": //8 eyes (J)
 				case "UNIF_NES-TLROM": // Gaiapolis (obviously a clone board, but which one?)
+				case "ACCLAIM-TLROM":
 					AssertPrg(128, 256, 512); AssertChr(64, 128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
