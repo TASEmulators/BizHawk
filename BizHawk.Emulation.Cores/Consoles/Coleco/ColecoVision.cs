@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void EndAsyncSound() { }
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o)
 		{
