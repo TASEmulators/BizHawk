@@ -42,10 +42,6 @@ SRCS = \
 	../fex/Data_Reader.cpp \
 	../fex/blargg_errors.cpp \
 	../fex/blargg_common.cpp
-#	../nes_emu/Nes_Recorder.cpp 
-#	../nes_emu/Nes_Film.cpp 
-#	../nes_emu/Nes_Film_Data.cpp 
-#	../nes_emu/Nes_Film_Packer.cpp 
 
 OBJS = $(SRCS:.cpp=.o)
 
