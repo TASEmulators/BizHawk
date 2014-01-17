@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER002":
+					AssertChr(0); Cart.vram_size = 8;
 					break;
 
 				case "NES-UNROM": //mega man

@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return (byte)attribute;
 					}
 				}
-				int nt = addr >> 10;
+				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
 				int offset = addr & ((1<<10)-1);
 				nt = nt_modes[nt];
 				switch (nt)
@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				addr -= 0x2000;
-				int nt = addr >> 10;
+				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
 				int offset = addr & ((1 << 10) - 1);
 				nt = nt_modes[nt];
 				switch (nt)
