@@ -48,6 +48,48 @@
     <ClCompile Include="..\nes_emu\nes_util.cpp" />
     <ClCompile Include="..\nes_emu\Nes_Vrc6_Apu.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\fex\blargg_common.h" />
+    <ClInclude Include="..\fex\blargg_config.h" />
+    <ClInclude Include="..\fex\blargg_endian.h" />
+    <ClInclude Include="..\fex\blargg_errors.h" />
+    <ClInclude Include="..\fex\blargg_source.h" />
+    <ClInclude Include="..\fex\Data_Reader.h" />
+    <ClInclude Include="..\nes_emu\abstract_file.h" />
+    <ClInclude Include="..\nes_emu\apu_state.h" />
+    <ClInclude Include="..\nes_emu\blargg_common.h" />
+    <ClInclude Include="..\nes_emu\blargg_config.h" />
+    <ClInclude Include="..\nes_emu\blargg_endian.h" />
+    <ClInclude Include="..\nes_emu\blargg_source.h" />
+    <ClInclude Include="..\nes_emu\Blip_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Blip_Synth.h" />
+    <ClInclude Include="..\nes_emu\Effects_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Multi_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Nes_Apu.h" />
+    <ClInclude Include="..\nes_emu\Nes_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Nes_Cart.h" />
+    <ClInclude Include="..\nes_emu\Nes_Core.h" />
+    <ClInclude Include="..\nes_emu\Nes_Cpu.h" />
+    <ClInclude Include="..\nes_emu\nes_cpu_io.h" />
+    <ClInclude Include="..\nes_emu\nes_data.h" />
+    <ClInclude Include="..\nes_emu\Nes_Effects_Buffer.h" />
+    <ClInclude Include="..\nes_emu\Nes_Emu.h" />
+    <ClInclude Include="..\nes_emu\Nes_File.h" />
+    <ClInclude Include="..\nes_emu\Nes_Fme7_Apu.h" />
+    <ClInclude Include="..\nes_emu\Nes_Mapper.h" />
+    <ClInclude Include="..\nes_emu\Nes_Namco_Apu.h" />
+    <ClInclude Include="..\nes_emu\nes_ntsc.h" />
+    <ClInclude Include="..\nes_emu\nes_ntsc_impl.h" />
+    <ClInclude Include="..\nes_emu\Nes_Oscs.h" />
+    <ClInclude Include="..\nes_emu\Nes_Ppu.h" />
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Bg.h" />
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Impl.h" />
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Rendering.h" />
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Sprites.h" />
+    <ClInclude Include="..\nes_emu\Nes_State.h" />
+    <ClInclude Include="..\nes_emu\nes_util.h" />
+    <ClInclude Include="..\nes_emu\Nes_Vrc6_Apu.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>
     <RootNamespace>libquicknes</RootNamespace>
