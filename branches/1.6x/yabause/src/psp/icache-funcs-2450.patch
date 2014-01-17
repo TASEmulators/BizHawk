@@ -1,0 +1,60 @@
+diff -urN a/pspsdk-2450/src/user/Makefile.am b/pspsdk-2450/src/user/Makefile.am
+--- a/pspsdk-2450/src/user/Makefile.am	2009-01-09 03:15:40 +0900
++++ b/pspsdk-2450/src/user/Makefile.am	2009-02-10 16:24:00 +0900
+@@ -24,7 +24,7 @@
+ 
+ THREADMAN_OBJS = ThreadManForUser_0000.o ThreadManForUser_0001.o ThreadManForUser_0002.o ThreadManForUser_0003.o ThreadManForUser_0004.o ThreadManForUser_0005.o ThreadManForUser_0006.o ThreadManForUser_0007.o ThreadManForUser_0008.o ThreadManForUser_0009.o ThreadManForUser_0010.o ThreadManForUser_0011.o ThreadManForUser_0012.o ThreadManForUser_0013.o ThreadManForUser_0014.o ThreadManForUser_0015.o ThreadManForUser_0016.o ThreadManForUser_0017.o ThreadManForUser_0018.o ThreadManForUser_0019.o ThreadManForUser_0020.o ThreadManForUser_0021.o ThreadManForUser_0022.o ThreadManForUser_0023.o ThreadManForUser_0024.o ThreadManForUser_0025.o ThreadManForUser_0026.o ThreadManForUser_0027.o ThreadManForUser_0028.o ThreadManForUser_0029.o ThreadManForUser_0030.o ThreadManForUser_0031.o ThreadManForUser_0032.o ThreadManForUser_0033.o ThreadManForUser_0034.o ThreadManForUser_0035.o ThreadManForUser_0036.o ThreadManForUser_0037.o ThreadManForUser_0038.o ThreadManForUser_0039.o ThreadManForUser_0040.o ThreadManForUser_0041.o ThreadManForUser_0042.o ThreadManForUser_0043.o ThreadManForUser_0044.o ThreadManForUser_0045.o ThreadManForUser_0046.o ThreadManForUser_0047.o ThreadManForUser_0048.o ThreadManForUser_0049.o ThreadManForUser_0050.o ThreadManForUser_0051.o ThreadManForUser_0052.o ThreadManForUser_0053.o ThreadManForUser_0054.o ThreadManForUser_0055.o ThreadManForUser_0056.o ThreadManForUser_0057.o ThreadManForUser_0058.o ThreadManForUser_0059.o ThreadManForUser_0060.o ThreadManForUser_0061.o ThreadManForUser_0062.o ThreadManForUser_0063.o ThreadManForUser_0064.o ThreadManForUser_0065.o ThreadManForUser_0066.o ThreadManForUser_0067.o ThreadManForUser_0068.o ThreadManForUser_0069.o ThreadManForUser_0070.o ThreadManForUser_0071.o ThreadManForUser_0072.o ThreadManForUser_0073.o ThreadManForUser_0074.o ThreadManForUser_0075.o ThreadManForUser_0076.o ThreadManForUser_0077.o ThreadManForUser_0078.o ThreadManForUser_0079.o ThreadManForUser_0080.o ThreadManForUser_0081.o ThreadManForUser_0082.o ThreadManForUser_0083.o ThreadManForUser_0084.o ThreadManForUser_0085.o ThreadManForUser_0086.o ThreadManForUser_0087.o ThreadManForUser_0088.o ThreadManForUser_0089.o ThreadManForUser_0090.o ThreadManForUser_0091.o ThreadManForUser_0092.o ThreadManForUser_0093.o ThreadManForUser_0094.o ThreadManForUser_0095.o ThreadManForUser_0096.o ThreadManForUser_0097.o ThreadManForUser_0098.o ThreadManForUser_0099.o ThreadManForUser_0100.o ThreadManForUser_0101.o ThreadManForUser_0102.o ThreadManForUser_0103.o ThreadManForUser_0104.o ThreadManForUser_0105.o ThreadManForUser_0106.o ThreadManForUser_0107.o ThreadManForUser_0108.o ThreadManForUser_0109.o ThreadManForUser_0110.o ThreadManForUser_0111.o ThreadManForUser_0112.o ThreadManForUser_0113.o ThreadManForUser_0114.o ThreadManForUser_0115.o ThreadManForUser_0116.o ThreadManForUser_0117.o ThreadManForUser_0118.o ThreadManForUser_0119.o ThreadManForUser_0120.o ThreadManForUser_0121.o ThreadManForUser_0122.o ThreadManForUser_0123.o ThreadManForUser_0124.o ThreadManForUser_0125.o ThreadManForUser_0126.o 
+ 
+-UTILS_OBJS = UtilsForUser_0000.o UtilsForUser_0001.o UtilsForUser_0002.o UtilsForUser_0003.o UtilsForUser_0004.o UtilsForUser_0005.o UtilsForUser_0006.o UtilsForUser_0007.o UtilsForUser_0008.o UtilsForUser_0009.o UtilsForUser_0010.o UtilsForUser_0011.o UtilsForUser_0012.o UtilsForUser_0013.o UtilsForUser_0014.o UtilsForUser_0015.o UtilsForUser_0016.o UtilsForUser_0017.o UtilsForUser_0018.o UtilsForUser_0019.o UtilsForUser_0020.o UtilsForUser_0021.o UtilsForUser_0022.o UtilsForUser_0023.o UtilsForUser_0024.o 
++UTILS_OBJS = UtilsForUser_0000.o UtilsForUser_0001.o UtilsForUser_0002.o UtilsForUser_0003.o UtilsForUser_0004.o UtilsForUser_0005.o UtilsForUser_0006.o UtilsForUser_0007.o UtilsForUser_0008.o UtilsForUser_0009.o UtilsForUser_0010.o UtilsForUser_0011.o UtilsForUser_0012.o UtilsForUser_0013.o UtilsForUser_0014.o UtilsForUser_0015.o UtilsForUser_0016.o UtilsForUser_0017.o UtilsForUser_0018.o UtilsForUser_0019.o UtilsForUser_0020.o UtilsForUser_0021.o UtilsForUser_0022.o UtilsForUser_0023.o UtilsForUser_0024.o UtilsForUser_0025.o UtilsForUser_0026.o 
+ 
+ INTERRUPT_OBJS = InterruptManager_0000.o InterruptManager_0001.o InterruptManager_0002.o InterruptManager_0003.o InterruptManager_0004.o InterruptManager_0005.o InterruptManager_0006.o InterruptManager_0007.o InterruptManager_0008.o InterruptManager_0009.o 
+ 
+diff -urN a/pspsdk-2450/src/user/UtilsForUser.S b/pspsdk-2450/src/user/UtilsForUser.S
+--- a/pspsdk-2450/src/user/UtilsForUser.S	2009-01-09 03:15:40 +0900
++++ b/pspsdk-2450/src/user/UtilsForUser.S	2009-02-10 16:23:29 +0900
+@@ -77,3 +77,9 @@
+ #ifdef F_UtilsForUser_0024
+ 	IMPORT_FUNC	"UtilsForUser",0xFB05FAD0,sceKernelIcacheReadTag
+ #endif
++#ifdef F_UtilsForUser_0025
++	IMPORT_FUNC	"UtilsForUser",0x920F104A,sceKernelIcacheInvalidateAll
++#endif
++#ifdef F_UtilsForUser_0026
++	IMPORT_FUNC	"UtilsForUser",0xC2DF770E,sceKernelIcacheInvalidateRange
++#endif
+diff -urN a/pspsdk-2450/src/user/psputils.h b/pspsdk-2450/src/user/psputils.h
+--- a/pspsdk-2450/src/user/psputils.h	2009-01-09 03:15:40 +0900
++++ b/pspsdk-2450/src/user/psputils.h	2009-02-10 16:27:07 +0900
+@@ -58,12 +58,12 @@
+ void sceKernelDcacheWritebackInvalidateAll(void);
+ 
+ /**
+-  * Write back a range of addresses from data cache to memory
++  * Write back a range of addresses from the data cache to memory
+   */
+ void sceKernelDcacheWritebackRange(const void *p, unsigned int size);
+ 
+ /**
+-  * Write back and invalidate a range of addresses in data cache
++  * Write back and invalidate a range of addresses in the data cache
+   */
+ void sceKernelDcacheWritebackInvalidateRange(const void *p, unsigned int size);
+ 
+@@ -72,6 +72,16 @@
+   */
+ void sceKernelDcacheInvalidateRange(const void *p, unsigned int size);
+ 
++/** 
++  * Invalidate the instruction cache
++  */
++void sceKernelIcacheInvalidateAll(void);
++
++/**
++  * Invalidate a range of addresses in the instruction cache
++  */
++void sceKernelIcacheInvalidateRange(const void *p, unsigned int size);
++
+ /** Structure for holding a mersenne twister context */
+ typedef struct _SceKernelUtilsMt19937Context {
+ 	unsigned int 	count;

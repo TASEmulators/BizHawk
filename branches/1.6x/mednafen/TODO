@@ -1,0 +1,345 @@
+!!! Make sure all legal notices and licenses for DLLs are included in the Win32 binary distribution !!!
+
+Document the major changes in Mednafen 0.9.0 over Mednafen 0.8.x somewhere(NEWS?).  A list to get started:
+	Sega Genesis/Mega Drive emulation, from Genesis Plus, Genesis Plus GX(EEPROM emulator, general information), Yabause(68K emulator), Gens(YM2612 emulator), and
+	of course the Z80 emulator core from FUSE already used in SMS and NGP emulation.
+
+	Virtual Boy emulation(using the V810 emulator forked(and optimized and otherwise improved!) from Reality Boy ages ago for use in PC-FX emulation, along
+	with original code for everything else).
+
+	Multi-threaded CD-ROM reading code.
+
+	Significantly more accurate(though not entirely perfect, and slower) PCE emulation.
+	
+	The "pce_fast" emulation module, which is a fork of 0.8.x optimized for speed, at the expense of *generally*-unimportant accuracy.
+
+	Various accuracy improvements to PC-FX emulation, including ADPCM IRQ generation(fixes Sparkling Feather),
+	correcting the ADPCM decoding algorithm, a new slightly more accurate V810 emulation mode to fix glitches in
+	Chip Chan Kick and Kishin Douji Zenki FX, greatly improved accuracy of KING->RAINBOW block transfers, and an 
+	interrupt controller fix that allows for the BIOS PhotoCD player to work.  The 2 switches on gamepads are also emulated
+	now.
+
+	A new experimental/unstable video driver, "overlay".
+
+	"Slow forwarding" feature.  Mednafen is too good for "slow-mo". ;b
+
+	Support for WSR(WonderSwan sound rip format) playback.
+
+	Support for RTC in GBA games(requires a "type" file).
+
+!!! Initialize statically-allocated Blip_Buffer objects(via clear() method) and reset any corresponding last-value variables
+on game load for each emulated system.
+
+Rewrite MDFNFILE in file.cpp to separate classes, ArchiveReader(takes a directory or archive filename) and ArchiveMemberReader(reads a file in a directory or a file
+in an archive).
+
+Fix C68K generator to work correctly when cross-compiling to a platform whose binaries can't run(through automatic emulation)
+on the build platform.
+
+In drivers/video.cpp, see if replacing "SDL_FillRect(screen, NULL, 0);" in ClearBackBuffer() with custom software-only
+code to clear it fixes framerate degradation problems on Windows when env var SDL_VIDEODRIVER=directx and setting vdriver=sdl
+Additionally, optimize ClearBackBuffer() to not clear parts of the screen that will be overwritten by normal non-OSD
+blitting, and do testing for the vdriver=overlay case.
+
+In drivers/video.cpp, allocate video scaler pixel buffers separately from the SDL_Surface itself, and realloc() to larger
+sizes when necessary(but never realloc() to smaller sizes), and free() only on video deinitialization.
+
+Add a setting to disallow joystick(or keyboard even) input when focus is lost.
+
+Switch hotkey/command key processing over to be event-based rather than instantaneous-state based.  Consider implications for ckdelay, hotkey
+logical AND mode.
+
+Systems with RTC emulation: Fix code to NOT use localtime(), which has consistency issues due to relying on external state(IE time zones), at
+			    any time other than virtual power toggle/init.
+
+YM2612:
+	Timer fixes?
+
+Internationalization issues:
+	Radix(decimal point) character:
+		Remove world_strtod().
+		Use trio functions solely for string<->floating-point conversion(in settings code), and ensure that trio is using the current locale.
+
+	Alter similar translatable strings in various emulation modules to be the same strings.
+	
+	Ensure all important translatable strings are marked as such.
+
+	Update Russian and German translations.
+
+	Filesystem character coding vs UTF8 internal encoding vs locale.
+
+	Replace string/ConvertUTF.cpp with iconv() usage.
+
+	Wrap iconv() in C++ classes.
+
+Documentation:
+	Document systems with a debugger available.
+
+Netplay:
+	Simplify name resolution and eventually remove hackish-sort-preference for IPv4 addresses over IPv6(in 2014 maybe?), split functionality
+	into different components:
+		NetServer (maybe, to support *potentially* lower-latency P2P-style netplay)
+		NetClient (keep, and rework, select() type functionality in this class)
+		|-NetAddress
+		|-NetConnection
+
+	Consider handling a recv() return value of 0 differently.
+
+
+Settings:
+	Quote(and escape) string-type settings in the configuration file.
+
+	Protect settings structures and objects with mutexes(for thread safety when using MDFNI_SetSetting() while the emulator is running)
+
+	Optional manually-created per-game setting override files(or one big database file per system?).
+
+	Save some emulation-related settings in save states, and temporarily(until another save state load, or a virtual power toggle via F11) make
+	them active.  Consider implications for netplay, state rewinding, and PSX memory card emulation(slots can be disabled via settings).
+	Would require revamping large amounts of code.
+	
+
+Video:
+	Refactor hq2x, scale2x, 2xsai, etc. filtering code into classes based off an abstract base class.
+
+	Add a "tblur.handle_gamma" setting that, when enabled, will cause gamma-correct temporal blurring.
+
+Sound:
+	Handle sound being disabled.
+
+	Open sound device in the game thread, and close it in the game thread, since the game thread is what writes to it.
+
+Backup memory:
+	SRAM delta log and/or backing up of previous save game files.
+
+PCE_FAST:
+	MWR latching!
+
+
+PCE:
+	<AamirM> <Ki_> one thing about timer inside the HuC6280
+	<AamirM> <Ki_> the 7-bit timer is decremented when MSB of the prescaler changes from 1 to 0.
+	<AamirM> <Ki_> (assuming the prescaler is an up counter)
+	<AamirM> <Ki_> the prescaler seems to be a 10-bit counter
+	<AamirM> <Ki_> which is reset to zero when zero is written to the control bit ($0c01.bit0)
+	<AamirM> <Ki_> if the control bit is written to zero when the prescaler is greater than 512 (i.e. the MSB is 1),
+	<AamirM> <Ki_> prescaler is reset and the MSB changes from 1 --> 0
+	<AamirM> <AamirM> ah..so the timer decrements
+	<AamirM> <Ki_> exactly
+	<AamirM> <Ki_> and if the timer value was zero at that point, /TIRQ will be asserted
+
+	Fix HuC6280 op TMA with multiple bits set.
+
+	Determine startup state of various chips(including PSG).
+
+	Fix sprite 0 IRQ timing.
+
+	Ensure all state is being saved to save states.
+
+	Fix VRAM->VRAM DMA, SAT DMA timing, and CPU-halting handling with new information from tests on a real system.
+
+	Fix broken SuperGrafx window emulation.
+
+	If power/reset is triggered in the debugger, force a return from MDFNI_Emulate(); either that or clear
+	the audio buffer on power/reset.  To fix a potential sound buffer overflow issue.  (Actually, that won't happen
+	as-is, but
+
+	Emulate disabled button/output when CLR is active on gamepad reads(might need to adjust the multitap code
+	to buffer data in this case?).
+
+	Double-check timer IRQ semantics vs real system(what reads and writes acknowledge IRQs, cli-then-ack behavior, 
+	mask register write effective delay, etc.).
+
+GBA:
+	GSF multiboot support, and make sure it works(and GSF loading in general) on big-endian platforms.
+
+SMS:
+	Rewrite VDP execution loop so events happen on the correct cycles more or less, and to remove the ugly IRQ-versus-
+	IRQ-bit-status-poll hacks.  Use "z80_tstates" to do this.
+
+	Simplify and improve(including TH latching of VDP H-counter) IO emulation, and use Genesis controller/gamepad
+	code(abstract it out of the Genesis code, into hw_input/sega_db9/* or something similar)
+
+	Galactic Protector input when FM sound is enabled.
+
+	Actually save/restore YM2413 data in save states.
+
+NGP:
+	Implement low-level BIOS and auxillary hardware emulation, with information provided by Judge.
+
+VB:
+	Check if Red Alarm's sound effects are supposed to be totally wonky when various sound effects "overlap".
+
+	Look into getting VIP SCANRDY status bit emulated correctly.
+
+Genesis:
+	Fix VDP H-counter read value(write test program if necessary).
+
+	Add Z80 IRQ ack hack which can be controlled by a setting.
+
+	Event system in C68K, fix possible problems with excessively long 68K instructions and the Z80 IRQ
+	not being handled.
+
+	Mouse emulation is borked, fix it.
+
+	Implement "Virtua Racing" SVP emulation via code supplied by notaz.
+
+PC-FX:
+	cdrom/scsicd.cpp
+		Allow commands that require medium access to complete successfully if there's no disc present and 
+		the "alloc size" field is 0.
+
+		Generate SCSI errors when reserved fields are set to something other than 0(especially cdb[1] and the final cdb
+		entry).
+
+		Complete mode page emulation: especially the CD audio control page, tests need to be done on the real
+		system to see if the volume fields have any effect, and if it's possible to have both L and R channels active
+		(0x3) on a single output port, or if only one is allowed per output port.
+
+		Determine what data command 0xDE, mode 0x03, match 0xB0 is returning(the PhotoCD player uses it, it may
+		contain information encoding the LBA of the filesystem).
+		Doing this will require obtaining various CD-i, CD-i Ready, and PhotoCD discs for examination.
+
+		Command 0x42(READ SUB-CHANNEL):
+			Add proper MCN and ISRC support.
+
+			Figure out the weirdness when the ISRC is requested for a data track.
+
+			Implement Q subchannel interpolation(perhaps globally).
+	
+			Only return Q subchannel data for audio operations?
+
+			Emulate audio completion(or lack thereof) status correctly(if completed successfully, 
+			0x13, and from then on 0x15, I believe).
+
+			Investigate audio status code when scanning.
+
+	mempeekhw
+
+	movbsu, cache load/store breakpoints
+
+	Figure out 1M/4M DRAM mode differences on KING [low priority]
+
+	Set pcfx.rainbow.chromaip default to 0 if the glitch in Deep Blue Fleet when viewing a ship from the side doesn't occur on a real PC-FX.
+
+	Determine correct relative volume levels between ADPCM, CD-DA, and PSG.
+
+	Investigate reported discrepancy between real PC-FX and Mednafen when uploading waveform to PSG by rewriting
+	the channel number/index before each sample write(on a real PC-FX, it doesn't work; IE, likely either the sample
+	writes are being ignored, or the waveform memory index is being reset on channel number/index write).
+
+	V810 MUL or MULU overflow flag logic is likely wrong(can't remember which off hand ATM; confirm, and fix).
+
+NES:
+	Add some kind of protection against FDS corruption when exiting the emulator in the middle of a disk write.
+
+	Fix apparent sound skew(lost cycles?) messing up blargg's DMC tests.
+
+	Fix weird graphical glitches in Quattro Sports: BMX Simulator
+
+	nes/boards/vrc7.cpp (slot save state saving)
+
+Safety fopen() replacement for preventing overwriting of files.
+
+smem_seek() offset signedness fix
+
+Reexamine the code for choosing which emulation module to use.  Highest priority to file extension(as long as the extension is unique to a system,
+"bin" is no unique for example), and special magic test functions if that fails.
+
+Investigate reports of undefined symbols(in V810 FPU emulation code, and the WonderSwan x86 disassembler, and possibly other places).  There ARE references to
+undefined symbols, but the symbols that reference them are never referenced themselves.  We should probably fix this.
+
+Add dummy copy constructors to lots of our new classes.
+
+TODO:  Add a "SaveStateMD5" member to the MDFNGI struct, to allow the sharing of battery-backed save files between PCE and PCE_FAST
+without allowing save states to be shared.
+
+TODO: Clean up multithreaded CD-ROM reading code.  Add fixes for drives that don't support raw subchannel reading and/or raw reading.  Add fixes
+for drives that return borked(from the wrong sectors) subchannel data.  Add fixes for drives that refuse to read garbage mode 1 sectors(or fix readahead to not read
+the pregap between audio and data tracks).
+
+TODO: Do locking in drivers/remote.cpp
+
+TODO: Consider locking in MDFNI_printf() due to the indentation global variable.
+
+Alter MD5 hash of games based on the module's name for save states etc.?
+
+Emulation "module" namespace encapsulation.
+
+Save state timestamp-related variables consistency checks to avoid the possibility of buffer overruns and, less importantly, locking up the emulator
+by use of malicious save states.
+
+Investigate excessively long pause time after buffer underrun with ALSA and Intel HDA.
+
+Rewrite the cheat interface, and add support for multiple patches per named cheat.
+
+Movie recording non-overwriting.
+
+Clean up intialization/deinitialization code so that more than one game can be loaded per Mednafen run.  Including cleaning up the
+ sound file player interface to not trash a system's MDFNGI struct. 
+ (This is a lot harder than it sounds! :b)
+
+Debugger(general):
+	Disassembly address forcible resynchronization has inconsistent results across different emulated systems; make
+	them consistent.
+
+	assert() in cdrom/scsicd.cpp on line 2629 is being triggered; "loading a save state while
+	stopped in the debugger brings up the message"
+
+	Breakpoint logger mode(instead of breaking, output the instruction address that caused the breakpoint,
+	and which breakpoint was triggered(assuming that address+breakpoint pair wasn't outputted to the text file already).
+
+	Add opcode breakpoints to PC-FX and NES debuggers.
+
+	Debugger memory usage map and per-address-space breakpoints.
+
+	Support for multi-line entries in the log viewer.
+
+	fix various debugger problems(first, register updates when in stepping mode, or when new values are inputted in the register editor)
+
+	Up-to-date register updates(for things like timer counter registers) during debugger while in step mode.
+
+	Sprite viewer
+
+	BG map viewer
+
+	Full undefined behavior logging
+
+Input macro recording.
+
+Return -1 on game load error in main(), -2(maybe!) for unknown format.
+
+
+
+************
+**Old TODO**:
+************
+
+The following games are broken to some extent:
+
+Crystalis:		Mostly working, but the screen jumps around during
+			dialogue.  It apparently resets the MMC3 IRQ counter
+			mid-scanline.  It'll require low-level PPU and MMC3
+			IRQ counter emulation to function properly.
+
+Kickmaster:		IRQ occurs a few CPU cycles too late, interferes with NMI routine,
+			and causes the game to lock up after the second boss.  Luckily, there
+			are passwords, at least.
+			*"FIXED" BY HACK*
+
+Star Wars(PAL Beam Software version):
+			MMC3 IRQ occurs when it shouldn't, similar to the problem in
+			Kickmaster.
+			*"FIXED" BY HACK*
+
+*** General Features:
+
+ Fix possible UNIF crashes(if no PRGx or CHRx chunks exist, it may crash,
+ due to changes made in 0.92).
+
+*** Emulation:
+
+ Figure out what mapper 113 really is.
+
+ Sound frame count stuff on PAL games(is it correct?).
+ 
+ Fix Zapper emulation(one version of Chiller still doesn't always work correctly).

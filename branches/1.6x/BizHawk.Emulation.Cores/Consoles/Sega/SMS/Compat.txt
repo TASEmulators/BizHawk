@@ -1,0 +1,23 @@
+﻿======= SMS compatibility issues =======
+
+* NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
+  In NTSC mode, it is impossible to start a game, however, it is possible on
+  other emulators.
+  Need to give it a test on Everdrive, and eventually investigate its NTSC behavior,
+  but don't really consider it super-high priority since it works correctly in PAL mode.
+
+* Desert Strike - you can enter the map screen but cannot leave.
+* Korean mapper needs to be implemented for SG-1000 games.
+
+Could probably stand to do another pass on SMS emulation after Genesis is working.
+
+======= Game Gear compatibility issues =======
+
+* Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
+  fix it, but so far, not without breaking other games.
+
+======= SG-1000 compatibility checklist =======
+
+The Castle      Dies, mapper issue
+Othello         Doesnt boot
+Terebi Oekaki   Req Graphic Board peripheral

@@ -1,0 +1,63 @@
+﻿-------------------------------
+BizHawk.Emulation Project Notes
+-------------------------------
+
+1) Please keep this project free of non-portable external references. 
+   Windows.Forms should not be referenced, nor System.Windows.Drawing, nor XNA, nor SlimDX, etc.
+   This project should be very close to vanilla C# consisting primarily of basic data manipulation.
+   
+2) If you want to include ie Winforms code for something such as a debugger, this should be placed in
+   a separate project. That project does not yet exist at the time of this writing. If you are creating
+   a debugger, please talk to me (vecna) and we'll figure out the right place to put it.
+   
+3) The current plan is that all actual emulation cores go in this assembly.
+   At least one reason for this is that .NET will not inline calls across assemblies.
+   At this time, please do not separate emulation into multiple assemblies - this is negotiable, but
+   for now this is the plan.
+
+4) IEmulator exposes a DeterministicEmulation property. When enabled, a well-behaving core must
+   use strictly deterministic (TAS-safe, not having de-syncs) emulation, regardless of the performance cost.
+   When disabled, the core is free to take whatever shortcuts it deems reasonable for performance.
+   
+   Note that in many cases, frameskipping will not be possible in Deterministic mode. In that case the 
+   client should still be free to request a frameskip, but the core will ignore this request and do a full 
+   frame execution.
+   
+   Deterministic means exactly that, no more, no less; it's not a synonym for 'max emulation quality'.
+      
+5) Classes should default sealed. Make unsealed only if the class is _designed for inheritance_.
+
+6) For GENERATED CPUs, DO NOT UPDATE THE GENERATED FILES DIRECTLY!!!!!!!!!!!!!!
+   Open the CpuCoreGenerator solution and make your changes there. Run the program to regenerate your cpus.
+   CpuCoreGenerator is a separate solution and it may not be obvious that it is there.
+
+7) The new new plan is really for cores to be native. Which was actually the original plan.
+   Note that native doesn't _necessarily_ mean C++.
+
+---------------
+Emulation Notes
+---------------
+
+1) I'm not super happy with the IController interfaces. If someone has suggestions on how they could be 
+   improved, I'm all for it. Although API changes would break all emulators, controls are typically pretty
+   simple to update.
+   
+2) Various improvements to ISoundProvider, IVideoProvider, and IEmulator are under consideration.
+   Feedback is appreciated.
+   
+   ISoundProvider:
+    * Current implementations generate garbage on each frame, although the API does not _require_
+      garbage to be created, it encourages it because you cannot provide a large buffer and specify 
+      a smaller number of samples to fill. Also the BufferAsync generates garbage and probably the 
+      SoundMixer. It's not really clear to me how much of a problem generating garbage is on PC.
+     
+   IVideoProvider:
+    * Some hints about different aspect ratios and non-square pixels could be useful.
+    * For some arcades, screen rotations could be important, but we could assign this to be
+      the responsibility of the emulator/video provider rather than the blitter.
+    * I suppose NTSC/PAL (ie: target fps) could be useful also.
+   
+   IEmulator:
+    * IEmulator should provide metadata about what Options it recognizes.
+    * Possibly, a lot of the metadata type functions should be removed from IEmulator and added to new
+      interface (such as IConsole, IArcade, IComputer, whatever)
