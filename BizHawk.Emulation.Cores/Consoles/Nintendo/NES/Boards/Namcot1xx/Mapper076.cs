@@ -1,8 +1,16 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka NAMCOT-3446
-	public sealed class Mapper076 : Namcot108Board_Base
+	public sealed class Mapper076 : NES.NESBoardBase
 	{
+		// config
+		int chr_bank_mask_2k;
+		int prg_bank_mask_8k;
+		// state
+		int[] prg = new int[4];
+		int[] chr = new int[4];
+		int port;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -15,29 +23,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			BaseSetup();
 			SetMirrorType(EMirrorType.Vertical);
+			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
+			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+
+			prg[3] = prg_bank_mask_8k;
+			prg[2] = prg_bank_mask_8k - 1;
+
+			Cart.wram_size = 0;
 
 			return true;
 		}
 
-		int RewireCHR(int addr)
+		public override void WritePRG(int addr, byte value)
 		{
-			int mapper_addr = addr >> 1;
-			int bank_1k = mapper.Get_CHRBank_1K(mapper_addr + 0x1000);
-			int ofs = addr & ((1 << 11) - 1);
-			return (bank_1k << 11) + ofs;
+			switch (addr & 1)
+			{
+				case 0:
+					port = value & 7;
+					break;
+				case 1:
+					switch (port)
+					{
+						case 6: prg[0] = value & 63 & prg_bank_mask_8k; break;
+						case 7: prg[1] = value & 63 & prg_bank_mask_8k; break;
+
+						case 2: chr[0] = value & 63 & chr_bank_mask_2k; break;
+						case 3: chr[1] = value & 63 & chr_bank_mask_2k; break;
+						case 4: chr[2] = value & 63 & chr_bank_mask_2k; break;
+						case 5: chr[3] = value & 63 & chr_bank_mask_2k; break;
+					}
+					break;
+			}
 		}
 
+		public override byte ReadPRG(int addr)
+		{
+			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
+		}
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000) return VROM[RewireCHR(addr)];
-			else return base.ReadPPU(addr);
-		}
-		public override void WritePPU(int addr, byte value)
-		{
-			if (addr < 0x2000) { }
-			else base.WritePPU(addr, value);
+			if (addr < 0x2000)
+				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
+			else
+				return base.ReadPPU(addr);
 		}
 	}
 }
