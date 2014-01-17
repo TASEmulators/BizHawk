@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (Cart.board_type)
 			{
-				case "MAPPER079":
+				case "MAPPER078":
 					break;
 				case "IREM-HOLYDIVER":
 					holydiver = true;

@@ -449,6 +449,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			NES nes = new NES();
 			nes.cart = cart;
+			Type ret = null;
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
 				{
@@ -464,11 +465,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						board.InitialRegisterValues = properties;
 						if (board.Configure(origin))
 						{
+#if DEBUG
+							if (ret != null)
+								throw new Exception(string.Format("Boards {0} and {1} both responded to Configure!", ret, type));
+							else
+								ret = type;
+#else
 							return type;
+#endif
 						}
 					}
 				}
-			return null;
+			return ret;
 		}
 
 		/// <summary>
