@@ -1,4 +1,5 @@
-﻿//27
+﻿using System;
+//27
 
 //TODO - could merge functionality with 192 somehow
 
@@ -19,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			VRAM = new byte[2048];
+			if (Cart.chr_size == 0)
+				throw new Exception("Mapper074 carts MUST have chr rom!");
 			BaseSetup();
 			return true;
 		}

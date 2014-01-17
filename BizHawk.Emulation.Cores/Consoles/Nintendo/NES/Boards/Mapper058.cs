@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+			AssertChr(8, 16, 32, 64);
+			AssertPrg(16, 32, 64, 128, 256);
 
 			SetMirrorType(EMirrorType.Vertical);
 

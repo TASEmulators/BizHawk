@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int prg_page;
 		public bool prg_mode;
+		public int prg_byte_mask;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -53,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 			prg_page = 0;
 			prg_mode = false;
+			prg_byte_mask = Cart.prg_size * 1024 - 1;
 			return true;
 		}
 
@@ -82,11 +84,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (prg_mode == false)
 			{
-				return ROM[((prg_page >> 1) * 0x8000) + addr];
+				return ROM[(((prg_page >> 1) * 0x8000) + addr) & prg_byte_mask];
 			}
 			else
 			{
-				return ROM[(prg_page * 0x4000) + (addr & 0x03FFF)];
+				return ROM[((prg_page * 0x4000) + (addr & 0x03FFF)) & prg_byte_mask];
 			}
 		}
 	}

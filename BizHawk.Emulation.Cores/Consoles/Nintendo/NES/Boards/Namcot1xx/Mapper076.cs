@@ -1,3 +1,6 @@
+using BizHawk.Common;
+
+
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka NAMCOT-3446
@@ -67,6 +70,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return VROM[addr & 0x7ff | chr[addr >> 11] << 11];
 			else
 				return base.ReadPPU(addr);
+		}
+		public override void SyncState(BizHawk.Common.Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg", ref prg, false);
+			ser.Sync("chr", ref chr, false);
+			ser.Sync("port", ref port);
 		}
 	}
 }
