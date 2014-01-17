@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public virtual void WriteWRAM(int addr, byte value)
 			{
 				if(wram != null)
-					wram[addr] = value;
+					wram[addr & wram_mask] = value;
 			}
 
 			private int wram_mask;
