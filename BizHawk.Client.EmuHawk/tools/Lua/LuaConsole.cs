@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -16,12 +17,15 @@ namespace BizHawk.Client.EmuHawk
 		// TODO:
 		// remember column widths and restore column width on restore default settings
 		// column click
+        // ^ done the sorting - MightyMar
 		// column reorder
 		public EmuLuaLibrary LuaImp { get; set; }
 
 		private readonly LuaFileList _luaList;
 		private int _defaultWidth;
 		private int _defaultHeight;
+        private bool _sortReverse;
+        private string _lastColumnSorted;
 
 		public bool UpdateBefore { get { return true; } }
 		public void UpdateValues() { }
@@ -37,6 +41,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaConsole()
 		{
+            _sortReverse = false;
+            _lastColumnSorted = String.Empty;
 			_luaList = new LuaFileList
 			{
 				ChangedCallback = SessionChangedCallback,
@@ -1003,7 +1009,71 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+        /// <summary> -MightyMar
+        /// Sorts the column Ascending on the first click and Descending on the second click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LuaListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            String columnToSort = LuaListView.Columns[e.Column].Text;
+            List<LuaFile> luaListTemp = new List<LuaFile>();
+            if (columnToSort != _lastColumnSorted)
+            {
+                _sortReverse = false;
+            }
+
+            //For getting the name of the .lua file, for some reason this field is kept blank in LuaFile.cs?
+            //The Name variable gets emptied again near the end just in case it would break something.
+            for (int i = 0; i < _luaList.Count; i++)
+            {
+                String[] words = Regex.Split(_luaList[i].Path, ".lua");
+                String[] split = words[0].Split('\\');
+
+                luaListTemp.Add(_luaList[i]);
+                luaListTemp[i].Name = split[split.Count() - 1];
+            }
+
+            //Script, Path
+            switch (columnToSort)
+            {
+                case "Script":
+                    if (_sortReverse)
+                    {
+                        luaListTemp = luaListTemp.OrderByDescending(x => x.Name).ThenBy(x => x.Path).ToList();
+                    }
+                    else
+                    {
+                        luaListTemp = luaListTemp.OrderBy(x => x.Name).ThenBy(x => x.Path).ToList();
+
+                    }
+                    break;
+                case "Path":
+                    if (_sortReverse)
+                    {
+                        luaListTemp = luaListTemp.OrderByDescending(x => x.Path).ThenBy(x => x.Name).ToList();
+                    }
+                    else
+                    {
+                        luaListTemp = luaListTemp.OrderBy(x => x.Path).ThenBy(x => x.Name).ToList();
+                    }
+                    break;
+            }
+
+            for (int i = 0; i < _luaList.Count; i++)
+            {
+                _luaList[i] = luaListTemp[i];
+                _luaList[i].Name = String.Empty;
+            }
+            UpdateDialog();
+            _lastColumnSorted = columnToSort;
+            _sortReverse = !_sortReverse;
+        }
+
+
+
 		#endregion
+
 
 		#endregion
 	}
