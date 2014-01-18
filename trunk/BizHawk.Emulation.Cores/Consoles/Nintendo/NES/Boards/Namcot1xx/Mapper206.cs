@@ -18,8 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "NAMCOT-3405": //side pocket (J)
 					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
-					throw new Exception("TODO - test please");
-					//break;
+					break;
 				case "NAMCOT-3406": //karnov (J)
 					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
