@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "IREM-NROM-256":
 				case "NAMCOT-3303":
 				case "NAMCOT-3311":
+				case "NAMCOT-3312":
 					AssertPrg(8, 16, 32); 
 					AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
