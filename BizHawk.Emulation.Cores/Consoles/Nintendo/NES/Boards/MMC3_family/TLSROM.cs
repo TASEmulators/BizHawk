@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TENGEN-800037": //Alien Syndrome (U)
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
+				case "MAPPER118":
+					break;
 				default:
 					return false;
 			}
