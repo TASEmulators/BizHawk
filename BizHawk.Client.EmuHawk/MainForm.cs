@@ -3036,8 +3036,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void coreSelectionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 
 		private void gBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3053,6 +3051,12 @@ namespace BizHawk.Client.EmuHawk
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
+		}
+
+		private void coreSelectionToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
+			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 	}
 }
