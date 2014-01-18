@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER004":
 					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
+				case "HVC-TBROM":
 					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
