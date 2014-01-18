@@ -28,8 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "NAMCOT-3413": //pro yakyuu family stadium (J)
 					AssertPrg(64); AssertChr(32); AssertVram(0); AssertWram(0);
-					throw new Exception("TODO - test please");
-					//break;
+					break;
 				case "NAMCOT-3414": //family boxing (J)
 					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
@@ -39,12 +38,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NAMCOT-3416": //dragon slayer IV (J) (aka legacy of the wizard)
 					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
-				case "NAMCOT-3417": //spy kid (J)
+				case "NAMCOT-3417": //spy kid (J), R.B.I. Baseball 2.7z|Pro Yakyuu - Family Stadium '87 (J) [!]
 					//apparently this shows up as namcot 108 as well but perhaps there is no difference
 					//(is this game older than the other namcot 109 games?)
 					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
-					throw new Exception("TODO - test please");
-					//break;
+					break;
 				case "TENGEN-800030": // Pac-Mania (U), etc
 					AssertPrg(64, 128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
 					break;
