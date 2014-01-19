@@ -1,4 +1,5 @@
-﻿using BizHawk.Common;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -76,52 +77,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case 0x1000:
+					chr_banks[0] &= 0xff00;
 					chr_banks[0] |= value;
 					break;
 				case 0x1001:
+					chr_banks[1] &= 0xff00;
 					chr_banks[1] |= value;
 					break;
 				case 0x1002:
+					chr_banks[2] &= 0xff00;
 					chr_banks[2] |= value;
 					break;
 				case 0x1003:
+					chr_banks[3] &= 0xff00;
 					chr_banks[3] |= value;
 					break;
 				case 0x1004:
+					chr_banks[4] &= 0xff00;
 					chr_banks[4] |= value;
 					break;
 				case 0x1005:
+					chr_banks[5] &= 0xff00;
 					chr_banks[5] |= value;
 					break;
 				case 0x1006:
+					chr_banks[6] &= 0xff00;
 					chr_banks[6] |= value;
 					break;
 				case 0x1007:
+					chr_banks[7] &= 0xff00;
 					chr_banks[7] |= value;
 					break;
 
 				case 0x2000:
+					chr_banks[0] &= 0x00ff;
 					chr_banks[0] |= (value << 8);
 					break;
 				case 0x2001:
+					chr_banks[1] &= 0x00ff;
 					chr_banks[1] |= (value << 8);
 					break;
 				case 0x2002:
+					chr_banks[2] &= 0x00ff;
 					chr_banks[2] |= (value << 8);
 					break;
 				case 0x2003:
+					chr_banks[3] &= 0x00ff;
 					chr_banks[3] |= (value << 8);
 					break;
 				case 0x2004:
+					chr_banks[4] &= 0x00ff;
 					chr_banks[4] |= (value << 8);
 					break;
 				case 0x2005:
+					chr_banks[5] &= 0x00ff;
 					chr_banks[5] |= (value << 8);
 					break;
 				case 0x2006:
+					chr_banks[6] &= 0x00ff;
 					chr_banks[6] |= (value << 8);
 					break;
 				case 0x2007:
+					chr_banks[7] &= 0x00ff;
 					chr_banks[7] |= (value << 8);
 					break;
 
