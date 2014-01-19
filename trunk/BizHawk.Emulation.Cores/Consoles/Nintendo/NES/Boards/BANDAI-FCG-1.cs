@@ -2,32 +2,40 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//AKA mapper 16 & 159
 	/*
-		Example Games:
-	--------------------------
-	Dragon Ball - Dai Maou Jukkatsu      (016)   Works
-	Dragon Ball Z Gaiden                 (016)   Works
-	Dragon Ball Z 2                      (016)   Works
-	Rokudenashi Blues                    (016)   Works
-	Akuma-kun - Makai no Wana            (016)   Works
-	Dragon Ball Z - Kyoushuu! Saiya Jin  (159)   Works
-	SD Gundam Gaiden                     (159)   Works
-	Magical Taruruuto Kun 1, 2           (159)   Works
+	I'm breaking FCG boards into 7 main types:
 	
-	PRG_ROM: 128KB
-	PRG_RAM: None
-	CHR-ROM: 128KB
-	CHR_RAM: None
-	No Batter
-	Mapper controlled mirroring
-	No CIC present
+	[1] FCG-1, FCG-2: regs at 6000:7fff.
+	    FCG-3: regs at 8000:ffff.  one of the following at 6000:7fff:
+	[2]   nothing 
+	[3]   seeprom (1kbit)
+	[4]   seeprom (2kbit)
+	[5]   sram (8kbyte) (SEE SIZE NOTES BELOW)
+	[6] Datach Joint ROM System: daughterboard setup (DON'T KNOW MUCH ABOUT THIS)
+	[7] Non-existant zombie board: regs are at 6000:ffff and 2kbit seeprom is present
+
+	iNES #16 refers to [7], which ends up working correctly for most [1], [2], or [4] games.
+	iNES #153 refers to [5], theoretically.
+	iNES #157 refers to [6], theoretically.
+	iNES #159 refers to [3], theoretically.
+	
+	We try to emulate everything but [5] and [6] here.
+	
+	Size notes:
+	chr regs are 8 bit wide and swap 1K at a time, for a max size of 256K chr, always rom.
+	prg reg is 4 bit wide and swaps 16K at a time, for a max size of 256K prg.
+	[5] is a special case; it has 8K of vram and uses some of the chr banking lines to handle 512K of prgrom.
+	I have no idea what [6] does.
+	Every real instance of [1], [2], [3], [4] had 128K or 256K of each of chr and prg.
 	*/
 
 	public sealed class BANDAI_FCG_1 : NES.NESBoardBase 
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;
+
+		bool regs_prg_enable;
+		bool regs_wram_enable;
 
 		//regenerable state
 		IntBuffer prg_banks_16k = new IntBuffer(2);
@@ -62,26 +70,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
-				case "BANDAI-FCG-1": // no eprom
-				case "BANDAI-FCG-2": // no eprom
-					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+				// see notes above that explain some of this in more detail
+
+				case "BANDAI-FCG-1": // [1]
+				case "BANDAI-FCG-2": // [1]
+				case "IREM-FCG-1": // [1] (the extra glue logic is to connect the two chr roms, and doesn't affect emulation)
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+					regs_prg_enable = false;
+					regs_wram_enable = true;
 					break;
-				case "BANDAI-LZ93D50+24C01": // 1kbit eprom
+				case "BANDAI-LZ93D50": // [2]
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+					regs_prg_enable = true;
+					regs_wram_enable = false;
+					break;
+				case "BANDAI-LZ93D50+24C01": // [3]
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					eprom = new SEEPROM(false);
+					regs_prg_enable = true;
+					regs_wram_enable = false;
 					break;
-				case "BANDAI-LZ93D50+24C02": // 2kbit eprom
+				case "MAPPER159": // [3]
+					AssertPrg(128, 256); AssertChr(128, 256);
+					Cart.wram_size = 0;
+					regs_prg_enable = true;
+					regs_wram_enable = false;
+					eprom = new SEEPROM(false);
+					break;
+				case "BANDAI-LZ93D50+24C02": // [4]
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					eprom = new SEEPROM(true);
+					regs_prg_enable = true;
+					regs_wram_enable = false;
 					break;
-					/* if implementing NES mappers, a way must be found to reliably determine which
-					 * eprom variety is in use
-				case "MAPPER016": // TEST TEST
+				case "MAPPER016": // [7]
+					AssertPrg(128, 256); AssertChr(128, 256);
 					Cart.wram_size = 0;
-					Cart.vram_size = 0;
-					eprom = new SEEPROM(false);
+					regs_prg_enable = true;
+					regs_wram_enable = true;
+					eprom = new SEEPROM(true);
 					break;
-					 */
 				default:
 					return false;
 			}
@@ -155,14 +183,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteWRAM(int addr, byte value)
 		{
 			//NES.LogLine("writewram {0:X4} = {1:X2}", addr, value);
-			addr &= 0xF;
-			WriteReg(addr, value);
+			if (regs_wram_enable)
+			{
+				addr &= 0xF;
+				WriteReg(addr, value);
+			}
 		}
 		public override void WritePRG(int addr, byte value)
 		{
 			//NES.LogLine("writeprg {0:X4} = {1:X2}", addr, value);
-			addr &= 0xF;
-			WriteReg(addr, value);
+			if (regs_prg_enable)
+			{
+				addr &= 0xF;
+				WriteReg(addr, value);
+			}
 		}
 
 		public override byte ReadWRAM(int addr)
