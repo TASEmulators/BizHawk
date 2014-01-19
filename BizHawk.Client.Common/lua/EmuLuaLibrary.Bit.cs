@@ -1,4 +1,5 @@
-﻿namespace BizHawk.Client.Common
+﻿using System;
+namespace BizHawk.Client.Common
 {
 	public class BitLuaLibrary : LuaLibraryBase
 	{
@@ -17,6 +18,7 @@
 					"rol",
 					"ror",
 					"rshift",
+					"check",
 				};
 			}
 		}
@@ -61,6 +63,12 @@
 		public static uint bit_rshift(object val, object amt)
 		{
 			return (uint)(LuaInt(val) >> LuaInt(amt));
+		}
+
+		public static bool bit_check(object num, object pos)
+		{
+			var value = Convert.ToInt64(LuaLong(num));
+			return (value & (1 << (int)(LuaInt(pos)))) != 0;
 		}
 	}
 }
