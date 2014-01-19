@@ -9,6 +9,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//If you change any of the IRQ logic here, be sure to change it in VRC 3/6/7 as well.
 	public sealed class VRC2_4 : NES.NESBoardBase
 	{
+		#region addressmaps
+		// remaps addresses into vrc2b form
+		// all varieties of vrc2&4 require A15 = 1 (ie, we're in 8000:ffff), and key on A14:A12 in the same way
+		// in addition, each variety has two other bits; a "low bit" and a "high bit"
+		// for vrc2b, low bit is A0 and high bit is A1, so it's represented by AddrA0A1
+		// other remaps are named similarly
+		int AddrA1A0(int addr)
+		{
+			return addr & 0x7000 | (addr >> 1) & 1 | (addr << 1) & 2;
+		}
+		int AddrA0A1(int addr)
+		{
+			return addr & 0x7003;
+		}
+		int AddrA1A2(int addr)
+		{
+			return addr & 0x7000 | (addr >> 1) & 3;
+		}
+		int AddrA6A7(int addr)
+		{
+			return addr & 0x7000 | (addr >> 6) & 3;
+		}
+		int AddrA2A3(int addr)
+		{
+			return addr & 0x7000 | (addr >> 2) & 3;
+		}
+		int AddrA3A2(int addr)
+		{
+			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 2;
+		}
+		// these composite mappings are what's needed for ines mappers
+		int AddrA1A2_A6A7(int addr)
+		{
+			return addr & 0x7000 | (addr >> 1) & 3 | (addr >> 6) & 3;
+		}
+		int AddrA0A1_A2A3(int addr)
+		{
+			return addr & 0x7003 | (addr >> 2) & 3;
+		}
+		int AddrA3A2_A1A0(int addr)
+		{
+			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 3 | (addr << 1) & 2;
+		}
+
+		#endregion
+
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
 		int prg_reg_mask_8k;
@@ -102,12 +148,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			fix_chr = (b) => b;
 			switch (Cart.board_type)
 			{
+				// for INES, we assume VRC4 in many cases where it might be VRC2
 				case "MAPPER021":
+					type = 4;
+					remap = AddrA1A2_A6A7;
+					Cart.wram_size = 8;
+					break;
 				case "MAPPER022":
+					type = 2;
+					remap = AddrA1A0;
+					Cart.wram_size = 8; // should be latch_exists = true but forget that
+					fix_chr = (b) => (b >> 1);
+					break;
 				case "MAPPER023":
+					type = 4;
+					remap = AddrA0A1_A2A3;
+					Cart.wram_size = 8;
+					break;
 				case "MAPPER025":
-					throw new InvalidOperationException("someone will need to bug me to set these up for failsafe mapping");
-
+					type = 4;
+					remap = AddrA3A2_A1A0;
+					Cart.wram_size = 8;
+					break;
 				case "MAPPER027":
 					//not exactly the same implementation as FCEUX, but we're taking functionality from it step by step as we discover and document it
 					//world hero (unl) is m027 and depends on the extrabig_chr functionality to have correct graphics.
@@ -115,50 +177,59 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					extrabig_chr = true;
 					remap = (addr) => addr;
 					type = 4;
-				  break;
-
+					break;
 				case "MAPPER116_HACKY":
 					remap = (addr) => addr;
 					type = 2;
 					break;
-
 				case "KONAMI-VRC-4":
-					AssertPrg(128,256); AssertChr(128,256); AssertVram(0); AssertWram(0,2,8);
+					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 2, 8);
 					type = 4;
-					if (Cart.pcb == "352396")
-						remap = (addr) => ((addr & 0xF000) | ((addr >> 2) & 3));
-					else if (Cart.pcb == "351406")
-						remap = (addr) => ((addr & 0xF000) | ((addr & 1) << 1) | ((addr & 2) >> 1));
-					else if (Cart.pcb == "351948") // Ganbare Goemon Gaiden
-						throw new Exception("VRC4: Fix me!");
-					else if (Cart.pcb == "352889") // Ganbare Goemon Gaiden 2
-						throw new Exception("VRC4: Fix me!");
-					else
-						throw new Exception("Unknown PCB type for VRC4");
+					switch (Cart.pcb)
+					{
+						case "352398": // vrc4a A1 A2
+							remap = AddrA1A2; break;
+						case "351406": // vrc4b A1 A0
+							remap = AddrA1A0; break;
+						case "352889": // vrc4c A6 A7
+							remap = AddrA6A7; break;
+						case "352400": // vrc4d A3 A2
+							remap = AddrA3A2; break;
+						case "352396": // vrc4e A2 A3
+							remap = AddrA2A3; break;
+						default:
+							throw new Exception("Unknown PCB type for VRC4");
+					}
 					break;
 				case "KONAMI-VRC-2":
-					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);
 					type = 2;
-					latch6k_exists = true;
-					if (Cart.pcb == "350926")
-						//likely VRC2b [mapper 23]
-						remap = (addr) => addr;
-					else if (Cart.pcb == "351618")
+					if (Cart.wram_size == 0)
+						latch6k_exists = true;
+					switch (Cart.pcb)
 					{
-						//ex. ganbare pennant race - important chr note applies (VRC2a [mapper 22])
-						remap = (addr) => ((addr & 0xF000) | ((addr & 1) << 1) | ((addr & 2) >> 1));
-						fix_chr = (b) => (b >> 1);
+						case "351618": // vrc2a A1 A0
+							remap = AddrA1A0;
+							fix_chr = (b) => (b >> 1); // smaller chr regs on vrc2a
+							break;
+						case "LROG009-00":
+						case "350603":
+						case "350926":
+						case "350636":
+						case "351179": // vrc2b A0 A1
+							remap = AddrA0A1;
+							break;
+						case "351948": // vrc2c A1 A0
+							// this is a weird PCB
+							// it's the only vrc2 with wram, and the only one with 256 prg rom
+							// it also has extra chips that no other vrc2\4 has
+							// it crashes unless you set type = 4; i didn't bother figuring out why
+							remap = AddrA1A0;
+							type = 4;
+							break;
+						default:
+							throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
 					}
-					else if (Cart.pcb == "LROG009-00") // Contra (J)
-					{
-						remap = (addr) => addr;
-					}
-					else if (Cart.pcb == "350603")
-					{
-						remap = (addr) => addr;
-					}
-					else
-						throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
 					break;
 				default:
 					return false;
@@ -167,9 +238,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
-			if(type == 4) prg_reg_mask_8k = 0x1F;
+			if (type == 4) prg_reg_mask_8k = 0x1F;
 			else prg_reg_mask_8k = 0xF;
-			
+
 			//this VRC2 variant has an extra large PRG reg
 			if (Cart.board_type == "MAPPER116_HACKY")
 				prg_reg_mask_8k = 0x1F;
@@ -227,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
 					SyncPRG();
 					break;
-				
+
 				case 0x1000: //$9000
 				case 0x1001: //$9001
 					switch (value & 3)
@@ -238,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
 					}
 					break;
-				
+
 				case 0x1002: //$9002
 				case 0x1003: //$9003
 					if (type == 4) prg_mode = value.Bit(1);
@@ -288,11 +359,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x7000: //$F000 (reload low)
 					if (type == 2) break;
-					irq_reload = (byte)((irq_reload&0xF0) | value);
+					irq_reload = (byte)((irq_reload & 0xF0) | value);
 					break;
 				case 0x7001: //$F001 (reload high)
 					if (type == 2) break;
-					irq_reload = (byte)((irq_reload&0x0F)|(value<<4));
+					irq_reload = (byte)((irq_reload & 0x0F) | (value << 4));
 					break;
 				case 0x7002: //$F001 (control)
 					if (type == 2) break;
@@ -318,7 +389,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SyncIRQ();
 
 					break;
-				
+
 				case 0x7003: //$F003 (ack)
 					if (type == 2) break;
 					irq_pending = false;
