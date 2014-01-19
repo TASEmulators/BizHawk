@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	iNES #157 refers to [6], theoretically.
 	iNES #159 refers to [3], theoretically.
 	
-	We try to emulate everything but [5] and [6] here.
+	We try to emulate everything but [6] here.
 	
 	Size notes:
 	chr regs are 8 bit wide and swap 1K at a time, for a max size of 256K chr, always rom.
@@ -34,8 +34,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;
 
-		bool regs_prg_enable;
-		bool regs_wram_enable;
+		bool regs_prg_enable; // can the mapper regs be written to in 8000:ffff?
+		bool regs_wram_enable; // can the mapper regs be written to in 6000:7fff?
+		bool jump2 = false; // are we in special mode for the JUMP2 board?
 
 		//regenerable state
 		IntBuffer prg_banks_16k = new IntBuffer(2);
@@ -110,6 +111,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					regs_wram_enable = true;
 					eprom = new SEEPROM(true);
 					break;
+				case "MAPPER153": // [5]
+					AssertPrg(512);
+					AssertChr(0);
+					Cart.vram_size = 8;
+					Cart.wram_size = 8;
+					regs_prg_enable = true;
+					regs_wram_enable = false;
+					break;
+				case "BANDAI-JUMP2": // [5]
+					AssertPrg(512);
+					AssertChr(0);
+					AssertVram(8);
+					AssertWram(8);
+					regs_prg_enable = true;
+					regs_wram_enable = false;
+					jump2 = true;
+					break;
+
 				default:
 					return false;
 			}
@@ -129,6 +148,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			prg_banks_16k[0] = prg_reg_16k & prg_bank_mask_16k;
 			prg_banks_16k[1] = 0xFF & prg_bank_mask_16k;
+			if (jump2)
+			{
+				if (regs[0].Bit(0))
+				{
+					prg_banks_16k[0] |= 0x10;
+					prg_banks_16k[1] |= 0x10;
+				}
+				else // wouldn't need this, except we aren't &=15 on the prg bank addresses
+				{
+					prg_banks_16k[0] &= 0x0f;
+					prg_banks_16k[1] &= 0x0f;
+				}
+			}			
 		}
 
 		void WriteReg(int reg, byte value)
@@ -145,6 +177,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6:
 				case 7:
 					regs[reg] = value;
+					if (jump2) // in jump2, chr regs are rewired to swap prg
+						SyncPRG();
 					break;
 				case 8:
 					//NES.LogLine("mapping PRG {0}", value);
@@ -188,6 +222,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr &= 0xF;
 				WriteReg(addr, value);
 			}
+			else if (jump2)
+			{
+				WRAM[addr] = value;
+			}
 		}
 		public override void WritePRG(int addr, byte value)
 		{
@@ -203,10 +241,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			// reading any addr in 6000:7fff returns a single bit from the eeprom
 			// in bit 4.
-			byte ret = (byte)(NES.DB & 0xef);
-			if (eprom != null && eprom.ReadBit(NES.DB.Bit(4)))
-				ret |= 0x10;
-			return ret;
+			if (!jump2)
+			{
+				byte ret = (byte)(NES.DB & 0xef);
+				if (eprom != null && eprom.ReadBit(NES.DB.Bit(4)))
+					ret |= 0x10;
+				return ret;
+			}
+			else
+			{
+				return WRAM[addr];
+			}
 		}
 
 		public override void ClockCPU()
@@ -243,8 +288,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[CalcPPUAddress(addr)];
-			else return base.ReadPPU(addr);
+			{
+				if (jump2)
+					return VRAM[addr];
+				else
+					return VROM[CalcPPUAddress(addr)];
+			}
+			else
+			{
+				return base.ReadPPU(addr);
+			}
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				if (jump2)
+					VRAM[addr] = value;
+			}
+			else
+			{
+				base.WritePPU(addr, value);
+			}
 		}
 
 		public override byte[] SaveRam
@@ -253,8 +319,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (eprom != null)
 					return eprom.GetSaveRAM();
+				else if (jump2)
+				{
+					return WRAM;
+				}
 				else
+				{
 					return null;
+				}
 			}
 		}
 	}
