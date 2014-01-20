@@ -117,7 +117,6 @@
     <Compile Include="lua\EmuLuaLibrary.Movie.cs" />
     <Compile Include="lua\EmuLuaLibrary.NES.cs" />
     <Compile Include="lua\EmuLuaLibrary.SNES.cs" />
-    <Compile Include="lua\EmuLuaLibrary.String.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFileList.cs" />
