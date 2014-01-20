@@ -62,6 +62,7 @@
             this.PositionLabel = new System.Windows.Forms.Label();
             this.ZoomLabel = new System.Windows.Forms.Label();
             this.LuaText = new BizHawk.Client.EmuHawk.LuaWriterBox();
+            this.Suggestion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -302,17 +303,24 @@
             // 
             // AutoCompleteView
             // 
+            this.AutoCompleteView.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.AutoCompleteView.AllowColumnReorder = true;
             this.AutoCompleteView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AutoCompleteView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Suggestion});
             this.AutoCompleteView.FullRowSelect = true;
+            this.AutoCompleteView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.AutoCompleteView.HideSelection = false;
+            this.AutoCompleteView.HoverSelection = true;
             this.AutoCompleteView.Location = new System.Drawing.Point(324, 322);
             this.AutoCompleteView.MultiSelect = false;
             this.AutoCompleteView.Name = "AutoCompleteView";
             this.AutoCompleteView.Size = new System.Drawing.Size(121, 97);
             this.AutoCompleteView.TabIndex = 3;
             this.AutoCompleteView.UseCompatibleStateImageBehavior = false;
-            this.AutoCompleteView.View = System.Windows.Forms.View.List;
+            this.AutoCompleteView.View = System.Windows.Forms.View.Details;
             this.AutoCompleteView.Visible = false;
+            this.AutoCompleteView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoComplete_KeyDown);
             this.AutoCompleteView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AutoCompleteView_MouseDoubleClick);
             // 
             // PositionLabel
@@ -352,6 +360,10 @@
             this.LuaText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyDown);
             this.LuaText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyUp);
             this.LuaText.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.LuaText_PreviewKeyDown);
+            // 
+            // Suggestion
+            // 
+            this.Suggestion.Width = 114;
             // 
             // LuaWriter
             // 
@@ -415,5 +427,6 @@
 		private System.Windows.Forms.ToolStripMenuItem startWithEmptyScriptToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem backgroundColorToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader Suggestion;
     }
 }
