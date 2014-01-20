@@ -102,8 +102,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (Cart.pcb == "353429")
 					{
 						//tiny toons 2
-						remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
+						// for consistency, we map the addr line used for the FM chip even though
 						// there is no resonator or crystal on the board for the fm chip
+						remap = (addr) => (addr & 0xF000) | ((addr & 0x8) >> 3) | (addr & 0x20) >> 4;
 						fm = null;
 					}
 					else if (Cart.pcb == "352402")
