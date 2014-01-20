@@ -62,6 +62,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		Func<int, int> fix_chr;
 		int type;
 		bool latch6k_exists = false;
+		// it's been verified that this should be true on all real VRC4 chips, and
+		// that some vrc4 boards support it: http://forums.nesdev.com/viewtopic.php?t=8569
+		// but no vrc4 game ever used it
 		bool extrabig_chr = false;
 
 		//state

@@ -548,6 +548,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cart.chips.Add(dict["MMC3"]);
 			if (dict.ContainsKey("PCB"))
 				cart.pcb = dict["PCB"];
+			if (dict.ContainsKey("BATT"))
+				cart.wram_battery = bool.Parse(dict["BATT"]);
 
 			return cart;
 		}
