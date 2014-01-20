@@ -10,8 +10,9 @@ namespace BizHawk.Client.Common
 			{
 				return new[]
 				{
-					"hex",
 					"binary",
+					"hex",
+					"octal",
 					"trim",
 					"replace",
 					"toupper",
@@ -19,7 +20,6 @@ namespace BizHawk.Client.Common
 					"startswith",
 					"substring",
 					"contains",
-					
 					"endswith",
 				};
 			}
@@ -36,6 +36,13 @@ namespace BizHawk.Client.Common
 			string binary = Convert.ToString( LuaLong(num), 2);
 			binary = binary.TrimStart('0');
 			return binary;
+		}
+
+		public static string string_octal(object num)
+		{
+			string octal = Convert.ToString(LuaLong(num),8);
+			if (octal.Length == 1) octal = "0" + octal;
+			return octal;
 		}
 
 		public static string string_trim(string str)
