@@ -19,6 +19,7 @@ namespace BizHawk.Client.Common
 					"ror",
 					"rshift",
 					"check",
+					"signed",
 				};
 			}
 		}
@@ -50,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		public static uint bit_rol(object val, object amt)
 		{
-			return (uint)((LuaInt(val) << LuaInt(amt)) 
+			return (uint)((LuaInt(val) << LuaInt(amt))
 				| (LuaInt(val) >> (32 - LuaInt(amt))));
 		}
 
