@@ -71,7 +71,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
