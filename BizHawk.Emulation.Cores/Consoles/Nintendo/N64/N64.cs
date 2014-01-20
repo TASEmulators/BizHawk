@@ -441,6 +441,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					_display_type = DisplayType.NTSC;
 					break;
 			}
+			switch (DisplayType)
+			{
+				case DisplayType.NTSC:
+					comm.VsyncNum = 60000;
+					comm.VsyncDen = 1001;
+					break;
+				case DisplayType.PAL:
+				case DisplayType.DENDY:
+				default:
+					comm.VsyncNum = 50;
+					comm.VsyncDen = 1;
+					break;
+			}
 
 			api = new mupen64plusApi(this, rom, this.SyncSettings.GetVPS(game), SaveType);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
