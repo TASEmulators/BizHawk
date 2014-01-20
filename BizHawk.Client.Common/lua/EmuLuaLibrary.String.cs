@@ -19,6 +19,7 @@ namespace BizHawk.Client.Common
 					"startswith",
 					"substring",
 					"contains",
+					"remove",
 					"endswith",
 				};
 			}
