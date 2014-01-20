@@ -19,7 +19,6 @@ namespace BizHawk.Client.Common
 					"ror",
 					"rshift",
 					"check",
-					"signed",
 				};
 			}
 		}
