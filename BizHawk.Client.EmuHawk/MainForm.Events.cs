@@ -1193,9 +1193,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FdsEjectDiskMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			for (int i = 1; i < FDSControlsMenuItem.DropDownItems.Count; i++)
+			while (FDSControlsMenuItem.DropDownItems.Count > 1)
 			{
-				FDSControlsMenuItem.DropDownItems.Remove(FDSControlsMenuItem.DropDownItems[i]);
+				FDSControlsMenuItem.DropDownItems.RemoveAt(1);
 			}
 
 			for (int i = 0; i < 16; i++)
