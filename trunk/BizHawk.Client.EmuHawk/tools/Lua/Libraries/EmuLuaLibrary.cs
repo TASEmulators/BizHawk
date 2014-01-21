@@ -1,24 +1,30 @@
 ﻿using System;
 using System.Threading;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class EmuLuaLibrary
 	{
-		private Lua _lua = new Lua();
-		private readonly LuaConsole _caller;
-		private Lua _currThread;
 		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
 		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
 		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
+		private readonly LuaConsole _caller;
 
-		public LuaDocumentation Docs = new LuaDocumentation();
-		public bool IsRunning;
-		public EventWaitHandle LuaWait;
-		public bool FrameAdvanceRequested;
+		private Lua _lua = new Lua();
+		private Lua _currThread;
+
+		public EmuLuaLibrary()
+		{
+			Docs = new LuaDocumentation();
+		}
+
+		public LuaDocumentation Docs { get; private set; }
+		public bool IsRunning { get; set; }
+		public EventWaitHandle LuaWait { get; private set; }
+		public bool FrameAdvanceRequested { get; private set; }
 
 		public GuiLuaLibrary GuiLibrary
 		{
@@ -103,14 +109,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var lua = _lua.NewThread();
 			var main = lua.LoadFile(file);
-			lua.Push(main); //push main function on to stack for subsequent resuming
+			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
 
 		public class ResumeResult
 		{
-			public bool WaitForFrame;
-			public bool Terminated;
+			public bool WaitForFrame { get; set; }
+			public bool Terminated { get; set; }
 		}
 
 		public ResumeResult ResumeScript(Lua script)
@@ -122,14 +128,15 @@ namespace BizHawk.Client.EmuHawk
 			var result = new ResumeResult();
 			if (execResult == 0)
 			{
-				//terminated
+				// terminated
 				result.Terminated = true;
 			}
 			else
 			{
-				//yielded
+				// yielded
 				result.WaitForFrame = FrameAdvanceRequested;
 			}
+
 			FrameAdvanceRequested = false;
 			return result;
 		}
