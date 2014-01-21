@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new []
 				{
+					"clearautohold",
 					"closerom",
 					"enablerewind",
 					"frameskip",
@@ -62,12 +63,17 @@ namespace BizHawk.Client.EmuHawk
 					"unpause",
 					"unpause_av",
 					"xpos",
-					"ypos",
+					"ypos"
 				};
 			}
 		}
 
 		public Action<string> LogOutputCallback = null;
+
+		public void client_clearautohold()
+		{
+			GlobalWin.MainForm.ClearHolds();
+		}
 
 		public static void client_closerom()
 		{
