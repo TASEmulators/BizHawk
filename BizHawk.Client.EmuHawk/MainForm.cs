@@ -465,6 +465,17 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public Methods
 
+		public void ClearHolds()
+		{
+			Global.StickyXORAdapter.ClearStickies();
+			Global.AutofireStickyXORAdapter.ClearStickies();
+
+			if (GlobalWin.Tools.Has<VirtualPadForm>())
+			{
+				GlobalWin.Tools.VirtualPad.ClearVirtualPadHolds();
+			}
+		}
+
 		public void FlagNeedsReboot()
 		{
 			RebootStatusBarIcon.Visible = true;
@@ -960,6 +971,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private methods
 
+		private void ClearAutohold()
+		{
+			ClearHolds();
+			GlobalWin.OSD.AddMessage("Autohold keys cleared");
+		}
+
 		private static void UpdateToolsLoadstate()
 		{
 			if (GlobalWin.Tools.Has<SNESGraphicsDebugger>())
@@ -972,19 +989,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.UpdateToolsAfter(fromLua);
 			HandleToggleLight();
-		}
-
-		private static void ClearAutohold()
-		{
-			Global.StickyXORAdapter.ClearStickies();
-			Global.AutofireStickyXORAdapter.ClearStickies();
-
-			if (GlobalWin.Tools.Has<VirtualPadForm>())
-			{
-				GlobalWin.Tools.VirtualPad.ClearVirtualPadHolds();
-			}
-
-			GlobalWin.OSD.AddMessage("Autohold keys cleared");
 		}
 
 		private void UpdateDumpIcon()
