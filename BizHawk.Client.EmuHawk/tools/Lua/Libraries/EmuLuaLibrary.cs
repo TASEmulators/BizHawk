@@ -21,6 +21,15 @@ namespace BizHawk.Client.EmuHawk
 			Docs = new LuaDocumentation();
 		}
 
+		public EmuLuaLibrary(LuaConsole passed)
+			:this()
+		{
+			LuaWait = new AutoResetEvent(false);
+			Docs.Clear();
+			_caller = passed.Get();
+			LuaRegister(_lua);
+		}
+
 		public LuaDocumentation Docs { get; private set; }
 		public bool IsRunning { get; set; }
 		public EventWaitHandle LuaWait { get; private set; }
@@ -59,14 +68,6 @@ namespace BizHawk.Client.EmuHawk
 		public void CallFrameAfterEvent()
 		{
 			_eventLibrary.CallFrameAfterEvent();
-		}
-
-		public EmuLuaLibrary(LuaConsole passed)
-		{
-			LuaWait = new AutoResetEvent(false);
-			Docs.Clear();
-			_caller = passed.Get();
-			LuaRegister(_lua);
 		}
 
 		public void Close()
