@@ -19,6 +19,8 @@ namespace BizHawk.Client.Common
 					"ror",
 					"rshift",
 					"check",
+					"set",
+					"clear",
 					"byteswap_16",
 					"byteswap_32",
 					"byteswap_64",
@@ -70,8 +72,17 @@ namespace BizHawk.Client.Common
 
 		public static bool bit_check(object num, object pos)
 		{
-			var value = Convert.ToInt64(LuaLong(num));
-			return (value & (1 << (int)(LuaInt(pos)))) != 0;
+			return (LuaLong(num) & (1 << (LuaInt(pos)))) != 0;
+		}
+		 
+		public static uint bit_set(object num, object pos)
+		{
+			return (uint) (LuaInt(num) |  1 << LuaInt(pos));
+		}
+
+		public static uint bit_clear(object num, object pos)
+		{
+			return (uint) (LuaInt(num) & ~(1 << LuaInt(pos)));
 		}
 
 		public static uint bit_byteswap_16(object short_)
