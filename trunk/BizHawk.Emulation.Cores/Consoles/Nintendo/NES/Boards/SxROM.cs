@@ -320,6 +320,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER116_HACKY":
 					break;
 				case "MAPPER001":
+					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
+					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
+					if (Cart.prg_size > 256)
+						return false;
 					break;
 				case "MAPPER171": // Tui Do Woo Ma Jeung
 					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
@@ -520,11 +524,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (Cart.board_type)
 			{
+				case "MAPPER001":
+					// we try to heuristic match to iNES 001 roms with big PRG only
+					if (Cart.prg_size <= 256)
+						return false;
+					AssertPrg(512); AssertChr(0);
+					Cart.vram_size = 8;
+					Cart.wram_size = 8;
+					Cart.wram_battery = true; // all SUROM boards had batteries
+					break;
 				case "NES-SUROM": //dragon warrior 4
 				case "HVC-SUROM":
 					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
-				default: return false;
+				default:
+					return false;
 			}
 
 			BaseConfigure();
