@@ -436,6 +436,8 @@
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\LibMednahawkDll.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
+    <Compile Include="LibRetro.cs" />
+    <Compile Include="LibRetroEmulator.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="Consoles\PC Engine\Input.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
