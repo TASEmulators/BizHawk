@@ -38,7 +38,12 @@ namespace BizHawk.Client.Common
 		protected static long LuaLong(object luaArg)
 		{
 			return (long)(double)luaArg;
-		}	
+		}
+
+		protected static ulong LuaULong(object luaArg)
+		{
+			return (ulong)(double)luaArg;
+		}
 
 		/// <summary>
 		/// LuaInterface requires the exact match of parameter count, except optional parameters. 
