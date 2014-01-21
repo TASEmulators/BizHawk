@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "MAPPER118":
+					AssertVram(0);
+					break;
 				case "HVC-TKSROM": //ys III: wanderers from ys (J)
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(8);
 					AssertBattery(true);
