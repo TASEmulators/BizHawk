@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			InitializeComponent();
-			LuaImp = new EmuLuaLibrary();
+			LuaImp = new EmuLuaLibrary(this);
 			Closing += (o, e) =>
 			{
 				if (AskSave())
