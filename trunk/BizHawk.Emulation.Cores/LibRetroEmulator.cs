@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Common
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores
 {
 	public unsafe class LibRetroEmulator : IEmulator, IVideoProvider
 	{

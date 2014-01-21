@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-namespace BizHawk.Emulation.Common
+namespace BizHawk.Emulation.Cores
 {
 	/// <summary>
 	/// libretro related shims
