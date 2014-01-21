@@ -114,9 +114,9 @@ namespace BizHawk.Client.Common
 					case DisplayType.Separator:
 						return '_';
 					case DisplayType.Unsigned:
-						return 's';
-					case DisplayType.Signed:
 						return 'u';
+					case DisplayType.Signed:
+						return 's';
 					case DisplayType.Hex:
 						return 'h';
 					case DisplayType.Binary:
