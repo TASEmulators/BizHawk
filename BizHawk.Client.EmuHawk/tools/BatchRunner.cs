@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			public string Filename; // name of file
 			public string Fullname; // filename + subfilename
 			public GameInfo GI;
-			
+
 			public Type CoreType; // actual type of the core that was returned
 			public enum EStatus
 			{
@@ -52,9 +52,12 @@ namespace BizHawk.Client.EmuHawk
 			public EStatus Status; // what happened
 			public List<string> Messages = new List<string>();
 
+			public int Frames; // number of frames successfully run
+			public int LaggedFrames; // number of those that were lagged
+
 			public void DumpToTW(System.IO.TextWriter tw)
 			{
-				tw.WriteLine("{0}\t{1}\t{2}\t{3}", Filename, Fullname, CoreType, Status);
+				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames);
 			}
 		}
 
@@ -156,6 +159,9 @@ namespace BizHawk.Client.EmuHawk
 				current.CoreType = emu.GetType();
 				emu.Controller = new Controller(emu.ControllerDefinition);
 
+				current.Frames = 0;
+				current.LaggedFrames = 0;
+
 				for (int i = 0; i < numframes; i++)
 				{
 					try
@@ -165,6 +171,9 @@ namespace BizHawk.Client.EmuHawk
 						emu.FrameAdvance(true, true);
 						// some cores really really really like it if you drain their audio every frame
 						emu.SyncSoundProvider.GetSamples(out samp, out nsamp);
+						current.Frames++;
+						if (emu.IsLagFrame)
+							current.LaggedFrames++;
 					}
 					catch (Exception e)
 					{

@@ -105,6 +105,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					regs_wram_enable = false;
 					break;
 				case "MAPPER016": // [7]
+					if (Cart.prg_size > 256)
+					{
+						// you have two options:
+						// 1) assume prg > 256 => jump2 (aka mapper 153, type [5])
+						//    this will break hypothetical prg oversize hacks
+						// 2) assume prg > 256 => oversize regular FCG
+						//    this will break famicom 2 dumps without hash match,
+						//    which are marked mapper016 usually
+						goto case "MAPPER153";
+					}
 					AssertPrg(128, 256); AssertChr(128, 256);
 					Cart.wram_size = 0;
 					regs_prg_enable = true;
@@ -118,6 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Cart.wram_size = 8;
 					regs_prg_enable = true;
 					regs_wram_enable = false;
+					jump2 = true;
 					break;
 				case "BANDAI-JUMP2": // [5]
 					AssertPrg(512);
