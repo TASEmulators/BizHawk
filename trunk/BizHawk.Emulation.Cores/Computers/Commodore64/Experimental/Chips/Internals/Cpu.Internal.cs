@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Emulation.Common.Components.M6502;
+using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Experimental
 {
