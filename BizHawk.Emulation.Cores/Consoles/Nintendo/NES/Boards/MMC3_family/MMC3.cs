@@ -12,7 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//state
 		int reg_addr;
-		bool chr_mode, prg_mode;
+		public bool get_chr_mode { get { return chr_mode; } } // one of the pirate mappers needs this
+		bool chr_mode;
+		bool prg_mode;
 		public ByteBuffer regs = new ByteBuffer(8);
 
 		public byte mirror;
