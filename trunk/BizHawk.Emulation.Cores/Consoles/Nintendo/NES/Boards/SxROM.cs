@@ -532,6 +532,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Cart.vram_size = 8;
 					Cart.wram_size = 8;
 					Cart.wram_battery = true; // all SUROM boards had batteries
+					Console.WriteLine("Guessing SUROM for 512KiB PRG ROM");
 					break;
 				case "NES-SUROM": //dragon warrior 4
 				case "HVC-SUROM":
