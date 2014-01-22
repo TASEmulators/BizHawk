@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.M6502;
+using BizHawk.Emulation.Cores.Components.M6502;
 
 #pragma warning disable 162
 
