@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER116_HACKY":
 					break;
 
+				case "TXROM-HOMEBREW": // should this even exist?
 				case "MAPPER004":
 					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
