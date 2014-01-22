@@ -47,6 +47,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Bit.cs" />
     <Compile Include="BitReverse.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="Colors.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="SwitcherStream.cs" />
-    <Compile Include="Types.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
