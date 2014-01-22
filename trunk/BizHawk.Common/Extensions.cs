@@ -84,7 +84,7 @@ namespace BizHawk.Common
 			return String.Format("{0:X" + numdigits + "}", n);
 		}
 
-		//http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
+		// http://stackoverflow.com/questions/1766328/can-linq-use-binary-search-when-the-collection-is-ordered
 		public static T BinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 		where TKey : IComparable<TKey>
 		{
@@ -114,6 +114,7 @@ namespace BizHawk.Common
 			{
 				return list[min];
 			}
+
 			throw new InvalidOperationException("Item not found");
 		}
 
@@ -218,11 +219,6 @@ namespace BizHawk.Common
 			return options.Any(j => i == j);
 		}
 
-		public static bool In(this int i, IEnumerable<int> options)
-		{
-			return options.Any(j => i == j);
-		}
-
 		public static bool ContainsStartsWith(this IEnumerable<string> options, string str)
 		{
 			return options.Any(opt => opt.StartsWith(str));
@@ -248,17 +244,6 @@ namespace BizHawk.Common
 		{
 			string strUpper = str.ToUpper();
 			return romExtensions.Any(ext => strUpper.EndsWith(ext.ToUpper()));
-		}
-
-		public static string ToCommaSeparated(this List<string> list)
-		{
-			var sb = new StringBuilder();
-			for (int i = 0; i < list.Count; i++)
-			{
-				if (i > 0) sb.Append(",");
-				sb.Append(list[i]);
-			}
-			return sb.ToString();
 		}
 
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
@@ -456,7 +441,10 @@ namespace BizHawk.Common
 		public static void ReadFromHex(this int[] buffer, string hex)
 		{
 			if (hex.Length % 8 != 0)
+			{
 				throw new Exception("Hex value string does not appear to be properly formatted.");
+			}
+
 			for (int i = 0; i < buffer.Length && i * 8 < hex.Length; i++)
 			{
 				//string inthex = "" + hex[i * 8] + hex[(i * 8) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3] + hex[(i*4
@@ -469,6 +457,4 @@ namespace BizHawk.Common
 		public static void WriteBit(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
 		public static Bit ReadBit(this BinaryReader br) { return br.ReadBoolean(); }
 	}
-
-
 }
