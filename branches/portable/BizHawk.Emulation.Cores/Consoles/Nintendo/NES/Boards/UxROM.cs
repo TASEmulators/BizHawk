@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	//TODO - look for a mirror=H UNROM--maybe there are none? this may be fixed to the board type.
 
+	// why are there no bus conflicts in here???????
+
 	[NES.INESBoardImplPriority]
 	public sealed class UxROM : NES.NESBoardBase
 	{
@@ -32,11 +34,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER002":
+					AssertChr(0); Cart.vram_size = 8;
 					break;
 
 				case "NES-UNROM": //mega man
 				case "HVC-UNROM": 
 				case "KONAMI-UNROM":
+				case "NES-UNEPROM": // proto
+				case "IREM-UNROM":
+				case "TAITO-UNROM":
 					AssertPrg(128); AssertChr(0); AssertVram(8);
 					//AssertWram(0); //JJ - Tobidase Daisakusen Part 2 (J) includes WRAM
 					break;
@@ -48,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case "NES-UOROM": //paperboy 2
 				case "HVC-UOROM":
+				case "JALECO-JF-15":
+				case "JALECO-JF-18":
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 

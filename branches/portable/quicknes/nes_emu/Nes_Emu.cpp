@@ -47,11 +47,14 @@ Nes_Emu::Nes_Emu()
 	init_called = false;
 	set_palette_range( 0 );
 	memset( single_frame.palette, 0, sizeof single_frame.palette );
+	host_pixel_buff = new char[buffer_width * buffer_height()];
+	set_pixels(host_pixel_buff, buffer_width);
 }
 
 Nes_Emu::~Nes_Emu()
 {
 	delete default_sound_buf;
+	delete[] host_pixel_buff;
 }
 
 blargg_err_t Nes_Emu::init_()

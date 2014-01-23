@@ -50,16 +50,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="e">context</param>
 		/// <param name="width">width</param>
 		/// <param name="height">height</param>
-		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_get_image_dimensions(IntPtr e, ref int width, ref int height);
+		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void qn_get_image_dimensions(IntPtr e, ref int width, ref int height);
 		/// <summary>
 		/// set output video buffer that will be used for all subsequent renders until replaced
 		/// </summary>
 		/// <param name="e">context</param>
 		/// <param name="dest">8bpp, at least as big as qn_get_image_dimensions()</param>
 		/// <param name="pitch">byte pitch</param>
-		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
+		//[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void qn_set_pixels(IntPtr e, IntPtr dest, int pitch);
 		/// <summary>
 		/// emulate a single frame
 		/// </summary>
@@ -74,8 +74,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		/// <param name="e">Context</param>
 		/// <param name="dest">rgb32 256x240 packed</param>
+		/// <param name="colors">rgb 24 colors, red first, 512 of them (1536 bytes)</param>
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void qn_blit(IntPtr e, IntPtr dest);
+		public static extern void qn_blit(IntPtr e, IntPtr dest, byte[] colors, int cropleft, int croptop, int cropright, int cropbottom);
+		/// <summary>
+		/// get quicknes's default palette
+		/// </summary>
+		/// <returns>1536 bytes suitable for qn_blit</returns>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr qn_get_default_colors();
 		/// <summary>
 		/// get number of times joypad was read in most recent frame
 		/// </summary>

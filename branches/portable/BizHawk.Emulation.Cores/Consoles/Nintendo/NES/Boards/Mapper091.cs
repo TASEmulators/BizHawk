@@ -98,10 +98,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				int bank_2k = (addr >> 11) - 1;
+				int bank_2k = (addr >> 11);
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask_2k;
-				return VROM[(bank_2k * 0x800) + addr];
+				return VROM[(bank_2k * 0x800) + (addr & 0x7ff)];
 			}
 			return base.ReadPPU(addr);
 		}

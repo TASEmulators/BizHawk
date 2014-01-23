@@ -5,7 +5,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
-using BizHawk.Emulation.Common.Components.Z80;
+using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void EndAsyncSound() { }
 
 		public object GetSettings() { return null; }
-		public object GetSyncSettings() { return SyncSettings; }
+		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o)
 		{

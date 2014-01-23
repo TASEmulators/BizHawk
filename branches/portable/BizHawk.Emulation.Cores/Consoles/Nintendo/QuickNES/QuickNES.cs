@@ -5,6 +5,8 @@ using System.Text;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -46,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.qn_setup_mappers();
 		}
 
-		public QuickNES(CoreComm nextComm, byte[] Rom)
+		public QuickNES(CoreComm nextComm, byte[] Rom, object Settings)
 		{
 			using (FP.Save())
 			{
@@ -71,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					BoardName = mappername;
 					CoreComm.VsyncNum = 39375000;
 					CoreComm.VsyncDen = 655171;
+					PutSettings(Settings ?? QuickNESSettings.GetDefaults());
 				}
 				catch
 				{
@@ -367,9 +370,95 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#region settings
 
+		public class QuickNESSettings
+		{
+			[DefaultValue(8)]
+			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
+			public int NumSprites
+			{
+				get { return _NumSprites; }
+				set { _NumSprites = Math.Min(64, Math.Max(0, value)); }
+			}
+			[JsonIgnore]
+			private int _NumSprites;
+
+			[DefaultValue(false)]
+			[Description("Clip the left and right 8 pixels of the display, which sometimes contain nametable garbage.")]
+			public bool ClipLeftAndRight { get; set; }
+
+			[DefaultValue(false)]
+			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
+			public bool ClipTopAndBottom { get; set; }
+
+			[Browsable(false)]
+			public byte[] Palette
+			{
+				get { return _Palette; }
+				set
+				{
+					if (value == null)
+						throw new ArgumentNullException();
+					else if (value.Length == 64 * 8 * 3)
+						_Palette = value;
+					else
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+			[JsonIgnore]
+			private byte[] _Palette;
+
+			public QuickNESSettings Clone()
+			{
+				var ret = (QuickNESSettings)MemberwiseClone();
+				ret._Palette = (byte[])_Palette.Clone();
+				return ret;
+			}
+			public static QuickNESSettings GetDefaults()
+			{
+				return new QuickNESSettings
+				{
+					NumSprites = 8,
+					ClipLeftAndRight = false,
+					ClipTopAndBottom = false,
+					_Palette = GetDefaultColors()
+				};
+			}
+
+			public void SetNesHawkPalette(int[,] pal)
+			{
+				if (pal.GetLength(0) != 64 || pal.GetLength(1) != 3)
+					throw new ArgumentOutOfRangeException();
+				for (int c = 0; c < 512; c++)
+				{
+					int a = c & 63;
+					byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
+					byte[] outp = new byte[3];
+					Nes_NTSC_Colors.Emphasis(inp, outp, c);
+					_Palette[c * 3] = outp[0];
+					_Palette[c * 3 + 1] = outp[1];
+					_Palette[c * 3 + 2] = outp[2];
+				}
+			}
+
+			static byte[] GetDefaultColors()
+			{
+				IntPtr src = LibQuickNES.qn_get_default_colors();
+				byte[] ret = new byte[1536];
+				Marshal.Copy(src, ret, 0, 1536);
+				return ret;
+			}
+
+			public void SetDefaultColors()
+			{
+				_Palette = GetDefaultColors();
+			}
+		}
+
+		QuickNESSettings Settings = QuickNESSettings.GetDefaults();
+
 		public object GetSettings()
 		{
-			return null;
+			return Settings.Clone();
 		}
 
 		public object GetSyncSettings()
@@ -379,6 +468,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public bool PutSettings(object o)
 		{
+			Settings = (QuickNESSettings)o;
+			LibQuickNES.qn_set_sprite_limit(Context, Settings.NumSprites);
+			RecalculateCrops();
 			return false;
 		}
 
@@ -396,11 +488,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				LibQuickNES.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
-			if (VideoInput != null)
-			{
-				VideoInputH.Free();
-				VideoInput = null;
-			}
+			//if (VideoInput != null)
+			//{
+			//	VideoInputH.Free();
+			//	VideoInput = null;
+			//}
 			if (VideoOutput != null)
 			{
 				VideoOutputH.Free();
@@ -411,31 +503,44 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region VideoProvider
 
 		int[] VideoOutput;
-		byte[] VideoInput;
-		GCHandle VideoInputH;
+		//byte[] VideoInput;
+		//GCHandle VideoInputH;
 		GCHandle VideoOutputH;
+
+		int cropleft = 0;
+		int cropright = 0;
+		int croptop = 0;
+		int cropbottom = 0;
+
+		void RecalculateCrops()
+		{
+			cropright = cropleft = Settings.ClipLeftAndRight ? 8 : 0;
+			cropbottom = croptop = Settings.ClipTopAndBottom ? 8 : 0;
+			BufferWidth = 256 - cropleft - cropright;
+			BufferHeight = 240 - croptop - cropbottom;
+		}
 
 		void InitVideo()
 		{
-			int w = 0, h = 0;
-			LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
-			VideoInput = new byte[w * h];
-			VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);
-			LibQuickNES.qn_set_pixels(Context, VideoInputH.AddrOfPinnedObject(), w);
+			//int w = 0, h = 0;
+			//LibQuickNES.qn_get_image_dimensions(Context, ref w, ref h);
+			//VideoInput = new byte[w * h];
+			//VideoInputH = GCHandle.Alloc(VideoInput, GCHandleType.Pinned);
+			//LibQuickNES.qn_set_pixels(Context, VideoInputH.AddrOfPinnedObject(), w);
 			VideoOutput = new int[256 * 240];
 			VideoOutputH = GCHandle.Alloc(VideoOutput, GCHandleType.Pinned);
 		}
 
 		void Blit()
 		{
-			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject());
+			LibQuickNES.qn_blit(Context, VideoOutputH.AddrOfPinnedObject(), Settings.Palette, cropleft, croptop, cropright, cropbottom);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] GetVideoBuffer() { return VideoOutput; }
-		public int VirtualWidth { get { return 292; } } // probably different on pal
-		public int BufferWidth { get { return 256; } }
-		public int BufferHeight { get { return 240; } }
+		public int VirtualWidth { get { return (int)(BufferWidth * 1.14); } }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
 		#endregion

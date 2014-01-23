@@ -3,7 +3,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.H6280;
+using BizHawk.Emulation.Cores.Components.H6280;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {

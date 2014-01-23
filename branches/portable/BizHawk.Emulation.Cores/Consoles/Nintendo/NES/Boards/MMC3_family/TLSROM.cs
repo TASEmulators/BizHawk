@@ -13,12 +13,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-TLSROM": //pro sport hockey (U)
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
+				case "MAPPER118":
+					AssertVram(0);
+					break;
 				case "HVC-TKSROM": //ys III: wanderers from ys (J)
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(8);
 					AssertBattery(true);
 					break;
 				case "TENGEN-800037": //Alien Syndrome (U)
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					break;
+				case "HVC-TLSROM":
+					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				default:
 					return false;

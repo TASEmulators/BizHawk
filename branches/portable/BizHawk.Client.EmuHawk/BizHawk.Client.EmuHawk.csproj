@@ -291,6 +291,12 @@
     <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NES\QuickNesConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\QuickNesConfig.Designer.cs">
+      <DependentUpon>QuickNesConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -381,7 +387,6 @@
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="DisplayManager\Filters\Scanlines.cs" />
     <Compile Include="GlobalWin.cs" />
-    <Compile Include="HotkeyActions.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
@@ -392,6 +397,10 @@
     </Compile>
     <Compile Include="LogWindow.Designer.cs">
       <DependentUpon>LogWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.Hotkey.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Movie.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -420,6 +429,7 @@
     <Compile Include="movie\EditSubtitlesForm.Designer.cs">
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="movie\MovieDetails.cs" />
     <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -453,6 +463,13 @@
       <DependentUpon>ScanlineSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
+    <Compile Include="tools\BatchRun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\BatchRun.Designer.cs">
+      <DependentUpon>BatchRun.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BatchRunner.cs" />
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -533,6 +550,7 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.String.cs" />
     <Compile Include="tools\Lua\LuaCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -909,6 +927,9 @@
     <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\QuickNesConfig.resx">
+      <DependentUpon>QuickNesConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\PathConfig.resx">
       <DependentUpon>PathConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -962,6 +983,9 @@
     </Compile>
     <EmbeddedResource Include="ScanlineSlider.resx">
       <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BatchRun.resx">
+      <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>

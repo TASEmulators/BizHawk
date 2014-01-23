@@ -1,6 +1,5 @@
-using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using SharpCompress.Archive;
 using SharpCompress.Reader;
 
@@ -13,17 +12,20 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class SevenZipSharpArchiveHandler : IHawkFileArchiveHandler
 	{
+        private IArchive _extractor;
+        private FileStream _stream;
+
 		public void Dispose()
 		{
-			if (extractor != null)
+			if (_extractor != null)
 			{
-				extractor.Dispose();
-				extractor = null;
+				_extractor.Dispose();
+				_extractor = null;
 			}
-			if (stream != null) 
+			if (_stream != null) 
 			{
-				stream.Dispose ();
-				stream = null;
+				_stream.Dispose ();
+				_stream = null;
 			}
 		}
 
@@ -38,7 +40,7 @@ namespace BizHawk.Client.Common
 				{
 					IArchive chk = ArchiveFactory.Open(fs, SharpCompress.Common.Options.None);
 				}
-				catch(Exception ex)
+				catch
 				{
 					return false;
 				}
@@ -49,29 +51,26 @@ namespace BizHawk.Client.Common
 
 		public IHawkFileArchiveHandler Construct(string path)
 		{
-			SevenZipSharpArchiveHandler ret = new SevenZipSharpArchiveHandler();
+			var ret = new SevenZipSharpArchiveHandler();
 			ret.Open(path);
 			return ret;
 		}
 
-		void Open(string path)
+		private void Open(string path)
 		{
-			if (stream != null) {
-				stream.Dispose();
-				stream = null;
+			if (_stream != null) {
+				_stream.Dispose();
+				_stream = null;
 			}
-			stream = new FileStream(path, FileMode.Open);
-			extractor = ArchiveFactory.Open(stream, SharpCompress.Common.Options.None);
+			_stream = new FileStream(path, FileMode.Open);
+			_extractor = ArchiveFactory.Open(_stream, SharpCompress.Common.Options.None);
 		}
-
-		IArchive extractor;
-		FileStream stream;
-
+        		
 		public List<HawkFileArchiveItem> Scan()
 		{
 			List<HawkFileArchiveItem> ret = new List<HawkFileArchiveItem>();
 			int i = -1;
-			foreach(var afd in extractor.Entries)
+			foreach(var afd in _extractor.Entries)
 			{
 				i++;
 				if (afd.IsDirectory) continue;
@@ -84,7 +83,7 @@ namespace BizHawk.Client.Common
 
 		public void ExtractFile(int index, Stream stream)
 		{
-			var data = extractor.GetEntry(index).OpenEntryStream();
+			var data = _extractor.GetEntry(index).OpenEntryStream();
 			byte[] buffer = new byte[1024];
 			int amt = 0;
 			while((amt = data.Read(buffer, 0, buffer.Length)) > 0){

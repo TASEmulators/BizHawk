@@ -50,7 +50,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,7 +71,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

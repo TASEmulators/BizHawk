@@ -103,12 +103,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER005":
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
+				case "HVC-ELROM":
 					AssertPrg(128, 256); AssertChr(128);
 					break;
 				case "NES-EKROM": //Gemfire (U)
 					AssertPrg(256); AssertChr(256);
 					break;
 				case "HVC-EKROM":
+					break;
+				case "NES-ETROM":
+				case "HVC-ETROM":
+					break;
+				case "NES-EWROM":
+				case "HVC-EWROM":
 					break;
 				default:
 					return false;
@@ -250,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return (byte)attribute;
 					}
 				}
-				int nt = addr >> 10;
+				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
 				int offset = addr & ((1<<10)-1);
 				nt = nt_modes[nt];
 				switch (nt)
@@ -279,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				addr -= 0x2000;
-				int nt = addr >> 10;
+				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
 				int offset = addr & ((1 << 10) - 1);
 				nt = nt_modes[nt];
 				switch (nt)

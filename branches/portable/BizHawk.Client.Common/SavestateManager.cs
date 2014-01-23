@@ -21,16 +21,17 @@ namespace BizHawk.Client.Common
 					writer.Write("Framebuffer ");
 					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
 				}
+
 				writer.Close();
 			}
 			else
 			{
 				// binary savestates
-				using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
-				using (BinaryStateSaver bs = new BinaryStateSaver(fs))
+				using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+				using (var bs = new BinaryStateSaver(fs))
 				{
 #if true
-					bs.PutLump(BinaryStateLump.Corestate, (bw) => Global.Emulator.SaveStateBinary(bw));
+					bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
 #else
 					// this would put text states inside the zipfile
 					bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
@@ -40,6 +41,7 @@ namespace BizHawk.Client.Common
 						var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
 						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(buff));
 					}
+
 					if (Global.MovieSession.Movie.IsActive)
 					{
 						bs.PutLump(BinaryStateLump.Input,
@@ -57,30 +59,31 @@ namespace BizHawk.Client.Common
 		public static bool LoadStateFile(string path, string name)
 		{
 			// try to detect binary first
-			BinaryStateLoader bl = BinaryStateLoader.LoadAndDetect(path);
+			var bl = BinaryStateLoader.LoadAndDetect(path);
 			if (bl != null)
 			{
 				try
 				{
-					bool succeed = false;
+					var succeed = false;
 
 					if (Global.MovieSession.Movie.IsActive)
 					{
-						bl.GetLump(BinaryStateLump.Input, true, (tr) => succeed = Global.MovieSession.HandleMovieLoadState(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
 						if (!succeed)
+						{
 							return false;
+						}
 					}
 
-					bl.GetCoreState((br) => Global.Emulator.LoadStateBinary(br), (tr) => Global.Emulator.LoadStateText(tr));
+					bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, 
 						delegate(BinaryReader br)
 						{
-							int i;
 							var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
 							try
 							{
-								for (i = 0; i < buff.Length; i++)
+								for (int i = 0; i < buff.Length; i++)
 								{
 									int j = br.ReadInt32();
 									buff[i] = j;
@@ -106,17 +109,25 @@ namespace BizHawk.Client.Common
 
 						while (true)
 						{
-							string str = reader.ReadLine();
-							if (str == null) break;
-							if (str.Trim() == "") continue;
+							var str = reader.ReadLine();
+							if (str == null)
+							{
+								break;
+							}
+							
+							if (str.Trim() == String.Empty)
+							{
+								continue;
+							}
 
-							string[] args = str.Split(' ');
+							var args = str.Split(' ');
 							if (args[0] == "Framebuffer")
 							{
 								Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}
+
 					return true;
 				}
 				else

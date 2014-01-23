@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public class XmlGame
 	{
-		public XmlDocument Xml;
+		public XmlDocument Xml { get; set; }
 		public GameInfo GI = new GameInfo();
 		public Dictionary<string, byte[]> Assets = new Dictionary<string, byte[]>();
 
@@ -22,7 +22,9 @@ namespace BizHawk.Client.Common
 				x.Load(f.GetStream());
 				var y = x.SelectSingleNode("./BizHawk-XMLGame");
 				if (y == null)
+				{
 					return null;
+				}
 
 				var ret = new XmlGame
 					{
@@ -38,8 +40,7 @@ namespace BizHawk.Client.Common
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
 				{
-					MemoryStream HashStream = new MemoryStream();
-
+					var HashStream = new MemoryStream();
 					int? OriginalIndex = null;
 
 					foreach (XmlNode a in n.ChildNodes)
@@ -54,7 +55,10 @@ namespace BizHawk.Client.Common
 							if (ai != null)
 							{
 								if (OriginalIndex == null)
+								{
 									OriginalIndex = f.GetBoundIndex();
+								}
+
 								f.Unbind();
 								f.BindArchiveMember(ai);
 								data = Util.ReadAllBytes(f.GetStream());
@@ -67,7 +71,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							string fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|')[0]) ?? String.Empty;
+							var fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|')[0]) ?? String.Empty;
 							fullpath = Path.Combine(fullpath, filename);
 							try
 							{
@@ -78,6 +82,7 @@ namespace BizHawk.Client.Common
 								throw new Exception("Couldn't load XMLGame LoadAsset \"" + name + "\"");
 							}
 						}
+
 						ret.Assets[name] = data;
 
 						using (var sha1 = System.Security.Cryptography.SHA1.Create())
@@ -86,6 +91,7 @@ namespace BizHawk.Client.Common
 							HashStream.Write(sha1.Hash, 0, sha1.Hash.Length);
 						}
 					}
+
 					ret.GI.Hash = Util.Hash_SHA1(HashStream.GetBuffer(), 0, (int)HashStream.Length);
 					HashStream.Close();
 					if (OriginalIndex != null)
@@ -98,13 +104,13 @@ namespace BizHawk.Client.Common
 				{
 					ret.GI.Hash = "0000000000000000000000000000000000000000";
 				}
+
 				return ret;
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				throw new InvalidOperationException(ex.ToString());
 			}
 		}
-
 	}
 }

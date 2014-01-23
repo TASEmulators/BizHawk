@@ -351,6 +351,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private
 
+		void RefreshFloatingWindowControl()
+		{
+			this.Owner = Global.Config.RamSearchFloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		private void ToggleSearchDependentToolBarItems()
 		{
 			DoSearchToolButton.Enabled =
@@ -1195,6 +1200,7 @@ namespace BizHawk.Client.EmuHawk
 			UseUndoHistoryMenuItem.Checked = _searches.UndoEnabled;
 			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchAlwaysOnTop;
+			FloatingWindowMenuItem.Checked = Global.Config.RamSearchFloatingWindow;
 			AutoSearchMenuItem.Checked = _autoSearch;
 		}
 
@@ -1236,6 +1242,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.RamSearchAlwaysOnTop ^= true;
 			TopMost = Global.Config.RamSearchAlwaysOnTop;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchFloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -1688,6 +1700,11 @@ namespace BizHawk.Client.EmuHawk
 					LoadWatchFile(file, false);
 				}
 			}
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion

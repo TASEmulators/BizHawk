@@ -12,6 +12,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Client.EmuHawk.config.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -698,6 +700,10 @@ namespace BizHawk.Client.EmuHawk
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ControllersMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+
+			toolStripSeparator8.Visible =
+				coreSelectionToolStripMenuItem.Visible =
+				VersionInfo.INTERIM;
 		}
 
 		private void EnableMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1105,6 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 				TAStudioMenuItem.Enabled =
 				VirtualPadMenuItem.Enabled =
 				!(Global.Emulator is NullEmulator);
+			batchRunnerToolStripMenuItem.Visible = VersionInfo.INTERIM;
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1170,12 +1177,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			NESDebuggerMenuItem.Visible = VersionInfo.INTERIM;
+			NESDebuggerMenuItem.Visible =
+			MovieSettingsMenuItem.Visible =
+				VersionInfo.INTERIM;
 
 			NESDebuggerMenuItem.Enabled =
 				NESPPUViewerMenuItem.Enabled =
 				NESNametableViewerMenuItem.Enabled =
 				NESSoundChannelsMenuItem.Enabled =
+				MovieSettingsMenuItem.Enabled =
 				Global.Emulator is NES;
 		}
 
@@ -1183,9 +1193,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FdsEjectDiskMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
-			for (int i = 1; i < FDSControlsMenuItem.DropDownItems.Count; i++)
+			while (FDSControlsMenuItem.DropDownItems.Count > 1)
 			{
-				FDSControlsMenuItem.DropDownItems.Remove(FDSControlsMenuItem.DropDownItems[i]);
+				FDSControlsMenuItem.DropDownItems.RemoveAt(1);
 			}
 
 			for (int i = 0; i < 16; i++)
@@ -1220,8 +1230,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new NESGraphicsConfig().ShowDialog();
-			CoreFileProvider.SyncCoreCommInputSignals();
+			if (Global.Emulator is NES)
+				new NESGraphicsConfig().ShowDialog(this);
+			else if (Global.Emulator is QuickNES)
+				new QuickNesConfig().ShowDialog(this);
 		}
 
 		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)

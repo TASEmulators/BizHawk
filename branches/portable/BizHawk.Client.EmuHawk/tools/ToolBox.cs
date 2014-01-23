@@ -6,9 +6,9 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
@@ -85,13 +85,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSize()
 		{
-			var rows = (int)(Math.Ceiling(ToolBoxItems.Count() / 4.0));
-			this.Height = 30 + (rows * 30);
+			var rows = (int)Math.Ceiling(ToolBoxItems.Count() / 4.0);
+			Height = 30 + (rows * 30);
 		}
 
-		/// <summary>
-		/// Provide LINQ capabilities to an outdated form collection
-		/// </summary>
+		// Provide LINQ capabilities to an outdated form collection
 		private IEnumerable<ToolStripItem> ToolBoxItems
 		{
 			get

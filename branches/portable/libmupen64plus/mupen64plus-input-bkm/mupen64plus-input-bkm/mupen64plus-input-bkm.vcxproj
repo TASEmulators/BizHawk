@@ -51,6 +51,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -72,7 +75,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\output\dll\</Command>
+      <Command>xcopy /y "$(OutDir)$(TargetName)$(TargetExt)" "$(TargetDir)..\..\..\..\..\output\dll\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -81,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\osal_dynamiclib.h" />
-    <ClInclude Include="..\osal_preproc.h" />
     <ClInclude Include="..\plugin.h" />
     <ClInclude Include="..\version.h" />
   </ItemGroup>

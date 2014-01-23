@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (prg_slot == 0)
 				{
 					//...$C000:
-					prg_banks_16k[0] = 0x0F;
+					prg_banks_16k[0] = 0x00;
 					prg_banks_16k[1] = prg;
 				}
 				else
@@ -320,6 +320,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER116_HACKY":
 					break;
 				case "MAPPER001":
+					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
+					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
+					if (Cart.prg_size > 256)
+						return false;
 					break;
 				case "MAPPER171": // Tui Do Woo Ma Jeung
 					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
@@ -341,6 +345,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(32); AssertChr(16,32); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SFROM": //bubble bobble
+				case "HVC-SFROM":
+				case "NES-SF1ROM":
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SGROM": //bionic commando
@@ -354,8 +360,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
 					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
 					break;
-				case "HVC-SJROM": //zombie hunter.. but it has no wram????
-					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
+				case "HVC-SJROM": //zombie hunter (wram is missing), artelius.
+					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0, 8);
 					break;
 				case "NES-SJROM": //air fortress
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8);
@@ -363,6 +369,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-SKROM": //zelda 2
 				case "HVC-SKROM": //ad&d dragons of flame (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
+					break;
+				case "NES-SKEPROM": // chip n dale 2 (proto)
+					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0, 8);
 					break;
 				case "NES-SLROM": //castlevania 2
 				case "KONAMI-SLROM": //bayou billy
@@ -379,6 +388,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SLRROM": //tecmo bowl
+				case "HVC-SLRROM":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "HVC-SMROM": //Hokkaidou Rensa Satsujin: Okhotsu ni Shoyu  
@@ -386,6 +396,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "NES-SNROM": //dragon warrior 2
 				case "HVC-SNROM":
+				case "VIRGIN-SNROM":
+				case "NES-SNWEPROM": // final fantasy 2 (proto)
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
 				case "SxROM-JUNK":
@@ -429,6 +441,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "NES-SOROM": //Nobunaga's Ambition
+				case "HVC-SOROM": // KHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
 					break;
 				default: return false;
@@ -511,11 +524,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (Cart.board_type)
 			{
+				case "MAPPER001":
+					// we try to heuristic match to iNES 001 roms with big PRG only
+					if (Cart.prg_size <= 256)
+						return false;
+					AssertPrg(512); AssertChr(0);
+					Cart.vram_size = 8;
+					Cart.wram_size = 8;
+					Cart.wram_battery = true; // all SUROM boards had batteries
+					Console.WriteLine("Guessing SUROM for 512KiB PRG ROM");
+					break;
 				case "NES-SUROM": //dragon warrior 4
 				case "HVC-SUROM":
 					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
-				default: return false;
+				default:
+					return false;
 			}
 
 			BaseConfigure();

@@ -22,7 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER018":
+				case "JALECO-JF-23":
 				case "JALECO-JF-24": //TODO: there will be many boards to list here
+				case "JALECO-JF-25":
+				case "JALECO-JF-27":
+				case "JALECO-JF-29":
+				case "JALECO-JF-37":
+				case "JALECO-JF-40":
 					break;
 				default:
 					return false;

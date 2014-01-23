@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *   Mupen64plus-input-sdl - version.h                                     *
- *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
+ *   Mupen64plus-input-bkm - version.h                                     *
+ *   Edited        2014      null_ptr                                      *
  *   Copyright (C) 2009-2012 Richard Goedeken                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

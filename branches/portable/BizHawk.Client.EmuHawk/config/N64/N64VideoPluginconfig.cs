@@ -259,6 +259,8 @@ namespace BizHawk.Client.EmuHawk
 			s.Glide64mk2Plugin.enable_hacks_for_game = Glide64mk2_enable_hacks_for_game.SelectedIndex;
 			s.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
 			s.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
+
+			GlobalWin.MainForm.PutCoreSyncSettings(s);
 		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
@@ -278,8 +280,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			switch (s.VidPlugin)
 			{
-				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64mk2"; break;
-				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64"; break;
+				case PLUGINTYPE.GLIDE64MK2: PluginComboBox.Text = "Glide64mk2"; break;
+				case PLUGINTYPE.GLIDE: PluginComboBox.Text = "Glide64"; break;
 				case PLUGINTYPE.RICE: PluginComboBox.Text = "Rice"; break;
 			}
 

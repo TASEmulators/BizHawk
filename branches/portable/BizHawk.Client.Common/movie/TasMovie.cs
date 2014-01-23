@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		// TODO: preloading, or benchmark and see how much of a performaance gain it really is
 		// TODO: support loop Offset
 		// TODO: consider the fileformat of binary and lagged data
-		private readonly NewMnemonicsGenerator _mg;
+		private readonly IMnemonicPorts _mg;
 		private readonly IController _source = Global.MovieOutputHardpoint;
 
 		public MovieRecord this[int index]
@@ -27,8 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var mg = new NewMnemonicsGenerator(_source) { ActivePlayers = this.ActivePlayers };
-				return mg.AvailableMnemonics;
+				return _mg.AvailableMnemonics;
 			}
 		}
 
@@ -89,14 +88,13 @@ namespace BizHawk.Client.Common
 
 		public TasMovie(bool startsFromSavestate = false)
 		{
+			_mg = MnemonicGeneratorFactory.Generate();
 			Filename = String.Empty;
 			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
 			Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion2;
 			_records = new MovieRecordList();
 			_mode = Moviemode.Inactive;
 			IsCountingRerecords = true;
-
-			_mg = new NewMnemonicsGenerator(_source);
 		}
 
 		public string Filename { get; set; }

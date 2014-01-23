@@ -16,8 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER077":
+					Cart.vram_size = 8;
 					break;
 				case "IREM-74*161/161/21/138":
+					AssertVram(8);
 					break;
 				default:
 					return false;

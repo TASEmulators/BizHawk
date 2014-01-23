@@ -3,18 +3,19 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -157,6 +158,9 @@ namespace BizHawk.Client.Common
 					}
 				}
 
+				// set this here so we can see what file we tried to load even if an error occurs
+				CanonicalFullPath = file.CanonicalFullPath;
+
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
@@ -234,18 +238,21 @@ namespace BizHawk.Client.Common
 										"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
 										+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!",
 										game.System);
+									return false;
 								}
 								else if (rom.GameInfo.NotInDatabase)
 								{
 									ThrowLoadError(
 										"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.", 
 										game.System);
+									return false;
 								}
 								else if (rom.GameInfo["BIOS"] == false)
 								{
 									ThrowLoadError(
 										"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.", 
 										game.System);
+									return false;
 								}
 
 								if (rom.GameInfo["SuperSysCard"])
@@ -258,6 +265,7 @@ namespace BizHawk.Client.Common
 									ThrowLoadError(
 										"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.",
 										game.System);
+									return false;
 								}
 
 								game.FirmwareHash = Util.Hash_SHA1(rom.RomData);
@@ -295,6 +303,7 @@ namespace BizHawk.Client.Common
 						catch (Exception ex)
 						{
 							ThrowLoadError(ex.ToString(), "XMLGame Load Error"); // TODO: don't pass in XMLGame Load Error as a system ID
+							return false;
 						}
 					}
 					else // most extensions
@@ -362,8 +371,9 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									nextEmulator = new QuickNES(nextComm, rom.FileData);
+									nextEmulator = new QuickNES(nextComm, rom.FileData, GetCoreSettings<QuickNES>());
 								}
+
 								break;
 							case "GB":
 							case "GBC":
@@ -408,13 +418,12 @@ namespace BizHawk.Client.Common
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
-								c64.HardReset(); // TODO: The core should be responsible for this!
 								nextEmulator = c64;
 								break;
 							case "GBA":
 								if (VersionInfo.INTERIM)
 								{
-									GBA gba = new GBA(nextComm);
+									var gba = new GBA(nextComm);
 									gba.Load(rom.RomData);
 									nextEmulator = gba;
 								}
@@ -448,7 +457,6 @@ namespace BizHawk.Client.Common
 				Rom = rom;
 				LoadedEmulator = nextEmulator;
 				Game = game;
-				CanonicalFullPath = file.CanonicalFullPath;
 				return true;
 			}
 		}

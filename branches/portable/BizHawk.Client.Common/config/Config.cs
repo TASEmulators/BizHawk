@@ -237,6 +237,7 @@ namespace BizHawk.Client.Common
 		public int RamSearchChangesIndex = 3;
 		public bool RamSearchFastMode = false;
 		public bool RamSearchAlwaysOnTop = false;
+		public bool RamSearchFloatingWindow = true; //default to the old behaviour
 
 		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
 		{

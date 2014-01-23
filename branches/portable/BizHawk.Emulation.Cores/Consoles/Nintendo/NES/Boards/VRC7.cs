@@ -92,9 +92,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER085":
-					// presumably the only reason a homebrew would use mapper085 is for the sound?
-					// so initialize like lagrange point
-					remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
+					// as in some VRC2/VRC4 cases, this is actually a "composite" mapping that catches
+					// both kinds of VRC7 (but screws up some of the address mirrors)
+					remap = (addr) => (addr & 0xF000) | (addr & 0x30) >> 4 | (addr & 0x8) >> 3;
 					fm = new YM2413(YM2413.ChipType.VRC7);
 					break;
 				case "KONAMI-VRC-7":
@@ -102,8 +102,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (Cart.pcb == "353429")
 					{
 						//tiny toons 2
-						remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
+						// for consistency, we map the addr line used for the FM chip even though
 						// there is no resonator or crystal on the board for the fm chip
+						remap = (addr) => (addr & 0xF000) | ((addr & 0x8) >> 3) | (addr & 0x20) >> 4;
 						fm = null;
 					}
 					else if (Cart.pcb == "352402")
