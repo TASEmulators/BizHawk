@@ -485,8 +485,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			// Start up the core
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
-				(IntPtr foo, int level, string Message) => { },
-				"", IntPtr.Zero);
+				null, "", IntPtr.Zero);
 
 			// Set the savetype if needed
 			if (SaveType != 0)
@@ -511,20 +510,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			// Order of plugin loading is important, do not change!
 			// Set up and connect the graphics plugin
-			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
+			result = GfxPluginStartup(CoreDll, "Video", null);
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
 			// Set up our audio plugin
-			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
+			result = AudPluginStartup(CoreDll, "Audio", null);
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up our input plugin
-			result = AudPluginStartup(CoreDll, "Input",
-				(IntPtr foo, int level, string Message) => { });
+			result = InpPluginStartup(CoreDll, "Input", null);
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
 
 			// Set up and connect the RSP plugin
-			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
+			result = RspPluginStartup(CoreDll, "RSP", null);
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
 
 			InitSaveram();
