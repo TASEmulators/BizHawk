@@ -317,18 +317,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		// Input plugin specific
 
 		/// <summary>
-		/// Sets the buttons for a controller
-		/// </summary>
-		/// <param name="num">The controller number to set buttons for (0-3)</param>
-		/// <param name="keys">The button data</param>
-		/// <param name="X">The value for the X axis</param>
-		/// <param name="Y">The value for the Y axis</param>
-		/// <returns></returns>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int SetKeys(int num, int keys, sbyte X, sbyte Y);
-		SetKeys InpSetKeys;
-
-		/// <summary>
 		/// Sets a callback to use when the mupen core wants controller buttons
 		/// </summary>
 		/// <param name="inputCallback">The delegate to use</param>
@@ -337,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		SetInputCallback InpSetInputCallback;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void InputCallback();
+		public delegate int InputCallback(int i);
 		InputCallback InpInputCallback;
 
 
@@ -600,7 +588,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			InpPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginStartup"), typeof(PluginStartup));
 			InpPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginShutdown"), typeof(PluginShutdown));
-			InpSetKeys = (SetKeys)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetKeys"), typeof(SetKeys));
 			InpSetInputCallback = (SetInputCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetInputCallback"), typeof(SetInputCallback));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
@@ -690,11 +677,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public IntPtr get_memory_ptr(N64_MEMORY id)
 		{
 			return m64pDebugMemGetPointer(id);
-		}
-
-		public void set_buttons(int num, int keys, sbyte X, sbyte Y)
-		{
-			InpSetKeys(num, keys, X, Y);
 		}
 
 		public void soft_reset()

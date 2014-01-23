@@ -47,7 +47,7 @@ static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
 static int l_PluginInit = 0;
 
-static void (*l_inputCallback)() = NULL;
+static int (*l_inputCallback)(int i) = NULL;
 
 static int romopen = 0;         // is a rom opened
 
@@ -272,22 +272,10 @@ EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
 *******************************************************************/
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
-	(*l_inputCallback)();
-	Keys->Value = controller[Control].buttons.Value;
+	Keys->Value = (*l_inputCallback)(Control);
 }
 
-/* ----------------------------------------------------------------------
-   ----------- Sets the internal buttons delegated to mupen64 -----------
-   ---------------------------------------------------------------------- */
-EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
-{
-	controller[num].buttons.Value = keys;
-
-	controller[num].buttons.X_AXIS = X;
-	controller[num].buttons.Y_AXIS = Y;
-}
-
-EXPORT void CALL SetInputCallback(void (*inputCallback)())
+EXPORT void CALL SetInputCallback(int (*inputCallback)(int i))
 {
 	l_inputCallback = inputCallback;
 }

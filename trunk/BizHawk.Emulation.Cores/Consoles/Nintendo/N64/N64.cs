@@ -141,32 +141,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		/// <summary>
-		/// Translates controller inputs from EmuHawk and
-		/// shoves them into mupen64plus
+		/// Translates controller input from EmuHawk into
+		/// N64 controller data
 		/// </summary>
-		public void setControllers()
+		/// <param name="i">Id of controller to update and shove</param>
+		public int GetControllerInput(int i)
 		{
 			CoreComm.InputCallback.Call();
 			IsLagFrame = false;
 
 			// Analog stick right = +X
 			// Analog stick up = +Y
+			string p = "P" + (i + 1);
+			sbyte x;
+			if (Controller.IsPressed(p + " A Left")) { x = -127; }
+			else if (Controller.IsPressed(p + " A Right")) { x = 127; }
+			else { x = (sbyte)Controller.GetFloat(p + " X Axis"); }
 
-			for (int i = 0; i < 4; i++)
-			{
-				string p = "P" + (i + 1);
-				sbyte x;
-				if (Controller.IsPressed(p + " A Left")) { x = -127; }
-				else if (Controller.IsPressed(p + " A Right")) { x = 127; }
-				else { x = (sbyte)Controller.GetFloat(p + " X Axis"); }
+			sbyte y;
+			if (Controller.IsPressed(p + " A Up")) { y = 127; }
+			else if (Controller.IsPressed(p + " A Down")) { y = -127; }
+			else { y = (sbyte)Controller.GetFloat(p + " Y Axis"); }
 
-				sbyte y;
-				if (Controller.IsPressed(p + " A Up")) { y = 127; }
-				else if (Controller.IsPressed(p + " A Down")) { y = -127; }
-				else { y = (sbyte)Controller.GetFloat(p + " Y Axis"); }
-
-				api.set_buttons(i, ReadController(i+1), x, y);
-			}
+			int value = ReadController(i + 1);
+			value |= (x & 0xFF) << 16;
+			value |= (y & 0xFF) << 24;
+			return value;
 		}
 
 		/// <summary>
@@ -456,7 +456,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			api = new mupen64plusApi(this, rom, this.SyncSettings.GetVPS(game), SaveType);
-			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
+			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(GetControllerInput));
 
 			audioProvider = new N64Audio(api);
 			videoProvider = new N64VideoProvider(api);
