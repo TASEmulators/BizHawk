@@ -47,7 +47,9 @@ static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
 static int l_PluginInit = 0;
 
+/* Callbacks for data flow out of mupen */
 static int (*l_inputCallback)(int i) = NULL;
+static int (*l_setrumbleCallback)(int i, int on) = NULL;
 
 static int romopen = 0;         // is a rom opened
 
@@ -141,6 +143,7 @@ EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
 		controller[i].control = ControlInfo.Controls + i;
 		controller[i].control->Plugin = PLUGIN_MEMPAK;
 		controller[i].control->Present = 1;
+		controller[i].control->RawData = 0;
     }
 
     DebugMessage(M64MSG_INFO, "%s version %i.%i.%i initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION));
@@ -195,13 +198,34 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *Plugi
     return M64ERR_SUCCESS;
 }
 
-#pragma region Useless stubs
+#pragma region Raw read and write
 
 /* ----------------------------------------------------------------------
-   -------------------- This functions are not used  --------------------
-   -------------------- Plugin api just expects them --------------------
-   -------------------- to exist                     --------------------
-   ---------------------------------------------------------------------- */
+-------------------------- Controller CRC ----------------------------
+---------------------------------------------------------------------- */
+static unsigned char DataCRC( unsigned char *Data, int iLenght )
+{
+	unsigned char Remainder = Data[0];
+
+	int iByte = 1;
+	unsigned char bBit = 0;
+
+	while( iByte <= iLenght )
+	{
+		int HighBit = ((Remainder & 0x80) != 0);
+		Remainder = Remainder << 1;
+
+		Remainder += ( iByte < iLenght && Data[iByte] & (0x80 >> bBit )) ? 1 : 0;
+
+		Remainder ^= (HighBit) ? 0x85 : 0;
+
+		bBit++;
+		iByte += bBit/8;
+		bBit %= 8;
+	}
+
+	return Remainder;
+}
 
 /******************************************************************
   Function: ControllerCommand
@@ -221,6 +245,78 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *Plugi
 *******************************************************************/
 EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
 {
+	if( Control == -1)
+		return;
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Handles raw data read from a rumble pak      -------------
+   ----------- Data read at address C01B is 32x the status  -------------
+   ----------- Data read at address 8001 is 32x 0x80        -------------
+   ---------------------------------------------------------------------- */
+void DoRumblePakRead(int Control, unsigned char* Command)
+{
+	if(Command[3] == 0x80 && Command[4] == 0x01)
+		memset(Command+5, 0x80, 32);
+	else if(Command[3] == 0xC0 && Command[4] == 0x1B)
+		memset(Command+5, controller[Control].rumbling, 32);
+	else
+		memset(Command+5, 0x00, 32);
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Writes data to rumble pak                    -------------
+   ----------- If writes 0x01 to address 0xC01B rumble on   -------------
+   ----------- If writes 0x00 to address 0xC01B rumble off  -------------
+   ---------------------------------------------------------------------- */
+void DoRumblePakWrite(int Control, unsigned char* Command)
+{
+	if(Command[3] == 0xC0 && Command[4] == 0x1B)
+	{
+		controller[Control].rumbling = Command[5];
+		if(l_setrumbleCallback != NULL)
+			l_setrumbleCallback(Control, Command[5]);
+	}
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Does a raw read of a controller pak          -------------
+   ----------- Currently only handles rumble paks           -------------
+   ---------------------------------------------------------------------- */
+void DoRawRead(int Control, unsigned char* Command)
+{
+	switch(controller[Control].control->Plugin)
+	{
+	case PLUGIN_RUMBLE_PAK:
+		DoRumblePakRead(Control, Command);
+		break;
+	case PLUGIN_NONE:
+	case PLUGIN_RAW:
+	case PLUGIN_MEMPAK:
+	case PLUGIN_TRANSFER_PAK:
+	default:
+		break;
+	}
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Handles raw write to the controller pak      -------------
+   ----------- Currently only handles rumble paks           -------------
+   ---------------------------------------------------------------------- */
+void DoRawWrite(int Control, unsigned char* Command)
+{
+	switch(controller[Control].control->Plugin)
+	{
+	case PLUGIN_RUMBLE_PAK:
+		DoRumblePakWrite(Control, Command);
+		break;
+	case PLUGIN_NONE:
+	case PLUGIN_RAW:
+	case PLUGIN_MEMPAK:
+	case PLUGIN_TRANSFER_PAK:
+	default:
+		break;
+	}
 }
 
 /******************************************************************
@@ -236,7 +332,47 @@ EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
 *******************************************************************/
 EXPORT void CALL ReadController(int Control, unsigned char *Command)
 {
+	unsigned char * Data = Command + 5;
+	int value;
+	if(Control == -1)
+		return;
+	
+	switch(Command[2])
+	{
+	case RD_RESETCONTROLLER:
+	case RD_GETSTATUS:
+		Command[3] = RD_GAMEPAD | RD_ABSOLUTE;
+		Command[4] = RD_NOEEPROM;
+		Command[5] = controller[Control].control->Plugin != PLUGIN_NONE;
+		break;
+	case RD_READKEYS:
+		value = l_inputCallback(Control);
+		*((int*)(Command+3)) = value;
+		break;
+	case RD_READPAK:
+		DoRawRead(Control, Command);
+		Data[32] = DataCRC(Data, 32);
+		break;
+	case RD_WRITEPAK:
+		DoRawWrite(Control, Command);
+		Data[32] = DataCRC(Data, 32);
+		break;
+	case RD_READEEPROM:
+	case RD_WRITEEPROM:
+	default:
+		break;
+	}
 }
+
+#pragma endregion
+
+#pragma region Useless stubs
+
+/* ----------------------------------------------------------------------
+   -------------------- This functions are not used  --------------------
+   -------------------- Plugin api just expects them --------------------
+   -------------------- to exist                     --------------------
+   ---------------------------------------------------------------------- */
 
 /******************************************************************
   Function: SDL_KeyDown
@@ -272,10 +408,43 @@ EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
 *******************************************************************/
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
-	Keys->Value = (*l_inputCallback)(Control);
+	//Keys->Value = (*l_inputCallback)(Control);
 }
 
+/* ----------------------------------------------------------------------
+   ----------- Sets callback to retrieve button and axis data -----------
+   ---------------------------------------------------------------------- */
 EXPORT void CALL SetInputCallback(int (*inputCallback)(int i))
 {
 	l_inputCallback = inputCallback;
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Sets a callback to set rumble on and off     -------------
+   ---------------------------------------------------------------------- */
+EXPORT void CALL SetRumbleCallback(void (*rumbleCallback)(int Control, int on))
+{
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Sets the type of the controller pak          -------------
+   ----------- Possible values for type:                    -------------
+   ----------- 1 - No pak inserted                          -------------
+   ----------- 2 - Memory card                              -------------
+   ----------- 3 - Rumble pak (no default implementation)   -------------
+   ----------- 4 - Transfer pak (no default implementation) -------------
+   ----------- 5 - Raw data                                 -------------
+   ---------------------------------------------------------------------- */
+EXPORT void CALL SetControllerPakType(int idx, int type)
+{
+	controller[idx].control->Plugin = type;
+	controller[idx].control->RawData = (type != PLUGIN_MEMPAK);
+}
+
+/* ----------------------------------------------------------------------
+   ----------- Sets if a controller is connected            -------------
+   ---------------------------------------------------------------------- */
+EXPORT void CALL SetControllerConnected(int idx, int connected)
+{
+	controller[idx].control->Present = connected;
 }
