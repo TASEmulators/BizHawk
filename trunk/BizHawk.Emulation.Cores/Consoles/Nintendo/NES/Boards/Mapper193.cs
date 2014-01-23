@@ -58,6 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER193":
 					break;
+				case "NTDEC-TC-112": // untested
+					break;
 				default:
 					return false;
 			}

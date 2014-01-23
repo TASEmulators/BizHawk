@@ -116,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER079":
 					AssertPrg(32, 64); AssertChr(32, 64);
 					break;
+				case "TXC-74*138/175": // untested
+					break;
 				case "MAPPER113":
 					mirror_control_enabled = true;
 					break;

@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-CNROM":
 				case "TAITO-CNROM":
 				case "BANDAI-CNROM":
+				case "BANDAI-74*161/32": // untested
 					bus_conflict = true;
 					AssertPrg(16, 32);
 					break;
@@ -58,6 +59,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "AVE-74*161":
 					bus_conflict = true;
 					AssertPrg(32); AssertChr(64);
+					break;
+				case "NTDEC-N715062": // untested
+				case "NTDEC-N715061": // untested
+					bus_conflict = true;
+					AssertPrg(16, 32); AssertChr(8, 16, 32);
+					break;
+
+				case "NAMCOT-CNROM+WRAM": // untested
+					AssertPrg(32); AssertChr(32); AssertWram(2);
 					break;
 				default:
 					return false;

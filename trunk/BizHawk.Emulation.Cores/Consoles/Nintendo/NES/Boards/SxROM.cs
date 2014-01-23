@@ -370,6 +370,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SKROM": //ad&d dragons of flame (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SKEPROM":
 				case "NES-SKEPROM": // chip n dale 2 (proto)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0, 8);
 					break;
@@ -378,6 +379,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SLROM": //Adventures of Lolo 2 (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
+				case "HVC-SL1ROM": // untested
 				case "NES-SL1ROM": //hoops
 					AssertPrg(64, 128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
