@@ -28,9 +28,34 @@
 #include "m64p_plugin.h"
 #include "m64p_config.h"
 
+// Some stuff from n-rage plugin
+#define RD_GETSTATUS		0x00 // get status
+#define RD_READKEYS			0x01 // read button values
+#define RD_READPAK			0x02 // read from controllerpack
+#define RD_WRITEPAK			0x03 // write to controllerpack
+#define RD_RESETCONTROLLER	0xff // reset controller
+#define RD_READEEPROM		0x04 // read eeprom
+#define RD_WRITEEPROM		0x05 // write eeprom
+
+#define RD_ABSOLUTE			0x01 // Default gamepad
+#define RD_RELATIVE			0x02
+#define RD_GAMEPAD			0x04 // Default gamepad
+        //B2
+#define RD_EEPROM			0x80 
+#define RD_NOEEPROM			0x00
+
+        //C3
+        // No Plugin in Controller
+#define RD_NOPLUGIN			0x00 // No pak in controller
+#define RD_PLUGIN			0x01 // Any pak in controller
+#define RD_NOTINITIALIZED	0x02 // Pak was uninitialized before call
+#define RD_ADDRCRCERR		0x04 // Last I/O address was invalid
+#define RD_EEPROMBUSY		0x80 // EEPROM busy
+
 typedef struct
 {
     CONTROL *control;               // pointer to CONTROL struct in Core library
+	BOOL rumbling;
 } SController;
 
 /* global data definitions */
