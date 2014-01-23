@@ -31,7 +31,6 @@
 typedef struct
 {
     CONTROL *control;               // pointer to CONTROL struct in Core library
-    BUTTONS buttons;
 } SController;
 
 /* global data definitions */
