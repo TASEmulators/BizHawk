@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NAMCOT-3301":
 				case "NAMCOT-3302":
 				case "NAMCOT-3303":
-				case "NACOMT-3304":
+				case "NAMCOT-3304":
 				case "NAMCOT-3305":
 				case "NAMCOT-3311":
 				case "NAMCOT-3312":

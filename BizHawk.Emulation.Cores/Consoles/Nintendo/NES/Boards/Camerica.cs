@@ -43,6 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
 					mirror_control_enabled = true;
 					break;
+				case "CODEMASTERS-NR8N": // untested
+					AssertPrg(256); AssertChr(0); AssertWram(0); AssertVram(8);
+					break;
 				default:
 					return false;
 			}

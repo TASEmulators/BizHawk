@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128, 256, 512); AssertChr(64, 128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
+				case "HVC-TL1ROM": // untested
 				case "NES-TL1ROM": //Double dragon 2
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					AssertBattery(false);

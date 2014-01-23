@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetMirrorType(Cart.pad_h, Cart.pad_v);
 					break;
 
+				case "AVE-NINA-07": // untested
+					SetMirrorType(Cart.pad_h, Cart.pad_v);
+					break;
 				case "AGCI-50282": // death race
 				case "MAPPER144":
 					bus_conflict_50282 = true;
