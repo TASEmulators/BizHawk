@@ -362,6 +362,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sachen8259.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
