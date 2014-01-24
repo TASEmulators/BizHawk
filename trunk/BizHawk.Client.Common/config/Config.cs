@@ -586,6 +586,7 @@ namespace BizHawk.Client.Common
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;
 		public bool LuaWriterStartEmpty = false;
+		public bool LuaShowLineNumbers = false;
 	}
 
 	// these are used in the defctrl.json or wherever

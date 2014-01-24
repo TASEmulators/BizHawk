@@ -513,9 +513,9 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private static void OpenLuaWriter(string path)
+		private void OpenLuaWriter(string path)
 		{
-			var writer = new LuaWriter { CurrentFile = path };
+			var writer = new LuaWriter(this) { CurrentFile = path };
 			writer.Show();
 		}
 
