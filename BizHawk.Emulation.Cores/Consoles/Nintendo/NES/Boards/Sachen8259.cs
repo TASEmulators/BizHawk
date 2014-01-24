@@ -110,9 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							switch (value & 6)
 							{
 								case 0: SetMirrorType(EMirrorType.Vertical); break;
-								case 1: SetMirrorType(EMirrorType.Horizontal); break;
-								case 2: SetMirroring(0, 1, 1, 1); break;
-								case 3: SetMirrorType(EMirrorType.OneScreenA); break;
+								case 2: SetMirrorType(EMirrorType.Horizontal); break;
+								case 4: SetMirroring(0, 1, 1, 1); break;
+								case 6: SetMirrorType(EMirrorType.OneScreenA); break;
 							}
 						}
 						break;
@@ -264,9 +264,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							switch (value & 6)
 							{
 								case 0: SetMirrorType(EMirrorType.Vertical); break;
-								case 1: SetMirrorType(EMirrorType.Horizontal); break;
-								case 2: SetMirroring(0, 1, 1, 1); break;
-								case 3: SetMirrorType(EMirrorType.OneScreenA); break;
+								case 2: SetMirrorType(EMirrorType.Horizontal); break;
+								case 4: SetMirroring(0, 1, 1, 1); break;
+								case 6: SetMirrorType(EMirrorType.OneScreenA); break;
 							}
 						}
 						break;
