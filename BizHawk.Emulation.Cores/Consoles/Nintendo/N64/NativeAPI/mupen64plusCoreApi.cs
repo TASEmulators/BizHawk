@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
 
-namespace BizHawk.Emulation.Cores.Nintendo.N64
+namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
 	public class mupen64plusApi : IDisposable
 	{
@@ -33,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[DllImport("kernel32.dll")]
 		public static extern bool FreeLibrary(IntPtr hModule);
 
-		enum m64p_error
+		public enum m64p_error
 		{
 			M64ERR_SUCCESS = 0,
 			M64ERR_NOT_INIT,        /* Function is disallowed before InitMupen64Plus() is called */
@@ -52,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			M64ERR_WRONG_TYPE       /* A given input type parameter cannot be used for desired operation */
 		};
 
-		enum m64p_plugin_type
+		public enum m64p_plugin_type
 		{
 			M64PLUGIN_NULL = 0,
 			M64PLUGIN_RSP = 1,
@@ -62,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			M64PLUGIN_CORE
 		};
 
-		enum m64p_command
+		private enum m64p_command
 		{
 			M64CMD_NOP = 0,
 			M64CMD_ROM_OPEN,
@@ -88,14 +84,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			M64CMD_SET_VI_CALLBACK
 		};
 
-		enum m64p_emu_state
+		public enum m64p_emu_state
 		{
 			M64EMU_STOPPED = 1,
 			M64EMU_RUNNING,
 			M64EMU_PAUSED
 		};
 
-		enum m64p_type
+		public enum m64p_type
 		{
 			M64TYPE_INT = 1,
 			M64TYPE_FLOAT,
@@ -261,102 +257,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		delegate m64p_error CoreDoCommandVICallback(m64p_command Command, int ParamInt, VICallback ParamPtr);
 		CoreDoCommandVICallback m64pCoreDoCommandVICallback;
 
-
-		// Graphics plugin specific
-
-		/// <summary>
-		/// Fills a provided buffer with the mupen64plus framebuffer
-		/// </summary>
-		/// <param name="framebuffer">The buffer to fill</param>
-		/// <param name="width">A pointer to a variable to fill with the width of the framebuffer</param>
-		/// <param name="height">A pointer to a variable to fill with the height of the framebuffer</param>
-		/// <param name="buffer">Which buffer to read: 0 = front, 1 = back</param>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ReadScreen2(int[] framebuffer, ref int width, ref int height, int buffer);
-		ReadScreen2 GFXReadScreen2;
-
-		/// <summary>
-		/// Gets the width and height of the mupen64plus framebuffer
-		/// </summary>
-		/// <param name="dummy">Use IntPtr.Zero</param>
-		/// <param name="width">A pointer to a variable to fill with the width of the framebuffer</param>
-		/// <param name="height">A pointer to a variable to fill with the height of the framebuffer</param>
-		/// <param name="buffer">Which buffer to read: 0 = front, 1 = back</param>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ReadScreen2Res(IntPtr dummy, ref int width, ref int height, int buffer);
-		ReadScreen2Res GFXReadScreen2Res;
-
-
-		// Audio plugin specific
-
-		/// <summary>
-		/// Gets the size of the mupen64plus audio buffer
-		/// </summary>
-		/// <returns>The size of the mupen64plus audio buffer</returns>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int GetBufferSize();
-		GetBufferSize AudGetBufferSize;
-
-		/// <summary>
-		/// Gets the audio buffer from mupen64plus, and then clears it
-		/// </summary>
-		/// <param name="dest">The buffer to fill with samples</param>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ReadAudioBuffer(short[] dest);
-		ReadAudioBuffer AudReadAudioBuffer;
-
-		/// <summary>
-		/// Gets the current audio rate from mupen64plus
-		/// </summary>
-		/// <returns>The current audio rate</returns>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int GetAudioRate();
-		GetAudioRate AudGetAudioRate;
-
-
-		// Input plugin specific
-
-		/// <summary>
-		/// Sets a callback to use when the mupen core wants controller buttons
-		/// </summary>
-		/// <param name="inputCallback">The delegate to use</param>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void SetInputCallback(InputCallback inputCallback);
-		SetInputCallback InpSetInputCallback;
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int InputCallback(int i);
-		InputCallback InpInputCallback;
-
-
 		// These are common for all four plugins
 
 		/// <summary>
 		/// Initializes the plugin
 		/// </summary>
 		/// <param name="CoreHandle">The DLL handle for the core DLL</param>
-		/// <param name="Context">Use "Video", "Audio", "Input", or "RSP" depending on the plugin</param>
+		/// <param name="Context">Giving a context to the DebugCallback</param>
 		/// <param name="DebugCallback">A function to use when the pluging wants to output debug messages</param>
 		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
+		public delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
 
 		/// <summary>
 		/// Cleans up the plugin
 		/// </summary>
 		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate m64p_error PluginShutdown();
-
-		PluginStartup GfxPluginStartup;
-		PluginStartup RspPluginStartup;
-		PluginStartup AudPluginStartup;
-		PluginStartup InpPluginStartup;
-
-		PluginShutdown GfxPluginShutdown;
-		PluginShutdown RspPluginShutdown;
-		PluginShutdown AudPluginShutdown;
-		PluginShutdown InpPluginShutdown;
+		public delegate m64p_error PluginShutdown();
 
 		// Callback functions
 
@@ -418,11 +336,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		GetRegisters m64pGetRegisters;
 
 		// DLL handles
-		IntPtr CoreDll;
-		IntPtr GfxDll;
-		IntPtr RspDll;
-		IntPtr AudDll;
-		IntPtr InpDll;
+		public IntPtr CoreDll { get; private set; }
 
 		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType)
 		{
@@ -434,40 +348,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 			this.bizhawkCore = bizhawkCore;
 
-			string VidDllName;
-			if (video_settings.Plugin == PLUGINTYPE.RICE)
-			{
-				VidDllName = "mupen64plus-video-rice.dll";
-			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE)
-			{
-				VidDllName = "mupen64plus-video-glide64.dll";
-			}
-			else if (video_settings.Plugin == PLUGINTYPE.GLIDE64MK2)
-			{
-				VidDllName = "mupen64plus-video-glide64mk2.dll";
-			}
-			else
-			{
-				throw new InvalidOperationException(string.Format("Unknown plugin {0}", video_settings.Plugin));
-			}
-
-			// Load each of the DLLs
 			CoreDll = LoadLibrary("mupen64plus.dll");
 			if (CoreDll == IntPtr.Zero)
 				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
-			GfxDll = LoadLibrary(VidDllName);
-			if (GfxDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load " + VidDllName));
-			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
-			if (RspDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-rsp-hle.dll"));
-			AudDll = LoadLibrary("mupen64plus-audio-bkm.dll");
-			if (AudDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-audio-bkm.dll"));
-			InpDll = LoadLibrary("mupen64plus-input-bkm.dll");
-			if (InpDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-input-bkm.dll"));
 
 			connectFunctionPointers();
 
@@ -496,23 +379,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			set_video_parameters(video_settings);
 
-			// Order of plugin loading is important, do not change!
-			// Set up and connect the graphics plugin
-			result = GfxPluginStartup(CoreDll, "Video", null);
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
-
-			// Set up our audio plugin
-			result = AudPluginStartup(CoreDll, "Audio", null);
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
-
-			// Set up our input plugin
-			result = InpPluginStartup(CoreDll, "Input", null);
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
-
-			// Set up and connect the RSP plugin
-			result = RspPluginStartup(CoreDll, "RSP", null);
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
-
 			InitSaveram();
 
 			// Initialize event invoker
@@ -521,22 +387,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			m64pVICallback = new VICallback(FireVIEvent);
 			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
 
-			// Start the emulator in another thread
+			// Prepare to start the emulator in a different thread
 			m64pEmulator = new Thread(ExecuteEmulator);
-			m64pEmulator.Start();
-
-			// Wait for the core to boot up
-			m64pStartupComplete.WaitOne();
 
 			AttachedCore = this;
 		}
 
 		volatile bool emulator_running = false;
+
+		/// <summary>
+		/// Starts executing the emulator asynchronously
+		/// Waits until the emulator booted up and than returns
+		/// </summary>
+		public void AsyncExecuteEmulator()
+		{
+			m64pEmulator.Start();
+
+			// Wait for the core to boot up
+			m64pStartupComplete.WaitOne();
+		}
+
 		/// <summary>
 		/// Starts execution of mupen64plus
 		/// Does not return until the emulator stops
 		/// </summary>
-		public void ExecuteEmulator()
+		private void ExecuteEmulator()
 		{
 			emulator_running = true;
 			var cb = new StartupCallback(() => m64pStartupComplete.Set());
@@ -574,24 +449,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
 
 			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
-
-			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
-			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
-			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
-			GFXReadScreen2Res = (ReadScreen2Res)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2Res));
-
-			AudPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginStartup"), typeof(PluginStartup));
-			AudPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginShutdown"), typeof(PluginShutdown));
-			AudGetBufferSize = (GetBufferSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetBufferSize"), typeof(GetBufferSize));
-			AudReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
-			AudGetAudioRate = (GetAudioRate)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetAudioRate"), typeof(GetAudioRate));
-
-			InpPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginStartup"), typeof(PluginStartup));
-			InpPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginShutdown"), typeof(PluginShutdown));
-			InpSetInputCallback = (SetInputCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetInputCallback"), typeof(SetInputCallback));
-
-			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
-			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 		}
 
 		/// <summary>
@@ -633,42 +490,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
-		private int[] m64pBuffer = new int[0];
-		/// <summary>
-		/// This function copies the frame buffer from mupen64plus
-		/// </summary>
-		public void Getm64pFrameBuffer(int[] buffer, ref int width, ref int height)
-		{
-			if(m64pBuffer.Length != width * height)
-				m64pBuffer = new int[width * height];
-			// Actually get the frame buffer
-			GFXReadScreen2(m64pBuffer, ref width, ref height, 0);
-
-			// vflip
-			int fromindex = width * (height - 1) * 4;
-			int toindex = 0;
-
-			for (int j = 0; j < height; j++)
-			{
-				Buffer.BlockCopy(m64pBuffer, fromindex, buffer, toindex, width * 4);
-				fromindex -= width * 4;
-				toindex += width * 4;
-			}
-			
-			// opaque
-			unsafe
-			{
-				fixed (int* ptr = &buffer[0])
-				{
-					int l = buffer.Length;
-					for (int i = 0; i < l; i++)
-					{
-						ptr[i] |= unchecked((int)0xff000000);
-					}
-				}
-			}
-		}
-
 		public int get_memory_size(N64_MEMORY id)
 		{
 			return m64pMemGetSize(id);
@@ -693,12 +514,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			m64pFrameComplete.WaitOne();
-		}
-
-		public void SetM64PInputCallback(InputCallback inputCallback)
-		{
-			InpInputCallback = inputCallback;
-			InpSetInputCallback(InpInputCallback);
 		}
 
 		public int SaveState(byte[] buffer)
@@ -787,22 +602,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				// Backup the saveram in case bizhawk wants to get at is after we've freed the libraries
 				saveram_backup = SaveSaveram();
 
-				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_GFX);
-				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO);
-				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_INPUT);
-				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_RSP);
-
-				GfxPluginShutdown();
-				FreeLibrary(GfxDll);
-
-				AudPluginShutdown();
-				FreeLibrary(AudDll);
-
-				InpPluginShutdown();
-				FreeLibrary(InpDll);
-
-				RspPluginShutdown();
-				FreeLibrary(RspDll);
+				DetachPlugin(m64p_plugin_type.M64PLUGIN_GFX);
+				DetachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO);
+				DetachPlugin(m64p_plugin_type.M64PLUGIN_INPUT);
+				DetachPlugin(m64p_plugin_type.M64PLUGIN_RSP);
 
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_ROM_CLOSE, 0, IntPtr.Zero);
 				m64pCoreShutdown();
@@ -812,24 +615,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		}
 
-		public void GetScreenDimensions(ref int width, ref int height)
+		struct AttachedPlugin
 		{
-			GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
+			public PluginStartup dllStartup;
+			public PluginShutdown dllShutdown;
+			public IntPtr dllHandle;
+		}
+		Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
+
+		public IntPtr AttachPlugin(m64p_plugin_type type, string PluginName)
+		{
+			if (plugins.ContainsKey(type))
+				DetachPlugin(type);
+
+			AttachedPlugin plugin;
+			plugin.dllHandle = LoadLibrary(PluginName);
+			if (plugin.dllHandle == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load plugin {0}", PluginName));
+
+			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
+			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));
+			plugin.dllStartup(CoreDll, null, null);
+
+			m64p_error result = m64pCoreAttachPlugin(type, plugin.dllHandle);
+			if (result != m64p_error.M64ERR_SUCCESS)
+			{
+				FreeLibrary(plugin.dllHandle);
+				throw new InvalidOperationException(string.Format("Error during attaching plugin {0}", PluginName));
+			}
+
+			plugins.Add(type, plugin);
+			return plugin.dllHandle;
 		}
 
-		public uint GetSamplingRate()
+		public void DetachPlugin(m64p_plugin_type type)
 		{
-			return (uint)AudGetAudioRate();
-		}
-
-		public int GetAudioBufferSize()
-		{
-			return AudGetBufferSize();
-		}
-
-		public void GetAudioBuffer(short[] buffer)
-		{
-			AudReadAudioBuffer(buffer);
+			AttachedPlugin plugin;
+			if (plugins.TryGetValue(type, out plugin))
+			{
+				plugins.Remove(type);
+				m64pCoreDetachPlugin(type);
+				plugin.dllShutdown();
+				FreeLibrary(plugin.dllHandle);
+			}
 		}
 
 		public event Action FrameFinished;
@@ -853,24 +681,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private void CompletedFrameCallback()
 		{
 			m64pFrameComplete.Set();
-		}
-	}
-
-	public class VideoPluginSettings
-	{
-		public PLUGINTYPE Plugin;
-		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
-		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
-
-		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
-		public int Height;
-		public int Width;
-
-		public VideoPluginSettings (PLUGINTYPE Plugin, int Width, int Height)
-		{
-			this.Plugin = Plugin;
-			this.Width = Width;
-			this.Height = Height;
 		}
 	}
 }
