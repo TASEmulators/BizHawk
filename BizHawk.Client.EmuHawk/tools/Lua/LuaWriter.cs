@@ -15,13 +15,15 @@ namespace BizHawk.Client.EmuHawk
 	public partial class LuaWriter : Form
 	{
 		//TODO:
-		//ability to save new script (currently causes an exception)
-		//New scripts should be added to lua console automatically
+		//Loads of exceptions when closing the writer, primarily in System.Windows.Forms.dll and  mscorlib.dll
+
+		//ability to save new script (currently causes an exception) - done
+		//New scripts should be added to lua console automatically - done
 		//make functions is string part of string or comment since the actual way of validating it isn't correct
-		//Save fontstyle to config
-		//Line numbers
+		//Save fontstyle to config - done
+		//Line numbersjn
 		//Option to toggle line numbers
-		//Auto-complete drop down on functions in libraries
+		//Auto-complete drop down on functions in libraries - done
 		//intellisense on library functions
 		//Option to turn off basic lua script
 		//Tool strip
@@ -38,13 +40,24 @@ namespace BizHawk.Client.EmuHawk
 		private bool redo;
 		private bool hasChanged;
 		private bool ProcessingText;
+		
+		private bool isFirst;
+		private bool DisableEvent;
+		private int lastLineofText;
+		private int lineIndex;
+		private int previousFirstVisibleChar;
+
 		private readonly char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		private List<int[]> pos = new List<int[]>();
+		private LuaConsole _owner;
 
-		public LuaWriter()
+		public LuaWriter(LuaConsole owner)
 		{
 			InitializeComponent();
-			LuaText.MouseWheel += LuaText_MouseWheel;            
+			isFirst = true;
+			_owner = owner;
+			LuaText.MouseWheel += LuaText_MouseWheel;
+			lineNumbersToolStripMenuItem.Checked = Global.Config.LuaShowLineNumbers;
         }
 
 		void LuaText_MouseWheel(object sender, MouseEventArgs e)
@@ -54,15 +67,26 @@ namespace BizHawk.Client.EmuHawk
 				Double Zoom;
 				if ((LuaText.ZoomFactor == 0.1F && e.Delta < 0) || (LuaText.ZoomFactor == 5.0F && e.Delta > 0))
 				{
-					Zoom = (LuaText.ZoomFactor*100);
+					Zoom = (LuaText.ZoomFactor * 100);
 				}
 				else
 				{
-					Zoom = (LuaText.ZoomFactor*100) + e.Delta/12;
+					Zoom = (LuaText.ZoomFactor * 100) + e.Delta / 12;
 				}
 
 				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
 			}
+			else
+			{
+				
+				//UpdateLineTextBox();
+			}
+
+		}
+
+		private void LuaText_VScroll(object sender, EventArgs e)
+		{
+			//UpdateLineTextBox();
 		}
 
 		private void timer_Tick(object sender, EventArgs e)
@@ -71,7 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
 			// ProcessText();   // Commenting out until it's fixed to not scroll everything all the time
 			hasChanged = false;
 		}
@@ -102,6 +125,8 @@ namespace BizHawk.Client.EmuHawk
 			ProcessingText = false;
 			LuaText.InhibitPaint = false;
 			LuaText.Refresh();
+			isFirst = false;
+			ShowLuaLineNumbersTextBox();
 		}
 
 		private void AddNumbers()
@@ -452,11 +477,13 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadFont()
 		{
 			LuaText.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
+			LuaLineTextBox.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
 		}
 
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
 			//LuaTextFont;
+			
 			ProcessingText = true;
 			LuaText.SelectionTabs = new[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			LoadFont();
@@ -613,6 +640,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
+
+			HasTextChanged();
+		}
+
+		private void HasTextChanged ()
+		{
 			if (!ProcessingText)
 			{
 				hasChanged = true;
@@ -640,9 +673,9 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				LuaText.Font = f.Font;
 				Global.Config.LuaWriterFont = f.Font.Name;
 				Global.Config.LuaWriterFontSize = f.Font.Size;
+				LoadFont();
 				ProcessText();   //Re-update coloring and such when font changes
 			}
 		}
@@ -812,35 +845,6 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-/*
-		private void SelectNextItem(bool Next)
-		{
-
-			if (AutoCompleteView.SelectedItems.Count > 0)
-			{
-				if (Next)
-				{
-					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[AutoCompleteView.Items.Count - 1])
-						return;
-
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) + 1];
-				}
-				else
-				{
-					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[0])
-						return;
-
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) - 1];
-				}
-			}
-			else
-			{
-				if (Next)
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
-               
-			}
-		}
-*/
 		private string CurrentWord()
 		{
 			int last = LuaText.SelectionStart;
@@ -916,7 +920,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_SelectionChanged(object sender, EventArgs e)
 		{
-			UpdateLineNumber();
+			if (!DisableEvent && Global.Config.LuaShowLineNumbers && !isFirst)
+			{
+				UpdateLineNumber();
+				ShowLuaLineNumbersTextBox();				
+			}
 		}
 
 		private void UpdateLineNumber()
@@ -931,6 +939,50 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void UpdateLineTextBox()
+		{
+			DisableEvent = true;
+			int currentLocation = LuaText.SelectionStart;
+			int firstVisibleChar = LuaText.GetCharIndexFromPosition(new Point(0,0));
+			LuaText.Select(firstVisibleChar, 0);
+
+
+			if (lastLineofText != LuaText.GetLineFromCharIndex(LuaText.TextLength) || previousFirstVisibleChar != LuaText.GetCharIndexFromPosition(new Point(0, 0)))
+			{
+				previousFirstVisibleChar = firstVisibleChar;
+				lastLineofText = LuaText.GetLineFromCharIndex(LuaText.TextLength);
+				lineIndex = LuaText.GetLineFromCharIndex(firstVisibleChar);
+				if (LuaText.GetLineFromCharIndex(currentLocation) == lastLineofText)
+				{
+					lineIndex++;
+				}
+					
+				LuaLineTextBox.Text = String.Empty;
+				for (int i = lineIndex + 1; i <= LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1; i++)
+				{
+					if (i < 10)
+					{
+						LuaLineTextBox.Text += "00" + i;
+					}
+					else if (i >= 10 && i < 100)
+					{
+						LuaLineTextBox.Text += "0" + i;
+					}
+					else
+					{
+						LuaLineTextBox.Text += i;
+					}
+					if (i != LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1)
+					{
+						LuaLineTextBox.Text += "\n";
+					}
+				}
+
+			}
+			LuaText.Select(currentLocation, 0);
+			DisableEvent = false;
+		}
+
 		private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 
@@ -938,12 +990,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//TODO: check for changes and ask save
 			Close();
 		}
 
 		private void LuaWriter_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (changes)
+			{
+				var result = MessageBox.Show("Save changes to this Document?", "Lua Writer", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				if (result == DialogResult.Yes)
+				{
+					SaveScript();
+					_owner.LoadLuaFile(CurrentFile);
+				}
+			}
+
 			Global.Config.LuaWriterZoom = LuaText.ZoomFactor;
 			Global.Config.LuaWriterStartEmpty = startWithEmptyScriptToolStripMenuItem.Checked;
 			Global.Config.LuaWriterBackColor = LuaText.BackColor.ToArgb();
@@ -1073,6 +1134,22 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				redoToolStripMenuItem.Enabled = false;
+			}
+		}
+
+		private void toolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaShowLineNumbers = !Global.Config.LuaShowLineNumbers;
+			lineNumbersToolStripMenuItem.Checked = Global.Config.LuaShowLineNumbers;
+			ShowLuaLineNumbersTextBox();
+		}
+
+		private void ShowLuaLineNumbersTextBox()
+		{
+			LuaLineTextBox.Visible = Global.Config.LuaShowLineNumbers ;
+			if (LuaLineTextBox.Visible)
+			{
+				UpdateLineTextBox();
 			}
 		}
 	}
