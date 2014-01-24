@@ -66,6 +66,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(16, 32); AssertChr(8, 16, 32);
 					break;
 
+				case "BANDAI-PT-554": // untested
+					// as seen on nescartdb, this board clearly has one of those audio sample chips on it,
+					// but we don't implement that
+					AssertPrg(32); AssertChr(32);
+					bus_conflict = true;
+					break;
+
 				case "NAMCOT-CNROM+WRAM": // untested
 					AssertPrg(32); AssertChr(32); AssertWram(2);
 					break;

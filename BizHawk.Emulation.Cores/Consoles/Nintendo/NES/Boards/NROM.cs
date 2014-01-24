@@ -1,3 +1,5 @@
+using System;
+
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplPriority]
@@ -66,14 +68,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
-					/*
 				case "CAMERICA-GAMEGENIE":
 					// if you really want to emulate a game genie, it isn't NROM
-					return false;
+					throw new Exception("Game Genie Support NYI");
+					break;
+
 				case "HVC-FAMILYBASIC":
-					// we don't emulate the controller, so no point
-					return false;
-					*/
+					// we don't emulate the controller, so this won't work
+					AssertPrg(32); AssertChr(8); AssertWram(2, 4);
+					break;
 
 				default:
 					return false;
