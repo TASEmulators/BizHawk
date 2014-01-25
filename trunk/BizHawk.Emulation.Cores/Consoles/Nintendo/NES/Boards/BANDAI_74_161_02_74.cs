@@ -142,23 +142,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPRG(int addr)
 		{
 			int bank_32k = prg_bank_32k & prg_bank_mask_32k;
-
-			int x = 0;
-			switch (bank_32k)
-			{
-				case 0:
-					x += 0;
-					break;
-				case 1:
-					x += 1;
-					break;
-				case 2:
-					x += 2;
-					break;
-				case 3:
-					x += 3;
-					break;
-			}
 			return ROM[(bank_32k << 15) + addr];
 		}
 
