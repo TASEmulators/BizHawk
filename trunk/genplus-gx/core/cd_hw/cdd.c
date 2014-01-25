@@ -211,7 +211,6 @@ int cdd_context_save(uint8 *state)
   save_param(&cdd.status, sizeof(cdd.status));
   save_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
   save_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
-  save_param(&cdd.status, sizeof(cdd.status));
 
   return bufferptr;
 }
@@ -230,7 +229,6 @@ int cdd_context_load(uint8 *state)
   load_param(&cdd.status, sizeof(cdd.status));
   load_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
   load_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
-  load_param(&cdd.status, sizeof(cdd.status));
 
   return bufferptr;
 }
