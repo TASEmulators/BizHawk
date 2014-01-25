@@ -41,11 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool hasChanged;
 		private bool ProcessingText;
 		
-		private bool isFirst;
-		private bool DisableEvent;
 		private int lastLineofText;
-		private int lineIndex;
-		private int previousFirstVisibleChar;
 
 		private readonly char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		private List<int[]> pos = new List<int[]>();
@@ -54,7 +50,6 @@ namespace BizHawk.Client.EmuHawk
 		public LuaWriter(LuaConsole owner)
 		{
 			InitializeComponent();
-			isFirst = true;
 			_owner = owner;
 			LuaText.MouseWheel += LuaText_MouseWheel;
 			lineNumbersToolStripMenuItem.Checked = Global.Config.LuaShowLineNumbers;
@@ -76,19 +71,8 @@ namespace BizHawk.Client.EmuHawk
 
 				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
 			}
-			else
-			{
-				
-				//UpdateLineTextBox();
-			}
-
 		}
-
-		private void LuaText_VScroll(object sender, EventArgs e)
-		{
-			//UpdateLineTextBox();
-		}
-
+		
 		private void timer_Tick(object sender, EventArgs e)
 		{
 			if (!hasChanged)
@@ -125,8 +109,6 @@ namespace BizHawk.Client.EmuHawk
 			ProcessingText = false;
 			LuaText.InhibitPaint = false;
 			LuaText.Refresh();
-			isFirst = false;
-			ShowLuaLineNumbersTextBox();
 		}
 
 		private void AddNumbers()
@@ -477,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadFont()
 		{
 			LuaText.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
-			LuaLineTextBox.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
+			LuaLineNumbersRtb.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
 		}
 
 		private void LuaWriter_Load(object sender, EventArgs e)
@@ -640,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
-
+			ShowLuaLineNumbersTextBox();
 			HasTextChanged();
 		}
 
@@ -682,9 +664,11 @@ namespace BizHawk.Client.EmuHawk
 
         private void AutoComplete_KeyDown(object sender, KeyEventArgs e)
         {
+			int start = LuaText.SelectionStart;
             if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Back)
             {
                 AutoCompleteView.Visible = false;
+				LuaText.Focus();
             }
 
             else if (e.KeyCode == Keys.Enter)
@@ -695,8 +679,8 @@ namespace BizHawk.Client.EmuHawk
             else if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
             {
                 AutoCompleteView.Visible = false;
+				LuaText.Focus();
                 e.SuppressKeyPress = true;
-                int start = LuaText.SelectionStart;
                 String letter = e.KeyCode.ToString();
                 if (!e.Shift)
                 {
@@ -704,9 +688,32 @@ namespace BizHawk.Client.EmuHawk
                 }
                 LuaText.Text = LuaText.Text.Insert(start, letter);
                 LuaText.Select(start + 1, 0);
-
             }
         }
+
+		private void ResizeAutoComplete()
+		{
+			if (AutoCompleteView.Items.Count != 0)
+			{
+				AutoCompleteView.Height = AutoCompleteView.Items.Count * 20;
+
+				int longestItem = AutoCompleteView.Items[0].Text.Length;
+				foreach (ListViewItem item in AutoCompleteView.Items)
+				{
+					if (item.Text.Length > longestItem)
+					{
+						longestItem = item.Text.Length;
+					}
+				}
+				AutoCompleteView.Width = longestItem * 5 + 20;
+				AutoCompleteView.Columns[0].Width = longestItem * 5 + 20;
+				AutoCompleteView.Visible = true;
+			}
+			else
+			{
+				AutoCompleteView.Visible = false;
+			}
+		}
 
 		private void LuaText_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -737,8 +744,7 @@ namespace BizHawk.Client.EmuHawk
 						AutoCompleteView.Items.Add(item);
 					}
                     // Show window after it has been positioned and set up
-                  
-                    AutoCompleteView.Visible = true;
+					ResizeAutoComplete();
 				}
 			}
 
@@ -760,21 +766,31 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
+						string line = LuaText.Lines[linenumber];
+						//string subString = line.Substring(0 + tabs, Word.Length);
+						if ((Word.Length + tabs) <= line.Length)
 						{
-							string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr + "\t\n" + tabsStr + "end");
-							LuaText.Text = str;
-							LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
-							e.SuppressKeyPress = true;
-							return;
+							if (line.Substring(0 + tabs, Word.Length) == Word)
+							{
+								string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr + "\t\n" + tabsStr + "end");
+								LuaText.Text = str;
+								LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
+								e.SuppressKeyPress = true;
+								return;
+							}
 						}
 					}
 					catch { }
 				}
 
-				string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
-				LuaText.Text = tempStr;
+			//	string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+				LuaText.Text = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+					//tempStr;
+				LuaLineNumbersRtb.Select(LuaLineNumbersRtb.GetFirstCharIndexFromLine(linenumber + 1), 0);
+				LuaLineNumbersRtb.ScrollToCaret();
 				LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + tabs, 0);
+				LuaText.ScrollToCaret();
+				
 				e.SuppressKeyPress = true;
 			}
 
@@ -821,7 +837,7 @@ namespace BizHawk.Client.EmuHawk
                             AutoCompleteView.Items.Add(item);
                         }
                     }
-                    AutoCompleteView.Visible = true;
+					ResizeAutoComplete();
                 }
                 else
                 {
@@ -838,11 +854,10 @@ namespace BizHawk.Client.EmuHawk
                                 AutoCompleteView.Items.Add(item);
                             }
                         }
-                        AutoCompleteView.Visible = true;
+						ResizeAutoComplete();
                     }
                 }
             }
-
 		}
 
 		private string CurrentWord()
@@ -896,7 +911,7 @@ namespace BizHawk.Client.EmuHawk
 			ListView.SelectedIndexCollection indexes = AutoCompleteView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-               
+				LuaText.Focus();
                 string str = AutoCompleteView.Items[indexes[0]].Text;
                 int start = LuaText.SelectionStart;
 
@@ -920,11 +935,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_SelectionChanged(object sender, EventArgs e)
 		{
-			if (!DisableEvent && Global.Config.LuaShowLineNumbers && !isFirst)
-			{
-				UpdateLineNumber();
-				ShowLuaLineNumbersTextBox();				
-			}
+			UpdateLineNumber();					
 		}
 
 		private void UpdateLineNumber()
@@ -941,46 +952,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateLineTextBox()
 		{
-			DisableEvent = true;
-			int currentLocation = LuaText.SelectionStart;
-			int firstVisibleChar = LuaText.GetCharIndexFromPosition(new Point(0,0));
-			LuaText.Select(firstVisibleChar, 0);
-
-
-			if (lastLineofText != LuaText.GetLineFromCharIndex(LuaText.TextLength) || previousFirstVisibleChar != LuaText.GetCharIndexFromPosition(new Point(0, 0)))
+			if (lastLineofText != LuaText.GetLineFromCharIndex(LuaText.TextLength))
 			{
-				previousFirstVisibleChar = firstVisibleChar;
 				lastLineofText = LuaText.GetLineFromCharIndex(LuaText.TextLength);
-				lineIndex = LuaText.GetLineFromCharIndex(firstVisibleChar);
-				if (LuaText.GetLineFromCharIndex(currentLocation) == lastLineofText)
-				{
-					lineIndex++;
-				}
-					
-				LuaLineTextBox.Text = String.Empty;
-				for (int i = lineIndex + 1; i <= LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1; i++)
+				LuaLineNumbersRtb.Text = String.Empty;
+				for (int i = 1; i <= LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1; i++)
 				{
 					if (i < 10)
 					{
-						LuaLineTextBox.Text += "00" + i;
+						LuaLineNumbersRtb.Text += "00" + i;
 					}
 					else if (i >= 10 && i < 100)
 					{
-						LuaLineTextBox.Text += "0" + i;
+						LuaLineNumbersRtb.Text += "0" + i;
 					}
 					else
 					{
-						LuaLineTextBox.Text += i;
+						LuaLineNumbersRtb.Text += i;
 					}
 					if (i != LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1)
 					{
-						LuaLineTextBox.Text += "\n";
+						LuaLineNumbersRtb.Text += "\n";
 					}
 				}
-
 			}
-			LuaText.Select(currentLocation, 0);
-			DisableEvent = false;
 		}
 
 		private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -1146,11 +1141,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowLuaLineNumbersTextBox()
 		{
-			LuaLineTextBox.Visible = Global.Config.LuaShowLineNumbers ;
-			if (LuaLineTextBox.Visible)
+			LuaLineNumbersRtb.Visible = Global.Config.LuaShowLineNumbers;
+			if (LuaLineNumbersRtb.Visible )
 			{
 				UpdateLineTextBox();
 			}
+		
+		
+			
+			
+		}
+
+		private void AutoCompleteView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void syncTextBox1_TextChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
