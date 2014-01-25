@@ -24,12 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			foreach (LuaDocumentation.LibraryFunction l in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
+			foreach (var l in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
 			{
 				ListViewItem item = new ListViewItem {Text = l.ReturnType};
 				item.SubItems.Add(l.Library + ".");
 				item.SubItems.Add(l.Name);
 				item.SubItems.Add(l.ParameterList);
+				item.SubItems.Add(l.Description);
 				FunctionView.Items.Add(item);
 			}
 		}
