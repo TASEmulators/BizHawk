@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				EmuYield
 			).LuaRegisterNew(lua, Docs);
 
-			_eventLibrary.LuaRegister(lua, Docs);
+			_eventLibrary.LuaRegisterNew(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
 			_guiLibrary.LuaRegister(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
