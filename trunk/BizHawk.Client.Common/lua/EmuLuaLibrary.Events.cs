@@ -132,35 +132,55 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		public string event_onframeend(LuaFunction luaf, string name = null)
+		[LuaMethodAttributes(
+			"onframeend",
+			"TODO"
+		)]
+		public string OnFrameEnd(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
-		public string event_onframestart(LuaFunction luaf, string name = null)
+		[LuaMethodAttributes(
+			"onframestart",
+			"TODO"
+		)]
+		public string OnFrameStart(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
-		public void event_oninputpoll(LuaFunction luaf, string name = null)
+		[LuaMethodAttributes(
+			"oninputpoll",
+			"TODO"
+		)]
+		public void OnInputPoll(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			Global.Emulator.CoreComm.InputCallback.Add(nlf.Callback);
 		}
 
-		public string event_onloadstate(LuaFunction luaf, string name = null)
+		[LuaMethodAttributes(
+			"onloadstate",
+			"TODO"
+		)]
+		public string OnLoadState(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
-		public string event_onmemoryexecute(LuaFunction luaf, object address, string name = null)
+		[LuaMethodAttributes(
+			"onmemoryexecute",
+			"TODO"
+		)]
+		public string OnMemoryExecute(LuaFunction luaf, object address, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
@@ -168,7 +188,11 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		public string event_onmemoryread(LuaFunction luaf, object address = null, string name = null)
+		[LuaMethodAttributes(
+			"onmemoryread",
+			"TODO"
+		)]
+		public string OnMemoryRead(LuaFunction luaf, object address = null, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
@@ -176,7 +200,11 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		public string event_onmemorywrite(LuaFunction luaf, object address = null, string name = null)
+		[LuaMethodAttributes(
+			"onmemorywrite",
+			"TODO"
+		)]
+		public string OnMemoryWrite(LuaFunction luaf, object address = null, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
@@ -184,14 +212,22 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		public string event_onsavestate(LuaFunction luaf, string name = null)
+		[LuaMethodAttributes(
+			"onsavestate",
+			"TODO"
+		)]
+		public string OnSaveState(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
 			return nlf.Guid.ToString();
 		}
 
-		public bool event_unregisterbyid(object guid)
+		[LuaMethodAttributes(
+			"unregisterbyid",
+			"TODO"
+		)]
+		public bool UnregisterById(object guid)
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
 			{
@@ -202,7 +238,11 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool event_unregisterbyname(object name)
+		[LuaMethodAttributes(
+			"unregisterbyname",
+			"TODO"
+		)]
+		public bool UnregisterByName(object name)
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Name == name.ToString()))
 			{
