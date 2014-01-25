@@ -161,6 +161,5 @@ namespace BizHawk.Client.Common
 		 (value & 0x000000FF00000000UL) >> 8 | (value & 0x0000FF0000000000UL) >> 24 |
 		 (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
 		}
-
 	}
 }

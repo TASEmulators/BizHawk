@@ -729,7 +729,7 @@ namespace BizHawk.Client.EmuHawk
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword);
+					List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword).ToList();
 
 					// Position autocomplete box near the cursor's current position
                     int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
@@ -845,7 +845,7 @@ namespace BizHawk.Client.EmuHawk
                     String fileName = words[0];
                     if (IsLibraryWord(fileName))
                     {
-                        List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(fileName);
+                        List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(fileName).ToList();
                         foreach (String libfunction in libfunctions)
                         {
                             if (libfunction.StartsWith(words[1]))
