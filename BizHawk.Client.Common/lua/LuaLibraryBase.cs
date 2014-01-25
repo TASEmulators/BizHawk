@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 
+using BizHawk.Common;
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -21,6 +23,24 @@ namespace BizHawk.Client.Common
 				if (docs != null)
 				{
 					docs.Add(Name, methodName, method);
+				}
+			}
+		}
+
+		// TODO: eventually only use this, and rename it
+		public virtual void LuaRegisterNew(Lua lua, ILuaDocumentation docs = null)
+		{
+			lua.NewTable(Name);
+
+			foreach (var nameLookup in Functions)
+			{
+				var luaMethodName = Name + "." + nameLookup.ToLower();
+				var actualMethodName = GetType().GetMethod(nameLookup);
+				lua.RegisterFunction(luaMethodName, this, actualMethodName);
+
+				if (docs != null)
+				{
+					docs.Add(Name, nameLookup, actualMethodName);
 				}
 			}
 		}
