@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public EmuLuaLibrary(LuaConsole passed)
-			:this()
+			: this()
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				_lua,
 				Frameadvance,
 				EmuYield
-			).LuaRegister(lua, Docs);
+			).LuaRegisterNew(lua, Docs);
 
 			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
