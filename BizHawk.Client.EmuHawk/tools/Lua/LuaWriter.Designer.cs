@@ -59,12 +59,12 @@
 			this.startWithEmptyScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MessageLabel = new System.Windows.Forms.Label();
-			this.AutoCompleteView = new System.Windows.Forms.ListView();
-			this.Suggestion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PositionLabel = new System.Windows.Forms.Label();
 			this.ZoomLabel = new System.Windows.Forms.Label();
 			this.LuaText = new BizHawk.Client.EmuHawk.LuaWriterBox();
-			this.LuaLineTextBox = new System.Windows.Forms.RichTextBox();
+			this.LuaLineNumbersRtb = new SyncTextBox();
+			this.AutoCompleteView = new System.Windows.Forms.ListView();
+			this.Suggestion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -83,7 +83,7 @@
             this.configToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(846, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -306,37 +306,11 @@
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(15, 484);
+			this.MessageLabel.Location = new System.Drawing.Point(15, 642);
 			this.MessageLabel.Name = "MessageLabel";
 			this.MessageLabel.Size = new System.Drawing.Size(91, 13);
 			this.MessageLabel.TabIndex = 2;
 			this.MessageLabel.Text = "                            ";
-			// 
-			// AutoCompleteView
-			// 
-			this.AutoCompleteView.Activation = System.Windows.Forms.ItemActivation.OneClick;
-			this.AutoCompleteView.AllowColumnReorder = true;
-			this.AutoCompleteView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AutoCompleteView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Suggestion});
-			this.AutoCompleteView.FullRowSelect = true;
-			this.AutoCompleteView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.AutoCompleteView.HideSelection = false;
-			this.AutoCompleteView.HoverSelection = true;
-			this.AutoCompleteView.Location = new System.Drawing.Point(696, 382);
-			this.AutoCompleteView.MultiSelect = false;
-			this.AutoCompleteView.Name = "AutoCompleteView";
-			this.AutoCompleteView.Size = new System.Drawing.Size(121, 97);
-			this.AutoCompleteView.TabIndex = 3;
-			this.AutoCompleteView.UseCompatibleStateImageBehavior = false;
-			this.AutoCompleteView.View = System.Windows.Forms.View.Details;
-			this.AutoCompleteView.Visible = false;
-			this.AutoCompleteView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoComplete_KeyDown);
-			this.AutoCompleteView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AutoCompleteView_MouseDoubleClick);
-			// 
-			// Suggestion
-			// 
-			this.Suggestion.Width = 114;
 			// 
 			// PositionLabel
 			// 
@@ -363,48 +337,76 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LuaText.Buddy = this.LuaLineNumbersRtb;
 			this.LuaText.EnableAutoDragDrop = true;
-			this.LuaText.Location = new System.Drawing.Point(63, 50);
+			this.LuaText.Location = new System.Drawing.Point(58, 46);
 			this.LuaText.Name = "LuaText";
-			this.LuaText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.LuaText.Size = new System.Drawing.Size(768, 429);
+			this.LuaText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+			this.LuaText.Size = new System.Drawing.Size(1126, 609);
 			this.LuaText.TabIndex = 0;
 			this.LuaText.Text = "";
 			this.LuaText.WordWrap = false;
 			this.LuaText.SelectionChanged += new System.EventHandler(this.LuaText_SelectionChanged);
-			this.LuaText.VScroll += new System.EventHandler(this.LuaText_VScroll);
 			this.LuaText.TextChanged += new System.EventHandler(this.LuaText_TextChanged);
 			this.LuaText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyDown);
 			this.LuaText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyUp);
 			this.LuaText.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.LuaText_PreviewKeyDown);
 			// 
-			// LuaLineTextBox
+			// LuaLineNumbersRtb
 			// 
-			this.LuaLineTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.LuaLineTextBox.BackColor = System.Drawing.SystemColors.ScrollBar;
-			this.LuaLineTextBox.Location = new System.Drawing.Point(0, 50);
-			this.LuaLineTextBox.Name = "LuaLineTextBox";
-			this.LuaLineTextBox.ReadOnly = true;
-			this.LuaLineTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.LuaLineTextBox.Size = new System.Drawing.Size(60, 429);
-			this.LuaLineTextBox.TabIndex = 6;
-			this.LuaLineTextBox.Text = "";
-			this.LuaLineTextBox.Visible = false;
+			this.LuaLineNumbersRtb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.LuaLineNumbersRtb.BackColor = System.Drawing.SystemColors.ButtonShadow;
+			this.LuaLineNumbersRtb.Buddy = this.LuaText;
+			this.LuaLineNumbersRtb.Location = new System.Drawing.Point(0, 46);
+			this.LuaLineNumbersRtb.Name = "LuaLineNumbersRtb";
+			this.LuaLineNumbersRtb.ReadOnly = true;
+			this.LuaLineNumbersRtb.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+			this.LuaLineNumbersRtb.Size = new System.Drawing.Size(1184, 609);
+			this.LuaLineNumbersRtb.TabIndex = 7;
+			this.LuaLineNumbersRtb.Text = "";
+			// 
+			// AutoCompleteView
+			// 
+			this.AutoCompleteView.Activation = System.Windows.Forms.ItemActivation.OneClick;
+			this.AutoCompleteView.AllowColumnReorder = true;
+			this.AutoCompleteView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Suggestion});
+			this.AutoCompleteView.FullRowSelect = true;
+			this.AutoCompleteView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.AutoCompleteView.HideSelection = false;
+			this.AutoCompleteView.HoverSelection = true;
+			this.AutoCompleteView.Location = new System.Drawing.Point(208, 153);
+			this.AutoCompleteView.MultiSelect = false;
+			this.AutoCompleteView.Name = "AutoCompleteView";
+			this.AutoCompleteView.Scrollable = false;
+			this.AutoCompleteView.Size = new System.Drawing.Size(150, 182);
+			this.AutoCompleteView.TabIndex = 3;
+			this.AutoCompleteView.UseCompatibleStateImageBehavior = false;
+			this.AutoCompleteView.View = System.Windows.Forms.View.Details;
+			this.AutoCompleteView.Visible = false;
+			this.AutoCompleteView.SelectedIndexChanged += new System.EventHandler(this.AutoCompleteView_SelectedIndexChanged);
+			this.AutoCompleteView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoComplete_KeyDown);
+			this.AutoCompleteView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AutoCompleteView_MouseDoubleClick);
+			// 
+			// Suggestion
+			// 
+			this.Suggestion.Width = 100;
 			// 
 			// LuaWriter
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(846, 501);
-			this.Controls.Add(this.LuaLineTextBox);
+			this.ClientSize = new System.Drawing.Size(1184, 659);
 			this.Controls.Add(this.AutoCompleteView);
+			this.Controls.Add(this.LuaText);
+			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.LuaLineNumbersRtb);
 			this.Controls.Add(this.ZoomLabel);
 			this.Controls.Add(this.PositionLabel);
 			this.Controls.Add(this.MessageLabel);
-			this.Controls.Add(this.LuaText);
-			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "LuaWriter";
@@ -435,7 +437,6 @@
 		private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem syntaxHighlightingToolStripMenuItem;
-		private System.Windows.Forms.ListView AutoCompleteView;
 		private System.Windows.Forms.Label PositionLabel;
 		private System.Windows.Forms.Label ZoomLabel;
 		private System.Windows.Forms.ToolStripMenuItem restoreSettingsToolStripMenuItem;
@@ -455,8 +456,9 @@
 		private System.Windows.Forms.ToolStripMenuItem startWithEmptyScriptToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem backgroundColorToolStripMenuItem;
-        private System.Windows.Forms.ColumnHeader Suggestion;
-		private System.Windows.Forms.RichTextBox LuaLineTextBox;
 		private System.Windows.Forms.ToolStripMenuItem lineNumbersToolStripMenuItem;
+		private SyncTextBox LuaLineNumbersRtb;
+		private System.Windows.Forms.ListView AutoCompleteView;
+		private System.Windows.Forms.ColumnHeader Suggestion;
     }
 }

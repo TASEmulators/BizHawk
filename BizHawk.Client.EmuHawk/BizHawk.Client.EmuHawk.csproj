@@ -595,6 +595,9 @@
     <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Lua\SyncTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
