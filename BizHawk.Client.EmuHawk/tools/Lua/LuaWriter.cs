@@ -442,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GenerateLibraryRegex()
 		{
 			StringBuilder list = new StringBuilder();
-			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
 			for (int i = 0; i < Libs.Count; i++)
 			{
 				list.Append(Libs[i]);
@@ -820,7 +820,7 @@ namespace BizHawk.Client.EmuHawk
                 String currentWord = CurrentWord();
                 currentWord += e.KeyCode;
                 currentWord = currentWord.ToLower();
-                List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+                List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
 
                 int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
                 int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
@@ -893,7 +893,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsLibraryWord(string word)
 		{
-			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
 			if (Libs.Contains(word))
 			{
 				return true;

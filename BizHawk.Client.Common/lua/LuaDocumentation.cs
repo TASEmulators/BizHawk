@@ -16,10 +16,9 @@ namespace BizHawk.Client.Common
 
 		public void Add(string method_lib, string method_name, System.Reflection.MethodInfo method, string description)
 		{
-			var f = new LibraryFunction(method_lib, method_name, method);
-			FunctionList.Add(f);
-
-			// TODO: use description;
+			FunctionList.Add(
+				new LibraryFunction(method_lib, method_name, method, description)
+			);
 		}
 
 		public void Clear()
@@ -32,15 +31,9 @@ namespace BizHawk.Client.Common
 			FunctionList = FunctionList.OrderBy(x => x.Library).ThenBy(x => x.Name).ToList();
 		}
 
-		public List<string> GetLibraryList()
+		public IEnumerable<string> GetLibraryList()
 		{
-			var libs = new HashSet<string>();
-			foreach (var function in FunctionList)
-			{
-				libs.Add(function.Library);
-			}
-
-			return libs.ToList();
+			return FunctionList.Select(x => x.Library);
 		}
 
 		public List<string> GetFunctionsByLibrary(string library)
@@ -50,7 +43,7 @@ namespace BizHawk.Client.Common
 
 		public class LibraryFunction
 		{
-			public LibraryFunction(string method_lib, string method_name, System.Reflection.MethodInfo method)
+			public LibraryFunction(string method_lib, string method_name, System.Reflection.MethodInfo method, string description)
 			{
 				Library = method_lib;
 				Name = method_name;
@@ -61,12 +54,16 @@ namespace BizHawk.Client.Common
 				}
 
 				return_type = method.ReturnType.ToString();
+
+				Description = description;
 			}
 			
 			public string Library = String.Empty;
 			public string Name = String.Empty;
 			public List<string> Parameters = new List<string>();
 			public string return_type = String.Empty;
+
+			public string Description { get; set; }
 
 			public string ParameterList
 			{
