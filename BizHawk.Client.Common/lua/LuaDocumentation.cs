@@ -7,17 +7,19 @@ namespace BizHawk.Client.Common
 {
 	public interface ILuaDocumentation
 	{
-		void Add(string method_lib, string method_name, System.Reflection.MethodInfo method);
+		void Add(string method_lib, string method_name, System.Reflection.MethodInfo method, string description);
 	}
 
 	public class LuaDocumentation : ILuaDocumentation
 	{
 		public List<LibraryFunction> FunctionList = new List<LibraryFunction>();
 
-		public void Add(string method_lib, string method_name, System.Reflection.MethodInfo method)
+		public void Add(string method_lib, string method_name, System.Reflection.MethodInfo method, string description)
 		{
 			var f = new LibraryFunction(method_lib, method_name, method);
 			FunctionList.Add(f);
+
+			// TODO: use description;
 		}
 
 		public void Clear()

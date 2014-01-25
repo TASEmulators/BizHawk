@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using BizHawk.Common;
@@ -22,7 +24,7 @@ namespace BizHawk.Client.Common
 
 				if (docs != null)
 				{
-					docs.Add(Name, methodName, method);
+					docs.Add(Name, methodName, method, String.Empty);
 				}
 			}
 		}
@@ -32,15 +34,21 @@ namespace BizHawk.Client.Common
 		{
 			lua.NewTable(Name);
 
-			foreach (var nameLookup in Functions)
+			var luaAttr = typeof(LuaMethodAttributes);
+
+			var methods = GetType()
+							.GetMethods()
+							.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
+
+			foreach (var method in methods)
 			{
-				var luaMethodName = Name + "." + nameLookup.ToLower();
-				var actualMethodName = GetType().GetMethod(nameLookup);
-				lua.RegisterFunction(luaMethodName, this, actualMethodName);
+				var luaMethodAttr = method.GetCustomAttributes(luaAttr, false).First() as LuaMethodAttributes;
+				var luaName = Name + "." + luaMethodAttr.Name;
+				lua.RegisterFunction(luaName, this, method);
 
 				if (docs != null)
 				{
-					docs.Add(Name, nameLookup, actualMethodName);
+					docs.Add(Name, luaName, method, luaMethodAttr.Description);
 				}
 			}
 		}
