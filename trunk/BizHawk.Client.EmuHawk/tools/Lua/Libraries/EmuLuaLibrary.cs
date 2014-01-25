@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
-			new BitLuaLibrary().LuaRegister(lua, Docs);
+			new BitLuaLibrary().LuaRegisterNew(lua, Docs);
 			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			
