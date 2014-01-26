@@ -40,7 +40,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case "TXROM-HOMEBREW": // should this even exist?
+					break;
 				case "MAPPER004":
+					if (Cart.inesmirroring == 2) // send these to TVROM
+						return false;
 					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
 				case "HVC-TBROM":
