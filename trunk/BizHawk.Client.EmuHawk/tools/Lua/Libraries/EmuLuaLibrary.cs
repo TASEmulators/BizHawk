@@ -98,9 +98,9 @@ namespace BizHawk.Client.EmuHawk
 			new MemoryLuaLibrary().LuaRegisterNew(lua, Docs);
 			new MainMemoryLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
-			new NESLuaLibrary().LuaRegister(lua, Docs);
+			new NESLuaLibrary().LuaRegisterNew(lua, Docs);
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
-			new SNESLuaLibrary().LuaRegister(lua, Docs);
+			new SNESLuaLibrary().LuaRegisterNew(lua, Docs);
 			new StringLuaLibrary().LuaRegister(lua, Docs);
 
 			Docs.Sort();

@@ -5,6 +5,10 @@ namespace BizHawk.Client.Common
 {
 	public class NESLuaLibrary : LuaLibraryBase
 	{
+		// TODO:  
+		// perhaps with the new core config system, one could
+		// automatically bring out all of the settings to a lua table, with names.  that
+		// would be completely arbitrary and would remove the whole requirement for this mess
 		public override string Name { get { return "nes"; } }
 		public override string[] Functions
 		{
@@ -29,7 +33,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void nes_addgamegenie(string code)
+		[LuaMethodAttributes(
+			"addgamegenie",
+			"TODO"
+		)]
+		public void AddGameGenie(string code)
 		{
 			if (Global.Emulator.SystemId == "NES")
 			{
@@ -50,15 +58,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// these methods are awkward.  perhaps with the new core config system, one could
-		// automatically bring out all of the settings to a lua table, with names.  that
-		// would be completely arbitrary and would remove the whole requirement for this mess
-		public static bool nes_getallowmorethaneightsprites()
+		[LuaMethodAttributes(
+			"getallowmorethaneightsprites",
+			"TODO"
+		)]
+		public static bool GetAllowMoreThanEightSprites()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
 		}
 
-		public static int nes_getbottomscanline(bool pal = false)
+		[LuaMethodAttributes(
+			"getbottomscanline",
+			"TODO"
+		)]
+		public static int GetBottomScanline(bool pal = false)
 		{
 			if (pal)
 			{
@@ -70,22 +83,38 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static bool nes_getclipleftandright()
+		[LuaMethodAttributes(
+			"getclipleftandright",
+			"TODO"
+		)]
+		public static bool GetClipLeftAndRight()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
 		}
 
-		public static bool nes_getdispbackground()
+		[LuaMethodAttributes(
+			"getdispbackground",
+			"TODO"
+		)]
+		public static bool GetDisplayBackground()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispBackground;
 		}
 
-		public static bool nes_getdispsprites()
+		[LuaMethodAttributes(
+			"getdispsprites",
+			"TODO"
+		)]
+		public static bool GetDisplaySprites()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispSprites;
 		}
 
-		public static int nes_gettopscanline(bool pal = false)
+		[LuaMethodAttributes(
+			"gettopscanline",
+			"TODO"
+		)]
+		public static int GetTopScanline(bool pal = false)
 		{
 			if (pal)
 			{
@@ -97,7 +126,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void nes_removegamegenie(string code)
+		[LuaMethodAttributes(
+			"removegamegenie",
+			"TODO"
+		)]
+		public void RemoveGameGenie(string code)
 		{
 			if (Global.Emulator.SystemId == "NES")
 			{
@@ -108,7 +141,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setallowmorethaneightsprites(bool allow)
+		[LuaMethodAttributes(
+			"setallowmorethaneightsprites",
+			"TODO"
+		)]
+		public static void SetAllowMoreThanEightSprites(bool allow)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -118,7 +155,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setclipleftandright(bool leftandright)
+		[LuaMethodAttributes(
+			"setclipleftandright",
+			"TODO"
+		)]
+		public static void SetClipLeftAndRight(bool leftandright)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -128,8 +169,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// these seem to duplicate emu.setrenderplanes???
-		public static void nes_setdispbackground(bool show)
+		[LuaMethodAttributes(
+			"setdispbackground",
+			"TODO"
+		)]
+		public static void SetDisplayBackground(bool show)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -139,7 +183,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setdispsprites(bool show)
+		[LuaMethodAttributes(
+			"setdispsprites",
+			"TODO"
+		)]
+		public static void SetDisplaySprites(bool show)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -149,7 +197,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setscanlines(object top, object bottom, bool pal = false)
+		[LuaMethodAttributes(
+			"setscanlines",
+			"TODO"
+		)]
+		public static void SetScanlines(object top, object bottom, bool pal = false)
 		{
 			if (Global.Emulator is NES)
 			{

@@ -31,47 +31,83 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static bool snes_getlayer_bg_1()
+		[LuaMethodAttributes(
+			"getlayer_bg_1",
+			"TODO"
+		)]
+		public static bool GetLayerBg1()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG1_1;
 		}
 
-		public static bool snes_getlayer_bg_2()
+		[LuaMethodAttributes(
+			"getlayer_bg_2",
+			"TODO"
+		)]
+		public static bool GetLayerBg2()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG2_1;
 		}
 
-		public static bool snes_getlayer_bg_3()
+		[LuaMethodAttributes(
+			"getlayer_bg_3",
+			"TODO"
+		)]
+		public static bool GetLayerBg3()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG3_1;
 		}
 
-		public static bool snes_getlayer_bg_4()
+		[LuaMethodAttributes(
+			"getlayer_bg_4",
+			"TODO"
+		)]
+		public static bool GetLayerBg4()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowBG4_1;
 		}
 
-		public static bool snes_getlayer_obj_1()
+		[LuaMethodAttributes(
+			"getlayer_obj_1",
+			"TODO"
+		)]
+		public static bool GetLayerObj1()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_0;
 		}
 
-		public static bool snes_getlayer_obj_2()
+		[LuaMethodAttributes(
+			"getlayer_obj_2",
+			"TODO"
+		)]
+		public static bool GetLayerObj2()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_1;
 		}
 
-		public static bool snes_getlayer_obj_3()
+		[LuaMethodAttributes(
+			"getlayer_obj_3",
+			"TODO"
+		)]
+		public static bool GetLayerObj3()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_2;
 		}
 
-		public static bool snes_getlayer_obj_4()
+		[LuaMethodAttributes(
+			"getlayer_obj_4",
+			"TODO"
+		)]
+		public static bool GetLayerObj4()
 		{
 			return ((LibsnesCore.SnesSettings)Global.Emulator.GetSettings()).ShowOBJ_3;
 		}
 
-		public static void snes_setlayer_bg_1(bool value)
+		[LuaMethodAttributes(
+			"setlayer_bg_1",
+			"TODO"
+		)]
+		public static void SetLayerBg1(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -81,7 +117,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_bg_2(bool value)
+		[LuaMethodAttributes(
+			"setlayer_bg_2",
+			"TODO"
+		)]
+		public static void SetLayerBg2(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -91,7 +131,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_bg_3(bool value)
+		[LuaMethodAttributes(
+			"setlayer_bg_3",
+			"TODO"
+		)]
+		public static void SetLayerBg3(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -101,7 +145,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_bg_4(bool value)
+		[LuaMethodAttributes(
+			"setlayer_bg_4",
+			"TODO"
+		)]
+		public static void SetLayerBg4(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -111,7 +159,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_obj_1(bool value)
+		[LuaMethodAttributes(
+			"setlayer_obj_1",
+			"TODO"
+		)]
+		public static void SetLayerObj1(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -121,7 +173,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_obj_2(bool value)
+		[LuaMethodAttributes(
+			"setlayer_obj_2",
+			"TODO"
+		)]
+		public static void SetLayerObj2(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -131,7 +187,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_obj_3(bool value)
+		[LuaMethodAttributes(
+			"setlayer_obj_3",
+			"TODO"
+		)]
+		public static void SetLayerObj3(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
@@ -141,7 +201,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void snes_setlayer_obj_4(bool value)
+		[LuaMethodAttributes(
+			"setlayer_obj_4",
+			"TODO"
+		)]
+		public static void SetLayerObj4(bool value)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
