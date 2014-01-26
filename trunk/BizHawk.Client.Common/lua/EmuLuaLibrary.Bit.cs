@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"set",
-			"TODO"
+			"Sets the bit 'pos' in 'num'"
 		)]
 		public static uint Set(object num, object pos)
 		{
@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"clear",
-			"TODO"
+			"Clears the bit 'pos' in 'num'"
 		)]
 		public static uint Clear(object num, object pos)
 		{
