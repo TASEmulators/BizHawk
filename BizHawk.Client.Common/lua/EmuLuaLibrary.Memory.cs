@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getmemorydomainlist",
-			"TODO"
+			"Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds"
 		)]
 		public string GetMemoryDomainList()
 		{
@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getcurrentmemorydomain",
-			"TODO"
+			"Returns a string name of the current memory domain selected by Lua. The default is Main memory"
 		)]
 		public string GetCurrentMemoryDomain()
 		{
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getcurrentmemorydomainsize",
-			"TODO"
+			"Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory"
 		)]
 		public int GetCurrentMemoryDomainSize()
 		{
@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"readbyte",
-			"TODO"
+			"gets the value from the given address as an unsigned byte"
 		)]
 		public uint ReadByte(object addr)
 		{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"readfloat",
-			"TODO"
+			"Reads the given address as a 32-bit float value from the main memory domain with th e given endian"
 		)]
 		public float ReadFloat(object addr, bool bigendian)
 		{
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"writebyte",
-			"TODO"
+			"Writes the given value to the given address as an unsigned byte"
 		)]
 		public void WriteByte(object addr, object value)
 		{
@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"writefloat",
-			"TODO"
+			"Writes the given 32-bit float value to the given address and endian"
 		)]
 		public void WriteFloat(object addr, object value, bool bigendian)
 		{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"usememorydomain",
-			"TODO"
+			"Attempts to set the current memory domain to the given domain. If the name does not match a valid memory domain, the function returns false, else it returns true"
 		)]
 		public bool UseMemoryDomain(string domain)
 		{
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s8",
-			"TODO"
+			"read signed byte"
 		)]
 		public int ReadS8(object addr)
 		{
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u8",
-			"TODO"
+			"read unsigned byte"
 		)]
 		public uint ReadU8(object addr)
 		{
@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s16_le",
-			"TODO"
+			"read signed 2 byte value, little endian"
 		)]
 		public int ReadS16Little(object addr)
 		{
@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s24_le",
-			"TODO"
+			"read signed 24 bit value, little endian"
 		)]
 		public int ReadS24Little(object addr)
 		{
@@ -216,7 +216,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s32_le",
-			"TODO"
+			"read signed 4 byte value, little endian"
 		)]
 		public int ReadS32Little(object addr)
 		{
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u16_le",
-			"TODO"
+			"read unsigned 2 byte value, little endian"
 		)]
 		public uint ReadU16Little(object addr)
 		{
@@ -234,7 +234,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u24_le",
-			"TODO"
+			"read unsigned 24 bit value, little endian"
 		)]
 		public uint ReadU24Little(object addr)
 		{
@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u32_le",
-			"TODO"
+			"read unsigned 4 byte value, little endian"
 		)]
 		public uint ReadU32Little(object addr)
 		{
@@ -252,7 +252,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s16_be",
-			"TODO"
+			"read signed 2 byte value, big endian"
 		)]
 		public int ReadS16Big(object addr)
 		{
@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s24_be",
-			"TODO"
+			"read signed 24 bit value, big endian"
 		)]
 		public int ReadS24Big(object addr)
 		{
@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_s32_be",
-			"TODO"
+			"read signed 4 byte value, big endian"
 		)]
 		public int ReadS32Big(object addr)
 		{
@@ -279,7 +279,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u16_be",
-			"TODO"
+			"read unsigned 2 byte value, big endian"
 		)]
 		public uint ReadU16Big(object addr)
 		{
@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"read_u24_be",
-			"TODO"
+			"read unsigned 24 bit value, big endian"
 		)]
 		public uint ReadU24Big(object addr)
 		{
@@ -297,7 +297,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"u32_be",
-			"TODO"
+			"read unsigned 4 byte value, big endian"
 		)]
 		public uint ReadU32Big(object addr)
 		{
@@ -306,7 +306,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s8",
-			"TODO"
+			"write signed byte"
 		)]
 		public void WriteS8(object addr, object value)
 		{
@@ -318,7 +318,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s8",
-			"TODO"
+			"write unsigned byte"
 		)]
 		public void WriteU8(object addr, object value)
 		{
@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s16_le",
-			"TODO"
+			"write signed 2 byte value, little endian"
 		)]
 		public void WriteS16Little(object addr, object value)
 		{
@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s24_le",
-			"TODO"
+			"write signed 24 bit value, little endian"
 		)]
 		public void WriteS24Little(object addr, object value)
 		{
@@ -354,7 +354,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s32_le",
-			"TODO"
+			"write signed 4 byte value, little endian"
 		)]
 		public void WriteS32Little(object addr, object value)
 		{
@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u16_le",
-			"TODO"
+			"write unsigned 2 byte value, little endian"
 		)]
 		public void WriteU16Little(object addr, object value)
 		{
@@ -378,7 +378,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u24_le",
-			"TODO"
+			"write unsigned 24 bit value, little endian"
 		)]
 		public void WriteU24Little(object addr, object value)
 		{
@@ -390,7 +390,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u32_le",
-			"TODO"
+			"write unsigned 4 byte value, little endian"
 		)]
 		public void WriteU32Little(object addr, object value)
 		{
@@ -402,7 +402,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s16_be",
-			"TODO"
+			"write signed 2 byte value, big endian"
 		)]
 		public void WriteS16Big(object addr, object value)
 		{
@@ -414,7 +414,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s24_be",
-			"TODO"
+			"write signed 24 bit value, big endian"
 		)]
 		public void WriteS24Big(object addr, object value)
 		{
@@ -426,7 +426,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_s32_be",
-			"TODO"
+			"write signed 4 byte value, big endian"
 		)]
 		public void WriteS32Big(object addr, object value)
 		{
@@ -438,7 +438,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u16_be",
-			"TODO"
+			"write unsigned 2 byte value, big endian"
 		)]
 		public void WriteU16Big(object addr, object value)
 		{
@@ -450,7 +450,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u24_be",
-			"TODO"
+			"write unsigned 24 bit value, big endian"
 		)]
 		public void WriteU24Big(object addr, object value)
 		{
@@ -462,7 +462,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"write_u32_be",
-			"TODO"
+			"write unsigned 4 byte value, big endian"
 		)]
 		public void WriteU32Big(object addr, object value)
 		{

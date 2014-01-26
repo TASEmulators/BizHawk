@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"get",
-			"TODO"
+			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads"
 		)]
 		public LuaTable Get()
 		{
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"getmouse",
-			"TODO"
+			"Returns a lua table of the mouse X/Y coordinates and button states. Table returns the values X, Y, Left, Middle, Right, XButton1, XButton2"
 		)]
 		public LuaTable GetMouse()
 		{

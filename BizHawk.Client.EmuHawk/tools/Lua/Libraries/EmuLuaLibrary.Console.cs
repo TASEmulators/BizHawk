@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"clear",
-			"TODO"
+			"clears the output box of the Lua Console window"
 		)]
 		public static void Clear()
 		{
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"getluafunctionslist",
-			"TODO"
+			"returns a list of implemented functions"
 		)]
 		public static string GetLuaFunctionsList()
 		{
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"log",
-			"TODO"
+			"Outputs the given string to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
 		)]
 		public static void Log(object output)
 		{

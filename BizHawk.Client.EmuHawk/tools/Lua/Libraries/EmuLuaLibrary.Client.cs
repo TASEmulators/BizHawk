@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"clearautohold",
-			"TODO"
+			"Clears all autohold keys"
 		)]
 		public void ClearAutohold()
 		{
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"closerom",
-			"TODO"
+			"Closes the loaded Rom"
 		)]
 		public static void CloseRom()
 		{
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"enablerewind",
-			"TODO"
+			"Sets whether or not the rewind feature is enabled"
 		)]
 		public static void EnableRewind(bool enabled)
 		{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"frameskip",
-			"TODO"
+			"Sets the frame skip value of the client UI"
 		)]
 		public void FrameSkip(object numFrames)
 		{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"getdisplayfilter",
-			"TODO"
+			"Gets the current display filter setting, possible values: 'None', 'x2SAI', 'SuperX2SAI', 'SuperEagle', 'Scanlines'"
 		)]
 		public string GetDisplayFilter()
 		{
