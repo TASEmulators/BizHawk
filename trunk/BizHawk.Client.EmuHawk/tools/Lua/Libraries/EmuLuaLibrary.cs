@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MemoryLuaLibrary().LuaRegister(lua, Docs);
-			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new MainMemoryLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new NESLuaLibrary().LuaRegister(lua, Docs);
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
