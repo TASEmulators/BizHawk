@@ -93,15 +93,15 @@ namespace BizHawk.Client.EmuHawk
 			_eventLibrary.LuaRegisterNew(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
 			_guiLibrary.LuaRegister(lua, Docs);
-			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new InputLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MemoryLuaLibrary().LuaRegisterNew(lua, Docs);
 			new MainMemoryLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new NESLuaLibrary().LuaRegisterNew(lua, Docs);
-			new SavestateLuaLibrary().LuaRegister(lua, Docs);
+			new SavestateLuaLibrary().LuaRegisterNew(lua, Docs);
 			new SNESLuaLibrary().LuaRegisterNew(lua, Docs);
-			new StringLuaLibrary().LuaRegister(lua, Docs);
+			new StringLuaLibrary().LuaRegisterNew(lua, Docs);
 
 			Docs.Sort();
 		}

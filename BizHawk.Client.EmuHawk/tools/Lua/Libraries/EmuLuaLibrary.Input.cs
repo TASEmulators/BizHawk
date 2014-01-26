@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,17 +28,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Lua _lua;
 
-		public LuaTable input_get()
+		[LuaMethodAttributes(
+			"get",
+			"TODO"
+		)]
+		public LuaTable Get()
 		{
 			var buttons = _lua.NewTable();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
 			{
 				buttons[kvp.Key] = true;
 			}
+
 			return buttons;
 		}
 
-		public LuaTable input_getmouse()
+		[LuaMethodAttributes(
+			"getmouse",
+			"TODO"
+		)]
+		public LuaTable GetMouse()
 		{
 			var buttons = _lua.NewTable();
 			var p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);

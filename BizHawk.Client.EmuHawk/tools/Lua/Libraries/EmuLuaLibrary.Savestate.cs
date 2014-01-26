@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,45 +15,54 @@ namespace BizHawk.Client.EmuHawk
 					"load",
 					"loadslot",
 					"save",
-					"saveslot",
+					"saveslot"
 				};
 			}
 		}
 
-		public void savestate_load(object lua_input)
+		[LuaMethodAttributes(
+			"load",
+			"TODO"
+		)]
+		public void Load(string path)
 		{
-			if (lua_input is string)
-			{
-				GlobalWin.MainForm.LoadState(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
-			}
+			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true);
 		}
 
-		public void savestate_loadslot(object lua_input)
+		[LuaMethodAttributes(
+			"loadslot",
+			"TODO"
+		)]
+		public void LoadSlot(object slotNum)
 		{
-			int slot = LuaInt(lua_input);
+			var slot = LuaInt(slotNum);
 
 			if (slot >= 0 && slot <= 9)
 			{
-				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slot.ToString(), true);
+				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slot, true);
 			}
 		}
 
-		public void savestate_save(object lua_input)
+		[LuaMethodAttributes(
+			"save",
+			"TODO"
+		)]
+		public void Save(string path)
 		{
-			if (lua_input is string)
-			{
-				string path = lua_input.ToString();
-				GlobalWin.MainForm.SaveState(path, path, true);
-			}
+			GlobalWin.MainForm.SaveState(path, path, true);
 		}
 
-		public void savestate_saveslot(object lua_input)
+		[LuaMethodAttributes(
+			"saveslot",
+			"TODO"
+		)]
+		public void SaveSlot(object slotNum)
 		{
-			int slot = LuaInt(lua_input);
+			var slot = LuaInt(slotNum);
 
 			if (slot >= 0 && slot <= 9)
 			{
-				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slot.ToString());
+				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slot);
 			}
 		}
 	}
