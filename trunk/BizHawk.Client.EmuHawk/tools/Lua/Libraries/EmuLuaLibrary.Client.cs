@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			"frameskip",
 			"Sets the frame skip value of the client UI"
 		)]
-		public void FrameSkip(object numFrames)
+		public void FrameSkip(int numFrames)
 		{
 			var frames = LuaInt(numFrames);
 			if (frames > 0)
@@ -286,9 +286,9 @@ namespace BizHawk.Client.EmuHawk
 			"settargetscanlineintensity",
 			"TODO"
 		)]
-		public static void SetTargetScanlineIntensity(object val)
+		public static void SetTargetScanlineIntensity(int val)
 		{
-			Global.Config.TargetScanlineFilterIntensity = LuaInt(val);
+			Global.Config.TargetScanlineFilterIntensity = val;
 		}
 
 		[LuaMethodAttributes(
@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			"setwindowsize",
 			"TODO"
 		)]
-		public void SetWindowSize(object size)
+		public void SetWindowSize(int size)
 		{
 			var s = LuaInt(size);
 			if (s == 1 || s == 2 || s == 3 || s == 4 || s == 5 || s == 10)
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 			"speedmode",
 			"TODO"
 		)]
-		public void SpeedMode(object percent)
+		public void SpeedMode(int percent)
 		{
 			var speed = LuaInt(percent);
 			if (speed > 0 && speed < 6400)

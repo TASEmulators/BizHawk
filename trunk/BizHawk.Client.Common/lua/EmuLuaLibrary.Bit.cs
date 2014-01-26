@@ -10,83 +10,83 @@ namespace BizHawk.Client.Common
 			"band", 
 			"Bitwise AND of 'val' against 'amt'"
 		)]
-		public static uint Band(object val, object amt)
+		public static uint Band(int val, int amt)
 		{
-			return (uint)(LuaInt(val) & LuaInt(amt));
+			return (uint)(val & amt);
 		}
 
 		[LuaMethodAttributes(
 			"bnot",
 			"Bitwise NOT of 'val' against 'amt'"
 		)]
-		public static uint Bnot(object val)
+		public static uint Bnot(int val)
 		{
-			return (uint)(~LuaInt(val));
+			return (uint)~val;
 		}
 
 		[LuaMethodAttributes(
 			"bor",
 			"Bitwise OR of 'val' against 'amt'"
 		)]
-		public static uint Bor(object val, object amt)
+		public static uint Bor(int val, int amt)
 		{
-			return (uint)(LuaInt(val) | LuaInt(amt));
+			return (uint)(val | amt);
 		}
 
 		[LuaMethodAttributes(
 			"bxor",
 			"Bitwise XOR of 'val' against 'amt'"
 		)]
-		public static uint Bxor(object val, object amt)
+		public static uint Bxor(int val, int amt)
 		{
-			return (uint)(LuaInt(val) ^ LuaInt(amt));
+			return (uint)(val ^ amt);
 		}
 
 		[LuaMethodAttributes(
 			"lshift",
 			"Logical shift left of 'val' by 'amt' bits"
 		)]
-		public static uint Lshift(object val, object amt)
+		public static uint Lshift(int val, int amt)
 		{
-			return (uint)(LuaInt(val) << LuaInt(amt));
+			return (uint)(val << amt);
 		}
 
 		[LuaMethodAttributes(
 			"rol",
 			"Left rotate 'val' by 'amt' bits"
 		)]
-		public static uint Rol(object val, object amt)
+		public static uint Rol(int val, int amt)
 		{
-			return (uint)((LuaInt(val) << LuaInt(amt))
-				| (LuaInt(val) >> (32 - LuaInt(amt))));
+			return (uint)((val << amt)
+				| (val >> (32 - amt)));
 		}
 
 		[LuaMethodAttributes(
 			"ror",
 			"Right rotate 'val' by 'amt' bits"
 		)]
-		public static uint Ror(object val, object amt)
+		public static uint Ror(int val, int amt)
 		{
-			return (uint)((LuaInt(val) >> LuaInt(amt))
-				| (LuaInt(val) << (32 - LuaInt(amt))));
+			return (uint)((val >> amt)
+				| (val << (32 - amt)));
 		}
 
 		[LuaMethodAttributes(
 			"rshift",
 			"Logical shift right of 'val' by 'amt' bits"
 		)]
-		public static uint Rshift(object val, object amt)
+		public static uint Rshift(int val, int amt)
 		{
-			return (uint)(LuaInt(val) >> LuaInt(amt));
+			return (uint)(val >> amt);
 		}
 
 		[LuaMethodAttributes(
 			"check",
 			"Returns result of bit 'pos' being set in 'num'"
 		)]
-		public static bool Check(object num, object pos)
+		public static bool Check(long num, int pos)
 		{
-			return (LuaLong(num) & (1 << LuaInt(pos))) != 0;
+			return (num & (1 << pos)) != 0;
 		}
 
 		[LuaMethodAttributes(
@@ -102,41 +102,40 @@ namespace BizHawk.Client.Common
 			"clear",
 			"Clears the bit 'pos' in 'num'"
 		)]
-		public static uint Clear(object num, object pos)
+		public static long Clear(uint num, int pos)
 		{
-			return (uint)(LuaInt(num) & ~(1 << LuaInt(pos)));
+			return num & ~(1 << pos);
 		}
 
 		[LuaMethodAttributes(
 			"byteswap_16",
 			"Byte swaps 'short', i.e. bit.byteswap_16(0xFF00) would return 0x00FF"
 		)]
-		public static uint Byteswap_16(object _short)
+		public static ushort Byteswap_16(ushort val)
 		{
-			 return (UInt16)((LuaInt(_short) & 0xFFU) << 8 | (LuaInt(_short) & 0xFF00U) >> 8);
+			 return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
 		}
 
 		[LuaMethodAttributes(
 			"byteswap_32",
 			"Byte swaps 'dword'"
 		)]
-		public static uint Byteswap_32(object _dword)
+		public static uint Byteswap_32(uint val)
 		{
-			return (LuaUInt(_dword) & 0x000000FFU) << 24 | (LuaUInt(_dword) & 0x0000FF00U) << 8 |
-				(LuaUInt(_dword) & 0x00FF0000U) >> 8 | (LuaUInt(_dword) & 0xFF000000U) >> 24;
+			return (val & 0x000000FFU) << 24 | (val & 0x0000FF00U) << 8 |
+				(val & 0x00FF0000U) >> 8 | (val & 0xFF000000U) >> 24;
 		}
 
 		[LuaMethodAttributes(
 			"byteswap_64",
 			"Byte swaps 'long'"
 		)]
-		public static UInt64 Byteswap_64(object _long)
+		public static UInt64 Byteswap_64(ulong val)
 		{
-			UInt64 value = (UInt64)LuaLong(_long);
-			return (value & 0x00000000000000FFUL) << 56 | (value & 0x000000000000FF00UL) << 40 |
-		 (value & 0x0000000000FF0000UL) << 24 | (value & 0x00000000FF000000UL) << 8 |
-		 (value & 0x000000FF00000000UL) >> 8 | (value & 0x0000FF0000000000UL) >> 24 |
-		 (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
+			return (val & 0x00000000000000FFUL) << 56 | (val & 0x000000000000FF00UL) << 40 |
+		 (val & 0x0000000000FF0000UL) << 24 | (val & 0x00000000FF000000UL) << 8 |
+		 (val & 0x000000FF00000000UL) >> 8 | (val & 0x0000FF0000000000UL) >> 24 |
+		 (val & 0x00FF000000000000UL) >> 40 | (val & 0xFF00000000000000UL) >> 56;
 		}
 	}
 }
