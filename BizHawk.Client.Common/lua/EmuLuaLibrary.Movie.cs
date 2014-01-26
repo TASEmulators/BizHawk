@@ -33,12 +33,20 @@ namespace BizHawk.Client.Common
 
 		private readonly Lua _lua;
 
-		public static string movie_filename()
+		[LuaMethodAttributes(
+			"filename",
+			"TODO"
+		)]
+		public static string Filename()
 		{
 			return Global.MovieSession.Movie.Filename;
 		}
 
-		public LuaTable movie_getinput(object frame)
+		[LuaMethodAttributes(
+			"getinput",
+			"TODO"
+		)]
+		public LuaTable GetInput(object frame)
 		{
 			var input = _lua.NewTable();
 
@@ -55,27 +63,47 @@ namespace BizHawk.Client.Common
 			return input;
 		}
 
-		public static bool movie_getreadonly()
+		[LuaMethodAttributes(
+			"getreadonly",
+			"TODO"
+		)]
+		public static bool GetReadOnly()
 		{
 			return Global.MovieSession.ReadOnly;
 		}
 
-		public static bool movie_getrerecordcounting()
+		[LuaMethodAttributes(
+			"getrerecordcounting",
+			"TODO"
+		)]
+		public static bool GetRerecordCounting()
 		{
 			return Global.MovieSession.Movie.IsCountingRerecords;
 		}
 
-		public static bool movie_isloaded()
+		[LuaMethodAttributes(
+			"isloaded",
+			"TODO"
+		)]
+		public static bool IsLoaded()
 		{
 			return Global.MovieSession.Movie.IsActive;
 		}
 
-		public static double movie_length()
+		[LuaMethodAttributes(
+			"length",
+			"TODO"
+		)]
+		public static double Length()
 		{
 			return Global.MovieSession.Movie.FrameCount;
 		}
 
-		public static string movie_mode()
+		[LuaMethodAttributes(
+			"mode",
+			"TODO"
+		)]
+		public static string Mode()
 		{
 			if (Global.MovieSession.Movie.IsFinished)
 			{
@@ -95,22 +123,38 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static string movie_rerecordcount()
+		[LuaMethodAttributes(
+			"rerecordcount",
+			"TODO"
+		)]
+		public static string RerecordCount()
 		{
 			return Global.MovieSession.Movie.Header.Rerecords.ToString();
 		}
 
-		public static void movie_setreadonly(object lua_input)
+		[LuaMethodAttributes(
+			"setreadonly",
+			"TODO"
+		)]
+		public static void SetReadOnly(object readonlyVal)
 		{
-			Global.MovieSession.ReadOnly = lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1";
+			Global.MovieSession.ReadOnly = readonlyVal.ToString().ToUpper() == "TRUE" || readonlyVal.ToString() == "1";
 		}
 
-		public static void movie_setrerecordcounting(object lua_input)
+		[LuaMethodAttributes(
+			"setrerecordcounting",
+			"TODO"
+		)]
+		public static void SetRerecordCounting(object countVal)
 		{
-			Global.MovieSession.Movie.IsCountingRerecords = lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1";
+			Global.MovieSession.Movie.IsCountingRerecords = countVal.ToString().ToUpper() == "TRUE" || countVal.ToString() == "1";
 		}
 
-		public static void movie_stop()
+		[LuaMethodAttributes(
+			"stop",
+			"TODO"
+		)]
+		public static void Stop()
 		{
 			Global.MovieSession.Movie.Stop();
 		}
