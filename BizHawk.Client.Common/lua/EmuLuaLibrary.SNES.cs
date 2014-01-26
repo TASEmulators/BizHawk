@@ -5,31 +5,6 @@ namespace BizHawk.Client.Common
 	public class SNESLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "snes"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"getlayer_bg_1",
-					"getlayer_bg_2",
-					"getlayer_bg_3",
-					"getlayer_bg_4",
-					"getlayer_obj_1",
-					"getlayer_obj_2",
-					"getlayer_obj_3",
-					"getlayer_obj_4",
-					"setlayer_bg_1",
-					"setlayer_bg_2",
-					"setlayer_bg_3",
-					"setlayer_bg_4",
-					"setlayer_obj_1",
-					"setlayer_obj_2",
-					"setlayer_obj_3",
-					"setlayer_obj_4"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"getlayer_bg_1",

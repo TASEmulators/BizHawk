@@ -21,27 +21,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "emu"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"displayvsync",
-					"frameadvance",
-					"framecount",
-					"getregister",
-					"getregisters",
-					"getsystemid",
-					"islagged",
-					"lagcount",
-					"limitframerate",
-					"minimizeframeskip",
-					"setrenderplanes",
-					"yield"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 		private readonly Action _frameAdvanceCallback;

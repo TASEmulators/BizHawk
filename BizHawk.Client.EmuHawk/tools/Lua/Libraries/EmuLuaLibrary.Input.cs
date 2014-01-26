@@ -14,17 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public override string Name { get { return "input"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"get",
-					"getmouse"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 

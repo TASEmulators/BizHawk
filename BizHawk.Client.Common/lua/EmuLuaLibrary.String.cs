@@ -4,26 +4,6 @@ namespace BizHawk.Client.Common
 	public class StringLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "string"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"binary",
-					"hex",
-					"octal",
-					"trim",
-					"replace",
-					"toupper",
-					"tolower",
-					"startswith",
-					"substring",
-					"contains",
-					"endswith"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"hex",

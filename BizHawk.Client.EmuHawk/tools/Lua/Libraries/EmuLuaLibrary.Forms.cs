@@ -13,33 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name { get { return "forms"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addclick",
-					"button",
-					"checkbox",
-					"clearclicks",
-					"destroy",
-					"destroyall",
-					"dropdown",
-					"getproperty",
-					"gettext",
-					"ischecked",
-					"label",
-					"newform",
-					"openfile",
-					"setlocation",
-					"setproperty",
-					"setsize",
-					"settext",
-					"textbox"
-				};
-			}
-		}
 
 		#region Forms Library Helpers
 

@@ -11,19 +11,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "joypad"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"get",
-					"getimmediate",
-					"set",
-					"setanalog"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 

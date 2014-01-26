@@ -11,32 +11,6 @@ namespace BizHawk.Client.EmuHawk
 	public class GuiLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "gui"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addmessage",
-					"alert",
-					"clearGraphics",
-					"cleartext",
-					"drawBezier",
-					"drawBox",
-					"drawEllipse",
-					"drawIcon",
-					"drawImage",
-					"drawLine",
-					"drawPie",
-					"drawPixel",
-					"drawPolygon",
-					"drawRectangle",
-					"drawString",
-					"drawText",
-					"text"
-				};
-			}
-		}
 
 		#region Gui API
 

@@ -10,28 +10,6 @@ namespace BizHawk.Client.Common
 		// automatically bring out all of the settings to a lua table, with names.  that
 		// would be completely arbitrary and would remove the whole requirement for this mess
 		public override string Name { get { return "nes"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addgamegenie",
-					"getallowmorethaneightsprites",
-					"getbottomscanline",
-					"getclipleftandright",
-					"getdispbackground",
-					"getdispsprites",
-					"gettopscanline",
-					"removegamegenie",
-					"setallowmorethaneightsprites",
-					"setclipleftandright",
-					"setdispbackground",
-					"setdispsprites",
-					"setscanlines"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"addgamegenie",

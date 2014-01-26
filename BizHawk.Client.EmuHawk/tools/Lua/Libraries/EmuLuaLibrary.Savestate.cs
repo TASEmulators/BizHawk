@@ -6,19 +6,6 @@ namespace BizHawk.Client.EmuHawk
 	public class SavestateLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "savestate"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"load",
-					"loadslot",
-					"save",
-					"saveslot"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"load",
