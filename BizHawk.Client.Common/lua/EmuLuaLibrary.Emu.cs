@@ -63,20 +63,9 @@ namespace BizHawk.Client.Common
 			"displayvsync",
 			"Sets the display vsync property of the emulator"
 		)]
-		public static void DisplayVsync(object boolean)
+		public static void DisplayVsync(bool enabled)
 		{
-			var temp = boolean.ToString();
-			if (!String.IsNullOrWhiteSpace(temp))
-			{
-				if (temp == "0" || temp.ToLower() == "false")
-				{
-					Global.Config.VSyncThrottle = false;
-				}
-				else
-				{
-					Global.Config.VSyncThrottle = true;
-				}
-			}
+			Global.Config.VSyncThrottle = enabled;
 		}
 
 		[LuaMethodAttributes(

@@ -83,17 +83,21 @@ namespace BizHawk.Client.Common
 					list.Append('(');
 					for (var i = 0; i < Parameters.Count; i++)
 					{
-						var param = Parameters[i]
-							.Replace("System", String.Empty)
-							.Replace("Object", String.Empty)
-							.Replace(" ", String.Empty)
-							.Replace(".", String.Empty)
-							.Replace("LuaInterface", String.Empty);
+						var param =
+							Parameters[i].Replace("System", String.Empty)
+										 .Replace("Object", String.Empty)
+										 .Replace(" ", String.Empty)
+										 .Replace(".", String.Empty)
+										 .Replace("LuaInterface", String.Empty)
+										 .Replace("Boolean", "bool ")
+										 .Replace("String", "string ")
+										 .Replace("LuaTable", "table ")
+										 .Replace("LuaFunction", "func ");
 
 						list.Append(param);
 						if (i < Parameters.Count - 1)
 						{
-							list.Append(',');
+							list.Append(", ");
 						}
 					}
 
