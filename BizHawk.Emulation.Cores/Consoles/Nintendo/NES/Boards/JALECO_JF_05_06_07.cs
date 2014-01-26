@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	*/
 	public sealed class JALECO_JF_05_06_07 : NES.NESBoardBase
 	{
-		bool hibit, lowbit;
 		int prg_byte_mask;
 		int chr;
 		int chr_mask_8k;
