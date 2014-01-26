@@ -27,7 +27,11 @@ namespace BizHawk.Client.Common
 
 		private readonly Lua _lua;
 
-		public LuaTable joypad_get(object controller = null)
+		[LuaMethodAttributes(
+			"get",
+			"TODO"
+		)]
+		public LuaTable Get(object controller = null)
 		{
 			var buttons = _lua.NewTable();
 			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
@@ -61,7 +65,11 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		public LuaTable joypad_getimmediate()
+		[LuaMethodAttributes(
+			"getimmediate",
+			"TODO"
+		)]
+		public LuaTable GetImmediate()
 		{
 			var buttons = _lua.NewTable();
 			foreach (var button in Global.ActiveController.Type.BoolButtons)
@@ -72,7 +80,11 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		public void joypad_set(LuaTable buttons, object controller = null)
+		[LuaMethodAttributes(
+			"set",
+			"TODO"
+		)]
+		public void Set(LuaTable buttons, object controller = null)
 		{
 			try
 			{
@@ -102,7 +114,6 @@ namespace BizHawk.Client.Common
 					{
 						theValue = null;
 					}
-
 
 					if (!invert)
 					{
@@ -164,7 +175,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void joypad_setanalog(LuaTable controls, object controller = null)
+		[LuaMethodAttributes(
+			"setanalog",
+			"TODO"
+		)]
+		public void SetAnalog(LuaTable controls, object controller = null)
 		{
 			try
 			{
