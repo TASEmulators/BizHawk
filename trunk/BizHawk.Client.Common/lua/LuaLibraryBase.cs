@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 				if (docs != null)
 				{
-					docs.Add(Name, luaName, method, luaMethodAttr.Description);
+					docs.Add(Name, luaMethodAttr.Name, method, luaMethodAttr.Description);
 				}
 			}
 		}
