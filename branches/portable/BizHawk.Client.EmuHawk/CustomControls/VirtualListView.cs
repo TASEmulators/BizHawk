@@ -605,7 +605,7 @@ namespace BizHawk.Client.EmuHawk
 			if (handler != null)
 			{
 				handler(this, e);
-		}
+			}
 		}
 		#if WINDOWS
 
@@ -673,6 +673,11 @@ namespace BizHawk.Client.EmuHawk
 		Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
 		}
 		}
+		}
+		#else
+		public int VScrollPos
+		{
+			get { return AutoScrollOffset.Y; }
 		}
 		#endif
 

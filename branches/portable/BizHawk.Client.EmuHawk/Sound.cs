@@ -417,14 +417,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSoundSettings()
 		{
-			if (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.NES.NES)
-			{
-				BizHawk.Emulation.Cores.Nintendo.NES.NES n = Global.Emulator as BizHawk.Emulation.Cores.Nintendo.NES.NES;
-				if (Global.Config.SoundEnabled == false)
-					n.SoundOn = false;
-				else
-					n.SoundOn = true;
-			}
+			//Don't need this, we mute when we're told
 		}
 
 		public void SetSyncInputPin(ISyncSoundProvider source)

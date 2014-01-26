@@ -2846,7 +2846,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
+				#if WINDOWS
 				JumpLists.AddRecentItem(loader.CanonicalFullPath);
+				#endif
 				if (File.Exists(PathManager.SaveRamPath(loader.Game)))
 				{
 					LoadSaveRam();
