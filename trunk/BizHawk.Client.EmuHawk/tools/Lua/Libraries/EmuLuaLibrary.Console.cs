@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Text;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,58 +19,66 @@ namespace BizHawk.Client.EmuHawk
 					"clear",
 					"getluafunctionslist",
 					"log",
-					"output",
+					"output"
 				};
 			}
 		}
 
-		public static void console_clear()
+		[LuaMethodAttributes(
+			"clear",
+			"TODO"
+		)]
+		public static void Clear()
 		{
 			GlobalWin.Tools.LuaConsole.ClearOutputWindow();
 		}
 
-		public static string console_getluafunctionslist()
+		[LuaMethodAttributes(
+			"getluafunctionslist",
+			"TODO"
+		)]
+		public static string GetLuaFunctionsList()
 		{
-			StringBuilder list = new StringBuilder();
+			var list = new StringBuilder();
 			foreach (var function in GlobalWin.Tools.LuaConsole.LuaImp.Docs.FunctionList)
 			{
 				list.AppendLine(function.Name);
 			}
+
 			return list.ToString();
 		}
 
-		public static void console_log(object lua_input)
+		[LuaMethodAttributes(
+			"log",
+			"TODO"
+		)]
+		public static void Log(object output)
 		{
-			console_output(lua_input);
-		}
-
-		public static void console_output(object lua_input)
-		{
-			if (lua_input == null)
+			if (output == null)
 			{
 				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
 			}
 			else
 			{
-				if (lua_input is LuaTable)
+				if (output is LuaTable)
 				{
-					StringBuilder sb = new StringBuilder();
-					var lti = (lua_input as LuaTable);
+					var sb = new StringBuilder();
+					var lti = output as LuaTable;
 
-					List<string> Keys = (from object key in lti.Keys select key.ToString()).ToList();
-					List<string> Values = (from object value in lti.Values select value.ToString()).ToList();
+					var keys = (from object key in lti.Keys select key.ToString()).ToList();
+					var values = (from object value in lti.Values select value.ToString()).ToList();
 
-					List<KeyValuePair<string, string>> KVPs = new List<KeyValuePair<string, string>>();
-					for (int i = 0; i < Keys.Count; i++)
+					var kvps = new List<KeyValuePair<string, string>>();
+					for (var i = 0; i < keys.Count; i++)
 					{
-						if (i < Values.Count)
+						if (i < values.Count)
 						{
-							KeyValuePair<string, string> kvp = new KeyValuePair<string, string>(Keys[i], Values[i]);
-							KVPs.Add(kvp);
+							kvps.Add(new KeyValuePair<string, string>(keys[i], values[i]));
 						}
 					}
-					KVPs = KVPs.OrderBy(x => x.Key).ToList();
-					foreach (var kvp in KVPs)
+
+					kvps = kvps.OrderBy(x => x.Key).ToList();
+					foreach (var kvp in kvps)
 					{
 						sb
 							.Append("\"")
@@ -85,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(lua_input.ToString());
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow(output.ToString());
 				}
 			}
 		}

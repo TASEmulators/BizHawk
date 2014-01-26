@@ -4,9 +4,9 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class MultiClientLuaLibrary : LuaLibraryBase
+	public class EmuHawkLuaLibrary : LuaLibraryBase
 	{
-		private Dictionary<int, string> _filterMappings = new Dictionary<int,string>
+		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
 			{
 				{ 0, "None" },
 				{ 1, "x2SAI" },
@@ -15,20 +15,20 @@ namespace BizHawk.Client.EmuHawk
 				{ 4, "Scanlines" },
 			};
 
-		public MultiClientLuaLibrary(Action<string> logOutputCallback)
+		public EmuHawkLuaLibrary(Action<string> logOutputCallback)
 			: this()
 		{
 			LogOutputCallback = logOutputCallback;
 		}
 
-		public MultiClientLuaLibrary() : base() { }
+		public EmuHawkLuaLibrary() { }
 
 		public override string Name { get { return "client"; } }
 		public override string[] Functions
 		{
 			get
 			{
-				return new []
+				return new[]
 				{
 					"clearautohold",
 					"closerom",
@@ -68,144 +68,228 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public Action<string> LogOutputCallback = null;
+		public Action<string> LogOutputCallback { get; set; }
 
-		public void client_clearautohold()
+		private void Log(string message)
+		{
+			if (LogOutputCallback != null)
+			{
+				LogOutputCallback(message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"clearautohold",
+			"TODO"
+		)]
+		public void ClearAutohold()
 		{
 			GlobalWin.MainForm.ClearHolds();
 		}
 
-		public static void client_closerom()
+		[LuaMethodAttributes(
+			"closerom",
+			"TODO"
+		)]
+		public static void CloseRom()
 		{
 			GlobalWin.MainForm.CloseRom();
 		}
 
-		public static void client_enablerewind(object boolean)
+		[LuaMethodAttributes(
+			"enablerewind",
+			"TODO"
+		)]
+		public static void EnableRewind(bool enabled)
 		{
-			string temp = boolean.ToString();
-			if (!String.IsNullOrWhiteSpace(temp))
+			if (enabled)
 			{
-				if (temp == "0" || temp.ToLower() == "false")
-				{
-					Global.Rewinder.RewindActive = false;
-					GlobalWin.OSD.AddMessage("Rewind suspended");
-				}
-				else
-				{
-					Global.Rewinder.RewindActive = true;
-					GlobalWin.OSD.AddMessage("Rewind enabled");
-				}
+				Global.Rewinder.RewindActive = true;
+				GlobalWin.OSD.AddMessage("Rewind enabled");
+			}
+			else
+			{
+				Global.Rewinder.RewindActive = false;
+				GlobalWin.OSD.AddMessage("Rewind suspended");
 			}
 		}
 
-		public void client_frameskip(object num_frames)
+		[LuaMethodAttributes(
+			"frameskip",
+			"TODO"
+		)]
+		public void FrameSkip(object numFrames)
 		{
-			try
+			var frames = LuaInt(numFrames);
+			if (frames > 0)
 			{
-				string temp = num_frames.ToString();
-				int frames = Convert.ToInt32(temp);
-				if (frames > 0)
-				{
-					Global.Config.FrameSkip = frames;
-					GlobalWin.MainForm.FrameSkipMessage();
-				}
-				else
-				{
-					ConsoleLuaLibrary.console_log("Invalid frame skip value");
-				}
+				Global.Config.FrameSkip = frames;
+				GlobalWin.MainForm.FrameSkipMessage();
 			}
-			catch
+			else
 			{
-				ConsoleLuaLibrary.console_log("Invalid frame skip value");
+				ConsoleLuaLibrary.Log("Invalid frame skip value");
 			}
 		}
 
-		public string client_getdisplayfilter()
+		[LuaMethodAttributes(
+			"getdisplayfilter",
+			"TODO"
+		)]
+		public string GetDisplayFilter()
 		{
 			return _filterMappings[Global.Config.TargetDisplayFilter];
 		}
 
-		public static int client_gettargetscanlineintensity()
+		[LuaMethodAttributes(
+			"gettargetscanlineintensity",
+			"TODO"
+		)]
+		public static int GetTargetScanlineIntensity()
 		{
 			return Global.Config.TargetScanlineFilterIntensity;
 		}
 
-		public static int client_getwindowsize()
+		[LuaMethodAttributes(
+			"getwindowsize",
+			"TODO"
+		)]
+		public static int GetWindowSize()
 		{
 			return Global.Config.TargetZoomFactor;
 		}
 
-		public static bool client_ispaused()
+		[LuaMethodAttributes(
+			"ispaused",
+			"TODO"
+		)]
+		public static bool IsPaused()
 		{
 			return GlobalWin.MainForm.EmulatorPaused;
 		}
 
-		public static void client_opencheats()
+		[LuaMethodAttributes(
+			"opencheats",
+			"TODO"
+		)]
+		public static void OpenCheats()
 		{
 			GlobalWin.Tools.Load<Cheats>();
 		}
 
-		public static void client_openhexeditor()
+		[LuaMethodAttributes(
+			"openhexeditor",
+			"TODO"
+		)]
+		public static void OpenHexEditor()
 		{
 			GlobalWin.Tools.Load<HexEditor>();
 		}
 
-		public static void client_openramwatch()
+		[LuaMethodAttributes(
+			"openramwatch",
+			"TODO"
+		)]
+		public static void OpenRamWatch()
 		{
-			GlobalWin.Tools.LoadRamWatch(true);
+			GlobalWin.Tools.LoadRamWatch(loadDialog: true);
 		}
 
-		public static void client_openramsearch()
+		[LuaMethodAttributes(
+			"openramsearch",
+			"TODO"
+		)]
+		public static void OpenRamSearch()
 		{
 			GlobalWin.Tools.Load<RamSearch>();
 		}
 
-		public static void client_openrom(object lua_input)
+		[LuaMethodAttributes(
+			"openrom",
+			"TODO"
+		)]
+		public static void OpenRom(string path)
 		{
-			GlobalWin.MainForm.LoadRom(lua_input.ToString());
+			GlobalWin.MainForm.LoadRom(path);
 		}
 
-		public static void client_opentasstudio()
+		[LuaMethodAttributes(
+			"opentasstudio",
+			"TODO"
+		)]
+		public static void OpenTasStudio()
 		{
 			GlobalWin.Tools.Load<TAStudio>();
 		}
 
-		public static void client_opentoolbox()
+		[LuaMethodAttributes(
+			"opentoolbox",
+			"TODO"
+		)]
+		public static void OpenToolBox()
 		{
 			GlobalWin.Tools.Load<ToolBox>();
 		}
 
-		public static void client_opentracelogger()
+		[LuaMethodAttributes(
+			"opentracelogger",
+			"TODO"
+		)]
+		public static void OpenTraceLogger()
 		{
 			GlobalWin.Tools.LoadTraceLogger();
 		}
 
-		public static void client_paint()
+		[LuaMethodAttributes(
+			"paint",
+			"TODO"
+		)]
+		public static void Paint()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
-		public static void client_pause()
+		[LuaMethodAttributes(
+			"pause",
+			"TODO"
+		)]
+		public static void Pause()
 		{
 			GlobalWin.MainForm.PauseEmulator();
 		}
 
-		public static void client_pause_av()
+		[LuaMethodAttributes(
+			"pause_av",
+			"TODO"
+		)]
+		public static void PauseAv()
 		{
 			GlobalWin.MainForm.PauseAVI = true;
 		}
 
-		public static void client_reboot_core()
+		[LuaMethodAttributes(
+			"reboot_core",
+			"TODO"
+		)]
+		public static void RebootCore()
 		{
 			GlobalWin.MainForm.RebootCore();
 		}
 
-		public static int client_screenheight()
+		[LuaMethodAttributes(
+			"screenheight",
+			"TODO"
+		)]
+		public static int ScreenHeight()
 		{
 			return GlobalWin.RenderPanel.NativeSize.Height;
 		}
 
-		public static void client_screenshot(object path = null)
+		[LuaMethodAttributes(
+			"screenshot",
+			"TODO"
+		)]
+		public static void Screenshot(string path = null)
 		{
 			if (path == null)
 			{
@@ -213,16 +297,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.MainForm.TakeScreenshot(path.ToString());
+				GlobalWin.MainForm.TakeScreenshot(path);
 			}
 		}
 
-		public static void client_screenshottoclipboard()
+		[LuaMethodAttributes(
+			"screenshottoclipboard",
+			"TODO"
+		)]
+		public static void ScreenshotToClipboard()
 		{
 			GlobalWin.MainForm.TakeScreenshotToClipboard();
 		}
 
-		public void client_setdisplayfilter(string filter)
+		[LuaMethodAttributes(
+			"setdisplayfilter",
+			"TODO"
+		)]
+		public void SetDisplayFilter(string filter)
 		{
 			foreach (var kvp in _filterMappings)
 			{
@@ -234,88 +326,110 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void client_settargetscanlineintensity(int val)
+		[LuaMethodAttributes(
+			"settargetscanlineintensity",
+			"TODO"
+		)]
+		public static void SetTargetScanlineIntensity(object val)
 		{
-			Global.Config.TargetScanlineFilterIntensity = val;
+			Global.Config.TargetScanlineFilterIntensity = LuaInt(val);
 		}
 
-		public static void client_setscreenshotosd(bool value)
+		[LuaMethodAttributes(
+			"setscreenshotosd",
+			"TODO"
+		)]
+		public static void SetScreenshotOSD(bool value)
 		{
 			Global.Config.Screenshot_CaptureOSD = value;
 		}
 
-		public static int client_screenwidth()
+		[LuaMethodAttributes(
+			"screenwidth",
+			"TODO"
+		)]
+		public static int ScreenWidth()
 		{
 			return GlobalWin.RenderPanel.NativeSize.Width;
 		}
 
-		public void client_setwindowsize(object window_size)
+		[LuaMethodAttributes(
+			"setwindowsize",
+			"TODO"
+		)]
+		public void SetWindowSize(object size)
 		{
-			try
+			var s = LuaInt(size);
+			if (s == 1 || s == 2 || s == 3 || s == 4 || s == 5 || s == 10)
 			{
-				string temp = window_size.ToString();
-				int size = Convert.ToInt32(temp);
-				if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
-				{
-					Global.Config.TargetZoomFactor = size;
-					GlobalWin.MainForm.FrameBufferResized();
-					GlobalWin.OSD.AddMessage("Window size set to " + size.ToString() + "x");
-				}
-				else
-				{
-					if (LogOutputCallback != null)
-					{
-						LogOutputCallback("Invalid window size");
-					}
-				}
+				Global.Config.TargetZoomFactor = s;
+				GlobalWin.MainForm.FrameBufferResized();
+				GlobalWin.OSD.AddMessage("Window size set to " + s + "x");
 			}
-			catch
+			else
 			{
-				LogOutputCallback("Invalid window size");
+				Log("Invalid window size");
 			}
 		}
 
-		public void client_speedmode(object percent)
+		[LuaMethodAttributes(
+			"speedmode",
+			"TODO"
+		)]
+		public void SpeedMode(object percent)
 		{
-			try
+			var speed = LuaInt(percent);
+			if (speed > 0 && speed < 6400)
 			{
-				int speed = Convert.ToInt32(percent.ToString());
-				if (speed > 0 && speed < 1600) // arbituarily capping it at 1600%
-				{
-					GlobalWin.MainForm.ClickSpeedItem(speed);
-				}
-				else
-				{
-					ConsoleLuaLibrary.console_log("Invalid speed value");
-				}
+				GlobalWin.MainForm.ClickSpeedItem(speed);
 			}
-			catch
+			else
 			{
-				ConsoleLuaLibrary.console_log("Invalid speed value");
+				Log("Invalid speed value");
 			}
 		}
 
-		public static void client_togglepause()
+		[LuaMethodAttributes(
+			"togglepause",
+			"TODO"
+		)]
+		public static void TogglePause()
 		{
 			GlobalWin.MainForm.TogglePause();
 		}
 
-		public static void client_unpause()
+		[LuaMethodAttributes(
+			"unpause",
+			"TODO"
+		)]
+		public static void Unpause()
 		{
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
-		public static void client_unpause_av()
+		[LuaMethodAttributes(
+			"unpause_av",
+			"TODO"
+		)]
+		public static void UnpauseAv()
 		{
 			GlobalWin.MainForm.PauseAVI = false;
 		}
 
-		public static int client_xpos()
+		[LuaMethodAttributes(
+			"xpos",
+			"TODO"
+		)]
+		public static int Xpos()
 		{
 			return GlobalWin.MainForm.DesktopLocation.X;
 		}
 
-		public static int client_ypos()
+		[LuaMethodAttributes(
+			"ypos",
+			"TODO"
+		)]
+		public static int Ypos()
 		{
 			return GlobalWin.MainForm.DesktopLocation.Y;
 		}

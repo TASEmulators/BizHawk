@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
+		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.Log);
 		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 		private readonly LuaConsole _caller;
 
@@ -81,8 +81,8 @@ namespace BizHawk.Client.EmuHawk
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
 			new BitLuaLibrary().LuaRegisterNew(lua, Docs);
-			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
-			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
+			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegisterNew(lua, Docs);
+			new ConsoleLuaLibrary().LuaRegisterNew(lua, Docs);
 			
 			new EmulatorLuaLibrary(
 				_lua,
@@ -91,8 +91,8 @@ namespace BizHawk.Client.EmuHawk
 			).LuaRegisterNew(lua, Docs);
 
 			_eventLibrary.LuaRegisterNew(lua, Docs);
-			_formsLibrary.LuaRegister(lua, Docs);
-			_guiLibrary.LuaRegister(lua, Docs);
+			_formsLibrary.LuaRegisterNew(lua, Docs);
+			_guiLibrary.LuaRegisterNew(lua, Docs);
 			new InputLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new JoypadLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
 			new MemoryLuaLibrary().LuaRegisterNew(lua, Docs);
