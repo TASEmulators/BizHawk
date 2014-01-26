@@ -225,11 +225,10 @@ namespace BizHawk.Client.Common
 		)]
 		public void WriteFloat(object address, object value, bool bigendian)
 		{
-			var addr = LuaInt(address);
 			var dv = (float)(double)value;
 			var bytes = BitConverter.GetBytes(dv);
 			var v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MemoryDomains.MainMemory.PokeDWord(addr, v, bigendian);
+			Global.Emulator.MemoryDomains.MainMemory.PokeDWord(LuaInt(address), v, bigendian);
 		}
 
 		[LuaMethodAttributes(
@@ -366,7 +365,7 @@ namespace BizHawk.Client.Common
 		{
 			WriteUnsignedByte(
 				LuaInt(addr),
-				LuaUInt(value)
+				(uint)LuaInt(value)
 			);
 		}
 
