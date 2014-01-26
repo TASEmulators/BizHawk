@@ -4,7 +4,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/FDS_audio
-	public class FDSAudio //: IDisposable
+	public class FDSAudio
 	{
 		public void SyncState(Serializer ser)
 		{
@@ -155,25 +155,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void CalcMod()
 		{
-			// really don't quite get this...
+			// http://forums.nesdev.com/viewtopic.php?f=3&t=10233
 			int tmp = sweepbias * sweepgain;
-			if ((tmp & 0xf) != 0)
+			int remainder = tmp & 15;
+			tmp >>= 4;
+			if (remainder > 0 && (tmp & 0x80) == 0)
 			{
-				tmp /= 16;
 				if (sweepbias < 0)
 					tmp -= 1;
 				else
 					tmp += 2;
 			}
-			else
-				tmp /= 16;
 
-			if (tmp > 193)
-				tmp -= 258;
+			// signed with unconventional bias
+			if (tmp >= 192)
+				tmp -= 256;
 			else if (tmp < -64)
 				tmp += 256;
 
-			modoutput = frequency * tmp / 64;
+			// round to nearest
+			tmp *= frequency;
+			remainder = tmp & 63;
+			tmp >>= 6;
+			if (remainder >= 32)
+				tmp++;
+			modoutput = tmp;
 		}
 
 		void CalcOut()
@@ -299,7 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					r4084_7 = (value & 0x80) != 0;
 					break;
 				case 0x4085:
-					modtablepos = 0; // reset
+					//modtablepos = 0; // this doesn't happen, ever!!
 					sweepbias = value & 0x7f;
 					// sign extend
 					sweepbias <<= 25;
