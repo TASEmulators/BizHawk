@@ -80,28 +80,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
-			new BitLuaLibrary().LuaRegisterNew(lua, Docs);
-			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegisterNew(lua, Docs);
-			new ConsoleLuaLibrary().LuaRegisterNew(lua, Docs);
+			new BitLuaLibrary().LuaRegister(lua, Docs);
+			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegister(lua, Docs);
+			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			
 			new EmulatorLuaLibrary(
 				_lua,
 				Frameadvance,
 				EmuYield
-			).LuaRegisterNew(lua, Docs);
+			).LuaRegister(lua, Docs);
 
-			_eventLibrary.LuaRegisterNew(lua, Docs);
-			_formsLibrary.LuaRegisterNew(lua, Docs);
-			_guiLibrary.LuaRegisterNew(lua, Docs);
-			new InputLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
-			new JoypadLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
-			new MemoryLuaLibrary().LuaRegisterNew(lua, Docs);
-			new MainMemoryLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
-			new MovieLuaLibrary(_lua).LuaRegisterNew(lua, Docs);
-			new NESLuaLibrary().LuaRegisterNew(lua, Docs);
-			new SavestateLuaLibrary().LuaRegisterNew(lua, Docs);
-			new SNESLuaLibrary().LuaRegisterNew(lua, Docs);
-			new StringLuaLibrary().LuaRegisterNew(lua, Docs);
+			_eventLibrary.LuaRegister(lua, Docs);
+			_formsLibrary.LuaRegister(lua, Docs);
+			_guiLibrary.LuaRegister(lua, Docs);
+			new InputLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new JoypadLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new MemoryLuaLibrary().LuaRegister(lua, Docs);
+			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
+			new NESLuaLibrary().LuaRegister(lua, Docs);
+			new SavestateLuaLibrary().LuaRegister(lua, Docs);
+			new SNESLuaLibrary().LuaRegister(lua, Docs);
+			new StringLuaLibrary().LuaRegister(lua, Docs);
 
 			Docs.Sort();
 		}

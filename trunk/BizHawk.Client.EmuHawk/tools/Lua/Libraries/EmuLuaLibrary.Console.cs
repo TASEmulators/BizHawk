@@ -10,19 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	public class ConsoleLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "console"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"clear",
-					"getluafunctionslist",
-					"log",
-					"output"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"clear",

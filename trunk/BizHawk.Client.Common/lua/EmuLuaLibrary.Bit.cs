@@ -5,29 +5,6 @@ namespace BizHawk.Client.Common
 	public class BitLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "bit"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"Band",
-					"Bnot",
-					"Bor",
-					"Bxor",
-					"Lshift",
-					"Rol",
-					"Ror",
-					"Rshift",
-					"Check",
-					"Set",
-					"Clear",
-					"Byteswap_16",
-					"Byteswap_32",
-					"Byteswap_64"
-				};
-			}
-		}
 
 		[LuaMethodAttributes(
 			"band", 

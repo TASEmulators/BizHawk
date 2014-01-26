@@ -13,51 +13,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "mainmemory"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"getname",
-					"readbyte",
-					"readbyterange",
-					"readfloat",
-					"writebyte",
-					"writebyterange",
-					"writefloat",
-
-					"read_s8",
-					"read_u8",
-					"read_s16_le",
-					"read_s24_le",
-					"read_s32_le",
-					"read_u16_le",
-					"read_u24_le",
-					"read_u32_le",
-					"read_s16_be",
-					"read_s24_be",
-					"read_s32_be",
-					"read_u16_be",
-					"read_u24_be",
-					"read_u32_be",
-					"write_s8",
-					"write_u8",
-					"write_s16_le",
-					"write_s24_le",
-					"write_s32_le",
-					"write_u16_le",
-					"write_u24_le",
-					"write_u32_le",
-					"write_s16_be",
-					"write_s24_be",
-					"write_s32_be",
-					"write_u16_be",
-					"write_u24_be",
-					"write_u32_be"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 

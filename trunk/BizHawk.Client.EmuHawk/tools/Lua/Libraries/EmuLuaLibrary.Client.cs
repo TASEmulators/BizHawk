@@ -24,50 +24,6 @@ namespace BizHawk.Client.EmuHawk
 		public EmuHawkLuaLibrary() { }
 
 		public override string Name { get { return "client"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"clearautohold",
-					"closerom",
-					"enablerewind",
-					"frameskip",
-					"getdisplayfilter",
-					"gettargetscanlineintensity",
-					"getwindowsize",
-					"ispaused",
-					"opencheats",
-					"openhexeditor",
-					"openramwatch",
-					"openramsearch",
-					"openrom",
-					"opentasstudio",
-					"opentoolbox",
-					"opentracelogger",
-					"paint",
-					"pause",
-					"pause_av",
-					"reboot_core",
-					"screenheight",
-					"screenshot",
-					"screenshottoclipboard",
-					"screenwidth",
-					"setdisplayfilter",
-					"setscreenshotosd",
-					"settargetscanlineintensity",
-					"setwindowsize",
-					"speedmode",
-					"togglepause",
-					"unpause",
-					"unpause_av",
-					"xpos",
-					"ypos"
-				};
-			}
-		}
-
 		public Action<string> LogOutputCallback { get; set; }
 
 		private void Log(string message)

@@ -10,26 +10,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "movie"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"filename",
-					"getinput",
-					"getreadonly",
-					"getrerecordcounting",
-					"isloaded",
-					"length",
-					"mode",
-					"rerecordcount",
-					"setreadonly",
-					"setrerecordcounting",
-					"stop"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 

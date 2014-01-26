@@ -13,25 +13,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "event"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"onframeend",
-					"onframestart",
-					"oninputpoll",
-					"onloadstate",
-					"onmemoryexecute",
-					"onmemoryread",
-					"onmemorywrite",
-					"onsavestate",
-					"unregisterbyid",
-					"unregisterbyname"
-				};
-			}
-		}
 
 		public Action<string> LogOutputCallback { get; set; }
 		public Lua CurrentThread { get; set; }
