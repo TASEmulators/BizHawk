@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"hex",
-			"TODO"
+			"Converts the number to a string representation of the hexadecimal value of the given number"
 		)]
 		public static string Hex(object num)
 		{
@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"binary",
-			"TODO"
+			"Converts the number to a string representation of the binary value of the given number"
 		)]
 		public static string Binary(object num)
 		{
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"octal",
-			"TODO"
+			"Converts the number to a string representation of the octal value of the given number"
 		)]
 		public static string Octal(object num)
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"trim",
-			"TODO"
+			"returns a string that trims whitespace on the left and right ends of the string"
 		)]
 		public static string Trim(string str)
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"replace",
-			"TODO"
+			"Returns a string that replaces all occurances of str2 in str1 with the value of replace"
 		)]
 		public static string Replace(string str, string str2, string replace)
 		{
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"toupper",
-			"TODO"
+			"Returns an uppercase version of the given string"
 		)]
 		public static string ToUpper(string str)
 		{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"tolower",
-			"TODO"
+			"Returns an lowercase version of the given string"
 		)]
 		public static string ToLower(string str)
 		{
@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"substring",
-			"TODO"
+			"Returns a string that represents a substring of str starting at position for the specified length"
 		)]
 		public static string SubString(string str, object position, object length)
 		{
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"remove",
-			"TODO"
+			"Returns a string that represents str with the given position and count removed"
 		)]
 		public static string Remove(string str, object position, object count)
 		{
@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"contains",
-			"TODO"
+			"Returns whether or not str contains str2"
 		)]
 		public static bool Contains(string str, string str2)
 		{
@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"startswith",
-			"TODO"
+			"Returns whether str starts with str2"
 		)]
 		public static bool StartsWith(string str, string str2)
 		{
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"endswith",
-			"TODO"
+			"Returns whether str ends wth str2"
 		)]
 		public static bool EndsWith(string str, string str2)
 		{

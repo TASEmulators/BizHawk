@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"get",
-			"TODO"
+			"returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller"
 		)]
 		public LuaTable Get(object controller = null)
 		{
@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getimmediate",
-			"TODO"
+			"returns a lua table of any controller buttons currently pressed by the user"
 		)]
 		public LuaTable GetImmediate()
 		{
@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"set",
-			"TODO"
+			"sets the given buttons to their provided values for the current frame"
 		)]
 		public void Set(LuaTable buttons, object controller = null)
 		{
@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setanalog",
-			"TODO"
+			"sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value."
 		)]
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{

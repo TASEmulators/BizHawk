@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"addgamegenie",
-			"TODO"
+			"Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect"
 		)]
 		public void AddGameGenie(string code)
 		{
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getallowmorethaneightsprites",
-			"TODO"
+			"Gets the NES setting 'Allow more than 8 sprites per scanline' value"
 		)]
 		public static bool GetAllowMoreThanEightSprites()
 		{
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getbottomscanline",
-			"TODO"
+			"Gets the current value for the bottom scanline value"
 		)]
 		public static int GetBottomScanline(bool pal = false)
 		{
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getclipleftandright",
-			"TODO"
+			"Gets the current value for the Clip Left and Right sides option"
 		)]
 		public static bool GetClipLeftAndRight()
 		{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getdispbackground",
-			"TODO"
+			"Indicates whether or not the bg layer is being displayed"
 		)]
 		public static bool GetDisplayBackground()
 		{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getdispsprites",
-			"TODO"
+			"Indicates whether or not sprites are being displayed"
 		)]
 		public static bool GetDisplaySprites()
 		{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"gettopscanline",
-			"TODO"
+			"Gets the current value for the top scanline value"
 		)]
 		public static int GetTopScanline(bool pal = false)
 		{
@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"removegamegenie",
-			"TODO"
+			"Removes the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect"
 		)]
 		public void RemoveGameGenie(string code)
 		{
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setallowmorethaneightsprites",
-			"TODO"
+			"Sets the NES setting 'Allow more than 8 sprites per scanline'"
 		)]
 		public static void SetAllowMoreThanEightSprites(bool allow)
 		{
@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setclipleftandright",
-			"TODO"
+			"Sets the Clip Left and Right sides option"
 		)]
 		public static void SetClipLeftAndRight(bool leftandright)
 		{
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setdispbackground",
-			"TODO"
+			"Sets whether or not the background layer will be displayed"
 		)]
 		public static void SetDisplayBackground(bool show)
 		{
@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setdispsprites",
-			"TODO"
+			"Sets whether or not sprites will be displayed"
 		)]
 		public static void SetDisplaySprites(bool show)
 		{
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setscanlines",
-			"TODO"
+			"sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239"
 		)]
 		public static void SetScanlines(object top, object bottom, bool pal = false)
 		{

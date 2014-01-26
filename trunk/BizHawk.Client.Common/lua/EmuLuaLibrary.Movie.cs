@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"filename",
-			"TODO"
+			"Returns the file name including path of the currently loaded movie"
 		)]
 		public static string Filename()
 		{
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getinput",
-			"TODO"
+			"Returns a table of buttons pressed on a given frame of the loaded movie"
 		)]
 		public LuaTable GetInput(object frame)
 		{
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getreadonly",
-			"TODO"
+			"Returns true if the movie is in read-only mode, false if in read+write"
 		)]
 		public static bool GetReadOnly()
 		{
@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getrerecordcounting",
-			"TODO"
+			"Returns whether or not the current movie is incrementing rerecords on loadstate"
 		)]
 		public static bool GetRerecordCounting()
 		{
@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"isloaded",
-			"TODO"
+			"Returns true if a movie is loaded in memory (play, record, or finished modes), false if not (inactive mode)"
 		)]
 		public static bool IsLoaded()
 		{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"length",
-			"TODO"
+			"Returns the total number of frames of the loaded movie"
 		)]
 		public static double Length()
 		{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"mode",
-			"TODO"
+			"Returns the mode of the current movie. Possible modes: PLAY, RECORD, FINISHED, INACTIVE"
 		)]
 		public static string Mode()
 		{
@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"rerecordcount",
-			"TODO"
+			"Returns the current rerecord count for the loaded movie"
 		)]
 		public static string RerecordCount()
 		{
@@ -114,25 +114,25 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setreadonly",
-			"TODO"
+			"Sets the read-only state to the given value. true for read only, false for read+write"
 		)]
-		public static void SetReadOnly(object readonlyVal)
+		public static void SetReadOnly(bool readOnly)
 		{
-			Global.MovieSession.ReadOnly = readonlyVal.ToString().ToUpper() == "TRUE" || readonlyVal.ToString() == "1";
+			Global.MovieSession.ReadOnly = readOnly;
 		}
 
 		[LuaMethodAttributes(
 			"setrerecordcounting",
-			"TODO"
+			"Sets whether or not the current movie will increment the rerecord counter on loadstate"
 		)]
-		public static void SetRerecordCounting(object countVal)
+		public static void SetRerecordCounting(bool counting)
 		{
-			Global.MovieSession.Movie.IsCountingRerecords = countVal.ToString().ToUpper() == "TRUE" || countVal.ToString() == "1";
+			Global.MovieSession.Movie.IsCountingRerecords = counting;
 		}
 
 		[LuaMethodAttributes(
 			"stop",
-			"TODO"
+			"Stops the current movie"
 		)]
 		public static void Stop()
 		{

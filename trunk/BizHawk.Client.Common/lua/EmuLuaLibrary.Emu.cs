@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"displayvsync",
-			"TODO"
+			"Sets the display vsync property of the emulator"
 		)]
 		public static void DisplayVsync(object boolean)
 		{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"frameadvance",
-			"TODO"
+			"Signals to the emulator to resume emulation. Necessary for any lua script while loop or else the emulator will freeze!"
 		)]
 		public void FrameAdvance()
 		{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"framecount",
-			"TODO"
+			"Returns the current frame count"
 		)]
 		public static int FrameCount()
 		{
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getregister",
-			"TODO"
+			"returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters"
 		)]
 		public static int GetRegister(string name)
 		{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getregisters",
-			"TODO"
+			"returns the complete set of available flags and registers for a given core"
 		)]
 		public LuaTable GetRegisters()
 		{
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getsystemid",
-			"TODO"
+			"Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL"
 		)]
 		public static string GetSystemId()
 		{
@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"islagged",
-			"TODO"
+			"returns whether or not the current frame is a lag frame"
 		)]
 		public static bool IsLagged()
 		{
@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"lagcount",
-			"TODO"
+			"Returns the current lag count"
 		)]
 		public static int LagCount()
 		{
@@ -150,56 +150,34 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"limitframerate",
-			"TODO"
+			"sets the limit framerate property of the emulator"
 		)]
-		public static void LimitFramerate(object boolean)
+		public static void LimitFramerate(bool enabled)
 		{
-			var temp = boolean.ToString();
-			if (!String.IsNullOrWhiteSpace(temp))
-			{
-				if (temp == "0" || temp.ToLower() == "false")
-				{
-					Global.Config.ClockThrottle = false;
-				}
-				else
-				{
-					Global.Config.ClockThrottle = true;
-				}
-			}
+			Global.Config.ClockThrottle = enabled;
 		}
 
 		[LuaMethodAttributes(
 			"minimizeframeskip",
-			"TODO"
+			"Sets the autominimizeframeskip value of the emulator"
 		)]
-		public static void MinimizeFrameskip(object boolean)
+		public static void MinimizeFrameskip(bool enabled)
 		{
-			var temp = boolean.ToString();
-			if (!String.IsNullOrWhiteSpace(temp))
-			{
-				if (temp == "0" || temp.ToLower() == "false")
-				{
-					Global.Config.AutoMinimizeSkipping = false;
-				}
-				else
-				{
-					Global.Config.AutoMinimizeSkipping = true;
-				}
-			}
+			Global.Config.AutoMinimizeSkipping = enabled;
 		}
 
 		[LuaMethodAttributes(
 			"setrenderplanes",
-			"TODO"
+			"Toggles the drawing of sprites and background planes. Set to false or nil to disable a pane, anything else will draw them"
 		)]
 		public static void SetRenderPlanes( // For now, it accepts arguments up to 5.
-			object lua_p0, 
-			object lua_p1 = null, 
-			object lua_p2 = null,
-			object lua_p3 = null, 
-			object lua_p4 = null)
+			object param0, 
+			object param1 = null, 
+			object param2 = null,
+			object param3 = null, 
+			object param4 = null)
 		{
-			SetrenderplanesDo(LuaVarArgs(lua_p0, lua_p1, lua_p2, lua_p3, lua_p4));
+			SetrenderplanesDo(LuaVarArgs(param0, param1, param2, param3, param4));
 		}
 
 		[LuaMethodAttributes(

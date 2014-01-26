@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_bg_1",
-			"TODO"
+			"Returns whether the bg 1 layer is displayed"
 		)]
 		public static bool GetLayerBg1()
 		{
@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_bg_2",
-			"TODO"
+			"Returns whether the bg 2 layer is displayed"
 		)]
 		public static bool GetLayerBg2()
 		{
@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_bg_3",
-			"TODO"
+			"Returns whether the bg 3 layer is displayed"
 		)]
 		public static bool GetLayerBg3()
 		{
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_bg_4",
-			"TODO"
+			"Returns whether the bg 4 layer is displayed"
 		)]
 		public static bool GetLayerBg4()
 		{
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_obj_1",
-			"TODO"
+			"Returns whether the obj 1 layer is displayed"
 		)]
 		public static bool GetLayerObj1()
 		{
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_obj_2",
-			"TODO"
+			"Returns whether the obj 2 layer is displayed"
 		)]
 		public static bool GetLayerObj2()
 		{
@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_obj_3",
-			"TODO"
+			"Returns whether the obj 3 layer is displayed"
 		)]
 		public static bool GetLayerObj3()
 		{
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"getlayer_obj_4",
-			"TODO"
+			"Returns whether the obj 4 layer is displayed"
 		)]
 		public static bool GetLayerObj4()
 		{
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_bg_1",
-			"TODO"
+			"Sets whether the bg 1 layer is displayed"
 		)]
 		public static void SetLayerBg1(bool value)
 		{
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_bg_2",
-			"TODO"
+			"Sets whether the bg 2 layer is displayed"
 		)]
 		public static void SetLayerBg2(bool value)
 		{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_bg_3",
-			"TODO"
+			"Sets whether the bg 3 layer is displayed"
 		)]
 		public static void SetLayerBg3(bool value)
 		{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_bg_4",
-			"TODO"
+			"Sets whether the bg 4 layer is displayed"
 		)]
 		public static void SetLayerBg4(bool value)
 		{
@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_obj_1",
-			"TODO"
+			"Sets whether the obj 1 layer is displayed"
 		)]
 		public static void SetLayerObj1(bool value)
 		{
@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_obj_2",
-			"TODO"
+			"Sets whether the obj 2 layer is displayed"
 		)]
 		public static void SetLayerObj2(bool value)
 		{
@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_obj_3",
-			"TODO"
+			"Sets whether the obj 3 layer is displayed"
 		)]
 		public static void SetLayerObj3(bool value)
 		{
@@ -178,7 +178,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setlayer_obj_4",
-			"TODO"
+			"Sets whether the obj 4 layer is displayed"
 		)]
 		public static void SetLayerObj4(bool value)
 		{
