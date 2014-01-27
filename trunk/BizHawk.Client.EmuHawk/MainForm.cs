@@ -1341,69 +1341,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-//    private void SyncPresentationMode()
-//    {
-//      GlobalWin.DisplayManager.Suspend();
-
-//#if WINDOWS
-//      bool gdi = Global.Config.DisplayGDI || GlobalWin.Direct3D == null;
-//#endif
-//      if (_renderTarget != null)
-//      {
-//        _renderTarget.Dispose();
-//        Controls.Remove(_renderTarget);
-//      }
-
-//      if (_retainedPanel != null)
-//      {
-//        _retainedPanel.Dispose();
-//      }
-
-//      if (GlobalWin.RenderPanel != null)
-//      {
-//        GlobalWin.RenderPanel.Dispose();
-//      }
-
-//#if WINDOWS
-//      if (gdi)
-//#endif
-//        _renderTarget = _retainedPanel = new RetainedViewportPanel();
-//#if WINDOWS
-//      else _renderTarget = new ViewportPanel();
-//#endif
-//      Controls.Add(_renderTarget);
-//      Controls.SetChildIndex(_renderTarget, 0);
-
-//      _renderTarget.Dock = DockStyle.Fill;
-//      _renderTarget.BackColor = Color.Black;
-
-//#if WINDOWS
-//      if (gdi)
-//      {
-//#endif
-//        GlobalWin.RenderPanel = new SysdrawingRenderPanel(_retainedPanel);
-//        _retainedPanel.ActivateThreaded();
-//#if WINDOWS
-//      }
-//      else
-//      {
-//        try
-//        {
-//          var d3dPanel = new BizwareGLRenderPanel(_renderTarget);
-//          GlobalWin.RenderPanel = d3dPanel;
-//        }
-//        catch
-//        {
-//          Program.DisplayDirect3DError();
-//          GlobalWin.Direct3D.Dispose();
-//          GlobalWin.Direct3D = null;
-//          SyncPresentationMode();
-//        }
-//      }
-//#endif
-
-//      GlobalWin.DisplayManager.Resume();
-//    }
 
 		private void SyncThrottle()
 		{

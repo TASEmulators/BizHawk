@@ -44,12 +44,24 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public IGL_TK()
 		{
+			//make an 'offscreen context' so we can at least do things without having to create a window
 			OffscreenNativeWindow = new NativeWindow();
 			OffscreenNativeWindow.ClientSize = new sd.Size(8, 8);
 			this.GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, 2, 0, GraphicsContextFlags.Default);
 			MakeDefaultCurrent();
-			this.GraphicsContext.LoadAll(); //this is important for reasons unknown
+
+			//this is important for reasons unknown
+			this.GraphicsContext.LoadAll(); 
+
+			//misc initialization
 			CreateRenderStates();
+		}
+
+		void IDisposable.Dispose()
+		{
+			//TODO - a lot of analysis here
+			OffscreenNativeWindow.Dispose(); OffscreenNativeWindow = null;
+			GraphicsContext.Dispose(); GraphicsContext = null;
 		}
 
 		void IGL.Clear(ClearBufferMask mask)
