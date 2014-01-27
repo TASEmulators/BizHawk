@@ -10,6 +10,7 @@
 //http://www.opentk.com/node/437 (AGG#, codes on Tao forums)
 
 using System;
+using System.Reflection;
 using System.Threading;
 using System.IO;
 using System.Collections.Generic;
@@ -121,6 +122,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			GLControlWrapper wrapper = new GLControlWrapper(this);
 			wrapper.MyControl = glc;
+
+			//this might be important.. or it might not. it's ready, in case we need it
+			//glc.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(glc, new object[] { System.Windows.Forms.ControlStyles.UserMouse, true });
 			return wrapper;
 		}
 
