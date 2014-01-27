@@ -30,6 +30,7 @@ namespace BizHawk.Bizware.Test
 
 			GuiRenderer gr = new GuiRenderer(igl);
 
+
 			TestForm tf = new TestForm();
 			GraphicsControl c = igl.CreateGraphicsControl();
 			tf.Controls.Add(c);
@@ -44,6 +45,18 @@ namespace BizHawk.Bizware.Test
 
 			c.SetVsync(false);
 
+			//create a render target, in the control context
+			c.Begin();
+			RenderTarget rt = igl.CreateRenderTarget(60, 60);
+			rt.Bind();
+			igl.ClearColor(Color.Blue);
+			igl.Clear(ClearBufferMask.ColorBufferBit);
+			gr.Begin(60, 60, true);
+			gr.Draw(smile);
+			gr.End();
+			rt.Unbind();
+			c.End();
+
 			DateTime start = DateTime.Now;
 			int wobble = 0;
 			for (; ; )
@@ -51,14 +64,20 @@ namespace BizHawk.Bizware.Test
 				if (c == null) break;
 
 				c.Begin();
-				
+
+
 				igl.ClearColor(Color.Red);
 				igl.Clear(BizwareGL.ClearBufferMask.ColorBufferBit);
 
 				int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
 
 				gr.Begin(c.Control.ClientSize.Width, c.Control.ClientSize.Height);
-				sr.RenderString(gr, 0, 0, "60 fps");
+				
+				gr.SetBlendState(igl.BlendNone);
+				gr.Draw(rt.Texture2d, 0, 20);
+				gr.SetBlendState(igl.BlendNormal);
+
+				sr.RenderString(gr, 0, 0, "?? fps");
 				gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
 				gr.Modelview.Translate(100, 100);
 				gr.Modelview.Push();

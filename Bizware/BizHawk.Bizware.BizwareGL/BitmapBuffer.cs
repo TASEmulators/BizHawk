@@ -200,6 +200,18 @@ namespace BizHawk.Bizware.BizwareGL
 			else LoadInternal(null, bitmap, options);
 		}
 
+
+		/// <summary>
+		/// Initializes a BitmapBuffer --WRAPPED-- from the supplied parameters, which should definitely have a stride==width and be in the standard color format
+		/// </summary>
+		public BitmapBuffer(int width, int height, int[] pixels)
+		{
+			this.Pixels = pixels;
+			this.Width = width;
+			this.Height = height;
+		}
+
+
 		void LoadInternal(Stream stream, sd.Bitmap bitmap, BitmapLoadOptions options)
 		{
 			bool cleanup = options.CleanupAlpha0;
@@ -344,7 +356,18 @@ namespace BizHawk.Bizware.BizwareGL
 			InitSize(width, height);
 		}
 
+		/// <summary>
+		/// Makes a new bitmap buffer, in ??? state
+		/// </summary>
 		public BitmapBuffer() { }
+
+		/// <summary>
+		/// initializes an empty BitmapBuffer, cleared to all 0
+		/// </summary>
+		public BitmapBuffer(Size size)
+		{
+			InitSize(size.Width, size.Height);
+		}
 
 		/// <summary>
 		/// clears this instance to (0,0,0,0) -- without allocating a new array (to avoid GC churn)
@@ -384,14 +407,6 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			//should these be copied?
 			Pixels = arr;
-		}
-
-		/// <summary>
-		/// initializes an empty BitmapBuffer, cleared to all 0
-		/// </summary>
-		public BitmapBuffer(Size size)
-		{
-			InitSize(size.Width, size.Height);
 		}
 
 		void InitSize(int width, int height)
