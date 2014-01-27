@@ -203,9 +203,9 @@ namespace BizHawk.Client.EmuHawk
 			"addmessage",
 			"Adds a message to the OSD's message area"
 		)]
-		public void AddMessage(object luaStr)
+		public void AddMessage(string message)
 		{
-			GlobalWin.OSD.AddMessage(luaStr.ToString());
+			GlobalWin.OSD.AddMessage(message);
 		}
 
 		[LuaMethodAttributes(
