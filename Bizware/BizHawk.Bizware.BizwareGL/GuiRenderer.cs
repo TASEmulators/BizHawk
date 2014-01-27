@@ -291,6 +291,7 @@ namespace BizHawk.Bizware.BizwareGL
 		Texture2d sTexture;
 
 		public readonly string DefaultVertexShader = @"
+#version 110 //opengl 2.0 ~ 2004
 uniform mat4 um44Modelview, um44Projection;
 
 attribute vec2 aPosition;
@@ -306,6 +307,7 @@ void main()
 }";
 
 		public readonly string DefaultPixelShader = @"
+#version 110 //opengl 2.0 ~ 2004
 uniform sampler2D uSampler0;
 uniform vec4 uModulateColor;
 
