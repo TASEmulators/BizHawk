@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #if WINDOWS
-using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
@@ -76,15 +75,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-
-			try { GlobalWin.Direct3D = new Direct3D(); }
-			catch
-			{
-				//fallback to GDI rendering
-				if (!Global.Config.DisplayGDI)
-					DisplayDirect3DError();
-			}
 #endif
+
+			//create IGL context.
+			//at some point in the future, we may need to select from several drivers
+			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 
 			try
 			{
@@ -152,8 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.DSound != null && GlobalWin.DSound.Disposed == false)
 					GlobalWin.DSound.Dispose();
-				if (GlobalWin.Direct3D != null && GlobalWin.Direct3D.Disposed == false)
-					GlobalWin.Direct3D.Dispose();
+				GlobalWin.GL.Dispose();
 				GamePad.CloseAll();
 			}
 #endif
@@ -250,10 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			} 
 		}
 
-		public static void DisplayDirect3DError()
-		{
-			MessageBox.Show("Failure to initialize Direct3D, reverting to GDI+ display method. Change the option in Config > GUI or install DirectX web update.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
+
 #endif
 	}
 }

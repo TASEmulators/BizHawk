@@ -8,8 +8,6 @@ using System.Threading;
 using System.Windows.Forms;
 #if WINDOWS
 using SlimDX;
-using SlimDX.Direct3D9;
-using d3d9font=SlimDX.Direct3D9.Font;
 #endif
 
 using BizHawk.Client.Common;
@@ -17,7 +15,6 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
-
 	public interface IRenderer : IDisposable
 	{
 		void RenderOverlay(DisplaySurface surface);
@@ -38,6 +35,24 @@ namespace BizHawk.Client.EmuHawk
 	//you might think it's cool to make this reusable for other windows, but it's probably a pipe dream. dont even try it. at least, refactor it into a simple render panel and some kind of NicePresentationWindow class
 	public class BizwareGLRenderPanel : IRenderer, IBlitter
 	{
+
+		public BizwareGLRenderPanel()
+		{
+			GL = GlobalWin.GL;
+
+			GraphicsControl = GL.CreateGraphicsControl();
+			Renderer = new GuiRenderer(GL);
+
+			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
+			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
+			GraphicsControl.Control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
+			GraphicsControl.Control.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
+
+			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
+			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
+				TheOneFont = new StringRenderer(GL, xml, tex);
+		}
+
 		public void Dispose()
 		{
 			//this hasnt been analyzed real well yet
@@ -66,27 +81,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		public BizwareGLRenderPanel()
-		{
-			if(gl == null)
-				gl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-			GraphicsControl = gl.CreateGraphicsControl();
-			Renderer = new GuiRenderer(gl);
-
-			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
-			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
-			GraphicsControl.Control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
-			GraphicsControl.Control.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
-
-			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
-			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
-			TheOneFont = new StringRenderer(gl,xml,tex);
-		}
-
 		void IBlitter.Open()
 		{
 			Renderer.Begin(GraphicsControl.Control.ClientSize.Width, GraphicsControl.Control.ClientSize.Height);
-			Renderer.SetBlendState(gl.BlendNormal);
+			Renderer.SetBlendState(GL.BlendNormal);
 			ClipBounds = new sd.Rectangle(0, 0, NativeSize.Width, NativeSize.Height);
 		}
 		void IBlitter.Close() {
@@ -109,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		StringRenderer TheOneFont;
 		public Bizware.BizwareGL.GraphicsControl GraphicsControl;
-		static Bizware.BizwareGL.IGL gl;
+		static Bizware.BizwareGL.IGL GL;
 		GuiRenderer Renderer;
 		Texture2d LastSurfaceTexture;
 
@@ -170,12 +168,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (sw != surface.Width || sh != surface.Height || LastSurfaceTexture == null)
 			{
-				LastSurfaceTexture = gl.LoadTexture(surface);
+				LastSurfaceTexture = GL.LoadTexture(surface);
 				LastSurfaceTexture.SetFilterNearest();
 			}
 			else
 			{
-				gl.LoadTextureData(LastSurfaceTexture, surface);
+				GL.LoadTextureData(LastSurfaceTexture, surface);
 			}
 
 			sw = surface.Width;
@@ -195,14 +193,14 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsControl.Begin();
 			if (!overlay)
 			{
-				gl.ClearColor(Color.Black); //TODO set from background color
-				gl.Clear(ClearBufferMask.ColorBufferBit);
+				GL.ClearColor(Color.Black); //TODO set from background color
+				GL.Clear(ClearBufferMask.ColorBufferBit);
 			}
 			
 			Renderer.Begin(GraphicsControl.Control.ClientSize.Width, GraphicsControl.Control.ClientSize.Height);
 			if (overlay)
-				Renderer.SetBlendState(gl.BlendNormal);
-			else Renderer.SetBlendState(gl.BlendNone);
+				Renderer.SetBlendState(GL.BlendNormal);
+			else Renderer.SetBlendState(GL.BlendNone);
 			Renderer.Modelview.Translate(dx, dy);
 			Renderer.Modelview.Scale(finalScale);
 			Renderer.Draw(LastSurfaceTexture);

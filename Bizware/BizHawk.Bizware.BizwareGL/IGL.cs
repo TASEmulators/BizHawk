@@ -14,7 +14,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// TODO - This really needs to be split up into an internal and a user interface. so many of the functions are made to support the smart wrappers
 	/// Maybe make a method that returns an interface used for advanced methods (and IGL_TK could implement that as well and just "return this:")
 	/// </summary>
-	public interface IGL
+	public interface IGL : IDisposable
 	{
 		/// <summary>
 		/// Returns an a control optimized for drawing onto the screen.

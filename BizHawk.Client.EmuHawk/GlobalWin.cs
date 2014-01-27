@@ -1,7 +1,6 @@
-﻿using SlimDX.Direct3D9;
+﻿using BizHawk.Client.Common;
+using BizHawk.Bizware.BizwareGL;
 using SlimDX.DirectSound;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,8 +10,8 @@ namespace BizHawk.Client.EmuHawk
 		public static ToolManager Tools;
 #if WINDOWS
 		public static DirectSound DSound;
-		public static Direct3D Direct3D;
 #endif
+		public static IGL GL;
 		public static Sound Sound;
 		public static IRenderer RenderPanel;
 		public static OSDManager OSD = new OSDManager();
