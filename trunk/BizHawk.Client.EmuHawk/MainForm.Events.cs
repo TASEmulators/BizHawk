@@ -911,8 +911,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UseGDIMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayGDI ^= true;
-			SyncPresentationMode();
+			//TODO GL - this concept is gone
+			//Global.Config.DisplayGDI ^= true;
+			//SyncPresentationMode();
 		}
 
 		private void UseBilinearMenuItem_Click(object sender, EventArgs e)
