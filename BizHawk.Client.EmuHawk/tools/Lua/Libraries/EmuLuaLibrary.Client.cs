@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"gettargetscanlineintensity",
-			"TODO"
+			"Gets the current scanline intensity setting, used for the scanline display filter"
 		)]
 		public static int GetTargetScanlineIntensity()
 		{
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"getwindowsize",
-			"TODO"
+			"Gets the main window's size Possible values are 1, 2, 3, 4, 5, and 10"
 		)]
 		public static int GetWindowSize()
 		{
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"ispaused",
-			"TODO"
+			"Returns true if emulator is paused, otherwise, false"
 		)]
 		public static bool IsPaused()
 		{
@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"opencheats",
-			"TODO"
+			"opens the Cheats dialog"
 		)]
 		public static void OpenCheats()
 		{
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openhexeditor",
-			"TODO"
+			"opens the Hex Editor dialog"
 		)]
 		public static void OpenHexEditor()
 		{
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openramwatch",
-			"TODO"
+			"opens the Ram Watch dialog"
 		)]
 		public static void OpenRamWatch()
 		{
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openramsearch",
-			"TODO"
+			"opens the Ram Search dialog"
 		)]
 		public static void OpenRamSearch()
 		{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openrom",
-			"TODO"
+			"opens the Open ROM dialog"
 		)]
 		public static void OpenRom(string path)
 		{
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"opentasstudio",
-			"TODO"
+			"opens the TAStudio dialog"
 		)]
 		public static void OpenTasStudio()
 		{
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"opentoolbox",
-			"TODO"
+			"opens the Toolbox Dialog"
 		)]
 		public static void OpenToolBox()
 		{
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"opentracelogger",
-			"TODO"
+			"opens the tracelogger if it is available for the given core"
 		)]
 		public static void OpenTraceLogger()
 		{
@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"paint",
-			"TODO"
+			"Causes the client UI to repaint the screen"
 		)]
 		public static void Paint()
 		{
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"pause",
-			"TODO"
+			"Pauses the emulator"
 		)]
 		public static void Pause()
 		{
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"pause_av",
-			"TODO"
+			"If currently capturing Audio/Video, this will suspend the record. Frames will not be captured into the AV until client.unpause_av() is called"
 		)]
 		public static void PauseAv()
 		{
@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"reboot_core",
-			"TODO"
+			"Reboots the currently loaded core"
 		)]
 		public static void RebootCore()
 		{
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenheight",
-			"TODO"
+			"Gets the current width in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenHeight()
 		{
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenshot",
-			"TODO"
+			"if a parameter is passed it will function as the Screenshot As menu item of the multiclient, else it will function as the Screenshot menu item"
 		)]
 		public static void Screenshot(string path = null)
 		{
@@ -259,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenshottoclipboard",
-			"TODO"
+			"Performs the same function as the multiclient's Screenshot To Clipboard menu item"
 		)]
 		public static void ScreenshotToClipboard()
 		{
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setdisplayfilter",
-			"TODO"
+			"Sets the current display filter setting, possible values: 'None', 'x2SAI', 'SuperX2SAI', 'SuperEagle', 'Scanlines'"
 		)]
 		public void SetDisplayFilter(string filter)
 		{
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"settargetscanlineintensity",
-			"TODO"
+			"Sets the current scanline intensity setting, used for the scanline display filter"
 		)]
 		public static void SetTargetScanlineIntensity(int val)
 		{
@@ -293,7 +293,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setscreenshotosd",
-			"TODO"
+			"Sets the screenshot Capture OSD property of the client"
 		)]
 		public static void SetScreenshotOSD(bool value)
 		{
@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenwidth",
-			"TODO"
+			"Gets the current height in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenWidth()
 		{
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setwindowsize",
-			"TODO"
+			"Sets the main window's size to the give value. Accepted values are 1, 2, 3, 4, 5, and 10"
 		)]
 		public void SetWindowSize(int size)
 		{
@@ -330,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"speedmode",
-			"TODO"
+			"Sets the speed of the emulator (in terms of percent)"
 		)]
 		public void SpeedMode(int percent)
 		{
@@ -347,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"togglepause",
-			"TODO"
+			"Toggles the current pause state"
 		)]
 		public static void TogglePause()
 		{
@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"unpause",
-			"TODO"
+			"Unpauses the emulator"
 		)]
 		public static void Unpause()
 		{
@@ -365,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"unpause_av",
-			"TODO"
+			"If currently capturing Audio/Video this resumes capturing"
 		)]
 		public static void UnpauseAv()
 		{
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"xpos",
-			"TODO"
+			"Returns the x value of the screen position where the client currently sits"
 		)]
 		public static int Xpos()
 		{
@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"ypos",
-			"TODO"
+			"Returns the y value of the screen position where the client currently sits"
 		)]
 		public static int Ypos()
 		{
