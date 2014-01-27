@@ -55,6 +55,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			//misc initialization
 			CreateRenderStates();
+			GL.Enable(EnableCap.Texture2D);
 		}
 
 		void IDisposable.Dispose()
@@ -155,6 +156,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		{
 			int sid = GL.CreateShader(ShaderType.VertexShader);
 			CompileShaderSimple(sid, source);
+
 			return new Shader(this, new IntPtr(sid));
 		}
 
@@ -237,17 +239,22 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if (validateStatus == 0)
 				throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
 
+			//set the program to active, in case we need to set sampler uniforms on it
+			GL.UseProgram(pid);
+
 			//get all the uniforms
 			List<UniformInfo> uniforms = new List<UniformInfo>();
 			int nUniforms;
 			int nSamplers = 0;
 			GL.GetProgram(pid,GetProgramParameterName.ActiveUniforms,out nUniforms);
+
 			for (int i = 0; i < nUniforms; i++)
 			{
 				int size, length;
 				ActiveUniformType type;
 				var sbName = new System.Text.StringBuilder();
 				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, sbName);
+				errcode = GL.GetError();
 				string name = sbName.ToString();
 				int loc = GL.GetUniformLocation(pid, name);
 				var ui = new UniformInfo();
@@ -266,6 +273,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				uniforms.Add(ui);
 			}
 
+			//deactivate the program, so we dont accidentally use it
+			GL.UseProgram(0);
 
 			return new Pipeline(this, new IntPtr(pid), uniforms);
 		}
@@ -316,7 +325,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		void IGL.SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
 		{
 			//set the sampler index into the uniform first
-			GL.Uniform1(uniform.Id.ToInt32(), uniform.SamplerIndex);
+			//GL.Uniform1(uniform.Id.ToInt32(), uniform.SamplerIndex);
 			//now bind the texture
 			GL.ActiveTexture((TextureUnit)((int)TextureUnit.Texture0 + uniform.SamplerIndex));
 			GL.BindTexture(TextureTarget.Texture2D, texHandle.ToInt32());
@@ -357,6 +366,45 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			{
 				bmp.UnlockBits(bmp_data);
 			}
+		}
+
+		unsafe RenderTarget IGL.CreateRenderTarget(int w, int h)
+		{
+			//create a texture for it
+			IntPtr texid = (this as IGL).GenTexture();
+			Texture2d tex = new Texture2d(this, texid, w, h);
+			GL.BindTexture(TextureTarget.Texture2D,texid.ToInt32());
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, w,h,  0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+			tex.SetMagFilter(TextureMagFilter.Nearest);
+			tex.SetMinFilter(TextureMinFilter.Nearest);
+
+			//create the FBO
+			int fbid = GL.GenFramebuffer();
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbid);
+
+			//bind the tex to the FBO
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid.ToInt32(), 0);
+
+			//do something, I guess say which colorbuffers are used by the framebuffer
+			DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
+			buffers[0] = DrawBuffersEnum.ColorAttachment0;
+			GL.DrawBuffers(1, buffers);
+
+			if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+				throw new InvalidOperationException("Error creating framebuffer (at CheckFramebufferStatus)");
+
+			//since we're done configuring unbind this framebuffer, to return to the default
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+			return new RenderTarget(this, new IntPtr(fbid), tex);
+		}
+
+		void IGL.BindRenderTarget(RenderTarget rt)
+		{
+			if(rt == null)
+				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			else
+				GL.BindFramebuffer(FramebufferTarget.Framebuffer, rt.Id.ToInt32());
 		}
 
 		Texture2d IGL.LoadTexture(BitmapBuffer bmp)
@@ -408,9 +456,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void IGL.SetViewport(int x, int y, int width, int height)
 		{
-			ErrorCode errcode;
 			GL.Viewport(x, y, width, height);
-			errcode = GL.GetError();
+		}
+
+		void IGL.SetViewport(int width, int height)
+		{
+			GL.Viewport(0, 0, width, height);
 		}
 
 		void IGL.SetViewport(swf.Control control)
@@ -450,11 +501,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			string result = GL.GetShaderInfoLog(sid);
 			if (result != "")
 				throw new InvalidOperationException("Error compiling shader:\r\n\r\n" + result);
-			
-			//HAX???
-			GL.Enable(EnableCap.Texture2D);
-			//GL.PolygonMode(MaterialFace.Back, PolygonMode.Line); //??
-			//GL.PolygonMode(MaterialFace.Front, PolygonMode.Line); //??
 		}
 
 		Dictionary<IGraphicsContext, VertexLayout> StateCurrentVertexLayouts = new Dictionary<IGraphicsContext, VertexLayout>();

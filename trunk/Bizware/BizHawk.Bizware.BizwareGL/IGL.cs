@@ -188,6 +188,11 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetViewport(int x, int y, int width, int height);
 
 		/// <summary>
+		/// sets the viewport according to the provided specifications
+		/// </summary>
+		void SetViewport(int width, int height);
+
+		/// <summary>
 		/// sets the viewport according to the client area of the provided control
 		/// </summary>
 		void SetViewport(swf.Control control);
@@ -202,5 +207,15 @@ namespace BizHawk.Bizware.BizwareGL
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
 		Matrix4 CreateGuiViewMatrix(int w, int h);
+
+		/// <summary>
+		/// Creates a render target. Includes a color buffer. Pixel format control TBD
+		/// </summary>
+		RenderTarget CreateRenderTarget(int w, int h);
+
+		/// <summary>
+		/// Binds a RenderTarget for current rendering
+		/// </summary>
+		void BindRenderTarget(RenderTarget rt);
 	}
 }

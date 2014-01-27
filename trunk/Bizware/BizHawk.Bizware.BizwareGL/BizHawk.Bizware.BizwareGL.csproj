@@ -66,6 +66,7 @@
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineUniform.cs" />
     <Compile Include="RenderStates.cs" />
+    <Compile Include="RenderTarget.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="StringRenderer.cs" />
     <Compile Include="TexAtlas.cs" />

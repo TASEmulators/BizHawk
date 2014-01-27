@@ -98,16 +98,25 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
+
 		/// <summary>
 		/// begin rendering, initializing viewport and projections to the given dimensions
 		/// </summary>
-		public void Begin(int width, int height)
+		/// <param name="yflipped">Whether the matrices should be Y-flipped, for use with render targets</param>
+		public void Begin(int width, int height, bool yflipped = false)
 		{
 			Begin();
 
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
-			Owner.SetViewport(0, 0, width, height);
+
+			if (yflipped)
+			{
+				//not sure this is the best way to do it. could be done in the view matrix creation
+				Modelview.Scale(1, -1);
+				Modelview.Translate(0, -height);
+			}
+			Owner.SetViewport(width, height);
 		}
 
 		/// <summary>
@@ -182,6 +191,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// draws the specified texture2d resource.
 		/// </summary>
 		public void Draw(Texture2d tex) { DrawInternal(tex, 0, 0, tex.Width, tex.Height); }
+
+		/// <summary>
+		/// draws the specified texture2d resource.
+		/// </summary>
+		public void Draw(Texture2d tex, float x, float y) { DrawInternal(tex, x, y, tex.Width, tex.Height); }
 
 		/// <summary>
 		/// draws the specified Art resource with the given flip flags
