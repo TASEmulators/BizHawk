@@ -15,32 +15,21 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IRenderer : IDisposable
+	/// <summary>
+	/// Handles the EmuHawk main presentation control - final display only.
+	/// Compositing, filters, etc., should be handled by DisplayManager
+	/// </summary>
+	public class PresentationPanel : IBlitter
 	{
-		void RenderOverlay(DisplaySurface surface);
-		void Render(BitmapBuffer surface);
-		void Clear(Color color);
-		void Present();
-		bool Resized { get; set; }
-		Size NativeSize { get; }
-		
-		/// <summary>
-		/// convert coordinates. this is a dumb name
-		/// </summary>
-		/// <param name="p">desktop coordinates</param>
-		/// <returns>ivideoprovider coordinates</returns>
-		sd.Point ScreenToScreen(sd.Point p);
-	}
-
-	//you might think it's cool to make this reusable for other windows, but it's probably a pipe dream. dont even try it. at least, refactor it into a simple render panel and some kind of NicePresentationWindow class
-	public class BizwareGLRenderPanel : IRenderer, IBlitter
-	{
-
-		public BizwareGLRenderPanel()
+		public PresentationPanel()
 		{
 			GL = GlobalWin.GL;
 
 			GraphicsControl = GL.CreateGraphicsControl();
+			GraphicsControl.Control.Dock = DockStyle.Fill;
+			GraphicsControl.Control.BackColor = Color.Black;
+
+			//prepare a renderer 
 			Renderer = new GuiRenderer(GL);
 
 			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
@@ -63,6 +52,14 @@ namespace BizHawk.Client.EmuHawk
 				LastSurfaceTexture.Dispose();
 			//gl shouldnt be disposed! it should be a global resource! probably managed elsewhere
 		}
+
+		public Control Control { get { return GraphicsControl.Control; } }
+		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl.Control; }
+		StringRenderer TheOneFont;
+		public Bizware.BizwareGL.GraphicsControl GraphicsControl;
+		static Bizware.BizwareGL.IGL GL;
+		GuiRenderer Renderer;
+		Texture2d LastSurfaceTexture;
 
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
@@ -104,12 +101,6 @@ namespace BizHawk.Client.EmuHawk
 			return stringRenderer.Measure(s);
 		}
 		public sd.Rectangle ClipBounds { get; set; }
-
-		StringRenderer TheOneFont;
-		public Bizware.BizwareGL.GraphicsControl GraphicsControl;
-		static Bizware.BizwareGL.IGL GL;
-		GuiRenderer Renderer;
-		Texture2d LastSurfaceTexture;
 
 		public bool Resized { get; set; }
 
@@ -153,9 +144,11 @@ namespace BizHawk.Client.EmuHawk
 		int sw=1, sh=1;
 		public void RenderExec(BitmapBuffer surface, DisplaySurface displaySurface)
 		{
+			GraphicsControl.Begin();
+
 			if (Resized || Vsync != VsyncRequested)
 			{
-				//recreate device
+				GraphicsControl.SetVsync(VsyncRequested);	
 			}
 
 			bool overlay = false;
@@ -169,12 +162,17 @@ namespace BizHawk.Client.EmuHawk
 			if (sw != surface.Width || sh != surface.Height || LastSurfaceTexture == null)
 			{
 				LastSurfaceTexture = GL.LoadTexture(surface);
-				LastSurfaceTexture.SetFilterNearest();
 			}
 			else
 			{
 				GL.LoadTextureData(LastSurfaceTexture, surface);
 			}
+
+			if(Global.Config.DispBlurry)
+				LastSurfaceTexture.SetFilterLinear();
+			else
+				LastSurfaceTexture.SetFilterNearest();
+
 
 			sw = surface.Width;
 			sh = surface.Height;
@@ -190,10 +188,9 @@ namespace BizHawk.Client.EmuHawk
 			float dx = (int)((vw - finalScale * surface.Width)/2);
 			float dy = (int)((vh - finalScale * surface.Height)/2);
 
-			GraphicsControl.Begin();
 			if (!overlay)
 			{
-				GL.ClearColor(Color.Black); //TODO set from background color
+				GL.ClearColor(Color.Black); //TODO GL - set from background color
 				GL.Clear(ClearBufferMask.ColorBufferBit);
 			}
 			
@@ -205,6 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			Renderer.Modelview.Scale(finalScale);
 			Renderer.Draw(LastSurfaceTexture);
 			Renderer.End();
+			
 			GraphicsControl.End();
 		}
 
@@ -221,8 +219,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	
-
 	public interface IBlitter
 	{
 		void Open();
@@ -235,22 +231,4 @@ namespace BizHawk.Client.EmuHawk
 
 	public interface IBlitterFont { }
 
-
-
-	class UIMessage
-	{
-		public string Message;
-		public DateTime ExpireAt;
-	}
-
-	class UIDisplay
-	{
-		public string Message;
-		public int X;
-		public int Y;
-		public bool Alert;
-		public int Anchor;
-		public Color ForeColor;
-		public Color BackGround;
-	}
 }

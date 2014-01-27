@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 #endif
 		public static IGL GL;
 		public static Sound Sound;
-		public static IRenderer RenderPanel;
+		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager = new DisplayManager();
 

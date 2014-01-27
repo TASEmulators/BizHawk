@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var buttons = _lua.NewTable();
 			//TODO - ZEROMUS - this could use a more sophisticated system, it's just a stopgap
-			var p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);
+			var p = GlobalWin.PresentationPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
 			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;

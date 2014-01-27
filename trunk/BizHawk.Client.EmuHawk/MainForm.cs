@@ -94,15 +94,9 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			//TODO GL - a lot of disorganized wiring-up here
-			var poop = new BizwareGLRenderPanel();
-			GlobalWin.RenderPanel = poop;
-			_renderTarget = poop.GraphicsControl;
-			poop.GraphicsControl.SetVsync(false);
-			
-			Controls.Add(_renderTarget);
-			Controls.SetChildIndex(_renderTarget, 0);
-			_renderTarget.Dock = DockStyle.Fill;
-			_renderTarget.BackColor = Color.Black;
+			GlobalWin.PresentationPanel = new PresentationPanel();
+			Controls.Add(GlobalWin.PresentationPanel);
+			Controls.SetChildIndex(GlobalWin.PresentationPanel, 0);
 
 			//TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -138,9 +132,9 @@ namespace BizHawk.Client.EmuHawk
 
 			ResizeEnd += (o, e) =>
 			{
-				if (GlobalWin.RenderPanel != null)
+				if (GlobalWin.PresentationPanel != null)
 				{
-					GlobalWin.RenderPanel.Resized = true;
+					GlobalWin.PresentationPanel.Resized = true;
 				}
 
 				if (GlobalWin.Sound != null)
@@ -378,7 +372,8 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateStatusSlots();
 
-			_renderTarget.Paint += (o, e) =>
+			//TODO POOP
+			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
@@ -693,8 +688,8 @@ namespace BizHawk.Client.EmuHawk
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
-				int borderWidth = Size.Width - _renderTarget.Size.Width;
-				int borderHeight = Size.Height - _renderTarget.Size.Height;
+				int borderWidth = Size.Width - GlobalWin.PresentationPanel.Control.Size.Width;
+				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
 				for (; zoom >= 1; zoom--)
@@ -709,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size((video.BufferWidth * zoom) + borderWidth, ((video.BufferHeight * zoom) + borderHeight));
 				PerformLayout();
-				GlobalWin.RenderPanel.Resized = true;
+				GlobalWin.PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (area.Contains(Bounds) == false)
@@ -739,7 +734,7 @@ namespace BizHawk.Client.EmuHawk
 
 				MainStatusBar.Visible = false;
 				PerformLayout();
-				GlobalWin.RenderPanel.Resized = true;
+				GlobalWin.PresentationPanel.Resized = true;
 				_inFullscreen = true;
 			}
 			else
@@ -936,7 +931,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastWidth = -1;
 		private int _lastHeight = -1;
-		private Control _renderTarget;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
 		// AVI/WAV state

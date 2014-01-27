@@ -45,15 +45,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			UpdateSourceEx(videoProvider, GlobalWin.RenderPanel);
+			UpdateSourceEx(videoProvider, GlobalWin.PresentationPanel);
 		}
 
 		/// <summary>
 		/// update the passed IRenderer with the passed IVideoProvider
 		/// </summary>
-		/// <param name="videoProvider"></param>
-		/// <param name="renderPanel">also must implement IBlitter</param>
-		public void UpdateSourceEx(IVideoProvider videoProvider, IRenderer renderPanel)
+		public void UpdateSourceEx(IVideoProvider videoProvider, PresentationPanel renderPanel)
 		{
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
 			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
