@@ -49,6 +49,12 @@ namespace BizHawk.Client.EmuHawk
 			//gl shouldnt be disposed! it should be a global resource! probably managed elsewhere
 		}
 
+		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+				GlobalWin.MainForm.ToggleFullscreen();
+		}
+
 		class FontWrapper : IBlitterFont
 		{
 			public FontWrapper(StringRenderer font)
@@ -66,6 +72,11 @@ namespace BizHawk.Client.EmuHawk
 				gl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 			GraphicsControl = gl.CreateGraphicsControl();
 			Renderer = new GuiRenderer(gl);
+
+			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
+			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
+			GraphicsControl.Control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
+			GraphicsControl.Control.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 
 			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
