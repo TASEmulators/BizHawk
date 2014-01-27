@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 			"hex",
 			"Converts the number to a string representation of the hexadecimal value of the given number"
 		)]
-		public static string Hex(object num)
+		public static string Hex(long num)
 		{
-			var hex = String.Format("{0:X}", LuaLong(num));
+			var hex = String.Format("{0:X}", num);
 			if (hex.Length == 1)
 			{
 				hex = "0" + hex;
@@ -24,9 +24,9 @@ namespace BizHawk.Client.Common
 			"binary",
 			"Converts the number to a string representation of the binary value of the given number"
 		)]
-		public static string Binary(object num)
+		public static string Binary(long num)
 		{
-			var binary = Convert.ToString(LuaLong(num), 2);
+			var binary = Convert.ToString(num, 2);
 			binary = binary.TrimStart('0');
 			return binary;
 		}
@@ -35,9 +35,9 @@ namespace BizHawk.Client.Common
 			"octal",
 			"Converts the number to a string representation of the octal value of the given number"
 		)]
-		public static string Octal(object num)
+		public static string Octal(long num)
 		{
-			var octal = Convert.ToString(LuaLong(num), 8);
+			var octal = Convert.ToString(num, 8);
 			if (octal.Length == 1)
 			{
 				octal = "0" + octal;

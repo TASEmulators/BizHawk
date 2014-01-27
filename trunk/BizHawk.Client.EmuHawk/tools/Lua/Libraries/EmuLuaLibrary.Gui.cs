@@ -134,8 +134,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static void DoGuiText(
-			object x,
-			object y,
+			int x,
+			int y,
 			string message,
 			bool alert,
 			object background = null,
@@ -155,8 +155,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var dx = LuaInt(x);
-			var dy = LuaInt(y);
 			var a = 0;
 			
 			if (anchor != null)
@@ -188,22 +186,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				dx -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
 			// blah hacks
-			dx *= EmuHawkLuaLibrary.GetWindowSize();
-			dy *= EmuHawkLuaLibrary.GetWindowSize();
+			x *= EmuHawkLuaLibrary.GetWindowSize();
+			y *= EmuHawkLuaLibrary.GetWindowSize();
 
-			GlobalWin.OSD.AddGUIText(message, dx, dy, alert, GetColor(background), GetColor(forecolor), a);
+			GlobalWin.OSD.AddGUIText(message, x, y, alert, GetColor(background), GetColor(forecolor), a);
 		}
 
 		#endregion
 
 		[LuaMethodAttributes(
 			"addmessage",
-			"TODO"
+			"Adds a message to the OSD's message area"
 		)]
 		public void AddMessage(object luaStr)
 		{
@@ -212,16 +210,16 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"alert",
-			"TODO"
+			"Functions the same as gui.text() but shows the message in the alert font"
 		)]
-		public void Alert(object x, object y, string message, object anchor = null)
+		public void Alert(int x, int y, string message, object anchor = null)
 		{
 			DoGuiText(x, y, message, true, null, null, anchor); // TODO: refactor DoGuiText to take luaStr as string and refactor
 		}
 
 		[LuaMethodAttributes(
 			"clearGraphics",
-			"TODO"
+			"clears all lua drawn graphics from the screen"
 		)]
 		public void ClearGraphics()
 		{
@@ -240,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawBezier",
-			"TODO"
+			"Draws a Bezier curve using the table of coordinates provided in the given color"
 		)]
 		public void DrawBezier(LuaTable points, object color)
 		{
@@ -273,43 +271,38 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawBox",
-			"TODO"
+			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height"
 		)]
-		public void DrawBox(object x, object y, object x2, object y2, object line = null, object background = null)
+		public void DrawBox(int x, int y, int x2, int y2, object line = null, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					var intX = LuaInt(x);
-					var intY = LuaInt(y);
-					var intWidth = LuaInt(x2);
-					var intHeight = LuaInt(y2);
-
-					if (intX < intWidth)
+					if (x < x2)
 					{
-						intWidth = Math.Abs(intX - intWidth);
+						x2 = Math.Abs(x - x2);
 					}
 					else
 					{
-						intWidth = intX - intWidth;
-						intX -= intWidth;
+						x2 = x - x2;
+						x -= x2;
 					}
 
-					if (intY < intHeight)
+					if (y < y2)
 					{
-						intHeight = Math.Abs(intY - intHeight);
+						y2 = Math.Abs(y - y2);
 					}
 					else
 					{
-						intHeight = intY - intHeight;
-						intY -= intHeight;
+						y2 = y - y2;
+						y -= y2;
 					}
 
-					g.DrawRectangle(GetPen(line ?? "white"), intX, intY, intWidth, intHeight);
+					g.DrawRectangle(GetPen(line ?? "white"), x, y, x2, y2);
 					if (background != null)
 					{
-						g.FillRectangle(GetBrush(background), intX, intY, intWidth, intHeight);
+						g.FillRectangle(GetBrush(background), x, y, x2, y2);
 					}
 				}
 				catch (Exception)
@@ -322,20 +315,20 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawEllipse",
-			"TODO"
+			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
 		)]
-		public void DrawEllipse(object x, object y, object width, object height, object line, object background = null)
+		public void DrawEllipse(int x, int y, int width, int height, object line, object background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? "white"), LuaInt(x), LuaInt(y), LuaInt(width), LuaInt(height));
+					g.DrawEllipse(GetPen(line ?? "white"), x, y, width, height);
 					if (background != null)
 					{
 						var brush = GetBrush(background);
-						g.FillEllipse(brush, LuaInt(x), LuaInt(y), LuaInt(width), LuaInt(height));
+						g.FillEllipse(brush, x, y, width, height);
 					}
 				}
 				catch (Exception)
@@ -348,9 +341,9 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawIcon",
-			"TODO"
+			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
 		)]
-		public void DrawIcon(string path, object x, object y, object width = null, object height = null)
+		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
@@ -358,16 +351,16 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					Icon icon;
-					if (width != null && height != null)
+					if (width.HasValue && height.HasValue)
 					{
-						icon = new Icon(path, LuaInt(width), LuaInt(height));
+						icon = new Icon(path, width.Value, height.Value);
 					}
 					else
 					{
 						icon = new Icon(path);
 					}
 
-					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
+					g.DrawIcon(icon, x, y);
 				}
 				catch (Exception)
 				{
@@ -378,102 +371,69 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawImage",
-			"TODO"
+			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
 		)]
-		public void DrawImage(string path, object x, object y, object width = null, object height = null)
+		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				try
-				{
-					var img = Image.FromFile(path);
-
-					if (width == null || width.GetType() != typeof(int))
-					{
-						width = img.Width.ToString();
-					}
-
-					if (height == null || height.GetType() != typeof(int))
-					{
-						height = img.Height.ToString();
-					}
-
-					g.DrawImage(img, LuaInt(x), LuaInt(y), LuaInt(width), LuaInt(height));
-				}
-				catch (Exception)
-				{
-					return;
-				}
+				var img = Image.FromFile(path);
+				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 			}
 		}
 
 		[LuaMethodAttributes(
 			"drawLine",
-			"TODO"
+			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)"
 		)]
-		public void DrawLine(object x1, object y1, object x2, object y2, object color = null)
+		public void DrawLine(int x1, int y1, int x2, int y2, object color = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				try
-				{
-					g.DrawLine(GetPen(color ?? "white"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
-				}
-				catch (Exception)
-				{
-					return;
-				}
+				g.DrawLine(GetPen(color ?? "white"), x1, y1, x2, y2);
 			}
 		}
 
 		[LuaMethodAttributes(
 			"drawPie",
-			"TODO"
+			"draws a Pie shape at the given coordinates and the given width and height"
 		)]
 		public void DrawPie(
-			object x,
-			object y,
-			object width,
-			object height,
-			object startangle,
-			object sweepangle,
+			int x,
+			int y,
+			int width,
+			int height,
+			int startangle,
+			int sweepangle,
 			object line,
 			object background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				try
+				g.DrawPie(GetPen(line), x, y, width, height, startangle, sweepangle);
+				if (background != null)
 				{
-					g.DrawPie(GetPen(line), LuaInt(x), LuaInt(y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-					if (background != null)
-					{
-						var brush = GetBrush(background);
-						g.FillPie(brush, LuaInt(x), LuaInt(y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-					}
-				}
-				catch (Exception)
-				{
-					// need to stop the script from here
-					return;
+					var brush = GetBrush(background);
+					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				}
 			}
 		}
 
 		[LuaMethodAttributes(
 			"drawPixel",
-			"TODO"
+			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)"
 		)]
-		public void DrawPixel(object x, object y, object color = null)
+		public void DrawPixel(int x, int y, object color = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "white"), LuaInt(x), LuaInt(y), LuaInt(x) + 0.1F, LuaInt(y));
+					g.DrawLine(GetPen(color ?? "white"), x, y, x + 0.1F, y);
 				}
 				catch (Exception)
 				{
@@ -484,7 +444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawPolygon",
-			"TODO"
+			"Draws a polygon using the table of coordinates specified in points. Line is the color of the polygon. Background is the optional fill color"
 		)]
 		public void DrawPolygon(LuaTable points, object line, object background = null)
 		{
@@ -517,42 +477,30 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawRectangle",
-			"TODO"
+			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color"
 		)]
-		public void DrawRectangle(object x, object y, object width, object height, object line, object background = null)
+		public void DrawRectangle(int x, int y, int width, int height, object line, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
-				try
+				g.DrawRectangle(GetPen(line ?? "white"), x, y, width, height);
+				if (background != null)
 				{
-					var intX = LuaInt(x);
-					var intY = LuaInt(y);
-					var intWidth = LuaInt(width);
-					var intHeight = LuaInt(height);
-					g.DrawRectangle(GetPen(line ?? "white"), intX, intY, intWidth, intHeight);
-					if (background != null)
-					{
-						g.FillRectangle(GetBrush(background), intX, intY, intWidth, intHeight);
-					}
-				}
-				catch (Exception)
-				{
-					// need to stop the script from here
-					return;
+					g.FillRectangle(GetBrush(background), x, y, width, height);
 				}
 			}
 		}
 
 		[LuaMethodAttributes(
 			"drawString",
-			"TODO"
+			"Alias of gui.drawText()"
 		)]
 		public void DrawString(
-			object x,
-			object y,
+			int x,
+			int y,
 			string message,
 			object color = null,
-			object fontsize = null,
+			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
 		{
@@ -561,14 +509,14 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawText",
-			"TODO"
+			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class. The fontsize default is 12. The default font style. Font style options are regular, bold, italic, strikethrough, underline"
 		)]
 		public void DrawText(
-			object x,
-			object y,
+			int x,
+			int y,
 			string message,
 			object color = null,
-			object fontsize = null,
+			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
 		{
@@ -577,12 +525,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var fsize = 12;
-					if (fontsize != null)
-					{
-						fsize = LuaInt(fontsize);
-					}
-
 					var family = FontFamily.GenericMonospace;
 					if (fontfamily != null)
 					{
@@ -612,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					var font = new Font(family, fsize, fstyle, GraphicsUnit.Pixel);
+					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 					g.DrawString(message, font, GetBrush(color ?? "white"), LuaInt(x), LuaInt(y));
 				}
 				catch (Exception)
@@ -624,11 +566,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"text",
-			"TODO"
+			"Displays the given text on the screen at the given coordinates. Optional Foreground and background colors. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
 		)]
 		public void Text(
-			object x,
-			object y,
+			int x,
+			int y,
 			string message,
 			object background = null,
 			object forecolor = null,

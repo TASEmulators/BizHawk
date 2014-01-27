@@ -93,9 +93,9 @@ namespace BizHawk.Client.Common
 			"set",
 			"Sets the bit 'pos' in 'num'"
 		)]
-		public static uint Set(object num, object pos)
+		public static uint Set(int num, int pos)
 		{
-			return (uint)(LuaInt(num) | 1 << LuaInt(pos));
+			return (uint)(num | 1 << pos);
 		}
 
 		[LuaMethodAttributes(

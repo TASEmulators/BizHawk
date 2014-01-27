@@ -42,16 +42,6 @@ namespace BizHawk.Client.Common
 			return (uint)(double)luaArg;
 		}
 
-		protected static long LuaLong(object luaArg)
-		{
-			return (long)(double)luaArg;
-		}
-
-		protected static ulong LuaULong(object luaArg)
-		{
-			return (ulong)(double)luaArg;
-		}
-
 		/// <summary>
 		/// LuaInterface requires the exact match of parameter count, except optional parameters. 
 		/// So, if you want to support variable arguments, declare them as optional and pass
