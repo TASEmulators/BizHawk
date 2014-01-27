@@ -4,6 +4,7 @@ using System;
 using sd=System.Drawing;
 
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -20,8 +21,8 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute(0, 2, BizwareGL.VertexAttributeType.Float, false, 16, 0);
-			VertexLayout.DefineVertexAttribute(1, 2, BizwareGL.VertexAttributeType.Float, false, 16, 8);
+			VertexLayout.DefineVertexAttribute(0, 2, VertexAttribPointerType.Float, false, 16, 0);
+			VertexLayout.DefineVertexAttribute(1, 2, VertexAttribPointerType.Float, false, 16, 8);
 			VertexLayout.Close();
 
 			_Projection = new MatrixStack();

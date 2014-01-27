@@ -58,7 +58,6 @@
     <Compile Include="Borrowed\BitmapFontParser\Padding.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Page.cs" />
     <Compile Include="GraphicsControl.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="GuiRenderer.cs" />
     <Compile Include="IGL.cs" />
     <Compile Include="ArtManager.cs" />

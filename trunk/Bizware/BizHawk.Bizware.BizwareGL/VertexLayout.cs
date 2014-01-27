@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using OpenTK.Graphics.OpenGL;
+
 namespace BizHawk.Bizware.BizwareGL
 {
 	//TEMP until its in bizhawk main
@@ -50,7 +52,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.BindVertexLayout(this);
 		}
 
-		public void DefineVertexAttribute(int index, int components, VertexAttributeType attribType, bool normalized, int stride, int offset=0)
+		public void DefineVertexAttribute(int index, int components, VertexAttribPointerType attribType, bool normalized, int stride, int offset = 0)
 		{
 			if (Closed)
 				throw new InvalidOperationException("Type is Closed and is now immutable.");
@@ -68,7 +70,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public class LayoutItem
 		{
 			public int Components { get; internal set; }
-			public VertexAttributeType AttribType { get; internal set; }
+			public VertexAttribPointerType AttribType { get; internal set; }
 			public bool Normalized { get; internal set; }
 			public int Stride { get; internal set; }
 			public int Offset { get; internal set; }

@@ -4,6 +4,7 @@ using sd=System.Drawing;
 using swf=System.Windows.Forms;
 
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -30,7 +31,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets the current clear color
 		/// </summary>
-		void ClearColor(sd.Color color);
+		void SetClearColor(sd.Color color);
 
 		/// <summary>
 		/// generates a texture handle
@@ -131,8 +132,8 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Creates a blending state object
 		/// </summary>
-		IBlendState CreateBlendState(BlendingFactor colorSource, BlendEquationMode colorEquation, BlendingFactor colorDest,
-			BlendingFactor alphaSource, BlendEquationMode alphaEquation, BlendingFactor alphaDest);
+		IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
+			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest);
 
 		/// <summary>
 		/// retrieves a blend state for opaque rendering
