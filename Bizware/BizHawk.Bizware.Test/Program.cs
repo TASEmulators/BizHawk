@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Bizware.BizwareGL;
+using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.Test
 {
@@ -49,7 +50,7 @@ namespace BizHawk.Bizware.Test
 			c.Begin();
 			RenderTarget rt = igl.CreateRenderTarget(60, 60);
 			rt.Bind();
-			igl.ClearColor(Color.Blue);
+			igl.SetClearColor(Color.Blue);
 			igl.Clear(ClearBufferMask.ColorBufferBit);
 			gr.Begin(60, 60, true);
 			gr.Draw(smile);
@@ -66,8 +67,8 @@ namespace BizHawk.Bizware.Test
 				c.Begin();
 
 
-				igl.ClearColor(Color.Red);
-				igl.Clear(BizwareGL.ClearBufferMask.ColorBufferBit);
+				igl.SetClearColor(Color.Red);
+				igl.Clear(ClearBufferMask.ColorBufferBit);
 
 				int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
 

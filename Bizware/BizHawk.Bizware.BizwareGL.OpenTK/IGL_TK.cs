@@ -69,7 +69,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		{
 			GL.Clear((global::OpenTK.Graphics.OpenGL.ClearBufferMask)mask);
 		}
-		void IGL.ClearColor(sd.Color color)
+		void IGL.SetClearColor(sd.Color color)
 		{
 			GL.ClearColor(color);
 		}
@@ -171,8 +171,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			public global::OpenTK.Graphics.OpenGL.BlendingFactorSrc alphaSource;
 			public global::OpenTK.Graphics.OpenGL.BlendEquationMode alphaEquation;
 			public global::OpenTK.Graphics.OpenGL.BlendingFactorDest alphaDest;
-			public MyBlendState(bool enabled, BlendingFactor colorSource, BlendEquationMode colorEquation, BlendingFactor colorDest,
-				BlendingFactor alphaSource, BlendEquationMode alphaEquation, BlendingFactor alphaDest)
+			public MyBlendState(bool enabled, BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
+				BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
 			{
 				this.enabled = enabled;
 				this.colorSource = (global::OpenTK.Graphics.OpenGL.BlendingFactorSrc)colorSource;
@@ -183,8 +183,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				this.alphaDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)alphaDest;
 			}
 		}
-		IBlendState IGL.CreateBlendState(BlendingFactor colorSource, BlendEquationMode colorEquation, BlendingFactor colorDest,
-			BlendingFactor alphaSource, BlendEquationMode alphaEquation, BlendingFactor alphaDest)
+		IBlendState IGL.CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
+			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
 		{
 			return new MyBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
@@ -563,10 +563,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void CreateRenderStates()
 		{
-			_rsBlendNone = new MyBlendState(false, BlendingFactor.One, BlendEquationMode.FuncAdd, BlendingFactor.Zero, BlendingFactor.One, BlendEquationMode.FuncAdd, BlendingFactor.Zero);
-			_rsBlendNormal = new MyBlendState(true, 
-				BlendingFactor.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactor.OneMinusSrcAlpha,
-				BlendingFactor.One, BlendEquationMode.FuncAdd, BlendingFactor.Zero);
+			_rsBlendNone = new MyBlendState(false, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+			_rsBlendNormal = new MyBlendState(true,
+				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
 		MyBlendState _rsBlendNone, _rsBlendNormal;

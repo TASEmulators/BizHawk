@@ -190,8 +190,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!overlay)
 			{
-				GL.ClearColor(Color.Black); //TODO GL - set from background color
-				GL.Clear(ClearBufferMask.ColorBufferBit);
+				GL.SetClearColor(Color.Black); //TODO GL - set from background color
+				GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
 			}
 			
 			Renderer.Begin(GraphicsControl.Control.ClientSize.Width, GraphicsControl.Control.ClientSize.Height);
