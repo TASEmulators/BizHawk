@@ -93,8 +93,18 @@ namespace BizHawk.Client.EmuHawk
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
-			SyncPresentationMode();
+			//TODO GL - a lot of disorganized wiring-up here
+			var poop = new BizwareGLRenderPanel();
+			GlobalWin.RenderPanel = poop;
+			_renderTarget = poop.GraphicsControl;
+			poop.GraphicsControl.SetVsync(false);
+			
+			Controls.Add(_renderTarget);
+			Controls.SetChildIndex(_renderTarget, 0);
+			_renderTarget.Dock = DockStyle.Fill;
+			_renderTarget.BackColor = Color.Black;
 
+			//TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
 			{
 				AllowDrop = true;
@@ -927,7 +937,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastWidth = -1;
 		private int _lastHeight = -1;
 		private Control _renderTarget;
-		private RetainedViewportPanel _retainedPanel;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
 		// AVI/WAV state
@@ -961,9 +970,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly bool _autoCloseOnDump;
 		private int _lastOpenRomFilter;
 
-		// workaround for possible memory leak in SysdrawingRenderPanel
-		private RetainedViewportPanel _captureOsdRvp;
-		private SysdrawingRenderPanel _captureOsdSrp;
+		//TODO GL - this whole feature will have to be re-added
+		//// workaround for possible memory leak in SysdrawingRenderPanel
+		//private RetainedViewportPanel _captureOsdRvp;
+		//private SysdrawingRenderPanel _captureOsdSrp;
 
 		private object _syncSettingsHack;
 
@@ -1331,70 +1341,69 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SyncPresentationMode()
-		{
-			GlobalWin.DisplayManager.Suspend();
+//    private void SyncPresentationMode()
+//    {
+//      GlobalWin.DisplayManager.Suspend();
 
-#if WINDOWS
-			bool gdi = Global.Config.DisplayGDI || GlobalWin.Direct3D == null;
-#endif
-			if (_renderTarget != null)
-			{
-				_renderTarget.Dispose();
-				Controls.Remove(_renderTarget);
-			}
+//#if WINDOWS
+//      bool gdi = Global.Config.DisplayGDI || GlobalWin.Direct3D == null;
+//#endif
+//      if (_renderTarget != null)
+//      {
+//        _renderTarget.Dispose();
+//        Controls.Remove(_renderTarget);
+//      }
 
-			if (_retainedPanel != null)
-			{
-				_retainedPanel.Dispose();
-			}
+//      if (_retainedPanel != null)
+//      {
+//        _retainedPanel.Dispose();
+//      }
 
-			if (GlobalWin.RenderPanel != null)
-			{
-				GlobalWin.RenderPanel.Dispose();
-			}
+//      if (GlobalWin.RenderPanel != null)
+//      {
+//        GlobalWin.RenderPanel.Dispose();
+//      }
 
-#if WINDOWS
-			if (gdi)
-#endif
-				_renderTarget = _retainedPanel = new RetainedViewportPanel();
-#if WINDOWS
-			else _renderTarget = new ViewportPanel();
-#endif
-			Controls.Add(_renderTarget);
-			Controls.SetChildIndex(_renderTarget, 0);
+//#if WINDOWS
+//      if (gdi)
+//#endif
+//        _renderTarget = _retainedPanel = new RetainedViewportPanel();
+//#if WINDOWS
+//      else _renderTarget = new ViewportPanel();
+//#endif
+//      Controls.Add(_renderTarget);
+//      Controls.SetChildIndex(_renderTarget, 0);
 
-			_renderTarget.Dock = DockStyle.Fill;
-			_renderTarget.BackColor = Color.Black;
+//      _renderTarget.Dock = DockStyle.Fill;
+//      _renderTarget.BackColor = Color.Black;
 
-#if WINDOWS
-			if (gdi)
-			{
-#endif
-				GlobalWin.RenderPanel = new SysdrawingRenderPanel(_retainedPanel);
-				_retainedPanel.ActivateThreaded();
-#if WINDOWS
-			}
-			else
-			{
-				try
-				{
-					var d3dPanel = new Direct3DRenderPanel(GlobalWin.Direct3D, _renderTarget);
-					d3dPanel.CreateDevice();
-					GlobalWin.RenderPanel = d3dPanel;
-				}
-				catch
-				{
-					Program.DisplayDirect3DError();
-					GlobalWin.Direct3D.Dispose();
-					GlobalWin.Direct3D = null;
-					SyncPresentationMode();
-				}
-			}
-#endif
+//#if WINDOWS
+//      if (gdi)
+//      {
+//#endif
+//        GlobalWin.RenderPanel = new SysdrawingRenderPanel(_retainedPanel);
+//        _retainedPanel.ActivateThreaded();
+//#if WINDOWS
+//      }
+//      else
+//      {
+//        try
+//        {
+//          var d3dPanel = new BizwareGLRenderPanel(_renderTarget);
+//          GlobalWin.RenderPanel = d3dPanel;
+//        }
+//        catch
+//        {
+//          Program.DisplayDirect3DError();
+//          GlobalWin.Direct3D.Dispose();
+//          GlobalWin.Direct3D = null;
+//          SyncPresentationMode();
+//        }
+//      }
+//#endif
 
-			GlobalWin.DisplayManager.Resume();
-		}
+//      GlobalWin.DisplayManager.Resume();
+//    }
 
 		private void SyncThrottle()
 		{
@@ -1862,24 +1871,26 @@ namespace BizHawk.Client.EmuHawk
 			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.ControlDark : SystemColors.Control;
 		}
 
+		//TODO GL - this whole feature will have to be re-added
 		private Bitmap CaptureOSD() // sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
 		{
-			// this code captures the emu display with OSD and lua composited onto it.
-			// it's slow and a bit hackish; a better solution is to create a new
-			// "dummy render" class that implements IRenderer, IBlitter, and possibly
-			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-			if (_captureOsdRvp == null)
-			{
-				_captureOsdRvp = new RetainedViewportPanel();
-				_captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
-			}
+		//  // this code captures the emu display with OSD and lua composited onto it.
+		//  // it's slow and a bit hackish; a better solution is to create a new
+		//  // "dummy render" class that implements IRenderer, IBlitter, and possibly
+		//  // IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+		//  if (_captureOsdRvp == null)
+		//  {
+		//    _captureOsdRvp = new RetainedViewportPanel();
+		//    _captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
+		//  }
 
-			// this size can be different for showing off stretching or filters
-			_captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
-			_captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
+		//  // this size can be different for showing off stretching or filters
+		//  _captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+		//  _captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
-			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
-			return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
+		//  GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
+		//  return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
+			return null;
 		}
 
 		private void ShowConsole()

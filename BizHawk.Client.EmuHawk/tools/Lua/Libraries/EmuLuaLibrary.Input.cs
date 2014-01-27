@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable GetMouse()
 		{
 			var buttons = _lua.NewTable();
+			//TODO - ZEROMUS - this could use a more sophisticated system, it's just a stopgap
 			var p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
