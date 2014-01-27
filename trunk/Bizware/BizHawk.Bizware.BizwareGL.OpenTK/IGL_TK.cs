@@ -224,7 +224,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			int linkStatus;
 			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
 			if(linkStatus == 0)
-				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
+				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
 
 			GL.ValidateProgram(pid);
 			errcode = GL.GetError();
@@ -237,7 +237,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			int validateStatus;
 			GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
 			if (validateStatus == 0)
-				throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
+				throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + "\r\n\r\n" + resultLog);
 
 			//set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
