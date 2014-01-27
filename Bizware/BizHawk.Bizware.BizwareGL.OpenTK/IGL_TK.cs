@@ -194,21 +194,32 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 			GL.AttachShader(pid, fragmentShader.Id.ToInt32());
 			errcode = GL.GetError();
+			
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
-			int n;
-			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out n);
+
+			string resultLog = GL.GetProgramInfoLog(pid);
 			
-			string result = GL.GetProgramInfoLog(pid);
-			if (result != "")
-				throw new InvalidOperationException("Error creating pipeline (program link step):\r\n\r\n" + result);
+			if (errcode != ErrorCode.NoError)
+				throw new InvalidOperationException("Error creating pipeline (error returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
+			
+			int linkStatus;
+			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
+			if(linkStatus == 0)
+				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
 
 			GL.ValidateProgram(pid);
 			errcode = GL.GetError();
 
-			result = GL.GetProgramInfoLog(pid);
-			if (result != "")
-				throw new InvalidOperationException("Error creating pipeline (program validate step):\r\n\r\n" + result);
+			resultLog = GL.GetProgramInfoLog(pid);
+
+			if (errcode != ErrorCode.NoError)
+				throw new InvalidOperationException("Error creating pipeline (error returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
+
+			int validateStatus;
+			GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
+			if (validateStatus == 0)
+				throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
 
 			//get all the uniforms
 			List<UniformInfo> uniforms = new List<UniformInfo>();
