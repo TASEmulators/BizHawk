@@ -281,14 +281,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.UseProgram(pipeline.Id.ToInt32());
 		}
 
-		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, Matrix mat, bool transpose)
+		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 			GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)&mat);
 		}
 
-		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix mat, bool transpose)
+		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
-			fixed(Matrix* pMat = &mat)
+			fixed(Matrix4* pMat = &mat)
 				GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)pMat);
 		}
 
@@ -373,17 +373,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				return (this as IGL).LoadTexture(fs);
 		}
 
-		Matrix IGL.CreateGuiProjectionMatrix(int w, int h)
+		Matrix4 IGL.CreateGuiProjectionMatrix(int w, int h)
 		{
-			Matrix ret = Matrix.Identity;
+			Matrix4 ret = Matrix4.Identity;
 			ret.M11 = 2.0f / (float)w;
 			ret.M22 = 2.0f / (float)h;
 			return ret;
 		}
 
-		Matrix IGL.CreateGuiViewMatrix(int w, int h)
+		Matrix4 IGL.CreateGuiViewMatrix(int w, int h)
 		{
-			Matrix ret = Matrix.Identity;
+			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
 			ret.M41 = -w * 0.5f; // -0.5f;
 			ret.M42 = h * 0.5f; // +0.5f;
