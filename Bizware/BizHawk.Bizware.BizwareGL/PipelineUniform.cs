@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using OpenTK;
+
 namespace BizHawk.Bizware.BizwareGL
 {
 	public class PipelineUniform
@@ -16,7 +18,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public IntPtr Id { get; private set; }
 		public int SamplerIndex { get; private set; }
 
-		public void Set(Matrix mat, bool transpose = false)
+		public void Set(Matrix4 mat, bool transpose = false)
 		{
 			Owner.Owner.SetPipelineUniformMatrix(this, mat, transpose);
 		}
@@ -26,7 +28,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.Owner.SetPipelineUniform(this, vec);
 		}
 
-		public void Set(ref Matrix mat, bool transpose = false)
+		public void Set(ref Matrix4 mat, bool transpose = false)
 		{
 			Owner.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
 		}

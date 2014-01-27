@@ -3,6 +3,8 @@
 using System;
 using sd=System.Drawing;
 
+using OpenTK;
+
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>

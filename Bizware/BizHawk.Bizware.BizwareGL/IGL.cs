@@ -3,6 +3,8 @@ using System.IO;
 using sd=System.Drawing;
 using swf=System.Windows.Forms;
 
+using OpenTK;
+
 namespace BizHawk.Bizware.BizwareGL
 {
 
@@ -73,12 +75,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose);
 
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose);
 
 		/// <summary>
 		/// sets a uniform value
@@ -193,12 +195,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix CreateGuiProjectionMatrix(int w, int h);
+		Matrix4 CreateGuiProjectionMatrix(int w, int h);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix CreateGuiViewMatrix(int w, int h);
+		Matrix4 CreateGuiViewMatrix(int w, int h);
 	}
 }

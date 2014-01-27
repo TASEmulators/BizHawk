@@ -34,6 +34,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -67,23 +71,6 @@
     <Compile Include="TexAtlas.cs" />
     <Compile Include="Art.cs" />
     <Compile Include="Texture2d.cs" />
-    <Compile Include="Types\BoundingBox.cs" />
-    <Compile Include="Types\BoundingFrustum.cs" />
-    <Compile Include="Types\BoundingSphere.cs" />
-    <Compile Include="Types\Enums.cs" />
-    <Compile Include="Types\MathHelper.cs" />
-    <Compile Include="Types\Matrix.cs" />
-    <Compile Include="Types\Plane.cs" />
-    <Compile Include="Types\PlaneHelper.cs" />
-    <Compile Include="Types\Point.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Types\Quaternion.cs" />
-    <Compile Include="Types\Ray.cs" />
-    <Compile Include="Types\Rectangle.cs" />
-    <Compile Include="Types\Vector2.cs" />
-    <Compile Include="Types\Vector3.cs" />
-    <Compile Include="Types\Vector4.cs" />
     <Compile Include="UniformInfo.cs" />
     <Compile Include="VertexLayout.cs" />
   </ItemGroup>
