@@ -10,6 +10,22 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
+	class UIMessage
+	{
+		public string Message;
+		public DateTime ExpireAt;
+	}
+
+	class UIDisplay
+	{
+		public string Message;
+		public int X;
+		public int Y;
+		public bool Alert;
+		public int Anchor;
+		public Color ForeColor;
+		public Color BackGround;
+	}
 
 	public class OSDManager
 	{
