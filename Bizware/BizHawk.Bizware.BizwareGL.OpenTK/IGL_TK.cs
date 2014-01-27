@@ -492,15 +492,27 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void CompileShaderSimple(int sid, string source)
 		{
+			ErrorCode errcode;
+
 			GL.ShaderSource(sid, source);
-			ErrorCode errcode = GL.GetError();
+			
+			errcode = GL.GetError();
+			if (errcode != ErrorCode.NoError)
+				throw new InvalidOperationException("Error compiling shader (ShaderSource)" + errcode);
+
 			GL.CompileShader(sid);
 			errcode = GL.GetError();
+
+			string resultLog = GL.GetShaderInfoLog(sid);
+
+			if (errcode != ErrorCode.NoError)
+				throw new InvalidOperationException("Error compiling shader (CompileShader)" + errcode + "\r\n\r\n" + resultLog);
+
 			int n;
 			GL.GetShader(sid, ShaderParameter.CompileStatus, out n);
-			string result = GL.GetShaderInfoLog(sid);
-			if (result != "")
-				throw new InvalidOperationException("Error compiling shader:\r\n\r\n" + result);
+
+			if(n==0)
+				throw new InvalidOperationException("Error compiling shader (CompileShader)" + "\r\n\r\n" + resultLog);
 		}
 
 		Dictionary<IGraphicsContext, VertexLayout> StateCurrentVertexLayouts = new Dictionary<IGraphicsContext, VertexLayout>();
