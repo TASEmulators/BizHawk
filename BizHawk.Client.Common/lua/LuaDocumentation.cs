@@ -83,16 +83,33 @@ namespace BizHawk.Client.Common
 					list.Append('(');
 					for (var i = 0; i < Parameters.Count; i++)
 					{
+						if (Parameters[i].Contains("Nullable"))
+						{
+							int x = 0;
+						}
+
 						var param =
 							Parameters[i].Replace("System", String.Empty)
-										 .Replace("Object", String.Empty)
 										 .Replace(" ", String.Empty)
 										 .Replace(".", String.Empty)
 										 .Replace("LuaInterface", String.Empty)
+										 .Replace("Object", "object ")
 										 .Replace("Boolean", "bool ")
 										 .Replace("String", "string ")
 										 .Replace("LuaTable", "table ")
-										 .Replace("LuaFunction", "func ");
+										 .Replace("LuaFunction", "func ")
+										 .Replace("Nullable`1[Int32]", "int? ")
+										 .Replace("Nullable`1[UInt32]", "uint? ")
+										 .Replace("Byte", "byte ")
+										 .Replace("Int16", "short ")
+										 .Replace("Int32", "int ")
+										 .Replace("Int64", "long ")
+										 .Replace("Ushort", "ushort ")
+										 .Replace("Ulong", "ulong ")
+										 .Replace("UInt32", "uint ")
+										 .Replace("UInt64", "ulong ")
+										 .Replace("Double", "double ")
+										 .Replace("Uint", "uint ");
 
 						list.Append(param);
 						if (i < Parameters.Count - 1)

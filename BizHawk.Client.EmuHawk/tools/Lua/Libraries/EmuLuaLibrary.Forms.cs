@@ -30,59 +30,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private LuaWinform GetForm(object formHandle)
+		private LuaWinform GetForm(int formHandle)
 		{
-			var ptr = new IntPtr(LuaInt(formHandle));
+			var ptr = new IntPtr(formHandle);
 			return _luaForms.FirstOrDefault(form => form.Handle == ptr);
 		}
 
-		private static void SetLocation(Control control, object x, object y)
+		private static void SetLocation(Control control, int x, int y)
 		{
-			try
-			{
-				if (x != null && y != null)
-				{
-					control.Location = new Point(LuaInt(x), LuaInt(y));
-				}
-			}
-			catch (Exception ex)
-			{
-				ConsoleLuaLibrary.Log(ex.Message);
-			}
+			control.Location = new Point(x, y);
 		}
 
-		private static void SetSize(Control control, object width, object height)
+		private static void SetSize(Control control, int width, int height)
 		{
-			try
-			{
-				if (width != null && height != null)
-				{
-					control.Size = new Size(LuaInt(width), LuaInt(height));
-				}
-			}
-			catch (Exception ex)
-			{
-				ConsoleLuaLibrary.Log(ex.Message);
-			}
+			control.Size = new Size(width, height);
 		}
 
-		private static void SetText(Control control, object caption)
+		private static void SetText(Control control, string caption)
 		{
-			if (caption != null)
-			{
-				control.Text = caption.ToString();
-			}
+			control.Text = caption ?? string.Empty;
 		}
 
 		#endregion
 
 		[LuaMethodAttributes(
 			"addclick",
-			"TODO"
+			"adds the given lua function as a click event to the given control"
 		)]
-		public void AddClick(object handle, LuaFunction clickEvent)
+		public void AddClick(int handle, LuaFunction clickEvent)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -97,16 +74,16 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"button",
-			"TODO"
+			"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size"
 		)]
 		public int Button(
-			object formHandle,
-			object caption,
+			int formHandle,
+			string caption,
 			LuaFunction clickEvent,
-			object x = null,
-			object y = null,
-			object width = null,
-			object height = null)
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -119,17 +96,24 @@ namespace BizHawk.Client.EmuHawk
 			form.Controls.Add(button);
 			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
 
-			SetLocation(button, x, y);
-			SetSize(button, width, height);
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(button, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(button, width.Value, height.Value);
+			}
 
 			return (int)button.Handle;
 		}
 
 		[LuaMethodAttributes(
 			"checkbox",
-			"TODO"
+			"Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form"
 		)]
-		public int Checkbox(object formHandle, string caption, object x = null, object y = null)
+		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -140,18 +124,22 @@ namespace BizHawk.Client.EmuHawk
 			var checkbox = new LuaCheckbox();
 			form.Controls.Add(checkbox);
 			SetText(checkbox, caption);
-			SetLocation(checkbox, x, y);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(checkbox, x.Value, y.Value);
+			}
 
 			return (int)checkbox.Handle;
 		}
 
 		[LuaMethodAttributes(
 			"clearclicks",
-			"TODO"
+			"Removes all click events from the given widget at the specified handle"
 		)]
-		public void ClearClicks(object handle)
+		public void ClearClicks(int handle)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -170,11 +158,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"destroy",
-			"TODO"
+			"Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false"
 		)]
-		public bool Destroy(object handle)
+		public bool Destroy(int handle)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -190,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"destroyall",
-			"TODO"
+			"Closes and removes all Lua created dialogs"
 		)]
 		public void DestroyAll()
 		{
@@ -203,15 +191,15 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"dropdown",
-			"TODO"
+			"Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters."
 		)]
 		public int Dropdown(
-			object formHandle,
+			int formHandle,
 			LuaTable items,
-			object x = null,
-			object y = null,
-			object width = null,
-			object height = null)
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -224,25 +212,34 @@ namespace BizHawk.Client.EmuHawk
 
 			var dropdown = new LuaDropDown(dropdownItems);
 			form.Controls.Add(dropdown);
-			SetLocation(dropdown, x, y);
-			SetSize(dropdown, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(dropdown, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(dropdown, width.Value, height.Value);
+			}
+			
 			return (int)dropdown.Handle;
 		}
 
 		[LuaMethodAttributes(
 			"getproperty",
-			"TODO"
+			"returns a string representation of the value of a property of the widget at the given handle"
 		)]
-		public string GetProperty(object handle, object property)
+		public string GetProperty(int handle, string property)
 		{
 			try
 			{
-				var ptr = new IntPtr(LuaInt(handle));
+				var ptr = new IntPtr(handle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
 					{
-						return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
 					}
 					else
 					{
@@ -250,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control.Handle == ptr)
 							{
-								return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+								return control.GetType().GetProperty(property).GetValue(control, null).ToString();
 							}
 						}
 					}
@@ -266,13 +263,13 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"gettext",
-			"TODO"
+			"Returns the text property of a given form or control"
 		)]
-		public string GetText(object handle)
+		public string GetText(int handle)
 		{
 			try
 			{
-				var ptr = new IntPtr(LuaInt(handle));
+				var ptr = new IntPtr(handle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -308,41 +305,34 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"ischecked",
-			"TODO"
+			"Returns the given checkbox's checked property"
 		)]
-		public bool IsChecked(object handle)
+		public bool IsChecked(int handle)
 		{
-			try
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
-				var ptr = new IntPtr(LuaInt(handle));
-				foreach (var form in _luaForms)
+				if (form.Handle == ptr)
 				{
-					if (form.Handle == ptr)
+					return false;
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
 					{
-						return false;
-					}
-					else
-					{
-						foreach (Control control in form.Controls)
+						if (control.Handle == ptr)
 						{
-							if (control.Handle == ptr)
+							if (control is LuaCheckbox)
 							{
-								if (control is LuaCheckbox)
-								{
-									return (control as LuaCheckbox).Checked;
-								}
-								else
-								{
-									return false;
-								}
+								return (control as LuaCheckbox).Checked;
+							}
+							else
+							{
+								return false;
 							}
 						}
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
 			return false;
@@ -350,15 +340,15 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"label",
-			"TODO"
+			"Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size."
 		)]
 		public int Label(
-			object formHandle,
-			object caption,
-			object x = null,
-			object y = null,
-			object width = null,
-			object height = null)
+			int formHandle,
+			string caption,
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -369,21 +359,29 @@ namespace BizHawk.Client.EmuHawk
 			var label = new Label();
 			SetText(label, caption);
 			form.Controls.Add(label);
-			SetLocation(label, x, y);
-			SetSize(label, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(label, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(label, width.Value, height.Value);
+			}
 
 			return (int)label.Handle;
 		}
 
 		[LuaMethodAttributes(
 			"newform",
-			"TODO"
+			"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created."
 		)]
-		public int NewForm(object width = null, object height = null, string title = null)
+		public int NewForm(int? width = null, int? height = null, string title = null)
 		{
 			var form = new LuaWinform();
 			_luaForms.Add(form);
-			if (width != null && height != null)
+			if (width.HasValue && height.HasValue)
 			{
 				form.Size = new Size(LuaInt(width), LuaInt(height));
 			}
@@ -395,7 +393,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openfile",
-			"TODO"
+			"Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string"
 		)]
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
@@ -429,11 +427,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setlocation",
-			"TODO"
+			"Sets the location of a control or form by passing in the handle of the created object"
 		)]
-		public void SetLocation(object handle, object x, object y)
+		public void SetLocation(int handle, int x, int y)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -455,16 +453,19 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setproperty",
-			"TODO"
+			"Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept"
 		)]
-		public void SetProperty(object handle, object property, object value)
+		public void SetProperty(int handle, string property, object value)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					form.GetType().GetProperty(property.ToString()).SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
+					form
+						.GetType()
+						.GetProperty(property)
+						.SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
 				}
 				else
 				{
@@ -472,7 +473,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							control.GetType().GetProperty(property.ToString()).SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
+							control
+								.GetType()
+								.GetProperty(property)
+								.SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
 						}
 					}
 				}
@@ -483,9 +487,9 @@ namespace BizHawk.Client.EmuHawk
 			"setsize",
 			"TODO"
 		)]
-		public void SetSize(object handle, object width, object height)
+		public void SetSize(int handle, int width, int height)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -507,11 +511,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"settext",
-			"TODO"
+			"Sets the text property of a control or form by passing in the handle of the created object"
 		)]
-		public void Settext(object handle, object caption)
+		public void Settext(int handle, string caption)
 		{
-			var ptr = new IntPtr(LuaInt(handle));
+			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -533,16 +537,16 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"textbox",
-			"TODO"
+			"Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font"
 		)]
 		public int Textbox(
-			object formHandle,
-			object caption = null,
-			object width = null,
-			object height = null,
-			object boxtype = null,
-			object x = null,
-			object y = null,
+			int formHandle,
+			string caption = null,
+			int? width = null,
+			int? height = null,
+			string boxtype = null,
+			int? x = null,
+			int? y = null,
 			bool multiline = false,
 			bool fixedWidth = false)
 		{
@@ -560,12 +564,20 @@ namespace BizHawk.Client.EmuHawk
 
 			textbox.Multiline = multiline;
 			SetText(textbox, caption);
-			SetLocation(textbox, x, y);
-			SetSize(textbox, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(textbox, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(textbox, width.Value, height.Value);
+			}
 
 			if (boxtype != null)
 			{
-				switch (boxtype.ToString().ToUpper())
+				switch (boxtype.ToUpper())
 				{
 					case "HEX":
 					case "HEXADECIMAL":
