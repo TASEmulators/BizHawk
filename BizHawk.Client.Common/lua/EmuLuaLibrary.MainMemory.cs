@@ -106,22 +106,20 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"readbyte",
-			"gets the value from the given address as an unsigned byte"
+			"readbyte", "gets the value from the given address as an unsigned byte"
 		)]
-		public uint ReadByte(object addr)
+		public uint ReadByte(int addr)
 		{
-			return ReadUnsignedByte(LuaInt(addr));
+			return ReadUnsignedByte(addr);
 		}
 
 		[LuaMethodAttributes(
 			"readbyterange",
 			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
 		)]
-		public LuaTable ReadByteRange(object address, object length)
+		public LuaTable ReadByteRange(int addr, int length)
 		{
-			var addr = LuaInt(address);
-			var lastAddr = LuaInt(length) + addr;
+			var lastAddr = length + addr;
 			var table = _lua.NewTable();
 			for (var i = addr; i <= lastAddr; i++)
 			{
@@ -138,25 +136,20 @@ namespace BizHawk.Client.Common
 			"readfloat",
 			"Reads the given address as a 32-bit float value from the main memory domain with th e given endian"
 		)]
-		public float ReadFloat(object addr, bool bigendian)
+		public float ReadFloat(int addr, bool bigendian)
 		{
-			var val = Global.Emulator.MemoryDomains.MainMemory.PeekDWord(LuaInt(addr), bigendian);
+			var val = Global.Emulator.MemoryDomains.MainMemory.PeekDWord(addr, bigendian);
 			var bytes = BitConverter.GetBytes(val);
-			var _float = BitConverter.ToSingle(bytes, 0);
-
-			return _float;
+			return BitConverter.ToSingle(bytes, 0);
 		}
 
 		[LuaMethodAttributes(
 			"writebyte",
 			"Writes the given value to the given address as an unsigned byte"
 		)]
-		public void WriteByte(object addr, object value)
+		public void WriteByte(int addr, uint value)
 		{
-			WriteUnsignedByte(
-				LuaInt(addr),
-				LuaUInt(value)
-			);
+			WriteUnsignedByte(addr, value);
 		}
 
 		[LuaMethodAttributes(
@@ -178,306 +171,264 @@ namespace BizHawk.Client.Common
 			"writefloat",
 			"Writes the given 32-bit float value to the given address and endian"
 		)]
-		public void WriteFloat(object address, object value, bool bigendian)
+		public void WriteFloat(int address, double value, bool bigendian)
 		{
-			var dv = (float)(double)value;
+			var dv = (float)value;
 			var bytes = BitConverter.GetBytes(dv);
 			var v = BitConverter.ToUInt32(bytes, 0);
-			Global.Emulator.MemoryDomains.MainMemory.PokeDWord(LuaInt(address), v, bigendian);
+			Global.Emulator.MemoryDomains.MainMemory.PokeDWord(address, v, bigendian);
 		}
 
 		[LuaMethodAttributes(
 			"read_s8",
 			"read signed byte"
 		)]
-		public int ReadS8(object addr)
+		public int ReadS8(int addr)
 		{
-			return (sbyte)ReadUnsignedByte(LuaInt(addr));
+			return (sbyte)ReadUnsignedByte(addr);
 		}
 
 		[LuaMethodAttributes(
 			"read_u8",
 			"read unsigned byte"
 		)]
-		public uint ReadU8(object addr)
+		public uint ReadU8(int addr)
 		{
-			return ReadUnsignedByte(LuaInt(addr));
+			return ReadUnsignedByte(addr);
 		}
 
 		[LuaMethodAttributes(
 			"read_s16_le",
 			"read signed 2 byte value, little endian"
 		)]
-		public int ReadS16Little(object addr)
+		public int ReadS16Little(int addr)
 		{
-			return ReadSignedLittleCore(LuaInt(addr), 2);
+			return ReadSignedLittleCore(addr, 2);
 		}
 
 		[LuaMethodAttributes(
 			"read_s24_le",
 			"read signed 24 bit value, little endian"
 		)]
-		public int ReadS24Little(object addr)
+		public int ReadS24Little(int addr)
 		{
-			return ReadSignedLittleCore(LuaInt(addr), 3);
+			return ReadSignedLittleCore(addr, 3);
 		}
 
 		[LuaMethodAttributes(
 			"read_s32_le",
 			"read signed 4 byte value, little endian"
 		)]
-		public int ReadS32Little(object addr)
+		public int ReadS32Little(int addr)
 		{
-			return ReadSignedLittleCore(LuaInt(addr), 4);
+			return ReadSignedLittleCore(addr, 4);
 		}
 
 		[LuaMethodAttributes(
 			"read_u16_le",
 			"read unsigned 2 byte value, little endian"
 		)]
-		public uint ReadU16Little(object addr)
+		public uint ReadU16Little(int addr)
 		{
-			return ReadSignedLittle(LuaInt(addr), 2);
+			return ReadSignedLittle(addr, 2);
 		}
 
 		[LuaMethodAttributes(
 			"read_u24_le",
 			"read unsigned 24 bit value, little endian"
 		)]
-		public uint ReadU24Little(object addr)
+		public uint ReadU24Little(int addr)
 		{
-			return ReadSignedLittle(LuaInt(addr), 3);
+			return ReadSignedLittle(addr, 3);
 		}
 
 		[LuaMethodAttributes(
 			"read_u32_le",
 			"read unsigned 4 byte value, little endian"
 		)]
-		public uint ReadU32Little(object addr)
+		public uint ReadU32Little(int addr)
 		{
-			return ReadSignedLittle(LuaInt(addr), 4);
+			return ReadSignedLittle(addr, 4);
 		}
 
 		[LuaMethodAttributes(
 			"read_s16_be",
 			"read signed 2 byte value, big endian"
 		)]
-		public int ReadS16Big(object addr)
+		public int ReadS16Big(int addr)
 		{
-			return ReadSignedBig(LuaInt(addr), 2);
+			return ReadSignedBig(addr, 2);
 		}
 
 		[LuaMethodAttributes(
 			"read_s24_be",
 			"read signed 24 bit value, big endian"
 		)]
-		public int ReadS24Big(object addr)
+		public int ReadS24Big(int addr)
 		{
-			return ReadSignedBig(LuaInt(addr), 3);
+			return ReadSignedBig(addr, 3);
 		}
 
 		[LuaMethodAttributes(
 			"read_s32_be",
 			"read signed 4 byte value, big endian"
 		)]
-		public int ReadS32Big(object addr)
+		public int ReadS32Big(int addr)
 		{
-			return ReadSignedBig(LuaInt(addr), 4);
+			return ReadSignedBig(addr, 4);
 		}
 
 		[LuaMethodAttributes(
 			"read_u16_be",
 			"read unsigned 2 byte value, big endian"
 		)]
-		public uint ReadU16Big(object addr)
+		public uint ReadU16Big(int addr)
 		{
-			return ReadUnsignedBig(LuaInt(addr), 2);
+			return ReadUnsignedBig(addr, 2);
 		}
 
 		[LuaMethodAttributes(
 			"read_u24_be",
 			"read unsigned 24 bit value, big endian"
 		)]
-		public uint ReadU24Big(object addr)
+		public uint ReadU24Big(int addr)
 		{
-			return ReadUnsignedBig(LuaInt(addr), 3);
+			return ReadUnsignedBig(addr, 3);
 		}
 
 		[LuaMethodAttributes(
 			"read_u32_be",
 			"read unsigned 4 byte value, big endian"
 		)]
-		public uint ReadU32Big(object addr)
+		public uint ReadU32Big(int addr)
 		{
-			return ReadUnsignedBig(LuaInt(addr), 4);
+			return ReadUnsignedBig(addr, 4);
 		}
 
 		[LuaMethodAttributes(
 			"write_s8",
 			"write signed byte"
 		)]
-		public void WriteS8(object addr, object value)
+		public void WriteS8(int addr, uint value)
 		{
-			WriteUnsignedByte(
-				LuaInt(addr),
-				(uint)LuaInt(value)
-			);
+			WriteUnsignedByte(addr, value);
 		}
 
 		[LuaMethodAttributes(
 			"write_u8",
 			"write unsigned byte"
 		)]
-		public void WriteU8(object addr, object value)
+		public void WriteU8(int addr, uint value)
 		{
-			WriteUnsignedByte(
-				LuaInt(addr),
-				LuaUInt(value)
-			);
+			WriteUnsignedByte(addr, value);
 		}
 
 		[LuaMethodAttributes(
 			"write_s16_le",
 			"write signed 2 byte value, little endian"
 		)]
-		public void WriteS16Little(object addr, object value)
+		public void WriteS16Little(int addr, int value)
 		{
-			WriteSignedLittle(
-				LuaInt(addr),
-				LuaInt(value),
-				2);
+			WriteSignedLittle(addr, value, 2);
 		}
 
 		[LuaMethodAttributes(
 			"write_s24_le",
 			"write signed 24 bit value, little endian"
 		)]
-		public void WriteS24Little(object addr, object value)
+		public void WriteS24Little(int addr, int value)
 		{
-			WriteSignedLittle(
-				LuaInt(addr),
-				LuaInt(value),
-				3);
+			WriteSignedLittle(addr, value, 3);
 		}
 
 		[LuaMethodAttributes(
 			"write_s32_le",
 			"write signed 4 byte value, little endian"
 		)]
-		public void WriteS32Little(object addr, object value)
+		public void WriteS32Little(int addr, int value)
 		{
-			WriteSignedLittle(
-				LuaInt(addr),
-				LuaInt(value),
-				4);
+			WriteSignedLittle(addr, value, 4);
 		}
 
 		[LuaMethodAttributes(
 			"write_u16_le",
 			"write unsigned 2 byte value, little endian"
 		)]
-		public void WriteU16Little(object addr, object value)
+		public void WriteU16Little(int addr, uint value)
 		{
-			WriteUnsignedLittle(
-				LuaInt(addr),
-				LuaUInt(value),
-				2);
+			WriteUnsignedLittle(addr, value, 2);
 		}
 
 		[LuaMethodAttributes(
 			"write_u24_le",
 			"write unsigned 24 bit value, little endian"
 		)]
-		public void WriteU24Little(object addr, object value)
+		public void WriteU24Little(int addr, uint value)
 		{
-			WriteUnsignedLittle(
-				LuaInt(addr),
-				LuaUInt(value),
-				3);
+			WriteUnsignedLittle(addr, value, 3);
 		}
 
 		[LuaMethodAttributes(
 			"write_u32_le",
 			"write unsigned 4 byte value, little endian"
 		)]
-		public void WriteU32Little(object addr, object value)
+		public void WriteU32Little(int addr, uint value)
 		{
-			WriteUnsignedLittle(
-				LuaInt(addr),
-				LuaUInt(value),
-				4);
+			WriteUnsignedLittle(addr, value, 4);
 		}
 
 		[LuaMethodAttributes(
 			"write_s16_be",
 			"write signed 2 byte value, big endian"
 		)]
-		public void WriteS16Big(object addr, object value)
+		public void WriteS16Big(int addr, int value)
 		{
-			WriteSignedBig(
-				LuaInt(addr),
-				LuaInt(value),
-				2);
+			WriteSignedBig(addr, value, 2);
 		}
 
 		[LuaMethodAttributes(
 			"write_s24_be",
 			"write signed 24 bit value, big endian"
 		)]
-		public void WriteS24Big(object addr, object value)
+		public void WriteS24Big(int addr, int value)
 		{
-			WriteSignedBig(
-				LuaInt(addr),
-				LuaInt(value),
-				3);
+			WriteSignedBig(addr, value, 3);
 		}
 
 		[LuaMethodAttributes(
 			"write_s32_be",
 			"write signed 4 byte value, big endian"
 		)]
-		public void WriteS32Big(object addr, object value)
+		public void WriteS32Big(int addr, int value)
 		{
-			WriteSignedBig(
-				LuaInt(addr),
-				LuaInt(value),
-				4);
+			WriteSignedBig(addr, value, 4);
 		}
 
 		[LuaMethodAttributes(
 			"write_u16_be",
 			"write unsigned 2 byte value, big endian"
 		)]
-		public void WriteU16Big(object addr, object value)
+		public void WriteU16Big(int addr, uint value)
 		{
-			WriteUnsignedBig(
-				LuaInt(addr),
-				LuaUInt(value),
-				2);
+			WriteUnsignedBig(addr, value, 2);
 		}
 
 		[LuaMethodAttributes(
 			"write_u24_be",
 			"write unsigned 24 bit value, big endian"
 		)]
-		public void WriteU24Big(object addr, object value)
+		public void WriteU24Big(int addr, uint value)
 		{
-			WriteUnsignedBig(
-				LuaInt(addr),
-				LuaUInt(value),
-				3);
+			WriteUnsignedBig(addr, value, 3);
 		}
 
 		[LuaMethodAttributes(
 			"write_u32_be",
 			"write unsigned 4 byte value, big endian"
 		)]
-		public void WriteU32Big(object addr, object value)
+		public void WriteU32Big(int addr, uint value)
 		{
-			WriteUnsignedBig(
-				LuaInt(addr),
-				LuaUInt(value),
-				4);
+			WriteUnsignedBig(addr, value, 4);
 		}
 	}
 }

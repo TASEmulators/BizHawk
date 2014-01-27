@@ -86,18 +86,18 @@ namespace BizHawk.Client.Common
 			"substring",
 			"Returns a string that represents a substring of str starting at position for the specified length"
 		)]
-		public static string SubString(string str, object position, object length)
+		public static string SubString(string str, int position, int length)
 		{
-			return str.Substring((int)position, (int)length);
+			return str.Substring(position, length);
 		}
 
 		[LuaMethodAttributes(
 			"remove",
 			"Returns a string that represents str with the given position and count removed"
 		)]
-		public static string Remove(string str, object position, object count)
+		public static string Remove(string str, int position, int count)
 		{
-			return str.Remove((int)position, (int)count);
+			return str.Remove(position, count);
 		}
 
 		[LuaMethodAttributes(
