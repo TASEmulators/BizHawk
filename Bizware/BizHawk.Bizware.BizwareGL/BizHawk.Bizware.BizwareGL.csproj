@@ -57,15 +57,21 @@
     <Compile Include="Borrowed\BitmapFontParser\Kerning.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Padding.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Page.cs" />
-    <Compile Include="GraphicsControl.cs" />
+    <Compile Include="GraphicsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GuiRenderer.cs" />
     <Compile Include="IGL.cs" />
     <Compile Include="ArtManager.cs" />
+    <Compile Include="IGraphicsControl.cs" />
     <Compile Include="MatrixStack.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="PipelineUniform.cs" />
     <Compile Include="RenderStates.cs" />
     <Compile Include="RenderTarget.cs" />
+    <Compile Include="RetainedGraphicsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Shader.cs" />
     <Compile Include="StringRenderer.cs" />
     <Compile Include="TexAtlas.cs" />

@@ -74,71 +74,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.ClearColor(color);
 		}
 
-		class GLControlWrapper : GraphicsControl
+		IGraphicsControl IGL.Internal_CreateGraphicsControl()
 		{
-			//Note: In order to work around bugs in OpenTK which sometimes do things to a context without making that context active first...
-			//we are going to push and pop the context before doing stuff
-
-			public GLControlWrapper(IGL_TK owner)
-			{
-				Owner = owner;
-			}
-
-			IGL_TK Owner;
-
-			public override swf.Control Control { get { return MyControl; } }
-
-			public override void SetVsync(bool state)
-			{
-				//IGraphicsContext curr = global::OpenTK.Graphics.GraphicsContext.CurrentContext;
-				MyControl.MakeCurrent();
-					MyControl.VSync = state;
-				//Owner.MakeContextCurrent(curr, Owner.NativeWindowsForContexts[curr]);
-			}
-
-			public override void Begin()
-			{
-				Owner.MakeContextCurrent(MyControl.Context, MyControl.WindowInfo);
-			}
-
-			public override void End()
-			{
-				//this slows things down too much
-				//Owner.MakeDefaultCurrent();
-			}
-
-			public override void SwapBuffers()
-			{
-				//IGraphicsContext curr = global::OpenTK.Graphics.GraphicsContext.CurrentContext;
-				MyControl.MakeCurrent();
-					MyControl.SwapBuffers();
-				//Owner.MakeContextCurrent(curr, Owner.NativeWindowsForContexts[curr]);
-			}
-
-			public override void Dispose()
-			{
-				//TODO - what happens if this context was current?
-				MyControl.Dispose();
-				MyControl = null;
-			}
-
-			public GLControl MyControl;
-		}
-
-		GraphicsControl IGL.CreateGraphicsControl()
-		{
-			var glc = new GLControl(GraphicsMode.Default, 2, 0, GraphicsContextFlags.Default);
+			var glc = new GLControlWrapper(this);
 			glc.CreateControl();
 
 			//now the control's context will be current. annoying! fix it.
 			MakeDefaultCurrent();
 
-			GLControlWrapper wrapper = new GLControlWrapper(this);
-			wrapper.MyControl = glc;
 
-			//this might be important.. or it might not. it's ready, in case we need it
-			//glc.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(glc, new object[] { System.Windows.Forms.ControlStyles.UserMouse, true });
-			return wrapper;
+			return glc;
 		}
 
 		IntPtr IGL.GenTexture() { return new IntPtr(GL.GenTexture()); }
@@ -376,6 +321,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 		}
 
+		void IGL.FreeRenderTarget(RenderTarget rt)
+		{
+			rt.Texture2d.Dispose();
+			GL.DeleteFramebuffer(rt.Id.ToInt32());
+		}
+
 		unsafe RenderTarget IGL.CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it
@@ -557,12 +508,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 		}
 
-		void MakeDefaultCurrent()
+		internal void MakeDefaultCurrent()
 		{
 			MakeContextCurrent(this.GraphicsContext, OffscreenNativeWindow.WindowInfo);
 		}
 
-		void MakeContextCurrent(IGraphicsContext context, global::OpenTK.Platform.IWindowInfo windowInfo)
+		internal void MakeContextCurrent(IGraphicsContext context, global::OpenTK.Platform.IWindowInfo windowInfo)
 		{
 			//TODO - if we're churning through contexts quickly, this will sort of be a memory leak, since they'll be memoized forever in here
 			//maybe make it a weakptr or something

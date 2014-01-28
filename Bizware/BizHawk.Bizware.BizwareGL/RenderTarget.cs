@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Bizware.BizwareGL
 {
-	public class RenderTarget
+	public class RenderTarget : IDisposable
 	{
 		public RenderTarget(IGL owner, IntPtr handle, Texture2d tex)
 		{
@@ -24,6 +24,11 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Bind()
 		{
 			Owner.BindRenderTarget(this);
+		}
+
+		public void Dispose()
+		{
+			Owner.FreeRenderTarget(this);
 		}
 	}
 }

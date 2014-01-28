@@ -59,6 +59,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicsControl_TK.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="IGL_TK.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

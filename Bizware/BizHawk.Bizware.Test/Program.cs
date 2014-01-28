@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,10 @@ namespace BizHawk.Bizware.Test
 {
 	class Program
 	{
+
 		static unsafe void Main(string[] args)
 		{
 			BizHawk.Bizware.BizwareGL.IGL igl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-
-			
 
 			List<Art> testArts = new List<Art>();
 			ArtManager am = new ArtManager(igl);
@@ -31,11 +31,10 @@ namespace BizHawk.Bizware.Test
 
 			GuiRenderer gr = new GuiRenderer(igl);
 
-
 			TestForm tf = new TestForm();
-			GraphicsControl c = igl.CreateGraphicsControl();
+			RetainedGraphicsControl c = new RetainedGraphicsControl(igl);
 			tf.Controls.Add(c);
-			c.Control.Dock = System.Windows.Forms.DockStyle.Fill;
+			c.Dock = System.Windows.Forms.DockStyle.Fill;
 			tf.FormClosing += (object sender, System.Windows.Forms.FormClosingEventArgs e) =>
 				{
 					tf.Controls.Remove(c);
@@ -43,6 +42,8 @@ namespace BizHawk.Bizware.Test
 					c = null;
 				};
 			tf.Show();
+
+			//tf.Paint += (object sender, PaintEventArgs e) => c.Refresh();
 
 			c.SetVsync(false);
 
@@ -58,45 +59,57 @@ namespace BizHawk.Bizware.Test
 			rt.Unbind();
 			c.End();
 
+			bool running = true;
+			c.MouseClick += (object sender, MouseEventArgs e) =>
+			{
+				if(e.Button == MouseButtons.Left)
+					running ^= true;
+				if (e.Button == MouseButtons.Right)
+					c.Retain ^= true;
+			};
+
 			DateTime start = DateTime.Now;
 			int wobble = 0;
 			for (; ; )
 			{
 				if (c == null) break;
 
-				c.Begin();
+				if (running)
+				{
+					c.Begin();
 
+					igl.SetClearColor(Color.Red);
+					igl.Clear(ClearBufferMask.ColorBufferBit);
 
-				igl.SetClearColor(Color.Red);
-				igl.Clear(ClearBufferMask.ColorBufferBit);
+					int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
 
-				int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
+					gr.Begin(c.ClientSize.Width, c.ClientSize.Height);
 
-				gr.Begin(c.Control.ClientSize.Width, c.Control.ClientSize.Height);
-				
-				gr.SetBlendState(igl.BlendNone);
-				gr.Draw(rt.Texture2d, 0, 20);
-				gr.SetBlendState(igl.BlendNormal);
+					gr.SetBlendState(igl.BlendNone);
+					gr.Draw(rt.Texture2d, 0, 20);
+					gr.SetBlendState(igl.BlendNormal);
 
-				sr.RenderString(gr, 0, 0, "?? fps");
-				gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
-				gr.Modelview.Translate(100, 100);
-				gr.Modelview.Push();
-				gr.Modelview.Translate(testArts[frame].Width, 0);
-				gr.Modelview.Scale(-1, 1);
-				wobble++;
-				gr.SetModulateColor(Color.Yellow);
-				gr.DrawFlipped(testArts[frame], true, false);
-				gr.SetModulateColorWhite();
-				gr.Modelview.Pop();
-				gr.SetBlendState(igl.BlendNormal);
-				gr.Draw(smile);
-				gr.End();
+					sr.RenderString(gr, 0, 0, "?? fps");
+					gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
+					gr.Modelview.Translate(100, 100);
+					gr.Modelview.Push();
+					gr.Modelview.Translate(testArts[frame].Width, 0);
+					gr.Modelview.Scale(-1, 1);
+					wobble++;
+					gr.SetModulateColor(Color.Yellow);
+					gr.DrawFlipped(testArts[frame], true, false);
+					gr.SetModulateColorWhite();
+					gr.Modelview.Pop();
+					gr.SetBlendState(igl.BlendNormal);
+					gr.Draw(smile);
+					gr.End();
 
-				c.SwapBuffers();
-				c.End();
+					c.SwapBuffers();
+					c.End();
+				}
 
 				System.Windows.Forms.Application.DoEvents();
+				System.Threading.Thread.Sleep(0);
 			}
 		}
 	}
