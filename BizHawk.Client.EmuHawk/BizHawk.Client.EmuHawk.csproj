@@ -382,9 +382,9 @@
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
-    <Compile Include="DisplayManager\IDisplayFilter.cs" />
     <Compile Include="DisplayManager\OSDManager.cs" />
-    <Compile Include="DisplayManager\SwappableBitmapBufferSet.cs" />
+    <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
+    <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
@@ -453,6 +453,7 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PresentationPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScanlineSlider.cs">
@@ -1155,7 +1156,6 @@
     <Compile Include="tools\InputPrompt.Designer.cs">
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="RenderPanel.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="tools\ToolBox.cs">
@@ -1415,9 +1415,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DisplayManager\Filters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

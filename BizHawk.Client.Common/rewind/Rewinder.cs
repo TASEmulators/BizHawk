@@ -251,6 +251,7 @@ namespace BizHawk.Client.Common
 			var inChangeSequence = false;
 
 			// try to set up the buffer in advance so we dont ever have exceptions in here
+			//zeromus says: this sets off red flags for me. vecna got an exception that might be related to this inflating to 2x the input size. we should add an emergency check, or analyze how much it could inflate by (perhaps 3x would be adequate in every case?)
 			if (_tempBuf.Length < currentState.Length)
 			{
 				_tempBuf = new byte[currentState.Length * 2];

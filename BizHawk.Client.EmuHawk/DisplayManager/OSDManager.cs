@@ -10,6 +10,20 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
+	/// <summary>
+	/// This is an old abstracted rendering class that the OSD system is using to get its work done.
+	/// We should probably just use a GuiRenderer (it was designed to do that) although wrapping it with
+	/// more information for OSDRendering could be helpful I suppose
+	/// </summary>
+	public interface IBlitter
+	{
+
+		IBlitterFont GetFontType(string fontType);
+		void DrawString(string s, IBlitterFont font, Color color, float x, float y);
+		SizeF MeasureString(string s, IBlitterFont font);
+		Rectangle ClipBounds { get; set; }
+	}
+
 	class UIMessage
 	{
 		public string Message;

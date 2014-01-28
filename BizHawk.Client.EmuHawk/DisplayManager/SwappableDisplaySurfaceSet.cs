@@ -1,28 +1,31 @@
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
-using BizHawk.Bizware.BizwareGL;
+using System.Runtime.InteropServices;
 
+using BizHawk.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// encapsulates thread-safe concept of pending/current BitmapBuffer, reusing buffers where matching 
+	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
 	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
-	/// This isnt in the csproj right now, but I'm keeping it, in case its handy.
 	/// </summary>
-	class SwappableBitmapBufferSet
+	class SwappableDisplaySurfaceSet
 	{
-		BitmapBuffer Pending, Current;
-		Queue<BitmapBuffer> ReleasedSurfaces = new Queue<BitmapBuffer>();
+		DisplaySurface Pending, Current;
+		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
 
 		/// <summary>
 		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
 		/// </summary>
-		public BitmapBuffer AllocateSurface(int width, int height, bool needsClear = true)
+		public DisplaySurface AllocateSurface(int width, int height, bool needsClear = true)
 		{
 			for (; ; )
 			{
-				BitmapBuffer trial;
+				DisplaySurface trial;
 				lock (this)
 				{
 					if (ReleasedSurfaces.Count == 0) break;
@@ -30,18 +33,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (trial.Width == width && trial.Height == height)
 				{
-					if (needsClear) trial.ClearWithoutAlloc();
+					if (needsClear) trial.Clear();
 					return trial;
 				}
 				trial.Dispose();
 			}
-			return new BitmapBuffer(width, height);
+			return new DisplaySurface(width, height);
 		}
 
 		/// <summary>
 		/// sets the provided buffer as pending. takes control of the supplied buffer
 		/// </summary>
-		public void SetPending(BitmapBuffer newPending)
+		public void SetPending(DisplaySurface newPending)
 		{
 			lock (this)
 			{
@@ -50,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void ReleaseSurface(BitmapBuffer surface)
+		public void ReleaseSurface(DisplaySurface surface)
 		{
 			lock (this) ReleasedSurfaces.Enqueue(surface);
 		}
@@ -58,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
 		/// </summary>
-		public BitmapBuffer GetCurrent()
+		public DisplaySurface GetCurrent()
 		{
 			lock (this)
 			{

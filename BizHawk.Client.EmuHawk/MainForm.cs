@@ -95,6 +95,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//TODO GL - a lot of disorganized wiring-up here
 			GlobalWin.PresentationPanel = new PresentationPanel();
+			GlobalWin.DisplayManager = new DisplayManager(GlobalWin.PresentationPanel);
 			Controls.Add(GlobalWin.PresentationPanel);
 			Controls.SetChildIndex(GlobalWin.PresentationPanel, 0);
 
