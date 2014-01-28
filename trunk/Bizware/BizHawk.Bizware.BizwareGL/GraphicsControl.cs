@@ -1,52 +1,53 @@
 using System;
-using swf = System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
-	/// Represents
+	/// a base class for deriving/wrapping from a IGraphicsControl.
+	/// This is to work around the annoyance that we cant inherit from a control whose type is unknown (it would be delivered by the selected BizwareGL driver)
+	/// and so we have to resort to composition and c# sucks and events suck.
 	/// </summary>
-	public abstract class GraphicsControl : IDisposable
+	public class GraphicsControl : UserControl
 	{
-		/// <summary>
-		/// Gets the control that this interface is wrapping
-		/// </summary>
-		public abstract swf.Control Control { get; }
+		public GraphicsControl(IGL owner)
+		{
+			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserMouse, true);
 
-		public static implicit operator swf.Control(GraphicsControl ctrl) { return ctrl.Control; }
+			//in case we need it
+			//GLControl.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(GLControl, new object[] { System.Windows.Forms.ControlStyles.UserMouse, true });
 
-		/// <summary>
-		/// The width of the control
-		/// </summary>
-		public int Width { get { return Control.Width; } }
 
-		/// <summary>
-		/// The height of the control
-		/// </summary>
-		public int Height { get { return Control.Height; } }
-		
-		/// <summary>
-		/// Sets whether presentation operations on this control will vsync
-		/// </summary>
-		public abstract void SetVsync(bool state);
+			IGC = owner.Internal_CreateGraphicsControl();
+			Managed = IGC as Control;
+			Managed.Dock = DockStyle.Fill;
+			Controls.Add(Managed);
 
-		/// <summary>
-		/// Swaps the buffers for this control
-		/// </summary>
-		public abstract void SwapBuffers();
+			//pass through these events to the form. I tried really hard to find a better way, but there is none.
+			//(dont use HTTRANSPARENT, it isnt portable, I would assume)
+			Managed.MouseDoubleClick += (object sender, MouseEventArgs e) => OnMouseDoubleClick(e);
+			Managed.MouseClick += (object sender, MouseEventArgs e) => OnMouseClick(e);
 
-		/// <summary>
-		/// Makes this control current for rendering operations.
-		/// Note that at this time, the window size shouldnt change until End() or else something bad might happen
-		/// Please be aware that this might change the rendering context, meaning that some things you set without calling BeginControl/EndControl might not be affected
-		/// </summary>
-		public abstract void Begin();
+			//the GraphicsControl is occupying all of our area. So we pretty much never get paint events ourselves.
+			//So lets capture its paint event and use it for ourselves (it doesnt know how to do anything, anyway)
+			Managed.Paint += new PaintEventHandler(GraphicsControl_Paint);
+		}
 
-		/// <summary>
-		/// Ends rendering on the specified control.
-		/// </summary>
-		public abstract void End();
+		void GraphicsControl_Paint(object sender, PaintEventArgs e)
+		{
+			OnPaint(e);
+		}
 
-		public abstract void Dispose();
+		IGraphicsControl IGC;
+		Control Managed;
+
+		//public virtual Control Control { get { return Managed; } } //do we need this anymore?
+		public virtual void SetVsync(bool state) { IGC.SetVsync(state); }
+		public virtual void SwapBuffers() { IGC.SwapBuffers(); }
+		public virtual void Begin() { IGC.Begin(); }
+		public virtual void End() { IGC.End(); }
 	}
 }

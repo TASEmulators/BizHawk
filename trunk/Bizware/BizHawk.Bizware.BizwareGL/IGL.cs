@@ -17,10 +17,6 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public interface IGL : IDisposable
 	{
-		/// <summary>
-		/// Returns an a control optimized for drawing onto the screen.
-		/// </summary>
-		GraphicsControl CreateGraphicsControl();
 
 		/// <summary>
 		/// Clears the specified buffer parts
@@ -112,6 +108,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// frees the provided texture handle
 		/// </summary>
 		void FreeTexture(IntPtr texHandle);
+
+		/// <summary>
+		/// frees the provided render target
+		/// </summary>
+		void FreeRenderTarget(RenderTarget rt);
 
 		/// <summary>
 		/// Binds this texture as the current texture2d target for parameter-specification
@@ -218,5 +219,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Binds a RenderTarget for current rendering
 		/// </summary>
 		void BindRenderTarget(RenderTarget rt);
+
+		IGraphicsControl Internal_CreateGraphicsControl();
 	}
 }

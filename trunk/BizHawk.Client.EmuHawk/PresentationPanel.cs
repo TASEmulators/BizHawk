@@ -26,14 +26,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GL = GlobalWin.GL;
 
-			GraphicsControl = GL.CreateGraphicsControl();
-			GraphicsControl.Control.Dock = DockStyle.Fill;
-			GraphicsControl.Control.BackColor = Color.Black;
+			GraphicsControl = new GraphicsControl(GL);
+			GraphicsControl.Dock = DockStyle.Fill;
+			GraphicsControl.BackColor = Color.Black;
 
 			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
-			GraphicsControl.Control.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
-			GraphicsControl.Control.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
+			GraphicsControl.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
+			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 		}
 
 		public void Dispose()
@@ -47,8 +47,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool Vsync;
 
-		public Control Control { get { return GraphicsControl.Control; } }
-		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl.Control; }
+		public Control Control { get { return GraphicsControl; } }
+		public static implicit operator Control(PresentationPanel self) { return self.GraphicsControl; }
 
 		private void HandleFullscreenToggle(object sender, MouseEventArgs e)
 		{
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			throw new InvalidOperationException("Not supported right now, sorry");
 		}
 
-		public Size NativeSize { get { return GraphicsControl.Control.ClientSize; } }
+		public Size NativeSize { get { return GraphicsControl.ClientSize; } }
 
 	
 	}
