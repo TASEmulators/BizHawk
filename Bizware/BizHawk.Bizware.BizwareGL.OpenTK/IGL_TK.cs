@@ -227,14 +227,21 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
 
 			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation
+			//"A sampler points to a texture unit used by fixed function with an incompatible target"
+			//
+			//info:
+			//http://www.opengl.org/sdk/docs/man/xhtml/glValidateProgram.xml
+			//This function mimics the validation operation that OpenGL implementations must perform when rendering commands are issued while programmable shaders are part of current state.
+			//glValidateProgram checks to see whether the executables contained in program can execute given the current OpenGL state
+			//This function is typically useful only during application development.
+			//
+			//So, this is no big deal. we shouldnt be calling validate right now anyway.
+			//conclusion: glValidate is very complicated and is of virtually no use unless your draw calls are returning errors and you want to know why
 			//GL.ValidateProgram(pid);
 			//errcode = GL.GetError();
-
 			//resultLog = GL.GetProgramInfoLog(pid);
-
 			//if (errcode != ErrorCode.NoError)
 			//  throw new InvalidOperationException("Error creating pipeline (error returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
-
 			//int validateStatus;
 			//GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
 			//if (validateStatus == 0)
