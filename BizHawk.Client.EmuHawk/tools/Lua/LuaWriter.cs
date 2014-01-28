@@ -816,8 +816,7 @@ namespace BizHawk.Client.EmuHawk
 				String currentWord = CurrentWord();
 				currentWord += e.KeyCode;
 				currentWord = currentWord.ToLower();
-				List<string> libList2 = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
-				var libList = (from d in libList2 select d).Distinct();
+				List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().Distinct().ToList();
 				int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
 				int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
 				AutoCompleteView.Location = new Point(x, y);
