@@ -408,7 +408,7 @@ EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
 *******************************************************************/
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
-	//Keys->Value = (*l_inputCallback)(Control);
+	Keys->Value = (*l_inputCallback)(Control);
 }
 
 /* ----------------------------------------------------------------------
