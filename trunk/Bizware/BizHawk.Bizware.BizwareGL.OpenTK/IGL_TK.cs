@@ -226,18 +226,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if(linkStatus == 0)
 				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
 
-			GL.ValidateProgram(pid);
-			errcode = GL.GetError();
+			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation
+			//GL.ValidateProgram(pid);
+			//errcode = GL.GetError();
 
-			resultLog = GL.GetProgramInfoLog(pid);
+			//resultLog = GL.GetProgramInfoLog(pid);
 
-			if (errcode != ErrorCode.NoError)
-				throw new InvalidOperationException("Error creating pipeline (error returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
+			//if (errcode != ErrorCode.NoError)
+			//  throw new InvalidOperationException("Error creating pipeline (error returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
 
-			int validateStatus;
-			GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
-			if (validateStatus == 0)
-				throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + "\r\n\r\n" + resultLog);
+			//int validateStatus;
+			//GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
+			//if (validateStatus == 0)
+			//  throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + "\r\n\r\n" + resultLog);
 
 			//set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
