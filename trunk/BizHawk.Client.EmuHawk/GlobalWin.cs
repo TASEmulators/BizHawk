@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Sound Sound;
 		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
-		public static DisplayManager DisplayManager = new DisplayManager();
+		public static DisplayManager DisplayManager;
 
 		//input state which has been destined for game controller inputs are coalesced here
 		//public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();

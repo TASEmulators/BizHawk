@@ -89,15 +89,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"getdisplayfilter",
-			"Gets the current display filter setting, possible values: 'None', 'x2SAI', 'SuperX2SAI', 'SuperEagle', 'Scanlines'"
-		)]
-		public string GetDisplayFilter()
-		{
-			return _filterMappings[Global.Config.TargetDisplayFilter];
-		}
-
-		[LuaMethodAttributes(
 			"gettargetscanlineintensity",
 			"Gets the current scanline intensity setting, used for the scanline display filter"
 		)]
@@ -264,22 +255,6 @@ namespace BizHawk.Client.EmuHawk
 		public static void ScreenshotToClipboard()
 		{
 			GlobalWin.MainForm.TakeScreenshotToClipboard();
-		}
-
-		[LuaMethodAttributes(
-			"setdisplayfilter",
-			"Sets the current display filter setting, possible values: 'None', 'x2SAI', 'SuperX2SAI', 'SuperEagle', 'Scanlines'"
-		)]
-		public void SetDisplayFilter(string filter)
-		{
-			foreach (var kvp in _filterMappings)
-			{
-				if (String.Equals(kvp.Value, filter, StringComparison.CurrentCultureIgnoreCase))
-				{
-					Global.Config.TargetDisplayFilter = kvp.Key;
-					return;
-				}
-			}
 		}
 
 		[LuaMethodAttributes(

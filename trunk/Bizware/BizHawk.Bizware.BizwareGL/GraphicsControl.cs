@@ -14,6 +14,16 @@ namespace BizHawk.Bizware.BizwareGL
 		public abstract swf.Control Control { get; }
 
 		public static implicit operator swf.Control(GraphicsControl ctrl) { return ctrl.Control; }
+
+		/// <summary>
+		/// The width of the control
+		/// </summary>
+		public int Width { get { return Control.Width; } }
+
+		/// <summary>
+		/// The height of the control
+		/// </summary>
+		public int Height { get { return Control.Height; } }
 		
 		/// <summary>
 		/// Sets whether presentation operations on this control will vsync

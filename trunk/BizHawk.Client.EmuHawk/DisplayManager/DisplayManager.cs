@@ -17,93 +17,30 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class DisplayFilterAnalysisReport
-	{
-		public bool Success;
-		public Size OutputSize;
-	}
-
-
+	/// <summary>
+	/// A DisplayManager is destined forevermore to drive the PresentationPanel it gets initialized with.
+	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitampBuffer? Texture2d?) for display by the PresentationPanel.
+	/// Details TBD
+	/// </summary>
 	public class DisplayManager : IDisposable
 	{
-		public DisplayManager()
+
+		public DisplayManager(PresentationPanel presentationPanel)
 		{
-			//have at least something here at the start
-			luaNativeSurfacePreOSD = new BitmapBuffer(1, 1); 
-		}
+			GL = GlobalWin.GL;
+			this.presentationPanel = presentationPanel;
+			GraphicsControl = this.presentationPanel.GraphicsControl;
 
-		readonly SwappableBitmapBufferSet sourceSurfaceSet = new SwappableBitmapBufferSet();
+			//it's sort of important for these to be initialized to something nonzero
+			currEmuWidth = currEmuHeight = 1;
 
-		public bool NeedsToPaint { get; set; }
+			Renderer = new GuiRenderer(GL);
+			VideoTextureFrugalizer = new TextureFrugalizer(GL);
+			LuaEmuTextureFrugalizer = new TextureFrugalizer(GL);
 
-		DisplaySurface luaEmuSurface = null;
-		public void PreFrameUpdateLuaSource()
-		{
-			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-		}
-
-		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
-		public void UpdateSource(IVideoProvider videoProvider)
-		{
-			UpdateSourceEx(videoProvider, GlobalWin.PresentationPanel);
-		}
-
-		/// <summary>
-		/// update the passed IRenderer with the passed IVideoProvider
-		/// </summary>
-		public void UpdateSourceEx(IVideoProvider videoProvider, PresentationPanel renderPanel)
-		{
-			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
-			sourceSurfaceSet.SetPending(newPendingSurface);
-		
-			if (renderPanel == null) return;
-
-			currNativeWidth = renderPanel.NativeSize.Width;
-			currNativeHeight = renderPanel.NativeSize.Height;
-
-			currentSourceSurface = sourceSurfaceSet.GetCurrent();
-
-			if (currentSourceSurface == null) return;
-
-			//if we're configured to use a scaling filter, apply it now
-			//SHOULD THIS BE RUN REPEATEDLY?
-			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
-			//but its sort of wasted work.
-			CheckFilter();
-
-			int w = currNativeWidth;
-			int h = currNativeHeight;
-
-			
-			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
-
-			//do we have anything to do?
-			//bool complexComposite = false;
-			//if (luaEmuSurface != null) complexComposite = true;
-			//if (luaSurface != null) complexComposite = true;
-
-			BitmapBuffer surfaceToRender = filteredSurface;
-			if (surfaceToRender == null) surfaceToRender = currentSourceSurface;
-
-			renderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
-			renderPanel.Render(surfaceToRender);
-			
-			//GL TODO - lua unhooked
-			if (luaEmuSurface != null)
-			{
-			  renderPanel.RenderOverlay(luaEmuSurface);
-			}
-
-			RenderOSD((IBlitter)renderPanel);
-
-			renderPanel.Present();
-
-			if (filteredSurface != null)
-				filteredSurface.Dispose();
-			filteredSurface = null;
-
-			NeedsToPaint = false;
+			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
+			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
+				TheOneFont = new StringRenderer(GL, xml, tex);
 		}
 
 		public bool Disposed { get; private set; }
@@ -112,18 +49,117 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Disposed) return;
 			Disposed = true;
+			VideoTextureFrugalizer.Dispose();
+			LuaEmuTextureFrugalizer.Dispose();
 		}
 
-		BitmapBuffer currentSourceSurface, filteredSurface;
+		//rendering resources:
+		IGL GL;
+		StringRenderer TheOneFont;
+		GuiRenderer Renderer;
 
-		//the surface to use to render a lua layer at native resolution (under the OSD)
-		BitmapBuffer luaNativeSurfacePreOSD;
 
+		//layer resources
+		DisplaySurface luaEmuSurface = null;
+		PresentationPanel presentationPanel; //well, its the final layer's target, at least
+		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
+
+
+		public bool NeedsToPaint { get; set; }
+
+		public void PreFrameUpdateLuaSource()
+		{
+			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+		}
+
+		/// <summary>
+		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
+		/// </summary>
+		int currEmuWidth, currEmuHeight;
+
+		TextureFrugalizer VideoTextureFrugalizer, LuaEmuTextureFrugalizer;
+
+		/// <summary>
+		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
+		/// Then it will stuff it into the bound PresentationPanel
+		/// </summary>
+		public void UpdateSource(IVideoProvider videoProvider)
+		{
+			//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVidepProviders)
+			BitmapBuffer bb = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
+
+			//record the size of what we received, since lua and stuff is gonna want to draw onto it
+			currEmuWidth = bb.Width;
+			currEmuHeight = bb.Height;
+
+			//now, acquire the data sent from the videoProvider into a texture
+			var videoTexture = VideoTextureFrugalizer.Get(bb);
+
+			//acquire the lua emu surface as a texture
+			Texture2d luaEmuTexture = null;
+			if (luaEmuSurface != null)
+				luaEmuTexture = LuaEmuTextureFrugalizer.Get(luaEmuSurface);
+
+	
+			//begin drawing to the PresentationPanel:
+			GraphicsControl.Begin();
+
+			//1. clear it with the background color that the emulator specified
+			GL.SetClearColor(Color.FromArgb(videoProvider.BackgroundColor));
+			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			
+			//2. begin 2d rendering
+			Renderer.Begin(GraphicsControl.Width, GraphicsControl.Height);
+
+			//3. figure out how to draw the emulator output content
+			var LL = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, bb.Width, bb.Height);
+
+			//4. draw the emulator content
+			Renderer.SetBlendState(GL.BlendNone);
+			Renderer.Modelview.Push();
+			Renderer.Modelview.Translate(LL.dx, LL.dy);
+			Renderer.Modelview.Scale(LL.finalScale);
+			if (Global.Config.DispBlurry)
+				videoTexture.SetFilterLinear();
+			else
+				videoTexture.SetFilterNearest();
+			Renderer.Draw(videoTexture);
+			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
+			Renderer.SetBlendState(GL.BlendNormal);
+			if(luaEmuTexture != null) Renderer.Draw(luaEmuTexture);
+			Renderer.Modelview.Pop();
+
+			//(should we draw native layer lua here? thats broken right now)
+
+			//5. draw the native layer OSD
+			MyBlitter myBlitter = new MyBlitter(this);
+			myBlitter.ClipBounds = new Rectangle(0, 0, GraphicsControl.Width, GraphicsControl.Height);
+			GlobalWin.OSD.Begin(myBlitter);
+			GlobalWin.OSD.DrawScreenInfo(myBlitter);
+			GlobalWin.OSD.DrawMessages(myBlitter);
+
+			//6. finished drawing
+			Renderer.End();
+
+			//7. apply the vsync setting (should probably try to avoid repeating this)
+			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+			presentationPanel.GraphicsControl.SetVsync(vsync);
+
+			//7. present and conclude drawing
+			presentationPanel.GraphicsControl.SwapBuffers();
+			presentationPanel.GraphicsControl.End();
+
+			//cleanup:
+			bb.Dispose();
+			NeedsToPaint = false; //??
+		}
 
 		SwappableDisplaySurfaceSet luaNativeSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
 		public DisplaySurface GetLuaSurfaceNative()
 		{
+			int currNativeWidth = presentationPanel.NativeSize.Width;
+			int currNativeHeight = presentationPanel.NativeSize.Height;
 			return luaNativeSurfaceSet.AllocateSurface(currNativeWidth, currNativeHeight);
 		}
 
@@ -131,71 +167,74 @@ namespace BizHawk.Client.EmuHawk
 		public void SetLuaSurfaceEmu(DisplaySurface surface) { luaEmuSurfaceSet.SetPending(surface); }
 		public DisplaySurface GetLuaEmuSurfaceEmu()
 		{
-			int width = 1, height = 1;
-			if (currentSourceSurface != null)
-				width = currentSourceSurface.Width;
-			if (currentSourceSurface != null)
-				height = currentSourceSurface.Height;
-			return luaEmuSurfaceSet.AllocateSurface(width, height);
+			return luaEmuSurfaceSet.AllocateSurface(currEmuWidth, currEmuHeight);
 		}
 
-		int currNativeWidth, currNativeHeight;
-	
+		//helper classes:
 
-		/// <summary>
-		/// suspends the display manager so that tricky things can be changed without the display thread going in and getting all confused and hating
-		/// </summary>
-		public void Suspend()
+		class MyBlitter : IBlitter
 		{
-		}
-
-		/// <summary>
-		/// resumes the display manager after a suspend
-		/// </summary>
-		public void Resume()
-		{
-		}
-
-		void RenderOSD(IBlitter renderPanel)
-		{
-			GlobalWin.OSD.Begin(renderPanel);
-			renderPanel.Open();
-			GlobalWin.OSD.DrawScreenInfo(renderPanel);
-			GlobalWin.OSD.DrawMessages(renderPanel);
-			renderPanel.Close();
-		}
-
-		void CheckFilter()
-		{
-			IDisplayFilter filter = null;
-			switch (Global.Config.TargetDisplayFilter)
+			DisplayManager Owner;
+			public MyBlitter(DisplayManager dispManager)
 			{
-				//TODO GL - filters removed
-				//case 0:
-				//  //no filter
-				//  break;
-				//case 1:
-				//  filter = new Hq2xBase_2xSai();
-				//  break;
-				//case 2:
-				//  filter = new Hq2xBase_Super2xSai();
-				//  break;
-				//case 3:
-				//  filter = new Hq2xBase_SuperEagle();
-				//  break;
-				//case 4:
-				//  filter = new Scanlines2x();
-				//  break;
-			
+				Owner = dispManager;
 			}
-			if (filter == null)
-				filteredSurface = null;
-			else
-				filteredSurface = filter.Execute(currentSourceSurface);
+
+			class FontWrapper : IBlitterFont
+			{
+				public FontWrapper(StringRenderer font)
+				{
+					this.font = font;
+				}
+
+				public readonly StringRenderer font;
+			}
+
+	
+			IBlitterFont IBlitter.GetFontType(string fontType) { return new FontWrapper(Owner.TheOneFont); }
+			void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
+			{
+				var stringRenderer = ((FontWrapper)font).font;
+				Owner.Renderer.SetModulateColor(color);
+				stringRenderer.RenderString(Owner.Renderer, x, y, s);
+				Owner.Renderer.SetModulateColorWhite();
+			}
+			SizeF IBlitter.MeasureString(string s, IBlitterFont font)
+			{
+				var stringRenderer = ((FontWrapper)font).font;
+				return stringRenderer.Measure(s);
+			}
+			public Rectangle ClipBounds { get; set; }
 		}
 
-		SwappableBitmapBufferSet nativeDisplaySurfaceSet = new SwappableBitmapBufferSet();
+		/// <summary>
+		/// applies letterboxing logic to figure out how to fit the source dimensions into the target dimensions.
+		/// In the future this could also apply rules like integer-only scaling, etc.
+		/// TODO - make this work with a output rect instead of float and dx/dy
+		/// </summary>
+		class LetterboxingLogic
+		{
+			public LetterboxingLogic(int targetWidth, int targetHeight, int sourceWidth, int sourceHeight)
+			{
+				float vw = (float)targetWidth;
+				float vh = (float)targetHeight;
+				float widthScale = vw / sourceWidth;
+				float heightScale = vh / sourceHeight;
+				finalScale = Math.Min(widthScale, heightScale);
+				dx = (int)((vw - finalScale * sourceWidth) / 2);
+				dy = (int)((vh - finalScale * sourceHeight) / 2);
+			}
 
-		//Thread displayThread;
+			/// <summary>
+			/// scale to be applied to both x and y
+			/// </summary>
+			public float finalScale;
+
+			/// <summary>
+			/// offset
+			/// </summary>
+			public float dx, dy;
+		}
 	}
+
 }
