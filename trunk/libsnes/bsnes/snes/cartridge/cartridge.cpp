@@ -82,7 +82,7 @@ void Cartridge::unload() {
 }
 
 Cartridge::Cartridge()
-	: rom()
+	: rom("CARTRIDGE_ROM")
 	, ram("CARTRIDGE_RAM")
 {
   loaded = false;
