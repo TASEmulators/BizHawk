@@ -253,12 +253,29 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			float[] data = new float[16] {
-			  x,y, u0,v0, 
-			  x+w,y, u1,v0,
-			  x,y+h, u0,v1,
-			  x+w,y+h, u1,v1
-			};
+			//float[] data = new float[16] {
+			//  x,y, u0,v0, 
+			//  x+w,y, u1,v0,
+			//  x,y+h, u0,v1,
+			//  x+w,y+h, u1,v1
+			//};
+			float* pData = stackalloc float[16];
+			pData[0] = x;
+			pData[1] = y;
+			pData[2] = u0;
+			pData[3] = v0;
+			pData[4] = x + w;
+			pData[5] = y;
+			pData[6] = u1;
+			pData[7] = v0;
+			pData[8] = x;
+			pData[9] = y + h;
+			pData[10] = u0;
+			pData[11] = v1;
+			pData[12] = x + w;
+			pData[13] = y + h;
+			pData[14] = u1;
+			pData[15] = v1;
 
 			if (sTexture != tex)
 				CurrPipeline["uSampler0"].Set(sTexture = tex);
@@ -274,11 +291,8 @@ namespace BizHawk.Bizware.BizwareGL
 				_Modelview.IsDirty = false;
 			}
 
-			fixed (float* pData = &data[0])
-			{
-				Owner.BindArrayData(pData);
-				Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
-			}
+			Owner.BindArrayData(pData);
+			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}
 		
 		public bool IsActive { get; private set; }
