@@ -233,6 +233,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();
+			SetupStateBuff();
 		}
 
 		int _lagcount = 0;
@@ -523,7 +524,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public byte[] SaveStateBinary()
+		byte[] SaveStateBinaryBuff;
+		void SetupStateBuff()
 		{
 			int buflen = 75908;
 			if (SuperGrafx) buflen += 90700;
@@ -533,15 +535,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (TurboCD) buflen += 0x20000 + 2165;
 			if (ArcadeCard) buflen += 42;
 			if (ArcadeCard && !ArcadeCardRewindHack) buflen += 0x200000;
-			//Console.WriteLine("LENGTH1 " + buflen);
+			SaveStateBinaryBuff = new byte[buflen];
+			Console.WriteLine("PCE: Internal savestate buff of {0} allocated", buflen);
+		}
 
-			var buf = new byte[buflen];
-			var stream = new MemoryStream(buf);
+		public byte[] SaveStateBinary()
+		{
+			var stream = new MemoryStream(SaveStateBinaryBuff);
 			var writer = new BinaryWriter(stream);
 			SaveStateBinary(writer);
-			//Console.WriteLine("LENGTH2 " + stream.Position);
 			writer.Close();
-			return buf;
+			return SaveStateBinaryBuff;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
