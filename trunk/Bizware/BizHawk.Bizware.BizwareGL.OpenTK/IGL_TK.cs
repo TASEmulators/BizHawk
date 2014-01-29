@@ -425,9 +425,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void IGL.SetViewport(swf.Control control)
 		{
-			ErrorCode errcode;
 			var r = control.ClientRectangle;
-			errcode = GL.GetError();
 			GL.Viewport(r.Left, r.Top, r.Width, r.Height);
 		}
 
@@ -490,8 +488,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		unsafe void MyBindArrayData(VertexLayout layout, void* pData)
 		{
-			ErrorCode errcode;
-
 			UnbindVertexAttributes();
 
 			//HAMNUTS (continued)
@@ -501,9 +497,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			foreach (var kvp in layout.Items)
 			{
 				GL.VertexAttribPointer(kvp.Key, kvp.Value.Components, (VertexAttribPointerType)kvp.Value.AttribType, kvp.Value.Normalized, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
-				errcode = GL.GetError();
 				GL.EnableVertexAttribArray(kvp.Key);
-				errcode = GL.GetError();
 				currBindings.Add(kvp.Key);
 			}
 		}
