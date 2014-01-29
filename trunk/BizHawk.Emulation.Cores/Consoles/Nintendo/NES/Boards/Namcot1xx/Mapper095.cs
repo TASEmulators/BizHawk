@@ -12,6 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NAMCOT-3425": //dragon buster (J)
 					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
 					break;
+				case "MAPPER095":
+					AssertVram(0);
+					break;
 				default:
 					return false;
 			}
