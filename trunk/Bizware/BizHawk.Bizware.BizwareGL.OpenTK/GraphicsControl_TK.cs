@@ -46,8 +46,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void End()
 		{
-			//this slows things down too much
-			//Owner.MakeDefaultCurrent();
+			Owner.MakeDefaultCurrent();
 		}
 
 		public new void SwapBuffers()
