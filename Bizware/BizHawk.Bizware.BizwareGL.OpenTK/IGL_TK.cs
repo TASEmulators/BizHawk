@@ -56,6 +56,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//misc initialization
 			CreateRenderStates();
 			GL.Enable(EnableCap.Texture2D);
+			PurgeStateCache();
 		}
 
 		void IDisposable.Dispose()
@@ -241,12 +242,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		unsafe void IGL.BindVertexLayout(VertexLayout layout)
 		{
-			StatePendingVertexLayouts[CurrentContext] = layout;
+			sStatePendingVertexLayout = layout;
 		}
 
 		unsafe void IGL.BindArrayData(void* pData)
 		{
-			MyBindArrayData(StatePendingVertexLayouts[CurrentContext], pData);
+			MyBindArrayData(sStatePendingVertexLayout, pData);
 		}
 
 		void IGL.DrawArrays(PrimitiveType mode, int first, int count)
@@ -278,9 +279,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		void IGL.SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
 		{
 			//set the sampler index into the uniform first
-			//GL.Uniform1(uniform.Id.ToInt32(), uniform.SamplerIndex);
 			//now bind the texture
-			GL.ActiveTexture((TextureUnit)((int)TextureUnit.Texture0 + uniform.SamplerIndex));
+			if(sActiveTexture != uniform.SamplerIndex)
+			{
+				sActiveTexture = uniform.SamplerIndex;
+				var selectedUnit = (TextureUnit)((int)TextureUnit.Texture0 + uniform.SamplerIndex);
+				GL.ActiveTexture(selectedUnit);
+			}
 			GL.BindTexture(TextureTarget.Texture2D, texHandle.ToInt32());
 		}
 
@@ -437,8 +442,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		//---------------
 		//my utility methods
 
-		global::OpenTK.Graphics.IGraphicsContext CurrentContext { get { return global::OpenTK.Graphics.GraphicsContext.CurrentContext; } }
-
 		GLControl CastControl(swf.Control swfControl)
 		{
 			GLControl glc = swfControl as GLControl;
@@ -471,16 +474,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if(n==0)
 				throw new InvalidOperationException("Error compiling shader (CompileShader)" + "\r\n\r\n" + resultLog);
 		}
-
-		Dictionary<IGraphicsContext, VertexLayout> StateCurrentVertexLayouts = new Dictionary<IGraphicsContext, VertexLayout>();
-		Dictionary<IGraphicsContext, VertexLayout> StatePendingVertexLayouts = new Dictionary<IGraphicsContext, VertexLayout>();
-		WorkingDictionary<IGraphicsContext, HashSet<int>> VertexAttribEnables = new WorkingDictionary<IGraphicsContext, HashSet<int>>();
+	
 		void UnbindVertexAttributes()
 		{
 			//HAMNUTS:
 			//its not clear how many bindings we'll have to disable before we can enable the ones we need..
 			//so lets just disable the ones we remember we have bound
-			var currBindings = VertexAttribEnables[CurrentContext];
+			var currBindings = sVertexAttribEnables;
 			foreach (var index in currBindings)
 				GL.DisableVertexAttribArray(index);
 			currBindings.Clear();
@@ -491,8 +491,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			UnbindVertexAttributes();
 
 			//HAMNUTS (continued)
-			var currBindings = VertexAttribEnables[CurrentContext];
-			StateCurrentVertexLayouts[CurrentContext] = StatePendingVertexLayouts[CurrentContext];
+			var currBindings = sVertexAttribEnables;
+			sStateCurrentVertexLayout = sStatePendingVertexLayout;
 
 			foreach (var kvp in layout.Items)
 			{
@@ -504,27 +504,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		internal void MakeDefaultCurrent()
 		{
-			MakeContextCurrent(this.GraphicsContext, OffscreenNativeWindow.WindowInfo);
+			MakeContextCurrent(this.GraphicsContext,OffscreenNativeWindow.WindowInfo);
 		}
 
 		internal void MakeContextCurrent(IGraphicsContext context, global::OpenTK.Platform.IWindowInfo windowInfo)
 		{
-			//TODO - if we're churning through contexts quickly, this will sort of be a memory leak, since they'll be memoized forever in here
-			//maybe make it a weakptr or something
-
-			//dont do anything if we're already current
-			IGraphicsContext currentForThread = null;
-			if (ThreadsForContexts.TryGetValue(Thread.CurrentThread, out currentForThread))
-				if (currentForThread == context)
-					return;
-
-			NativeWindowsForContexts[context] = windowInfo;
 			context.MakeCurrent(windowInfo);
-			ThreadsForContexts[Thread.CurrentThread] = context;
+			PurgeStateCache();
 		}
-
-		Dictionary<Thread, IGraphicsContext> ThreadsForContexts = new Dictionary<Thread, IGraphicsContext>();
-		Dictionary<IGraphicsContext, global::OpenTK.Platform.IWindowInfo> NativeWindowsForContexts = new Dictionary<IGraphicsContext, global::OpenTK.Platform.IWindowInfo>();
 
 		void CreateRenderStates()
 		{
@@ -535,6 +522,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		}
 
 		MyBlendState _rsBlendNone, _rsBlendNormal;
+
+		//state caches
+		int sActiveTexture;
+		VertexLayout sStateCurrentVertexLayout;
+		VertexLayout sStatePendingVertexLayout;
+		HashSet<int> sVertexAttribEnables = new HashSet<int>();
+		void PurgeStateCache()
+		{
+			sStateCurrentVertexLayout = null;
+			sStatePendingVertexLayout = null;
+			sVertexAttribEnables.Clear();
+			sActiveTexture = -1;
+		}
 	
 	} //class IGL_TK
 
