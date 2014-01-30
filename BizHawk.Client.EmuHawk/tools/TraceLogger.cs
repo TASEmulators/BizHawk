@@ -14,9 +14,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// Refresh rate slider
 		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
-		// Remember window size
 		private readonly List<string> _instructions = new List<string>();
+		
 		private FileInfo _logFile;
+		private int _defaultWidth;
+		private int _defaultHeight;
 
 		public TraceLogger()
 		{
@@ -44,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.CoreComm.Tracer.Enabled = false;
 			Global.Config.TraceLoggerSettings.Wndx = Location.X;
 			Global.Config.TraceLoggerSettings.Wndy = Location.Y;
+			Global.Config.TraceLoggerSettings.Width = Size.Width;
+			Global.Config.TraceLoggerSettings.Height = Size.Height;
 		}
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
@@ -53,9 +57,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceLogger_Load(object sender, EventArgs e)
 		{
+			_defaultWidth = Size.Width;
+			_defaultHeight = Size.Height;
+
 			if (Global.Config.TraceLoggerSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.TraceLoggerSettings.Wndx.Value, Global.Config.TraceLoggerSettings.Wndy.Value);
+				Location = Global.Config.TraceLoggerSettings.WindowPosition;
+			}
+
+			if (Global.Config.TraceLoggerSettings.UseWindowSize)
+			{
+				Size = Global.Config.TraceLoggerSettings.WindowSize;
 			}
 
 			ClearList();
@@ -308,6 +320,17 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TraceLoggerSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
+		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			Size = new Size(_defaultWidth, _defaultHeight);
+
+			Global.Config.TraceLoggerSettings.SaveWindowPosition = true;
+			Global.Config.TraceLoggerSettings.TopMost = false;
+			Global.Config.TraceLoggerSettings.FloatingWindow = false;
+
 			RefreshFloatingWindowControl();
 		}
 

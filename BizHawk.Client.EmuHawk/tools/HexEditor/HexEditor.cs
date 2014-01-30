@@ -1498,7 +1498,10 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.HexEditorSettings.TopMost = false;
 			Global.Config.HexEditorSettings.SaveWindowPosition = true;
+			Global.Config.HexEditorSettings.FloatingWindow = false;
 			Global.Config.AutoLoadHexEditor = false;
+
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion

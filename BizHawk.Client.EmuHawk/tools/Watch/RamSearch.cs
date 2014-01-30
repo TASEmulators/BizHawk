@@ -198,12 +198,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.RamSearchSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.RamSearchSettings.Wndx.Value, Global.Config.RamSearchSettings.Wndy.Value);
+				Location = Global.Config.RamSearchSettings.WindowPosition;
 			}
 
 			if (Global.Config.RamSearchSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.RamSearchSettings.Width.Value, Global.Config.RamSearchSettings.Height.Value);
+				Size = Global.Config.RamSearchSettings.WindowSize;
 			}
 
 			TopMost = Global.Config.RamSearchSettings.TopMost;
@@ -1288,6 +1288,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetToFastMode();
 			}
+
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
