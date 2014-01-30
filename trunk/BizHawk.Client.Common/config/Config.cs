@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		public PathEntryCollection PathEntries = new PathEntryCollection();
 
 		// BIOS Paths
-		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); //key: sysid+firmwareId; value: absolute path
+		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); // key: sysid+firmwareId; value: absolute path
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
@@ -49,12 +49,12 @@ namespace BizHawk.Client.Common
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
-		public int TargetScanlineFilterIntensity = 0; //choose between 0 and 256
+		public int TargetScanlineFilterIntensity = 0; // choose between 0 and 256
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
-		public int MainWndx = -1; //Negative numbers will be ignored
+		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
 		public bool RunInBackground = true;
 		public bool AcceptBackgroundInput = false;
@@ -179,13 +179,8 @@ namespace BizHawk.Client.Common
 		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings
+		public ToolDialogSettings RamWatchSettings = new ToolDialogSettings();
 		public RecentFiles RecentWatches = new RecentFiles(8);
-		public bool RamWatchSaveWindowPosition = true;
-		public bool RamWatchAlwaysOnTop = false;
-		public int RamWatchWndx = -1;   // Negative numbers will be ignored even with save window position set
-		public int RamWatchWndy = -1;
-		public int RamWatchWidth = -1;
-		public int RamWatchHeight = -1;
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;

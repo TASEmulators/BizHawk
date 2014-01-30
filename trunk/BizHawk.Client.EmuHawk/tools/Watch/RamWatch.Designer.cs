@@ -116,6 +116,7 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -170,7 +171,7 @@
             this.ShowDiffContextMenuItem,
             this.ShowDomainContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 346);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 324);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// EditContextMenuItem
@@ -721,6 +722,7 @@
             this.WatchesOnScreenMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator7,
             this.RestoreWindowSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
@@ -843,6 +845,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchListView.AutoArrange = false;
+			this.WatchListView.BlazingFast = false;
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.AddressColumn,
             this.ValueColumn,
@@ -914,6 +917,13 @@
 			this.NotesColumn.Name = "NotesColumn";
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.FloatingWindowMenuItem.Text = "&Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// RamWatch
 			// 
@@ -1033,5 +1043,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowDiffContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }
