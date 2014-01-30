@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
+
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		{
 			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
 			{
-				ControlDefaults cd = ConfigService.Load<ControlDefaults>(ControlDefaultPath);
+				var cd = ConfigService.Load<ControlDefaults>(ControlDefaultPath);
 				AllTrollers = cd.AllTrollers;
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
@@ -35,12 +35,12 @@ namespace BizHawk.Client.Common
 			HotkeyBindings.ResolveWithDefaults();
 		}
 
-		//Path Settings ************************************/
+		// Path Settings ************************************/
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
 		public PathEntryCollection PathEntries = new PathEntryCollection();
 
-		//BIOS Paths
+		// BIOS Paths
 		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); //key: sysid+firmwareId; value: absolute path
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 
 		// Run-Control settings
-		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
+		public int FrameProgressDelayMs = 500; // how long until a frame advance hold turns into a frame progress?
 		public int FrameSkip = 4;
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
 
-		//Rewind settings
+		// Rewind settings
 		public bool Rewind_UseDelta = true;
 		public bool RewindEnabledSmall = true;
 		public bool RewindEnabledMedium = false;
@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;
-		public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
+		public int LuaConsoleWndx = -1;   // Negative numbers will be ignored even with save window position set
 		public int LuaConsoleWndy = -1;
 		public int LuaConsoleWidth = -1;
 		public int LuaConsoleHeight = -1;
@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentWatches = new RecentFiles(8);
 		public bool RamWatchSaveWindowPosition = true;
 		public bool RamWatchAlwaysOnTop = false;
-		public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
+		public int RamWatchWndx = -1;   // Negative numbers will be ignored even with save window position set
 		public int RamWatchWndy = -1;
 		public int RamWatchWidth = -1;
 		public int RamWatchHeight = -1;
@@ -216,13 +216,9 @@ namespace BizHawk.Client.Common
 		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
 
 		// RamSearch Settings
+		public ToolDialogSettings RamSearchSettings = new ToolDialogSettings();
 		public int RamSearchPrev_Type = 1;
-		public bool RamSearchSaveWindowPosition = true;
 		public RecentFiles RecentSearches = new RecentFiles(8);
-		public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
-		public int RamSearchWndy = -1;
-		public int RamSearchWidth = -1;  //Negative numbers will be ignored
-		public int RamSearchHeight = -1;
 		public int RamSearchPreviousAs = 0;
 		public bool RamSearchPreviewMode = true;
 		public bool RamSearchAlwaysExcludeRamWatch = false;
@@ -235,8 +231,14 @@ namespace BizHawk.Client.Common
 		public int RamSearchPrevIndex = 2;
 		public int RamSearchChangesIndex = 3;
 		public bool RamSearchFastMode = false;
-		public bool RamSearchAlwaysOnTop = false;
-		public bool RamSearchFloatingWindow = true; //default to the old behaviour
+
+		// public bool RamSearchSaveWindowPosition = true;
+		// public int RamSearchWndx = -1;   // Negative numbers will be ignored even with save window position set
+		// public int RamSearchWndy = -1;
+		// public int RamSearchWidth = -1;  // Negative numbers will be ignored
+		// public int RamSearchHeight = -1;
+		// public bool RamSearchAlwaysOnTop = false;
+		// public bool RamSearchFloatingWindow = true; // default to the old behaviour
 
 		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
 		{
@@ -264,14 +266,14 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadHexEditor = false;
 		public bool HexEditorSaveWindowPosition = true;
 		public bool HexEditorAlwaysOnTop = false;
-		public int HexEditorWndx = -1;  //Negative numbers will be ignored even with save window position set
+		public int HexEditorWndx = -1;  // Negative numbers will be ignored even with save window position set
 		public int HexEditorWndy = -1;
 		public int HexEditorWidth = -1;
 		public int HexEditorHeight = -1;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 
-		//Hex Editor Colors
+		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
 		public Color HexForegrndColor = Color.FromName("ControlText");
 		public Color HexMenubarColor = Color.FromName("Control");
@@ -279,7 +281,7 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
 
-		//Trace Logger Settings
+		// Trace Logger Settings
 		public bool TraceLoggerAutoLoad = false;
 		public bool TraceLoggerSaveWindowPosition = true;
 		public bool TraceLoggerOnTop = false;
@@ -309,46 +311,61 @@ namespace BizHawk.Client.Common
 		{
 			return GetCoreSettings(typeof(T));
 		}
+
 		public object GetCoreSettings(Type t)
 		{
 			object ret;
 			CoreSettings.TryGetValue(t.ToString(), out ret);
 			return ret;
 		}
+
 		public void PutCoreSettings<T>(object o)
 			where T : IEmulator
 		{
 			PutCoreSettings(o, typeof(T));
 		}
+
 		public void PutCoreSettings(object o, Type t)
 		{
 			if (o != null)
+			{
 				CoreSettings[t.ToString()] = o;
+			}
 			else
+			{
 				CoreSettings.Remove(t.ToString());
+			}
 		}
+
 		public object GetCoreSyncSettings<T>()
 			where T : IEmulator
 		{
 			return GetCoreSyncSettings(typeof(T));
 		}
+
 		public object GetCoreSyncSettings(Type t)
 		{
 			object ret;
 			CoreSyncSettings.TryGetValue(t.ToString(), out ret);
 			return ret;
 		}
+
 		public void PutCoreSyncSettings<T>(object o)
 			where T : IEmulator
 		{
 			PutCoreSyncSettings(o, typeof(T));
 		}
+
 		public void PutCoreSyncSettings(object o, Type t)
 		{
 			if (o != null)
+			{
 				CoreSyncSettings[t.ToString()] = o;
+			}
 			else
+			{
 				CoreSyncSettings.Remove(t.ToString());
+			}
 		}
 
 		#endregion
@@ -511,7 +528,7 @@ namespace BizHawk.Client.Common
 		public int GENGGWndx = -1;
 		public int GENGGWndy = -1;
 
-		//Movie Settings
+		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
@@ -533,7 +550,7 @@ namespace BizHawk.Client.Common
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
 
-		//Analog Hotkey values
+		// Analog Hotkey values
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;
 
@@ -564,7 +581,7 @@ namespace BizHawk.Client.Common
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = false;
 
-		//LuaWriter Settings
+		// LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;
 		public bool LuaDefaultTextBold = false;
 		public int LuaWriterBackColor = -1;
@@ -588,7 +605,7 @@ namespace BizHawk.Client.Common
 		public bool LuaShowLineNumbers = false;
 	}
 
-	// these are used in the defctrl.json or wherever
+	// These are used in the defctrl.json or wherever
 	public class ControlDefaults
 	{
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
