@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 			public string Library { get; set; }
 			public string Name { get; set; }
 			public List<string> Parameters { get; set; }
-			private readonly string _returnType = String.Empty;
+			private readonly string _returnType = string.Empty;
 
 			public string Description { get; set; }
 
@@ -83,16 +83,11 @@ namespace BizHawk.Client.Common
 					list.Append('(');
 					for (var i = 0; i < Parameters.Count; i++)
 					{
-						if (Parameters[i].Contains("Nullable"))
-						{
-							int x = 0;
-						}
-
 						var param =
-							Parameters[i].Replace("System", String.Empty)
-										 .Replace(" ", String.Empty)
-										 .Replace(".", String.Empty)
-										 .Replace("LuaInterface", String.Empty)
+							Parameters[i].Replace("System", string.Empty)
+										 .Replace(" ", string.Empty)
+										 .Replace(".", string.Empty)
+										 .Replace("LuaInterface", string.Empty)
 										 .Replace("Object", "object ")
 										 .Replace("Boolean", "bool ")
 										 .Replace("String", "string ")
@@ -129,8 +124,8 @@ namespace BizHawk.Client.Common
 				get
 				{
 					return _returnType
-						.Replace("System.", String.Empty)
-						.Replace("LuaInterface.", String.Empty)
+						.Replace("System.", string.Empty)
+						.Replace("LuaInterface.", string.Empty)
 						.ToLower()
 						.Trim();
 				}

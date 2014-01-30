@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			this.Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		private void ToggleSearchDependentToolBarItems()
@@ -1700,6 +1700,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnShown(EventArgs e)
 		{
 			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		#endregion
