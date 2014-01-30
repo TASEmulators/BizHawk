@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings = new RamSearchEngine.Settings();
 			_searches = new RamSearchEngine(_settings);
 
-			TopMost = Global.Config.RamSearchSettings.AlwaysOnTop;
+			TopMost = Global.Config.RamSearchSettings.TopMost;
 		}
 
 		private void HardSetDisplayTypeDropDown(Watch.DisplayType type)
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(Global.Config.RamSearchSettings.Width.Value, Global.Config.RamSearchSettings.Height.Value);
 			}
 
-			TopMost = Global.Config.RamSearchSettings.AlwaysOnTop;
+			TopMost = Global.Config.RamSearchSettings.TopMost;
 
 			LoadColumnInfo();
 		}
@@ -1192,7 +1192,7 @@ namespace BizHawk.Client.EmuHawk
 			ExcludeRamWatchMenuItem.Checked = Global.Config.RamSearchAlwaysExcludeRamWatch;
 			UseUndoHistoryMenuItem.Checked = _searches.UndoEnabled;
 			PreviewModeMenuItem.Checked = Global.Config.RamSearchPreviewMode;
-			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchSettings.AlwaysOnTop;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamSearchSettings.TopMost;
 			FloatingWindowMenuItem.Checked = Global.Config.RamSearchSettings.FloatingWindow;
 			AutoSearchMenuItem.Checked = _autoSearch;
 		}
@@ -1233,8 +1233,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamSearchSettings.AlwaysOnTop ^= true;
-			TopMost = Global.Config.RamSearchSettings.AlwaysOnTop;
+			Global.Config.RamSearchSettings.TopMost ^= true;
+			TopMost = Global.Config.RamSearchSettings.TopMost;
 		}
 
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
@@ -1269,7 +1269,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
 
 			Global.Config.RamSearchSettings.SaveWindowPosition = true;
-			Global.Config.RamSearchSettings.AlwaysOnTop = TopMost = false;
+			Global.Config.RamSearchSettings.TopMost = TopMost = false;
 			Global.Config.RamSearchSettings.FloatingWindow = false;
 
 			Global.Config.RamSearchColumnWidths = new Dictionary<string, int>

@@ -13,7 +13,7 @@
 		public int? Height { get; set; }
 
 		public bool SaveWindowPosition { get; set; }
-		public bool AlwaysOnTop { get; set; }
+		public bool TopMost { get; set; }
 		public bool FloatingWindow { get; set; }
 
 		public bool UseWindowPosition

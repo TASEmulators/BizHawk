@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			TraceView.QueryItemText += TraceView_QueryItemText;
 			TraceView.VirtualMode = true;
 
-			TopMost = Global.Config.TraceLoggerOnTop;
+			TopMost = Global.Config.TraceLoggerSettings.TopMost;
 			Closing += (o, e) => SaveConfigSettings();
 		}
 
@@ -42,20 +42,20 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			Global.CoreComm.Tracer.Enabled = false;
-			Global.Config.TraceLoggerWndx = Location.X;
-			Global.Config.TraceLoggerWndy = Location.Y;
+			Global.Config.TraceLoggerSettings.Wndx = Location.X;
+			Global.Config.TraceLoggerSettings.Wndy = Location.Y;
 		}
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			text = index < _instructions.Count ? _instructions[index] : String.Empty;
+			text = index < _instructions.Count ? _instructions[index] : string.Empty;
 		}
 
 		private void TraceLogger_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.TraceLoggerSaveWindowPosition && Global.Config.TraceLoggerWndx >= 0 && Global.Config.TraceLoggerWndy >= 0)
+			if (Global.Config.TraceLoggerSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.TraceLoggerWndx, Global.Config.TraceLoggerWndy);
+				Location = new Point(Global.Config.TraceLoggerSettings.Wndx.Value, Global.Config.TraceLoggerSettings.Wndy.Value);
 			}
 
 			ClearList();
@@ -116,15 +116,14 @@ namespace BizHawk.Client.EmuHawk
 		private void LogToWindow()
 		{
 			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
-			if (!String.IsNullOrWhiteSpace(instructions[0]))
+			if (!string.IsNullOrWhiteSpace(instructions[0]))
 			{
 				_instructions.AddRange(instructions);
 			}
 
 			if (_instructions.Count >= Global.Config.TraceLoggerMaxLines)
 			{
-				var x = _instructions.Count - Global.Config.TraceLoggerMaxLines;
-				_instructions.RemoveRange(0, x);
+				_instructions.RemoveRange(0, _instructions.Count - Global.Config.TraceLoggerMaxLines);
 			}
 
 			TraceView.ItemCount = _instructions.Count;
@@ -180,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".txt";
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
-			else if (!String.IsNullOrWhiteSpace(_logFile.FullName))
+			else if (!string.IsNullOrWhiteSpace(_logFile.FullName))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = Path.GetDirectoryName(_logFile.FullName);
@@ -213,6 +212,11 @@ namespace BizHawk.Client.EmuHawk
 					sw.WriteLine(instruction);
 				}
 			}
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.TraceLoggerSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -280,8 +284,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadMenuItem.Checked = Global.Config.TraceLoggerAutoLoad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.TraceLoggerSaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.TraceLoggerOnTop;
+			SaveWindowPositionMenuItem.Checked = Global.Config.TraceLoggerSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.TraceLoggerSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.TraceLoggerSettings.FloatingWindow;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
@@ -291,13 +296,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TraceLoggerSaveWindowPosition ^= true;
+			Global.Config.TraceLoggerSettings.SaveWindowPosition ^= true;
 		}
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TraceLoggerOnTop ^= true;
-			TopMost = Global.Config.TraceLoggerOnTop;
+			Global.Config.TraceLoggerSettings.TopMost ^= true;
+			TopMost = Global.Config.TraceLoggerSettings.TopMost;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TraceLoggerSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
@@ -359,6 +370,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetTracerBoxTitle();
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		#endregion
