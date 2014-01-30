@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			Header.Font = new Font("Courier New", 8);
 			AddressesLabel.Font = new Font("Courier New", 8);
 			AddressLabel.Font = new Font("Courier New", 8);
-			TopMost = Global.Config.HexEditorSettings.AlwaysOnTop;
+			TopMost = Global.Config.HexEditorSettings.TopMost;
 		}
 
 		private int? HighlightedAddress
@@ -1445,7 +1445,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AutoloadMenuItem.Checked = Global.Config.AutoLoadHexEditor;
 			SaveWindowsPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.HexEditorSettings.AlwaysOnTop;
+			AlwaysOnTopMenuItem.Checked = Global.Config.HexEditorSettings.TopMost;
 		}
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
@@ -1480,8 +1480,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.HexEditorSettings.AlwaysOnTop ^= true;
-			TopMost = Global.Config.HexEditorSettings.AlwaysOnTop;
+			Global.Config.HexEditorSettings.TopMost ^= true;
+			TopMost = Global.Config.HexEditorSettings.TopMost;
 		}
 
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
@@ -1495,7 +1495,7 @@ namespace BizHawk.Client.EmuHawk
 			Size = new Size(_defaultWidth, _defaultHeight);
 			SetUpScrollBar();
 
-			Global.Config.HexEditorSettings.AlwaysOnTop = false;
+			Global.Config.HexEditorSettings.TopMost = false;
 			Global.Config.HexEditorSettings.SaveWindowPosition = true;
 			Global.Config.AutoLoadHexEditor = false;
 		}
