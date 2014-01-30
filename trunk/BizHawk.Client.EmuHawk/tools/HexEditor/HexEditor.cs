@@ -1446,6 +1446,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoloadMenuItem.Checked = Global.Config.AutoLoadHexEditor;
 			SaveWindowsPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Global.Config.HexEditorSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.HexEditorSettings.FloatingWindow;
 		}
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
