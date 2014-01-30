@@ -101,6 +101,7 @@
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />
     <Compile Include="config\PathEntry.cs" />
+    <Compile Include="config\ToolDialogSettings.cs" />
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="FirmwareManager.cs" />
