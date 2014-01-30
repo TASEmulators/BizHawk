@@ -394,16 +394,12 @@ namespace BizHawk.Client.Common
 
 		#region Cheats Dialog
 
+		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
 		public bool Cheats_ValuesAsHex = true;
-		public bool CheatsSaveWindowPosition = true;
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
 		public bool CheatsAutoSaveOnClose = true;
 		public RecentFiles RecentCheats = new RecentFiles(8);
-		public int CheatsWndx = -1;
-		public int CheatsWndy = -1;
-		public int CheatsWidth = -1;
-		public int CheatsHeight = -1;
 		public int CheatsNameWidth = -1;
 		public int CheatsAddressWidth = -1;
 		public int CheatsValueWidth = -1;
@@ -416,7 +412,6 @@ namespace BizHawk.Client.Common
 		public int CheatsCompareIndex = 3;
 		public int CheatsOnIndex = 4;
 		public int CheatsDomainIndex = 5;
-		public bool CheatsAlwaysOnTop = false;
 
 		public Dictionary<string, int> CheatsColumnWidths = new Dictionary<string, int>
 			{
