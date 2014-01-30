@@ -28,7 +28,7 @@
 		{
 			get
 			{
-				return Width.HasValue && Height.HasValue;
+				return SaveWindowPosition && Width.HasValue && Height.HasValue;
 			}
 		}
 	}

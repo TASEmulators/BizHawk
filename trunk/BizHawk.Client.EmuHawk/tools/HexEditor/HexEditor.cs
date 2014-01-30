@@ -38,18 +38,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _row;
 		private int _addr;
-		private string _findStr = String.Empty;
-		private bool _loaded;
+		private string _findStr = string.Empty;
 		private bool _mouseIsDown;
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
 		private HexFind _hexFind = new HexFind();
 
 		// Configurations
-		private int _wndx = -1;
-		private int _wndy = -1;
-		private int _width = -1;
-		private int _height = -1;
 		private bool _bigEndian;
 		private int _dataSize;
 
@@ -63,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			Header.Font = new Font("Courier New", 8);
 			AddressesLabel.Font = new Font("Courier New", 8);
 			AddressLabel.Font = new Font("Courier New", 8);
-			TopMost = Global.Config.HexEditorAlwaysOnTop;
+			TopMost = Global.Config.HexEditorSettings.AlwaysOnTop;
 		}
 
 		private int? HighlightedAddress
@@ -158,8 +153,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var found = -1;
 
-			var search = value.Replace(" ", String.Empty).ToUpper();
-			if (String.IsNullOrEmpty(search))
+			var search = value.Replace(" ", string.Empty).ToUpper();
+			if (string.IsNullOrEmpty(search))
 			{
 				return;
 			}
@@ -185,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				var ramblock = new StringBuilder();
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(String.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
 				}
 
 				var block = ramblock.ToString().ToUpper();
@@ -214,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			var found = -1;
 
 			var search = value.Replace(" ", string.Empty).ToUpper();
-			if (!String.IsNullOrEmpty(search))
+			if (!string.IsNullOrEmpty(search))
 			{
 				return;
 			}
@@ -236,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				var ramblock = new StringBuilder();
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(String.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
 				}
 
 				var block = ramblock.ToString().ToUpper();
@@ -341,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static int GetNumDigits(Int32 i)
+		private static int GetNumDigits(int i)
 		{
 			if (i <= 0x10000)
 			{
@@ -364,6 +359,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.RamSearchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		private static string GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
-			return result == DialogResult.OK ? sfd.FileName : String.Empty;
+			return result == DialogResult.OK ? sfd.FileName : string.Empty;
 		}
 
 		private static bool IsHexKeyCode(char key)
@@ -410,31 +410,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
-			if (Global.Config.SaveWindowPosition)
-			{
-				if (_wndx >= 0 && _wndy >= 0)
-				{
-					Location = new Point(_wndx, _wndy);
-				}
 
-				if (_width >= 0 && _height >= 0)
-				{
-					Size = new Size(_width, _height);
-				}
+			if (Global.Config.HexEditorSettings.UseWindowPosition)
+			{
+				Location = new Point(Global.Config.HexEditorSettings.Wndx.Value, Global.Config.HexEditorSettings.Wndy.Value);
+			}
+			
+			if (Global.Config.HexEditorSettings.UseWindowSize)
+			{
+				Size = new Size(Global.Config.HexEditorSettings.Width.Value, Global.Config.HexEditorSettings.Height.Value);
 			}
 
 			SetMemoryDomainMenu();
 			SetDataSize(_dataSize);
 			UpdateValues();
-			_loaded = true;
 		}
 
 		private void LoadConfigSettings()
 		{
-			_wndx = Global.Config.HexEditorWndx;
-			_wndy = Global.Config.HexEditorWndy;
-			_width = Global.Config.HexEditorWidth;
-			_height = Global.Config.HexEditorHeight;
 			_bigEndian = Global.Config.HexEditorBigEndian;
 			_dataSize = Global.Config.HexEditorDataSize;
 
@@ -454,10 +447,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.SaveWindowPosition)
 			{
-				Global.Config.HexEditorWndx = _loaded ? Location.X : _wndx;
-				Global.Config.HexEditorWndy = _loaded ? Location.Y : _wndy;
-				Global.Config.HexEditorWidth = _loaded ? Right - Left : _width;
-				Global.Config.HexEditorHeight = _loaded ? Bottom - Top : _height;
+				Global.Config.HexEditorSettings.Wndx = Location.X;
+				Global.Config.HexEditorSettings.Wndy = Location.Y;
+				Global.Config.HexEditorSettings.Width = Right - Left;
+				Global.Config.HexEditorSettings.Height = Bottom - Top;
 			}
 
 			Global.Config.HexEditorBigEndian = _bigEndian;
@@ -717,7 +710,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_addressHighlighted >= 0)
 			{
-				Text = "Hex Editor - Editing Address 0x" + String.Format(_numDigitsStr, _addressHighlighted);
+				Text = "Hex Editor - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
 			}
 			else
 			{
@@ -768,11 +761,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 1:
-					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, String.Empty);
+					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, string.Empty);
 				case 2:
-					return new WordWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, String.Empty);
+					return new WordWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, string.Empty);
 				case 4:
-					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, String.Empty);
+					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, _bigEndian, string.Empty);
 			}
 		}
 
@@ -804,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 					address,
 					WatchSize,
 					Watch.DisplayType.Hex,
-					String.Empty,
+					string.Empty,
 					_bigEndian);
 
 				Global.CheatList.Add(new Cheat(
@@ -859,7 +852,7 @@ namespace BizHawk.Client.EmuHawk
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
-			return result == DialogResult.OK ? sfd.FileName : String.Empty;
+			return result == DialogResult.OK ? sfd.FileName : string.Empty;
 		}
 
 		private void ResetScrollBar()
@@ -1005,7 +998,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeNibbles()
 		{
-			var str = String.Empty;
+			var str = string.Empty;
 			for (var x = 0; x < (_dataSize * 2); x++)
 			{
 				if (_nibbles[x] != 'G')
@@ -1120,11 +1113,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (address != -1)
 			{
-				return String.Format(_digitFormatString, MakeValue(address)).Trim();
+				return string.Format(_digitFormatString, MakeValue(address)).Trim();
 			}
 			else
 			{
-				return String.Empty;
+				return string.Empty;
 			}
 		}
 
@@ -1137,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				return String.Empty;
+				return string.Empty;
 			}
 		}
 
@@ -1193,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTextMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = GetSaveFileFromUser();
-			if (!String.IsNullOrWhiteSpace(path))
+			if (!string.IsNullOrWhiteSpace(path))
 			{
 				var file = new FileInfo(path);
 				using (var sw = new StreamWriter(file.FullName))
@@ -1204,7 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (var j = 0; j < 16; j++)
 						{
-							sb.Append(String.Format("{0:X2} ", _domain.PeekByte((i * 16) + j)));
+							sb.Append(string.Format("{0:X2} ", _domain.PeekByte((i * 16) + j)));
 						}
 
 						sb.AppendLine();
@@ -1226,14 +1219,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			FindNextMenuItem.Enabled = !String.IsNullOrWhiteSpace(_findStr);
+			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : String.Empty;
+			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : string.Empty;
 			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
-			if (!String.IsNullOrWhiteSpace(value))
+			if (!string.IsNullOrWhiteSpace(value))
 			{
 				Clipboard.SetDataObject(value);
 			}
@@ -1245,7 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (data != null && data.GetDataPresent(DataFormats.Text))
 			{
-				var clipboardRaw = (String)data.GetData(DataFormats.Text);
+				var clipboardRaw = (string)data.GetData(DataFormats.Text);
 				var hex = InputValidate.DoHexString(clipboardRaw);
 
 				var numBytes = hex.Length / 2;
@@ -1434,14 +1427,13 @@ namespace BizHawk.Client.EmuHawk
 						address,
 						(Watch.WatchSize)_dataSize,
 						Watch.DisplayType.Hex,
-						String.Empty,
+						string.Empty,
 						_bigEndian
 				));
 
 				poke.SetWatch(watches);
 				poke.ShowHawkDialog();
 				UpdateValues();
-
 			}
 		}
 
@@ -1453,7 +1445,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AutoloadMenuItem.Checked = Global.Config.AutoLoadHexEditor;
 			SaveWindowsPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.HexEditorAlwaysOnTop;
+			AlwaysOnTopMenuItem.Checked = Global.Config.HexEditorSettings.AlwaysOnTop;
 		}
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
@@ -1488,8 +1480,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.HexEditorAlwaysOnTop ^= true;
-			TopMost = Global.Config.HexEditorAlwaysOnTop;
+			Global.Config.HexEditorSettings.AlwaysOnTop ^= true;
+			TopMost = Global.Config.HexEditorSettings.AlwaysOnTop;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.HexEditorSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1497,8 +1495,8 @@ namespace BizHawk.Client.EmuHawk
 			Size = new Size(_defaultWidth, _defaultHeight);
 			SetUpScrollBar();
 
-			Global.Config.HexEditorAlwaysOnTop = false;
-			Global.Config.HexEditorSaveWindowPosition = true;
+			Global.Config.HexEditorSettings.AlwaysOnTop = false;
+			Global.Config.HexEditorSettings.SaveWindowPosition = true;
 			Global.Config.AutoLoadHexEditor = false;
 		}
 
@@ -2045,7 +2043,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SetHighlighted(pointed_address);
 						_secondaryHighlightedAddresses.Clear();
-						_findStr = String.Empty;
+						_findStr = string.Empty;
 					}
 
 					MemoryViewerBox.Refresh();
@@ -2060,6 +2058,11 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
 		#endregion
 
 		#endregion

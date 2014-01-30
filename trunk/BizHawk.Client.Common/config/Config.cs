@@ -232,14 +232,6 @@ namespace BizHawk.Client.Common
 		public int RamSearchChangesIndex = 3;
 		public bool RamSearchFastMode = false;
 
-		// public bool RamSearchSaveWindowPosition = true;
-		// public int RamSearchWndx = -1;   // Negative numbers will be ignored even with save window position set
-		// public int RamSearchWndy = -1;
-		// public int RamSearchWidth = -1;  // Negative numbers will be ignored
-		// public int RamSearchHeight = -1;
-		// public bool RamSearchAlwaysOnTop = false;
-		// public bool RamSearchFloatingWindow = true; // default to the old behaviour
-
 		public Dictionary<string, int> RamSearchColumnWidths = new Dictionary<string, int>
 		{
 			{ "AddressColumn", -1 },
@@ -263,15 +255,17 @@ namespace BizHawk.Client.Common
 		public bool RamSearchShowDiffColumn = false;
 
 		// HexEditor Settings
+		public ToolDialogSettings HexEditorSettings = new ToolDialogSettings();
 		public bool AutoLoadHexEditor = false;
-		public bool HexEditorSaveWindowPosition = true;
-		public bool HexEditorAlwaysOnTop = false;
-		public int HexEditorWndx = -1;  // Negative numbers will be ignored even with save window position set
-		public int HexEditorWndy = -1;
-		public int HexEditorWidth = -1;
-		public int HexEditorHeight = -1;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
+
+		//public bool HexEditorSaveWindowPosition = true;
+		//public bool HexEditorAlwaysOnTop = false;
+		//public int HexEditorWndx = -1;
+		//public int HexEditorWndy = -1;
+		//public int HexEditorWidth = -1;
+		//public int HexEditorHeight = -1;
 
 		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
