@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			if (keyboard.Poll().IsFailure)
 				return;
 
-			state = keyboard.GetCurrentState();
+			keyboard.GetCurrentState(ref state);
 			if (Result.Last.IsFailure)
 				return;
 		}
