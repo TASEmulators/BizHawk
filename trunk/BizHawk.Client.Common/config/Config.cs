@@ -260,13 +260,6 @@ namespace BizHawk.Client.Common
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 
-		//public bool HexEditorSaveWindowPosition = true;
-		//public bool HexEditorAlwaysOnTop = false;
-		//public int HexEditorWndx = -1;
-		//public int HexEditorWndy = -1;
-		//public int HexEditorWidth = -1;
-		//public int HexEditorHeight = -1;
-
 		// Hex Editor Colors
 		public Color HexBackgrndColor = Color.FromName("Control");
 		public Color HexForegrndColor = Color.FromName("ControlText");

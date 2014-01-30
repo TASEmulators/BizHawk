@@ -2063,6 +2063,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshFloatingWindowControl();
 			base.OnShown(e);
 		}
+
 		#endregion
 
 		#endregion
