@@ -369,17 +369,17 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigSettings()
 		{
 			// Size and Positioning
-			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
+			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
 			if (Global.Config.RamWatchSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.RamWatchSettings.Wndx.Value, Global.Config.RamWatchSettings.Wndy.Value);
+				Location = Global.Config.RamWatchSettings.WindowPosition;
 			}
 
 			if (Global.Config.RamWatchSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.RamWatchSettings.Width.Value, Global.Config.RamWatchSettings.Height.Value);
+				Size = Global.Config.RamWatchSettings.WindowSize;
 			}
 
 			LoadColumnInfo();
