@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -8,7 +10,7 @@ using BizHawk.Bizware.BizwareGL;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// Recycles a temporary texture to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.
+	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.
 	/// When the dimensions dont match, a new one will be allocated
 	/// </summary>
 	class TextureFrugalizer : IDisposable
@@ -16,19 +18,26 @@ namespace BizHawk.Client.EmuHawk
 		public TextureFrugalizer(IGL gl)
 		{
 			GL = gl;
+			ResetList();
 		}
 
 		public void Dispose()
 		{
-			if (CurrentTexture != null)
-			{
-				CurrentTexture.Dispose();
-				CurrentTexture = null;
-			}
+			foreach (var ct in CurrentTextures)
+				if(ct != null)
+					ct.Dispose();
+			ResetList();
+		}
+
+		void ResetList()
+		{
+			CurrentTextures = new List<Texture2d>();
+			CurrentTextures.Add(null);
+			CurrentTextures.Add(null);
 		}
 
 		IGL GL;
-		Texture2d CurrentTexture;
+		List<Texture2d> CurrentTextures;
 
 		public Texture2d Get(DisplaySurface ds)
 		{
@@ -39,16 +48,27 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public Texture2d Get(BitmapBuffer bb)
 		{
+			//get the current entry
+			Texture2d CurrentTexture = CurrentTextures[0];
+
+			//check if its rotten and needs recreating
 			if (CurrentTexture == null || CurrentTexture.IntWidth != bb.Width || CurrentTexture.IntHeight != bb.Height)
 			{
+				//needs recreating. be sure to kill the old one...
 				if (CurrentTexture != null)
 					CurrentTexture.Dispose();
+				//and make a new one
 				CurrentTexture = GL.LoadTexture(bb);
 			}
 			else
 			{
+				//its good! just load in the data
 				GL.LoadTextureData(CurrentTexture, bb);
 			}
+
+			//now shuffle the buffers
+			CurrentTextures.Insert(0,CurrentTextures[1]);
+			CurrentTextures[1] = CurrentTexture;
 
 			return CurrentTexture;
 		}
