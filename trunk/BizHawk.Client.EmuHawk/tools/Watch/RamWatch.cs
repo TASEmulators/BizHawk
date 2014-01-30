@@ -923,7 +923,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSettings.SaveWindowPosition = true;
 			Global.Config.RamWatchSettings.TopMost = TopMost = false;
+			Global.Config.RamWatchSettings.FloatingWindow = false;
 
+			RefreshFloatingWindowControl();
 			LoadColumnInfo();
 		}
 

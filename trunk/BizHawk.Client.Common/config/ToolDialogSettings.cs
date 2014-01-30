@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.Common
+﻿using System.Drawing;
+
+namespace BizHawk.Client.Common
 {
 	public class ToolDialogSettings
 	{
@@ -29,6 +31,22 @@
 			get
 			{
 				return SaveWindowPosition && Width.HasValue && Height.HasValue;
+			}
+		}
+
+		public Point WindowPosition
+		{
+			get
+			{
+				return new Point(Wndx ?? 0, Wndy ?? 0);
+			}
+		}
+
+		public Size WindowSize
+		{
+			get
+			{
+				return new Size(Width ?? 0, Height ?? 0);
 			}
 		}
 	}
