@@ -413,12 +413,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.HexEditorSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.HexEditorSettings.Wndx.Value, Global.Config.HexEditorSettings.Wndy.Value);
+				Location = Global.Config.HexEditorSettings.WindowPosition;
 			}
 			
 			if (Global.Config.HexEditorSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.HexEditorSettings.Width.Value, Global.Config.HexEditorSettings.Height.Value);
+				Size = Global.Config.HexEditorSettings.WindowSize;
 			}
 
 			SetMemoryDomainMenu();

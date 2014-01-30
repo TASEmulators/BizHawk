@@ -168,14 +168,10 @@ namespace BizHawk.Client.Common
 		public int LogWindowHeight = -1;
 
 		// Lua Console
+		public ToolDialogSettings LuaSettings = new ToolDialogSettings();
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool AutoLoadLuaConsole = false;
-		public bool LuaConsoleSaveWindowPosition = true;
-		public int LuaConsoleWndx = -1;   // Negative numbers will be ignored even with save window position set
-		public int LuaConsoleWndy = -1;
-		public int LuaConsoleWidth = -1;
-		public int LuaConsoleHeight = -1;
 		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings

@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaConsole()
 		{
 			_sortReverse = false;
-			_lastColumnSorted = String.Empty;
+			_lastColumnSorted = string.Empty;
 			_luaList = new LuaFileList
 			{
 				ChangedCallback = SessionChangedCallback,
@@ -60,9 +60,12 @@ namespace BizHawk.Client.EmuHawk
 					e.Cancel = true;
 				}
 			};
+
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
+
+			TopMost = Global.Config.LuaSettings.TopMost;
 		}
 
 		private void LuaConsole_Load(object sender, EventArgs e)
@@ -89,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
-				var luaFile = new LuaFile(String.Empty, path);
+				var luaFile = new LuaFile(string.Empty, path);
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				Global.Config.RecentLua.Add(path);
@@ -177,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SessionChangedCallback()
 		{
 			OutputMessages.Text =
-				(_luaList.Changes ? "* " : String.Empty) +
+				(_luaList.Changes ? "* " : string.Empty) +
 				Path.GetFileName(_luaList.Filename);
 		}
 
@@ -204,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaListView_QueryItemText(int index, int column, out string text)
 		{
-			text = String.Empty;
+			text = string.Empty;
 
 			if (column == 0)
 			{
@@ -219,10 +222,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			LuaImp.Close();
-			Global.Config.LuaConsoleWndx = Location.X;
-			Global.Config.LuaConsoleWndy = Location.Y;
-			Global.Config.LuaConsoleWidth = Right - Left;
-			Global.Config.LuaConsoleHeight = Bottom - Top;
+			Global.Config.LuaSettings.Wndx = Location.X;
+			Global.Config.LuaSettings.Wndy = Location.Y;
+			Global.Config.LuaSettings.Width = Right - Left;
+			Global.Config.LuaSettings.Height = Bottom - Top;
 		}
 
 		private void LoadConfigSettings()
@@ -230,15 +233,14 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Global.Config.LuaConsoleSaveWindowPosition && Global.Config.LuaConsoleWndx >= 0
-				&& Global.Config.LuaConsoleWndy >= 0)
+			if (Global.Config.LuaSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.LuaConsoleWndx, Global.Config.LuaConsoleWndy);
+				Location = Global.Config.LuaSettings.WindowPosition;
 			}
 
-			if (Global.Config.LuaConsoleWidth >= 0 && Global.Config.LuaConsoleHeight >= 0)
+			if (Global.Config.LuaSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.LuaConsoleWidth, Global.Config.LuaConsoleHeight);
+				Size = Global.Config.LuaSettings.WindowSize;
 			}
 		}
 
@@ -262,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateNumberOfScripts()
 		{
-			var message = String.Empty;
+			var message = string.Empty;
 			var total = SelectedFiles.Count();
 			var active = _luaList.Count(file => file.Enabled);
 			var paused = _luaList.Count(file => file.Enabled && file.Paused);
@@ -317,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text = String.Empty;
+				OutputBox.Text = string.Empty;
 				OutputBox.Refresh();
 			});
 		}
@@ -419,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(_luaList.Filename))
+			if (!string.IsNullOrWhiteSpace(_luaList.Filename))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(_luaList.Filename);
 				sfd.InitialDirectory = Path.GetDirectoryName(_luaList.Filename);
@@ -488,7 +490,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					if (!String.IsNullOrWhiteSpace(_luaList.Filename))
+					if (!string.IsNullOrWhiteSpace(_luaList.Filename))
 					{
 						_luaList.SaveSession();
 					}
@@ -549,6 +551,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		#region Events
 
 		#region File Menu
@@ -602,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_luaList.Changes)
 			{
-				if (!String.IsNullOrWhiteSpace(_luaList.Filename))
+				if (!string.IsNullOrWhiteSpace(_luaList.Filename))
 				{
 					_luaList.SaveSession();
 				}
@@ -852,15 +859,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
+			SaveWindowPositionMenuItem.Checked = Global.Config.LuaSettings.SaveWindowPosition;
 			AutoloadConsoleMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
 			AutoloadSessionMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaConsoleSaveWindowPosition ^= true;
+			AlwaysOnTopMenuItem.Checked = Global.Config.LuaSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.LuaSettings.FloatingWindow;
 		}
 
 		private void AutoloadConsoleMenuItem_Click(object sender, EventArgs e)
@@ -878,9 +882,30 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisableLuaScriptsOnLoad ^= true;
 		}
 
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaSettings.SaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaSettings.TopMost ^= true;
+			TopMost = Global.Config.LuaSettings.TopMost;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
 		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
+
+			Global.Config.LuaSettings.SaveWindowPosition = true;
+			Global.Config.LuaSettings.TopMost = TopMost = false;
+			Global.Config.LuaSettings.FloatingWindow = false;
 		}
 
 		#endregion
@@ -938,6 +963,12 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Dialog, Listview, OutputBox
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
@@ -1008,32 +1039,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary> -MightyMar
+		/// <summary>
 		/// Sorts the column Ascending on the first click and Descending on the second click.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void LuaListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			String columnToSort = LuaListView.Columns[e.Column].Text;
-			List<LuaFile> luaListTemp = new List<LuaFile>();
+			var columnToSort = LuaListView.Columns[e.Column].Text;
+			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
 				_sortReverse = false;
 			}
 
-			//For getting the name of the .lua file, for some reason this field is kept blank in LuaFile.cs?
-			//The Name variable gets emptied again near the end just in case it would break something.
-			for (int i = 0; i < _luaList.Count; i++)
+			// For getting the name of the .lua file, for some reason this field is kept blank in LuaFile.cs?
+			// The Name variable gets emptied again near the end just in case it would break something.
+			for (var i = 0; i < _luaList.Count; i++)
 			{
-				String[] words = Regex.Split(_luaList[i].Path, ".lua");
-				String[] split = words[0].Split('\\');
+				var words = Regex.Split(_luaList[i].Path, ".lua");
+				var split = words[0].Split(Path.DirectorySeparatorChar);
 
 				luaListTemp.Add(_luaList[i]);
 				luaListTemp[i].Name = split[split.Count() - 1];
 			}
 
-			//Script, Path
+			// Script, Path
 			switch (columnToSort)
 			{
 				case "Script":
@@ -1044,8 +1073,8 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						luaListTemp = luaListTemp.OrderBy(x => x.Name).ThenBy(x => x.Path).ToList();
-
 					}
+
 					break;
 				case "Path":
 					if (_sortReverse)
@@ -1056,23 +1085,22 @@ namespace BizHawk.Client.EmuHawk
 					{
 						luaListTemp = luaListTemp.OrderBy(x => x.Path).ThenBy(x => x.Name).ToList();
 					}
+
 					break;
 			}
 
-			for (int i = 0; i < _luaList.Count; i++)
+			for (var i = 0; i < _luaList.Count; i++)
 			{
 				_luaList[i] = luaListTemp[i];
-				_luaList[i].Name = String.Empty;
+				_luaList[i].Name = string.Empty;
 			}
+
 			UpdateDialog();
 			_lastColumnSorted = columnToSort;
 			_sortReverse = !_sortReverse;
 		}
 
-
-
 		#endregion
-
 
 		#endregion
 	}
