@@ -378,10 +378,8 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsUserBackdropColor = -1;
 
 		// PCE BG Viewer settings
-		public bool PCEBGViewerSaveWIndowPosition = true;
+		public ToolDialogSettings PceBgViewerSettings = new ToolDialogSettings();
 		public bool PCEBGViewerAutoload = false;
-		public int PCEBGViewerWndx = -1;
-		public int PCEBGViewerWndy = -1;
 		public int PCEBGViewerRefreshRate = 16;
 
 		#region Cheats Dialog

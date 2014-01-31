@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceBgViewerToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<PCEBGViewer>();
+			GlobalWin.Tools.Load<PceBgViewer>();
 		}
 
 		private void GbaGpuViewerToolBarItem_Click(object sender, EventArgs e)

@@ -1254,7 +1254,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<PCEBGViewer>();
+			GlobalWin.Tools.Load<PceBgViewer>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
