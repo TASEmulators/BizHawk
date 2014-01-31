@@ -486,10 +486,8 @@ namespace BizHawk.Client.Common
 		
 
 		// GEN Game Genie Encoder/Decoder
-		public bool GENGGAutoload = false;
-		public bool GENGGSaveWindowPosition = true;
-		public int GENGGWndx = -1;
-		public int GENGGWndy = -1;
+		public ToolDialogSettings GenGGSettings = new ToolDialogSettings();
+		public bool GenGGAutoload = false;
 
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
