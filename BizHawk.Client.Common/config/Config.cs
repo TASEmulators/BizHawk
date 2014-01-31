@@ -358,11 +358,9 @@ namespace BizHawk.Client.Common
 		public int NESDebuggerWidth = -1;
 		public int NESDebuggerHeight = -1;
 
-		// NESNameTableViewer Settings
+		// NES NameTableViewer Settings
+		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
 		public bool AutoLoadNESNameTable = false;
-		public bool NESNameTableSaveWindowPosition = true;
-		public int NESNameTableWndx = -1;
-		public int NESNameTableWndy = -1;
 		public int NESNameTableRefreshRate = 4;
 
 		// gb gpu view settings
