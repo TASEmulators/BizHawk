@@ -347,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Winform key events suck at the numberpad, so this is necessary
-		private static char ForceCorrectKeyString(Keys keycode)
+		private static char ForceCorrectKeyString(char keycode)
 		{
 			if ((int)keycode >= 96 && (int)keycode <= 106)
 			{
@@ -1720,15 +1720,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HexEditor_KeyUp(object sender, KeyEventArgs e)
+		private void HexEditor_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (!IsHexKeyCode((char)e.KeyCode))
+			if (!IsHexKeyCode(e.KeyChar))
 			{
 				e.Handled = true;
 				return;
 			}
 
-			if (e.Control || e.Shift || e.Alt)
+			if ((Control.ModifierKeys & (Keys.Control | Keys.Shift | Keys.Alt)) != 0)
 			{
 				return;
 			}
@@ -1739,11 +1739,11 @@ namespace BizHawk.Client.EmuHawk
 				case 1:
 					if (_nibbles[0] == 'G')
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else
 					{
-						var temp = _nibbles[0].ToString() + ForceCorrectKeyString(e.KeyCode);
+						var temp = _nibbles[0].ToString() + ForceCorrectKeyString(e.KeyChar);
 						var x = byte.Parse(temp, NumberStyles.HexNumber);
 						_domain.PokeByte(_addressHighlighted, x);
 						ClearNibbles();
@@ -1755,22 +1755,22 @@ namespace BizHawk.Client.EmuHawk
 				case 2:
 					if (_nibbles[0] == 'G')
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[1] == 'G')
 					{
-						_nibbles[1] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[1] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[2] == 'G')
 					{
-						_nibbles[2] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[2] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[3] == 'G')
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
 
-						var temp2 = _nibbles[2].ToString() + ((char)e.KeyCode);
+						var temp2 = _nibbles[2].ToString() + ((char)e.KeyChar);
 						var x2 = byte.Parse(temp2, NumberStyles.HexNumber);
 
 						PokeWord(_addressHighlighted, x1, x2);
@@ -1783,31 +1783,31 @@ namespace BizHawk.Client.EmuHawk
 				case 4:
 					if (_nibbles[0] == 'G')
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[1] == 'G')
 					{
-						_nibbles[1] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[1] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[2] == 'G')
 					{
-						_nibbles[2] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[2] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[3] == 'G')
 					{
-						_nibbles[3] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[3] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[4] == 'G')
 					{
-						_nibbles[4] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[4] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[5] == 'G')
 					{
-						_nibbles[5] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[5] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[6] == 'G')
 					{
-						_nibbles[6] = ForceCorrectKeyString(e.KeyCode);
+						_nibbles[6] = ForceCorrectKeyString(e.KeyChar);
 					}
 					else if (_nibbles[7] == 'G')
 					{
@@ -1820,7 +1820,7 @@ namespace BizHawk.Client.EmuHawk
 						var temp3 = _nibbles[4].ToString() + _nibbles[5];
 						var x3 = byte.Parse(temp3, NumberStyles.HexNumber);
 
-						var temp4 = _nibbles[6].ToString() + ForceCorrectKeyString(e.KeyCode);
+						var temp4 = _nibbles[6].ToString() + ForceCorrectKeyString(e.KeyChar);
 						var x4 = byte.Parse(temp4, NumberStyles.HexNumber);
 
 						PokeWord(_addressHighlighted, x1, x2);
