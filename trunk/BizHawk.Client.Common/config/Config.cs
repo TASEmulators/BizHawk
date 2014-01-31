@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 		// Sound options
 		public bool SoundEnabled = true;
 		public bool MuteFrameAdvance = true;
-		public int SoundVolume = 100; //Range 0-100
+		public int SoundVolume = 100; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
 
@@ -463,14 +463,10 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentTas = new RecentFiles(8);
 
 		// VirtualPad Dialog
+		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
 		public bool VirtualPadsUpdatePads = true;
-		public bool VirtualPadSaveWindowPosition = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
-		public int VPadWndx = -1;
-		public int VPadWndy = -1;
-		public int VPadWidth = -1;
-		public int VPadHeight = -1;
 
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;
