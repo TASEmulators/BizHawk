@@ -254,6 +254,7 @@ class Mbc3 : public DefaultMbc {
 	unsigned char rambank;
 	bool enableRam;
 
+	static unsigned adjustedRombank(unsigned bank) { return bank & 0x7F ? bank : bank | 1; }
 	void setRambank() const {
 		unsigned flags = enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0;
 		
@@ -266,6 +267,9 @@ class Mbc3 : public DefaultMbc {
 
 		memptrs.setRambank(flags, rambank & (rambanks(memptrs) - 1));
 	}
+	// we adjust the rombank before masking with size?  this seems correct, as how would the mbc
+	// know that high rom address outputs were not connected
+	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank) & (rombanks(memptrs) - 1)); }
 
 public:
 	Mbc3(MemPtrs &memptrs, Rtc *const rtc)
@@ -285,7 +289,7 @@ public:
 			break;
 		case 1:
 			rombank = data & 0x7F;
-			memptrs.setRombank(rombank & (rombanks(memptrs) - 1));
+			setRombank();
 			break;
 		case 2:
 			rambank = data;
@@ -310,7 +314,7 @@ public:
 		rambank = ss.rambank;
 		enableRam = ss.enableRam;
 		setRambank();
-		memptrs.setRombank(rombank & (rombanks(memptrs) - 1));
+		setRombank();
 	}
 };
 
