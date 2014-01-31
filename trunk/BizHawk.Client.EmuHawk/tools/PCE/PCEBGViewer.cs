@@ -1,43 +1,74 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCEBGViewer : Form, IToolForm
+	public partial class PceBgViewer : Form, IToolForm
 	{
 		private PCEngine _pce;
-		private int VDCtype;
+		private int _vdcType;
+
+		public PceBgViewer()
+		{
+			InitializeComponent();
+			TopMost = Global.Config.PceBgViewerSettings.TopMost;
+			Activated += (o, e) => Generate();
+			Closing += (o, e) =>
+				{
+					Global.Config.PceBgViewerSettings.Wndx = Location.X;
+					Global.Config.PceBgViewerSettings.Wndy = Location.Y;
+					Global.Config.PCEBGViewerRefreshRate = RefreshRate.Value;
+				};
+		}
+
+		private void PceBgViewer_Load(object sender, EventArgs e)
+		{
+			_pce = Global.Emulator as PCEngine;
+
+			if (Global.Config.PceBgViewerSettings.UseWindowPosition)
+			{
+				Location = Global.Config.PceBgViewerSettings.WindowPosition;
+			}
+
+			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
+			{
+				RefreshRate.Value = Global.Config.PCEBGViewerRefreshRate;
+			}
+			else
+			{
+				RefreshRate.Value = RefreshRate.Maximum;
+			}
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.PceBgViewerSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		#region Public API
 
 		public bool AskSave() { return true; }
 		public bool UpdateBefore { get { return true; } }
 
-		public PCEBGViewer()
-		{
-			InitializeComponent();
-			Activated += (o, e) => Generate();
-			Closing += (o, e) => SaveConfigSettings();
-		}
-
 		public unsafe void Generate()
 		{
-			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
+			if (Global.Emulator.Frame % RefreshRate.Value != 0)
+			{
+				return;
+			}
 
-			VDC vdc = VDCtype == 0 ? _pce.VDC1 : _pce.VDC2;
+			var vdc = _vdcType == 0 ? _pce.VDC1 : _pce.VDC2;
 
-			int width = 8 * vdc.BatWidth;
-			int height = 8 * vdc.BatHeight;
-			BitmapData buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
-			int pitch = buf.Stride / 4;
-			int* begin = (int*)buf.Scan0.ToPointer();
-
-			// TODO: this does not clear background, why?
-			//for (int i = 0; i < pitch * buf.Height; ++i, ++p)
-			//	*p = canvas.BackColor.ToArgb();
+			var width = 8 * vdc.BatWidth;
+			var height = 8 * vdc.BatHeight;
+			var buf = canvas.Bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.Bat.PixelFormat);
+			var pitch = buf.Stride / 4;
+			var begin = (int*)buf.Scan0.ToPointer();
 
 			int* p = begin;
 			for (int y = 0; y < height; ++y)
@@ -54,12 +85,15 @@ namespace BizHawk.Client.EmuHawk
 
 					byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 					if (c == 0)
+					{
 						*p = _pce.VCE.Palette[0];
+					}
 					else
 					{
 						*p = _pce.VCE.Palette[paletteBase + c];
 					}
 				}
+
 				p += pitch - width;
 			}
 
@@ -91,95 +125,89 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfigSettings()
+		#endregion
+
+		#region Events
+
+		#region Menu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Global.Config.PCEBGViewerWndx = Location.X;
-			Global.Config.PCEBGViewerWndy = Location.Y;
-			Global.Config.PCEBGViewerRefreshRate = RefreshRate.Value;
+			VDC2MenuItem.Enabled = _pce.SystemId == "SGX";
+
+			VDC1MenuItem.Checked = _vdcType == 0;
+			VDC2MenuItem.Checked = _vdcType == 1;
 		}
 
-		private void LoadConfigSettings()
+		private void VDC1MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Config.PCEBGViewerSaveWIndowPosition && Global.Config.PCEBGViewerWndx >= 0 && Global.Config.PCEBGViewerWndy >= 0)
-				Location = new Point(Global.Config.PCEBGViewerWndx, Global.Config.PCEBGViewerWndy);
+			_vdcType = 0;
 		}
 
-		private void PCEBGViewer_Load(object sender, EventArgs e)
+		private void VDC2MenuItem_Click(object sender, EventArgs e)
 		{
-			_pce = Global.Emulator as PCEngine;
-			LoadConfigSettings();
-			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
-			{
-				RefreshRate.Value = Global.Config.PCEBGViewerRefreshRate;
-			}
-			else
-			{
-				RefreshRate.Value = RefreshRate.Maximum;
-			}
+			_vdcType = 1;
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Global.Config.PCEBGViewerSaveWIndowPosition ^= true;
+			SaveWindowPositionMenuItem.Checked = Global.Config.PceBgViewerSettings.SaveWindowPosition;
+			AutoloadMenuItem.Checked = Global.Config.PCEBGViewerAutoload;
+			AlwaysOnTopMenuItem.Checked = Global.Config.PceBgViewerSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.PceBgViewerSettings.FloatingWindow;
 		}
 
-		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.PCEBGViewerAutoload ^= true;
 		}
 
-		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.PCEBGViewerSaveWIndowPosition;
-			autoloadToolStripMenuItem.Checked = Global.Config.PCEBGViewerAutoload;
+			Global.Config.PceBgViewerSettings.SaveWindowPosition ^= true;
 		}
 
-		private void vDC1ToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			VDCtype = 0;
+			Global.Config.PceBgViewerSettings.TopMost ^= true;
+			TopMost = Global.Config.PceBgViewerSettings.TopMost;
 		}
 
-		private void vCD2ToolStripMenuItem_Click(object sender, EventArgs e)
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
-			VDCtype = 1;
+			Global.Config.PceBgViewerSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
-		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if (_pce.SystemId == "SGX")
-				vCD2ToolStripMenuItem.Enabled = true;
-			else
-				vCD2ToolStripMenuItem.Enabled = false;
-			
-			switch (VDCtype)
-			{
-				default:
-				case 0:
-					vDC1ToolStripMenuItem.Checked = true;
-					vCD2ToolStripMenuItem.Checked = false;
-					break;
-				case 1:
-					vDC1ToolStripMenuItem.Checked = false;
-					vCD2ToolStripMenuItem.Checked = true;
-					break;
-			}
-		}
+		#endregion
 
-		private void canvas_MouseMove(object sender, MouseEventArgs e)
+		#region Dialog and Controls
+
+		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			VDC vdc = VDCtype == 0 ? _pce.VDC1 : _pce.VDC2;
+			var vdc = _vdcType == 0 ? _pce.VDC1 : _pce.VDC2;
 			int xTile = e.X / 8;
 			int yTile = e.Y / 8;
-			int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;
-			int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
+			int tileNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] & 0x07FF;
+			int paletteNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] >> 12;
 			TileIDLabel.Text = tileNo.ToString();
-			XYLabel.Text = xTile.ToString() + ":" + yTile.ToString();
+			XYLabel.Text = xTile + ":" + yTile;
 			PaletteLabel.Text = paletteNo.ToString();
 		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
+
+		#endregion
+
+		#endregion
 	}
 }
