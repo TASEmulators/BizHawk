@@ -613,7 +613,7 @@
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HexEditor_KeyPress);
 			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
 			this.HexMenuStrip.ResumeLayout(false);
