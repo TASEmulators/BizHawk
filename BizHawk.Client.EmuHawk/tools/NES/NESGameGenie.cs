@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -12,22 +11,22 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
-			{ 'A', 0 }, // 0000
-			{ 'P', 1 }, // 0001
-			{ 'Z', 2 }, // 0010
-			{ 'L', 3 }, // 0011
-			{ 'G', 4 }, // 0100
-			{ 'I', 5 }, // 0101
-			{ 'T', 6 }, // 0110
-			{ 'Y', 7 }, // 0111
-			{ 'E', 8 }, // 1000
-			{ 'O', 9 }, // 1001
-			{ 'X', 10}, // 1010
-			{ 'U', 11}, // 1011
-			{ 'K', 12}, // 1100
-			{ 'S', 13}, // 1101
-			{ 'V', 14}, // 1110
-			{ 'N', 15}, // 1111
+			{ 'A', 0 },  // 0000
+			{ 'P', 1 },  // 0001
+			{ 'Z', 2 },  // 0010
+			{ 'L', 3 },  // 0011
+			{ 'G', 4 },  // 0100
+			{ 'I', 5 },  // 0101
+			{ 'T', 6 },  // 0110
+			{ 'Y', 7 },  // 0111
+			{ 'E', 8 },  // 1000
+			{ 'O', 9 },  // 1001
+			{ 'X', 10 }, // 1010
+			{ 'U', 11 }, // 1011
+			{ 'K', 12 }, // 1100
+			{ 'S', 13 }, // 1101
+			{ 'V', 14 }, // 1110
+			{ 'N', 15 }, // 1111
 		};
 
 		private int? _address;
@@ -61,9 +60,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Closing += (o, e) =>
 				{
-					Global.Config.NESGGWndx = Location.X;
-					Global.Config.NESGGWndy = Location.Y;
+					Global.Config.NesGGSettings.Wndx = Location.X;
+					Global.Config.NesGGSettings.Wndy = Location.Y;
 				};
+			TopMost = Global.Config.NesGGSettings.TopMost;
 			AddressBox.SetHexProperties(0x10000);
 			ValueBox.SetHexProperties(0x100);
 			CompareBox.SetHexProperties(0x100);
@@ -73,9 +73,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AddCheat.Enabled = false;
 
-			if (Global.Config.NESGGSaveWindowPosition && Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
+			if (Global.Config.NesGGSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.NESGGWndx, Global.Config.NESGGWndy);
+				Location = Global.Config.NesGGSettings.WindowPosition;
 			}
 		}
 
@@ -125,16 +125,16 @@ namespace BizHawk.Client.EmuHawk
 			AddressBox.Text =
 				CompareBox.Text =
 				ValueBox.Text =
-				String.Empty;
+				string.Empty;
 
 			AddCheat.Enabled = false;
 		}
 
 		private void TryEnableAddCheat()
 		{
-			AddCheat.Enabled = !String.IsNullOrWhiteSpace(AddressBox.Text)
-				&& !String.IsNullOrWhiteSpace(ValueBox.Text)
-				&& !String.IsNullOrWhiteSpace(GameGenieCode.Text);
+			AddCheat.Enabled = !string.IsNullOrWhiteSpace(AddressBox.Text)
+				&& !string.IsNullOrWhiteSpace(ValueBox.Text)
+				&& !string.IsNullOrWhiteSpace(GameGenieCode.Text);
 		}
 
 		private void EncodeGameGenie()
@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheatClick()
 		{
-			if (!String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text))
+			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var watch = Watch.GenerateWatch(
 					Global.Emulator.MemoryDomains["System Bus"],
@@ -165,6 +165,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.NesGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		#region Events
 
 		#region File Menu
@@ -172,7 +177,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadMenuItem.Checked = Global.Config.NESGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NESGGSaveWindowPosition;
+			SaveWindowPositionMenuItem.Checked = Global.Config.NesGGSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.NesGGSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.NesGGSettings.FloatingWindow;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
@@ -182,12 +189,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.NESGGSaveWindowPosition ^= true;
+			Global.Config.NesGGSettings.SaveWindowPosition ^= true;
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NesGGSettings.TopMost ^= true;
+			TopMost = Global.Config.NesGGSettings.TopMost;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NesGGSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
@@ -212,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
 			ClearProperties();
-			GameGenieCode.Text = String.Empty;
+			GameGenieCode.Text = string.Empty;
 			Encoding.Checked = false;
 		}
 
@@ -234,12 +253,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ValueBox_TextChanged(object sender, EventArgs e)
 		{
-			if (Encoding.Checked && !String.IsNullOrWhiteSpace(ValueBox.Text))
+			if (Encoding.Checked && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
-				int val = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+				var val = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
 				if (val > 0 && val < 0x100)
 				{
-					if (!String.IsNullOrWhiteSpace(AddressBox.Text))
+					if (!string.IsNullOrWhiteSpace(AddressBox.Text))
 					{
 						_value = val;
 						EncodeGameGenie();
@@ -254,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GameGenieCode.Text.Length < 8)
 			{
-				var code = String.Empty;
+				var code = string.Empty;
 				if (sender == A) code = "A";
 				if (sender == P) code += "P";
 				if (sender == Z) code += "Z";
@@ -283,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Encoding.Checked && AddressBox.Text.Length > 0)
 			{
-				if (!String.IsNullOrEmpty(ValueBox.Text))
+				if (!string.IsNullOrEmpty(ValueBox.Text))
 				{
 					EncodeGameGenie();
 				}
@@ -298,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (CompareBox.Text.Length > 0)
 				{
-					int c = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
+					var c = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					if (c > 0 && c < 0x100)
 					{
 						if (ValueBox.Text.Length > 0 && AddressBox.Text.Length > 0)
@@ -333,6 +352,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TryEnableAddCheat();
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		#endregion

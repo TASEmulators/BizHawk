@@ -469,10 +469,8 @@ namespace BizHawk.Client.Common
 		public bool VirtualPadSticky = true;
 
 		// NES Game Genie Encoder/Decoder
+		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
 		public bool NESGGAutoload = false;
-		public bool NESGGSaveWindowPosition = true;
-		public int NESGGWndx = -1;
-		public int NESGGWndy = -1;
 
 		// SNES Game Genie Encoder/Decoder
 		public bool SNESGGAutoload = false;
