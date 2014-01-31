@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesPPUToolbarItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<NESPPU>();
+			GlobalWin.Tools.Load<NesPPU>();
 		}
 
 		private void NesDebuggerToolbarItem_Click(object sender, EventArgs e)

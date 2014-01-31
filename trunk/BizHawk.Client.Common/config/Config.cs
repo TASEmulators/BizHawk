@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 		public bool DisplayFPS = false;
 		public int DispFPSx = 0;
 		public int DispFPSy = 0;
-		public int DispFPSanchor = 0;	//0 = UL, 1 = UR, 2 = DL, 3 = DR
+		public int DispFPSanchor = 0;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
 		public int DispFrameCx = 0;
 		public int DispFrameCy = 14;
@@ -344,10 +344,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		// NESPPU Settings
+		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;
-		public bool NESPPUSaveWindowPosition = true;
-		public int NESPPUWndx = -1;
-		public int NESPPUWndy = -1;
 		public int NESPPURefreshRate = 4;
 
 		// NESDebuger Settings
