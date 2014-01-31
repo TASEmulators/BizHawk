@@ -298,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
-				GlobalWin.Tools.Load<NESPPU>();
+				GlobalWin.Tools.Load<NesPPU>();
 			}
 
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
