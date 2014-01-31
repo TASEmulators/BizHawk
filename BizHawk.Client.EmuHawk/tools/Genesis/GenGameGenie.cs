@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-//using BizHawk.Emulation.Cores.Sega.Genesis;
 
 #pragma warning disable 675 //TOOD: fix the potential problem this is masking
 
@@ -14,21 +12,69 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenGameGenie : Form, IToolForm
 	{
-		bool _processing;
-		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
+		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
+		{
+			{ 'A', 0 },
+			{ 'B', 1 },
+			{ 'C', 2 },
+			{ 'D', 3 },
+			{ 'E', 4 },
+			{ 'F', 5 },
+			{ 'G', 6 },
+			{ 'H', 7 },
+			{ 'J', 8 },
+			{ 'K', 9 },
+			{ 'L', 10 },
+			{ 'M', 11 },
+			{ 'N', 12 },
+			{ 'P', 13 },
+			{ 'R', 14 },
+			{ 'S', 15 },
+			{ 'T', 16 },
+			{ 'V', 17 },
+			{ 'W', 18 },
+			{ 'X', 19 },
+			{ 'Y', 20 },
+			{ 'Z', 21 },
+			{ '0', 22 },
+			{ '1', 23 },
+			{ '2', 24 },
+			{ '3', 25 },
+			{ '4', 26 },
+			{ '5', 27 },
+			{ '6', 28 },
+			{ '7', 29 },
+			{ '8', 30 },
+			{ '9', 31 }
+		};
+
+		private bool _processing;
+
+		private void GenGameGenie_Load(object sender, EventArgs e)
+		{
+			if (Global.Config.GenGGSettings.UseWindowPosition)
+			{
+				Location = Global.Config.GenGGSettings.WindowPosition;
+			}
+		}
+
+		#region Public API
 
 		public bool AskSave() { return true; }
+
 		public bool UpdateBefore { get { return false; } }
+
 		public void Restart()
 		{
-			if (!(Global.Emulator.SystemId == "GEN"))
+			if (Global.Emulator.SystemId != "GEN")
 			{
 				Close();
 			}
 		}
+
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator.SystemId == "GEN"))
+			if (Global.Emulator.SystemId != "GEN")
 			{
 				Close();
 			}
@@ -38,101 +84,123 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-
-			GameGenieTable.Add('A', 0);
-			GameGenieTable.Add('B', 1);
-			GameGenieTable.Add('C', 2);
-			GameGenieTable.Add('D', 3);
-			GameGenieTable.Add('E', 4);
-			GameGenieTable.Add('F', 5);
-			GameGenieTable.Add('G', 6);
-			GameGenieTable.Add('H', 7);
-			GameGenieTable.Add('J', 8);
-			GameGenieTable.Add('K', 9);
-			GameGenieTable.Add('L', 10);
-			GameGenieTable.Add('M', 11);
-			GameGenieTable.Add('N', 12);
-			GameGenieTable.Add('P', 13);
-			GameGenieTable.Add('R', 14);
-			GameGenieTable.Add('S', 15);
-			GameGenieTable.Add('T', 16);
-			GameGenieTable.Add('V', 17);
-			GameGenieTable.Add('W', 18);
-			GameGenieTable.Add('X', 19);
-			GameGenieTable.Add('Y', 20);
-			GameGenieTable.Add('Z', 21);
-			GameGenieTable.Add('0', 22);
-			GameGenieTable.Add('1', 23);
-			GameGenieTable.Add('2', 24);
-			GameGenieTable.Add('3', 25);
-			GameGenieTable.Add('4', 26);
-			GameGenieTable.Add('5', 27);
-			GameGenieTable.Add('6', 28);
-			GameGenieTable.Add('7', 29);
-			GameGenieTable.Add('8', 30);
-			GameGenieTable.Add('9', 31);
+			TopMost = Global.Config.GenGGSettings.TopMost;
 		}
+
+		#endregion
 
 		// code is code to be converted, val is pointer to value, add is pointer to address
 		private void GenGGDecode(string code, ref int val, ref int add)
 		{
 			long hexcode = 0;
-			long decoded = 0;
-			int y = 0;
 
-			//convert code to a long binary string
-			foreach (char t in code)
+			// convert code to a long binary string
+			foreach (var t in code)
 			{
 				hexcode <<= 5;
-				GameGenieTable.TryGetValue(t, out y);
+				int y;
+				_gameGenieTable.TryGetValue(t, out y);
 				hexcode |= y;
 			}
 
-			decoded = ((hexcode & 0xFF00000000) >> 32);
-			decoded |= (hexcode & 0x00FF000000);
-			decoded |= ((hexcode & 0x0000FF0000) << 16 );
-			decoded |= ((hexcode & 0x00000000700) << 5);
-			decoded |= ((hexcode & 0x000000F800) >> 3);
-			decoded |= ((hexcode & 0x00000000FF) << 16);
+			long decoded = (hexcode & 0xFF00000000) >> 32;
+			decoded |= hexcode & 0x00FF000000;
+			decoded |= (hexcode & 0x0000FF0000) << 16;
+			decoded |= (hexcode & 0x00000000700) << 5;
+			decoded |= (hexcode & 0x000000F800) >> 3;
+			decoded |= (hexcode & 0x00000000FF) << 16;
 
 			val = (int)(decoded & 0x000000FFFF);
 			add = (int)((decoded & 0xFFFFFF0000) >> 16);
-
 		}
 
-		private string GenGGEncode(int val, int add)
+		private static string GenGGEncode(int val, int add)
 		{
-			long encoded = 0;
+			long encoded;
 			string code = null;
 
-			encoded = ((long)(val & 0x00FF) << 32);
-			encoded |= ((val & 0xE000) >> 5);
-			encoded |= ((val & 0x1F00) << 3);
-			encoded |= (add & 0xFF0000);
-			encoded |= ((add & 0x00FF00) << 16);
-			encoded |= (add & 0x0000FF);
+			encoded = (long)(val & 0x00FF) << 32;
+			encoded |= (val & 0xE000) >> 5;
+			encoded |= (val & 0x1F00) << 3;
+			encoded |= add & 0xFF0000;
+			encoded |= (add & 0x00FF00) << 16;
+			encoded |= add & 0x0000FF;
 
 			char[] letters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-			for (int x = 0; x < 8; x++)
+			for (var i = 0; i < 8; i++)
 			{
-				int chr = 0;
-				chr = (int)(encoded & 0x1F);
+				var chr = (int)(encoded & 0x1F);
 				code += letters[chr];
 				encoded >>= 5; 
 			}
-			//reverse string, as its build backward
-			char[] array = code.ToCharArray();
-            Array.Reverse(array);
-   			return (new string(array));
+
+			// reverse string, as its build backward
+			var array = code.ToCharArray();
+			Array.Reverse(array);
+			return new string(array);
 		}
+
+		private void SaveConfigSettings()
+		{
+			Global.Config.GenGGSettings.Wndx = Location.X;
+			Global.Config.GenGGSettings.Wndy = Location.Y;
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.GenGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		#region Events
+
+		#region Menu
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoloadMenuItem.Checked = Global.Config.GenGGAutoload;
+			SaveWindowPositionMenuItem.Checked = Global.Config.GenGGSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.GenGGSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.GenGGSettings.FloatingWindow;
+		}
+
+		private void AutoloadMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenGGAutoload ^= true;
+		}
+
+		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenGGSettings.SaveWindowPosition ^= true;
+		}
+
+		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenGGSettings.TopMost ^= true;
+			TopMost = Global.Config.GenGGSettings.TopMost;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GenGGSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
+		}
+
+		private void ExitMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		#endregion
+
+		#region Dialog and Controls
 
 		private void GGCodeMaskBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			//ignore I O Q U
+			// ignore I O Q U
 			if ((e.KeyChar == 73) || (e.KeyChar == 79) || (e.KeyChar == 81) || (e.KeyChar == 85) ||
 					(e.KeyChar == 105) || (e.KeyChar == 111) || (e.KeyChar == 113) || (e.KeyChar == 117))
 			{
-				e.KeyChar = '\n' ;
+				e.KeyChar = '\n';
 			}
 		}
 
@@ -141,67 +209,67 @@ namespace BizHawk.Client.EmuHawk
 			if (_processing == false)
 			{
 				_processing = true;
-				//remove Invalid I O Q P if pasted
+
+				// remove Invalid I O Q P if pasted
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("I", string.Empty);
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("O", string.Empty);
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("Q", string.Empty);
 				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("U", string.Empty);
-				
 
 				if (GGCodeMaskBox.Text.Length > 0)
 				{
 					int val = 0;
 					int add = 0;
 					GenGGDecode(GGCodeMaskBox.Text, ref val, ref add);
-					AddressBox.Text = String.Format("{0:X6}", add);
-					ValueBox.Text = String.Format("{0:X4}", val);
-					addcheatbt.Enabled = true;
+					AddressBox.Text = string.Format("{0:X6}", add);
+					ValueBox.Text = string.Format("{0:X4}", val);
+					AddCheatButton.Enabled = true;
 				}
 				else
 				{
-					AddressBox.Text = "";
-					ValueBox.Text = "";
-					addcheatbt.Enabled = false;
+					AddressBox.Text = string.Empty;
+					ValueBox.Text = string.Empty;
+					AddCheatButton.Enabled = false;
 				}
+
 				_processing = false;
 			}
 		}
 
-		private void ClearBT_Click(object sender, EventArgs e)
-		{
-			AddressBox.Text = "";
-			ValueBox.Text = "";
-			GGCodeMaskBox.Text = "";
-			addcheatbt.Enabled = false;
-		}
-
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
-			//remove invalid character when pasted
+			// remove invalid character when pasted
 			if (_processing == false)
 			{
 				_processing = true;
 				if (Regex.IsMatch(AddressBox.Text, @"[^a-fA-F0-9]"))
 				{
-					string temp = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
-					AddressBox.Text = temp;
+					AddressBox.Text = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
 				}
+
 				if ((AddressBox.Text.Length > 0) || (ValueBox.Text.Length > 0))
 				{
 					int val = 0;
 					int add = 0;
 					if (ValueBox.Text.Length > 0)
+					{
 						val = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+					}
+
 					if (AddressBox.Text.Length > 0)
+					{
 						add = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					}
+
 					GGCodeMaskBox.Text = GenGGEncode(val, add);
-					addcheatbt.Enabled = true;
+					AddCheatButton.Enabled = true;
 				}
 				else
 				{
-					GGCodeMaskBox.Text = "";
-					addcheatbt.Enabled = false;
+					GGCodeMaskBox.Text = string.Empty;
+					AddCheatButton.Enabled = false;
 				}
+
 				_processing = false;
 			}
 		}
@@ -211,106 +279,100 @@ namespace BizHawk.Client.EmuHawk
 			if (_processing == false)
 			{
 				_processing = true;
-				//remove invalid character when pasted
+
+				// remove invalid character when pasted
 				if (Regex.IsMatch(ValueBox.Text, @"[^a-fA-F0-9]"))
 				{
-					string temp = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", string.Empty);
-					ValueBox.Text = temp;
+					ValueBox.Text = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", string.Empty);
 				}
+
 				if ((AddressBox.Text.Length > 0) || (ValueBox.Text.Length > 0))
 				{
 					int val = 0;
 					int add = 0;
 					if (ValueBox.Text.Length > 0)
+					{
 						val = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
-					if (AddressBox.Text.Length > 0)
-						add = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-					GGCodeMaskBox.Text = GenGGEncode(val, add);
-					addcheatbt.Enabled = true;
+					}
 
+					if (AddressBox.Text.Length > 0)
+					{
+						add = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					}
+
+					GGCodeMaskBox.Text = GenGGEncode(val, add);
+					AddCheatButton.Enabled = true;
 				}
 				else
 				{
-					GGCodeMaskBox.Text = "";
-					addcheatbt.Enabled = false;
+					GGCodeMaskBox.Text = string.Empty;
+					AddCheatButton.Enabled = false;
 				}
+
 				_processing = false;
 			}
 		}
 
-		private void addcheatbt_Click(object sender, EventArgs e)
+		private void ClearButton_Click(object sender, EventArgs e)
 		{
-			string NAME;
-			int ADDRESS = 0;
-			int VALUE = 0;
+			AddressBox.Text = string.Empty;
+			ValueBox.Text = string.Empty;
+			GGCodeMaskBox.Text = string.Empty;
+			AddCheatButton.Enabled = false;
+		}
 
-			if (!String.IsNullOrWhiteSpace(cheatname.Text))
+		private void AddCheatButton_Click(object sender, EventArgs e)
+		{
+			string name;
+			var address = 0;
+			var value = 0;
+
+			if (!string.IsNullOrWhiteSpace(cheatname.Text))
 			{
-				NAME = cheatname.Text;
+				name = cheatname.Text;
 			}
 			else
 			{
 				_processing = true;
 				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-				NAME = GGCodeMaskBox.Text;
+				name = GGCodeMaskBox.Text;
 				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
 				_processing = false;
 			}
 
-			if (!String.IsNullOrWhiteSpace(AddressBox.Text))
+			if (!string.IsNullOrWhiteSpace(AddressBox.Text))
 			{
-				ADDRESS = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			}
 
-			if (!String.IsNullOrWhiteSpace(ValueBox.Text))
+			if (!string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
-				VALUE = ValueBox.ToRawInt().Value;
+				value = ValueBox.ToRawInt() ?? 0;
 			}
 
-			Watch watch = Watch.GenerateWatch(
+			var watch = Watch.GenerateWatch(
 				Global.Emulator.MemoryDomains["MD CART"],
-				ADDRESS,
+				address,
 				Watch.WatchSize.Word,
 				Watch.DisplayType.Hex,
-				NAME, true
+				name,
+				true
 			);
 
 			Global.CheatList.Add(new Cheat(
 				watch,
-				VALUE
+				value
 			));
 		}
 
-		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		protected override void OnShown(EventArgs e)
 		{
-			Global.Config.GENGGAutoload ^= true;
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
-		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GENGGSaveWindowPosition ^= true;
-		}
+		#endregion
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void GENGameGenie_Load(object sender, EventArgs e)
-		{
-
-			if (Global.Config.GENGGSaveWindowPosition && Global.Config.GENGGWndx >= 0 && Global.Config.GENGGWndy >= 0)
-			{
-				Location = new Point(Global.Config.GENGGWndx, Global.Config.GENGGWndy);
-			}
-		}
-
-		private void SaveConfigSettings()
-		{
-			Global.Config.GENGGWndx = Location.X;
-			Global.Config.GENGGWndy = Location.Y;
-		}
-
+		#endregion
 	}
 }
-
