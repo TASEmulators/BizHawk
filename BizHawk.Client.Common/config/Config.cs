@@ -481,10 +481,9 @@ namespace BizHawk.Client.Common
 		public int SNESGGWndy = -1;
 
 		// GB/GG Game Genie Encoder/Decoder
+		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
 		public bool GBGGAutoload = false;
-		public bool GBGGSaveWindowPosition = true;
-		public int GBGGWndx = -1;
-		public int GBGGWndy = -1;
+		
 
 		// GEN Game Genie Encoder/Decoder
 		public bool GENGGAutoload = false;
