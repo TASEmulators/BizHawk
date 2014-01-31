@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] SaveStateBinary()
 		{
-			var buf = new byte[24802 + 1 + 16384 + 16384];
+			var buf = new byte[24806 + 1 + 16384 + 16384];
 			var stream = new MemoryStream(buf);
 			var writer = new BinaryWriter(stream);
 			SaveStateBinary(writer);
