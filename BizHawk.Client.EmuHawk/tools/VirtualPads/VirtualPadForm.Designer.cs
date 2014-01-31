@@ -32,18 +32,19 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPadForm));
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autolaodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.restoreDefaultSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyBox = new System.Windows.Forms.CheckBox();
-			this.button1 = new System.Windows.Forms.Button();
+			this.ClearButton = new System.Windows.Forms.Button();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -64,88 +65,89 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem});
+            this.ClearMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.Size = new System.Drawing.Size(102, 26);
 			// 
-			// clearToolStripMenuItem
+			// ClearMenuItem
 			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-			this.clearToolStripMenuItem.Text = "&Clear";
-			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+			this.ClearMenuItem.Name = "ClearMenuItem";
+			this.ClearMenuItem.Size = new System.Drawing.Size(101, 22);
+			this.ClearMenuItem.Text = "&Clear";
+			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem});
+            this.OptionsSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(452, 24);
 			this.menuStrip1.TabIndex = 6;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// optionsToolStripMenuItem
+			// OptionsSubMenu
 			// 
-			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alwaysOnTopToolStripMenuItem,
-            this.autolaodToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem,
+			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AutoloadMenuItem,
+            this.SaveWindowPositionMenuItem,
+            this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator2,
-            this.restoreDefaultSettingsToolStripMenuItem,
+            this.RestoreDefaultSettingsMenuItem,
             this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-			this.optionsToolStripMenuItem.Text = "&Options";
-			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
+            this.ExitMenuItem});
+			this.OptionsSubMenu.Name = "OptionsSubMenu";
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Text = "&Options";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
-			// alwaysOnTopToolStripMenuItem
+			// AutoloadMenuItem
 			// 
-			this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
-			this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.alwaysOnTopToolStripMenuItem.Text = "Always On Top";
-			this.alwaysOnTopToolStripMenuItem.Click += new System.EventHandler(this.alwaysOnTopToolStripMenuItem_Click);
+			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
+			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AutoloadMenuItem.Text = "&Autoload";
+			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
 			// 
-			// autolaodToolStripMenuItem
+			// AlwaysOnTopMenuItem
 			// 
-			this.autolaodToolStripMenuItem.Name = "autolaodToolStripMenuItem";
-			this.autolaodToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.autolaodToolStripMenuItem.Text = "&Autoload";
-			this.autolaodToolStripMenuItem.Click += new System.EventHandler(this.autolaodToolStripMenuItem_Click);
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AlwaysOnTopMenuItem.Text = "Always On Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
-			// saveWindowPositionToolStripMenuItem
+			// SaveWindowPositionMenuItem
 			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
+			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
+			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
 			// 
-			// restoreDefaultSettingsToolStripMenuItem
+			// RestoreDefaultSettingsMenuItem
 			// 
-			this.restoreDefaultSettingsToolStripMenuItem.Name = "restoreDefaultSettingsToolStripMenuItem";
-			this.restoreDefaultSettingsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.restoreDefaultSettingsToolStripMenuItem.Text = "Restore Default Settings";
-			this.restoreDefaultSettingsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultSettingsToolStripMenuItem_Click);
+			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
+			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
+			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
 			// 
-			// exitToolStripMenuItem
+			// ExitMenuItem
 			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			this.ExitMenuItem.Name = "ExitMenuItem";
+			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.ExitMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.ExitMenuItem.Text = "E&xit";
+			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// StickyBox
 			// 
@@ -159,23 +161,30 @@
 			this.StickyBox.UseVisualStyleBackColor = true;
 			this.StickyBox.CheckedChanged += new System.EventHandler(this.StickyBox_CheckedChanged);
 			// 
-			// button1
+			// ClearButton
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button1.Location = new System.Drawing.Point(79, 279);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 8;
-			this.button1.Text = "&Clear";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ClearButton.Location = new System.Drawing.Point(79, 279);
+			this.ClearButton.Name = "ClearButton";
+			this.ClearButton.Size = new System.Drawing.Size(75, 23);
+			this.ClearButton.TabIndex = 8;
+			this.ClearButton.Text = "&Clear";
+			this.ClearButton.UseVisualStyleBackColor = true;
+			this.ClearButton.Click += new System.EventHandler(this.ClearMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// VirtualPadForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(452, 312);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.StickyBox);
 			this.Controls.Add(this.menuStrip1);
@@ -198,17 +207,18 @@
 
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem autolaodToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.CheckBox StickyBox;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem restoreDefaultSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
-		private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
+		private System.Windows.Forms.Button ClearButton;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }
