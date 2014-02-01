@@ -83,6 +83,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ret.prg_size = 256 * 16;
 				ret.chr_size = (short)(VROM_size * 8);
 				ret.wram_battery = (ROM_type & 2) != 0;
+				if (ROM_type.Bit(2))
+					report.WriteLine("DANGER:  According to the flags, this iNES has a trainer in it!  We don't support this garbage.");
 
 				if(wram_size != 0 || flags9 != 0 || flags10 != 0 || zero11 != 0 || zero12 != 0 || zero13 != 0 || zero14 != 0 || zero15 != 0)
 				{

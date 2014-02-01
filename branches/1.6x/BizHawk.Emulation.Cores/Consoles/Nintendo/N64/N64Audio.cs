@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -11,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <summary>
 		/// mupen64 DLL Api
 		/// </summary>
-		private mupen64plusApi api;
+		private mupen64plusAudioApi api;
 		/// <summary>
 		/// Buffer for audio data
 		/// </summary>
@@ -42,12 +40,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// Creates a N64 Audio subsystem
 		/// </summary>
 		/// <param name="api">Mupen64 api which is used for fetching sound</param>
-		public N64Audio(mupen64plusApi api)
+		public N64Audio(mupen64plusApi core)
 		{
-			this.api = api;
+			this.api = new mupen64plusAudioApi(core);
+
 			_samplingRate = api.GetSamplingRate();
 			Resampler = new SpeexResampler(6, SamplingRate, 44100,
 				SamplingRate, 44100);
+
+			core.VInterrupt += DoAudioFrame;
 		}
 
 		/// <summary>
@@ -77,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			if(Resampler != null)
 				Resampler.Dispose();
 			Resampler = null;
-			// Api is disposed by N64
 			api = null;
 		}
 	}

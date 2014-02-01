@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+			AssertPrg(32, 64, 128);
+			AssertChr(8, 16, 32, 64, 128);
 
 			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
 			chr_bank_mask_8k = Cart.chr_size / 8 - 1;

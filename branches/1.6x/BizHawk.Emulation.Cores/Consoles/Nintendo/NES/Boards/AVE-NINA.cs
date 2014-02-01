@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
+				case "AVE-NINA-02": // untested
 				case "AVE-NINA-01": //Impossible Mission 2 (U)
 					AssertPrg(64); AssertChr(64); AssertWram(8); AssertVram(0);
 					break;
@@ -115,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER079":
 					AssertPrg(32, 64); AssertChr(32, 64);
+					break;
+				case "TXC-74*138/175": // untested
 					break;
 				case "MAPPER113":
 					mirror_control_enabled = true;

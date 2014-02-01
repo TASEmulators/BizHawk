@@ -320,6 +320,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER116_HACKY":
 					break;
 				case "MAPPER001":
+					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
+					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
+					if (Cart.prg_size > 256)
+						return false;
 					break;
 				case "MAPPER171": // Tui Do Woo Ma Jeung
 					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
@@ -366,11 +370,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SKROM": //ad&d dragons of flame (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SKEPROM":
+				case "NES-SKEPROM": // chip n dale 2 (proto)
+					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0, 8);
+					break;
 				case "NES-SLROM": //castlevania 2
 				case "KONAMI-SLROM": //bayou billy
 				case "HVC-SLROM": //Adventures of Lolo 2 (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
+				case "HVC-SL1ROM": // untested
 				case "NES-SL1ROM": //hoops
 					AssertPrg(64, 128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
@@ -390,6 +399,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-SNROM": //dragon warrior 2
 				case "HVC-SNROM":
 				case "VIRGIN-SNROM":
+				case "NES-SNWEPROM": // final fantasy 2 (proto)
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
 				case "SxROM-JUNK":
@@ -516,11 +526,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (Cart.board_type)
 			{
+				case "MAPPER001":
+					// we try to heuristic match to iNES 001 roms with big PRG only
+					if (Cart.prg_size <= 256)
+						return false;
+					AssertPrg(512); AssertChr(0);
+					Cart.vram_size = 8;
+					Cart.wram_size = 8;
+					Cart.wram_battery = true; // all SUROM boards had batteries
+					Console.WriteLine("Guessing SUROM for 512KiB PRG ROM");
+					break;
 				case "NES-SUROM": //dragon warrior 4
 				case "HVC-SUROM":
 					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
-				default: return false;
+				default:
+					return false;
 			}
 
 			BaseConfigure();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using LuaInterface;
 
@@ -7,20 +8,26 @@ namespace BizHawk.Client.Common
 	public abstract class LuaLibraryBase
 	{
 		public abstract string Name { get; }
-		public abstract string[] Functions { get; }
 
 		public virtual void LuaRegister(Lua lua, ILuaDocumentation docs = null)
 		{
 			lua.NewTable(Name);
-			foreach (var methodName in Functions)
+
+			var luaAttr = typeof(LuaMethodAttributes);
+
+			var methods = GetType()
+							.GetMethods()
+							.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
+
+			foreach (var method in methods)
 			{
-				var func = Name + "." + methodName;
-				var method = GetType().GetMethod(Name + "_" + methodName);
-				lua.RegisterFunction(func, this, method);
+				var luaMethodAttr = method.GetCustomAttributes(luaAttr, false).First() as LuaMethodAttributes;
+				var luaName = Name + "." + luaMethodAttr.Name;
+				lua.RegisterFunction(luaName, this, method);
 
 				if (docs != null)
 				{
-					docs.Add(Name, methodName, method);
+					docs.Add(Name, luaMethodAttr.Name, method, luaMethodAttr.Description);
 				}
 			}
 		}
@@ -33,6 +40,16 @@ namespace BizHawk.Client.Common
 		protected static uint LuaUInt(object luaArg)
 		{
 			return (uint)(double)luaArg;
+		}
+
+		protected static long LuaLong(object luaArg)
+		{
+			return (long)(double)luaArg;
+		}
+
+		protected static ulong LuaULong(object luaArg)
+		{
+			return (ulong)(double)luaArg;
 		}
 
 		/// <summary>

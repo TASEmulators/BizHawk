@@ -21,6 +21,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
+				case "AVE-NINA-07": // wally bear and the gang
+					// it's not the NINA_001 but something entirely different; actually a colordreams with VRAM
+					// this actually works
+					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
+					break;
+
 				case "IREM-BNROM": //Mashou (J).nes
 				case "NES-BNROM": //Deadly Towers (U)
 					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);

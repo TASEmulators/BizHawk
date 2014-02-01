@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	class N64VideoProvider : IVideoProvider, IDisposable
 	{
 		private int[] frameBuffer;
-		private mupen64plusApi api;
+		private mupen64plusVideoApi api;
 
 		/// <summary>
 		/// Creates N64 Video system with mupen64plus backend
 		/// </summary>
 		/// <param name="api">mupen64plus DLL that is used</param>
-		public N64VideoProvider(mupen64plusApi api)
+		public N64VideoProvider(mupen64plusApi core, VideoPluginSettings videosettings)
 		{
-			this.api = api;
+			this.api = new mupen64plusVideoApi(core, videosettings);
 			int width = 0;
 			int height = 0;
 			api.GetScreenDimensions(ref width, ref height);
 			SetBufferSize(width, height);
+
+			core.FrameFinished += DoVideoFrame;
 		}
 
 		public int[] GetVideoBuffer()

@@ -3,6 +3,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
@@ -417,7 +418,6 @@ namespace BizHawk.Client.Common
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
-								c64.HardReset(); // TODO: The core should be responsible for this!
 								nextEmulator = c64;
 								break;
 							case "GBA":

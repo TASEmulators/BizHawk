@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,31 +14,29 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public override string Name { get { return "input"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"get",
-					"getmouse"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 
-		public LuaTable input_get()
+		[LuaMethodAttributes(
+			"get",
+			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads"
+		)]
+		public LuaTable Get()
 		{
 			var buttons = _lua.NewTable();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value))
 			{
 				buttons[kvp.Key] = true;
 			}
+
 			return buttons;
 		}
 
-		public LuaTable input_getmouse()
+		[LuaMethodAttributes(
+			"getmouse",
+			"Returns a lua table of the mouse X/Y coordinates and button states. Table returns the values X, Y, Left, Middle, Right, XButton1, XButton2"
+		)]
+		public LuaTable GetMouse()
 		{
 			var buttons = _lua.NewTable();
 			var p = GlobalWin.RenderPanel.ScreenToScreen(Control.MousePosition);

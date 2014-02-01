@@ -11,23 +11,14 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "joypad"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"get",
-					"getimmediate",
-					"set",
-					"setanalog"
-				};
-			}
-		}
 
 		private readonly Lua _lua;
 
-		public LuaTable joypad_get(object controller = null)
+		[LuaMethodAttributes(
+			"get",
+			"returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller"
+		)]
+		public LuaTable Get(object controller = null)
 		{
 			var buttons = _lua.NewTable();
 			foreach (var button in Global.ControllerOutput.Source.Type.BoolButtons)
@@ -61,7 +52,11 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		public LuaTable joypad_getimmediate()
+		[LuaMethodAttributes(
+			"getimmediate",
+			"returns a lua table of any controller buttons currently pressed by the user"
+		)]
+		public LuaTable GetImmediate()
 		{
 			var buttons = _lua.NewTable();
 			foreach (var button in Global.ActiveController.Type.BoolButtons)
@@ -72,7 +67,11 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		public void joypad_set(LuaTable buttons, object controller = null)
+		[LuaMethodAttributes(
+			"set",
+			"sets the given buttons to their provided values for the current frame"
+		)]
+		public void Set(LuaTable buttons, object controller = null)
 		{
 			try
 			{
@@ -102,7 +101,6 @@ namespace BizHawk.Client.Common
 					{
 						theValue = null;
 					}
-
 
 					if (!invert)
 					{
@@ -164,7 +162,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void joypad_setanalog(LuaTable controls, object controller = null)
+		[LuaMethodAttributes(
+			"setanalog",
+			"sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value."
+		)]
+		public void SetAnalog(LuaTable controls, object controller = null)
 		{
 			try
 			{

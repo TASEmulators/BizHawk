@@ -1,66 +1,141 @@
-﻿namespace BizHawk.Client.Common
+﻿using System;
+
+namespace BizHawk.Client.Common
 {
 	public class BitLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "bit"; } }
-		public override string[] Functions
+
+		[LuaMethodAttributes(
+			"band", 
+			"Bitwise AND of 'val' against 'amt'"
+		)]
+		public static uint Band(int val, int amt)
 		{
-			get
-			{
-				return new[]
-				{
-					"band",
-					"bnot",
-					"bor",
-					"bxor",
-					"lshift",
-					"rol",
-					"ror",
-					"rshift",
-				};
-			}
+			return (uint)(val & amt);
 		}
 
-		public static uint bit_band(object val, object amt)
+		[LuaMethodAttributes(
+			"bnot",
+			"Bitwise NOT of 'val' against 'amt'"
+		)]
+		public static uint Bnot(int val)
 		{
-			return (uint)(LuaInt(val) & LuaInt(amt));
+			return (uint)~val;
 		}
 
-		public static uint bit_bnot(object val)
+		[LuaMethodAttributes(
+			"bor",
+			"Bitwise OR of 'val' against 'amt'"
+		)]
+		public static uint Bor(int val, int amt)
 		{
-			return (uint)(~LuaInt(val));
+			return (uint)(val | amt);
 		}
 
-		public static uint bit_bor(object val, object amt)
+		[LuaMethodAttributes(
+			"bxor",
+			"Bitwise XOR of 'val' against 'amt'"
+		)]
+		public static uint Bxor(int val, int amt)
 		{
-			return (uint)(LuaInt(val) | LuaInt(amt));
+			return (uint)(val ^ amt);
 		}
 
-		public static uint bit_bxor(object val, object amt)
+		[LuaMethodAttributes(
+			"lshift",
+			"Logical shift left of 'val' by 'amt' bits"
+		)]
+		public static uint Lshift(int val, int amt)
 		{
-			return (uint)(LuaInt(val) ^ LuaInt(amt));
+			return (uint)(val << amt);
 		}
 
-		public static uint bit_lshift(object val, object amt)
+		[LuaMethodAttributes(
+			"rol",
+			"Left rotate 'val' by 'amt' bits"
+		)]
+		public static uint Rol(int val, int amt)
 		{
-			return (uint)(LuaInt(val) << LuaInt(amt));
+			return (uint)((val << amt)
+				| (val >> (32 - amt)));
 		}
 
-		public static uint bit_rol(object val, object amt)
+		[LuaMethodAttributes(
+			"ror",
+			"Right rotate 'val' by 'amt' bits"
+		)]
+		public static uint Ror(int val, int amt)
 		{
-			return (uint)((LuaInt(val) << LuaInt(amt)) 
-				| (LuaInt(val) >> (32 - LuaInt(amt))));
+			return (uint)((val >> amt)
+				| (val << (32 - amt)));
 		}
 
-		public static uint bit_ror(object val, object amt)
+		[LuaMethodAttributes(
+			"rshift",
+			"Logical shift right of 'val' by 'amt' bits"
+		)]
+		public static uint Rshift(int val, int amt)
 		{
-			return (uint)((LuaInt(val) >> LuaInt(amt))
-				| (LuaInt(val) << (32 - LuaInt(amt))));
+			return (uint)(val >> amt);
 		}
 
-		public static uint bit_rshift(object val, object amt)
+		[LuaMethodAttributes(
+			"check",
+			"Returns result of bit 'pos' being set in 'num'"
+		)]
+		public static bool Check(long num, int pos)
 		{
-			return (uint)(LuaInt(val) >> LuaInt(amt));
+			return (num & (1 << pos)) != 0;
+		}
+
+		[LuaMethodAttributes(
+			"set",
+			"Sets the bit 'pos' in 'num'"
+		)]
+		public static uint Set(object num, object pos)
+		{
+			return (uint)(LuaInt(num) | 1 << LuaInt(pos));
+		}
+
+		[LuaMethodAttributes(
+			"clear",
+			"Clears the bit 'pos' in 'num'"
+		)]
+		public static long Clear(uint num, int pos)
+		{
+			return num & ~(1 << pos);
+		}
+
+		[LuaMethodAttributes(
+			"byteswap_16",
+			"Byte swaps 'short', i.e. bit.byteswap_16(0xFF00) would return 0x00FF"
+		)]
+		public static ushort Byteswap_16(ushort val)
+		{
+			 return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
+		}
+
+		[LuaMethodAttributes(
+			"byteswap_32",
+			"Byte swaps 'dword'"
+		)]
+		public static uint Byteswap_32(uint val)
+		{
+			return (val & 0x000000FFU) << 24 | (val & 0x0000FF00U) << 8 |
+				(val & 0x00FF0000U) >> 8 | (val & 0xFF000000U) >> 24;
+		}
+
+		[LuaMethodAttributes(
+			"byteswap_64",
+			"Byte swaps 'long'"
+		)]
+		public static UInt64 Byteswap_64(ulong val)
+		{
+			return (val & 0x00000000000000FFUL) << 56 | (val & 0x000000000000FF00UL) << 40 |
+		 (val & 0x0000000000FF0000UL) << 24 | (val & 0x00000000FF000000UL) << 8 |
+		 (val & 0x000000FF00000000UL) >> 8 | (val & 0x0000FF0000000000UL) >> 24 |
+		 (val & 0x00FF000000000000UL) >> 40 | (val & 0xFF00000000000000UL) >> 56;
 		}
 	}
 }

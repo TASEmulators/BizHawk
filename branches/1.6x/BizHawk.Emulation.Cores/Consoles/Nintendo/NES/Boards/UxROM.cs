@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER002":
+					AssertChr(0); Cart.vram_size = 8;
 					break;
 
 				case "NES-UNROM": //mega man
@@ -53,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case "NES-UOROM": //paperboy 2
 				case "HVC-UOROM":
+				case "JALECO-JF-15":
 				case "JALECO-JF-18":
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;

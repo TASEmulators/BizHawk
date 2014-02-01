@@ -317,5 +317,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
+
+		public override byte[] SaveRam
+		{
+			get
+			{
+				if (Cart.wram_battery)
+				{
+					if (WRAM != null)
+						return WRAM;
+					else if (audio != null)
+						return audio.GetSaveRam();
+				}
+				return null;
+			}
+		}
 	}
 }

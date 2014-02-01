@@ -136,4 +136,126 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\nes_emu\abstract_file.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\apu_state.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_common.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_config.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_endian.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\blargg_source.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Blip_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Blip_Synth.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Effects_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Multi_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Cart.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Core.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Cpu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_cpu_io.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_data.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Effects_Buffer.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Emu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_File.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Fme7_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Mapper.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Namco_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_ntsc.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_ntsc_impl.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Oscs.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Bg.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Impl.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Rendering.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Ppu_Sprites.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_State.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\nes_util.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nes_emu\Nes_Vrc6_Apu.h">
+      <Filter>Header Files\nes_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_common.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_config.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_endian.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_errors.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\blargg_source.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fex\Data_Reader.h">
+      <Filter>Header Files\fex</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	*/
 	public sealed class JALECO_JF_05_06_07 : NES.NESBoardBase
 	{
-		bool hibit, lowbit;
 		int prg_byte_mask;
 		int chr;
 		int chr_mask_8k;
@@ -36,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TAITO-74*139/74":
 				case "JALECO-JF-07":
 				case "JALECO-JF-08":
+				case "JALECO-JF-09": // untested
 				case "KONAMI-74*139/74":
 				case "JALECO-JF-10":
 					AssertPrg(16, 32); AssertChr(16, 32); AssertVram(0); AssertWram(0);

@@ -749,7 +749,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					board.VROM = new byte[choice.chr_size * 1024];
 					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
-					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, board.VROM.Length);
+					// if file isn't long enough for VROM, truncate
+
+					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, Math.Min(board.VROM.Length, file.Length - 16 - vrom_offset));
 				}
 			}
 			else
