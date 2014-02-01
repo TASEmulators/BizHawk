@@ -20,13 +20,11 @@ namespace BizHawk.Client.EmuHawk
 			"loadslot",
 			"Loads the savestate at the given slot number (must be an integer between 0 and 9)"
 		)]
-		public void LoadSlot(object slotNum)
+		public void LoadSlot(int slotNum)
 		{
-			var slot = LuaInt(slotNum);
-
-			if (slot >= 0 && slot <= 9)
+			if (slotNum >= 0 && slotNum <= 9)
 			{
-				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slot, true);
+				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slotNum, true);
 			}
 		}
 
@@ -43,13 +41,11 @@ namespace BizHawk.Client.EmuHawk
 			"saveslot",
 			"Saves a state at the given save slot (must be an integer between 0 and 9)"
 		)]
-		public void SaveSlot(object slotNum)
+		public void SaveSlot(int slotNum)
 		{
-			var slot = LuaInt(slotNum);
-
-			if (slot >= 0 && slot <= 9)
+			if (slotNum >= 0 && slotNum <= 9)
 			{
-				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slot);
+				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slotNum);
 			}
 		}
 	}

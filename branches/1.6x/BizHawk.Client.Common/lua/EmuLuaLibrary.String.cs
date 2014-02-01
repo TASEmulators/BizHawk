@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 			"hex",
 			"Converts the number to a string representation of the hexadecimal value of the given number"
 		)]
-		public static string Hex(object num)
+		public static string Hex(long num)
 		{
-			var hex = String.Format("{0:X}", LuaLong(num));
+			var hex = String.Format("{0:X}", num);
 			if (hex.Length == 1)
 			{
 				hex = "0" + hex;
@@ -24,9 +24,9 @@ namespace BizHawk.Client.Common
 			"binary",
 			"Converts the number to a string representation of the binary value of the given number"
 		)]
-		public static string Binary(object num)
+		public static string Binary(long num)
 		{
-			var binary = Convert.ToString(LuaLong(num), 2);
+			var binary = Convert.ToString(num, 2);
 			binary = binary.TrimStart('0');
 			return binary;
 		}
@@ -35,9 +35,9 @@ namespace BizHawk.Client.Common
 			"octal",
 			"Converts the number to a string representation of the octal value of the given number"
 		)]
-		public static string Octal(object num)
+		public static string Octal(long num)
 		{
-			var octal = Convert.ToString(LuaLong(num), 8);
+			var octal = Convert.ToString(num, 8);
 			if (octal.Length == 1)
 			{
 				octal = "0" + octal;
@@ -86,18 +86,18 @@ namespace BizHawk.Client.Common
 			"substring",
 			"Returns a string that represents a substring of str starting at position for the specified length"
 		)]
-		public static string SubString(string str, object position, object length)
+		public static string SubString(string str, int position, int length)
 		{
-			return str.Substring((int)position, (int)length);
+			return str.Substring(position, length);
 		}
 
 		[LuaMethodAttributes(
 			"remove",
 			"Returns a string that represents str with the given position and count removed"
 		)]
-		public static string Remove(string str, object position, object count)
+		public static string Remove(string str, int position, int count)
 		{
-			return str.Remove((int)position, (int)count);
+			return str.Remove(position, count);
 		}
 
 		[LuaMethodAttributes(

@@ -179,41 +179,39 @@ namespace BizHawk.Client.Common
 			"setscanlines",
 			"sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239"
 		)]
-		public static void SetScanlines(object top, object bottom, bool pal = false)
+		public static void SetScanlines(int top, int bottom, bool pal = false)
 		{
 			if (Global.Emulator is NES)
 			{
-				var first = LuaInt(top);
-				var last = LuaInt(bottom);
-				if (first > 127)
+				if (top > 127)
 				{
-					first = 127;
+					top = 127;
 				}
-				else if (first < 0)
+				else if (top < 0)
 				{
-					first = 0;
+					top = 0;
 				}
 
-				if (last > 239)
+				if (bottom > 239)
 				{
-					last = 239;
+					bottom = 239;
 				}
-				else if (last < 128)
+				else if (bottom < 128)
 				{
-					last = 128;
+					bottom = 128;
 				}
 
 				var s = (NES.NESSettings)Global.Emulator.GetSettings();
 
 				if (pal)
 				{
-					s.PAL_TopLine = first;
-					s.PAL_BottomLine = last;
+					s.PAL_TopLine = top;
+					s.PAL_BottomLine = bottom;
 				}
 				else
 				{
-					s.NTSC_TopLine = first;
-					s.NTSC_BottomLine = last;
+					s.NTSC_TopLine = top;
+					s.NTSC_BottomLine = bottom;
 				}
 
 				Global.Emulator.PutSettings(s);

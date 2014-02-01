@@ -2512,6 +2512,8 @@ void CPU::process(const unsigned long cycles) {
 				break;
 
 			case 0xD3: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 
 				//call nc,nn (24;12 cycles):
@@ -2578,6 +2580,8 @@ void CPU::process(const unsigned long cycles) {
 				break;
 
 			case 0xDB: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 
 				//call z,nn (24;12 cycles):
@@ -2589,6 +2593,11 @@ void CPU::process(const unsigned long cycles) {
 					PC_MOD((PC + 2) & 0xFFFF);
 					cycleCounter += 4;
 				}
+				break;
+
+			case 0xDD: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 
 			case 0xDE:
@@ -2626,8 +2635,12 @@ void CPU::process(const unsigned long cycles) {
 				FF_WRITE(0xFF00 | C, A);
 				break;
 			case 0xE3: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xE4: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xE5:
 				push_rr(H, L);
@@ -2682,10 +2695,16 @@ void CPU::process(const unsigned long cycles) {
 				break;
 
 			case 0xEB: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xEC: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xED: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xEE:
 				{
@@ -2734,6 +2753,8 @@ void CPU::process(const unsigned long cycles) {
 				break;
 
 			case 0xF4: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xF5: /*push_rr(A, F); Cycles(16); break;*/
 				calcHF(HF1, HF2);
@@ -2806,8 +2827,12 @@ void CPU::process(const unsigned long cycles) {
 				break;
 
 			case 0xFC: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xFD: /*doesn't exist*/
+				skip = true;
+				memory.di();
 				break;
 			case 0xFE:
 				{

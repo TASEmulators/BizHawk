@@ -161,11 +161,11 @@ namespace BizHawk.Client.Common
 			"onmemoryexecute",
 			"Fires after the given address is executed by the core"
 		)]
-		public string OnMemoryExecute(LuaFunction luaf, object address, string name = null)
+		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddExecute(nlf.Callback, LuaUInt(address));
+			Global.CoreComm.MemoryCallbackSystem.AddExecute(nlf.Callback, address);
 			return nlf.Guid.ToString();
 		}
 
@@ -173,11 +173,11 @@ namespace BizHawk.Client.Common
 			"onmemoryread",
 			"Fires after the given address is read by the core. If no address is given, it will attach to every memory read"
 		)]
-		public string OnMemoryRead(LuaFunction luaf, object address = null, string name = null)
+		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, address != null ? LuaUInt(address) : (uint?)null);
+			Global.CoreComm.MemoryCallbackSystem.AddRead(nlf.Callback, address);
 			return nlf.Guid.ToString();
 		}
 
@@ -185,11 +185,11 @@ namespace BizHawk.Client.Common
 			"onmemorywrite",
 			"Fires after the given address is written by the core. If no address is given, it will attach to every memory write"
 		)]
-		public string OnMemoryWrite(LuaFunction luaf, object address = null, string name = null)
+		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
 			_luaFunctions.Add(nlf);
-			Global.CoreComm.MemoryCallbackSystem.AddWrite(nlf.Callback, address != null ? LuaUInt(address) : (uint?)null);
+			Global.CoreComm.MemoryCallbackSystem.AddWrite(nlf.Callback, address);
 			return nlf.Guid.ToString();
 		}
 

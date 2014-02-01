@@ -26,13 +26,13 @@ namespace BizHawk.Client.Common
 			"getinput",
 			"Returns a table of buttons pressed on a given frame of the loaded movie"
 		)]
-		public LuaTable GetInput(object frame)
+		public LuaTable GetInput(int frame)
 		{
 			var input = _lua.NewTable();
 
 			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
-				Global.MovieSession.Movie.GetInput(LuaInt(frame))
+				Global.MovieSession.Movie.GetInput(frame)
 			);
 
 			foreach (var button in m.Type.BoolButtons)

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"log",
-			"Outputs the given string to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
+			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
 		)]
 		public static void Log(object output)
 		{

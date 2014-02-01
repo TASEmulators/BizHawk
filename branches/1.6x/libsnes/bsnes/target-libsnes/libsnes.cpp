@@ -586,6 +586,9 @@ uint8_t* snes_get_memory_data(unsigned id) {
       return SNES::ppu.oam;
     case SNES_MEMORY_CGRAM:
       return SNES::ppu.cgram;
+    
+		case SNES_MEMORY_CARTRIDGE_ROM:
+      return SNES::cartridge.rom.data();
   }
 
   return 0;
@@ -640,6 +643,9 @@ const char* snes_get_memory_id_name(unsigned id) {
       return "OAM";
     case SNES_MEMORY_CGRAM:
       return "CGRAM";
+
+    case SNES_MEMORY_CARTRIDGE_ROM:
+      return "CARTRIDGE_ROM";
   }
 
   return nullptr;
@@ -704,6 +710,10 @@ unsigned snes_get_memory_size(unsigned id) {
       break;
     case SNES_MEMORY_CGRAM:
       size = 512;
+      break;
+
+    case SNES_MEMORY_CARTRIDGE_ROM:
+      size =  SNES::cartridge.rom.size();
       break;
   }
 
