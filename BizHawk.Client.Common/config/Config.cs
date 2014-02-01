@@ -493,10 +493,8 @@ namespace BizHawk.Client.Common
 		public bool PlayMovie_MatchGameName = false;
 
 		//TI83
+		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
 		public bool TI83autoloadKeyPad = true;
-		public bool TI83KeypadSaveWindowPosition = true;
-		public int TI83KeyPadWndx = -1;
-		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
