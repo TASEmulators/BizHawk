@@ -44,6 +44,7 @@
 #define MAPPER_TEREBI      (0x01)
 #define MAPPER_RAM_8K_EXT1 (0x02)
 #define MAPPER_RAM_8K_EXT2 (0x03)
+#define MAPPER_OMV         (0x04)
 #define MAPPER_SEGA        (0x10)
 #define MAPPER_SEGA_X      (0x11)
 #define MAPPER_93C46       (0x12)
@@ -55,7 +56,7 @@
 #define MAPPER_MSX         (0x21)
 #define MAPPER_MSX_NEMESIS (0x22)
 
-#define GAME_DATABASE_CNT (211)
+#define GAME_DATABASE_CNT (214)
 
 typedef struct
 {
@@ -95,7 +96,7 @@ static const rominfo_t game_list[GAME_DATABASE_CNT] =
   {0x445525E2, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Penguin Adventure (KR) */
   {0x83F0EEDE, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Street Master (KR) */
   {0xA05258F5, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Won-Si-In (KR) */
-  {0x06965ED9, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,          SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* F-1 Spirit - The way to Formula-1 (KR) */
+  {0x06965ED9, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* F-1 Spirit - The way to Formula-1 (KR) */
   {0x77EFE84A, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Cyborg Z (KR) */
   {0xF89AF3CC, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Knightmare II - The Maze of Galious (KR) */
   {0x9195C34C, 0, 0, SYSTEM_MS_GAMEPAD, MAPPER_MSX,         SYSTEM_SMS,  REGION_JAPAN_NTSC}, /* Super Boy 3 (KR) */
@@ -152,6 +153,11 @@ static const rominfo_t game_list[GAME_DATABASE_CNT] =
   {0x2E366CCF, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_RAM_8K_EXT2, SYSTEM_SG, REGION_JAPAN_NTSC}, /* The Castle (TW) */
   {0xAAAC12CF, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_RAM_8K_EXT2, SYSTEM_SG, REGION_JAPAN_NTSC}, /* Rally-X (TW) */
   {0xD2EDD329, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_RAM_8K_EXT2, SYSTEM_SG, REGION_JAPAN_NTSC}, /* Road Fighter (TW) */
+
+  /* games requiring 2K internal RAM (Othello Multivision hardware) */
+  {0x7F7F009D, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_OMV, SYSTEM_SG, REGION_JAPAN_NTSC}, /* Circus Charlie (KR) */
+  {0x77DB4704, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_OMV, SYSTEM_SG, REGION_JAPAN_NTSC}, /* Q*Bert */
+  {0xC5A67B95, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_OMV, SYSTEM_SG, REGION_JAPAN_NTSC}, /* Othello Multivision BIOS */
 
   /* games requiring Japanese region setting */
   {0x71DEBA5A, 0, 0, SYSTEM_MS_GAMEPAD,  MAPPER_SEGA,   SYSTEM_GG,   REGION_JAPAN_NTSC}, /* Pop Breaker */
@@ -727,18 +733,30 @@ static void mapper_reset(void)
         z80_readmap[i] = z80_writemap[i] = &work_ram[(i & 0x07) << 10];
       }
     }
-    else
+
+    /* Othello Multivision hardware */
+    else if (cart_rom.mapper == MAPPER_OMV)
     {
-      /* $C000-$FFFF mapped to 2k mirrored RAM */
+      /* $C000-$FFFF mapped to 2k internal RAM (mirrored) */
       for (i = 0x30; i < 0x40; i++)
       {
         z80_readmap[i] = z80_writemap[i] = &work_ram[(i & 0x01) << 10];
       }
     }
+
+    /* default SG-1000 hardware */
+    else
+    {
+      /* $C000-$FFFF mapped to 1k internal RAM (mirrored) */
+      for (i = 0x30; i < 0x40; i++)
+      {
+        z80_readmap[i] = z80_writemap[i] = &work_ram[0];
+      }
+    }
   }
   else
   {
-    /* $C000-$FFFF mapped to 8k internal RAM (mirrored) */
+    /* Master System / Game Gear hardware: $C000-$FFFF mapped to 8k internal RAM (mirrored) */
     for (i = 0x30; i < 0x40; i++)
     {
       z80_readmap[i] = z80_writemap[i] = &work_ram[(i & 0x07) << 10];
@@ -761,17 +779,17 @@ static void mapper_reset(void)
     return;
   }
 
-  /* reset default $0000-$BFFF mapping */
+  /* by default, $0000-$BFFF is mapped to ROM (first 48k) */
+  for (i = 0x00; i < 0x30; i++)
+  {
+    z80_readmap[i] = &slot.rom[i << 10];
+    z80_writemap[i] = cart.rom + 0x510000; /* unused area */
+  }
+
+  /* reset cartridge hardware mapping */
   if (slot.mapper < MAPPER_SEGA)
   {
-    /* $0000-$BFFF mapped to ROM (48k) */
-    for (i = 0x00; i < 0x30; i++)
-    {
-      z80_readmap[i] = &slot.rom[i << 10];
-      z80_writemap[i] = cart.rom + 0x510000; /* unused area */
-    }
-
-    /* cartridge extra RAM enabled by default with 32K ROM */
+    /* cartridge extra RAM enabled by default with 32K ROM (The Castle) */
     if (slot.pages <= 0x20)
     {
       /* $8000-$BFFF mapped to 8k external RAM (mirrored) */
@@ -793,22 +811,16 @@ static void mapper_reset(void)
   }
   else
   {
-    /* $0000-$BFFF mapped to ROM by default */
-    for (i = 0x00; i < 0x30; i++)
-    {
-      z80_readmap[i] = &slot.rom[i << 10];
-      z80_writemap[i] = cart.rom + 0x510000; /* unused area */
-    }
-
-    /* reset default ROM paging */
+    /* reset ROM paging hardware */
     if (slot.mapper & MAPPER_KOREA_8K)
     {
+      /* 8k pages */
       mapper_8k_w(0,slot.fcr[0]);
       mapper_8k_w(1,slot.fcr[1]);
       mapper_8k_w(2,slot.fcr[2]);
       mapper_8k_w(3,slot.fcr[3]);
 
-      /* Nemesis special case */
+      /* "Nemesis" mapper specific */
       if (slot.mapper == MAPPER_MSX_NEMESIS)
       {
         /* first 8k page is mapped to last 8k ROM bank */
@@ -820,6 +832,7 @@ static void mapper_reset(void)
     }
     else
     {
+      /* 16k pages */
       mapper_16k_w(0,slot.fcr[0]);
       mapper_16k_w(1,slot.fcr[1]);
       mapper_16k_w(2,slot.fcr[2]);
