@@ -850,7 +850,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (Settings.ClipLeftAndRight)
 			{
 				videoProvider.left = 8;
-				videoProvider.right = 248;
+				videoProvider.right = 247;
 			}
 			else
 			{
