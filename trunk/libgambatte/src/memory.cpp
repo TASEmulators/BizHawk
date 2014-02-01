@@ -322,11 +322,14 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 			intreq.setEventTime<END>(cycleCounter + (isDoubleSpeed() ?
 					(intreq.eventTime(END) - cycleCounter) << 1 : (intreq.eventTime(END) - cycleCounter) >> 1));
 		}
+		// when switching speed, it seems that the CPU spontaneously restarts soon?
+		// otherwise, the cpu should be allowed to stay halted as long as needed
+		// so only execute this line when switching speed
+		intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
 	}
 	
 	intreq.halt();
-	intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
-	
+
 	return cycleCounter;
 }
 
