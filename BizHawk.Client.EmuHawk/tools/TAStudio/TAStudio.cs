@@ -143,14 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					if (_markers.CurrentFrame == index + 1)
-					{
-						text = ">";
-					}
-					else
-					{
-						text = String.Empty;
-					}
+					text = _markers.CurrentFrame == index + 1 ? ">" : string.Empty;
 				}
 				else if (columnName == FrameColumnName)
 				{
@@ -158,17 +151,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					text = _tas[index].IsPressed(columnName) ? columnText : String.Empty;
+					text = _tas[index].IsPressed(columnName) ? columnText : string.Empty;
 				}
 			}
 			catch (Exception ex)
 			{
-				text = String.Empty;
+				text = string.Empty;
 				MessageBox.Show("oops\n" + ex);
 			}
 		}
 
-		private void TAStudio_Load(object sender, EventArgs e)
+		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -192,7 +185,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_tas.ActivePlayers = new List<string> { "Player 1" }; // TODO
-
 
 			SetUpColumns();
 			LoadConfigSettings();
@@ -300,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_tas.SwitchToPlay();
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
-				Global.Emulator.FrameAdvance(true, true);
+				Global.Emulator.FrameAdvance(true);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				TasView.ensureVisible(frame);
 				TasView.Refresh();
@@ -316,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: columns selected
 			// TODO: clipboard
 			var list = TasView.SelectedIndices;
-			var message = string.Empty;
+			string message;
 
 			if (list.Count > 0)
 			{
@@ -354,13 +346,12 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
-		private void NewTASMenuItem_Click(object sender, EventArgs e)
+		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
 			StartNewSession();
 		}
 
-
-		private void OpenTASMenuItem_Click(object sender, EventArgs e)
+		private void OpenTasMenuItem_Click(object sender, EventArgs e)
 		{
 			if (AskSave())
 			{
@@ -371,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 					_tas.Load();
 					Global.Config.RecentTas.Add(_tas.Filename);
 					TasView.ItemCount = _tas.InputLogLength;
-					// TOOD: message to the user
+					MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " loaded.";
 				}
 			}
 		}
@@ -385,8 +376,8 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_tas.Save();
+				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
 			}
-			// TODO: inform the user it happened somehow
 		}
 
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
@@ -397,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 				_tas.Filename = file.FullName;
 				_tas.Save();
 				Global.Config.RecentTas.Add(_tas.Filename);
-				// TODO: inform the user it happened somehow
+				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
 			}
 		}
 
@@ -547,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 						endVal = e.OldCell.Row.Value;
 					}
 
-					for (int i = startVal + 1; i <= endVal; i++)
+					for (var i = startVal + 1; i <= endVal; i++)
 					{
 						TasView.SelectItem(i, true);
 					}
