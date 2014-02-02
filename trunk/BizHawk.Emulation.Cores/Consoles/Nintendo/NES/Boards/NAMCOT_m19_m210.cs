@@ -2,12 +2,17 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//AKA mapper 19 + 210
-	//210 lacks the sound and nametable control
-	//I'm not sure why bootgod turned all of these into mapper 19.. 
-	//some of them (example: family circuit) cannot work on mapper 19 because it clobbers nametable[0]
-	//luckily, we work by board
-	public sealed class NAMCOT_m19_m210 : NES.NESBoardBase
+	// AKA mapper 19
+	// the similar mapper 210 has no sound, no irq, and a different nametable setup
+	// as of Jan 2014, bootgod has the 210 separated from the 19 correctly; but "in the wild"
+	// most things are labeled 19.
+
+	// to further complicate matters, some 210 roms write to both sets of NT regs so that they
+	// will work emulated either way.  but some don't, and must be emulated differently
+
+	// what we have here should work for everthing that's actually a 129 or 163,
+	// and some of the 175/340 (mapper 210)
+	public sealed class Namcot129_163 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k;
@@ -20,11 +25,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int irq_counter;
 		bool irq_enabled;
-		int irq_cycles;
 		bool irq_pending;
+		bool audio_disable = true;
 
 		Namco163Audio audio;
 		int audio_cycles;
+
+		byte prgram_write = 0;
 
 		public override void Dispose()
 		{
@@ -42,14 +49,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("vram_enable_" + i, ref vram_enable[i]);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_cycles", ref irq_cycles);
 			ser.Sync("irq_pending", ref irq_pending);
 			SyncIRQ();
-			if (audio != null)
-			{
-				ser.Sync("audio_cycles", ref audio_cycles);
-				audio.SyncState(ser);
-			}
+			ser.Sync("audio_cycles", ref audio_cycles);
+			audio.SyncState(ser);
+			ser.Sync("audio_disable", ref audio_disable);
+			ser.Sync("prgram_write", ref prgram_write);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -60,14 +65,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertVram(0);
 					break;
 
-				//mapper 19:
+				case "NAMCOT-129": // star wars
+				// no known differences between 129 and 163
 				case "NAMCOT-163":
 					//final lap
 					//battle fleet
 					//dragon ninja
 					//famista '90
-					//hydelide 3 *this is a good test of more advanced features
-					AssertPrg(128,256); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
+					//hydelide 3 - this is a good test of more advanced features
+					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);
 					break;
 
 				default:
@@ -95,10 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x0800:
-					if (audio != null)
-						return audio.ReadData();
-					else
-						break;
+					return audio.ReadData();
 				case 0x1000:
 					return (byte)(irq_counter & 0xFF);
 				case 0x1800:
@@ -113,8 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x0800:
-					if (audio != null)
-						audio.WriteData(value);
+					audio.WriteData(value);
 					break;
 				case 0x1000:
 					irq_counter = (irq_counter & 0xFF00) | value;
@@ -127,10 +129,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						bool last_enabled = irq_enabled;
 						irq_enabled = value.Bit(7);
 						irq_pending = false;
-						if (irq_enabled && !last_enabled)
-						{
-							irq_cycles = 3;
-						}
 						SyncIRQ();
 						break;
 					}
@@ -157,7 +155,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x5800: chr_banks_1k[11] = value; break;
 
 				case 0x6000: //$E000
-					prg_banks_8k[0] = (value & 0x3F) & prg_bank_mask_8k; 
+					prg_banks_8k[0] = (value & 0x3F) & prg_bank_mask_8k;
+					audio_disable = value.Bit(6);
 					break;
 				case 0x6800: //$E800
 					prg_banks_8k[1] = (value & 0x3F) & prg_bank_mask_8k;
@@ -165,11 +164,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					vram_enable[1] = !value.Bit(7);
 					break;
 				case 0x7000: //$F000
-					prg_banks_8k[2] = (value & 0x3F) & prg_bank_mask_8k; 
+					prg_banks_8k[2] = (value & 0x3F) & prg_bank_mask_8k;
 					break;
 				case 0x7800: //$F800
-					if (audio != null)
-						audio.WriteAddr(value);
+					audio.WriteAddr(value);
+					prgram_write = value; // yes, same port
 					break;
 			}
 		}
@@ -252,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ClockIRQ();
 			}
-			if (audio != null)
+			if (!audio_disable)
 			{
 				audio_cycles++;
 				if (audio_cycles == 15)
@@ -271,10 +270,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					if (WRAM != null)
 						return WRAM;
-					else if (audio != null)
+					else
 						return audio.GetSaveRam();
 				}
-				return null;
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			// top 4 bits must be in this arrangement to write at all
+			if ((prgram_write & 0xf0) == 0x40)
+			{
+				// then the bit corresponding to the 2K subsection must be 0
+				if (!prgram_write.Bit(addr >> 11))
+				{
+					base.WriteWRAM(addr, value);
+				}
 			}
 		}
 	}
