@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						audio = new Namco163Audio(NES.apu.ExternalQueue);
 					break;
 
+					/*
 				//mapper 210:
 				case "NAMCOT-175":
 					//wagyan land 2
@@ -89,6 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//famista '92
 					AssertPrg(128,256,512); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
 					break;
+					*/
 				default:
 					return false;
 			}
