@@ -133,5 +133,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return ROM[addr & 0x1fff | prg[addr >> 13] << 13];
 		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			if (wramenable)
+				base.WriteWRAM(addr, value);
+		}
+		public override byte ReadWRAM(int addr)
+		{
+			if (wramenable)
+				return base.ReadWRAM(addr);
+			else
+				return NES.DB;
+		}
 	}
 }
