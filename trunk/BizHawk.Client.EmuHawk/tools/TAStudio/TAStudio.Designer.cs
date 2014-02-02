@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			this.NewTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.NewTASMenuItem.Text = "&New";
-			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTASMenuItem_Click);
+			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTasMenuItem_Click);
 			// 
 			// OpenTASMenuItem
 			// 
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.OpenTASMenuItem.Text = "&Open";
-			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTASMenuItem_Click);
+			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTasMenuItem_Click);
 			// 
 			// SaveTASMenuItem
 			// 
@@ -756,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
-			this.Load += new System.EventHandler(this.TAStudio_Load);
+			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
