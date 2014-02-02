@@ -92,8 +92,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDef.FloatRanges.Add(FullShort);
 			Converts.Add(delegate()
 			{
-				target.analog[idx,0] = (short)source.GetFloat(NX);
-				target.analog[idx,1] = (short)source.GetFloat(NY);
+					target.analog[(2*idx)+0] = (short)source.GetFloat(NX);
+					target.analog[(2*idx)+1] = (short)source.GetFloat(NY);
 			});
 		}
 
