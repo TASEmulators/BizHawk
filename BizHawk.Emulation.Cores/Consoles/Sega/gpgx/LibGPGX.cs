@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			/// analog (x/y)
 			/// </summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAX_DEVICES * 2)]
-			public readonly short[,] analog = new short[MAX_DEVICES, 2];
+			public readonly short[] analog = new short[MAX_DEVICES * 2];
 			/// <summary>
 			/// gun horizontal offset
 			/// </summary>
