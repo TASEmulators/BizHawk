@@ -15,9 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//state
 		IntBuffer prg_banks_8k = new IntBuffer(4);
-		IntBuffer chr_banks_1k = new IntBuffer(8);
-		IntBuffer nt_banks_1k = new IntBuffer(4);
-		bool[] vram_enable = new bool[2];
+		IntBuffer chr_banks_1k = new IntBuffer(12);
+		bool[] vram_enable = new bool[3];
 
 		int irq_counter;
 		bool irq_enabled;
@@ -32,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
-			nt_banks_1k.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -40,8 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
-			ser.Sync("nt_banks_1k", ref nt_banks_1k);
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < vram_enable.Length; i++)
 				ser.Sync("vram_enable_" + i, ref vram_enable[i]);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
@@ -60,8 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER019":
-					break;
-				case "MAPPER210":
+					AssertVram(0);
 					break;
 
 				//mapper 19:
@@ -71,36 +67,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//dragon ninja
 					//famista '90
 					//hydelide 3 *this is a good test of more advanced features
-					Cart.vram_size = 8; //not many test cases of this, but hydelide 3 needs it.
-					AssertPrg(128,256); AssertChr(128,256); AssertVram(8); AssertWram(0,8);
-					if (NES.apu != null)
-						audio = new Namco163Audio(NES.apu.ExternalQueue);
+					AssertPrg(128,256); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
 					break;
 
-					/*
-				//mapper 210:
-				case "NAMCOT-175":
-					//wagyan land 2
-					//splatter house
-					AssertPrg(128,256); AssertChr(128); AssertVram(0); AssertWram(0);
-					break;
-				case "NAMCOT-340":
-					//family circuit '91
-					//dream master
-					//famista '92
-					AssertPrg(128,256,512); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
-					break;
-					*/
 				default:
 					return false;
 			}
+
+			if (NES.apu != null)
+				audio = new Namco163Audio(NES.apu.ExternalQueue);
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
-			nt_banks_1k[0] = nt_banks_1k[2] = 0xFF;
-			nt_banks_1k[1] = nt_banks_1k[3] = 0xFF;
+			chr_banks_1k[8] = chr_banks_1k[10] = 0xFF;
+			chr_banks_1k[9] = chr_banks_1k[11] = 0xFF;
+
+			vram_enable[2] = true;
 
 			return true;
 		}
@@ -159,27 +143,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			addr &= 0xF800;
 			switch (addr)
 			{
-				case 0x0000: chr_banks_1k[0] = value & chr_bank_mask_1k; break;
-				case 0x0800: chr_banks_1k[1] = value & chr_bank_mask_1k; break;
-				case 0x1000: chr_banks_1k[2] = value & chr_bank_mask_1k; break;
-				case 0x1800: chr_banks_1k[3] = value & chr_bank_mask_1k; break;
-				case 0x2000: chr_banks_1k[4] = value & chr_bank_mask_1k; break;
-				case 0x2800: chr_banks_1k[5] = value & chr_bank_mask_1k; break;
-				case 0x3000: chr_banks_1k[6] = value & chr_bank_mask_1k; break;
-				case 0x3800: chr_banks_1k[7] = value & chr_bank_mask_1k; break;
-
-				case 0x4000: //$C000
-					nt_banks_1k[0] = value;
-					break;
-				case 0x4800: //$C800
-					nt_banks_1k[1] = value;
-					break;
-				case 0x5000: //$D000
-					nt_banks_1k[2] = value;
-					break;
-				case 0x5800: //$D800
-					nt_banks_1k[3] = value;
-					break;
+				case 0x0000: chr_banks_1k[0] = value; break;
+				case 0x0800: chr_banks_1k[1] = value; break;
+				case 0x1000: chr_banks_1k[2] = value; break;
+				case 0x1800: chr_banks_1k[3] = value; break;
+				case 0x2000: chr_banks_1k[4] = value; break;
+				case 0x2800: chr_banks_1k[5] = value; break;
+				case 0x3000: chr_banks_1k[6] = value; break;
+				case 0x3800: chr_banks_1k[7] = value; break;
+				case 0x4000: chr_banks_1k[8] = value; break;
+				case 0x4800: chr_banks_1k[9] = value; break;
+				case 0x5000: chr_banks_1k[10] = value; break;
+				case 0x5800: chr_banks_1k[11] = value; break;
 
 				case 0x6000: //$E000
 					prg_banks_8k[0] = (value & 0x3F) & prg_bank_mask_8k; 
@@ -199,7 +174,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
 		public override byte ReadPRG(int addr)
 		{
 			int bank_8k = addr >> 13;
@@ -212,67 +186,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePPU(int addr, byte value)
 		{
-			if (addr < 0x2000)
+			int bank_1k = addr >> 10;
+			if (bank_1k >= 12)
+				bank_1k -= 4; // mirror 3000:3fff to 2000:2fff
+			int ofs = addr & ((1 << 10) - 1);
+			bool useciram = vram_enable[bank_1k >> 2];
+			bank_1k = chr_banks_1k[bank_1k];
+
+			if (useciram && bank_1k >= 0xe0)
 			{
-				//hydelide 3 is the first game i found that tests this
-				VRAM[addr] = value;
+				bank_1k &= 1;
+				NES.CIRAM[bank_1k << 10 | ofs] = value;
 			}
 			else
 			{
-				addr -= 0x2000;
-				int bank_1k = addr >> 10;
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = nt_banks_1k[bank_1k];
-				if (bank_1k >= 0xE0)
-				{
-					int which_nt = bank_1k & 1;
-					NES.CIRAM[which_nt * 0x400 + ofs] = value;
-				}
-				else
-				{
-					//throw new InvalidOperationException("what? the nametable was mapped to rom..");
-					base.WritePPU(addr + 0x2000, value);
-				}
-			}	
+				// mapped to VROM; nothing to do
+			}
 		}
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000)
+			int bank_1k = addr >> 10;
+			if (bank_1k >= 12)
+				bank_1k -= 4; // mirror 3000:3fff to 2000:2fff
+			int ofs = addr & ((1 << 10) - 1);
+			bool useciram = vram_enable[bank_1k >> 2];
+			bank_1k = chr_banks_1k[bank_1k];
+
+			if (useciram && bank_1k >= 0xe0)
 			{
-				int bank_1k = addr >> 10;
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = chr_banks_1k[bank_1k];
-				if (bank_1k >= 0xE0)
-				{
-					//chr ram handling
-					int side = addr >> 12;
-					if (vram_enable[side])
-					{
-						bank_1k -= 0xE0;
-						bank_1k &= 7; //??
-						return VRAM[bank_1k * 0x400 + ofs];
-					}
-				}
-				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				bank_1k &= 1;
+				return NES.CIRAM[bank_1k << 10 | ofs];
 			}
 			else
 			{
-				addr -= 0x2000;
-				int bank_1k = addr >> 10;
-				if (bank_1k > 3) return base.ReadPPU(addr); //namco classic 2 tests this at the title screen
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = nt_banks_1k[bank_1k];
-				if (bank_1k >= 0xE0)
-				{
-					int which_nt = bank_1k & 1;
-					return NES.CIRAM[which_nt * 0x400 + ofs];
-				}
-				else
-				{
-					int chr_bank_1k = bank_1k;
-					return VROM[chr_bank_1k * 0x400 + ofs];
-				}
+				bank_1k &= chr_bank_mask_1k;
+				return VROM[bank_1k << 10 | ofs];
 			}
 		}
 
@@ -302,12 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (irq_enabled)
 			{
-				//irq_cycles--;
-				//if (irq_cycles == 0)
-				//{
-					//irq_cycles += 3;
-					ClockIRQ();
-				//}
+				ClockIRQ();
 			}
 			if (audio != null)
 			{
