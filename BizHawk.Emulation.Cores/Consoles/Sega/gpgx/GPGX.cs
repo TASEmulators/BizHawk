@@ -284,6 +284,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region controller
 
+		/// <summary>
+		/// size of native input struct
+		/// </summary>
+		int inputsize;
+
 		GPGXControlConverter ControlConverter;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
@@ -291,7 +296,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void SetControllerDefinition()
 		{
-			if (!LibGPGX.gpgx_get_control(input))
+			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
+			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed");
 
 			ControlConverter = new GPGXControlConverter(input);
@@ -316,12 +322,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.gpgx_reset(true);
 
 			// do we really have to get each time?  nothing has changed
-			if (!LibGPGX.gpgx_get_control(input))
+			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed!");
 
 			ControlConverter.Convert(Controller, input);
 
-			if (!LibGPGX.gpgx_put_control(input))
+			if (!LibGPGX.gpgx_put_control(input, inputsize))
 				throw new Exception("gpgx_put_control() failed!");
 
 			IsLagFrame = true;
