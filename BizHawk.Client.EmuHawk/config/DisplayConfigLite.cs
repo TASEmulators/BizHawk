@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk.config
 			rbHq2x.Checked  = Global.Config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = Global.Config.TargetDisplayFilter == 2;
 			checkBilinearFilter.Checked = Global.Config.DispBlurry;
+			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -34,6 +35,7 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.TargetDisplayFilter = 2;
 
 			Global.Config.DispBlurry = checkBilinearFilter.Checked;
+			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			Close();

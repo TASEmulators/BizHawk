@@ -36,10 +36,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			VertexLayout = null;
 		}
 
+		public void Bind()
+		{
+			//lame...
+			Owner.BindPipeline(Pipeline);
+		}
+
 		public unsafe void Run(Texture2d tex, Size InputSize, Size OutputSize, bool flip)
 		{
 			//ack! make sure to set the pipeline before setting
-			Owner.BindPipeline(Pipeline);
+			Bind();
 
 			Pipeline["InputSize"].Set(new Vector2(InputSize.Width,InputSize.Height));
 			Pipeline["TextureSize"].Set(new Vector2(InputSize.Width, InputSize.Height));
