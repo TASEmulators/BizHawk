@@ -36,7 +36,9 @@
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbNone = new System.Windows.Forms.RadioButton();
+			this.tbScanlineIntensity = new System.Windows.Forms.TrackBar();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -64,7 +66,7 @@
 			// checkBilinearFilter
 			// 
 			this.checkBilinearFilter.AutoSize = true;
-			this.checkBilinearFilter.Location = new System.Drawing.Point(12, 143);
+			this.checkBilinearFilter.Location = new System.Drawing.Point(12, 145);
 			this.checkBilinearFilter.Name = "checkBilinearFilter";
 			this.checkBilinearFilter.Size = new System.Drawing.Size(85, 17);
 			this.checkBilinearFilter.TabIndex = 0;
@@ -82,12 +84,13 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.tbScanlineIntensity);
 			this.groupBox1.Controls.Add(this.rbNone);
 			this.groupBox1.Controls.Add(this.rbScanlines);
 			this.groupBox1.Controls.Add(this.rbHq2x);
 			this.groupBox1.Location = new System.Drawing.Point(12, 34);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(200, 92);
+			this.groupBox1.Size = new System.Drawing.Size(200, 105);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Filter";
@@ -95,7 +98,7 @@
 			// rbHq2x
 			// 
 			this.rbHq2x.AutoSize = true;
-			this.rbHq2x.Location = new System.Drawing.Point(14, 42);
+			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
 			this.rbHq2x.Name = "rbHq2x";
 			this.rbHq2x.Size = new System.Drawing.Size(50, 17);
 			this.rbHq2x.TabIndex = 0;
@@ -106,7 +109,7 @@
 			// rbScanlines
 			// 
 			this.rbScanlines.AutoSize = true;
-			this.rbScanlines.Location = new System.Drawing.Point(14, 65);
+			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
 			this.rbScanlines.Name = "rbScanlines";
 			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
 			this.rbScanlines.TabIndex = 1;
@@ -117,13 +120,24 @@
 			// rbNone
 			// 
 			this.rbNone.AutoSize = true;
-			this.rbNone.Location = new System.Drawing.Point(14, 19);
+			this.rbNone.Location = new System.Drawing.Point(6, 19);
 			this.rbNone.Name = "rbNone";
 			this.rbNone.Size = new System.Drawing.Size(51, 17);
 			this.rbNone.TabIndex = 2;
 			this.rbNone.TabStop = true;
 			this.rbNone.Text = "None";
 			this.rbNone.UseVisualStyleBackColor = true;
+			// 
+			// tbScanlineIntensity
+			// 
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 255;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			// 
 			// DisplayConfigLite
 			// 
@@ -142,6 +156,7 @@
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -157,5 +172,6 @@
 		private System.Windows.Forms.RadioButton rbNone;
 		private System.Windows.Forms.RadioButton rbScanlines;
 		private System.Windows.Forms.RadioButton rbHq2x;
+		private System.Windows.Forms.TrackBar tbScanlineIntensity;
 	}
 }

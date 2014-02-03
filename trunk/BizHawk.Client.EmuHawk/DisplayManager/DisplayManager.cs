@@ -49,9 +49,15 @@ namespace BizHawk.Client.EmuHawk
 				RetroShader_Hq2x = new Bizware.BizwareGL.Drivers.OpenTK.RetroShader(GL, str);
 			}
 
+			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.DisplayManager.Filters.BizScanlines.glsl"))
+			{
+				var str = new System.IO.StreamReader(stream).ReadToEnd();
+				RetroShader_BizScanlines = new Bizware.BizwareGL.Drivers.OpenTK.RetroShader(GL, str);
+			}
+
 		}
 
-		Bizware.BizwareGL.Drivers.OpenTK.RetroShader RetroShader_Hq2x;
+		Bizware.BizwareGL.Drivers.OpenTK.RetroShader RetroShader_Hq2x, RetroShader_BizScanlines;
 
 		public bool Disposed { get; private set; }
 
@@ -112,6 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				luaEmuTexture = LuaEmuTextureFrugalizer.Get(luaEmuSurface);
 
 	
+			//TargetScanlineFilterIntensity
 			//apply filter chain (currently, over-simplified)
 			Texture2d currentTexture = videoTexture;
 			if (Global.Config.TargetDisplayFilter == 1)
@@ -120,6 +127,16 @@ namespace BizHawk.Client.EmuHawk
 				rt.Bind();
 				Size outSize = new Size(videoTexture.IntWidth * 2, videoTexture.IntHeight * 2);
 				RetroShader_Hq2x.Run(videoTexture, videoTexture.Size, outSize, true);
+				currentTexture = rt.Texture2d;
+			}
+			if (Global.Config.TargetDisplayFilter == 2)
+			{
+				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
+				rt.Bind();
+				Size outSize = new Size(videoTexture.IntWidth * 2, videoTexture.IntHeight * 2);
+				RetroShader_BizScanlines.Bind();
+				RetroShader_BizScanlines.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
+				RetroShader_BizScanlines.Run(videoTexture, videoTexture.Size, outSize, true);
 				currentTexture = rt.Texture2d;
 			}
 
