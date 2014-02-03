@@ -2,157 +2,64 @@
 
 namespace BizHawk.Client.Common
 {
+	using System.Linq;
+
 	/// <summary>
 	/// Includes helper functions to validate user input
 	/// </summary>
 	public static class InputValidate
 	{
-		public static bool IsValidUnsignedNumber(string str)
+		/// <summary>
+		/// Validates all chars are 0-9
+		/// </summary>
+		public static bool IsUnsigned(string str)
 		{
-			var input = str.ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-			
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] < 47 || bc[0] > 58)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		public static bool IsValidUnsignedNumber(char c)
-		{
-			if (c < 47 || c > 58)
-			{
-				return false;
-			}
-
-			return true;
+			return str.All(IsUnsigned);
 		}
 
 		/// <summary>
-		/// Validates all chars are 0-9 or a dash as the first value
+		/// Validates the char is 0-9
 		/// </summary>
-		public static bool IsValidSignedNumber(string str)
+		public static bool IsUnsigned(char c)
 		{
-			var input = str.Trim().ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] > 58)
-				{
-					return false;
-				}
-
-				if (bc[0] < 47)
-				{
-					if (bc[0] == 45 && i == 0)
-					{
-						continue;
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
+			return char.IsDigit(c);
 		}
 
-		public static bool IsValidSignedNumber(char c)
+		/// <summary>
+		/// Validates all chars are 0-9, or a dash as the first value
+		/// </summary>
+		public static bool IsSigned(string str)
 		{
-			if (c == 45)
+			return IsSigned(str[0]) && str.Substring(1).All(IsUnsigned);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9 or a dash
+		/// </summary>
+		public static bool IsSigned(char c)
+		{
+			return char.IsDigit(c) || c == '-';
+		}
+
+		/// <summary>
+		/// Validates all chars are 0-9, A-F or a-f
+		/// </summary>
+		public static bool IsHex(string str)
+		{
+			return str.All(IsHex);
+		}
+
+		/// <summary>
+		/// Validates the char is 0-9, A-F or a-f
+		/// </summary>
+		public static bool IsHex(char c)
+		{
+			if (char.IsDigit(c))
 			{
 				return true;
 			}
 
-			if (c < 47 || c > 58)
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// validates is a Hex number 0-9, A-F (must be capital letters)
-		/// </summary>
-		public static bool IsValidHexNumber(string str)
-		{
-			var input = str.ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] < 47) // 0
-				{
-					return false;
-				}
-
-				if (bc[0] > 58) // 9
-				{
-					if (bc[0] < 65) // A
-					{
-						return false;
-					}
-
-					if (bc[0] > 70) // F
-					{
-						if (bc[0] < 97 || bc[0] > 102) // a-f
-						{
-							return false;
-						}
-					}
-				}
-			}
-
-			return true;
-		}
-
-		public static bool IsValidHexNumber(char c)
-		{
-			if (c < 47)
-			{
-				return false; // 0
-			}
-
-			if (c > 58) // 9
-			{
-				if (c < 65) // A
-				{
-					return false;
-				}
-
-				if (c > 70) // F
-				{
-					if (c < 97 || c > 102) // a-f
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
+			return char.ToUpper(c) >= 'A' && char.ToUpper(c) <= 'F';
 		}
 
 		/// <summary>
@@ -160,168 +67,68 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string DoHexString(string raw)
 		{
-			raw = raw.ToUpper();
 			var output = new StringBuilder();
+
 			foreach (var chr in raw)
 			{
-				if (chr >= 'A' && chr <= 'F')
+				if (IsHex(chr))
 				{
-					output.Append(chr);
-				}
-				else if (chr >= '0' && chr <= '9')
-				{
-					output.Append(chr);
+					output.Append(char.ToUpper(chr));
 				}
 			}
 
 			return output.ToString();
 		}
 
-		public static bool IsValidBinaryNumber(string str)
+		/// <summary>
+		/// Validates all chars are 0 or 1
+		/// </summary>
+		public static bool IsBinary(string str)
 		{
-			var input = str.ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] != 48 && bc[0] != 49) // 0 or 1
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		public static bool IsValidBinaryNumber(char c)
-		{
-			return c == 48 || c == 49;
+			return str.All(IsBinary);
 		}
 
 		/// <summary>
-		/// Validates all chars are 0-9 or decimal
+		/// Validates the char is 0 or 1
 		/// </summary>
-		public static bool IsValidFixedPointNumber(string str)
+		public static bool IsBinary(char c)
 		{
-			if (StringHelpers.HowMany(str, '.') > 1)
-			{
-				return false;
-			}
-
-			var input = str.Trim().ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-			
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] > 58)
-				{
-					return false;
-				}
-
-				if (bc[0] == 46)
-				{
-					continue;
-				}
-
-				if (bc[0] < 48)
-				{
-					if (bc[0] == 45 && i == 0)
-					{
-						continue;
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}
-
-		public static bool IsValidFixedPointNumber(char c)
-		{
-			if (c == 46 || c == 45)
-			{
-				return true;
-			}
-
-			if (c < 48 || c > 58)
-			{
-				return false;
-			}
-
-			return true;
+			return c == '0' || c == '1';
 		}
 
 		/// <summary>
-		/// Validates all chars are 0-9 or decimal or dash as the first character
+		/// Validates all chars are 0-9, a decimal point, and that there is no more than 1 decimal point, can not be signed
 		/// </summary>
-		public static bool IsValidDecimalNumber(string str)
+		public static bool IsFixedPoint(string str)
 		{
-			if (StringHelpers.HowMany(str, '.') > 1)
-			{
-				return false;
-			}
-
-			var input = str.Trim().ToCharArray();
-			var asciiEncoding = new ASCIIEncoding();
-
-			// Check each character in the new label to determine if it is a number.
-			for (int i = 0; i < input.Length; i++)
-			{
-				// Encode the character from the character array to its ASCII code.
-				var bc = asciiEncoding.GetBytes(input[i].ToString());
-
-				// Determine if the ASCII code is within the valid range of numerical values.
-				if (bc[0] > 58)
-				{
-					return false;
-				}
-
-				if (bc[0] == 46)
-				{
-					continue;
-				}
-
-				if (bc[0] < 48)
-				{
-					if (bc[0] == 45 && i == 0)
-					{
-						continue;
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
+			return StringHelpers.HowMany(str, '.') <= 1 
+				&& str.All(IsFixedPoint);
 		}
 
-		public static bool IsValidDecimalNumber(char c)
+		/// <summary>
+		/// Validates the char is 0-9, a dash, or a decimal
+		/// </summary>
+		public static bool IsFixedPoint(char c)
 		{
-			if (c == 45 || c == 46) // 45 = dash, 46 = dot
-			{
-				return true;
-			}
-			else if (c < 48 || c > 58)
-			{
-				return false;
-			}
+			return IsUnsigned(c) || c == '.';
+		}
 
-			return true;
+		/// <summary>
+		/// Validates all chars are 0-9 or decimal, and that there is no more than 1 decimal point, a dash can be the first character
+		/// </summary>
+		public static bool IsFloat(string str)
+		{
+			return StringHelpers.HowMany(str, '.') <= 1
+				&& IsFloat(str[0])
+				&& str.Substring(1).All(IsFixedPoint);
+		}
+
+		/// <summary>
+		/// Validates that the char is 0-9, a dash, or a decimal point
+		/// </summary>
+		public static bool IsFloat(char c)
+		{
+			return IsFixedPoint(c) || c == '-';
 		}
 	}
 }

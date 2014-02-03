@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			else if (!InputValidate.IsHex(e.KeyChar))
 			{
 				e.Handled = true;
 			}
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsValidHexNumber(Text) && !String.IsNullOrEmpty(_addressFormatStr))
+				if (InputValidate.IsHex(Text) && !String.IsNullOrEmpty(_addressFormatStr))
 				{
 					uint val = (uint)ToRawInt();
 
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsValidHexNumber(Text) && !String.IsNullOrEmpty(_addressFormatStr))
+				if (InputValidate.IsHex(Text) && !String.IsNullOrEmpty(_addressFormatStr))
 				{
 					uint val = (uint)ToRawInt();
 					if (val == 0)
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+			else if (!InputValidate.IsUnsigned(e.KeyChar))
 			{
 				e.Handled = true;
 			}
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsValidUnsignedNumber(Text))
+				if (InputValidate.IsUnsigned(Text))
 				{
 					uint val = (uint)ToRawInt();
 					if (val == uint.MaxValue)
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsValidUnsignedNumber(Text))
+				if (InputValidate.IsUnsigned(Text))
 				{
 					uint val = (uint)ToRawInt();
 
