@@ -358,7 +358,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			rt.Texture2d.Dispose();
-			GL.DeleteFramebuffer(rt.Id.ToInt32());
+			GL.Ext.DeleteFramebuffer(rt.Id.ToInt32());
 		}
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
@@ -372,22 +372,22 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			tex.SetMinFilter(TextureMinFilter.Nearest);
 
 			//create the FBO
-			int fbid = GL.GenFramebuffer();
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbid);
+			int fbid = GL.Ext.GenFramebuffer();
+			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, fbid);
 
 			//bind the tex to the FBO
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid.ToInt32(), 0);
+			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid.ToInt32(), 0);
 
 			//do something, I guess say which colorbuffers are used by the framebuffer
-			DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
-			buffers[0] = DrawBuffersEnum.ColorAttachment0;
-			GL.DrawBuffers(1, buffers);
+			//DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
+			//buffers[0] = DrawBuffersEnum.ColorAttachment0;
+			GL.Ext.FramebufferDrawBuffer(0, DrawBufferMode.ColorAttachment0);
 
-			if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
 				throw new InvalidOperationException("Error creating framebuffer (at CheckFramebufferStatus)");
 
 			//since we're done configuring unbind this framebuffer, to return to the default
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
 			return new RenderTarget(this, new IntPtr(fbid), tex);
 		}
@@ -395,9 +395,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void BindRenderTarget(RenderTarget rt)
 		{
 			if(rt == null)
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 			else
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, rt.Id.ToInt32());
+				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, rt.Id.ToInt32());
 		}
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
