@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttributeInfo.cs" />
     <Compile Include="BitmapBuffer.cs" />
     <Compile Include="BitmapLoadOptions.cs" />
     <Compile Include="Borrowed\BitmapFontParser\BitmapFont.cs" />

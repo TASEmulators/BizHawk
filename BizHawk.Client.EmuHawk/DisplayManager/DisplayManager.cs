@@ -37,11 +37,21 @@ namespace BizHawk.Client.EmuHawk
 			Renderer = new GuiRenderer(GL);
 			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 			LuaEmuTextureFrugalizer = new TextureFrugalizer(GL);
+			Video2xFrugalizer = new RenderTargetFrugalizer(GL);
 
 			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
+
+			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.DisplayManager.Filters.hq2x.glsl"))
+			{
+				var str = new System.IO.StreamReader(stream).ReadToEnd();
+				RetroShader_Hq2x = new Bizware.BizwareGL.Drivers.OpenTK.RetroShader(GL, str);
+			}
+
 		}
+
+		Bizware.BizwareGL.Drivers.OpenTK.RetroShader RetroShader_Hq2x;
 
 		public bool Disposed { get; private set; }
 
@@ -78,6 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		int currEmuWidth, currEmuHeight;
 
 		TextureFrugalizer VideoTextureFrugalizer, LuaEmuTextureFrugalizer;
+		RenderTargetFrugalizer Video2xFrugalizer;
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -101,18 +112,31 @@ namespace BizHawk.Client.EmuHawk
 				luaEmuTexture = LuaEmuTextureFrugalizer.Get(luaEmuSurface);
 
 	
+			//apply filter chain (currently, over-simplified)
+			Texture2d currentTexture = videoTexture;
+			if (Global.Config.TargetDisplayFilter == 1)
+			{
+				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
+				rt.Bind();
+				Size outSize = new Size(videoTexture.IntWidth * 2, videoTexture.IntHeight * 2);
+				RetroShader_Hq2x.Run(videoTexture, videoTexture.Size, outSize, true);
+				currentTexture = rt.Texture2d;
+			}
+
 			//begin drawing to the PresentationPanel:
 			GraphicsControl.Begin();
 
 			//1. clear it with the background color that the emulator specified
 			GL.SetClearColor(Color.FromArgb(videoProvider.BackgroundColor));
 			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+
 			
 			//2. begin 2d rendering
 			Renderer.Begin(GraphicsControl.Width, GraphicsControl.Height);
 
 			//3. figure out how to draw the emulator output content
-			var LL = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, bb.Width, bb.Height);
+			var LL = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, currentTexture.IntWidth, currentTexture.IntHeight);
+
 
 			//4. draw the emulator content
 			Renderer.SetBlendState(GL.BlendNone);
@@ -123,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 				videoTexture.SetFilterLinear();
 			else
 				videoTexture.SetFilterNearest();
-			Renderer.Draw(videoTexture);
+			Renderer.Draw(currentTexture);
 			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
 			Renderer.SetBlendState(GL.BlendNormal);
 			if(luaEmuTexture != null) Renderer.Draw(luaEmuTexture);

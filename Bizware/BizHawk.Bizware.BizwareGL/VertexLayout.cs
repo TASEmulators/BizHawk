@@ -47,16 +47,11 @@ namespace BizHawk.Bizware.BizwareGL
 			//nothing to do yet..
 		}
 
-		public void Bind()
-		{
-			Owner.BindVertexLayout(this);
-		}
-
-		public void DefineVertexAttribute(int index, int components, VertexAttribPointerType attribType, bool normalized, int stride, int offset = 0)
+		public void DefineVertexAttribute(string name, int index, int components, VertexAttribPointerType attribType, bool normalized, int stride, int offset = 0)
 		{
 			if (Closed)
 				throw new InvalidOperationException("Type is Closed and is now immutable.");
-			Items[index] = new LayoutItem { Components = components, AttribType = attribType, Normalized = normalized, Stride = stride, Offset = offset };
+			Items[index] = new LayoutItem { Name = name, Components = components, AttribType = attribType, Normalized = normalized, Stride = stride, Offset = offset };
 		}
 
 		/// <summary>
@@ -69,6 +64,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public class LayoutItem
 		{
+			public string Name { get; internal set; }
 			public int Components { get; internal set; }
 			public VertexAttribPointerType AttribType { get; internal set; }
 			public bool Normalized { get; internal set; }

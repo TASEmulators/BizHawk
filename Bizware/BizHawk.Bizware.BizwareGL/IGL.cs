@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using sd=System.Drawing;
+using System.Drawing;
 using swf=System.Windows.Forms;
 
 using OpenTK;
@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets the current clear color
 		/// </summary>
-		void SetClearColor(sd.Color color);
+		void SetClearColor(Color color);
 
 		/// <summary>
 		/// generates a texture handle
@@ -59,7 +59,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Creates a complete pipeline from the provided vertex and fragment shader handles
 		/// </summary>
-		Pipeline CreatePipeline(Shader vertexShader, Shader fragmentShader);
+		Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader);
 
 		/// <summary>
 		/// Binds this pipeline as the current used for rendering
@@ -87,9 +87,14 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, Vector4 value);
 
 		/// <summary>
-		/// Binds this VertexLayout for use in rendering (in OpenGL's case, by glVertexAttribPointer calls)
+		/// sets a uniform value
 		/// </summary>
-		void BindVertexLayout(VertexLayout layout);
+		void SetPipelineUniform(PipelineUniform uniform, Vector2 value);
+
+		/// <summary>
+		/// sets a uniform value
+		/// </summary>
+		void SetPipelineUniform(PipelineUniform uniform, float value);
 
 		/// <summary>
 		/// Binds array data for use with the currently-bound VertexLayout
@@ -184,7 +189,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Loads a texture from the System.Drawing.Bitmap
 		/// </summary>
-		Texture2d LoadTexture(sd.Bitmap bitmap);
+		Texture2d LoadTexture(Bitmap bitmap);
 
 		/// <summary>
 		/// sets the viewport according to the provided specifications
@@ -202,15 +207,31 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetViewport(swf.Control control);
 
 		/// <summary>
+		/// sets the viewport according to the provided specifications
+		/// </summary>
+		void SetViewport(Size size);
+
+		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
 		Matrix4 CreateGuiProjectionMatrix(int w, int h);
+
+		/// <summary>
+		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
+		/// </summary>
+		Matrix4 CreateGuiProjectionMatrix(Size dims);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
 		Matrix4 CreateGuiViewMatrix(int w, int h);
+
+		/// <summary>
+		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
+		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
+		/// </summary>
+		Matrix4 CreateGuiViewMatrix(Size dims);
 
 		/// <summary>
 		/// Creates a render target. Includes a color buffer. Pixel format control TBD

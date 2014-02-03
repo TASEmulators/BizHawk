@@ -3,12 +3,16 @@ using System.Collections.Generic;
 
 namespace BizHawk.Bizware.BizwareGL
 {
+	/// <summary>
+	/// WARNING! PLEASE SET THIS PIPELINE CURRENT BEFORE SETTING UNIFORMS IN IT! NOT TOO GREAT, I KNOW.
+	/// </summary>
 	public class Pipeline : IDisposable
 	{
-		public Pipeline(IGL owner, IntPtr id, IEnumerable<UniformInfo> uniforms)
+		public Pipeline(IGL owner, IntPtr id, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms)
 		{
 			Owner = owner;
 			Id = id;
+			VertexLayout = vertexLayout;
 
 			//create the uniforms from the info list we got
 			UniformsDictionary = new SpecialWorkingDictionary(this);
@@ -62,6 +66,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public IGL Owner { get; private set; }
 		public IntPtr Id { get; private set; }
+		public VertexLayout VertexLayout { get; private set; }
 
 		///// <summary>
 		///// Makes the pipeline current

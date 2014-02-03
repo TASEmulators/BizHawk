@@ -21,8 +21,8 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute(0, 2, VertexAttribPointerType.Float, false, 16, 0);
-			VertexLayout.DefineVertexAttribute(1, 2, VertexAttribPointerType.Float, false, 16, 8);
+			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, false, 16, 0);
+			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, false, 16, 8);
 			VertexLayout.Close();
 
 			_Projection = new MatrixStack();
@@ -30,7 +30,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			var vs = Owner.CreateVertexShader(DefaultVertexShader);
 			var ps = Owner.CreateFragmentShader(DefaultPixelShader);
-			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(vs, ps);
+			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps);
 		}
 
 		public void Dispose()
@@ -131,7 +131,6 @@ namespace BizHawk.Bizware.BizwareGL
 				throw new InvalidOperationException("Pipeline hasn't been set!");
 			
 			IsActive = true;
-			Owner.BindVertexLayout(VertexLayout);
 			Owner.BindPipeline(CurrPipeline);
 
 			//clear state cache

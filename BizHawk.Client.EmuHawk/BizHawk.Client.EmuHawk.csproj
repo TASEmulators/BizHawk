@@ -191,6 +191,12 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\DisplayConfigLite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\DisplayConfigLite.Designer.cs">
+      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\FirmwaresConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -388,7 +394,9 @@
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
+    <Compile Include="DisplayManager\FilterManager.cs" />
     <Compile Include="DisplayManager\OSDManager.cs" />
+    <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
     <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="GlobalWin.cs" />
@@ -896,6 +904,9 @@
     <EmbeddedResource Include="config\DisplayConfig.resx">
       <DependentUpon>DisplayConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\DisplayConfigLite.resx">
+      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\FirmwaresConfig.resx">
       <DependentUpon>FirmwaresConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -1149,6 +1160,7 @@
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DisplayManager\Filters\hq2x.glsl" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

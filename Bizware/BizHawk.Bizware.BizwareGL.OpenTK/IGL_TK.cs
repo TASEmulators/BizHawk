@@ -66,16 +66,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GraphicsContext.Dispose(); GraphicsContext = null;
 		}
 
-		void IGL.Clear(ClearBufferMask mask)
+		public void Clear(ClearBufferMask mask)
 		{
 			GL.Clear((global::OpenTK.Graphics.OpenGL.ClearBufferMask)mask);
 		}
-		void IGL.SetClearColor(sd.Color color)
+		public void SetClearColor(sd.Color color)
 		{
 			GL.ClearColor(color);
 		}
 
-		IGraphicsControl IGL.Internal_CreateGraphicsControl()
+		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
 			var glc = new GLControlWrapper(this);
 			glc.CreateControl();
@@ -87,18 +87,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return glc;
 		}
 
-		IntPtr IGL.GenTexture() { return new IntPtr(GL.GenTexture()); }
-		void IGL.FreeTexture(IntPtr texHandle) { GL.DeleteTexture(texHandle.ToInt32()); }
-		IntPtr IGL.GetEmptyHandle() { return new IntPtr(0); }
-		IntPtr IGL.GetEmptyUniformHandle() { return new IntPtr(-1); }
+		public IntPtr GenTexture() { return new IntPtr(GL.GenTexture()); }
+		public void FreeTexture(IntPtr texHandle) { GL.DeleteTexture(texHandle.ToInt32()); }
+		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
+		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
 
-		Shader IGL.CreateFragmentShader(string source)
+		public Shader CreateFragmentShader(string source)
 		{
 			int sid = GL.CreateShader(ShaderType.FragmentShader);
 			CompileShaderSimple(sid,source);
 			return new Shader(this,new IntPtr(sid));
 		}
-		Shader IGL.CreateVertexShader(string source)
+		public Shader CreateVertexShader(string source)
 		{
 			int sid = GL.CreateShader(ShaderType.VertexShader);
 			CompileShaderSimple(sid, source);
@@ -106,7 +106,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return new Shader(this, new IntPtr(sid));
 		}
 
-		void IGL.FreeShader(IntPtr shader) { GL.DeleteShader(shader.ToInt32()); }
+		public void FreeShader(IntPtr shader) { GL.DeleteShader(shader.ToInt32()); }
 
 		class MyBlendState : IBlendState
 		{
@@ -129,13 +129,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				this.alphaDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)alphaDest;
 			}
 		}
-		IBlendState IGL.CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
+		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
 			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
 		{
 			return new MyBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
 
-		void IGL.SetBlendState(IBlendState rsBlend)
+		public void SetBlendState(IBlendState rsBlend)
 		{
 			var mybs = rsBlend as MyBlendState;
 			if (mybs.enabled)
@@ -147,10 +147,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			else GL.Disable(EnableCap.Blend);
 		}
 
-		IBlendState IGL.BlendNone { get { return _rsBlendNone; } }
-		IBlendState IGL.BlendNormal { get { return _rsBlendNormal; } }
+		public IBlendState BlendNone { get { return _rsBlendNone; } }
+		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
-		Pipeline IGL.CreatePipeline(Shader vertexShader, Shader fragmentShader)
+		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader)
 		{
 			ErrorCode errcode;
 			int pid = GL.CreateProgram();
@@ -158,6 +158,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 			GL.AttachShader(pid, fragmentShader.Id.ToInt32());
 			errcode = GL.GetError();
+
+			//bind the attribute locations from the vertex layout
+			foreach (var kvp in vertexLayout.Items)
+				GL.BindAttribLocation(pid, kvp.Key, kvp.Value.Name);
 			
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
@@ -196,6 +200,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
 
+			////get all the attributes (not needed)
+			//List<AttributeInfo> attributes = new List<AttributeInfo>();
+			//int nAttributes;
+			//GL.GetProgram(pid, GetProgramParameterName.ActiveAttributes, out nAttributes);
+			//for (int i = 0; i < nAttributes; i++)
+			//{
+			//  int size, length;
+			//  var sbName = new System.Text.StringBuilder();
+			//  ActiveAttribType type;
+			//  GL.GetActiveAttrib(pid, i, 1024, out length, out size, out type, sbName);
+			//  attributes.Add(new AttributeInfo() { Handle = new IntPtr(i), Name = sbName.ToString() });
+			//}
+
 			//get all the uniforms
 			List<UniformInfo> uniforms = new List<UniformInfo>();
 			int nUniforms;
@@ -230,53 +247,59 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//deactivate the program, so we dont accidentally use it
 			GL.UseProgram(0);
 
-			return new Pipeline(this, new IntPtr(pid), uniforms);
+			return new Pipeline(this, new IntPtr(pid), vertexLayout, uniforms);
 		}
 
-		VertexLayout IGL.CreateVertexLayout() { return new VertexLayout(this,new IntPtr(0)); }
+		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
 
-		void IGL.BindTexture2d(Texture2d tex)
+		public void BindTexture2d(Texture2d tex)
 		{
 			GL.BindTexture(TextureTarget.Texture2D, tex.Id.ToInt32());
 		}
 
-		unsafe void IGL.BindVertexLayout(VertexLayout layout)
-		{
-			sStatePendingVertexLayout = layout;
-		}
-
-		unsafe void IGL.BindArrayData(void* pData)
+		public unsafe void BindArrayData(void* pData)
 		{
 			MyBindArrayData(sStatePendingVertexLayout, pData);
 		}
 
-		void IGL.DrawArrays(PrimitiveType mode, int first, int count)
+		public void DrawArrays(PrimitiveType mode, int first, int count)
 		{
 			GL.DrawArrays((global::OpenTK.Graphics.OpenGL.PrimitiveType)mode, first, count);
 		}
 
-		void IGL.BindPipeline(Pipeline pipeline)
+		public void BindPipeline(Pipeline pipeline)
 		{
+			sStatePendingVertexLayout = pipeline.VertexLayout;
 			GL.UseProgram(pipeline.Id.ToInt32());
 		}
 
-		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 			GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)&mat);
 		}
 
-		unsafe void IGL.SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
 			fixed(Matrix4* pMat = &mat)
 				GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)pMat);
 		}
 
-		void IGL.SetPipelineUniform(PipelineUniform uniform, Vector4 value)
+		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
 		{
 			GL.Uniform4(uniform.Id.ToInt32(), value.X, value.Y, value.Z, value.W);
 		}
 
-		void IGL.SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
+		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
+		{
+			GL.Uniform2(uniform.Id.ToInt32(), value.X, value.Y);
+		}
+
+		public void SetPipelineUniform(PipelineUniform uniform, float value)
+		{
+			GL.Uniform1(uniform.Id.ToInt32(), value);
+		}
+
+		public void SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
 		{
 			//set the sampler index into the uniform first
 			//now bind the texture
@@ -289,30 +312,30 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.BindTexture(TextureTarget.Texture2D, texHandle.ToInt32());
 		}
 
-		void IGL.TexParameter2d(TextureParameterName pname, int param)
+		public void TexParameter2d(TextureParameterName pname, int param)
 		{
 			GL.TexParameter(TextureTarget.Texture2D, (global::OpenTK.Graphics.OpenGL.TextureParameterName)pname, param);
 		}
 
-		Texture2d IGL.LoadTexture(sd.Bitmap bitmap)
+		public Texture2d LoadTexture(sd.Bitmap bitmap)
 		{
 			using (var bmp = new BitmapBuffer(bitmap, new BitmapLoadOptions()))
 				return (this as IGL).LoadTexture(bmp);
 		}
 
-		Texture2d IGL.LoadTexture(Stream stream)
+		public Texture2d LoadTexture(Stream stream)
 		{
 			using(var bmp = new BitmapBuffer(stream,new BitmapLoadOptions()))
 				return (this as IGL).LoadTexture(bmp);
 		}
 
-		Texture2d IGL.CreateTexture(int width, int height)
+		public Texture2d CreateTexture(int width, int height)
 		{
 			IntPtr id = (this as IGL).GenTexture();
 			return new Texture2d(this, id, width, height);
 		}
 
-		void IGL.LoadTextureData(Texture2d tex, BitmapBuffer bmp)
+		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			sdi.BitmapData bmp_data = bmp.LockBits();
 			try
@@ -326,13 +349,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 		}
 
-		void IGL.FreeRenderTarget(RenderTarget rt)
+		public void FreeRenderTarget(RenderTarget rt)
 		{
 			rt.Texture2d.Dispose();
 			GL.DeleteFramebuffer(rt.Id.ToInt32());
 		}
 
-		unsafe RenderTarget IGL.CreateRenderTarget(int w, int h)
+		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it
 			IntPtr texid = (this as IGL).GenTexture();
@@ -363,7 +386,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return new RenderTarget(this, new IntPtr(fbid), tex);
 		}
 
-		void IGL.BindRenderTarget(RenderTarget rt)
+		public void BindRenderTarget(RenderTarget rt)
 		{
 			if(rt == null)
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -371,7 +394,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, rt.Id.ToInt32());
 		}
 
-		Texture2d IGL.LoadTexture(BitmapBuffer bmp)
+		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret = null;
 			IntPtr id = (this as IGL).GenTexture();
@@ -395,40 +418,55 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return ret;
 		}
 
-		Texture2d IGL.LoadTexture(string path)
+		public Texture2d LoadTexture(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 				return (this as IGL).LoadTexture(fs);
 		}
 
-		Matrix4 IGL.CreateGuiProjectionMatrix(int w, int h)
+		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
+		{
+			return CreateGuiProjectionMatrix(new sd.Size(w, h));
+		}
+
+		public Matrix4 CreateGuiViewMatrix(int w, int h)
+		{
+			return CreateGuiViewMatrix(new sd.Size(w, h));
+		}
+
+		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M11 = 2.0f / (float)w;
-			ret.M22 = 2.0f / (float)h;
+			ret.M11 = 2.0f / (float)dims.Width;
+			ret.M22 = 2.0f / (float)dims.Height;
 			return ret;
 		}
 
-		Matrix4 IGL.CreateGuiViewMatrix(int w, int h)
+		public Matrix4 CreateGuiViewMatrix(sd.Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = -w * 0.5f; // -0.5f;
-			ret.M42 = h * 0.5f; // +0.5f;
+			ret.M41 = -(float)dims.Width * 0.5f; // -0.5f;
+			ret.M42 = (float)dims.Height * 0.5f; // +0.5f;
 			return ret;
 		}
 
-		void IGL.SetViewport(int x, int y, int width, int height)
+		public void SetViewport(int x, int y, int width, int height)
 		{
 			GL.Viewport(x, y, width, height);
 		}
 
-		void IGL.SetViewport(int width, int height)
+		public void SetViewport(int width, int height)
 		{
 			GL.Viewport(0, 0, width, height);
 		}
 
-		void IGL.SetViewport(swf.Control control)
+		public void SetViewport(sd.Size size)
+		{
+			SetViewport(size.Width, size.Height);
+		}
+
+		public void SetViewport(swf.Control control)
 		{
 			var r = control.ClientRectangle;
 			GL.Viewport(r.Left, r.Top, r.Width, r.Height);
