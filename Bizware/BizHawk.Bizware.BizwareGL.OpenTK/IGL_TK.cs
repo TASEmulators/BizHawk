@@ -379,9 +379,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid.ToInt32(), 0);
 
 			//do something, I guess say which colorbuffers are used by the framebuffer
-			//DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
-			//buffers[0] = DrawBuffersEnum.ColorAttachment0;
-			GL.Ext.FramebufferDrawBuffer(0, DrawBufferMode.ColorAttachment0);
+			DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
+			buffers[0] = DrawBuffersEnum.ColorAttachment0;
+			GL.DrawBuffers(1, buffers);
 
 			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
 				throw new InvalidOperationException("Error creating framebuffer (at CheckFramebufferStatus)");
