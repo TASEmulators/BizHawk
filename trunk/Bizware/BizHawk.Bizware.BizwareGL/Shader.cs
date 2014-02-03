@@ -8,15 +8,17 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Shader : IDisposable
 	{
-		public Shader(IGL owner, IntPtr id)
+		public Shader(IGL owner, IntPtr id, bool available)
 		{
 			Owner = owner;
 			Id = id;
+			Available = available;
 		}
 
 		public IGL Owner { get; private set; }
 		public IntPtr Id { get; private set; }
 		public bool Disposed { get; private set; }
+		public bool Available { get; private set; }
 
 		public void Dispose()
 		{

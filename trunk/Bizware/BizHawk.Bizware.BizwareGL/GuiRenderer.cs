@@ -28,9 +28,9 @@ namespace BizHawk.Bizware.BizwareGL
 			_Projection = new MatrixStack();
 			_Modelview = new MatrixStack();
 
-			var vs = Owner.CreateVertexShader(DefaultVertexShader);
-			var ps = Owner.CreateFragmentShader(DefaultPixelShader);
-			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps);
+			var vs = Owner.CreateVertexShader(DefaultVertexShader,true);
+			var ps = Owner.CreateFragmentShader(DefaultPixelShader, true);
+			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true);
 		}
 
 		public void Dispose()

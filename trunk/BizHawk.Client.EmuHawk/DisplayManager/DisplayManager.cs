@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			//TargetScanlineFilterIntensity
 			//apply filter chain (currently, over-simplified)
 			Texture2d currentTexture = videoTexture;
-			if (Global.Config.TargetDisplayFilter == 1)
+			if (Global.Config.TargetDisplayFilter == 1 && RetroShader_Hq2x.Pipeline.Available)
 			{
 				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
 				rt.Bind();
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				RetroShader_Hq2x.Run(videoTexture, videoTexture.Size, outSize, true);
 				currentTexture = rt.Texture2d;
 			}
-			if (Global.Config.TargetDisplayFilter == 2)
+			if (Global.Config.TargetDisplayFilter == 2 && RetroShader_BizScanlines.Pipeline.Available)
 			{
 				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
 				rt.Bind();

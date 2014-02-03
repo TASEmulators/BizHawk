@@ -49,17 +49,17 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
-		Shader CreateFragmentShader(string source);
+		Shader CreateFragmentShader(string source, bool required);
 
 		/// <summary>
 		/// compile a vertex shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
-		Shader CreateVertexShader(string source);
+		Shader CreateVertexShader(string source, bool required);
 
 		/// <summary>
 		/// Creates a complete pipeline from the provided vertex and fragment shader handles
 		/// </summary>
-		Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader);
+		Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required);
 
 		/// <summary>
 		/// Binds this pipeline as the current used for rendering

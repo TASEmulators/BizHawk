@@ -8,11 +8,12 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Pipeline : IDisposable
 	{
-		public Pipeline(IGL owner, IntPtr id, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms)
+		public Pipeline(IGL owner, IntPtr id, bool available, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms)
 		{
 			Owner = owner;
 			Id = id;
 			VertexLayout = vertexLayout;
+			Available = available;
 
 			//create the uniforms from the info list we got
 			UniformsDictionary = new SpecialWorkingDictionary(this);
@@ -67,14 +68,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public IGL Owner { get; private set; }
 		public IntPtr Id { get; private set; }
 		public VertexLayout VertexLayout { get; private set; }
-
-		///// <summary>
-		///// Makes the pipeline current
-		///// </summary>
-		//public void BindData()
-		//{
-		//  Owner.BindPipeline(this);
-		//}
+		public bool Available { get; private set; }
 
 		public void Dispose()
 		{

@@ -92,18 +92,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
 		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
 
-		public Shader CreateFragmentShader(string source)
+		
+		public Shader CreateFragmentShader(string source, bool required)
 		{
-			int sid = GL.CreateShader(ShaderType.FragmentShader);
-			CompileShaderSimple(sid,source);
-			return new Shader(this,new IntPtr(sid));
+			return CreateShader(ShaderType.FragmentShader, source, required);
 		}
-		public Shader CreateVertexShader(string source)
+		public Shader CreateVertexShader(string source, bool required)
 		{
-			int sid = GL.CreateShader(ShaderType.VertexShader);
-			CompileShaderSimple(sid, source);
-
-			return new Shader(this, new IntPtr(sid));
+			return CreateShader(ShaderType.VertexShader, source, required);
 		}
 
 		public void FreeShader(IntPtr shader) { GL.DeleteShader(shader.ToInt32()); }
@@ -150,8 +146,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public IBlendState BlendNone { get { return _rsBlendNone; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader)
+		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
 		{
+			bool success = true;
+
 			ErrorCode errcode;
 			int pid = GL.CreateProgram();
 			GL.AttachShader(pid, vertexShader.Id.ToInt32());
@@ -167,14 +165,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 
 			string resultLog = GL.GetProgramInfoLog(pid);
-			
+
 			if (errcode != ErrorCode.NoError)
-				throw new InvalidOperationException("Error creating pipeline (error returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
+				if (required)
+					throw new InvalidOperationException("Error creating pipeline (error returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
+				else success = false;
 			
 			int linkStatus;
 			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
-			if(linkStatus == 0)
-				throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
+			if (linkStatus == 0)
+				if (required)
+					throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
+				else success = false;
 
 			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation
 			//"A sampler points to a texture unit used by fixed function with an incompatible target"
@@ -247,7 +249,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//deactivate the program, so we dont accidentally use it
 			GL.UseProgram(0);
 
-			return new Pipeline(this, new IntPtr(pid), vertexLayout, uniforms);
+			if (!vertexShader.Available) success = false;
+			if (!fragmentShader.Available) success = false;
+
+			return new Pipeline(this, new IntPtr(pid), success, vertexLayout, uniforms);
 		}
 
 		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
@@ -269,6 +274,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void BindPipeline(Pipeline pipeline)
 		{
+			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
 			sStatePendingVertexLayout = pipeline.VertexLayout;
 			GL.UseProgram(pipeline.Id.ToInt32());
 		}
@@ -488,15 +494,30 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return glc;
 		}
 
-		void CompileShaderSimple(int sid, string source)
+		Shader CreateShader(ShaderType type, string source, bool required)
 		{
+			int sid = GL.CreateShader(type);
+			bool ok = CompileShaderSimple(sid,source, required);
+			if(!ok)
+			{
+				GL.DeleteShader(sid);
+				sid = 0;
+			}
+			return new Shader(this, new IntPtr(sid), ok);
+		}
+
+		bool CompileShaderSimple(int sid, string source, bool required)
+		{
+			bool success = true;
 			ErrorCode errcode;
 
 			GL.ShaderSource(sid, source);
 			
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
-				throw new InvalidOperationException("Error compiling shader (ShaderSource)" + errcode);
+				if (required)
+					throw new InvalidOperationException("Error compiling shader (ShaderSource)" + errcode);
+				else success = false;
 
 			GL.CompileShader(sid);
 			errcode = GL.GetError();
@@ -504,13 +525,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			string resultLog = GL.GetShaderInfoLog(sid);
 
 			if (errcode != ErrorCode.NoError)
-				throw new InvalidOperationException("Error compiling shader (CompileShader)" + errcode + "\r\n\r\n" + resultLog);
+				if (required)
+					throw new InvalidOperationException("Error compiling shader (CompileShader)" + errcode + "\r\n\r\n" + resultLog);
+				else success = false;
 
 			int n;
 			GL.GetShader(sid, ShaderParameter.CompileStatus, out n);
 
-			if(n==0)
-				throw new InvalidOperationException("Error compiling shader (CompileShader)" + "\r\n\r\n" + resultLog);
+			if (n == 0)
+				if (required)
+					throw new InvalidOperationException("Error compiling shader (CompileShader)" + "\r\n\r\n" + resultLog);
+				else success = false;
+
+			return success;
 		}
 	
 		void UnbindVertexAttributes()
