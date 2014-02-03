@@ -108,8 +108,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					CoreComm.VsyncDen = fpsden;
 				}
 
-				savebuff = new byte[LibGPGX.gpgx_state_size()];
-				savebuff2 = new byte[savebuff.Length + 13];
+				// compute state size
+				{
+					byte[] tmp = new byte[LibGPGX.gpgx_state_max_size()];
+					int size = LibGPGX.gpgx_state_size(tmp, tmp.Length);
+					if (size <= 0)
+						throw new Exception("Couldn't Determine GPGX internal state size!");
+					savebuff = new byte[size];
+					savebuff2 = new byte[savebuff.Length + 13];
+					Console.WriteLine("GPGX Internal State Size: {0}", size);
+				}
 
 				SetControllerDefinition();
 
