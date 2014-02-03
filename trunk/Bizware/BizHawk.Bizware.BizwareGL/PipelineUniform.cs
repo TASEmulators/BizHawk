@@ -23,9 +23,19 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.Owner.SetPipelineUniformMatrix(this, mat, transpose);
 		}
 
-		public void Set(Vector4 vec, bool transpose = false)
+		public void Set(Vector4 vec)
 		{
 			Owner.Owner.SetPipelineUniform(this, vec);
+		}
+
+		public void Set(Vector2 vec)
+		{
+			Owner.Owner.SetPipelineUniform(this, vec);
+		}
+
+		public void Set(float f)
+		{
+			Owner.Owner.SetPipelineUniform(this, f);
 		}
 
 		public void Set(ref Matrix4 mat, bool transpose = false)

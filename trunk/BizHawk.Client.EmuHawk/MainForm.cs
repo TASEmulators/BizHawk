@@ -3005,5 +3005,13 @@ namespace BizHawk.Client.EmuHawk
 			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
 			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
+
+		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
+		{
+			new config.DisplayConfigLite().ShowDialog();
+		}
+
+
+
 	}
 }

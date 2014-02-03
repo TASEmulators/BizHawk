@@ -132,6 +132,7 @@
 			this.SoundMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutofireMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RewindOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DisplayConfigMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FirmwaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ConfigEnableSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -1098,42 +1099,42 @@
 			// x1MenuItem
 			// 
 			this.x1MenuItem.Name = "x1MenuItem";
-			this.x1MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x1MenuItem.Size = new System.Drawing.Size(94, 22);
 			this.x1MenuItem.Text = "&1x";
 			this.x1MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// x2MenuItem
 			// 
 			this.x2MenuItem.Name = "x2MenuItem";
-			this.x2MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x2MenuItem.Size = new System.Drawing.Size(94, 22);
 			this.x2MenuItem.Text = "&2x";
 			this.x2MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// x3MenuItem
 			// 
 			this.x3MenuItem.Name = "x3MenuItem";
-			this.x3MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x3MenuItem.Size = new System.Drawing.Size(94, 22);
 			this.x3MenuItem.Text = "&3x";
 			this.x3MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// x4MenuItem
 			// 
 			this.x4MenuItem.Name = "x4MenuItem";
-			this.x4MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x4MenuItem.Size = new System.Drawing.Size(94, 22);
 			this.x4MenuItem.Text = "&4x";
 			this.x4MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// x5MenuItem
 			// 
 			this.x5MenuItem.Name = "x5MenuItem";
-			this.x5MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x5MenuItem.Size = new System.Drawing.Size(94, 22);
 			this.x5MenuItem.Text = "&5x";
 			this.x5MenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
 			// mzMenuItem
 			// 
 			this.mzMenuItem.Name = "mzMenuItem";
-			this.mzMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.mzMenuItem.Size = new System.Drawing.Size(94, 22);
 			this.mzMenuItem.Text = "&Max";
 			this.mzMenuItem.Click += new System.EventHandler(this.WindowSize_Click);
 			// 
@@ -1221,6 +1222,7 @@
             this.SoundMenuItem,
             this.AutofireMenuItem,
             this.RewindOptionsMenuItem,
+            this.DisplayConfigMenuItem,
             this.FirmwaresMenuItem,
             this.toolStripSeparator9,
             this.ConfigEnableSubMenu,
@@ -1293,6 +1295,13 @@
 			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.RewindOptionsMenuItem.Text = "&Rewind...";
 			this.RewindOptionsMenuItem.Click += new System.EventHandler(this.RewindOptionsMenuItem_Click);
+			// 
+			// DisplayConfigMenuItem
+			// 
+			this.DisplayConfigMenuItem.Name = "DisplayConfigMenuItem";
+			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DisplayConfigMenuItem.Text = "Display...";
+			this.DisplayConfigMenuItem.Click += new System.EventHandler(this.DisplayConfigMenuItem_Click);
 			// 
 			// FirmwaresMenuItem
 			// 
@@ -3335,6 +3344,7 @@
 		private System.Windows.Forms.ToolStripMenuItem gBInSGBToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nESInQuickNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem batchRunnerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 	}
 }
 

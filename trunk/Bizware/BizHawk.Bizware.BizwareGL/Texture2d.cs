@@ -1,5 +1,8 @@
 using System;
+using System.Drawing;
 
+using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -74,11 +77,12 @@ namespace BizHawk.Bizware.BizwareGL
 		public IGL Owner { get; private set; }
 		public IntPtr Id { get; private set; }
 		
-		//note.. it is commonly helpful to have these as floats, since we're more often using them for rendering than for raster logic
+		//note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
 		public float Width { get; private set; }
 		public float Height { get; private set; }
 
 		public int IntWidth { get { return (int)Width; } }
 		public int IntHeight { get { return (int)Height; } }
+		public Size Size { get { return new Size(IntWidth, IntHeight); } }
 	}
 }

@@ -29,23 +29,23 @@
 		private void InitializeComponent()
 		{
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.button1 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
-			this.listView2 = new System.Windows.Forms.ListView();
-			this.label1 = new System.Windows.Forms.Label();
-			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.listView2 = new System.Windows.Forms.ListView();
+			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.label1 = new System.Windows.Forms.Label();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.button2 = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.panel3 = new System.Windows.Forms.Panel();
-			this.label2 = new System.Windows.Forms.Label();
-			this.panel4 = new System.Windows.Forms.Panel();
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.panel4 = new System.Windows.Forms.Panel();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
@@ -73,16 +73,6 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(557, 433);
 			this.tableLayoutPanel1.TabIndex = 1;
 			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(74, 3);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "OK";
-			this.button1.UseVisualStyleBackColor = true;
-			// 
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(3, 407);
@@ -91,6 +81,16 @@
 			this.button3.TabIndex = 4;
 			this.button3.Text = "Defaults";
 			this.button3.UseVisualStyleBackColor = true;
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.listView2);
+			this.panel1.Controls.Add(this.label1);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(330, 3);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(224, 398);
+			this.panel1.TabIndex = 7;
 			// 
 			// listView2
 			// 
@@ -104,6 +104,11 @@
 			this.listView2.UseCompatibleStateImageBehavior = false;
 			this.listView2.View = System.Windows.Forms.View.Details;
 			// 
+			// columnHeader4
+			// 
+			this.columnHeader4.Text = "";
+			this.columnHeader4.Width = 101;
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -113,21 +118,6 @@
 			this.label1.Size = new System.Drawing.Size(38, 13);
 			this.label1.TabIndex = 6;
 			this.label1.Text = "Library";
-			// 
-			// columnHeader4
-			// 
-			this.columnHeader4.Text = "";
-			this.columnHeader4.Width = 101;
-			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.listView2);
-			this.panel1.Controls.Add(this.label1);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(330, 3);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(224, 398);
-			this.panel1.TabIndex = 7;
 			// 
 			// panel2
 			// 
@@ -151,6 +141,16 @@
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
 			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(74, 3);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 2;
+			this.button1.Text = "OK";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
 			// panel3
 			// 
 			this.panel3.Controls.Add(this.listView1);
@@ -161,26 +161,6 @@
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(321, 398);
 			this.panel3.TabIndex = 9;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.label2.Location = new System.Drawing.Point(0, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(172, 13);
-			this.label2.TabIndex = 7;
-			this.label2.Text = "Current Layers/Filters Configuration";
-			// 
-			// panel4
-			// 
-			this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.panel4.Controls.Add(this.groupBox1);
-			this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel4.Location = new System.Drawing.Point(0, 298);
-			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(321, 100);
-			this.panel4.TabIndex = 4;
 			// 
 			// listView1
 			// 
@@ -211,15 +191,25 @@
 			this.columnHeader3.Text = "Description";
 			this.columnHeader3.Width = 88;
 			// 
-			// checkBox1
+			// label2
 			// 
-			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(6, 19);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(85, 17);
-			this.checkBox1.TabIndex = 0;
-			this.checkBox1.Text = "Bilinear Filter";
-			this.checkBox1.UseVisualStyleBackColor = true;
+			this.label2.AutoSize = true;
+			this.label2.Dock = System.Windows.Forms.DockStyle.Top;
+			this.label2.Location = new System.Drawing.Point(0, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(172, 13);
+			this.label2.TabIndex = 7;
+			this.label2.Text = "Current Layers/Filters Configuration";
+			// 
+			// panel4
+			// 
+			this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel4.Controls.Add(this.groupBox1);
+			this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panel4.Location = new System.Drawing.Point(0, 298);
+			this.panel4.Name = "panel4";
+			this.panel4.Size = new System.Drawing.Size(321, 100);
+			this.panel4.TabIndex = 4;
 			// 
 			// groupBox1
 			// 
@@ -230,6 +220,16 @@
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Final Presentation:";
+			// 
+			// checkBox1
+			// 
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.Location = new System.Drawing.Point(6, 19);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(85, 17);
+			this.checkBox1.TabIndex = 0;
+			this.checkBox1.Text = "Bilinear Filter";
+			this.checkBox1.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfig
 			// 

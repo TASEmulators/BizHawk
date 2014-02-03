@@ -63,6 +63,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="IGL_TK.cs" />
+    <Compile Include="RetroShader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
