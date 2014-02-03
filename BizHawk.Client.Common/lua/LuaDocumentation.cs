@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,18 +12,17 @@ namespace BizHawk.Client.Common
 
 	public class LuaDocumentation : ILuaDocumentation
 	{
-		public List<LibraryFunction> FunctionList { get; set; }
-
 		public LuaDocumentation()
 		{
 			FunctionList = new List<LibraryFunction>();
 		}
 
+		public List<LibraryFunction> FunctionList { get; set; }
+
 		public void Add(string methodLib, string methodName, MethodInfo method, string description)
 		{
 			FunctionList.Add(
-				new LibraryFunction(methodLib, methodName, method, description)
-			);
+				new LibraryFunction(methodLib, methodName, method, description));
 		}
 
 		public void Clear()
@@ -51,6 +49,8 @@ namespace BizHawk.Client.Common
 
 		public class LibraryFunction
 		{
+			private readonly string _returnType = string.Empty;
+
 			public LibraryFunction(string methodLib, string methodName, MethodInfo method, string description)
 			{
 				Library = methodLib;
@@ -71,7 +71,6 @@ namespace BizHawk.Client.Common
 			public string Library { get; set; }
 			public string Name { get; set; }
 			public List<string> Parameters { get; set; }
-			private readonly string _returnType = string.Empty;
 
 			public string Description { get; set; }
 

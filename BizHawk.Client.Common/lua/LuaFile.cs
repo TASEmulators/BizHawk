@@ -5,18 +5,9 @@ namespace BizHawk.Client.Common
 {
 	public class LuaFile
 	{
-		public string Name { get; set; }
-		public string Path { get; set; }
-		public bool Enabled { get; set; }
-		public bool Paused { get; set; }
-		public bool IsSeparator { get; set; }
-		public LuaInterface.Lua Thread { get; set; }
-		public bool FrameWaiting { get; set; }
-		public string CurrentDirectory { get; set; }
-
 		public LuaFile(string path)
 		{
-			Name = String.Empty;
+			Name = string.Empty;
 			Path = path;
 			Enabled = true;
 			Paused = false;
@@ -30,18 +21,18 @@ namespace BizHawk.Client.Common
 			IsSeparator = false;
 
 			// the current directory for the lua task will start off wherever the lua file is located
-			var directory_info = new FileInfo(path).Directory;
-			if (directory_info != null)
+			var directoryInfo = new FileInfo(path).Directory;
+			if (directoryInfo != null)
 			{
-				CurrentDirectory = directory_info.FullName;
+				CurrentDirectory = directoryInfo.FullName;
 			}
 		}
 
 		public LuaFile(bool isSeparator)
 		{
 			IsSeparator = isSeparator;
-			Name = String.Empty;
-			Path = String.Empty;
+			Name = string.Empty;
+			Path = string.Empty;
 			Enabled = false;
 		}
 
@@ -54,6 +45,15 @@ namespace BizHawk.Client.Common
 			IsSeparator = file.IsSeparator;
 			CurrentDirectory = file.CurrentDirectory;
 		}
+
+		public string Name { get; set; }
+		public string Path { get; set; }
+		public bool Enabled { get; set; }
+		public bool Paused { get; set; }
+		public bool IsSeparator { get; set; }
+		public LuaInterface.Lua Thread { get; set; }
+		public bool FrameWaiting { get; set; }
+		public string CurrentDirectory { get; set; }
 
 		public static LuaFile SeparatorInstance
 		{

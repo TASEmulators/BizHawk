@@ -30,18 +30,12 @@ namespace BizHawk.Client.Common
 						"error running function attached by the event " +
 						_event +
 						"\nError message: " +
-						ex.Message
-					);
+						ex.Message);
 				}
 			};
 		}
 
 		public Guid Guid { get; private set; }
-
-		public void Call(string name = null)
-		{
-			_function.Call(name);
-		}
 
 		public string Name
 		{
@@ -58,6 +52,11 @@ namespace BizHawk.Client.Common
 		public Action Callback
 		{
 			get { return _action; }
+		}
+
+		public void Call(string name = null)
+		{
+			_function.Call(name);
 		}
 	}
 }

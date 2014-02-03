@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public class SNESLuaLibrary : LuaLibraryBase
+	public class SnesLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "snes"; } }
 

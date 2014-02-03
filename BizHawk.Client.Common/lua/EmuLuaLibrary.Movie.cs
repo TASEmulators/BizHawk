@@ -4,14 +4,14 @@ namespace BizHawk.Client.Common
 {
 	public class MovieLuaLibrary : LuaLibraryBase
 	{
+		private readonly Lua _lua;
+
 		public MovieLuaLibrary(Lua lua)
 		{
 			_lua = lua;
 		}
 
 		public override string Name { get { return "movie"; } }
-
-		private readonly Lua _lua;
 
 		[LuaMethodAttributes(
 			"filename",
@@ -32,8 +32,7 @@ namespace BizHawk.Client.Common
 
 			var m = new MovieControllerAdapter { Type = Global.MovieSession.MovieControllerAdapter.Type };
 			m.SetControllersAsMnemonic(
-				Global.MovieSession.Movie.GetInput(frame)
-			);
+				Global.MovieSession.Movie.GetInput(frame));
 
 			foreach (var button in m.Type.BoolButtons)
 			{
@@ -89,18 +88,18 @@ namespace BizHawk.Client.Common
 			{
 				return "FINISHED";
 			}
-			else if (Global.MovieSession.Movie.IsPlaying)
+			
+			if (Global.MovieSession.Movie.IsPlaying)
 			{
 				return "PLAY";
 			}
-			else if (Global.MovieSession.Movie.IsRecording)
+			
+			if (Global.MovieSession.Movie.IsRecording)
 			{
 				return "RECORD";
 			}
-			else
-			{
-				return "INACTIVE";
-			}
+			
+			return "INACTIVE";
 		}
 
 		[LuaMethodAttributes(

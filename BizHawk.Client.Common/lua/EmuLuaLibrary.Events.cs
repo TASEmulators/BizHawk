@@ -7,6 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public class EventLuaLibrary : LuaLibraryBase
 	{
+		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
+
 		public EventLuaLibrary(Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
@@ -18,8 +20,6 @@ namespace BizHawk.Client.Common
 		public Lua CurrentThread { get; set; }
 
 		#region Events Library Helpers
-
-		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
 		public LuaFunctionList RegisteredFunctions { get { return _luaFunctions; } }
 
