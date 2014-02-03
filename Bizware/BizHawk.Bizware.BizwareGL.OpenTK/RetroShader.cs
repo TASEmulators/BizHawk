@@ -25,9 +25,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			string vsSource = "#define VERTEX\r\n" + source;
 			string psSource = "#define FRAGMENT\r\n" + source;
-			var vs = Owner.CreateVertexShader(vsSource);
-			var ps = Owner.CreateFragmentShader(psSource);
-			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps);
+			var vs = Owner.CreateVertexShader(vsSource, false);
+			var ps = Owner.CreateFragmentShader(psSource, false);
+			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, false);
 		}
 
 		public void Dispose()
