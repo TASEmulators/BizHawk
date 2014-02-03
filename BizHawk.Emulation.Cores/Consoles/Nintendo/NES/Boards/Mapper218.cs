@@ -7,7 +7,7 @@
 		//configuration
 		int prg_byte_mask;
 		int chr_addr_mask;
-				
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -49,7 +49,7 @@
 					// we need an ines identification for correct mirroring
 					return false;
 			}
-			prg_byte_mask = (Cart.prg_size*1024) - 1;
+			prg_byte_mask = (Cart.prg_size * 1024) - 1;
 			return true;
 		}
 
@@ -64,20 +64,12 @@
 
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x3f00)
-				return NES.CIRAM[TransformPPU(addr)];
-			else
-				// palettes only
-				return base.ReadPPU(addr);
+			return NES.CIRAM[TransformPPU(addr)];
 		}
 
 		public override void WritePPU(int addr, byte value)
 		{
-			if (addr < 0x3f00)
-				NES.CIRAM[TransformPPU(addr)] = value;
-			else
-				// palettes only
-				base.WritePPU(addr, value);
+			NES.CIRAM[TransformPPU(addr)] = value;
 		}
 
 		public override byte ReadPRG(int addr)
