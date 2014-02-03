@@ -150,15 +150,15 @@ namespace BizHawk.Client.EmuHawk
 			switch (_boxType)
 			{
 				case BoxType.Unsigned:
-					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					if (!InputValidate.IsUnsigned(e.KeyChar))
 						e.Handled = true;
 					break;
 				case BoxType.Signed:
-					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					if (!InputValidate.IsSigned(e.KeyChar))
 						e.Handled = true;
 					break;
 				case BoxType.Hex:
-					if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					if (!InputValidate.IsHex(e.KeyChar))
 						e.Handled = true;
 					break;
 			}

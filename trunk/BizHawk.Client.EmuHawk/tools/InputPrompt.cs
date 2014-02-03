@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					else if (!InputValidate.IsHex(e.KeyChar))
 					{
 						e.Handled = true;
 					}
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					else if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					else if (!InputValidate.IsUnsigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					else if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					else if (!InputValidate.IsSigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}

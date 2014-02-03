@@ -98,12 +98,12 @@ namespace BizHawk.Client.EmuHawk
 			s.RicePlugin.FastLoadTile = RiceFastLoadTile_CB.Checked;
 			s.RicePlugin.UseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
 
-			if (InputValidate.IsValidSignedNumber(RiceVIWidth_Text.Text))
+			if (InputValidate.IsSigned(RiceVIWidth_Text.Text))
 				s.RicePlugin.VIWidth = int.Parse(RiceVIWidth_Text.Text);
 			else
 				s.RicePlugin.VIWidth = -1;
 
-			if (InputValidate.IsValidSignedNumber(RiceVIHeight_Text.Text))
+			if (InputValidate.IsSigned(RiceVIHeight_Text.Text))
 				s.RicePlugin.VIHeight = int.Parse(RiceVIHeight_Text.Text);
 			else
 				s.RicePlugin.VIHeight = -1;
@@ -145,19 +145,19 @@ namespace BizHawk.Client.EmuHawk
 			s.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
 
 			s.GlidePlugin.offset_x =
-				InputValidate.IsValidSignedNumber(Glide_offset_x.Text) ? 
+				InputValidate.IsSigned(Glide_offset_x.Text) ? 
 				int.Parse(Glide_offset_x.Text) : 0;
 
 			s.GlidePlugin.offset_y =
-				InputValidate.IsValidSignedNumber(Glide_offset_y.Text) ? 
+				InputValidate.IsSigned(Glide_offset_y.Text) ? 
 				int.Parse(Glide_offset_y.Text) : 0;
 
 			s.GlidePlugin.scale_x =
-				InputValidate.IsValidSignedNumber(Glide_scale_x.Text) ? 
+				InputValidate.IsSigned(Glide_scale_x.Text) ? 
 				int.Parse(Glide_scale_x.Text) : 100000;
 
 			s.GlidePlugin.scale_y =
-				InputValidate.IsValidSignedNumber(Glide_scale_y.Text) ?
+				InputValidate.IsSigned(Glide_scale_y.Text) ?
 				int.Parse(Glide_scale_y.Text) : 100000;
 
 			s.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
@@ -186,22 +186,22 @@ namespace BizHawk.Client.EmuHawk
 			s.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
 
 			s.GlidePlugin.depth_bias =
-				InputValidate.IsValidSignedNumber(Glide_depth_bias.Text) ?
+				InputValidate.IsSigned(Glide_depth_bias.Text) ?
 				int.Parse(Glide_depth_bias.Text) : 20;
 
 			s.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
 
-			s.GlidePlugin.fix_tex_coord = InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text) ?
+			s.GlidePlugin.fix_tex_coord = InputValidate.IsSigned(Glide_fix_tex_coord.Text) ?
 				int.Parse(Glide_fix_tex_coord.Text) : 0;
 
 			s.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
 
 			s.GlidePlugin.stipple_mode =
-				InputValidate.IsValidSignedNumber(Glide_stipple_mode.Text) ?
+				InputValidate.IsSigned(Glide_stipple_mode.Text) ?
 				int.Parse(Glide_stipple_mode.Text) : 2;
 
 			s.GlidePlugin.stipple_pattern =
-				InputValidate.IsValidSignedNumber(Glide_stipple_pattern.Text) ?
+				InputValidate.IsSigned(Glide_stipple_pattern.Text) ?
 				int.Parse(Glide_stipple_pattern.Text) : 1041204192;
 
 			s.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
@@ -232,11 +232,11 @@ namespace BizHawk.Client.EmuHawk
 			s.Glide64mk2Plugin.swapmode = Glide64mk2_swapmode.SelectedIndex;
 
 			s.Glide64mk2Plugin.stipple_pattern =
-				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_pattern.Text) ?
+				InputValidate.IsSigned(Glide64mk2_stipple_pattern.Text) ?
 				int.Parse(Glide64mk2_stipple_pattern.Text) : 1041204192;
 
 			s.Glide64mk2Plugin.stipple_mode =
-				InputValidate.IsValidSignedNumber(Glide64mk2_stipple_mode.Text) ?
+				InputValidate.IsSigned(Glide64mk2_stipple_mode.Text) ?
 				int.Parse(Glide64mk2_stipple_mode.Text) : 2;
 
 			s.Glide64mk2Plugin.lodmode = Glide64mk2_lodmode.SelectedIndex;
@@ -636,7 +636,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int GetIntFromDB(string parameter, int defaultVal)
 		{
-			if (Global.Game.OptionPresent(parameter) && InputValidate.IsValidUnsignedNumber(Global.Game.OptionValue(parameter)))
+			if (Global.Game.OptionPresent(parameter) && InputValidate.IsUnsigned(Global.Game.OptionValue(parameter)))
 			{
 				return int.Parse(Global.Game.OptionValue(parameter));
 			}

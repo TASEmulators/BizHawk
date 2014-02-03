@@ -186,38 +186,38 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Watch.DisplayType.Binary:
-					if (!InputValidate.IsValidBinaryNumber(e.KeyChar))
+					if (!InputValidate.IsBinary(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
 				case Watch.DisplayType.FixedPoint_12_4:
 				case Watch.DisplayType.FixedPoint_20_12:
-					if (!InputValidate.IsValidFixedPointNumber(e.KeyChar))
+					if (!InputValidate.IsFixedPoint(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
 				case Watch.DisplayType.Float:
-					if (!InputValidate.IsValidDecimalNumber(e.KeyChar))
+					if (!InputValidate.IsFloat(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
 				case Watch.DisplayType.Hex:
-					if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					if (!InputValidate.IsHex(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
 				case Watch.DisplayType.Signed:
-					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					if (!InputValidate.IsSigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}
 					break;
 				case Watch.DisplayType.Unsigned:
-					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					if (!InputValidate.IsUnsigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}

@@ -76,12 +76,12 @@ namespace BizHawk.Client.EmuHawk
 
 			int x = 0;
 			int y = 0;
-			if (InputValidate.IsValidSignedNumber(buttons.Substring(14, 4)))
+			if (InputValidate.IsSigned(buttons.Substring(14, 4)))
 			{
 				x = Int32.Parse(buttons.Substring(14, 4));
 
 			}
-			if (InputValidate.IsValidSignedNumber(buttons.Substring(19, 4)))
+			if (InputValidate.IsSigned(buttons.Substring(19, 4)))
 			{
 				y = Int32.Parse(buttons.Substring(19, 4));
 			}
