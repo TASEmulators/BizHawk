@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +10,10 @@ namespace BizHawk.Client.Common
 {
 	public class WatchList : IList<Watch>
 	{
+		private List<Watch> _watchList = new List<Watch>();
+		private MemoryDomain _domain;
+		private string _currentFilename = string.Empty;
+
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
 		public const string PREV = "PrevColumn";
@@ -19,36 +22,29 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange }
-
-		private List<Watch> _watchList = new List<Watch>();
-		private MemoryDomain _domain;
-		private string _currentFilename = String.Empty;
-
 		public WatchList(MemoryDomain domain)
 		{
 			_domain = domain;
 		}
+		
+		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange }
 
-		public IEnumerator<Watch> GetEnumerator()
+		public string AddressFormatStr // TODO: this is probably compensating for not using the ToHex string extension
 		{
-			return _watchList.GetEnumerator();
-		}
+			get
+			{
+				if (_domain != null)
+				{
+					return "{0:X" + IntHelpers.GetNumDigits(this._domain.Size - 1) + "}";
+				}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
+				return string.Empty;
+			}
 		}
 
 		public int Count
 		{
 			get { return _watchList.Count; }
-		}
-
-		public Watch this[int index]
-		{
-			get { return _watchList[index]; }
-			set { _watchList[index] = value; }
 		}
 
 		public int WatchCount
@@ -59,6 +55,38 @@ namespace BizHawk.Client.Common
 		public int ItemCount
 		{
 			get { return _watchList.Count; }
+		}
+
+		public MemoryDomain Domain
+		{
+			get { return _domain; }
+			set { _domain = value; }
+		}
+
+		public bool IsReadOnly { get { return false; } }
+
+		public string CurrentFileName
+		{
+			get { return _currentFilename; }
+			set { _currentFilename = value; }
+		}
+
+		public bool Changes { get; set; }
+
+		public Watch this[int index]
+		{
+			get { return _watchList[index]; }
+			set { _watchList[index] = value; }
+		}
+
+		public IEnumerator<Watch> GetEnumerator()
+		{
+			return _watchList.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 
 		public void OrderWatches(string column, bool reverse)
@@ -221,29 +249,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string AddressFormatStr
-		{
-			get
-			{
-				if (_domain != null)
-				{
-					return "{0:X" + IntHelpers.GetNumDigits(this._domain.Size - 1) + "}";
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
 		public void Clear()
 		{
 			_watchList.Clear();
 			Changes = false;
-			_currentFilename = String.Empty;
+			_currentFilename = string.Empty;
 		}
-
-		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
 
 		public void UpdateValues()
 		{
@@ -289,8 +300,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsReadOnly { get { return false; } }
-
 		public bool Contains(Watch watch)
 		{
 			return _watchList.Any(w =>
@@ -298,8 +307,7 @@ namespace BizHawk.Client.Common
 				w.Type == watch.Type &&
 				w.Domain == watch.Domain &&
 				w.Address == watch.Address &&
-				w.BigEndian == watch.BigEndian
-			);
+				w.BigEndian == watch.BigEndian);
 		}
 
 		public void CopyTo(Watch[] array, int arrayIndex)
@@ -319,9 +327,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#region File handling logic - probably needs to be its own class
-
-		public string CurrentFileName { get { return _currentFilename; } set { _currentFilename = value; } }
-		public bool Changes { get; set; }
 
 		public bool Load(string path, bool append)
 		{
@@ -345,7 +350,7 @@ namespace BizHawk.Client.Common
 
 		public void Reload()
 		{
-			if (!String.IsNullOrWhiteSpace(CurrentFileName))
+			if (!string.IsNullOrWhiteSpace(CurrentFileName))
 			{
 				LoadFile(CurrentFileName, append: false);
 				Changes = false;
@@ -354,7 +359,7 @@ namespace BizHawk.Client.Common
 
 		public bool Save()
 		{
-			if (String.IsNullOrWhiteSpace(CurrentFileName))
+			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
 				return false;
 			}
@@ -369,7 +374,7 @@ namespace BizHawk.Client.Common
 				foreach (var watch in _watchList)
 				{
 					sb
-						.Append(String.Format(AddressFormatStr, watch.Address ?? 0)).Append('\t')
+						.Append(string.Format(AddressFormatStr, watch.Address ?? 0)).Append('\t')
 						.Append(watch.SizeAsChar).Append('\t')
 						.Append(watch.TypeAsChar).Append('\t')
 						.Append(watch.BigEndian ? '1' : '0').Append('\t')
@@ -393,15 +398,13 @@ namespace BizHawk.Client.Common
 				CurrentFileName = file.FullName;
 				return Save();
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		private bool LoadFile(string path, bool append)
 		{
-			var domain = String.Empty;
+			var domain = string.Empty;
 			var file = new FileInfo(path);
 			if (file.Exists == false)
 			{
@@ -457,9 +460,9 @@ namespace BizHawk.Client.Common
 					}
 					else if (numColumns == 4)
 					{
-						isOldBizHawkWatch = true;
+						isOldBizHawkWatch = true; // This supports the legacy .wch format from 1.0.5 and earlier
 					}
-					else // 4 is 1.0.5 and earlier
+					else 
 					{
 						continue;   // If not 4, something is wrong with this line, ignore it
 					}
@@ -471,7 +474,7 @@ namespace BizHawk.Client.Common
 					var temp = line.Substring(0, line.IndexOf('\t'));
 					try
 					{
-						addr = Int32.Parse(temp, NumberStyles.HexNumber);
+						addr = int.Parse(temp, NumberStyles.HexNumber);
 					}
 					catch
 					{
@@ -490,7 +493,7 @@ namespace BizHawk.Client.Common
 					line = line.Substring(startIndex, line.Length - startIndex);   // Endian
 					try
 					{
-						startIndex = Int16.Parse(line[0].ToString());
+						startIndex = short.Parse(line[0].ToString());
 					}
 					catch
 					{

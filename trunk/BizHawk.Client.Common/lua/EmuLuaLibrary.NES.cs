@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {
-	public class NESLuaLibrary : LuaLibraryBase
+	public class NesLuaLibrary : LuaLibraryBase
 	{
 		// TODO:  
 		// perhaps with the new core config system, one could
@@ -26,13 +26,12 @@ namespace BizHawk.Client.Common
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
 					code,
-					false
-				);
+					false);
+
 				Global.CheatList.Add(new Cheat(
 					watch,
 					decoder.Value,
-					decoder.Compare
-				));
+					decoder.Compare));
 			}
 		}
 
@@ -55,10 +54,8 @@ namespace BizHawk.Client.Common
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_BottomLine;
 			}
-			else
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
-			}
+			
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
 		}
 
 		[LuaMethodAttributes(
@@ -98,10 +95,8 @@ namespace BizHawk.Client.Common
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_TopLine;
 			}
-			else
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
-			}
+			
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
 		}
 
 		[LuaMethodAttributes(
@@ -114,8 +109,7 @@ namespace BizHawk.Client.Common
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Address == decoder.Address)
-				);
+					Global.CheatList.Where(x => x.Address == decoder.Address));
 			}
 		}
 

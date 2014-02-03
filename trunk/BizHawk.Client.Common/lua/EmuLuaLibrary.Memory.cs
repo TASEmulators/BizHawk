@@ -5,9 +5,9 @@ namespace BizHawk.Client.Common
 {
 	public class MemoryLuaLibrary : LuaLibraryBase
 	{
-		public override string Name { get { return "memory"; } }
-
 		private int _currentMemoryDomain; // Main memory by default
+
+		public override string Name { get { return "memory"; } }
 
 		#region Memory Library Helpers
 
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetMemoryDomainList()
 		{
-			return Global.Emulator.MemoryDomains.Aggregate(String.Empty, (current, t) => current + (t.Name + '\n'));
+			return Global.Emulator.MemoryDomains.Aggregate(string.Empty, (current, t) => current + (t.Name + '\n'));
 		}
 
 		[LuaMethodAttributes(

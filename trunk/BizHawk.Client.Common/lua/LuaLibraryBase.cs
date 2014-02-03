@@ -59,9 +59,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var lua_result = new object[n - trim];
-			Array.Copy(luaArgs, lua_result, n - trim);
-			return lua_result;
+			var luaResult = new object[n - trim];
+			Array.Copy(luaArgs, luaResult, n - trim);
+			return luaResult;
 		}
 	}
 }

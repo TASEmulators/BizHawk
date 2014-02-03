@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace BizHawk.Client.Common
 {
+	// TODO: these classes are worthless or need to be extensions, decide which
 	public static class StringHelpers
 	{
 		public static int HowMany(string str, char c)
 		{
-			return !String.IsNullOrEmpty(str) ? str.Count(t => t == c) : 0;
+			return !string.IsNullOrEmpty(str) ? str.Count(t => t == c) : 0;
 		}
 
 		public static int HowMany(string str, string s)
@@ -28,27 +28,27 @@ namespace BizHawk.Client.Common
 	// TODO: put it in its own file
 	public static class IntHelpers // TODO: a less lame name
 	{
-		public static int GetNumDigits(Int32 i)
+		public static int GetNumDigits(int i)
 		{
 			if (i < 0x100)
 			{
 				return 2;
 			}
-			else if (i < 0x10000)
+			
+			if (i < 0x10000)
 			{
 				return 4;
 			}
-			else if (i < 0x1000000)
+			
+			if (i < 0x1000000)
 			{
 				return 6;
 			}
-			else
-			{
-				return 8;
-			}
+			
+			return 8;
 		}
 
-		public static uint MaxHexValueFromMaxDigits(Int32 i)
+		public static uint MaxHexValueFromMaxDigits(int i)
 		{
 			switch (i)
 			{
@@ -74,5 +74,5 @@ namespace BizHawk.Client.Common
 
 			return int.MaxValue;
 		}
-    }
+	}
 }
