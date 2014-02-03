@@ -52,7 +52,7 @@ void eeprom_93c_init()
   /* default eeprom state */
   memset(&eeprom_93c, 0, sizeof(T_EEPROM_93C));
   eeprom_93c.data = 1;
-  eeprom_93c.state = WAIT_START;
+  eeprom_93c.state = WAIT_START93;
   sram.custom = 3;
 }
 
@@ -67,19 +67,19 @@ void eeprom_93c_write(unsigned char data)
       /* Current EEPROM state */
       switch (eeprom_93c.state)
       {
-        case WAIT_START:
+        case WAIT_START93:
         {
           /* Wait for START bit */
           if (data & (1 << BIT_DATA))
           {
             eeprom_93c.opcode = 0;
             eeprom_93c.cycles = 0;
-            eeprom_93c.state = GET_OPCODE;
+            eeprom_93c.state = GET_OPCODE93;
           }
           break;
         }
 
-        case GET_OPCODE:
+        case GET_OPCODE93:
         {
           /* 8-bit buffer (opcode + address) */
           eeprom_93c.opcode |= ((data >> BIT_DATA) & 1) << (7 - eeprom_93c.cycles);
@@ -95,7 +95,7 @@ void eeprom_93c_write(unsigned char data)
                 /* WRITE */
                 eeprom_93c.buffer = 0;
                 eeprom_93c.cycles = 0;
-                eeprom_93c.state = WRITE_WORD;
+                eeprom_93c.state = WRITE_WORD93;
                 break;
               }
 
@@ -104,7 +104,7 @@ void eeprom_93c_write(unsigned char data)
                 /* READ */
                 eeprom_93c.buffer = *(uint16 *)(sram.sram + ((eeprom_93c.opcode & 0x3F) << 1));
                 eeprom_93c.cycles = 0;
-                eeprom_93c.state = READ_WORD;
+                eeprom_93c.state = READ_WORD93;
 
                 /* Force DATA OUT */
                 eeprom_93c.data = 0;
@@ -120,7 +120,7 @@ void eeprom_93c_write(unsigned char data)
                 }
 
                 /* wait for next command */
-                eeprom_93c.state = WAIT_STANDBY;
+                eeprom_93c.state = WAIT_STANDBY93;
                 break;
               }
 
@@ -134,7 +134,7 @@ void eeprom_93c_write(unsigned char data)
                     /* WRITE ALL */
                     eeprom_93c.buffer = 0;
                     eeprom_93c.cycles = 0;
-                    eeprom_93c.state = WRITE_WORD;
+                    eeprom_93c.state = WRITE_WORD93;
                     break;
                   }
 
@@ -147,7 +147,7 @@ void eeprom_93c_write(unsigned char data)
                     }
 
                     /* wait for next command */
-                    eeprom_93c.state = WAIT_STANDBY;
+                    eeprom_93c.state = WAIT_STANDBY93;
                     break;
                   }
 
@@ -157,7 +157,7 @@ void eeprom_93c_write(unsigned char data)
                     eeprom_93c.we = (eeprom_93c.opcode >> 4) & 1;
 
                     /* wait for next command */
-                    eeprom_93c.state = WAIT_STANDBY;
+                    eeprom_93c.state = WAIT_STANDBY93;
                     break;
                   }
                 }
@@ -168,7 +168,7 @@ void eeprom_93c_write(unsigned char data)
           break;
         }
 
-        case WRITE_WORD:
+        case WRITE_WORD93:
         {
           /* 16-bit data buffer */
           eeprom_93c.buffer |= ((data >> BIT_DATA) & 1) << (15 - eeprom_93c.cycles);
@@ -197,12 +197,12 @@ void eeprom_93c_write(unsigned char data)
             }
 
             /* wait for next command */
-            eeprom_93c.state = WAIT_STANDBY;
+            eeprom_93c.state = WAIT_STANDBY93;
           }
           break;
         }
 
-        case READ_WORD:
+        case READ_WORD93:
         {
           /* set DATA OUT */
           eeprom_93c.data = ((eeprom_93c.buffer >> (15 - eeprom_93c.cycles)) & 1);
@@ -233,7 +233,7 @@ void eeprom_93c_write(unsigned char data)
     {
       /* standby mode */
       eeprom_93c.data = 1;
-      eeprom_93c.state = WAIT_START;
+      eeprom_93c.state = WAIT_START93;
     }
   }
 

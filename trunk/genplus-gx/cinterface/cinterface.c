@@ -106,25 +106,36 @@ GPGX_EX void gpgx_get_fps(int *num, int *den)
 	}
 }
 
-GPGX_EX int gpgx_state_size(void)
+GPGX_EX int gpgx_state_max_size(void)
 {
-	return STATE_SIZE;
+	// original state size, plus 64K sram or 16K ebram, plus 8K ibram or seeprom control structures
+	return STATE_SIZE + (64 + 8) * 1024;
+}
+
+GPGX_EX int gpgx_state_size(void *dest, int size)
+{
+	int actual = 0;
+	if (size < gpgx_state_max_size())
+		return -1;
+
+	actual = state_save((unsigned char*) dest);
+	if (actual > size)
+		// fixme!
+		return -1;
+	return actual;
 }
 
 GPGX_EX int gpgx_state_save(void *dest, int size)
 {
-	if (size != STATE_SIZE)
-		return 0;
-
-	return !!state_save((unsigned char*) dest);
+	return state_save((unsigned char*) dest) == size;
 }
 
 GPGX_EX int gpgx_state_load(void *src, int size)
 {
-	if (size != STATE_SIZE)
+	if (!size)
 		return 0;
 
-	if (state_load((unsigned char *) src))
+	if (state_load((unsigned char *) src) == size)
 	{
 		update_viewport();
 		return 1;
@@ -200,28 +211,7 @@ GPGX_EX void gpgx_advance(void)
 // internal: computes sram size (no brams)
 int saveramsize(void)
 {
-	if (!sram.on)
-		return 0;
-	switch (sram.custom)
-	{
-	case 0: // plain bus access saveram
-		break;
-	case 1: // i2c
-		return eeprom_i2c.config.size_mask + 1;
-	case 2: // spi
-		return 0x10000; // it doesn't appear to mask anything internally
-	case 3: // 93c
-		return 0x10000; // SMS only and i don't have time to look into it
-	default:
-		return 0x10000; // who knows
-	}
-	// figure size for plain bus access saverams
-	{
-		int startaddr = sram.start / 8192;
-		int endaddr = sram.end / 8192 + 1;
-		int size = (endaddr - startaddr) * 8192;
-		return size;
-	}
+	return sram_get_actual_size();
 }
 
 GPGX_EX void gpgx_clear_sram(void)

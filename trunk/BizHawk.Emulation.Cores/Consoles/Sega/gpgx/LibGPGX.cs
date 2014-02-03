@@ -36,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public static extern void gpgx_get_fps(ref int num, ref int den);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gpgx_state_size();
+		public static extern int gpgx_state_max_size();
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gpgx_state_size(byte[] dest, int size);
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gpgx_state_save(byte[] dest, int size);
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
