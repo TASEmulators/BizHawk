@@ -12,6 +12,7 @@
 #include "genesis.h"
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
+#include "eeprom_i2c.h"
 
 char GG_ROM[256] = "GG_ROM"; // game genie rom
 char AR_ROM[256] = "AR_ROM"; // actin replay rom
@@ -196,6 +197,33 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
+// internal: computes sram size (no brams)
+int saveramsize(void)
+{
+	if (!sram.on)
+		return 0;
+	switch (sram.custom)
+	{
+	case 0: // plain bus access saveram
+		break;
+	case 1: // i2c
+		return eeprom_i2c.config.size_mask + 1;
+	case 2: // spi
+		return 0x10000; // it doesn't appear to mask anything internally
+	case 3: // 93c
+		return 0x10000; // SMS only and i don't have time to look into it
+	default:
+		return 0x10000; // who knows
+	}
+	// figure size for plain bus access saverams
+	{
+		int startaddr = sram.start / 8192;
+		int endaddr = sram.end / 8192 + 1;
+		int size = (endaddr - startaddr) * 8192;
+		return size;
+	}
+}
+
 GPGX_EX void gpgx_clear_sram(void)
 {
 	// clear sram
@@ -329,7 +357,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		if (sram.on)
 		{
 			*area = sram.sram;
-			*size = 0x10000;
+			*size = saveramsize();
 			return "SRAM";
 		}
 		else return NULL;
@@ -356,7 +384,7 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 	if (sram.on)
 	{
 		*area = sram.sram;
-		*size = 0x10000;
+		*size = saveramsize();
 	}
 	else if (scd.cartridge.id)
 	{

@@ -186,14 +186,16 @@ void sram_init()
       sram.on = 0;
     }
 
-    /* by default, enable backup RAM for ROM smaller than 2MB */
+    // by default, enable backup RAM for ROM smaller than 2MB
+	/*
     else if (cart.romsize <= 0x200000)
     {
-      /* 64KB static RAM mapped to $200000-$20ffff */
+      // 64KB static RAM mapped to $200000-$20ffff
       sram.start = 0x200000;
       sram.end = 0x20ffff;
       sram.on = 1;
     }
+	*/
   }
 }
 
