@@ -108,8 +108,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					CoreComm.VsyncDen = fpsden;
 				}
 
-				savebuff = new byte[LibGPGX.gpgx_state_size()];
-				savebuff2 = new byte[savebuff.Length + 13];
+				// compute state size
+				{
+					byte[] tmp = new byte[LibGPGX.gpgx_state_max_size()];
+					int size = LibGPGX.gpgx_state_size(tmp, tmp.Length);
+					if (size <= 0)
+						throw new Exception("Couldn't Determine GPGX internal state size!");
+					savebuff = new byte[size];
+					savebuff2 = new byte[savebuff.Length + 13];
+					Console.WriteLine("GPGX Internal State Size: {0}", size);
+				}
 
 				SetControllerDefinition();
 
@@ -284,6 +292,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region controller
 
+		/// <summary>
+		/// size of native input struct
+		/// </summary>
+		int inputsize;
+
 		GPGXControlConverter ControlConverter;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
@@ -291,7 +304,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void SetControllerDefinition()
 		{
-			if (!LibGPGX.gpgx_get_control(input))
+			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
+			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed");
 
 			ControlConverter = new GPGXControlConverter(input);
@@ -316,12 +330,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.gpgx_reset(true);
 
 			// do we really have to get each time?  nothing has changed
-			if (!LibGPGX.gpgx_get_control(input))
+			if (!LibGPGX.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed!");
 
 			ControlConverter.Convert(Controller, input);
 
-			if (!LibGPGX.gpgx_put_control(input))
+			if (!LibGPGX.gpgx_put_control(input, inputsize))
 				throw new Exception("gpgx_put_control() failed!");
 
 			IsLagFrame = true;

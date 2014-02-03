@@ -1441,6 +1441,11 @@ int scd_context_save(uint8 *state)
     bufferptr += md_cart_context_save(&state[bufferptr]);
   }
 
+  save_param(scd.bram, 0x2000);
+  // we don't save scd.cartridge.id separately, so it must be non-changing!
+  if (scd.cartridge.id)
+	  save_param(scd.cartridge.area, scd.cartridge.mask + 1);
+
   return bufferptr;
 }
 
@@ -1640,6 +1645,11 @@ int scd_context_load(uint8 *state)
   {
     bufferptr += md_cart_context_load(&state[bufferptr]);
   }
+
+  load_param(scd.bram, 0x2000);
+  // we don't save scd.cartridge.id separately, so it must be non-changing!
+  if (scd.cartridge.id)
+	  load_param(scd.cartridge.area, scd.cartridge.mask + 1);
 
   return bufferptr;
 }

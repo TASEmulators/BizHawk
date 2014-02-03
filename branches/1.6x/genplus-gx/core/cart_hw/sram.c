@@ -37,6 +37,9 @@
  ****************************************************************************************/
 
 #include "shared.h"
+#include "eeprom_i2c.h"
+#include "eeprom_spi.h"
+#include "eeprom_93c.h"
 
 T_SRAM sram;
 
@@ -69,7 +72,7 @@ void sram_init()
 
   /* initialize Backup RAM */
   memset(sram.sram, 0xFF, 0x10000);
-  sram.crc = crc32(0, sram.sram, 0x10000);
+  //sram.crc = crc32(0, sram.sram, 0x10000);
 
   /* retrieve informations from header */
   if ((READ_BYTE(cart.rom,0x1b0) == 0x52) && (READ_BYTE(cart.rom,0x1b1) == 0x41))
@@ -186,14 +189,16 @@ void sram_init()
       sram.on = 0;
     }
 
-    /* by default, enable backup RAM for ROM smaller than 2MB */
+    // by default, enable backup RAM for ROM smaller than 2MB
+	/*
     else if (cart.romsize <= 0x200000)
     {
-      /* 64KB static RAM mapped to $200000-$20ffff */
+      // 64KB static RAM mapped to $200000-$20ffff
       sram.start = 0x200000;
       sram.end = 0x20ffff;
       sram.on = 1;
     }
+	*/
   }
 }
 
@@ -218,4 +223,75 @@ void sram_write_word(unsigned int address, unsigned int data)
   address &= 0xfffe;
   sram.sram[address] = data >> 8;
   sram.sram[address + 1] = data & 0xff;
+}
+
+// the variables in SRAM_T are all part of "configuration", so we don't have to save those.
+// the only thing that needs to be saved is the SRAM itself and the SEEPROM struct (if applicable)
+
+int sram_context_save(uint8 *state)
+{
+	int bufferptr = 0;
+	if (!sram.on)
+		return 0;
+	save_param(sram.sram, sram_get_actual_size());
+	switch (sram.custom)
+	{
+	case 1:
+		save_param(&eeprom_i2c, sizeof(eeprom_i2c));
+		break;
+	case 2:
+		save_param(&spi_eeprom, sizeof(spi_eeprom));
+		break;
+	case 3:
+		save_param(&eeprom_93c, sizeof(eeprom_93c));
+		break;
+	}
+	return bufferptr;
+}
+
+int sram_context_load(uint8 *state)
+{
+	int bufferptr = 0;
+	if (!sram.on)
+		return 0;
+	load_param(sram.sram, sram_get_actual_size());
+	switch (sram.custom)
+	{
+	case 1:
+		load_param(&eeprom_i2c, sizeof(eeprom_i2c));
+		break;
+	case 2:
+		load_param(&spi_eeprom, sizeof(spi_eeprom));
+		break;
+	case 3:
+		load_param(&eeprom_93c, sizeof(eeprom_93c));
+		break;
+	}
+	return bufferptr;
+}
+
+int sram_get_actual_size()
+{
+	if (!sram.on)
+		return 0;
+	switch (sram.custom)
+	{
+	case 0: // plain bus access saveram
+		break;
+	case 1: // i2c
+		return eeprom_i2c.config.size_mask + 1;
+	case 2: // spi
+		return 0x10000; // it doesn't appear to mask anything internally
+	case 3: // 93c
+		return 0x10000; // SMS only and i don't have time to look into it
+	default:
+		return 0x10000; // who knows
+	}
+	// figure size for plain bus access saverams
+	{
+		int startaddr = sram.start / 8192;
+		int endaddr = sram.end / 8192 + 1;
+		int size = (endaddr - startaddr) * 8192;
+		return size;
+	}
 }
