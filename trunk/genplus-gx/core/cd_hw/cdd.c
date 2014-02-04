@@ -128,7 +128,7 @@ typedef struct
 	void (*cdd_readcallback)(int lba, void *dest, int audio);
 } frontendcd_t;
 
-int cdd_load(char *header)
+int cdd_load(const char *key, char *header)
 {
 	frontendcd_t fecd;
 	char data[2048];
@@ -136,7 +136,7 @@ int cdd_load(char *header)
 
 
 	int bytes = sizeof(frontendcd_t);
-	if (load_archive("PRIMARY_CD", (unsigned char *)&fecd, bytes, NULL) != bytes)
+	if (load_archive(key, (unsigned char *)&fecd, bytes, NULL) != bytes)
 		return 0;
 
 	// look for valid header
