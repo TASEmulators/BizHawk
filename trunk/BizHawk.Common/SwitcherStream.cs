@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace BizHawk.Common
@@ -12,56 +11,60 @@ namespace BizHawk.Common
 	/// </summary>
 	public class SwitcherStream : Stream
 	{
-		//switchstream method? flush old stream?
-		Stream CurrStream = null;
-
-		public void SetCurrStream(Stream str) { CurrStream = str; }
+		// switchstream method? flush old stream?
+		private Stream _currStream;
 
 		public SwitcherStream()
 		{
 		}
 
-		public override bool CanRead { get { return CurrStream.CanRead; } }
-		public override bool CanSeek { get { return CurrStream.CanSeek; } }
-		public override bool CanWrite { get { return CurrStream.CanWrite; } }
-		public override void Flush()
-		{
-			CurrStream.Flush();
-		}
+		public override bool CanRead { get { return _currStream.CanRead; } }
+		public override bool CanSeek { get { return _currStream.CanSeek; } }
+		public override bool CanWrite { get { return _currStream.CanWrite; } }
 
-		public override long Length { get { return CurrStream.Length; } }
+		public override long Length { get { return _currStream.Length; } }
 
 		public override long Position
 		{
 			get
 			{
-				return CurrStream.Position;
+				return _currStream.Position;
 			}
+
 			set
 			{
-				CurrStream.Position = Position;
+				_currStream.Position = Position;
 			}
+		}
+
+		public void SetCurrStream(Stream str)
+		{
+			_currStream = str;
+		}
+
+		public override void Flush()
+		{
+			_currStream.Flush();
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			return CurrStream.Read(buffer, offset, count);
+			return _currStream.Read(buffer, offset, count);
 		}
 
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			return CurrStream.Seek(offset, origin);
+			return _currStream.Seek(offset, origin);
 		}
 
 		public override void SetLength(long value)
 		{
-			CurrStream.SetLength(value);
+			_currStream.SetLength(value);
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
 		{
-			CurrStream.Write(buffer, offset, count);
+			_currStream.Write(buffer, offset, count);
 		}
 	}
-
 }

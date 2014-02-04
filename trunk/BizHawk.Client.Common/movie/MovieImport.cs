@@ -993,9 +993,9 @@ namespace BizHawk.Client.Common
 			string platform = "SNES";
 			foreach (var item in hf.ArchiveItems)
 			{
-				if (item.name == "authors")
+				if (item.Name == "authors")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string authors = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
 					string author_list = "";
@@ -1028,25 +1028,25 @@ namespace BizHawk.Client.Common
 					m.Header[HeaderKeys.AUTHOR] = author_list;
 					hf.Unbind();
 				}
-				else if (item.name == "coreversion")
+				else if (item.Name == "coreversion")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header.Comments.Add(COREORIGIN + " " + coreversion);
 					hf.Unbind();
 				}
-				else if (item.name == "gamename")
+				else if (item.Name == "gamename")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string gamename = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[HeaderKeys.GAMENAME] = gamename;
 					hf.Unbind();
 				}
-				else if (item.name == "gametype")
+				else if (item.Name == "gametype")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					// TODO: Handle the other types.
@@ -1069,9 +1069,9 @@ namespace BizHawk.Client.Common
 					m.Header[HeaderKeys.PAL] = pal.ToString();
 					hf.Unbind();
 				}
-				else if (item.name == "input")
+				else if (item.Name == "input")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string input = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
 					int lineNum = 0;
@@ -1095,9 +1095,9 @@ namespace BizHawk.Client.Common
 					}
 					hf.Unbind();
 				}
-				else if (item.name.StartsWith("moviesram."))
+				else if (item.Name.StartsWith("moviesram."))
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					byte[] moviesram = Util.ReadAllBytes(stream);
 					if (moviesram.Length != 0)
@@ -1108,33 +1108,33 @@ namespace BizHawk.Client.Common
 					}
 					hf.Unbind();
 				}
-				else if (item.name == "port1")
+				else if (item.Name == "port1")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string port1 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[PORT1] = port1;
 					hf.Unbind();
 				}
-				else if (item.name == "port2")
+				else if (item.Name == "port2")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string port2 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[PORT2] = port2;
 					hf.Unbind();
 				}
-				else if (item.name == "projectid")
+				else if (item.Name == "projectid")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string projectid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[PROJECTID] = projectid;
 					hf.Unbind();
 				}
-				else if (item.name == "rerecords")
+				else if (item.Name == "rerecords")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string rerecords = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
 					int rerecordCount;
@@ -1150,24 +1150,24 @@ namespace BizHawk.Client.Common
 					m.Header.Rerecords = (ulong)rerecordCount;
 					hf.Unbind();
 				}
-				else if (item.name.EndsWith(".sha256"))
+				else if (item.Name.EndsWith(".sha256"))
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					int pos = item.name.LastIndexOf(".sha256");
-					string name = item.name.Substring(0, pos);
+					int pos = item.Name.LastIndexOf(".sha256");
+					string name = item.Name.Substring(0, pos);
 					m.Header[SHA256 + "_" + name] = rom;
 					hf.Unbind();
 				}
-				else if (item.name == "savestate")
+				else if (item.Name == "savestate")
 				{
 					errorMsg = "Movies that begin with a savestate are not supported.";
 					return null;
 				}
-				else if (item.name == "subtitles")
+				else if (item.Name == "subtitles")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string subtitles = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
 					using (StringReader reader = new StringReader(subtitles))
@@ -1178,25 +1178,25 @@ namespace BizHawk.Client.Common
 					}
 					hf.Unbind();
 				}
-				else if (item.name == "starttime.second")
+				else if (item.Name == "starttime.second")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string startSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[STARTSECOND] = startSecond;
 					hf.Unbind();
 				}
-				else if (item.name == "starttime.subsecond")
+				else if (item.Name == "starttime.subsecond")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string startSubSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header[STARTSUBSECOND] = startSubSecond;
 					hf.Unbind();
 				}
-				else if (item.name == "systemid")
+				else if (item.Name == "systemid")
 				{
-					hf.BindArchiveMember(item.index);
+					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header.Comments.Add(EMULATIONORIGIN + " " + systemid);
