@@ -733,15 +733,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_inFullscreen == false)
 			{
+				SuspendLayout();
 				#if WINDOWS
 					//Work around an AMD driver bug in >= vista:
 					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
 					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
 					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
-					//At any rate, we can solve this by adding a 1px black border around the GL control, and this is a really easy way.
+					//At any rate, we can solve this by adding a 1px black border around the GL control
 					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) | 0x00800000); //GWL_STYLE ; WS_BORDER
+					Padding = new System.Windows.Forms.Padding(1);
+					BackColor = Color.Black;
 				#endif
 
 				_windowedLocation = Location;
@@ -749,27 +751,26 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Maximized;
 				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
 				MainStatusBar.Visible = false;
-				PerformLayout();
+				ResumeLayout();
 
 				GlobalWin.PresentationPanel.Resized = true;
 				_inFullscreen = true;
 			}
 			else
 			{
+				SuspendLayout();
+
 				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
 
 				#if WINDOWS
-					//The placement of this is important.. I think a SWP_FRAMECHANGED needs to get sent by later code.
-					//With wrong placement, the border will get stuck.
-					SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) & ~0x00800000); //GWL_STYLE ; WS_BORDER
+					Padding = new System.Windows.Forms.Padding(0);
 				#endif
 
 				MainMenuStrip.Visible = true;
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				Location = _windowedLocation;
-				PerformLayout();
-
+				ResumeLayout();
 
 				FrameBufferResized();
 				_inFullscreen = false;

@@ -470,6 +470,11 @@
     <Compile Include="PresentationPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
@@ -989,14 +994,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
@@ -1289,6 +1289,10 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\pcb.png" />
+    <None Include="images\tvIcon.png" />
+    <None Include="Resources\pcb.png" />
+    <None Include="Resources\tvIcon.png" />
     <EmbeddedResource Include="Resources\courier16px_0.png" />
     <None Include="images\pcejin1.bmp" />
     <None Include="images\watch.ico" />

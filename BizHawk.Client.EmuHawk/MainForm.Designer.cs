@@ -147,8 +147,6 @@
 			this.StartPausedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ForceGDIMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.UseBilinearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SuppressGuiLayerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuInFullScreenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunInBackgroundMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1217,13 +1215,13 @@
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ControllersMenuItem,
             this.HotkeysMenuItem,
-            this.MessagesMenuItem,
-            this.PathsMenuItem,
+            this.DisplayConfigMenuItem,
             this.SoundMenuItem,
+            this.PathsMenuItem,
+            this.FirmwaresMenuItem,
+            this.MessagesMenuItem,
             this.AutofireMenuItem,
             this.RewindOptionsMenuItem,
-            this.DisplayConfigMenuItem,
-            this.FirmwaresMenuItem,
             this.toolStripSeparator9,
             this.ConfigEnableSubMenu,
             this.GuiSubMenu,
@@ -1298,6 +1296,7 @@
 			// 
 			// DisplayConfigMenuItem
 			// 
+			this.DisplayConfigMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("DisplayConfigMenuItem.Image")));
 			this.DisplayConfigMenuItem.Name = "DisplayConfigMenuItem";
 			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.DisplayConfigMenuItem.Text = "Display...";
@@ -1305,6 +1304,7 @@
 			// 
 			// FirmwaresMenuItem
 			// 
+			this.FirmwaresMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("FirmwaresMenuItem.Image")));
 			this.FirmwaresMenuItem.Name = "FirmwaresMenuItem";
 			this.FirmwaresMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.FirmwaresMenuItem.Text = "&Firmwares";
@@ -1378,8 +1378,6 @@
             this.StartPausedMenuItem,
             this.toolStripSeparator22,
             this.SaveWindowPositionMenuItem,
-            this.ForceGDIMenuItem,
-            this.UseBilinearMenuItem,
             this.SuppressGuiLayerMenuItem,
             this.ShowMenuInFullScreenMenuItem,
             this.RunInBackgroundMenuItem,
@@ -1418,20 +1416,6 @@
 			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.SaveWindowPositionMenuItem.Text = "Save window position";
 			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// ForceGDIMenuItem
-			// 
-			this.ForceGDIMenuItem.Name = "ForceGDIMenuItem";
-			this.ForceGDIMenuItem.Size = new System.Drawing.Size(231, 22);
-			this.ForceGDIMenuItem.Text = "Use GDI+ Display Method";
-			this.ForceGDIMenuItem.Click += new System.EventHandler(this.UseGDIMenuItem_Click);
-			// 
-			// UseBilinearMenuItem
-			// 
-			this.UseBilinearMenuItem.Name = "UseBilinearMenuItem";
-			this.UseBilinearMenuItem.Size = new System.Drawing.Size(231, 22);
-			this.UseBilinearMenuItem.Text = "Use Bilinear Filtering";
-			this.UseBilinearMenuItem.Click += new System.EventHandler(this.UseBilinearMenuItem_Click);
 			// 
 			// SuppressGuiLayerMenuItem
 			// 
@@ -3142,7 +3126,6 @@
 		private System.Windows.Forms.ToolStripMenuItem NESGameGenieCodesMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem CheatsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ForceGDIMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NESDebuggerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NESNametableViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ToolBoxMenuItem;

@@ -782,6 +782,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pcb {
+            get {
+                object obj = ResourceManager.GetObject("pcb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pcejin1 {
             get {
                 object obj = ResourceManager.GetObject("pcejin1", resourceCulture);
@@ -1125,6 +1135,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap TurboFastForward {
             get {
                 object obj = ResourceManager.GetObject("TurboFastForward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tvIcon {
+            get {
+                object obj = ResourceManager.GetObject("tvIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
