@@ -6,6 +6,16 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
 {
+	public enum BinaryStateLump
+	{
+		Versiontag,
+		Corestate,
+		Framebuffer,
+		Input,
+		CorestateText,
+		Movieheader
+	}
+
 	public class BinaryStateFileNames
 	{
 		/*
@@ -36,22 +46,19 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public enum BinaryStateLump
-	{
-		Versiontag,
-		Corestate,
-		Framebuffer,
-		Input,
-		CorestateText,
-		Movieheader
-	}
-
 	/// <summary>
 	/// more accurately should be called ZipStateLoader, as it supports both text and binary core data
 	/// </summary>
 	public class BinaryStateLoader : IDisposable
 	{
+		private ZipFile _zip;
+		private Version _ver;
 		private bool _isDisposed;
+
+		private BinaryStateLoader()
+		{
+		}
+
 		public void Dispose()
 		{
 			Dispose(true);
@@ -69,13 +76,6 @@ namespace BizHawk.Client.Common
 					_zip.Close();
 				}
 			}
-		}
-
-		private ZipFile _zip;
-		private Version _ver;
-
-		private BinaryStateLoader()
-		{
 		}
 
 		private void ReadVersion(Stream s)
@@ -139,8 +139,8 @@ namespace BizHawk.Client.Common
 		/// <returns>true if callback was called and stream was loaded</returns>
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream> callback)
 		{
-			string Name = BinaryStateFileNames.Get(lump);
-			var e = _zip.GetEntry(Name);
+			var name = BinaryStateFileNames.Get(lump);
+			var e = _zip.GetEntry(name);
 			if (e != null)
 			{
 				using (var zs = _zip.GetInputStream(e))
@@ -150,14 +150,13 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			else if (abort)
+			
+			if (abort)
 			{
-				throw new Exception("Essential zip section not found: " + Name);
+				throw new Exception("Essential zip section not found: " + name);
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback)
@@ -198,28 +197,12 @@ namespace BizHawk.Client.Common
 				throw new Exception("Couldn't find Binary or Text savestate");
 			}
 		}
-
-		/*
-		public bool GetFrameBuffer(Action<Stream> callback)
-		{
-			return GetFileByName(BinaryStateFileNames.Framebuffer, false, callback);
-		}
-
-		public void GetInputLogRequired(Action<Stream> callback)
-		{
-			GetFileByName(BinaryStateFileNames.Input, true, callback);
-		}
-
-		public void GetMovieHeaderRequired(Action<Stream> callback)
-		{
-			GetFileByName(BinaryStateFileNames.Movieheader, true, callback);
-		}
-		*/
 	}
 
 	public class BinaryStateSaver : IDisposable
 	{
-		private readonly ZipOutputStream zip;
+		private readonly ZipOutputStream _zip;
+		private bool _isDisposed;
 
 		private static void WriteVersion(Stream s)
 		{
@@ -234,23 +217,23 @@ namespace BizHawk.Client.Common
 		/// <param name="s">not closed when finished!</param>
 		public BinaryStateSaver(Stream s)
 		{
-			zip = new ZipOutputStream(s)
+			_zip = new ZipOutputStream(s)
 				{
 					IsStreamOwner = false,
 					UseZip64 = UseZip64.Off
 				};
-			zip.SetLevel(0);
+			_zip.SetLevel(0);
 
 			PutLump(BinaryStateLump.Versiontag, WriteVersion);	
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
-			string Name = BinaryStateFileNames.Get(lump);
-			var e = new ZipEntry(Name) {CompressionMethod = CompressionMethod.Stored};
-			zip.PutNextEntry(e);
-			callback(zip);
-			zip.CloseEntry();
+			var name = BinaryStateFileNames.Get(lump);
+			var e = new ZipEntry(name) {CompressionMethod = CompressionMethod.Stored};
+			_zip.PutNextEntry(e);
+			callback(_zip);
+			_zip.CloseEntry();
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
@@ -273,35 +256,6 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		/*
-		public void PutCoreStateBinary(Action<Stream> callback)
-		{
-			PutFileByName(BinaryStateFileNames.Corestate, callback);
-		}
-
-		public void PutCoreStateText(Action<Stream> callback)
-		{
-			PutFileByName(BinaryStateFileNames.CorestateText, callback);
-		}
-
-		public void PutFrameBuffer(Action<Stream> callback)
-		{
-			PutFileByName(BinaryStateFileNames.Framebuffer, callback);
-		}
-
-		public void PutInputLog(Action<Stream> callback)
-		{
-			PutFileByName(BinaryStateFileNames.Input, callback);
-		}
-
-		public void PutMovieHeader(Action<Stream> callback)
-		{
-			PutFileByName(BinaryStateFileNames.Movieheader, callback);
-		}
-		*/
-
-		private bool _isDisposed;
-
 		public void Dispose()
 		{
 			Dispose(true);
@@ -316,7 +270,7 @@ namespace BizHawk.Client.Common
 
 				if (disposing)
 				{
-					zip.Close();
+					_zip.Close();
 				}
 			}
 		}

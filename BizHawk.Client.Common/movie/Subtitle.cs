@@ -1,20 +1,12 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public class Subtitle
 	{
-		public string Message { get; set; }
-		public int Frame { get; set; }
-		public int X { get; set; }
-		public int Y { get; set; }
-		public int Duration { get; set; }
-		public uint Color { get; set; }
-
 		public Subtitle()
 		{
-			Message = String.Empty;
+			Message = string.Empty;
 			X = 0;
 			Y = 0;
 			Duration = 120;
@@ -32,6 +24,13 @@ namespace BizHawk.Client.Common
 			Color = s.Color;
 		}
 
+		public string Message { get; set; }
+		public int Frame { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Duration { get; set; }
+		public uint Color { get; set; }
+
 		public override string ToString()
 		{
 			var sb = new StringBuilder("subtitle ");
@@ -40,7 +39,7 @@ namespace BizHawk.Client.Common
 				.Append(X).Append(" ")
 				.Append(Y).Append(" ")
 				.Append(Duration).Append(" ")
-				.Append(String.Format("{0:X8}", Color)).Append(" ")
+				.Append(string.Format("{0:X8}", Color)).Append(" ")
 				.Append(Message);
 
 			return sb.ToString();
