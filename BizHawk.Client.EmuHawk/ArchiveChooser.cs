@@ -36,9 +36,9 @@ namespace BizHawk.Client.EmuHawk
 				var item = items[i];
 				var lvi = new ListViewItem { Tag = i };
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
-				lvi.Text = item.name;
-				long size = item.size;
-				var extension = Path.GetExtension(item.name);
+				lvi.Text = item.Name;
+				long size = item.Size;
+				var extension = Path.GetExtension(item.Name);
 				if (extension != null && (size % 1024 == 16 && extension.ToUpper() == ".NES"))
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
