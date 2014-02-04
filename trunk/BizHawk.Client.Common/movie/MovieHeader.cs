@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	using System.Linq;
-
 	public class MovieHeader : Dictionary<string, string>, IMovieHeader
 	{
-		public List<string> Comments { get; private set; }
-		public Dictionary<string, string> BoardProperties { get; private set; }
-		public SubtitleList Subtitles { get; private set; }
-
 		public MovieHeader()
 		{
 			Comments = new List<string>();
@@ -20,17 +13,100 @@ namespace BizHawk.Client.Common
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
 			this[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion1;
-			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : String.Empty;
-			this[HeaderKeys.GAMENAME] = String.Empty;
-			this[HeaderKeys.AUTHOR] = String.Empty;
+			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : string.Empty;
+			this[HeaderKeys.GAMENAME] = string.Empty;
+			this[HeaderKeys.AUTHOR] = string.Empty;
 			this[HeaderKeys.RERECORDS] = "0";
+		}
+
+		public List<string> Comments { get; private set; }
+		public Dictionary<string, string> BoardProperties { get; private set; }
+		public SubtitleList Subtitles { get; private set; }
+
+		public ulong Rerecords
+		{
+			get
+			{
+				if (!ContainsKey(HeaderKeys.RERECORDS))
+				{
+					this[HeaderKeys.RERECORDS] = "0";
+				}
+
+				return ulong.Parse(this[HeaderKeys.RERECORDS]);
+			}
+
+			set
+			{
+				this[HeaderKeys.RERECORDS] = value.ToString();
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
+				{
+					return bool.Parse(this[HeaderKeys.STARTSFROMSAVESTATE]);
+				}
+				
+				return false;
+			}
+
+			set
+			{
+				if (value)
+				{
+					Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
+				}
+				else
+				{
+					Remove(HeaderKeys.STARTSFROMSAVESTATE);
+				}
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.GAMENAME))
+				{
+					return this[HeaderKeys.GAMENAME];
+				}
+				
+				return string.Empty;
+			}
+
+			set
+			{
+				this[HeaderKeys.GAMENAME] = value;
+			}
+		}
+
+		public string SystemID
+		{
+			get
+			{
+				if (ContainsKey(HeaderKeys.PLATFORM))
+				{
+					return this[HeaderKeys.PLATFORM];
+				}
+				
+				return string.Empty;
+			}
+
+			set
+			{
+				this[HeaderKeys.PLATFORM] = value;
+			}
 		}
 
 		public new string this[string key]
 		{
 			get
 			{
-				return this.ContainsKey(key) ? base[key] : String.Empty;
+				return this.ContainsKey(key) ? base[key] : string.Empty;
 			}
 
 			set
@@ -84,94 +160,9 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public ulong Rerecords
-		{
-			get
-			{
-				if (!ContainsKey(HeaderKeys.RERECORDS))
-				{
-					this[HeaderKeys.RERECORDS] = "0";
-				}
-
-				return ulong.Parse(this[HeaderKeys.RERECORDS]);
-			}
-
-			set
-			{
-				this[HeaderKeys.RERECORDS] = value.ToString();
-			}
-		}
-
-		public bool StartsFromSavestate
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
-				{
-					return bool.Parse(this[HeaderKeys.STARTSFROMSAVESTATE]);
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			set
-			{
-				if (value)
-				{
-					Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
-				}
-				else
-				{
-					Remove(HeaderKeys.STARTSFROMSAVESTATE);
-				}
-			}
-		}
-
-		public string GameName
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.GAMENAME))
-				{
-					return this[HeaderKeys.GAMENAME];
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			set
-			{
-				this[HeaderKeys.GAMENAME] = value;
-			}
-		}
-
-		public string SystemID
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.PLATFORM))
-				{
-					return this[HeaderKeys.PLATFORM];
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			set
-			{
-				this[HeaderKeys.PLATFORM] = value;
-			}
-		}
-
 		public bool ParseLineFromFile(string line)
 		{
-			if (!String.IsNullOrWhiteSpace(line))
+			if (!string.IsNullOrWhiteSpace(line))
 			{
 				var splitLine = line.Split(new[] { ' ' }, 2);
 

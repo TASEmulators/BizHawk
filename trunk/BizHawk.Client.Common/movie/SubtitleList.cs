@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -22,14 +21,14 @@ namespace BizHawk.Client.Common
 
 		public bool AddFromString(string subtitleStr)
 		{
-			if (!String.IsNullOrWhiteSpace(subtitleStr))
+			if (!string.IsNullOrWhiteSpace(subtitleStr))
 			{
 				try
 				{
 					var subparts = subtitleStr.Split(' ');
 
 					// Unfortunately I made the file format space delminated so this hack is necessary to get the message
-					var message = String.Empty;
+					var message = string.Empty;
 					for (var i = 6; i < subparts.Length; i++)
 					{
 						message += subparts[i] + ' ';
@@ -52,10 +51,8 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 	}
 }
