@@ -723,18 +723,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
 		public void ToggleFullscreen()
 		{
 			if (_inFullscreen == false)
 			{
+				#if WINDOWS
+					//Work around an AMD driver bug in >= vista:
+					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
+					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
+					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
+					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
+					//At any rate, we can solve this by adding a 1px black border around the GL control, and this is a really easy way.
+					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
+					SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) | 0x00800000); //GWL_STYLE ; WS_BORDER
+				#endif
+
 				_windowedLocation = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
-
 				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
-
 				MainStatusBar.Visible = false;
 				PerformLayout();
+
 				GlobalWin.PresentationPanel.Resized = true;
 				_inFullscreen = true;
 			}
@@ -746,6 +762,11 @@ namespace BizHawk.Client.EmuHawk
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				Location = _windowedLocation;
 				PerformLayout();
+
+				#if WINDOWS
+				SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) & ~0x00800000); //GWL_STYLE ; WS_BORDER
+				#endif
+
 				FrameBufferResized();
 				_inFullscreen = false;
 			}
