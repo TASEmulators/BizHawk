@@ -3,6 +3,7 @@ using System;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//various japanese Namcot108 boards plus DEROM
+	[NES.INESBoardImplPriority]
 	public sealed class Mapper206 : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)

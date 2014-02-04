@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg_bank_32k, chr_bank_8k;
 
+		[NES.INESBoardImplPriority]
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
