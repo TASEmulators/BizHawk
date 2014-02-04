@@ -433,7 +433,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	} //class SxROM
 
 
-	[NES.INESBoardImplPriority]
 	class SoROM : SuROM
 	{
 		//this uses a CHR bit to select WRAM banks
@@ -517,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	[NES.INESBoardImplPriority]
+
 	class SuROM : SxROM
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
