@@ -6,6 +6,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	[NES.INESBoardImplPriority]
 	public class Namcot175_340 : NES.NESBoardBase
 	{
 		/*
