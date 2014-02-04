@@ -758,14 +758,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
+
+				#if WINDOWS
+					//The placement of this is important.. I think a SWP_FRAMECHANGED needs to get sent by later code.
+					//With wrong placement, the border will get stuck.
+					SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) & ~0x00800000); //GWL_STYLE ; WS_BORDER
+				#endif
+
 				MainMenuStrip.Visible = true;
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				Location = _windowedLocation;
 				PerformLayout();
 
-				#if WINDOWS
-				SetWindowLong(Controls[0].Handle, -16, GetWindowLong(Controls[0].Handle, -16) & ~0x00800000); //GWL_STYLE ; WS_BORDER
-				#endif
 
 				FrameBufferResized();
 				_inFullscreen = false;
