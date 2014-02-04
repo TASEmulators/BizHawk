@@ -271,9 +271,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public byte ReadConsoleSwitches(bool peek)
 		{
-			//TODO - zeromus isnt sure this should clear the lag flag
 			byte value = 0xFF;
-
 			bool select = Controller["Select"];
 			bool reset = Controller["Reset"];
 
