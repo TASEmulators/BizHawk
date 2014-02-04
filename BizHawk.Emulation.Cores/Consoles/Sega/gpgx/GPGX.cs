@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
+			//hack, don't use
+			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
+
 			try
 			{
 				this.SyncSettings = (GPGXSyncSettings)SyncSettings ?? GPGXSyncSettings.GetDefaults();
@@ -165,18 +168,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				srcdata = romfile;
 			}
-			else if (filename == "PRIMARY_CD")
+			else if (filename == "PRIMARY_CD" || filename == "SECONDARY_CD")
 			{
-				if (CD == null)
+				if (filename == "PRIMARY_CD" && romfile != null)
 				{
-					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_CD because none was provided.");
+					Console.WriteLine("Declined to satisfy firmware request PRIMARY_CD because PRIMARY_ROM was provided.");
 					return 0;
 				}
-				srcdata = GetCDData();
-				if (srcdata.Length != maxsize)
+				else
 				{
-					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_CD because of struct size.");
-					return 0;
+					if (CD == null)
+					{
+						Console.WriteLine("Couldn't satisfy firmware request {0} because none was provided.", filename);
+						return 0;
+					}
+					srcdata = GetCDData();
+					if (srcdata.Length != maxsize)
+					{
+						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size.", filename);
+						return 0;
+					}
 				}
 			}
 			else
