@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Crystal Mines
 	//Metal Fighter
 
+	[NES.INESBoardImplPriority]
 	public sealed class IC_74x377 : NES.NESBoardBase
 	{
 		//configuration
@@ -18,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg_bank_32k, chr_bank_8k;
 
-		[NES.INESBoardImplPriority]
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
