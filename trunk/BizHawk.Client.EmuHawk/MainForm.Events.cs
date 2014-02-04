@@ -700,8 +700,6 @@ namespace BizHawk.Client.EmuHawk
 			PauseWhenMenuActivatedMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
 			StartPausedMenuItem.Checked = Global.Config.StartPaused;
 			SaveWindowPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
-			ForceGDIMenuItem.Checked = Global.Config.DisplayGDI;
-			UseBilinearMenuItem.Checked = Global.Config.DispBlurry;
 			SuppressGuiLayerMenuItem.Checked = Global.Config.SuppressGui;
 			ShowMenuInFullScreenMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 			RunInBackgroundMenuItem.Checked = Global.Config.RunInBackground;
@@ -895,11 +893,6 @@ namespace BizHawk.Client.EmuHawk
 			//SyncPresentationMode();
 		}
 
-		private void UseBilinearMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DispBlurry ^= true;
-		}
-
 		private void SuppressGuiLayerMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SuppressGui ^= true;
@@ -908,6 +901,12 @@ namespace BizHawk.Client.EmuHawk
 		private void ShowMenuInFullScreenMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ShowMenuInFullscreen ^= true;
+
+			//make sure this gets applied immediately
+			if (_inFullscreen)
+			{
+				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
+			}
 		}
 
 		private void RunInBackgroundMenuItem_Click(object sender, EventArgs e)
