@@ -103,6 +103,9 @@ namespace BizHawk.Client.Common
 			{
 				var di = todo.Dequeue();
 
+				if (!di.Exists)
+					continue;
+
 				// we're going to allow recursing into subdirectories, now. its been verified to work OK
 				foreach (var disub in di.GetDirectories())
 				{
