@@ -196,6 +196,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		string GetStringForPulse(int val)
+		{
+			if (_watch.Type == Watch.DisplayType.Hex)
+				return val.ToString("X8");
+			else return val.ToString();
+		}
+
 		public void Pulse()
 		{
 			if (!IsSeparator && _enabled)
@@ -204,12 +211,12 @@ namespace BizHawk.Client.Common
 				{
 					if (_compare.Value == _watch.Value)
 					{
-						_watch.Poke(_val.ToString());
+						_watch.Poke(GetStringForPulse(_val));
 					}
 				}
 				else
 				{
-					_watch.Poke(_val.ToString());
+					_watch.Poke(GetStringForPulse(_val));
 				}
 			}
 		}
