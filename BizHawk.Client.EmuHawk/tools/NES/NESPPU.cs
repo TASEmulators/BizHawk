@@ -618,7 +618,13 @@ namespace BizHawk.Client.EmuHawk
 				flags += "Front";
 			}
 
-			var tile = _nes.ppu.OAM[spriteNumber * 1];
+			int tile = _nes.ppu.OAM[spriteNumber * 4 + 1];
+			if (is8x16)
+			{
+				if ((tile & 1) != 0)
+					tile += 256;
+				tile &= ~1;
+			}
 
 			AddressLabel.Text = "Number: " + string.Format("{0:X2}", spriteNumber);
 			ValueLabel.Text = "X: " + string.Format("{0:X2}", x);
