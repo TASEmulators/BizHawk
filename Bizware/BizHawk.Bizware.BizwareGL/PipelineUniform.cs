@@ -38,14 +38,28 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.Owner.SetPipelineUniform(this, f);
 		}
 
+		public void Set(Vector4[] vecs)
+		{
+			Owner.Owner.SetPipelineUniform(this, vecs);
+		}
+
 		public void Set(ref Matrix4 mat, bool transpose = false)
 		{
 			Owner.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
 		}
 
+		public void Set(bool value)
+		{
+			Owner.Owner.SetPipelineUniform(this, value);
+		}
+
 		public void Set(Texture2d tex)
 		{
-			Owner.Owner.SetPipelineUniformSampler(this, tex.Id);
+			IntPtr handle;
+			if (tex == null)
+				handle = Owner.Owner.GetEmptyHandle();
+			else handle = tex.Id;
+			Owner.Owner.SetPipelineUniformSampler(this, handle);
 		}
 	}
 }

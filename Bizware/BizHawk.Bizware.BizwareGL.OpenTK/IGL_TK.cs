@@ -55,7 +55,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			//misc initialization
 			CreateRenderStates();
-			GL.Enable(EnableCap.Texture2D);
 			PurgeStateCache();
 		}
 
@@ -279,6 +278,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.UseProgram(pipeline.Id.ToInt32());
 		}
 
+		public void SetPipelineUniform(PipelineUniform uniform, bool value)
+		{
+			GL.Uniform1(uniform.Id.ToInt32(), value ? 1 : 0); 
+		}
+
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 			GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)&mat);
@@ -303,6 +307,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
 		{
 			GL.Uniform1(uniform.Id.ToInt32(), value);
+		}
+
+		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
+		{
+			fixed (Vector4* pValues = &values[0])
+				GL.Uniform4(uniform.Id.ToInt32(), values.Length, (float*)pValues);
 		}
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
@@ -511,12 +521,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			bool success = true;
 			ErrorCode errcode;
 
+			errcode = GL.GetError();
+			if (errcode != ErrorCode.NoError) 
+				throw new InvalidOperationException("Error compiling shader (from previous operation) " + errcode);
+
 			GL.ShaderSource(sid, source);
 			
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (ShaderSource)" + errcode);
+					throw new InvalidOperationException("Error compiling shader (ShaderSource) " + errcode);
 				else success = false;
 
 			GL.CompileShader(sid);
@@ -526,7 +540,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (CompileShader)" + errcode + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException("Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog);
 				else success = false;
 
 			int n;
@@ -534,7 +548,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (n == 0)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (CompileShader)" + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException("Error compiling shader (CompileShader )" + "\r\n\r\n" + resultLog);
 				else success = false;
 
 			return success;

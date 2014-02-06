@@ -97,6 +97,16 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, float value);
 
 		/// <summary>
+		/// sets uniform values
+		/// </summary>
+		void SetPipelineUniform(PipelineUniform uniform, Vector4[] values);
+
+		/// <summary>
+		/// sets a uniform value
+		/// </summary>
+		void SetPipelineUniform(PipelineUniform uniform, bool value);
+
+		/// <summary>
 		/// Binds array data for use with the currently-bound VertexLayout
 		/// </summary>
 		unsafe void BindArrayData(void* pData);

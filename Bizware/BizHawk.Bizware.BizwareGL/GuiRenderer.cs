@@ -1,6 +1,8 @@
 //http://stackoverflow.com/questions/6893302/decode-rgb-value-to-single-float-without-bit-shift-in-glsl
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using sd=System.Drawing;
 
 using OpenTK;
@@ -21,8 +23,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, false, 16, 0);
-			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, false, 16, 8);
+			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, false, 32, 0);
+			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, false, 32, 8);
+			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, false, 32, 16);
 			VertexLayout.Close();
 
 			_Projection = new MatrixStack();
@@ -31,6 +34,30 @@ namespace BizHawk.Bizware.BizwareGL
 			var vs = Owner.CreateVertexShader(DefaultVertexShader,true);
 			var ps = Owner.CreateFragmentShader(DefaultPixelShader, true);
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true);
+		}
+
+		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
+			new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f),new OpenTK.Graphics.Color4(1.0f,1.0f,1.0f,1.0f)
+		};
+
+		/// <summary>
+		/// Sets the specified corner color (for the gradient effect)
+		/// </summary>
+		public void SetCornerColor(int which, OpenTK.Graphics.Color4 color)
+		{
+			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			CornerColors[which] = color;
+		}
+
+		/// <summary>
+		/// Sets all four corner colors at once
+		/// </summary>
+		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
+		{
+			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
+			if (colors.Length != 4) throw new ArgumentException("array must be size 4", "colors");
+			for (int i = 0; i < 4; i++)
+				CornerColors[i] = colors[i];
 		}
 
 		public void Dispose()
@@ -52,6 +79,10 @@ namespace BizHawk.Bizware.BizwareGL
 
 			Flush();
 			CurrPipeline = pipeline;
+
+			//clobber state cache
+			sTexture = null;
+			//save the modulate color? user beware, I guess, for now.
 		}
 
 		/// <summary>
@@ -135,6 +166,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			//clear state cache
 			sTexture = null;
+			CurrPipeline["uSamplerEnable"].Set(false);
 			Modelview.Clear();
 			Projection.Clear();
 			SetModulateColorWhite();
@@ -157,6 +189,12 @@ namespace BizHawk.Bizware.BizwareGL
 			if (!IsActive)
 				throw new InvalidOperationException("GuiRenderer is not active!");
 			IsActive = false;
+		}
+
+		public void RectFill(float x, float y, float w, float h)
+		{
+			PrepDrawSubrectInternal(null);
+			EmitRectangleInternal(x, y, w, h, 0, 0, 0, 0);
 		}
 
 		/// <summary>
@@ -221,27 +259,16 @@ namespace BizHawk.Bizware.BizwareGL
 			if(fy) { v0 = art.v1; v1 = art.v0; }
 			else { v0 = art.v0; v1 = art.v1; }
 
-			float[] data = new float[16] {
-			  x,y, u0,v0, 
-			  x+art.Width,y, u1,v0,
-			  x,y+art.Height, u0,v1,
-			  x+art.Width,y+art.Height, u1,v1
+			float[] data = new float[32] {
+			  x,y, u0,v0, CornerColors[0].R, CornerColors[0].G, CornerColors[0].B, CornerColors[0].A,
+			  x+art.Width,y, u1,v0, CornerColors[1].R, CornerColors[1].G, CornerColors[1].B, CornerColors[1].A,
+			  x,y+art.Height, u0,v1, CornerColors[2].R, CornerColors[2].G, CornerColors[2].B, CornerColors[2].A,
+			  x+art.Width,y+art.Height, u1,v1,  CornerColors[3].R, CornerColors[3].G, CornerColors[3].B, CornerColors[3].A,
 			};
 
 			Texture2d tex = art.BaseTexture;
-			if(sTexture != tex)
-				CurrPipeline["uSampler0"].Set(sTexture = tex);
-
-			if (_Projection.IsDirty)
-			{
-				CurrPipeline["um44Projection"].Set(ref _Projection.Top);
-				_Projection.IsDirty = false;
-			}
-			if (_Modelview.IsDirty)
-			{
-				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top);
-				_Modelview.IsDirty = false;
-			}
+			
+			PrepDrawSubrectInternal(tex);
 
 			fixed (float* pData = &data[0])
 			{
@@ -250,34 +277,21 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		unsafe void PrepDrawSubrectInternal(Texture2d tex)
 		{
-			//float[] data = new float[16] {
-			//  x,y, u0,v0, 
-			//  x+w,y, u1,v0,
-			//  x,y+h, u0,v1,
-			//  x+w,y+h, u1,v1
-			//};
-			float* pData = stackalloc float[16];
-			pData[0] = x;
-			pData[1] = y;
-			pData[2] = u0;
-			pData[3] = v0;
-			pData[4] = x + w;
-			pData[5] = y;
-			pData[6] = u1;
-			pData[7] = v0;
-			pData[8] = x;
-			pData[9] = y + h;
-			pData[10] = u0;
-			pData[11] = v1;
-			pData[12] = x + w;
-			pData[13] = y + h;
-			pData[14] = u1;
-			pData[15] = v1;
-
 			if (sTexture != tex)
-				CurrPipeline["uSampler0"].Set(sTexture = tex);
+			{
+				sTexture = tex;
+				CurrPipeline["uSampler0"].Set(tex);
+				if (sTexture == null)
+				{
+					CurrPipeline["uSamplerEnable"].Set(false);
+				}
+				else
+				{
+					CurrPipeline["uSamplerEnable"].Set(true);
+				}
+			}
 
 			if (_Projection.IsDirty)
 			{
@@ -289,9 +303,52 @@ namespace BizHawk.Bizware.BizwareGL
 				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top);
 				_Modelview.IsDirty = false;
 			}
+		}
+
+		unsafe void EmitRectangleInternal(float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		{
+			float* pData = stackalloc float[32];
+			pData[0] = x;
+			pData[1] = y;
+			pData[2] = u0;
+			pData[3] = v0;
+			pData[4] = CornerColors[0].R;
+			pData[5] = CornerColors[0].G;
+			pData[6] = CornerColors[0].B;
+			pData[7] = CornerColors[0].A;
+			pData[8] = x + w;
+			pData[9] = y;
+			pData[10] = u1;
+			pData[11] = v0;
+			pData[12] = CornerColors[1].R;
+			pData[13] = CornerColors[1].G;
+			pData[14] = CornerColors[1].B;
+			pData[15] = CornerColors[1].A;
+			pData[16] = x;
+			pData[17] = y + h;
+			pData[18] = u0;
+			pData[19] = v1;
+			pData[20] = CornerColors[2].R;
+			pData[21] = CornerColors[2].G;
+			pData[22] = CornerColors[2].B;
+			pData[23] = CornerColors[2].A;
+			pData[24] = x + w;
+			pData[25] = y + h;
+			pData[26] = u1;
+			pData[27] = v1;
+			pData[28] = CornerColors[3].R;
+			pData[29] = CornerColors[3].G;
+			pData[30] = CornerColors[3].B;
+			pData[31] = CornerColors[3].A;
 
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+		}
+
+		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		{
+			PrepDrawSubrectInternal(tex);
+			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
 		}
 		
 		public bool IsActive { get; private set; }
@@ -306,30 +363,35 @@ namespace BizHawk.Bizware.BizwareGL
 		public readonly string DefaultVertexShader = @"
 #version 110 //opengl 2.0 ~ 2004
 uniform mat4 um44Modelview, um44Projection;
+uniform vec4 uModulateColor;
 
 attribute vec2 aPosition;
 attribute vec2 aTexcoord;
+attribute vec4 aColor;
 
 varying vec2 vTexcoord0;
+varying vec4 vCornerColor;
 
 void main()
 {
-    vec4 temp = vec4(aPosition,0,1);
-		gl_Position = um44Projection * (um44Modelview * temp);
-    vTexcoord0 = aTexcoord;
+	vec4 temp = vec4(aPosition,0,1);
+	gl_Position = um44Projection * (um44Modelview * temp);
+	vTexcoord0 = aTexcoord;
+	vCornerColor = aColor * uModulateColor;
 }";
 
 		public readonly string DefaultPixelShader = @"
 #version 110 //opengl 2.0 ~ 2004
+uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
-uniform vec4 uModulateColor;
 
 varying vec2 vTexcoord0;
+varying vec4 vCornerColor;
 
 void main()
 {
-	vec4 temp = texture2D(uSampler0,vTexcoord0);
-	temp *= uModulateColor;
+	vec4 temp = vCornerColor;
+	if(uSamplerEnable) temp *= texture2D(uSampler0,vTexcoord0);
 	gl_FragColor = temp;
 }";
 
