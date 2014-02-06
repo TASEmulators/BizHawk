@@ -64,7 +64,9 @@ namespace BizHawk.Bizware.Test
 			rt2.Bind();
 			igl.SetClearColor(Color.CornflowerBlue);
 			igl.Clear(ClearBufferMask.ColorBufferBit);
-			RetroShader shader = new RetroShader(igl, System.IO.File.ReadAllText(@"B:\svn\bizhawk8\trunk\Bizware\4xSoft.glsl"));
+			RetroShader shader;
+			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.4xSoft.glsl"))
+				shader = new RetroShader(igl, new System.IO.StreamReader(stream).ReadToEnd());
 			igl.SetBlendState(igl.BlendNone);
 			shader.Run(rt.Texture2d, new Size(60, 60), new Size(240, 240), true);
 
@@ -95,13 +97,18 @@ namespace BizHawk.Bizware.Test
 
 					gr.Begin(c.ClientSize.Width, c.ClientSize.Height);
 
+					gr.SetModulateColor(Color.Green);
+					gr.RectFill(250, 0, 16, 16);
+
 					gr.SetBlendState(igl.BlendNone);
 					gr.Draw(rt.Texture2d, 0, 20);
 					gr.SetBlendState(igl.BlendNormal);
 
 					sr.RenderString(gr, 0, 0, "?? fps");
 					gr.SetModulateColor(Color.FromArgb(255, 255, 255, 255));
+					gr.SetCornerColor(0, OpenTK.Graphics.Color4.Red);
 					gr.Draw(rt2.Texture2d, 0, 0);
+					gr.SetCornerColor(0, OpenTK.Graphics.Color4.White);
 					gr.SetModulateColorWhite();
 					gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
 					gr.Modelview.Translate(100, 100);
@@ -115,6 +122,7 @@ namespace BizHawk.Bizware.Test
 					gr.Modelview.Pop();
 					gr.SetBlendState(igl.BlendNormal);
 					gr.Draw(smile);
+
 					gr.End();
 
 
