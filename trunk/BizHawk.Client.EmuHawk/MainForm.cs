@@ -1100,7 +1100,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					sram = new byte[Global.Emulator.ReadSaveRam().Length];
+					var oldram = Global.Emulator.ReadSaveRam();
+					if (oldram == null)
+					{
+						MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+						return;
+					}
+					sram = new byte[oldram.Length];
 					using (var reader = new BinaryReader(
 							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
 					{
