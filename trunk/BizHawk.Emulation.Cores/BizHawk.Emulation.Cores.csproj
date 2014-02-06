@@ -345,6 +345,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot129_163.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot175_340.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper076.cs" />
@@ -355,9 +356,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namco163Audio.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\NanJing.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NES-EVENT.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NovelDiamond.cs" />
