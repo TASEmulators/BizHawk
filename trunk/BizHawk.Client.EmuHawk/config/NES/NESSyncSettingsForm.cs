@@ -21,6 +21,10 @@ namespace BizHawk.Client.EmuHawk
 			SyncSettings = (BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings)Global.Emulator.GetSyncSettings();
 			DTDB = new DataTableDictionaryBind<string, string>(SyncSettings.BoardProperties);
 			dataGridView1.DataSource = DTDB.Table;
+
+			comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+			comboBox1.Items.AddRange(Enum.GetNames(typeof(BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region)));
+			comboBox1.SelectedItem = Enum.GetName(typeof(BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region), SyncSettings.RegionOverride);
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -31,8 +35,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
+			var old = SyncSettings.RegionOverride;
+			SyncSettings.RegionOverride = (BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region)
+				Enum.Parse(
+				typeof(BizHawk.Emulation.Cores.Nintendo.NES.NES.NESSyncSettings.Region),
+				(string)comboBox1.SelectedItem);
+
 			DialogResult = DialogResult.OK;
-			if (DTDB.WasModified)
+			if (DTDB.WasModified || old != SyncSettings.RegionOverride)
 			{
 				GlobalWin.MainForm.PutCoreSyncSettings(SyncSettings);
 			}
