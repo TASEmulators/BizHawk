@@ -171,11 +171,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 
 			// set up region
-			switch (cart.system)
+			switch (_display_type)
 			{
-				case "NES-PAL":
-				case "NES-PAL-A":
-				case "NES-PAL-B":
+				case Common.DisplayType.PAL:
 					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
 					CoreComm.VsyncNum = 50;
@@ -184,8 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_sequence = cpu_sequence_PAL;
 					_display_type = DisplayType.PAL;
 					break;
-				case "NES-NTSC":
-				case "Famicom":
+				case Common.DisplayType.NTSC:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
 					CoreComm.VsyncNum = 39375000;
@@ -194,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_sequence = cpu_sequence_NTSC;
 					break;
 				// this is in bootgod, but not used at all
-				case "Dendy":
+				case Common.DisplayType.DENDY:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
 					CoreComm.VsyncNum = 50;
@@ -203,12 +200,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_sequence = cpu_sequence_NTSC;
 					_display_type = DisplayType.DENDY;
 					break;
-				case null:
-					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
-					goto case "NES-NTSC";
 				default:
-					Console.WriteLine("Unrecognized NES system \"{0}\"!  Defaulting to NTSC.", cart.system);
-					goto case "NES-NTSC";
+					throw new Exception("Unknown displaytype!");
 			}
 			if (magicSoundProvider == null)
 				magicSoundProvider = new MagicSoundProvider(this, (uint)cpuclockrate);
