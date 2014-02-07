@@ -59,6 +59,8 @@ namespace BizHawk.Bizware.Test
 			gr.End();
 			rt.Unbind();
 
+			Texture2d rttex2d = igl.LoadTexture(rt.Texture2d.Resolve());
+
 			//test retroarch shader
 			RenderTarget rt2 = igl.CreateRenderTarget(240, 240);
 			rt2.Bind();
@@ -68,7 +70,7 @@ namespace BizHawk.Bizware.Test
 			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.4xSoft.glsl"))
 				shader = new RetroShader(igl, new System.IO.StreamReader(stream).ReadToEnd());
 			igl.SetBlendState(igl.BlendNone);
-			shader.Run(rt.Texture2d, new Size(60, 60), new Size(240, 240), true);
+			shader.Run(rttex2d, new Size(60, 60), new Size(240, 240), true);
 
 
 			bool running = true;
@@ -101,7 +103,7 @@ namespace BizHawk.Bizware.Test
 					gr.RectFill(250, 0, 16, 16);
 
 					gr.SetBlendState(igl.BlendNone);
-					gr.Draw(rt.Texture2d, 0, 20);
+					gr.Draw(rttex2d, 0, 20);
 					gr.SetBlendState(igl.BlendNormal);
 
 					sr.RenderString(gr, 0, 0, "?? fps");

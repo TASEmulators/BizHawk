@@ -13,24 +13,13 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Texture2d : IDisposable
 	{
-		//not sure if I need this idea.
-		//public class Maker
-		//{
-		//  public Maker(Texture2d tex)
-		//  {
-		//    MyTexture = tex;
-		//  }
-		//  public void SetWidth(int width)
-		//  {
-		//    MyTexture.Width = width;
-		//  }
-		//  public void SetHeight(int width)
-		//  {
-		//    MyTexture.Height = height;
-		//  }
-
-		//  Texture2d MyTexture;
-		//}
+		/// <summary>
+		/// resolves the texture into a new BitmapBuffer
+		/// </summary>
+		public BitmapBuffer Resolve()
+		{
+			return Owner.ResolveTexture2d(this);
+		}
 
 		public void Dispose()
 		{
