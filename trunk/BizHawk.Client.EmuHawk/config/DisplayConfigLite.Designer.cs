@@ -33,10 +33,11 @@
 			this.checkBilinearFilter = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.rbHq2x = new System.Windows.Forms.RadioButton();
-			this.rbScanlines = new System.Windows.Forms.RadioButton();
-			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.tbScanlineIntensity = new System.Windows.Forms.TrackBar();
+			this.rbNone = new System.Windows.Forms.RadioButton();
+			this.rbScanlines = new System.Windows.Forms.RadioButton();
+			this.rbHq2x = new System.Windows.Forms.RadioButton();
+			this.checkLetterbox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.SuspendLayout();
@@ -95,27 +96,16 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Filter";
 			// 
-			// rbHq2x
+			// tbScanlineIntensity
 			// 
-			this.rbHq2x.AutoSize = true;
-			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
-			this.rbHq2x.Name = "rbHq2x";
-			this.rbHq2x.Size = new System.Drawing.Size(50, 17);
-			this.rbHq2x.TabIndex = 0;
-			this.rbHq2x.TabStop = true;
-			this.rbHq2x.Text = "Hq2x";
-			this.rbHq2x.UseVisualStyleBackColor = true;
-			// 
-			// rbScanlines
-			// 
-			this.rbScanlines.AutoSize = true;
-			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
-			this.rbScanlines.Name = "rbScanlines";
-			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
-			this.rbScanlines.TabIndex = 1;
-			this.rbScanlines.TabStop = true;
-			this.rbScanlines.Text = "Scanlines";
-			this.rbScanlines.UseVisualStyleBackColor = true;
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 255;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			// 
 			// rbNone
 			// 
@@ -128,16 +118,37 @@
 			this.rbNone.Text = "None";
 			this.rbNone.UseVisualStyleBackColor = true;
 			// 
-			// tbScanlineIntensity
+			// rbScanlines
 			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 255;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.rbScanlines.AutoSize = true;
+			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
+			this.rbScanlines.Name = "rbScanlines";
+			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
+			this.rbScanlines.TabIndex = 1;
+			this.rbScanlines.TabStop = true;
+			this.rbScanlines.Text = "Scanlines";
+			this.rbScanlines.UseVisualStyleBackColor = true;
+			// 
+			// rbHq2x
+			// 
+			this.rbHq2x.AutoSize = true;
+			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
+			this.rbHq2x.Name = "rbHq2x";
+			this.rbHq2x.Size = new System.Drawing.Size(50, 17);
+			this.rbHq2x.TabIndex = 0;
+			this.rbHq2x.TabStop = true;
+			this.rbHq2x.Text = "Hq2x";
+			this.rbHq2x.UseVisualStyleBackColor = true;
+			// 
+			// checkLetterbox
+			// 
+			this.checkLetterbox.AutoSize = true;
+			this.checkLetterbox.Location = new System.Drawing.Point(12, 168);
+			this.checkLetterbox.Name = "checkLetterbox";
+			this.checkLetterbox.Size = new System.Drawing.Size(188, 17);
+			this.checkLetterbox.TabIndex = 8;
+			this.checkLetterbox.Text = "Letterbox (to maintain aspect ratio)";
+			this.checkLetterbox.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfigLite
 			// 
@@ -146,6 +157,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(292, 236);
+			this.Controls.Add(this.checkLetterbox);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.checkBilinearFilter);
@@ -173,5 +185,6 @@
 		private System.Windows.Forms.RadioButton rbScanlines;
 		private System.Windows.Forms.RadioButton rbHq2x;
 		private System.Windows.Forms.TrackBar tbScanlineIntensity;
+		private System.Windows.Forms.CheckBox checkLetterbox;
 	}
 }

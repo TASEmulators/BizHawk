@@ -58,6 +58,7 @@
     <Compile Include="Borrowed\BitmapFontParser\Kerning.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Padding.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Page.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="GraphicsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

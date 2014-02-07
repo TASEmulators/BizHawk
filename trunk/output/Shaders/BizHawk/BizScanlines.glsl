@@ -70,7 +70,7 @@ uniform float uIntensity;
 void main()
 {
 	vec4 temp = texture2D(Texture,vTexCoord0);
-	if(((int)gl_FragCoord.y)%2==1) temp.rgb *= uIntensity;
+	if((int(gl_FragCoord.y))%2==1) temp.rgb *= uIntensity;
 	FragColor = temp;
 } 
 #endif

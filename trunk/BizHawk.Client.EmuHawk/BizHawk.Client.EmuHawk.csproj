@@ -1151,8 +1151,6 @@
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DisplayManager\Filters\hq2x.glsl" />
-    <EmbeddedResource Include="DisplayManager\Filters\BizScanlines.glsl" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

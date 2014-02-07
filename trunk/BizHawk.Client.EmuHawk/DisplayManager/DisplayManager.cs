@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +15,9 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 using BizHawk.Bizware.BizwareGL;
+
+using OpenTK;
+using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -39,25 +43,25 @@ namespace BizHawk.Client.EmuHawk
 			LuaEmuTextureFrugalizer = new TextureFrugalizer(GL);
 			Video2xFrugalizer = new RenderTargetFrugalizer(GL);
 
+			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
+			for (int i = 0; i < 16; i++)
+			{
+				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
+			}
+
 			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.DisplayManager.Filters.hq2x.glsl"))
-			{
-				var str = new System.IO.StreamReader(stream).ReadToEnd();
-				RetroShader_Hq2x = new Bizware.BizwareGL.Drivers.OpenTK.RetroShader(GL, str);
-			}
-
-			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.DisplayManager.Filters.BizScanlines.glsl"))
-			{
-				var str = new System.IO.StreamReader(stream).ReadToEnd();
-				RetroShader_BizScanlines = new Bizware.BizwareGL.Drivers.OpenTK.RetroShader(GL, str);
-			}
-
+			var fiHq2x = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
+			if(fiHq2x.Exists)
+				using(var stream = fiHq2x.OpenRead())
+					ShaderChain_hq2x = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
+			var fiScanlines = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+			if (fiScanlines.Exists)
+				using (var stream = fiScanlines.OpenRead())
+					ShaderChain_scanlines = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
 		}
-
-		Bizware.BizwareGL.Drivers.OpenTK.RetroShader RetroShader_Hq2x, RetroShader_BizScanlines;
 
 		public bool Disposed { get; private set; }
 
@@ -67,6 +71,9 @@ namespace BizHawk.Client.EmuHawk
 			Disposed = true;
 			VideoTextureFrugalizer.Dispose();
 			LuaEmuTextureFrugalizer.Dispose();
+			foreach (var f in ShaderChainFrugalizers)
+				if (f != null)
+					f.Dispose();
 		}
 
 		//rendering resources:
@@ -95,6 +102,8 @@ namespace BizHawk.Client.EmuHawk
 
 		TextureFrugalizer VideoTextureFrugalizer, LuaEmuTextureFrugalizer;
 		RenderTargetFrugalizer Video2xFrugalizer;
+		RenderTargetFrugalizer[] ShaderChainFrugalizers;
+		RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines;
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -117,37 +126,58 @@ namespace BizHawk.Client.EmuHawk
 			if (luaEmuSurface != null)
 				luaEmuTexture = LuaEmuTextureFrugalizer.Get(luaEmuSurface);
 
-	
-			//TargetScanlineFilterIntensity
-			//apply filter chain (currently, over-simplified)
+			//select shader chain
+			RetroShaderChain selectedChain = null;
+			if (Global.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
+				selectedChain = ShaderChain_hq2x;
+			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
+				selectedChain = ShaderChain_scanlines;
+
+			//run shader chain
 			Texture2d currentTexture = videoTexture;
-			if (Global.Config.TargetDisplayFilter == 1 && RetroShader_Hq2x.Pipeline.Available)
+			if (selectedChain != null)
 			{
-				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
-				rt.Bind();
-				Size outSize = new Size(videoTexture.IntWidth * 2, videoTexture.IntHeight * 2);
-				RetroShader_Hq2x.Run(videoTexture, videoTexture.Size, outSize, true);
-				currentTexture = rt.Texture2d;
-			}
-			if (Global.Config.TargetDisplayFilter == 2 && RetroShader_BizScanlines.Pipeline.Available)
-			{
-				var rt = Video2xFrugalizer.Get(videoTexture.IntWidth*2,videoTexture.IntHeight*2);
-				rt.Bind();
-				Size outSize = new Size(videoTexture.IntWidth * 2, videoTexture.IntHeight * 2);
-				RetroShader_BizScanlines.Bind();
-				RetroShader_BizScanlines.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
-				RetroShader_BizScanlines.Run(videoTexture, videoTexture.Size, outSize, true);
-				currentTexture = rt.Texture2d;
+				foreach (var pass in selectedChain.Passes)
+				{
+					//calculate size of input and output (note, we dont have a distinction between logical size and POW2 buffer size yet, like we should)
+					
+					Size insize = currentTexture.Size;
+					Size outsize = insize;
+
+					//calculate letterboxing scale factors for the current configuration, so that ScaleType.Viewport can do something intelligent
+					var LLpass = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, insize.Width, insize.Height);
+
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Viewport) outsize.Width = LLpass.Rectangle.Width;
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(insize.Width * pass.Scale.X);
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Viewport) outsize.Height = LLpass.Rectangle.Height;
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(insize.Height * pass.Scale.Y);
+
+					if (pass.InputFilterLinear)
+						videoTexture.SetFilterLinear();
+					else
+						videoTexture.SetFilterNearest();
+
+					var rt = ShaderChainFrugalizers[pass.Index].Get(outsize.Width, outsize.Height);
+					rt.Bind();
+
+					var shader = selectedChain.Shaders[pass.Index];
+					shader.Bind();
+					if(selectedChain == ShaderChain_scanlines)
+						shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
+					shader.Run(currentTexture, insize, outsize, true);
+					currentTexture = rt.Texture2d;
+				}
 			}
 
 			//begin drawing to the PresentationPanel:
 			GraphicsControl.Begin();
 
-			//1. clear it with the background color that the emulator specified
+			//1. clear it with the background color that the emulator specified (could we please only clear the necessary letterbox area, to save some time?)
 			GL.SetClearColor(Color.FromArgb(videoProvider.BackgroundColor));
 			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
 
-			
 			//2. begin 2d rendering
 			Renderer.Begin(GraphicsControl.Width, GraphicsControl.Height);
 
@@ -264,6 +294,7 @@ namespace BizHawk.Client.EmuHawk
 				finalScale = Math.Min(widthScale, heightScale);
 				dx = (int)((vw - finalScale * sourceWidth) / 2);
 				dy = (int)((vh - finalScale * sourceHeight) / 2);
+				Rectangle = new Rectangle((int)dx, (int)dy, (int)(finalScale * sourceWidth), (int)(finalScale * sourceHeight));
 			}
 
 			/// <summary>
@@ -275,6 +306,11 @@ namespace BizHawk.Client.EmuHawk
 			/// offset
 			/// </summary>
 			public float dx, dy;
+
+			/// <summary>
+			/// The destination rectangle
+			/// </summary>
+			public Rectangle Rectangle;
 		}
 	}
 
