@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner, out int resizew, out int resizeh)
+		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad)
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
 
@@ -67,6 +67,9 @@ namespace BizHawk.Client.EmuHawk
 				resizew = -1;
 				resizeh = -1;
 			}
+
+			pad = dlg.checkBoxPad.Checked;
+
 			dlg.Dispose();
 			return ret;
 		}
