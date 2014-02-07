@@ -434,6 +434,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return ret;
 		}
 
+		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		{
+			//note - this is dangerous since it changes the bound texture. could we save it?
+			BindTexture2d(tex);
+			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
+			var bmpdata = bb.LockBits();
+			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.Byte, bmpdata.Scan0);
+			bb.UnlockBits(bmpdata);
+			return bb;
+		}
+
 		public Texture2d LoadTexture(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))

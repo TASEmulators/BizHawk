@@ -19,7 +19,6 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public interface IGL : IDisposable
 	{
-
 		/// <summary>
 		/// Clears the specified buffer parts
 		/// </summary>
@@ -127,6 +126,11 @@ namespace BizHawk.Bizware.BizwareGL
 		void FreeTexture(IntPtr texHandle);
 
 		/// <summary>
+		/// resolves the texture into a new BitmapBuffer
+		/// </summary>
+		BitmapBuffer ResolveTexture2d(Texture2d texture);
+
+		/// <summary>
 		/// frees the provided render target
 		/// </summary>
 		void FreeRenderTarget(RenderTarget rt);
@@ -134,7 +138,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Binds this texture as the current texture2d target for parameter-specification
 		/// </summary>
-		/// <param name="texture"></param>
 		void BindTexture2d(Texture2d texture);
 
 		/// <summary>
