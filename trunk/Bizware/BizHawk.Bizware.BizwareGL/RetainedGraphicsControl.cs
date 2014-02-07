@@ -8,7 +8,7 @@ using System.Text;
 using BizHawk.Bizware.BizwareGL;
 using OpenTK.Graphics.OpenGL;
 
-namespace BizHawk.Bizware.Test
+namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
 	/// Adapts a GraphicsControl to gain the power of remembering what was drawn to it, and keeping it presented in response to Paint events
