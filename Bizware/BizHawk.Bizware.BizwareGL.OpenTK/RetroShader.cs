@@ -13,7 +13,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 	/// </summary>
 	public class RetroShader : IDisposable
 	{
-		public RetroShader(IGL owner, string source)
+		public RetroShader(IGL owner, string source, bool debug = false)
 		{
 			Owner = owner as IGL_TK;
 
@@ -25,9 +25,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			string vsSource = "#define VERTEX\r\n" + source;
 			string psSource = "#define FRAGMENT\r\n" + source;
-			var vs = Owner.CreateVertexShader(vsSource, false);
-			var ps = Owner.CreateFragmentShader(psSource, false);
-			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, false);
+			var vs = Owner.CreateVertexShader(vsSource, debug);
+			var ps = Owner.CreateFragmentShader(psSource, debug);
+			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug);
 		}
 
 		public void Dispose()

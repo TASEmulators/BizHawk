@@ -1,0 +1,4 @@
+shaders = 1
+
+shader0 = hq2x.glsl
+scale0 = 2

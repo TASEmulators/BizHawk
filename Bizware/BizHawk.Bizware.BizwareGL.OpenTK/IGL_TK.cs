@@ -513,6 +513,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				GL.DeleteShader(sid);
 				sid = 0;
 			}
+
 			return new Shader(this, new IntPtr(sid), ok);
 		}
 
