@@ -178,5 +178,27 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		private void VDPViewer_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = Cursor.Position;
+				Control top = this;
+				Control found;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found is BmpView)
+				{
+					var bv = found as BmpView;
+					Clipboard.SetImage(bv.bmp);
+				}
+			}
+		}
 	}
 }

@@ -29,12 +29,13 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.checkBoxVDC2 = new System.Windows.Forms.CheckBox();
-			this.bmpViewSPPal = new BizHawk.Client.EmuHawk.BmpView();
-			this.bmpViewSP = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewBGPal = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewBG = new BizHawk.Client.EmuHawk.BmpView();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.bmpViewSPPal = new BizHawk.Client.EmuHawk.BmpView();
+			this.bmpViewSP = new BizHawk.Client.EmuHawk.BmpView();
+			this.checkBoxVDC2 = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -49,45 +50,6 @@
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Background";
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.bmpViewSPPal);
-			this.groupBox2.Controls.Add(this.bmpViewSP);
-			this.groupBox2.Location = new System.Drawing.Point(12, 299);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(786, 281);
-			this.groupBox2.TabIndex = 5;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Sprite";
-			// 
-			// checkBoxVDC2
-			// 
-			this.checkBoxVDC2.AutoSize = true;
-			this.checkBoxVDC2.Location = new System.Drawing.Point(12, 586);
-			this.checkBoxVDC2.Name = "checkBoxVDC2";
-			this.checkBoxVDC2.Size = new System.Drawing.Size(57, 17);
-			this.checkBoxVDC2.TabIndex = 6;
-			this.checkBoxVDC2.Text = "VDC 2";
-			this.checkBoxVDC2.UseVisualStyleBackColor = true;
-			this.checkBoxVDC2.CheckedChanged += new System.EventHandler(this.checkBoxVDC2_CheckedChanged);
-			// 
-			// bmpViewSPPal
-			// 
-			this.bmpViewSPPal.Location = new System.Drawing.Point(524, 19);
-			this.bmpViewSPPal.Name = "bmpViewSPPal";
-			this.bmpViewSPPal.Size = new System.Drawing.Size(256, 256);
-			this.bmpViewSPPal.TabIndex = 1;
-			this.bmpViewSPPal.Text = "bmpView4";
-			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewSPPal_MouseClick);
-			// 
-			// bmpViewSP
-			// 
-			this.bmpViewSP.Location = new System.Drawing.Point(6, 19);
-			this.bmpViewSP.Name = "bmpViewSP";
-			this.bmpViewSP.Size = new System.Drawing.Size(512, 256);
-			this.bmpViewSP.TabIndex = 0;
-			this.bmpViewSP.Text = "bmpView3";
 			// 
 			// bmpViewBGPal
 			// 
@@ -106,16 +68,67 @@
 			this.bmpViewBG.TabIndex = 2;
 			this.bmpViewBG.Text = "bmpView1";
 			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.bmpViewSPPal);
+			this.groupBox2.Controls.Add(this.bmpViewSP);
+			this.groupBox2.Location = new System.Drawing.Point(12, 299);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(786, 281);
+			this.groupBox2.TabIndex = 5;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Sprite";
+			// 
+			// bmpViewSPPal
+			// 
+			this.bmpViewSPPal.Location = new System.Drawing.Point(524, 19);
+			this.bmpViewSPPal.Name = "bmpViewSPPal";
+			this.bmpViewSPPal.Size = new System.Drawing.Size(256, 256);
+			this.bmpViewSPPal.TabIndex = 1;
+			this.bmpViewSPPal.Text = "bmpView4";
+			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewSPPal_MouseClick);
+			// 
+			// bmpViewSP
+			// 
+			this.bmpViewSP.Location = new System.Drawing.Point(6, 19);
+			this.bmpViewSP.Name = "bmpViewSP";
+			this.bmpViewSP.Size = new System.Drawing.Size(512, 256);
+			this.bmpViewSP.TabIndex = 0;
+			this.bmpViewSP.Text = "bmpView3";
+			// 
+			// checkBoxVDC2
+			// 
+			this.checkBoxVDC2.AutoSize = true;
+			this.checkBoxVDC2.Location = new System.Drawing.Point(12, 586);
+			this.checkBoxVDC2.Name = "checkBoxVDC2";
+			this.checkBoxVDC2.Size = new System.Drawing.Size(57, 17);
+			this.checkBoxVDC2.TabIndex = 6;
+			this.checkBoxVDC2.Text = "VDC 2";
+			this.checkBoxVDC2.UseVisualStyleBackColor = true;
+			this.checkBoxVDC2.CheckedChanged += new System.EventHandler(this.checkBoxVDC2_CheckedChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(504, 593);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(294, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "CTRL + C copies the pane under the mouse to the clipboard.";
+			// 
 			// PCETileViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(810, 615);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.checkBoxVDC2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.KeyPreview = true;
 			this.Name = "PCETileViewer";
 			this.Text = "Tile Viewer";
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PCETileViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -132,5 +145,6 @@
 		private BmpView bmpViewBG;
 		private BmpView bmpViewSPPal;
 		private BmpView bmpViewSP;
+		private System.Windows.Forms.Label label1;
 	}
 }
