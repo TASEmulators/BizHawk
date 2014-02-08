@@ -151,7 +151,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					text = _tas[index].IsPressed(columnName) ? columnText : string.Empty;
+					//Serialize TODO
+					//text = _tas[index].IsPressed(columnName) ? columnText : string.Empty;
+					text = string.Empty;
 				}
 			}
 			catch (Exception ex)
@@ -197,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 			
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
-			_tas.OnChanged += OnMovieChanged;
 			GlobalWin.MainForm.StartNewMovie(_tas, true, true);
 		}
 
@@ -417,7 +418,8 @@ namespace BizHawk.Client.EmuHawk
 			var list = TasView.SelectedIndices;
 			for (var i = 0; i < list.Count; i++)
 			{
-				_tasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
+				//Serialize TODO
+				//_tasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
 			}
 
 			SetSplicer();
@@ -476,12 +478,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region TASView Events
-
-		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
-		{
-			// TODO: move logic needs to go here
-			TasView.ItemCount = _tas.InputLogLength;
-		}
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
