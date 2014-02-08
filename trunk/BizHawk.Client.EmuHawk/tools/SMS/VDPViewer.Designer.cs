@@ -34,6 +34,7 @@
 			this.bmpViewBG = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewPalette = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewTiles = new BizHawk.Client.EmuHawk.BmpView();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -94,20 +95,33 @@
 			this.bmpViewTiles.TabIndex = 0;
 			this.bmpViewTiles.Text = "bmpViewTiles";
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 304);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(294, 13);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "CTRL + C copies the pane under the mouse to the clipboard.";
+			// 
 			// VDPViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(572, 326);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.KeyPreview = true;
 			this.Name = "VDPViewer";
 			this.Text = "VDP Viewer";
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -119,5 +133,6 @@
 		private BmpView bmpViewPalette;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private BmpView bmpViewBG;
+		private System.Windows.Forms.Label label1;
 	}
 }
