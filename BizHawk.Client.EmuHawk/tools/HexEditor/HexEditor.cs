@@ -857,7 +857,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpScrollBar()
 		{
 			_rowsVisible = (MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight;
-			var totalRows = _domain.Size / 16;
+			var totalRows = (_domain.Size + 15) / 16;
 
 			if (totalRows < _rowsVisible)
 			{
