@@ -668,6 +668,12 @@
     <Compile Include="tools\PCE\PCETileViewer.Designer.cs">
       <DependentUpon>PCETileViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\SMS\VDPViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SMS\VDPViewer.Designer.cs">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\SNES\SNESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1081,6 +1087,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
       <DependentUpon>PCETileViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SMS\VDPViewer.resx">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGameGenie.resx">
       <DependentUpon>SNESGameGenie.cs</DependentUpon>
