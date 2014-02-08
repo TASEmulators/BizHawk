@@ -36,10 +36,10 @@ namespace BizHawk.Client.Common
 
 		public static bool Contains(string val)
 		{
-			var keys = typeof(HeaderKeys).GetFields()
+			return typeof(HeaderKeys)
+				.GetFields()
 				.Select(field => field.GetValue(null).ToString())
-				.ToList();
-			return keys.Contains(val);
+				.Contains(val);
 		}
 	}
 }
