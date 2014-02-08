@@ -34,29 +34,23 @@ namespace BizHawk.Client.Common
 		public void ToggleButton(int frame, string buttonName)
 		{
 			InvalidateGreenzone(frame);
+			/*Serialize todo
 			_records[frame].SetButton(buttonName, !_records[frame].Buttons[buttonName]);
+			*/
 
 		}
 
 		public void SetButton(int frame, string buttonName, bool value)
 		{
 			InvalidateGreenzone(frame);
+			/*Serialize TODO
 			_records[frame].SetButton(buttonName, value);
+			*/
 		}
 
 		public bool IsPressed(int frame, string buttonName)
 		{
-			return _records[frame].Buttons[buttonName];
-		}
-
-		private void InputChanged(object sender, MovieRecord.InputEventArgs e)
-		{
-			Changes = true;
-
-			if (OnChanged != null)
-			{
-				OnChanged(sender, e);
-			}
+			return true; //Serialize TODO - _records[frame].Buttons[buttonName];
 		}
 
 		/// <summary>
@@ -71,14 +65,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Events
-
-		public delegate void MovieEventHandler(object sender, MovieRecord.InputEventArgs e);
-		public event MovieEventHandler OnChanged;
-
-		#endregion
-
-		#region Implementation
+		#region IMovie Implementation
 
 		public TasMovie(string filename, bool startsFromSavestate = false)
 			: this(startsFromSavestate)
@@ -89,7 +76,7 @@ namespace BizHawk.Client.Common
 		public TasMovie(bool startsFromSavestate = false)
 		{
 			_mg = MnemonicGeneratorFactory.Generate();
-			Filename = String.Empty;
+			Filename = string.Empty;
 			Header = new MovieHeader { StartsFromSavestate = startsFromSavestate };
 			Header[HeaderKeys.MOVIEVERSION] = HeaderKeys.MovieVersion2;
 			_records = new MovieRecordList();
@@ -159,21 +146,24 @@ namespace BizHawk.Client.Common
 					{
 						_records[frame].CaptureSate();
 					}
-					return _mg.GenerateMnemonicString(_records[frame].Buttons);
+
+					return string.Empty; //Serialize TODO _mg.GenerateMnemonicString(_records[frame].Buttons);
 				}
 				else
 				{
-					return String.Empty;
+					return string.Empty;
 				}
 			}
 			else
 			{
 				_mode = Moviemode.Record;
 
+				/* Serialize TODO
 				var buttons = _mg.ParseMnemonicString(_mg.EmptyMnemonic);
-
 				_records.Add(new MovieRecord(buttons, true));
-				return String.Empty;
+				*/
+
+				return string.Empty;
 			}
 		}
 
@@ -182,8 +172,9 @@ namespace BizHawk.Client.Common
 			StringBuilder sb = new StringBuilder();
 			foreach (var record in _records)
 			{
-				sb.AppendLine(_mg.GenerateMnemonicString(record.Buttons));
+				sb.AppendLine(record.SerializedInput);
 			}
+
 			return sb.ToString();
 		}
 
@@ -207,15 +198,6 @@ namespace BizHawk.Client.Common
 		{
 			// adelikat: I think Tastudio should be in charge of saving, and so we should not attempt to manage any logic like that here
 			// EmuHawk client UI assumes someone has already picked a filename ahead of time and that it is in charge of movies
-			/*
-			if (saveChanges)
-			{
-				if (_mode == Moviemode.Record || Changes)
-				{
-					Save();
-				}
-			}
-			*/
 			_mode = Moviemode.Inactive;
 		}
 
@@ -236,10 +218,11 @@ namespace BizHawk.Client.Common
 		public void AppendFrame(IController source)
 		{
 			Changes = true;
+			/* Serialize TODO
 			_mg.Source = source;
 			var record = new MovieRecord(_mg.GetBoolButtons(), true);
-			record.OnChanged += InputChanged;
 			_records.Add(record);
+			*/
 		}
 
 		public void RecordFrame(int frame, IController source)
@@ -273,7 +256,9 @@ namespace BizHawk.Client.Common
 			{
 				Changes = true;
 				_mg.Source = source;
+				/* Serialize TODO
 				_records[frame].SetInput(_mg.GetBoolButtons());
+				*/
 			}
 		}
 
@@ -331,7 +316,7 @@ namespace BizHawk.Client.Common
 				bl.GetLump(BinaryStateLump.Input, true,
 					delegate(TextReader tr)
 					{
-						string line = String.Empty;
+						string line = string.Empty;
 						while (true)
 						{
 							line = tr.ReadLine();
@@ -341,8 +326,10 @@ namespace BizHawk.Client.Common
 							}
 							else if (line.StartsWith("|"))
 							{
+								/* Serialize TODO
 								var parsedButtons = _mg.ParseMnemonicString(line);
 								_records.Add(new MovieRecord(parsedButtons, captureState: false));
+								*/
 							}
 						}
 					});
