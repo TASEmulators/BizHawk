@@ -3057,5 +3057,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<PCETileViewer>();
 		}
 
+		private void SMSVDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<VDPViewer>();
+		}
+
 	}
 }

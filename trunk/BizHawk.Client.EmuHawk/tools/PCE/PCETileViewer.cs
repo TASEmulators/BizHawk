@@ -148,7 +148,10 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			if (!(Global.Emulator is PCEngine))
+			{
 				Close();
+				return;
+			}
 			emu = (PCEngine)Global.Emulator;
 
 			vce = emu.VCE;

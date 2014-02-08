@@ -222,6 +222,7 @@
 			this.MovieSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEBGViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PCEtileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
 			this.PCEAlwaysPerformSpriteLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEAlwaysEqualizeVolumesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -341,7 +342,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PCEtileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSVDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2007,6 +2008,13 @@
 			this.PCEBGViewerMenuItem.Text = "&BG Viewer";
 			this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PCEBGViewerMenuItem_Click);
 			// 
+			// PCEtileViewerToolStripMenuItem
+			// 
+			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
+			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
+			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PCEtileViewerToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
@@ -2051,7 +2059,8 @@
             this.HighlightActiveDisplayRegionMenuItem,
             this.toolStripSeparator24,
             this.SMSGraphicsSettingsMenuItem,
-            this.GGGameGenieMenuItem});
+            this.GGGameGenieMenuItem,
+            this.SMSVDPViewerToolStripMenuItem});
 			this.SMSSubMenu.Name = "SMSSubMenu";
 			this.SMSSubMenu.Size = new System.Drawing.Size(39, 17);
 			this.SMSSubMenu.Text = "&SMS";
@@ -2977,12 +2986,12 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// PCEtileViewerToolStripMenuItem
+			// SMSVDPViewerToolStripMenuItem
 			// 
-			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
-			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
-			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PCEtileViewerToolStripMenuItem_Click);
+			this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
+			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
+			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SMSVDPViewerToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3338,6 +3347,7 @@
 		private System.Windows.Forms.ToolStripMenuItem batchRunnerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSVDPViewerToolStripMenuItem;
 	}
 }
 
