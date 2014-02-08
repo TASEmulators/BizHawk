@@ -937,6 +937,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _soundRemainder; // audio timekeeping for video dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
+		private bool _avwriterpad;
 
 		private bool _exit;
 		private bool _runloopFrameProgress;
@@ -2502,7 +2503,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh, out _avwriterpad);
 			}
 
 			foreach (var w in video_writers)
@@ -2693,7 +2694,15 @@ namespace BizHawk.Client.EmuHawk
 						var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
 						using (var g = Graphics.FromImage(bmpout))
 						{
-							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+							if (_avwriterpad)
+							{
+								g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
+								g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+							}
+							else
+							{
+								g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+							}
 						}
 
 						bmpin.Dispose();

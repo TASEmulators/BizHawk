@@ -10,4 +10,4 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-zip -X -9 -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll gamedb NES\Palettes Lua Gameboy\Palettes Firmware/BIOS_Info.txt  -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe
+zip -X -9 -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll gamedb Firmware NES\Palettes Lua Gameboy\Palettes Firmware/BIOS_Info.txt  -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe
