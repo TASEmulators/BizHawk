@@ -27,9 +27,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		VdpCommand vdpCommand;
 		int TmsMode = 4;
 
-		bool VIntPending; // FIXME put in savestate
-		bool HIntPending; // FIXME put in savestate
-		int lineIntLinesRemaining; // FIXME put in savestate
+		bool VIntPending;
+		bool HIntPending;
+		int lineIntLinesRemaining;
 
 		SMS Sms;
 		VdpMode mode;

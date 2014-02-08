@@ -3,14 +3,16 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public sealed partial class HuC6280
 	{
-		public HuC6280()
+		public HuC6280(CoreComm comm)
 		{
 			Reset();
+			CoreComm = comm;
 		}
 
 		public void Reset()
@@ -346,6 +348,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Action<int, byte> WriteMemory21;
 		public Action<int, byte> WriteVDC;
 		public Action<int> ThinkAction = delegate { };
+
+		public CoreComm CoreComm;
 
 		public byte ReadMemory(ushort address)
 		{
