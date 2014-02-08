@@ -1,27 +1,21 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputWidget : TextBox
 	{
-		//TODO: when binding, make sure that the new key combo is not in one of the other bindings
-
-		private readonly int _maxBind = 4; //Max number of bindings allowed
-		private int _pos;	 //Which mapping the widget will listen for
+		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
+		private readonly ToolTip _tooltip1 = new ToolTip();
 		private readonly Timer _timer = new Timer();
 		private readonly string[] _bindings = new string[4];
-		private string _wasPressed = String.Empty;
-		private readonly ToolTip _tooltip1 = new ToolTip();
-
-		public bool AutoTab = true;
-		public string WidgetName;
-
-		[DllImport("user32")]
-		private static extern bool HideCaret(IntPtr hWnd);
+		private readonly int _maxBind = 4; // Max number of bindings allowed
+	
+		private int _pos;	 // Which mapping the widget will listen for
+		private string _wasPressed = string.Empty;
 
 		public InputWidget()
 		{
@@ -29,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			_timer.Tick += Timer_Tick;
 			ClearBindings();
 			_tooltip1.AutoPopDelay = 2000;
+			AutoTab = true;
 		}
 
 		public InputWidget(int maxBindings, bool autotab)
@@ -42,6 +37,35 @@ namespace BizHawk.Client.EmuHawk
 			_tooltip1.AutoPopDelay = 2000;
 		}
 
+		public bool AutoTab { get; set; }
+		public string WidgetName { get; set; }
+
+		public string Bindings
+		{
+			get
+			{
+				return Text;
+			}
+
+			set
+			{
+				ClearBindings();
+				var newBindings = value.Trim().Split(',');
+				for (var i = 0; i < _maxBind; i++)
+				{
+					if (i < newBindings.Length)
+					{
+						_bindings[i] = newBindings[i];
+					}
+				}
+
+				UpdateLabel();
+			}
+		}
+
+		[DllImport("user32")]
+		private static extern bool HideCaret(IntPtr hWnd);
+
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
 			HideCaret(Handle);
@@ -50,9 +74,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearBindings()
 		{
-			for (int i = 0; i < _maxBind; i++)
+			for (var i = 0; i < _maxBind; i++)
 			{
-				_bindings[i] = String.Empty;
+				_bindings[i] = string.Empty;
 			}
 		}
 
@@ -71,7 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateLabel();
 			BackColor = SystemColors.Window;
 			base.OnLeave(e);
-
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
@@ -82,36 +105,38 @@ namespace BizHawk.Client.EmuHawk
 		public void EraseMappings()
 		{
 			ClearBindings();
-			Text = String.Empty;
+			Text = string.Empty;
 		}
 
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
-			var TempBindingStr = Input.Instance.GetNextBindEvent();
-			if (!String.IsNullOrEmpty(_wasPressed) && TempBindingStr == _wasPressed)
+			var bindingStr = Input.Instance.GetNextBindEvent();
+			if (!string.IsNullOrEmpty(_wasPressed) && bindingStr == _wasPressed)
 			{
 				return;
 			}
-			else if (TempBindingStr != null)
+			
+			if (bindingStr != null)
 			{
-				if (TempBindingStr == "Escape")
+				if (bindingStr == "Escape")
 				{
-					ClearBindings();
+					EraseMappings();
 					Increment();
 					return;
 				}
-				else if (TempBindingStr == "Alt+F4")
+				
+				if (bindingStr == "Alt+F4")
 				{
 					return;
 				}
 
-				if (!IsDuplicate(TempBindingStr))
+				if (!IsDuplicate(bindingStr))
 				{
-					_bindings[_pos] = TempBindingStr;
+					_bindings[_pos] = bindingStr;
 				}
-				_wasPressed = TempBindingStr;
-
+				
+				_wasPressed = bindingStr;
 				UpdateLabel();
 				Increment();
 			}
@@ -129,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 				base.OnKeyUp(e);
 			}
 
-			_wasPressed = String.Empty;
+			_wasPressed = string.Empty;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -184,28 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateLabel()
 		{
-			Text = String.Join(",", _bindings.Where(x => !String.IsNullOrWhiteSpace(x)));
-		}
-
-		public string Bindings
-		{
-			get
-			{
-				return Text;
-			}
-			set
-			{
-				ClearBindings();
-				var newBindings = value.Trim().Split(',');
-				for (int i = 0; i < _maxBind; i++)
-				{
-					if (i < newBindings.Length)
-					{
-						_bindings[i] = newBindings[i];
-					}
-				}
-				UpdateLabel();
-			}
+			Text = string.Join(",", _bindings.Where(str => !string.IsNullOrWhiteSpace(str)));
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -217,27 +221,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			switch (m.Msg)
 			{
-				case 0x0201: //WM_LBUTTONDOWN
-					{
-						Focus();
-						return;
-					}
-				case 0x0203://WM_LBUTTONDBLCLK
-					{
-						return;
-					}
-				case 0x0204://WM_RBUTTONDOWN
-					{
-						return;
-					}
-				case 0x0205://WM_RBUTTONUP
-					{
-						return;
-					}
-				case 0x0206://WM_RBUTTONDBLCLK
-					{
-						return;
-					}
+				case 0x0201: // WM_LBUTTONDOWN
+					Focus();
+					return;
+				case 0x0203: // WM_LBUTTONDBLCLK
+				case 0x0204: // WM_RBUTTONDOWN
+				case 0x0205: // WM_RBUTTONUP
+				case 0x0206: // WM_RBUTTONDBLCLK
+					return;
 			}
 
 			base.WndProc(ref m);
@@ -253,6 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Increment();
 			}
+
 			base.OnMouseWheel(e);
 		}
 
