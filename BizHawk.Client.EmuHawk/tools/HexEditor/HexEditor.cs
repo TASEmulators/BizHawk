@@ -346,17 +346,9 @@ namespace BizHawk.Client.EmuHawk
 			return i <= 0x1000000 ? 6 : 8;
 		}
 
-		// Winform key events suck at the numberpad, so this is necessary
 		private static char ForceCorrectKeyString(char keycode)
 		{
-			if ((int)keycode >= 96 && (int)keycode <= 106)
-			{
-				return (char)((int)keycode - 48);
-			}
-			else
-			{
-				return (char)keycode;
-			}
+			return (char)keycode;
 		}
 
 		private void RefreshFloatingWindowControl()
@@ -388,15 +380,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool IsHexKeyCode(char key)
 		{
-			if (key >= 48 && key <= 57) // 0-9
+			if (key >= '0' && key <= '9') // 0-9
 			{
 				return true;
 			}
-			else if (key >= 65 && key <= 70) // A-F
+			else if (key >= 'a' && key <= 'f') // A-F
 			{
 				return true;
 			}
-			else if (key >= 96 && key <= 106) // 0-9 Numpad
+			else if (key >= 'A' && key <= 'F') // A-F
 			{
 				return true;
 			}
