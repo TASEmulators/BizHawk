@@ -3052,7 +3052,10 @@ namespace BizHawk.Client.EmuHawk
 			new config.DisplayConfigLite().ShowDialog();
 		}
 
-
+		private void PCEtileViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCETileViewer>();
+		}
 
 	}
 }
