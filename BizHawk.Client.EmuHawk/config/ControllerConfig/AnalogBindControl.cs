@@ -83,5 +83,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			trackBarSensitivity.Value *= -1;
 		}
+
+		private void buttonUnbind_Click(object sender, EventArgs e)
+		{
+			Bind.Value = "";
+			textBox1.Text = "";
+		}
 	}
 }
