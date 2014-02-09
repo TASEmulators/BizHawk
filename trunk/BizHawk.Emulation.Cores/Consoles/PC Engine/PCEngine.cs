@@ -565,6 +565,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				(addr, value) => Cpu.WriteMemory21(addr, value));
 			domains.Add(SystemBusDomain);
 
+			var RomDomain = new MemoryDomain("ROM", RomLength, MemoryDomain.Endian.Little,
+				addr => RomData[addr],
+				(addr, value) => RomData[addr] = value);
+			domains.Add(RomDomain);
+			
+
 			if (BRAM != null)
 			{
 				var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, MemoryDomain.Endian.Little,
