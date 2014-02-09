@@ -93,13 +93,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280(CoreComm);
+			Cpu = new HuC6280();
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
-			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+			Cpu.TraceLogger = (s) => CoreComm.Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomData = rom;
 				RomLength = RomData.Length;
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
+				Cpu.TraceLogger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
 			}
 			else
 			{
@@ -260,7 +260,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-			Cpu.Debug = CoreComm.Tracer.Enabled;
+			Cpu.TraceEnabled = CoreComm.Tracer.Enabled;
+
+			if (CoreComm.MemoryCallbackSystem.HasExecutes)
+			{
+				Cpu.CallExecute = delegate(uint addr)
+				{
+					CoreComm.MemoryCallbackSystem.CallExecute(addr);
+				};
+			}
+			else
+			{
+				Cpu.CallExecute = null;
+			}
 
 			if (SuperGrafx)
 				VPC.ExecFrame(render);
