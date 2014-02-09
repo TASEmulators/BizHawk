@@ -10,7 +10,7 @@
 
         var y = new HuC6280.CoreGenerator();
         y.InitOpcodeTable();
-        y.GenerateDisassembler("../../../BizHawk.Emulation.Cores/CPUs/HuC6280/Disassembler.cs");
-        y.GenerateExecutor("../../../BizHawk.Emulation.Cores/CPUs/HuC6280/Execute.cs");
+        y.GenerateDisassembler("../../../BizHawk.Emulation.Common/CPUs/HuC6280/Disassembler.cs");
+        y.GenerateExecutor("../../../BizHawk.Emulation.Common/CPUs/HuC6280/Execute.cs");
     }
 }
