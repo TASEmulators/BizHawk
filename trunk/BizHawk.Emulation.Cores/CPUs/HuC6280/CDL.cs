@@ -2,9 +2,89 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
+	public class CodeDataLog : Dictionary<string, byte[]>
+	{
+		private CodeDataLog()
+			:base()
+		{
+		}
+
+		public void LogicalOrFrom(CodeDataLog other)
+		{
+			if (this.Count != other.Count)
+				throw new InvalidDataException("Dictionaries must have the same number of keys!");
+
+			foreach (var kvp in other)
+			{
+				byte[] fromdata = kvp.Value;
+				byte[] todata = this[kvp.Key];
+
+				if (fromdata.Length != todata.Length)
+					throw new InvalidDataException("Memory regions must be the same size!");
+
+				for (int i = 0; i < todata.Length; i++)
+					todata[i] |= fromdata[i];
+			}
+		}
+
+		public void ClearData()
+		{
+			foreach (byte[] data in Values)
+				Array.Clear(data, 0, data.Length);
+		}
+
+		public void Save(Stream s)
+		{
+			var w = new BinaryWriter(s);
+			w.Write(Count);
+			foreach (var kvp in this)
+			{
+				w.Write(kvp.Key);
+				w.Write(kvp.Value.Length);
+				w.Write(kvp.Value);
+			}
+			w.Flush();
+		}
+
+		public static CodeDataLog Load(Stream s)
+		{
+			var t = new CodeDataLog();
+			var r = new BinaryReader(s);
+			int count = r.ReadInt32();
+			for (int i = 0; i < count; i++)
+			{
+				string key = r.ReadString();
+				int len = r.ReadInt32();
+				byte[] data = r.ReadBytes(len);
+				t[key] = data;
+			}
+			return t;
+		}
+
+		public static CodeDataLog Create(IEnumerable<HuC6280.MemMapping> mm)
+		{
+			var t = new CodeDataLog();
+
+			Dictionary<string, int> sizes = new Dictionary<string, int>();
+			foreach (var m in mm)
+			{
+				if (!sizes.ContainsKey(m.Name) || m.Offs >= sizes[m.Name])
+					sizes[m.Name] = m.Offs;
+			}
+
+			foreach (var kvp in sizes)
+			{
+				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
+				t[kvp.Key] = new byte[kvp.Value + 8192];
+			}
+			return t;
+		}
+	}
+
 	public partial class HuC6280
 	{
 		public struct MemMapping
@@ -14,28 +94,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 		public MemMapping[] Mappings; // = new MemMapping[256];
 
-		public Dictionary<string, byte[]> CodeDataLog = new Dictionary<string, byte[]>();
 
-		/// <summary>
-		/// create a new empty CodeDataLog to match the Mappings
-		/// </summary>
-		public void InitCDL()
-		{
-			Dictionary<string, int> sizes = new Dictionary<string, int>();
-			foreach (var m in Mappings)
-			{
-				if (!sizes.ContainsKey(m.Name) || m.Offs >= sizes[m.Name])
-					sizes[m.Name] = m.Offs;
-			}
-
-			CodeDataLog.Clear();
-			foreach (var kvp in sizes)
-			{
-				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
-				CodeDataLog[kvp.Key] = new byte[kvp.Value + 8192];
-			}
-		}
-
+		public CodeDataLog CDL;
 
 
 		[Flags]
@@ -63,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		void Mark(ushort addr, CDLUsage flag)
 		{
 			var m = Mappings[MPR[addr >> 13]];
-			CodeDataLog[m.Name][addr & 0x1fff | m.Offs] |= (byte)flag;
+			CDL[m.Name][addr & 0x1fff | m.Offs] |= (byte)flag;
 		}
 
 		// mark addr as having been fetched for execute
