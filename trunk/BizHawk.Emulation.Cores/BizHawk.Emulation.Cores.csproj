@@ -414,6 +414,7 @@
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
+    <Compile Include="Consoles\PC Engine\CDLMapping.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
@@ -452,6 +453,8 @@
     <Compile Include="CPUs\CP1610\CP1610.cs" />
     <Compile Include="CPUs\CP1610\Disassembler.cs" />
     <Compile Include="CPUs\CP1610\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\CDL.cs" />
+    <Compile Include="CPUs\HuC6280\CDLOpcodes.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280.cs" />
