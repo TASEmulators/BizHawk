@@ -796,8 +796,7 @@ bool Handle_QUERY(eMessage msg)
 			int layer = ReadPipe<s32>();
 			int priority = ReadPipe<s32>();
 			bool enable = ReadPipe<bool>();
-			//TODO - readd this
-			//snes_set_layer_enable(layer,priority,enable);
+			snes_set_layer_enable(layer,priority,enable);
 			break;
 		}
 
