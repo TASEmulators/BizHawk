@@ -159,6 +159,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemorySF2;
 				RomData = rom;
 				RomLength = RomData.Length;
+				// user request: current value of the SF2MapperLatch on the tracelogger
+				Cpu.Logger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
 			}
 			else
 			{
