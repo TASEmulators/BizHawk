@@ -438,7 +438,7 @@ namespace HuC6280
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");
             w.WriteLine();
-            w.WriteLine("namespace BizHawk.Emulation.Common.Components.H6280");
+            w.WriteLine("namespace BizHawk.Emulation.Cores.Components.H6280");
             w.WriteLine("{");
             w.WriteLine("    public partial class HuC6280");
             w.WriteLine("    {");
@@ -753,7 +753,7 @@ namespace HuC6280
         public void GenerateDisassembler(string file)
         {
             var w = new StreamWriter(file, false);
-            w.WriteLine("namespace BizHawk.Emulation.Common.Components.H6280");
+            w.WriteLine("namespace BizHawk.Emulation.Cores.Components.H6280");
             w.WriteLine();
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");

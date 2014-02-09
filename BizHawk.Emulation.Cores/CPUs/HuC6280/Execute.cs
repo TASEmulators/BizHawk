@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                 LagIFlag = FlagI;
 
                 if (Debug) Logger(State());
-				CoreComm.MemoryCallbackSystem.CallExecute(PC);
+                CoreComm.MemoryCallbackSystem.CallExecute(PC);
 
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
