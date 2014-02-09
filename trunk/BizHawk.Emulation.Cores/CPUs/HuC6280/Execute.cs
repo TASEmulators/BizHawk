@@ -7,6 +7,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
     public partial class HuC6280
     {
+        public bool Debug;
+        public Action<string> Logger;
+
         public void Execute(int cycles)
         {
             sbyte rel8;
@@ -55,7 +58,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                 IRQControlByte = IRQNextControlByte;
                 LagIFlag = FlagI;
 
-                ExecuteCallbacks();
+                if (Debug) Logger(State());
+				CoreComm.MemoryCallbackSystem.CallExecute(PC);
 
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)

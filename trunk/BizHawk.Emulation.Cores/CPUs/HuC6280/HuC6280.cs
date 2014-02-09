@@ -9,24 +9,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public sealed partial class HuC6280
 	{
-		public Action<string> TraceLogger;
-		public bool TraceEnabled;
-		public Action<uint> CallExecute;
-
-		void ExecuteCallbacks()
-		{
-			if (TraceEnabled)
-			{
-				TraceLogger(State());
-			}
-			if (CallExecute != null)
-				CallExecute(PC);
-		}
-
-
-		public HuC6280()
+		public HuC6280(CoreComm comm)
 		{
 			Reset();
+			CoreComm = comm;
 		}
 
 		public void Reset()
@@ -362,6 +348,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Action<int, byte> WriteMemory21;
 		public Action<int, byte> WriteVDC;
 		public Action<int> ThinkAction = delegate { };
+
+		public CoreComm CoreComm;
 
 		public byte ReadMemory(ushort address)
 		{
