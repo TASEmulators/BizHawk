@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		byte SF2MapperLatch;
 
+		// when true, every mapper register write is propogated to the vtable that the CDL uses
+		bool SF2UpdateCDLMappings = false;
+
 		byte ReadMemorySF2(int addr)
 		{
 			if (addr < 0x7FFFF) // read ROM
@@ -43,6 +46,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				// Set SF2 pager.
 				SF2MapperLatch = (byte)(addr & 0x03);
+
+				if (SF2UpdateCDLMappings)
+				{
+					CDLMappingApplyRange(Cpu.Mappings, "ROM", 0x40, 0x80000, (SF2MapperLatch + 1) * 0x80000);
+				}
+
 				return;
 			}
 

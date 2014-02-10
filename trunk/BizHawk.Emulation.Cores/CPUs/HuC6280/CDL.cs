@@ -72,8 +72,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			Dictionary<string, int> sizes = new Dictionary<string, int>();
 			foreach (var m in mm)
 			{
-				if (!sizes.ContainsKey(m.Name) || m.Offs >= sizes[m.Name])
-					sizes[m.Name] = m.Offs;
+				if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
+					sizes[m.Name] = m.MaxOffs;
 			}
 
 			foreach (var kvp in sizes)
@@ -91,7 +91,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			public string Name;
 			public int Offs;
+			public int VOffs; // if non-zero, specifies a larger potential offset
+			public int MaxOffs { get { return Math.Max(Offs, VOffs); } }
 		}
+
 		public MemMapping[] Mappings; // = new MemMapping[256];
 
 		public CodeDataLog CDL = null;

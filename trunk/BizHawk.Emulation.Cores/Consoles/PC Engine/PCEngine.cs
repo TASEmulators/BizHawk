@@ -236,7 +236,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu.ResetPC();
 			SetupMemoryDomains();
 			SetupStateBuff();
-			InitCDLMappings();
 		}
 
 		int _lagcount = 0;
