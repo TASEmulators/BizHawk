@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public void Save(Stream s)
 		{
 			var w = new BinaryWriter(s);
+			w.Write("BIZHAWK-CDL-1");
 			w.Write(Count);
 			foreach (var kvp in this)
 			{
@@ -54,6 +55,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			var t = new CodeDataLog();
 			var r = new BinaryReader(s);
+			string id = r.ReadString();
+			if (id != "BIZHAWK-CDL-1")
+				throw new InvalidDataException("File is not a Bizhawk CDL file!");
 			int count = r.ReadInt32();
 			for (int i = 0; i < count; i++)
 			{

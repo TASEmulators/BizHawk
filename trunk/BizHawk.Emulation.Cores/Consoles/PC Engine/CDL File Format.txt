@@ -1,10 +1,15 @@
+====Type definitions==============
+
 A "string" is an LEB128 encoded number which is the number of bytes
 in the string, followed by that many bytes of UTF-8 character data.
 
 A "number" is a little endian 32 bit integer.
 
-File format is as follows:
 
+
+====File format is as follows:====
+
+string id: file identifier, always "BIZHAWK-CDL-1"
 number NumberOfBlocks: number of memory areas represented in this file
 
 For each block:
@@ -14,6 +19,7 @@ number bytelength: length of the block in bytes.
 byte data[bytelength]: one byte of information for each byte in the original block.
 
 
+====Other definitions:============
 
 The BlockNames are:
 
