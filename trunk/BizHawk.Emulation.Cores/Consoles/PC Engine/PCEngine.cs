@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public string BoardName { get { return null; } }
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom, object Settings)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -85,6 +85,45 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			this.Settings = (PCESettings)Settings ?? new PCESettings();
+
+			GameInfo biosInfo;
+			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out biosInfo,
+				"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
+
+			if (biosInfo.Status == RomStatus.BadDump)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
+					+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+				throw new Exception();
+			}
+			else if (biosInfo.NotInDatabase)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+				throw new Exception();
+			}
+			else if (biosInfo["BIOS"] == false)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+				throw new Exception();
+			}
+
+			if (biosInfo["SuperSysCard"])
+			{
+				game.AddOption("SuperSysCard");
+			}
+
+			if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
+			{
+				CoreComm.ShowMessage(
+					"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in the firmware configuration.");
+				throw new Exception();
+			}
+
+			game.FirmwareHash = Util.Hash_SHA1(rom);
+
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
