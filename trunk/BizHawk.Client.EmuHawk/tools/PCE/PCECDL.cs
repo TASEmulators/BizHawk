@@ -112,9 +112,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))
 					{
-						CDL = CodeDataLog.Load(fs);
-						emu.Cpu.CDL = CDL;
-						UpdateDisplay();
+						var newCDL = CodeDataLog.Load(fs);
+						if (!newCDL.CheckConsistency(emu.Cpu.Mappings))
+						{
+							MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						}
+						else
+						{
+							CDL = newCDL;
+							emu.Cpu.CDL = CDL;
+							UpdateDisplay();
+						}
 					}
 				}
 			}

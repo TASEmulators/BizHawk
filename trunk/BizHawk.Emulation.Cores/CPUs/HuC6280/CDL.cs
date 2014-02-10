@@ -69,10 +69,23 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			return t;
 		}
 
-		public static CodeDataLog Create(IEnumerable<HuC6280.MemMapping> mm)
+		public bool CheckConsistency(IEnumerable<HuC6280.MemMapping> mm)
 		{
-			var t = new CodeDataLog();
+			var sizes = SizesFromHuMap(mm);
+			if (sizes.Count != Count)
+				return false;
+			foreach (var kvp in sizes)
+			{
+				if (ContainsKey(kvp.Key))
+					return false;
+				if (this[kvp.Key].Length != kvp.Value)
+					return false;
+			}
+			return true;
+		}
 
+		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
+		{
 			Dictionary<string, int> sizes = new Dictionary<string, int>();
 			foreach (var m in mm)
 			{
@@ -80,10 +93,21 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					sizes[m.Name] = m.MaxOffs;
 			}
 
-			foreach (var kvp in sizes)
+			List<string> keys = new List<string>(sizes.Keys);
+			foreach (var key in keys)
 			{
 				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
-				t[kvp.Key] = new byte[kvp.Value + 8192];
+				sizes[key] += 8192;
+			}
+			return sizes;
+		}
+
+		public static CodeDataLog Create(IEnumerable<HuC6280.MemMapping> mm)
+		{
+			var t = new CodeDataLog();
+			foreach (var kvp in SizesFromHuMap(mm))
+			{
+				t[kvp.Key] = new byte[kvp.Value];
 			}
 			return t;
 		}
