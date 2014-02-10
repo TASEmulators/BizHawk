@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 				emu = (PCEngine)Global.Emulator;
 				checkBox1.Checked = emu.Cpu.CDLLoggingActive;
 				CDL = emu.Cpu.CDL;
+				emu.InitCDLMappings();
 				UpdateDisplay();
 			}
 			else
