@@ -556,9 +556,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(10);
+			int mainmemorymask = Ram.Length - 1;
 			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr & 0x1FFF],
-				(addr, value) => Ram[addr & 0x1FFF] = value);
+				addr => Ram[addr & mainmemorymask],
+				(addr, value) => Ram[addr & mainmemorymask] = value);
 			domains.Add(MainMemoryDomain);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
@@ -607,6 +608,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						addr => ArcadeRam[addr & 0x1FFFFF],
 						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
 				domains.Add(ArcadeRamMemoryDomain);
+			}
+
+			if (PopulousRAM != null)
+			{
+				var PopulusRAMDomain = new MemoryDomain("Cart Battery RAM", PopulousRAM.Length, MemoryDomain.Endian.Little,
+					addr => PopulousRAM[addr & 0x7fff],
+					(addr, value) => PopulousRAM[addr & 0x7fff] = value);
+				domains.Add(PopulusRAMDomain);
 			}
 
 			memoryDomains = new MemoryDomainList(domains);

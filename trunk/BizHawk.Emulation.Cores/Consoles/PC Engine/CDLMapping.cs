@@ -29,22 +29,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			CDLMappingApplyRange(mm, "ROM", 0x00, RomLength);
 			if (PopulousRAM != null)
-				CDLMappingApplyRange(mm, "Populous RAM", 0x40, PopulousRAM.Length);
+				CDLMappingApplyRange(mm, "Cart Battery RAM",, 0x40, PopulousRAM.Length);
 
 			if (SuperRam != null)
-				CDLMappingApplyRange(mm, "Super RAM", 0x68, SuperRam.Length);
+				CDLMappingApplyRange(mm, "Super System Card RAM", 0x68, SuperRam.Length);
 
 			if (CDRam != null)
-				CDLMappingApplyRange(mm, "CD RAM", 0x80, CDRam.Length);
+				CDLMappingApplyRange(mm, "TurboCD RAM", 0x80, CDRam.Length);
 
 			if (BRAM != null)
-				CDLMappingApplyRange(mm, "BRAM", 0xf7, BRAM.Length);
+				CDLMappingApplyRange(mm, "Battery RAM", 0xf7, BRAM.Length);
 
 			{
-				var rammirrors = new HuC6280.MemMapping { Name = "RAM", Offs = 0 };
+				var rammirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
 				mm[0xf9] = mm[0xfa] = mm[0xfb] = rammirrors;
 			}
-			CDLMappingApplyRange(mm, "RAM", 0xf8, Ram.Length);
+			CDLMappingApplyRange(mm, "Main Memory", 0xf8, Ram.Length);
 
 			mm[0xff] = new HuC6280.MemMapping { Name = "MMIO", Offs = 0 };
 
