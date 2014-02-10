@@ -75,24 +75,46 @@ namespace BizHawk.Client.Common
 			return path;
 		}
 
-		public byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null)
+		private byte[] GetFirmwareWithPath(string sysID, string firmwareID, bool required, string msg, out string path)
 		{
 			byte[] ret = null;
-			var path = GetFirmwarePath(sysID, firmwareID, required, msg);
-			if (path != null && File.Exists(path))
+			var path_ = GetFirmwarePath(sysID, firmwareID, required, msg);
+			if (path_ != null && File.Exists(path_))
 			{
 				try
 				{
-					ret = File.ReadAllBytes(path);
+					ret = File.ReadAllBytes(path_);
 				}
 				catch (IOException) { }
 			}
 
-			if (ret == null && path != null)
+			if (ret == null && path_ != null)
 			{
 				FirmwareWarn(sysID, firmwareID, required, msg);
 			}
 
+			path = path_;
+			return ret;
+		}
+
+		public byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null)
+		{
+			string unused;
+			return GetFirmwareWithPath(sysID, firmwareID, required, msg, out unused);
+		}
+
+		public byte[] GetFirmwareWithGameInfo(string sysID, string firmwareID, bool required, out GameInfo gi, string msg = null)
+		{
+			string path;
+			byte[] ret = GetFirmwareWithPath(sysID, firmwareID, required, msg, out path);
+			if (ret != null && path != null)
+			{
+				gi = Database.GetGameInfo(ret, path);
+			}
+			else
+			{
+				gi = null;
+			}
 			return ret;
 		}
 

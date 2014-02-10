@@ -47,6 +47,8 @@ namespace BizHawk.Emulation.Common
 		/// <returns></returns>
 		byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null);
 
+		byte[] GetFirmwareWithGameInfo(string sysID, string firmwareID, bool required, out GameInfo gi, string msg = null);
+
 		#endregion
 
 	}
