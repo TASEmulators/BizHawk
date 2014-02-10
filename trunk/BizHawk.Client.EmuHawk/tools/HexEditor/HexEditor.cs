@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var theDomain = _domain.Name.ToLower() == "rom file" ? 999 : GetDomainInt(_domain.Name);
+			var theDomain = _domain.Name.ToLower() == "file on disk" ? 999 : GetDomainInt(_domain.Name);
 
 			SetMemoryDomainMenu(); // Calls update routines, TODO: refactor, that is confusing!
 
@@ -579,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// <zeromus> THIS IS HORRIBLE.
 				_romDomain = new MemoryDomain(
-					"ROM File", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
+					"File on Disk", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
 
 				// <zeromus> THIS IS HORRIBLE.
 				_domain = _romDomain;
@@ -627,10 +627,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// Add ROM File memory domain
+			// Add File on Disk memory domain
 			// <zeromus> THIS IS HORRIBLE.
-			var rom_item = new ToolStripMenuItem { Text = "ROM File" };
-			rom_item.Click += (o, ev) => SetMemoryDomain(999); // 999 will denote ROM file
+			var rom_item = new ToolStripMenuItem { Text = "File on Disk" };
+			rom_item.Click += (o, ev) => SetMemoryDomain(999); // 999 will denote File on Disk
 			MemoryDomainsMenuItem.DropDownItems.Add(rom_item);
 			_domainMenuItems.Add(rom_item);
 		}
@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetSaveFileFilter()
 		{
-			if (_domain.Name == "ROM File")
+			if (_domain.Name == "File on Disk")
 			{
 				var extension = Path.GetExtension(GlobalWin.MainForm.CurrentlyOpenRom);
 
@@ -1151,7 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (_domain.Name == "ROM File")
+			if (_domain.Name == "File on Disk")
 			{
 				SaveMenuItem.Visible = !CurrentRomIsArchive();
 				SaveAsBinaryMenuItem.Text = "Save as ROM...";
