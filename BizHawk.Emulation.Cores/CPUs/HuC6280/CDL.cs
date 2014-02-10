@@ -94,9 +94,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 		public MemMapping[] Mappings; // = new MemMapping[256];
 
+		public CodeDataLog CDL = null;
 
-		public CodeDataLog CDL;
-
+		public bool CDLLoggingActive = false;
 
 		[Flags]
 		enum CDLUsage : byte

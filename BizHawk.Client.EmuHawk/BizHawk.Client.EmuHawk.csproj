@@ -662,6 +662,12 @@
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\PCE\PCECDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCECDL.Designer.cs">
+      <DependentUpon>PCECDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\PCE\PCETileViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1084,6 +1090,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCECDL.resx">
+      <DependentUpon>PCECDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
       <DependentUpon>PCETileViewer.cs</DependentUpon>

@@ -238,6 +238,7 @@
 			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.SMSGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSVDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TI83SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -342,7 +343,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSVDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.codeDataLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1991,6 +1992,7 @@
 			this.PCESubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PCEBGViewerMenuItem,
             this.PCEtileViewerToolStripMenuItem,
+            this.codeDataLoggerToolStripMenuItem,
             this.toolStripSeparator25,
             this.PCEAlwaysPerformSpriteLimitMenuItem,
             this.PCEAlwaysEqualizeVolumesMenuItem,
@@ -2126,6 +2128,13 @@
 			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(221, 22);
 			this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
 			this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GGGameGenieMenuItem_Click);
+			// 
+			// SMSVDPViewerToolStripMenuItem
+			// 
+			this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
+			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
+			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SMSVDPViewerToolStripMenuItem_Click);
 			// 
 			// TI83SubMenu
 			// 
@@ -2986,12 +2995,12 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// SMSVDPViewerToolStripMenuItem
+			// codeDataLoggerToolStripMenuItem
 			// 
-			this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
-			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
-			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SMSVDPViewerToolStripMenuItem_Click);
+			this.codeDataLoggerToolStripMenuItem.Name = "codeDataLoggerToolStripMenuItem";
+			this.codeDataLoggerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.codeDataLoggerToolStripMenuItem.Text = "Code-Data Logger";
+			this.codeDataLoggerToolStripMenuItem.Click += new System.EventHandler(this.codeDataLoggerToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3348,6 +3357,7 @@
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSVDPViewerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem codeDataLoggerToolStripMenuItem;
 	}
 }
 

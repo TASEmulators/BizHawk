@@ -495,6 +495,7 @@ namespace HuC6280
             w.WriteLine();
             w.WriteLine("                if (Debug) Logger(State());");
             w.WriteLine("                CoreComm.MemoryCallbackSystem.CallExecute(PC);");
+			w.WriteLine("                if (CDLLoggingActive) CDLOpcode();");
             w.WriteLine();
             w.WriteLine("                byte opcode = ReadMemory(PC++);");
             w.WriteLine("                switch (opcode)");
