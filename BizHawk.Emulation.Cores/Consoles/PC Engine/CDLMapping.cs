@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{
 					// mark as unknown mirrors
 					mm[i].Name = null;
+					mm[i].Offs = 0;
 				}
 				for (int i = 0x40; i < 0x50; i++)
 				{
