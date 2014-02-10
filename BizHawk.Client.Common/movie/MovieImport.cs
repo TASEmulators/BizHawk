@@ -913,7 +913,7 @@ namespace BizHawk.Client.Common
 			m.Header.Comments.Add(COMMENT + " " + description);
 			SimpleController controllers = new SimpleController
 				{
-					Type = new ControllerDefinition {Name = "Genesis 3-Button Controller"}
+					Type = new ControllerDefinition { Name = "GPGX Genesis Controller" }
 				};
 			/*
 			 040 frame data
