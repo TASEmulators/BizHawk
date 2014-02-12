@@ -381,6 +381,7 @@
 			this.AutoCompleteView.MultiSelect = false;
 			this.AutoCompleteView.Name = "AutoCompleteView";
 			this.AutoCompleteView.Scrollable = false;
+			this.AutoCompleteView.ShowItemToolTips = true;
 			this.AutoCompleteView.Size = new System.Drawing.Size(150, 182);
 			this.AutoCompleteView.TabIndex = 3;
 			this.AutoCompleteView.UseCompatibleStateImageBehavior = false;
