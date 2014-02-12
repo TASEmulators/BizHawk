@@ -151,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
 			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
-			cpu.TraceCallback = (s) => { if (CoreComm.Tracer.Enabled) CoreComm.Tracer.Put(s); };
 
 			cpu.BCD_Enabled = false;
 			cpu.OnExecFetch = ExecFetch;
@@ -219,6 +218,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			if (CoreComm.Tracer.Enabled)
+				cpu.TraceCallback = (s) => CoreComm.Tracer.Put(s);
+			else
+				cpu.TraceCallback = null;
+
 			lagged = true;
 			if (resetSignal)
 			{
