@@ -15,7 +15,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class LuaWriter : Form
 	{
 		//TODO:
-		//Loads of exceptions when closing the writer, primarily in System.Windows.Forms.dll and  mscorlib.dll
 		//make functions is string part of string or comment since the actual way of validating it isn't correct
 		//Option to turn off basic lua script
 		//Tool strip
@@ -725,8 +724,7 @@ namespace BizHawk.Client.EmuHawk
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword).ToList();
-
+					List<LuaDocumentation.LibraryFunction> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword).ToList();
 					// Position autocomplete box near the cursor's current position
 					int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
 					int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
@@ -734,9 +732,10 @@ namespace BizHawk.Client.EmuHawk
 
 					// Populate list with available options
 					AutoCompleteView.Items.Clear();
-					foreach (string function in libfunctions)
+					foreach (LuaDocumentation.LibraryFunction function in libfunctions)
 					{
-						ListViewItem item = new ListViewItem(function);
+						ListViewItem item = new ListViewItem(function.Name);
+						item.ToolTipText = function.Description;
 						AutoCompleteView.Items.Add(item);
 					}
 					// Show window after it has been positioned and set up
@@ -817,6 +816,7 @@ namespace BizHawk.Client.EmuHawk
 				currentWord += e.KeyCode;
 				currentWord = currentWord.ToLower();
 				List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().Distinct().ToList();
+			//	List<string> libListToolTip = GlobalWin.Tools.LuaConsole.LuaImp.Docs.
 				int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
 				int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
 				AutoCompleteView.Location = new Point(x, y);
@@ -840,12 +840,13 @@ namespace BizHawk.Client.EmuHawk
 					String fileName = words[0];
 					if (IsLibraryWord(fileName))
 					{
-						List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(fileName).ToList();
-						foreach (String libfunction in libfunctions)
+						List<LuaDocumentation.LibraryFunction> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(words[1]).ToList();
+						foreach (LuaDocumentation.LibraryFunction libfunction in libfunctions)
 						{
-							if (libfunction.StartsWith(words[1]))
+							if (libfunction.Name.StartsWith(words[1]))
 							{
-								ListViewItem item = new ListViewItem(libfunction);
+								ListViewItem item = new ListViewItem(libfunction.Name);
+								item.ToolTipText = libfunction.Description;
 								AutoCompleteView.Items.Add(item);
 							}
 						}

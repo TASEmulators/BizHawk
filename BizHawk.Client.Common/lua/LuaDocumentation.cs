@@ -40,11 +40,10 @@ namespace BizHawk.Client.Common
 			return FunctionList.Select(x => x.Library);
 		}
 
-		public IEnumerable<string> GetFunctionsByLibrary(string library)
+		public IEnumerable<LibraryFunction> GetFunctionsByLibrary(string library)
 		{
 			return FunctionList
-				.Where(func => func.Library == library)
-				.Select(func => func.Name);
+				.Where(func => func.Library == library);
 		}
 
 		public class LibraryFunction
