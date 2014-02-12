@@ -548,40 +548,40 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		bool booltemp;
 		int tempint;
 		int lo, hi;
-		public Action FetchCallback;
+		public Action<string> TraceCallback;
 
 		void Fetch1()
 		{
+			my_iflag = FlagI;
+			FlagI = iflag_pending;
+			if (!branch_irq_hack)
 			{
-				if (FetchCallback != null)
-					FetchCallback();
-				my_iflag = FlagI;
-				FlagI = iflag_pending;
-				if (!branch_irq_hack)
+				interrupt_pending = false;
+				if (NMI)
 				{
-					interrupt_pending = false;
-					if (NMI)
-					{
-						ea = NMIVector;
-						opcode = VOP_NMI;
-						NMI = false;
-						mi = 0;
-						ExecuteOneRetry();
-						return;
-					}
-					else if (IRQ && !my_iflag)
-					{
-						ea = IRQVector;
-						opcode = VOP_IRQ;
-						mi = 0;
-						ExecuteOneRetry();
-						return;
-					}
+					if (TraceCallback != null)
+						TraceCallback("====NMI====");
+					ea = NMIVector;
+					opcode = VOP_NMI;
+					NMI = false;
+					mi = 0;
+					ExecuteOneRetry();
+					return;
 				}
-				Fetch1_Real();
+				else if (IRQ && !my_iflag)
+				{
+					if (TraceCallback != null)
+						TraceCallback("====IRQ====");
+					ea = IRQVector;
+					opcode = VOP_IRQ;
+					mi = 0;
+					ExecuteOneRetry();
+					return;
+				}
 			}
-
+			Fetch1_Real();
 		}
+
 		void Fetch1_Real()
 		{
 			rdy_freeze = !RDY;
@@ -590,6 +590,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				if (debug) Console.WriteLine(State());
 				branch_irq_hack = false;
 				if (OnExecFetch != null) OnExecFetch(PC);
+				if (TraceCallback != null)
+					TraceCallback(State());
 				opcode = ReadMemory(PC++);
 				mi = -1;
 			}
