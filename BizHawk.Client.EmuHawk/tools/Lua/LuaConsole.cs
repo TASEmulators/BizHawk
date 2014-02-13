@@ -1100,8 +1100,16 @@ namespace BizHawk.Client.EmuHawk
 			_sortReverse = !_sortReverse;
 		}
 
+		private void RefreshScriptMenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleScriptMenuItem_Click(sender, e);
+			ToggleScriptMenuItem_Click(sender, e);
+		}
+
 		#endregion
 
 		#endregion
+
+
 	}
 }
