@@ -85,7 +85,15 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawBG(int* pal)
 		{
-			var lockdata = bmpViewBG.bmp.LockBits(new Rectangle(0, 0, 256, 128), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			int bgheight = vdp.FrameHeight == 192 ? 224 : 256;
+			int maxtile = bgheight * 4;
+			if (bgheight != bmpViewBG.bmp.Height)
+			{
+				bmpViewBG.Height = bgheight;
+				bmpViewBG.ChangeBitmapSize(256, bgheight);
+			}
+
+			var lockdata = bmpViewBG.bmp.LockBits(new Rectangle(0, 0, 256, bgheight), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 
@@ -95,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					short* map = (short*)(vram + vdp.CalcNameTableBase());
 
-					for (int tile = 0; tile < 1024; tile++)
+					for (int tile = 0; tile < maxtile; tile++)
 					{
 						short bgent = *map++;
 						bool hflip = (bgent & 1 << 9) != 0;
