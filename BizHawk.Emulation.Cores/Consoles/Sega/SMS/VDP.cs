@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int IPeriod = 228;
 		public VdpMode VdpMode { get { return mode; } }
 
-		int FrameHeight = 192;
+		public int FrameHeight = 192;
 		public int ScanLine;
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
