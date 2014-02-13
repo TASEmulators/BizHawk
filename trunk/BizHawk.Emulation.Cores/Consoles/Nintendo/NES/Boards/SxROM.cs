@@ -23,14 +23,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Zelda 2
 	//Castlevania 2
 
+	// TODO -- different MMC1 revisions handle wram_disable differently; on some it doesn't work at all; on others,
+	//         it works, but with different initial states possible.  we only emulate the first case
+
 	public sealed class MMC1
 	{
-		NES.NESBoardBase board;
 		public MMC1_SerialController scnt = new MMC1_SerialController();
 
-		public MMC1(NES.NESBoardBase board)
+		public MMC1()
 		{
-			this.board = board;
 			scnt.WriteRegister = SerialWriteRegister;
 			scnt.Reset = SerialReset;
 
@@ -415,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected void BaseConfigure()
 		{
-			mmc1 = new MMC1(this);
+			mmc1 = new MMC1();
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
