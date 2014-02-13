@@ -40,8 +40,8 @@ end
 
 local function buildbox(i)
 	local box = {0,0}  -- xrad/yrad
-	local dracform = mainmemory.read_u8(0x434 + i)
-		
+	local offset = mainmemory.read_u8(0x434 + i)
+	local dracform
 	if offset == 0x1D then
 		dracform = mainmemory.read_u8(0x7A)
 		if dracform == 1 then
