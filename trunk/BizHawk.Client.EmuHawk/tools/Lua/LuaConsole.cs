@@ -339,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (LuaImp.GuiLibrary.SurfaceIsNull)
 				{
-					LuaImp.GuiLibrary.DrawNewEmu();
+					LuaImp.GuiLibrary.DrawNew("emu");
 				}
 
 				foreach (var lf in _luaList)
@@ -396,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_luaList.Any() && LuaImp.GuiLibrary.SurfaceIsNull)
 			{
-				LuaImp.GuiLibrary.DrawNewEmu();
+				LuaImp.GuiLibrary.DrawNew("emu");
 			}
 		}
 
@@ -404,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_luaList.Any())
 			{
-				LuaImp.GuiLibrary.DrawFinishEmu();
+				LuaImp.GuiLibrary.DrawFinish();
 			}
 		}
 
