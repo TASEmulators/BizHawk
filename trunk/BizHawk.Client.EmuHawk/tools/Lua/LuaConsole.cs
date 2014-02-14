@@ -14,28 +14,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : Form, IToolForm
 	{
-		// TODO:
-		// remember column widths and restore column width on restore default settings
-		// column reorder
-		public EmuLuaLibrary LuaImp { get; set; }
-
 		private readonly LuaFileList _luaList;
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private bool _sortReverse;
 		private string _lastColumnSorted;
-
-		public bool UpdateBefore { get { return true; } }
-		public void UpdateValues() { }
-
-		public LuaConsole Get() { return this; }
-
-		public void ConsoleLog(string message)
-		{
-			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
-			OutputBox.SelectionStart = OutputBox.Text.Length;
-			OutputBox.ScrollToCaret();
-		}
 
 		public LuaConsole()
 		{
@@ -66,6 +49,41 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.VirtualMode = true;
 
 			TopMost = Global.Config.LuaSettings.TopMost;
+		}
+
+		public EmuLuaLibrary LuaImp { get; set; }
+
+		public bool UpdateBefore { get { return true; } }
+
+		private IEnumerable<int> SelectedIndices
+		{
+			get { return LuaListView.SelectedIndices.Cast<int>(); }
+		}
+
+		private IEnumerable<LuaFile> SelectedItems
+		{
+			get { return SelectedIndices.Select(index => _luaList[index]); }
+		}
+
+		private IEnumerable<LuaFile> SelectedFiles
+		{
+			get { return SelectedItems.Where(x => !x.IsSeparator); }
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		public void UpdateValues() { }
+
+		public LuaConsole Get() { return this; }
+
+		public void ConsoleLog(string message)
+		{
+			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
+			OutputBox.SelectionStart = OutputBox.Text.Length;
+			OutputBox.ScrollToCaret();
 		}
 
 		private void LuaConsole_Load(object sender, EventArgs e)
@@ -501,12 +519,14 @@ namespace BizHawk.Client.EmuHawk
 
 					return true;
 				}
-				else if (result == DialogResult.No)
+				
+				if (result == DialogResult.No)
 				{
 					_luaList.Changes = false;
 					return true;
 				}
-				else if (result == DialogResult.Cancel)
+				
+				if (result == DialogResult.Cancel)
 				{
 					return false;
 				}
@@ -524,8 +544,7 @@ namespace BizHawk.Client.EmuHawk
 		private Point GetPromptPoint()
 		{
 			return PointToScreen(
-				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30)
-			);
+				new Point(LuaListView.Location.X + 30, LuaListView.Location.Y + 30));
 		}
 
 		private static void UpdateRegisteredFunctionsDialog()
@@ -534,26 +553,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				form.UpdateValues();
 			}
-		}
-
-		private IEnumerable<int> SelectedIndices
-		{
-			get { return LuaListView.SelectedIndices.Cast<int>(); }
-		}
-
-		private IEnumerable<LuaFile> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _luaList[index]); }
-		}
-
-		private IEnumerable<LuaFile> SelectedFiles
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -569,16 +568,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent)
-			);
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLuaSession, LoadSessionFromRecent));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent)
-			);
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentLua, LoadLuaFromRecent));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
@@ -1109,7 +1106,5 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#endregion
-
-
 	}
 }
