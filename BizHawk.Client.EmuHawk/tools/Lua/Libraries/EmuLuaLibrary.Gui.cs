@@ -35,37 +35,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// sets the current drawing context to a new surface.
-		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
-		/// could be more powerful.
-		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
-		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
-		/// </summary>
-		public void DrawNew()
+		[LuaMethodAttributes(
+			"DrawNew",
+			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface."
+		)]
+		public void DrawNew(string name)
 		{
-			_luaSurface = GlobalWin.DisplayManager.GetLuaSurfaceNative();
+			DrawFinish();
+			_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
 		}
 
-		public void DrawNewEmu()
-		{
-			_luaSurface = GlobalWin.DisplayManager.GetLuaEmuSurfaceEmu();
-		}
-
-		/// <summary>
-		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
-		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
-		/// most notably, the client output [emulated] resolution 
-		/// </summary>
 		public void DrawFinish()
 		{
-			GlobalWin.DisplayManager.SetLuaSurfaceNativePreOSD(_luaSurface);
-			_luaSurface = null;
-		}
-
-		public void DrawFinishEmu()
-		{
-			GlobalWin.DisplayManager.SetLuaSurfaceEmu(_luaSurface);
+			if(_luaSurface != null)
+				GlobalWin.DisplayManager.UnlockLuaSurface(_luaSurface);
 			_luaSurface = null;
 		}
 

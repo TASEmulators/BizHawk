@@ -39,9 +39,9 @@ namespace BizHawk.Client.EmuHawk
 			currEmuWidth = currEmuHeight = 1;
 
 			Renderer = new GuiRenderer(GL);
-			VideoTextureFrugalizer = new TextureFrugalizer(GL);
-			LuaEmuTextureFrugalizer = new TextureFrugalizer(GL);
+
 			Video2xFrugalizer = new RenderTargetFrugalizer(GL);
+			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
 			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
 			for (int i = 0; i < 16; i++)
@@ -61,6 +61,11 @@ namespace BizHawk.Client.EmuHawk
 			if (fiScanlines.Exists)
 				using (var stream = fiScanlines.OpenRead())
 					ShaderChain_scanlines = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
+
+			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
+			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
+			LuaSurfaceFrugalizers["emu"] = new TextureFrugalizer(GL);
+			LuaSurfaceFrugalizers["native"] = new TextureFrugalizer(GL);
 		}
 
 		public bool Disposed { get; private set; }
@@ -70,37 +75,33 @@ namespace BizHawk.Client.EmuHawk
 			if (Disposed) return;
 			Disposed = true;
 			VideoTextureFrugalizer.Dispose();
-			LuaEmuTextureFrugalizer.Dispose();
+			foreach (var f in LuaSurfaceFrugalizers.Values)
+				f.Dispose();
 			foreach (var f in ShaderChainFrugalizers)
 				if (f != null)
 					f.Dispose();
 		}
+
+		//dont know what to do about this yet
+		public bool NeedsToPaint { get; set; }
 
 		//rendering resources:
 		IGL GL;
 		StringRenderer TheOneFont;
 		GuiRenderer Renderer;
 
-
 		//layer resources
-		DisplaySurface luaEmuSurface = null;
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
 		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
 
-
-		public bool NeedsToPaint { get; set; }
-
-		public void PreFrameUpdateLuaSource()
-		{
-			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-		}
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
-		TextureFrugalizer VideoTextureFrugalizer, LuaEmuTextureFrugalizer;
+		TextureFrugalizer VideoTextureFrugalizer;
+		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer Video2xFrugalizer;
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
 		RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines;
@@ -121,10 +122,16 @@ namespace BizHawk.Client.EmuHawk
 			//now, acquire the data sent from the videoProvider into a texture
 			var videoTexture = VideoTextureFrugalizer.Get(bb);
 
-			//acquire the lua emu surface as a texture
+			//acquire the lua surfaces as textures
 			Texture2d luaEmuTexture = null;
+			var luaEmuSurface = LuaSurfaceSets["emu"].GetCurrent();
 			if (luaEmuSurface != null)
-				luaEmuTexture = LuaEmuTextureFrugalizer.Get(luaEmuSurface);
+				luaEmuTexture = LuaSurfaceFrugalizers["emu"].Get(luaEmuSurface);
+
+			Texture2d luaNativeTexture = null;
+			var luaNativeSurface = LuaSurfaceSets["native"].GetCurrent();
+			if (luaNativeSurface != null)
+				luaNativeTexture = LuaSurfaceFrugalizers["native"].Get(luaNativeSurface);
 
 			//select shader chain
 			RetroShaderChain selectedChain = null;
@@ -200,9 +207,11 @@ namespace BizHawk.Client.EmuHawk
 			if(luaEmuTexture != null) Renderer.Draw(luaEmuTexture);
 			Renderer.Modelview.Pop();
 
-			//(should we draw native layer lua here? thats broken right now)
+			//5a. draw the native layer content
+			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
+			if (luaNativeTexture != null) Renderer.Draw(luaNativeTexture);
 
-			//5. draw the native layer OSD
+			//5b. draw the native layer OSD
 			MyBlitter myBlitter = new MyBlitter(this);
 			myBlitter.ClipBounds = new Rectangle(0, 0, GraphicsControl.Width, GraphicsControl.Height);
 			GlobalWin.OSD.Begin(myBlitter);
@@ -225,20 +234,53 @@ namespace BizHawk.Client.EmuHawk
 			NeedsToPaint = false; //??
 		}
 
+		Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
+		Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
+		Dictionary<string, SwappableDisplaySurfaceSet> LuaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
 		SwappableDisplaySurfaceSet luaNativeSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
-		public DisplaySurface GetLuaSurfaceNative()
+
+		/// <summary>
+		/// Locks the requested lua surface name
+		/// </summary>
+		public DisplaySurface LockLuaSurface(string name)
 		{
+			if (MapNameToLuaSurface.ContainsKey(name))
+				throw new InvalidOperationException("Lua surface is already locked: " + name);
+
+			SwappableDisplaySurfaceSet sdss;
+			if (!LuaSurfaceSets.TryGetValue(name, out sdss))
+			{
+				sdss = new SwappableDisplaySurfaceSet();
+				LuaSurfaceSets.Add(name, sdss);
+			}
+
+			//placeholder logic for more abstracted surface definitions from filter chain
 			int currNativeWidth = presentationPanel.NativeSize.Width;
 			int currNativeHeight = presentationPanel.NativeSize.Height;
-			return luaNativeSurfaceSet.AllocateSurface(currNativeWidth, currNativeHeight);
+
+			int width,height;
+			if(name == "emu") { width = currEmuWidth; height = currEmuHeight; }
+			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
+			else throw new InvalidOperationException("Unknown lua surface name: " +name);
+
+			DisplaySurface ret = sdss.AllocateSurface(width, height);
+			MapNameToLuaSurface[name] = ret;
+			MapLuaSurfaceToName[ret] = name;
+			return ret;
 		}
 
-		SwappableDisplaySurfaceSet luaEmuSurfaceSet = new SwappableDisplaySurfaceSet();
-		public void SetLuaSurfaceEmu(DisplaySurface surface) { luaEmuSurfaceSet.SetPending(surface); }
-		public DisplaySurface GetLuaEmuSurfaceEmu()
+		/// <summary>
+		/// Unlocks this DisplaySurface which had better have been locked as a lua surface
+		/// </summary>
+		public void UnlockLuaSurface(DisplaySurface surface)
 		{
-			return luaEmuSurfaceSet.AllocateSurface(currEmuWidth, currEmuHeight);
+			if (!MapLuaSurfaceToName.ContainsKey(surface))
+				throw new InvalidOperationException("Surface was not locked as a lua surface");
+			string name = MapLuaSurfaceToName[surface];
+			MapLuaSurfaceToName.Remove(surface);
+			MapNameToLuaSurface.Remove(name);
+			LuaSurfaceSets[name].SetPending(surface);
 		}
 
 		//helper classes:

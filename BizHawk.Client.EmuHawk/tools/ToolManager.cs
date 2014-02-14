@@ -232,7 +232,6 @@ namespace BizHawk.Client.EmuHawk
 				LuaConsole.LuaImp.CallFrameAfterEvent();
 				if (!fromLua)
 				{
-					GlobalWin.DisplayManager.PreFrameUpdateLuaSource();
 					LuaConsole.EndLuaDrawing();
 				}
 			}
