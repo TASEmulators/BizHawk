@@ -98,23 +98,21 @@ namespace BizHawk.Client.EmuHawk
 			int pitch = lockdata.Stride / sizeof(int);
 
 			fixed (byte* src = vdp.PatternBuffer)
+			fixed (byte* vram = vdp.VRAM)
 			{
-				fixed (byte* vram = vdp.VRAM)
-				{
-					short* map = (short*)(vram + vdp.CalcNameTableBase());
+				short* map = (short*)(vram + vdp.CalcNameTableBase());
 
-					for (int tile = 0; tile < maxtile; tile++)
-					{
-						short bgent = *map++;
-						bool hflip = (bgent & 1 << 9) != 0;
-						bool vflip = (bgent & 1 << 10) != 0;
-						int* tpal = pal + ((bgent & 1 << 11) >> 7);
-						int srcaddr = (bgent & 511) * 64;
-						int tx = tile & 31;
-						int ty = tile >> 5;
-						int destaddr = ty * 8 * pitch + tx * 8;
-						Draw8x8hv(src + srcaddr, dest + destaddr, pitch, tpal, hflip, vflip);
-					}
+				for (int tile = 0; tile < maxtile; tile++)
+				{
+					short bgent = *map++;
+					bool hflip = (bgent & 1 << 9) != 0;
+					bool vflip = (bgent & 1 << 10) != 0;
+					int* tpal = pal + ((bgent & 1 << 11) >> 7);
+					int srcaddr = (bgent & 511) * 64;
+					int tx = tile & 31;
+					int ty = tile >> 5;
+					int destaddr = ty * 8 * pitch + tx * 8;
+					Draw8x8hv(src + srcaddr, dest + destaddr, pitch, tpal, hflip, vflip);
 				}
 			}
 			bmpViewBG.bmp.UnlockBits(lockdata);

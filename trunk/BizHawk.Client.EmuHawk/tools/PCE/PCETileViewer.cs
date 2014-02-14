@@ -78,17 +78,15 @@ namespace BizHawk.Client.EmuHawk
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 			fixed (byte* src = vdc.SpriteBuffer)
+			fixed (int* pal = &vce.Palette[256 + sppalnum * 16])
 			{
-				fixed (int* pal = &vce.Palette[256 + sppalnum * 16])
+				for (int tile = 0; tile < 512; tile++)
 				{
-					for (int tile = 0; tile < 512; tile++)
-					{
-						int srcaddr = tile * 256;
-						int tx = tile & 31;
-						int ty = tile >> 5;
-						int destaddr = ty * 16 * pitch + tx * 16;
-						Draw16x16(src + srcaddr, dest + destaddr, pitch, pal);
-					}
+					int srcaddr = tile * 256;
+					int tx = tile & 31;
+					int ty = tile >> 5;
+					int destaddr = ty * 16 * pitch + tx * 16;
+					Draw16x16(src + srcaddr, dest + destaddr, pitch, pal);
 				}
 			}
 			bmpViewSP.bmp.UnlockBits(lockdata);
@@ -101,17 +99,15 @@ namespace BizHawk.Client.EmuHawk
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 			fixed (byte* src = vdc.PatternBuffer)
+			fixed (int* pal = &vce.Palette[0 + bgpalnum * 16])
 			{
-				fixed (int* pal = &vce.Palette[0 + bgpalnum * 16])
+				for (int tile = 0; tile < 2048; tile++)
 				{
-					for (int tile = 0; tile < 2048; tile++)
-					{
-						int srcaddr = tile * 64;
-						int tx = tile & 63;
-						int ty = tile >> 6;
-						int destaddr = ty * 8 * pitch + tx * 8;
-						Draw8x8(src + srcaddr, dest + destaddr, pitch, pal);
-					}
+					int srcaddr = tile * 64;
+					int tx = tile & 63;
+					int ty = tile >> 6;
+					int destaddr = ty * 8 * pitch + tx * 8;
+					Draw8x8(src + srcaddr, dest + destaddr, pitch, pal);
 				}
 			}
 			bmpViewBG.bmp.UnlockBits(lockdata);
