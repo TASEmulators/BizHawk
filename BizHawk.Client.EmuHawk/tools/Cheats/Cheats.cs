@@ -594,10 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			Enumerable
-				.Range(0, Global.CheatList.Count)
-				.ToList()
-				.ForEach(i => CheatListView.SelectItem(i, true));
+			CheatListView.SelectAll();
 		}
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)

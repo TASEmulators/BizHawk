@@ -775,5 +775,26 @@ namespace BizHawk.Client.EmuHawk
 
 			selection = -1;
 		}
+
+		public void SelectAll()
+		{
+			this.BeginUpdate();
+			for (var i = 0; i < _itemCount; i++)
+			{
+				this.SelectItem(i, true);
+			}
+
+			this.EndUpdate();
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
+			{
+				SelectAll();
+			}
+
+			base.OnKeyDown(e);
+		}
 	}
 }
