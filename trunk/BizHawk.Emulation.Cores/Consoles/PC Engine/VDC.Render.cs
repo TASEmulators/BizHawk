@@ -112,7 +112,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			RenderSpritesScanline(pce.Settings.ShowOBJ1);
 		}
 
-		unsafe void RenderBackgroundScanline(bool show)
+		Action<bool> RenderBackgroundScanline;
+
+		unsafe void RenderBackgroundScanlineUnsafe(bool show)
 		{
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
 
@@ -187,6 +189,46 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						paletteBase = paletteNo * 16;
 						src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
 					}
+				}
+			}
+		}
+
+		void RenderBackgroundScanlineSafe(bool show)
+		{
+			Array.Clear(PriorityBuffer, 0, FrameWidth);
+
+			if (BackgroundEnabled == false)
+			{
+				for (int i = 0; i < FrameWidth; i++)
+					FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[256];
+				return;
+			}
+
+			int batHeight = BatHeight * 8;
+			int batWidth = BatWidth * 8;
+
+			int vertLine = BackgroundY;
+			vertLine %= batHeight;
+			int yTile = (vertLine / 8);
+			int yOfs = vertLine % 8;
+
+			// This is not optimized. But it seems likely to remain that way.
+			int xScroll = Registers[BXR] & 0x3FF;
+			for (int x = 0; x < FrameWidth; x++)
+			{
+				int xTile = ((x + xScroll) / 8) % BatWidth;
+				int xOfs = (x + xScroll) & 7;
+				int tileNo = VRAM[(ushort)(((yTile * BatWidth) + xTile))] & 2047;
+				int paletteNo = VRAM[(ushort)(((yTile * BatWidth) + xTile))] >> 12;
+				int paletteBase = paletteNo * 16;
+
+				byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
+				if (c == 0)
+					FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[0];
+				else
+				{
+					FrameBuffer[(ActiveLine * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
+					PriorityBuffer[x] = 1;
 				}
 			}
 		}

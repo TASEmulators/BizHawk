@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			this.pce = pce;
 			this.cpu = cpu;
 			this.vce = vce;
+			RenderBackgroundScanline = RenderBackgroundScanlineUnsafe;
 
 			Registers[HSR] = 0x00FF;
 			Registers[HDR] = 0x00FF;
