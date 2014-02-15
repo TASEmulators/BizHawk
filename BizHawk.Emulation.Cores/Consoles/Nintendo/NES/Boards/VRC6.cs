@@ -43,19 +43,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					case 0:
 					case 6:
-					case 7: // H-mirror
-						banknum >>= 1;
+					case 7: // H-mirror, 6677
+						bank = (byte)(banknum >> 1 | 6);
 						break;
 					case 2:
 					case 3:
-					case 4: // V-mirror
-						banknum &= 1;
+					case 4: // V-mirror, 6767
+						bank = (byte)(banknum | 6);
 						break;
 					case 1:
-					case 5: // 4 screen
+					case 5: // 4 screen, 4567
+					default:
+						bank = (byte)(banknum | 4);
 						break;
 				}
-				bank = (byte)(banknum + 4);
 				switch (b003)
 				{
 					case 0:
