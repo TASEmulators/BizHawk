@@ -7,6 +7,7 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings()
 		{
 			SaveWindowPosition = true;
+			FloatingWindow = true;
 		}
 
 		public int? Wndx { get; set; }
