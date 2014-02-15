@@ -1591,13 +1591,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RemoveAddresses();
 			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
-			{
-				for (var i = 0; i < _searches.Count; i++)
-				{
-					WatchListView.SelectItem(i, true);
-				}
-			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
 				if (SelectedIndices.Count > 0)

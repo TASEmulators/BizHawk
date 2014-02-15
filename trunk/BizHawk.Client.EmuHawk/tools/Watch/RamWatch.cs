@@ -821,10 +821,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (var i = 0; i < _watches.Count; i++)
-			{
-				WatchListView.SelectItem(i, true);
-			}
+			WatchListView.SelectAll();
 		}
 
 		#endregion
@@ -1074,13 +1071,6 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
 			{
 				RemoveWatchMenuItem_Click(sender, e);
-			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) // Select All
-			{
-				for (var x = 0; x < _watches.Count; x++)
-				{
-					WatchListView.SelectItem(x, true);
-				}
 			}
 			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{

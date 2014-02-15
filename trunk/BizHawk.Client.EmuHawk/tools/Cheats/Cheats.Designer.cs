@@ -73,6 +73,7 @@
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +102,6 @@
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.CheatGroupBox = new System.Windows.Forms.GroupBox();
 			this.CheatEditor = new BizHawk.Client.EmuHawk.CheatEdit();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsContextMenu.SuspendLayout();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -382,7 +382,7 @@
 			// SelectAllMenuItem
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
-			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
@@ -486,6 +486,13 @@
 			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
 			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -518,63 +525,63 @@
 			// ShowNameMenuItem
 			// 
 			this.ShowNameMenuItem.Name = "ShowNameMenuItem";
-			this.ShowNameMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowNameMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowNameMenuItem.Text = "&Name";
 			this.ShowNameMenuItem.Click += new System.EventHandler(this.ShowNameMenuItem_Click);
 			// 
 			// ShowAddressMenuItem
 			// 
 			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
-			this.ShowAddressMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowAddressMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowAddressMenuItem.Text = "&Address";
 			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
 			// 
 			// ShowValueMenuItem
 			// 
 			this.ShowValueMenuItem.Name = "ShowValueMenuItem";
-			this.ShowValueMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowValueMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowValueMenuItem.Text = "&Value";
 			this.ShowValueMenuItem.Click += new System.EventHandler(this.ShowValueMenuItem_Click);
 			// 
 			// ShowCompareMenuItem
 			// 
 			this.ShowCompareMenuItem.Name = "ShowCompareMenuItem";
-			this.ShowCompareMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowCompareMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowCompareMenuItem.Text = "&Compare";
 			this.ShowCompareMenuItem.Click += new System.EventHandler(this.ShowCompareMenuItem_Click);
 			// 
 			// ShowOnMenuItem
 			// 
 			this.ShowOnMenuItem.Name = "ShowOnMenuItem";
-			this.ShowOnMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowOnMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowOnMenuItem.Text = "&On";
 			this.ShowOnMenuItem.Click += new System.EventHandler(this.ShowOnMenuItem_Click);
 			// 
 			// ShowDomainMenuItem
 			// 
 			this.ShowDomainMenuItem.Name = "ShowDomainMenuItem";
-			this.ShowDomainMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowDomainMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowDomainMenuItem.Text = "&Domain";
 			this.ShowDomainMenuItem.Click += new System.EventHandler(this.ShowDomainMenuItem_Click);
 			// 
 			// ShowSizeMenuItem
 			// 
 			this.ShowSizeMenuItem.Name = "ShowSizeMenuItem";
-			this.ShowSizeMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowSizeMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowSizeMenuItem.Text = "&Size";
 			this.ShowSizeMenuItem.Click += new System.EventHandler(this.ShowSizeMenuItem_Click);
 			// 
 			// ShowEndianMenuItem
 			// 
 			this.ShowEndianMenuItem.Name = "ShowEndianMenuItem";
-			this.ShowEndianMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowEndianMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowEndianMenuItem.Text = "&Endian";
 			this.ShowEndianMenuItem.Click += new System.EventHandler(this.ShowEndianMenuItem_Click);
 			// 
 			// ShowDisplayTypeMenuItem
 			// 
 			this.ShowDisplayTypeMenuItem.Name = "ShowDisplayTypeMenuItem";
-			this.ShowDisplayTypeMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ShowDisplayTypeMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.ShowDisplayTypeMenuItem.Text = "&Display Type";
 			this.ShowDisplayTypeMenuItem.Click += new System.EventHandler(this.ShowDisplayTypeMenuItem_Click);
 			// 
@@ -735,13 +742,6 @@
 			this.CheatEditor.Name = "CheatEditor";
 			this.CheatEditor.Size = new System.Drawing.Size(190, 264);
 			this.CheatEditor.TabIndex = 0;
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// Cheats
 			// 

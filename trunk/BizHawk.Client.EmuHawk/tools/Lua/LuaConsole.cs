@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -353,6 +354,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
+			foreach (var blah in onTheFlyList)
+			{
+				var result = LuaImp.ResumeScript(blah);
+			}
+
 			if (_luaList.Any())
 			{
 				if (LuaImp.GuiLibrary.SurfaceIsNull)
@@ -817,10 +823,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (var i = 0; i < _luaList.Count; i++)
-			{
-				LuaListView.SelectItem(i, true);
-			}
+			LuaListView.SelectAll();
 		}
 
 		private void StopAllScriptsMenuItem_Click(object sender, EventArgs e)
@@ -1104,6 +1107,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private List<Lua> onTheFlyList = new List<Lua>();
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			onTheFlyList.Add(LuaImp.SpawnCoroutineFromText(ConsoleTextBox.Text));
+		}
 
 		#endregion
 	}

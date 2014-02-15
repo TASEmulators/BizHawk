@@ -113,6 +113,14 @@ namespace BizHawk.Client.EmuHawk
 			return lua;
 		}
 
+		public Lua SpawnCoroutineFromText(string text)
+		{
+			var lua = _lua.NewThread();
+			var main = lua.LoadString(text, string.Empty);
+			lua.Push(main);
+			return lua;
+		}
+
 		public ResumeResult ResumeScript(Lua script)
 		{
 			_eventLibrary.CurrentThread = script;
