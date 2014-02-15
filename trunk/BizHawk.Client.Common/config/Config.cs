@@ -348,6 +348,7 @@ namespace BizHawk.Client.Common
 		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;
 		public int NESPPURefreshRate = 4;
+		public bool NESPPUChrRomView = false;
 
 		// NESDebuger Settings
 		public bool AutoLoadNESDebugger = false;
