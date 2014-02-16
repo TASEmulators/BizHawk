@@ -102,15 +102,11 @@
 			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ConsoleBox = new System.Windows.Forms.GroupBox();
-			this.ConsoleTextBox = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			this.ConsoleBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ScriptListContextMenu
@@ -550,7 +546,7 @@
 			this.OutputBox.Location = new System.Drawing.Point(6, 17);
 			this.OutputBox.Name = "OutputBox";
 			this.OutputBox.ReadOnly = true;
-			this.OutputBox.Size = new System.Drawing.Size(246, 307);
+			this.OutputBox.Size = new System.Drawing.Size(246, 234);
 			this.OutputBox.TabIndex = 2;
 			this.OutputBox.Text = "";
 			this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
@@ -585,7 +581,7 @@
 			this.groupBox1.Controls.Add(this.OutputBox);
 			this.groupBox1.Location = new System.Drawing.Point(310, 71);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(258, 328);
+			this.groupBox1.Size = new System.Drawing.Size(258, 255);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
@@ -603,7 +599,7 @@
 			// 
 			this.OutputMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.OutputMessages.AutoSize = true;
-			this.OutputMessages.Location = new System.Drawing.Point(13, 499);
+			this.OutputMessages.Location = new System.Drawing.Point(13, 329);
 			this.OutputMessages.Name = "OutputMessages";
 			this.OutputMessages.Size = new System.Drawing.Size(106, 13);
 			this.OutputMessages.TabIndex = 6;
@@ -753,7 +749,7 @@
 			this.LuaListView.Location = new System.Drawing.Point(13, 71);
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.selectedItem = -1;
-			this.LuaListView.Size = new System.Drawing.Size(291, 328);
+			this.LuaListView.Size = new System.Drawing.Size(291, 255);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.UseCompatibleStateImageBehavior = false;
 			this.LuaListView.View = System.Windows.Forms.View.Details;
@@ -771,49 +767,12 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
-			// ConsoleBox
-			// 
-			this.ConsoleBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ConsoleBox.Controls.Add(this.ConsoleTextBox);
-			this.ConsoleBox.Location = new System.Drawing.Point(13, 405);
-			this.ConsoleBox.Name = "ConsoleBox";
-			this.ConsoleBox.Size = new System.Drawing.Size(495, 100);
-			this.ConsoleBox.TabIndex = 7;
-			this.ConsoleBox.TabStop = false;
-			this.ConsoleBox.Text = "Console";
-			// 
-			// ConsoleTextBox
-			// 
-			this.ConsoleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ConsoleTextBox.Location = new System.Drawing.Point(6, 19);
-			this.ConsoleTextBox.Multiline = true;
-			this.ConsoleTextBox.Name = "ConsoleTextBox";
-			this.ConsoleTextBox.Size = new System.Drawing.Size(483, 72);
-			this.ConsoleTextBox.TabIndex = 0;
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(514, 441);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(48, 23);
-			this.button1.TabIndex = 8;
-			this.button1.Text = "button1";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 517);
-			this.Controls.Add(this.button1);
-			this.Controls.Add(this.ConsoleBox);
+			this.ClientSize = new System.Drawing.Size(584, 347);
 			this.Controls.Add(this.OutputMessages);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.groupBox1);
@@ -836,8 +795,6 @@
 			this.groupBox1.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			this.ConsoleBox.ResumeLayout(false);
-			this.ConsoleBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -917,8 +874,5 @@
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton RefreshScriptToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem RefreshScriptMenuItem;
-		private System.Windows.Forms.GroupBox ConsoleBox;
-		private System.Windows.Forms.TextBox ConsoleTextBox;
-		private System.Windows.Forms.Button button1;
 	}
 }
