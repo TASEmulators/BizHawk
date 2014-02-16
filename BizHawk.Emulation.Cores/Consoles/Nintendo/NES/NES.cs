@@ -592,62 +592,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if (USE_DATABASE)
-				choice = IdentifyFromBootGodDB(hash_sha1_several);
-			if (choice == null)
 			{
-				LoadWriteLine("Could not locate game in nescartdb");
-				if (USE_DATABASE)
-				{
-					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-					if (choice == null)
-					{
-						choice = IdentifyFromGameDB(hash_sha1);
-					}
-				}
+				if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
 				if (choice == null)
-				{
+					choice = IdentifyFromGameDB(hash_sha1);
+				if (choice == null)
 					LoadWriteLine("Could not locate game in bizhawk gamedb");
-					if (unif != null)
-					{
-						LoadWriteLine("Using information from UNIF header");
-						choice = unif.GetCartInfo();
-						choice.game = new NESGameInfo();
-						choice.game.name = gameInfo.Name;
-						origin = EDetectionOrigin.UNIF;
-					}
-					if (iNesHeaderInfo != null)
-					{
-						LoadWriteLine("Attempting inference from iNES header");
-						choice = iNesHeaderInfo;
-						string iNES_board = iNESBoardDetector.Detect(choice);
-						if (iNES_board == null)
-							throw new Exception("couldnt identify NES rom");
-						choice.board_type = iNES_board;
-
-						//try spinning up a board with 8K wram and with 0K wram to see if one answers
-						try
-						{
-							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
-						}
-						catch { }
-						if (boardType == null)
-						{
-							if (choice.wram_size == 8) choice.wram_size = 0;
-							else if (choice.wram_size == 0) choice.wram_size = 8;
-							try
-							{
-								boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
-							}
-							catch { }
-							if (boardType != null)
-								LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
-						}
-
-						LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
-						choice.game.name = gameInfo.Name;
-						origin = EDetectionOrigin.INES;
-					}
-				}
 				else
 				{
 					origin = EDetectionOrigin.GameDB;
@@ -668,14 +618,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.vram_size == -1) choice.vram_size = 0;
 						if (choice.wram_size == -1) choice.wram_size = 0;
 					}
+				}
 
+				//if this is still null, we have to try it some other way. nescartdb perhaps?
+	
+				if (choice == null)
+				{
+					choice = IdentifyFromBootGodDB(hash_sha1_several);
+					if (choice == null)
+						LoadWriteLine("Could not locate game in nescartdb");
+					else
+					{
+						LoadWriteLine("Chose board from nescartdb:");
+						LoadWriteLine(choice);
+						origin = EDetectionOrigin.BootGodDB;
+					}
 				}
 			}
-			else
+
+			//if choice is still null, try UNIF and iNES
+			if (choice == null)
 			{
-				LoadWriteLine("Chose board from nescartdb:");
-				LoadWriteLine(choice);
-				origin = EDetectionOrigin.BootGodDB;
+				if (unif != null)
+				{
+					LoadWriteLine("Using information from UNIF header");
+					choice = unif.GetCartInfo();
+					choice.game = new NESGameInfo();
+					choice.game.name = gameInfo.Name;
+					origin = EDetectionOrigin.UNIF;
+				}
+				if (iNesHeaderInfo != null)
+				{
+					LoadWriteLine("Attempting inference from iNES header");
+					choice = iNesHeaderInfo;
+					string iNES_board = iNESBoardDetector.Detect(choice);
+					if (iNES_board == null)
+						throw new Exception("couldnt identify NES rom");
+					choice.board_type = iNES_board;
+
+					//try spinning up a board with 8K wram and with 0K wram to see if one answers
+					try
+					{
+						boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+					}
+					catch { }
+					if (boardType == null)
+					{
+						if (choice.wram_size == 8) choice.wram_size = 0;
+						else if (choice.wram_size == 0) choice.wram_size = 8;
+						try
+						{
+							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+						}
+						catch { }
+						if (boardType != null)
+							LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
+					}
+
+					LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
+					choice.game.name = gameInfo.Name;
+					origin = EDetectionOrigin.INES;
+				}
 			}
 
 			//TODO - generate better name with region and system
