@@ -1,4 +1,5 @@
-﻿using BizHawk.Common;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -57,10 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_16k = (byte)((value >> 4) & 15);
 			SyncPRG();
 
-			if (value.Bit(0))
-				SetMirrorType(EMirrorType.Horizontal);
-			else
-				SetMirrorType(EMirrorType.Vertical);
+			// there is no mirroring control on this board; only a hardwired H\V
 		}
 
 		public override byte ReadPRG(int addr)
