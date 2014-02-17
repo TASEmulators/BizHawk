@@ -28,13 +28,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
 
-			// Hide Status bar icons
+			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+
+			// Hide Status bar icons and general statusbar prep
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
+			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 		}
 
 		static MainForm()
@@ -992,10 +995,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly bool _autoCloseOnDump;
 		private int _lastOpenRomFilter;
 
-		//TODO GL - this whole feature will have to be re-added
-		//// workaround for possible memory leak in SysdrawingRenderPanel
-		//private RetainedViewportPanel _captureOsdRvp;
-		//private SysdrawingRenderPanel _captureOsdSrp;
+		// Resources
+		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 
 		private object _syncSettingsHack;
 
@@ -2065,8 +2066,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED
-						? Properties.Resources.LightOn
-						: Properties.Resources.LightOff;
+						? StatusBarDiskLightOnImage
+						: StatusBarDiskLightOffImage;
 				}
 				else
 				{
