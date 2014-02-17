@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// maybe the tail is earlier than the head
-			if (_mTail.Value.Index < _mHead.Value.Index)
+			if (_mTail != null && _mTail.Value.Index <= _mHead.Value.Index)
 			{
 				if (target <= _mCapacity)
 				{
@@ -129,24 +129,25 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				// nope, tail is after head. we'll have to clobber from the tail
+				// nope, tail is after head. we'll have to clobber from the tail..
 				_mHead = _mBookmarks.AddAfter(_mHead, new ListItem(timestamp, _mHead.Value.EndExclusive, amount));
 				goto CLEANUP;
 			}
 
+		PLACEATSTART:
 			// no room before the tail, or before capacity. head needs to wrap around.
 			_mHead = _mBookmarks.AddAfter(_mHead, new ListItem(timestamp, 0, amount));
 
 		CLEANUP:
 			// while the head impinges on tail items, discard them
-			for (;;)
+			for (; ; )
 			{
 				if (_mTail == null)
 				{
 					break;
 				}
 
-				if (_mHead.Value.EndExclusive > _mTail.Value.Index && _mHead.Value.Index <= _mTail.Value.Index)
+				if (_mHead.Value.EndExclusive > _mTail.Value.Index && _mHead.Value.Index <= _mTail.Value.Index && _mHead != _mTail)
 				{
 					var nextTail = _mTail.Next;
 					_mSize -= _mTail.Value.Length;
@@ -157,6 +158,17 @@ namespace BizHawk.Client.Common
 				{
 					break;
 				}
+			}
+
+			//one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
+			//this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
+			//and then again to purge tail items impinged by this new item at the beginning
+			if (_mHead.Value.EndExclusive > _mCapacity)
+			{
+				var temp = _mHead.Previous;
+				_mBookmarks.Remove(_mHead);
+				_mHead = temp;
+				goto PLACEATSTART;
 			}
 
 			return _mHead.Value.Index;
@@ -214,7 +226,7 @@ namespace BizHawk.Client.Common
 
 			int ts = _mTail.Value.Timestamp;
 			LinkedListNode<ListItem> curr = _mTail;
-			for (;;)
+			for (; ; )
 			{
 				if (curr == null)
 				{
@@ -249,6 +261,47 @@ namespace BizHawk.Client.Common
 			public long EndExclusive
 			{
 				get { return Index + Length; }
+			}
+		}
+
+		private static byte[] test_BufferManage(byte[] inbuf, long size, bool allocate)
+		{
+			if (allocate)
+			{
+				// if we have an appropriate buffer free, return it
+				if (test_rewindFellationBuf != null && test_rewindFellationBuf.LongLength == size)
+				{
+					var ret = test_rewindFellationBuf;
+					test_rewindFellationBuf = null;
+					return ret;
+				}
+
+				// otherwise, allocate it
+				return new byte[size];
+			}
+
+			test_rewindFellationBuf = inbuf;
+			return null;
+		}
+		static byte[] test_rewindFellationBuf;
+
+		private static void test(string[] args)
+		{
+			var sbb = new StreamBlobDatabase(false, 1024, test_BufferManage);
+			Random r = new Random(0);
+			byte[] temp = new byte[1024];
+			int trials = 0;
+			for (; ; )
+			{
+				int len = r.Next(1024) + 1;
+				if (r.Next(100) == 0)
+					len = 1024;
+				ArraySegment<byte> seg = new ArraySegment<byte>(temp, 0, len);
+				Console.WriteLine("{0} - {1}", trials, seg.Count);
+				if (seg.Count == 1024)
+					Console.Write("*************************");
+				trials++;
+				sbb.Push(seg);
 			}
 		}
 	}
