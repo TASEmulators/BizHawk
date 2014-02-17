@@ -4,7 +4,6 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
-	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4
 	//this is confusing. see docs/sunsoft.txt
 	public sealed class Sunsoft2_Mapper93 : NES.NESBoardBase
 	{
@@ -23,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "SUNSOFT-1":
 					if (Cart.pcb != "SUNSOFT-4") return false;
-					break;
+					return false; // this has been moved to Sunsoft1_Alt
 				default:
 					return false;
 			}

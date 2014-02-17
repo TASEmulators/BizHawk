@@ -367,6 +367,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1_Alt.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft3.cs" />
