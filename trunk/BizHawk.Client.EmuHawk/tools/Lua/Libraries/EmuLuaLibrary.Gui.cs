@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			bool alert,
 			object background = null,
 			object forecolor = null, 
-			object anchor = null)
+			string anchor = null)
 		{
 			if (!alert)
 			{
@@ -140,31 +140,26 @@ namespace BizHawk.Client.EmuHawk
 
 			var a = 0;
 			
-			if (anchor != null)
+			if (!string.IsNullOrEmpty(anchor))
 			{
-				int dummy;
-				if (int.TryParse(anchor.ToString(), out dummy) == false)
+				switch (anchor)
 				{
-					if (anchor.ToString().ToLower() == "topleft")
-					{
+					case "0":
+					case "topleft":
 						a = 0;
-					}
-					else if (anchor.ToString().ToLower() == "topright")
-					{
+						break;
+					case "1":
+					case "topright":
 						a = 1;
-					}
-					else if (anchor.ToString().ToLower() == "bottomleft")
-					{
+						break;
+					case "2":
+					case "bottomleft":
 						a = 2;
-					}
-					else if (anchor.ToString().ToLower() == "bottomright")
-					{
+						break;
+					case "3":
+					case "bottomright":
 						a = 3;
-					}
-				}
-				else
-				{
-					a = LuaInt(anchor);
+						break;
 				}
 			}
 			else
@@ -195,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			"alert",
 			"Functions the same as gui.text() but shows the message in the alert font"
 		)]
-		public void Alert(int x, int y, string message, object anchor = null)
+		public void Alert(int x, int y, string message, string anchor = null)
 		{
 			DoGuiText(x, y, message, true, null, null, anchor); // TODO: refactor DoGuiText to take luaStr as string and refactor
 		}
@@ -557,7 +552,7 @@ namespace BizHawk.Client.EmuHawk
 			string message,
 			object background = null,
 			object forecolor = null,
-			object anchor = null)
+			string anchor = null)
 		{
 			DoGuiText(x, y, message, false, background, forecolor, anchor);
 		}
