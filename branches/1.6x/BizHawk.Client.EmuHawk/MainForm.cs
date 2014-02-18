@@ -35,6 +35,8 @@ namespace BizHawk.Client.EmuHawk
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
+			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 		}
 
 		static MainForm()
@@ -967,6 +969,7 @@ namespace BizHawk.Client.EmuHawk
 		private SysdrawingRenderPanel _captureOsdSrp;
 
 		private object _syncSettingsHack;
+		private Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 
 		#endregion
 
@@ -2090,8 +2093,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED
-						? Properties.Resources.LightOn
-						: Properties.Resources.LightOff;
+						? StatusBarDiskLightOnImage
+						: StatusBarDiskLightOffImage;
 				}
 				else
 				{
