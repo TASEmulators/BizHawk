@@ -570,6 +570,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return new List<KeyValuePair<string, int>>();
 		}
 
+		public void UpdateVDPViewContext(LibGPGX.VDPView view)
+		{
+			LibGPGX.gpgx_get_vdp_view(view);
+		}
+
 		#endregion
 
 		public void Dispose()

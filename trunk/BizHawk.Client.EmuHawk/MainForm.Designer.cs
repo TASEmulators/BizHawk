@@ -223,6 +223,7 @@
 			this.PCESubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEBGViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEtileViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.codeDataLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
 			this.PCEAlwaysPerformSpriteLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEAlwaysEqualizeVolumesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -343,7 +344,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.codeDataLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2017,6 +2018,13 @@
 			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
 			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PCEtileViewerToolStripMenuItem_Click);
 			// 
+			// codeDataLoggerToolStripMenuItem
+			// 
+			this.codeDataLoggerToolStripMenuItem.Name = "codeDataLoggerToolStripMenuItem";
+			this.codeDataLoggerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.codeDataLoggerToolStripMenuItem.Text = "Code-Data Logger";
+			this.codeDataLoggerToolStripMenuItem.Click += new System.EventHandler(this.codeDataLoggerToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
@@ -2455,14 +2463,15 @@
 			// DGBsettingsToolStripMenuItem
 			// 
 			this.DGBsettingsToolStripMenuItem.Name = "DGBsettingsToolStripMenuItem";
-			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DGBsettingsToolStripMenuItem_Click);
 			// 
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GenesisSettingsToolStripMenuItem});
+            this.GenesisSettingsToolStripMenuItem,
+            this.vDPViewerToolStripMenuItem});
 			this.GenesisSubMenu.Name = "GenesisSubMenu";
 			this.GenesisSubMenu.Size = new System.Drawing.Size(56, 17);
 			this.GenesisSubMenu.Text = "&Genesis";
@@ -2470,8 +2479,8 @@
 			// GenesisSettingsToolStripMenuItem
 			// 
 			this.GenesisSettingsToolStripMenuItem.Name = "GenesisSettingsToolStripMenuItem";
-			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.GenesisSettingsToolStripMenuItem.Text = "Settings...";
+			this.GenesisSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GenesisSettingsToolStripMenuItem.Text = "&Settings...";
 			this.GenesisSettingsToolStripMenuItem.Click += new System.EventHandler(this.GenesisSettingsToolStripMenuItem_Click);
 			// 
 			// HelpSubMenu
@@ -2995,12 +3004,12 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// codeDataLoggerToolStripMenuItem
+			// vDPViewerToolStripMenuItem
 			// 
-			this.codeDataLoggerToolStripMenuItem.Name = "codeDataLoggerToolStripMenuItem";
-			this.codeDataLoggerToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.codeDataLoggerToolStripMenuItem.Text = "Code-Data Logger";
-			this.codeDataLoggerToolStripMenuItem.Click += new System.EventHandler(this.codeDataLoggerToolStripMenuItem_Click);
+			this.vDPViewerToolStripMenuItem.Name = "vDPViewerToolStripMenuItem";
+			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
+			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.vDPViewerToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3358,6 +3367,7 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSVDPViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem codeDataLoggerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem vDPViewerToolStripMenuItem;
 	}
 }
 

@@ -550,7 +550,7 @@ static const uint32 tms_palette[16] =
 #endif
 
 /* Cached and flipped patterns */
-static uint8 bg_pattern_cache[0x80000];
+uint8 bg_pattern_cache[0x80000];
 
 /* Sprite pattern name offset look-up table (Mode 5) */
 static uint8 name_lut[0x400];
@@ -562,7 +562,7 @@ static uint32 bp_lut[0x10000];
 static uint8 lut[LUT_MAX][LUT_SIZE];
 
 /* Output pixel data look-up tables*/
-static PIXEL_OUT_T pixel[0x100];
+PIXEL_OUT_T pixel[0x100];
 static PIXEL_OUT_T pixel_lut[3][0x200];
 static PIXEL_OUT_T pixel_lut_m4[0x40];
 
