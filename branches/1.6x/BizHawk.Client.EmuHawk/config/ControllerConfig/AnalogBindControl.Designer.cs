@@ -38,6 +38,7 @@
 			this.trackBarDeadzone = new System.Windows.Forms.TrackBar();
 			this.labelDeadzone = new System.Windows.Forms.Label();
 			this.buttonFlip = new System.Windows.Forms.Button();
+			this.buttonUnbind = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSensitivity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarDeadzone)).BeginInit();
 			this.SuspendLayout();
@@ -123,10 +124,21 @@
 			this.buttonFlip.UseVisualStyleBackColor = true;
 			this.buttonFlip.Click += new System.EventHandler(this.buttonFlip_Click);
 			// 
+			// buttonUnbind
+			// 
+			this.buttonUnbind.Location = new System.Drawing.Point(3, 58);
+			this.buttonUnbind.Name = "buttonUnbind";
+			this.buttonUnbind.Size = new System.Drawing.Size(75, 23);
+			this.buttonUnbind.TabIndex = 8;
+			this.buttonUnbind.Text = "Unbind!";
+			this.buttonUnbind.UseVisualStyleBackColor = true;
+			this.buttonUnbind.Click += new System.EventHandler(this.buttonUnbind_Click);
+			// 
 			// AnalogBindControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.buttonUnbind);
 			this.Controls.Add(this.buttonFlip);
 			this.Controls.Add(this.labelDeadzone);
 			this.Controls.Add(this.trackBarDeadzone);
@@ -155,5 +167,6 @@
 		private System.Windows.Forms.TrackBar trackBarDeadzone;
 		private System.Windows.Forms.Label labelDeadzone;
 		private System.Windows.Forms.Button buttonFlip;
+		private System.Windows.Forms.Button buttonUnbind;
 	}
 }

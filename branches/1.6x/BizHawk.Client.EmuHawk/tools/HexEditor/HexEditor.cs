@@ -1179,7 +1179,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsBinaryMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveFileBinary(GetBinarySaveFileFromUser());
+			var path = GetBinarySaveFileFromUser();
+			if (!string.IsNullOrEmpty(path))
+			{
+				SaveFileBinary(path);
+			}
 		}
 
 		private void SaveAsTextMenuItem_Click(object sender, EventArgs e)
