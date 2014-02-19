@@ -537,6 +537,12 @@
     <Compile Include="tools\Genesis\GenGameGenie.Designer.cs">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Genesis\VDPViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Genesis\VDPViewer.Designer.cs">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexEditor\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1044,6 +1050,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Genesis\GenGameGenie.resx">
       <DependentUpon>GenGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Genesis\VDPViewer.resx">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>

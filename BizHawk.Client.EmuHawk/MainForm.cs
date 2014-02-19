@@ -3068,5 +3068,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<PCECDL>();
 		}
 
+		private void vDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BizHawk.Client.EmuHawk.tools.Genesis.VDPViewer>();
+		}
+
 	}
 }
