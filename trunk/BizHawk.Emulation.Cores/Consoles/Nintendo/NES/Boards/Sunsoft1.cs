@@ -52,7 +52,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteWRAM(int addr, byte value)
 		{
 			left_piece = value & 7 & chr_mask;
-			right_piece = (value >> 4) & 7 & chr_mask;
+			// the bank at ppu $1000 has only 2 selection bits.  the high bit is frozen to 1
+			// this doesn't matter in practice because the only game on this board with 32K CHR,
+			// wing of madoola, writes a '1' to the unread bit.
+			right_piece = (value >> 4 & 3 | 4) & chr_mask;
 		}
 
 		public override void SyncState(Serializer ser)
