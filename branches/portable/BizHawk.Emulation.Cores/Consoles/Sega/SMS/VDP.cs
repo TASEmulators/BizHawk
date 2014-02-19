@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		bool VIntPending;
 		bool HIntPending;
+		int lineIntLinesRemaining;
 
 		SMS Sms;
 		VdpMode mode;
@@ -39,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int IPeriod = 228;
 		public VdpMode VdpMode { get { return mode; } }
 
-		int FrameHeight = 192;
+		public int FrameHeight = 192;
 		public int ScanLine;
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
@@ -320,8 +321,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		int lineIntLinesRemaining;
-
 		void ProcessFrameInterrupt()
 		{
 			if (ScanLine == FrameHeight + 1)
@@ -415,6 +414,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			writer.WriteLine("ReadBuffer {0:X2}", VdpBuffer);
 			writer.WriteLine("VdpAddress {0:X4}", VdpAddress);
 			writer.WriteLine("Command " + Enum.GetName(typeof(VdpCommand), vdpCommand));
+			writer.WriteLine("HIntPending {0}", HIntPending);
+			writer.WriteLine("VIntPending {0}", VIntPending);
+			writer.WriteLine("LineIntLinesRemaining {0}", lineIntLinesRemaining);
 
 			writer.Write("Registers ");
 			Registers.SaveAsHex(writer);
@@ -446,6 +448,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					VdpAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "Command")
 					vdpCommand = (VdpCommand)Enum.Parse(typeof(VdpCommand), args[1]);
+				else if (args[0] == "HIntPending")
+					HIntPending = bool.Parse(args[1]);
+				else if (args[0] == "VIntPending")
+					VIntPending = bool.Parse(args[1]);
+				else if (args[0] == "LineIntLinesRemaining")
+					lineIntLinesRemaining = int.Parse(args[1]);
 				else if (args[0] == "Registers")
 					Registers.ReadFromHex(args[1]);
 				else if (args[0] == "CRAM")
@@ -475,6 +483,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			writer.Write(VdpBuffer);
 			writer.Write(VdpAddress);
 			writer.Write((byte)vdpCommand);
+			writer.Write(HIntPending);
+			writer.Write(VIntPending);
+			writer.Write((short)lineIntLinesRemaining);
 			writer.Write(Registers);
 			writer.Write(CRAM);
 			writer.Write(VRAM);
@@ -488,6 +499,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			VdpBuffer = reader.ReadByte();
 			VdpAddress = reader.ReadUInt16();
 			vdpCommand = (VdpCommand)Enum.ToObject(typeof(VdpCommand), reader.ReadByte());
+			HIntPending = reader.ReadBoolean();
+			VIntPending = reader.ReadBoolean();
+			lineIntLinesRemaining = reader.ReadInt16();
 			Registers = reader.ReadBytes(Registers.Length);
 			CRAM = reader.ReadBytes(CRAM.Length);
 			VRAM = reader.ReadBytes(VRAM.Length);

@@ -223,53 +223,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "PCE":
 							case "PCECD":
-								var biosPath = Global.FirmwareManager.Request("PCECD", "Bios");
-								if (!File.Exists(biosPath))
-								{
-									ThrowLoadError("PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.", game.System);
-									return false;
-								}
-
-								rom = new RomGame(new HawkFile(biosPath));
-
-								if (rom.GameInfo.Status == RomStatus.BadDump)
-								{
-									ThrowLoadError(
-										"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
-										+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!",
-										game.System);
-									return false;
-								}
-								else if (rom.GameInfo.NotInDatabase)
-								{
-									ThrowLoadError(
-										"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.", 
-										game.System);
-									return false;
-								}
-								else if (rom.GameInfo["BIOS"] == false)
-								{
-									ThrowLoadError(
-										"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.", 
-										game.System);
-									return false;
-								}
-
-								if (rom.GameInfo["SuperSysCard"])
-								{
-									game.AddOption("SuperSysCard");
-								}
-
-								if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
-								{
-									ThrowLoadError(
-										"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.",
-										game.System);
-									return false;
-								}
-
-								game.FirmwareHash = Util.Hash_SHA1(rom.RomData);
-								nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData, GetCoreSettings<PCEngine>());
+								nextEmulator = new PCEngine(nextComm, game, disc, GetCoreSettings<PCEngine>());
 								break;
 						}
 					}

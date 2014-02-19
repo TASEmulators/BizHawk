@@ -11,7 +11,29 @@ namespace BizHawk.Client.Common
 {
 	public class CheatCollection : ICollection<Cheat>
 	{
+		private List<Cheat> _cheatList = new List<Cheat>();
+		private string _currentFileName = string.Empty;
+		private string _defaultFileName = string.Empty;
 		private bool _changes;
+
+		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
+		public event CheatListEventHandler Changed;
+
+		public int Count
+		{
+			get { return _cheatList.Count; }
+		}
+
+		public int CheatCount
+		{
+			get { return _cheatList.Count(x => !x.IsSeparator); }
+		}
+
+		public int ActiveCount
+		{
+			get { return _cheatList.Count(x => x.Enabled); }
+		}
+
 		public bool Changes
 		{
 			get
@@ -29,19 +51,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private List<Cheat> _cheatList = new List<Cheat>();
-		private string _currentFileName = String.Empty;
-		private string _defaultFileName = String.Empty;
-
-		public IEnumerator<Cheat> GetEnumerator()
+		public string CurrentFileName
 		{
-			return _cheatList.GetEnumerator();
+			get { return _currentFileName; }
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		public bool IsReadOnly { get { return false; } }
 
 		public Cheat this[int index]
 		{
@@ -56,6 +71,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public IEnumerator<Cheat> GetEnumerator()
+		{
+			return _cheatList.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
 		public void Pulse()
 		{
 			_cheatList.ForEach(cheat => cheat.Pulse());
@@ -64,7 +89,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Looks for a .cht file that matches the ROM loaded based on the default filename for a given ROM
 		/// </summary>
-		/// <returns></returns>
 		public bool AttemptToLoadCheatFile()
 		{
 			var file = new FileInfo(_defaultFileName);
@@ -73,32 +97,15 @@ namespace BizHawk.Client.Common
 			{
 				return Load(file.FullName, false);
 			}
-			else
-			{
-				return false;
-			}
-		}
-
-		public int Count
-		{
-			get { return _cheatList.Count; }
-		}
-
-		public int CheatCount
-		{
-			get { return _cheatList.Count(x => !x.IsSeparator); }
-		}
-
-		public int ActiveCount
-		{
-			get { return _cheatList.Count(x => x.Enabled); }
+			
+			return false;
 		}
 
 		public void NewList(string defaultFileName)
 		{
 			_defaultFileName = defaultFileName;
 			_cheatList.Clear();
-			_currentFileName = String.Empty;
+			_currentFileName = string.Empty;
 			Changes = false;
 		}
 
@@ -145,10 +152,8 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		public bool Remove(Watch w)
@@ -160,10 +165,8 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		public bool Contains(Cheat cheat)
@@ -175,8 +178,6 @@ namespace BizHawk.Client.Common
 		{
 			_cheatList.CopyTo(array, arrayIndex);
 		}
-
-		public bool IsReadOnly { get { return false; } }
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
@@ -206,19 +207,11 @@ namespace BizHawk.Client.Common
 
 		public bool IsActive(MemoryDomain domain, int address)
 		{
-			foreach (var cheat in _cheatList)
-			{
-				if (cheat.IsSeparator)
-				{
-					continue;
-				}
-				else if (cheat.Domain == domain && cheat.Contains(address) && cheat.Enabled)
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return _cheatList.Any(cheat => 
+					!cheat.IsSeparator &&
+					cheat.Enabled &&
+					cheat.Domain == domain
+					&& cheat.Contains(address));
 		}
 
 		public void SaveOnClose()
@@ -227,14 +220,14 @@ namespace BizHawk.Client.Common
 			{
 				if (Changes && _cheatList.Any())
 				{
-					if (String.IsNullOrWhiteSpace(_currentFileName))
+					if (string.IsNullOrWhiteSpace(_currentFileName))
 					{
 						_currentFileName = _defaultFileName;
 					}
 
 					SaveFile(_currentFileName);
 				}
-				else if (!_cheatList.Any() && !String.IsNullOrWhiteSpace(_currentFileName))
+				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(_currentFileName))
 				{
 					new FileInfo(_currentFileName).Delete();
 				}
@@ -243,7 +236,7 @@ namespace BizHawk.Client.Common
 
 		public bool Save()
 		{
-			if (String.IsNullOrWhiteSpace(_currentFileName))
+			if (string.IsNullOrWhiteSpace(_currentFileName))
 			{
 				_currentFileName = _defaultFileName;
 			}
@@ -346,8 +339,8 @@ namespace BizHawk.Client.Common
 							}
 
 							var vals = s.Split('\t');
-							var address = Int32.Parse(vals[0], NumberStyles.HexNumber);
-							var value = Int32.Parse(vals[1], NumberStyles.HexNumber);
+							var address = int.Parse(vals[0], NumberStyles.HexNumber);
+							var value = int.Parse(vals[1], NumberStyles.HexNumber);
 
 							if (vals[2] == "N")
 							{
@@ -355,7 +348,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								compare = Int32.Parse(vals[2], NumberStyles.HexNumber);
+								compare = int.Parse(vals[2], NumberStyles.HexNumber);
 							}
 
 							var domain = Global.Emulator.MemoryDomains[vals[3]];
@@ -376,8 +369,7 @@ namespace BizHawk.Client.Common
 								size,
 								type,
 								name,
-								bigendian
-							);
+								bigendian);
 
 							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled));
 						}
@@ -391,11 +383,6 @@ namespace BizHawk.Client.Common
 
 			Changes = false;
 			return true;
-		}
-
-		public string CurrentFileName
-		{
-			get { return _currentFileName; }
 		}
 
 		public void Sort(string column, bool reverse)
@@ -572,21 +559,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public class CheatListEventArgs : EventArgs
-		{
-			public CheatListEventArgs(Cheat c)
-			{
-				Cheat = c;
-			}
-
-			public Cheat Cheat { get; private set; }
-		}
-
-		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
-		public event CheatListEventHandler Changed;
-
-		#region Privates
-
 		private void CheatChanged(object sender)
 		{
 			if (Changed != null)
@@ -597,7 +569,15 @@ namespace BizHawk.Client.Common
 			_changes = true;
 		}
 
-		#endregion
+		public class CheatListEventArgs : EventArgs
+		{
+			public CheatListEventArgs(Cheat c)
+			{
+				Cheat = c;
+			}
+
+			public Cheat Cheat { get; private set; }
+		}
 
 		public const string NAME = "NamesColumn";
 		public const string ADDRESS = "AddressColumn";

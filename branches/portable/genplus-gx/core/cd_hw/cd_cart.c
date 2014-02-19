@@ -191,8 +191,9 @@ void cd_cart_init(void)
   {
     /* enable 512K backup RAM cartridge when booting from CD (Mode 2) */
     //scd.cartridge.id = 6;
-	scd.cartridge.id = 4; // use 128K instead, which is the size of a real ebram cart
+	//scd.cartridge.id = 4; // use 128K instead, which is the size of a real ebram cart
 						// bizhawk doesn't need the extra space because it gives each game its own anyway
+	  scd.cartridge.id = 1; // 16K to be size-frugal
   }
 
   /* RAM cartridge enabled ? */

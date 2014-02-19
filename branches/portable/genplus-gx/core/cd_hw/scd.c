@@ -1201,8 +1201,8 @@ void scd_reset(int hard)
     scd.dmna = 0;
 
     /* H-INT default vector */
-    *(uint16 *)(m68k.memory_map[0].base + 0x70) = 0x00FF;
-    *(uint16 *)(m68k.memory_map[0].base + 0x72) = 0xFFFF;
+    *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x70) = 0x00FF;
+    *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x72) = 0xFFFF;
 
     /* Power ON initial values (MAIN-CPU side) */
     scd.regs[0x00>>1].w = 0x0002;
@@ -1405,7 +1405,7 @@ int scd_context_save(uint8 *state)
   save_param(&s68k.poll, sizeof(s68k.poll));
 
   /* H-INT default vector */
-  tmp16 = *(uint16 *)(m68k.memory_map[0].base + 0x72);
+  tmp16 = *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x72);
   save_param(&tmp16, 2);
 
   /* SUB-CPU internal state */
@@ -1440,6 +1440,11 @@ int scd_context_save(uint8 *state)
   {
     bufferptr += md_cart_context_save(&state[bufferptr]);
   }
+
+  save_param(scd.bram, 0x2000);
+  // we don't save scd.cartridge.id separately, so it must be non-changing!
+  if (scd.cartridge.id)
+	  save_param(scd.cartridge.area, scd.cartridge.mask + 1);
 
   return bufferptr;
 }
@@ -1606,7 +1611,7 @@ int scd_context_load(uint8 *state)
 
   /* H-INT default vector */
   load_param(&tmp16, 2);
-  *(uint16 *)(m68k.memory_map[0].base + 0x72) = tmp16;
+  *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x72) = tmp16;
 
   /* SUB-CPU internal state */
   load_param(&s68k.cycles, sizeof(s68k.cycles));
@@ -1640,6 +1645,11 @@ int scd_context_load(uint8 *state)
   {
     bufferptr += md_cart_context_load(&state[bufferptr]);
   }
+
+  load_param(scd.bram, 0x2000);
+  // we don't save scd.cartridge.id separately, so it must be non-changing!
+  if (scd.cartridge.id)
+	  load_param(scd.cartridge.area, scd.cartridge.mask + 1);
 
   return bufferptr;
 }

@@ -12,30 +12,29 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : Form, IToolForm
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-
 		private const string MarkerColumnName = "MarkerColumn";
 		private const string FrameColumnName = "FrameColumn";
+
+		private readonly MarkerList _markers = new MarkerList();
+		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private TasMovie _tas;
 
-		private MarkerList _markers = new MarkerList();
-		private List<TasClipboardEntry> TasClipboard = new List<TasClipboardEntry>();
-
 		// Input Painting
-		private string StartDrawColumn = String.Empty;
-		private bool StartOn = false;
-		private bool StartMarkerDrag = false;
-		private bool StartFrameDrag = false;
+		private string _startDrawColumn = string.Empty;
+		private bool _startOn;
+		private bool _startMarkerDrag;
+		private bool _startFrameDrag;
 
 		#region API
 
 		public TAStudio()
 		{
 			InitializeComponent();
-			TasView.QueryItemText += TASView_QueryItemText;
-			TasView.QueryItemBkColor += TASView_QueryItemBkColor;
+			TasView.QueryItemText += TasView_QueryItemText;
+			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.VirtualMode = true;
 			Closing += (o, e) =>
 			{
@@ -55,9 +54,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			TopMost = Global.Config.TAStudioTopMost;
+			TopMost = Global.Config.TAStudioSettings.TopMost;
 			TasView.InputPaintingMode = Global.Config.TAStudioDrawInput;
-			TasView.PointedCellChanged += TASView_PointedCellChanged;
+			TasView.PointedCellChanged += TasView_PointedCellChanged;
 		}
 
 		public bool AskSave()
@@ -69,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					SaveTASMenuItem_Click(null, null);
+					SaveTasMenuItem_Click(null, null);
 				}
 				else if (result == DialogResult.No)
 				{
@@ -80,7 +79,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return false;
 				}
-
 			}
 
 			return true;
@@ -119,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
+		private void TasView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			var record = _tas[index];
 			if (_markers.CurrentFrame == index + 1)
@@ -136,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TASView_QueryItemText(int index, int column, out string text)
+		private void TasView_QueryItemText(int index, int column, out string text)
 		{
 			try
 			{
@@ -145,14 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == MarkerColumnName)
 				{
-					if (_markers.CurrentFrame == index + 1)
-					{
-						text = ">";
-					}
-					else
-					{
-						text = String.Empty;
-					}
+					text = _markers.CurrentFrame == index + 1 ? ">" : string.Empty;
 				}
 				else if (columnName == FrameColumnName)
 				{
@@ -160,17 +151,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					text = _tas[index].IsPressed(columnName) ? columnText : String.Empty;
+					//Serialize TODO
+					//text = _tas[index].IsPressed(columnName) ? columnText : string.Empty;
+					text = string.Empty;
 				}
 			}
 			catch (Exception ex)
 			{
-				text = String.Empty;
+				text = string.Empty;
 				MessageBox.Show("oops\n" + ex);
 			}
 		}
 
-		private void TAStudio_Load(object sender, EventArgs e)
+		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -195,7 +188,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_tas.ActivePlayers = new List<string> { "Player 1" }; // TODO
 
-
 			SetUpColumns();
 			LoadConfigSettings();
 		}
@@ -207,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 			
 			_tas = Global.MovieSession.Movie as TasMovie;
 			_tas.StartNewRecording();
-			_tas.OnChanged += OnMovieChanged;
 			GlobalWin.MainForm.StartNewMovie(_tas, true, true);
 		}
 
@@ -254,23 +245,23 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Global.Config.TAStudioSaveWindowPosition && Global.Config.TASWndx >= 0 && Global.Config.TASWndy >= 0)
+			if (Global.Config.TAStudioSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.TASWndx, Global.Config.TASWndy);
+				Location = Global.Config.TAStudioSettings.WindowPosition;
 			}
 
-			if (Global.Config.TASWidth >= 0 && Global.Config.TASHeight >= 0)
+			if (Global.Config.TAStudioSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.TASWidth, Global.Config.TASHeight);
+				Size = Global.Config.TAStudioSettings.WindowSize;
 			}
 		}
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.TASWndx = Location.X;
-			Global.Config.TASWndy = Location.Y;
-			Global.Config.TASWidth = Right - Left;
-			Global.Config.TASHeight = Bottom - Top;
+			Global.Config.TAStudioSettings.Wndx = Location.X;
+			Global.Config.TAStudioSettings.Wndy = Location.Y;
+			Global.Config.TAStudioSettings.Width = Right - Left;
+			Global.Config.TAStudioSettings.Height = Bottom - Top;
 		}
 
 		public void LoadFileFromRecent(string path)
@@ -293,24 +284,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToFrame(int frame)
 		{
-			//If past greenzone, emulate and capture states
-			//if past greenzone AND movie, record input and capture states
-			//If in greenzone, loadstate
-			//If near a greenzone item, load and emulate
-				//Do capturing and recording as needed
-
+			// If past greenzone, emulate and capture states
+			// If past greenzone AND movie, record input and capture states
+			// If in greenzone, loadstate
+			// If near a greenzone item, load and emulate
+			// Do capturing and recording as needed
 			if (_tas[frame - 1].HasState) // Go back 1 frame and emulate
 			{
 				_tas.SwitchToPlay();
 				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(_tas[frame].State.ToArray())));
-				Global.Emulator.FrameAdvance(true, true);
+				Global.Emulator.FrameAdvance(true);
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				TasView.ensureVisible(frame);
 				TasView.Refresh();
 			}
 			else
 			{
-				//Find the earliest frame before this state
+				// Find the earliest frame before this state
 			}
 		}
 
@@ -318,21 +308,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// TODO: columns selected
 			// TODO: clipboard
-			ListView.SelectedIndexCollection list = TasView.SelectedIndices;
-			string message = String.Empty;
+			var list = TasView.SelectedIndices;
+			string message;
 
 			if (list.Count > 0)
 			{
-				message = list.Count.ToString() + " rows, 0 col, clipboard: ";
+				message = list.Count + " rows, 0 col, clipboard: ";
 			}
 			else
 			{
-				message = list.Count.ToString() + " selected: none, clipboard: ";
+				message = list.Count + " selected: none, clipboard: ";
 			}
 
-			message += TasClipboard.Any() ? TasClipboard.Count.ToString() : "empty";
+			message += _tasClipboard.Any() ? _tasClipboard.Count.ToString() : "empty";
 
 			SplicerStatusLabel.Text = message;
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.TAStudioSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -341,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveTASMenuItem.Enabled = !String.IsNullOrWhiteSpace(_tas.Filename);
+			SaveTASMenuItem.Enabled = !string.IsNullOrWhiteSpace(_tas.Filename);
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -352,13 +347,12 @@ namespace BizHawk.Client.EmuHawk
 			);
 		}
 
-		private void NewTASMenuItem_Click(object sender, EventArgs e)
+		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
 			StartNewSession();
 		}
 
-
-		private void OpenTASMenuItem_Click(object sender, EventArgs e)
+		private void OpenTasMenuItem_Click(object sender, EventArgs e)
 		{
 			if (AskSave())
 			{
@@ -369,25 +363,25 @@ namespace BizHawk.Client.EmuHawk
 					_tas.Load();
 					Global.Config.RecentTas.Add(_tas.Filename);
 					TasView.ItemCount = _tas.InputLogLength;
-					// TOOD: message to the user
+					MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " loaded.";
 				}
 			}
 		}
 
-		private void SaveTASMenuItem_Click(object sender, EventArgs e)
+		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (String.IsNullOrEmpty(_tas.Filename))
+			if (string.IsNullOrEmpty(_tas.Filename))
 			{
-				SaveAsTASMenuItem_Click(sender, e);
+				SaveAsTasMenuItem_Click(sender, e);
 			}
 			else
 			{
 				_tas.Save();
+				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
 			}
-			// TODO: inform the user it happened somehow
 		}
 
-		private void SaveAsTASMenuItem_Click(object sender, EventArgs e)
+		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.GetTasProjSaveFileFromUser(_tas.Filename);
 			if (file != null)
@@ -395,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 				_tas.Filename = file.FullName;
 				_tas.Save();
 				Global.Config.RecentTas.Add(_tas.Filename);
-				// TODO: inform the user it happened somehow
+				MessageStatusLabel.Text = Path.GetFileName(_tas.Filename) + " saved.";
 			}
 		}
 
@@ -420,11 +414,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			TasClipboard.Clear();
-			ListView.SelectedIndexCollection list = TasView.SelectedIndices;
-			for (int i = 0; i < list.Count; i++)
+			_tasClipboard.Clear();
+			var list = TasView.SelectedIndices;
+			for (var i = 0; i < list.Count; i++)
 			{
-				TasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
+				//Serialize TODO
+				//_tasClipboard.Add(new TasClipboardEntry(list[i], _tas[i].Buttons));
 			}
 
 			SetSplicer();
@@ -436,10 +431,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.TAStudioSaveWindowPosition;
+			SaveWindowPositionMenuItem.Checked = Global.Config.TAStudioSettings.SaveWindowPosition;
 			AutoloadMenuItem.Checked = Global.Config.AutoloadTAStudio;
 			AutoloadProjectMenuItem.Checked = Global.Config.AutoloadTAStudioProject;
-			AlwaysOnTopMenuItem.Checked = Global.Config.TAStudioTopMost;
+			AlwaysOnTopMenuItem.Checked = Global.Config.TAStudioSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.TAStudioSettings.FloatingWindow;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
@@ -454,72 +450,75 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioSaveWindowPosition ^= true;
+			Global.Config.TAStudioSettings.SaveWindowPosition ^= true;
 		}
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TAStudioTopMost ^= true;
+			Global.Config.TAStudioSettings.TopMost ^= true;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TAStudioSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
 
-			Global.Config.TAStudioSaveWindowPosition = true;
-			Global.Config.TAStudioTopMost = true;
+			Global.Config.TAStudioSettings.SaveWindowPosition = true;
+			Global.Config.TAStudioSettings.TopMost = false;
+			Global.Config.TAStudioSettings.FloatingWindow = false;
+
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
 
 		#region TASView Events
 
-		private void OnMovieChanged(object sender, MovieRecord.InputEventArgs e)
+		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
-			//TODO: move logic needs to go here
-			TasView.ItemCount = _tas.InputLogLength;
-		}
-
-		private void TASView_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (TasView.PointedCell.Row.HasValue && !String.IsNullOrEmpty(TasView.PointedCell.Column))
+			if (TasView.PointedCell.Row.HasValue && !string.IsNullOrEmpty(TasView.PointedCell.Column))
 			{
 				if (TasView.PointedCell.Column == MarkerColumnName)
 				{
-					StartMarkerDrag = true;
+					_startMarkerDrag = true;
 				}
 				else if (TasView.PointedCell.Column == FrameColumnName)
 				{
-					StartFrameDrag = true;
+					_startFrameDrag = true;
 				}
 				else
 				{
 					_tas.ToggleButton(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 					TasView.Refresh();
 
-					StartDrawColumn = TasView.PointedCell.Column;
-					StartOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
+					_startDrawColumn = TasView.PointedCell.Column;
+					_startOn = _tas.IsPressed(TasView.PointedCell.Row.Value, TasView.PointedCell.Column);
 				}
 			}
 		}
 
-		private void TASView_MouseUp(object sender, MouseEventArgs e)
+		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			StartMarkerDrag = false;
-			StartFrameDrag = false;
-			StartDrawColumn = String.Empty;
+			_startMarkerDrag = false;
+			_startFrameDrag = false;
+			_startDrawColumn = string.Empty;
 		}
 
-		private void TASView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
+		private void TasView_PointedCellChanged(object sender, TasListView.CellEventArgs e)
 		{
-			if (StartMarkerDrag)
+			if (_startMarkerDrag)
 			{
 				if (e.NewCell.Row.HasValue)
 				{
 					GoToFrame(e.NewCell.Row.Value);
 				}
 			}
-			else if (StartFrameDrag)
+			else if (_startFrameDrag)
 			{
 				if (e.OldCell.Row.HasValue && e.NewCell.Row.HasValue)
 				{
@@ -535,22 +534,32 @@ namespace BizHawk.Client.EmuHawk
 						endVal = e.OldCell.Row.Value;
 					}
 
-					for (int i = startVal + 1; i <= endVal; i++)
+					for (var i = startVal + 1; i <= endVal; i++)
 					{
 						TasView.SelectItem(i, true);
 					}
 				}
 			}
-			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !String.IsNullOrEmpty(StartDrawColumn))
+			else if (TasView.IsPaintDown && e.NewCell.Row.HasValue && !string.IsNullOrEmpty(_startDrawColumn))
 			{
-				_tas.SetButton(e.NewCell.Row.Value, StartDrawColumn, StartOn); //Notice it uses new row, old column, you can only paint across a single column
+				_tas.SetButton(e.NewCell.Row.Value, _startDrawColumn, _startOn); // Notice it uses new row, old column, you can only paint across a single column
 				TasView.Refresh();
 			}
 		}
 
-		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
+		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetSplicer();
+		}
+
+		#endregion
+
+		#region Dialog Events
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		#endregion
@@ -562,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 		public class TasClipboardEntry
 		{
 			private readonly Dictionary<string, bool> _buttons;
-			private int _frame;
+			private readonly int _frame;
 
 			public TasClipboardEntry(int frame, Dictionary<string, bool> buttons)
 			{

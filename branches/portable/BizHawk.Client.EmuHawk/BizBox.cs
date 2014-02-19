@@ -99,5 +99,11 @@ namespace BizHawk.Client.EmuHawk
 			SaturnLinkLabel.LinkVisited = true;
 			System.Diagnostics.Process.Start("http://yabause.org");
 		}
+
+		private void linkLabel12_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			linkLabel12.LinkVisited = true;
+			System.Diagnostics.Process.Start("https://code.google.com/p/genplus-gx/");
+		}
 	}
 }

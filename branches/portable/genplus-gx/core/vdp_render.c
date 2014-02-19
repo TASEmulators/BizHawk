@@ -1142,8 +1142,7 @@ void color_update_m5(int index, unsigned int data)
 /* Graphics I */
 void render_bg_m0(int line)
 {
-  uint8 color, pattern;
-  uint16 name;
+  uint8 color, name, pattern;
 
   uint8 *lb = &linebuf[0][0x20];
   uint8 *nt = &vram[((reg[2] << 10) & 0x3C00) + ((line & 0xF8) << 2)];
@@ -1190,7 +1189,7 @@ void render_bg_m1(int line)
 
   do
   {
-    pattern = pg[*nt++];
+    pattern = pg[*nt++ << 3];
 
     *lb++ = 0x10 | ((color >> (((pattern >> 7) & 1) << 2)) & 0x0F);
     *lb++ = 0x10 | ((color >> (((pattern >> 6) & 1) << 2)) & 0x0F);
@@ -1298,8 +1297,6 @@ void render_bg_m2(int line)
 void render_bg_m3(int line)
 {
   uint8 color;
-  uint16 name;
-
   uint8 *lb = &linebuf[0][0x20];
   uint8 *nt = &vram[((reg[2] << 10) & 0x3C00) + ((line & 0xF8) << 2)];
   uint8 *pg = &vram[((reg[4] << 11) & 0x3800) + ((line >> 2) & 7)];
@@ -1309,8 +1306,7 @@ void render_bg_m3(int line)
 
   do
   {
-    name = *nt++;
-    color = pg[name << 3];
+    color = pg[*nt++ << 3];
     
     *lb++ = 0x10 | ((color >> 4) & 0x0F);
     *lb++ = 0x10 | ((color >> 4) & 0x0F);
@@ -1328,7 +1324,6 @@ void render_bg_m3(int line)
 void render_bg_m3x(int line)
 {
   uint8 color;
-  uint16 name;
   uint8 *pg;
 
   uint8 *lb = &linebuf[0][0x20];
@@ -1349,8 +1344,7 @@ void render_bg_m3x(int line)
 
   do
   {
-    name = *nt++;
-    color = pg[name << 3];
+    color = pg[*nt++ << 3];
     
     *lb++ = 0x10 | ((color >> 4) & 0x0F);
     *lb++ = 0x10 | ((color >> 4) & 0x0F);

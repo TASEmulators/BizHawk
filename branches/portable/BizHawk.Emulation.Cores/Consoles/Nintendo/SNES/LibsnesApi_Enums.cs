@@ -179,6 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			OAM = 103,
 			CGRAM = 104,
 
+			CARTRIDGE_ROM = 105,
+
 			SYSBUS = 200,
 			LOGICAL_REGS = 201
 		}

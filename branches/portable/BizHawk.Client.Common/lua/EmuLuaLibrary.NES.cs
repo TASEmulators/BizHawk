@@ -3,33 +3,19 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {
-	public class NESLuaLibrary : LuaLibraryBase
+	public class NesLuaLibrary : LuaLibraryBase
 	{
+		// TODO:  
+		// perhaps with the new core config system, one could
+		// automatically bring out all of the settings to a lua table, with names.  that
+		// would be completely arbitrary and would remove the whole requirement for this mess
 		public override string Name { get { return "nes"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addgamegenie",
-					"getallowmorethaneightsprites",
-					"getbottomscanline",
-					"getclipleftandright",
-					"getdispbackground",
-					"getdispsprites",
-					"gettopscanline",
-					"removegamegenie",
-					"setallowmorethaneightsprites",
-					"setclipleftandright",
-					"setdispbackground",
-					"setdispsprites",
-					"setscanlines"
-				};
-			}
-		}
 
-		public void nes_addgamegenie(string code)
+		[LuaMethodAttributes(
+			"addgamegenie",
+			"Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect"
+		)]
+		public void AddGameGenie(string code)
 		{
 			if (Global.Emulator.SystemId == "NES")
 			{
@@ -40,75 +26,98 @@ namespace BizHawk.Client.Common
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
 					code,
-					false
-				);
+					false);
+
 				Global.CheatList.Add(new Cheat(
 					watch,
 					decoder.Value,
-					decoder.Compare
-				));
+					decoder.Compare));
 			}
 		}
 
-		// these methods are awkward.  perhaps with the new core config system, one could
-		// automatically bring out all of the settings to a lua table, with names.  that
-		// would be completely arbitrary and would remove the whole requirement for this mess
-		public static bool nes_getallowmorethaneightsprites()
+		[LuaMethodAttributes(
+			"getallowmorethaneightsprites",
+			"Gets the NES setting 'Allow more than 8 sprites per scanline' value"
+		)]
+		public static bool GetAllowMoreThanEightSprites()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).AllowMoreThanEightSprites;
 		}
 
-		public static int nes_getbottomscanline(bool pal = false)
+		[LuaMethodAttributes(
+			"getbottomscanline",
+			"Gets the current value for the bottom scanline value"
+		)]
+		public static int GetBottomScanline(bool pal = false)
 		{
 			if (pal)
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_BottomLine;
 			}
-			else
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
-			}
+			
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_BottomLine;
 		}
 
-		public static bool nes_getclipleftandright()
+		[LuaMethodAttributes(
+			"getclipleftandright",
+			"Gets the current value for the Clip Left and Right sides option"
+		)]
+		public static bool GetClipLeftAndRight()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).ClipLeftAndRight;
 		}
 
-		public static bool nes_getdispbackground()
+		[LuaMethodAttributes(
+			"getdispbackground",
+			"Indicates whether or not the bg layer is being displayed"
+		)]
+		public static bool GetDisplayBackground()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispBackground;
 		}
 
-		public static bool nes_getdispsprites()
+		[LuaMethodAttributes(
+			"getdispsprites",
+			"Indicates whether or not sprites are being displayed"
+		)]
+		public static bool GetDisplaySprites()
 		{
 			return ((NES.NESSettings)Global.Emulator.GetSettings()).DispSprites;
 		}
 
-		public static int nes_gettopscanline(bool pal = false)
+		[LuaMethodAttributes(
+			"gettopscanline",
+			"Gets the current value for the top scanline value"
+		)]
+		public static int GetTopScanline(bool pal = false)
 		{
 			if (pal)
 			{
 				return ((NES.NESSettings)Global.Emulator.GetSettings()).PAL_TopLine;
 			}
-			else
-			{
-				return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
-			}
+			
+			return ((NES.NESSettings)Global.Emulator.GetSettings()).NTSC_TopLine;
 		}
 
-		public void nes_removegamegenie(string code)
+		[LuaMethodAttributes(
+			"removegamegenie",
+			"Removes the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect"
+		)]
+		public void RemoveGameGenie(string code)
 		{
 			if (Global.Emulator.SystemId == "NES")
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Address == decoder.Address)
-				);
+					Global.CheatList.Where(x => x.Address == decoder.Address));
 			}
 		}
 
-		public static void nes_setallowmorethaneightsprites(bool allow)
+		[LuaMethodAttributes(
+			"setallowmorethaneightsprites",
+			"Sets the NES setting 'Allow more than 8 sprites per scanline'"
+		)]
+		public static void SetAllowMoreThanEightSprites(bool allow)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -118,7 +127,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setclipleftandright(bool leftandright)
+		[LuaMethodAttributes(
+			"setclipleftandright",
+			"Sets the Clip Left and Right sides option"
+		)]
+		public static void SetClipLeftAndRight(bool leftandright)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -128,8 +141,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// these seem to duplicate emu.setrenderplanes???
-		public static void nes_setdispbackground(bool show)
+		[LuaMethodAttributes(
+			"setdispbackground",
+			"Sets whether or not the background layer will be displayed"
+		)]
+		public static void SetDisplayBackground(bool show)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -139,7 +155,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setdispsprites(bool show)
+		[LuaMethodAttributes(
+			"setdispsprites",
+			"Sets whether or not sprites will be displayed"
+		)]
+		public static void SetDisplaySprites(bool show)
 		{
 			if (Global.Emulator is NES)
 			{
@@ -149,41 +169,43 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void nes_setscanlines(object top, object bottom, bool pal = false)
+		[LuaMethodAttributes(
+			"setscanlines",
+			"sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239"
+		)]
+		public static void SetScanlines(int top, int bottom, bool pal = false)
 		{
 			if (Global.Emulator is NES)
 			{
-				var first = LuaInt(top);
-				var last = LuaInt(bottom);
-				if (first > 127)
+				if (top > 127)
 				{
-					first = 127;
+					top = 127;
 				}
-				else if (first < 0)
+				else if (top < 0)
 				{
-					first = 0;
+					top = 0;
 				}
 
-				if (last > 239)
+				if (bottom > 239)
 				{
-					last = 239;
+					bottom = 239;
 				}
-				else if (last < 128)
+				else if (bottom < 128)
 				{
-					last = 128;
+					bottom = 128;
 				}
 
 				var s = (NES.NESSettings)Global.Emulator.GetSettings();
 
 				if (pal)
 				{
-					s.PAL_TopLine = first;
-					s.PAL_BottomLine = last;
+					s.PAL_TopLine = top;
+					s.PAL_BottomLine = bottom;
 				}
 				else
 				{
-					s.NTSC_TopLine = first;
-					s.NTSC_BottomLine = last;
+					s.NTSC_TopLine = top;
+					s.NTSC_BottomLine = bottom;
 				}
 
 				Global.Emulator.PutSettings(s);

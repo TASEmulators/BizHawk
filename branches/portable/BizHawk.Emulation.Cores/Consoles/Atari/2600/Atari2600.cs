@@ -41,9 +41,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.CpuTraceAvailable = true;
 			this.rom = rom;
 			this.game = game;
+
+			if (!game.GetOptionsDict().ContainsKey("m"))
+				DetectMapper();
+
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
+
+		void DetectMapper()
+		{
+			string m = "UNKNOWN";
+			switch (rom.Length)
+			{
+				case 2048: m = "2K"; break;
+				case 4096: m = "4K"; break;
+			}
+			game.AddOption("m", m);
+		}
+
 
 		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
 		{

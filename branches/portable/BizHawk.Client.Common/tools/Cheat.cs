@@ -5,7 +5,10 @@ namespace BizHawk.Client.Common
 {
 	public class Cheat
 	{
-		#region Constructors
+		private readonly Watch _watch;
+		private int? _compare;
+		private int _val;
+		private bool _enabled;
 
 		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true)
 		{
@@ -43,32 +46,12 @@ namespace BizHawk.Client.Common
 		}
 
 		public delegate void CheatEventHandler(object sender);
+		public event CheatEventHandler Changed;
 
 		public static Cheat Separator
 		{
 			get { return new Cheat(SeparatorWatch.Instance, 0, null, false); }
 		}
-
-		#endregion
-
-		#region private parts
-
-		private readonly Watch _watch;
-		private int? _compare;
-		private int _val;
-		private bool _enabled;
-
-		private void Changes()
-		{
-			if (Changed != null)
-			{
-				Changed(this);
-			}
-		}
-
-		#endregion
-
-		#region Properties
 
 		public bool IsSeparator
 		{
@@ -127,7 +110,7 @@ namespace BizHawk.Client.Common
 
 		public string Name
 		{
-			get { return IsSeparator ? String.Empty : _watch.Notes; }
+			get { return IsSeparator ? string.Empty : _watch.Notes; }
 		}
 
 		public string AddressStr
@@ -143,7 +126,7 @@ namespace BizHawk.Client.Common
 				{
 					default:
 					case Watch.WatchSize.Separator:
-						return String.Empty;
+						return string.Empty;
 					case Watch.WatchSize.Byte:
 						return (_watch as ByteWatch).FormatValue((byte)_val);
 					case Watch.WatchSize.Word:
@@ -164,7 +147,7 @@ namespace BizHawk.Client.Common
 					{
 						default:
 						case Watch.WatchSize.Separator:
-							return String.Empty;
+							return string.Empty;
 						case Watch.WatchSize.Byte:
 							return (_watch as ByteWatch).FormatValue((byte)_compare.Value);
 						case Watch.WatchSize.Word:
@@ -173,18 +156,10 @@ namespace BizHawk.Client.Common
 							return (_watch as DWordWatch).FormatValue((uint)_compare.Value);
 					}
 				}
-				else
-				{
-					return String.Empty;
-				}
+				
+				return string.Empty;
 			}
 		}
-
-		public event CheatEventHandler Changed;
-
-		#endregion
-
-		#region Actions
 
 		public void Enable()
 		{
@@ -221,6 +196,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		string GetStringForPulse(int val)
+		{
+			if (_watch.Type == Watch.DisplayType.Hex)
+				return val.ToString("X8");
+			else return val.ToString();
+		}
+
 		public void Pulse()
 		{
 			if (!IsSeparator && _enabled)
@@ -229,12 +211,12 @@ namespace BizHawk.Client.Common
 				{
 					if (_compare.Value == _watch.Value)
 					{
-						_watch.Poke(_val.ToString());
+						_watch.Poke(GetStringForPulse(_val));
 					}
 				}
 				else
 				{
-					_watch.Poke(_val.ToString());
+					_watch.Poke(GetStringForPulse(_val));
 				}
 			}
 		}
@@ -285,6 +267,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#endregion
+		private void Changes()
+		{
+			if (Changed != null)
+			{
+				Changed(this);
+			}
+		}
+
 	}
 }

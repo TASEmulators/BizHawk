@@ -541,7 +541,7 @@ int load_rom(const char *filename)
   }
 
   /* auto-detect CD image files */
-  size = cdd_load((char *)(cart.rom));
+  size = cdd_load("PRIMARY_CD", (char *)(cart.rom));
   if (size < 0)
   {
     /* error opening file */
@@ -731,7 +731,7 @@ int load_rom(const char *filename)
         /* automatically load associated .iso image */
 		// this will only possibly work if a CD and a ROM are provided at the same time, which the frontend
 		// has no provision for at the moment
-        if (cdd_load((char *)cdc.ram) <= 0)
+        if (cdd_load("SECONDARY_CD", (char *)cdc.ram) <= 0)
 		  // no load, so disable CD hardware
 		  system_hw = SYSTEM_MD;
       }

@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly FormsLuaLibrary _formsLibrary = new FormsLuaLibrary();
-		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.console_log);
+		private readonly EventLuaLibrary _eventLibrary = new EventLuaLibrary(ConsoleLuaLibrary.Log);
 		private readonly GuiLuaLibrary _guiLibrary = new GuiLuaLibrary();
 		private readonly LuaConsole _caller;
 
@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public EmuLuaLibrary(LuaConsole passed)
-			:this()
+			: this()
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
@@ -40,6 +40,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return _guiLibrary; }
 		}
 
+		public LuaFunctionList RegisteredFunctions
+		{
+			get { return _eventLibrary.RegisteredFunctions; }
+		}
+
 		public void WindowClosed(IntPtr handle)
 		{
 			_formsLibrary.WindowClosed(handle);
@@ -53,11 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		public void CallLoadStateEvent(string name)
 		{
 			_eventLibrary.CallLoadStateEvent(name);
-		}
-
-		public LuaFunctionList RegisteredFunctions
-		{
-			get { return _eventLibrary.RegisteredFunctions; }
 		}
 
 		public void CallFrameBeforeEvent()
@@ -81,14 +81,13 @@ namespace BizHawk.Client.EmuHawk
 			lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
 
 			new BitLuaLibrary().LuaRegister(lua, Docs);
-			new MultiClientLuaLibrary(ConsoleLuaLibrary.console_log).LuaRegister(lua, Docs);
+			new EmuHawkLuaLibrary(ConsoleLuaLibrary.Log).LuaRegister(lua, Docs);
 			new ConsoleLuaLibrary().LuaRegister(lua, Docs);
 			
 			new EmulatorLuaLibrary(
 				_lua,
 				Frameadvance,
-				EmuYield
-			).LuaRegister(lua, Docs);
+				EmuYield).LuaRegister(lua, Docs);
 
 			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
@@ -98,9 +97,9 @@ namespace BizHawk.Client.EmuHawk
 			new MemoryLuaLibrary().LuaRegister(lua, Docs);
 			new MainMemoryLuaLibrary(_lua).LuaRegister(lua, Docs);
 			new MovieLuaLibrary(_lua).LuaRegister(lua, Docs);
-			new NESLuaLibrary().LuaRegister(lua, Docs);
+			new NesLuaLibrary().LuaRegister(lua, Docs);
 			new SavestateLuaLibrary().LuaRegister(lua, Docs);
-			new SNESLuaLibrary().LuaRegister(lua, Docs);
+			new SnesLuaLibrary().LuaRegister(lua, Docs);
 			new StringLuaLibrary().LuaRegister(lua, Docs);
 
 			Docs.Sort();
@@ -112,12 +111,6 @@ namespace BizHawk.Client.EmuHawk
 			var main = lua.LoadFile(file);
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
-		}
-
-		public class ResumeResult
-		{
-			public bool WaitForFrame { get; set; }
-			public bool Terminated { get; set; }
 		}
 
 		public ResumeResult ResumeScript(Lua script)
@@ -157,6 +150,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			_currThread.Yield(0);
+		}
+
+		public class ResumeResult
+		{
+			public bool WaitForFrame { get; set; }
+			public bool Terminated { get; set; }
 		}
 	}
 }

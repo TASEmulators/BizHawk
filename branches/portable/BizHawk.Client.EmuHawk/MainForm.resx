@@ -121,6 +121,28 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="DisplayConfigMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NC
+        NwAAAaRJREFUOE+dk0FLAlEUhd9/kgwFMUQMhMEIhJLIhVCRDIRhAznEIEYtlBiQYApBSGQw2xhBlhLE
+        zCLQTa3bt2nd8tR5pFTaLLxwuJd7vgNv3syIv+Xz+fA9TpSX96s0TZsAp+0862fAM3xpN5DNZpHL5VAo
+        FFAqlVCpVFCtVsEgxZk7emTIMsOsyGQyGAwGM4lZkU6n4bouVg4aCO1cQDGusXbyiA1rIMWZO3pkyEYi
+        EdmZFalUCr1eD3Nb5/jiPUWGrOM4sjMrkskkOp0O5rdrOLp7h+l8TBU9MmR5AnZmRSKRQLPZRFCtQ62/
+        YPNsCK31iuLNmxRn7uiRIdvtdmVnVsTjcViWJZ9x3XQQ1VpTRY8MWZ6AnVkRjUZRLpexsNtE5vQJq+WH
+        qaJHhmy73ZadWREOh2EYBiJ5e3zz/4kM2ZGYFcFgEPl8Hkt7NSzuX8lXtnx4i+TxvRRn7uiRITsSs8Lv
+        90NVVei6DtM0Yds2+v3++GPhzB09MmRHYlYUDV0OgUAAoVBIXlAsFpMXpCiKFGfu6JEhywyz8n94HrqY
+        RUII8QnYkDBq2GMFXwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="FirmwaresMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAEEoAABBKATXIp58AAABwSURBVDhPzZDhCgAhCIN99HvzTgNj6k6i/lzwaW3DKJFH
+        xhVMtMU6xYraIDR4BqlCQ87OfBEacnbmtfzsCYr/eu4UK+EJH2hyUjw82CAkeDsDjrDit/nNjofyOUDF
+        BA4ow9YGzBIimaWheQQVt5HxAoOkokovUz91AAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="N64PluginSettingsMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

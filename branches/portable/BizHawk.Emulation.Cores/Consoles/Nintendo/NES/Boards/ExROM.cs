@@ -18,8 +18,7 @@ using BizHawk.Emulation.Common.Components;
 //FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//MMC5 isn't actually all that common
-	//[NES.INESBoardImplPriority]
+	[NES.INESBoardImplPriority]
 	public sealed class ExROM : NES.NESBoardBase
 	{
 		//configuraton
@@ -122,7 +121,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-			chr_bank_mask_1k = Cart.chr_size - 1;
+
+			if (Cart.chr_size > 0)
+				chr_bank_mask_1k = Cart.chr_size - 1;
+			else
+				chr_bank_mask_1k = Cart.vram_size - 1;
 			wram_bank_mask_8k = Cart.wram_size / 8 - 1;
 
 			PoweronState();
@@ -225,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				addr = MapCHR(addr);
-				return VROM[addr];
+				return (VROM ?? VRAM)[addr];
 			}
 			else
 			{
@@ -258,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				int nt = (addr >> 10) & 3; // &3 to read from the NT mirrors at 3xxx
-				int offset = addr & ((1<<10)-1);
+				int offset = addr & ((1 << 10) - 1);
 				nt = nt_modes[nt];
 				switch (nt)
 				{
@@ -281,7 +284,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				// no vram or anything here ever
+				if (VRAM != null)
+					VRAM[MapCHR(addr)] = value;
 			}
 			else
 			{

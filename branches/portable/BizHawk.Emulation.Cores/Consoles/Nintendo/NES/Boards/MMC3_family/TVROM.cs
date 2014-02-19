@@ -1,6 +1,5 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
 	public sealed class TVROM : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -8,6 +7,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "MAPPER004":
+					if (Cart.inesmirroring != 2) // send these to TxROM
+						return false;
+					Cart.vram_size = 8;
+					break;
+
+
 				case "NES-TVROM": //rad racer II (U)
 					AssertPrg(64); AssertChr(64); AssertVram(8); AssertWram(0);
 					AssertBattery(false);

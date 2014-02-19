@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.Genesis;
 
@@ -40,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = String.Empty;
+		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
 
 		public bool UpdateBefore { get { return false; } }
@@ -64,9 +63,9 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
 
-			_sortedColumn = String.Empty;
+			_sortedColumn = string.Empty;
 			_sortReverse = false;
-			TopMost = Global.Config.CheatsAlwaysOnTop;
+			TopMost = Global.Config.CheatsSettings.TopMost;
 		}
 
 		public void UpdateValues()
@@ -92,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadFileFromRecent(string path)
 		{
-			var askResult = Global.CheatList.Changes ? AskSave() : true;
+			var askResult = !Global.CheatList.Changes || AskSave();
 			if (askResult)
 			{
 				var loadResult = Global.CheatList.Load(path, append: false);
@@ -113,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MessageLabel.Text = saved 
 				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
-				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : String.Empty);
+				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : string.Empty);
 		}
 
 		public bool AskSave()
@@ -203,10 +202,10 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveConfigSettings()
 		{
 			SaveColumnInfo();
-			Global.Config.CheatsWndx = Location.X;
-			Global.Config.CheatsWndy = Location.Y;
-			Global.Config.CheatsWidth = Right - Left;
-			Global.Config.CheatsHeight = Bottom - Top;
+			Global.Config.CheatsSettings.Wndx = Location.X;
+			Global.Config.CheatsSettings.Wndy = Location.Y;
+			Global.Config.CheatsSettings.Width = Right - Left;
+			Global.Config.CheatsSettings.Height = Bottom - Top;
 		}
 
 		private void LoadConfigSettings()
@@ -214,14 +213,14 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
+			if (Global.Config.CheatsSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.CheatsWndx, Global.Config.CheatsWndy);
+				Location = Global.Config.CheatsSettings.WindowPosition;
 			}
 
-			if (Global.Config.CheatsWidth >= 0 && Global.Config.CheatsHeight >= 0)
+			if (Global.Config.CheatsSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.CheatsWidth, Global.Config.CheatsHeight);
+				Size = Global.Config.CheatsSettings.WindowSize;
 			}
 
 			LoadColumnInfo();
@@ -318,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
-			text = String.Empty;
+			text = string.Empty;
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
 			{
 				return;
@@ -341,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Global.CheatList[index].CompareStr;
 					break;
 				case ON:
-					text = Global.CheatList[index].Enabled ? "*" : String.Empty;
+					text = Global.CheatList[index].Enabled ? "*" : string.Empty;
 					break;
 				case DOMAIN:
 					text = Global.CheatList[index].Domain.Name;
@@ -405,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewList()
 		{
-			var result = Global.CheatList.Changes ? AskSave() : true;
+			var result = !Global.CheatList.Changes || AskSave();
 			if (result)
 			{
 				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
@@ -417,11 +416,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewList()
 		{
-			var result = Global.CheatList.Changes ? AskSave() : true;
+			var result = !Global.CheatList.Changes || AskSave();
 			if (result)
 			{
 				StartNewList();
 			}
+		}
+
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.CheatsSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -590,10 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			Enumerable
-				.Range(0, Global.CheatList.Count)
-				.ToList()
-				.ForEach(i => CheatListView.SelectItem(i, true));
+			CheatListView.SelectAll();
 		}
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
@@ -621,8 +622,9 @@ namespace BizHawk.Client.EmuHawk
 			AutoSaveCheatsMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
 			DisableCheatsOnLoadMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
 			AutoloadMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.CheatsAlwaysOnTop;
+			SaveWindowPositionMenuItem.Checked = Global.Config.CheatsSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.CheatsSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.CheatsSettings.FloatingWindow;
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
@@ -647,19 +649,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.CheatsSaveWindowPosition ^= true;
+			Global.Config.CheatsSettings.SaveWindowPosition ^= true;
 		}
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.CheatsAlwaysOnTop ^= true;
+			Global.Config.CheatsSettings.TopMost ^= true;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.CheatsSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
 		{
 			Size = new Size(_defaultWidth, _defaultHeight);
-			Global.Config.CheatsSaveWindowPosition = true;
-			Global.Config.CheatsAlwaysOnTop = TopMost = false;
+			Global.Config.CheatsSettings.SaveWindowPosition = true;
+			Global.Config.CheatsSettings.TopMost = TopMost = false;
+			Global.Config.CheatsSettings.FloatingWindow = false;
 			Global.Config.DisableCheatsOnLoad = false;
 			Global.Config.LoadCheatFileByGame = true;
 			Global.Config.CheatsAutoSaveOnClose = true;
@@ -704,6 +713,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			LoadColumnInfo();
+			RefreshFloatingWindowControl();
 		}
 
 		#endregion
@@ -868,6 +878,12 @@ namespace BizHawk.Client.EmuHawk
 					ToolHelpers.ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address ?? 0));
 				}
 			}
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
 		}
 
 		#endregion

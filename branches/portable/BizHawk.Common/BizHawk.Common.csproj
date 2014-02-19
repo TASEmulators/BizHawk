@@ -52,7 +52,8 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="CustomCollections.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="IPC\IPCRingBuffer.cs" />
     <Compile Include="IPC\SharedMemoryBlock.cs" />

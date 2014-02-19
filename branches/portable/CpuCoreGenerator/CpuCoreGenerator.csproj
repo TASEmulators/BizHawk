@@ -61,6 +61,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HuC6280\CDL.cs" />
     <Compile Include="HuC6280\CoreGenerator.cs" />
     <Compile Include="HuC6280\Instructions.cs" />
     <Compile Include="MOS 6502\CoreGenerator.cs" />

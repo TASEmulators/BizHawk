@@ -1,9 +1,8 @@
-﻿#if WINDOWS
-using SlimDX.Direct3D9;
+﻿using BizHawk.Client.Common;
+using BizHawk.Bizware.BizwareGL;
+#if WINDOWS
 using SlimDX.DirectSound;
 #endif
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -13,12 +12,12 @@ namespace BizHawk.Client.EmuHawk
 		public static ToolManager Tools;
 #if WINDOWS
 		public static DirectSound DSound;
-		public static Direct3D Direct3D;
 #endif
+		public static IGL GL;
 		public static Sound Sound;
-		public static IRenderer RenderPanel;
+		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
-		public static DisplayManager DisplayManager = new DisplayManager();
+		public static DisplayManager DisplayManager;
 
 		//input state which has been destined for game controller inputs are coalesced here
 		//public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();

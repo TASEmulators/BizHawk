@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = StartLocation;
 			}
+
 			PopulateListView();
 		}
 
@@ -89,6 +90,7 @@ namespace BizHawk.Client.EmuHawk
 					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
 					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Remove(nlf);
 				}
+
 				PopulateListView();
 			}
 		}
@@ -119,15 +121,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift) //Delete
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift) // Delete
 			{
 				RemoveFunctionButton();
 			}
-			else if (e.KeyCode == Keys.Space && !e.Control && !e.Alt && !e.Shift) //Space
+			else if (e.KeyCode == Keys.Space && !e.Control && !e.Alt && !e.Shift) // Space
 			{
 				CallFunction();
 			}
-			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) //Enter
+			else if (e.KeyCode == Keys.Enter && !e.Control && !e.Alt && !e.Shift) // Enter
 			{
 				CallFunction();
 			}

@@ -23,14 +23,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	//Zelda 2
 	//Castlevania 2
 
+	// TODO -- different MMC1 revisions handle wram_disable differently; on some it doesn't work at all; on others,
+	//         it works, but with different initial states possible.  we only emulate the first case
+
 	public sealed class MMC1
 	{
-		NES.NESBoardBase board;
 		public MMC1_SerialController scnt = new MMC1_SerialController();
 
-		public MMC1(NES.NESBoardBase board)
+		public MMC1()
 		{
-			this.board = board;
 			scnt.WriteRegister = SerialWriteRegister;
 			scnt.Reset = SerialReset;
 
@@ -370,6 +371,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SKROM": //ad&d dragons of flame (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SKEPROM":
 				case "NES-SKEPROM": // chip n dale 2 (proto)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0, 8);
 					break;
@@ -378,6 +380,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SLROM": //Adventures of Lolo 2 (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
+				case "HVC-SL1ROM": // untested
 				case "NES-SL1ROM": //hoops
 					AssertPrg(64, 128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
@@ -413,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected void BaseConfigure()
 		{
-			mmc1 = new MMC1(this);
+			mmc1 = new MMC1();
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
@@ -431,7 +434,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	} //class SxROM
 
 
-	[NES.INESBoardImplPriority]
 	class SoROM : SuROM
 	{
 		//this uses a CHR bit to select WRAM banks
@@ -515,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	[NES.INESBoardImplPriority]
+
 	class SuROM : SxROM
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)

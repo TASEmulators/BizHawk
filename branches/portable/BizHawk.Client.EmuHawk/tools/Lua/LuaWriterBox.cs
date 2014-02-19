@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class LuaWriterBox : RichTextBox
+	class LuaWriterBox : SyncTextBox
 	{
 		public bool InhibitPaint = false;
 

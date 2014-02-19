@@ -12,6 +12,7 @@
 #include "genesis.h"
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
+#include "eeprom_i2c.h"
 
 char GG_ROM[256] = "GG_ROM"; // game genie rom
 char AR_ROM[256] = "AR_ROM"; // actin replay rom
@@ -105,25 +106,36 @@ GPGX_EX void gpgx_get_fps(int *num, int *den)
 	}
 }
 
-GPGX_EX int gpgx_state_size(void)
+GPGX_EX int gpgx_state_max_size(void)
 {
-	return STATE_SIZE;
+	// original state size, plus 64K sram or 16K ebram, plus 8K ibram or seeprom control structures
+	return STATE_SIZE + (64 + 8) * 1024;
+}
+
+GPGX_EX int gpgx_state_size(void *dest, int size)
+{
+	int actual = 0;
+	if (size < gpgx_state_max_size())
+		return -1;
+
+	actual = state_save((unsigned char*) dest);
+	if (actual > size)
+		// fixme!
+		return -1;
+	return actual;
 }
 
 GPGX_EX int gpgx_state_save(void *dest, int size)
 {
-	if (size != STATE_SIZE)
-		return 0;
-
-	return !!state_save((unsigned char*) dest);
+	return state_save((unsigned char*) dest) == size;
 }
 
 GPGX_EX int gpgx_state_load(void *src, int size)
 {
-	if (size != STATE_SIZE)
+	if (!size)
 		return 0;
 
-	if (state_load((unsigned char *) src))
+	if (state_load((unsigned char *) src) == size)
 	{
 		update_viewport();
 		return 1;
@@ -194,6 +206,12 @@ GPGX_EX void gpgx_advance(void)
 	}
 
 	nsamples = audio_update(soundbuffer);
+}
+
+// internal: computes sram size (no brams)
+int saveramsize(void)
+{
+	return sram_get_actual_size();
 }
 
 GPGX_EX void gpgx_clear_sram(void)
@@ -329,7 +347,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		if (sram.on)
 		{
 			*area = sram.sram;
-			*size = 0x10000;
+			*size = saveramsize();
 			return "SRAM";
 		}
 		else return NULL;
@@ -356,7 +374,7 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 	if (sram.on)
 	{
 		*area = sram.sram;
-		*size = 0x10000;
+		*size = saveramsize();
 	}
 	else if (scd.cartridge.id)
 	{

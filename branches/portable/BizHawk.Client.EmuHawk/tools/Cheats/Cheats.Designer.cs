@@ -73,6 +73,7 @@
 			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -381,7 +382,7 @@
 			// SelectAllMenuItem
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
-			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
@@ -430,6 +431,7 @@
             this.AutoloadMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator5,
             this.RestoreWindowSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
@@ -483,6 +485,13 @@
 			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.AlwaysOnTopMenuItem.Text = "Always on &Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -836,5 +845,6 @@
 		private CheatEdit CheatEditor;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripMenuItem ViewInHexEditorContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

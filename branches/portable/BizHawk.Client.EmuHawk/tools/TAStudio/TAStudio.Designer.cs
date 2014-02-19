@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
 			this.TasBookmarksBranchesBox = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -150,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			this.NewTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.NewTASMenuItem.Text = "&New";
-			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTASMenuItem_Click);
+			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTasMenuItem_Click);
 			// 
 			// OpenTASMenuItem
 			// 
@@ -158,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.OpenTASMenuItem.Text = "&Open";
-			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTASMenuItem_Click);
+			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTasMenuItem_Click);
 			// 
 			// SaveTASMenuItem
 			// 
@@ -166,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveTASMenuItem.Text = "&Save";
-			this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTASMenuItem_Click);
+			this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTasMenuItem_Click);
 			// 
 			// SaveAsTASMenuItem
 			// 
@@ -175,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.Keys.S)));
 			this.SaveAsTASMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.SaveAsTASMenuItem.Text = "Save As";
-			this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTASMenuItem_Click);
+			this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTasMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 
@@ -581,6 +582,7 @@ namespace BizHawk.Client.EmuHawk
             this.AutoloadProjectMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator12,
             this.RestoreDefaultSettingsMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
@@ -657,11 +659,12 @@ namespace BizHawk.Client.EmuHawk
 			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			// 
-			// TASView
+			// TasView
 			// 
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasView.BlazingFast = false;
 			this.TasView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
@@ -671,15 +674,15 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.InputPaintingMode = false;
 			this.TasView.ItemCount = 0;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
-			this.TasView.Name = "TASView";
+			this.TasView.Name = "TasView";
 			this.TasView.selectedItem = -1;
 			this.TasView.Size = new System.Drawing.Size(288, 471);
 			this.TasView.TabIndex = 1;
 			this.TasView.UseCompatibleStateImageBehavior = false;
 			this.TasView.View = System.Windows.Forms.View.Details;
-			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
-			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseDown);
-			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
+			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
+			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
+			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
 			// 
 			// Frame
 			// 
@@ -730,6 +733,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TasBookmarksBranchesBox.Size = new System.Drawing.Size(204, 343);
 			this.TasBookmarksBranchesBox.TabIndex = 7;
 			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -746,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
-			this.Load += new System.EventHandler(this.TAStudio_Load);
+			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
@@ -834,5 +844,6 @@ namespace BizHawk.Client.EmuHawk
 		private PlaybackBox TasPlaybackBox;
 		private BookmarksBranchesBox TasBookmarksBranchesBox;
 		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

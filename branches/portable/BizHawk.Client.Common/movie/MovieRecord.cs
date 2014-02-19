@@ -6,42 +6,27 @@ namespace BizHawk.Client.Common
 	public class MovieRecord
 	{
 		private byte[] _state = new byte[0];
-		private Dictionary<string, bool> _boolButtons = new Dictionary<string, bool>();
 
-		public MovieRecord(Dictionary<string, bool> buttons, bool captureState)
+		public MovieRecord(string serializedInput, bool captureState)
 		{
-			SetInput(buttons);
+			SerializedInput = serializedInput;
 			if (captureState)
 			{
 				CaptureSate();
 			}
 		}
 
-		public Dictionary<string, bool> Buttons
-		{
-			get { return _boolButtons; }
-		}
-
+		public string SerializedInput { get; private set; }
 		public bool Lagged { get; private set; }
 
-		#region Input Api
-
-		public bool IsPressed(string buttonName)
+		public void ClearInput()
 		{
-			return _boolButtons[buttonName];
+			SerializedInput = string.Empty;
 		}
 
-		public void SetButton(string button, bool pressed)
+		public void SetInput(string input)
 		{
-			InputChanged(new Dictionary<string, bool> { { button, pressed } });
-			_boolButtons[button] = pressed;
-		}
-
-		public void SetInput(Dictionary<string, bool> buttons)
-		{
-			InputChanged(buttons);
-			_boolButtons.Clear();
-			_boolButtons = buttons;
+			SerializedInput = input ?? string.Empty;
 		}
 
 		public void CaptureSate()
@@ -49,16 +34,6 @@ namespace BizHawk.Client.Common
 			Lagged = Global.Emulator.IsLagFrame;
 			_state = (byte[])Global.Emulator.SaveStateBinary().Clone();
 		}
-
-		public void ClearInput()
-		{
-			InputChanged(_boolButtons);
-			_boolButtons.Clear();
-		}
-
-		#endregion
-
-		#region State API
 
 		public IEnumerable<byte> State
 		{
@@ -74,32 +49,5 @@ namespace BizHawk.Client.Common
 		{
 			_state = new byte[0];
 		}
-
-		#endregion
-
-		#region Event Handling
-
-		public class InputEventArgs
-		{
-			public InputEventArgs(Dictionary<string, bool> editedButtons)
-			{
-				EditedButtons = editedButtons;
-			}
-
-			public Dictionary<string, bool> EditedButtons { get; private set; }
-		}
-
-		public delegate void InputEventHandler(object sender, InputEventArgs e);
-		public event InputEventHandler OnChanged;
-
-		private void InputChanged(Dictionary<string, bool> editedButtons)
-		{
-			if (OnChanged != null) 
-			{
-				OnChanged(this, new InputEventArgs(editedButtons));
-			}
-		}
-
-		#endregion
 	}
 }

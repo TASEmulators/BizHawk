@@ -28,13 +28,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Text = "BizHawk" + (VersionInfo.INTERIM ? " (interim) " : String.Empty);
 
-			// Hide Status bar icons
+			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+
+			// Hide Status bar icons and general statusbar prep
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
+			StatusBarDiskLightOffImage = Properties.Resources.LightOff;
 		}
 
 		static MainForm()
@@ -93,8 +96,13 @@ namespace BizHawk.Client.EmuHawk
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
-			SyncPresentationMode();
+			//TODO GL - a lot of disorganized wiring-up here
+			GlobalWin.PresentationPanel = new PresentationPanel();
+			GlobalWin.DisplayManager = new DisplayManager(GlobalWin.PresentationPanel);
+			Controls.Add(GlobalWin.PresentationPanel);
+			Controls.SetChildIndex(GlobalWin.PresentationPanel, 0);
 
+			//TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
 			{
 				AllowDrop = true;
@@ -128,9 +136,9 @@ namespace BizHawk.Client.EmuHawk
 
 			ResizeEnd += (o, e) =>
 			{
-				if (GlobalWin.RenderPanel != null)
+				if (GlobalWin.PresentationPanel != null)
 				{
-					GlobalWin.RenderPanel.Resized = true;
+					GlobalWin.PresentationPanel.Resized = true;
 				}
 
 				if (GlobalWin.Sound != null)
@@ -293,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
-				GlobalWin.Tools.Load<NESPPU>();
+				GlobalWin.Tools.Load<NesPPU>();
 			}
 
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
@@ -333,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
-				GlobalWin.Tools.Load<PCEBGViewer>();
+				GlobalWin.Tools.Load<PceBgViewer>();
 			}
 
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
@@ -368,7 +376,8 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateStatusSlots();
 
-			_renderTarget.Paint += (o, e) =>
+			//TODO POOP
+			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
@@ -683,8 +692,8 @@ namespace BizHawk.Client.EmuHawk
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
-				int borderWidth = Size.Width - _renderTarget.Size.Width;
-				int borderHeight = Size.Height - _renderTarget.Size.Height;
+				int borderWidth = Size.Width - GlobalWin.PresentationPanel.Control.Size.Width;
+				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
 				for (; zoom >= 1; zoom--)
@@ -699,7 +708,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size((video.BufferWidth * zoom) + borderWidth, ((video.BufferHeight * zoom) + borderHeight));
 				PerformLayout();
-				GlobalWin.RenderPanel.Resized = true;
+				GlobalWin.PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (area.Contains(Bounds) == false)
@@ -717,29 +726,55 @@ namespace BizHawk.Client.EmuHawk
 		}
 		}
 
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+		static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
 		public void ToggleFullscreen()
 		{
 			if (_inFullscreen == false)
 			{
+				SuspendLayout();
+				#if WINDOWS
+					//Work around an AMD driver bug in >= vista:
+					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
+					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
+					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
+					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
+					//At any rate, we can solve this by adding a 1px black border around the GL control
+					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
+					Padding = new System.Windows.Forms.Padding(1);
+					BackColor = Color.Black;
+				#endif
+
 				_windowedLocation = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
-
 				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
-
 				MainStatusBar.Visible = false;
-				PerformLayout();
-				GlobalWin.RenderPanel.Resized = true;
+				ResumeLayout();
+
+				GlobalWin.PresentationPanel.Resized = true;
 				_inFullscreen = true;
 			}
 			else
 			{
+				SuspendLayout();
+
 				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
+
+				#if WINDOWS
+					Padding = new System.Windows.Forms.Padding(0);
+				#endif
+
 				MainMenuStrip.Visible = true;
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
 				Location = _windowedLocation;
-				PerformLayout();
+				ResumeLayout();
+
 				FrameBufferResized();
 				_inFullscreen = false;
 			}
@@ -926,8 +961,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastWidth = -1;
 		private int _lastHeight = -1;
-		private Control _renderTarget;
-		private RetainedViewportPanel _retainedPanel;
 		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
 
 		// AVI/WAV state
@@ -937,6 +970,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _soundRemainder; // audio timekeeping for video dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
+		private bool _avwriterpad;
 
 		private bool _exit;
 		private bool _runloopFrameProgress;
@@ -961,9 +995,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly bool _autoCloseOnDump;
 		private int _lastOpenRomFilter;
 
-		// workaround for possible memory leak in SysdrawingRenderPanel
-		private RetainedViewportPanel _captureOsdRvp;
-		private SysdrawingRenderPanel _captureOsdSrp;
+		// Resources
+		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 
 		private object _syncSettingsHack;
 
@@ -1069,7 +1102,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					sram = new byte[Global.Emulator.ReadSaveRam().Length];
+					var oldram = Global.Emulator.ReadSaveRam();
+					if (oldram == null)
+					{
+						MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
+						return;
+					}
+					sram = new byte[oldram.Length];
 					using (var reader = new BinaryReader(
 							new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
 					{
@@ -1331,70 +1370,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SyncPresentationMode()
-		{
-			GlobalWin.DisplayManager.Suspend();
-
-#if WINDOWS
-			bool gdi = Global.Config.DisplayGDI || GlobalWin.Direct3D == null;
-#endif
-			if (_renderTarget != null)
-			{
-				_renderTarget.Dispose();
-				Controls.Remove(_renderTarget);
-			}
-
-			if (_retainedPanel != null)
-			{
-				_retainedPanel.Dispose();
-			}
-
-			if (GlobalWin.RenderPanel != null)
-			{
-				GlobalWin.RenderPanel.Dispose();
-			}
-
-#if WINDOWS
-			if (gdi)
-#endif
-				_renderTarget = _retainedPanel = new RetainedViewportPanel();
-#if WINDOWS
-			else _renderTarget = new ViewportPanel();
-#endif
-			Controls.Add(_renderTarget);
-			Controls.SetChildIndex(_renderTarget, 0);
-
-			_renderTarget.Dock = DockStyle.Fill;
-			_renderTarget.BackColor = Color.Black;
-
-#if WINDOWS
-			if (gdi)
-			{
-#endif
-				GlobalWin.RenderPanel = new SysdrawingRenderPanel(_retainedPanel);
-				_retainedPanel.ActivateThreaded();
-#if WINDOWS
-			}
-			else
-			{
-				try
-				{
-					var d3dPanel = new Direct3DRenderPanel(GlobalWin.Direct3D, _renderTarget);
-					d3dPanel.CreateDevice();
-					GlobalWin.RenderPanel = d3dPanel;
-				}
-				catch
-				{
-					Program.DisplayDirect3DError();
-					GlobalWin.Direct3D.Dispose();
-					GlobalWin.Direct3D = null;
-					SyncPresentationMode();
-				}
-			}
-#endif
-
-			GlobalWin.DisplayManager.Resume();
-		}
 
 		private void SyncThrottle()
 		{
@@ -1862,24 +1837,26 @@ namespace BizHawk.Client.EmuHawk
 			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.ControlDark : SystemColors.Control;
 		}
 
+		//TODO GL - this whole feature will have to be re-added
 		private Bitmap CaptureOSD() // sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
 		{
-			// this code captures the emu display with OSD and lua composited onto it.
-			// it's slow and a bit hackish; a better solution is to create a new
-			// "dummy render" class that implements IRenderer, IBlitter, and possibly
-			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-			if (_captureOsdRvp == null)
-			{
-				_captureOsdRvp = new RetainedViewportPanel();
-				_captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
-			}
+		//  // this code captures the emu display with OSD and lua composited onto it.
+		//  // it's slow and a bit hackish; a better solution is to create a new
+		//  // "dummy render" class that implements IRenderer, IBlitter, and possibly
+		//  // IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+		//  if (_captureOsdRvp == null)
+		//  {
+		//    _captureOsdRvp = new RetainedViewportPanel();
+		//    _captureOsdSrp = new SysdrawingRenderPanel(_captureOsdRvp);
+		//  }
 
-			// this size can be different for showing off stretching or filters
-			_captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
-			_captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
+		//  // this size can be different for showing off stretching or filters
+		//  _captureOsdRvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+		//  _captureOsdRvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
-			GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
-			return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
+		//  GlobalWin.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, _captureOsdSrp);
+		//  return (Bitmap)_captureOsdRvp.GetBitmap().Clone();
+			return null;
 		}
 
 		private void ShowConsole()
@@ -2089,8 +2066,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					LedLightStatusLabel.Image = Global.Emulator.CoreComm.DriveLED
-						? Properties.Resources.LightOn
-						: Properties.Resources.LightOff;
+						? StatusBarDiskLightOnImage
+						: StatusBarDiskLightOffImage;
 					}
 					else
 					{
@@ -2502,7 +2479,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, GlobalWin.MainForm, out _avwriterResizew, out _avwriterResizeh, out _avwriterpad);
 			}
 
 			foreach (var w in video_writers)
@@ -2693,7 +2670,15 @@ namespace BizHawk.Client.EmuHawk
 						var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
 						using (var g = Graphics.FromImage(bmpout))
 						{
-							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+							if (_avwriterpad)
+							{
+								g.Clear(Color.FromArgb(Global.Emulator.VideoProvider.BackgroundColor));
+								g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+							}
+							else
+							{
+								g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+							}
 						}
 
 						bmpin.Dispose();
@@ -3064,5 +3049,26 @@ namespace BizHawk.Client.EmuHawk
 			gBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
 			nESInQuickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
+
+		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
+		{
+			new config.DisplayConfigLite().ShowDialog();
+		}
+
+		private void PCEtileViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCETileViewer>();
+		}
+
+		private void SMSVDPViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<VDPViewer>();
+		}
+
+		private void codeDataLoggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<PCECDL>();
+		}
+
 	}
 }

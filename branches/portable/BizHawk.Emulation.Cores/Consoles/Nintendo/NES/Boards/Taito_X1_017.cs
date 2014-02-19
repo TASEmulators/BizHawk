@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Taito_X1_017 : NES.NESBoardBase 
+	public sealed class Taito_X1_017 : NES.NESBoardBase
 	{
 		/*
 		ines Mapper 82
@@ -57,10 +57,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 Note:  remember that the low 2 bits are not used (right-shift written values by 2)
 		*/
 
+		// config
 		int prg_bank_mask, chr_bank_mask;
+		// state
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 		ByteBuffer chr_regs_1k = new ByteBuffer(8);
 		bool ChrMode;
+		bool[] wramenable = new bool[3];
 
 		public override void Dispose()
 		{
@@ -75,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg_regs_8k", ref prg_regs_8k);
 			ser.Sync("chr_regs_1k", ref chr_regs_1k);
 			ser.Sync("ChrMode", ref ChrMode);
+			for (int i = 0; i < wramenable.Length; i++)
+				ser.Sync("wramenable_" + i, ref wramenable[i]);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -90,6 +95,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+			// actually internal to the mapper
+			Cart.wram_size = 5;
+
 			SetMirrorType(EMirrorType.Vertical);
 			chr_bank_mask = Cart.chr_size / 1 - 1;
 			prg_bank_mask = Cart.prg_size / 8 - 1;
@@ -97,75 +105,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override byte ReadWRAM(int addr)
+		{
+			if (addr < 0x1400 && wramenable[addr >> 11])
+				return WRAM[addr];
+			else
+				return NES.DB;
+		}
+
 		public override void WriteWRAM(int addr, byte value)
 		{
+			if (addr < 0x1400)
+			{
+				if (wramenable[addr >> 11])
+					WRAM[addr] = value;
+				return;
+			}
+
 			switch (addr)
 			{
 				case 0x1EF0:
-					if (ChrMode)
-					{
-						chr_regs_1k[4] = (byte)(value / 2 * 2);
-						chr_regs_1k[5] = (byte)(value / 2 * 2 + 1);
-					}
-					else
-					{
-						chr_regs_1k[0] = (byte)(value / 2 * 2);
-						chr_regs_1k[1] = (byte)(value / 2 * 2 + 1);
-					}
+					chr_regs_1k[0] = (byte)(value & ~1);
+					chr_regs_1k[1] = (byte)(value | 1);
 					break;
 				case 0x1EF1:
-					if (ChrMode)
-					{
-						chr_regs_1k[6] = (byte)(value / 2 * 2);
-						chr_regs_1k[7] = (byte)(value / 2 * 2 + 1);
-					}
-					else
-					{
-						chr_regs_1k[2] = (byte)(value / 2 * 2);
-						chr_regs_1k[3] = (byte)(value / 2 * 2 + 1);
-					}
+					chr_regs_1k[2] = (byte)(value & ~1);
+					chr_regs_1k[3] = (byte)(value | 1);
 					break;
 
 				case 0x1EF2:
-					if (ChrMode)
-					{
-						chr_regs_1k[0] = value;
-					}
-					else
-					{
-						chr_regs_1k[4] = value;
-					}
+					chr_regs_1k[4] = value;
 					break;
 				case 0x1EF3:
-					if (ChrMode)
-					{
-						chr_regs_1k[1] = value;
-					}
-					else
-					{
-						chr_regs_1k[5] = value;
-					}
+					chr_regs_1k[5] = value;
 					break;
 				case 0x1EF4:
-					if (ChrMode)
-					{
-						chr_regs_1k[2] = value;
-					}
-					else
-					{
-						chr_regs_1k[6] = value;
-					}
+					chr_regs_1k[6] = value;
 					break;
 				case 0X1EF5:
-					if (ChrMode)
-					{
-						chr_regs_1k[3] = value;
-					}
-					else
-					{
-						chr_regs_1k[7] = value;
-					}
-					break; 
+					chr_regs_1k[7] = value;
+					break;
 
 				case 0x1EF6:
 					ChrMode = value.Bit(1);
@@ -175,7 +154,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						SetMirrorType(EMirrorType.Horizontal);
 					break;
 
-				case 0x1EFA:  
+				case 0x1EF7: wramenable[0] = value == 0xca; break;
+				case 0x1EF8: wramenable[1] = value == 0x69; break;
+				case 0x1EF9: wramenable[2] = value == 0x84; break;
+
+				case 0x1EFA:
 					prg_regs_8k[0] = (byte)(value >> 2);
 					break;
 				case 0x1EFB:
@@ -201,6 +184,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
+				if (ChrMode)
+					addr ^= 1 << 12;
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_regs_1k[bank_1k];
@@ -208,7 +193,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_1k << 10) | ofs;
 				return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+			else
+			{
+				return base.ReadPPU(addr);
+			}
 		}
 	}
 }

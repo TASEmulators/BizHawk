@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 			{
 				i++;
 				if (afd.IsDirectory) continue;
-				var ai = new HawkFileArchiveItem { name = HawkFile.Util_FixArchiveFilename(afd.FilePath), size = (long)afd.Size, archiveIndex = i, index = ret.Count };
+				var ai = new HawkFileArchiveItem { Name = HawkFile.Util_FixArchiveFilename(afd.FilePath), Size = (long)afd.Size, ArchiveIndex = i, Index = ret.Count };
 				ret.Add(ai);
 			}
 

@@ -37,7 +37,7 @@ end
 
 function frames()
 	if not movie.isloaded() then
-		console.output('No data loaded from frames')
+		console.log('No data loaded from frames')
 		return
 	end
 	reset()
@@ -46,7 +46,7 @@ function frames()
 	for frame = 0, emu.framecount() - 1 do
 		record(movie.getinput(frame))
 	end
-	console.output('Data loaded from frames')
+	console.log('Data loaded from frames')
 	counts(data)
 end
 
@@ -59,7 +59,7 @@ function load(name)
 		return
 	end
 	data = deepcopy(states[name])
-	console.output('Data loaded from ' .. name)
+	console.log('Data loaded from ' .. name)
 	--Show the data from before the state's frame.
 	local previous = states[name].previous
 	counts(previous)
@@ -98,7 +98,7 @@ function save(name)
 		state = deepcopy(data)
 	end
 	states[name] = deepcopy(state)
-	console.output('Data saved to ' .. name)
+	console.log('Data saved to ' .. name)
 end
 
 reset()

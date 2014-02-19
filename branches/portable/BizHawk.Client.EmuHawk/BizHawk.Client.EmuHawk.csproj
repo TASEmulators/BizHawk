@@ -74,10 +74,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
+    <Reference Include="SlimDX, Version=4.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT'" >
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -97,12 +108,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="LuaInterface">
       <HintPath>..\output\dll\LuaInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT' ">
-      <HintPath>..\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="OpenTK">
@@ -194,6 +199,12 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\DisplayConfigLite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\DisplayConfigLite.Designer.cs">
+      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\FirmwaresConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -205,6 +216,12 @@
     </Compile>
     <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
       <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\DisplayConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\DisplayConfig.Designer.cs">
+      <DependentUpon>DisplayConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\GB\BmpView.cs">
       <SubType>Component</SubType>
@@ -384,8 +401,12 @@
     </Compile>
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
-    <Compile Include="DisplayManager\Filters\Hq2x.cs" />
-    <Compile Include="DisplayManager\Filters\Scanlines.cs" />
+    <Compile Include="DisplayManager\DisplaySurface.cs" />
+    <Compile Include="DisplayManager\FilterManager.cs" />
+    <Compile Include="DisplayManager\OSDManager.cs" />
+    <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
+    <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
+    <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -454,13 +475,13 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PresentationPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScanlineSlider.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ScanlineSlider.Designer.cs">
-      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="tools\BatchRun.cs">
@@ -602,6 +623,9 @@
     <Compile Include="tools\Lua\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Lua\SyncTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\NES\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -646,6 +670,24 @@
     </Compile>
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\PCE\PCECDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCECDL.Designer.cs">
+      <DependentUpon>PCECDL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\PCE\PCETileViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\PCE\PCETileViewer.Designer.cs">
+      <DependentUpon>PCETileViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\SMS\VDPViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\SMS\VDPViewer.Designer.cs">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\SNES\SNESGameGenie.cs">
       <SubType>Form</SubType>
@@ -885,6 +927,12 @@
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\DisplayConfig.resx">
+      <DependentUpon>DisplayConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\DisplayConfigLite.resx">
+      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\FirmwaresConfig.resx">
       <DependentUpon>FirmwaresConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -973,16 +1021,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <EmbeddedResource Include="ScanlineSlider.resx">
-      <DependentUpon>ScanlineSlider.cs</DependentUpon>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
@@ -1052,12 +1092,22 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESPPU.resx">
       <DependentUpon>NESPPU.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\PatternViewer.resx">
       <DependentUpon>PatternViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCECDL.resx">
+      <DependentUpon>PCECDL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
+      <DependentUpon>PCETileViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\SMS\VDPViewer.resx">
+      <DependentUpon>VDPViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\SNES\SNESGameGenie.resx">
       <DependentUpon>SNESGameGenie.cs</DependentUpon>
@@ -1153,7 +1203,6 @@
     <Compile Include="tools\InputPrompt.Designer.cs">
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="RenderPanel.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="tools\ToolBox.cs">
@@ -1162,6 +1211,7 @@
     <Compile Include="tools\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Resources\courier16px.fnt" />
     <Compile Include="Input\OTK_Keyboard.cs" Condition=" '$(OS)' != 'Windows_NT' " />
   </ItemGroup>
   <ItemGroup>
@@ -1184,6 +1234,14 @@
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
       <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
+      <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
+      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
+      <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1266,6 +1324,11 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\pcb.png" />
+    <None Include="images\tvIcon.png" />
+    <None Include="Resources\pcb.png" />
+    <None Include="Resources\tvIcon.png" />
+    <EmbeddedResource Include="Resources\courier16px_0.png" />
     <None Include="images\pcejin1.bmp" />
     <None Include="images\watch.ico" />
     <None Include="images\TurboFastForward.png" />
@@ -1363,6 +1426,7 @@
     <None Include="images\addWatch.ico" />
     <None Include="images\alt_about_image.gif" />
     <None Include="images\gba-icon.png" />
+    <None Include="images\checkbox.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
@@ -1404,9 +1468,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

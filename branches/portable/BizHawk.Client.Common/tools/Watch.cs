@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 		protected DisplayType _type;
 		protected bool _bigEndian;
 		protected int _changecount;
-		protected string _notes = String.Empty;
+		protected string _notes = string.Empty;
 
 		public abstract int? Value { get; }
 		public abstract string ValueString { get; }
@@ -163,10 +163,8 @@ namespace BizHawk.Client.Common
 				{
 					return "X" + IntHelpers.GetNumDigits(this._domain.Size - 1);
 				}
-				else
-				{
-					return String.Empty;
-				}
+				
+				return string.Empty;
 			}
 		}
 
@@ -283,17 +281,17 @@ namespace BizHawk.Client.Common
 
 		public override string AddressString
 		{
-			get { return String.Empty; }
+			get { return string.Empty; }
 		}
 
 		public override string ValueString
 		{
-			get { return String.Empty; }
+			get { return string.Empty; }
 		}
 
 		public override string PreviousStr
 		{
-			get { return String.Empty; }
+			get { return string.Empty; }
 		}
 
 		public override string ToString()
@@ -331,7 +329,7 @@ namespace BizHawk.Client.Common
 			return;
 		}
 
-		public override string Diff { get { return String.Empty; } }
+		public override string Diff { get { return string.Empty; } }
 
 		public override void Update() { return; }
 	}
@@ -445,7 +443,7 @@ namespace BizHawk.Client.Common
 				switch (Type)
 				{
 					case DisplayType.Unsigned:
-						if (InputValidate.IsValidUnsignedNumber(value))
+						if (InputValidate.IsUnsigned(value))
 						{
 							val = (byte)int.Parse(value);
 						}
@@ -456,7 +454,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Signed:
-						if (InputValidate.IsValidSignedNumber(value))
+						if (InputValidate.IsSigned(value))
 						{
 							val = (byte)(sbyte)int.Parse(value);
 						}
@@ -467,7 +465,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Hex:
-						if (InputValidate.IsValidHexNumber(value))
+						if (InputValidate.IsHex(value))
 						{
 							val = (byte)int.Parse(value, NumberStyles.HexNumber);
 						}
@@ -478,7 +476,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Binary:
-						if (InputValidate.IsValidBinaryNumber(value))
+						if (InputValidate.IsBinary(value))
 						{
 							val = (byte)Convert.ToInt32(value, 2);
 						}
@@ -503,7 +501,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var diff = String.Empty;
+				var diff = string.Empty;
 				var diffVal = _value - _previous;
 				if (diffVal > 0)
 				{
@@ -636,7 +634,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(4);
 				case DisplayType.FixedPoint_12_4:
-					return String.Format("{0:F4}", val / 16.0);
+					return string.Format("{0:F4}", val / 16.0);
 				case DisplayType.Binary:
 					return Convert.ToString(val, 2).PadLeft(16, '0').Insert(8, " ").Insert(4, " ").Insert(14, " ");
 			}
@@ -650,7 +648,7 @@ namespace BizHawk.Client.Common
 				switch (Type)
 				{
 					case DisplayType.Unsigned:
-						if (InputValidate.IsValidUnsignedNumber(value))
+						if (InputValidate.IsUnsigned(value))
 						{
 							val = (ushort)int.Parse(value);
 						}
@@ -661,7 +659,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Signed:
-						if (InputValidate.IsValidSignedNumber(value))
+						if (InputValidate.IsSigned(value))
 						{
 							val = (ushort)(short)int.Parse(value);
 						}
@@ -672,7 +670,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Hex:
-						if (InputValidate.IsValidHexNumber(value))
+						if (InputValidate.IsHex(value))
 						{
 							val = (ushort)int.Parse(value, NumberStyles.HexNumber);
 						}
@@ -683,7 +681,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Binary:
-						if (InputValidate.IsValidBinaryNumber(value))
+						if (InputValidate.IsBinary(value))
 						{
 							val = (ushort)Convert.ToInt32(value, 2);
 						}
@@ -694,7 +692,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.FixedPoint_12_4:
-						if (InputValidate.IsValidFixedPointNumber(value))
+						if (InputValidate.IsFixedPoint(value))
 						{
 							val = (ushort)(double.Parse(value) * 16.0);
 						}
@@ -841,11 +839,11 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
-					return String.Format("{0:0.######}", val / 4096.0);
+					return string.Format("{0:0.######}", val / 4096.0);
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
-					return String.Format("{0:0.######}", _float);
+					return string.Format("{0:0.######}", _float);
 			}
 		}
 
@@ -857,7 +855,7 @@ namespace BizHawk.Client.Common
 				switch (Type)
 				{
 					case DisplayType.Unsigned:
-						if (InputValidate.IsValidUnsignedNumber(value))
+						if (InputValidate.IsUnsigned(value))
 						{
 							val = (uint)int.Parse(value);
 						}
@@ -868,7 +866,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Signed:
-						if (InputValidate.IsValidSignedNumber(value))
+						if (InputValidate.IsSigned(value))
 						{
 							val = (uint)int.Parse(value);
 						}
@@ -879,7 +877,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Hex:
-						if (InputValidate.IsValidHexNumber(value))
+						if (InputValidate.IsHex(value))
 						{
 							val = (uint)int.Parse(value, NumberStyles.HexNumber);
 						}
@@ -890,7 +888,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.FixedPoint_20_12:
-						if (InputValidate.IsValidFixedPointNumber(value))
+						if (InputValidate.IsFixedPoint(value))
 						{
 							val = (uint)(int)(double.Parse(value) * 4096.0);
 						}
@@ -901,7 +899,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case DisplayType.Float:
-						if (InputValidate.IsValidDecimalNumber(value))
+						if (InputValidate.IsFloat(value))
 						{
 							var bytes = BitConverter.GetBytes(float.Parse(value));
 							val = BitConverter.ToUInt32(bytes, 0);

@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER189":
 					break;
+				case "TXC-PT8154":
+					break;
 				default:
 					return false;
 			}

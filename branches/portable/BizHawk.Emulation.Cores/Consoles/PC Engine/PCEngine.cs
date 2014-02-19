@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public string BoardName { get { return null; } }
 
-		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom, object Settings)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings)
 		{
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
@@ -85,6 +85,45 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			this.Settings = (PCESettings)Settings ?? new PCESettings();
+
+			GameInfo biosInfo;
+			byte[] rom = CoreComm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out biosInfo,
+				"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
+
+			if (biosInfo.Status == RomStatus.BadDump)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"
+					+ "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+				throw new Exception();
+			}
+			else if (biosInfo.NotInDatabase)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+				throw new Exception();
+			}
+			else if (biosInfo["BIOS"] == false)
+			{
+				CoreComm.ShowMessage(
+					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+				throw new Exception();
+			}
+
+			if (biosInfo["SuperSysCard"])
+			{
+				game.AddOption("SuperSysCard");
+			}
+
+			if (game["NeedSuperSysCard"] && game["SuperSysCard"] == false)
+			{
+				CoreComm.ShowMessage(
+					"This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in the firmware configuration.");
+				throw new Exception();
+			}
+
+			game.FirmwareHash = Util.Hash_SHA1(rom);
+
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
@@ -93,7 +132,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void Init(GameInfo game, byte[] rom)
 		{
 			Controller = NullController.GetNullController();
-			Cpu = new HuC6280();
+			Cpu = new HuC6280(CoreComm);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
@@ -159,6 +198,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemorySF2;
 				RomData = rom;
 				RomLength = RomData.Length;
+				// user request: current value of the SF2MapperLatch on the tracelogger
+				Cpu.Logger = (s) => CoreComm.Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
 			}
 			else
 			{
@@ -233,6 +274,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();
+			SetupStateBuff();
 		}
 
 		int _lagcount = 0;
@@ -523,7 +565,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public byte[] SaveStateBinary()
+		byte[] SaveStateBinaryBuff;
+		void SetupStateBuff()
 		{
 			int buflen = 75908;
 			if (SuperGrafx) buflen += 90700;
@@ -533,15 +576,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (TurboCD) buflen += 0x20000 + 2165;
 			if (ArcadeCard) buflen += 42;
 			if (ArcadeCard && !ArcadeCardRewindHack) buflen += 0x200000;
-			//Console.WriteLine("LENGTH1 " + buflen);
+			SaveStateBinaryBuff = new byte[buflen];
+			Console.WriteLine("PCE: Internal savestate buff of {0} allocated", buflen);
+		}
 
-			var buf = new byte[buflen];
-			var stream = new MemoryStream(buf);
+		public byte[] SaveStateBinary()
+		{
+			var stream = new MemoryStream(SaveStateBinaryBuff);
 			var writer = new BinaryWriter(stream);
 			SaveStateBinary(writer);
-			//Console.WriteLine("LENGTH2 " + stream.Position);
 			writer.Close();
-			return buf;
+			return SaveStateBinaryBuff;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
@@ -549,15 +594,22 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(10);
+			int mainmemorymask = Ram.Length - 1;
 			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr & 0x1FFF],
-				(addr, value) => Ram[addr & 0x1FFF] = value);
+				addr => Ram[addr & mainmemorymask],
+				(addr, value) => Ram[addr & mainmemorymask] = value);
 			domains.Add(MainMemoryDomain);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
 				addr => Cpu.ReadMemory21(addr),
 				(addr, value) => Cpu.WriteMemory21(addr, value));
 			domains.Add(SystemBusDomain);
+
+			var RomDomain = new MemoryDomain("ROM", RomLength, MemoryDomain.Endian.Little,
+				addr => RomData[addr],
+				(addr, value) => RomData[addr] = value);
+			domains.Add(RomDomain);
+			
 
 			if (BRAM != null)
 			{
@@ -594,6 +646,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						addr => ArcadeRam[addr & 0x1FFFFF],
 						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
 				domains.Add(ArcadeRamMemoryDomain);
+			}
+
+			if (PopulousRAM != null)
+			{
+				var PopulusRAMDomain = new MemoryDomain("Cart Battery RAM", PopulousRAM.Length, MemoryDomain.Endian.Little,
+					addr => PopulousRAM[addr & 0x7fff],
+					(addr, value) => PopulousRAM[addr & 0x7fff] = value);
+				domains.Add(PopulusRAMDomain);
 			}
 
 			memoryDomains = new MemoryDomainList(domains);

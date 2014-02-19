@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 
-		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 		List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		public bool UpdateBefore { get { return false; } }

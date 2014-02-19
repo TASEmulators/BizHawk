@@ -574,27 +574,6 @@ namespace BizHawk.Client.EmuHawk
 			DisplayLogWindowMenuItem.Checked = Global.Config.ShowLogWindow;
 		}
 
-		private void DisplayFilterSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			DisplayFilterNoneMenuItem.Checked = Global.Config.TargetDisplayFilter == 0;
-			x2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 1;
-			SuperX2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 2;
-			SuperEagleMenuItem.Checked = Global.Config.TargetDisplayFilter == 3;
-			scanlines2xToolStripMenuItem.Checked = Global.Config.TargetDisplayFilter == 4;
-		}
-
-		private void DisplayFilterMenuItem_Click(object sender, EventArgs e)
-		{
-			if (sender == DisplayFilterNoneMenuItem) Global.Config.TargetDisplayFilter = 0;
-			if (sender == x2SAIMenuItem) Global.Config.TargetDisplayFilter = 1;
-			if (sender == SuperX2SAIMenuItem) Global.Config.TargetDisplayFilter = 2;
-			if (sender == SuperEagleMenuItem) Global.Config.TargetDisplayFilter = 3;
-			if (sender == Scanlines25MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 192; }
-			if (sender == Scanlines50MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 128; }
-			if (sender == Scanlines75MenuItem) { Global.Config.TargetDisplayFilter = 4; Global.Config.TargetScanlineFilterIntensity = 64; }
-			if (sender == ScanlinesCustomMenuItem) { Global.Config.TargetDisplayFilter = 4; new ScanlineSlider().Show(); }
-		}
-
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			x1MenuItem.Checked =
@@ -721,8 +700,6 @@ namespace BizHawk.Client.EmuHawk
 			PauseWhenMenuActivatedMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
 			StartPausedMenuItem.Checked = Global.Config.StartPaused;
 			SaveWindowPositionMenuItem.Checked = Global.Config.SaveWindowPosition;
-			ForceGDIMenuItem.Checked = Global.Config.DisplayGDI;
-			UseBilinearMenuItem.Checked = Global.Config.DispBlurry;
 			SuppressGuiLayerMenuItem.Checked = Global.Config.SuppressGui;
 			ShowMenuInFullScreenMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 			RunInBackgroundMenuItem.Checked = Global.Config.RunInBackground;
@@ -911,13 +888,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UseGDIMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayGDI ^= true;
-			SyncPresentationMode();
-		}
-
-		private void UseBilinearMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DispBlurry ^= true;
+			//TODO GL - this concept is gone
+			//Global.Config.DisplayGDI ^= true;
+			//SyncPresentationMode();
 		}
 
 		private void SuppressGuiLayerMenuItem_Click(object sender, EventArgs e)
@@ -928,6 +901,12 @@ namespace BizHawk.Client.EmuHawk
 		private void ShowMenuInFullScreenMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ShowMenuInFullscreen ^= true;
+
+			//make sure this gets applied immediately
+			if (_inFullscreen)
+			{
+				MainMenuStrip.Visible = Global.Config.ShowMenuInFullscreen;
+		}
 		}
 
 		private void RunInBackgroundMenuItem_Click(object sender, EventArgs e)
@@ -971,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWin.RenderPanel.Resized = true;
+					GlobalWin.PresentationPanel.Resized = true;
 				}
 			}
 			LimitFrameRateMessage();
@@ -988,7 +967,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWin.RenderPanel.Resized = true;
+					GlobalWin.PresentationPanel.Resized = true;
 				}
 			}
 		}
@@ -996,7 +975,7 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.VSyncThrottle ^= true;
-			GlobalWin.RenderPanel.Resized = true;
+			GlobalWin.PresentationPanel.Resized = true;
 			if (Global.Config.VSyncThrottle)
 			{
 				Global.Config.ClockThrottle = false;
@@ -1015,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VSync ^= true;
 			if (!Global.Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
-				GlobalWin.RenderPanel.Resized = true;
+				GlobalWin.PresentationPanel.Resized = true;
 			}
 		}
 
@@ -1215,7 +1194,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESPPUViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<NESPPU>();
+			GlobalWin.Tools.Load<NesPPU>();
 		}
 
 		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
@@ -1274,7 +1253,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PCEBGViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<PCEBGViewer>();
+			GlobalWin.Tools.Load<PceBgViewer>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -2019,10 +1998,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			if (GlobalWin.RenderPanel != null) 
-			{
-				GlobalWin.RenderPanel.Resized = true;
-			}
+			GlobalWin.PresentationPanel.Resized = true;
+
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

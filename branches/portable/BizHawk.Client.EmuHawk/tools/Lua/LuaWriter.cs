@@ -15,20 +15,12 @@ namespace BizHawk.Client.EmuHawk
 	public partial class LuaWriter : Form
 	{
 		//TODO:
-		//ability to save new script (currently causes an exception)
-		//New scripts should be added to lua console automatically
 		//make functions is string part of string or comment since the actual way of validating it isn't correct
-		//Save fontstyle to config
-		//Line numbers
-		//Option to toggle line numbers
-		//Auto-complete drop down on functions in libraries
-		//intellisense on library functions
 		//Option to turn off basic lua script
 		//Tool strip
 		//function toolstrip button (inserts a function end block and puts cursor on blank line between them
 		//error checking logic on library functions (check parameters, etc)
-		//fix so drag & drop text file on edit box works (not just the edges around it
-		//listview object with lua functions, double click inserts them into the script
+		//fix so drag & drop text file on edit box works (not just the edges around it)
 
 		public string CurrentFile = "";
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
@@ -38,13 +30,19 @@ namespace BizHawk.Client.EmuHawk
 		private bool redo;
 		private bool hasChanged;
 		private bool ProcessingText;
+		
+		private int lastLineofText;
+
 		private readonly char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		private List<int[]> pos = new List<int[]>();
+		private LuaConsole _owner;
 
-		public LuaWriter()
+		public LuaWriter(LuaConsole owner)
 		{
 			InitializeComponent();
-			LuaText.MouseWheel += LuaText_MouseWheel;            
+			_owner = owner;
+			LuaText.MouseWheel += LuaText_MouseWheel;
+			lineNumbersToolStripMenuItem.Checked = Global.Config.LuaShowLineNumbers;
         }
 
 		void LuaText_MouseWheel(object sender, MouseEventArgs e)
@@ -56,25 +54,24 @@ namespace BizHawk.Client.EmuHawk
 				Double Zoom;
 				if ((LuaText.ZoomFactor == 0.1F && e.Delta < 0) || (LuaText.ZoomFactor == 5.0F && e.Delta > 0))
 				{
-					Zoom = (LuaText.ZoomFactor*100);
+					Zoom = (LuaText.ZoomFactor * 100);
 				}
 				else
 				{
-					Zoom = (LuaText.ZoomFactor*100) + e.Delta/12;
+					Zoom = (LuaText.ZoomFactor * 100) + e.Delta / 12;
 				}
 
 				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
 			}
 			#endif
 		}
-
+		
 		private void timer_Tick(object sender, EventArgs e)
 		{
 			if (!hasChanged)
 			{
 				return;
 			}
-
 			// ProcessText();   // Commenting out until it's fixed to not scroll everything all the time
 			hasChanged = false;
 		}
@@ -438,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GenerateLibraryRegex()
 		{
 			StringBuilder list = new StringBuilder();
-			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
 			for (int i = 0; i < Libs.Count; i++)
 			{
 				list.Append(Libs[i]);
@@ -455,11 +452,13 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadFont()
 		{
 			LuaText.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
+			LuaLineNumbersRtb.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
 		}
 
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
 			//LuaTextFont;
+			
 			ProcessingText = true;
 			LuaText.SelectionTabs = new[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			LoadFont();
@@ -558,6 +557,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveScript();
 				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
 				Global.Config.RecentLua.Add(file.FullName);
+				_owner.LoadLuaFile(CurrentFile);
 			}
 		}
 
@@ -616,6 +616,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
+			ShowLuaLineNumbersTextBox();
+			HasTextChanged();
+		}
+
+		private void HasTextChanged ()
+		{
 			if (!ProcessingText)
 			{
 				hasChanged = true;
@@ -643,18 +649,20 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				LuaText.Font = f.Font;
 				Global.Config.LuaWriterFont = f.Font.Name;
 				Global.Config.LuaWriterFontSize = f.Font.Size;
+				LoadFont();
 				ProcessText();   //Re-update coloring and such when font changes
 			}
 		}
 
         private void AutoComplete_KeyDown(object sender, KeyEventArgs e)
         {
+			int start = LuaText.SelectionStart;
             if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Back)
             {
                 AutoCompleteView.Visible = false;
+				LuaText.Focus();
             }
 
             else if (e.KeyCode == Keys.Enter)
@@ -665,8 +673,8 @@ namespace BizHawk.Client.EmuHawk
             else if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
             {
                 AutoCompleteView.Visible = false;
+				LuaText.Focus();
                 e.SuppressKeyPress = true;
-                int start = LuaText.SelectionStart;
                 String letter = e.KeyCode.ToString();
                 if (!e.Shift)
                 {
@@ -674,50 +682,76 @@ namespace BizHawk.Client.EmuHawk
                 }
                 LuaText.Text = LuaText.Text.Insert(start, letter);
                 LuaText.Select(start + 1, 0);
-
             }
         }
 
+		private void ResizeAutoComplete()
+		{
+			if (AutoCompleteView.Items.Count != 0)
+			{
+				AutoCompleteView.Height = AutoCompleteView.Items.Count * 20;
+
+				int longestItem = AutoCompleteView.Items[0].Text.Length;
+				foreach (ListViewItem item in AutoCompleteView.Items)
+				{
+					if (item.Text.Length > longestItem)
+					{
+						longestItem = item.Text.Length;
+					}
+				}
+				AutoCompleteView.Width = longestItem * 5 + 20;
+				AutoCompleteView.Columns[0].Width = longestItem * 5 + 20;
+				AutoCompleteView.Visible = true;
+			}
+			else
+			{
+				AutoCompleteView.Visible = false;
+			}
+		}
+
 		private void LuaText_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape )
 			{
 				AutoCompleteView.Visible = false;
                 e.SuppressKeyPress = true;
                 return;
 			}
-
+			else if (e.KeyCode == Keys.Back)
+			{
+				AutoCompleteView.Visible = false;
+				return;
+			}
 			else if (e.KeyCode == Keys.OemPeriod)
 			{
 				string currentword = CurrentWord();
 				if (IsLibraryWord(currentword))
 				{
-					List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword);
-
+					List<LuaDocumentation.LibraryFunction> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(currentword).ToList();
 					// Position autocomplete box near the cursor's current position
-                    int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
-                    int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
+					int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
+					int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
 					AutoCompleteView.Location = new Point(x, y);
-                    
-                    // Populate list with available options
-                    AutoCompleteView.Items.Clear();
-					foreach (string function in libfunctions)
+
+					// Populate list with available options
+					AutoCompleteView.Items.Clear();
+					foreach (LuaDocumentation.LibraryFunction function in libfunctions)
 					{
-						ListViewItem item = new ListViewItem(function);
+						ListViewItem item = new ListViewItem(function.Name);
+						item.ToolTipText = function.Description;
 						AutoCompleteView.Items.Add(item);
 					}
-                    // Show window after it has been positioned and set up
-                  
-                    AutoCompleteView.Visible = true;
+					// Show window after it has been positioned and set up
+					ResizeAutoComplete();
 				}
 			}
 
 			else if (e.KeyCode == Keys.Enter)
 			{
-                if (AutoCompleteView.Visible == true)
-                {
-                    AutoCompleteView.Visible = false;
-                }
+				if (AutoCompleteView.Visible == true)
+				{
+					AutoCompleteView.Visible = false;
+				}
 				string[] Words = { "if", "for", "while", "function" };
 				string tabsStr = "";
 				int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
@@ -730,120 +764,101 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
+						string line = LuaText.Lines[linenumber];
+						//string subString = line.Substring(0 + tabs, Word.Length);
+						if ((Word.Length + tabs) <= line.Length)
 						{
-							string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr + "\t\n" + tabsStr + "end");
-							LuaText.Text = str;
-							LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
-							e.SuppressKeyPress = true;
-							return;
+							if (line.Substring(0 + tabs, Word.Length) == Word)
+							{
+								string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr + "\t\n" + tabsStr + "end");
+								LuaText.Text = str;
+								LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
+								e.SuppressKeyPress = true;
+								return;
+							}
 						}
 					}
 					catch { }
 				}
 
-				string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
-				LuaText.Text = tempStr;
+				//	string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+				LuaText.Text = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+				//tempStr;
+				LuaLineNumbersRtb.Select(LuaLineNumbersRtb.GetFirstCharIndexFromLine(linenumber + 1), 0);
+				LuaLineNumbersRtb.ScrollToCaret();
 				LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + tabs, 0);
+				LuaText.ScrollToCaret();
+
 				e.SuppressKeyPress = true;
 			}
 
-            else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
-            {
-                if (AutoCompleteView.Visible)
-                {
-                    e.SuppressKeyPress = true;
-                    AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
-
-                    AutoCompleteView.FocusedItem.Selected = true;
-                    AutoCompleteView.Focus();
-                   
-                }
-            }
-
-            else if (e.KeyCode == Keys.D9 && e.Shift)
-            {
-                if (AutoCompleteView.Visible == true)
-                {
-                    AutoCompleteView.Visible = false;
-                }
-            }
-
-            else if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
-            {
-                String currentWord = CurrentWord();
-                currentWord += e.KeyCode;
-                currentWord = currentWord.ToLower();
-                List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
-
-                int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
-                int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
-                AutoCompleteView.Location = new Point(x, y);
-                AutoCompleteView.Items.Clear();
-
-                if (!currentWord.Contains('.'))
-                {
-                    foreach (string library in libList)
-                    {
-                        if (library.StartsWith(currentWord))
-                        {
-                            ListViewItem item = new ListViewItem(library);
-                            AutoCompleteView.Items.Add(item);
-                        }
-                    }
-                    AutoCompleteView.Visible = true;
-                }
-                else
-                {
-                    String [] words = currentWord.Split('.');
-                    String fileName = words[0];
-                    if (IsLibraryWord(fileName))
-                    {
-                        List<string> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(fileName);
-                        foreach (String libfunction in libfunctions)
-                        {
-                            if (libfunction.StartsWith(words[1]))
-                            {
-                                ListViewItem item = new ListViewItem(libfunction);
-                                AutoCompleteView.Items.Add(item);
-                            }
-                        }
-                        AutoCompleteView.Visible = true;
-                    }
-                }
-            }
-
-		}
-
-/*
-		private void SelectNextItem(bool Next)
-		{
-
-			if (AutoCompleteView.SelectedItems.Count > 0)
+			else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
 			{
-				if (Next)
+				if (AutoCompleteView.Visible)
 				{
-					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[AutoCompleteView.Items.Count - 1])
-						return;
+					e.SuppressKeyPress = true;
+					AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
 
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) + 1];
+					AutoCompleteView.FocusedItem.Selected = true;
+					AutoCompleteView.Focus();
+
+				}
+			}
+
+			else if (e.KeyCode == Keys.D9 && e.Shift)
+			{
+				if (AutoCompleteView.Visible == true)
+				{
+					AutoCompleteView.Visible = false;
+				}
+			}
+
+			else if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
+			{
+				String currentWord = CurrentWord();
+				currentWord += e.KeyCode;
+				currentWord = currentWord.ToLower();
+				List<string> libList = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().Distinct().ToList();
+			//	List<string> libListToolTip = GlobalWin.Tools.LuaConsole.LuaImp.Docs.
+				int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
+				int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
+				AutoCompleteView.Location = new Point(x, y);
+				AutoCompleteView.Items.Clear();
+
+				if (!currentWord.Contains('.'))
+				{
+					foreach (string library in libList)
+					{
+						if (library.StartsWith(currentWord))
+						{
+							ListViewItem item = new ListViewItem(library);
+							AutoCompleteView.Items.Add(item);
+						}
+					}
+					ResizeAutoComplete();
 				}
 				else
 				{
-					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[0])
-						return;
-
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) - 1];
+					String[] words = currentWord.Split('.');
+					String fileName = words[0];
+					if (IsLibraryWord(fileName))
+					{
+						List<LuaDocumentation.LibraryFunction> libfunctions = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetFunctionsByLibrary(words[1]).ToList();
+						foreach (LuaDocumentation.LibraryFunction libfunction in libfunctions)
+						{
+							if (libfunction.Name.StartsWith(words[1]))
+							{
+								ListViewItem item = new ListViewItem(libfunction.Name);
+								item.ToolTipText = libfunction.Description;
+								AutoCompleteView.Items.Add(item);
+							}
+						}
+						ResizeAutoComplete();
+					}
 				}
 			}
-			else
-			{
-				if (Next)
-					AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
-               
-			}
 		}
-*/
+
 		private string CurrentWord()
 		{
 			int last = LuaText.SelectionStart;
@@ -877,7 +892,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsLibraryWord(string word)
 		{
-			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList();
+			List<string> Libs = GlobalWin.Tools.LuaConsole.LuaImp.Docs.GetLibraryList().ToList();
 			if (Libs.Contains(word))
 			{
 				return true;
@@ -895,7 +910,7 @@ namespace BizHawk.Client.EmuHawk
 			ListView.SelectedIndexCollection indexes = AutoCompleteView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-               
+				LuaText.Focus();
                 string str = AutoCompleteView.Items[indexes[0]].Text;
                 int start = LuaText.SelectionStart;
 
@@ -919,7 +934,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaText_SelectionChanged(object sender, EventArgs e)
 		{
-			UpdateLineNumber();
+			UpdateLineNumber();					
 		}
 
 		private void UpdateLineNumber()
@@ -934,6 +949,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void UpdateLineTextBox()
+		{
+			if (lastLineofText != LuaText.GetLineFromCharIndex(LuaText.TextLength))
+			{
+				lastLineofText = LuaText.GetLineFromCharIndex(LuaText.TextLength);
+				LuaLineNumbersRtb.Text = String.Empty;
+				for (int i = 1; i <= LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1; i++)
+				{
+					if (i < 10)
+					{
+						LuaLineNumbersRtb.Text += "00" + i;
+					}
+					else if (i >= 10 && i < 100)
+					{
+						LuaLineNumbersRtb.Text += "0" + i;
+					}
+					else
+					{
+						LuaLineNumbersRtb.Text += i;
+					}
+					if (i != LuaText.GetLineFromCharIndex(LuaText.TextLength) + 1)
+					{
+						LuaLineNumbersRtb.Text += "\n";
+					}
+				}
+			}
+		}
+
 		private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 
@@ -941,12 +984,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//TODO: check for changes and ask save
 			Close();
 		}
 
 		private void LuaWriter_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (changes)
+			{
+				var result = MessageBox.Show("Save changes to this Document?", "Lua Writer", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				if (result == DialogResult.Yes)
+				{
+					SaveScript();
+				
+				}
+			}
+
 			Global.Config.LuaWriterZoom = LuaText.ZoomFactor;
 			Global.Config.LuaWriterStartEmpty = startWithEmptyScriptToolStripMenuItem.Checked;
 			Global.Config.LuaWriterBackColor = LuaText.BackColor.ToArgb();
@@ -1077,6 +1129,36 @@ namespace BizHawk.Client.EmuHawk
 			{
 				redoToolStripMenuItem.Enabled = false;
 			}
+		}
+
+		private void toolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaShowLineNumbers = !Global.Config.LuaShowLineNumbers;
+			lineNumbersToolStripMenuItem.Checked = Global.Config.LuaShowLineNumbers;
+			ShowLuaLineNumbersTextBox();
+		}
+
+		private void ShowLuaLineNumbersTextBox()
+		{
+			LuaLineNumbersRtb.Visible = Global.Config.LuaShowLineNumbers;
+			if (LuaLineNumbersRtb.Visible )
+			{
+				UpdateLineTextBox();
+			}
+		
+		
+			
+			
+		}
+
+		private void AutoCompleteView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void syncTextBox1_TextChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

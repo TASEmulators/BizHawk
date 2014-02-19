@@ -118,9 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Forward.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="AudioHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\AudioHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -199,11 +196,17 @@
   <data name="SNESControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\SNESControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="C64Keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\C64Keyboard.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Play" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Play.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CutHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\CutHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LightOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\LightOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Hack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Hack.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="HotKeys" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\HotKeys.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -220,23 +223,23 @@
   <data name="Recent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Recent.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ReadOnly" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\ReadOnly.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="colecovisioncontroller" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\colecovisioncontroller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntVController" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\IntVController.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Unfreeze" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Unfreeze.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TruncateFromRW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\TruncateFromRW.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Blank.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Play" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Play.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Duplicate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Duplicate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LightOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\LightOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="BlueUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\BlueUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -244,17 +247,23 @@
   <data name="addWatch" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\addWatch.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Refresh1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Refresh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ToolBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ToolBox.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GenesisControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\GenesisControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Debugger" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Debugger.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Close.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="FindHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\FindHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Import" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Scan" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Scan.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -262,17 +271,17 @@
   <data name="GameController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\GameController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="gba_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gba-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="cheat" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\cheat.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Lua" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Lua.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="whiteTriDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\whiteTriDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LightOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\LightOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="alt_about_image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\alt_about_image.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="whiteTriLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\whiteTriLeft.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -280,20 +289,20 @@
   <data name="Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pencil.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="watch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\watch.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ExclamationRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ExclamationRed.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\camera.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pcejin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pcejin1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RetroQuestion" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\RetroQuestion.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TI83_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\TI83_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\camera.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PCEngineController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\PCEngineController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -303,6 +312,9 @@
   </data>
   <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TI83_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\TI83_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NESControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\NESControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -337,6 +349,9 @@
   <data name="SNES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\SNES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="C64Keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\C64Keyboard.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="HomeBrew" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\HomeBrew.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -351,12 +366,6 @@
   </data>
   <data name="GreenCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\GreenCheck.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CopyFolderHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\CopyFolderHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Translation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Translation.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="BackMore" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\BackMore.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -373,8 +382,8 @@
   <data name="Pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Pause.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ForwardMore" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\ForwardMore.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Close.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TruncateFromFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\TruncateFromFile.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -400,17 +409,20 @@
   <data name="C64Joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\C64Joystick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Import" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ForwardMore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\ForwardMore.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pencil.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="WarningHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\WarningHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="restart" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\restart.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Forward.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="IntVController" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\IntVController.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Duplicate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Duplicate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="C64Symbol" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\C64Symbol.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -418,46 +430,43 @@
   <data name="Previous" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Previous.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="restart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\restart.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="GENController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\GENController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="N64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\N64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="NES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\NES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Translation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Translation.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TruncateFromRW" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\TruncateFromRW.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Hack" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Hack.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ReadOnly" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\ReadOnly.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\search.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LightOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\LightOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\NES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Refresh1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Refresh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Lua" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Lua.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GenesisControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\GenesisControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CopyFolderHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\CopyFolderHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MoveUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\MoveUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="watch" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\watch.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pcb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pcb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="alt_about_image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\alt_about_image.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="tvIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tvIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pcejin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pcejin1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="gba_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gba-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="checkbox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\checkbox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

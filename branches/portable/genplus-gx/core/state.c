@@ -189,6 +189,8 @@ int state_load(unsigned char *state)
     sms_cart_switch(~io_reg[0x0E]);
   }
 
+  bufferptr += sram_context_load(&state[bufferptr]);
+
   load_param(&bitmap.viewport, sizeof(bitmap.viewport));
 
   return bufferptr;
@@ -281,6 +283,8 @@ int state_save(unsigned char *state)
     /* MS cartridge hardware */
     bufferptr += sms_cart_context_save(&state[bufferptr]);
   }
+
+  bufferptr += sram_context_save(&state[bufferptr]);
 
   save_param(&bitmap.viewport, sizeof(bitmap.viewport));
 

@@ -4,41 +4,15 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class FormsLuaLibrary : LuaLibraryBase
 	{
+		// TODO: replace references to ConsoleLuaLibrary.Log with a callback that is passed in
 		public override string Name { get { return "forms"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addclick",
-					"button",
-					"checkbox",
-					"clearclicks",
-					"destroy",
-					"destroyall",
-					"dropdown",
-					"getproperty",
-					"gettext",
-					"ischecked",
-					"label",
-					"newform",
-					"openfile",
-					"setlocation",
-					"setproperty",
-					"setsize",
-					"settext",
-					"textbox"
-				};
-			}
-		}
 
 		#region Forms Library Helpers
 
@@ -46,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void WindowClosed(IntPtr handle)
 		{
-			foreach (LuaWinform form in _luaForms)
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == handle)
 				{
@@ -56,120 +30,140 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private LuaWinform GetForm(object formHandle)
+		private LuaWinform GetForm(int formHandle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(formHandle));
+			var ptr = new IntPtr(formHandle);
 			return _luaForms.FirstOrDefault(form => form.Handle == ptr);
 		}
 
-		private void SetLocation(Control control, object X, object Y)
+		private static void SetLocation(Control control, int x, int y)
 		{
-			try
-			{
-				if (X != null && Y != null)
-				{
-					control.Location = new Point(LuaInt(X), LuaInt(Y));
-				}
-			}
-			catch { /*Do nothing*/ }
+			control.Location = new Point(x, y);
 		}
 
-		private void SetSize(Control control, object Width, object Height)
+		private static void SetSize(Control control, int width, int height)
 		{
-			try
-			{
-				if (Width != null && Height != null)
-				{
-					control.Size = new Size(LuaInt(Width), LuaInt(Height));
-				}
-			}
-			catch { /*Do nothing*/ }
+			control.Size = new Size(width, height);
 		}
 
-		private void SetText(Control control, object caption)
+		private static void SetText(Control control, string caption)
 		{
-			if (caption != null)
-			{
-				control.Text = caption.ToString();
-			}
+			control.Text = caption ?? string.Empty;
 		}
 
 		#endregion
 
-		public void forms_addclick(object handle, LuaFunction lua_event)
+		[LuaMethodAttributes(
+			"addclick",
+			"adds the given lua function as a click event to the given control"
+		)]
+		public void AddClick(int handle, LuaFunction clickEvent)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
 				{
 					if (control.Handle == ptr)
 					{
-						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, lua_event));
+						form.ControlEvents.Add(new LuaWinform.LuaEvent(control.Handle, clickEvent));
 					}
 				}
 			}
 		}
 
-		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null, object width = null, object height = null)
+		[LuaMethodAttributes(
+			"button",
+			"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size"
+		)]
+		public int Button(
+			int formHandle,
+			string caption,
+			LuaFunction clickEvent,
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
-			LuaWinform form = GetForm(form_handle);
+			var form = GetForm(formHandle);
 			if (form == null)
 			{
 				return 0;
 			}
 
-			LuaButton button = new LuaButton();
+			var button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
-			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, lua_event));
+			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
 
-			SetLocation(button, X, Y);
-			SetSize(button, width, height);
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(button, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(button, width.Value, height.Value);
+			}
 
 			return (int)button.Handle;
 		}
 
-		public int forms_checkbox(object form_handle, string caption, object X = null, object Y = null)
+		[LuaMethodAttributes(
+			"checkbox",
+			"Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form"
+		)]
+		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
 		{
-			LuaWinform form = GetForm(form_handle);
+			var form = GetForm(formHandle);
 			if (form == null)
 			{
 				return 0;
 			}
 
-			LuaCheckbox checkbox = new LuaCheckbox();
+			var checkbox = new LuaCheckbox();
 			form.Controls.Add(checkbox);
 			SetText(checkbox, caption);
-			SetLocation(checkbox, X, Y);
-			
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(checkbox, x.Value, y.Value);
+			}
 
 			return (int)checkbox.Handle;
 		}
 
-		public void forms_clearclicks(object handle)
+		[LuaMethodAttributes(
+			"clearclicks",
+			"Removes all click events from the given widget at the specified handle"
+		)]
+		public void ClearClicks(int handle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
 				{
 					if (control.Handle == ptr)
 					{
-						List<LuaWinform.LuaEvent> lua_events = form.ControlEvents.Where(x => x.Control == ptr).ToList();
-						foreach (LuaWinform.LuaEvent levent in lua_events)
+						var luaEvents = form.ControlEvents.Where(x => x.Control == ptr).ToList();
+						foreach (var luaEvent in luaEvents)
 						{
-							form.ControlEvents.Remove(levent);
+							form.ControlEvents.Remove(luaEvent);
 						}
 					}
 				}
 			}
 		}
 
-		public bool forms_destroy(object handle)
+		[LuaMethodAttributes(
+			"destroy",
+			"Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false"
+		)]
+		public bool Destroy(int handle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -178,46 +172,74 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 				}
 			}
+
 			return false;
 		}
 
-		public void forms_destroyall()
+		[LuaMethodAttributes(
+			"destroyall",
+			"Closes and removes all Lua created dialogs"
+		)]
+		public void DestroyAll()
 		{
-			foreach (LuaWinform form in _luaForms)
+			foreach (var form in _luaForms)
 			{
 				form.Close();
 				_luaForms.Remove(form);
 			}
 		}
 
-		public int forms_dropdown(object form_handle, LuaTable items, object X = null, object Y = null, object width = null, object height = null)
+		[LuaMethodAttributes(
+			"dropdown",
+			"Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters."
+		)]
+		public int Dropdown(
+			int formHandle,
+			LuaTable items,
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
-			LuaWinform form = GetForm(form_handle);
+			var form = GetForm(formHandle);
 			if (form == null)
 			{
 				return 0;
 			}
 
-			List<string> dropdownItems = items.Values.Cast<string>().ToList();
+			var dropdownItems = items.Values.Cast<string>().ToList();
 			dropdownItems.Sort();
 
-			LuaDropDown dropdown = new LuaDropDown(dropdownItems);
+			var dropdown = new LuaDropDown(dropdownItems);
 			form.Controls.Add(dropdown);
-			SetLocation(dropdown, X, Y);
-			SetSize(dropdown, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(dropdown, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(dropdown, width.Value, height.Value);
+			}
+			
 			return (int)dropdown.Handle;
 		}
 
-		public string forms_getproperty(object handle, object property)
+		[LuaMethodAttributes(
+			"getproperty",
+			"returns a string representation of the value of a property of the widget at the given handle"
+		)]
+		public string GetProperty(int handle, string property)
 		{
 			try
 			{
-				IntPtr ptr = new IntPtr(LuaInt(handle));
-				foreach (LuaWinform form in _luaForms)
+				var ptr = new IntPtr(handle);
+				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
 					{
-						return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
 					}
 					else
 					{
@@ -225,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control.Handle == ptr)
 							{
-								return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+								return control.GetType().GetProperty(property).GetValue(control, null).ToString();
 							}
 						}
 					}
@@ -233,18 +255,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.console_output(ex.Message);
+				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
 			return String.Empty;
 		}
 
-		public string forms_gettext(object handle)
+		[LuaMethodAttributes(
+			"gettext",
+			"Returns the text property of a given form or control"
+		)]
+		public string GetText(int handle)
 		{
 			try
 			{
-				IntPtr ptr = new IntPtr(LuaInt(handle));
-				foreach (LuaWinform form in _luaForms)
+				var ptr = new IntPtr(handle);
+				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
 					{
@@ -271,100 +297,122 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.console_output(ex.Message);
+				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
 			return String.Empty;
 		}
 
-		public bool forms_ischecked(object handle)
+		[LuaMethodAttributes(
+			"ischecked",
+			"Returns the given checkbox's checked property"
+		)]
+		public bool IsChecked(int handle)
 		{
-			try
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
-				IntPtr ptr = new IntPtr(LuaInt(handle));
-				foreach (LuaWinform form in _luaForms)
+				if (form.Handle == ptr)
 				{
-					if (form.Handle == ptr)
+					return false;
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
 					{
-						return false;
-					}
-					else
-					{
-						foreach (Control control in form.Controls)
+						if (control.Handle == ptr)
 						{
-							if (control.Handle == ptr)
+							if (control is LuaCheckbox)
 							{
-								if (control is LuaCheckbox)
-								{
-									return (control as LuaCheckbox).Checked;
-								}
-								else
-								{
-									return false;
-								}
+								return (control as LuaCheckbox).Checked;
+							}
+							else
+							{
+								return false;
 							}
 						}
 					}
 				}
 			}
-			catch (Exception ex)
-			{
-				ConsoleLuaLibrary.console_output(ex.Message);
-			}
 
 			return false;
 		}
 
-		public int forms_label(object form_handle, object caption, object X = null, object Y = null, object width = null, object height = null)
+		[LuaMethodAttributes(
+			"label",
+			"Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size."
+		)]
+		public int Label(
+			int formHandle,
+			string caption,
+			int? x = null,
+			int? y = null,
+			int? width = null,
+			int? height = null)
 		{
-			LuaWinform form = GetForm(form_handle);
+			var form = GetForm(formHandle);
 			if (form == null)
 			{
 				return 0;
 			}
 
-			Label label = new Label();
+			var label = new Label();
 			SetText(label, caption);
 			form.Controls.Add(label);
-			SetLocation(label, X, Y);
-			SetSize(label, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(label, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(label, width.Value, height.Value);
+			}
 
 			return (int)label.Handle;
 		}
 
-		public int forms_newform(object Width = null, object Height = null, object title = null)
+		[LuaMethodAttributes(
+			"newform",
+			"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created."
+		)]
+		public int NewForm(int? width = null, int? height = null, string title = null)
 		{
-
-			LuaWinform theForm = new LuaWinform();
-			_luaForms.Add(theForm);
-			if (Width != null && Height != null)
+			var form = new LuaWinform();
+			_luaForms.Add(form);
+			if (width.HasValue && height.HasValue)
 			{
-				theForm.Size = new Size(LuaInt(Width), LuaInt(Height));
+				form.Size = new Size(LuaInt(width), LuaInt(height));
 			}
 
-			theForm.Text = (string)title;
-			theForm.Show();
-			return (int)theForm.Handle;
+			form.Text = title;
+			form.Show();
+			return (int)form.Handle;
 		}
 
-		public string forms_openfile(string FileName = null, string InitialDirectory = null, string Filter = "All files (*.*)|*.*")
+		[LuaMethodAttributes(
+			"openfile",
+			"Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string"
+		)]
+		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
 			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
-			OpenFileDialog openFileDialog1 = new OpenFileDialog();
-			if (InitialDirectory != null)
+			var openFileDialog1 = new OpenFileDialog();
+			if (initialDirectory != null)
 			{
-				openFileDialog1.InitialDirectory = InitialDirectory;
+				openFileDialog1.InitialDirectory = initialDirectory;
 			}
 			
-			if (FileName != null)
+			if (fileName != null)
 			{
-				openFileDialog1.FileName = FileName;
+				openFileDialog1.FileName = fileName;
 			}
 			
-			if (Filter != null)
+			if (filter != null)
 			{
 				openFileDialog1.AddExtension = true;
-				openFileDialog1.Filter = Filter;
+				openFileDialog1.Filter = filter;
 			}
 			
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -377,14 +425,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void forms_setlocation(object handle, object X, object Y)
+		[LuaMethodAttributes(
+			"setlocation",
+			"Sets the location of a control or form by passing in the handle of the created object"
+		)]
+		public void SetLocation(int handle, int x, int y)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					SetLocation(form, X, Y);
+					SetLocation(form, x, y);
 				}
 				else
 				{
@@ -392,21 +444,28 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							SetLocation(control, X, Y);
+							SetLocation(control, x, y);
 						}
 					}
 				}
 			}
 		}
 
-		public void forms_setproperty(object handle, object property, object value)
+		[LuaMethodAttributes(
+			"setproperty",
+			"Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept"
+		)]
+		public void SetProperty(int handle, string property, object value)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					form.GetType().GetProperty(property.ToString()).SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
+					form
+						.GetType()
+						.GetProperty(property)
+						.SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
 				}
 				else
 				{
@@ -414,21 +473,28 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							control.GetType().GetProperty(property.ToString()).SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
+							control
+								.GetType()
+								.GetProperty(property)
+								.SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
 						}
 					}
 				}
 			}
 		}
 
-		public void forms_setsize(object handle, object Width, object Height)
+		[LuaMethodAttributes(
+			"setsize",
+			"TODO"
+		)]
+		public void SetSize(int handle, int width, int height)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					SetSize(form, Width, Height);
+					SetSize(form, width, height);
 				}
 				else
 				{
@@ -436,17 +502,21 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
-							SetSize(control, Width, Height);
+							SetSize(control, width, height);
 						}
 					}
 				}
 			}
 		}
 
-		public void forms_settext(object handle, object caption)
+		[LuaMethodAttributes(
+			"settext",
+			"Sets the text property of a control or form by passing in the handle of the created object"
+		)]
+		public void Settext(int handle, string caption)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in _luaForms)
+			var ptr = new IntPtr(handle);
+			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
 				{
@@ -465,15 +535,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null, bool multiline = false, bool fixedWidth = false)
+		[LuaMethodAttributes(
+			"textbox",
+			"Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font"
+		)]
+		public int Textbox(
+			int formHandle,
+			string caption = null,
+			int? width = null,
+			int? height = null,
+			string boxtype = null,
+			int? x = null,
+			int? y = null,
+			bool multiline = false,
+			bool fixedWidth = false)
 		{
-			LuaWinform form = GetForm(form_handle);
+			var form = GetForm(formHandle);
 			if (form == null)
 			{
 				return 0;
 			}
 
-			LuaTextBox textbox = new LuaTextBox();
+			var textbox = new LuaTextBox();
 			if (fixedWidth)
 			{
 				textbox.Font = new Font("Courier New", 8);
@@ -481,12 +564,20 @@ namespace BizHawk.Client.EmuHawk
 
 			textbox.Multiline = multiline;
 			SetText(textbox, caption);
-			SetLocation(textbox, X, Y);
-			SetSize(textbox, width, height);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(textbox, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				SetSize(textbox, width.Value, height.Value);
+			}
 
 			if (boxtype != null)
 			{
-				switch (boxtype.ToString().ToUpper())
+				switch (boxtype.ToUpper())
 				{
 					case "HEX":
 					case "HEXADECIMAL":
@@ -504,6 +595,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 			}
+
 			form.Controls.Add(textbox);
 			return (int)textbox.Handle;
 		}

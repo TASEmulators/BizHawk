@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using LuaInterface;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -7,54 +6,46 @@ namespace BizHawk.Client.EmuHawk
 	public class SavestateLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "savestate"; } }
-		public override string[] Functions
+
+		[LuaMethodAttributes(
+			"load",
+			"Loads a savestate with the given path"
+		)]
+		public void Load(string path)
 		{
-			get
+			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true);
+		}
+
+		[LuaMethodAttributes(
+			"loadslot",
+			"Loads the savestate at the given slot number (must be an integer between 0 and 9)"
+		)]
+		public void LoadSlot(int slotNum)
+		{
+			if (slotNum >= 0 && slotNum <= 9)
 			{
-				return new[]
-				{
-					"load",
-					"loadslot",
-					"save",
-					"saveslot",
-				};
+				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slotNum, true);
 			}
 		}
 
-		public void savestate_load(object lua_input)
+		[LuaMethodAttributes(
+			"save",
+			"Saves a state at the given path"
+		)]
+		public void Save(string path)
 		{
-			if (lua_input is string)
-			{
-				GlobalWin.MainForm.LoadState(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
-			}
+			GlobalWin.MainForm.SaveState(path, path, true);
 		}
 
-		public void savestate_loadslot(object lua_input)
+		[LuaMethodAttributes(
+			"saveslot",
+			"Saves a state at the given save slot (must be an integer between 0 and 9)"
+		)]
+		public void SaveSlot(int slotNum)
 		{
-			int slot = LuaInt(lua_input);
-
-			if (slot >= 0 && slot <= 9)
+			if (slotNum >= 0 && slotNum <= 9)
 			{
-				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slot.ToString(), true);
-			}
-		}
-
-		public void savestate_save(object lua_input)
-		{
-			if (lua_input is string)
-			{
-				string path = lua_input.ToString();
-				GlobalWin.MainForm.SaveState(path, path, true);
-			}
-		}
-
-		public void savestate_saveslot(object lua_input)
-		{
-			int slot = LuaInt(lua_input);
-
-			if (slot >= 0 && slot <= 9)
-			{
-				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slot.ToString());
+				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slotNum);
 			}
 		}
 	}

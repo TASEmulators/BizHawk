@@ -3,14 +3,16 @@ using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public sealed partial class HuC6280
 	{
-		public HuC6280()
+		public HuC6280(CoreComm comm)
 		{
 			Reset();
+			CoreComm = comm;
 		}
 
 		public void Reset()
@@ -347,6 +349,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public Action<int, byte> WriteVDC;
 		public Action<int> ThinkAction = delegate { };
 
+		public CoreComm CoreComm;
+
 		public byte ReadMemory(ushort address)
 		{
 			byte page = MPR[address >> 13];
@@ -383,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public string State()
 		{
 			int notused;
-			string a = string.Format("{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused)).PadRight(41);
+			string a = string.Format("{3:X2}:{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused), MPR[PC>>13]).PadRight(41);
 			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", A, X, Y, P, S, TotalExecutedCycles);
 			string val = a + b + "   ";
 			if (FlagN) val = val + "N";

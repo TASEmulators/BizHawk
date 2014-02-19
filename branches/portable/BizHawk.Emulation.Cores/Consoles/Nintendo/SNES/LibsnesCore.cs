@@ -1020,11 +1020,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, MemoryDomain.Endian.Little);
 
-				var romDomain = new MemoryDomain("CARTROM", romData.Length, MemoryDomain.Endian.Little,
-					(addr) => romData[addr],
-					(addr, value) => romData[addr] = value);
-				_memoryDomains.Add(romDomain);
 
+				MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little);
 				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little);
 				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little);
 				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little);

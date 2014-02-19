@@ -225,10 +225,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case "351948": // vrc2c A1 A0
 							// this is a weird PCB
 							// it's the only vrc2 with wram, and the only one with 256 prg rom
-							// it also has extra chips that no other vrc2\4 has
-							// it crashes unless you set type = 4; i didn't bother figuring out why
+							// it also has extra chips that no other vrc2\4 has (probably because
+							// the VRC2 doesn't support WRAM internally)
 							remap = AddrA1A0;
-							type = 4;
 							break;
 						default:
 							throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
@@ -241,12 +240,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
-			if (type == 4) prg_reg_mask_8k = 0x1F;
-			else prg_reg_mask_8k = 0xF;
-
-			//this VRC2 variant has an extra large PRG reg
-			if (Cart.board_type == "MAPPER116_HACKY")
-				prg_reg_mask_8k = 0x1F;
+			// prg regs are 5 bits wide in all VRC2 and VRC4, believe it or not
+			// todo: we don't even need this, do we?  removing it would
+			// support those 'oversizes' that nesdev gets boners for
+			prg_reg_mask_8k = 0x1F;
 
 			prg_bank_reg_8k[0] = 0;
 			prg_bank_reg_8k[1] = 1;

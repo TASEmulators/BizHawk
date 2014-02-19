@@ -101,6 +101,7 @@
 			this.WatchesOnScreenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -170,7 +171,7 @@
             this.ShowDiffContextMenuItem,
             this.ShowDomainContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 346);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 324);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// EditContextMenuItem
@@ -709,7 +710,7 @@
 			// SelectAllMenuItem
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
-			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(224, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
@@ -721,6 +722,7 @@
             this.WatchesOnScreenMenuItem,
             this.SaveWindowPositionMenuItem,
             this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator7,
             this.RestoreWindowSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
@@ -780,6 +782,13 @@
 			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.AlwaysOnTopMenuItem.Text = "&Always On Top";
 			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.FloatingWindowMenuItem.Text = "&Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
@@ -843,6 +852,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchListView.AutoArrange = false;
+			this.WatchListView.BlazingFast = false;
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.AddressColumn,
             this.ValueColumn,
@@ -1033,5 +1043,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ShowDiffContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

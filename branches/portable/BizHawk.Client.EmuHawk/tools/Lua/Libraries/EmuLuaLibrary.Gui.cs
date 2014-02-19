@@ -3,98 +3,64 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
-using LuaInterface;
 using BizHawk.Client.Common;
+using LuaInterface;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class GuiLuaLibrary : LuaLibraryBase
 	{
 		public override string Name { get { return "gui"; } }
-		public override string[] Functions
-		{
-			get
-			{
-				return new[]
-				{
-					"addmessage",
-					"alert",
-					"clearGraphics",
-					"cleartext",
-					"drawBezier",
-					"drawBox",
-					"drawEllipse",
-					"drawIcon",
-					"drawImage",
-					"drawLine",
-					"drawPie",
-					"drawPixel",
-					"drawPolygon",
-					"drawRectangle",
-					"drawString",
-					"drawText",
-					"text",
-				};
-			}
-		}
 
 		#region Gui API
 
 		public void Dispose()
 		{
-			foreach (var brush in SolidBrushes.Values) brush.Dispose();
-			foreach (var brush in Pens.Values) brush.Dispose();
+			foreach (var brush in _solidBrushes.Values)
+			{
+				brush.Dispose();
+			}
+
+			foreach (var brush in _pens.Values)
+			{
+				brush.Dispose();
+			}
 		}
 
 		public bool SurfaceIsNull
 		{
 			get
 			{
-				return luaSurface == null;
+				return _luaSurface == null;
 			}
 		}
 
-		/// <summary>
-		/// sets the current drawing context to a new surface.
-		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
-		/// could be more powerful.
-		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
-		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
-		/// </summary>
-		public void DrawNew()
+		[LuaMethodAttributes(
+			"DrawNew",
+			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface."
+		)]
+		public void DrawNew(string name)
 		{
-			luaSurface = GlobalWin.DisplayManager.GetLuaSurfaceNative();
+			DrawFinish();
+			_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
 		}
 
-		public void DrawNewEmu()
-		{
-			luaSurface = GlobalWin.DisplayManager.GetLuaEmuSurfaceEmu();
-		}
-
-		/// <summary>
-		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
-		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
-		/// most notably, the client output [emulated] resolution 
-		/// </summary>
 		public void DrawFinish()
 		{
-			GlobalWin.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
-			luaSurface = null;
-		}
-
-		public void DrawFinishEmu()
-		{
-			GlobalWin.DisplayManager.SetLuaSurfaceEmu(luaSurface);
-			luaSurface = null;
+			if(_luaSurface != null)
+				GlobalWin.DisplayManager.UnlockLuaSurface(_luaSurface);
+			_luaSurface = null;
 		}
 
 		#endregion
 
 		#region Helpers
 
-		private DisplaySurface luaSurface;
-		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
-		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
+		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
+		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
+
+		private DisplaySurface _luaSurface;
 
 		private static Color GetColor(object color)
 		{
@@ -110,131 +76,169 @@ namespace BizHawk.Client.EmuHawk
 
 		private SolidBrush GetBrush(object color)
 		{
-			Color c = GetColor(color);
+			var c = GetColor(color);
 			SolidBrush b;
-			if (!SolidBrushes.TryGetValue(c, out b))
+			if (!_solidBrushes.TryGetValue(c, out b))
 			{
 				b = new SolidBrush(c);
-				SolidBrushes[c] = b;
+				_solidBrushes[c] = b;
 			}
+
 			return b;
 		}
 
 		private Pen GetPen(object color)
 		{
-			Color c = GetColor(color);
+			var c = GetColor(color);
 			Pen p;
-			if (!Pens.TryGetValue(c, out p))
+			if (!_pens.TryGetValue(c, out p))
 			{
 				p = new Pen(c);
-				Pens[c] = p;
+				_pens[c] = p;
 			}
+
 			return p;
 		}
 
-		Bitmap nullGraphicsBitmap = new Bitmap(1, 1);
 		private Graphics GetGraphics()
 		{
-			Graphics g;
-			if (luaSurface == null)
-				g = Graphics.FromImage(nullGraphicsBitmap);
-			else g = luaSurface.GetGraphics();
-			int tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-			int ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
+
+			var tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+			var ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
 				transform.Translate(-tx, -ty);
 				g.Transform = transform;
 			}
+
 			return g;
 		}
 
-		private void DoGuiText(object luaX, object luaY, object luaStr, bool alert, object background = null,
-								 object forecolor = null, object anchor = null)
+		private static void DoGuiText(
+			int x,
+			int y,
+			string message,
+			bool alert,
+			object background = null,
+			object forecolor = null, 
+			string anchor = null)
 		{
 			if (!alert)
 			{
 				if (forecolor == null)
+				{
 					forecolor = "white";
-				if (background == null)
-					background = "black";
-			}
-			int dx = LuaInt(luaX);
-			int dy = LuaInt(luaY);
-			int a = 0;
-			if (anchor != null)
-			{
-				int x;
-				if (int.TryParse(anchor.ToString(), out x) == false)
-				{
-					if (anchor.ToString().ToLower() == "topleft")
-						a = 0;
-					else if (anchor.ToString().ToLower() == "topright")
-						a = 1;
-					else if (anchor.ToString().ToLower() == "bottomleft")
-						a = 2;
-					else if (anchor.ToString().ToLower() == "bottomright")
-						a = 3;
 				}
-				else
+
+				if (background == null)
 				{
-					a = LuaInt(anchor);
+					background = "black";
+				}
+			}
+
+			var a = 0;
+			
+			if (!string.IsNullOrEmpty(anchor))
+			{
+				switch (anchor)
+				{
+					case "0":
+					case "topleft":
+						a = 0;
+						break;
+					case "1":
+					case "topright":
+						a = 1;
+						break;
+					case "2":
+					case "bottomleft":
+						a = 2;
+						break;
+					case "3":
+					case "bottomright":
+						a = 3;
+						break;
 				}
 			}
 			else
 			{
-				dx -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
-			// blah hacks
-			dx *= MultiClientLuaLibrary.client_getwindowsize();
-			dy *= MultiClientLuaLibrary.client_getwindowsize();
 
-			GlobalWin.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor), a);
+			// blah hacks
+			x *= EmuHawkLuaLibrary.GetWindowSize();
+			y *= EmuHawkLuaLibrary.GetWindowSize();
+
+			GlobalWin.OSD.AddGUIText(message, x, y, alert, GetColor(background), GetColor(forecolor), a);
 		}
 
 		#endregion
 
-		public void gui_addmessage(object luaStr)
+		[LuaMethodAttributes(
+			"addmessage",
+			"Adds a message to the OSD's message area"
+		)]
+		public void AddMessage(string message)
 		{
-			GlobalWin.OSD.AddMessage(luaStr.ToString());
+			GlobalWin.OSD.AddMessage(message);
 		}
 
-		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
+		[LuaMethodAttributes(
+			"alert",
+			"Functions the same as gui.text() but shows the message in the alert font"
+		)]
+		public void Alert(int x, int y, string message, string anchor = null)
 		{
-			DoGuiText(luaX, luaY, luaStr, true, null, null, anchor);
+			DoGuiText(x, y, message, true, null, null, anchor); // TODO: refactor DoGuiText to take luaStr as string and refactor
 		}
 
-		public void gui_clearGraphics()
+		[LuaMethodAttributes(
+			"clearGraphics",
+			"clears all lua drawn graphics from the screen"
+		)]
+		public void ClearGraphics()
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-			luaSurface.Clear();
+			_luaSurface.Clear();
 		}
 
-		public static void gui_cleartext()
+		[LuaMethodAttributes(
+			"cleartext",
+			"TODO"
+		)]
+		public static void ClearText()
 		{
 			GlobalWin.OSD.ClearGUIText();
 		}
 
-		public void gui_drawBezier(LuaTable points, object color)
+		[LuaMethodAttributes(
+			"drawBezier",
+			"Draws a Bezier curve using the table of coordinates provided in the given color"
+		)]
+		public void DrawBezier(LuaTable points, object color)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					Point[] Points = new Point[4];
-					int i = 0;
+					var pointsArr = new Point[4];
+					
+					var i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
+						pointsArr[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 						if (i >= 4)
+						{
 							break;
+						}
 					}
 
-					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
+					g.DrawBezier(GetPen(color), pointsArr[0], pointsArr[1], pointsArr[2], pointsArr[3]);
 				}
 				catch (Exception)
 				{
@@ -243,41 +247,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawBox(object X, object Y, object X2, object Y2, object line = null, object background = null)
+		[LuaMethodAttributes(
+			"drawBox",
+			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height"
+		)]
+		public void DrawBox(int x, int y, int x2, int y2, object line = null, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					int int_x = LuaInt(X);
-					int int_y = LuaInt(Y);
-					int int_width = LuaInt(X2);
-					int int_height = LuaInt(Y2);
-
-					if (int_x < int_width)
+					if (x < x2)
 					{
-						int_width = Math.Abs(int_x - int_width);
+						x2 = Math.Abs(x - x2);
 					}
 					else
 					{
-						int_width = int_x - int_width;
-						int_x -= int_width;
+						x2 = x - x2;
+						x -= x2;
 					}
 
-					if (int_y < int_height)
+					if (y < y2)
 					{
-						int_height = Math.Abs(int_y - int_height);
+						y2 = Math.Abs(y - y2);
 					}
 					else
 					{
-						int_height = int_y - int_height;
-						int_y -= int_height;
+						y2 = y - y2;
+						y -= y2;
 					}
 
-					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
+					g.DrawRectangle(GetPen(line ?? "white"), x, y, x2, y2);
 					if (background != null)
 					{
-						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
+						g.FillRectangle(GetBrush(background), x, y, x2, y2);
 					}
 				}
 				catch (Exception)
@@ -288,18 +291,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
+		[LuaMethodAttributes(
+			"drawEllipse",
+			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
+		)]
+		public void DrawEllipse(int x, int y, int width, int height, object line, object background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? "white"), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					g.DrawEllipse(GetPen(line ?? "white"), x, y, width, height);
 					if (background != null)
 					{
 						var brush = GetBrush(background);
-						g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+						g.FillEllipse(brush, x, y, width, height);
 					}
 				}
 				catch (Exception)
@@ -310,7 +317,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
+		[LuaMethodAttributes(
+			"drawIcon",
+			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
+		)]
+		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
@@ -318,16 +329,16 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					Icon icon;
-					if (width != null && height != null)
+					if (width.HasValue && height.HasValue)
 					{
-						icon = new Icon(Path.ToString(), LuaInt(width), LuaInt(height));
+						icon = new Icon(path, width.Value, height.Value);
 					}
 					else
 					{
-						icon = new Icon(Path.ToString());
+						icon = new Icon(path);
 					}
 
-					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
+					g.DrawIcon(icon, x, y);
 				}
 				catch (Exception)
 				{
@@ -336,21 +347,71 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
+		[LuaMethodAttributes(
+			"drawImage",
+			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
+		)]
+		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			using (var g = GetGraphics())
+			{
+				var img = Image.FromFile(path);
+				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"drawLine",
+			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)"
+		)]
+		public void DrawLine(int x1, int y1, int x2, int y2, object color = null)
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			using (var g = GetGraphics())
+			{
+				g.DrawLine(GetPen(color ?? "white"), x1, y1, x2, y2);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"drawPie",
+			"draws a Pie shape at the given coordinates and the given width and height"
+		)]
+		public void DrawPie(
+			int x,
+			int y,
+			int width,
+			int height,
+			int startangle,
+			int sweepangle,
+			object line,
+			object background = null)
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			using (var g = GetGraphics())
+			{
+				g.DrawPie(GetPen(line), x, y, width, height, startangle, sweepangle);
+				if (background != null)
+				{
+					var brush = GetBrush(background);
+					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
+				}
+			}
+		}
+
+		[LuaMethodAttributes(
+			"drawPixel",
+			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)"
+		)]
+		public void DrawPixel(int x, int y, object color = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					Image img = Image.FromFile(Path.ToString());
-
-					if (width == null || width.GetType() != typeof(int))
-						width = img.Width.ToString();
-					if (height == null || height.GetType() != typeof(int))
-						height = img.Height.ToString();
-
-					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
+					g.DrawLine(GetPen(color ?? "white"), x, y, x + 0.1F, y);
 				}
 				catch (Exception)
 				{
@@ -359,84 +420,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
+		[LuaMethodAttributes(
+			"drawPolygon",
+			"Draws a polygon using the table of coordinates specified in points. Line is the color of the polygon. Background is the optional fill color"
+		)]
+		public void DrawPolygon(LuaTable points, object line, object background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
+
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "white"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
-				}
-				catch (Exception)
-				{
-					return;
-				}
-			}
-		}
-
-		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
-								object line, object background = null)
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			using (var g = GetGraphics())
-			{
-				try
-				{
-					g.DrawPie(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-					if (background != null)
-					{
-						var brush = GetBrush(background);
-						g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-					}
-				}
-				catch (Exception)
-				{
-					// need to stop the script from here
-					return;
-				}
-			}
-		}
-
-
-		public void gui_drawPixel(object X, object Y, object color = null)
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			using (var g = GetGraphics())
-			{
-				float x = LuaInt(X) + 0.1F;
-				try
-				{
-					g.DrawLine(GetPen(color ?? "white"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
-				}
-				catch (Exception)
-				{
-					return;
-				}
-			}
-		}
-
-		public void gui_drawPolygon(LuaTable points, object line, object background = null)
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			//this is a test
-			using (var g = GetGraphics())
-			{
-				try
-				{
-					Point[] Points = new Point[points.Values.Count];
-					int i = 0;
+					var pointsArr = new Point[points.Values.Count];
+					var i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
+						pointsArr[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 					}
 
-					g.DrawPolygon(GetPen(line), Points);
+					g.DrawPolygon(GetPen(line), pointsArr);
 					if (background != null)
 					{
-						var brush = GetBrush(background);
-						g.FillPolygon(brush, Points);
+						g.FillPolygon(GetBrush(background), pointsArr);
 					}
 				}
 				catch (Exception)
@@ -446,59 +453,66 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_drawRectangle(object X, object Y, object width, object height, object line, object background = null)
+		[LuaMethodAttributes(
+			"drawRectangle",
+			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color"
+		)]
+		public void DrawRectangle(int x, int y, int width, int height, object line, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
-				try
+				g.DrawRectangle(GetPen(line ?? "white"), x, y, width, height);
+				if (background != null)
 				{
-					int int_x = LuaInt(X);
-					int int_y = LuaInt(Y);
-					int int_width = LuaInt(width);
-					int int_height = LuaInt(height);
-					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
-					if (background != null)
-					{
-						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
-					}
-				}
-				catch (Exception)
-				{
-					// need to stop the script from here
-					return;
+					g.FillRectangle(GetBrush(background), x, y, width, height);
 				}
 			}
 		}
 
-		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		[LuaMethodAttributes(
+			"drawString",
+			"Alias of gui.drawText()"
+		)]
+		public void DrawString(
+			int x,
+			int y,
+			string message,
+			object color = null,
+			int? fontsize = null,
+			string fontfamily = null,
+			string fontstyle = null)
 		{
-			gui_drawText(X, Y, message, color, fontsize, fontfamily, fontstyle);
+			DrawText(x, y, message, color, fontsize, fontfamily, fontstyle);
 		}
 
-		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		[LuaMethodAttributes(
+			"drawText",
+			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class. The fontsize default is 12. The default font style. Font style options are regular, bold, italic, strikethrough, underline"
+		)]
+		public void DrawText(
+			int x,
+			int y,
+			string message,
+			object color = null,
+			int? fontsize = null,
+			string fontfamily = null,
+			string fontstyle = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					int fsize = 12;
-					if (fontsize != null)
-					{
-						fsize = LuaInt(fontsize);
-					}
-
-					FontFamily family = FontFamily.GenericMonospace;
+					var family = FontFamily.GenericMonospace;
 					if (fontfamily != null)
 					{
-						family = new FontFamily(fontfamily.ToString());
+						family = new FontFamily(fontfamily);
 					}
 
-					FontStyle fstyle = FontStyle.Regular;
+					var fstyle = FontStyle.Regular;
 					if (fontstyle != null)
 					{
-						string tmp = fontstyle.ToString().ToLower();
-						switch (tmp)
+						switch (fontstyle.ToLower())
 						{
 							default:
 							case "regular":
@@ -518,8 +532,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					Font font = new Font(family, fsize, fstyle, GraphicsUnit.Pixel);
-					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
+					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+					g.DrawString(message, font, GetBrush(color ?? "white"), LuaInt(x), LuaInt(y));
 				}
 				catch (Exception)
 				{
@@ -528,10 +542,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
-							 object anchor = null)
+		[LuaMethodAttributes(
+			"text",
+			"Displays the given text on the screen at the given coordinates. Optional Foreground and background colors. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
+		)]
+		public void Text(
+			int x,
+			int y,
+			string message,
+			object background = null,
+			object forecolor = null,
+			string anchor = null)
 		{
-			DoGuiText(luaX, luaY, luaStr, false, background, forecolor, anchor);
+			DoGuiText(x, y, message, false, background, forecolor, anchor);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,705 +10,62 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-//using dx=SlimDX;
-//using d3d=SlimDX.Direct3D9;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
+using BizHawk.Bizware.BizwareGL;
+
+using OpenTK;
+using OpenTK.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
-	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
+	/// A DisplayManager is destined forevermore to drive the PresentationPanel it gets initialized with.
+	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitampBuffer? Texture2d?) for display by the PresentationPanel.
+	/// Details TBD
 	/// </summary>
-	class SwappableDisplaySurfaceSet
-	{
-		DisplaySurface Pending, Current;
-		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
-
-		/// <summary>
-		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
-		/// </summary>
-		public DisplaySurface AllocateSurface(int width, int height, bool needsClear = true)
-		{
-			for (; ; )
-			{
-				DisplaySurface trial;
-				lock (this)
-				{
-					if (ReleasedSurfaces.Count == 0) break;
-					trial = ReleasedSurfaces.Dequeue();
-				}
-				if (trial.Width == width && trial.Height == height)
-				{
-					if (needsClear) trial.Clear();
-					return trial;
-				}
-				trial.Dispose();
-			}
-			return new DisplaySurface(width, height);
-		}
-
-		/// <summary>
-		/// sets the provided buffer as pending. takes control of the supplied buffer
-		/// </summary>
-		public void SetPending(DisplaySurface newPending)
-		{
-			lock (this)
-			{
-				if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
-				Pending = newPending;
-			}
-		}
-
-		public void ReleaseSurface(DisplaySurface surface)
-		{
-			lock (this) ReleasedSurfaces.Enqueue(surface);
-		}
-
-		/// <summary>
-		/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
-		/// </summary>
-		public DisplaySurface GetCurrent()
-		{
-			lock (this)
-			{
-				if (Pending != null)
-				{
-					if (Current != null) ReleasedSurfaces.Enqueue(Current);
-					Current = Pending;
-					Pending = null;
-				}
-			}
-			return Current;
-		}
-	}
-
-
-	public interface IDisplayFilter
-	{
-		/// <summary>
-		/// describes how this filter will respond to an input format
-		/// </summary>
-		DisplayFilterAnalysisReport Analyze(Size sourceSize);
-
-		/// <summary>
-		/// runs the filter
-		/// </summary>
-		DisplaySurface Execute(DisplaySurface surface);
-	}
-
-	public class DisplayFilterAnalysisReport
-	{
-		public bool Success;
-		public Size OutputSize;
-	}
-
-	interface IDisplayDriver
-	{
-
-	}
-
-	class Direct3DDisplayDriver : IDisplayDriver
-	{
-	}
-
-	public unsafe class DisplaySurface : IDisposable
-	{
-		Bitmap bmp;
-		BitmapData bmpdata;
-		int[] pixels;
-
-		public unsafe void Clear()
-		{
-			FromBitmap(false);
-			Util.Memset(PixelPtr, 0, Stride * Height);
-		}
-
-		public Bitmap PeekBitmap()
-		{
-			ToBitmap();
-			return bmp;
-		}
-
-		/// <summary>
-		/// returns a Graphics object used to render to this surface. be sure to dispose it!
-		/// </summary>
-		public Graphics GetGraphics()
-		{
-			ToBitmap();
-			return Graphics.FromImage(bmp);
-		}
-
-		public unsafe void ToBitmap(bool copy=true)
-		{
-			if (isBitmap) return;
-			isBitmap = true;
-
-			if (bmp == null)
-			{
-				bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
-			}
-
-			if (copy)
-			{
-				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-				int w = Width;
-				int h = Height;
-				int stride = bmpdata.Stride / 4;
-				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
-				for (int y = 0, i = 0; y < h; y++)
-					for (int x = 0; x < w; x++)
-						bmpbuf[y * stride + x] = pixels[i++];
-
-				bmp.UnlockBits(bmpdata);
-			}
-
-		}
-
-		public bool IsBitmap { get { return isBitmap; } }
-		bool isBitmap = false;
-
-		public unsafe void FromBitmap(bool copy=true)
-		{
-			if (!isBitmap) return;
-			isBitmap = false;
-
-			if (copy)
-			{
-				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-				int w = Width;
-				int h = Height;
-				int stride = bmpdata.Stride / 4;
-				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
-				for (int y = 0, i = 0; y < h; y++)
-					for (int x = 0; x < w; x++)
-						pixels[i++] = bmpbuf[y * stride + x];
-
-				bmp.UnlockBits(bmpdata);
-			}
-		}
-
-
-		public static DisplaySurface DisplaySurfaceWrappingBitmap(Bitmap bmp)
-		{
-			DisplaySurface ret = new DisplaySurface();
-			ret.Width = bmp.Width;
-			ret.Height = bmp.Height;
-			ret.bmp = bmp;
-			ret.isBitmap = true;
-			return ret;
-		}
-
-		private DisplaySurface() 
-		{
-		}
-
-		public DisplaySurface(int width, int height)
-		{
-			//can't create a bitmap with zero dimensions, so for now, just bump it up to one
-			if (width == 0) width = 1;
-			if (height == 0) height = 1; 
-			
-			Width = width;
-			Height = height;
-
-			pixels = new int[width * height];
-			LockPixels();
-		}
-
-		public int* PixelPtr { get { return (int*)ptr; } }
-		public IntPtr PixelIntPtr { get { return new IntPtr(ptr); } }
-		public int Stride { get { return Width*4; } }
-		public int OffsetOf(int x, int y) { return y * Stride + x*4; }
-
-		void* ptr;
-		GCHandle handle;
-		void LockPixels()
-		{
-			UnlockPixels();
-			handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
-			ptr = handle.AddrOfPinnedObject().ToPointer();
-		}
-
-		void UnlockPixels()
-		{
-			if(handle.IsAllocated) handle.Free();
-		}
-
-		/// <summary>
-		/// returns a new surface 
-		/// </summary>
-		/// <param name="xpad"></param>
-		/// <param name="ypad"></param>
-		/// <returns></returns>
-		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
-		{
-			int new_width = Width + xpad0 + xpad1;
-			int new_height = Height + ypad0 + ypad1;
-			DisplaySurface ret = new DisplaySurface(new_width, new_height);
-			int* dptr = ret.PixelPtr;
-			int* sptr = PixelPtr;
-			int dstride = ret.Stride / 4;
-			int sstride = Stride / 4;
-			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width; x++)
-				{
-					dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
-				}
-			return ret;
-
-		}
-
-		public int Width { get; private set; }
-		public int Height { get; private set; }
-
-		public void Dispose()
-		{
-			if (bmp != null)
-				bmp.Dispose();
-			bmp = null;
-			UnlockPixels();
-		}
-
-		//public unsafe int[] ToIntArray() { }
-
-		public void AcceptIntArray(int[] newpixels)
-		{
-			FromBitmap(false);
-			UnlockPixels();
-			pixels = newpixels;
-			LockPixels();
-		}
-	}
-
-
-	public class OSDManager
-	{
-		public string FPS { get; set; }
-		public string MT { get; set; }
-		public IBlitterFont MessageFont;
-		public IBlitterFont AlertFont;
-		public void Dispose()
-		{
-
-		}
-
-		public void Begin(IBlitter blitter)
-		{
-			MessageFont = blitter.GetFontType("MessageFont");
-			AlertFont = blitter.GetFontType("AlertFont");
-		}
-
-		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
-		public System.Drawing.Color FixedAlertMessageColor { get { return System.Drawing.Color.FromArgb(Global.Config.AlertMessageColor); } }
-
-		public OSDManager()
-		{
-		}
-
-		private float GetX(IBlitter g, int x, int anchor, IBlitterFont font, string message)
-		{
-			var size = g.MeasureString(message, font);
-			//Rectangle rect = g.MeasureString(Sprite, message, new DrawTextFormat());
-			switch (anchor)
-			{
-				default:
-				case 0: //Top Left
-				case 2: //Bottom Left
-					return x;
-				case 1: //Top Right
-				case 3: //Bottom Right
-					return g.ClipBounds.Width - x - size.Width;
-			}
-		}
-
-		private float GetY(IBlitter g, int y, int anchor, IBlitterFont font, string message)
-		{
-			var size = g.MeasureString(message, font);
-			switch (anchor)
-			{
-				default:
-				case 0: //Top Left
-				case 1: //Top Right
-					return y;
-				case 2: //Bottom Left
-				case 3: //Bottom Right
-					return g.ClipBounds.Height - y - size.Height;
-			}
-		}
-
-
-
-		private string MakeFrameCounter()
-		{
-			if (Global.MovieSession.Movie.IsFinished)
-			{
-				var sb = new StringBuilder();
-				sb
-					.Append(Global.Emulator.Frame)
-					.Append('/')
-					.Append(Global.MovieSession.Movie.FrameCount)
-					.Append(" (Finished)");
-				return sb.ToString();
-			}
-			else if (Global.MovieSession.Movie.IsPlaying)
-			{
-				var sb = new StringBuilder();
-				sb
-					.Append(Global.Emulator.Frame)
-					.Append('/')
-					.Append(Global.MovieSession.Movie.FrameCount);
-
-				return sb.ToString();
-			}
-			else if (Global.MovieSession.Movie.IsRecording)
-			{
-				return Global.Emulator.Frame.ToString();
-			}
-			else
-			{
-				return Global.Emulator.Frame.ToString();
-			}
-		}
-
-		private string MakeLagCounter()
-		{
-			return Global.Emulator.LagCount.ToString();
-		}
-
-		private List<UIMessage> messages = new List<UIMessage>(5);
-		private List<UIDisplay> GUITextList = new List<UIDisplay>();
-
-		public void AddMessage(string message)
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
-		}
-
-		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
-		}
-
-		public void ClearGUIText()
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			GUITextList.Clear();
-		}
-
-
-		public void DrawMessages(IBlitter g)
-		{
-			if (!Global.ClientControls["MaxTurbo"])
-			{
-				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-				int line = 1;
-				if (Global.Config.StackOSDMessages)
-				{
-					for (int i = messages.Count - 1; i >= 0; i--, line++)
-					{
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
-					}
-				}
-				else
-				{
-					if (messages.Count > 0)
-					{
-						int i = messages.Count - 1;
-						
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
-					}
-				}
-
-				for (int x = 0; x < GUITextList.Count; x++)
-				{
-					try
-					{
-						float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
-
-						if (GUITextList[x].Alert)
-							g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
-						else
-							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
-					}
-					catch (Exception)
-					{
-						return;
-					}
-				}
-			}
-		}
-
-
-		public string MakeInputDisplay()
-		{
-			StringBuilder s;
-			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
-			{
-				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
-			}
-			else
-			{
-				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
-			}
-
-			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
-			
-			return s.ToString();
-		}
-
-		public string MakeRerecordCount()
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				return "Rerecord Count: " + Global.MovieSession.Movie.Header.Rerecords;
-			}
-			else
-			{
-				return String.Empty;
-			}
-		}
-
-		/// <summary>
-		/// Display all screen info objects like fps, frame counter, lag counter, and input display
-		/// </summary>
-		public void DrawScreenInfo(IBlitter g)
-		{
-			if (Global.Config.DisplayFrameCounter)
-			{
-				string message = MakeFrameCounter();
-				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
-				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
-				g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
-					g.DrawString(message, MessageFont, Color.FromArgb(Global.Config.MessagesColor), x, y);
-			}
-			if (Global.Config.DisplayInput)
-			{
-				string input = MakeInputDisplay();
-				Color c;
-				float x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
-				float y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
-				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsRecording)
-				{
-					c = Color.FromArgb(Global.Config.MovieInput);
-				}
-				else
-				{
-					c = Color.FromArgb(Global.Config.MessagesColor);
-				}
-
-				g.DrawString(input, MessageFont, Color.Black, x+1,y+1);
-				g.DrawString(input, MessageFont, c, x,y);
-			}
-			if (Global.MovieSession.MultiTrack.IsActive)
-			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
-				g.DrawString(MT, MessageFont, Color.Black,
-				x + 1, y + 1);
-				g.DrawString(MT, MessageFont, FixedMessagesColor,
-					x, y);
-			}
-			if (Global.Config.DisplayFPS && FPS != null)
-			{
-				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
-				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
-				g.DrawString(FPS, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(FPS, MessageFont, FixedMessagesColor, x, y);
-			}
-
-			if (Global.Config.DisplayLagCounter)
-			{
-				string counter = MakeLagCounter();
-
-				if (Global.Emulator.IsLagFrame)
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(counter, AlertFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, AlertFont, FixedAlertMessageColor, x, y);
-				}
-				else
-				{
-					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
-					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
-					g.DrawString(counter, MessageFont, FixedMessagesColor, x , y );
-				}
-
-			}
-			if (Global.Config.DisplayRerecordCount)
-			{
-				string rerec = MakeRerecordCount();
-				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
-				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
-				g.DrawString(rerec, MessageFont, Color.Black, x + 1, y + 1);
-				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
-			}
-
-			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
-			{
-				StringBuilder disp = new StringBuilder("Held: ");
-
-				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
-				{
-					disp.Append(s);
-					disp.Append(' ');
-				}
-
-				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
-				{
-					disp.Append("Auto-");
-					disp.Append(s);
-					disp.Append(' ');
-				}
-
-				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, Global.Config.DispAutoholdx, Global.Config.DispAutoholdanchor, MessageFont, 
-					disp.ToString()), GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, MessageFont, disp.ToString()));
-			}
-
-			//TODO
-			//if (Global.MovieSession.Movie.IsPlaying)
-			//{
-			//    //int r = (int)g.ClipBounds.Width;
-			//    //Point[] p = { new Point(r - 20, 2), 
-			//    //				new Point(r - 4, 12), 
-			//    //				new Point(r - 20, 22) };
-			//    //g.FillPolygon(new SolidBrush(Color.Red), p);
-			//    //g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
-
-			//}
-			//else if (Global.MovieSession.Movie.IsRecording)
-			//{
-			//    //g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//    //g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			//}
-
-			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
-			{
-				var subList = Global.MovieSession.Movie.Header.Subtitles.GetSubtitles(Global.Emulator.Frame).ToList();
-
-				for (int i = 0; i < subList.Count; i++)
-				{
-					g.DrawString(subList[i].Message, MessageFont, Color.Black, subList[i].X + 1, subList[i].Y + 1);
-					g.DrawString(subList[i].Message, MessageFont, Color.FromArgb((int)subList[i].Color), subList[i].X, subList[i].Y);
-				}
-			}
-		}
-	}
-
 	public class DisplayManager : IDisposable
 	{
-		public DisplayManager()
+
+		public DisplayManager(PresentationPanel presentationPanel)
 		{
-			//have at least something here at the start
-			luaNativeSurfacePreOSD = new DisplaySurface(1, 1); 
-		}
+			GL = GlobalWin.GL;
+			this.presentationPanel = presentationPanel;
+			GraphicsControl = this.presentationPanel.GraphicsControl;
 
-		readonly SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
+			//it's sort of important for these to be initialized to something nonzero
+			currEmuWidth = currEmuHeight = 1;
 
-		public bool NeedsToPaint { get; set; }
+			Renderer = new GuiRenderer(GL);
 
-		DisplaySurface luaEmuSurface = null;
-		public void PreFrameUpdateLuaSource()
-		{
-			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-		}
+			Video2xFrugalizer = new RenderTargetFrugalizer(GL);
+			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
-		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
-		public void UpdateSource(IVideoProvider videoProvider)
-		{
-			UpdateSourceEx(videoProvider, GlobalWin.RenderPanel);
-		}
-
-		/// <summary>
-		/// update the passed IRenderer with the passed IVideoProvider
-		/// </summary>
-		/// <param name="videoProvider"></param>
-		/// <param name="renderPanel">also must implement IBlitter</param>
-		public void UpdateSourceEx(IVideoProvider videoProvider, IRenderer renderPanel)
-		{
-			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
-			sourceSurfaceSet.SetPending(newPendingSurface);
-		
-			if (renderPanel == null) return;
-
-			currNativeWidth = renderPanel.NativeSize.Width;
-			currNativeHeight = renderPanel.NativeSize.Height;
-
-			currentSourceSurface = sourceSurfaceSet.GetCurrent();
-
-			if (currentSourceSurface == null) return;
-
-			//if we're configured to use a scaling filter, apply it now
-			//SHOULD THIS BE RUN REPEATEDLY?
-			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
-			//but its sort of wasted work.
-			CheckFilter();
-
-			int w = currNativeWidth;
-			int h = currNativeHeight;
-
-			
-			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
-
-			//do we have anything to do?
-			//bool complexComposite = false;
-			//if (luaEmuSurface != null) complexComposite = true;
-			//if (luaSurface != null) complexComposite = true;
-
-			DisplaySurface surfaceToRender = filteredSurface;
-			if (surfaceToRender == null) surfaceToRender = currentSourceSurface;
-
-			renderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
-			renderPanel.Render(surfaceToRender);
-			if (luaEmuSurface != null)
+			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
+			for (int i = 0; i < 16; i++)
 			{
-				renderPanel.RenderOverlay(luaEmuSurface);
+				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
 			}
 
-			RenderOSD((IBlitter)renderPanel);
+			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
+			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
+				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			renderPanel.Present();
+			var fiHq2x = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
+			if(fiHq2x.Exists)
+				using(var stream = fiHq2x.OpenRead())
+					ShaderChain_hq2x = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
+			var fiScanlines = new FileInfo(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+			if (fiScanlines.Exists)
+				using (var stream = fiScanlines.OpenRead())
+					ShaderChain_scanlines = new RetroShaderChain(GL,new RetroShaderPreset(stream), System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk"));
 
-			if (filteredSurface != null)
-				filteredSurface.Dispose();
-			filteredSurface = null;
-
-			NeedsToPaint = false;
+			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
+			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
+			LuaSurfaceFrugalizers["emu"] = new TextureFrugalizer(GL);
+			LuaSurfaceFrugalizers["native"] = new TextureFrugalizer(GL);
 		}
 
 		public bool Disposed { get; private set; }
@@ -716,89 +74,286 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Disposed) return;
 			Disposed = true;
+			VideoTextureFrugalizer.Dispose();
+			foreach (var f in LuaSurfaceFrugalizers.Values)
+				f.Dispose();
+			foreach (var f in ShaderChainFrugalizers)
+				if (f != null)
+					f.Dispose();
 		}
 
-		DisplaySurface currentSourceSurface, filteredSurface;
+		//dont know what to do about this yet
+		public bool NeedsToPaint { get; set; }
 
-		//the surface to use to render a lua layer at native resolution (under the OSD)
-		DisplaySurface luaNativeSurfacePreOSD;
+		//rendering resources:
+		IGL GL;
+		StringRenderer TheOneFont;
+		GuiRenderer Renderer;
+
+		//layer resources
+		PresentationPanel presentationPanel; //well, its the final layer's target, at least
+		GraphicsControl GraphicsControl; //well, its the final layer's target, at least
 
 
+		/// <summary>
+		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
+		/// </summary>
+		int currEmuWidth, currEmuHeight;
+
+		TextureFrugalizer VideoTextureFrugalizer;
+		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
+		RenderTargetFrugalizer Video2xFrugalizer;
+		RenderTargetFrugalizer[] ShaderChainFrugalizers;
+		RetroShaderChain ShaderChain_hq2x, ShaderChain_scanlines;
+
+		/// <summary>
+		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
+		/// Then it will stuff it into the bound PresentationPanel
+		/// </summary>
+		public void UpdateSource(IVideoProvider videoProvider)
+		{
+			//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVidepProviders)
+			BitmapBuffer bb = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
+
+			//record the size of what we received, since lua and stuff is gonna want to draw onto it
+			currEmuWidth = bb.Width;
+			currEmuHeight = bb.Height;
+
+			//now, acquire the data sent from the videoProvider into a texture
+			var videoTexture = VideoTextureFrugalizer.Get(bb);
+
+			//acquire the lua surfaces as textures
+			Texture2d luaEmuTexture = null;
+			var luaEmuSurface = LuaSurfaceSets["emu"].GetCurrent();
+			if (luaEmuSurface != null)
+				luaEmuTexture = LuaSurfaceFrugalizers["emu"].Get(luaEmuSurface);
+
+			Texture2d luaNativeTexture = null;
+			var luaNativeSurface = LuaSurfaceSets["native"].GetCurrent();
+			if (luaNativeSurface != null)
+				luaNativeTexture = LuaSurfaceFrugalizers["native"].Get(luaNativeSurface);
+
+			//select shader chain
+			RetroShaderChain selectedChain = null;
+			if (Global.Config.TargetDisplayFilter == 1 && ShaderChain_hq2x != null && ShaderChain_hq2x.Available)
+				selectedChain = ShaderChain_hq2x;
+			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
+				selectedChain = ShaderChain_scanlines;
+
+			//run shader chain
+			Texture2d currentTexture = videoTexture;
+			if (selectedChain != null)
+			{
+				foreach (var pass in selectedChain.Passes)
+				{
+					//calculate size of input and output (note, we dont have a distinction between logical size and POW2 buffer size yet, like we should)
+					
+					Size insize = currentTexture.Size;
+					Size outsize = insize;
+
+					//calculate letterboxing scale factors for the current configuration, so that ScaleType.Viewport can do something intelligent
+					var LLpass = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, insize.Width, insize.Height);
+
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Viewport) outsize.Width = LLpass.Rectangle.Width;
+					if (pass.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(insize.Width * pass.Scale.X);
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) { throw new NotImplementedException("ScaleType Absolute"); }
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Viewport) outsize.Height = LLpass.Rectangle.Height;
+					if (pass.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(insize.Height * pass.Scale.Y);
+
+					if (pass.InputFilterLinear)
+						videoTexture.SetFilterLinear();
+					else
+						videoTexture.SetFilterNearest();
+
+					var rt = ShaderChainFrugalizers[pass.Index].Get(outsize.Width, outsize.Height);
+					rt.Bind();
+
+					var shader = selectedChain.Shaders[pass.Index];
+					shader.Bind();
+					if(selectedChain == ShaderChain_scanlines)
+						shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
+					shader.Run(currentTexture, insize, outsize, true);
+					currentTexture = rt.Texture2d;
+				}
+			}
+
+			//begin drawing to the PresentationPanel:
+			GraphicsControl.Begin();
+
+			//1. clear it with the background color that the emulator specified (could we please only clear the necessary letterbox area, to save some time?)
+			GL.SetClearColor(Color.FromArgb(videoProvider.BackgroundColor));
+			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+
+			//2. begin 2d rendering
+			Renderer.Begin(GraphicsControl.Width, GraphicsControl.Height);
+
+			//3. figure out how to draw the emulator output content
+			var LL = new LetterboxingLogic(GraphicsControl.Width, GraphicsControl.Height, currentTexture.IntWidth, currentTexture.IntHeight);
+
+
+			//4. draw the emulator content
+			Renderer.SetBlendState(GL.BlendNone);
+			Renderer.Modelview.Push();
+			Renderer.Modelview.Translate(LL.dx, LL.dy);
+			Renderer.Modelview.Scale(LL.finalScale);
+			if (Global.Config.DispBlurry)
+				videoTexture.SetFilterLinear();
+			else
+				videoTexture.SetFilterNearest();
+			Renderer.Draw(currentTexture);
+			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
+			Renderer.SetBlendState(GL.BlendNormal);
+			if(luaEmuTexture != null) Renderer.Draw(luaEmuTexture);
+			Renderer.Modelview.Pop();
+
+			//5a. draw the native layer content
+			//4.b draw the "lua emu surface" which is designed for art matching up exactly with the emulator output
+			if (luaNativeTexture != null) Renderer.Draw(luaNativeTexture);
+
+			//5b. draw the native layer OSD
+			MyBlitter myBlitter = new MyBlitter(this);
+			myBlitter.ClipBounds = new Rectangle(0, 0, GraphicsControl.Width, GraphicsControl.Height);
+			GlobalWin.OSD.Begin(myBlitter);
+			GlobalWin.OSD.DrawScreenInfo(myBlitter);
+			GlobalWin.OSD.DrawMessages(myBlitter);
+
+			//6. finished drawing
+			Renderer.End();
+
+			//7. apply the vsync setting (should probably try to avoid repeating this)
+			bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+			presentationPanel.GraphicsControl.SetVsync(vsync);
+
+			//7. present and conclude drawing
+			presentationPanel.GraphicsControl.SwapBuffers();
+			presentationPanel.GraphicsControl.End();
+
+			//cleanup:
+			bb.Dispose();
+			NeedsToPaint = false; //??
+		}
+
+		Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
+		Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
+		Dictionary<string, SwappableDisplaySurfaceSet> LuaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
 		SwappableDisplaySurfaceSet luaNativeSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
-		public DisplaySurface GetLuaSurfaceNative()
-		{
-			return luaNativeSurfaceSet.AllocateSurface(currNativeWidth, currNativeHeight);
-		}
-
-		SwappableDisplaySurfaceSet luaEmuSurfaceSet = new SwappableDisplaySurfaceSet();
-		public void SetLuaSurfaceEmu(DisplaySurface surface) { luaEmuSurfaceSet.SetPending(surface); }
-		public DisplaySurface GetLuaEmuSurfaceEmu()
-		{
-			int width = 1, height = 1;
-			if (currentSourceSurface != null)
-				width = currentSourceSurface.Width;
-			if (currentSourceSurface != null)
-				height = currentSourceSurface.Height;
-			return luaEmuSurfaceSet.AllocateSurface(width, height);
-		}
-
-		int currNativeWidth, currNativeHeight;
-	
 
 		/// <summary>
-		/// suspends the display manager so that tricky things can be changed without the display thread going in and getting all confused and hating
+		/// Locks the requested lua surface name
 		/// </summary>
-		public void Suspend()
+		public DisplaySurface LockLuaSurface(string name)
 		{
-		}
+			if (MapNameToLuaSurface.ContainsKey(name))
+				throw new InvalidOperationException("Lua surface is already locked: " + name);
 
-		/// <summary>
-		/// resumes the display manager after a suspend
-		/// </summary>
-		public void Resume()
-		{
-		}
-
-		void RenderOSD(IBlitter renderPanel)
-		{
-			GlobalWin.OSD.Begin(renderPanel);
-			renderPanel.Open();
-			GlobalWin.OSD.DrawScreenInfo(renderPanel);
-			GlobalWin.OSD.DrawMessages(renderPanel);
-			renderPanel.Close();
-		}
-
-		void CheckFilter()
-		{
-			IDisplayFilter filter = null;
-			switch (Global.Config.TargetDisplayFilter)
+			SwappableDisplaySurfaceSet sdss;
+			if (!LuaSurfaceSets.TryGetValue(name, out sdss))
 			{
-				case 0:
-					//no filter
-					break;
-				case 1:
-					filter = new Hq2xBase_2xSai();
-					break;
-				case 2:
-					filter = new Hq2xBase_Super2xSai();
-					break;
-				case 3:
-					filter = new Hq2xBase_SuperEagle();
-					break;
-				case 4:
-					filter = new Scanlines2x();
-					break;
-			
+				sdss = new SwappableDisplaySurfaceSet();
+				LuaSurfaceSets.Add(name, sdss);
 			}
-			if (filter == null)
-				filteredSurface = null;
-			else
-				filteredSurface = filter.Execute(currentSourceSurface);
+
+			//placeholder logic for more abstracted surface definitions from filter chain
+			int currNativeWidth = presentationPanel.NativeSize.Width;
+			int currNativeHeight = presentationPanel.NativeSize.Height;
+
+			int width,height;
+			if(name == "emu") { width = currEmuWidth; height = currEmuHeight; }
+			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
+			else throw new InvalidOperationException("Unknown lua surface name: " +name);
+
+			DisplaySurface ret = sdss.AllocateSurface(width, height);
+			MapNameToLuaSurface[name] = ret;
+			MapLuaSurfaceToName[ret] = name;
+			return ret;
 		}
 
-		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
+		/// <summary>
+		/// Unlocks this DisplaySurface which had better have been locked as a lua surface
+		/// </summary>
+		public void UnlockLuaSurface(DisplaySurface surface)
+		{
+			if (!MapLuaSurfaceToName.ContainsKey(surface))
+				throw new InvalidOperationException("Surface was not locked as a lua surface");
+			string name = MapLuaSurfaceToName[surface];
+			MapLuaSurfaceToName.Remove(surface);
+			MapNameToLuaSurface.Remove(name);
+			LuaSurfaceSets[name].SetPending(surface);
+		}
 
-		//Thread displayThread;
+		//helper classes:
+
+		class MyBlitter : IBlitter
+		{
+			DisplayManager Owner;
+			public MyBlitter(DisplayManager dispManager)
+			{
+				Owner = dispManager;
+			}
+
+			class FontWrapper : IBlitterFont
+			{
+				public FontWrapper(StringRenderer font)
+				{
+					this.font = font;
+				}
+
+				public readonly StringRenderer font;
+			}
+
+	
+			IBlitterFont IBlitter.GetFontType(string fontType) { return new FontWrapper(Owner.TheOneFont); }
+			void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
+			{
+				var stringRenderer = ((FontWrapper)font).font;
+				Owner.Renderer.SetModulateColor(color);
+				stringRenderer.RenderString(Owner.Renderer, x, y, s);
+				Owner.Renderer.SetModulateColorWhite();
+			}
+			SizeF IBlitter.MeasureString(string s, IBlitterFont font)
+			{
+				var stringRenderer = ((FontWrapper)font).font;
+				return stringRenderer.Measure(s);
+			}
+			public Rectangle ClipBounds { get; set; }
+		}
+
+		/// <summary>
+		/// applies letterboxing logic to figure out how to fit the source dimensions into the target dimensions.
+		/// In the future this could also apply rules like integer-only scaling, etc.
+		/// TODO - make this work with a output rect instead of float and dx/dy
+		/// </summary>
+		class LetterboxingLogic
+		{
+			public LetterboxingLogic(int targetWidth, int targetHeight, int sourceWidth, int sourceHeight)
+			{
+				float vw = (float)targetWidth;
+				float vh = (float)targetHeight;
+				float widthScale = vw / sourceWidth;
+				float heightScale = vh / sourceHeight;
+				finalScale = Math.Min(widthScale, heightScale);
+				dx = (int)((vw - finalScale * sourceWidth) / 2);
+				dy = (int)((vh - finalScale * sourceHeight) / 2);
+				Rectangle = new Rectangle((int)dx, (int)dy, (int)(finalScale * sourceWidth), (int)(finalScale * sourceHeight));
+			}
+
+			/// <summary>
+			/// scale to be applied to both x and y
+			/// </summary>
+			public float finalScale;
+
+			/// <summary>
+			/// offset
+			/// </summary>
+			public float dx, dy;
+
+			/// <summary>
+			/// The destination rectangle
+			/// </summary>
+			public Rectangle Rectangle;
+		}
 	}
+
 }

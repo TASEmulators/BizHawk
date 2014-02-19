@@ -592,62 +592,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if (USE_DATABASE)
-				choice = IdentifyFromBootGodDB(hash_sha1_several);
-			if (choice == null)
 			{
-				LoadWriteLine("Could not locate game in nescartdb");
-				if (USE_DATABASE)
-				{
-					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-					if (choice == null)
-					{
-						choice = IdentifyFromGameDB(hash_sha1);
-					}
-				}
+				if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
 				if (choice == null)
-				{
+					choice = IdentifyFromGameDB(hash_sha1);
+				if (choice == null)
 					LoadWriteLine("Could not locate game in bizhawk gamedb");
-					if (unif != null)
-					{
-						LoadWriteLine("Using information from UNIF header");
-						choice = unif.GetCartInfo();
-						choice.game = new NESGameInfo();
-						choice.game.name = gameInfo.Name;
-						origin = EDetectionOrigin.UNIF;
-					}
-					if (iNesHeaderInfo != null)
-					{
-						LoadWriteLine("Attempting inference from iNES header");
-						choice = iNesHeaderInfo;
-						string iNES_board = iNESBoardDetector.Detect(choice);
-						if (iNES_board == null)
-							throw new Exception("couldnt identify NES rom");
-						choice.board_type = iNES_board;
-
-						//try spinning up a board with 8K wram and with 0K wram to see if one answers
-						try
-						{
-							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
-						}
-						catch { }
-						if (boardType == null)
-						{
-							if (choice.wram_size == 8) choice.wram_size = 0;
-							else if (choice.wram_size == 0) choice.wram_size = 8;
-							try
-							{
-								boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
-							}
-							catch { }
-							if (boardType != null)
-								LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
-						}
-
-						LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
-						choice.game.name = gameInfo.Name;
-						origin = EDetectionOrigin.INES;
-					}
-				}
 				else
 				{
 					origin = EDetectionOrigin.GameDB;
@@ -668,14 +618,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.vram_size == -1) choice.vram_size = 0;
 						if (choice.wram_size == -1) choice.wram_size = 0;
 					}
+				}
 
+				//if this is still null, we have to try it some other way. nescartdb perhaps?
+	
+				if (choice == null)
+				{
+					choice = IdentifyFromBootGodDB(hash_sha1_several);
+					if (choice == null)
+						LoadWriteLine("Could not locate game in nescartdb");
+					else
+					{
+						LoadWriteLine("Chose board from nescartdb:");
+						LoadWriteLine(choice);
+						origin = EDetectionOrigin.BootGodDB;
+					}
 				}
 			}
-			else
+
+			//if choice is still null, try UNIF and iNES
+			if (choice == null)
 			{
-				LoadWriteLine("Chose board from nescartdb:");
-				LoadWriteLine(choice);
-				origin = EDetectionOrigin.BootGodDB;
+				if (unif != null)
+				{
+					LoadWriteLine("Using information from UNIF header");
+					choice = unif.GetCartInfo();
+					choice.game = new NESGameInfo();
+					choice.game.name = gameInfo.Name;
+					origin = EDetectionOrigin.UNIF;
+				}
+				if (iNesHeaderInfo != null)
+				{
+					LoadWriteLine("Attempting inference from iNES header");
+					choice = iNesHeaderInfo;
+					string iNES_board = iNESBoardDetector.Detect(choice);
+					if (iNES_board == null)
+						throw new Exception("couldnt identify NES rom");
+					choice.board_type = iNES_board;
+
+					//try spinning up a board with 8K wram and with 0K wram to see if one answers
+					try
+					{
+						boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+					}
+					catch { }
+					if (boardType == null)
+					{
+						if (choice.wram_size == 8) choice.wram_size = 0;
+						else if (choice.wram_size == 0) choice.wram_size = 8;
+						try
+						{
+							boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
+						}
+						catch { }
+						if (boardType != null)
+							LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
+					}
+
+					LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
+					choice.game.name = gameInfo.Name;
+					origin = EDetectionOrigin.INES;
+				}
 			}
 
 			//TODO - generate better name with region and system
@@ -768,7 +771,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			board.PostConfigure();
 
+			// set up display type
+
+			NESSyncSettings.Region fromrom = DetectRegion(cart.system);
+			NESSyncSettings.Region fromsettings = SyncSettings.RegionOverride;
+
+			if (fromsettings != NESSyncSettings.Region.Default)
+			{
+				Console.WriteLine("Using system region override");
+				fromrom = fromsettings;
+			}
+			switch (fromrom)
+			{
+				case NESSyncSettings.Region.Dendy:
+					_display_type = Common.DisplayType.DENDY;
+					break;
+				case NESSyncSettings.Region.NTSC:
+					_display_type = Common.DisplayType.NTSC;
+					break;
+				case NESSyncSettings.Region.PAL:
+					_display_type = Common.DisplayType.PAL;
+					break;
+				default:
+					_display_type = Common.DisplayType.NTSC;
+					break;
+			}
+			Console.WriteLine("Using NES system region of {0}", _display_type);
+
 			HardReset();
+		}
+
+		NESSyncSettings.Region DetectRegion(string system)
+		{
+			switch (system)
+			{
+				case "NES-PAL":
+				case "NES-PAL-A":
+				case "NES-PAL-B":
+					return NESSyncSettings.Region.PAL;
+				case "NES-NTSC":
+				case "Famicom":
+					return NESSyncSettings.Region.NTSC;
+				// this is in bootgod, but not used at all
+				case "Dendy":
+					return NESSyncSettings.Region.Dendy;
+				case null:
+					Console.WriteLine("Rom is of unknown NES region!");
+					return NESSyncSettings.Region.Default;
+				default:
+					Console.WriteLine("Unrecognized region {0}", system);
+					return NESSyncSettings.Region.Default;
+			}
 		}
 
 		void SyncState(Serializer ser)
@@ -850,7 +903,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (Settings.ClipLeftAndRight)
 			{
 				videoProvider.left = 8;
-				videoProvider.right = 248;
+				videoProvider.right = 247;
 			}
 			else
 			{
@@ -926,6 +979,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
 
+			public enum Region
+			{
+				Default,
+				NTSC,
+				PAL,
+				Dendy
+			};
+
+			public Region RegionOverride = Region.Default;
+
 			public NESSyncSettings Clone()
 			{
 				var ret = (NESSyncSettings)MemberwiseClone();
@@ -935,7 +998,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
 			{
-				return !Util.DictionaryEqual(x.BoardProperties, y.BoardProperties);
+				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) && x.RegionOverride == y.RegionOverride);
 			}
 		}
 

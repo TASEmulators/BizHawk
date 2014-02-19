@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Common
 		public void RecalculateMagic(double framerate)
 		{
 			// ceiling instead of floor here is very important (magic)
-			SamplesInOneFrame = (int)System.Math.Ceiling((88200.0 / framerate));
+			SamplesInOneFrame = 2 * (int)System.Math.Ceiling((44100.0 / framerate));
 			//TargetExtraSamples = ;// complete guess
 		}
 

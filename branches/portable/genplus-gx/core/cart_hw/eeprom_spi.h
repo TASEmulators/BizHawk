@@ -39,6 +39,30 @@
 #ifndef _EEPROM_SPI_H_
 #define _EEPROM_SPI_H_
 
+typedef enum
+{
+  STANDBY,
+  GET_OPCODE,
+  GET_ADDRESS,
+  WRITE_BYTE,
+  READ_BYTE
+} T_STATE_SPI;
+
+typedef struct
+{
+  uint8 cs;           /* !CS line state */
+  uint8 clk;          /* SCLK line state */
+  uint8 out;          /* SO line state */
+  uint8 status;       /* status register */
+  uint8 opcode;       /* 8-bit opcode */
+  uint8 buffer;       /* 8-bit data buffer */
+  uint16 addr;        /* 16-bit address */
+  uint32 cycles;      /* current operation cycle */
+  T_STATE_SPI state;  /* current operation state */
+} T_EEPROM_SPI;
+
+extern T_EEPROM_SPI spi_eeprom;
+
 /* Function prototypes */
 extern void eeprom_spi_init();
 extern void eeprom_spi_write(unsigned char data);

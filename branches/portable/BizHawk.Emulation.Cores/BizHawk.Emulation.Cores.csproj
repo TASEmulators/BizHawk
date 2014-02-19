@@ -59,9 +59,8 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -222,11 +221,15 @@
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
-    <Compile Include="Consoles\Nintendo\N64\mupen64plusApi.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
+    <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusAudioApi.cs" />
+    <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusCoreApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Audio.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64VideoProvider.cs" />
+    <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusInputApi.cs" />
+    <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusVideoApi.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -293,7 +296,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper200.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper203.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper207.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper222.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
@@ -342,6 +344,8 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot129_163.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot175_340.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper076.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper088.cs" />
@@ -351,9 +355,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namco163Audio.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\NanJing.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NES-EVENT.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NovelDiamond.cs" />
@@ -361,9 +362,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sachen8259.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1_Alt.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft3.cs" />
@@ -411,6 +414,7 @@
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
+    <Compile Include="Consoles\PC Engine\CDLMapping.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
@@ -449,6 +453,8 @@
     <Compile Include="CPUs\CP1610\CP1610.cs" />
     <Compile Include="CPUs\CP1610\Disassembler.cs" />
     <Compile Include="CPUs\CP1610\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\CDL.cs" />
+    <Compile Include="CPUs\HuC6280\CDLOpcodes.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280.cs" />

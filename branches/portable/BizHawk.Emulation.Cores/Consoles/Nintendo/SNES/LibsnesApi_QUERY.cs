@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void QUERY_set_trace_callback(snes_trace_t callback)
 		{
 			this.traceCallback = callback;
-			WritePipeMessage(eMessage.eMessage_QUERY_enable_scanline);
+			WritePipeMessage(eMessage.eMessage_QUERY_enable_trace);
 			bwPipe.Write(callback != null);
 			bwPipe.Flush();
 		}

@@ -36,16 +36,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public static extern void gpgx_get_fps(ref int num, ref int den);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gpgx_state_size();
+		public static extern int gpgx_state_max_size();
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gpgx_state_size(byte[] dest, int size);
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gpgx_state_save(byte[] dest, int size);
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gpgx_state_load(byte[] src, int size);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gpgx_get_control(IntPtr dest, int bytes);
+		public static extern bool gpgx_get_control([Out]InputData dest, int bytes);
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gpgx_put_control(IntPtr src, int bytes);
+		public static extern bool gpgx_put_control([In]InputData src, int bytes);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_get_sram(ref IntPtr area, ref int size);
@@ -71,30 +73,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_reset(bool hard);
-
-		public static bool gpgx_get_control(InputData dest)
-		{
-			int bytes = Marshal.SizeOf(typeof(InputData));
-			IntPtr p = Marshal.AllocHGlobal(bytes);
-
-			bool succeed = gpgx_get_control(p, bytes);
-			if (succeed)
-				Marshal.PtrToStructure(p, dest);
-			Marshal.FreeHGlobal(p);
-			return succeed;
-		}
-
-		public static bool gpgx_put_control(InputData src)
-		{
-			int bytes = Marshal.SizeOf(typeof(InputData));
-			IntPtr p = Marshal.AllocHGlobal(bytes);
-
-			Marshal.StructureToPtr(src, p, false);
-
-			bool succeed = gpgx_put_control(p, bytes);
-			Marshal.FreeHGlobal(p);
-			return succeed;
-		}
 
 		public const int MAX_DEVICES = 8;
 

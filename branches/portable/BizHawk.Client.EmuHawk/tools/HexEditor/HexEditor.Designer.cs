@@ -88,12 +88,13 @@
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// menuStrip1
+			// HexMenuStrip
 			// 
 			this.HexMenuStrip.ClickThrough = true;
 			this.HexMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -337,6 +338,7 @@
             this.AutoloadMenuItem,
             this.SaveWindowsPositionMenuItem,
             this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator3,
             this.RestoreDefaultSettingsMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
@@ -587,6 +589,13 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "&Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -604,7 +613,7 @@
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HexEditor_KeyPress);
 			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
 			this.HexMenuStrip.ResumeLayout(false);
@@ -675,5 +684,6 @@
 		private System.Windows.Forms.ToolStripMenuItem PokeAddressMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PokeContextItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }
