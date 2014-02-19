@@ -50,7 +50,7 @@ namespace BizHawk.Bizware.BizwareGL
 					return temp;
 				}
 
-				internal set
+				set
 				{
 					base[key] = value;
 				}

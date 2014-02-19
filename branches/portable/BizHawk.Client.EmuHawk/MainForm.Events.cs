@@ -1998,8 +1998,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			GlobalWin.PresentationPanel.Resized = true;
-
+			if(GlobalWin.PresentationPanel != null)
+				GlobalWin.PresentationPanel.Resized = true;
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

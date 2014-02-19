@@ -80,8 +80,7 @@ namespace BizHawk.Bizware.BizwareGL
 				{
 					return base[key];
 				}
-
-				internal set
+				set
 				{
 					base[key] = value;
 				}
