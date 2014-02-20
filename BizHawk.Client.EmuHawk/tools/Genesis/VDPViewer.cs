@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk.tools.Genesis
 			int* dest = (int*)lockdata.Scan0;
 			byte* src = (byte*)View.PatternCache;
 
-			int* pal = 0x40 + 0x10 * palindex + (int*)View.ColorCache;
+			int* pal = 0x10 * palindex + (int*)View.ColorCache;
 
 			for (int tile = 0; tile < 2048;)
 			{
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk.tools.Genesis
 			Emu.UpdateVDPViewContext(View);
 			unsafe
 			{
-				int* pal = 0x40 + (int*)View.ColorCache;
+				int* pal = (int*)View.ColorCache;
 				for (int i = 0; i < 0x40; i++)
 					pal[i] |= unchecked((int)0xff000000);
 				DrawPalettes(pal);
