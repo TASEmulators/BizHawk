@@ -31,12 +31,13 @@
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.disassembleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -69,10 +70,18 @@
             this.clearToolStripMenuItem,
             this.loadToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.unionToolStripMenuItem});
+            this.unionToolStripMenuItem,
+            this.disassembleToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
+			// 
+			// newToolStripMenuItem
+			// 
+			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newToolStripMenuItem.Text = "&New";
+			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
@@ -102,13 +111,6 @@
 			this.unionToolStripMenuItem.Text = "&Union...";
 			this.unionToolStripMenuItem.Click += new System.EventHandler(this.unionToolStripMenuItem_Click);
 			// 
-			// newToolStripMenuItem
-			// 
-			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.newToolStripMenuItem.Text = "&New";
-			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
-			// 
 			// textBox1
 			// 
 			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -120,6 +122,13 @@
 			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(292, 211);
 			this.textBox1.TabIndex = 3;
+			// 
+			// disassembleToolStripMenuItem
+			// 
+			this.disassembleToolStripMenuItem.Name = "disassembleToolStripMenuItem";
+			this.disassembleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.disassembleToolStripMenuItem.Text = "&Disassemble...";
+			this.disassembleToolStripMenuItem.Click += new System.EventHandler(this.disassembleToolStripMenuItem_Click);
 			// 
 			// PCECDL
 			// 
@@ -151,6 +160,7 @@
 		private System.Windows.Forms.ToolStripMenuItem unionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.ToolStripMenuItem disassembleToolStripMenuItem;
 
 	}
 }

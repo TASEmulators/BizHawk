@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
@@ -48,6 +49,44 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				w.Write(kvp.Value.Length);
 				w.Write(kvp.Value);
 			}
+			w.Flush();
+		}
+
+		public void Disassemble(Stream s, MemoryDomainList mem)
+		{
+			var w = new StreamWriter(s);
+			w.WriteLine("; Bizhawk CDL Disassembly");
+			w.WriteLine();
+			foreach (var kvp in this)
+			{
+				w.WriteLine(".\"{0}\" size=0x{1:x8}", kvp.Key, kvp.Value.Length);
+
+				byte[] cd = kvp.Value;
+				var md = mem[kvp.Key];
+
+				for (int i = 0; i < kvp.Value.Length; i++)
+				{
+					if ((kvp.Value[i] & (byte)HuC6280.CDLUsage.Code) != 0)
+					{
+						int unused;
+						string dis = HuC6280.DisassembleExt(
+							0,
+							out unused,
+							delegate(ushort addr)
+							{
+								return md.PeekByte(addr + i);
+							},
+							delegate(ushort addr)
+							{
+								return md.PeekWord(addr + i, false);
+							}
+						);
+						w.WriteLine("0x{0:x8}: {1}", i, dis);
+					}
+				}
+				w.WriteLine();
+			}
+			w.WriteLine("; EOF");
 			w.Flush();
 		}
 
@@ -130,9 +169,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public bool CDLLoggingActive = false;
 
 		[Flags]
-		enum CDLUsage : byte
+		public enum CDLUsage : byte
 		{
-			// was fetched as an opcode
+			// was fetched as an opcode first byte
 			Code = 0x01,
 			// was read or written as data
 			Data = 0x02,
@@ -145,10 +184,10 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			// was read and used as function pointer
 			// NB: there is no "IndirectCode"; all code is marked simply as code regardless of how it is reached
 			FcnPtr = 0x20,
-			// was used as a source (either initial or during the loop) of a block xfer
-			BlockFrom = 0x40,
-			// was used as a destination (either initial or during the loop) of a block xfer
-			BlockTo = 0x80
+			// was used as a source or destination (either initial or during the loop) of a block xfer
+			BlockXFer = 0x40,
+			// was fetched as an operand byte to an opcode
+			CodeOperand = 0x80
 		}
 
 		void Mark(ushort addr, CDLUsage flag)
@@ -158,10 +197,13 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		}
 
 		// mark addr as having been fetched for execute
-		void MarkCode(int addr_)
+		void MarkCode(int addr_, int n)
 		{
-			ushort addr = (ushort)addr_;
-			Mark(addr, CDLUsage.Code);
+			for (int i = 0; i < n; i++)
+			{
+				ushort addr = (ushort)(addr_ + i);
+				Mark(addr, i == 0 ? CDLUsage.Code : CDLUsage.CodeOperand);
+			}
 		}
 
 		// mark addr as having been seen as data
@@ -233,14 +275,14 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		void MarkBTFrom(int addr_)
 		{
 			ushort addr = (ushort)addr_;
-			Mark(addr, CDLUsage.BlockFrom);
+			Mark(addr, CDLUsage.BlockXFer);
 		}
 
 		// block transfer "to"
 		void MarkBTTo(int addr_)
 		{
 			ushort addr = (ushort)addr_;
-			Mark(addr, CDLUsage.BlockTo);
+			Mark(addr, CDLUsage.BlockXFer);
 		}
 	}
 }
