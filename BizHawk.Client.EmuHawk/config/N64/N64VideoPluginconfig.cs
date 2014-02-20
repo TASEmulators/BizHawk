@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,6 +12,26 @@ namespace BizHawk.Client.EmuHawk
 		public N64VideoPluginconfig()
 		{
 			InitializeComponent();
+		}
+
+		// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
+		// never do this
+		static N64SyncSettings GetS()
+		{
+			if (Global.Emulator is N64)
+				return (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			else
+				return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>();
+		}
+
+		// never do this
+		static void PutS(N64SyncSettings s)
+		{
+			if (Global.Emulator is N64)
+				GlobalWin.MainForm.PutCoreSyncSettings(s);
+			else
+				// hack, don't do!
+				Global.Config.PutCoreSyncSettings<N64>(s);
 		}
 
 		private void CancelBT_Click(object sender, EventArgs e)
@@ -29,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
-			var s = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			var s = GetS();
 			//Global
 			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
 			var strArr = video_settings.Split('x');
@@ -260,12 +281,12 @@ namespace BizHawk.Client.EmuHawk
 			s.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
 			s.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
-			GlobalWin.MainForm.PutCoreSyncSettings(s);
+			PutS(s);
 		} 
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
-			var s = (N64SyncSettings)Global.Emulator.GetSyncSettings();
+			var s = GetS();
 
 			//Load Variables
 			//Global
