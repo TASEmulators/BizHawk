@@ -120,8 +120,8 @@ namespace BizHawk.Client.EmuHawk.tools.Genesis
 			unsafe
 			{
 				int* pal = (int*)View.ColorCache;
-				for (int i = 0; i < 0x40; i++)
-					pal[i] |= unchecked((int)0xff000000);
+				//for (int i = 0; i < 0x40; i++)
+				//	pal[i] |= unchecked((int)0xff000000);
 				DrawPalettes(pal);
 				DrawTiles();
 				ushort *VRAMNT = (ushort*)View.VRAM;
