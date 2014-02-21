@@ -2,9 +2,10 @@ using System;
 using MonoMac.CoreFoundation;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
-using BizHawk.MultiClient;
+using BizHawk.Client.EmuHawk;
 using System.Windows.Forms;
 using System.Reflection;
+using BizHawk.Client.Common;
 
 namespace MonoMacWrapper
 {
@@ -12,7 +13,7 @@ namespace MonoMacWrapper
 	public class AppDelegate : NSApplicationDelegate
 	{
 		private System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter> _menuLookup;
-		private System.Threading.Thread _uiRunLoop;
+		//private System.Threading.Thread _uiRunLoop;
 		private MainForm _mainWinForm;
 		private NSApplication _sharedApp;
 		public AppDelegate(){}
@@ -33,17 +34,23 @@ namespace MonoMacWrapper
 
 		private void StartApplication()
 		{
-			BizHawk.HawkUIFactory.OpenDialogClass = typeof(MacOpenFileDialog);
-			BizHawk.HawkUIFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
-			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config ());
+			//BizHawk.HawkUIFactory.OpenDialogClass = typeof(MacOpenFileDialog);
+			//BizHawk.HawkUIFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
+			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 			try
 			{
-				_mainWinForm = new BizHawk.MultiClient.MainForm(new string[0]);
+				_mainWinForm = new BizHawk.Client.EmuHawk.MainForm(new string[0]);
 				var title = _mainWinForm.Text;
 				_mainWinForm.Show();
 				DoMenuExtraction();
-				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
+				//_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
+				_mainWinForm.ProgramRunLoop();
+				NSApplication.SharedApplication.Terminate(this);
+				/*while(true){
+					NSRunLoop.Current.RunUntil(DateTime.Now.AddMilliseconds(100));
+				}*/
 			}
 			catch (Exception e) 
 			{
@@ -51,11 +58,11 @@ namespace MonoMacWrapper
 				nsa.MessageText = e.ToString();
 				nsa.RunModal();
 			}
-			_uiRunLoop = new System.Threading.Thread(KeepThingsGoing);
-			_uiRunLoop.Start();
+			//_uiRunLoop = new System.Threading.Thread(KeepThingsGoing);
+			//_uiRunLoop.Start();
 		}
 		
-		private void KeepThingsGoing()
+		/*private void KeepThingsGoing()
 		{
 			while(!_mainWinForm.exit)
 			{
@@ -69,7 +76,7 @@ namespace MonoMacWrapper
 			while(_mainWinForm.RunLoopBlocked); //Wait to terminate until shutdown is complete
 			_mainWinForm.Dispose();
 			InvokeOnMainThread(new NSAction(()=>{NSApplication.SharedApplication.Terminate(this);}));
-		}
+		}*/
 				
 		private void DoMenuExtraction()
 		{
@@ -138,7 +145,12 @@ namespace MonoMacWrapper
 				if(eventList != null)
 				{
 					Delegate ddd = eventList[dropDownOpeningValue];
-					if(ddd!=null) ddd.DynamicInvoke(null, EventArgs.Empty);
+					try{
+						if(ddd!=null) ddd.DynamicInvoke(null, EventArgs.Empty);
+					}
+					catch(Exception ex){
+						//throw ex;
+					}
 				}
 	        }
 		}

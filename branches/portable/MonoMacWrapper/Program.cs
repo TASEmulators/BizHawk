@@ -1,6 +1,5 @@
 using System;
 using MonoMac.AppKit;
-using BizHawk.MultiClient;
 
 namespace MonoMacWrapper
 {

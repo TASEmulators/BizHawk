@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MonoMacWrapper
 {
-	public class MacOpenFileDialog : BizHawk.IOpenFileDialog
+	public class MacOpenFileDialog //: BizHawk.IOpenFileDialog
 	{
 		private MonoMac.AppKit.NSOpenPanel _openPanel;
 		private static MonoMac.Foundation.NSUrl _directoryToRestore;
@@ -140,7 +140,7 @@ namespace MonoMacWrapper
 		}
 	}
 
-	public class MacFolderBrowserDialog : BizHawk.IFolderBrowserDialog
+	public class MacFolderBrowserDialog //: BizHawk.IFolderBrowserDialog
 	{
 		private MonoMac.AppKit.NSOpenPanel _openPanel;
 
