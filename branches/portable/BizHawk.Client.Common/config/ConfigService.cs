@@ -44,7 +44,10 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException("Config Error", ex);
+				config = default(T);
+				//throw new InvalidOperationException("Config Error", ex);
+				//Commented out because I'm not sure why you'd want an exception here. 
+				//This happens when the application loads, so they'd never be able to run it if their config was corrupt.
 			}
 
 			if (config == null)
