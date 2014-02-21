@@ -80,28 +80,14 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="SlimDX, Version=4.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT'" >
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\SlimDX.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -111,7 +97,10 @@
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="OpenTK">
-      <HintPath>..\OpenTK.dll</HintPath>
+      <HintPath>..\References\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT'">
+      <HintPath>..\References\SlimDX.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
