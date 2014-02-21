@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -165,6 +166,13 @@ namespace BizHawk.Client.EmuHawk
 				else if (Global.Emulator is N64)
 				{
 					if ((Global.Emulator as N64).DisplayType == DisplayType.PAL)
+					{
+						_movieToRecord.Header[HeaderKeys.PAL] = "1";
+					}
+				}
+				else if (Global.Emulator is GPGX)
+				{
+					if ((Global.Emulator as GPGX).DisplayType == DisplayType.PAL)
 					{
 						_movieToRecord.Header[HeaderKeys.PAL] = "1";
 					}

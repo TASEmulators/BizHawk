@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
 					CoreComm.VsyncNum = fpsnum;
 					CoreComm.VsyncDen = fpsden;
+					DisplayType = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
 				// compute state size
@@ -270,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			var ses = CD.TOC.Sessions[0];
 			int ntrack = ses.Tracks.Count;
-	
+
 			// bet you a dollar this is all wrong
 			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
@@ -548,7 +549,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
-				byte *p = (byte*) area;
+				byte* p = (byte*)area;
 
 				mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
 					delegate(int addr)
@@ -625,6 +626,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		#endregion
 
 		#region VideoProvider
+
+		public DisplayType DisplayType { get; private set; }
 
 		public IVideoProvider VideoProvider { get { return this; } }
 
