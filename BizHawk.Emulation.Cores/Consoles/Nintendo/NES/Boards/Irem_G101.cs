@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER032":
 					break;
 				case "IREM-G101":
-					if (Cart.pcb == "UNAMED-IF-13")
+					if (Cart.pcb == "UNK-IF-13")
 					{
 						//special case for major league
 						oneScreenHack = true;
@@ -101,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_mode <<= 2;
 					mirror_mode = value & 1;
 					SyncMirror();
+					NES.LogLine("V: {0}", value);
 					break;
 
 				//$A000-$A007:  [PPPP PPPP]    PRG Reg 1
