@@ -659,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				for (int j = 0; j < vheight; j++)
 				{
 					for (int i = 0; i < vwidth; i++)
-						*pdst++ = *psrc++ | unchecked((int)0xff000000);
+						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
 					psrc += rinc;
 				}
 			}

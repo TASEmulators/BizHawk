@@ -478,7 +478,7 @@ INLINE void WRITE_LONG(void *address, uint32 data)
 
 /* 8:8:8 RGB */
 #elif defined(USE_32BPP_RENDERING)
-#define MAKE_PIXEL(r,g,b) ((r) << 20 | (r) << 16 | (g) << 12 | (g)  << 8 | (b) << 4 | (b))
+#define MAKE_PIXEL(r,g,b) (0xff000000 | (r) << 20 | (r) << 16 | (g) << 12 | (g)  << 8 | (b) << 4 | (b))
 #endif
 
 /* Window & Plane A clipping */
