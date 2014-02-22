@@ -390,49 +390,59 @@ namespace BizHawk.Client.EmuHawk
 
 			for (; ; )
 			{
-				Input.Instance.Update();
-
-				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
-				ProcessInput();
-				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
-				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
-
-				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
-
-				if (Global.ClientControls["Autohold"])
+				if (RunLoopCore())
 				{
-					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+					Thread.Sleep(0);
 				}
-				else if (Global.ClientControls["Autofire"])
-				{
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-				}
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
-				}
-
-				StepRunLoop_Core();
-				StepRunLoop_Throttle();
-
-				if (GlobalWin.DisplayManager.NeedsToPaint)
-				{
-					Render();
-				}
-
-				CheckMessages();
-				if (_exit)
+				else
 				{
 					break;
 				}
+			}
+		}
 
-				Thread.Sleep(0);
+		public bool RunLoopCore()
+		{
+			Input.Instance.Update();
+
+			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
+			ProcessInput();
+			Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+			Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
+			Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+			Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
+			if (Global.ClientControls["Autohold"])
+			{
+				Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+				Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+			}
+			else if (Global.ClientControls["Autofire"])
+			{
+				Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 			}
 
-			Shutdown();
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				GlobalWin.Tools.LuaConsole.ResumeScripts(false);
+			}
+
+			StepRunLoop_Core();
+			StepRunLoop_Throttle();
+
+			if (GlobalWin.DisplayManager.NeedsToPaint)
+			{
+				Render();
+			}
+
+			CheckMessages();
+			if (_exit)
+			{
+				Shutdown();
+				return false;
+			}
+			return true;
 		}
 
 		/// <summary>
