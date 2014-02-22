@@ -768,6 +768,9 @@ namespace BizHawk.Client.EmuHawk
 
 				#if WINDOWS
 					Padding = new System.Windows.Forms.Padding(0);
+					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+					//so we need the statusbar and mainform backdrop color to match
+					BackColor = SystemColors.Control; 
 				#endif
 
 				MainMenuStrip.Visible = true;
