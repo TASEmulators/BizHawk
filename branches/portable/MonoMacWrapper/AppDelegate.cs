@@ -13,15 +13,16 @@ namespace MonoMacWrapper
 	public class AppDelegate : NSApplicationDelegate
 	{
 		private System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter> _menuLookup;
-		//private System.Threading.Thread _uiRunLoop;
+		private NSTimer _masterTimer;
 		private MainForm _mainWinForm;
 		private NSApplication _sharedApp;
+		private Action _queuedAction;
 		public AppDelegate(){}
 
 		public override void FinishedLaunching(NSObject notification)
 		{
 			NSApplication.SharedApplication.BeginInvokeOnMainThread(()=>
-            {
+			{
 				_sharedApp = NSApplication.SharedApplication;
 				StartApplication();
 			});
@@ -38,19 +39,17 @@ namespace MonoMacWrapper
 			//BizHawk.HawkUIFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 			try
 			{
 				_mainWinForm = new BizHawk.Client.EmuHawk.MainForm(new string[0]);
 				var title = _mainWinForm.Text;
 				_mainWinForm.Show();
 				DoMenuExtraction();
-				//_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
+				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
-				_mainWinForm.ProgramRunLoop();
-				NSApplication.SharedApplication.Terminate(this);
-				/*while(true){
-					NSRunLoop.Current.RunUntil(DateTime.Now.AddMilliseconds(100));
-				}*/
+				_masterTimer = NSTimer.CreateRepeatingTimer(0.005, MacRunLoop);
+				NSRunLoop.Current.AddTimer(_masterTimer, NSRunLoopMode.Common);
 			}
 			catch (Exception e) 
 			{
@@ -58,25 +57,19 @@ namespace MonoMacWrapper
 				nsa.MessageText = e.ToString();
 				nsa.RunModal();
 			}
-			//_uiRunLoop = new System.Threading.Thread(KeepThingsGoing);
-			//_uiRunLoop.Start();
 		}
-		
-		/*private void KeepThingsGoing()
-		{
-			while(!_mainWinForm.exit)
-			{
-				_sharedApp.InvokeOnMainThread(()=>
-				{
-					if(_mainWinForm.Visible && !_mainWinForm.RunLoopBlocked)
-						Application.DoEvents();
-				});
-				System.Threading.Thread.Sleep(1);
+
+		private void MacRunLoop(){
+			if (_mainWinForm.RunLoopCore()) {
+				if (_queuedAction != null) {
+					_queuedAction.Invoke (); //Needs to happen in the same context as the RunLoop, otherwise we'll get weird behavior.
+					_queuedAction = null;
+				}
+			} else {
+				_masterTimer.Invalidate();
+				NSApplication.SharedApplication.Terminate(this);
 			}
-			while(_mainWinForm.RunLoopBlocked); //Wait to terminate until shutdown is complete
-			_mainWinForm.Dispose();
-			InvokeOnMainThread(new NSAction(()=>{NSApplication.SharedApplication.Terminate(this);}));
-		}*/
+		}
 				
 		private void DoMenuExtraction()
 		{
@@ -138,7 +131,7 @@ namespace MonoMacWrapper
 		{
 			var dropDownOpeningKey = typeof(ToolStripDropDownItem).GetField("DropDownOpenedEvent", BindingFlags.Static | BindingFlags.NonPublic);
 			var eventProp = typeof(ToolStripDropDownItem).GetProperty("Events", BindingFlags.Instance | BindingFlags.NonPublic);
-	        if (eventProp != null && dropDownOpeningKey != null)
+			if (eventProp != null && dropDownOpeningKey != null)
 			{
 				var dropDownOpeningValue = dropDownOpeningKey.GetValue(item);
 				var eventList = eventProp.GetValue(item, null) as System.ComponentModel.EventHandlerList;
@@ -239,7 +232,7 @@ namespace MonoMacWrapper
 		[Export("HandleMenu")]
 		private void HandleMenu(MenuItemAdapter item)
 		{
-			item.HostMenu.PerformClick();
+			_queuedAction = new Action(item.HostMenu.PerformClick);
 		}
 	}
 }
