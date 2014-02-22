@@ -1817,27 +1817,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stateSlots.Update();
 
-			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Color.Black : Color.Gray;
-			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Color.Black : Color.Gray;
-			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Color.Black : Color.Gray;
-			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Color.Black : Color.Gray;
-			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Color.Black : Color.Gray;
-			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Color.Black : Color.Gray;
-			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Color.Black : Color.Gray;
-			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Color.Black : Color.Gray;
-			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Color.Black : Color.Gray;
-			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Color.Black : Color.Gray;
+			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Global.Config.SaveSlot == 0 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Global.Config.SaveSlot == 1 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Global.Config.SaveSlot == 2 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Global.Config.SaveSlot == 3 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Global.Config.SaveSlot == 4 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Global.Config.SaveSlot == 5 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Global.Config.SaveSlot == 6 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Global.Config.SaveSlot == 7 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Global.Config.SaveSlot == 8 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Global.Config.SaveSlot == 9 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
 
-			Slot0StatusButton.BackColor = Global.Config.SaveSlot == 0 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot1StatusButton.BackColor = Global.Config.SaveSlot == 1 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot2StatusButton.BackColor = Global.Config.SaveSlot == 2 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot3StatusButton.BackColor = Global.Config.SaveSlot == 3 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot4StatusButton.BackColor = Global.Config.SaveSlot == 4 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot5StatusButton.BackColor = Global.Config.SaveSlot == 5 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot6StatusButton.BackColor = Global.Config.SaveSlot == 6 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot7StatusButton.BackColor = Global.Config.SaveSlot == 7 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot8StatusButton.BackColor = Global.Config.SaveSlot == 8 ? SystemColors.ControlDark : SystemColors.Control;
-			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.ControlDark : SystemColors.Control;
+			Slot0StatusButton.BackColor = Global.Config.SaveSlot == 0 ? SystemColors.Highlight : SystemColors.Control;
+			Slot1StatusButton.BackColor = Global.Config.SaveSlot == 1 ? SystemColors.Highlight : SystemColors.Control;
+			Slot2StatusButton.BackColor = Global.Config.SaveSlot == 2 ? SystemColors.Highlight : SystemColors.Control;
+			Slot3StatusButton.BackColor = Global.Config.SaveSlot == 3 ? SystemColors.Highlight : SystemColors.Control;
+			Slot4StatusButton.BackColor = Global.Config.SaveSlot == 4 ? SystemColors.Highlight : SystemColors.Control;
+			Slot5StatusButton.BackColor = Global.Config.SaveSlot == 5 ? SystemColors.Highlight : SystemColors.Control;
+			Slot6StatusButton.BackColor = Global.Config.SaveSlot == 6 ? SystemColors.Highlight : SystemColors.Control;
+			Slot7StatusButton.BackColor = Global.Config.SaveSlot == 7 ? SystemColors.Highlight : SystemColors.Control;
+			Slot8StatusButton.BackColor = Global.Config.SaveSlot == 8 ? SystemColors.Highlight : SystemColors.Control;
+			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.Highlight : SystemColors.Control;
 		}
 
 		//TODO GL - this whole feature will have to be re-added
