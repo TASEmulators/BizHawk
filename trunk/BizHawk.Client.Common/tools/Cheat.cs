@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -196,11 +195,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		string GetStringForPulse(int val)
+		private string GetStringForPulse(int val)
 		{
 			if (_watch.Type == Watch.DisplayType.Hex)
+			{
 				return val.ToString("X8");
-			else return val.ToString();
+			}
+			
+			return val.ToString();
 		}
 
 		public void Pulse()
@@ -274,6 +276,5 @@ namespace BizHawk.Client.Common
 				Changed(this);
 			}
 		}
-
 	}
 }
