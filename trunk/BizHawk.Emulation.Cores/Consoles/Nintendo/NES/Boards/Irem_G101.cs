@@ -101,7 +101,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_mode <<= 2;
 					mirror_mode = value & 1;
 					SyncMirror();
-					NES.LogLine("V: {0}", value);
 					break;
 
 				//$A000-$A007:  [PPPP PPPP]    PRG Reg 1
