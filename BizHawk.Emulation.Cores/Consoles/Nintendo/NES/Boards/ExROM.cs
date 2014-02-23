@@ -269,15 +269,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				switch (nt)
 				{
 					case 0: //NES internal NTA
-						return base.ReadPPU(0x2000 + offset);
+						return NES.CIRAM[offset];
 					case 1: //NES internal NTB
-						return base.ReadPPU(0x2400 + offset);
+						return NES.CIRAM[0x400 | offset];
 					case 2: //use ExRAM as NT
 						//TODO - additional r/w security
-						if (exram_mode >= 2) return 0;
-						else return EXRAM[offset];
-					case 3: //Fill Mode
-						return 0xFF; //TODO
+						if (exram_mode >= 2)
+							return 0;
+						else
+							return EXRAM[offset];
+					case 3: // Fill Mode
+						if (offset >= 0x3c0)
+							return nt_fill_attrib;
+						else
+							return nt_fill_tile;
 					default: throw new Exception();
 				}
 			}
@@ -389,7 +394,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_fill_tile = value;
 					break;
 				case 0x1107: //$5107:  [.... ..AA]     Fill Attribute bits
-					nt_fill_attrib = value;
+					nt_fill_attrib = (byte)(value & 3);
+					// extend out to fill all 4 positions
+					nt_fill_attrib |= (byte)(nt_fill_attrib << 2);
+					nt_fill_attrib |= (byte)(nt_fill_attrib << 4);
 					break;
 				
 
