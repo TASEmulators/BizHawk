@@ -195,9 +195,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int exram_addr = last_nt_read;
 				int bank_4k = EXRAM[exram_addr] & 0x3F;
-				
+
 				bank_1k = bank_4k * 4;
-				bank_1k += chr_reg_high<<2;
+				// low 12 bits of address come from PPU
+				// next 6 bits of address come from exram table
+				// top 2 bits of address come from chr_reg_high
+				bank_1k += chr_reg_high << 8;
 				ofs = addr & (4 * 1024 - 1);
 				goto MAPPED;
 			}
