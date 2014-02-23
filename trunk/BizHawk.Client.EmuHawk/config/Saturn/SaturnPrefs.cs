@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		public SaturnPrefs()
 		{
 			InitializeComponent();
+			comboBoxCartType.Items.AddRange(Enum.GetNames(typeof(LibYabause.CartType)));
 			try
 			{
 				var ss = (Yabause.SaturnSyncSettings)Global.Emulator.GetSyncSettings();
@@ -28,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				numericUpDownFactor.Value = ss.DispFactor;
 				numericUpDown1.Value = ss.GLW;
 				numericUpDown2.Value = ss.GLH;
+				comboBoxCartType.SelectedItem = Enum.GetName(typeof(LibYabause.CartType), ss.CartType);
 			}
 			catch (ArgumentOutOfRangeException)
 			{
@@ -53,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			ss.DispFactor = (int)numericUpDownFactor.Value;
 			ss.GLW = (int)numericUpDown1.Value;
 			ss.GLH = (int)numericUpDown2.Value;
+			ss.CartType = (LibYabause.CartType)Enum.Parse(typeof(LibYabause.CartType), (string)comboBoxCartType.SelectedItem);
 			GlobalWin.MainForm.PutCoreSyncSettings(ss);
 		}
 	}

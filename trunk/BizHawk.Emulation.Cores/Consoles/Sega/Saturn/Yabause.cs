@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			string BiosPipe = fp.GetPipeNameNative();
 			fp.Offer(bios);
 
-			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL))
+			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL, SyncSettings.CartType))
 				throw new Exception("libyabause_init() failed!");
 
 			fp.Finish();
@@ -670,10 +670,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			public bool DispFree = false;
 			public int GLW = 640;
 			public int GLH = 480;
+			public LibYabause.CartType CartType = LibYabause.CartType.NONE;
 
 			public static bool NeedsReboot(SaturnSyncSettings x, SaturnSyncSettings y)
 			{
-				return x.UseGL != y.UseGL;
+				return x.UseGL != y.UseGL || x.CartType != y.CartType;
 			}
 			public SaturnSyncSettings Clone()
 			{
