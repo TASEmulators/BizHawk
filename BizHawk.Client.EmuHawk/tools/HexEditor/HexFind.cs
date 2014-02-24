@@ -35,24 +35,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetFindBoxChars()
 		{
-			if (String.IsNullOrWhiteSpace(FindBox.Text))
+			if (string.IsNullOrWhiteSpace(FindBox.Text))
 			{
-				return String.Empty;
+				return string.Empty;
 			}
-			else if (HexRadio.Checked)
+			
+			if (HexRadio.Checked)
 			{
 				return FindBox.Text;
 			}
-			else
+			
+			var bytestring = new StringBuilder();
+			foreach (var b in FindBox.Text.Select(Convert.ToByte))
 			{
-				var bytestring = new StringBuilder();
-				foreach (var b in FindBox.Text.Select(Convert.ToByte))
-				{
-					bytestring.Append(String.Format("{0:X2}", b));
-				}
-
-				return bytestring.ToString();
+				bytestring.Append(string.Format("{0:X2}", b));
 			}
+
+			return bytestring.ToString();
 		}
 
 		private void Find_Prev_Click(object sender, EventArgs e)
