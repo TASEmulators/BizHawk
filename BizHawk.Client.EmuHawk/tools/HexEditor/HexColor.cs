@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			HexHighlight.BackColor = Global.Config.HexHighlightColor;
 		}
 
-		private void HexBackgrnd_Click(Object sender, MouseEventArgs e)
+		private void HexBackgrnd_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HexForegrnd_Click(Object sender, MouseEventArgs e)
+		private void HexForegrnd_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -41,11 +41,10 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.HexEditor.Header.ForeColor = colorDialog1.Color;
 				GlobalWin.Tools.HexEditor.MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
 				HexForegrnd.BackColor = colorDialog1.Color;
-
 			}
 		}
 
-		private void HexMenubar_Click(Object sender, MouseEventArgs e)
+		private void HexMenubar_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -55,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HexHighlight_Click(Object sender, MouseEventArgs e)
+		private void HexHighlight_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -64,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HexFreeze_Click(Object sender, MouseEventArgs e)
+		private void HexFreeze_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
@@ -73,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HexFreezeHL_Click(Object sender, MouseEventArgs e)
+		private void HexFreezeHL_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
