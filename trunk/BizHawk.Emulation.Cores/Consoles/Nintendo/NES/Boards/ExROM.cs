@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//configuraton
 		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
-		int wram_bank_mask_8k;
 
 		//state
 		int irq_target, irq_counter;
@@ -100,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER005":
+					Cart.wram_size = 64;
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 				case "HVC-ELROM":
@@ -126,7 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chr_bank_mask_1k = Cart.chr_size - 1;
 			else
 				chr_bank_mask_1k = Cart.vram_size - 1;
-			wram_bank_mask_8k = Cart.wram_size / 8 - 1;
 
 			PoweronState();
 
@@ -150,24 +149,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 		}
 
-		int MapWRAM(int addr)
-		{
-			int bank_8k = wram_bank & wram_bank_mask_8k;
-			int ofs = addr & ((1 << 13) - 1);
-			addr = (bank_8k << 13) | ofs;
-			return addr;
-		}
-
-		int MapPRG(int addr, out bool ram)
+		int PRGGetBank(int addr, out bool ram)
 		{
 			int bank_8k = addr >> 13;
-			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
 			ram = (bank_8k & 0x80) == 0;
-			bank_8k &= ~0x80;
 			if (!ram)
 				bank_8k &= prg_bank_mask_8k;
-			return (bank_8k << 13) | ofs;
+			return bank_8k;
+		}
+
+		// wram:
+		// [.... .CBB]
+		// C = chip select
+		// B = bank select (8K banks)
+		// the following configurations are known:
+		// 1) no wram
+		// 2) 8K wram: 1x 8K
+		// 3) 16K wram: 2x 8K
+		// 4) 32K wram: 1x 32K
+		//
+		// for iNES, we assume 64K wram
+		int? MaskWRAM(int bank)
+		{
+			bank &= 7;
+			switch (Cart.wram_size)
+			{
+				case 0:
+					return null;
+				case 8:
+					if (bank >= 4)
+						return null;
+					else
+						return 0;
+				case 16:
+					return bank >> 2;
+				case 32:
+					if (bank >= 4)
+						return null;
+					else
+						return bank & 3;
+				case 64:
+					return bank;
+				default:
+					throw new Exception();
+			}
+		}
+
+		void WriteWRAMActual(int bank, int offs, byte value)
+		{
+			int? bbank = MaskWRAM(bank);
+			if (bbank.HasValue)
+				WRAM[(int)bbank << 13 | offs] = value;
+		}
+
+		byte ReadWRAMActual(int bank, int offs)
+		{
+			int? bbank = MaskWRAM(bank);
+			if (bbank.HasValue)
+				return WRAM[(int)bbank << 13 | offs];
+			else
+				return NES.DB;
 		}
 
 		//this could be handy, but probably not. I did it on accident.
@@ -304,10 +346,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				switch (nt)
 				{
 					case 0: //NES internal NTA
-						base.WritePPU(0x2000 + offset, value);
+						NES.CIRAM[offset] = value;
 						break;
 					case 1: //NES internal NTB
-						base.WritePPU(0x2400 + offset, value);
+						NES.CIRAM[0x400 | offset] = value;
 						break;
 					case 2: //use ExRAM as NT
 						//TODO - additional r/w security
@@ -323,25 +365,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			addr = MapWRAM(addr);
-			WRAM[addr] = value;
+			WriteWRAMActual(wram_bank, addr & 0x1fff, value);
 		}
 
 		public override byte ReadWRAM(int addr)
 		{
-			addr = MapWRAM(addr);
-			return WRAM[addr];
+			return ReadWRAMActual(wram_bank, addr & 0x1fff);
 		}
 
 		public override byte ReadPRG(int addr)
 		{
 			bool ram;
 			byte ret;
-			int mapaddr = MapPRG(addr, out ram);
+			int offs = addr & 0x1fff;
+			int bank = PRGGetBank(addr, out ram);
+
 			if (ram)
-				ret = WRAM[mapaddr];
+				ret = ReadWRAMActual(bank, offs);
 			else
-				ret = ROM[mapaddr];
+				ret = ROM[bank << 13 | offs];
 			if (addr < 0x4000)
 				audio.ReadROMTrigger(ret);
 			return ret;
@@ -350,8 +392,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePRG(int addr, byte value)
 		{
 			bool ram;
-			addr = MapPRG(addr, out ram);
-			if (ram) WRAM[addr] = value;
+			int bank = PRGGetBank(addr, out ram);
+			if (ram)
+				WriteWRAMActual(bank, addr & 0x1fff, value);
 		}
 
 		public override void WriteEXP(int addr, byte value)
