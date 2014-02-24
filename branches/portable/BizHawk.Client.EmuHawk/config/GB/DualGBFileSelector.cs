@@ -60,12 +60,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using (var ofd = HawkDialogFactory.CreateOpenFileDialog())
 			{
 				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 				ofd.Filter = "GB Roms (*.gb,*.gbc)|*.gb;*.gbc|All Files|*.*";
 				ofd.RestoreDirectory = true;
-				var result = ofd.ShowDialog(this);
+				var result = ofd.ShowDialog();
 				if (result == DialogResult.OK)
 					textBox1.Text = ofd.FileName;
 			}

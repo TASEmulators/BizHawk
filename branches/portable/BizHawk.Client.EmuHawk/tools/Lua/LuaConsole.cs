@@ -265,12 +265,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private static FileInfo GetFileFromUser(string filter)
 		{
-			var ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.GetLuaPath(),
-					Filter = filter,
-					RestoreDirectory = true
-				};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetLuaPath();
+			ofd.Filter = filter;
+			ofd.RestoreDirectory = true;
 
 			if (!Directory.Exists(ofd.InitialDirectory))
 			{

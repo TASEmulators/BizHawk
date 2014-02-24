@@ -106,8 +106,8 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var ofd = new OpenFileDialog();
-				result = ofd.ShowDialog(this);
+				var ofd = HawkDialogFactory.CreateOpenFileDialog();
+				result = ofd.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					using (FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))
@@ -156,8 +156,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var ofd = new OpenFileDialog();
-				var result = ofd.ShowDialog(this);
+				var ofd = HawkDialogFactory.CreateOpenFileDialog();
+				var result = ofd.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					using (FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))

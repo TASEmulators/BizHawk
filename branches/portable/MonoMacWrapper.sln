@@ -73,6 +73,7 @@ Global
 		$2.IncludeInNewFiles = True
 		$0.TextStylePolicy = $3
 		$3.TabsToSpaces = False
+		$3.EolMarker = Windows
 		$3.inheritsSet = VisualStudio
 		$3.inheritsScope = text/plain
 		$3.scope = text/x-csharp

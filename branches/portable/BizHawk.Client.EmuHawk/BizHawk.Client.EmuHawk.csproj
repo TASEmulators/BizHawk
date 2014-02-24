@@ -34,6 +34,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
     <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
+    <ReleaseVersion>1.0.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1202,6 +1203,9 @@
     </Compile>
     <EmbeddedResource Include="Resources\courier16px.fnt" />
     <Compile Include="Input\OTK_Keyboard.cs" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Compile Include="HawkDialogFactory.cs" />
+    <Compile Include="IFolderBrowserDialog.cs" />
+    <Compile Include="IOpenFileDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">

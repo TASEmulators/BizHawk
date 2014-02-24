@@ -15,7 +15,6 @@ namespace MonoMacWrapper
 		private System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter> _menuLookup;
 		private NSTimer _masterTimer;
 		private MainForm _mainWinForm;
-		private NSApplication _sharedApp;
 		private Action _queuedAction;
 		public AppDelegate(){}
 
@@ -23,7 +22,6 @@ namespace MonoMacWrapper
 		{
 			NSApplication.SharedApplication.BeginInvokeOnMainThread(()=>
 			{
-				_sharedApp = NSApplication.SharedApplication;
 				StartApplication();
 			});
 		}
@@ -35,8 +33,8 @@ namespace MonoMacWrapper
 
 		private void StartApplication()
 		{
-			//BizHawk.HawkUIFactory.OpenDialogClass = typeof(MacOpenFileDialog);
-			//BizHawk.HawkUIFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
+			BizHawk.Client.EmuHawk.HawkDialogFactory.OpenDialogClass = typeof(MacOpenFileDialog);
+			BizHawk.Client.EmuHawk.HawkDialogFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
@@ -48,7 +46,7 @@ namespace MonoMacWrapper
 				DoMenuExtraction();
 				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
-				_masterTimer = NSTimer.CreateRepeatingTimer(0.005, MacRunLoop);
+				_masterTimer = NSTimer.CreateRepeatingTimer(0.00833333333333, MacRunLoop);
 				NSRunLoop.Current.AddTimer(_masterTimer, NSRunLoopMode.Common);
 			}
 			catch (Exception e) 

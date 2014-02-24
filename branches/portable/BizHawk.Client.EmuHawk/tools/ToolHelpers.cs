@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static FileInfo GetTasProjFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!String.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!String.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCheatFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!String.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);

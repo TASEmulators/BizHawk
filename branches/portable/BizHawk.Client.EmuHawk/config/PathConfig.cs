@@ -209,11 +209,10 @@ namespace BizHawk.Client.EmuHawk
 				system = null;
 			}
 
-			var f = new FolderBrowserDialog
-			{
-				Description = "Set the directory for " + name,
-				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
-			};
+			var f = HawkDialogFactory.CreateFolderBrowserDialog();
+			f.Description = "Set the directory for " + name;
+			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, system);
+
 			var result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -289,11 +288,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBase_Click(object sender, EventArgs e)
 		{
-			var f = new FolderBrowserDialog
-			{
-				Description = "Set the directory for the base global path",
-				SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null)
-			};
+			var f = HawkDialogFactory.CreateFolderBrowserDialog();
+			f.Description = "Set the directory for the base global path";
+			f.SelectedPath = PathManager.MakeAbsolutePath(BasePathBox.Text, null);
+
 			var result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{

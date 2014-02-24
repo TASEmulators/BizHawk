@@ -1496,12 +1496,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
-				RestoreDirectory = true
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetSaveStatePath(Global.Game);
+			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			ofd.RestoreDirectory = true;
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -1573,7 +1571,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRom()
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 
 			// adelikat: ugly design for this, I know
 			if (VersionInfo.INTERIM)

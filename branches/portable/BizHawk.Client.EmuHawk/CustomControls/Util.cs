@@ -31,6 +31,17 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
+		public static DialogResult ShowHawkDialog(this IHasShowDialog form)
+		{
+			GlobalWin.Sound.StopSound();
+			var result = form.ShowDialog();
+			GlobalWin.Sound.StartSound();
+			return result;
+		}
+
+		/// <summary>
+		/// Handles EmuHawk specific issues before showing a modal dialog
+		/// </summary>
 		public static DialogResult ShowHawkDialog(this CommonDialog form)
 		{
 			GlobalWin.Sound.StopSound();

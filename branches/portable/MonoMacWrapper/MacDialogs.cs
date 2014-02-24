@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MonoMacWrapper
 {
-	public class MacOpenFileDialog //: BizHawk.IOpenFileDialog
+	public class MacOpenFileDialog : BizHawk.Client.EmuHawk.IOpenFileDialog
 	{
 		private MonoMac.AppKit.NSOpenPanel _openPanel;
 		private static MonoMac.Foundation.NSUrl _directoryToRestore;
@@ -30,6 +30,15 @@ namespace MonoMacWrapper
 				return System.Windows.Forms.DialogResult.OK;
 			}
 			return System.Windows.Forms.DialogResult.Cancel;
+		}
+
+		/// <summary>
+		/// This isn't really applicable, since nobody ever types in the filename on an open file dialog.
+		/// </summary>
+		public bool AddExtension
+		{
+			get { return false; }
+			set { }
 		}
 
 		public string InitialDirectory 
@@ -140,7 +149,7 @@ namespace MonoMacWrapper
 		}
 	}
 
-	public class MacFolderBrowserDialog //: BizHawk.IFolderBrowserDialog
+	public class MacFolderBrowserDialog : BizHawk.Client.EmuHawk.IFolderBrowserDialog
 	{
 		private MonoMac.AppKit.NSOpenPanel _openPanel;
 

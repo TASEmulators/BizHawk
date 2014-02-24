@@ -301,13 +301,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button6_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using (var ofd = HawkDialogFactory.CreateOpenFileDialog())
 			{
 				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 				ofd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				ofd.RestoreDirectory = true;
 
-				var result = ofd.ShowDialog(this);
+				var result = ofd.ShowDialog();
 				if (result == DialogResult.OK)
 					LoadColorFile(ofd.FileName, true);
 			}
