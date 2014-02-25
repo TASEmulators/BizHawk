@@ -72,6 +72,65 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region MMC5
+
+		private unsafe void GenerateExAttr(int* dst, int pitch, byte[] palram, byte[] ppumem, byte[] exram)
+		{
+			byte[] chr = _nes.GetBoard().VROM ?? _nes.GetBoard().VRAM;
+			int chr_mask = chr.Length - 1;
+
+			fixed (byte* chrptr = chr, palptr = palram, ppuptr = ppumem, exptr = exram)
+			{
+				DrawExNT(dst, pitch, palptr, ppuptr + 0x2000, exptr, chrptr, chr_mask);
+				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2400, exptr, chrptr, chr_mask);
+				dst += pitch * 240;
+				DrawExNT(dst, pitch, palptr, ppuptr + 0x2800, exptr, chrptr, chr_mask);
+				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2c00, exptr, chrptr, chr_mask);
+			}
+		}
+
+		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile)
+		{
+			dst += 7;
+			int vinc = pitch + 8;
+			for (int j = 0; j < 8; j++)
+			{
+				int lo = tile[0];
+				int hi = tile[8] << 1;
+				for (int i = 0; i < 8; i++)
+				{
+					*dst-- = _nes.LookupColor(pal[lo & 1 | hi & 2]);
+					lo >>= 1;
+					hi >>= 1;
+				}
+				dst += vinc;
+				tile++;
+			}
+		}
+
+		private unsafe void DrawExNT(int* dst, int pitch, byte* palram, byte* nt, byte* exnt, byte* chr, int chr_mask)
+		{
+			for (int ty = 0; ty < 30; ty++)
+			{
+				for (int tx = 0; tx < 32; tx++)
+				{
+					byte t = *nt++;
+					byte ex = *exnt++;
+
+					int tilenum = t | (ex & 0x3f) << 8;
+					int palnum = ex >> 6;
+
+					int tileaddr = tilenum << 4 & chr_mask;
+					DrawTile(dst, pitch, palram + palnum * 4, chr + tileaddr);
+					dst += 8;
+				}
+				dst -= 256;
+				dst += pitch * 8;
+			}
+		}
+
+		#endregion
+
 		private unsafe void Generate(bool now = false)
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -110,6 +169,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				palram[i] = _nes.ppu.PALRAM[i];
 			}
+
+			var board = _nes.GetBoard();
+			if (board is ExROM && (board as ExROM).ExAttrActive)
+			{
+				byte[] exram = new byte[1024];
+				var md = _nes.MemoryDomains["ExRAM"];
+				for (int i = 0; i < 1024; i++)
+					exram[i] = md.PeekByte(i);
+
+				GenerateExAttr(dptr, pitch, palram, ppuBuffer, exram);
+				goto finish;
+			}
+
 
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
@@ -165,6 +237,7 @@ namespace BizHawk.Client.EmuHawk
 
 				dptr += pitch - 512;
 			}
+		finish:
 
 			NameTableView.Nametables.UnlockBits(bmpdata);
 			NameTableView.Refresh();

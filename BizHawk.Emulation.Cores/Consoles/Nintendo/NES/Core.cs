@@ -51,6 +51,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SetNoise(int v) { apu.NoiseV = v; }
 		public void SetDMC(int v) { apu.DMCV = v; }
 
+		/// <summary>
+		/// for debugging only!
+		/// </summary>
+		/// <returns></returns>
+		public INESBoard GetBoard()
+		{
+			return board;
+		}
+
 		public void Dispose()
 		{
 			if (magicSoundProvider != null) magicSoundProvider.Dispose();
