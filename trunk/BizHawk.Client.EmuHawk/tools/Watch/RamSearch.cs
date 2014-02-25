@@ -898,11 +898,11 @@ namespace BizHawk.Client.EmuHawk
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
-			var prompt = new InputPrompt { Text = "Go to Address", _Location = GetPromptPoint() };
+			var prompt = new InputPrompt { Text = "Go to Address", StartLocation = GetPromptPoint() };
 			prompt.SetMessage("Enter a hexadecimal value");
 			prompt.ShowHawkDialog();
 
-			if (prompt.UserOK)
+			if (prompt.UserOk)
 			{
 				if (InputValidate.IsHex(prompt.UserText))
 				{

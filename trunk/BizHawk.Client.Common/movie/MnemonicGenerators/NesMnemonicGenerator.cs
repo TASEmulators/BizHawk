@@ -8,7 +8,10 @@ namespace BizHawk.Client.Common
 {
 	public class NesMnemonicGenerator : IMnemonicPorts
 	{
-		public NesMnemonicGenerator(IController source, bool fds =  false, bool isFourscore = false)
+		private bool _isFds;
+		private bool _isFourscore;
+
+		public NesMnemonicGenerator(IController source, bool fds = false, bool isFourscore = false)
 		{
 			Source = source;
 			_isFds = fds;
@@ -33,6 +36,15 @@ namespace BizHawk.Client.Common
 
 		#region IMnemonicPorts Implementation
 
+		public string EmptyMnemonic
+		{
+			get
+			{
+				var blah = AvailableGenerators.Select(x => x.EmptyMnemonicString);
+				return "|" + string.Join("|", blah) + "|";
+			}
+		}
+
 		public int Count
 		{
 			get { return _isFourscore ? 4 : 2; }
@@ -47,7 +59,7 @@ namespace BizHawk.Client.Common
 			{
 				yield return ConsoleControls;
 
-				for (int i = 0; i < Count; i++)
+				for (var i = 0; i < Count; i++)
 				{
 					yield return _controllerPorts[i];
 				}
@@ -99,9 +111,9 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, bool> ParseMnemonicString(string mnemonicStr)
 		{
 			var segments = mnemonicStr.Split('|');
-			var kvps = new List<KeyValuePair<string,bool>>();
+			var kvps = new List<KeyValuePair<string, bool>>();
 			var generators = AvailableGenerators.ToList();
-			for(int i = 0; i < mnemonicStr.Length; i++)
+			for (var i = 0; i < mnemonicStr.Length; i++)
 			{
 				kvps.AddRange(generators[i].ParseMnemonicSegment(segments[i]));
 			}
@@ -111,48 +123,18 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, bool> GetBoolButtons()
 		{
-			List<IMnemonicGenerator> generators = AvailableGenerators.ToList();
-
-			return generators
+			return AvailableGenerators
+				.Where(g => g.IsFloat)
 				.SelectMany(mc => mc.AvailableMnemonics)
-				.ToDictionary(kvp => kvp.Key, kvp => this.Source.IsPressed(kvp.Key));
+				.ToDictionary(kvp => kvp.Key, kvp => Source.IsPressed(kvp.Key));
 		}
 
-		// TODO: this shouldn't be required, refactor MovieRecord
-		public string GenerateMnemonicString(Dictionary<string, bool> buttons)
+		public Dictionary<string, float> GetFloatButtons()
 		{
-			var mnemonics = AvailableMnemonics;
-
-			var sb = new StringBuilder();
-			sb.Append('|');
-
-			foreach (var generator in AvailableGenerators)
-			{
-				foreach (var blah in generator.AvailableMnemonics)
-				{
-					if (buttons.ContainsKey(blah.Key))
-					{
-						sb.Append(buttons[blah.Key] ? blah.Value : '.');
-					}
-					else
-					{
-						sb.Append('.');
-					}
-				}
-			}
-
-			sb.Append('|');
-
-			return sb.ToString();
-		}
-
-		public string EmptyMnemonic
-		{
-			get
-			{
-				var blah = AvailableGenerators.Select(x => x.EmptyMnemonicString);
-				return "|" + String.Join("|", blah) + "|";
-			}
+			return AvailableGenerators
+				.Where(g => !g.IsFloat)
+				.SelectMany(mc => mc.AvailableMnemonics)
+				.ToDictionary(kvp => kvp.Key, kvp => Source.GetFloat(kvp.Key));
 		}
 
 		// TODO: refactor me!
@@ -178,9 +160,6 @@ namespace BizHawk.Client.Common
 
 		#region Privates
 
-		private bool _isFds;
-		private bool _isFourscore;
-
 		private static readonly Dictionary<string, char> _basicController = new Dictionary<string, char>
 		{
 			{ "Up", 'U' },
@@ -202,7 +181,7 @@ namespace BizHawk.Client.Common
 			}
 		)
 			{
-				ControllerPrefix = String.Empty
+				ControllerPrefix = string.Empty
 			};
 
 		private readonly BooleanControllerMnemonicGenerator _fdsConsoleControls = new BooleanControllerMnemonicGenerator(
@@ -217,7 +196,7 @@ namespace BizHawk.Client.Common
 			}
 		)
 		{
-			ControllerPrefix = String.Empty
+			ControllerPrefix = string.Empty
 		};
 
 		private readonly List<IMnemonicGenerator> _controllerPorts =

@@ -11,22 +11,18 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class InputPrompt : Form
 	{
-		public enum InputType { HEX, UNSIGNED, SIGNED, TEXT };
-		public bool UserOK;    //Will be true if the user selects Ok
-		public string UserText = "";   //What the user selected
-		public Point _Location = new Point(-1, -1);
-		private InputType itype = InputType.TEXT;
-
-		public InputType TextInputType
-		{
-			get { return itype; }
-			set { itype = value; }
-		}
-
 		public InputPrompt()
 		{
 			InitializeComponent();
+			UserText = string.Empty;
+			StartLocation = new Point(-1, -1);
 		}
+
+		public enum InputType { Hex, Unsigned, Signed, Text }
+		public bool UserOk { get; set; } // Will be true if the user selects Ok
+		public string UserText { get; set; } // What the user selected
+		public Point StartLocation { get; set; }
+		public InputType TextInputType { get; set; }
 
 		public void SetMessage(string message)
 		{
@@ -50,61 +46,67 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InputPrompt_Load(object sender, EventArgs e)
 		{
-			if (_Location.X > 0 && _Location.Y > 0)
+			if (StartLocation.X > 0 && StartLocation.Y > 0)
 			{
-				Location = _Location;
+				Location = StartLocation;
 			}
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
-			UserOK = true;
+			UserOk = true;
 			UserText = PromptBox.Text;
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			UserOK = false;
+			UserOk = false;
 			Close();
 		}
 
 		private void PromptBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			switch (itype)
+			switch (TextInputType)
 			{
 				default:
-				case InputType.TEXT:
+				case InputType.Text:
 					break;
-				case InputType.HEX:
+				case InputType.Hex:
 					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
-					else if (!InputValidate.IsHex(e.KeyChar))
+					
+					if (!InputValidate.IsHex(e.KeyChar))
 					{
 						e.Handled = true;
 					}
+
 					break;
-				case InputType.SIGNED:
+				case InputType.Signed:
 					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
-					else if (!InputValidate.IsUnsigned(e.KeyChar))
+					
+					if (!InputValidate.IsUnsigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}
+
 					break;
-				case InputType.UNSIGNED:
+				case InputType.Unsigned:
 					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
-					else if (!InputValidate.IsSigned(e.KeyChar))
+					
+					if (!InputValidate.IsSigned(e.KeyChar))
 					{
 						e.Handled = true;
 					}
+
 					break;
 			}
 		}
