@@ -21,12 +21,14 @@ namespace BizHawk.Client.Common
 		bool IsEmpty { get; }
 		string MnemonicString { get; }
 
+		bool IsFloat { get; } // Float or Boolean
+
 		/// <summary>
 		/// Gets a string that represents an empty or default mnemonic
 		/// </summary>
 		string EmptyMnemonicString { get; }
 
-		// Analog TODO: this assumes the Generator is boolean
+		// Analog TODO: this assumes the Generator is boolean, pass an object structure that contains both the boolean and float dictionaries
 		/// <summary>
 		/// Parses a segment of a full mnemonic string (the content between pipes)
 		/// Note: this assume the pipes are not being passed in!

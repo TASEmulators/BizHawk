@@ -1039,7 +1039,7 @@ namespace BizHawk.Client.EmuHawk
 			InputPrompt gotodialog = new InputPrompt();
 			gotodialog.FormClosing += (s, a) =>
 				{
-					if (gotodialog.UserOK)
+					if (gotodialog.UserOk)
 					{
 						int x;
 

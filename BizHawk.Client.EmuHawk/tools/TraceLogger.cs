@@ -280,10 +280,10 @@ namespace BizHawk.Client.EmuHawk
 			var prompt = new InputPrompt();
 			prompt.SetMessage("Max lines to display in the window");
 			prompt.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
-			prompt.TextInputType = InputPrompt.InputType.UNSIGNED;
-			prompt._Location = GetPromptPoint();
+			prompt.TextInputType = InputPrompt.InputType.Unsigned;
+			prompt.StartLocation = GetPromptPoint();
 			prompt.ShowDialog();
-			if (prompt.UserOK)
+			if (prompt.UserOk)
 			{
 				var max = int.Parse(prompt.UserText);
 				if (max > 0)

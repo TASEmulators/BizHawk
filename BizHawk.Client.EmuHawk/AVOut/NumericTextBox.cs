@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
@@ -16,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.OnKeyPress(e);
 
-			NumberFormatInfo numberFormatInfo = System.Globalization.CultureInfo.CurrentCulture.NumberFormat;
+			var numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
 			string decimalSeparator = numberFormatInfo.NumberDecimalSeparator;
 			string groupSeparator = numberFormatInfo.NumberGroupSeparator;
 			string negativeSign = numberFormatInfo.NegativeSign;
