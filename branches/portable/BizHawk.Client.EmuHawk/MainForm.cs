@@ -76,6 +76,12 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
+			#if !WINDOWS
+			if (OpenTK.Configuration.RunningOnMacOS && File.Exists(FFMpeg.FFMpegPath+"_osx"))
+			{
+				FFMpeg.FFMpegPath += "_osx";
+			}
+			#endif
 
 			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
