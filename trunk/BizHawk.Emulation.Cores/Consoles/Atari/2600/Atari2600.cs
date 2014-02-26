@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			var domains = new List<MemoryDomain>(1)
 				{
-					new MemoryDomain("Main RAM", 128, MemoryDomain.Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value),
+					new MemoryDomain("Main RAM", 128, MemoryDomain.Endian.Little, addr => ram[addr], (addr, value) => ram[addr] = value),
 					new MemoryDomain("TIA", 16, MemoryDomain.Endian.Little, addr => tia.ReadMemory((ushort) addr, true),
 					                 (addr, value) => tia.WriteMemory((ushort) addr, value)),
 					new MemoryDomain("PIA", 1024, MemoryDomain.Endian.Little, addr => m6532.ReadMemory((ushort) addr, true),

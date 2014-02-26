@@ -443,17 +443,27 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			var domains = new List<MemoryDomain>(3);
 			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
-				addr => SystemRam[addr & RamSizeMask],
-				(addr, value) => SystemRam[addr & RamSizeMask] = value);
+				addr => SystemRam[addr],
+				(addr, value) => SystemRam[addr] = value);
 			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => Vdp.VRAM[addr & 0x3FFF],
-				(addr, value) => Vdp.VRAM[addr & 0x3FFF] = value);
+				addr => Vdp.VRAM[addr],
+				(addr, value) => Vdp.VRAM[addr] = value);
 			var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
-				addr => SaveRAM[addr % SaveRAM.Length],
-				(addr, value) => { SaveRAM[addr % SaveRAM.Length] = value; SaveRamModified = true; });
+				addr => SaveRAM[addr],
+				(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => Cpu.ReadMemory((ushort)addr),
-				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory((ushort)addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory((ushort)addr, value);
+				});
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
