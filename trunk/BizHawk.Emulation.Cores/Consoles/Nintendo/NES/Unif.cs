@@ -98,6 +98,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				byte[] all = ms.ToArray();
 				ci.sha1 = "sha1:" + Util.Hash_SHA1(all, 0, all.Length);
 			}
+
+			// other code will expect this
+			if (chrrom.Length == 0)
+				chrrom = null;
 		}
 
 		public NES.CartInfo GetCartInfo() { return ci; }
