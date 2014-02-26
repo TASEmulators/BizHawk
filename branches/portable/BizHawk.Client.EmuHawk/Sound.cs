@@ -306,9 +306,9 @@ namespace BizHawk.Client.EmuHawk
 					AL.BufferData(buffer, ALFormat.Stereo16, samples, BUFFER_SIZE, 44100);
 					AL.SourceQueueBuffer(_audSource, buffer);
 				}
-			} 
+			}
 			catch(AudioException e)
-			{ 
+			{
 				System.Windows.Forms.MessageBox.Show("Unable to initalize sound. That's too bad.");
 			}
 		}
@@ -329,6 +329,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//Todo: Should I delete the buffers?
 			AL.DeleteSource(_audSource);
+			_audContext.Dispose();
 		}
 
 		int SNDDXGetAudioSpace()
@@ -371,13 +372,6 @@ namespace BizHawk.Client.EmuHawk
 					int nsampgot;
 					syncsoundProvider.GetSamples(out samples, out nsampgot);
 					samplesProvided = 2 * nsampgot;
-
-					if (!Global.ForceNoThrottle)
-						while (samplesNeeded < samplesProvided)
-						{
-							System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
-							samplesNeeded = SNDDXGetAudioSpace() * 2;
-						}
 				}
 				else if (asyncsoundProvider != null)
 				{
@@ -393,8 +387,22 @@ namespace BizHawk.Client.EmuHawk
 
 				AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
 				int buffer = AL.SourceUnqueueBuffer(_audSource);
-				AL.BufferData(buffer, ALFormat.Stereo16, samples, samplesProvided*2, 44100);    
+				AL.BufferData(buffer, ALFormat.Stereo16, samples, samplesProvided*2, 44100);
 				AL.SourceQueueBuffer(_audSource, buffer);
+				if (syncsoundProvider != null)
+				{
+					if (!Global.ForceNoThrottle)
+					{
+						int buffersProcessed;
+						do
+						{
+							AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out buffersProcessed);
+							if (buffersProcessed < 1)
+								System.Threading.Thread.Sleep(1);
+						} while(buffersProcessed < 1);
+					}
+					break; //We're syncing via audio, so I can only fill the buffer once here
+				}
 			}
 			if(AL.GetSourceState(_audSource) != ALSourceState.Playing)
 			{

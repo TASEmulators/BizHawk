@@ -2438,7 +2438,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				GlobalWin.Sound.UpdateSilence();
-		}
+			}
 		}
 
 		#endregion
