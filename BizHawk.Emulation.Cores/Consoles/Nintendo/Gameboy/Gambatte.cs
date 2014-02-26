@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				return CachedMemory[addr % CachedMemory.Length];
+				return CachedMemory[addr];
 			}
 			public void Poke(int addr, byte val)
 			{
@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				CachedMemory[addr % CachedMemory.Length] = val;
+				CachedMemory[addr] = val;
 				writeneeded = true;
 			}
 		}
@@ -658,10 +658,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_MemoryDomains.Add(new MemoryDomain("System Bus", 65536, MemoryDomain.Endian.Little,
 				delegate(int addr)
 				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
 				},
 				delegate(int addr, byte val)
 				{
+					if (addr < 0 || addr >= 65536)
+						throw new ArgumentOutOfRangeException();
 					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
 				}));
 

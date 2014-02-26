@@ -257,20 +257,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						"RAM1", 0x800, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
+							if (addr < 0 || addr >= 0x800)
+								throw new ArgumentOutOfRangeException();
 							return ((Machine7800)theMachine).RAM1[(ushort)addr];
 						},
 						delegate(int addr, byte val)
 						{
+							if (addr < 0 || addr >= 0x800)
+								throw new ArgumentOutOfRangeException();
 							((Machine7800)theMachine).RAM1[(ushort)addr] = val;
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
 						"RAM2", 0x800, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
+							if (addr < 0 || addr >= 0x800)
+								throw new ArgumentOutOfRangeException();
 							return ((Machine7800)theMachine).RAM2[(ushort)addr];
 						},
 						delegate(int addr, byte val)
 						{
+							if (addr < 0 || addr >= 0x800)
+								throw new ArgumentOutOfRangeException();
 							((Machine7800)theMachine).RAM2[(ushort)addr] = val;
 						}));
 					_MemoryDomains.Add(new MemoryDomain(
@@ -308,10 +316,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						"System Bus", 65536, MemoryDomain.Endian.Unknown,
 						delegate(int addr)
 						{
+							if (addr < 0 || addr >= 0x10000)
+								throw new ArgumentOutOfRangeException();
 							return theMachine.Mem[(ushort)addr];
 						},
 						delegate(int addr, byte val)
 						{
+							if (addr < 0 || addr >= 0x10000)
+								throw new ArgumentOutOfRangeException();
 							theMachine.Mem[(ushort)addr] = val;
 						}));
 				}

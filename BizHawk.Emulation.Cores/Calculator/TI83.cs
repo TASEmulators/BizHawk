@@ -657,8 +657,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 					"Main RAM",
 					ram.Length,
 					MemoryDomain.Endian.Little,
-					addr => ram[addr & RamSizeMask],
-					(addr, value) => ram[addr & RamSizeMask] = value
+					addr => ram[addr],
+					(addr, value) => ram[addr] = value
 				)
 			};
 

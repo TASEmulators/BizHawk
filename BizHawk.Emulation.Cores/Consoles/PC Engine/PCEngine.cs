@@ -596,13 +596,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			var domains = new List<MemoryDomain>(10);
 			int mainmemorymask = Ram.Length - 1;
 			var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr & mainmemorymask],
-				(addr, value) => Ram[addr & mainmemorymask] = value);
+				addr => Ram[addr],
+				(addr, value) => Ram[addr] = value);
 			domains.Add(MainMemoryDomain);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, MemoryDomain.Endian.Little,
-				addr => Cpu.ReadMemory21(addr),
-				(addr, value) => Cpu.WriteMemory21(addr, value));
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
+					return Cpu.ReadMemory21(addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
+					Cpu.WriteMemory21(addr, value);
+				});
 			domains.Add(SystemBusDomain);
 
 			var RomDomain = new MemoryDomain("ROM", RomLength, MemoryDomain.Endian.Little,
@@ -614,28 +624,28 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (BRAM != null)
 			{
 				var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, MemoryDomain.Endian.Little,
-					addr => BRAM[addr & 0x7FF],
-					(addr, value) => BRAM[addr & 0x7FF] = value);
+					addr => BRAM[addr],
+					(addr, value) => BRAM[addr] = value);
 				domains.Add(BRAMMemoryDomain);
 			}
 
 			if (TurboCD)
 			{
 				var CDRamMemoryDomain = new MemoryDomain("TurboCD RAM", CDRam.Length, MemoryDomain.Endian.Little,
-					addr => CDRam[addr & 0xFFFF],
-					(addr, value) => CDRam[addr & 0xFFFF] = value);
+					addr => CDRam[addr],
+					(addr, value) => CDRam[addr] = value);
 				domains.Add(CDRamMemoryDomain);
 
 				var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM.RAM.Length, MemoryDomain.Endian.Little,
-					addr => ADPCM.RAM[addr & 0xFFFF],
-					(addr, value) => ADPCM.RAM[addr & 0xFFFF] = value);
+					addr => ADPCM.RAM[addr],
+					(addr, value) => ADPCM.RAM[addr] = value);
 				domains.Add(AdpcmMemoryDomain);
 
 				if (SuperRam != null)
 				{
 					var SuperRamMemoryDomain = new MemoryDomain("Super System Card RAM", SuperRam.Length, MemoryDomain.Endian.Little,
-						addr => SuperRam[addr & 0x3FFFF],
-						(addr, value) => SuperRam[addr & 0x3FFFF] = value);
+						addr => SuperRam[addr],
+						(addr, value) => SuperRam[addr] = value);
 					domains.Add(SuperRamMemoryDomain);
 				}
 			}
@@ -643,16 +653,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (ArcadeCard)
 			{
 				var ArcadeRamMemoryDomain = new MemoryDomain("Arcade Card RAM", ArcadeRam.Length, MemoryDomain.Endian.Little,
-						addr => ArcadeRam[addr & 0x1FFFFF],
-						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
+						addr => ArcadeRam[addr],
+						(addr, value) => ArcadeRam[addr] = value);
 				domains.Add(ArcadeRamMemoryDomain);
 			}
 
 			if (PopulousRAM != null)
 			{
 				var PopulusRAMDomain = new MemoryDomain("Cart Battery RAM", PopulousRAM.Length, MemoryDomain.Endian.Little,
-					addr => PopulousRAM[addr & 0x7fff],
-					(addr, value) => PopulousRAM[addr & 0x7fff] = value);
+					addr => PopulousRAM[addr],
+					(addr, value) => PopulousRAM[addr] = value);
 				domains.Add(PopulusRAMDomain);
 			}
 
