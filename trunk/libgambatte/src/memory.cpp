@@ -1063,7 +1063,7 @@ bool Memory::getMemoryArea(int which, unsigned char **data, int *length) {
 		return true;
 	case 5: // hram
 		*data = &ioamhram[384];
-		*length = 127;
+		*length = 128;
 		return true;
 	case 6: // bgpal
 		*data = (unsigned char *)display.bgPalette();
