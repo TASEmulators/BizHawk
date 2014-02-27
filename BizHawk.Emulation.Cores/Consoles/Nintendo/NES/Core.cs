@@ -498,11 +498,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ret = ppu.ReadReg(addr & 7);
+				ret = ppu.PeekReg(addr & 7);
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+				ret = PeekReg(addr); //we're not rebasing the register just to keep register names canonical
 			}
 			else
 			{
