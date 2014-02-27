@@ -397,6 +397,7 @@
     <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
     <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NESControllers.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
