@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public interface IFamicomExpansion
 	{
 		void Strobe(StrobeInfo s, IController c);
-		byte ReadA(IController c); // only uses D1:D4
+		byte ReadA(IController c); // only uses D1
 		byte ReadB(IController c); // only uses D1:D4
 		ControllerDefinition GetDefinition();
 		void SyncState(Serializer ser);
