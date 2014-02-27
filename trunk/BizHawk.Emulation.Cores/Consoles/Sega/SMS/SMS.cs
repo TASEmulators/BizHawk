@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		byte Port3E = 0xAF;
 		byte Port3F = 0xFF;
 
+		byte ForceStereoByte = 0xAD;
+
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -173,12 +175,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
             if (this.Settings.ForceStereoSeparation && !IsGameGear)
             {
-                byte stereoByte = 0xAD;
                 if (game["StereoByte"])
                 {
-                    stereoByte = byte.Parse(game.OptionValue("StereoByte"));
+                    ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
                 }
-                PSG.StereoPanning = stereoByte;
+				PSG.StereoPanning = ForceStereoByte;
             }
 
             if (this.SyncSettings.AllowOverlock && game["OverclockSafe"])
@@ -246,6 +247,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 			Cpu.Debug = CoreComm.Tracer.Enabled;
+			if (!IsGameGear)
+				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
+
 			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
 			{
 				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
@@ -513,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			public static bool RebootNeeded(SMSSettings x, SMSSettings y)
 			{
-				return x.ForceStereoSeparation != y.ForceStereoSeparation || x.SpriteLimit != y.SpriteLimit;
+				return false;
 			}
 		}
 
