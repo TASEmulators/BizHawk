@@ -353,6 +353,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public void ExecFrame(bool render)
 		{
 			int scanlinesPerFrame = DisplayType == DisplayType.NTSC ? 262 : 313;
+			SpriteLimit = Sms.Settings.SpriteLimit;
 			for (ScanLine = 0; ScanLine < scanlinesPerFrame; ScanLine++)
 			{
 				RenderCurrentScanline(render);
