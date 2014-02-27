@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ControlDefUnMerger RightU;
 		ControllerDefinition Definition;
 
-		public NesDeck(INesPort Left, INesPort Right)
+		public NesDeck(INesPort Left, INesPort Right, Func<int, int, bool> PPUCallback)
 		{
 			this.Left = Left;
 			this.Right = Right;
@@ -61,6 +61,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Definition = ControllerDefMerger.GetMerged(new[] { Left.GetDefinition(), Right.GetDefinition() }, out cdum);
 			LeftU = cdum[0];
 			RightU = cdum[1];
+
+			// apply hacks
+			// if this list gets very long, then something should be changed
+			// if it stays short, then no problem
+			if (Left is FourScore)
+				(Left as FourScore).RightPort = false;
+			if (Right is FourScore)
+				(Right as FourScore).RightPort = true;
+			if (Left is Zapper)
+				(Left as Zapper).PPUCallback = PPUCallback;
+			if (Right is Zapper)
+				(Right as Zapper).PPUCallback = PPUCallback;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -386,7 +398,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		ControllerDefinition Definition;
 
-		public FamicomDeck(IFamicomExpansion ExpSlot)
+		public FamicomDeck(IFamicomExpansion ExpSlot, Func<int, int, bool> PPUCallback)
 		{
 			Player3 = ExpSlot;
 			List<ControlDefUnMerger> cdum;
@@ -396,6 +408,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Player1U = cdum[0];
 			Player2U = cdum[1];
 			Player3U = cdum[2];
+
+			// hack
+			if (Player3 is Zapper)
+				(Player3 as Zapper).PPUCallback = PPUCallback;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
