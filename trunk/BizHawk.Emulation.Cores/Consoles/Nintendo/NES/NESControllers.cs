@@ -97,12 +97,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte ReadA(IController c)
 		{
-			return (byte)(Left.Read(LeftU.UnMerge(c)) & 0x13);
+			return (byte)(Left.Read(LeftU.UnMerge(c)) & 0x19);
 		}
 
 		public byte ReadB(IController c)
 		{
-			return (byte)(Right.Read(RightU.UnMerge(c)) & 0x13);
+			return (byte)(Right.Read(RightU.UnMerge(c)) & 0x19);
 		}
 
 		public ControllerDefinition GetDefinition()
