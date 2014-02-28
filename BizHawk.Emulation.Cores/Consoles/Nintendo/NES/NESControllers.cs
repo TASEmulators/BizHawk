@@ -19,6 +19,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int OUT0old;
 		public int OUT1old;
 		public int OUT2old;
+
+		public StrobeInfo(byte oldvalue, byte newvalue)
+		{
+			OUT0old = oldvalue & 1;
+			OUT1old = oldvalue >> 1 & 1;
+			OUT2old = oldvalue >> 2 & 1;
+			OUT0 = newvalue & 1;
+			OUT1 = newvalue >> 1 & 1;
+			OUT2 = newvalue >> 2 & 1;
+		}
 	}
 
 	public interface IControllerDeck
@@ -380,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0;
 			if (c["0Fire"])
 				ret |= 0x08;
-			if (PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
 				ret |= 0x10;
 			return ret;
 		}
@@ -943,13 +953,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					string r = Allocate(s, ref plr, ref plrnext);
 					ret.BoolButtons.Add(r);
-					remaps[s] = r;
+					remaps[r] = s;
 				}
 				foreach (string s in def.FloatControls)
 				{
 					string r = Allocate(s, ref plr, ref plrnext);
 					ret.FloatControls.Add(r);
-					remaps[s] = r;
+					remaps[r] = s;
 				}
 				ret.FloatRanges.AddRange(def.FloatRanges);
 				plr = plrnext;

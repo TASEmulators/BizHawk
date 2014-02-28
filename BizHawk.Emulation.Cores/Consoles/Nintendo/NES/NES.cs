@@ -33,16 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
-			ControllerDefinition = new ControllerDefinition(NESController);
 			if (board is FDS)
 			{
-				var b = board as FDS;
-				ControllerDefinition.BoolButtons.Add("FDS Eject");
-				for (int i = 0; i < b.NumSides; i++)
-					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
-
 				CoreComm.UsesDriveLed = true;
-				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
+				(board as FDS).SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
 			PutSettings(Settings ?? new NESSettings());
 		}
@@ -123,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return (flags & EFlags.GameGenie) != 0;
 				}
 			}
-			
+
 			public byte ApplyGameGenie(byte curr)
 			{
 				if (!HasGameGenie)
@@ -165,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
-			
+
 			NES emu;
 			public MyVideoProvider(NES emu)
 			{
@@ -229,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 			}
-			
+
 		}
 
 		MyVideoProvider videoProvider;
@@ -256,74 +250,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			get { return controller; }
 			set { controller = value; }
-		}
-
-		interface IPortDevice
-		{
-			void Write(int value);
-			byte Read(bool peek);
-			void Update();
-		}
-
-		//static INPUTC GPC = { ReadGP, 0, StrobeGP, UpdateGP, 0, 0, LogGP, LoadGP };
-		class JoypadPortDevice : NullPortDevice
-		{
-			int state;
-			NES nes;
-			int player;
-			public JoypadPortDevice(NES nes, int player)
-			{
-				this.nes = nes;
-				this.player = player;
-			}
-			void Strobe()
-			{
-				value = 0;
-				foreach (
-					string str in new string[] {
-						"P" + (player + 1).ToString() + " Right", "P" + (player + 1).ToString() + " Left",
-						"P" + (player + 1).ToString() +  " Down", "P" + (player + 1).ToString() +  " Up",
-						"P" + (player + 1).ToString() +  " Start", "P" + (player + 1).ToString() +  " Select",
-						"P" + (player + 1).ToString() +  " B", "P" + (player + 1).ToString() +  " A"
-					}
-				)
-				{
-					value <<= 1;
-					value |= nes.Controller.IsPressed(str) ? 1 : 0;
-				}
-			}
-			public override void Write(int value)
-			{
-				if (state == 1 && value == 0)
-					Strobe();
-				state = value;
-			}
-			public override byte Read(bool peek)
-			{
-				int ret = value & 1;
-				if(!peek) value >>= 1;
-				// more information is needed
-				return (byte)(ret | (nes.DB & 0xe0));
-			}
-			public override void Update()
-			{
-
-			}
-			int value;
-		}
-
-		class NullPortDevice : IPortDevice
-		{
-			public virtual void Write(int value)
-			{
-			}
-			public virtual byte Read(bool peek)
-			{
-				return 0xFF;
-			}
-			public virtual void Update()
-			{
-			}
 		}
 
 		int _frame;
@@ -354,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (board == null || board.SaveRam == null)
 				return null;
-			return (byte[])board.SaveRam.Clone();	
+			return (byte[])board.SaveRam.Clone();
 		}
 		public void StoreSaveRam(byte[] data)
 		{
@@ -478,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		class MyWriter : StringWriter
 		{
-			public MyWriter(TextWriter _loadReport)	
+			public MyWriter(TextWriter _loadReport)
 			{
 				loadReport = _loadReport;
 			}
@@ -621,7 +547,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				//if this is still null, we have to try it some other way. nescartdb perhaps?
-	
+
 				if (choice == null)
 				{
 					choice = IdentifyFromBootGodDB(hash_sha1_several);
@@ -826,7 +752,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void SyncState(Serializer ser)
 		{
-			int version = 2;
+			int version = 3;
 			ser.BeginSection("NES");
 			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
@@ -851,6 +777,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (version >= 2)
 				ser.Sync("DB", ref DB);
+			if (version >= 3)
+			{
+				ser.Sync("latched4016", ref latched4016);
+				ser.BeginSection("ControllerDeck");
+				ControllerDeck.SyncState(ser);
+				ser.EndSection();
+			}
 
 			ser.EndSection();
 		}
@@ -898,7 +831,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public object GetSettings() { return Settings.Clone(); }
 		public object GetSyncSettings() { return SyncSettings.Clone(); }
 		public bool PutSettings(object o)
-		{ 
+		{
 			Settings = (NESSettings)o;
 			if (Settings.ClipLeftAndRight)
 			{
@@ -963,7 +896,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				Palette = (int[,])Palettes.FCEUX_Standard.Clone();
 			}
-			
+
 			[Newtonsoft.Json.JsonConstructor]
 			public NESSettings(int[,] Palette)
 			{
