@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public class BitLuaLibrary : LuaLibraryBase
 	{
@@ -10,65 +8,63 @@ namespace BizHawk.Client.Common
 			"band", 
 			"Bitwise AND of 'val' against 'amt'"
 		)]
-		public static uint Band(int val, int amt)
+		public static uint Band(uint val, uint amt)
 		{
-			return (uint)(val & amt);
+			return val & amt;
 		}
 
 		[LuaMethodAttributes(
 			"bnot",
 			"Bitwise NOT of 'val' against 'amt'"
 		)]
-		public static uint Bnot(int val)
+		public static uint Bnot(uint val)
 		{
-			return (uint)~val;
+			return ~val;
 		}
 
 		[LuaMethodAttributes(
 			"bor",
 			"Bitwise OR of 'val' against 'amt'"
 		)]
-		public static uint Bor(int val, int amt)
+		public static uint Bor(uint val, uint amt)
 		{
-			return (uint)(val | amt);
+			return val | amt;
 		}
 
 		[LuaMethodAttributes(
 			"bxor",
 			"Bitwise XOR of 'val' against 'amt'"
 		)]
-		public static uint Bxor(int val, int amt)
+		public static uint Bxor(uint val, uint amt)
 		{
-			return (uint)(val ^ amt);
+			return val ^ amt;
 		}
 
 		[LuaMethodAttributes(
 			"lshift",
 			"Logical shift left of 'val' by 'amt' bits"
 		)]
-		public static uint Lshift(int val, int amt)
+		public static uint Lshift(uint val, int amt)
 		{
-			return (uint)(val << amt);
+			return val << amt;
 		}
 
 		[LuaMethodAttributes(
 			"rol",
 			"Left rotate 'val' by 'amt' bits"
 		)]
-		public static uint Rol(int val, int amt)
+		public static uint Rol(uint val, int amt)
 		{
-			return (uint)((val << amt)
-				| (val >> (32 - amt)));
+			return (val << amt) | (val >> (32 - amt));
 		}
 
 		[LuaMethodAttributes(
 			"ror",
 			"Right rotate 'val' by 'amt' bits"
 		)]
-		public static uint Ror(int val, int amt)
+		public static uint Ror(uint val, int amt)
 		{
-			return (uint)((val >> amt)
-				| (val << (32 - amt)));
+			return (val >> amt) | (val << (32 - amt));
 		}
 
 		[LuaMethodAttributes(
@@ -93,7 +89,7 @@ namespace BizHawk.Client.Common
 			"set",
 			"Sets the bit 'pos' in 'num'"
 		)]
-		public static uint Set(int num, int pos)
+		public static uint Set(uint num, int pos)
 		{
 			return (uint)(num | 1 << pos);
 		}
@@ -130,7 +126,7 @@ namespace BizHawk.Client.Common
 			"byteswap_64",
 			"Byte swaps 'long'"
 		)]
-		public static UInt64 Byteswap64(ulong val)
+		public static ulong Byteswap64(ulong val)
 		{
 			return (val & 0x00000000000000FFUL) << 56 | (val & 0x000000000000FF00UL) << 40 |
 				(val & 0x0000000000FF0000UL) << 24 | (val & 0x00000000FF000000UL) << 8 |
