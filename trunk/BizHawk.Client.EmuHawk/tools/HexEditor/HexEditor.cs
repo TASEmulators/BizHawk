@@ -791,6 +791,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void FreezeSecondaries()
+		{
+			var cheats = new List<Cheat>();
+			foreach (var address in _secondaryHighlightedAddresses)
+			{
+				var watch = Watch.GenerateWatch(
+					_domain,
+					address,
+					WatchSize,
+					Watch.DisplayType.Hex,
+					string.Empty,
+					_bigEndian);
+
+				cheats.Add(new Cheat(
+					watch,
+					watch.Value ?? 0));
+			}
+
+			Global.CheatList.AddRange(cheats);
+		}
+
+		private void UnfreezeSecondaries()
+		{
+			Global.CheatList.RemoveRange(
+				Global.CheatList.Where(
+					cheat => !cheat.IsSeparator && cheat.Domain == _domain && _secondaryHighlightedAddresses.Contains(cheat.Address.Value)));
+		}
+
 		private void SaveFileBinary(string path)
 		{
 			var file = new FileInfo(path);
@@ -1348,22 +1376,12 @@ namespace BizHawk.Client.EmuHawk
 				if (IsFrozen(HighlightedAddress.Value))
 				{
 					UnFreezeAddress(HighlightedAddress.Value);
+					UnfreezeSecondaries();
 				}
 				else
 				{
 					FreezeAddress(HighlightedAddress.Value);
-				}
-			}
-
-			foreach (var addr in _secondaryHighlightedAddresses)
-			{
-				if (IsFrozen(addr))
-				{
-					UnFreezeAddress(addr);
-				}
-				else
-				{
-					FreezeAddress(addr);
+					FreezeSecondaries();
 				}
 			}
 
