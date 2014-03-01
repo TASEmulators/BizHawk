@@ -39,6 +39,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Determines whether a given IToolForm is already loaded
+		/// </summary>
+		public bool IsLoaded<T>() where T : IToolForm
+		{
+			var existingTool = _tools.FirstOrDefault(x => x is T);
+			if (existingTool != null)
+			{
+				return !existingTool.IsDisposed;
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Returns true if an instance of T exists
 		/// </summary>
 		public bool Has<T>() where T : IToolForm
@@ -407,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			if (!IsLoaded<RamWatch>() && Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
 			{
 				GlobalWin.Tools.RamWatch.LoadFileFromRecent(Global.Config.RecentWatches[0]);
 			}
