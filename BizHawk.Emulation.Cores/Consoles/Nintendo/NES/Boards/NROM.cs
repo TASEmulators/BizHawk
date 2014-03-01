@@ -68,10 +68,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
-				case "CAMERICA-GAMEGENIE":
-					// if you really want to emulate a game genie, it isn't NROM
-					throw new Exception("Game Genie Support NYI");
-
 				case "HVC-FAMILYBASIC":
 					// we don't emulate the controller, so this won't work
 					AssertPrg(32); AssertChr(8); AssertWram(2, 4);
