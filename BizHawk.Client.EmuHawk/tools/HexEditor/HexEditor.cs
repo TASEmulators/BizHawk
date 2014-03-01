@@ -788,8 +788,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Add(new Cheat(
 					watch,
 					watch.Value ?? 0));
-
-				ToolHelpers.UpdateCheatRelatedTools(null, null);
 			}
 		}
 
