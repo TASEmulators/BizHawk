@@ -72,8 +72,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region MMC5
-
 		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile)
 		{
 			dst += 7;
@@ -164,8 +162,6 @@ namespace BizHawk.Client.EmuHawk
 				dst += pitch * 8;
 			}
 		}
-
-		#endregion
 
 		private unsafe void Generate(bool now = false)
 		{
