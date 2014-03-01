@@ -255,6 +255,60 @@ namespace BizHawk.Client.Common
 		public abstract string Diff { get; }
 		
 		public abstract void Update();
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Watch)
+			{
+				var watch = obj as Watch;
+				return this.Domain == watch.Domain && this.Address == watch.Address;
+			}
+
+			if (obj is Cheat)
+			{
+				var cheat = obj as Cheat;
+				return this.Domain == cheat.Domain && this.Address == cheat.Address;
+			}
+
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Domain.GetHashCode() + this.Address ?? 0;
+		}
+
+		public static bool operator ==(Watch a, Watch b)
+		{
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+			{
+				return false;
+			}
+
+			return a.Domain == b.Domain && a.Address == b.Address;
+		}
+
+		public static bool operator !=(Watch a, Watch b)
+		{
+			return !(a == b);
+		}
+
+		public static bool operator ==(Watch a, Cheat b)
+		{
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null))
+			{
+				return false;
+			}
+
+			return a.Domain == b.Domain && a.Address == b.Address;
+		}
+
+		public static bool operator !=(Watch a, Cheat b)
+		{
+			return !(a == b);
+		}
 	}
 
 	public sealed class SeparatorWatch : Watch

@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetTasProjFileFromUser(string currentFile)
 		{
 			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetTasProjSaveFileFromUser(string currentFile)
 		{
 			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
 			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
 			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetCheatFileFromUser(string currentFile)
 		{
 			var ofd = new OpenFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
 		{
 			var sfd = new SaveFileDialog();
-			if (!String.IsNullOrWhiteSpace(currentFile))
+			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			}
@@ -257,18 +257,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void FreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
-			{
-				Global.CheatList.Add(new Cheat(watch, watch.Value ?? 0));
-			}
+			Global.CheatList.AddRange(
+				watches
+				.Where(w => !w.IsSeparator)
+				.Select(w => new Cheat(w, w.Value ?? 0)));
+
+			//foreach (var watch in watches.Where(watch => !watch.IsSeparator))
+			//{
+			//	Global.CheatList.Add(new Cheat(watch, watch.Value ?? 0));
+			//}
 		}
 
 		public static void UnfreezeAddress(IEnumerable<Watch> watches)
 		{
-			foreach (var watch in watches.Where(watch => !watch.IsSeparator))
-			{
-				Global.CheatList.Remove(watch);
-			}
+			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 
 		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses)
@@ -286,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 					var column = new ColumnHeader
 					{
 						Name = columnName,
-						Text = columnName.Replace("Column", String.Empty),
+						Text = columnName.Replace("Column", string.Empty),
 						Width = columnWidth,
 					};
 
