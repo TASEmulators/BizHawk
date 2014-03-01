@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			if (Cart.pcb == "HVC-CNROM-256K-01")
+			if (Cart.pcb == "9011-N02") // othello
 				copyprotection = true;
 			prg_byte_mask = Cart.prg_size * 1024 - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
