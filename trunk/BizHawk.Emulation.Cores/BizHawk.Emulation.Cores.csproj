@@ -243,6 +243,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\GameGenie.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper028.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">
