@@ -131,7 +131,8 @@ namespace BizHawk.Client.Common
 
 		public void AddRange(IEnumerable<Cheat> cheats)
 		{
-			_cheatList.AddRange(cheats);
+			_cheatList.AddRange(
+				cheats.Where(c => !_cheatList.Contains(c)));
 			Changes = true;
 		}
 
@@ -187,7 +188,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
-			foreach (var cheat in cheats)
+			foreach (var cheat in cheats.ToList())
 			{
 				_cheatList.Remove(cheat);
 			}
