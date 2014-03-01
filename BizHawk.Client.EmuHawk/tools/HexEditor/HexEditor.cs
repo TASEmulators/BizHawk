@@ -1386,6 +1386,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ToolHelpers.UpdateCheatRelatedTools(null, null);
+			MemoryViewerBox.Refresh();
 		}
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
