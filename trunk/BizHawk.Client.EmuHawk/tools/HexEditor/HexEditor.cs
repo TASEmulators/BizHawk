@@ -69,10 +69,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return _addressHighlighted;
 				}
-				else
-				{
-					return null; // Negative = no address highlighted
-				}
+				
+				return null; // Negative = no address highlighted
 			}
 		}
 
@@ -263,14 +261,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return '.';
 			}
-			else if (val >= 0x80)
+			
+			if (val >= 0x80)
 			{
 				return '.';
 			}
-			else
-			{
-				return (char)val;
-			}
+			
+			return (char)val;
 		}
 
 		private static int? GetDomainInt(string name)
@@ -329,10 +326,8 @@ namespace BizHawk.Client.EmuHawk
 					var stream = file.GetStream();
 					return Util.ReadAllBytes(stream);
 				}
-				else
-				{
-					return File.ReadAllBytes(path);
-				}
+				
+				return File.ReadAllBytes(path);
 			}
 		}
 
@@ -384,18 +379,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return true;
 			}
-			else if (key >= 'a' && key <= 'f') // A-F
+			
+			if (key >= 'a' && key <= 'f') // A-F
 			{
 				return true;
 			}
-			else if (key >= 'A' && key <= 'F') // A-F
+			
+			if (key >= 'A' && key <= 'F') // A-F
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		private void HexEditor_Load(object sender, EventArgs e)
@@ -638,8 +633,7 @@ namespace BizHawk.Client.EmuHawk
 		private Point GetPromptPoint()
 		{
 			return PointToScreen(
-				new Point(MemoryViewerBox.Location.X + 30, MemoryViewerBox.Location.Y + 30)
-			);
+				new Point(MemoryViewerBox.Location.X + 30, MemoryViewerBox.Location.Y + 30));
 		}
 
 		private void ClearNibbles()
@@ -772,8 +766,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: can't unfreeze address 0??
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains(address)).ToList()
-				);
+					Global.CheatList.Where(x => x.Contains(address)).ToList());
 			}
 
 			MemoryViewerBox.Refresh();
@@ -820,10 +813,8 @@ namespace BizHawk.Client.EmuHawk
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
-			else
-			{
-				return "Binary (*.bin)|*.bin|All Files|*.*";
-			}
+			
+			return "Binary (*.bin)|*.bin|All Files|*.*";
 		}
 
 		private string GetBinarySaveFileFromUser()
@@ -1044,22 +1035,19 @@ namespace BizHawk.Client.EmuHawk
 					case 1:
 						_domain.PokeByte(
 							address,
-							(byte)(_domain.PeekByte(address) + 1)
-						);
+							(byte)(_domain.PeekByte(address) + 1));
 						break;
 					case 2:
 						_domain.PokeWord(
 							address,
 							(ushort)(_domain.PeekWord(address, _bigEndian) + 1),
-							_bigEndian
-						);
+							_bigEndian);
 						break;
 					case 4:
 						_domain.PokeDWord(
 							address,
 							_domain.PeekDWord(address, _bigEndian) + 1,
-							_bigEndian
-						);
+							_bigEndian);
 						break;
 				}
 			}
@@ -1080,22 +1068,19 @@ namespace BizHawk.Client.EmuHawk
 					case 1:
 						_domain.PokeByte(
 							address,
-							(byte)(_domain.PeekByte(address) - 1)
-						);
+							(byte)(_domain.PeekByte(address) - 1));
 						break;
 					case 2:
 						_domain.PokeWord(
 							address,
 							(ushort)(_domain.PeekWord(address, _bigEndian) - 1),
-							_bigEndian
-						);
+							_bigEndian);
 						break;
 					case 4:
 						_domain.PokeDWord(
 							address,
 							_domain.PeekDWord(address, _bigEndian) - 1,
-							_bigEndian
-						);
+							_bigEndian);
 						break;
 				}
 			}
@@ -1107,10 +1092,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return string.Format(_digitFormatString, MakeValue(address)).Trim();
 			}
-			else
-			{
-				return string.Empty;
-			}
+			
+			return string.Empty;
 		}
 
 		private string GetFindValues()
@@ -1120,10 +1103,8 @@ namespace BizHawk.Client.EmuHawk
 				var values = ValueString(HighlightedAddress.Value);
 				return _secondaryHighlightedAddresses.Aggregate(values, (current, x) => current + ValueString(x));
 			}
-			else
-			{
-				return string.Empty;
-			}
+			
+			return string.Empty;
 		}
 
 		private void HighlightSecondaries(string value, int found)
@@ -1359,8 +1340,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_secondaryHighlightedAddresses.ForEach(addr =>
-				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(addr))
-			);
+				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(addr)));
 		}
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1424,8 +1404,7 @@ namespace BizHawk.Client.EmuHawk
 						(Watch.WatchSize)_dataSize,
 						Watch.DisplayType.Hex,
 						string.Empty,
-						_bigEndian
-				));
+						_bigEndian));
 
 				poke.SetWatch(watches);
 				poke.ShowHawkDialog();
