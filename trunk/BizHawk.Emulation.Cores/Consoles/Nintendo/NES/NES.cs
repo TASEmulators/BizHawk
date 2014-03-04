@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
+			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
 			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
@@ -922,16 +923,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public Region RegionOverride = Region.Default;
 
+			public NESControlSettings Controls = new NESControlSettings();
+
 			public NESSyncSettings Clone()
 			{
 				var ret = (NESSyncSettings)MemberwiseClone();
 				ret.BoardProperties = new Dictionary<string, string>(BoardProperties);
+				ret.Controls = Controls.Clone();
 				return ret;
 			}
 
 			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
 			{
-				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) && x.RegionOverride == y.RegionOverride);
+				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) &&
+					x.RegionOverride == y.RegionOverride &&
+					!NESControlSettings.NeedsReboot(x.Controls, y.Controls));
 			}
 		}
 

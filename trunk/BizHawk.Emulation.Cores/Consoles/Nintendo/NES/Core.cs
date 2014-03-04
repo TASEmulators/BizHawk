@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int[] palette_compiled = new int[64*8];
 
 		// new input system
+		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
 		IControllerDeck ControllerDeck;
 		byte latched4016;
 
@@ -181,10 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			
 			// wire controllers
 			// todo: allow changing this
-			ControllerDeck = new NesDeck(
-				new ControllerNES(),
-				new ControllerNES(),
-				ppu.LightGunCallback);
+			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
