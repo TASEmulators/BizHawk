@@ -99,6 +99,14 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
 			Option("GEN", "CD_BIOS_US", us_scd1_9210);
 			Option("GEN", "CD_BIOS_US", us_scd2_9303);	
+
+			// SMS
+			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
+			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
+			Firmware("SMS", "SMS_US", "SMS Bios (USA)");
+			Firmware("SMS", "SMS_JP", "SMS Bios (Japan)");
+			Option("SMS", "SMS_US", sms_us_13);
+			Option("SMS", "SMS_JP", sms_jp_21);
 		}
 
 		//adds a defined firmware ID to the database

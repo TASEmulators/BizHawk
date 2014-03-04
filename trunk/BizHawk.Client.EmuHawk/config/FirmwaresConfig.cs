@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "INTV", "Intellivision" },
 				{ "C64", "C64" },
 				{ "GEN", "Genesis" },
+				{ "SMS", "Sega Master System" },
 			};
 
 		public string TargetSystem = null;
