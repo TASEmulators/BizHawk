@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using System.Reflection;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -159,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool FamicomP2Hack;
 
 		ControllerDefinition Definition;
-		
+
 		public ControllerNES()
 		{
 			Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
@@ -168,8 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ControllerNES(bool famicomP2)
 		{
 			if (famicomP2)
-				Definition = new ControllerDefinition
-					{ BoolButtons = new List<string>(FamicomP2Buttons.Where((s) => s != null)) };
+				Definition = new ControllerDefinition { BoolButtons = new List<string>(FamicomP2Buttons.Where((s) => s != null)) };
 			else
 				Definition = new ControllerDefinition { BoolButtons = new List<string>(Buttons) };
 			FamicomP2Hack = famicomP2;
@@ -353,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				latched3 >>= 1; // ASR not LSR, so endless stream of 1s after data
 				latched4 >>= 1;
 			}
-			return (byte)(d3 << 3| d4 << 4);
+			return (byte)(d3 << 3 | d4 << 4);
 		}
 
 		public ControllerDefinition GetDefinition()
@@ -376,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
-			FloatControls = { "0Zapper X", "0Zapper Y"},
+			FloatControls = { "0Zapper X", "0Zapper Y" },
 			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
 		};
 
@@ -542,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class FamilyBasicKeyboard: IFamicomExpansion
+	public class FamilyBasicKeyboard : IFamicomExpansion
 	{
 		#region buttonlookup
 		static string[] Buttons =
@@ -933,7 +934,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				plrnext = currplr + 1;
 			return string.Format("P{0} {1}", currplr, input.Substring(1));
 		}
-			
+
 		/// <summary>
 		/// handles all player number merging
 		/// </summary>
@@ -966,6 +967,123 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Unmergers.Add(new ControlDefUnMerger(remaps));
 			}
 			return ret;
+		}
+	}
+
+	#endregion
+
+	#region settings
+
+	public class NESControlSettings
+	{
+		static readonly Dictionary<string, Type> FamicomExpansions;
+		static readonly Dictionary<string, Type> NesPortDevices;
+
+		static Dictionary<string, Type> Implementors<T>()
+		{
+			var assy = typeof(NESControlSettings).Assembly;
+			var types = assy.GetTypes().Where(c => typeof(T).IsAssignableFrom(c));
+			var ret = new Dictionary<string, Type>();
+			foreach (Type t in types)
+				ret[t.Name] = t;
+			return ret;
+		}
+
+		static NESControlSettings()
+		{
+			FamicomExpansions = Implementors<IFamicomExpansion>();
+			NesPortDevices = Implementors<INesPort>();
+		}
+
+		public static IList<string> GetFamicomExpansionValues()
+		{
+			return new List<string>(FamicomExpansions.Keys).AsReadOnly();
+		}
+		public static IList<string> GetNesPortValues()
+		{
+			return new List<string>(NesPortDevices.Keys).AsReadOnly();
+		}
+
+		[JsonIgnore]
+		private bool _Famicom;
+		public bool Famicom { get { return _Famicom; } set { _Famicom = value; } }
+		[JsonIgnore]
+		private string _NesLeftPort;
+		[JsonIgnore]
+		private string _NesRightPort;
+		public string NesLeftPort
+		{
+			get { return _NesLeftPort; }
+			set
+			{
+				if (NesPortDevices.ContainsKey(value))
+					_NesLeftPort = value;
+				else
+					throw new InvalidOperationException();
+			}
+		}
+		public string NesRightPort
+		{
+			get { return _NesRightPort; }
+			set
+			{
+				if (NesPortDevices.ContainsKey(value))
+					_NesRightPort = value;
+				else
+					throw new InvalidOperationException();
+			}
+		}
+		[JsonIgnore]
+		private string _FamicomExpPort;
+		public string FamicomExpPort
+		{
+			get { return _FamicomExpPort; }
+			set
+			{
+				if (FamicomExpansions.ContainsKey(value))
+					_FamicomExpPort = value;
+				else
+					throw new InvalidOperationException();
+			}
+		}
+
+		public NESControlSettings()
+		{
+			Famicom = false;
+			FamicomExpPort = typeof(UnpluggedFam).Name;
+			NesLeftPort = typeof(ControllerNES).Name;
+			NesRightPort = typeof(ControllerNES).Name;
+		}
+
+		public static bool NeedsReboot(NESControlSettings x, NESControlSettings y)
+		{
+			return
+				x.Famicom != y.Famicom ||
+				x.FamicomExpPort != y.FamicomExpPort ||
+				x.NesLeftPort != y.NesLeftPort ||
+				x.NesRightPort != y.NesRightPort;
+		}
+
+		public NESControlSettings Clone()
+		{
+			return (NESControlSettings)MemberwiseClone();
+		}
+
+		public IControllerDeck Instantiate(Func<int, int, bool> PPUCallback)
+		{
+			if (Famicom)
+			{
+				IFamicomExpansion exp = (IFamicomExpansion)Activator.CreateInstance(FamicomExpansions[FamicomExpPort]);
+				IControllerDeck ret = new FamicomDeck(exp, PPUCallback);
+				return ret;
+			}
+			else
+			{
+				INesPort left = (INesPort)Activator.CreateInstance(NesPortDevices[NesLeftPort]);
+				INesPort right = (INesPort)Activator.CreateInstance(NesPortDevices[NesRightPort]);
+				IControllerDeck ret = new NesDeck(left, right, PPUCallback);
+				return ret;
+			}
 		}
 	}
 
