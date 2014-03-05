@@ -17,25 +17,35 @@
 		const ushort BankSizeMask = 0x3FFF;
 		const ushort RamSizeMask = 0x1FFF;
 
+		bool BiosMapped { get { return (Port3E & 0x40) == 0x40; } }
+
 		byte ReadMemory(ushort address)
 		{
 			byte ret;
-			if (address < 1024)
-				ret = RomData[address];
-			else if (address < BankSize)
-				ret = RomData[(RomBank0 * BankSize) + address];
-			else if (address < BankSize * 2)
-				ret = RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
-			else if (address < BankSize * 3)
+
+			if (address < 0xC000)
 			{
-				switch (SaveRamBank)
+				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
+					ret = 0xFF;
+				else if (BiosMapped && BiosRom != null)
+					ret = BiosRom[address & 0x1FFF];
+				else if (address < 1024)
+					ret = RomData[address];
+				else if (address < 0x4000)
+					ret = RomData[(RomBank0 * BankSize) + address];
+				else if (address < 0x8000)
+					ret = RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
+				else
 				{
-					case 0: ret = RomData[(RomBank2 * BankSize) + (address & BankSizeMask)]; break;
-					case 1: ret = SaveRAM[address & BankSizeMask]; break;
-					case 2: ret = SaveRAM[BankSize + (address & BankSizeMask)]; break;
-					default:
-						ret = SystemRam[address & RamSizeMask];
-						break;
+					switch (SaveRamBank)
+					{
+						case 0: ret = RomData[(RomBank2 * BankSize) + (address & BankSizeMask)]; break;
+						case 1: ret = SaveRAM[address & BankSizeMask]; break;
+						case 2: ret = SaveRAM[BankSize + (address & BankSizeMask)]; break;
+						default:
+							ret = SystemRam[address & RamSizeMask];
+							break;
+					}
 				}
 			}
 			else
@@ -91,22 +101,20 @@
 			WriteMemory(0xFFFF, 2);
 		}
 
-		// Mapper when loading a BIOS as a ROM
-
-		bool BiosMapped { get { return (Port3E & 0x08) == 0; } }
+		// Mapper when loading a BIOS as a ROM (simulating no cart loaded)
 
 		byte ReadMemoryBIOS(ushort address)
 		{
-			if (BiosMapped == false && address < BankSize * 3)
-				return 0x00;
+			if ((Port3E & 0x08) != 0 && address < 0xC000)
+				return 0xFF;
 
 			if (address < 1024)
 				return RomData[address];
-			if (address < BankSize)
+			if (address < 0x4000)
 				return RomData[(RomBank0 * BankSize) + address];
-			if (address < BankSize * 2)
+			if (address < 0x8000)
 				return RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
-			if (address < BankSize * 3)
+			if (address < 0xC000)
 				return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];
 
 			return SystemRam[address & RamSizeMask];

@@ -103,10 +103,14 @@ namespace BizHawk.Emulation.Common
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
-			Firmware("SMS", "SMS_US", "SMS Bios (USA)");
-			Firmware("SMS", "SMS_JP", "SMS Bios (Japan)");
-			Option("SMS", "SMS_US", sms_us_13);
-			Option("SMS", "SMS_JP", sms_jp_21);
+			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", "sms_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)");
+			var sms_m404  = File("4A06C8E66261611DCE0305217C42138B71331701", "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)");
+
+			Firmware("SMS", "SMSBIOS", "SMS Bios");
+			Option("SMS", "SMSBIOS", sms_us_13);
+			Option("SMS", "SMSBIOS", sms_jp_21);
+			Option("SMS", "SMSBIOS", sms_us_1b);
+			Option("SMS", "SMSBIOS", sms_m404);
 		}
 
 		//adds a defined firmware ID to the database
