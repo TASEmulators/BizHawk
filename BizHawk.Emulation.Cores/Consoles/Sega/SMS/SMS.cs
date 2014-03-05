@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte[] SaveRAM = new byte[BankSize * 2];
 		public byte SaveRamBank;
 
+		public byte[] BiosRom;
+
 		public byte[] ReadSaveRam()
 		{
 			if (SaveRAM != null)
@@ -192,11 +194,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["3D"])
 				IsGame3D = true;
 
-            if (game["BIOS"])
-            {
-                Port3E = 0xF7; // Disable cartridge, enable BIOS rom
-                InitBiosMapper();
-            }
+			if (game["BIOS"])
+			{
+				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
+				InitBiosMapper();
+			}
+			else
+			{
+				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", "SMSBIOS", false);
+				if (BiosRom != null) // && usebios
+				{
+					Port3E = 0xF7;
+				}
+			}
+
             SetupMemoryDomains();
 		}
 
