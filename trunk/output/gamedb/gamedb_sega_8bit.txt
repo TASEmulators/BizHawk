@@ -147,8 +147,8 @@ DA3A2F57	 	Black Belt	SMS
 8D39B5E7	F	Black Belt (2x overdump) (h) [A]	SMS	
 8231C5E6	F	Black Belt (2x overdump) (h) [B]	SMS	
 CE8DAE8D	F	Black Belt (2x overdump) (h) [C]	SMS	
-8ECD201C	 	Blade Eagle 3-D	SMS		FM
-FBF96C81	T	Blade Eagle 3-D (BR)	SMS		FM
+8ECD201C	 	Blade Eagle 3-D	SMS		FM;3D
+FBF96C81	T	Blade Eagle 3-D (BR)	SMS		FM;3D
 2734A9B4	D	blockhead	SMS	proppy & tet; v1.00
 6994770D	D	blockhead [beta 1]	SMS	proppy & tet; v1.00 14/7/2004
 79A1D911	D	blockhead [beta 2]	SMS	proppy & tet; v1.00 26/9/2004
@@ -585,8 +585,8 @@ B936F761	H	Master Zelda [RHW]	SMS	Teddy Boy
 D1B9112E	O	Masters Of Combat (2x overdump)	SMS	
 22F2C541	B	Masters of Combat (2 bad bytes)	SMS	
 6AD0B71D	V	Masters of Combat (bad - 10KB missing)	SMS	
-31B8040B	 	Maze Hunter 3-D	SMS		FM
-CD16DB0A	V	Maze Hunter 3-D (bad - 54KB missing)	SMS		FM
+31B8040B	 	Maze Hunter 3-D	SMS		FM;3D
+CD16DB0A	V	Maze Hunter 3-D (bad - 54KB missing)	SMS		FM;3D
 871562B0	 	Maze Walker (JP)	SMS	
 4FCC473B	D	Mega Drive 6-Button Controller Test	SMS	Charles MacDonald
 9EF355D7	D	MegaMania SMS	SMS	Haroldo Pinheiro
@@ -610,8 +610,8 @@ EBC2BFA1	B	Miracle Warriors - Seal of the Dark Lord (bad byte)	SMS		FM
 41BF3D56	F	Miracle Warriors - Seal of the Dark Lord (f) [B]	SMS	F	FM
 F14A8546	F	Miracle Warriors - Seal of the Dark Lord (h) (f)	SMS		FM
 ED9FD67D	T	Miracle Warriors - Seal Of The Dark Lord (DE)	SMS	Azelistic; v0.95b	FM
-FBE5CFBB	 	Missile Defense 3-D	SMS	
-E79BB689	 	Missile Defense 3-D [BIOS]	SMS	
+FBE5CFBB	 	Missile Defense 3-D	SMS		3D
+E79BB689	 	Missile Defense 3-D [BIOS]	SMS		3D
 458390E7	H	Monica 3 [A]	SMS	Wonder Boy in Monster World
 693C63D5	H	Monica 3 [B]	SMS	Wonder Boy in Monster World
 01D67C0B	 	Monica no Castelo do Dragao (BR)	SMS		FM
@@ -671,8 +671,8 @@ CA99CEFA	F	Out Run (bad byte) (h) [B]	SMS		FM;WhenFMDisablePSG
 D70BBD06	B	Out Run (bad byte) [B]	SMS		FM;WhenFMDisablePSG
 DC0860E7	F	Out Run (f)	SMS	F	FM;WhenFMDisablePSG
 481BAB2E	F	Out Run (h)	SMS		FM;WhenFMDisablePSG
-D6F43DDA	 	Out Run 3-D	SMS		FM
-77936A83	V	Out Run 3-D (corrupted)	SMS	First 12KB is data from Out Run Europa [GG]	FM
+D6F43DDA	 	Out Run 3-D	SMS		FM;3D
+77936A83	V	Out Run 3-D (corrupted)	SMS	First 12KB is data from Out Run Europa [GG]	FM;3D
 3932ADBC	 	Out Run Europa	SMS	
 F037EC00	 	Out Run Europa [SMS-GG]	SMS	
 2AA12D7E	B	Out Run Europa [SMS-GG] (four bad bytes)	SMS	
@@ -748,7 +748,7 @@ BDFB09F6	H	Pop Breaker (JP) [GG2SMS] [v1.10]	SMS	Game Gear Pop Breaker (JP) by C
 C7A1FDEF	 	Populous	SMS	
 C7C906EA	O	Populous (f)	SMS	
 4A9B4ECB	F	Populous (h) (f)	SMS	
-ABD48AD2	 	Poseidon Wars 3-D	SMS		FM
+ABD48AD2	 	Poseidon Wars 3-D	SMS		FM;3D
 4077EFD9	 	Power Strike	SMS		FM;OverclockSafe
 F94616C4	F	Power Strike (h)	SMS		FM;OverclockSafe
 514E7ABE	O	Power Strike (2x overdump)	SMS		FM;OverclockSafe
@@ -969,8 +969,8 @@ CA1D3752	 	Space Harrier [50 Hz]	SMS
 47BD2006	V	Space Harrier [50 Hz] (bad dump)	SMS	
 D78F44AE	F	Space Harrier [50 Hz] (h) [A]	SMS	
 F63E2DD4	F	Space Harrier [50 Hz] (h) [B]	SMS	
-6BD5C2BF	 	Space Harrier 3-D	SMS		FM
-156948F9	 	Space Harrier 3D (JP)	SMS		FM
+6BD5C2BF	 	Space Harrier 3-D	SMS		FM;3D
+156948F9	 	Space Harrier 3D (JP)	SMS		FM;3D
 33FDEA7A	D	SpaceOddity v.00	SMS	Proppy & Tet
 5ED9495B	D	SpaceOddity v.01	SMS	Proppy & Tet
 9039DB33	D	SpaceOddity v.02	SMS	Proppy & Tet
@@ -1238,8 +1238,8 @@ CE61185D	D	Z88DK Sound Test [B]	SMS	Haroldo O. Pinheiro
 4A444668	D	Z88DK Test [B]	SMS	Haroldo O. Pinheiro
 B20AD645	D	Z88DK Test [C]	SMS	Haroldo O. Pinheiro
 CCC71D75	D	Z88DK Test [D]	SMS	Haroldo O. Pinheiro
-A3EF13CB	 	Zaxxon 3-D	SMS		FM
-bba74147	 	Zaxxon 3-D [Proto]	SMS		FM
+A3EF13CB	 	Zaxxon 3-D	SMS		FM;3D
+bba74147	 	Zaxxon 3-D [Proto]	SMS		FM;3D
 60C19645	 	Zillion	SMS	
 5718762C	 	Zillion (US)	SMS	
 EE298F31	F	Zillion (US) (h)	SMS	

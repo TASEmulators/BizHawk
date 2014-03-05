@@ -123,6 +123,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		byte Port3F = 0xFF;
 
 		byte ForceStereoByte = 0xAD;
+		bool IsGame3D = false;
 
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
@@ -188,6 +189,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
             if (this.Settings.SpriteLimit)
                 Vdp.SpriteLimit = true;
 
+			if (game["3D"])
+				IsGame3D = true;
+
             if (game["BIOS"])
             {
                 Port3E = 0xF7; // Disable cartridge, enable BIOS rom
@@ -251,16 +255,16 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
 
 			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-			{
 				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
-			}
 
 			if (IsGameGear == false)
-			{
 				Cpu.NonMaskableInterrupt = Controller["Pause"];
-			}
 
-			Vdp.ExecFrame(render);
+			if (IsGame3D && Settings.Fix3D)
+				Vdp.ExecFrame((Frame & 1) == 0);
+			else 
+				Vdp.ExecFrame(render);
+
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 			if (lagged)
 			{
@@ -504,6 +508,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			public bool ForceStereoSeparation = false;
 			public bool SpriteLimit = false;
+			public bool Fix3D = true;
 			// GG settings
 			public bool ShowClippedRegions = false;
 			public bool HighlightActiveDisplayRegion = false;

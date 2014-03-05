@@ -1294,12 +1294,14 @@ namespace BizHawk.Client.EmuHawk
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
 			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
 			SMSSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			SMSFix3DGameDisplayToolStripMenuItem.Checked = s.Fix3D;
 			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
 			SMSEnableFMChipMenuItem.Visible =
 				SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
+				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
@@ -1333,6 +1335,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 			s.SpriteLimit ^= true;
+			PutCoreSettings(s);
+		}
+
+		private void SMSFix3DDisplayMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
+			s.Fix3D ^= true;
 			PutCoreSettings(s);
 		}
 
