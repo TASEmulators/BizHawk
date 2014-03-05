@@ -385,14 +385,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					for (uint i = 0; i < SampPerFrame * 2; i += 2)
 					{
-						// gameboy audio output is mono, so ignore one sample
-						int s = sl[i];
+						int s = (sl[i] + sl[i + 1]) / 2;
 						if (s != LatchL)
 						{
 							blip_left.AddDelta(i, s - LatchL);
 							LatchL = s;
 						}
-						s = sr[i];
+						s = (sr[i] + sr[i + 1]) / 2;
 						if (s != LatchR)
 						{
 							blip_right.AddDelta(i, s - LatchR);
