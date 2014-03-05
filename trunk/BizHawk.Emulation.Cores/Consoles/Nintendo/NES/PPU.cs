@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					for (int i = xmin; i <= xmax; i++)
 					{
-						short s = xbuf[y * 256 + x];
+						short s = xbuf[j * 256 + i];
 						int lum = s & 0x30;
 						if ((s & 0x0f) >= 0x0e)
 							lum = 0;
