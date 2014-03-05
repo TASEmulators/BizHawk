@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
 				InitBiosMapper();
 			}
-			else
+			else if (game.System == "SMS")
 			{
 				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", "SMSBIOS", false);
 				if (BiosRom != null) // && usebios
