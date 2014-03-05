@@ -390,9 +390,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			byte ret = 0;
 			if (c["0Fire"])
-				ret |= 0x08;
-			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
 				ret |= 0x10;
+			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+				ret |= 0x08;
 			return ret;
 		}
 
@@ -982,7 +982,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static Dictionary<string, Type> Implementors<T>()
 		{
 			var assy = typeof(NESControlSettings).Assembly;
-			var types = assy.GetTypes().Where(c => typeof(T).IsAssignableFrom(c));
+			var types = assy.GetTypes().Where(c => typeof(T).IsAssignableFrom(c) && !c.IsAbstract && !c.IsInterface);
 			var ret = new Dictionary<string, Type>();
 			foreach (Type t in types)
 				ret[t.Name] = t;

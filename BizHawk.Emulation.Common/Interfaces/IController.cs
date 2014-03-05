@@ -56,16 +56,9 @@ namespace BizHawk.Emulation.Common
 			: this()
 		{
 			Name = source.Name;
-
-			foreach (var s in source.BoolButtons)
-			{
-				BoolButtons.Add(s);
-			}
-
-			foreach (var s in source.FloatControls)
-			{
-				FloatControls.Add(s);
-			}
+			BoolButtons.AddRange(source.BoolButtons);
+			FloatControls.AddRange(source.FloatControls);
+			FloatRanges.AddRange(source.FloatRanges);
 		}
 
 		public ControllerDefinition()
