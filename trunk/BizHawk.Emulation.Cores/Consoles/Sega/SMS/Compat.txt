@@ -7,7 +7,6 @@
   but don't really consider it super-high priority since it works correctly in PAL mode.
 
 * Desert Strike - you can enter the map screen but cannot leave.
-* Korean mapper needs to be implemented for SG-1000 games.
 
 Could probably stand to do another pass on SMS emulation after Genesis is working.
 
@@ -18,6 +17,4 @@ Could probably stand to do another pass on SMS emulation after Genesis is workin
 
 ======= SG-1000 compatibility checklist =======
 
-The Castle      Dies, mapper issue
-Othello         Doesnt boot
 Terebi Oekaki   Req Graphic Board peripheral
