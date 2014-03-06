@@ -97,21 +97,27 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x01) > 0) ? fgColor : bgColor) : 0;
 			}
 		}
-
+		
 		void RenderTmsSprites(bool show)
+		{
+			if (EnableDoubledSprites == false)
+				RenderTmsSpritesStandard(show);
+			else
+				RenderTmsSpritesDouble(show);
+		}
+
+		void RenderTmsSpritesStandard(bool show)
 		{
 			if (DisplayOn == false) return;
 
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
 
-			bool Double = EnableDoubledSprites;
 			bool LargeSprites = EnableLargeSprites;
 
 			int SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;
-			if (Double) SpriteSize *= 2;
-			int OneCellSize = Double ? 16 : 8;
+			const int OneCellSize = 8;
 
 			int NumSpritesOnScanline = 0;
 			for (int i = 0; i < 32; i++)
@@ -130,14 +136,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				if (++NumSpritesOnScanline == 5)
 				{
+					StatusByte &= 0xE0;    // Clear FS0-FS4 bits
 					StatusByte |= (byte)i; // set 5th sprite index
-					StatusByte |= 0x40; // set overflow bit
+					StatusByte |= 0x40;    // set overflow bit
 					break;
 				}
 
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
 				int SpriteLine = ScanLine - y;
-				if (Double) SpriteLine /= 2;
+
+				// pv contains the VRAM byte holding the pattern data for this character at this scanline.
+				// each byte contains the pattern data for each the 8 pixels on this line.
+				// the bit-shift further down on PV pulls out the relevant horizontal pixel.
 
 				byte pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
 
@@ -147,13 +157,83 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					if (LargeSprites && xp == OneCellSize)
 						pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine + 16];
 
-					if ((pv & (1 << (7 - (xp & 7)))) > 0)
+					if (Color != 0 && (pv & (1 << (7 - (xp & 7)))) > 0)
 					{
-						// todo sprite collision
-						if (Color != 0 && ScanlinePriorityBuffer[x + xp] == 0)
+						if (SpriteCollisionBuffer[x + xp] != 0)
+							StatusByte |= 0x20; // Set sprite collision flag
+
+						if (ScanlinePriorityBuffer[x + xp] == 0)
 						{
 							ScanlinePriorityBuffer[x + xp] = 1;
-							if (show) FrameBuffer[(ScanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+							SpriteCollisionBuffer[x + xp] = 1;
+							if (show)
+								FrameBuffer[(ScanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+						}
+					}
+				}
+			}
+		}
+
+		void RenderTmsSpritesDouble(bool show)
+		{
+			if (DisplayOn == false) return;
+
+			Array.Clear(ScanlinePriorityBuffer, 0, 256);
+			Array.Clear(SpriteCollisionBuffer, 0, 256);
+
+			bool LargeSprites = EnableLargeSprites;
+
+			int SpriteSize = 8;
+			if (LargeSprites) SpriteSize *= 2;
+			SpriteSize *= 2;  // because sprite magnification
+			const int OneCellSize = 16; // once 8-pixel cell, doubled, will take 16 pixels
+
+			int NumSpritesOnScanline = 0;
+			for (int i = 0; i < 32; i++)
+			{
+				int SpriteBase = TmsSpriteAttributeBase + (i * 4);
+				int y = VRAM[SpriteBase++];
+				int x = VRAM[SpriteBase++];
+				int Pattern = VRAM[SpriteBase++];
+				int Color = VRAM[SpriteBase];
+
+				if (y == 208) break; // terminator sprite
+				if (y > 224) y -= 256; // sprite Y wrap
+				y++; // inexplicably, sprites start on Y+1
+				if (y > ScanLine || y + SpriteSize <= ScanLine) continue; // sprite is not on this scanline
+				if ((Color & 0x80) > 0) x -= 32; // Early Clock adjustment
+
+				if (++NumSpritesOnScanline == 5)
+				{
+					StatusByte &= 0xE0;    // Clear FS0-FS4 bits
+					StatusByte |= (byte)i; // set 5th sprite index
+					StatusByte |= 0x40;    // set overflow bit
+					break;
+				}
+
+				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
+				int SpriteLine = ScanLine - y;
+				SpriteLine /= 2; // because of sprite magnification
+
+				byte pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
+
+				for (int xp = 0; xp < SpriteSize && x + xp < 256; xp++)
+				{
+					if (x + xp < 0) continue;
+					if (LargeSprites && xp == OneCellSize)
+						pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine + 16];
+
+					if (Color != 0 && (pv & (1 << (7 - ((xp / 2) & 7)))) > 0)  // xp/2 is due to sprite magnification
+					{
+						if (SpriteCollisionBuffer[x + xp] != 0)
+							StatusByte |= 0x20; // Set sprite collision flag
+
+						if (ScanlinePriorityBuffer[x + xp] == 0)
+						{
+							ScanlinePriorityBuffer[x + xp] = 1;
+							SpriteCollisionBuffer[x + xp] = 1;
+							if (show)
+								FrameBuffer[(ScanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
 						}
 					}
 				}
