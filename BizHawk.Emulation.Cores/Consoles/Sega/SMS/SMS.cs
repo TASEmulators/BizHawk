@@ -130,10 +130,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
-		public SMS(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
+		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-			this.Settings = (SMSSettings)Settings ?? new SMSSettings();
-			this.SyncSettings = (SMSSyncSettings)SyncSettings ?? new SMSSyncSettings();
+			Settings = (SMSSettings)settings ?? new SMSSettings();
+			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 
 			CoreComm = comm;
 			
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			CoreComm.VsyncDen = 1;
             
             if (game["Japan"]) Region = "Japan";
-            if (game.NotInDatabase || game["FM"] && this.SyncSettings.EnableFM && !IsGameGear)
+            if (game.NotInDatabase || game["FM"] && SyncSettings.EnableFM && !IsGameGear)
                 HasYM2413 = true;
 
             if (Controller == null)
@@ -171,12 +171,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
             ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
 
             SystemRam = new byte[0x2000];
-            if (game["CMMapper"] == false)
-                InitSegaMapper();
-            else
-                InitCodeMastersMapper();
 
-            if (this.Settings.ForceStereoSeparation && !IsGameGear)
+			if (game["CMMapper"])
+				InitCodeMastersMapper();
+			else if (game["ExtRam"])
+				InitExt2kMapper(int.Parse(game.OptionValue("ExtRam")));
+			else
+				InitSegaMapper();
+
+            if (Settings.ForceStereoSeparation && !IsGameGear)
             {
                 if (game["StereoByte"])
                 {
@@ -185,10 +188,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				PSG.StereoPanning = ForceStereoByte;
             }
 
-            if (this.SyncSettings.AllowOverlock && game["OverclockSafe"])
+            if (SyncSettings.AllowOverlock && game["OverclockSafe"])
                 Vdp.IPeriod = 512;
 
-            if (this.Settings.SpriteLimit)
+            if (Settings.SpriteLimit)
                 Vdp.SpriteLimit = true;
 
 			if (game["3D"])
@@ -303,12 +306,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			SystemRam.SaveAsHex(writer);
 			writer.WriteLine("Port01 {0:X2}", Port01);
 			writer.WriteLine("Port02 {0:X2}", Port02);
+			writer.WriteLine("Port3E {0:X2}", Port3E);
 			writer.WriteLine("Port3F {0:X2}", Port3F);
 			int SaveRamLen = Util.SaveRamBytesUsed(SaveRAM);
 			if (SaveRamLen > 0)
 			{
 				writer.Write("SaveRAM ");
 				SaveRAM.SaveAsHex(writer, SaveRamLen);
+			}
+			if (ExtRam != null)
+			{
+				writer.Write("ExtRAM ");
+				ExtRam.SaveAsHex(writer, ExtRam.Length);
 			}
 			if (HasYM2413)
 			{
@@ -345,6 +354,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					for (int i = 0; i < SaveRAM.Length; i++) SaveRAM[i] = 0;
 					SaveRAM.ReadFromHex(args[1]);
 				}
+				else if (args[0] == "ExtRAM")
+				{
+					for (int i = 0; i < ExtRam.Length; i++) ExtRam[i] = 0;
+					ExtRam.ReadFromHex(args[1]);
+				}
 				else if (args[0] == "FMRegs")
 				{
 					byte[] regs = new byte[YM2413.opll.reg.Length];
@@ -356,6 +370,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					Port01 = byte.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "Port02")
 					Port02 = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Port3E")
+					Port3E = byte.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "Port3F")
 					Port3F = byte.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "[Z80]")
@@ -371,7 +387,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] SaveStateBinary()
 		{
-			var buf = new byte[24806 + 1 + 16384 + 16384];
+			int buflen = 24808 + 16384 + 16384;
+			if (ExtRam != null)
+				buflen += ExtRam.Length;
+			var buf = new byte[buflen];
 			var stream = new MemoryStream(buf);
 			var writer = new BinaryWriter(stream);
 			SaveStateBinary(writer);
@@ -399,7 +418,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			writer.Write(SaveRAM);
 			writer.Write(Port01);
 			writer.Write(Port02);
+			writer.Write(Port3E);
 			writer.Write(Port3F);
+			if (ExtRam != null)
+				writer.Write(ExtRam);
 			writer.Write(YM2413.opll.reg);
 		}
 
@@ -419,7 +441,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			reader.Read(SaveRAM, 0, SaveRAM.Length);
 			Port01 = reader.ReadByte();
 			Port02 = reader.ReadByte();
+			Port3E = reader.ReadByte();
 			Port3F = reader.ReadByte();
+			if (ExtRam != null)
+				reader.Read(ExtRam, 0, ExtRam.Length);
 			if (HasYM2413)
 			{
 				byte[] regs = new byte[YM2413.opll.reg.Length];

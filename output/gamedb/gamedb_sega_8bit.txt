@@ -1914,7 +1914,7 @@ D8A87095	 	Bank Panic	SG
 EA0F2691	 	Bomb Jack	SG	
 0B4BCA74	 	Borderline	SG
 BE7ED0EB	 	C_So! (JP)	SG
-092F29D6	 	The Castle	SG
+092F29D6	 	The Castle	SG		ExtRam=8192
 D37BDA49	 	Chack'n Pop	SG
 5970A12B	 	Champion Baseball	SG
 62B21E31	 	Champion Billiards	SG
@@ -1960,7 +1960,8 @@ BA09A0FD	 	Hyper Sports (Konami no)	SG
 3B912408	 	Ninja Princess	SG
 09196FC5	 	N-Sub [1988]	SG
 F4F78B76	 	Orguss	SG
-AF4F14BC	 	Othello (JP)	SG
+AF4F14BC	 	Othello (JP)	SG		ExtRam=2048
+1D1A0CA3		Othello (TW)	SG		ExtRam=2048
 30C52E5E	 	Pacar	SG
 326587E1	 	Pachinko (JP)	SG
 FD7CB50A	 	Pachinko II	SG
