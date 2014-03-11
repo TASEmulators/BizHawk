@@ -19,6 +19,7 @@ namespace BizHawk.Client.DBMan
 		public string RomMetadata;
 		public string RomStatus;
 		public string Catalog;
+		public long Size;
 
 		public override string ToString() { return Name + " " + VersionTags; }
 		public Game Game;
@@ -32,6 +33,7 @@ namespace BizHawk.Client.DBMan
 				return Game.GameMetadata + ";" + RomMetadata;
 			}
 		}
+		public string SizeFriendly { get { return string.Format("{0} bytes ({1}k)", Size, Size / 1024); } }
 	}
 
 	public class Game
@@ -100,7 +102,7 @@ namespace BizHawk.Client.DBMan
 		static void LoadRoms(string system)
 		{
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = "SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog FROM rom WHERE system = @System";
+			cmd.CommandText = "SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog, size FROM rom WHERE system = @System";
 			cmd.Parameters.Add(new SqliteParameter("@System", system));
 			var reader = cmd.ExecuteReader();
 			while (reader.NextResult())
@@ -117,6 +119,7 @@ namespace BizHawk.Client.DBMan
 				rom.RomMetadata = reader.GetString(8);
 				rom.RomStatus = reader.GetString(9);
 				rom.Catalog = reader.GetString(10);
+				rom.Size = reader.GetInt64(11);
 				rom.Game = GameMap[rom.Name];
 				Roms.Add(rom);
 			}

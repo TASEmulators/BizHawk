@@ -17,6 +17,7 @@ namespace BizHawk.Client.DBMan
 		public string CRC32;
 		public string MD5;
 		public string SHA1;
+		public long Size;
 
 		public override string ToString()
 		{
@@ -167,6 +168,7 @@ namespace BizHawk.Client.DBMan
 			info.CRC32 = Hash_CRC32(romBytes);
 			info.MD5 = Hash_MD5(romBytes);
 			info.SHA1 = Hash_SHA1(romBytes);
+			info.Size = romBytes.Length;
 
 			return info;
 		}

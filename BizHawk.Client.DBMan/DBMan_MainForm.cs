@@ -117,6 +117,7 @@ namespace BizHawk.Client.DBMan
 			crcBox.Text = rom.CRC32;
 			md5Box.Text = rom.MD5;
 			sha1Box.Text = rom.SHA1;
+			sizeBox.Text = rom.SizeFriendly;
 			regionBox.Text = rom.Region;
 			versionBox.Text = rom.VersionTags;
 			gameMetaBox.Text = rom.Game.GameMetadata;
@@ -180,7 +181,6 @@ namespace BizHawk.Client.DBMan
 			if (saveMode == 0) DB.SaveRom(SelectedRom);
 			if (saveMode == 1) DB.SaveRom1(SelectedRom, origSystem, origName);
 			if (saveMode == 2) DB.SaveRom2(SelectedRom);
-
 
 			if (romListView.SelectedItems.Count > 0)
 			{

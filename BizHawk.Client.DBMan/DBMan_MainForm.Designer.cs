@@ -41,6 +41,22 @@
 			this.romListColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.romListColumnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.detailPanel = new System.Windows.Forms.Panel();
+			this.notesLabel = new System.Windows.Forms.Label();
+			this.notesBox = new System.Windows.Forms.TextBox();
+			this.altNamesLabel = new System.Windows.Forms.Label();
+			this.altNamesBox = new System.Windows.Forms.TextBox();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.saveButton = new System.Windows.Forms.Button();
+			this.playersBox = new System.Windows.Forms.TextBox();
+			this.catalogLabel = new System.Windows.Forms.Label();
+			this.catalogBox = new System.Windows.Forms.TextBox();
+			this.playersLabel = new System.Windows.Forms.Label();
+			this.releaseDateLabel = new System.Windows.Forms.Label();
+			this.releaseDateBox = new System.Windows.Forms.TextBox();
+			this.classificationLabel = new System.Windows.Forms.Label();
+			this.classificationBox = new System.Windows.Forms.ComboBox();
+			this.publisherLabel = new System.Windows.Forms.Label();
+			this.publisherBox = new System.Windows.Forms.TextBox();
 			this.developerLabel = new System.Windows.Forms.Label();
 			this.developerBox = new System.Windows.Forms.TextBox();
 			this.romStatusLabel = new System.Windows.Forms.Label();
@@ -68,23 +84,9 @@
 			this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.directoryScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.publisherBox = new System.Windows.Forms.TextBox();
-			this.publisherLabel = new System.Windows.Forms.Label();
-			this.classificationBox = new System.Windows.Forms.ComboBox();
-			this.classificationLabel = new System.Windows.Forms.Label();
-			this.releaseDateBox = new System.Windows.Forms.TextBox();
-			this.releaseDateLabel = new System.Windows.Forms.Label();
-			this.playersLabel = new System.Windows.Forms.Label();
-			this.catalogBox = new System.Windows.Forms.TextBox();
-			this.catalogLabel = new System.Windows.Forms.Label();
-			this.playersBox = new System.Windows.Forms.TextBox();
-			this.saveButton = new System.Windows.Forms.Button();
-			this.cancelButton = new System.Windows.Forms.Button();
 			this.cleanupDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.altNamesBox = new System.Windows.Forms.TextBox();
-			this.altNamesLabel = new System.Windows.Forms.Label();
-			this.notesBox = new System.Windows.Forms.TextBox();
-			this.notesLabel = new System.Windows.Forms.Label();
+			this.sizeBox = new System.Windows.Forms.TextBox();
+			this.sizeLabel = new System.Windows.Forms.Label();
 			this.filterPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -153,7 +155,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.detailPanel);
-			this.splitContainer1.Size = new System.Drawing.Size(963, 588);
+			this.splitContainer1.Size = new System.Drawing.Size(963, 624);
 			this.splitContainer1.SplitterDistance = 492;
 			this.splitContainer1.TabIndex = 0;
 			this.splitContainer1.TabStop = false;
@@ -172,7 +174,7 @@
 			this.romListView.Location = new System.Drawing.Point(0, 0);
 			this.romListView.MultiSelect = false;
 			this.romListView.Name = "romListView";
-			this.romListView.Size = new System.Drawing.Size(492, 588);
+			this.romListView.Size = new System.Drawing.Size(492, 624);
 			this.romListView.TabIndex = 0;
 			this.romListView.TabStop = false;
 			this.romListView.UseCompatibleStateImageBehavior = false;
@@ -206,6 +208,8 @@
 			// 
 			// detailPanel
 			// 
+			this.detailPanel.Controls.Add(this.sizeLabel);
+			this.detailPanel.Controls.Add(this.sizeBox);
 			this.detailPanel.Controls.Add(this.notesLabel);
 			this.detailPanel.Controls.Add(this.notesBox);
 			this.detailPanel.Controls.Add(this.altNamesLabel);
@@ -249,8 +253,157 @@
 			this.detailPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.detailPanel.Location = new System.Drawing.Point(0, 0);
 			this.detailPanel.Name = "detailPanel";
-			this.detailPanel.Size = new System.Drawing.Size(467, 588);
+			this.detailPanel.Size = new System.Drawing.Size(467, 624);
 			this.detailPanel.TabIndex = 0;
+			// 
+			// notesLabel
+			// 
+			this.notesLabel.AutoSize = true;
+			this.notesLabel.Location = new System.Drawing.Point(3, 408);
+			this.notesLabel.Name = "notesLabel";
+			this.notesLabel.Size = new System.Drawing.Size(35, 13);
+			this.notesLabel.TabIndex = 48;
+			this.notesLabel.Text = "Notes";
+			// 
+			// notesBox
+			// 
+			this.notesBox.Location = new System.Drawing.Point(80, 408);
+			this.notesBox.Multiline = true;
+			this.notesBox.Name = "notesBox";
+			this.notesBox.Size = new System.Drawing.Size(296, 61);
+			this.notesBox.TabIndex = 44;
+			// 
+			// altNamesLabel
+			// 
+			this.altNamesLabel.AutoSize = true;
+			this.altNamesLabel.Location = new System.Drawing.Point(3, 381);
+			this.altNamesLabel.Name = "altNamesLabel";
+			this.altNamesLabel.Size = new System.Drawing.Size(55, 13);
+			this.altNamesLabel.TabIndex = 46;
+			this.altNamesLabel.Text = "Alt Names";
+			// 
+			// altNamesBox
+			// 
+			this.altNamesBox.Location = new System.Drawing.Point(80, 381);
+			this.altNamesBox.Name = "altNamesBox";
+			this.altNamesBox.Size = new System.Drawing.Size(296, 20);
+			this.altNamesBox.TabIndex = 42;
+			// 
+			// cancelButton
+			// 
+			this.cancelButton.Location = new System.Drawing.Point(125, 589);
+			this.cancelButton.Name = "cancelButton";
+			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.TabIndex = 48;
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.UseVisualStyleBackColor = true;
+			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+			// 
+			// saveButton
+			// 
+			this.saveButton.Location = new System.Drawing.Point(6, 589);
+			this.saveButton.Name = "saveButton";
+			this.saveButton.Size = new System.Drawing.Size(75, 23);
+			this.saveButton.TabIndex = 46;
+			this.saveButton.Text = "&Save";
+			this.saveButton.UseVisualStyleBackColor = true;
+			this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+			// 
+			// playersBox
+			// 
+			this.playersBox.AutoCompleteCustomSource.AddRange(new string[] {
+            "1 Player",
+            "2 Players Alternating",
+            "2 Players Cooperative",
+            "2 Players Versus"});
+			this.playersBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.playersBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+			this.playersBox.Location = new System.Drawing.Point(80, 326);
+			this.playersBox.Name = "playersBox";
+			this.playersBox.Size = new System.Drawing.Size(194, 20);
+			this.playersBox.TabIndex = 38;
+			// 
+			// catalogLabel
+			// 
+			this.catalogLabel.AutoSize = true;
+			this.catalogLabel.Location = new System.Drawing.Point(3, 354);
+			this.catalogLabel.Name = "catalogLabel";
+			this.catalogLabel.Size = new System.Drawing.Size(43, 13);
+			this.catalogLabel.TabIndex = 41;
+			this.catalogLabel.Text = "Catalog";
+			// 
+			// catalogBox
+			// 
+			this.catalogBox.Location = new System.Drawing.Point(80, 354);
+			this.catalogBox.Name = "catalogBox";
+			this.catalogBox.Size = new System.Drawing.Size(194, 20);
+			this.catalogBox.TabIndex = 40;
+			// 
+			// playersLabel
+			// 
+			this.playersLabel.AutoSize = true;
+			this.playersLabel.Location = new System.Drawing.Point(3, 326);
+			this.playersLabel.Name = "playersLabel";
+			this.playersLabel.Size = new System.Drawing.Size(41, 13);
+			this.playersLabel.TabIndex = 39;
+			this.playersLabel.Text = "Players";
+			// 
+			// releaseDateLabel
+			// 
+			this.releaseDateLabel.AutoSize = true;
+			this.releaseDateLabel.Location = new System.Drawing.Point(3, 299);
+			this.releaseDateLabel.Name = "releaseDateLabel";
+			this.releaseDateLabel.Size = new System.Drawing.Size(48, 13);
+			this.releaseDateLabel.TabIndex = 37;
+			this.releaseDateLabel.Text = "Rls Date";
+			// 
+			// releaseDateBox
+			// 
+			this.releaseDateBox.Location = new System.Drawing.Point(80, 299);
+			this.releaseDateBox.Name = "releaseDateBox";
+			this.releaseDateBox.Size = new System.Drawing.Size(100, 20);
+			this.releaseDateBox.TabIndex = 36;
+			// 
+			// classificationLabel
+			// 
+			this.classificationLabel.AutoSize = true;
+			this.classificationLabel.Location = new System.Drawing.Point(3, 271);
+			this.classificationLabel.Name = "classificationLabel";
+			this.classificationLabel.Size = new System.Drawing.Size(32, 13);
+			this.classificationLabel.TabIndex = 35;
+			this.classificationLabel.Text = "Class";
+			// 
+			// classificationBox
+			// 
+			this.classificationBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.classificationBox.FormattingEnabled = true;
+			this.classificationBox.Items.AddRange(new object[] {
+            "Licensed",
+            "Unlicensed",
+            "Homebrew",
+            "Firmware"});
+			this.classificationBox.Location = new System.Drawing.Point(80, 271);
+			this.classificationBox.Name = "classificationBox";
+			this.classificationBox.Size = new System.Drawing.Size(121, 21);
+			this.classificationBox.TabIndex = 34;
+			// 
+			// publisherLabel
+			// 
+			this.publisherLabel.AutoSize = true;
+			this.publisherLabel.Location = new System.Drawing.Point(3, 244);
+			this.publisherLabel.Name = "publisherLabel";
+			this.publisherLabel.Size = new System.Drawing.Size(50, 13);
+			this.publisherLabel.TabIndex = 33;
+			this.publisherLabel.Text = "Publisher";
+			// 
+			// publisherBox
+			// 
+			this.publisherBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.publisherBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+			this.publisherBox.Location = new System.Drawing.Point(80, 244);
+			this.publisherBox.Name = "publisherBox";
+			this.publisherBox.Size = new System.Drawing.Size(194, 20);
+			this.publisherBox.TabIndex = 32;
 			// 
 			// developerLabel
 			// 
@@ -494,171 +647,39 @@
 			// directoryScanToolStripMenuItem
 			// 
 			this.directoryScanToolStripMenuItem.Name = "directoryScanToolStripMenuItem";
-			this.directoryScanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.directoryScanToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.directoryScanToolStripMenuItem.Text = "Directory Scan";
 			this.directoryScanToolStripMenuItem.Click += new System.EventHandler(this.directoryScanToolStripMenuItem_Click);
-			// 
-			// publisherBox
-			// 
-			this.publisherBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.publisherBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-			this.publisherBox.Location = new System.Drawing.Point(80, 244);
-			this.publisherBox.Name = "publisherBox";
-			this.publisherBox.Size = new System.Drawing.Size(194, 20);
-			this.publisherBox.TabIndex = 32;
-			// 
-			// publisherLabel
-			// 
-			this.publisherLabel.AutoSize = true;
-			this.publisherLabel.Location = new System.Drawing.Point(3, 244);
-			this.publisherLabel.Name = "publisherLabel";
-			this.publisherLabel.Size = new System.Drawing.Size(50, 13);
-			this.publisherLabel.TabIndex = 33;
-			this.publisherLabel.Text = "Publisher";
-			// 
-			// classificationBox
-			// 
-			this.classificationBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.classificationBox.FormattingEnabled = true;
-			this.classificationBox.Items.AddRange(new object[] {
-            "Licensed",
-            "Unlicensed",
-            "Homebrew",
-            "Firmware"});
-			this.classificationBox.Location = new System.Drawing.Point(80, 271);
-			this.classificationBox.Name = "classificationBox";
-			this.classificationBox.Size = new System.Drawing.Size(121, 21);
-			this.classificationBox.TabIndex = 34;
-			// 
-			// classificationLabel
-			// 
-			this.classificationLabel.AutoSize = true;
-			this.classificationLabel.Location = new System.Drawing.Point(3, 271);
-			this.classificationLabel.Name = "classificationLabel";
-			this.classificationLabel.Size = new System.Drawing.Size(32, 13);
-			this.classificationLabel.TabIndex = 35;
-			this.classificationLabel.Text = "Class";
-			// 
-			// releaseDateBox
-			// 
-			this.releaseDateBox.Location = new System.Drawing.Point(80, 299);
-			this.releaseDateBox.Name = "releaseDateBox";
-			this.releaseDateBox.Size = new System.Drawing.Size(100, 20);
-			this.releaseDateBox.TabIndex = 36;
-			// 
-			// releaseDateLabel
-			// 
-			this.releaseDateLabel.AutoSize = true;
-			this.releaseDateLabel.Location = new System.Drawing.Point(3, 299);
-			this.releaseDateLabel.Name = "releaseDateLabel";
-			this.releaseDateLabel.Size = new System.Drawing.Size(48, 13);
-			this.releaseDateLabel.TabIndex = 37;
-			this.releaseDateLabel.Text = "Rls Date";
-			// 
-			// playersLabel
-			// 
-			this.playersLabel.AutoSize = true;
-			this.playersLabel.Location = new System.Drawing.Point(3, 326);
-			this.playersLabel.Name = "playersLabel";
-			this.playersLabel.Size = new System.Drawing.Size(41, 13);
-			this.playersLabel.TabIndex = 39;
-			this.playersLabel.Text = "Players";
-			// 
-			// catalogBox
-			// 
-			this.catalogBox.Location = new System.Drawing.Point(80, 354);
-			this.catalogBox.Name = "catalogBox";
-			this.catalogBox.Size = new System.Drawing.Size(194, 20);
-			this.catalogBox.TabIndex = 40;
-			// 
-			// catalogLabel
-			// 
-			this.catalogLabel.AutoSize = true;
-			this.catalogLabel.Location = new System.Drawing.Point(3, 354);
-			this.catalogLabel.Name = "catalogLabel";
-			this.catalogLabel.Size = new System.Drawing.Size(43, 13);
-			this.catalogLabel.TabIndex = 41;
-			this.catalogLabel.Text = "Catalog";
-			// 
-			// playersBox
-			// 
-			this.playersBox.AutoCompleteCustomSource.AddRange(new string[] {
-            "1 Player",
-            "2 Players Alternating",
-            "2 Players Cooperative",
-            "2 Players Versus"});
-			this.playersBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.playersBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-			this.playersBox.Location = new System.Drawing.Point(80, 326);
-			this.playersBox.Name = "playersBox";
-			this.playersBox.Size = new System.Drawing.Size(194, 20);
-			this.playersBox.TabIndex = 38;
-			// 
-			// saveButton
-			// 
-			this.saveButton.Location = new System.Drawing.Point(6, 556);
-			this.saveButton.Name = "saveButton";
-			this.saveButton.Size = new System.Drawing.Size(75, 23);
-			this.saveButton.TabIndex = 46;
-			this.saveButton.Text = "&Save";
-			this.saveButton.UseVisualStyleBackColor = true;
-			this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-			// 
-			// cancelButton
-			// 
-			this.cancelButton.Location = new System.Drawing.Point(125, 556);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
-			this.cancelButton.TabIndex = 48;
-			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseVisualStyleBackColor = true;
-			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// cleanupDBToolStripMenuItem
 			// 
 			this.cleanupDBToolStripMenuItem.Name = "cleanupDBToolStripMenuItem";
-			this.cleanupDBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.cleanupDBToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.cleanupDBToolStripMenuItem.Text = "Cleanup DB";
 			this.cleanupDBToolStripMenuItem.Click += new System.EventHandler(this.cleanupDBToolStripMenuItem_Click);
 			// 
-			// altNamesBox
+			// sizeBox
 			// 
-			this.altNamesBox.Location = new System.Drawing.Point(80, 381);
-			this.altNamesBox.Name = "altNamesBox";
-			this.altNamesBox.Size = new System.Drawing.Size(296, 20);
-			this.altNamesBox.TabIndex = 42;
+			this.sizeBox.Location = new System.Drawing.Point(80, 557);
+			this.sizeBox.Name = "sizeBox";
+			this.sizeBox.ReadOnly = true;
+			this.sizeBox.Size = new System.Drawing.Size(255, 20);
+			this.sizeBox.TabIndex = 49;
 			// 
-			// altNamesLabel
+			// sizeLabel
 			// 
-			this.altNamesLabel.AutoSize = true;
-			this.altNamesLabel.Location = new System.Drawing.Point(3, 381);
-			this.altNamesLabel.Name = "altNamesLabel";
-			this.altNamesLabel.Size = new System.Drawing.Size(55, 13);
-			this.altNamesLabel.TabIndex = 46;
-			this.altNamesLabel.Text = "Alt Names";
-			// 
-			// notesBox
-			// 
-			this.notesBox.Location = new System.Drawing.Point(80, 408);
-			this.notesBox.Multiline = true;
-			this.notesBox.Name = "notesBox";
-			this.notesBox.Size = new System.Drawing.Size(296, 61);
-			this.notesBox.TabIndex = 44;
-			// 
-			// notesLabel
-			// 
-			this.notesLabel.AutoSize = true;
-			this.notesLabel.Location = new System.Drawing.Point(3, 408);
-			this.notesLabel.Name = "notesLabel";
-			this.notesLabel.Size = new System.Drawing.Size(35, 13);
-			this.notesLabel.TabIndex = 48;
-			this.notesLabel.Text = "Notes";
+			this.sizeLabel.AutoSize = true;
+			this.sizeLabel.Location = new System.Drawing.Point(6, 557);
+			this.sizeLabel.Name = "sizeLabel";
+			this.sizeLabel.Size = new System.Drawing.Size(27, 13);
+			this.sizeLabel.TabIndex = 50;
+			this.sizeLabel.Text = "Size";
 			// 
 			// DBMan_MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(963, 642);
+			this.ClientSize = new System.Drawing.Size(963, 678);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.filterPanel);
 			this.Controls.Add(this.mainMenuStrip);
@@ -740,6 +761,8 @@
 		private System.Windows.Forms.TextBox altNamesBox;
 		private System.Windows.Forms.Label notesLabel;
 		private System.Windows.Forms.TextBox notesBox;
+		private System.Windows.Forms.Label sizeLabel;
+		private System.Windows.Forms.TextBox sizeBox;
 
 	}
 }
