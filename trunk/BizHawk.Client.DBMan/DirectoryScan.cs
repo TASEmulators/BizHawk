@@ -91,11 +91,12 @@ namespace BizHawk.Client.DBMan
 			using (var cmd = DB.Con.CreateCommand())
 			{
 				cmd.CommandText = 
-					"INSERT INTO rom (crc32, md5, sha1, system, name, region, version_tags) "+
-					"VALUES (@crc32, @md5, @sha1, @System, @Name, @Region, @VersionTags)";
+					"INSERT INTO rom (crc32, md5, sha1, size, system, name, region, version_tags) "+
+					"VALUES (@crc32, @md5, @sha1, @size, @System, @Name, @Region, @VersionTags)";
 				cmd.Parameters.Add(new SqliteParameter("@crc32", rom.CRC32));
 				cmd.Parameters.Add(new SqliteParameter("@md5", rom.MD5));
 				cmd.Parameters.Add(new SqliteParameter("@sha1", rom.SHA1));
+				cmd.Parameters.Add(new SqliteParameter("@size", rom.Size));
 				cmd.Parameters.Add(new SqliteParameter("@System", rom.GuessedSystem));
 				cmd.Parameters.Add(new SqliteParameter("@Name", rom.Name));
 				cmd.Parameters.Add(new SqliteParameter("@Region", rom.GuessedRegion));
