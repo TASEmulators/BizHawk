@@ -102,7 +102,11 @@ namespace BizHawk.Client.DBMan
 		static void LoadRoms(string system)
 		{
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = "SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog, size FROM rom WHERE system = @System";
+			cmd.CommandText =
+				"SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog, size " +
+				"FROM rom " +
+				"WHERE system = @System " +
+				"ORDER BY name, region, version_tags";
 			cmd.Parameters.Add(new SqliteParameter("@System", system));
 			var reader = cmd.ExecuteReader();
 			while (reader.NextResult())
@@ -176,6 +180,14 @@ namespace BizHawk.Client.DBMan
 
 		public static void SaveRom1(Rom rom, string origSystem, string origName)
 		{
+			// Does this game already exist?
+			var game = GameExists(rom.System, rom.Name);
+			if (game != null) // existing game with this system/name already exists. we'll merge to it. (existing game wins)
+			{
+				DeleteGame(origSystem, origName);
+				rom.Game = game;
+			}
+			
 			var cmd = Con.CreateCommand();
 			cmd.CommandText =
 				"UPDATE rom SET " +
@@ -329,6 +341,46 @@ namespace BizHawk.Client.DBMan
 			cmd.Dispose();
 
 			return names;
+		}
+
+		static Game GameExists(string system, string name)
+		{
+			var game = new Game();
+			var cmd = Con.CreateCommand();
+			cmd.CommandText = "SELECT game_id, system, name, developer, publisher, classification, release_date, players, game_metadata, tags, alternate_names, notes FROM game WHERE system = @System and name = @Name";
+			cmd.Parameters.Add(new SqliteParameter("@System", system));
+			cmd.Parameters.Add(new SqliteParameter("@Name", name));
+			var reader = cmd.ExecuteReader();
+			if (reader.NextResult())
+			{
+				game.GameId = reader.GetInt64(0);
+				game.System = reader.GetString(1);
+				game.Name = reader.GetString(2);
+				game.Developer = reader.GetString(3);
+				game.Publisher = reader.GetString(4);
+				game.Classification = reader.GetString(5);
+				game.ReleaseDate = reader.GetString(6);
+				game.Players = reader.GetString(7);
+				game.GameMetadata = reader.GetString(8);
+				game.Tags = reader.GetString(9);
+				game.AltNames = reader.GetString(10);
+				game.Notes = reader.GetString(11);
+			}
+			reader.Dispose();
+			cmd.Dispose();
+
+			if (game.GameId == 0) return null;
+			return game;
+		}
+
+		static void DeleteGame(string system, string name)
+		{
+			var cmd = Con.CreateCommand();
+			cmd.CommandText = "DELETE FROM game WHERE system=@System and name=@Name";
+			cmd.Parameters.Add(new SqliteParameter("@System", system));
+			cmd.Parameters.Add(new SqliteParameter("@Name", name));
+			cmd.ExecuteNonQuery();
+			cmd.Dispose();
 		}
 	}
 }

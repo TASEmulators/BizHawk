@@ -380,6 +380,7 @@
 			this.classificationBox.Items.AddRange(new object[] {
             "Licensed",
             "Unlicensed",
+            "Unreleased",
             "Homebrew",
             "Firmware"});
 			this.classificationBox.Location = new System.Drawing.Point(80, 271);
