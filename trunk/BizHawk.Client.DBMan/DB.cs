@@ -33,7 +33,17 @@ namespace BizHawk.Client.DBMan
 				return Game.GameMetadata + ";" + RomMetadata;
 			}
 		}
+		
 		public string SizeFriendly { get { return string.Format("{0} bytes ({1}k)", Size, Size / 1024); } }
+
+		public string NameWithTheFlipped
+		{
+			get
+			{
+				if (!Name.EndsWith(", The")) return Name;
+				return "The "+Name.Substring(0, Name.Length-5);
+			}
+		}
 	}
 
 	public class Game
