@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -83,8 +84,6 @@ namespace BizHawk.Client.DBMan
 			}
 		}
 
-		bool RomChanged;
-
 		void selectedRomChanged(object sender, EventArgs e)
 		{
 			if (RomChangesMade())
@@ -94,14 +93,6 @@ namespace BizHawk.Client.DBMan
 					saveButton_Click(null, null);
 				SelectedRom = null;
 			}
-			
-			RomChanged = true;
-		}
-
-		void selectedRomMouseUp(object sender, MouseEventArgs e)
-		{
-			if (RomChanged == false) return;
-			RomChanged = false;
 
 			if (romListView.SelectedItems.Count == 0)
 			{
@@ -134,13 +125,30 @@ namespace BizHawk.Client.DBMan
 			notesBox.Text = rom.Game.Notes;
 
 			detailPanel.Visible = true;
-	//		nameBox.Focus();
 		}
 
 		void cancelButton_Click(object sender, EventArgs e)
 		{
-			RomChanged = true;
-			selectedRomMouseUp(null, null);
+			gameSystemBox.Text = SelectedRom.System;
+			nameBox.Text = SelectedRom.Name;
+			crcBox.Text = SelectedRom.CRC32;
+			md5Box.Text = SelectedRom.MD5;
+			sha1Box.Text = SelectedRom.SHA1;
+			sizeBox.Text = SelectedRom.SizeFriendly;
+			regionBox.Text = SelectedRom.Region;
+			versionBox.Text = SelectedRom.VersionTags;
+			gameMetaBox.Text = SelectedRom.Game.GameMetadata;
+			romMetaBox.Text = SelectedRom.RomMetadata;
+			tagsBox.Text = SelectedRom.Game.Tags;
+			romStatusBox.Text = SelectedRom.RomStatus;
+			developerBox.Text = SelectedRom.Game.Developer;
+			publisherBox.Text = SelectedRom.Game.Publisher;
+			classificationBox.Text = SelectedRom.Game.Classification;
+			releaseDateBox.Text = SelectedRom.Game.ReleaseDate;
+			playersBox.Text = SelectedRom.Game.Players;
+			catalogBox.Text = SelectedRom.Catalog;
+			altNamesBox.Text = SelectedRom.Game.AltNames;
+			notesBox.Text = SelectedRom.Game.Notes;
 		}
 
 		void saveButton_Click(object sender, EventArgs e)
@@ -266,6 +274,60 @@ namespace BizHawk.Client.DBMan
 		{
 			DB.Cleanup();
 			MessageBox.Show("Orphaned GAME records deleted and Sqlite VACUUM performed.");
+		}
+
+		void exportGameDBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var sfd = new SaveFileDialog();
+			sfd.DefaultExt = ".txt";
+			sfd.AddExtension = true;
+			var result = sfd.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.Cancel)
+				return;
+
+			var tw = new StreamWriter(sfd.FileName);
+
+			loadRomsForSelectedSystem();
+			foreach (var rom in DB.Roms)
+			{
+				string romCode = "";
+				if (rom.Game.Classification == "Homebrew") romCode = "D";
+				if (rom.RomStatus == "Overdump") romCode = "O";
+				if (rom.RomStatus == "Bad Dump") romCode = "V";
+				
+				string regionStr = "";
+				if (rom.Region != null)
+				{
+					if (rom.Region.IndexOf("Japan") >= 0) regionStr += "J";
+					if (rom.Region.IndexOf("USA") >= 0) regionStr += "U";
+					if (rom.Region.IndexOf("Europe") >= 0) regionStr += "E";
+					if (rom.Region.IndexOf("Brazil") >= 0) regionStr += "Br";
+					if (rom.Region.IndexOf("Taiwan") >= 0) regionStr += "Tw";
+					if (rom.Region.IndexOf("Korea") >= 0) regionStr += "Kr";
+					if (rom.Region.IndexOf("Australia") >= 0) regionStr += "Aus";
+					if (rom.Region.IndexOf("World") >= 0) regionStr += "W";
+				}
+
+				string romName = rom.Name;
+				if (regionStr.Length > 0)
+					romName += " ("+regionStr+")";
+
+				string versionStr = "";
+				if (rom.VersionTags != null) 
+				{
+					var versions = rom.VersionTags.Split(';');
+					foreach (var version in versions)
+					{
+						if (version.Trim().Length == 0)
+							continue;
+						romName += " (" + version + ")";
+					}
+				}
+
+				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", rom.MD5, romCode, romName, rom.System, rom.Game.Tags, rom.CombinedMetaData, rom.Region);
+			}
+
+			tw.Close();
 		}
 	}
 }
