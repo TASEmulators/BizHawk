@@ -41,6 +41,8 @@
 			this.romListColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.romListColumnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.detailPanel = new System.Windows.Forms.Panel();
+			this.sizeLabel = new System.Windows.Forms.Label();
+			this.sizeBox = new System.Windows.Forms.TextBox();
 			this.notesLabel = new System.Windows.Forms.Label();
 			this.notesBox = new System.Windows.Forms.TextBox();
 			this.altNamesLabel = new System.Windows.Forms.Label();
@@ -85,8 +87,7 @@
 			this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.directoryScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cleanupDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sizeBox = new System.Windows.Forms.TextBox();
-			this.sizeLabel = new System.Windows.Forms.Label();
+			this.exportGameDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.filterPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -180,7 +181,6 @@
 			this.romListView.UseCompatibleStateImageBehavior = false;
 			this.romListView.View = System.Windows.Forms.View.Details;
 			this.romListView.SelectedIndexChanged += new System.EventHandler(this.selectedRomChanged);
-			this.romListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.selectedRomMouseUp);
 			// 
 			// romListColumnHeader1
 			// 
@@ -255,6 +255,23 @@
 			this.detailPanel.Name = "detailPanel";
 			this.detailPanel.Size = new System.Drawing.Size(467, 624);
 			this.detailPanel.TabIndex = 0;
+			// 
+			// sizeLabel
+			// 
+			this.sizeLabel.AutoSize = true;
+			this.sizeLabel.Location = new System.Drawing.Point(6, 557);
+			this.sizeLabel.Name = "sizeLabel";
+			this.sizeLabel.Size = new System.Drawing.Size(27, 13);
+			this.sizeLabel.TabIndex = 50;
+			this.sizeLabel.Text = "Size";
+			// 
+			// sizeBox
+			// 
+			this.sizeBox.Location = new System.Drawing.Point(80, 557);
+			this.sizeBox.Name = "sizeBox";
+			this.sizeBox.ReadOnly = true;
+			this.sizeBox.Size = new System.Drawing.Size(255, 20);
+			this.sizeBox.TabIndex = 49;
 			// 
 			// notesLabel
 			// 
@@ -640,7 +657,8 @@
 			// 
 			this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.directoryScanToolStripMenuItem,
-            this.cleanupDBToolStripMenuItem});
+            this.cleanupDBToolStripMenuItem,
+            this.exportGameDBToolStripMenuItem});
 			this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
 			this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
 			this.databaseToolStripMenuItem.Text = "Database";
@@ -648,33 +666,23 @@
 			// directoryScanToolStripMenuItem
 			// 
 			this.directoryScanToolStripMenuItem.Name = "directoryScanToolStripMenuItem";
-			this.directoryScanToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.directoryScanToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.directoryScanToolStripMenuItem.Text = "Directory Scan";
 			this.directoryScanToolStripMenuItem.Click += new System.EventHandler(this.directoryScanToolStripMenuItem_Click);
 			// 
 			// cleanupDBToolStripMenuItem
 			// 
 			this.cleanupDBToolStripMenuItem.Name = "cleanupDBToolStripMenuItem";
-			this.cleanupDBToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.cleanupDBToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.cleanupDBToolStripMenuItem.Text = "Cleanup DB";
 			this.cleanupDBToolStripMenuItem.Click += new System.EventHandler(this.cleanupDBToolStripMenuItem_Click);
 			// 
-			// sizeBox
+			// exportGameDBToolStripMenuItem
 			// 
-			this.sizeBox.Location = new System.Drawing.Point(80, 557);
-			this.sizeBox.Name = "sizeBox";
-			this.sizeBox.ReadOnly = true;
-			this.sizeBox.Size = new System.Drawing.Size(255, 20);
-			this.sizeBox.TabIndex = 49;
-			// 
-			// sizeLabel
-			// 
-			this.sizeLabel.AutoSize = true;
-			this.sizeLabel.Location = new System.Drawing.Point(6, 557);
-			this.sizeLabel.Name = "sizeLabel";
-			this.sizeLabel.Size = new System.Drawing.Size(27, 13);
-			this.sizeLabel.TabIndex = 50;
-			this.sizeLabel.Text = "Size";
+			this.exportGameDBToolStripMenuItem.Name = "exportGameDBToolStripMenuItem";
+			this.exportGameDBToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.exportGameDBToolStripMenuItem.Text = "Export GameDB";
+			this.exportGameDBToolStripMenuItem.Click += new System.EventHandler(this.exportGameDBToolStripMenuItem_Click);
 			// 
 			// DBMan_MainForm
 			// 
@@ -764,6 +772,7 @@
 		private System.Windows.Forms.TextBox notesBox;
 		private System.Windows.Forms.Label sizeLabel;
 		private System.Windows.Forms.TextBox sizeBox;
+		private System.Windows.Forms.ToolStripMenuItem exportGameDBToolStripMenuItem;
 
 	}
 }
