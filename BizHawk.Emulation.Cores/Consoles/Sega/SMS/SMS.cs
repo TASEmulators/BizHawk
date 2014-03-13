@@ -14,10 +14,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + HCounter
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
-
-  + SG-1000 TMS does not fire sprite collision bit
-  + SG-1000 TMS sprite doubling most likely does not work!
-  + Maybe try to unify the Coleco TMS with SG-1000? Or at least pull in other TMS fixes.
+  + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
  
 **********************************************************/
 
@@ -542,6 +539,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public class SMSSettings
 		{
+			// Game settings
 			public bool ForceStereoSeparation = false;
 			public bool SpriteLimit = false;
 			public bool Fix3D = true;
@@ -566,6 +564,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			public bool EnableFM = true;
 			public bool AllowOverlock = false;
+			public bool UseBIOS = false;
+			public bool ExportRegion = true;
+			public bool UsePAL = false;
 
 			public SMSSyncSettings Clone()
 			{
@@ -573,7 +574,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			public static bool RebootNeeded(SMSSyncSettings x, SMSSyncSettings y)
 			{
-				return x.EnableFM != y.EnableFM || x.AllowOverlock != y.AllowOverlock;
+				return
+					x.EnableFM != y.EnableFM ||
+					x.AllowOverlock != y.AllowOverlock ||
+					x.UseBIOS != y.UseBIOS ||
+					x.ExportRegion != y.ExportRegion ||
+					x.UsePAL != y.UsePAL;
 			}
 		}
 	}

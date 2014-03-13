@@ -1290,6 +1290,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			SMSexportToolStripMenuItem.Checked = ss.ExportRegion;
+			SMSjapanToolStripMenuItem.Checked = !ss.ExportRegion;
+			SMS_NTSCToolStripMenuItem.Checked = !ss.UsePAL;
+			SMS_PALToolStripMenuItem.Checked = ss.UsePAL;
+			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
 			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
@@ -1298,16 +1303,57 @@ namespace BizHawk.Client.EmuHawk
 			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
+			SMSFix3DGameDisplayToolStripMenuItem.Visible = 
+				SMSenableBIOSToolStripMenuItem.Visible = 
+				Global.Game.System == "SMS";
+
 			SMSEnableFMChipMenuItem.Visible =
 				SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
-				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
+				SMS_NTSCToolStripMenuItem.Visible = 
+				SMS_PALToolStripMenuItem.Visible = 
+				SMStoolStripMenuItem2.Visible =
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
 				HighlightActiveDisplayRegionMenuItem.Visible =
 				GGGameGenieMenuItem.Visible =
 				Global.Game.System == "GG";
+		}
+
+		private void SMS_Export_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.ExportRegion = true;
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_Japan_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.ExportRegion = false;
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_NTSC_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.UsePAL = false;
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_PAL_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.UsePAL = true;
+			PutCoreSyncSettings(ss);
+		}
+		
+		private void SMS_BIOS_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.UseBIOS ^= true;
+			PutCoreSyncSettings(ss);
 		}
 
 		private void SMSEnableFMChipMenuItem_Click(object sender, EventArgs e)
