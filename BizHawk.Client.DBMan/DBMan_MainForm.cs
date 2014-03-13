@@ -308,7 +308,7 @@ namespace BizHawk.Client.DBMan
 					if (rom.Region.IndexOf("World") >= 0) regionStr += "W";
 				}
 
-				string romName = rom.Name;
+				string romName = rom.NameWithTheFlipped;
 				if (regionStr.Length > 0)
 					romName += " ("+regionStr+")";
 
