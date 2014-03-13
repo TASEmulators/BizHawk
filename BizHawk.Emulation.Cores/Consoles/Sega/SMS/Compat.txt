@@ -1,5 +1,10 @@
 ﻿======= SMS compatibility issues =======
 
+* Several korean TMS games don't work. Possibly mapper issue?
+* Janggun-ui Adeul (Korea).sms - Sprite flip gfx issue? Could be interesting to investigate. Cogwheel does the same; Kega wont even boot the game
+* Jang Pung 3 - boots but totally fuxed?
+* Pretty much everything with (korea) in it needs to be checked. Stupid rare korea shit.
+
 * NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
   In NTSC mode, it is impossible to start a game, however, it is possible on
   other emulators.

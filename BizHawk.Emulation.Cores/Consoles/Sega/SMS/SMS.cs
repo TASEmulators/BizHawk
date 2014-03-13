@@ -15,6 +15,9 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
   + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
+  + Add Region to GameDB.
+  + Still need a "disable bios for japan-only games when bios is enabled and region is export" functionality
+  + Or a "force region to japan if game is only for japan" thing. Which one is better?
  
 **********************************************************/
 
@@ -142,12 +145,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
                 Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
             RomBanks = (byte)(RomData.Length / BankSize);
 
-            DisplayType = DisplayType.NTSC;
-            if (game["PAL"]) DisplayType = DisplayType.PAL;
+            DisplayType = SyncSettings.UsePAL ? DisplayType.PAL : DisplayType.NTSC;
+			if (game["PAL"] && DisplayType != DisplayType.PAL)
+			{
+				DisplayType = DisplayType.PAL;
+				Console.WriteLine("Display was forced to PAL mode for game compatibility."); // TODO change to corecomm.notify when it exists
+			}
 			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
 			CoreComm.VsyncDen = 1;
-            
-            if (game["Japan"]) Region = "Japan";
+
+			Region = SyncSettings.ExportRegion ? "Export" : "Japan";
+			if (game["Japan"] && Region != "Japan")
+			{
+				Region = "Japan";
+				Console.WriteLine("Region was forced to Japan for game compatibility."); // TODO corecomm.notify
+			}
+
             if (game.NotInDatabase || game["FM"] && SyncSettings.EnableFM && !IsGameGear)
                 HasYM2413 = true;
 
@@ -201,14 +214,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (game.System == "SMS")
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", "SMSBIOS", false);
-				if (BiosRom != null) // && usebios
-				{
+				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", Region, false);
+				if (BiosRom != null && SyncSettings.UseBIOS)
 					Port3E = 0xF7;
-				}
-			}
 
-            SetupMemoryDomains();
+				if (SyncSettings.UseBIOS && BiosRom == null)
+					Console.WriteLine("BIOS was selected, but rom image not available. BIOS not enabled."); // TODO corecomm.notify
+			}
+            
+			SetupMemoryDomains();
 		}
 
 		public byte ReadPort(ushort port)
@@ -464,7 +478,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public string BoardName { get { return null; } }
 
-		string region = "Export";
+		string region;
 		public string Region
 		{
 			get { return region; }
