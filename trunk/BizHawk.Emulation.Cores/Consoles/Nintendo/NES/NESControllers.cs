@@ -734,7 +734,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Latch(c);
 			byte ret = (byte)(latchedp2 << 1 & 2);
 			if (!resetting)
-				latchedp1 >>= 1;
+				latchedp2 >>= 1;
 			return ret;
 		}
 
