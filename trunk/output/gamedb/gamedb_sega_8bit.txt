@@ -244,6 +244,7 @@ C576C058	T	The Cyber Shinobi (FR)	SMS	Terminus Traduction; v1.00
 903AAD36	T	Cyborg Hunter (BR)	SMS		FM
 BDD034EE	T	Cyborg Hunter (IT)	SMS		FM
 0F2E4F1E	T	Cyborg Hunter (FR)	SMS	Terminus Traduction; v1.00	FM
+77EFE84A		Cyborg Z (KR)	SMS		MSXMapper
 7694ED1C	D	Cycle Counter	SMS	FluBBa
 71ABEF27	 	Daffy Duck in Hollywood	SMS	
 FCEFD481	D	Damiana (v1)	SMS	Heliophobe; Y2Kode entry; accidentally has a very short level
@@ -264,8 +265,8 @@ D1341667	D	Digger Ball	SMS	Aypok & PlayGeneration; SMS Power Sega 8-bit Coding C
 C4CA6878	D	Digger Chan	SMS	Aypok; SMS Power Sega 8-bit Coding Competition 2006 entry
 EA5C3A6F	 	Dinobasher - Starring Bignose the Caveman [Proto]	SMS	
 32F4B791	 	The Dinosaur Dooley (KR)	SMS	
-89B79E77	 	Dodgeball King (KR)	SMS	
-A672D27C	O	Dodgeball King (KR) (80KB overdump)	SMS	
+89B79E77	 	Dodgeball King (KR)	SMS		KoreaMapper
+A672D27C	O	Dodgeball King (KR) (80KB overdump)	SMS		KoreaMapper
 A55D89F3	 	Double Dragon	SMS		FM
 B8CFFA0F	F	Double Dragon (h) [A]	SMS		FM
 3010152A	F	Double Dragon (h) [B]	SMS		FM
@@ -305,6 +306,7 @@ C10FCE39	 	E-SWAT [B]	SMS
 AA140C9C	 	THe Excellent Dizzy Collection [SMS-GG]	SMS		CMMapper
 EC788661	 	F1	SMS		
 8AB10CB4	V	F1 (first 128KB only)	SMS		
+06965ED9		F1 Spirit (KR)	SMS		MSXMapper
 EAEBF323	 	F-16 Fighter	SMS		
 7CE06FCE	 	F-16 Fighting Falcon (JP)	SMS		
 184C23B7	 	F-16 Fighting Falcon (US)	SMS		
@@ -500,6 +502,7 @@ BE9A7071	 	The Incredible Hulk	SMS
 102D5FEA	 	James Pond II - Codename - Robocod	SMS	
 FEF68275	B	James Pond II - Codename - Robocod (bad byte)	SMS	
 76C5BDFB	 	Jang Pung II [SMS-GG] (KR)	SMS	
+18FB98A3		Jang Pang III (KR)	SMS		KoreaMapper
 0A9089E5	 	Joe Montana Football	SMS	
 45C50294	 	Jogos de Verao II (BR)	SMS	
 EF2F37C9	H	Jornada do Krazy	SMS	Psycho Fox
@@ -529,6 +532,7 @@ b7fe0a9d	 	King's Quest - Quest for the Crown [Proto] (US)	SMS
 ED15F21E	B	KLAX (26 bad bytes)	SMS	
 BB351118	B	KLAX (bad byte)	SMS	
 97B38E8A	V	KLAX (bad dump)	SMS	Blank areas
+F89AF3CC		Knightmare II - The Maze of Galious (KR)	SMS		MSXMapper
 64A585EB	 	Krusty's Fun House	SMS	
 D11D32E4	 	Kujakuou (JP)	SMS	
 68108314	B	Kujakuou (JP) (bad byte)	SMS	
@@ -642,6 +646,8 @@ A06D065C	D	NanoWars 8k	SMS	Haroldo O. Pinheiro; v0.7
 5B5F9106	 	Nekyuu Kousien (JP)	SMS		FM
 C660FF34	 	The New Zealand Story	SMS	
 FBC66CBF	B	The New Zealand Story (bad byte)	SMS	
+E316C06D		Nemesis (KR)	SMS		NemesisMapper
+0A77FA5E		Nemesis 2 (KR)	SMS		MSXMapper
 383E7EBD	D	New Duel	SMS	losinggeneration; SMS Power 8-bit Coding Comptetition 2011 Entry
 82AE5ACD	D	Nine Pixels	SMS	Heliophobe; SMS Power Sega 8-bit Coding Competition 2006 entry
 1B1D8CC2	 	Ninja Gaiden	SMS	
@@ -700,6 +706,7 @@ E030E66C	 	Parlour Games	SMS		FM
 9AEFE664	 	Pat Riley Basketball [Proto]	SMS	
 592B8297	D	Pause Test	SMS	FluBBa
 85060847	D	Paws	SMS	An!mal; SMS Power Sega 8-bit Coding Competition 2006 entry
+445525E2		Penguin Adventure (KR)	SMS		MSXMapper
 F97E9875	 	Penguin Land	SMS		FM;StereoByte=237
 F6552DA8	O	Penguin Land (4x overdump)	SMS		FM;StereoByte=237
 2BCDB8FA	 	Penguin Land (JP)	SMS		FM;StereoByte=237
@@ -857,7 +864,7 @@ C0EA7FB7	O	Sagaia (2x overdump)	SMS
 CB5D369B	B	Sagaia (bad byte)	SMS	
 7CBD4432	D	SALY [v1.00]	SMS	Marc Klemp; v1.00 31/5/03
 5D62F2D1	D	SALY [v1.00a]	SMS	Marc Klemp; v1.00 15/12/05
-97D03541	 	Sangokushi 3 (KR)	SMS	
+97D03541	 	Sangokushi 3 (KR)	SMS		KoreaMapper
 890E83E4	 	Sapo Xule O Mestre do Kung Fu (BR)	SMS	
 7AB2946A	 	Sapo Xule S.O.S. Lagoa Poluida (BR)	SMS	
 9A608327	 	Sapo Xule Vs Os Invasores do Brejo (BR)	SMS	
@@ -1021,6 +1028,7 @@ D4B8F66D	 	Star Wars	SMS
 0F8287EC	 	Street Fighter II' (BR)	SMS	
 599901BB	B	Street Fighter II' (BR) (five bad bytes)	SMS	
 87AABDFE	B	Street Fighter II' (BR) (four bad bytes)	SMS	
+83F0EEDE		Street Master (KR)	SMS		MSXMapper
 4AB3790F	 	Streets of Rage	SMS	
 ECC18147	T	Streets of Rage (FR)	SMS	
 6F2CF48A	B	Streets of Rage (two bad bytes)	SMS	
@@ -1188,6 +1196,7 @@ CA500A43	H	Wonder Boy III DC	SMS	Wonder Boy III	FM
 5C87B0AE	T	Wonder Boy in Monster World (FR)	SMS	MacroTrads
 81BFF9BB	 	Wonder Boy in Monster World [Proto]	SMS	
 FA8B5F3D	B	Wonder Boy in Monster World [Proto] (bad byte)	SMS	
+A05258F5		Wonsiin (KR)	SMS		MSXMapper
 315917D4	 	Woody Pop - Shinjinrui no Block Kuzushi (JP)	SMS	
 C9A449B7	 	World Class Leader Board	SMS	
 6E1AD6FD	 	World Cup Italia '90	SMS	
