@@ -1303,12 +1303,12 @@ namespace BizHawk.Client.EmuHawk
 			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
-			SMSFix3DGameDisplayToolStripMenuItem.Visible = 
+			SMSEnableFMChipMenuItem.Visible =
+				SMSFix3DGameDisplayToolStripMenuItem.Visible = 
 				SMSenableBIOSToolStripMenuItem.Visible = 
 				Global.Game.System == "SMS";
 
-			SMSEnableFMChipMenuItem.Visible =
-				SMSOverclockMenuItem.Visible =
+			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMS_NTSCToolStripMenuItem.Visible = 
 				SMS_PALToolStripMenuItem.Visible = 

@@ -18,6 +18,8 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + Add Region to GameDB.
   + Still need a "disable bios for japan-only games when bios is enabled and region is export" functionality
   + Or a "force region to japan if game is only for japan" thing. Which one is better?
+  + I confess, Mapper system needs some refactoring and love. But right now I want to get all games to work and THEN refactor it.
+  + Savestate system.... maybe use a zeromus-like system. Except maintain the text-savestate compatibility. Might give up some speed for improved maintainability tho.
  
 **********************************************************/
 
@@ -30,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		// ROM
 		public byte[] RomData;
-		public byte RomBank0, RomBank1, RomBank2;
+		public byte RomBank0, RomBank1, RomBank2, RomBank3;
 		public byte RomBanks;
 
 		// SaveRAM
@@ -186,6 +188,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				InitCodeMastersMapper();
 			else if (game["ExtRam"])
 				InitExt2kMapper(int.Parse(game.OptionValue("ExtRam")));
+			else if (game["KoreaMapper"])
+				InitKoreaMapper();
+			else if (game["MSXMapper"])
+				InitMSXMapper();
+			else if (game["NemesisMapper"])
+				InitNemesisMapper();
 			else
 				InitSegaMapper();
 
@@ -313,6 +321,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			writer.WriteLine("Bank0 {0}", RomBank0);
 			writer.WriteLine("Bank1 {0}", RomBank1);
 			writer.WriteLine("Bank2 {0}", RomBank2);
+			writer.WriteLine("Bank3 {0}", RomBank3);
 			writer.Write("RAM ");
 			SystemRam.SaveAsHex(writer);
 			writer.WriteLine("Port01 {0:X2}", Port01);
@@ -352,6 +361,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					RomBank1 = byte.Parse(args[1]);
 				else if (args[0] == "Bank2")
 					RomBank2 = byte.Parse(args[1]);
+				else if (args[0] == "Bank3")
+					RomBank3 = byte.Parse(args[1]);
 				else if (args[0] == "Frame")
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
@@ -398,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] SaveStateBinary()
 		{
-			int buflen = 24808 + 16384 + 16384;
+			int buflen = 24809 + 16384 + 16384;
 			if (ExtRam != null)
 				buflen += ExtRam.Length;
 			var buf = new byte[buflen];
@@ -425,6 +436,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			writer.Write(RomBank0);
 			writer.Write(RomBank1);
 			writer.Write(RomBank2);
+			writer.Write(RomBank3);
 			writer.Write(SystemRam);
 			writer.Write(SaveRAM);
 			writer.Write(Port01);
@@ -448,6 +460,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			RomBank0 = reader.ReadByte();
 			RomBank1 = reader.ReadByte();
 			RomBank2 = reader.ReadByte();
+			RomBank3 = reader.ReadByte();
 			SystemRam = reader.ReadBytes(SystemRam.Length);
 			reader.Read(SaveRAM, 0, SaveRAM.Length);
 			Port01 = reader.ReadByte();
