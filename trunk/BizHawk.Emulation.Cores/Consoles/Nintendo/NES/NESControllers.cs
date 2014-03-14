@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		int shiftidx = 0;
 		bool resetting = false;
-		byte latchedvalue = 0x54;
+		byte latchedvalue = 0x54 ^ 0xff;
 
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
@@ -234,7 +234,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (resetting)
 				shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
+			{
 				latchedvalue = (byte)(0x54 + (int)c.GetFloat("0Paddle"));
+				latchedvalue ^= 0xff;
+			}
 		}
 
 		public byte Read(IController c)
@@ -244,8 +247,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return ret;
 
 			byte value = latchedvalue;
-			value >>= (3 - shiftidx);
-			ret |= (byte)(value & 0x10);
+			value <<= shiftidx;
+			ret |= (byte)(value >> 3 & 0x10);
 			shiftidx++;
 			return ret;
 		}
@@ -494,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		int shiftidx = 0;
 		bool resetting = false;
-		byte latchedvalue = 0x54;
+		byte latchedvalue = 0x54 ^ 0xff;
 
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
@@ -509,7 +512,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (resetting)
 				shiftidx = 0;
 			if (s.OUT0 > s.OUT0old)
+			{
 				latchedvalue = (byte)(0x54 + (int)c.GetFloat("0Paddle"));
+				latchedvalue ^= 0xff;
+			}
 		}
 
 		public byte ReadA(IController c)
@@ -524,8 +530,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return ret;
 
 			byte value = latchedvalue;
-			value >>= (6 - shiftidx);
-			ret |= (byte)(value & 0x02);
+			value <<= shiftidx;
+			ret |= (byte)(value >> 6 & 0x02);
 			shiftidx++;
 			return ret;
 		}
