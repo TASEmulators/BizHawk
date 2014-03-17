@@ -88,6 +88,7 @@
 			this.directoryScanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cleanupDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportGameDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteButton = new System.Windows.Forms.Button();
 			this.filterPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -157,7 +158,7 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.detailPanel);
 			this.splitContainer1.Size = new System.Drawing.Size(963, 624);
-			this.splitContainer1.SplitterDistance = 492;
+			this.splitContainer1.SplitterDistance = 561;
 			this.splitContainer1.TabIndex = 0;
 			this.splitContainer1.TabStop = false;
 			// 
@@ -175,7 +176,7 @@
 			this.romListView.Location = new System.Drawing.Point(0, 0);
 			this.romListView.MultiSelect = false;
 			this.romListView.Name = "romListView";
-			this.romListView.Size = new System.Drawing.Size(492, 624);
+			this.romListView.Size = new System.Drawing.Size(561, 624);
 			this.romListView.TabIndex = 0;
 			this.romListView.TabStop = false;
 			this.romListView.UseCompatibleStateImageBehavior = false;
@@ -208,6 +209,7 @@
 			// 
 			// detailPanel
 			// 
+			this.detailPanel.Controls.Add(this.deleteButton);
 			this.detailPanel.Controls.Add(this.sizeLabel);
 			this.detailPanel.Controls.Add(this.sizeBox);
 			this.detailPanel.Controls.Add(this.notesLabel);
@@ -253,7 +255,7 @@
 			this.detailPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.detailPanel.Location = new System.Drawing.Point(0, 0);
 			this.detailPanel.Name = "detailPanel";
-			this.detailPanel.Size = new System.Drawing.Size(467, 624);
+			this.detailPanel.Size = new System.Drawing.Size(398, 624);
 			this.detailPanel.TabIndex = 0;
 			// 
 			// sizeLabel
@@ -399,6 +401,7 @@
             "Unlicensed",
             "Unreleased",
             "Homebrew",
+            "Test Rom",
             "Firmware"});
 			this.classificationBox.Location = new System.Drawing.Point(80, 271);
 			this.classificationBox.Name = "classificationBox";
@@ -684,6 +687,16 @@
 			this.exportGameDBToolStripMenuItem.Text = "Export GameDB";
 			this.exportGameDBToolStripMenuItem.Click += new System.EventHandler(this.exportGameDBToolStripMenuItem_Click);
 			// 
+			// deleteButton
+			// 
+			this.deleteButton.Location = new System.Drawing.Point(301, 589);
+			this.deleteButton.Name = "deleteButton";
+			this.deleteButton.Size = new System.Drawing.Size(75, 23);
+			this.deleteButton.TabIndex = 51;
+			this.deleteButton.Text = "Delete";
+			this.deleteButton.UseVisualStyleBackColor = true;
+			this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+			// 
 			// DBMan_MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -773,6 +786,7 @@
 		private System.Windows.Forms.Label sizeLabel;
 		private System.Windows.Forms.TextBox sizeBox;
 		private System.Windows.Forms.ToolStripMenuItem exportGameDBToolStripMenuItem;
+		private System.Windows.Forms.Button deleteButton;
 
 	}
 }

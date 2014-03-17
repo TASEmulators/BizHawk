@@ -20,6 +20,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + Or a "force region to japan if game is only for japan" thing. Which one is better?
   + I confess, Mapper system needs some refactoring and love. But right now I want to get all games to work and THEN refactor it.
   + Savestate system.... maybe use a zeromus-like system. Except maintain the text-savestate compatibility. Might give up some speed for improved maintainability tho.
+  + Make corecomm OSD notifier system
  
 **********************************************************/
 
@@ -74,51 +75,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		bool lagged = true;
 		bool islag = false;
 		public int Frame { get; set; }
-		
-		public void ResetCounters()
-		{
-			Frame = 0;
-			_lagcount = 0;
-			islag = false;
-		}
-
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
-		{
-			return new List<KeyValuePair<string, int>>
-			{
-				new KeyValuePair<string, int>("A", Cpu.RegisterA),
-				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
-				new KeyValuePair<string, int>("B", Cpu.RegisterB),
-				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
-				new KeyValuePair<string, int>("C", Cpu.RegisterC),
-				new KeyValuePair<string, int>("D", Cpu.RegisterD),
-				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
-				new KeyValuePair<string, int>("E", Cpu.RegisterE),
-				new KeyValuePair<string, int>("F", Cpu.RegisterF),
-				new KeyValuePair<string, int>("H", Cpu.RegisterH),
-				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
-				new KeyValuePair<string, int>("I", Cpu.RegisterI),
-				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
-				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
-				new KeyValuePair<string, int>("L", Cpu.RegisterL),
-				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
-				new KeyValuePair<string, int>("R", Cpu.RegisterR),
-				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
-				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
-				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
-				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
-				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
-				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
-			};
-		}
-		
+	
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 		byte Port01 = 0xFF;
@@ -153,6 +110,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				DisplayType = DisplayType.PAL;
 				Console.WriteLine("Display was forced to PAL mode for game compatibility."); // TODO change to corecomm.notify when it exists
 			}
+			if (IsGameGear) 
+				DisplayType = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
 			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
 			CoreComm.VsyncDen = 1;
 
@@ -194,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				InitMSXMapper();
 			else if (game["NemesisMapper"])
 				InitNemesisMapper();
+			else if (game["TerebiOekaki"])
+				InitTerebiOekaki();
 			else
 				InitSegaMapper();
 
@@ -223,14 +184,23 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (game.System == "SMS")
 			{
 				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", Region, false);
-				if (BiosRom != null && SyncSettings.UseBIOS)
+				if (BiosRom != null && (game["RequireBios"] || SyncSettings.UseBIOS))
 					Port3E = 0xF7;
 
+				if (BiosRom == null && game["RequireBios"])
+					Console.WriteLine("BIOS image not available. This game requires BIOS to function."); // TODO corecomm.notify
 				if (SyncSettings.UseBIOS && BiosRom == null)
 					Console.WriteLine("BIOS was selected, but rom image not available. BIOS not enabled."); // TODO corecomm.notify
 			}
             
 			SetupMemoryDomains();
+		}
+
+		public void ResetCounters()
+		{
+			Frame = 0;
+			_lagcount = 0;
+			islag = false;
 		}
 
 		public byte ReadPort(ushort port)
@@ -477,7 +447,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					YM2413.Write(i, regs[i]);
 			}
 		}
-
+		
 		public IVideoProvider VideoProvider { get { return Vdp; } }
 		public CoreComm CoreComm { get; private set; }
 
@@ -502,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				region = value;
 			}
 		}
-
+		
 		readonly string[] validRegions = { "Export", "Japan" };
 
 		MemoryDomainList memoryDomains;
@@ -541,6 +511,43 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
+
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", Cpu.RegisterA),
+				new KeyValuePair<string, int>("AF", Cpu.RegisterAF),
+				new KeyValuePair<string, int>("B", Cpu.RegisterB),
+				new KeyValuePair<string, int>("BC", Cpu.RegisterBC),
+				new KeyValuePair<string, int>("C", Cpu.RegisterC),
+				new KeyValuePair<string, int>("D", Cpu.RegisterD),
+				new KeyValuePair<string, int>("DE", Cpu.RegisterDE),
+				new KeyValuePair<string, int>("E", Cpu.RegisterE),
+				new KeyValuePair<string, int>("F", Cpu.RegisterF),
+				new KeyValuePair<string, int>("H", Cpu.RegisterH),
+				new KeyValuePair<string, int>("HL", Cpu.RegisterHL),
+				new KeyValuePair<string, int>("I", Cpu.RegisterI),
+				new KeyValuePair<string, int>("IX", Cpu.RegisterIX),
+				new KeyValuePair<string, int>("IY", Cpu.RegisterIY),
+				new KeyValuePair<string, int>("L", Cpu.RegisterL),
+				new KeyValuePair<string, int>("PC", Cpu.RegisterPC),
+				new KeyValuePair<string, int>("R", Cpu.RegisterR),
+				new KeyValuePair<string, int>("Shadow AF", Cpu.RegisterShadowAF),
+				new KeyValuePair<string, int>("Shadow BC", Cpu.RegisterShadowBC),
+				new KeyValuePair<string, int>("Shadow DE", Cpu.RegisterShadowDE),
+				new KeyValuePair<string, int>("Shadow HL", Cpu.RegisterShadowHL),
+				new KeyValuePair<string, int>("SP", Cpu.RegisterSP),
+				new KeyValuePair<string, int>("Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0),
+			};
+		}
 
 		public void Dispose() { }
 
