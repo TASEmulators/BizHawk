@@ -8,6 +8,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		internal void RenderBackgroundCurrentLine(bool show)
 		{
+			if (ScanLine >= FrameHeight)
+				return;
+			
 			if (DisplayOn == false)
 			{
 				for (int x = 0; x < 256; x++)
@@ -105,7 +108,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		internal void RenderSpritesCurrentLine(bool show)
 		{
-			if (DisplayOn == false) return;
+			bool overflowHappens = true;
+			bool collisionHappens = true;
+			bool renderHappens = show;
+
+			if (!DisplayOn)
+			{
+				renderHappens = false;
+				collisionHappens = false;
+			}
+			if (ScanLine >= FrameHeight)
+			{
+				renderHappens = false;
+				overflowHappens = false;
+			}
+
 			int SpriteBase = SpriteAttributeTableBase;
 			int SpriteHeight = EnableLargeSprites ? 16 : 8;
 
@@ -118,8 +135,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				if (SpritesDrawnThisScanline >= 8)
 				{
-					StatusByte |= 0x40; // Set Overflow bit
-					if (SpriteLimit) break;
+					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
+					if (overflowHappens) 
+						StatusByte |= 0x40; // Set Overflow bit
+					if (SpriteLimit) 
+						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
 				}
 
 				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
@@ -145,19 +165,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					byte color = PatternBuffer[(tileNo * 64) + (ys * 8) + xs];
 					if (color != 0 && x + xs >= 0)
 					{
-						if (SpriteCollisionBuffer[x + xs] != 0)
-							StatusByte |= 0x20; // Set Collision bit
-						else if (ScanlinePriorityBuffer[x + xs] == 0)
+						if (collisionHappens && SpriteCollisionBuffer[x + xs] != 0)
 						{
-							if (show) FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
-							SpriteCollisionBuffer[x + xs] = 1;
+							StatusByte |= 0x20; // Set Collision bit
 						}
+						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
+						{
+							FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
+						}
+						SpriteCollisionBuffer[x + xs] = 1;
 					}
 				}
 				SpritesDrawnThisScanline++;
 			}
 		}
 
+		// TODO apply enhancements from 1x renderer to 2x renderer. lets be consistent
 		internal void RenderSpritesCurrentLineDoubleSize(bool show)
 		{
 			if (DisplayOn == false) return;
@@ -207,65 +230,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 							if (show) FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
 							SpriteCollisionBuffer[x + xs] = 1;
 						}
-					}
-				}
-				SpritesDrawnThisScanline++;
-			}
-		}
-
-		internal void ProcessSpriteCollisionForFrameskip()
-		{
-			if (DisplayOn == false) return;
-			int SpriteBase = SpriteAttributeTableBase;
-			int SpriteHeight = EnableLargeSprites ? 16 : 8;
-
-			// Clear the sprite collision buffer for this scanline
-			Array.Clear(SpriteCollisionBuffer, 0, 256);
-
-			// 208 is a special terminator sprite (in 192-line mode). Lets find it...
-			int TerminalSprite = 64;
-			if (FrameHeight == 192)
-				for (int i = 0; i < 64; i++)
-				{
-					if (VRAM[SpriteBase + i] == 208)
-					{
-						TerminalSprite = i;
-						break;
-					}
-				}
-
-			// Loop through these sprites and render the current scanline
-			int SpritesDrawnThisScanline = 0;
-			for (int i = TerminalSprite - 1; i >= 0; i--)
-			{
-				if (SpritesDrawnThisScanline >= 8)
-					StatusByte |= 0x40; // Set Overflow bit
-
-				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
-				if (ShiftSpritesLeft8Pixels)
-					x -= 8;
-
-				int y = VRAM[SpriteBase + i] + 1;
-				if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
-
-				if (y + SpriteHeight <= ScanLine || y > ScanLine)
-					continue;
-
-				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
-				if (EnableLargeSprites)
-					tileNo &= 0xFE;
-				tileNo += SpriteTileBase;
-
-				int ys = ScanLine - y;
-
-				for (int xs = 0; xs < 8 && x + xs < 256; xs++)
-				{
-					byte color = PatternBuffer[(tileNo * 64) + (ys * 8) + xs];
-					if (color != 0 && x + xs >= 0)
-					{
-						if (SpriteCollisionBuffer[x + xs] != 0)
-							StatusByte |= 0x20; // Set Collision bit
-						SpriteCollisionBuffer[x + xs] = 1;
 					}
 				}
 				SpritesDrawnThisScanline++;

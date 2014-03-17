@@ -370,37 +370,28 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		internal void RenderCurrentScanline(bool render)
 		{
-			if (ScanLine >= FrameHeight)
-				return;
-
+			// only mode 4 supports frameskip. deal with it
 			if (TmsMode == 4)
 			{
-				if (render == false)
-				{
-					ProcessSpriteCollisionForFrameskip();
-					return;
-				}
-
-				RenderBackgroundCurrentLine(Sms.Settings.DispBG);
+				if (render)
+					RenderBackgroundCurrentLine(Sms.Settings.DispBG);
 
 				if (EnableDoubledSprites)
-					RenderSpritesCurrentLineDoubleSize(Sms.Settings.DispOBJ);
+					RenderSpritesCurrentLineDoubleSize(Sms.Settings.DispOBJ & render);
 				else
-					RenderSpritesCurrentLine(Sms.Settings.DispOBJ);
+					RenderSpritesCurrentLine(Sms.Settings.DispOBJ & render);
 			}
 			else if (TmsMode == 2)
 			{
-				if (render == false)
+				if (ScanLine >= FrameHeight)  // TODO fix this other way
 					return;
-
 				RenderBackgroundM2(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
 			else if (TmsMode == 0)
 			{
-				if (render == false)
+				if (ScanLine >= FrameHeight)  // TODO fix this other way
 					return;
-
 				RenderBackgroundM0(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
