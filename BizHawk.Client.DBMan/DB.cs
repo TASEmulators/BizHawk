@@ -20,6 +20,8 @@ namespace BizHawk.Client.DBMan
 		public string RomStatus;
 		public string Catalog;
 		public long Size;
+		public DateTime Created;
+		public DateTime Modified;
 
 		public override string ToString() { return Name + " " + VersionTags; }
 		public Game Game;
@@ -35,6 +37,7 @@ namespace BizHawk.Client.DBMan
 		}
 		
 		public string SizeFriendly { get { return string.Format("{0} bytes ({1}k)", Size, Size / 1024); } }
+		public bool New { get { return (Created > Modified); } }
 
 		public string NameWithTheFlipped
 		{
@@ -42,6 +45,43 @@ namespace BizHawk.Client.DBMan
 			{
 				if (!Name.EndsWith(", The")) return Name;
 				return "The "+Name.Substring(0, Name.Length-5);
+			}
+		}
+
+		public string SortString()
+		{
+			var ret = "";
+			if (Game.Classification == "Firmware") ret += "[BIOS] ";
+			if (Game.Classification == "Homebrew") ret += "[Homebrew] ";
+			if (Game.Classification == "Test Rom") ret += "[Test ROM] ";
+			ret += Name;
+			ret += "|" + RegionRank + "|" + VersionTags;
+			return ret;
+		}
+
+		public string DisplayName
+		{
+			get
+			{
+				var ret = "";
+				if (Game.Classification == "Firmware") ret += "[BIOS] ";
+				if (Game.Classification == "Homebrew") ret += "[Homebrew] ";
+				if (Game.Classification == "Test Rom") ret += "[Test ROM] ";
+				ret += Name;
+				return ret;
+			}
+		}
+
+		public int RegionRank
+		{
+			get
+			{
+				if (String.IsNullOrEmpty(Region)) return 99;
+				if (Region.Contains("World")) return 1;
+				if (Region.Contains("USA")) return 2;
+				if (Region.Contains("Europe")) return 3;
+				if (Region.Contains("Japan")) return 4;
+				return Region.GetHashCode();
 			}
 		}
 	}
@@ -60,6 +100,8 @@ namespace BizHawk.Client.DBMan
 		public string Tags;
 		public string AltNames;
 		public string Notes;
+		public DateTime Created;
+		public DateTime Modified;
 
 		public override string ToString() { return Name; }
 	}
@@ -84,7 +126,10 @@ namespace BizHawk.Client.DBMan
 		static void LoadGames(string system)
 		{
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = "SELECT game_id, system, name, developer, publisher, classification, release_date, players, game_metadata, tags, alternate_names, notes FROM game WHERE system = @System";
+			cmd.CommandText = 
+				"SELECT game_id, system, name, developer, publisher, classification, release_date, players, game_metadata, tags, alternate_names, notes "+
+				"FROM game "+
+				"WHERE system = @System";
 			cmd.Parameters.Add(new SqliteParameter("@System", system));
 			var reader = cmd.ExecuteReader();
 			while (reader.NextResult())
@@ -113,10 +158,9 @@ namespace BizHawk.Client.DBMan
 		{
 			var cmd = Con.CreateCommand();
 			cmd.CommandText =
-				"SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog, size " +
+				"SELECT rom_id, crc32, md5, sha1, system, name, region, version_tags, rom_metadata, rom_status, catalog, size, created_date, modified_date " +
 				"FROM rom " +
-				"WHERE system = @System " +
-				"ORDER BY name, region, version_tags";
+				"WHERE system = @System";
 			cmd.Parameters.Add(new SqliteParameter("@System", system));
 			var reader = cmd.ExecuteReader();
 			while (reader.NextResult())
@@ -134,11 +178,14 @@ namespace BizHawk.Client.DBMan
 				rom.RomStatus = reader.GetString(9);
 				rom.Catalog = reader.GetString(10);
 				rom.Size = reader.GetInt64(11);
+				rom.Created = reader.GetDateTime(12);
+				rom.Modified = reader.GetDateTime(13);
 				rom.Game = GameMap[rom.Name];
 				Roms.Add(rom);
 			}
 			reader.Dispose();
 			cmd.Dispose();
+			Roms = Roms.OrderBy(x=>x.SortString()).ToList();
 		}
 
 		public static void SaveRom(Rom rom)
@@ -150,7 +197,8 @@ namespace BizHawk.Client.DBMan
 				"version_tags=@VersionTags, "+
 				"rom_metadata=@RomMetadata, "+
 				"rom_status=@RomStatus, "+
-				"catalog=@Catalog " +
+				"catalog=@Catalog, " +
+				"modified_date=datetime('now','localtime') " +
 				"WHERE rom_id=@RomId";
 			cmd.Parameters.Add(new SqliteParameter("@Region", rom.Region));
 			cmd.Parameters.Add(new SqliteParameter("@VersionTags", rom.VersionTags));
@@ -172,7 +220,8 @@ namespace BizHawk.Client.DBMan
 				"game_metadata=@GameMetadata, "+
 				"tags=@Tags, "+
 				"alternate_names=@AltNames, "+
-				"notes=@Notes "+
+				"notes=@Notes, "+
+				"modified_date=datetime('now','localtime') " +
 				"WHERE game_id=@GameId";
 			cmd.Parameters.Add(new SqliteParameter("@Developer", rom.Game.Developer));
 			cmd.Parameters.Add(new SqliteParameter("@Publisher", rom.Game.Publisher));
@@ -238,7 +287,8 @@ namespace BizHawk.Client.DBMan
 				"version_tags=@VersionTags, " +
 				"rom_metadata=@RomMetadata, " +
 				"rom_status=@RomStatus, " +
-				"catalog=@Catalog " +
+				"catalog=@Catalog, " +
+				"modified_date=datetime('now','localtime') " +
 				"WHERE rom_id=@RomId";
 			cmd.Parameters.Add(new SqliteParameter("@System", rom.System));
 			cmd.Parameters.Add(new SqliteParameter("@Name", rom.Name));
@@ -262,7 +312,7 @@ namespace BizHawk.Client.DBMan
 			if (!gameAlreadyExists)
 			{
 				cmd = Con.CreateCommand();
-				cmd.CommandText = "INSERT INTO game (system, name) values (@System, @Name)";
+				cmd.CommandText = "INSERT INTO game (system, name, created_date) values (@System, @Name, datetime('now','localtime'))";
 				cmd.Parameters.Add(new SqliteParameter("@System", rom.System));
 				cmd.Parameters.Add(new SqliteParameter("@Name", rom.Name));
 				cmd.ExecuteNonQuery();
@@ -280,7 +330,8 @@ namespace BizHawk.Client.DBMan
 				"game_metadata=@GameMetadata, " +
 				"tags=@Tags, " +
 				"alternate_names=@AltNames, " +
-				"notes=@Notes " +
+				"notes=@Notes, " +
+				"modified_date=datetime('now','localtime') " +
 				"WHERE system=@System and name=@Name";
 			cmd.Parameters.Add(new SqliteParameter("@Developer", rom.Game.Developer));
 			cmd.Parameters.Add(new SqliteParameter("@Publisher", rom.Game.Publisher));
@@ -339,9 +390,9 @@ namespace BizHawk.Client.DBMan
 
 			var cmd = Con.CreateCommand();
 			cmd.CommandText =
-				"SELECT DISTINCT developer FROM game WHERE developer is not null " +
+				"SELECT DISTINCT developer FROM game WHERE developer is not null and classification not in ('Homebrew','Test Rom')" +
 				"UNION " +
-				"SELECT DISTINCT publisher FROM game WHERE publisher is not null";
+				"SELECT DISTINCT publisher FROM game WHERE publisher is not null and classification not in ('Homebrew','Test Rom')";
 			var reader = cmd.ExecuteReader();
 			while (reader.NextResult())
 			{
@@ -389,6 +440,15 @@ namespace BizHawk.Client.DBMan
 			cmd.CommandText = "DELETE FROM game WHERE system=@System and name=@Name";
 			cmd.Parameters.Add(new SqliteParameter("@System", system));
 			cmd.Parameters.Add(new SqliteParameter("@Name", name));
+			cmd.ExecuteNonQuery();
+			cmd.Dispose();
+		}
+
+		public static void DeleteRom(Rom rom)
+		{
+			var cmd = Con.CreateCommand();
+			cmd.CommandText = "DELETE FROM rom WHERE md5 = @Md5";
+			cmd.Parameters.Add(new SqliteParameter("@Md5", rom.MD5));
 			cmd.ExecuteNonQuery();
 			cmd.Dispose();
 		}

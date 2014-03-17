@@ -54,8 +54,9 @@ namespace BizHawk.Client.DBMan
 			romListView.Items.Clear();
 			foreach (var rom in DB.Roms)
 			{
-				var lvi = new ListViewItem(new string[] { rom.Name, rom.Region, rom.VersionTags, rom.CombinedMetaData, rom.Game.Tags }); 
+				var lvi = new ListViewItem(new string[] { rom.DisplayName, rom.Region, rom.VersionTags, rom.CombinedMetaData, rom.Game.Tags }); 
 				lvi.Tag = rom;
+				lvi.BackColor = rom.New ? Color.LightGreen : Color.White;
 				romListView.Items.Add(lvi);
 			}
 			detailPanel.Visible = false;
@@ -154,7 +155,7 @@ namespace BizHawk.Client.DBMan
 		void saveButton_Click(object sender, EventArgs e)
 		{
 			// Check if any changes were made
-			if (RomChangesMade() == false)
+			if (SelectedRom.New == false && RomChangesMade() == false)
 				return;
 			
 			int saveMode = 0;
@@ -185,6 +186,7 @@ namespace BizHawk.Client.DBMan
 			SelectedRom.Catalog = fmt(catalogBox.Text);
 			SelectedRom.Game.AltNames = fmt(altNamesBox.Text);
 			SelectedRom.Game.Notes = fmt(notesBox.Text);
+			SelectedRom.Modified = DateTime.Now;
 
 			if (saveMode == 0) DB.SaveRom(SelectedRom);
 			if (saveMode == 1) DB.SaveRom1(SelectedRom, origSystem, origName);
@@ -194,11 +196,12 @@ namespace BizHawk.Client.DBMan
 			{
 				// Update the side listing
 				var romListItem = (ListViewItem)romListView.SelectedItems[0];
-				romListItem.SubItems[0] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.Name);
+				romListItem.SubItems[0] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.DisplayName);
 				romListItem.SubItems[1] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.Region);
 				romListItem.SubItems[2] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.VersionTags);
 				romListItem.SubItems[3] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.CombinedMetaData);
 				romListItem.SubItems[4] = new ListViewItem.ListViewSubItem(romListItem, SelectedRom.Game.Tags);
+				romListItem.BackColor = SelectedRom.New ? Color.LightGreen : Color.White;
 			}
 
 			if (saveMode > 0) loadRomsForSelectedSystem();
@@ -208,7 +211,7 @@ namespace BizHawk.Client.DBMan
 		{
 			if (SelectedRom == null) 
 				return false;
-
+			
 			if (!streq(SelectedRom.System, gameSystemBox.Text)) return true;
 			if (!streq(SelectedRom.Name, nameBox.Text)) return true;
 			if (!streq(SelectedRom.Region, regionBox.Text)) return true;
@@ -301,9 +304,9 @@ namespace BizHawk.Client.DBMan
 					if (rom.Region.IndexOf("Japan") >= 0) regionStr += "J";
 					if (rom.Region.IndexOf("USA") >= 0) regionStr += "U";
 					if (rom.Region.IndexOf("Europe") >= 0) regionStr += "E";
-					if (rom.Region.IndexOf("Brazil") >= 0) regionStr += "Br";
-					if (rom.Region.IndexOf("Taiwan") >= 0) regionStr += "Tw";
-					if (rom.Region.IndexOf("Korea") >= 0) regionStr += "Kr";
+					if (rom.Region.IndexOf("Brazil") >= 0) regionStr += "B";
+					if (rom.Region.IndexOf("Taiwan") >= 0) regionStr += "T";
+					if (rom.Region.IndexOf("Korea") >= 0) regionStr += "K";
 					if (rom.Region.IndexOf("Australia") >= 0) regionStr += "Aus";
 					if (rom.Region.IndexOf("World") >= 0) regionStr += "W";
 				}
@@ -328,6 +331,16 @@ namespace BizHawk.Client.DBMan
 			}
 
 			tw.Close();
+		}
+
+		void deleteButton_Click(object sender, EventArgs e)
+		{
+			var rslt = MessageBox.Show("Confirm deletion for ROM: "+SelectedRom.Name+" "+SelectedRom.Region+" "+SelectedRom.VersionTags+"?", "Confirm ROM Delete", MessageBoxButtons.YesNo);
+			if (rslt != System.Windows.Forms.DialogResult.Yes)
+				return;
+
+			DB.DeleteRom(SelectedRom);
+			loadRomsForSelectedSystem();
 		}
 	}
 }

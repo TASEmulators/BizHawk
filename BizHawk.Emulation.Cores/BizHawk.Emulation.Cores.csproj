@@ -436,6 +436,7 @@
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
+    <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />

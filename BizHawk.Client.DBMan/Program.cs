@@ -29,7 +29,7 @@ namespace BizHawk.Client.DBMan
 		static void InitDB()
 		{
 			DB.Con = new SqliteConnection();
-			DB.Con.ConnectionString = @"Version=3,uri=file://game.db";
+			DB.Con.ConnectionString = @"Version=3,uri=file://gamedb/game.db";
 			DB.Con.Open();
 		}
 	}

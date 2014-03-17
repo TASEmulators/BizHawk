@@ -91,8 +91,8 @@ namespace BizHawk.Client.DBMan
 			using (var cmd = DB.Con.CreateCommand())
 			{
 				cmd.CommandText = 
-					"INSERT INTO rom (crc32, md5, sha1, size, system, name, region, version_tags) "+
-					"VALUES (@crc32, @md5, @sha1, @size, @System, @Name, @Region, @VersionTags)";
+					"INSERT INTO rom (crc32, md5, sha1, size, system, name, region, version_tags, created_date) "+
+					"VALUES (@crc32, @md5, @sha1, @size, @System, @Name, @Region, @VersionTags, datetime('now','localtime'))";
 				cmd.Parameters.Add(new SqliteParameter("@crc32", rom.CRC32));
 				cmd.Parameters.Add(new SqliteParameter("@md5", rom.MD5));
 				cmd.Parameters.Add(new SqliteParameter("@sha1", rom.SHA1));
@@ -109,7 +109,7 @@ namespace BizHawk.Client.DBMan
 		{
 			using (var cmd = DB.Con.CreateCommand())
 			{
-				cmd.CommandText = "INSERT INTO game (system, name) VALUES (@System, @Name)";
+				cmd.CommandText = "INSERT INTO game (system, name, created_date) VALUES (@System, @Name, datetime('now','localtime'))";
 				cmd.Parameters.Add(new SqliteParameter("@System", rom.GuessedSystem));
 				cmd.Parameters.Add(new SqliteParameter("@Name", rom.Name));
 				cmd.ExecuteNonQuery();

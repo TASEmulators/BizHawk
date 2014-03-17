@@ -9,7 +9,9 @@
 
 ;Hash	Status	Name	System ID	Notes	MetaData	Configurations
 
-#include gamedb_sega_8bit.txt
+#include gamedb_sega_sms.txt
+#include gamedb_sega_sg1000.txt
+#include gamedb_sega_gg.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_pce_cd.txt
 #include gamedb_sega_md.txt

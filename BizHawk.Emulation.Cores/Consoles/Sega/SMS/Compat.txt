@@ -1,9 +1,12 @@
 ﻿======= SMS compatibility issues =======
 
-* Several korean TMS games don't work. Possibly mapper issue?
-* Janggun-ui Adeul (Korea).sms - Sprite flip gfx issue? Could be interesting to investigate. Cogwheel does the same; Kega wont even boot the game
-* Jang Pung 3 - boots but totally fuxed?
-* Pretty much everything with (korea) in it needs to be checked. Stupid rare korea shit.
+Fantastic Dizzy (SMS and SMSGG) are freezing on boot. I swear I fixed this before, now it's re-broken. Sigh.
+Hopefully due to sprite collision thingy?
+
+Korean games currently not booting:
+ - FA Tetris
+ - Flashpoint
+ - Sky Jaguar boots but gfx issues (works in cogwheel) (but not in MEKA!)
 
 * NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
   In NTSC mode, it is impossible to start a game, however, it is possible on
@@ -12,6 +15,10 @@
   but don't really consider it super-high priority since it works correctly in PAL mode.
 
 * Desert Strike - you can enter the map screen but cannot leave.
+
+- Light Gun emulation
+- Paddle emulation
+- Sports pad emulation?
 
 Could probably stand to do another pass on SMS emulation after Genesis is working.
 
