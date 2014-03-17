@@ -1,6 +1,5 @@
 ﻿======= SMS compatibility issues =======
 
-Fantastic Dizzy (SMS and SMSGG) are freezing on boot. I swear I fixed this before, now it's re-broken. Sigh.
 Hopefully due to sprite collision thingy?
 
 Korean games currently not booting:
@@ -24,6 +23,7 @@ Could probably stand to do another pass on SMS emulation after Genesis is workin
 
 ======= Game Gear compatibility issues =======
 
+* Ernie Els Golf has weird gfx corruption. Also in Cogwheel and Kega. Works in MEKA and Regen
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
 
