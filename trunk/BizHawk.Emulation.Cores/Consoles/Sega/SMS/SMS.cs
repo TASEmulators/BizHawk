@@ -205,47 +205,73 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte ReadPort(ushort port)
 		{
-			switch (port & 0xFF)
+			port &= 0xFF;
+			if (port < 0x40) // General IO ports
 			{
-				case 0x00: return ReadPort0();
-				case 0x01: return Port01;
-				case 0x02: return Port02;
-				case 0x03: return 0x00;
-				case 0x04: return 0xFF;
-				case 0x05: return 0x00;
-				case 0x06: return 0xFF;
-				case 0x3E: return Port3E;
-				case 0x7E: return Vdp.ReadVLineCounter();
-				case 0x7F: break; // hline counter TODO
-				case 0xBE: return Vdp.ReadData();
-				case 0xBF: return Vdp.ReadVdpStatus();
+				switch (port)
+				{
+					case 0x00: return ReadPort0();
+					case 0x01: return Port01;
+					case 0x02: return Port02;
+					case 0x03: return 0x00;
+					case 0x04: return 0xFF;
+					case 0x05: return 0x00;
+					case 0x06: return 0xFF;
+					case 0x3E: return Port3E;
+					default: return 0xFF;
+				}
+			}
+			if (port < 0x80)  // VDP Vcounter/HCounter
+			{
+				if ((port & 1) == 0)
+					return Vdp.ReadVLineCounter();
+				else
+					return 0x50; // TODO Vdp.ReadHLineCounter();
+			}
+			if (port < 0xC0) // VDP data/control ports
+			{
+				if ((port & 1) == 0)
+					return Vdp.ReadData();
+				else
+					return Vdp.ReadVdpStatus();
+			}
+			switch (port) 
+			{
 				case 0xC0:
 				case 0xDC: return ReadControls1();
 				case 0xC1:
 				case 0xDD: return ReadControls2();
 				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
+				default: return 0xFF;
 			}
-			return 0xFF;
 		}
 
 		public void WritePort(ushort port, byte value)
 		{
-			switch (port & 0xFF)
+			port &= 0xFF;
+			if (port < 0x40) // general IO ports
 			{
-				case 0x01: Port01 = value; break;
-				case 0x02: Port02 = value; break;
-				case 0x06: PSG.StereoPanning = value; break;
-				case 0x3E: Port3E = value; break;
-				case 0x3F: Port3F = value; break;
-				case 0x7E:
-				case 0x7F: PSG.WritePsgData(value, Cpu.TotalExecutedCycles); break;
-				case 0xBE: Vdp.WriteVdpData(value); break;
-				case 0xBD:
-				case 0xBF: Vdp.WriteVdpControl(value); break;
-				case 0xF0: if (HasYM2413) YM2413.RegisterLatch = value; break;
-				case 0xF1: if (HasYM2413) YM2413.Write(value); break;
-				case 0xF2: if (HasYM2413) YM2413.DetectionValue = value; break;
+				switch (port & 0xFF)
+				{
+					case 0x01: Port01 = value; break;
+					case 0x02: Port02 = value; break;
+					case 0x06: PSG.StereoPanning = value; break;
+					case 0x3E: Port3E = value; break;
+					case 0x3F: Port3F = value; break;
+				}
 			}
+			else if (port < 0x80) // PSG
+				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+			else if (port < 0xC0) // VDP
+			{
+				if ((port & 1) == 0)
+					Vdp.WriteVdpData(value);
+				else
+					Vdp.WriteVdpControl(value);
+			}
+			else if (port == 0xF0 && HasYM2413) YM2413.RegisterLatch = value;
+			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
+			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
