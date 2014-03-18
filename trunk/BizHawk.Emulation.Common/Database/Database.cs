@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Common
 		public string System;
 		public string MetaData;
 		public string Hash;
+		public string Region;
 		public RomStatus Status;
 	}
 
@@ -93,6 +94,7 @@ namespace BizHawk.Emulation.Common
 						Game.Name = items[2];
 						Game.System = items[3];
 						Game.MetaData = items.Length >= 6 ? items[5] : null;
+						Game.Region = items.Length >= 7 ? items[6] : "";
 
 						if (db.ContainsKey(Game.Hash))
 							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", Game.Hash, Game.Name, db[Game.Hash].Name);
