@@ -20,7 +20,6 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + Or a "force region to japan if game is only for japan" thing. Which one is better?
   + I confess, Mapper system needs some refactoring and love. But right now I want to get all games to work and THEN refactor it.
   + Savestate system.... maybe use a zeromus-like system. Except maintain the text-savestate compatibility. Might give up some speed for improved maintainability tho.
-  + Make corecomm OSD notifier system
  
 **********************************************************/
 
@@ -108,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["PAL"] && DisplayType != DisplayType.PAL)
 			{
 				DisplayType = DisplayType.PAL;
-				Console.WriteLine("Display was forced to PAL mode for game compatibility."); // TODO change to corecomm.notify when it exists
+				CoreComm.Notify("Display was forced to PAL mode for game compatibility.");
 			}
 			if (IsGameGear) 
 				DisplayType = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
@@ -119,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["Japan"] && Region != "Japan")
 			{
 				Region = "Japan";
-				Console.WriteLine("Region was forced to Japan for game compatibility."); // TODO corecomm.notify
+				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
             if (game.NotInDatabase || game["FM"] && SyncSettings.EnableFM && !IsGameGear)
@@ -190,9 +189,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					Port3E = 0xF7;
 
 				if (BiosRom == null && game["RequireBios"])
-					Console.WriteLine("BIOS image not available. This game requires BIOS to function."); // TODO corecomm.notify
+					CoreComm.Notify("BIOS image not available. This game requires BIOS to function.");
 				if (SyncSettings.UseBIOS && BiosRom == null)
-					Console.WriteLine("BIOS was selected, but rom image not available. BIOS not enabled."); // TODO corecomm.notify
+					CoreComm.Notify("BIOS was selected, but rom image not available. BIOS not enabled.");
 			}
             
 			SetupMemoryDomains();

@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -2752,6 +2752,11 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(this, e.Message, e.AttemptedCoreLoad + " load warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
+		private void NotifyCoreComm(string message)
+		{
+			GlobalWin.OSD.AddMessage(message);
+		}
+
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
@@ -2775,7 +2780,7 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig();
 
-			var nextComm = new CoreComm(ShowMessageCoreComm);
+			var nextComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 
 			var result = loader.LoadRom(path, nextComm);
@@ -2956,7 +2961,7 @@ namespace BizHawk.Client.EmuHawk
 			CommitCoreSettingsToConfig();
 
 			Global.Emulator.Dispose();
-			Global.CoreComm = new CoreComm(ShowMessageCoreComm);
+			Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 			CoreFileProvider.SyncCoreCommInputSignals();
 			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
@@ -2976,7 +2981,7 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = new CoreComm(ShowMessageCoreComm);
+				Global.CoreComm = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
 				CoreFileProvider.SyncCoreCommInputSignals();
 				Global.Emulator = new NullEmulator(Global.CoreComm);
 				Global.Game = GameInfo.GetNullGame();

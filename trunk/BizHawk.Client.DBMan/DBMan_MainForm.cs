@@ -315,7 +315,6 @@ namespace BizHawk.Client.DBMan
 				if (regionStr.Length > 0)
 					romName += " ("+regionStr+")";
 
-				string versionStr = "";
 				if (rom.VersionTags != null) 
 				{
 					var versions = rom.VersionTags.Split(';');
