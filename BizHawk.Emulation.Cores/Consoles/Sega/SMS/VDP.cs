@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Cpu.ExecuteCycles(IPeriod);
 
 				if (ScanLine == scanlinesPerFrame - 1)
-					RenderBlankingRegions();
+					ProcessGGScreen();
 			}
 		}
 
@@ -380,6 +380,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					RenderSpritesCurrentLineDoubleSize(Sms.Settings.DispOBJ & render);
 				else
 					RenderSpritesCurrentLine(Sms.Settings.DispOBJ & render);
+
+				RenderLineBlanking(render);
 			}
 			else if (TmsMode == 2)
 			{
