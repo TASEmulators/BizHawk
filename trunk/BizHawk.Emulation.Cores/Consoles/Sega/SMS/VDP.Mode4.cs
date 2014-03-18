@@ -133,15 +133,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			int SpritesDrawnThisScanline = 0;
 			for (int i = 0; i < 64; i++)
 			{
-				if (SpritesDrawnThisScanline >= 8)
-				{
-					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
-					if (overflowHappens) 
-						StatusByte |= 0x40; // Set Overflow bit
-					if (SpriteLimit) 
-						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
-				}
-
 				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
 				if (ShiftSpritesLeft8Pixels)
 					x -= 8;
@@ -154,6 +145,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				if (y + SpriteHeight <= ScanLine || y > ScanLine)
 					continue;
+
+				if (SpritesDrawnThisScanline >= 8)
+				{
+					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
+					if (overflowHappens)
+						StatusByte |= 0x40; // Set Overflow bit
+					if (SpriteLimit)
+						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
+				}
 
 				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
 				if (EnableLargeSprites)
@@ -210,15 +210,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			int SpritesDrawnThisScanline = 0;
 			for (int i = 0; i < 64; i++)
 			{
-				if (SpritesDrawnThisScanline >= 8)
-				{
-					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
-					if (overflowHappens)
-						StatusByte |= 0x40; // Set Overflow bit
-					if (SpriteLimit)
-						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
-				}
-
 				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
 				if (ShiftSpritesLeft8Pixels)
 					x -= 8;
@@ -231,6 +222,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				if (y + (SpriteHeight * 2) <= ScanLine || y > ScanLine)
 					continue;
+
+				if (SpritesDrawnThisScanline >= 8)
+				{
+					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
+					if (overflowHappens)
+						StatusByte |= 0x40; // Set Overflow bit
+					if (SpriteLimit)
+						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
+				}
 
 				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
 				if (EnableLargeSprites)
@@ -260,75 +260,74 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		// Performs render buffer blanking. This includes the left-column blanking as well as Game Gear blanking if requested.
-		// Should be called at the end of the frame.
-		internal void RenderBlankingRegions()
+		// Renders left-blanking. Should be done per scanline, not per-frame.
+		internal void RenderLineBlanking(bool render)
 		{
-			int blankingColor = Palette[BackdropColor];
+			if (!LeftBlanking || ScanLine >= FrameHeight || !render) 
+				return;
 
-			if (LeftBlanking)
+			int ofs = ScanLine * 256;
+			for (int x = 0; x < 8; x++)
+				FrameBuffer[ofs++] = Palette[BackdropColor];
+		}
+
+		// Handles GG clipping or highlighting
+		internal void ProcessGGScreen()
+		{
+			if (mode != VdpMode.GameGear)
+				return;
+
+			if (Sms.Settings.ShowClippedRegions == false)
 			{
-				for (int y = 0; y < FrameHeight; y++)
-				{
-					for (int x = 0; x < 8; x++)
-						FrameBuffer[(y * 256) + x] = blankingColor;
-				}
+				int yStart = (FrameHeight - 144) / 2;
+				for (int y = 0; y < 144; y++)
+					for (int x = 0; x < 160; x++)
+						GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
 			}
 
-			if (mode == VdpMode.GameGear)
+			if (Sms.Settings.HighlightActiveDisplayRegion && Sms.Settings.ShowClippedRegions)
 			{
-				if (Sms.Settings.ShowClippedRegions == false)
+				// Top 24 scanlines
+				for (int y = 0; y < 24; y++)
 				{
-					int yStart = (FrameHeight - 144) / 2;
-					for (int y = 0; y < 144; y++)
-						for (int x = 0; x < 160; x++)
-							GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
+					for (int x = 0; x < 256; x++)
+					{
+						int frameOffset = (y * 256) + x;
+						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
+					}
 				}
 
-				if (Sms.Settings.HighlightActiveDisplayRegion && Sms.Settings.ShowClippedRegions)
+				// Bottom 24 scanlines
+				for (int y = 168; y < 192; y++)
 				{
-					// Top 24 scanlines
-					for (int y = 0; y < 24; y++)
+					for (int x = 0; x < 256; x++)
 					{
-						for (int x = 0; x < 256; x++)
-						{
-							int frameOffset = (y * 256) + x;
-							int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-							FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
-						}
+						int frameOffset = (y * 256) + x;
+						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
 					}
+				}
 
-					// Bottom 24 scanlines
-					for (int y = 168; y < 192; y++)
+				// Left 48 pixels
+				for (int y = 24; y < 168; y++)
+				{
+					for (int x = 0; x < 48; x++)
 					{
-						for (int x = 0; x < 256; x++)
-						{
-							int frameOffset = (y * 256) + x;
-							int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-							FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
-						}
+						int frameOffset = (y * 256) + x;
+						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
 					}
+				}
 
-					// Left 48 pixels
-					for (int y = 24; y < 168; y++)
+				// Right 48 pixels
+				for (int y = 24; y < 168; y++)
+				{
+					for (int x = 208; x < 256; x++)
 					{
-						for (int x = 0; x < 48; x++)
-						{
-							int frameOffset = (y * 256) + x;
-							int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-							FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
-						}
-					}
-
-					// Right 48 pixels
-					for (int y = 24; y < 168; y++)
-					{
-						for (int x = 208; x < 256; x++)
-						{
-							int frameOffset = (y * 256) + x;
-							int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-							FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
-						}
+						int frameOffset = (y * 256) + x;
+						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
 					}
 				}
 			}
