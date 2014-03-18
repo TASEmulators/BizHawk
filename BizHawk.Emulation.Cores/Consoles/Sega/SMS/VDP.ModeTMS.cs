@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void RenderBackgroundM0(bool show)
 		{
+			if (ScanLine >= FrameHeight)
+				return;
+
 			if (DisplayOn == false)
 			{
 				Array.Clear(FrameBuffer, ScanLine * 256, 256);
@@ -63,6 +66,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void RenderBackgroundM2(bool show)
 		{
+			if (ScanLine >= FrameHeight)
+				return;
+
 			if (DisplayOn == false)
 			{
 				Array.Clear(FrameBuffer, ScanLine * 256, 256);
@@ -100,6 +106,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		
 		void RenderTmsSprites(bool show)
 		{
+			if (ScanLine >= FrameHeight || DisplayOn == false)
+				return;
+
 			if (EnableDoubledSprites == false)
 				RenderTmsSpritesStandard(show);
 			else
@@ -108,8 +117,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void RenderTmsSpritesStandard(bool show)
 		{
-			if (DisplayOn == false) return;
-
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
 
@@ -176,8 +183,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void RenderTmsSpritesDouble(bool show)
 		{
-			if (DisplayOn == false) return;
-
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
 

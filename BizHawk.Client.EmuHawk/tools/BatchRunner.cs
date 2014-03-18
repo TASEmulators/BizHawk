@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			ldr = new RomLoader();
 			ldr.OnLoadError += OnLoadError;
 			ldr.ChooseArchive = ChooseArchive;
-			Comm = new CoreComm(CommMessage);
+			Comm = new CoreComm(CommMessage, CommMessage);
 			CoreFileProvider.SyncCoreCommInputSignals(Comm);
 		}
 

@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? GambatteLinkSyncSettings.GetDefaults();
 
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
-			R = new Gameboy(new CoreComm(comm.ShowMessage), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
+			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L);
+			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);

@@ -385,15 +385,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (TmsMode == 2)
 			{
-				if (ScanLine >= FrameHeight)  // TODO fix this other way
-					return;
 				RenderBackgroundM2(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
 			else if (TmsMode == 0)
 			{
-				if (ScanLine >= FrameHeight)  // TODO fix this other way
-					return;
 				RenderBackgroundM0(Sms.Settings.DispBG);
 				RenderTmsSprites(Sms.Settings.DispOBJ);
 			}
