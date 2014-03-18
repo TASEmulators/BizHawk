@@ -145,6 +145,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (game["CMMapper"])
 				InitCodeMastersMapper();
+			else if (game["CMMapperWithRam"])
+				InitCodeMastersMapperRam();
 			else if (game["ExtRam"])
 				InitExt2kMapper(int.Parse(game.OptionValue("ExtRam")));
 			else if (game["KoreaMapper"])
