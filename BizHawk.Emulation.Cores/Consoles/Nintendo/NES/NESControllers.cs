@@ -887,45 +887,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private class DummyController : IController
 		{
-			public DummyController() { Type = new ControllerDefinition { Name = "Dummy" }; }
-			public ControllerDefinition Type { get; private set; }
+			IController src;
+			Dictionary<string, string> remaps;
+			public DummyController(IController src, Dictionary<string, string> remaps)
+			{
+				this.src = src;
+				this.remaps = remaps;
+			}
 
-			public Dictionary<string, bool> Bools = new Dictionary<string, bool>();
-			public Dictionary<string, float> Floats = new Dictionary<string, float>();
+			public ControllerDefinition Type { get { throw new NotImplementedException(); } }
 
-			public bool this[string button] { get { return Bools[button]; } }
-			public bool IsPressed(string button) { return Bools[button]; }
+			public bool this[string button] { get { return IsPressed(button); } }
 
-			public float GetFloat(string name) { return Floats[name]; }
+			public bool IsPressed(string button)
+			{
+				return src.IsPressed(remaps[button]);
+			}
+
+			public float GetFloat(string name)
+			{
+				return src.GetFloat(remaps[name]);
+			}
 		}
 
 		public IController UnMerge(IController c)
 		{
-			string r;
-			var ret = new DummyController();
-
-			var t = c.Type;
-
-			foreach (string s in t.BoolButtons)
-			{
-				Remaps.TryGetValue(s, out r);
-				if (r != null)
-				{
-					ret.Type.BoolButtons.Add(r);
-					ret.Bools[r] = c[s];
-				}
-			}
-			for (int i = 0; i < t.FloatControls.Count; i++)
-			{
-				Remaps.TryGetValue(t.FloatControls[i], out r);
-				if (r != null)
-				{
-					ret.Type.FloatControls.Add(r);
-					ret.Type.FloatRanges.Add(t.FloatRanges[i]);
-					ret.Floats[r] = c.GetFloat(t.FloatControls[i]);
-				}
-			}
-			return ret;
+			return new DummyController(c, Remaps);
 		}
 
 	}
@@ -960,13 +947,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					string r = Allocate(s, ref plr, ref plrnext);
 					ret.BoolButtons.Add(r);
-					remaps[r] = s;
+					remaps[s] = r;
 				}
 				foreach (string s in def.FloatControls)
 				{
 					string r = Allocate(s, ref plr, ref plrnext);
 					ret.FloatControls.Add(r);
-					remaps[r] = s;
+					remaps[s] = r;
 				}
 				ret.FloatRanges.AddRange(def.FloatRanges);
 				plr = plrnext;
