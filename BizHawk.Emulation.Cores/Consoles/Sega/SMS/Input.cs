@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			byte value = 0xFF;
 			if (Controller["Pause"])
 				value ^= 0x80;
-			if (Region == "US")
+			if (Region == "Japan")
 				value ^= 0x40;
 			return value;
 		}
