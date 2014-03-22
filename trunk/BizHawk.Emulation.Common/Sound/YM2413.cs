@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Common.Components
 			VRC7 = 1,
 			YMF281B = 2
 		};
+
 		public YM2413(ChipType type)
 		{
 			MaxVolume = short.MaxValue;
@@ -37,8 +38,16 @@ namespace BizHawk.Emulation.Common.Components
 
 		public void SyncState(Serializer ser)
 		{
-			//TODO !! MUCH BETTER-NESS!
+			ser.BeginSection("YM2413");
 			ser.Sync("RegisterLatch", ref RegisterLatch);
+			ser.Sync("Registers", ref opll.reg, false);
+			ser.EndSection();
+		}
+
+		public void PostLoadState()
+		{
+			for (byte i = 0; i < opll.reg.Length; i++)
+				Write(i, opll.reg[i]);
 		}
 
 		public void Reset()

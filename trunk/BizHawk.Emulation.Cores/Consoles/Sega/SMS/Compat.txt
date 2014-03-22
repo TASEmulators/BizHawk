@@ -1,17 +1,11 @@
 ﻿======= SMS compatibility issues =======
 
-Hopefully due to sprite collision thingy?
+Note: add PS1J-retranslation to gamedb
 
 Korean games currently not booting:
  - FA Tetris
  - Flashpoint
  - Sky Jaguar boots but gfx issues (works in cogwheel) (but not in MEKA!)
-
-* NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
-  In NTSC mode, it is impossible to start a game, however, it is possible on
-  other emulators.
-  Need to give it a test on Everdrive, and eventually investigate its NTSC behavior,
-  but don't really consider it super-high priority since it works correctly in PAL mode.
 
 * Desert Strike - you can enter the map screen but cannot leave.
 
@@ -19,11 +13,8 @@ Korean games currently not booting:
 - Paddle emulation
 - Sports pad emulation?
 
-Could probably stand to do another pass on SMS emulation after Genesis is working.
-
 ======= Game Gear compatibility issues =======
 
-* Ernie Els Golf has weird gfx corruption. Also in Cogwheel and Kega. Works in MEKA and Regen
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
 

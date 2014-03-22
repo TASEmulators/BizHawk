@@ -41,43 +41,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		//-------
 
-		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
-		{
-			return new List<KeyValuePair<string, int>>
-			{
-				new KeyValuePair<string, int>("A", cpu.RegisterA),
-				new KeyValuePair<string, int>("AF", cpu.RegisterAF),
-				new KeyValuePair<string, int>("B", cpu.RegisterB),
-				new KeyValuePair<string, int>("BC", cpu.RegisterBC),
-				new KeyValuePair<string, int>("C", cpu.RegisterC),
-				new KeyValuePair<string, int>("D", cpu.RegisterD),
-				new KeyValuePair<string, int>("DE", cpu.RegisterDE),
-				new KeyValuePair<string, int>("E", cpu.RegisterE),
-				new KeyValuePair<string, int>("F", cpu.RegisterF),
-				new KeyValuePair<string, int>("H", cpu.RegisterH),
-				new KeyValuePair<string, int>("HL", cpu.RegisterHL),
-				new KeyValuePair<string, int>("I", cpu.RegisterI),
-				new KeyValuePair<string, int>("IX", cpu.RegisterIX),
-				new KeyValuePair<string, int>("IY", cpu.RegisterIY),
-				new KeyValuePair<string, int>("L", cpu.RegisterL),
-				new KeyValuePair<string, int>("PC", cpu.RegisterPC),
-				new KeyValuePair<string, int>("R", cpu.RegisterR),
-				new KeyValuePair<string, int>("Shadow AF", cpu.RegisterShadowAF),
-				new KeyValuePair<string, int>("Shadow BC", cpu.RegisterShadowBC),
-				new KeyValuePair<string, int>("Shadow DE", cpu.RegisterShadowDE),
-				new KeyValuePair<string, int>("Shadow HL", cpu.RegisterShadowHL),
-				new KeyValuePair<string, int>("SP", cpu.RegisterSP),
-				new KeyValuePair<string, int>("Flag C", cpu.RegisterF.Bit(0) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag N", cpu.RegisterF.Bit(1) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag P/V", cpu.RegisterF.Bit(2) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 3rd", cpu.RegisterF.Bit(3) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag H", cpu.RegisterF.Bit(4) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag 5th", cpu.RegisterF.Bit(5) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag Z", cpu.RegisterF.Bit(6) ? 1 : 0),
-				new KeyValuePair<string, int>("Flag S", cpu.RegisterF.Bit(7) ? 1 : 0),
-			};
-		}
-
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;
@@ -496,12 +459,12 @@ namespace BizHawk.Emulation.Cores.Calculators
 			Frame++;
 			if (lagged)
 			{
-				_lagcount++;
-				islag = true;
+				lagCount++;
+				isLag = true;
 			}
 			else
 			{
-				islag = false;
+				isLag = false;
 			}
 		}
 
@@ -527,20 +490,20 @@ namespace BizHawk.Emulation.Cores.Calculators
 			disp_x = disp_y = 0;
 		}
 
-		private int _lagcount = 0;
+		private int lagCount = 0;
 		private bool lagged = true;
-		private bool islag = false;
-		public int Frame { get; set; }
+		private bool isLag = false;
+		private int frame;
+		public int Frame { get { return frame; } set { frame = value; } }
+		public int LagCount { get { return lagCount; } set { lagCount = value; } }
+		public bool IsLagFrame { get { return isLag; } }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			_lagcount = 0;
-			islag = false;
+			lagCount = 0;
+			isLag = false;
 		}
-
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
 
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -553,97 +516,58 @@ namespace BizHawk.Emulation.Cores.Calculators
 			set { }
 		}
 
-		public void SaveStateText(TextWriter writer)
+		public bool BinarySaveStatesPreferred { get { return false; } }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
+		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); }
+
+		void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[TI83]\n");
-			writer.WriteLine("Frame {0}", Frame);
-			cpu.SaveStateText(writer);
-			writer.Write("RAM ");
-			ram.SaveAsHex(writer);
-			writer.WriteLine("romPageLow3Bits {0}", romPageLow3Bits);
-			writer.WriteLine("romPageHighBit {0}", romPageHighBit);
-			writer.WriteLine("disp_mode {0}", disp_mode);
-			writer.WriteLine("disp_move {0}", disp_move);
-			writer.WriteLine("disp_x {0}", disp_x);
-			writer.WriteLine("disp_y {0}", disp_y);
-			writer.WriteLine("m_CursorMoved {0}", m_CursorMoved);
-			writer.WriteLine("maskOn {0}", maskOn);
-			writer.WriteLine("onPressed {0}", onPressed);
-			writer.WriteLine("keyboardMask {0}", keyboardMask);
-			writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
-			writer.WriteLine("m_LinkInput {0}", m_LinkInput);
-			writer.WriteLine("lag {0}", _lagcount);
-			writer.WriteLine("islag {0}", islag);
-			writer.WriteLine("vram {0}", Util.BytesToHexString(vram));
-			writer.WriteLine("[/TI83]");
+			ser.BeginSection("TI83");
+			cpu.SyncState(ser);
+			ser.Sync("RAM", ref ram, false);
+			ser.Sync("romPageLow3Bits", ref romPageLow3Bits);
+			ser.Sync("romPageHighBit", ref romPageHighBit);
+			ser.Sync("disp_mode", ref disp_mode);
+			ser.Sync("disp_move", ref disp_move);
+			ser.Sync("disp_x", ref disp_x);
+			ser.Sync("disp_y", ref disp_y);
+			ser.Sync("m_CursorMoved", ref m_CursorMoved);
+			ser.Sync("maskOn", ref maskOn);
+			ser.Sync("onPressed", ref onPressed);
+			ser.Sync("keyboardMask", ref keyboardMask);
+			ser.Sync("m_LinkOutput", ref m_LinkOutput);
+			ser.Sync("VRAM", ref vram, false);
+			ser.Sync("Frame", ref frame);
+			ser.Sync("LagCount", ref lagCount);
+			ser.Sync("IsLag", ref isLag);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
+		byte[] stateBuffer;
+		public byte[] SaveStateBinary()
 		{
-			while (true)
+			if (stateBuffer == null)
 			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[TI83]") continue;
-				if (args[0] == "[/TI83]") break;
-				if (args[0] == "Frame")
-					Frame = int.Parse(args[1]);
-				else if (args[0] == "[Z80]")
-					cpu.LoadStateText(reader);
-				else if (args[0] == "RAM")
-					ram.ReadFromHex(args[1]);
-				else if (args[0] == "romPageLow3Bits")
-					romPageLow3Bits = int.Parse(args[1]);
-				else if (args[0] == "romPageHighBit")
-					romPageHighBit = int.Parse(args[1]);
-				else if (args[0] == "disp_mode")
-					disp_mode = int.Parse(args[1]);
-				else if (args[0] == "disp_move")
-					disp_move = int.Parse(args[1]);
-				else if (args[0] == "disp_x")
-					disp_x = uint.Parse(args[1]);
-				else if (args[0] == "disp_y")
-					disp_y = uint.Parse(args[1]);
-				else if (args[0] == "m_CursorMoved")
-					m_CursorMoved = bool.Parse(args[1]);
-				else if (args[0] == "maskOn")
-					maskOn = byte.Parse(args[1]);
-				else if (args[0] == "onPressed")
-					onPressed = bool.Parse(args[1]);
-				else if (args[0] == "keyboardMask")
-					keyboardMask = int.Parse(args[1]);
-				else if (args[0] == "m_LinkOutput")
-					m_LinkOutput = int.Parse(args[1]);
-				else if (args[0] == "m_LinkInput")
-					m_LinkInput = int.Parse(args[1]);
-				else if (args[0] == "lag")
-					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "islag")
-					islag = bool.Parse(args[1]);
-				else if (args[0] == "vram")
-					vram = Util.HexStringToBytes(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				stateBuffer = stream.ToArray();
+				writer.Close();
+				return stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return stateBuffer;
 			}
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-
 		public string SystemId { get { return "TI83"; } }
-
 		public string BoardName { get { return null; } }
 
 		private MemoryDomainList _memoryDomains;
@@ -1047,5 +971,41 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public bool PutSettings(object o) { return false; }
 		public bool PutSyncSettings(object o) { return false; }
 
+		public List<KeyValuePair<string, int>> GetCpuFlagsAndRegisters()
+		{
+			return new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>("A", cpu.RegisterA),
+				new KeyValuePair<string, int>("AF", cpu.RegisterAF),
+				new KeyValuePair<string, int>("B", cpu.RegisterB),
+				new KeyValuePair<string, int>("BC", cpu.RegisterBC),
+				new KeyValuePair<string, int>("C", cpu.RegisterC),
+				new KeyValuePair<string, int>("D", cpu.RegisterD),
+				new KeyValuePair<string, int>("DE", cpu.RegisterDE),
+				new KeyValuePair<string, int>("E", cpu.RegisterE),
+				new KeyValuePair<string, int>("F", cpu.RegisterF),
+				new KeyValuePair<string, int>("H", cpu.RegisterH),
+				new KeyValuePair<string, int>("HL", cpu.RegisterHL),
+				new KeyValuePair<string, int>("I", cpu.RegisterI),
+				new KeyValuePair<string, int>("IX", cpu.RegisterIX),
+				new KeyValuePair<string, int>("IY", cpu.RegisterIY),
+				new KeyValuePair<string, int>("L", cpu.RegisterL),
+				new KeyValuePair<string, int>("PC", cpu.RegisterPC),
+				new KeyValuePair<string, int>("R", cpu.RegisterR),
+				new KeyValuePair<string, int>("Shadow AF", cpu.RegisterShadowAF),
+				new KeyValuePair<string, int>("Shadow BC", cpu.RegisterShadowBC),
+				new KeyValuePair<string, int>("Shadow DE", cpu.RegisterShadowDE),
+				new KeyValuePair<string, int>("Shadow HL", cpu.RegisterShadowHL),
+				new KeyValuePair<string, int>("SP", cpu.RegisterSP),
+				new KeyValuePair<string, int>("Flag C", cpu.RegisterF.Bit(0) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag N", cpu.RegisterF.Bit(1) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag P/V", cpu.RegisterF.Bit(2) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 3rd", cpu.RegisterF.Bit(3) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag H", cpu.RegisterF.Bit(4) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag 5th", cpu.RegisterF.Bit(5) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag Z", cpu.RegisterF.Bit(6) ? 1 : 0),
+				new KeyValuePair<string, int>("Flag S", cpu.RegisterF.Bit(7) ? 1 : 0),
+			};
+		}
 	}
 }
