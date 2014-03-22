@@ -14,8 +14,6 @@ using BizHawk.Emulation.Cores.Components.Z80;
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
   + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
-  + Still need a "disable bios for japan-only games when bios is enabled and region is export" functionality
-  + Or a "force region to japan if game is only for japan" thing. Which one is better?
  
 **********************************************************/
 
@@ -98,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
                 Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
             RomBanks = (byte)(RomData.Length / BankSize);
 
-            DisplayType = SyncSettings.UsePAL ? DisplayType.PAL : DisplayType.NTSC;
+            DisplayType = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
 			if (game["PAL"] && DisplayType != DisplayType.PAL)
 			{
 				DisplayType = DisplayType.PAL;
@@ -109,7 +107,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
 			CoreComm.VsyncDen = 1;
 
-			Region = SyncSettings.ExportRegion ? "Export" : "Japan";
+			Region = SyncSettings.ConsoleRegion;
+			if (Region == "Auto") Region = DetermineRegion(game.Region);
+
 			if (game["Japan"] && Region != "Japan")
 			{
 				Region = "Japan";
@@ -195,6 +195,29 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				SaveRAM = new byte[0x8000];
 
 			SetupMemoryDomains();
+		}
+
+		string DetermineRegion(string gameRegion)
+		{
+			if (gameRegion.IndexOf("USA") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Europe") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("World") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Brazil") >= 0)
+				return "Export";
+			if (gameRegion.IndexOf("Australia") >= 0)
+				return "Export";
+			return "Japan";
+		}
+
+		DisplayType DetermineDisplayType(string display, string region)
+		{
+			if (display == "NTSC") return DisplayType.NTSC;
+			if (display == "PAL") return DisplayType.PAL;
+			if (region == "Europe") return DisplayType.PAL;
+			return DisplayType.NTSC;
 		}
 
 		public void ResetCounters()
@@ -399,7 +422,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 		
-		readonly string[] validRegions = { "Export", "Japan" };
+		readonly string[] validRegions = { "Export", "Japan", "Auto" };
 
 		MemoryDomainList memoryDomains;
 
@@ -537,8 +560,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool EnableFM = true;
 			public bool AllowOverlock = false;
 			public bool UseBIOS = false;
-			public bool ExportRegion = true;
-			public bool UsePAL = false;
+			public string ConsoleRegion = "Export";
+			public string DisplayType = "NTSC";
 
 			public SMSSyncSettings Clone()
 			{
@@ -550,8 +573,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					x.EnableFM != y.EnableFM ||
 					x.AllowOverlock != y.AllowOverlock ||
 					x.UseBIOS != y.UseBIOS ||
-					x.ExportRegion != y.ExportRegion ||
-					x.UsePAL != y.UsePAL;
+					x.ConsoleRegion != y.ConsoleRegion ||
+					x.DisplayType != y.DisplayType;
 			}
 		}
 	}

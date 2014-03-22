@@ -230,11 +230,14 @@
 			this.PCEArcadeCardRewindEnableMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSexportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSjapanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMStoolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-			this.SMS_NTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMS_PALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionJapanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSdisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSdisplayNtscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSdisplayPalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSdisplayAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMStoolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.SMSenableBIOSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSEnableFMChipMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2069,11 +2072,8 @@
 			// SMSSubMenu
 			// 
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SMSexportToolStripMenuItem,
-            this.SMSjapanToolStripMenuItem,
-            this.SMStoolStripMenuItem1,
-            this.SMS_NTSCToolStripMenuItem,
-            this.SMS_PALToolStripMenuItem,
+            this.SMSregionToolStripMenuItem,
+            this.SMSdisplayToolStripMenuItem,
             this.SMStoolStripMenuItem2,
             this.SMSenableBIOSToolStripMenuItem,
             this.SMSEnableFMChipMenuItem,
@@ -2092,38 +2092,67 @@
 			this.SMSSubMenu.Text = "&SMS";
 			this.SMSSubMenu.DropDownOpened += new System.EventHandler(this.SMSSubMenu_DropDownOpened);
 			// 
-			// SMSexportToolStripMenuItem
+			// SMSregionToolStripMenuItem
 			// 
-			this.SMSexportToolStripMenuItem.Name = "SMSexportToolStripMenuItem";
-			this.SMSexportToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.SMSexportToolStripMenuItem.Text = "Export";
-			this.SMSexportToolStripMenuItem.Click += new System.EventHandler(this.SMS_Export_Click);
+			this.SMSregionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SMSregionExportToolStripMenuItem,
+            this.SMSregionJapanToolStripMenuItem,
+            this.SMSregionAutoToolStripMenuItem});
+			this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
+			this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.SMSregionToolStripMenuItem.Text = "Region";
 			// 
-			// SMSjapanToolStripMenuItem
+			// SMSregionExportToolStripMenuItem
 			// 
-			this.SMSjapanToolStripMenuItem.Name = "SMSjapanToolStripMenuItem";
-			this.SMSjapanToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.SMSjapanToolStripMenuItem.Text = "Japan";
-			this.SMSjapanToolStripMenuItem.Click += new System.EventHandler(this.SMS_Japan_Click);
+			this.SMSregionExportToolStripMenuItem.Name = "SMSregionExportToolStripMenuItem";
+			this.SMSregionExportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionExportToolStripMenuItem.Text = "Export";
+			this.SMSregionExportToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionExport_Click);
 			// 
-			// SMStoolStripMenuItem1
+			// SMSregionJapanToolStripMenuItem
 			// 
-			this.SMStoolStripMenuItem1.Name = "SMStoolStripMenuItem1";
-			this.SMStoolStripMenuItem1.Size = new System.Drawing.Size(238, 6);
+			this.SMSregionJapanToolStripMenuItem.Name = "SMSregionJapanToolStripMenuItem";
+			this.SMSregionJapanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionJapanToolStripMenuItem.Text = "Japan";
+			this.SMSregionJapanToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionJapan_Click);
 			// 
-			// SMS_NTSCToolStripMenuItem
+			// SMSregionAutoToolStripMenuItem
 			// 
-			this.SMS_NTSCToolStripMenuItem.Name = "SMS_NTSCToolStripMenuItem";
-			this.SMS_NTSCToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.SMS_NTSCToolStripMenuItem.Text = "NTSC";
-			this.SMS_NTSCToolStripMenuItem.Click += new System.EventHandler(this.SMS_NTSC_Click);
+			this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
+			this.SMSregionAutoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSregionAutoToolStripMenuItem.Text = "Auto";
+			this.SMSregionAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionAuto_Click);
 			// 
-			// SMS_PALToolStripMenuItem
+			// SMSdisplayToolStripMenuItem
 			// 
-			this.SMS_PALToolStripMenuItem.Name = "SMS_PALToolStripMenuItem";
-			this.SMS_PALToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.SMS_PALToolStripMenuItem.Text = "PAL";
-			this.SMS_PALToolStripMenuItem.Click += new System.EventHandler(this.SMS_PAL_Click);
+			this.SMSdisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SMSdisplayNtscToolStripMenuItem,
+            this.SMSdisplayPalToolStripMenuItem,
+            this.SMSdisplayAutoToolStripMenuItem});
+			this.SMSdisplayToolStripMenuItem.Name = "SMSdisplayToolStripMenuItem";
+			this.SMSdisplayToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.SMSdisplayToolStripMenuItem.Text = "Display Type";
+			// 
+			// SMSdisplayNtscToolStripMenuItem
+			// 
+			this.SMSdisplayNtscToolStripMenuItem.Name = "SMSdisplayNtscToolStripMenuItem";
+			this.SMSdisplayNtscToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayNtscToolStripMenuItem.Text = "NTSC";
+			this.SMSdisplayNtscToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayNTSC_Click);
+			// 
+			// SMSdisplayPalToolStripMenuItem
+			// 
+			this.SMSdisplayPalToolStripMenuItem.Name = "SMSdisplayPalToolStripMenuItem";
+			this.SMSdisplayPalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayPalToolStripMenuItem.Text = "PAL";
+			this.SMSdisplayPalToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayPAL_Click);
+			// 
+			// SMSdisplayAutoToolStripMenuItem
+			// 
+			this.SMSdisplayAutoToolStripMenuItem.Name = "SMSdisplayAutoToolStripMenuItem";
+			this.SMSdisplayAutoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SMSdisplayAutoToolStripMenuItem.Text = "Auto";
+			this.SMSdisplayAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayAuto_Click);
 			// 
 			// SMStoolStripMenuItem2
 			// 
@@ -3438,12 +3467,15 @@
 		private System.Windows.Forms.ToolStripMenuItem vDPViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSFix3DGameDisplayToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator SMStoolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem SMSexportToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SMSjapanToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator SMStoolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem SMS_NTSCToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SMS_PALToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSenableBIOSToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionExportToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionJapanToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionAutoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSdisplayToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSdisplayNtscToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSdisplayPalToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSdisplayAutoToolStripMenuItem;
 	}
 }
 
