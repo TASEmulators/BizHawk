@@ -1290,10 +1290,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = (SMS.SMSSettings)Global.Emulator.GetSettings();
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			SMSexportToolStripMenuItem.Checked = ss.ExportRegion;
-			SMSjapanToolStripMenuItem.Checked = !ss.ExportRegion;
-			SMS_NTSCToolStripMenuItem.Checked = !ss.UsePAL;
-			SMS_PALToolStripMenuItem.Checked = ss.UsePAL;
+			SMSregionExportToolStripMenuItem.Checked = ss.ConsoleRegion == "Export";
+			SMSregionJapanToolStripMenuItem.Checked = ss.ConsoleRegion == "Japan";
+			SMSregionAutoToolStripMenuItem.Checked = ss.ConsoleRegion == "Auto";
+			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
+			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
+			SMSdisplayAutoToolStripMenuItem.Checked = ss.DisplayType == "Auto";
 			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
@@ -1310,45 +1312,61 @@ namespace BizHawk.Client.EmuHawk
 
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
-				SMS_NTSCToolStripMenuItem.Visible = 
-				SMS_PALToolStripMenuItem.Visible = 
-				SMStoolStripMenuItem2.Visible =
+				SMSdisplayToolStripMenuItem.Visible = 
 				Global.Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
 				HighlightActiveDisplayRegionMenuItem.Visible =
 				GGGameGenieMenuItem.Visible =
 				Global.Game.System == "GG";
+
+			SMSOverclockMenuItem.Visible =
+				SMSVDPViewerToolStripMenuItem.Visible = 
+				Global.Game.System != "SG";
 		}
 
-		private void SMS_Export_Click(object sender, EventArgs e)
+		private void SMS_RegionExport_Click(object sender, EventArgs e)
 		{
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			ss.ExportRegion = true;
+			ss.ConsoleRegion = "Export";
 			PutCoreSyncSettings(ss);
 		}
 
-		private void SMS_Japan_Click(object sender, EventArgs e)
+		private void SMS_RegionJapan_Click(object sender, EventArgs e)
 		{
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			ss.ExportRegion = false;
+			ss.ConsoleRegion = "Japan";
 			PutCoreSyncSettings(ss);
 		}
 
-		private void SMS_NTSC_Click(object sender, EventArgs e)
+		private void SMS_RegionAuto_Click(object sender, EventArgs e)
 		{
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			ss.UsePAL = false;
+			ss.ConsoleRegion = "Auto";
 			PutCoreSyncSettings(ss);
 		}
 
-		private void SMS_PAL_Click(object sender, EventArgs e)
+		private void SMS_DisplayNTSC_Click(object sender, EventArgs e)
 		{
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
-			ss.UsePAL = true;
+			ss.DisplayType = "NTSC";
 			PutCoreSyncSettings(ss);
 		}
-		
+
+		private void SMS_DisplayPAL_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisplayType = "PAL";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_DisplayAuto_Click(object sender, EventArgs e)
+		{
+			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
+			ss.DisplayType = "Auto";
+			PutCoreSyncSettings(ss);
+		}
+
 		private void SMS_BIOS_Click(object sender, EventArgs e)
 		{
 			var ss = (SMS.SMSSyncSettings)Global.Emulator.GetSyncSettings();
