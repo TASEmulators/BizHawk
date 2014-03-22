@@ -21,7 +21,7 @@
 
 		byte ReadMemory(ushort address)
 		{
-			byte ret;
+			byte ret = 0xFF;
 
 			if (address < 0xC000)
 			{
@@ -40,8 +40,8 @@
 					switch (SaveRamBank)
 					{
 						case 0: ret = RomData[(RomBank2 * BankSize) + (address & BankSizeMask)]; break;
-						case 1: ret = SaveRAM[address & BankSizeMask]; break;
-						case 2: ret = SaveRAM[BankSize + (address & BankSizeMask)]; break;
+						case 1: if (SaveRAM != null) ret = SaveRAM[(address & BankSizeMask) % SaveRAM.Length]; break;
+						case 2: if (SaveRAM != null) ret = SaveRAM[(BankSize + (address & BankSizeMask)) & BankSizeMask]; break;
 						default:
 							ret = SystemRam[address & RamSizeMask];
 							break;
@@ -63,14 +63,18 @@
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
 
-			else if (address >= 0x8000)
+			else if (address >= 0x8000) 
 			{
-				SaveRamModified = true;
-				switch (SaveRamBank)
+				if (SaveRAM != null)
 				{
-					case 1: SaveRAM[address & BankSizeMask] = value; return;
-					case 2: SaveRAM[BankSize + (address & BankSizeMask)] = value; return;
+					SaveRamModified = true;
+					switch (SaveRamBank)
+					{
+						case 1: SaveRAM[(address & BankSizeMask) % SaveRAM.Length] = value; return;
+						case 2: SaveRAM[(BankSize + (address & BankSizeMask)) & BankSizeMask] = value; return;
+					}
 				}
+				else System.Console.WriteLine("Game attempt to use SRAM but SRAM not present");
 			}
 
 			if (address >= 0xFFFC)
@@ -87,7 +91,6 @@
 				else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
 				return;
 			}
-
 			CoreComm.MemoryCallbackSystem.CallWrite((uint)address);
 		}
 

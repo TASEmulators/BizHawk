@@ -9,17 +9,13 @@ using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
 
 /*****************************************************
-
   TODO: 
   + HCounter
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
   + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
-  + Add Region to GameDB.
   + Still need a "disable bios for japan-only games when bios is enabled and region is export" functionality
   + Or a "force region to japan if game is only for japan" thing. Which one is better?
-  + I confess, Mapper system needs some refactoring and love. But right now I want to get all games to work and THEN refactor it.
-  + Savestate system.... maybe use a zeromus-like system. Except maintain the text-savestate compatibility. Might give up some speed for improved maintainability tho.
  
 **********************************************************/
 
@@ -36,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte RomBanks;
 
 		// SaveRAM
-		public byte[] SaveRAM = new byte[BankSize * 2];
+		public byte[] SaveRAM;
 		public byte SaveRamBank;
 
 		public byte[] BiosRom;
@@ -70,13 +66,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsGameGear = false;
 		public bool HasYM2413 = false;
 
-		int _lagcount = 0;
+		int frame = 0;
+		int lagCount = 0;
 		bool lagged = true;
-		bool islag = false;
-		public int Frame { get; set; }
-	
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
+		bool isLag = false;
+		public int Frame { get { return frame; } set { frame = value; } }
+		public int LagCount { get { return lagCount; } set { lagCount = value; } }
+		public bool IsLagFrame { get { return isLag; } }
 		byte Port01 = 0xFF;
 		byte Port02 = 0xFF;
 		byte Port3E = 0xAF;
@@ -92,9 +88,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
-
 			CoreComm = comm;
-			
+
 			IsGameGear = game.System == "GG";
 		    RomData = rom;
             CoreComm.CpuTraceAvailable = true;
@@ -193,15 +188,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if (SyncSettings.UseBIOS && BiosRom == null)
 					CoreComm.Notify("BIOS was selected, but rom image not available. BIOS not enabled.");
 			}
-            
+
+			if (game["SRAM"])
+				SaveRAM = new byte[int.Parse(game.OptionValue("SRAM"))];
+			else if (game.NotInDatabase)
+				SaveRAM = new byte[0x8000];
+
 			SetupMemoryDomains();
 		}
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			_lagcount = 0;
-			islag = false;
+			lagCount = 0;
+			isLag = false;
 		}
 
 		public byte ReadPort(ushort port)
@@ -298,183 +298,82 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 			if (lagged)
 			{
-				_lagcount++;
-				islag = true;
+				lagCount++;
+				isLag = true;
 			}
 			else
-				islag = false;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			writer.WriteLine("[SMS]\n");
-			Cpu.SaveStateText(writer);
-			PSG.SaveStateText(writer);
-			Vdp.SaveStateText(writer);
-
-			writer.WriteLine("Frame {0}", Frame);
-			writer.WriteLine("Lag {0}", _lagcount);
-			writer.WriteLine("IsLag {0}", islag);
-			writer.WriteLine("Bank0 {0}", RomBank0);
-			writer.WriteLine("Bank1 {0}", RomBank1);
-			writer.WriteLine("Bank2 {0}", RomBank2);
-			writer.WriteLine("Bank3 {0}", RomBank3);
-			writer.Write("RAM ");
-			SystemRam.SaveAsHex(writer);
-			writer.WriteLine("Port01 {0:X2}", Port01);
-			writer.WriteLine("Port02 {0:X2}", Port02);
-			writer.WriteLine("Port3E {0:X2}", Port3E);
-			writer.WriteLine("Port3F {0:X2}", Port3F);
-			int SaveRamLen = Util.SaveRamBytesUsed(SaveRAM);
-			if (SaveRamLen > 0)
-			{
-				writer.Write("SaveRAM ");
-				SaveRAM.SaveAsHex(writer, SaveRamLen);
-			}
-			if (ExtRam != null)
-			{
-				writer.Write("ExtRAM ");
-				ExtRam.SaveAsHex(writer, ExtRam.Length);
-			}
-			if (HasYM2413)
-			{
-				writer.Write("FMRegs ");
-				YM2413.opll.reg.SaveAsHex(writer);
-			}
-			writer.WriteLine("[/SMS]");
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[SMS]") continue;
-				if (args[0] == "[/SMS]") break;
-				if (args[0] == "Bank0")
-					RomBank0 = byte.Parse(args[1]);
-				else if (args[0] == "Bank1")
-					RomBank1 = byte.Parse(args[1]);
-				else if (args[0] == "Bank2")
-					RomBank2 = byte.Parse(args[1]);
-				else if (args[0] == "Bank3")
-					RomBank3 = byte.Parse(args[1]);
-				else if (args[0] == "Frame")
-					Frame = int.Parse(args[1]);
-				else if (args[0] == "Lag")
-					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "IsLag")
-					islag = bool.Parse(args[1]);
-				else if (args[0] == "RAM")
-					SystemRam.ReadFromHex(args[1]);
-				else if (args[0] == "SaveRAM")
-				{
-					for (int i = 0; i < SaveRAM.Length; i++) SaveRAM[i] = 0;
-					SaveRAM.ReadFromHex(args[1]);
-				}
-				else if (args[0] == "ExtRAM")
-				{
-					for (int i = 0; i < ExtRam.Length; i++) ExtRam[i] = 0;
-					ExtRam.ReadFromHex(args[1]);
-				}
-				else if (args[0] == "FMRegs")
-				{
-					byte[] regs = new byte[YM2413.opll.reg.Length];
-					regs.ReadFromHex(args[1]);
-					for (byte i = 0; i < regs.Length; i++)
-						YM2413.Write(i, regs[i]);
-				}
-				else if (args[0] == "Port01")
-					Port01 = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Port02")
-					Port02 = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Port3E")
-					Port3E = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Port3F")
-					Port3F = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "[Z80]")
-					Cpu.LoadStateText(reader);
-				else if (args[0] == "[PSG]")
-					PSG.LoadStateText(reader);
-				else if (args[0] == "[VDP]")
-					Vdp.LoadStateText(reader);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			int buflen = 24809 + 16384 + 16384;
-			if (ExtRam != null)
-				buflen += ExtRam.Length;
-			var buf = new byte[buflen];
-			var stream = new MemoryStream(buf);
-			var writer = new BinaryWriter(stream);
-			SaveStateBinary(writer);
-			if (stream.Length != buf.Length)
-				throw new Exception(string.Format("savestate buffer underrun: {0} < {1}", stream.Length, buf.Length));
-			writer.Close();
-			return buf;
+				isLag = false;
 		}
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
-
-		public void SaveStateBinary(BinaryWriter writer)
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); PostLoadState(); }
+		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
+		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); PostLoadState(); }
+		
+		void SyncState(Serializer ser)
 		{
-			Cpu.SaveStateBinary(writer);
-			PSG.SaveStateBinary(writer);
-			Vdp.SaveStateBinary(writer);
+			ser.BeginSection("SMS");
+			Cpu.SyncState(ser);
+			Vdp.SyncState(ser);
+			PSG.SyncState(ser);
+			ser.Sync("RAM", ref SystemRam, false);
+			ser.Sync("RomBank0", ref RomBank0);
+			ser.Sync("RomBank1", ref RomBank1);
+			ser.Sync("RomBank2", ref RomBank2);
+			ser.Sync("RomBank3", ref RomBank3);
+			ser.Sync("Port01", ref Port01);
+			ser.Sync("Port02", ref Port02);
+			ser.Sync("Port3E", ref Port3E);
+			ser.Sync("Port3F", ref Port3F);
 
-			writer.Write(Frame);
-			writer.Write(_lagcount);
-			writer.Write(islag);
-			writer.Write(RomBank0);
-			writer.Write(RomBank1);
-			writer.Write(RomBank2);
-			writer.Write(RomBank3);
-			writer.Write(SystemRam);
-			writer.Write(SaveRAM);
-			writer.Write(Port01);
-			writer.Write(Port02);
-			writer.Write(Port3E);
-			writer.Write(Port3F);
+			if (SaveRAM != null)
+			{
+				ser.Sync("SaveRAM", ref SaveRAM, false);
+				ser.Sync("SaveRamBank", ref SaveRamBank);
+			}
 			if (ExtRam != null)
-				writer.Write(ExtRam);
-			writer.Write(YM2413.opll.reg);
+				ser.Sync("ExtRAM", ref ExtRam, true);
+			if (HasYM2413)
+				YM2413.SyncState(ser);
+
+			ser.Sync("Frame", ref frame);
+			ser.Sync("LagCount", ref lagCount);
+			ser.Sync("IsLag", ref isLag);
+
+			ser.EndSection();
 		}
 
-		public void LoadStateBinary(BinaryReader reader)
+		void PostLoadState()
 		{
-			Cpu.LoadStateBinary(reader);
-			PSG.LoadStateBinary(reader);
-			Vdp.LoadStateBinary(reader);
-
-			Frame = reader.ReadInt32();
-			_lagcount = reader.ReadInt32();
-			islag = reader.ReadBoolean();
-			RomBank0 = reader.ReadByte();
-			RomBank1 = reader.ReadByte();
-			RomBank2 = reader.ReadByte();
-			RomBank3 = reader.ReadByte();
-			SystemRam = reader.ReadBytes(SystemRam.Length);
-			reader.Read(SaveRAM, 0, SaveRAM.Length);
-			Port01 = reader.ReadByte();
-			Port02 = reader.ReadByte();
-			Port3E = reader.ReadByte();
-			Port3F = reader.ReadByte();
-			if (ExtRam != null)
-				reader.Read(ExtRam, 0, ExtRam.Length);
+			Vdp.PostLoadState();
+			PSG.PostLoadState();
 			if (HasYM2413)
+				YM2413.PostLoadState();
+		}
+
+		byte[] stateBuffer;
+		public byte[] SaveStateBinary()
+		{
+			if (stateBuffer == null)
 			{
-				byte[] regs = new byte[YM2413.opll.reg.Length];
-				reader.Read(regs, 0, regs.Length);
-				for (byte i = 0; i < regs.Length; i++)
-					YM2413.Write(i, regs[i]);
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				stateBuffer = stream.ToArray();
+				writer.Close();
+				return stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return stateBuffer;
 			}
 		}
-		
+
 		public IVideoProvider VideoProvider { get { return Vdp; } }
 		public CoreComm CoreComm { get; private set; }
 
@@ -513,9 +412,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
 				addr => Vdp.VRAM[addr],
 				(addr, value) => Vdp.VRAM[addr] = value);
-			var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
-				addr => SaveRAM[addr],
-				(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
+			
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
@@ -532,8 +429,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
-			domains.Add(SaveRamDomain);
 			domains.Add(SystemBusDomain);
+
+			if (SaveRAM != null)
+			{
+				var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+					addr => SaveRAM[addr],
+					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
+				domains.Add(SaveRamDomain);
+			}
+			if (ExtRam != null)
+			{
+				var ExtRamDomain = new MemoryDomain("Cart (Volatile) RAM", ExtRam.Length, MemoryDomain.Endian.Little,
+					addr => ExtRam[addr],
+					(addr, value) => { ExtRam[addr] = value; });
+				domains.Add(ExtRamDomain);
+			}
 			memoryDomains = new MemoryDomainList(domains);
 		}
 

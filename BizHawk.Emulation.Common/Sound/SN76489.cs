@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-
-// TODO the freq->note translation should be moved to a separate utility class.
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.Components
 {
-	/// <summary>
-	/// Emulates a Texas Instruments SN76489
-	/// </summary>
 	public sealed class SN76489 : ISoundProvider
 	{
 		public sealed class Channel
@@ -175,251 +171,58 @@ namespace BizHawk.Emulation.Common.Components
 			}
 		}
 
+		byte stereoPanning = 0xFF;
 		public byte StereoPanning
 		{
 			get
 			{
 				byte value = 0;
-				if (Channels[0].Left) value |= 0x10;
+				if (Channels[0].Left)  value |= 0x10;
 				if (Channels[0].Right) value |= 0x01;
-				if (Channels[1].Left) value |= 0x20;
+				if (Channels[1].Left)  value |= 0x20;
 				if (Channels[1].Right) value |= 0x02;
-				if (Channels[2].Left) value |= 0x40;
+				if (Channels[2].Left)  value |= 0x40;
 				if (Channels[2].Right) value |= 0x04;
-				if (Channels[3].Left) value |= 0x80;
+				if (Channels[3].Left)  value |= 0x80;
 				if (Channels[3].Right) value |= 0x08;
 				return value;
 			}
 			set
 			{
-				Channels[0].Left = (value & 0x10) != 0;
+				Channels[0].Left  = (value & 0x10) != 0;
 				Channels[0].Right = (value & 0x01) != 0;
-				Channels[1].Left = (value & 0x20) != 0;
+				Channels[1].Left  = (value & 0x20) != 0;
 				Channels[1].Right = (value & 0x02) != 0;
-				Channels[2].Left = (value & 0x40) != 0;
+				Channels[2].Left  = (value & 0x40) != 0;
 				Channels[2].Right = (value & 0x04) != 0;
-				Channels[3].Left = (value & 0x80) != 0;
+				Channels[3].Left  = (value & 0x80) != 0;
 				Channels[3].Right = (value & 0x08) != 0;
+				stereoPanning = value;
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[PSG]");
-			writer.WriteLine("Volume0 {0:X2}", Channels[0].Volume);
-			writer.WriteLine("Volume1 {0:X2}", Channels[1].Volume);
-			writer.WriteLine("Volume2 {0:X2}", Channels[2].Volume);
-			writer.WriteLine("Volume3 {0:X2}", Channels[3].Volume);
-			writer.WriteLine("Freq0 {0:X4}", Channels[0].Frequency);
-			writer.WriteLine("Freq1 {0:X4}", Channels[1].Frequency);
-			writer.WriteLine("Freq2 {0:X4}", Channels[2].Frequency);
-			writer.WriteLine("Freq3 {0:X4}", Channels[3].Frequency);
-			writer.WriteLine("NoiseType {0:X}", Channels[3].NoiseType);
-			writer.WriteLine("PsgLatch {0:X2}", PsgLatch);
-			writer.WriteLine("Panning {0:X2}", StereoPanning);
-			writer.WriteLine("[/PSG]");
-			writer.WriteLine();
+			ser.BeginSection("PSG");
+			ser.Sync("Volume0", ref Channels[0].Volume);
+			ser.Sync("Volume1", ref Channels[1].Volume);
+			ser.Sync("Volume2", ref Channels[2].Volume);
+			ser.Sync("Volume3", ref Channels[3].Volume);
+			ser.Sync("Freq0", ref Channels[0].Frequency);
+			ser.Sync("Freq1", ref Channels[1].Frequency);
+			ser.Sync("Freq2", ref Channels[2].Frequency);
+			ser.Sync("Freq3", ref Channels[3].Frequency);
+			ser.Sync("NoiseType", ref Channels[3].NoiseType);
+			ser.Sync("PsgLatch", ref PsgLatch);
+			ser.Sync("Panning", ref stereoPanning);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
+		public void PostLoadState()
 		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/PSG]") break;
-				if (args[0] == "Volume0")
-					Channels[0].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Volume1")
-					Channels[1].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Volume2")
-					Channels[2].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Volume3")
-					Channels[3].Volume = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Freq0")
-					Channels[0].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Freq1")
-					Channels[1].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Freq2")
-					Channels[2].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Freq3")
-					Channels[3].Frequency = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "NoiseType")
-					Channels[3].NoiseType = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "PsgLatch")
-					PsgLatch = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Panning")
-					StereoPanning = byte.Parse(args[1], NumberStyles.HexNumber);
-
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
+			StereoPanning = stereoPanning;
 			UpdateNoiseType(Channels[3].NoiseType);
 		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			writer.Write(Channels[0].Volume);
-			writer.Write(Channels[1].Volume);
-			writer.Write(Channels[2].Volume);
-			writer.Write(Channels[3].Volume);
-			writer.Write(Channels[0].Frequency);
-			writer.Write(Channels[1].Frequency);
-			writer.Write(Channels[2].Frequency);
-			writer.Write(Channels[3].Frequency);
-			writer.Write(Channels[3].NoiseType);
-			writer.Write(PsgLatch);
-			writer.Write(StereoPanning);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			Channels[0].Volume = reader.ReadByte();
-			Channels[1].Volume = reader.ReadByte();
-			Channels[2].Volume = reader.ReadByte();
-			Channels[3].Volume = reader.ReadByte();
-			Channels[0].Frequency = reader.ReadUInt16();
-			Channels[1].Frequency = reader.ReadUInt16();
-			Channels[2].Frequency = reader.ReadUInt16();
-			Channels[3].Frequency = reader.ReadUInt16();
-			UpdateNoiseType(reader.ReadByte());
-			PsgLatch = reader.ReadByte();
-			StereoPanning = reader.ReadByte();
-		}
-
-		#region Frequency -> Note Conversion (for interested humans)
-
-		public static string GetNote(int freq)
-		{
-			if (freq < 26) return "LOW";
-			if (freq > 4435) return "HIGH";
-
-			for (int i = 0; i < frequencies.Length - 1; i++)
-			{
-				if (freq >= frequencies[i + 1]) continue;
-				int nextNoteDistance = frequencies[i + 1] - frequencies[i];
-				int distance = freq - frequencies[i];
-				if (distance < nextNoteDistance / 2)
-				{
-					// note identified
-					return notes[i];
-				}
-			}
-			return "?";
-		}
-
-		// For the curious, A4 = 440hz. Every octave is a doubling, so A5=880, A3=220
-		// Each next step is a factor of the 12-root of 2. So to go up a step you multiply by 1.0594630943592952645618252949463
-		// Next step from A4 is A#4. A#4 = (440.00 * 1.05946...) = 466.163...
-		// Note that because frequencies must be integers, SMS games will be slightly out of pitch to a normally tuned instrument, especially at the low end.
-
-		static readonly int[] frequencies =
-            {
-                27,   // A0
-                29,   // A#0
-                31,   // B0
-                33,   // C1
-                35,   // C#1
-                37,   // D1
-                39,   // D#1
-                41,   // E1
-                44,   // F1
-                46,   // F#1
-                49,   // G1
-                52,   // G#1
-                55,   // A1
-                58,   // A#1
-                62,   // B1
-                65,   // C2
-                69,   // C#2
-                73,   // D2
-                78,   // D#2
-                82,   // E2
-                87,   // F2
-                92,   // F#2
-                98,   // G2
-                104,  // G#2
-                110,  // A2
-                117,  // A#2
-                123,  // B2
-                131,  // C3
-                139,  // C#3
-                147,  // D3
-                156,  // D#3
-                165,  // E3
-                175,  // F3
-                185,  // F#3
-                196,  // G3
-                208,  // G#3
-                220,  // A3
-                233,  // A#3
-                247,  // B3
-                262,  // C4
-                277,  // C#4
-                294,  // D4
-                311,  // D#4
-                330,  // E4
-                349,  // F4
-                370,  // F#4
-                392,  // G4
-                415,  // G#4
-                440,  // A4
-                466,  // A#4
-                494,  // B4
-                523,  // C5
-                554,  // C#5
-                587,  // D5
-                622,  // D#5
-                659,  // E5
-                698,  // F5
-                740,  // F#5
-                784,  // G5
-                831,  // G#5
-                880,  // A5
-                932,  // A#5
-                988,  // B5
-                1046, // C6
-                1109, // C#6
-                1175, // D6
-                1245, // D#6
-                1319, // E6
-                1397, // F6
-                1480, // F#6
-                1568, // G6
-                1661, // G#6
-                1760, // A6
-                1865, // A#6
-                1976, // B6
-                2093, // C7
-                2217, // C#7
-                2349, // D7
-                2489, // D#7
-                2637, // E7
-                2794, // F7
-                2960, // F#7
-                3136, // G7
-                3322, // G#7
-                3520, // A7
-                3729, // A#7
-                3951, // B7
-                4186, // C8
-                4435  // C#8
-            };
-
-		static readonly string[] notes =
-            {
-                                                                 "A0","A#0","B0",
-                "C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1","A1","A#1","B1",
-                "C2","C#2","D2","D#2","E2","F2","F#2","G2","G#2","A2","A#2","B2",
-                "C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3","A#3","B3",
-                "C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4",
-                "C5","C#5","D5","D#5","E5","F5","F#5","G5","G#5","A5","A#5","B5",
-                "C6","C#6","D6","D#6","E6","F6","F#6","G6","G#6","A6","A#6","B6",
-                "C7","C#7","D7","D#7","E7","F7","F#7","G7","G#7","A7","A#7","B7",
-                "C8","HIGH"
-            };
-
-		#endregion
 
 		public int MaxVolume { get; set; }
 		public void DiscardSamples() { commands.Clear(); }
