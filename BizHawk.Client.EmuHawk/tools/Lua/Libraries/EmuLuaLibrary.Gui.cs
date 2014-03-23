@@ -125,17 +125,14 @@ namespace BizHawk.Client.EmuHawk
 			object forecolor = null, 
 			string anchor = null)
 		{
-			if (!alert)
+			if (forecolor == null)
 			{
-				if (forecolor == null)
-				{
-					forecolor = "white";
-				}
+				forecolor = "white";
+			}
 
-				if (background == null)
-				{
-					background = "black";
-				}
+			if (background == null)
+			{
+				background = "black";
 			}
 
 			var a = 0;

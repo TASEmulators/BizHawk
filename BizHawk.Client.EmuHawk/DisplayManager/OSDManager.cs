@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
 
 						if (GUITextList[x].Alert)
-							g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
+							g.DrawString(GUITextList[x].Message, AlertFont, FixedMessagesColor, posx, posy);
 						else
 							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
 					}
