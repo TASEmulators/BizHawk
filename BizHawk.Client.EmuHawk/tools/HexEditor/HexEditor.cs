@@ -962,16 +962,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private Point GetAddressCoordinates(int address)
 		{
+			var extra = (address % _dataSize) * FontWidth * 2;
 			switch (_dataSize)
 			{
 				default:
 				case 1:
-					return new Point(((address % 16) * (FontWidth * 3)) + 67, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
+					return new Point(((address % 16) * (FontWidth * 3)) + 67 + extra, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / _dataSize) * (FontWidth * 5)) + 67, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / _dataSize) * (FontWidth * 5)) + 67 + extra, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / _dataSize) * (FontWidth * 9)) + 67, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / _dataSize) * (FontWidth * 9)) + 67 + extra, (((address / 16) - HexScrollBar.Value) * fontHeight) + 30);
 			}
+		}
+
+		// TODO: rename this, but it is a hack work around for highlighting misaligned addresses that result from highlighting on in a smaller data size and switching size
+		private bool NeedsExtra(int val)
+		{
+			return val % _dataSize > 0;
 		}
 
 		private int GetTextOffset()
@@ -1928,7 +1935,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_domain.ToString() == cheat.Domain.Name)
 					{
-						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(15 * _dataSize, fontHeight));
+						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(15 * (int)cheat.Size, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
@@ -1941,7 +1948,7 @@ namespace BizHawk.Client.EmuHawk
 				var textX = GetTextX(_addressHighlighted);
 				var textpoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(15 * _dataSize, fontHeight));
+				var rect = new Rectangle(point, new Size(15 * _dataSize + (NeedsExtra(_addressHighlighted) ? FontWidth : 0), fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 
 				var textrect = new Rectangle(textpoint, new Size(8 * _dataSize, fontHeight));
