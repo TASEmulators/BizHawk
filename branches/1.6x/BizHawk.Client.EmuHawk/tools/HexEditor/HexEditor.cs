@@ -196,7 +196,6 @@ namespace BizHawk.Client.EmuHawk
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				_findStr = search;
-				MemoryViewerBox.Focus();
 			}
 			else if (wrap == false)  
 			{
@@ -249,7 +248,6 @@ namespace BizHawk.Client.EmuHawk
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				_findStr = search;
-				MemoryViewerBox.Focus();
 			}
 			else if (wrap == false) 
 			{
