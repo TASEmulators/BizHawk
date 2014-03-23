@@ -46,8 +46,11 @@ namespace BizHawk.Client.EmuHawk
 				return FindBox.Text;
 			}
 			
+			
+			var bytes = GlobalWin.Tools.HexEditor.ConvertTextToBytes(FindBox.Text);
+
 			var bytestring = new StringBuilder();
-			foreach (var b in FindBox.Text.Select(Convert.ToByte))
+			foreach (var b in bytes)
 			{
 				bytestring.Append(string.Format("{0:X2}", b));
 			}
