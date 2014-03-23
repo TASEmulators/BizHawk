@@ -389,16 +389,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			if (SelectedCheats.Any())
+			if (!CheatListView.SelectAllInProgress)
 			{
-				var cheat = SelectedCheats.First();
-				CheatEditor.SetCheat(cheat);
-				CheatGroupBox.Text = "Editing Cheat " + cheat.Name + " - " + cheat.AddressStr;
-			}
-			else
-			{
-				CheatEditor.ClearForm();
-				CheatGroupBox.Text = "New Cheat";
+				if (SelectedCheats.Any())
+				{
+					var cheat = SelectedCheats.First();
+					CheatEditor.SetCheat(cheat);
+					CheatGroupBox.Text = "Editing Cheat " + cheat.Name + " - " + cheat.AddressStr;
+				}
+				else
+				{
+					CheatEditor.ClearForm();
+					CheatGroupBox.Text = "New Cheat";
+				}
 			}
 		}
 
