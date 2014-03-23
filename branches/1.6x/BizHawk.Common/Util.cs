@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
 
 namespace BizHawk.Common
 {
@@ -10,13 +10,13 @@ namespace BizHawk.Common
 		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		private static System.Runtime.InteropServices.GCHandle HexConvHandle;
 
-		public static char* HexConvPtr { get; set; }
-
 		static Util()
 		{
 			HexConvHandle = System.Runtime.InteropServices.GCHandle.Alloc(HexConvArr, System.Runtime.InteropServices.GCHandleType.Pinned);
 			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
 		}
+
+		public static char* HexConvPtr { get; set; }
 
 		public static string Hash_MD5(byte[] data, int offset, int len)
 		{
@@ -58,11 +58,11 @@ namespace BizHawk.Common
 
 		public static int SaveRamBytesUsed(byte[] saveRam)
 		{
-			for (int j = saveRam.Length - 1; j >= 0; j--)
+			for (var i = saveRam.Length - 1; i >= 0; i--)
 			{
-				if (saveRam[j] != 0)
+				if (saveRam[i] != 0)
 				{
-					return j + 1;
+					return i + 1;
 				}
 			}
 
@@ -73,7 +73,7 @@ namespace BizHawk.Common
 		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];
-			for (int b = 0; b < bytes; b++)
+			for (var b = 0; b < bytes; b++)
 			{
 				read[b] = r.ReadByte();
 			}
@@ -84,7 +84,7 @@ namespace BizHawk.Common
 		public static string ReadStringAsciiZ(this BinaryReader r)
 		{
 			var sb = new StringBuilder();
-			for (; ; )
+			for (;;)
 			{
 				int b = r.ReadByte();
 				if (b <= 0)
@@ -128,7 +128,7 @@ namespace BizHawk.Common
 				int d = 0;
 				for (int j = 0; j < 2; j++)
 				{
-					var c = char.ToLower(str[i * 2 + j]);
+					var c = char.ToLower(str[(i * 2) + j]);
 					if (c >= '0' && c <= '9')
 					{
 						d += c - '0';
@@ -146,11 +146,11 @@ namespace BizHawk.Common
 					{
 						d <<= 4;
 					}
-
 				}
 
 				ms.WriteByte((byte)d);
 			}
+
 			return ms.ToArray();
 		}
 
@@ -346,11 +346,11 @@ namespace BizHawk.Common
 
 		public static string FormatFileSize(long filesize)
 		{
-			Decimal size = filesize;
+			decimal size = filesize;
 
-			Decimal OneKiloByte = 1024M;
-			Decimal OneMegaByte = OneKiloByte * 1024M;
-			Decimal OneGigaByte = OneMegaByte * 1024M;
+			const decimal OneKiloByte = 1024M;
+			const decimal OneMegaByte = OneKiloByte * 1024M;
+			decimal OneGigaByte = OneMegaByte * 1024M;
 
 			string suffix;
 			if (size > 1024 * 1024 * 1024)
@@ -373,26 +373,45 @@ namespace BizHawk.Common
 				suffix = " B";
 			}
 
-			var precision = "2";
-			return String.Format("{0:N" + precision + "}{1}", size, suffix);
+			const string precision = "2";
+			return string.Format("{0:N" + precision + "}{1}", size, suffix);
 		}
 
 		// http://stackoverflow.com/questions/3928822/comparing-2-dictionarystring-string-instances
 		public static bool DictionaryEqual<TKey, TValue>(
 			IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
 		{
-			if (first == second) return true;
-			if ((first == null) || (second == null)) return false;
-			if (first.Count != second.Count) return false;
+			if (first == second)
+			{
+				return true;
+			}
+
+			if ((first == null) || (second == null))
+			{
+				return false;
+			}
+
+			if (first.Count != second.Count)
+			{
+				return false;
+			}
 
 			var comparer = EqualityComparer<TValue>.Default;
 
-			foreach (KeyValuePair<TKey, TValue> kvp in first)
+			foreach (var kvp in first)
 			{
 				TValue secondValue;
-				if (!second.TryGetValue(kvp.Key, out secondValue)) return false;
-				if (!comparer.Equals(kvp.Value, secondValue)) return false;
+				if (!second.TryGetValue(kvp.Key, out secondValue))
+				{
+					return false;
+				}
+
+				if (!comparer.Equals(kvp.Value, secondValue))
+				{
+					return false;
+				}
 			}
+
 			return true;
 		}
 
@@ -407,9 +426,11 @@ namespace BizHawk.Common
 		{
 			TValue ret;
 			if (!dict.TryGetValue(key, out ret))
+			{
 				return defaultvalue;
-			else
-				return ret;
+			}
+			
+			return ret;
 		}
 	}
 
@@ -420,6 +441,14 @@ namespace BizHawk.Common
 
 	internal class SuperGloballyUniqueID
 	{
+		private static readonly string StaticPart;
+		private static int ctr;
+
+		static SuperGloballyUniqueID()
+		{
+			StaticPart = "bizhawk-" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid();
+		}
+
 		public static string Next()
 		{
 			int myctr;
@@ -430,13 +459,5 @@ namespace BizHawk.Common
 
 			return StaticPart + "-" + myctr;
 		}
-
-		static SuperGloballyUniqueID()
-		{
-			StaticPart = "bizhawk-" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid();
-		}
-
-		private static readonly string StaticPart;
-		private static int ctr;
 	}
 }

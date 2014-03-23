@@ -768,7 +768,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			board.PostConfigure();
 
+			// set up display type
+
+			NESSyncSettings.Region fromrom = DetectRegion(cart.system);
+			NESSyncSettings.Region fromsettings = SyncSettings.RegionOverride;
+
+			if (fromsettings != NESSyncSettings.Region.Default)
+			{
+				Console.WriteLine("Using system region override");
+				fromrom = fromsettings;
+			}
+			switch (fromrom)
+			{
+				case NESSyncSettings.Region.Dendy:
+					_display_type = Common.DisplayType.DENDY;
+					break;
+				case NESSyncSettings.Region.NTSC:
+					_display_type = Common.DisplayType.NTSC;
+					break;
+				case NESSyncSettings.Region.PAL:
+					_display_type = Common.DisplayType.PAL;
+					break;
+				default:
+					_display_type = Common.DisplayType.NTSC;
+					break;
+			}
+			Console.WriteLine("Using NES system region of {0}", _display_type);
+
 			HardReset();
+		}
+
+		NESSyncSettings.Region DetectRegion(string system)
+		{
+			switch (system)
+			{
+				case "NES-PAL":
+				case "NES-PAL-A":
+				case "NES-PAL-B":
+					return NESSyncSettings.Region.PAL;
+				case "NES-NTSC":
+				case "Famicom":
+					return NESSyncSettings.Region.NTSC;
+				// this is in bootgod, but not used at all
+				case "Dendy":
+					return NESSyncSettings.Region.Dendy;
+				case null:
+					Console.WriteLine("Rom is of unknown NES region!");
+					return NESSyncSettings.Region.Default;
+				default:
+					Console.WriteLine("Unrecognized region {0}", system);
+					return NESSyncSettings.Region.Default;
+			}
 		}
 
 		void SyncState(Serializer ser)
@@ -926,6 +976,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
 
+			public enum Region
+			{
+				Default,
+				NTSC,
+				PAL,
+				Dendy
+			};
+
+			public Region RegionOverride = Region.Default;
+
 			public NESSyncSettings Clone()
 			{
 				var ret = (NESSyncSettings)MemberwiseClone();
@@ -935,7 +995,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public static bool NeedsReboot(NESSyncSettings x, NESSyncSettings y)
 			{
-				return !Util.DictionaryEqual(x.BoardProperties, y.BoardProperties);
+				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) && x.RegionOverride == y.RegionOverride);
 			}
 		}
 
