@@ -776,11 +776,21 @@ namespace BizHawk.Client.EmuHawk
 			selection = -1;
 		}
 
+		// Informs user that a select all event is in place, can be used in change events to wait until this is false
+		public bool SelectAllInProgress { get; set; }
+
 		public void SelectAll()
 		{
 			this.BeginUpdate();
+			SelectAllInProgress = true;
+
 			for (var i = 0; i < _itemCount; i++)
 			{
+				if (i == _itemCount - 1)
+				{
+					SelectAllInProgress = false;
+				}
+
 				this.SelectItem(i, true);
 			}
 
