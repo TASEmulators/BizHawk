@@ -2,23 +2,27 @@
 using System.Globalization;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public interface INumberBox
 	{
+		bool Nullable { get; }
 		int? ToRawInt();
 		void SetFromRawInt(int? rawint);
-		bool Nullable { get; }
 	}
 
 	public class HexTextBox : TextBox, INumberBox
 	{
-		private string _addressFormatStr = String.Empty;
-		private int? _maxSize = null;
+		private string _addressFormatStr = string.Empty;
+		private int? _maxSize;
 		private bool _nullable = true;
+
+		public HexTextBox()
+		{
+			CharacterCasing = CharacterCasing.Upper;
+		}
 
 		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
@@ -26,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_maxSize = domainSize - 1;
 			MaxLength = IntHelpers.GetNumDigits(_maxSize.Value);
-			_addressFormatStr = "{0:X" + MaxLength.ToString() + "}";
+			_addressFormatStr = "{0:X" + MaxLength + "}";
 			
 			ResetText();
 		}
@@ -37,27 +41,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return (uint)_maxSize.Value;
 			}
-			else
-			{
-				return IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
-			}
+			
+			return IntHelpers.MaxHexValueFromMaxDigits(MaxLength);
 		}
 
 		public override void ResetText()
 		{
-			if (_nullable)
-			{
-				Text = String.Empty;
-			}
-			else
-			{
-				Text = String.Format(_addressFormatStr, 0);
-			}
-		}
-
-		public HexTextBox()
-		{
-			CharacterCasing = CharacterCasing.Upper;
+			Text = _nullable ? string.Empty : string.Format(_addressFormatStr, 0);
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -66,7 +56,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (!InputValidate.IsHex(e.KeyChar))
+			
+			if (!InputValidate.IsHex(e.KeyChar))
 			{
 				e.Handled = true;
 			}
@@ -76,9 +67,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.Up)
 			{
-				if (InputValidate.IsHex(Text) && !String.IsNullOrEmpty(_addressFormatStr))
+				if (InputValidate.IsHex(Text) && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					uint val = (uint)ToRawInt();
+					var val = (uint)ToRawInt();
 
 					if (val == GetMax())
 					{
@@ -89,14 +80,14 @@ namespace BizHawk.Client.EmuHawk
 						val++;
 					}
 
-					Text = String.Format(_addressFormatStr, val);
+					Text = string.Format(_addressFormatStr, val);
 				}
 			}
 			else if (e.KeyCode == Keys.Down)
 			{
-				if (InputValidate.IsHex(Text) && !String.IsNullOrEmpty(_addressFormatStr))
+				if (InputValidate.IsHex(Text) && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					uint val = (uint)ToRawInt();
+					var val = (uint)ToRawInt();
 					if (val == 0)
 					{
 						val = GetMax();
@@ -106,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 						val--;
 					}
 
-					Text = String.Format(_addressFormatStr, val);
+					Text = string.Format(_addressFormatStr, val);
 				}
 			}
 			else
@@ -117,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnTextChanged(EventArgs e)
 		{
-			if (String.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text))
 			{
 				ResetText();
 			}
@@ -127,44 +118,33 @@ namespace BizHawk.Client.EmuHawk
 
 		public int? ToRawInt()
 		{
-			if (String.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text))
 			{
 				if (Nullable)
 				{
 					return null;
 				}
-				else
-				{
-					return 0;
-				}
+				
+				return 0;
 			}
-			else
-			{
-				return int.Parse(Text, NumberStyles.HexNumber);
-			}
+
+			return int.Parse(Text, NumberStyles.HexNumber);
 		}
 
 		public void SetFromRawInt(int? val)
 		{
-			if (val.HasValue)
-			{
-				Text = String.Format(_addressFormatStr, val);
-			}
-			else
-			{
-				Text = String.Empty;
-			}
+			Text = val.HasValue ? string.Format(_addressFormatStr, val) : string.Empty;
 		}
 	}
 
 	public class UnsignedIntegerBox : TextBox, INumberBox
 	{
+		private bool _nullable = true;
+
 		public UnsignedIntegerBox()
 		{
 			CharacterCasing = CharacterCasing.Upper;
 		}
-
-		private bool _nullable = true;
 
 		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
@@ -174,7 +154,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (!InputValidate.IsUnsigned(e.KeyChar))
+			
+			if (!InputValidate.IsUnsigned(e.KeyChar))
 			{
 				e.Handled = true;
 			}
@@ -182,14 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void ResetText()
 		{
-			if (_nullable)
-			{
-				Text = String.Empty;
-			}
-			else
-			{
-				Text = "0";
-			}
+			Text = _nullable ? string.Empty : "0";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -198,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (InputValidate.IsUnsigned(Text))
 				{
-					uint val = (uint)ToRawInt();
+					var val = (uint)ToRawInt();
 					if (val == uint.MaxValue)
 					{
 						val = 0;
@@ -207,6 +181,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						val++;
 					}
+
 					Text = val.ToString();
 				}
 			}
@@ -214,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (InputValidate.IsUnsigned(Text))
 				{
-					uint val = (uint)ToRawInt();
+					var val = (uint)ToRawInt();
 
 					if (val == 0)
 					{
@@ -236,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnTextChanged(EventArgs e)
 		{
-			if (String.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text))
 			{
 				ResetText();
 			}
@@ -246,26 +221,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public int? ToRawInt()
 		{
-			if (String.IsNullOrWhiteSpace(Text))
+			if (string.IsNullOrWhiteSpace(Text))
 			{
 				if (Nullable)
 				{
 					return null;
 				}
-				else
-				{
-					return 0;
-				}
+				
+				return 0;
 			}
-			else
-			{
-				return (int)uint.Parse(Text);
-			}
+
+			return (int)uint.Parse(Text);
 		}
 
 		public void SetFromRawInt(int? val)
 		{
-			Text = val.HasValue ? val.ToString() : String.Empty;
+			Text = val.HasValue ? val.ToString() : string.Empty;
 		}
 	}
 }

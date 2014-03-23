@@ -507,7 +507,7 @@ void vdp2newhook(u16 v)
 	}
 }
 
-extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const char *biosfn, int usegl)
+extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const char *biosfn, int usegl, int carttype)
 {
 	usinggl = usegl;
 	if (usegl && (!StartGLContext() || !LoadExtensions()))
@@ -544,7 +544,7 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const cha
 	yinit.cdpath = "Saturnus"; //NULL;
 	yinit.buppath = NULL;
 	yinit.mpegpath = NULL;
-	yinit.cartpath = NULL;
+	yinit.carttype = carttype;
 	yinit.netlinksetting = NULL;
 	yinit.videoformattype = VIDEOFORMATTYPE_NTSC;
 

@@ -241,14 +241,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
 					}
-					else
+					
+					foreach (Control control in form.Controls)
 					{
-						foreach (Control control in form.Controls)
+						if (control.Handle == ptr)
 						{
-							if (control.Handle == ptr)
-							{
-								return control.GetType().GetProperty(property).GetValue(control, null).ToString();
-							}
+							return control.GetType().GetProperty(property).GetValue(control, null).ToString();
 						}
 					}
 				}
@@ -258,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
-			return String.Empty;
+			return string.Empty;
 		}
 
 		[LuaMethodAttributes(
@@ -276,21 +274,17 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return form.Text;
 					}
-					else
+					
+					foreach (Control control in form.Controls)
 					{
-						foreach (Control control in form.Controls)
+						if (control.Handle == ptr)
 						{
-							if (control.Handle == ptr)
+							if (control is LuaDropDown)
 							{
-								if (control is LuaDropDown)
-								{
-									return (control as LuaDropDown).SelectedItem.ToString();
-								}
-								else
-								{
-									return control.Text;
-								}
+								return (control as LuaDropDown).SelectedItem.ToString();
 							}
+							
+							return control.Text;
 						}
 					}
 				}
@@ -300,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
-			return String.Empty;
+			return string.Empty;
 		}
 
 		[LuaMethodAttributes(
@@ -316,21 +310,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return false;
 				}
-				else
+				
+				foreach (Control control in form.Controls)
 				{
-					foreach (Control control in form.Controls)
+					if (control.Handle == ptr)
 					{
-						if (control.Handle == ptr)
+						if (control is LuaCheckbox)
 						{
-							if (control is LuaCheckbox)
-							{
-								return (control as LuaCheckbox).Checked;
-							}
-							else
-							{
-								return false;
-							}
+							return (control as LuaCheckbox).Checked;
 						}
+						
+						return false;
 					}
 				}
 			}
@@ -383,7 +373,7 @@ namespace BizHawk.Client.EmuHawk
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
-				form.Size = new Size(LuaInt(width), LuaInt(height));
+				form.Size = new Size(width.Value, height.Value);
 			}
 
 			form.Text = title;
@@ -419,10 +409,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return openFileDialog1.FileName;
 			}
-			else
-			{
-				return String.Empty;
-			}
+			
+			return string.Empty;
 		}
 
 		[LuaMethodAttributes(
