@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = String.Empty;
+		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
 
 		public RamWatch()
@@ -48,10 +48,11 @@ namespace BizHawk.Client.EmuHawk
 					e.Cancel = true;
 				}
 			};
-			_sortedColumn = String.Empty;
+
+			_sortedColumn = string.Empty;
 			_sortReverse = false;
 
-			TopMost = Global.Config.RamWatchAlwaysOnTop;
+			TopMost = Global.Config.RamWatchSettings.TopMost;
 		}
 
 		private IEnumerable<int> SelectedIndices
@@ -177,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				_watches.Reload();
 			}
@@ -317,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (name)
 			{
 				default:
-					return String.Empty;
+					return string.Empty;
 				case WatchList.ADDRESS:
 					return _watches[index].AddressString;
 				case WatchList.VALUE:
@@ -371,14 +372,14 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;     // Save these first so that the user can restore to its original size
 			_defaultHeight = Size.Height;
 
-			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+			if (Global.Config.RamWatchSettings.UseWindowPosition)
 			{
-				Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+				Location = new Point(Global.Config.RamWatchSettings.Wndx.Value, Global.Config.RamWatchSettings.Wndy.Value);
 			}
 
-			if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
+			if (Global.Config.RamWatchSettings.UseWindowSize)
 			{
-				Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+				Size = new Size(Global.Config.RamWatchSettings.Width.Value, Global.Config.RamWatchSettings.Height.Value);
 			}
 
 			LoadColumnInfo();
@@ -399,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateWatchCount();
 				UpdateMessageLabel();
 				_sortReverse = false;
-				_sortedColumn = String.Empty;
+				_sortedColumn = string.Empty;
 			}
 		}
 
@@ -476,10 +477,10 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			SaveColumnInfo();
-			Global.Config.RamWatchWndx = Location.X;
-			Global.Config.RamWatchWndy = Location.Y;
-			Global.Config.RamWatchWidth = Right - Left;
-			Global.Config.RamWatchHeight = Bottom - Top;
+			Global.Config.RamWatchSettings.Wndx = Location.X;
+			Global.Config.RamWatchSettings.Wndy = Location.Y;
+			Global.Config.RamWatchSettings.Width = Right - Left;
+			Global.Config.RamWatchSettings.Height = Bottom - Top;
 		}
 
 		private void SetMemoryDomain(string name)
@@ -496,8 +497,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMessageLabel(bool saved = false)
 		{
-			var message = String.Empty;
-			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			var message = string.Empty;
+			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				if (saved)
 				{
@@ -505,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					message = Path.GetFileName(_watches.CurrentFileName) + (_watches.Changes ? " *" : String.Empty);
+					message = Path.GetFileName(_watches.CurrentFileName) + (_watches.Changes ? " *" : string.Empty);
 				}
 			}
 
@@ -539,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_QueryItemText(int index, int column, out string text)
 		{
-			text = String.Empty;
+			text = string.Empty;
 
 			if (index >= _watches.ItemCount || _watches[index].IsSeparator)
 			{
@@ -578,6 +579,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void RefreshFloatingWindowControl()
+		{
+			Owner = Global.Config.RamWatchSettings.FloatingWindow ? null : GlobalWin.MainForm;
+		}
+
 		#endregion
 
 		#region Winform Events
@@ -602,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!String.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				if (_watches.Save())
 				{
@@ -828,8 +834,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			WatchesOnScreenMenuItem.Checked = Global.Config.DisplayRamWatch;
-			SaveWindowPositionMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.RamWatchAlwaysOnTop;
+			SaveWindowPositionMenuItem.Checked = Global.Config.RamWatchSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Global.Config.RamWatchSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Global.Config.RamWatchSettings.FloatingWindow;
 		}
 
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -870,13 +877,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchSaveWindowPosition ^= true;
+			Global.Config.RamWatchSettings.SaveWindowPosition ^= true;
 		}
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchAlwaysOnTop ^= true;
-			TopMost = Global.Config.RamWatchAlwaysOnTop;
+			Global.Config.RamWatchSettings.TopMost ^= true;
+			TopMost = Global.Config.RamWatchSettings.TopMost;
+		}
+
+		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl();
 		}
 
 		private void RestoreWindowSizeMenuItem_Click(object sender, EventArgs e)
@@ -903,15 +916,13 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.Columns[WatchList.ADDRESS].Width = _defaultColumnWidths[WatchList.ADDRESS];
 			WatchListView.Columns[WatchList.VALUE].Width = _defaultColumnWidths[WatchList.VALUE];
-			// WatchListView.Columns[WatchList.PREV].Width = DefaultColumnWidths[WatchList.PREV];
 			WatchListView.Columns[WatchList.CHANGES].Width = _defaultColumnWidths[WatchList.CHANGES];
-			// WatchListView.Columns[WatchList.DIFF].Width = DefaultColumnWidths[WatchList.DIFF];
 			WatchListView.Columns[WatchList.DOMAIN].Width = _defaultColumnWidths[WatchList.DOMAIN];
 			WatchListView.Columns[WatchList.NOTES].Width = _defaultColumnWidths[WatchList.NOTES];
 
 			Global.Config.DisplayRamWatch = false;
-			Global.Config.RamWatchSaveWindowPosition = true;
-			Global.Config.RamWatchAlwaysOnTop = TopMost = false;
+			Global.Config.RamWatchSettings.SaveWindowPosition = true;
+			Global.Config.RamWatchSettings.TopMost = TopMost = false;
 
 			LoadColumnInfo();
 		}
@@ -1100,8 +1111,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RamWatchColumnIndexes[WatchList.NOTES] = WatchListView.Columns[WatchList.NOTES].DisplayIndex;
 		}
 
+		protected override void OnShown(EventArgs e)
+		{
+			RefreshFloatingWindowControl();
+			base.OnShown(e);
+		}
+
 		#endregion
-		
+
 		#endregion
 	}
 }
