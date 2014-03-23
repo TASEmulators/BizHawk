@@ -955,6 +955,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			int size = api.QUERY_get_memory_size(id);
 			int mask = size - 1;
+			bool pow2 = Util.IsPowerOfTwo(size);
 
 			//if this type of memory isnt available, dont make the memory domain (most commonly save ram)
 			if (size == 0)
@@ -975,10 +976,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					 (addr, value) => { if (addr < 544) blockptr[addr] = value; }
 					 );
 			}
-			else
+			else if(pow2)
 				md = new MemoryDomain(name, size, endian,
 						(addr) => blockptr[addr & mask],
 						(addr, value) => blockptr[addr & mask] = value);
+			else
+				md = new MemoryDomain(name, size, endian,
+						(addr) => blockptr[addr % size],
+						(addr, value) => blockptr[addr % size] = value);
 
 			_memoryDomains.Add(md);
 

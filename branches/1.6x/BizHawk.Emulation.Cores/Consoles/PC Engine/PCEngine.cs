@@ -49,7 +49,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte[] SuperRam;  // Super System Card 192K of additional RAM
 		public byte[] ArcadeRam; // Arcade Card 2048K of additional RAM
 
-		private string systemid = "PCE";
+		string systemid = "PCE";
+		bool ForceSpriteLimit;
 
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
@@ -199,12 +200,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			// the gamedb can force sprite limit on, ignoring settings
-			if (Settings.SpriteLimit || game["ForceSpriteLimit"] || game.NotInDatabase)
-			{
-				VDC1.PerformSpriteLimit = true;
-				if (VDC2 != null)
-					VDC2.PerformSpriteLimit = true;
-			}
+			if (game["ForceSpriteLimit"] || game.NotInDatabase)
+				ForceSpriteLimit = true;
 
 			if (game["CdVol"])
 				CDAudio.MaxVolume = int.Parse(game.OptionValue("CdVol"));
@@ -213,7 +210,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (game["AdpcmVol"])
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
 			// the gamedb can also force equalizevolumes on
-			if (Settings.EqualizeVolume || game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
+			if (TurboCD && (Settings.EqualizeVolume || game["EqualizeVolumes"] || game.NotInDatabase))
 				SoundMixer.EqualizeVolumes();
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
@@ -258,6 +255,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			lagged = true;
 			CoreComm.DriveLED = false;
 			Frame++;
+			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
 			Cpu.Debug = CoreComm.Tracer.Enabled;
@@ -278,6 +276,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else
 				islag = false;
+		}
+
+		void CheckSpriteLimit()
+		{
+			bool spriteLimit = ForceSpriteLimit | Settings.SpriteLimit;
+			VDC1.PerformSpriteLimit = spriteLimit;
+			if (VDC2 != null)
+				VDC2.PerformSpriteLimit = spriteLimit;
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -649,7 +655,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PCESettings n = (PCESettings)o;
 			bool ret;
 			if (n.ArcadeCardRewindHack != Settings.ArcadeCardRewindHack ||
-				n.SpriteLimit != Settings.SpriteLimit ||
 				n.EqualizeVolume != Settings.EqualizeVolume)
 				ret = true;
 			else
