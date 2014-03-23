@@ -40,6 +40,7 @@
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.LoadTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentTablesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,7 +93,7 @@
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloseTableFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -120,6 +121,7 @@
             this.SaveAsTextMenuItem,
             this.toolStripSeparator4,
             this.LoadTableFileMenuItem,
+            this.CloseTableFileMenuItem,
             this.RecentTablesSubMenu,
             this.toolStripSeparator1,
             this.ExitMenuItem});
@@ -173,6 +175,12 @@
 			this.RecentTablesSubMenu.Size = new System.Drawing.Size(229, 22);
 			this.RecentTablesSubMenu.Text = "Recent";
 			this.RecentTablesSubMenu.DropDownOpened += new System.EventHandler(this.RecentTablesSubMenu_DropDownOpened);
+			// 
+			// noneToolStripMenuItem
+			// 
+			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator1
 			// 
@@ -624,11 +632,12 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
-			// noneToolStripMenuItem
+			// CloseTableFileMenuItem
 			// 
-			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.noneToolStripMenuItem.Text = "None";
+			this.CloseTableFileMenuItem.Name = "CloseTableFileMenuItem";
+			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(229, 22);
+			this.CloseTableFileMenuItem.Text = "Close .tbl file";
+			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
 			// 
 			// HexEditor
 			// 
@@ -723,5 +732,6 @@
 		private System.Windows.Forms.ToolStripMenuItem LoadTableFileMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RecentTablesSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CloseTableFileMenuItem;
 	}
 }
