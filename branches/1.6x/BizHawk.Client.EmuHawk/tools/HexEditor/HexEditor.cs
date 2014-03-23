@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G' };    // G = off 0-9 & A-F are acceptable values
 		private readonly List<int> _secondaryHighlightedAddresses = new List<int>();
 
+		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
+
 		private int _defaultWidth;
 		private int _defaultHeight;
 		private int _rowsVisible;
@@ -200,6 +202,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
+
+			_hexFind.Close();
 		}
 
 		public void FindPrev(string value, bool wrap)
@@ -207,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			var found = -1;
 
 			var search = value.Replace(" ", string.Empty).ToUpper();
-			if (!string.IsNullOrEmpty(search))
+			if (string.IsNullOrEmpty(search))
 			{
 				return;
 			}
@@ -251,23 +255,37 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
+
+			_hexFind.Close();
 		}
 
 		#endregion
 
-		private static char Remap(byte val)
+		private char Remap(byte val)
 		{
-			if (val < ' ')
+			if (_textTable.Any())
 			{
-				return '.';
+				if (_textTable.ContainsKey(val))
+				{
+					return _textTable[val];
+				}
+
+				return '?';
 			}
-			
-			if (val >= 0x80)
+			else
 			{
-				return '.';
+				if (val < ' ')
+				{
+					return '.';
+				}
+
+				if (val >= 0x80)
+				{
+					return '.';
+				}
+
+				return (char)val;
 			}
-			
-			return (char)val;
 		}
 
 		private static int? GetDomainInt(string name)
@@ -410,6 +428,12 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMemoryDomainMenu();
 			SetDataSize(_dataSize);
+
+			if (Global.Config.RecentTables.AutoLoad)
+			{
+				LoadFileFromRecent(Global.Config.RecentTables[0]);
+			}
+
 			UpdateValues();
 		}
 
@@ -1159,6 +1183,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool LoadTable(string path)
+		{
+			var file = new FileInfo(path);
+			if (!file.Exists)
+			{
+				return false;
+			}
+
+			using (var sr = file.OpenText())
+			{
+				string line;
+
+				while ((line = sr.ReadLine()) != null)
+				{
+					var parts = line.Split('=');
+					_textTable.Add(
+						int.Parse(parts[0],
+						NumberStyles.HexNumber), parts[1].First());
+				}
+			}
+
+			return true;
+		}
+
 		#region Events
 
 		#region File Menu
@@ -1216,6 +1264,52 @@ namespace BizHawk.Client.EmuHawk
 					sw.WriteLine(sb);
 				}
 			}
+		}
+
+		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId),
+				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
+				RestoreDirectory = false
+			};
+
+			GlobalWin.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			GlobalWin.Sound.StartSound();
+
+			if (result == DialogResult.OK)
+			{
+				LoadTable(ofd.FileName);
+				Global.Config.RecentTables.Add(ofd.FileName);
+				UpdateValues();
+			}
+		}
+
+		public void LoadFileFromRecent(string path)
+		{
+
+			var result = LoadTable(path);
+			if (!result)
+			{
+				ToolHelpers.HandleLoadError(Global.Config.RecentTables, path);
+			}
+			else
+			{
+				Global.Config.RecentTables.Add(path);
+				UpdateValues();
+			}
+		}
+
+		private void RecentTablesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentTablesSubMenu.DropDownItems.Clear();
+			RecentTablesSubMenu.DropDownItems.AddRange(
+				ToolHelpers.GenerateRecentMenu(Global.Config.RecentTables, LoadFileFromRecent));
+
+			RecentTablesSubMenu.DropDownItems.Add(
+				ToolHelpers.GenerateAutoLoadItem(Global.Config.RecentTables));
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
