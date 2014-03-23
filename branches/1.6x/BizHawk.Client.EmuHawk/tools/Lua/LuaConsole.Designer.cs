@@ -97,6 +97,9 @@
 			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
@@ -426,10 +429,13 @@
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SaveWindowPositionMenuItem,
             this.AutoloadConsoleMenuItem,
             this.AutoloadSessionMenuItem,
             this.DisableScriptsOnLoadMenuItem,
+            this.toolStripSeparator4,
+            this.SaveWindowPositionMenuItem,
+            this.AlwaysOnTopMenuItem,
+            this.FloatingWindowMenuItem,
             this.toolStripSeparator5,
             this.RestoreDefaultSettingsMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
@@ -719,6 +725,25 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
+			// AlwaysOnTopMenuItem
+			// 
+			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
+			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.AlwaysOnTopMenuItem.Text = "Always On Top";
+			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
+			// 
+			// FloatingWindowMenuItem
+			// 
+			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
+			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.FloatingWindowMenuItem.Text = "Floating Window";
+			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(196, 6);
+			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -821,5 +846,8 @@
 		private System.Windows.Forms.ToolStripButton NewScriptToolbarItem;
 		private System.Windows.Forms.ToolStripMenuItem RegisteredFunctionsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RegisteredFunctionsContextItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

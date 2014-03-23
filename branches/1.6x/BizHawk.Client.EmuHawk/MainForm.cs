@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			{
-				GlobalWin.Tools.Load<NESPPU>();
+				GlobalWin.Tools.Load<NesPPU>();
 			}
 
 			if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 			{
-				GlobalWin.Tools.Load<PCEBGViewer>();
+				GlobalWin.Tools.Load<PceBgViewer>();
 			}
 
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)

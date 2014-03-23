@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 		public bool DisplayFPS = false;
 		public int DispFPSx = 0;
 		public int DispFPSy = 0;
-		public int DispFPSanchor = 0;	//0 = UL, 1 = UR, 2 = DL, 3 = DR
+		public int DispFPSanchor = 0;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
 		public int DispFrameCx = 0;
 		public int DispFrameCy = 14;
@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 		// Sound options
 		public bool SoundEnabled = true;
 		public bool MuteFrameAdvance = true;
-		public int SoundVolume = 100; //Range 0-100
+		public int SoundVolume = 100; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
 
@@ -169,14 +169,10 @@ namespace BizHawk.Client.Common
 		public int LogWindowHeight = -1;
 
 		// Lua Console
+		public ToolDialogSettings LuaSettings = new ToolDialogSettings();
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool AutoLoadLuaConsole = false;
-		public bool LuaConsoleSaveWindowPosition = true;
-		public int LuaConsoleWndx = -1;   // Negative numbers will be ignored even with save window position set
-		public int LuaConsoleWndy = -1;
-		public int LuaConsoleWidth = -1;
-		public int LuaConsoleHeight = -1;
 		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings
@@ -349,10 +345,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		// NESPPU Settings
+		public ToolDialogSettings NesPPUSettings = new ToolDialogSettings();
 		public bool AutoLoadNESPPU = false;
-		public bool NESPPUSaveWindowPosition = true;
-		public int NESPPUWndx = -1;
-		public int NESPPUWndy = -1;
 		public int NESPPURefreshRate = 4;
 
 		// NESDebuger Settings
@@ -363,11 +357,9 @@ namespace BizHawk.Client.Common
 		public int NESDebuggerWidth = -1;
 		public int NESDebuggerHeight = -1;
 
-		// NESNameTableViewer Settings
+		// NES NameTableViewer Settings
+		public ToolDialogSettings NesNameTableSettings = new ToolDialogSettings();
 		public bool AutoLoadNESNameTable = false;
-		public bool NESNameTableSaveWindowPosition = true;
-		public int NESNameTableWndx = -1;
-		public int NESNameTableWndy = -1;
 		public int NESNameTableRefreshRate = 4;
 
 		// gb gpu view settings
@@ -387,24 +379,18 @@ namespace BizHawk.Client.Common
 		public int SNESGraphicsUserBackdropColor = -1;
 
 		// PCE BG Viewer settings
-		public bool PCEBGViewerSaveWIndowPosition = true;
+		public ToolDialogSettings PceBgViewerSettings = new ToolDialogSettings();
 		public bool PCEBGViewerAutoload = false;
-		public int PCEBGViewerWndx = -1;
-		public int PCEBGViewerWndy = -1;
 		public int PCEBGViewerRefreshRate = 16;
 
 		#region Cheats Dialog
 
+		public ToolDialogSettings CheatsSettings = new ToolDialogSettings();
 		public bool Cheats_ValuesAsHex = true;
-		public bool CheatsSaveWindowPosition = true;
 		public bool DisableCheatsOnLoad = false;
 		public bool LoadCheatFileByGame = true;
 		public bool CheatsAutoSaveOnClose = true;
 		public RecentFiles RecentCheats = new RecentFiles(8);
-		public int CheatsWndx = -1;
-		public int CheatsWndy = -1;
-		public int CheatsWidth = -1;
-		public int CheatsHeight = -1;
 		public int CheatsNameWidth = -1;
 		public int CheatsAddressWidth = -1;
 		public int CheatsValueWidth = -1;
@@ -417,7 +403,6 @@ namespace BizHawk.Client.Common
 		public int CheatsCompareIndex = 3;
 		public int CheatsOnIndex = 4;
 		public int CheatsDomainIndex = 5;
-		public bool CheatsAlwaysOnTop = false;
 
 		public Dictionary<string, int> CheatsColumnWidths = new Dictionary<string, int>
 			{
@@ -473,38 +458,27 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentTas = new RecentFiles(8);
 
 		// VirtualPad Dialog
+		public ToolDialogSettings VirtualPadSettings = new ToolDialogSettings();
 		public bool VirtualPadsUpdatePads = true;
-		public bool VirtualPadSaveWindowPosition = true;
 		public bool AutoloadVirtualPad = false;
 		public bool VirtualPadSticky = true;
-		public int VPadWndx = -1;
-		public int VPadWndy = -1;
-		public int VPadWidth = -1;
-		public int VPadHeight = -1;
 
 		// NES Game Genie Encoder/Decoder
+		public ToolDialogSettings NesGGSettings = new ToolDialogSettings();
 		public bool NESGGAutoload = false;
-		public bool NESGGSaveWindowPosition = true;
-		public int NESGGWndx = -1;
-		public int NESGGWndy = -1;
 
 		// SNES Game Genie Encoder/Decoder
+		public ToolDialogSettings SnesGGSettings = new ToolDialogSettings();
 		public bool SNESGGAutoload = false;
-		public bool SNESGGSaveWindowPosition = true;
-		public int SNESGGWndx = -1;
-		public int SNESGGWndy = -1;
 
 		// GB/GG Game Genie Encoder/Decoder
+		public ToolDialogSettings GbGGSettings = new ToolDialogSettings();
 		public bool GBGGAutoload = false;
-		public bool GBGGSaveWindowPosition = true;
-		public int GBGGWndx = -1;
-		public int GBGGWndy = -1;
+		
 
 		// GEN Game Genie Encoder/Decoder
-		public bool GENGGAutoload = false;
-		public bool GENGGSaveWindowPosition = true;
-		public int GENGGWndx = -1;
-		public int GENGGWndy = -1;
+		public ToolDialogSettings GenGGSettings = new ToolDialogSettings();
+		public bool GenGGAutoload = false;
 
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
@@ -520,10 +494,8 @@ namespace BizHawk.Client.Common
 		public bool PlayMovie_MatchGameName = false;
 
 		//TI83
+		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
 		public bool TI83autoloadKeyPad = true;
-		public bool TI83KeypadSaveWindowPosition = true;
-		public int TI83KeyPadWndx = -1;
-		public int TI83KeyPadWndy = -1;
 		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
