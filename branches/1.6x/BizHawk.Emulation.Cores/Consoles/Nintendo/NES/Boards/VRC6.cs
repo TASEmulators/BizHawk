@@ -43,19 +43,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					case 0:
 					case 6:
-					case 7: // H-mirror
-						banknum >>= 1;
+					case 7: // H-mirror, 6677
+						bank = (byte)(banknum >> 1 | 6);
 						break;
 					case 2:
 					case 3:
-					case 4: // V-mirror
-						banknum &= 1;
+					case 4: // V-mirror, 6767
+						bank = (byte)(banknum | 6);
 						break;
 					case 1:
-					case 5: // 4 screen
+					case 5: // 4 screen, 4567
+					default:
+						bank = (byte)(banknum | 4);
 						break;
 				}
-				bank = (byte)(banknum + 4);
 				switch (b003)
 				{
 					case 0:
@@ -184,11 +185,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else if (Cart.pcb == "351949A")
 						newer_variant = true;
 					else throw new Exception("Unknown PCB type for VRC6");
+					AssertPrg(256); AssertChr(128, 256);
 					break;
 				default:
 					return false;
 			}
-			AssertPrg(256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);
+			AssertVram(0); AssertWram(0, 8);
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;

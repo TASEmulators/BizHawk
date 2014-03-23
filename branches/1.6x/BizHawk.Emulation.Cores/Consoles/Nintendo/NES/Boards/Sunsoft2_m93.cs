@@ -1,9 +1,9 @@
-﻿using BizHawk.Common;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
-	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4
 	//this is confusing. see docs/sunsoft.txt
 	public sealed class Sunsoft2_Mapper93 : NES.NESBoardBase
 	{
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "SUNSOFT-1":
 					if (Cart.pcb != "SUNSOFT-4") return false;
-					break;
+					return false; // this has been moved to Sunsoft1_Alt
 				default:
 					return false;
 			}
@@ -57,10 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_16k = (byte)((value >> 4) & 15);
 			SyncPRG();
 
-			if (value.Bit(0))
-				SetMirrorType(EMirrorType.Horizontal);
-			else
-				SetMirrorType(EMirrorType.Vertical);
+			// there is no mirroring control on this board; only a hardwired H\V
 		}
 
 		public override byte ReadPRG(int addr)

@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER032":
 					break;
 				case "IREM-G101":
-					if (Cart.pcb == "UNAMED-IF-13")
+					if (Cart.pcb == "UNK-IF-13")
 					{
 						//special case for major league
 						oneScreenHack = true;

@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			if (ser.IsReader)
 			{
 				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				avProvider.ConnectToMachine(theMachine);
+				avProvider.ConnectToMachine(theMachine, GameInfo);
 			}
 		}
 		#endregion
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				throw new Exception("For now, only Atari 7800 ProLine Joystick games are supported.");
 			ControllerDefinition = ControlAdapter.ControlType;
 
-			avProvider.ConnectToMachine(theMachine);
+			avProvider.ConnectToMachine(theMachine, GameInfo);
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
 			CoreComm.VsyncDen = 1;
@@ -336,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		class MyAVProvider : IVideoProvider, ISyncSoundProvider, IDisposable
 		{
 			public FrameBuffer framebuffer { get; private set; }
-			public void ConnectToMachine(MachineBase m)
+			public void ConnectToMachine(MachineBase m, EMU7800.Win.GameProgram g)
 			{
 				framebuffer = m.CreateFrameBuffer();
 				BufferWidth = framebuffer.VisiblePitch;
@@ -352,13 +352,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					resampler = new SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
 					samplerate = newsamplerate;
 					dcfilter = DCFilter.DetatchedMode(256);
-				}				
+				}
+				if (g.MachineType == MachineType.A7800PAL || g.MachineType == MachineType.A2600PAL)
+					palette = TIATables.PALPalette;
+				else
+					palette = TIATables.NTSCPalette;
 			}
 
 			uint samplerate;
 			int[] vidbuffer;
 			SpeexResampler resampler;
 			DCFilter dcfilter;
+			int[] palette;
 
 			public void FillFrameBuffer()
 			{
@@ -366,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				{
 					fixed (byte* src_ = framebuffer.VideoBuffer)
 					fixed (int* dst_ = vidbuffer)
-					fixed (int* pal = TIATables.NTSCPalette)
+					fixed (int* pal = palette)
 					{
 						byte* src = src_;
 						int* dst = dst_;
