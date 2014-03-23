@@ -149,6 +149,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public byte[] ConvertTextToBytes(string str)
+		{
+			if (_textTable.Any())
+			{
+				var byteArr = new List<byte>();
+				foreach (var chr in str)
+				{
+					byteArr.Add((byte)_textTable.FirstOrDefault(kvp => kvp.Value == chr).Key);
+				}
+
+				return byteArr.ToArray();
+			}
+
+			return str.Select(Convert.ToByte).ToArray();
+		}
+
 		public void FindNext(string value, bool wrap)
 		{
 			var found = -1;
