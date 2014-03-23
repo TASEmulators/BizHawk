@@ -1391,7 +1391,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnfreezeAllMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.CheatList.DisableAll();
+			Global.CheatList.RemoveAll();
 		}
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1687,7 +1687,7 @@ namespace BizHawk.Client.EmuHawk
 				case Keys.Delete:
 					if (e.Modifiers == Keys.Shift)
 					{
-						Global.CheatList.DisableAll();
+						Global.CheatList.RemoveAll();
 					}
 					else
 					{
