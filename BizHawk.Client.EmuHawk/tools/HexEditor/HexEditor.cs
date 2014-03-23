@@ -1220,6 +1220,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
+
+			CloseTableFileMenuItem.Enabled = _textTable.Any();
 		}
 		
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -1283,6 +1285,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.RecentTables.Add(ofd.FileName);
 				UpdateValues();
 			}
+		}
+
+		private void CloseTableFileMenuItem_Click(object sender, EventArgs e)
+		{
+			_textTable.Clear();
 		}
 
 		public void LoadFileFromRecent(string path)
