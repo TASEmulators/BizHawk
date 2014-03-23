@@ -294,31 +294,71 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[256];
 		}
 
-		void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
+		unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
 		{
 			if (vdc.BackgroundEnabled == false)
 				return;
 
+			// per-line parameters
 			int vertLine = vdc.BackgroundY;
 			vertLine %= vdc.BatHeight * 8;
 			int yTile = (vertLine / 8);
 			int yOfs = vertLine % 8;
-
 			int xScroll = vdc.Registers[BXR] & 0x3FF;
-			for (int x = 0; x < FrameWidth; x++)
-			{
-				if (PriorityBuffer[x] >= priority) continue;
-				int xTile = ((x + xScroll) / 8) % vdc.BatWidth;
-				int xOfs = (x + xScroll) & 7;
-				int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 2047;
-				int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
-				int paletteBase = paletteNo * 16;
+			int BatRowMask = vdc.BatWidth - 1;
 
-				byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
-				if (c != 0)
+			fixed (ushort* VRAMptr = vdc.VRAM)
+			fixed (int* PALptr = VCE.Palette)
+			fixed (byte* Patternptr = vdc.PatternBuffer)
+			fixed (int* FBptr = FrameBuffer)
+			fixed (byte* Priortyptr = PriorityBuffer)
+			{
+				// pointer to the BAT and the framebuffer for this line
+				ushort* BatRow = VRAMptr + yTile * vdc.BatWidth;
+				int* dst = FBptr + vdc.ActiveLine * FrameWidth;
+
+				// parameters that change per tile
+				ushort BatEnt;
+				int tileNo, paletteNo, paletteBase;
+				byte* src;
+
+				// calculate tile number and offset for first tile
+				int xTile = (xScroll >> 3) & BatRowMask;
+				int xOfs = xScroll & 7;
+
+				// update per-tile parameters for first tile
+				BatEnt = BatRow[xTile];
+				tileNo = BatEnt & 2047;
+				paletteNo = BatEnt >> 12;
+				paletteBase = paletteNo * 16;
+				src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
+
+				for (int x = 0; x < FrameWidth; x++)
 				{
-					FrameBuffer[(vdc.ActiveLine * FrameWidth) + x] = show ? VCE.Palette[paletteBase + c] : VCE.Palette[0];
-					PriorityBuffer[x] = priority;
+					if (Priortyptr[x] < priority)
+					{
+						byte c = *src;
+						if (c != 0)
+						{
+							dst[x] = show ? PALptr[paletteBase + c] : PALptr[0];
+							Priortyptr[x] = priority;
+						}
+					}
+					xOfs++;
+					src++;
+					if (xOfs == 8)
+					{
+						// update tile number
+						xOfs = 0;
+						xTile++;
+						xTile &= BatRowMask;
+						// update per-tile parameters
+						BatEnt = BatRow[xTile];
+						tileNo = BatEnt & 2047;
+						paletteNo = BatEnt >> 12;
+						paletteBase = paletteNo * 16;
+						src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
+					}
 				}
 			}
 		}

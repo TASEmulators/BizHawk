@@ -40,6 +40,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return _guiLibrary; }
 		}
 
+		public LuaFunctionList RegisteredFunctions
+		{
+			get { return _eventLibrary.RegisteredFunctions; }
+		}
+
 		public void WindowClosed(IntPtr handle)
 		{
 			_formsLibrary.WindowClosed(handle);
@@ -53,11 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		public void CallLoadStateEvent(string name)
 		{
 			_eventLibrary.CallLoadStateEvent(name);
-		}
-
-		public LuaFunctionList RegisteredFunctions
-		{
-			get { return _eventLibrary.RegisteredFunctions; }
 		}
 
 		public void CallFrameBeforeEvent()
@@ -87,8 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			new EmulatorLuaLibrary(
 				_lua,
 				Frameadvance,
-				EmuYield
-			).LuaRegister(lua, Docs);
+				EmuYield).LuaRegister(lua, Docs);
 
 			_eventLibrary.LuaRegister(lua, Docs);
 			_formsLibrary.LuaRegister(lua, Docs);
@@ -112,12 +111,6 @@ namespace BizHawk.Client.EmuHawk
 			var main = lua.LoadFile(file);
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
-		}
-
-		public class ResumeResult
-		{
-			public bool WaitForFrame { get; set; }
-			public bool Terminated { get; set; }
 		}
 
 		public ResumeResult ResumeScript(Lua script)
@@ -157,6 +150,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			_currThread.Yield(0);
+		}
+
+		public class ResumeResult
+		{
+			public bool WaitForFrame { get; set; }
+			public bool Terminated { get; set; }
 		}
 	}
 }

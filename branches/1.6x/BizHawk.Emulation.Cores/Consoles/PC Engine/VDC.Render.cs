@@ -112,42 +112,81 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			RenderSpritesScanline(pce.Settings.ShowOBJ1);
 		}
 
-		void RenderBackgroundScanline(bool show)
+		unsafe void RenderBackgroundScanline(bool show)
 		{
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
 
 			if (BackgroundEnabled == false)
 			{
-				for (int i = 0; i < FrameWidth; i++)
-					FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[256];
+				int p = vce.Palette[256];
+				fixed (int* FBptr = FrameBuffer)
+				{
+					int* dst = FBptr + ActiveLine * FramePitch;
+					for (int i = 0; i < FrameWidth; i++)
+						*dst++ = p;
+				}
 				return;
 			}
 
-			int batHeight = BatHeight * 8;
-			int batWidth = BatWidth * 8;
-
+			// per-line parameters
 			int vertLine = BackgroundY;
-			vertLine %= batHeight;
+			vertLine %= BatHeight * 8;
 			int yTile = (vertLine / 8);
 			int yOfs = vertLine % 8;
-
-			// This is not optimized. But it seems likely to remain that way.
 			int xScroll = Registers[BXR] & 0x3FF;
-			for (int x = 0; x < FrameWidth; x++)
-			{
-				int xTile = ((x + xScroll) / 8) % BatWidth;
-				int xOfs = (x + xScroll) & 7;
-				int tileNo = VRAM[(ushort)(((yTile * BatWidth) + xTile))] & 2047;
-				int paletteNo = VRAM[(ushort)(((yTile * BatWidth) + xTile))] >> 12;
-				int paletteBase = paletteNo * 16;
+			int BatRowMask = BatWidth - 1;
 
-				byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
-				if (c == 0)
-					FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[0];
-				else
+			fixed (ushort* VRAMptr = VRAM)
+			fixed (int* PALptr = vce.Palette)
+			fixed (byte* Patternptr = PatternBuffer)
+			fixed (int* FBptr = FrameBuffer)
+			fixed (byte* Priortyptr = PriorityBuffer)
+			{
+				// pointer to the BAT and the framebuffer for this line
+				ushort* BatRow = VRAMptr + yTile * BatWidth;
+				int* dst = FBptr + ActiveLine * FramePitch;
+
+				// parameters that change per tile
+				ushort BatEnt;
+				int tileNo, paletteNo, paletteBase;
+				byte* src;
+
+				// calculate tile number and offset for first tile
+				int xTile = (xScroll >> 3) & BatRowMask;
+				int xOfs = xScroll & 7;
+
+				// update per-tile parameters for first tile
+				BatEnt = BatRow[xTile];
+				tileNo = BatEnt & 2047;
+				paletteNo = BatEnt >> 12;
+				paletteBase = paletteNo * 16;
+				src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
+
+				for (int x = 0; x < FrameWidth; x++)
 				{
-					FrameBuffer[(ActiveLine * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
-					PriorityBuffer[x] = 1;
+					byte c = *src++;
+					if (c == 0)
+						dst[x] = PALptr[0];
+					else
+					{
+						dst[x] = show ? PALptr[paletteBase + c] : PALptr[0];
+						Priortyptr[x] = 1;
+					}
+
+					xOfs++;
+					if (xOfs == 8)
+					{
+						// update tile number
+						xOfs = 0;
+						xTile++;
+						xTile &= BatRowMask;
+						// update per-tile parameters
+						BatEnt = BatRow[xTile];
+						tileNo = BatEnt & 2047;
+						paletteNo = BatEnt >> 12;
+						paletteBase = paletteNo * 16;
+						src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
+					}
 				}
 			}
 		}

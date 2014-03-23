@@ -6,14 +6,109 @@ using BizHawk.Emulation.Common.Components;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//mapper 24 + 26
-	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/7 as well.
+	//If you change any of the IRQ logic here, be sure to change it in VRC 4/7 as well.
 	public sealed class VRC6 : NES.NESBoardBase
 	{
+		#region CHRLUT
+		// what did i do in a previous life to deserve this?
+
+		// given the bottom four bits of $b003, and a 1K address region in PPU $0000:$3fff,
+		static byte[] Banks = new byte[16 * 16]; // which of the 8 chr regs is used to determine the bank here?
+		static byte[] Masks = new byte[16 * 16]; // what is the resulting 8 bit chr reg value ANDed with?
+		static byte[] A10s = new byte[16 * 16]; // and then what is it ORed with?
+
+		static byte[] PTables = new byte[]
+		{
+			0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
+			0x80,0xc0,0x81,0xc1,0x82,0xc2,0x83,0xc3,
+			0x00,0x01,0x02,0x03,0x84,0xc4,0x85,0xc5,	
+		};
+
+		static void GetBankByte(int b003, int banknum, out byte bank, out byte mask, out byte a10)
+		{
+			if (banknum < 8) // pattern tables
+			{
+				int ptidx = b003 & 3;
+				if (ptidx == 3) ptidx--;
+				byte pt = PTables[ptidx * 8 + banknum];
+
+				bank = (byte)(pt & 7);
+				mask = (byte)(pt.Bit(7) ? 0xfe : 0xff);
+				a10 = (byte)(pt.Bit(7) && pt.Bit(6) ? 1 : 0);
+			}
+			else // nametables
+			{
+				banknum &= 3;
+				switch (b003 & 7)
+				{
+					case 0:
+					case 6:
+					case 7: // H-mirror
+						banknum >>= 1;
+						break;
+					case 2:
+					case 3:
+					case 4: // V-mirror
+						banknum &= 1;
+						break;
+					case 1:
+					case 5: // 4 screen
+						break;
+				}
+				bank = (byte)(banknum + 4);
+				switch (b003)
+				{
+					case 0:
+					case 7: // V-mirror
+						mask = 0xfe;
+						a10 = (byte)(banknum & 1);
+						break;
+					case 3:
+					case 4: // H-mirror
+						mask = 0xfe;
+						a10 = (byte)(banknum >> 1);
+						break;
+					case 8:
+					case 15: // 1scA
+						mask = 0xfe;
+						a10 = 0;
+						break;
+					case 11:
+					case 12: // 1scB
+						mask = 0xfe;
+						a10 = 1;
+						break;
+					default: // no replacement
+						mask = 0xff;
+						a10 = 0;
+						break;
+				}
+			}
+		}
+
+		static VRC6()
+		{
+			int idx = 0;
+			byte bank, mask, a10;
+			for (int b003 = 0; b003 < 16; b003++)
+			{
+				for (int banknum = 0; banknum < 16; banknum++)
+				{
+					GetBankByte(b003, banknum, out bank, out mask, out a10);
+					Banks[idx] = bank;
+					Masks[idx] = mask;
+					A10s[idx] = a10;
+					idx++;
+				}
+			}
+		}
+		#endregion
+
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
+		int chr_byte_mask;
 		bool newer_variant;
 
-		//Sound.VRC6 VRC6Sound = new Sound.VRC6();
 		VRC6Alt VRC6Sound;
 
 		//state
@@ -26,13 +121,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte irq_counter;
 		int irq_prescaler;
 
+		bool chrA10replace;
+		bool NTROM;
+		int PPUBankingMode;
+
 		public override void Dispose()
 		{
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
-			//if (VRC6Sound != null)
-			//	VRC6Sound.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -49,6 +146,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_prescaler", ref irq_prescaler);
+
+			ser.Sync("chrA10replace", ref chrA10replace);
+			ser.Sync("NTROM", ref NTROM);
+			ser.Sync("PPUBankingMode", ref PPUBankingMode);
 
 			SyncPRG();
 			SyncIRQ();
@@ -91,11 +192,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
+			chr_byte_mask = Cart.chr_size * 1024 - 1;
 
 			prg_bank_16k = 0;
 			prg_bank_8k = 0;
 			SyncPRG();
-			SetMirrorType(EMirrorType.Vertical);
 
 			if (NES.apu != null) // don't start up sound when in configurator
 				VRC6Sound = new VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
@@ -112,18 +213,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[addr];
 		}
 
+		int MapPPU(int addr)
+		{
+			int lutidx = addr >> 10 | PPUBankingMode << 4;
+			int bank = chr_banks_1k[Banks[lutidx]];
+			if (chrA10replace)
+			{
+				bank &= Masks[lutidx];
+				bank |= A10s[lutidx];
+			}
+			return addr & 0x3ff | bank << 10;
+		}
+
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000)
-			{
-				int bank_1k = addr >> 10;
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = chr_banks_1k[bank_1k];
-				bank_1k &= chr_bank_mask_1k;
-				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
-			}
-			else return base.ReadPPU(addr);
+			if (addr >= 0x2000 && !NTROM)
+				return NES.CIRAM[MapPPU(addr) & 0x7ff];
+			else
+				return VROM[MapPPU(addr) & chr_byte_mask];
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr >= 0x2000 && !NTROM)
+				NES.CIRAM[MapPPU(addr) & 0x7ff] = value;
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -141,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_bank_16k = value;
 					SyncPRG();
 					break;
-				
+
 				case 0x1000: //$9000
 					VRC6Sound.Write9000(value);
 					break;
@@ -174,15 +287,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x3002: //$B002
 					VRC6Sound.WriteB002(value);
 					break;
-				
+
 				case 0x3003: //$B003
-					switch ((value>>2) & 3)
-					{
-						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
-						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
-						case 2: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA); break;
-						case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
-					}
+					PPUBankingMode = value & 15;
+					NTROM = value.Bit(4);
+					chrA10replace = value.Bit(5);
 					break;
 
 				case 0x4000: //$C000
@@ -204,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x6001: //$E001
 				case 0x6002: //$E002
 				case 0x6003: //$E003
-					chr_banks_1k[4+ addr - 0x6000] = value;
+					chr_banks_1k[4 + addr - 0x6000] = value;
 					break;
 
 				case 0x7000: //$F000 (reload)
@@ -233,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SyncIRQ();
 
 					break;
-				
+
 				case 0x7002: //$F002 (ack)
 					irq_pending = false;
 					irq_enabled = irq_autoen;
@@ -274,20 +383,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
-		//public override void ApplyCustomAudio(short[] samples)
-		//{
-			/*
-			short[] fmsamples = new short[samples.Length];
-			VRC6Sound.GetSamples(fmsamples);
-			int len = samples.Length;
-			for (int i = 0; i < len; i++)
-			{
-				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
-			}
-			*/
-		//	VRC6Sound.ApplyCustomAudio(samples);
-		//}
 
 	}
 }
