@@ -271,19 +271,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var watch = Watch.GenerateWatch(
-					Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
-					AddressBox.ToRawInt().Value,
-					GetCurrentSize(),
-					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
-					NameBox.Text,
-					BigEndianCheckBox.Checked);
+				var domain = Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var address = AddressBox.ToRawInt().Value;
+				if (address < domain.Size)
+				{
+					var watch = Watch.GenerateWatch(
+						Global.Emulator.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
+						AddressBox.ToRawInt().Value,
+						GetCurrentSize(),
+						Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
+						NameBox.Text,
+						BigEndianCheckBox.Checked);
 
-				return new Cheat(
-					watch,
-					ValueBox.ToRawInt().Value,
-					 CompareBox.ToRawInt()
-				);
+					return new Cheat(
+						watch,
+						ValueBox.ToRawInt().Value,
+						 CompareBox.ToRawInt()
+					);
+				}
+				else
+				{
+					MessageBox.Show(address.ToString() + " is not a valid address for the domain " + domain.Name, "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return Cheat.Separator;
+				}
 			}
 		}
 
