@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage(message);
 		}
-
+		/*
 		[LuaMethodAttributes(
 			"alert",
 			"Functions the same as gui.text() but shows the message in the alert font"
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DoGuiText(x, y, message, true, null, null, anchor); // TODO: refactor DoGuiText to take luaStr as string and refactor
 		}
-
+		*/
 		[LuaMethodAttributes(
 			"clearGraphics",
 			"clears all lua drawn graphics from the screen"
