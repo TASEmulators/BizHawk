@@ -530,7 +530,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-					g.DrawString(message, font, GetBrush(color ?? "white"), LuaInt(x), LuaInt(y));
+					g.DrawString(message, font, GetBrush(color ?? "white"), x, y);
 				}
 				catch (Exception)
 				{
