@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 					sb
 						.Append(file.Enabled ? "1" : "0")
 						.Append(' ')
-						.Append(file.Path)
+						.Append(PathManager.TryMakeRelative(file.Path))
 						.AppendLine();
 				}
 
