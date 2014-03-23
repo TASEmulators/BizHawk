@@ -1398,12 +1398,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (allCheats)
 			{
-				FreezeContextMenuItem.Text = "&Unfreeze address";
+				FreezeContextMenuItem.Text = "&Unfreeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				FreezeContextMenuItem.Text = "&Freeze address";
+				FreezeContextMenuItem.Text = "&Freeze Address";
 				FreezeContextMenuItem.Image = Properties.Resources.Freeze;
 			}
 		}

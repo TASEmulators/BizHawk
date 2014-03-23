@@ -49,6 +49,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			//hack, don't use
 			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
+			if (romfile != null && romfile.Length > 16 * 1024 * 1024)
+			{
+				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
+			}
 
 			try
 			{

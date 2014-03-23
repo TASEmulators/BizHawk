@@ -22,7 +22,7 @@ namespace BizHawk.Common
 		{
 			using (var md5 = System.Security.Cryptography.MD5.Create())
 			{
-				md5.TransformFinalBlock(data, offset, len);
+				md5.ComputeHash(data, offset, len);
 				return BytesToHexString(md5.Hash);
 			}
 		}
@@ -36,7 +36,7 @@ namespace BizHawk.Common
 		{
 			using (var sha1 = System.Security.Cryptography.SHA1.Create())
 			{
-				sha1.TransformFinalBlock(data, offset, len);
+				sha1.ComputeHash(data, offset, len);
 				return BytesToHexString(sha1.Hash);
 			}
 		}
