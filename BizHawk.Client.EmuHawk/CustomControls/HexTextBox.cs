@@ -6,6 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	// TODO: add a MaxValue property, nullable int, that will show up in Designer, change events will check that value and fix entries that exceed that value
 	public interface INumberBox
 	{
 		bool Nullable { get; }
