@@ -1338,7 +1338,7 @@ namespace BizHawk.Client.EmuHawk
 			inputPrompt.SetMessage("Enter a hexadecimal value");
 			inputPrompt.ShowHawkDialog();
 
-			if (inputPrompt.UserOK && InputValidate.IsValidHexNumber(inputPrompt.UserText))
+			if (inputPrompt.UserOK && InputValidate.IsHex(inputPrompt.UserText))
 			{
 				GoToAddress(int.Parse(inputPrompt.UserText, NumberStyles.HexNumber));
 			}

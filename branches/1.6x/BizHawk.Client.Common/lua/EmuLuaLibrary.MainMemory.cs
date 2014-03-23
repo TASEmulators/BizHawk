@@ -7,14 +7,14 @@ namespace BizHawk.Client.Common
 	// TODO: this needs a major refactor, as well as MemoryLuaLibrary, and this shoudl inherit memorylua library and extend it
 	public class MainMemoryLuaLibrary : LuaLibraryBase
 	{
+		private readonly Lua _lua;
+
 		public MainMemoryLuaLibrary(Lua lua)
 		{
 			_lua = lua;
 		}
 
 		public override string Name { get { return "mainmemory"; } }
-
-		private readonly Lua _lua;
 
 		#region Main Memory Library Helpers
 
@@ -123,9 +123,9 @@ namespace BizHawk.Client.Common
 			var table = _lua.NewTable();
 			for (var i = addr; i <= lastAddr; i++)
 			{
-				var a = String.Format("{0:X2}", i);
+				var a = string.Format("{0:X2}", i);
 				var v = Global.Emulator.MemoryDomains.MainMemory.PeekByte(i);
-				var vs = String.Format("{0:X2}", (int)v);
+				var vs = string.Format("{0:X2}", (int)v);
 				table[a] = vs;
 			}
 
@@ -162,8 +162,7 @@ namespace BizHawk.Client.Common
 			{
 				Global.Emulator.MemoryDomains.MainMemory.PokeByte(
 					LuaInt(address),
-					(byte)LuaInt(memoryblock[address])
-				);
+					(byte)LuaInt(memoryblock[address]));
 			}
 		}
 

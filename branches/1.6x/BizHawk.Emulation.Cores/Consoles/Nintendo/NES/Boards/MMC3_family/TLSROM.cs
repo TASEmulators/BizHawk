@@ -2,7 +2,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//aka mapper 118
 	//wires the mapper outputs to control the nametables
-	[NES.INESBoardImplPriority]
 	public sealed class TLSROM : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)

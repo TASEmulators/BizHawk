@@ -13,6 +13,10 @@ namespace BizHawk.Client.Common
 
 	public class EmulatorLuaLibrary : LuaLibraryBase
 	{
+		private readonly Lua _lua;
+		private readonly Action _frameAdvanceCallback;
+		private readonly Action _yieldCallback;
+
 		public EmulatorLuaLibrary(Lua lua, Action frameAdvanceCallback, Action yieldCallback)
 		{
 			_lua = lua;
@@ -21,10 +25,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public override string Name { get { return "emu"; } }
-
-		private readonly Lua _lua;
-		private readonly Action _frameAdvanceCallback;
-		private readonly Action _yieldCallback;
 
 		private static void SetrenderplanesDo(IList<object> luaParam)
 		{

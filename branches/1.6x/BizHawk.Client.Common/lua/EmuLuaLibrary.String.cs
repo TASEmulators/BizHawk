@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static string Hex(long num)
 		{
-			var hex = String.Format("{0:X}", num);
+			var hex = string.Format("{0:X}", num);
 			if (hex.Length == 1)
 			{
 				hex = "0" + hex;

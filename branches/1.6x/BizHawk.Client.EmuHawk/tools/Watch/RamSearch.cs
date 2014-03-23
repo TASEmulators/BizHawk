@@ -862,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (prompt.UserOK)
 			{
-				if (InputValidate.IsValidHexNumber(prompt.UserText))
+				if (InputValidate.IsHex(prompt.UserText))
 				{
 					var addr = int.Parse(prompt.UserText, NumberStyles.HexNumber);
 					WatchListView.SelectItem(addr, true);

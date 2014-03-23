@@ -1,6 +1,5 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[NES.INESBoardImplPriority]
 	public sealed class TVROM : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
