@@ -107,7 +107,14 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					_watches.Save();
+					if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+					{
+						SaveAs();
+					}
+					else
+					{
+						_watches.Save();
+					}
 				}
 				else if (result == DialogResult.No)
 				{
