@@ -109,18 +109,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadLuaFile(string path)
 		{
-			if (LuaAlreadyInSession(path) == false)
+			var processedPath = PathManager.TryMakeRelative(path);
+
+			if (LuaAlreadyInSession(processedPath) == false)
 			{
-				var luaFile = new LuaFile(string.Empty, path);
+				var luaFile = new LuaFile(string.Empty, processedPath);
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
-				Global.Config.RecentLua.Add(path);
+				Global.Config.RecentLua.Add(processedPath);
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
 				{
 					try
 					{
-						luaFile.Thread = LuaImp.SpawnCoroutine(path);
+						luaFile.Thread = LuaImp.SpawnCoroutine(processedPath);
 						luaFile.Enabled = true;
 					}
 					catch (Exception e)
@@ -145,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				foreach (var file in _luaList.Where(file => path == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad))
+				foreach (var file in _luaList.Where(file => processedPath == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad))
 				{
 					file.Toggle();
 					break;
@@ -234,8 +236,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (column == 1)
 			{
-				text = _luaList[index].Path;
+				text = DressUpRelative(_luaList[index].Path);
 			}
+		}
+
+		private string DressUpRelative(string path)
+		{
+			if (path.StartsWith(".\\"))
+			{
+				return path.Replace(".\\", string.Empty);
+			}
+
+			return path;
 		}
 
 		private void SaveConfigSettings()
