@@ -298,7 +298,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper200.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper203.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper207.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper222.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
@@ -347,6 +346,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot175_340.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper076.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper088.cs" />

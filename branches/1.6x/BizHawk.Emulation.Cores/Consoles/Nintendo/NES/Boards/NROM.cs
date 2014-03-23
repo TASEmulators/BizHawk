@@ -71,7 +71,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "CAMERICA-GAMEGENIE":
 					// if you really want to emulate a game genie, it isn't NROM
 					throw new Exception("Game Genie Support NYI");
-					break;
 
 				case "HVC-FAMILYBASIC":
 					// we don't emulate the controller, so this won't work
