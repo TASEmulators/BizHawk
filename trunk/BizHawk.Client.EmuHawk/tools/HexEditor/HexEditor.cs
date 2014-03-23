@@ -199,6 +199,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
+
+			_hexFind.Close();
 		}
 
 		public void FindPrev(string value, bool wrap)
@@ -206,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			var found = -1;
 
 			var search = value.Replace(" ", string.Empty).ToUpper();
-			if (!string.IsNullOrEmpty(search))
+			if (string.IsNullOrEmpty(search))
 			{
 				return;
 			}
@@ -249,6 +251,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
+
+			_hexFind.Close();
 		}
 
 		#endregion
