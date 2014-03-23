@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK
 				&& !String.IsNullOrWhiteSpace(sfd.FileName))
 			{
-				RecordBox.Text = filename;
+				RecordBox.Text = sfd.FileName;
 			}
 		}
 
