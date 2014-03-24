@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 					"File on Disk", _rom.Length, MemoryDomain.Endian.Little, i => _rom[i], (i, value) => _rom[i] = value);
 
 				// <zeromus> THIS IS HORRIBLE.
-				_domain = _romDomain;
+				SetMemoryDomain(_romDomain);
 			}
 			else if (pos < Global.Emulator.MemoryDomains.Count)
 			{
