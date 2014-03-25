@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
-            if (game.NotInDatabase || game["FM"] && SyncSettings.EnableFM && !IsGameGear)
+            if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
                 HasYM2413 = true;
 
             if (Controller == null)
@@ -199,6 +199,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		string DetermineRegion(string gameRegion)
 		{
+			if (gameRegion == null)
+				return "Export";
 			if (gameRegion.IndexOf("USA") >= 0)
 				return "Export";
 			if (gameRegion.IndexOf("Europe") >= 0)
@@ -216,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (display == "NTSC") return DisplayType.NTSC;
 			if (display == "PAL") return DisplayType.PAL;
-			if (region == "Europe") return DisplayType.PAL;
+			if (region != null && region == "Europe") return DisplayType.PAL;
 			return DisplayType.NTSC;
 		}
 
