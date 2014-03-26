@@ -11,11 +11,11 @@ local m64_filename = forms.openfile(nil,nil,"Mupen Movie Files (*.M64)|*.M64|All
 
 console.clear()
 if m64_filename == "" then
-  console.output("No movie selected. Exiting.")
+  console.log("No movie selected. Exiting.")
   return
 end
 
-console.output("Opening movie for playback: " .. m64_filename)
+console.log("Opening movie for playback: " .. m64_filename)
 
 -- Open the file and read past the header data
 local input_file = assert(io.open(m64_filename, "rb"))
@@ -23,7 +23,7 @@ local header = input_file:read(0x400)
 
 -- Check the file and display some info
 if string.sub(header,1,3) ~= "M64" or string.byte(header,4) ~= 0x1A then
-  console.output("File signature is not M64\\x1A. This might not be an .m64 movie, but I'll try to play it anyway")
+  console.log("File signature is not M64\\x1A. This might not be an .m64 movie, but I'll try to play it anyway")
 end
 
 function remove_nulls(s)
@@ -41,37 +41,37 @@ end
 
 local movie_rom_name = string.sub(header,0x0C5,0x0E4)
 movie_rom_name = remove_nulls(movie_rom_name)
-console.output("Rom name: " .. movie_rom_name)
+console.log("Rom name: " .. movie_rom_name)
 
 local rerecords = string.byte(header,0x11) + string.byte(header,0x12) * 0x100 + string.byte(header,0x13) * 0x10000 + string.byte(header,0x14) * 0x1000000
-console.output("# of rerecords: " .. rerecords)
+console.log("# of rerecords: " .. rerecords)
 
 local rerecords = string.byte(header,0x0D) + string.byte(header,0x0E) * 0x100 + string.byte(header,0x0F) * 0x10000 + string.byte(header,0x10) * 0x1000000
-console.output("# of frames: " .. rerecords)
+console.log("# of frames: " .. rerecords)
 
 local author_info = string.sub(header,0x223,0x300)
 author_info = remove_nulls(author_info)
-console.output("Author: " .. author_info)
+console.log("Author: " .. author_info)
 
 local description = string.sub(header,0x301,0x400)
 description = remove_nulls(description)
-console.output("Description: " .. description)
+console.log("Description: " .. description)
 
 local video_plugin = string.sub(header,0x123,0x162)
 video_plugin = remove_nulls(video_plugin)
-console.output("Video Plugin: " .. video_plugin)
+console.log("Video Plugin: " .. video_plugin)
 
 local audio_plugin = string.sub(header,0x163,0x1A2)
 audio_plugin = remove_nulls(audio_plugin)
-console.output("Audio Plugin: " .. audio_plugin)
+console.log("Audio Plugin: " .. audio_plugin)
 
 local input_plugin = string.sub(header,0x1A3,0x1E2)
 input_plugin = remove_nulls(input_plugin)
-console.output("Input Plugin: " .. input_plugin)
+console.log("Input Plugin: " .. input_plugin)
 
 local rsp_plugin = string.sub(header,0x1E3,0x222)
 rsp_plugin = remove_nulls(rsp_plugin)
-console.output("RSP Plugin: " .. rsp_plugin)
+console.log("RSP Plugin: " .. rsp_plugin)
 
 -- Flag to note that we've reached the end of the movie
 local finished = false
@@ -194,7 +194,7 @@ while true do
   end
   
   if finished then
-    console.output("Movie finished")
+    console.log("Movie finished")
     client.pause()
     return
   end
