@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 
 		public bool Empty
 		{
-			get { return recentlist.Count == 0; }
+			get { return !recentlist.Any(); }
 		}
 
 		public int Count
@@ -100,6 +100,14 @@ namespace BizHawk.Client.Common
 		public void ToggleAutoLoad()
 		{
 			AutoLoad ^= true;
+		}
+
+		public string MostRecent
+		{
+			get
+			{
+				return recentlist.Any() ? recentlist[0] : string.Empty;
+			}
 		}
 	}
 }

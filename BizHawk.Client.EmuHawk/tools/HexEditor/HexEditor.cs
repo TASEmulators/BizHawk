@@ -385,21 +385,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetSaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
-
-			if (!(Global.Emulator is NullEmulator))
+			var sfd = new SaveFileDialog
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				Filter = "Text (*.txt)|*.txt|All Files|*.*",
+				RestoreDirectory = true
+			};
+
+			if (Global.Emulator is NullEmulator)
+			{
+				sfd.FileName = "MemoryDump";
+				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
 			}
 			else
 			{
-				sfd.FileName = "MemoryDump";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 			}
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
-
-			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
-			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : string.Empty;
@@ -883,20 +885,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetBinarySaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
-
-			if (!(Global.Emulator is NullEmulator))
+			var sfd = new SaveFileDialog
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				Filter = GetSaveFileFilter(),
+				RestoreDirectory = true
+			};
+
+			if (Global.Emulator is NullEmulator)
+			{
+				sfd.FileName = "MemoryDump";
+				sfd.InitialDirectory = PathManager.GetBasePathAbsolute();
 			}
 			else
 			{
-				sfd.FileName = "MemoryDump";
+				if (_domain.Name == "File on Disk")
+				{
+					sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
+				}
+				else
+				{
+					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				}
+
+				sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 			}
 
-			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
-			sfd.Filter = GetSaveFileFilter();
-			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
 
 			return result == DialogResult.OK ? sfd.FileName : string.Empty;
@@ -1286,7 +1299,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId),
+				FileName = Path.GetFileNameWithoutExtension(Global.Config.RecentRoms.MostRecent) + ".tbl",
+				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null)),
 				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
 				RestoreDirectory = false
 			};
